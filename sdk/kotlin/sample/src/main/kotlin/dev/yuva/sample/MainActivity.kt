@@ -45,6 +45,8 @@ import java.net.URL
 import java.net.URLEncoder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
@@ -83,10 +85,22 @@ private fun Sample(context: Context, openConversation: String?, startScreen: Str
     var identified by remember { mutableStateOf(prefs.getBoolean("identified", false)) }
     var userId by remember { mutableStateOf(prefs.getString("user_id", "").orEmpty()) }
     var screen by remember { mutableStateOf(if (openConversation != null) "messages" else startScreen) }
-    var yuva by remember { mutableStateOf(client(context, identified, userId)) }
+    var yuva by remember { mutableStateOf<YuvaClient?>(client(context, identified, userId)) }
     var screenshot by remember { mutableStateOf<YuvaUpload?>(null) }
     val view = LocalView.current
     val scope = rememberCoroutineScope()
+    val swap = remember { Mutex() }
+
+    fun replaceClient(signOut: Boolean) {
+        val previous = yuva
+        yuva = null
+        scope.launch {
+            swap.withLock {
+                if (signOut) (yuva ?: previous)?.signOut()
+                yuva = client(context, identified, userId)
+            }
+        }
+    }
 
     LaunchedEffect(identified, userId) {
         prefs.edit().putBoolean("identified", identified).putString("user_id", userId).apply()
@@ -96,15 +110,16 @@ private fun Sample(context: Context, openConversation: String?, startScreen: Str
         Text("Copy sample/yuva.properties.example to sample/yuva.properties and rebuild.", Modifier.padding(32.dp))
         return
     }
-    when (screen) {
+    val current = yuva
+    when (screen.takeIf { current != null }) {
         "messages" -> {
             BackHandler { screen = null }
-            YuvaConversationsView(yuva, openConversationId = openConversation, onClose = { screen = null })
+            YuvaConversationsView(current!!, openConversationId = openConversation, onClose = { screen = null })
             return
         }
         "feedback" -> {
             BackHandler { screen = null }
-            YuvaFeedbackView(yuva, screenshot = screenshot, screen = "sample.home", onDone = { screen = null })
+            YuvaFeedbackView(current!!, screenshot = screenshot, screen = "sample.home", onDone = { screen = null })
             return
         }
     }
@@ -120,10 +135,7 @@ private fun Sample(context: Context, openConversation: String?, startScreen: Str
                         onClick = {
                             val signOut = identified && !value
                             identified = value
-                            scope.launch {
-                                if (signOut) yuva.signOut()
-                                yuva = client(context, value, userId)
-                            }
+                            replaceClient(signOut)
                         },
                         shape = SegmentedButtonDefaults.itemShape(index, 2),
                     ) { Text(label) }
@@ -134,15 +146,17 @@ private fun Sample(context: Context, openConversation: String?, startScreen: Str
                     value = userId,
                     onValueChange = {
                         userId = it
-                        yuva = client(context, true, it)
+                        replaceClient(false)
                     },
                     label = { Text("Host user id") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
-            Button(onClick = { screen = "messages" }, modifier = Modifier.fillMaxWidth()) { Text("Open messages") }
-            Button(onClick = {
+            Button(onClick = { screen = "messages" }, enabled = current != null, modifier = Modifier.fillMaxWidth()) {
+                Text("Open messages")
+            }
+            Button(enabled = current != null, onClick = {
                 screenshot = capture(view)
                 screen = "feedback"
             }, modifier = Modifier.fillMaxWidth()) { Text("Send feedback") }

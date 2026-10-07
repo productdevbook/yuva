@@ -196,6 +196,7 @@ sealed interface YuvaEvent {
     data class Read(val conversationId: String, val readAt: Instant) : YuvaEvent
     data class Typing(val conversationId: String, val typing: Boolean, val author: YuvaMessageAuthor) : YuvaEvent
     data class Presence(val presence: YuvaPresence) : YuvaEvent
+    data class InboxUpdated(val inbox: YuvaInbox) : YuvaEvent
     data object ResyncRequired : YuvaEvent
     data class ConnectionChanged(val connected: Boolean) : YuvaEvent
 }

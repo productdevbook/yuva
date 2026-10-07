@@ -6,9 +6,16 @@ struct StoredSession: Codable, Sendable {
     var expiresAt: Date?
     var subject: String?
     var visitorId: String?
+    var pendingRevoke: [String]?
 }
 
-struct SessionStore: Sendable {
+protocol SessionStorage: Sendable {
+    func load() -> StoredSession
+    func save(_ stored: StoredSession)
+    func clear()
+}
+
+struct SessionStore: SessionStorage {
     let account: String
 
     init(channelKey: String) {

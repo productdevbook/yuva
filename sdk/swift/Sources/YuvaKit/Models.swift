@@ -171,6 +171,7 @@ public enum YuvaEvent: Sendable {
     case read(conversationId: String, readAt: Date)
     case typing(conversationId: String, typing: Bool, author: YuvaMessageAuthor)
     case presence(YuvaPresence)
+    case inboxUpdated(YuvaInbox)
     case resyncRequired
     case connectionChanged(connected: Bool)
 }

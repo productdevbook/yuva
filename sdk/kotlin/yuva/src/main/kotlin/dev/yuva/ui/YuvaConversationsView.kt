@@ -103,6 +103,7 @@ internal class ConversationsState(private val client: YuvaClient) {
                 is YuvaEvent.Read -> refresh(event.conversationId)
                 is YuvaEvent.MessageCreated -> refresh(event.message.conversationId)
                 is YuvaEvent.Presence -> runCatching { session = client.refreshSession() }
+                is YuvaEvent.InboxUpdated -> session = session?.copy(inbox = event.inbox)
                 is YuvaEvent.ResyncRequired -> load()
                 else -> Unit
             }

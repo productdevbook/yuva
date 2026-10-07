@@ -99,6 +99,8 @@ final class ThreadModel {
                 }
             case .presence:
                 inbox = try? await client.refreshSession().inbox
+            case .inboxUpdated(let updated):
+                inbox = updated
             case .connectionChanged(let connected):
                 self.connected = connected
             case .resyncRequired:

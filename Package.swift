@@ -14,5 +14,10 @@ let package = Package(
             path: "sdk/swift/Sources/YuvaKit",
             resources: [.process("Resources")]
         ),
+        .testTarget(
+            name: "YuvaKitTests",
+            dependencies: ["YuvaKit"],
+            path: "sdk/swift/Tests/YuvaKitTests"
+        ),
     ]
 )

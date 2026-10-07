@@ -31,9 +31,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.widthIn
+import dev.yuva.R
 import dev.yuva.YuvaClient
+import dev.yuva.YuvaException
 import dev.yuva.YuvaUpload
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -121,3 +124,14 @@ internal fun imageUpload(context: Context, uri: Uri, name: String = "image"): Yu
 }
 
 internal fun fileSize(context: Context, size: Long): String = Formatter.formatShortFileSize(context, size)
+
+internal fun errorMessage(error: Throwable): Int {
+    if (error is IOException) return R.string.yuva_error_network
+    if (error !is YuvaException) return R.string.yuva_error_generic
+    return when {
+        error.code == "attachment_too_large" || error.status == 413 -> R.string.yuva_error_attachment_too_large
+        error.code == "attachment_type_mismatch" -> R.string.yuva_error_attachment_mismatch
+        error.code == "attachment_type_not_allowed" || error.status == 415 -> R.string.yuva_error_attachment_type
+        else -> R.string.yuva_error_generic
+    }
+}

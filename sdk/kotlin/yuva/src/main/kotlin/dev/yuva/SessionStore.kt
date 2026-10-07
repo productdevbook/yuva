@@ -12,28 +12,37 @@ internal data class StoredSession(
     val expiresAt: Instant? = null,
     val subject: String? = null,
     val visitorId: String? = null,
+    val pendingRevoke: List<String> = emptyList(),
 )
 
-internal class SessionStore(context: Context, channelKey: String) {
+internal interface SessionStorage {
+    fun load(): StoredSession
+    fun save(stored: StoredSession)
+    fun clear()
+}
+
+internal class SessionStore(context: Context, channelKey: String) : SessionStorage {
     private val prefs = context.getSharedPreferences("yuva.session.$channelKey", Context.MODE_PRIVATE)
 
-    fun load() = StoredSession(
+    override fun load() = StoredSession(
         token = prefs.getString("token", null),
         expiresAt = prefs.getString("expires_at", null)?.let(Instant::parse),
         subject = prefs.getString("subject", null),
         visitorId = prefs.getString("visitor_id", null),
+        pendingRevoke = prefs.getStringSet("pending_revoke", null).orEmpty().sorted(),
     )
 
-    fun save(stored: StoredSession) {
+    override fun save(stored: StoredSession) {
         prefs.edit()
             .putString("token", stored.token)
             .putString("expires_at", stored.expiresAt?.toString())
             .putString("subject", stored.subject)
             .putString("visitor_id", stored.visitorId)
+            .putStringSet("pending_revoke", stored.pendingRevoke.toSet().ifEmpty { null })
             .apply()
     }
 
-    fun clear() {
+    override fun clear() {
         prefs.edit().clear().apply()
     }
 }

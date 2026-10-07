@@ -51,6 +51,8 @@ final class ConversationsModel {
                 await refresh(message.conversationId)
             case .presence:
                 session = try? await client.refreshSession()
+            case .inboxUpdated:
+                session = await client.session
             case .resyncRequired:
                 await load()
             default:

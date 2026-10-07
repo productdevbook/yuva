@@ -15,7 +15,7 @@ public struct YuvaFeedbackView: View {
     @State private var email = ""
     @State private var sending = false
     @State private var sent = false
-    @State private var failed = false
+    @State private var failure: String?
     @State private var clientId = UUID().uuidString
 
     public init(client: YuvaClient, screenshot: YuvaUpload? = nil, screen: String? = nil, onDone: @escaping () -> Void = {}) {
@@ -59,13 +59,20 @@ public struct YuvaFeedbackView: View {
         }
         .task {
             guard let session = try? await client.start() else { return }
-            let offered = session.inbox.feedbackCategories
-            if !offered.isEmpty {
-                categories = offered
-                if !offered.contains(category), let first = offered.first { category = first }
-            }
+            offer(session.inbox.feedbackCategories)
             knownEmail = session.contact.email
         }
+        .task {
+            for await event in client.events() {
+                if case .inboxUpdated(let inbox) = event { offer(inbox.feedbackCategories) }
+            }
+        }
+    }
+
+    private func offer(_ offered: [YuvaFeedbackCategory]) {
+        guard !offered.isEmpty else { return }
+        categories = offered
+        if !offered.contains(category), let first = offered.first { category = first }
     }
 
     private var needsEmail: Bool { allowEmail && knownEmail == nil }
@@ -128,9 +135,9 @@ public struct YuvaFeedbackView: View {
             } footer: {
                 Text(L.t("feedback.metadataHint"))
             }
-            if failed {
+            if let failure {
                 Section {
-                    Text(L.t("error.generic")).foregroundStyle(.red)
+                    Text(failure).foregroundStyle(.red).accessibilityIdentifier("yuva.feedback.error")
                 }
             }
         }
@@ -151,7 +158,7 @@ public struct YuvaFeedbackView: View {
 
     private func send() async {
         sending = true
-        failed = false
+        failure = nil
         defer { sending = false }
         do {
             try await client.sendFeedback(
@@ -161,7 +168,7 @@ public struct YuvaFeedbackView: View {
                     clientId: clientId))
             sent = true
         } catch {
-            failed = true
+            failure = L.message(for: error)
         }
     }
 }

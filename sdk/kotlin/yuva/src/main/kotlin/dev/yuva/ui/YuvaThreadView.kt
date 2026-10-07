@@ -169,6 +169,7 @@ internal class ThreadState(val client: YuvaClient, conversationId: String?, priv
                     }
                 }
                 is YuvaEvent.Presence -> runCatching { inbox = client.refreshSession().inbox }
+                is YuvaEvent.InboxUpdated -> inbox = event.inbox
                 is YuvaEvent.ConnectionChanged -> connected = event.connected
                 is YuvaEvent.ResyncRequired -> load()
                 else -> Unit

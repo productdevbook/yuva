@@ -5,6 +5,7 @@ import java.io.IOException
 import java.time.Instant
 import java.util.UUID
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.min
 import kotlin.math.pow
@@ -59,16 +60,28 @@ class YuvaConfiguration(
     val serverUrl: String,
     val channelKey: String,
     val identityToken: (suspend () -> String?)? = null,
-)
-
-class YuvaClient(
-    context: Context,
-    val configuration: YuvaConfiguration,
-    httpClient: OkHttpClient = OkHttpClient(),
+    val maxAttachmentSize: Long = DEFAULT_MAX_ATTACHMENT_SIZE,
 ) {
-    internal val appContext: Context = context.applicationContext
+    companion object {
+        const val DEFAULT_MAX_ATTACHMENT_SIZE: Long = 25L * 1024 * 1024
+    }
+}
+
+class YuvaClient internal constructor(
+    val configuration: YuvaConfiguration,
+    httpClient: OkHttpClient,
+    private val store: SessionStorage,
+    private val context: Context?,
+) {
+    constructor(context: Context, configuration: YuvaConfiguration, httpClient: OkHttpClient = OkHttpClient()) : this(
+        configuration,
+        httpClient,
+        SessionStore(context.applicationContext, configuration.channelKey),
+        context.applicationContext,
+    )
+
+    internal val appContext: Context get() = checkNotNull(context)
     private val http = httpClient.newBuilder().pingInterval(0, TimeUnit.SECONDS).build()
-    private val store = SessionStore(appContext, configuration.channelKey)
     private val base: HttpUrl = configuration.serverUrl.trimEnd('/').toHttpUrl()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val sessionLock = Mutex()
@@ -76,6 +89,7 @@ class YuvaClient(
     private var realtime: Job? = null
 
     @Volatile private var token: String? = null
+    @Volatile private var identityEnabled = true
     @Volatile private var lastEventId = 0L
 
     @Volatile var session: YuvaSession? = null
@@ -100,20 +114,24 @@ class YuvaClient(
         request<YuvaSession>("GET", "client/v1/session").also { session = it }
 
     suspend fun identify(): YuvaSession {
+        identityEnabled = true
         sessionToken(fresh = true)
         restartRealtime()
         return start()
     }
 
     suspend fun signOut() {
-        stopRealtime()
-        token?.let { current ->
-            runCatching { execute(Request.Builder().url(url("client/v1/session")).delete().bearer(current).build()) }
+        sessionLock.withLock {
+            stopRealtime()
+            identityEnabled = false
+            val stored = store.load()
+            val pending = (stored.pendingRevoke + listOfNotNull(token, stored.token)).distinct()
+            token = null
+            session = null
+            lastEventId = 0
+            store.save(StoredSession(pendingRevoke = pending))
+            revoke(pending)
         }
-        token = null
-        session = null
-        lastEventId = 0
-        store.clear()
         if (shared.subscriptionCount.value > 0) startRealtime()
     }
 
@@ -211,9 +229,27 @@ class YuvaClient(
         }
     }
 
+    private suspend fun revoke(tokens: List<String>) {
+        val left = tokens.filterNot { revoke(it) }
+        val stored = store.load().copy(pendingRevoke = left)
+        if (left.isEmpty() && stored.token == null && stored.visitorId == null) store.clear() else store.save(stored)
+    }
+
+    private suspend fun revoke(token: String): Boolean = try {
+        send("DELETE", "client/v1/session", emptyList(), null, token)
+        true
+    } catch (error: YuvaException) {
+        error.status != 429 && error.status < 500
+    } catch (error: CancellationException) {
+        throw error
+    } catch (_: Exception) {
+        false
+    }
+
     private suspend fun beginSession(fresh: Boolean): String {
+        store.load().pendingRevoke.takeIf { it.isNotEmpty() }?.let { revoke(it) }
         val stored = store.load()
-        val identity = configuration.identityToken?.invoke()
+        val identity = if (identityEnabled) configuration.identityToken?.invoke() else null
         val subject = identity?.let(IdentityToken::subject)
         val saved = stored.token
         if (!fresh && saved != null && stored.subject == subject &&
@@ -299,6 +335,9 @@ class YuvaClient(
         query: List<Pair<String, String>> = emptyList(),
         body: Body? = null,
     ): ByteArray {
+        if (body != null && body.files.any { it.data.size > configuration.maxAttachmentSize }) {
+            throw YuvaException(413, "attachment_too_large", "an attachment is larger than the server allows")
+        }
         val current = sessionToken()
         return try {
             send(method, path, query, body, current)
@@ -372,6 +411,7 @@ class YuvaClient(
 
     private suspend fun runRealtime() {
         val attempt = AtomicInteger(0)
+        val connectedBefore = AtomicBoolean(false)
         while (scope.isActive) {
             try {
                 val current = sessionToken()
@@ -385,7 +425,10 @@ class YuvaClient(
                     request,
                     object : WebSocketListener() {
                         override fun onMessage(webSocket: WebSocket, text: String) {
-                            if (handle(text)) attempt.set(0)
+                            if (handle(text)) {
+                                attempt.set(0)
+                                if (connectedBefore.getAndSet(true)) scope.launch { refetchInbox() }
+                            }
                         }
 
                         override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
@@ -423,6 +466,11 @@ class YuvaClient(
         }
     }
 
+    private suspend fun refetchInbox() {
+        val info = runCatching { refreshSession() }.getOrNull() ?: return
+        shared.tryEmit(YuvaEvent.InboxUpdated(info.inbox))
+    }
+
     private fun handle(text: String): Boolean {
         val message = runCatching { json.parseToJsonElement(text).jsonObject }.getOrNull() ?: return false
         message["id"]?.jsonPrimitive?.longOrNull?.let { lastEventId = maxOf(lastEventId, it) }
@@ -451,6 +499,11 @@ class YuvaClient(
                 YuvaEvent.Typing(typing.conversationId, typing.typing, typing.author)
             }
             "presence" -> payload { YuvaEvent.Presence(json.decodeFromJsonElement(it)) }
+            "inbox.updated" -> payload {
+                val inbox = json.decodeFromJsonElement<YuvaInbox>(it)
+                session = session?.copy(inbox = inbox)
+                YuvaEvent.InboxUpdated(inbox)
+            }
             else -> null
         }
         event?.let(shared::tryEmit)

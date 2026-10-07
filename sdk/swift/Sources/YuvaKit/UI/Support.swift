@@ -16,6 +16,22 @@ enum L {
     static func f(_ key: String, _ args: CVarArg...) -> String {
         String(format: t(key), arguments: args)
     }
+
+    static func message(for error: Error) -> String {
+        if error is URLError { return t("error.network") }
+        guard let error = error as? YuvaError else { return t("error.generic") }
+        switch error.code {
+        case "attachment_too_large": return t("error.attachmentTooLarge")
+        case "attachment_type_not_allowed": return t("error.attachmentType")
+        case "attachment_type_mismatch": return t("error.attachmentMismatch")
+        default: break
+        }
+        switch error.status {
+        case 413: return t("error.attachmentTooLarge")
+        case 415: return t("error.attachmentType")
+        default: return t("error.generic")
+        }
+    }
 }
 
 extension Image {

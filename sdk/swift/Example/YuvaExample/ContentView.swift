@@ -18,7 +18,8 @@ struct ContentView: View {
     let config: ExampleConfig
     @AppStorage("userId") private var userId = ""
     @AppStorage("identified") private var identified = false
-    @State private var client: YuvaClient
+    @State private var client: YuvaClient?
+    @State private var swap: Task<Void, Never>?
 
     init(config: ExampleConfig) {
         self.config = config
@@ -52,6 +53,7 @@ struct ContentView: View {
                     Button("Send feedback") { screen = .feedback(captureScreen()) }
                         .accessibilityIdentifier("example.feedback")
                 }
+                .disabled(client == nil)
                 Section("Server") {
                     LabeledContent("URL", value: config.serverURL.absoluteString)
                     LabeledContent("YuvaKit", value: Yuva.version)
@@ -60,22 +62,20 @@ struct ContentView: View {
             .navigationTitle("Yuva Example")
         }
         .sheet(item: $screen) { screen in
-            switch screen {
-            case .messages:
-                YuvaConversationsView(client: client, openConversationId: $openConversationId)
-            case .feedback(let screenshot):
-                YuvaFeedbackView(client: client, screenshot: screenshot, screen: "example.home") { self.screen = nil }
+            if let client {
+                switch screen {
+                case .messages:
+                    YuvaConversationsView(client: client, openConversationId: $openConversationId)
+                case .feedback(let screenshot):
+                    YuvaFeedbackView(client: client, screenshot: screenshot, screen: "example.home") { self.screen = nil }
+                }
             }
         }
         .onChange(of: identified) { old, new in
-            let previous = client
-            Task {
-                if old && !new { await previous.signOut() }
-                client = Self.makeClient(config: config, identified: identified, userId: userId)
-            }
+            replaceClient(signOut: old && !new)
         }
         .onChange(of: userId) { _, _ in
-            client = Self.makeClient(config: config, identified: identified, userId: userId)
+            replaceClient(signOut: false)
         }
         .onAppear {
             let defaults = UserDefaults.standard
@@ -84,6 +84,18 @@ struct ContentView: View {
             case "feedback": screen = .feedback(nil)
             default: break
             }
+        }
+    }
+
+    private func replaceClient(signOut: Bool) {
+        let previous = client
+        let pending = swap
+        client = nil
+        screen = nil
+        swap = Task {
+            await pending?.value
+            if signOut, let old = client ?? previous { await old.signOut() }
+            client = Self.makeClient(config: config, identified: identified, userId: userId)
         }
     }
 

@@ -4,11 +4,18 @@ public struct YuvaConfiguration: Sendable {
     public var serverURL: URL
     public var channelKey: String
     public var identityToken: (@Sendable () async throws -> String?)?
+    public var maxAttachmentSize: Int
 
-    public init(serverURL: URL, channelKey: String, identityToken: (@Sendable () async throws -> String?)? = nil) {
+    public static let defaultMaxAttachmentSize = 25 * 1024 * 1024
+
+    public init(
+        serverURL: URL, channelKey: String, identityToken: (@Sendable () async throws -> String?)? = nil,
+        maxAttachmentSize: Int = YuvaConfiguration.defaultMaxAttachmentSize
+    ) {
         self.serverURL = serverURL
         self.channelKey = channelKey
         self.identityToken = identityToken
+        self.maxAttachmentSize = maxAttachmentSize
     }
 }
 
@@ -27,18 +34,24 @@ public enum YuvaOrder: String, Sendable {
 public actor YuvaClient {
     public nonisolated let configuration: YuvaConfiguration
     private let urlSession: URLSession
-    private let store: SessionStore
+    private let store: any SessionStorage
     private var token: String?
-    private var starting: Task<String, Error>?
+    private var identityEnabled = true
+    private var sessionBusy = false
+    private var sessionWaiters: [CheckedContinuation<Void, Never>] = []
     private var subscribers: [UUID: AsyncStream<YuvaEvent>.Continuation] = [:]
     private var realtimeTask: Task<Void, Never>?
     private var lastEventId: Int64 = 0
     public private(set) var session: YuvaSession?
 
     public init(configuration: YuvaConfiguration, urlSession: URLSession = .shared) {
+        self.init(configuration: configuration, urlSession: urlSession, store: SessionStore(channelKey: configuration.channelKey))
+    }
+
+    init(configuration: YuvaConfiguration, urlSession: URLSession, store: any SessionStorage) {
         self.configuration = configuration
         self.urlSession = urlSession
-        store = SessionStore(channelKey: configuration.channelKey)
+        self.store = store
     }
 
     @discardableResult
@@ -57,23 +70,27 @@ public actor YuvaClient {
 
     @discardableResult
     public func identify() async throws -> YuvaSession {
+        identityEnabled = true
         _ = try await sessionToken(fresh: true)
         restartRealtime()
         return try await start()
     }
 
     public func signOut() async {
+        await lockSession()
         stopRealtime()
-        if let token {
-            var request = URLRequest(url: url("client/v1/session"))
-            request.httpMethod = "DELETE"
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-            _ = try? await urlSession.data(for: request)
+        identityEnabled = false
+        let stored = store.load()
+        var pending = stored.pendingRevoke ?? []
+        for candidate in [token, stored.token].compactMap({ $0 }) where !pending.contains(candidate) {
+            pending.append(candidate)
         }
         token = nil
         session = nil
         lastEventId = 0
-        store.clear()
+        store.save(StoredSession(pendingRevoke: pending))
+        await revoke(pending)
+        unlockSession()
         if !subscribers.isEmpty { startRealtime() }
     }
 
@@ -169,18 +186,59 @@ public actor YuvaClient {
 
     // MARK: Session
 
+    private func lockSession() async {
+        guard sessionBusy else {
+            sessionBusy = true
+            return
+        }
+        await withCheckedContinuation { sessionWaiters.append($0) }
+    }
+
+    private func unlockSession() {
+        if sessionWaiters.isEmpty {
+            sessionBusy = false
+        } else {
+            sessionWaiters.removeFirst().resume()
+        }
+    }
+
     private func sessionToken(fresh: Bool = false) async throws -> String {
         if !fresh, let token { return token }
-        if let starting { return try await starting.value }
-        let task = Task { try await beginSession(fresh: fresh) }
-        starting = task
-        defer { starting = nil }
-        return try await task.value
+        await lockSession()
+        defer { unlockSession() }
+        if !fresh, let token { return token }
+        return try await beginSession(fresh: fresh)
+    }
+
+    private func revoke(_ tokens: [String]) async {
+        var left: [String] = []
+        for token in tokens {
+            if await !revoke(token) { left.append(token) }
+        }
+        var stored = store.load()
+        stored.pendingRevoke = left.isEmpty ? nil : left
+        if stored.pendingRevoke == nil, stored.token == nil, stored.visitorId == nil {
+            store.clear()
+        } else {
+            store.save(stored)
+        }
+    }
+
+    private func revoke(_ token: String) async -> Bool {
+        do {
+            _ = try await raw("DELETE", "client/v1/session", query: [], body: nil, token: token)
+            return true
+        } catch let error as YuvaError {
+            return error.status != 0 && error.status != 429 && error.status < 500
+        } catch {
+            return false
+        }
     }
 
     private func beginSession(fresh: Bool) async throws -> String {
+        if let pending = store.load().pendingRevoke, !pending.isEmpty { await revoke(pending) }
         var stored = store.load()
-        let identity = try await configuration.identityToken?()
+        let identity = identityEnabled ? try await configuration.identityToken?() : nil
         let subject = identity.flatMap(IdentityToken.subject(of:))
         if !fresh, let saved = stored.token, stored.subject == subject,
            let expires = stored.expiresAt, expires > Date().addingTimeInterval(60) {
@@ -262,6 +320,10 @@ public actor YuvaClient {
     }
 
     private func raw(_ method: String, _ path: String, query: [URLQueryItem], body: Body?) async throws -> (Data, Int) {
+        if let body, body.files.contains(where: { $0.data.count > configuration.maxAttachmentSize }) {
+            throw YuvaError(
+                status: 413, code: "attachment_too_large", detail: "an attachment is larger than the server allows")
+        }
         let token = try await sessionToken()
         do {
             return try await raw(method, path, query: query, body: body, token: token)
@@ -346,6 +408,7 @@ public actor YuvaClient {
 
     private func runRealtime() async {
         var attempt = 0
+        var connectedBefore = false
         while !Task.isCancelled {
             var socket: URLSessionWebSocketTask?
             do {
@@ -360,7 +423,11 @@ public actor YuvaClient {
                 try await withTaskCancellationHandler {
                     while true {
                         let message = try await task.receive()
-                        if case .string(let text) = message, handle(Data(text.utf8)) { attempt = 0 }
+                        if case .string(let text) = message, handle(Data(text.utf8)) {
+                            attempt = 0
+                            if connectedBefore { Task { await refetchInbox() } }
+                            connectedBefore = true
+                        }
                     }
                 } onCancel: {
                     task.cancel(with: .normalClosure, reason: nil)
@@ -379,6 +446,11 @@ public actor YuvaClient {
             attempt += 1
             try? await Task.sleep(for: .seconds(delay))
         }
+    }
+
+    private func refetchInbox() async {
+        guard let info = try? await refreshSession() else { return }
+        broadcast(.inboxUpdated(info.inbox))
     }
 
     private struct Envelope: Decodable {
@@ -442,6 +514,14 @@ public actor YuvaClient {
             }
         case "presence":
             if let presence = payload(YuvaPresence.self) { broadcast(.presence(presence)) }
+        case "inbox.updated":
+            if let inbox = payload(YuvaInbox.self) {
+                if let current = session {
+                    session = YuvaSession(
+                        expiresAt: current.expiresAt, visitorId: current.visitorId, contact: current.contact, inbox: inbox)
+                }
+                broadcast(.inboxUpdated(inbox))
+            }
         default:
             break
         }

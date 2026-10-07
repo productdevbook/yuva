@@ -53,10 +53,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import dev.yuva.R
 import dev.yuva.YuvaClient
+import dev.yuva.YuvaEvent
 import dev.yuva.YuvaFeedback
 import dev.yuva.YuvaFeedbackCategory
 import dev.yuva.YuvaUpload
 import java.util.UUID
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -81,7 +83,7 @@ fun YuvaFeedbackView(
     var email by remember { mutableStateOf("") }
     var sending by remember { mutableStateOf(false) }
     var sent by remember { mutableStateOf(false) }
-    var failed by remember { mutableStateOf(false) }
+    var failure by remember { mutableStateOf<Int?>(null) }
     val clientId = remember { UUID.randomUUID().toString() }
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(10)) { uris ->
         scope.launch {
@@ -89,14 +91,19 @@ fun YuvaFeedbackView(
         }
     }
 
+    fun offer(offered: List<YuvaFeedbackCategory>) {
+        if (offered.isEmpty()) return
+        categories = offered
+        if (category !in offered) category = offered.first()
+    }
+
     LaunchedEffect(client) {
         val session = runCatching { client.start() }.getOrNull() ?: return@LaunchedEffect
-        val offered = session.inbox.feedbackCategories
-        if (offered.isNotEmpty()) {
-            categories = offered
-            if (category !in offered) category = offered.first()
-        }
+        offer(session.inbox.feedbackCategories)
         knownEmail = session.contact.email
+    }
+    LaunchedEffect(client) {
+        client.events().collect { event -> if (event is YuvaEvent.InboxUpdated) offer(event.inbox.feedbackCategories) }
     }
 
     val needsEmail = allowEmail && knownEmail == null
@@ -118,7 +125,7 @@ fun YuvaFeedbackView(
                             onClick = {
                                 scope.launch {
                                     sending = true
-                                    failed = false
+                                    failure = null
                                     try {
                                         client.sendFeedback(
                                             YuvaFeedback(
@@ -132,8 +139,10 @@ fun YuvaFeedbackView(
                                             ),
                                         )
                                         sent = true
-                                    } catch (_: Exception) {
-                                        failed = true
+                                    } catch (error: CancellationException) {
+                                        throw error
+                                    } catch (error: Exception) {
+                                        failure = errorMessage(error)
                                     } finally {
                                         sending = false
                                     }
@@ -223,7 +232,9 @@ fun YuvaFeedbackView(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            if (failed) Text(stringResource(R.string.yuva_error_generic), color = MaterialTheme.colorScheme.error)
+            failure?.let {
+                Text(stringResource(it), color = MaterialTheme.colorScheme.error, modifier = Modifier.testTag("yuva.feedback.error"))
+            }
         }
     }
 }
