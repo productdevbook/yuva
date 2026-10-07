@@ -156,7 +156,8 @@ per contact within a set interval; the greeting is a `system` message with
 `Auto-Submitted: auto-replied`.
 
 Bounces: an inbound delivery report (`multipart/report; report-type=delivery-status`) to a channel
-address counts only when it names a message we sent from that workspace (its Message-ID in the
+address counts only when its envelope sender is empty (the null reverse-path RFC 5321 §4.5.5
+requires of delivery reports), it names a message we sent from that workspace (its Message-ID in the
 returned headers, `In-Reply-To` or `References`) and a `Final-Recipient` that was a recipient of
 that message; then it fails the message and marks the permanently failed recipients
 undeliverable. Anything else is stored as an ordinary automatic mail from its sender and changes

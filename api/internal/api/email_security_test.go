@@ -142,7 +142,19 @@ func TestForgedDeliveryReports(t *testing.T) {
 		t.Fatal("a blocked sender's report counted")
 	}
 
-	genuine := h.ingest(et.address, dsnMail(et.address, ourID, victim, "5.1.1"), nil)
+	third := strings.Replace(string(dsnMail(et.address, ourID, victim, "5.1.1")),
+		"From: Mail Delivery System <mailer-daemon@mx.example.net>", "From: <third@example.com>", 1)
+	sent := h.ingest(et.address, []byte(third), func(req *http.Request) { req.Header.Set("X-Yuva-Envelope-From", "third@example.com") })
+	if sent.status != http.StatusAccepted || sent.str("status") != "stored" || len(undeliverable(et.owner, contactID)) != 0 {
+		t.Fatalf("a report with a sender counted: %d %v", sent.status, sent.body)
+	}
+	for _, m := range messages(et.owner, sent.str("conversation_id")) {
+		if m["direction"] == "out" {
+			t.Fatal("a report with a sender got an automatic reply")
+		}
+	}
+
+	genuine := h.ingest(et.address, []byte(third), func(req *http.Request) { req.Header.Set("X-Yuva-Envelope-From", "") })
 	if genuine.str("status") != "bounce" || len(undeliverable(et.owner, contactID)) != 1 {
 		t.Fatalf("genuine report: %v", genuine.body)
 	}

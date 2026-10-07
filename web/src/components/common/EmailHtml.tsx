@@ -3,16 +3,6 @@ import { useEffect, useMemo, useRef, useState } from "react"
 
 import { cn } from "@/lib/utils"
 
-const REMOTE = /^\s*(https?:)?\/\//i
-const REMOTE_IN_SRCSET = /(^|,)\s*(https?:)?\/\//i
-
-function remoteImages(doc: Document) {
-  return [...doc.querySelectorAll("img, [background]")].filter((el) => {
-    const src = el.getAttribute("src") ?? el.getAttribute("background") ?? ""
-    return REMOTE.test(src) || REMOTE_IN_SRCSET.test(el.getAttribute("srcset") ?? "")
-  })
-}
-
 function cidOf(src: string) {
   const m = /^\s*cid:(.+)$/i.exec(src)
   if (!m) return undefined
@@ -41,11 +31,12 @@ function prepare(html: string, images: boolean, inline: ReadonlyMap<string, stri
     if (url) img.setAttribute("src", new URL(url, window.location.origin).href)
   }
   if (!images) {
-    for (const el of remoteImages(doc)) {
-      if (el.getAttribute("src")?.startsWith(`${window.location.origin}/v1/attachments/`)) continue
-      el.removeAttribute("src")
+    const own = `${window.location.origin}/v1/attachments/`
+    const kept = (v: string | null) => !v || v.startsWith(own) || /^\s*(data|cid):/i.test(v)
+    for (const el of doc.querySelectorAll("img, [background]")) {
+      if (!kept(el.getAttribute("src"))) el.removeAttribute("src")
+      if (!kept(el.getAttribute("background"))) el.removeAttribute("background")
       el.removeAttribute("srcset")
-      el.removeAttribute("background")
     }
   }
   return doc.body.innerHTML

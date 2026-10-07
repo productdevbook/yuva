@@ -656,7 +656,8 @@ func TestBounceDSN(t *testing.T) {
 	h.sendQueued(t, et.ws, reply.str("id"))
 	ourID := lastOf(messages(et.owner, conv), "message")["email"].(map[string]any)["message_id"].(string)
 
-	b := h.ingest(et.address, dsnMail(et.address, ourID, rcpt, "5.1.1"), func(req *http.Request) { req.Header.Set("X-Yuva-Envelope-From", "") })
+	nullFrom := func(req *http.Request) { req.Header.Set("X-Yuva-Envelope-From", "") }
+	b := h.ingest(et.address, dsnMail(et.address, ourID, rcpt, "5.1.1"), nullFrom)
 	if b.status != http.StatusAccepted || b.str("status") != "bounce" || b.str("message_id") != reply.str("id") {
 		t.Fatalf("dsn: %d %v", b.status, b.body)
 	}
@@ -679,7 +680,7 @@ func TestBounceDSN(t *testing.T) {
 		t.Fatal("no messages")
 	}
 	before, _ := et.owner.expect(http.StatusOK, "GET", "/v1/conversations/counts", nil).body["all"].(float64)
-	delayed := h.ingest(et.address, dsnMail(et.address, ourID, rcpt, "4.4.1"), nil)
+	delayed := h.ingest(et.address, dsnMail(et.address, ourID, rcpt, "4.4.1"), nullFrom)
 	if delayed.str("status") != "bounce" {
 		t.Fatalf("delayed dsn: %v", delayed.body)
 	}

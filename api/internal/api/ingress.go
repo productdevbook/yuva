@@ -239,7 +239,7 @@ func (s *Server) IngestEmail(ctx context.Context, envelopeTo, envelopeFrom strin
 	if err := s.refuseBlockedSender(ctx, ch.WorkspaceID, sender); err != nil {
 		return IngestResult{}, err
 	}
-	if m.Bounce != nil {
+	if m.Bounce != nil && nullSender(envelopeFrom) {
 		res, handled, err := s.applyDSN(ctx, ch, m)
 		if err != nil || handled {
 			return res, err
