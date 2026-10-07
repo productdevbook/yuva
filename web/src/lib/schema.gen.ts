@@ -956,7 +956,9 @@ export interface paths {
          *     is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
          *     `failed`. Notes are never e-mailed. When the recipient address is undeliverable (bounced or
          *     complained) the reply is refused with `409 email_undeliverable`; when the channel has no
-         *     SMTP account, with `409 email_not_configured`.
+         *     SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
+         *     address the contact wrote to; when the conversation has none and the channel has no
+         *     `from_address`, the reply is refused with `409 email_no_sender`.
          */
         post: operations["createMessage"];
         delete?: never;
@@ -1779,6 +1781,12 @@ export interface paths {
          *     timestamp must be within 5 minutes of the server's clock. A message with a Message-ID seen
          *     before on the same channel is accepted again without being stored twice.
          *
+         *     The recipient selects the channel: its exact address, then `local@` for `local+tag@`, then
+         *     the domain's catch-all channel (`*@domain`). Volume never bounces mail: a sender over the
+         *     hourly limit of new conversations on a channel has the message added to its latest
+         *     conversation there instead. Only a sender over the server's hard cap of inbound mails per
+         *     hour (`YUVA_EMAIL_SENDER_HOURLY_CAP`, default 500) is refused with `429 rate_limited`.
+         *
          *     Refusals are permanent (4xx) and carry a `reason` that the sending server shows to the
          *     sender. 5xx means try again later.
          */
@@ -2390,6 +2398,13 @@ export interface components {
         };
         /** @description Settings of an `email` channel. */
         EmailChannel: {
+            /**
+             * @description The address the channel receives mail at, unique on the server. `*@example.com` makes a
+             *     catch-all channel (one per domain): it receives mail to every address of the domain that
+             *     no other channel has, and replies go out from the address the contact wrote to, so the
+             *     SMTP account must be allowed to send from the whole domain. `from_address` is then used
+             *     only for conversations that have no such address and cannot itself be a catch-all.
+             */
             address: components["schemas"]["Email"];
             /** @description The name in `From`; the channel name when empty. */
             display_name: string;
@@ -2398,6 +2413,13 @@ export interface components {
             auto_reply: components["schemas"]["EmailAutoReply"];
         };
         EmailChannelInput: {
+            /**
+             * @description The address the channel receives mail at, unique on the server. `*@example.com` makes a
+             *     catch-all channel (one per domain): it receives mail to every address of the domain that
+             *     no other channel has, and replies go out from the address the contact wrote to, so the
+             *     SMTP account must be allowed to send from the whole domain. `from_address` is then used
+             *     only for conversations that have no such address and cannot itself be a catch-all.
+             */
             address: components["schemas"]["Email"];
             display_name?: string;
             from_address?: components["schemas"]["Email"];

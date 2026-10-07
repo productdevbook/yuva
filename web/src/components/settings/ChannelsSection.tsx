@@ -481,7 +481,16 @@ function EmailFields({
         <legend className="mb-3 text-sm font-semibold">
           <Trans>Receiving</Trans>
         </legend>
-        <Field label={<Trans>Support address</Trans>} htmlFor="email-address">
+        <Field
+          label={<Trans>Support address</Trans>}
+          htmlFor="email-address"
+          hint={
+            <Trans>
+              *@example.com receives every address of the domain that no other channel has; replies then go out from
+              the address the customer wrote to.
+            </Trans>
+          }
+        >
           <Input
             id="email-address"
             type="email"
