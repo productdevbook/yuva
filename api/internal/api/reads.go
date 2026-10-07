@@ -42,29 +42,35 @@ func (s *Server) MarkConversationRead(ctx context.Context, req oas.MarkConversat
 			}
 			msgID, msgAt = m.ID, m.CreatedAt
 		}
-		read, err := q.MarkConversationRead(ctx, store.MarkConversationReadParams{
-			WorkspaceID: p.workspaceID, MemberID: p.memberID, ConversationID: c.ID, MessageID: msgID, MessageAt: msgAt, Now: s.now(),
-		})
-		moved := err == nil
-		if store.IsNotFound(err) {
-			read, err = q.GetConversationRead(ctx, store.GetConversationReadParams{WorkspaceID: p.workspaceID, MemberID: p.memberID, ConversationID: c.ID})
-		}
-		if err != nil {
-			return err
-		}
-		out.LastReadMessageId = &read.LastReadMessageID
-		unread, err := q.ListUnreadConversations(ctx, store.ListUnreadConversationsParams{WorkspaceID: p.workspaceID, MemberID: p.memberID, ConversationIds: []uuid.UUID{c.ID}})
-		if err != nil {
-			return err
-		}
-		out.Unread = len(unread) > 0
-		if moved {
-			events.conversation(realtime.ConversationRead, c, out)
-		}
-		return nil
+		out, err = s.moveReadCursor(ctx, q, events, p.workspaceID, p.memberID, c, msgID, msgAt)
+		return err
 	})
 	if err != nil {
 		return nil, err
 	}
 	return oas.MarkConversationRead200JSONResponse(out), nil
+}
+
+func (s *Server) moveReadCursor(ctx context.Context, q *store.Queries, events *eventBatch, workspaceID, memberID uuid.UUID, c store.Conversation, msgID uuid.UUID, msgAt time.Time) (oas.ConversationRead, error) {
+	out := oas.ConversationRead{ConversationId: c.ID, MemberId: memberID}
+	read, err := q.MarkConversationRead(ctx, store.MarkConversationReadParams{
+		WorkspaceID: workspaceID, MemberID: memberID, ConversationID: c.ID, MessageID: msgID, MessageAt: msgAt, Now: s.now(),
+	})
+	moved := err == nil
+	if store.IsNotFound(err) {
+		read, err = q.GetConversationRead(ctx, store.GetConversationReadParams{WorkspaceID: workspaceID, MemberID: memberID, ConversationID: c.ID})
+	}
+	if err != nil {
+		return out, err
+	}
+	out.LastReadMessageId = &read.LastReadMessageID
+	unread, err := q.ListUnreadConversations(ctx, store.ListUnreadConversationsParams{WorkspaceID: workspaceID, MemberID: memberID, ConversationIds: []uuid.UUID{c.ID}})
+	if err != nil {
+		return out, err
+	}
+	out.Unread = len(unread) > 0
+	if moved {
+		events.conversation(realtime.ConversationRead, c, out)
+	}
+	return out, nil
 }

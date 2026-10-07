@@ -539,12 +539,20 @@ func TestClientRealtimeFiltering(t *testing.T) {
 	ct.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "note", "body": "internal"})
 	labels := ct.owner.expect(http.StatusCreated, "POST", "/v1/labels", map[string]any{"name": "vip", "color": "#ff0000"})
 	ct.owner.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"labels": []string{labels.str("id")}})
-	ct.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "body": "Hello!"})
 	m := ws.nextNot("presence")
+	if m.Type != "read" || m.ConversationID != conv {
+		t.Fatalf("the member's note moves the read receipt: %s %s", m.Type, m.Data)
+	}
+	h.clock.Advance(time.Second)
+	ct.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "body": "Hello!"})
+	m = ws.nextNot("presence")
 	helloID := m.ID
 	if m.Type != "message.created" || m.ConversationID != conv || m.ID == 0 || !strings.Contains(string(m.Data), `"Hello!"`) ||
 		strings.Contains(string(m.Data), "member_id") {
 		t.Fatalf("first frame after the reply: %s %s", m.Type, m.Data)
+	}
+	if m = ws.nextNot("presence"); m.Type != "read" {
+		t.Fatalf("the member's reply moves the read receipt: %s %s", m.Type, m.Data)
 	}
 	ct.owner.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"status": "closed"})
 	m = ws.nextNot("presence")
@@ -568,6 +576,9 @@ func TestClientRealtimeFiltering(t *testing.T) {
 		t.Fatalf("contact typing on /v1/realtime: %s", m.Data)
 	}
 
+	h.clock.Advance(time.Second)
+	cs.expect(http.StatusCreated, "POST", "/client/v1/conversations/"+conv+"/messages", map[string]any{"body": "thanks"})
+	ws.until(messageIn(conv))
 	ct.owner.expect(http.StatusOK, "POST", "/v1/conversations/"+conv+"/read", nil)
 	m = ws.nextNot("presence")
 	if m.Type != "read" || !strings.Contains(string(m.Data), `"read_at"`) {
@@ -593,7 +604,7 @@ func TestClientRealtimeFiltering(t *testing.T) {
 	for _, m := range resumed.until(func(m wsMessage) bool { return m.Type == "ready" }) {
 		types = append(types, m.Type)
 	}
-	if got := strings.Join(types, " "); got != "conversation.updated read conversation.created message.created ready" {
+	if got := strings.Join(types, " "); got != "read conversation.updated conversation.updated message.created read conversation.created message.created ready" {
 		t.Fatalf("replay: %s", got)
 	}
 	if _, status, err := dialContact(h, cs.token, ct.origin, "?last_event_id=1"); err != nil || status != http.StatusSwitchingProtocols {

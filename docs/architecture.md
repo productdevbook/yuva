@@ -337,7 +337,9 @@ E-mail fallback: an event with e-mail on schedules one check per member and conv
 member's delay (15 minutes by default). If the conversation still has contact messages (or an
 assignment) newer than the member's read position and the previous notification e-mail, one
 e-mail through the server's own mailer, in the member's locale, lists them and links to the
-conversation and to the notification settings; at most one per member and conversation per hour.
+conversation and to the notification settings; at most one per member and conversation per hour. A
+member's own message or note moves their read position to it, so the e-mail never lists what
+they already answered.
 
 ### Storage
 

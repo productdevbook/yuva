@@ -194,6 +194,9 @@ func TestRealtimeAccessFiltering(t *testing.T) {
 			}
 		}
 		want := []string{"conversation.created@" + inboxB, "message.created@" + inboxB, "conversation.created@" + tm.inbox, "contact.updated@", "message.created@" + tm.inbox}
+		if name == "owner" {
+			want = slices.Insert(want, 2, "conversation.read@"+inboxB)
+		}
 		if !slices.Equal(types, want) {
 			t.Fatalf("%s events %v, want %v", name, types, want)
 		}

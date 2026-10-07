@@ -872,3 +872,46 @@ func TestNotificationEmailDigest(t *testing.T) {
 		t.Fatalf("e-mailed a read conversation: next %v err %v mails %d", next, err, len(sent()))
 	}
 }
+
+func TestNotificationEmailSkipsAnsweredMessages(t *testing.T) {
+	h, _ := pushHarness(t)
+	nt := newNotifyTeam(t, h)
+	agentEmail := nt.agent.expect(http.StatusOK, "GET", "/v1/me", nil).body["person"].(map[string]any)["email"].(string)
+	conv := nt.open(h, nt.live, "first question")
+	nt.owner.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"assignee_id": nt.agentID})
+	h.runNotifications(nt.ws)
+	h.emailChecks(nt.ws)
+
+	h.clock.Advance(time.Second)
+	nt.write(h, conv, "answered already")
+	h.runNotifications(nt.ws)
+	checks := h.emailChecks(nt.ws)
+	if len(checks) != 1 {
+		t.Fatalf("checks %d", len(checks))
+	}
+	h.clock.Advance(time.Second)
+	nt.agent.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "body": "here is the answer"})
+	h.clock.Advance(time.Second)
+	nt.write(h, conv, "a new question")
+	h.runNotifications(nt.ws)
+	h.emailChecks(nt.ws)
+
+	before := len(h.mail.to(agentEmail))
+	h.clock.Advance(time.Hour)
+	if _, err := h.srv.SendNotificationEmail(context.Background(), checks[0]); err != nil {
+		t.Fatal(err)
+	}
+	mails := h.mail.to(agentEmail)[before:]
+	if len(mails) != 1 {
+		t.Fatalf("mails %d", len(mails))
+	}
+	m := mails[0].Text
+	if !strings.Contains(m, "> a new question") {
+		t.Fatalf("mail lacks the message after the reply:\n%s", m)
+	}
+	for _, old := range []string{"first question", "answered already", "here is the answer"} {
+		if strings.Contains(m, old) {
+			t.Fatalf("mail quotes %q from before the member's reply:\n%s", old, m)
+		}
+	}
+}

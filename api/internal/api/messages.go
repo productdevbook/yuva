@@ -491,6 +491,11 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 			return err
 		}
 		events.conversation(realtime.MessageCreated, c, withEmail(messageBody(msg, atts), summary))
+		if arg.AuthorMemberID != nil {
+			if _, err := s.moveReadCursor(ctx, q, events, p.workspaceID, *arg.AuthorMemberID, c, msg.ID, msg.CreatedAt); err != nil {
+				return err
+			}
+		}
 		return nil
 	})
 	if err != nil || !created {

@@ -1,6 +1,7 @@
 package api_test
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/url"
@@ -96,6 +97,77 @@ func TestConversationListItems(t *testing.T) {
 	tm.owner.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/conversations?contact_id="+uuid.New().String(), nil)
 }
 
+func TestMemberPostMovesReadCursor(t *testing.T) {
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	key := tm.apiKey(h)
+	tm.owner.expect(http.StatusNoContent, "PUT", "/v1/inboxes/"+tm.inbox+"/members/"+tm.agentID, nil)
+	conv := tm.conversation(tm.owner)
+	unread := func(c *client) bool {
+		t.Helper()
+		return itemByID(listItems(c, ""), conv)["unread"].(bool)
+	}
+	ownerID := tm.owner.expect(http.StatusOK, "GET", "/v1/me", nil).body["memberships"].([]any)[0].(map[string]any)["member_id"].(string)
+	cursor := func(member string) any {
+		t.Helper()
+		var id *string
+		err := h.st.Pool.QueryRow(context.Background(),
+			"SELECT last_read_message_id::text FROM conversation_reads WHERE member_id = $1 AND conversation_id = $2", member, conv).Scan(&id)
+		if err != nil {
+			return nil
+		}
+		return *id
+	}
+	post(key, conv, map[string]any{"kind": "message", "direction": "in", "body": "hello"})
+	tab, ownerWS := tm.agent.dial(""), tm.owner.dial("")
+	tab.ready()
+	ownerWS.ready()
+
+	reply := post(tm.agent, conv, map[string]any{"kind": "message", "body": "hi"})
+	if unread(tm.agent) || !unread(tm.owner) || cursor(tm.agentID) != reply || cursor(ownerID) != nil {
+		t.Fatalf("after the agent's reply: agent cursor %v, owner cursor %v", cursor(tm.agentID), cursor(ownerID))
+	}
+	var read struct {
+		LastRead string `json:"last_read_message_id"`
+		MemberID string `json:"member_id"`
+		Unread   bool   `json:"unread"`
+	}
+	m := tab.nextNot("message.created", "conversation.updated", "presence")
+	if m.Type != "conversation.read" || m.ConversationID != conv {
+		t.Fatalf("event %s %s, want conversation.read", m.Type, m.Data)
+	}
+	_ = json.Unmarshal(m.Data, &read)
+	if read.LastRead != reply || read.MemberID != tm.agentID || read.Unread {
+		t.Fatalf("read event %s", m.Data)
+	}
+
+	post(key, conv, map[string]any{"kind": "message", "direction": "in", "body": "thanks"})
+	note := post(tm.agent, conv, map[string]any{"kind": "note", "body": "follow up tomorrow"})
+	if cursor(tm.agentID) != note || unread(tm.agent) {
+		t.Fatalf("a note did not move the cursor: %v", cursor(tm.agentID))
+	}
+	m = tab.nextNot("message.created", "conversation.updated", "presence")
+	_ = json.Unmarshal(m.Data, &read)
+	if m.Type != "conversation.read" || read.LastRead != note {
+		t.Fatalf("event %s %s, want conversation.read for the note", m.Type, m.Data)
+	}
+	post(key, conv, map[string]any{"kind": "note", "body": "from the API"})
+	post(key, conv, map[string]any{"kind": "message", "body": "system reply"})
+	if cursor(tm.agentID) != note || cursor(ownerID) != nil {
+		t.Fatal("API key posts moved a member's cursor")
+	}
+	tm.say(tm.owner, conv, "owner reply")
+	for _, m := range ownerWS.until(func(m wsMessage) bool { return m.Type == "conversation.read" }) {
+		if m.Type == "conversation.read" {
+			_ = json.Unmarshal(m.Data, &read)
+			if read.MemberID != ownerID || read.Unread {
+				t.Fatalf("owner read event %s", m.Data)
+			}
+		}
+	}
+	tab.quiet(300*time.Millisecond, "message.created", "conversation.updated", "presence")
+}
+
 func TestUnreadAndReadCursor(t *testing.T) {
 	h := newHarness(t)
 	tm := newTeam(t, h)
@@ -111,7 +183,7 @@ func TestUnreadAndReadCursor(t *testing.T) {
 		t.Fatal("conversations without messages are unread")
 	}
 	first := post(key, conv, map[string]any{"kind": "message", "direction": "in", "body": "hello"})
-	reply := post(tm.owner, conv, map[string]any{"kind": "message", "body": "hi, how can I help?"})
+	reply := post(key, conv, map[string]any{"kind": "message", "body": "hi, how can I help?"})
 	if !unread(tm.agent, conv) || !unread(tm.owner, conv) || unread(key, conv) {
 		t.Fatal("unread after a contact message: agent and owner should see it, the API key never")
 	}
