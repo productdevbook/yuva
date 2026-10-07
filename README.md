@@ -3,6 +3,8 @@
 Open-source customer messaging for teams that run many products: one inbox for e-mail, live chat
 and private in-app conversations.
 
+Website: https://useyuva.com
+
 > [!WARNING]
 > **Pre-alpha.** Yuva is being designed and built in the open; 0.0.1 is its first public release.
 > The API and database schema will change without migration paths, and nothing has had a security
