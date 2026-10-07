@@ -23,6 +23,7 @@ import (
 
 	"github.com/productdevbook/yuva/api/internal/api"
 	"github.com/productdevbook/yuva/api/internal/mail"
+	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/secret"
 	"github.com/productdevbook/yuva/api/internal/storage"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -94,6 +95,7 @@ type harness struct {
 	mail    *outbox
 	secrets *secret.Key
 	storage *storage.Local
+	hub     *realtime.Hub
 }
 
 const testAttachmentMaxBytes = 1024
@@ -129,7 +131,11 @@ func newHarness(t *testing.T) *harness {
 	if err != nil {
 		t.Fatal(err)
 	}
-	h := &harness{t: t, st: st, clock: &clock{now: time.Now()}, mail: &outbox{}, secrets: key, storage: objects}
+	hub := realtime.NewHub(256)
+	listenCtx, stopListening := context.WithCancel(ctx)
+	t.Cleanup(stopListening)
+	go realtime.Listen(listenCtx, dsn, st.Queries, hub, slog.New(slog.DiscardHandler))
+	h := &harness{t: t, st: st, clock: &clock{now: time.Now()}, mail: &outbox{}, secrets: key, storage: objects, hub: hub}
 	srv := api.New(api.Deps{
 		Log:      slog.New(slog.DiscardHandler),
 		Store:    st,
@@ -144,6 +150,7 @@ func newHarness(t *testing.T) *harness {
 			MaxBytes: testAttachmentMaxBytes,
 			Types:    []string{"text/plain", "image/*"},
 		},
+		Hub: hub,
 	})
 	ts := httptest.NewServer(srv.Handler())
 	t.Cleanup(ts.Close)

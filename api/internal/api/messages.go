@@ -15,6 +15,7 @@ import (
 	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
+	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/storage"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
@@ -359,7 +360,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		atts    []store.Attachment
 		created = true
 	)
-	err := s.st.InTx(ctx, func(q *store.Queries) error {
+	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		c, err := visibleConversation(ctx, q, p, req.ConversationId, true)
 		if err != nil {
 			return err
@@ -409,7 +410,11 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		}); err != nil {
 			return err
 		}
-		return s.addUsage(ctx, q, p.workspaceID, 0, 1, total)
+		if err := s.addUsage(ctx, q, p.workspaceID, 0, 1, total); err != nil {
+			return err
+		}
+		events.conversation(realtime.MessageCreated, c, messageBody(msg, atts))
+		return nil
 	})
 	if err != nil || !created {
 		s.deleteObjects(ctx, stored)

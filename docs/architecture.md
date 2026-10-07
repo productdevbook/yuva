@@ -54,9 +54,14 @@ panel (embedded SPA) ─────────► /v1 + WS ──────�
   oapi-codegen. Postgres through pgx and sqlc; goose migrations.
 - Background work on River (Postgres-backed queue): outbound e-mail, webhooks, notification
   fan-out, attachment cleanup, retention.
-- Realtime: WebSocket (`coder/websocket`). An in-process hub fans events out to connections;
-  Postgres `LISTEN/NOTIFY` carries events between replicas. Clients resume with the last event id
-  and fetch anything missed over HTTP.
+- Realtime: WebSocket (`coder/websocket`). Every change that members see live writes a row to
+  `events` in the same transaction, last, under a per-workspace advisory lock, so event ids within
+  a workspace follow commit order; the transaction's `NOTIFY` carries the id. One listener per
+  process loads each notified event and an in-process hub fans it out to that workspace's
+  connections, filtered by inbox access. Clients resume with the last event id: the server
+  replays newer events (kept 24 hours, cleaned by a River job) before live ones, or answers
+  `resync_required` and the client reloads over HTTP. A slow connection is closed instead of
+  holding up the hub; when the listener reconnects, every connection is closed so it resumes.
 - The panel and the widget bundles are embedded with `go:embed`; one binary serves everything.
 - Configuration through environment variables. Secrets stored in the database (SMTP passwords,
   identity secrets, webhook secrets) are encrypted with AES-256-GCM under a master key,

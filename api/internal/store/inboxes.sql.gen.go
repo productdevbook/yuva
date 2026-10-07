@@ -116,7 +116,7 @@ func (q *Queries) GetInbox(ctx context.Context, arg GetInboxParams) (Inbox, erro
 	return i, err
 }
 
-const grantInboxAccess = `-- name: GrantInboxAccess :exec
+const grantInboxAccess = `-- name: GrantInboxAccess :execrows
 INSERT INTO inbox_members (workspace_id, inbox_id, member_id, created_at)
 VALUES ($1, $2, $3, $4)
 ON CONFLICT DO NOTHING
@@ -129,14 +129,17 @@ type GrantInboxAccessParams struct {
 	Now         time.Time
 }
 
-func (q *Queries) GrantInboxAccess(ctx context.Context, arg GrantInboxAccessParams) error {
-	_, err := q.db.Exec(ctx, grantInboxAccess,
+func (q *Queries) GrantInboxAccess(ctx context.Context, arg GrantInboxAccessParams) (int64, error) {
+	result, err := q.db.Exec(ctx, grantInboxAccess,
 		arg.WorkspaceID,
 		arg.InboxID,
 		arg.MemberID,
 		arg.Now,
 	)
-	return err
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
 }
 
 const hasInboxAccess = `-- name: HasInboxAccess :one
@@ -290,6 +293,35 @@ func (q *Queries) ListInboxes(ctx context.Context, arg ListInboxesParams) ([]Inb
 	return items, nil
 }
 
+const listMemberInboxIDs = `-- name: ListMemberInboxIDs :many
+SELECT inbox_id FROM inbox_members WHERE workspace_id = $1 AND member_id = $2
+`
+
+type ListMemberInboxIDsParams struct {
+	WorkspaceID uuid.UUID
+	MemberID    uuid.UUID
+}
+
+func (q *Queries) ListMemberInboxIDs(ctx context.Context, arg ListMemberInboxIDsParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listMemberInboxIDs, arg.WorkspaceID, arg.MemberID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var inbox_id uuid.UUID
+		if err := rows.Scan(&inbox_id); err != nil {
+			return nil, err
+		}
+		items = append(items, inbox_id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const lockInbox = `-- name: LockInbox :one
 SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at FROM inboxes WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
@@ -320,7 +352,7 @@ func (q *Queries) LockInbox(ctx context.Context, arg LockInboxParams) (Inbox, er
 	return i, err
 }
 
-const revokeInboxAccess = `-- name: RevokeInboxAccess :exec
+const revokeInboxAccess = `-- name: RevokeInboxAccess :execrows
 DELETE FROM inbox_members WHERE workspace_id = $1 AND inbox_id = $2 AND member_id = $3
 `
 
@@ -330,9 +362,12 @@ type RevokeInboxAccessParams struct {
 	MemberID    uuid.UUID
 }
 
-func (q *Queries) RevokeInboxAccess(ctx context.Context, arg RevokeInboxAccessParams) error {
-	_, err := q.db.Exec(ctx, revokeInboxAccess, arg.WorkspaceID, arg.InboxID, arg.MemberID)
-	return err
+func (q *Queries) RevokeInboxAccess(ctx context.Context, arg RevokeInboxAccessParams) (int64, error) {
+	result, err := q.db.Exec(ctx, revokeInboxAccess, arg.WorkspaceID, arg.InboxID, arg.MemberID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
 }
 
 const setInboxIdentitySecret = `-- name: SetInboxIdentitySecret :execrows

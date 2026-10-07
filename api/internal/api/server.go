@@ -14,6 +14,7 @@ import (
 	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/metrics"
 	"github.com/productdevbook/yuva/api/internal/oas"
+	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/secret"
 	"github.com/productdevbook/yuva/api/internal/storage"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -38,6 +39,7 @@ type Server struct {
 	objects  storage.Storage
 	attach   AttachmentSettings
 	sanitize *bluemonday.Policy
+	hub      *realtime.Hub
 }
 
 type Deps struct {
@@ -52,6 +54,7 @@ type Deps struct {
 	Secrets     *secret.Key
 	Storage     storage.Storage
 	Attachments AttachmentSettings
+	Hub         *realtime.Hub
 }
 
 type AttachmentSettings struct {
@@ -73,6 +76,7 @@ func New(d Deps) *Server {
 	return &Server{
 		log: d.Log, st: d.Store, version: d.Version, mailer: d.Mailer, webauthn: d.WebAuthn, auth: d.Auth, now: now,
 		secrets: d.Secrets, objects: d.Storage, attach: d.Attachments, sanitize: bluemonday.UGCPolicy(),
+		hub: d.Hub,
 	}
 }
 
@@ -90,6 +94,7 @@ func (s *Server) Handler() http.Handler {
 			writeProblem(w, errValidation(err.Error()))
 		},
 	})
+	mux.HandleFunc("GET /v1/realtime", s.serveRealtime)
 	panel := ui.Handler()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if isAPIPath(r.URL.Path) {

@@ -63,6 +63,8 @@ tags:
     description: Workspace labels for conversations.
   - name: canned-replies
     description: Saved answers members insert into replies.
+  - name: realtime
+    description: Live workspace events over WebSocket.
 paths:
   /healthz:
     get:
@@ -1544,6 +1546,70 @@ paths:
           $ref: "#/components/responses/Problem"
         "403":
           $ref: "#/components/responses/Problem"
+  /v1/realtime:
+    get:
+      operationId: realtime
+      summary: Live events (WebSocket)
+      description: |
+        Upgrades to a WebSocket that streams the workspace's events as they are committed. Members
+        authenticate with the session cookie; the `Origin` header must then be the server's public
+        origin (or one of the configured WebAuthn origins). API keys send
+        `Authorization: Bearer <key>`. Browsers cannot set headers on a WebSocket, so the workspace
+        can also be named with the `workspace_id` query parameter instead of `Yuva-Workspace`.
+
+        Every server message is one JSON text frame matching `RealtimeMessage`. Events carry an
+        increasing `id`; within a workspace ids are in commit order. Owners, admins and API keys
+        receive every event of the workspace. Agents receive the events of the inboxes they can
+        access, contact events, and `inbox_access.changed` events about themselves; their access is
+        re-read when such an event arrives and every 30 seconds.
+
+        Resuming: after the replay (if any) the server sends `ready` with `last_event_id`, the
+        stream position at that moment. Remember the larger of that value and the `id` of every
+        event received, and reconnect with `?last_event_id=<it>`. The server then replays the
+        events after it, without gaps or duplicates, before the live ones. Events are kept for 24
+        hours; when `last_event_id` is no longer known the server sends `resync_required` (reload
+        everything over HTTP) followed by `ready` and continues live. Without `last_event_id` there
+        is no replay.
+
+        The server pings every 30 seconds. The client sends nothing; data messages from the client
+        close the connection. Close codes: 1008 (`unauthenticated`, `forbidden`) when the session
+        or membership ends, 1013 (`slow_consumer`) when the client does not read fast enough, 1012
+        (`restart`) when the server restarts or loses its event feed. Reconnect with
+        `last_event_id` after any of them except 1008. While the server is reconnecting its own event
+        feed the upgrade is refused with 503 `realtime_unavailable`; retry with backoff.
+      tags: [realtime]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - name: workspace_id
+          in: query
+          description: The workspace to act on, for clients that cannot send `Yuva-Workspace`.
+          schema:
+            type: string
+            format: uuid
+        - name: last_event_id
+          in: query
+          description: Replay the events after this one before streaming live ones.
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+      responses:
+        "101":
+          description: |
+            Switching to the WebSocket protocol. Each text frame is one `RealtimeMessage`; the
+            content below describes a frame, not an HTTP body.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RealtimeMessage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "503":
+          $ref: "#/components/responses/Problem"
 components:
   securitySchemes:
     session:
@@ -2696,6 +2762,199 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/UsageMonth"
+    ConversationEvent:
+      type: object
+      description: A conversation was created, or its status, snooze, assignee, priority, labels or subject changed.
+      required: [id, type, workspace_id, inbox_id, conversation_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [conversation.created, conversation.updated]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/Conversation"
+    MessageCreatedEvent:
+      type: object
+      description: A message, note or event message was added to a conversation.
+      required: [id, type, workspace_id, inbox_id, conversation_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [message.created]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/Message"
+    ContactUpdatedEvent:
+      type: object
+      description: A contact changed.
+      required: [id, type, workspace_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [contact.updated]
+        workspace_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/Contact"
+    ContactDeletedEvent:
+      type: object
+      description: A contact was deleted with its conversations.
+      required: [id, type, workspace_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [contact.deleted]
+        workspace_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/ContactRef"
+    InboxUpdatedEvent:
+      type: object
+      description: An inbox's settings changed.
+      required: [id, type, workspace_id, inbox_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [inbox.updated]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/Inbox"
+    InboxAccessChangedEvent:
+      type: object
+      description: A member was given or lost access to an inbox. Reload the inboxes and conversations when it is about you.
+      required: [id, type, workspace_id, inbox_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [inbox_access.changed]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/InboxAccessChange"
+    ContactRef:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: string
+          format: uuid
+    InboxAccessChange:
+      type: object
+      required: [inbox_id, member_id, granted]
+      properties:
+        inbox_id:
+          type: string
+          format: uuid
+        member_id:
+          type: string
+          format: uuid
+        granted:
+          type: boolean
+    RealtimeReady:
+      type: object
+      description: The replay is over; live events follow. `last_event_id` is the stream position.
+      required: [type, last_event_id]
+      properties:
+        type:
+          type: string
+          enum: [ready]
+        last_event_id:
+          type: integer
+          format: int64
+    RealtimeResyncRequired:
+      type: object
+      description: The requested `last_event_id` is gone; reload over HTTP. `ready` follows.
+      required: [type]
+      properties:
+        type:
+          type: string
+          enum: [resync_required]
+    RealtimeMessage:
+      description: One server message on `/v1/realtime`, told apart by `type`.
+      oneOf:
+        - $ref: "#/components/schemas/ConversationEvent"
+        - $ref: "#/components/schemas/MessageCreatedEvent"
+        - $ref: "#/components/schemas/ContactUpdatedEvent"
+        - $ref: "#/components/schemas/ContactDeletedEvent"
+        - $ref: "#/components/schemas/InboxUpdatedEvent"
+        - $ref: "#/components/schemas/InboxAccessChangedEvent"
+        - $ref: "#/components/schemas/RealtimeReady"
+        - $ref: "#/components/schemas/RealtimeResyncRequired"
+      discriminator:
+        propertyName: type
+        mapping:
+          conversation.created: "#/components/schemas/ConversationEvent"
+          conversation.updated: "#/components/schemas/ConversationEvent"
+          message.created: "#/components/schemas/MessageCreatedEvent"
+          contact.updated: "#/components/schemas/ContactUpdatedEvent"
+          contact.deleted: "#/components/schemas/ContactDeletedEvent"
+          inbox.updated: "#/components/schemas/InboxUpdatedEvent"
+          inbox_access.changed: "#/components/schemas/InboxAccessChangedEvent"
+          ready: "#/components/schemas/RealtimeReady"
+          resync_required: "#/components/schemas/RealtimeResyncRequired"
     Health:
       type: object
       required: [status]

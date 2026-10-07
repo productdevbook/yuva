@@ -8,6 +8,7 @@ import (
 	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
+	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
@@ -87,13 +88,17 @@ func labelSet(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, in [
 
 func validPriority(p oas.Priority) bool { return p.Valid() }
 
-func (s *Server) writeEvent(ctx context.Context, q *store.Queries, p principal, conversationID uuid.UUID, ev oas.MessageEvent, at time.Time) error {
+func (s *Server) writeEvent(ctx context.Context, q *store.Queries, events *eventBatch, p principal, c store.Conversation, ev oas.MessageEvent, at time.Time) error {
 	author, member := authorFor(p)
-	_, err := q.CreateMessage(ctx, store.CreateMessageParams{
-		ID: newID(), WorkspaceID: p.workspaceID, ConversationID: conversationID, Kind: string(oas.MessageKindEvent),
+	msg, err := q.CreateMessage(ctx, store.CreateMessageParams{
+		ID: newID(), WorkspaceID: p.workspaceID, ConversationID: c.ID, Kind: string(oas.MessageKindEvent),
 		AuthorType: author, AuthorMemberID: member, Event: mustJSON(ev), CreatedAt: at,
 	})
-	return err
+	if err != nil {
+		return err
+	}
+	events.conversation(realtime.MessageCreated, c, messageBody(msg, nil))
+	return nil
 }
 
 func authorFor(p principal) (string, *uuid.UUID) {
@@ -104,19 +109,19 @@ func authorFor(p principal) (string, *uuid.UUID) {
 	return string(oas.AuthorTypeMember), &id
 }
 
-func (s *Server) recordChanges(ctx context.Context, q *store.Queries, p principal, before, after store.Conversation, added, removed []uuid.UUID, at time.Time) error {
+func (s *Server) recordChanges(ctx context.Context, q *store.Queries, events *eventBatch, p principal, before, after store.Conversation, added, removed []uuid.UUID, at time.Time) error {
 	if !sameID(before.AssigneeID, after.AssigneeID) {
 		ev := oas.MessageEvent{Type: oas.Unassigned, PreviousAssigneeId: before.AssigneeID}
 		if after.AssigneeID != nil {
 			ev = oas.MessageEvent{Type: oas.Assigned, AssigneeId: after.AssigneeID, PreviousAssigneeId: before.AssigneeID}
 		}
-		if err := s.writeEvent(ctx, q, p, after.ID, ev, at); err != nil {
+		if err := s.writeEvent(ctx, q, events, p, after, ev, at); err != nil {
 			return err
 		}
 	}
 	if before.Status != after.Status {
 		st, prev := oas.ConversationStatus(after.Status), oas.ConversationStatus(before.Status)
-		if err := s.writeEvent(ctx, q, p, after.ID, oas.MessageEvent{Type: oas.StatusChanged, Status: &st, PreviousStatus: &prev}, at); err != nil {
+		if err := s.writeEvent(ctx, q, events, p, after, oas.MessageEvent{Type: oas.StatusChanged, Status: &st, PreviousStatus: &prev}, at); err != nil {
 			return err
 		}
 	}
@@ -127,11 +132,23 @@ func (s *Server) recordChanges(ctx context.Context, q *store.Queries, p principa
 		if removed == nil {
 			removed = []uuid.UUID{}
 		}
-		if err := s.writeEvent(ctx, q, p, after.ID, oas.MessageEvent{Type: oas.LabelsChanged, AddedLabels: &added, RemovedLabels: &removed}, at); err != nil {
+		if err := s.writeEvent(ctx, q, events, p, after, oas.MessageEvent{Type: oas.LabelsChanged, AddedLabels: &added, RemovedLabels: &removed}, at); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+func conversationChanged(a, b store.Conversation) bool {
+	return a.Subject != b.Subject || a.Status != b.Status || a.Priority != b.Priority ||
+		!sameID(a.AssigneeID, b.AssigneeID) || !sameTime(a.SnoozeUntil, b.SnoozeUntil)
+}
+
+func sameTime(a, b *time.Time) bool {
+	if a == nil || b == nil {
+		return a == nil && b == nil
+	}
+	return a.Equal(*b)
 }
 
 func sameID(a, b *uuid.UUID) bool {
@@ -232,7 +249,7 @@ func (s *Server) CreateConversation(ctx context.Context, req oas.CreateConversat
 		priority = *b.Priority
 	}
 	var out oas.Conversation
-	err = s.st.InTx(ctx, func(q *store.Queries) error {
+	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		if _, err := visibleInbox(ctx, q, p, b.InboxId); err != nil {
 			return err
 		}
@@ -278,16 +295,14 @@ func (s *Server) CreateConversation(ctx context.Context, req oas.CreateConversat
 				return err
 			}
 		}
+		out = conversationBody(c, labels)
+		events.conversation(realtime.ConversationCreated, c, out)
 		before := c
 		before.AssigneeID = nil
-		if err := s.recordChanges(ctx, q, p, before, c, labels, nil, now); err != nil {
+		if err := s.recordChanges(ctx, q, events, p, before, c, labels, nil, now); err != nil {
 			return err
 		}
-		if err := s.addUsage(ctx, q, p.workspaceID, 1, 0, 0); err != nil {
-			return err
-		}
-		out = conversationBody(c, labels)
-		return nil
+		return s.addUsage(ctx, q, p.workspaceID, 1, 0, 0)
 	})
 	if err != nil {
 		return nil, err
@@ -312,7 +327,7 @@ func (s *Server) UpdateConversation(ctx context.Context, req oas.UpdateConversat
 	p := principalFrom(ctx)
 	b := req.Body
 	var out oas.Conversation
-	err := s.st.InTx(ctx, func(q *store.Queries) error {
+	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		cur, err := visibleConversation(ctx, q, p, req.ConversationId, true)
 		if err != nil {
 			return err
@@ -404,11 +419,11 @@ func (s *Server) UpdateConversation(ctx context.Context, req oas.UpdateConversat
 		if err != nil {
 			return err
 		}
-		if err := s.recordChanges(ctx, q, p, cur, updated, added, removed, now); err != nil {
-			return err
-		}
 		out = conversationBody(updated, labels)
-		return nil
+		if conversationChanged(cur, updated) || len(added) > 0 || len(removed) > 0 {
+			events.conversation(realtime.ConversationUpdated, updated, out)
+		}
+		return s.recordChanges(ctx, q, events, p, cur, updated, added, removed, now)
 	})
 	if err != nil {
 		return nil, err

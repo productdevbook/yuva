@@ -103,6 +103,16 @@ type ConversationLabel struct {
 	LabelID        uuid.UUID
 }
 
+type Event struct {
+	ID             int64
+	WorkspaceID    uuid.UUID
+	Type           string
+	InboxID        *uuid.UUID
+	ConversationID *uuid.UUID
+	Payload        []byte
+	CreatedAt      time.Time
+}
+
 type Inbox struct {
 	ID                   uuid.UUID
 	WorkspaceID          uuid.UUID

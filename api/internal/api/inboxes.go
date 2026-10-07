@@ -10,6 +10,7 @@ import (
 	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
+	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
@@ -199,7 +200,7 @@ func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObje
 	}
 	b := req.Body
 	var out store.Inbox
-	err := s.st.InTx(ctx, func(q *store.Queries) error {
+	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		cur, err := q.LockInbox(ctx, store.LockInboxParams{WorkspaceID: p.workspaceID, ID: req.InboxId})
 		if store.IsNotFound(err) {
 			return errInboxGone
@@ -252,7 +253,11 @@ func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObje
 		if store.IsUniqueViolation(err) {
 			return errSlugTaken
 		}
-		return err
+		if err != nil {
+			return err
+		}
+		events.add(realtime.InboxUpdated, &out.ID, nil, inboxBody(out))
+		return nil
 	})
 	if err != nil {
 		return nil, err
@@ -342,7 +347,14 @@ func (s *Server) GrantInboxAccess(ctx context.Context, req oas.GrantInboxAccessR
 	if err := s.inboxAndMember(ctx, p, req.InboxId, req.MemberId); err != nil {
 		return nil, err
 	}
-	err := s.st.GrantInboxAccess(ctx, store.GrantInboxAccessParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId, MemberID: req.MemberId, Now: s.now()})
+	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
+		n, err := q.GrantInboxAccess(ctx, store.GrantInboxAccessParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId, MemberID: req.MemberId, Now: s.now()})
+		if err != nil || n == 0 {
+			return err
+		}
+		accessChanged(events, req.InboxId, req.MemberId, true)
+		return nil
+	})
 	if store.IsForeignKeyViolation(err) {
 		return nil, errNotFound
 	}
@@ -360,8 +372,20 @@ func (s *Server) RevokeInboxAccess(ctx context.Context, req oas.RevokeInboxAcces
 	if err := s.inboxAndMember(ctx, p, req.InboxId, req.MemberId); err != nil {
 		return nil, err
 	}
-	if err := s.st.RevokeInboxAccess(ctx, store.RevokeInboxAccessParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId, MemberID: req.MemberId}); err != nil {
+	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
+		n, err := q.RevokeInboxAccess(ctx, store.RevokeInboxAccessParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId, MemberID: req.MemberId})
+		if err != nil || n == 0 {
+			return err
+		}
+		accessChanged(events, req.InboxId, req.MemberId, false)
+		return nil
+	})
+	if err != nil {
 		return nil, err
 	}
 	return oas.RevokeInboxAccess204Response{}, nil
+}
+
+func accessChanged(events *eventBatch, inboxID, memberID uuid.UUID, granted bool) {
+	events.add(realtime.InboxAccessChanged, &inboxID, nil, oas.InboxAccessChange{InboxId: inboxID, MemberId: memberID, Granted: granted})
 }

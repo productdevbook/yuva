@@ -21,6 +21,7 @@ import (
 	"github.com/productdevbook/yuva/api/internal/jobs"
 	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/metrics"
+	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/secret"
 	"github.com/productdevbook/yuva/api/internal/storage"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -127,9 +128,20 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 			return err
 		}
 	}
-	if _, err := jobs.New(st.Pool, log); err != nil {
+	queue, err := jobs.New(st.Pool, st.Queries, log)
+	if err != nil {
 		return fmt.Errorf("job queue: %w", err)
 	}
+	if err := queue.Start(ctx); err != nil {
+		return fmt.Errorf("job queue: %w", err)
+	}
+	defer func() {
+		stopCtx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+		defer cancel()
+		_ = queue.Stop(stopCtx)
+	}()
+	hub := realtime.NewHub(256)
+	go realtime.Listen(ctx, cfg.DatabaseURL, st.Queries, hub, log)
 	if cfg.MetricsAddr != "" {
 		go metrics.Serve(ctx, cfg.MetricsAddr, log)
 	}
@@ -164,6 +176,7 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 			MaxBytes: cfg.Attachments.MaxBytes,
 			Types:    cfg.Attachments.Types,
 		},
+		Hub: hub,
 	})
 	httpSrv := &http.Server{
 		Addr:              cfg.ListenAddr,
@@ -173,6 +186,7 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 	}
 	go func() {
 		<-ctx.Done()
+		hub.StopAll(realtime.ReasonRestart)
 		shutdown, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 		defer cancel()
 		_ = httpSrv.Shutdown(shutdown)

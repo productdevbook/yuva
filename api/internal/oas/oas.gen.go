@@ -68,6 +68,54 @@ func (e ChannelKind) Valid() bool {
 	}
 }
 
+// Defines values for ContactDeletedEventType.
+const (
+	ContactDeleted ContactDeletedEventType = "contact.deleted"
+)
+
+// Valid indicates whether the value is a known member of the ContactDeletedEventType enum.
+func (e ContactDeletedEventType) Valid() bool {
+	switch e {
+	case ContactDeleted:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ContactUpdatedEventType.
+const (
+	ContactUpdated ContactUpdatedEventType = "contact.updated"
+)
+
+// Valid indicates whether the value is a known member of the ContactUpdatedEventType enum.
+func (e ContactUpdatedEventType) Valid() bool {
+	switch e {
+	case ContactUpdated:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ConversationEventType.
+const (
+	ConversationCreated ConversationEventType = "conversation.created"
+	ConversationUpdated ConversationEventType = "conversation.updated"
+)
+
+// Valid indicates whether the value is a known member of the ConversationEventType enum.
+func (e ConversationEventType) Valid() bool {
+	switch e {
+	case ConversationCreated:
+		return true
+	case ConversationUpdated:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ConversationStatus.
 const (
 	Closed  ConversationStatus = "closed"
@@ -149,6 +197,21 @@ func (e HealthStatus) Valid() bool {
 	}
 }
 
+// Defines values for InboxAccessChangedEventType.
+const (
+	InboxAccessChanged InboxAccessChangedEventType = "inbox_access.changed"
+)
+
+// Valid indicates whether the value is a known member of the InboxAccessChangedEventType enum.
+func (e InboxAccessChangedEventType) Valid() bool {
+	switch e {
+	case InboxAccessChanged:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for InboxMode.
 const (
 	Async InboxMode = "async"
@@ -161,6 +224,21 @@ func (e InboxMode) Valid() bool {
 	case Async:
 		return true
 	case Live:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for InboxUpdatedEventType.
+const (
+	InboxUpdated InboxUpdatedEventType = "inbox.updated"
+)
+
+// Valid indicates whether the value is a known member of the InboxUpdatedEventType enum.
+func (e InboxUpdatedEventType) Valid() bool {
+	switch e {
+	case InboxUpdated:
 		return true
 	default:
 		return false
@@ -221,6 +299,21 @@ func (e MessageCreateMultipartKind) Valid() bool {
 	}
 }
 
+// Defines values for MessageCreatedEventType.
+const (
+	MessageCreated MessageCreatedEventType = "message.created"
+)
+
+// Valid indicates whether the value is a known member of the MessageCreatedEventType enum.
+func (e MessageCreatedEventType) Valid() bool {
+	switch e {
+	case MessageCreated:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for MessageKind.
 const (
 	MessageKindEvent   MessageKind = "event"
@@ -260,6 +353,36 @@ func (e Priority) Valid() bool {
 	case Normal:
 		return true
 	case Urgent:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RealtimeReadyType.
+const (
+	Ready RealtimeReadyType = "ready"
+)
+
+// Valid indicates whether the value is a known member of the RealtimeReadyType enum.
+func (e RealtimeReadyType) Valid() bool {
+	switch e {
+	case Ready:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RealtimeResyncRequiredType.
+const (
+	ResyncRequired RealtimeResyncRequiredType = "resync_required"
+)
+
+// Valid indicates whether the value is a known member of the RealtimeResyncRequiredType enum.
+func (e RealtimeResyncRequiredType) Valid() bool {
+	switch e {
+	case ResyncRequired:
 		return true
 	default:
 		return false
@@ -495,12 +618,29 @@ type ContactCreate struct {
 	Name        *string       `json:"name,omitempty"`
 }
 
+// ContactDeletedEvent A contact was deleted with its conversations.
+type ContactDeletedEvent struct {
+	CreatedAt   time.Time               `json:"created_at"`
+	Data        ContactRef              `json:"data"`
+	Id          int64                   `json:"id"`
+	Type        ContactDeletedEventType `json:"type"`
+	WorkspaceId uuid.UUID               `json:"workspace_id"`
+}
+
+// ContactDeletedEventType defines model for ContactDeletedEvent.Type.
+type ContactDeletedEventType string
+
 // ContactPage defines model for ContactPage.
 type ContactPage struct {
 	Items []Contact `json:"items"`
 
 	// NextCursor Absent on the last page.
 	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// ContactRef defines model for ContactRef.
+type ContactRef struct {
+	Id uuid.UUID `json:"id"`
 }
 
 // ContactUpdate defines model for ContactUpdate.
@@ -512,6 +652,18 @@ type ContactUpdate struct {
 	ExternalIds *[]ExternalId `json:"external_ids,omitempty"`
 	Name        *string       `json:"name,omitempty"`
 }
+
+// ContactUpdatedEvent A contact changed.
+type ContactUpdatedEvent struct {
+	CreatedAt   time.Time               `json:"created_at"`
+	Data        Contact                 `json:"data"`
+	Id          int64                   `json:"id"`
+	Type        ContactUpdatedEventType `json:"type"`
+	WorkspaceId uuid.UUID               `json:"workspace_id"`
+}
+
+// ContactUpdatedEventType defines model for ContactUpdatedEvent.Type.
+type ContactUpdatedEventType string
 
 // Conversation defines model for Conversation.
 type Conversation struct {
@@ -553,6 +705,20 @@ type ConversationCreate struct {
 	Priority  *Priority    `json:"priority,omitempty"`
 	Subject   *string      `json:"subject,omitempty"`
 }
+
+// ConversationEvent A conversation was created, or its status, snooze, assignee, priority, labels or subject changed.
+type ConversationEvent struct {
+	ConversationId uuid.UUID             `json:"conversation_id"`
+	CreatedAt      time.Time             `json:"created_at"`
+	Data           Conversation          `json:"data"`
+	Id             int64                 `json:"id"`
+	InboxId        uuid.UUID             `json:"inbox_id"`
+	Type           ConversationEventType `json:"type"`
+	WorkspaceId    uuid.UUID             `json:"workspace_id"`
+}
+
+// ConversationEventType defines model for ConversationEvent.Type.
+type ConversationEventType string
 
 // ConversationPage defines model for ConversationPage.
 type ConversationPage struct {
@@ -640,6 +806,26 @@ type Inbox struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+// InboxAccessChange defines model for InboxAccessChange.
+type InboxAccessChange struct {
+	Granted  bool      `json:"granted"`
+	InboxId  uuid.UUID `json:"inbox_id"`
+	MemberId uuid.UUID `json:"member_id"`
+}
+
+// InboxAccessChangedEvent A member was given or lost access to an inbox. Reload the inboxes and conversations when it is about you.
+type InboxAccessChangedEvent struct {
+	CreatedAt   time.Time                   `json:"created_at"`
+	Data        InboxAccessChange           `json:"data"`
+	Id          int64                       `json:"id"`
+	InboxId     uuid.UUID                   `json:"inbox_id"`
+	Type        InboxAccessChangedEventType `json:"type"`
+	WorkspaceId uuid.UUID                   `json:"workspace_id"`
+}
+
+// InboxAccessChangedEventType defines model for InboxAccessChangedEvent.Type.
+type InboxAccessChangedEventType string
+
 // InboxBranding defines model for InboxBranding.
 type InboxBranding struct {
 	// Color Examples: #2563eb
@@ -713,6 +899,19 @@ type InboxUpdate struct {
 	Slug     *Slug   `json:"slug,omitempty"`
 	Timezone *string `json:"timezone,omitempty"`
 }
+
+// InboxUpdatedEvent An inbox's settings changed.
+type InboxUpdatedEvent struct {
+	CreatedAt   time.Time             `json:"created_at"`
+	Data        Inbox                 `json:"data"`
+	Id          int64                 `json:"id"`
+	InboxId     uuid.UUID             `json:"inbox_id"`
+	Type        InboxUpdatedEventType `json:"type"`
+	WorkspaceId uuid.UUID             `json:"workspace_id"`
+}
+
+// InboxUpdatedEventType defines model for InboxUpdatedEvent.Type.
+type InboxUpdatedEventType string
 
 // Invite defines model for Invite.
 type Invite struct {
@@ -884,6 +1083,20 @@ type MessageCreateMultipart struct {
 // MessageCreateMultipartKind defines model for MessageCreateMultipart.Kind.
 type MessageCreateMultipartKind string
 
+// MessageCreatedEvent A message, note or event message was added to a conversation.
+type MessageCreatedEvent struct {
+	ConversationId uuid.UUID               `json:"conversation_id"`
+	CreatedAt      time.Time               `json:"created_at"`
+	Data           Message                 `json:"data"`
+	Id             int64                   `json:"id"`
+	InboxId        uuid.UUID               `json:"inbox_id"`
+	Type           MessageCreatedEventType `json:"type"`
+	WorkspaceId    uuid.UUID               `json:"workspace_id"`
+}
+
+// MessageCreatedEventType defines model for MessageCreatedEvent.Type.
+type MessageCreatedEventType string
+
 // MessageEvent defines model for MessageEvent.
 type MessageEvent struct {
 	AddedLabels *[]uuid.UUID `json:"added_labels,omitempty"`
@@ -982,6 +1195,28 @@ type Problem struct {
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
 }
+
+// RealtimeMessage One server message on `/v1/realtime`, told apart by `type`.
+type RealtimeMessage struct {
+	union json.RawMessage
+}
+
+// RealtimeReady The replay is over; live events follow. `last_event_id` is the stream position.
+type RealtimeReady struct {
+	LastEventId int64             `json:"last_event_id"`
+	Type        RealtimeReadyType `json:"type"`
+}
+
+// RealtimeReadyType defines model for RealtimeReady.Type.
+type RealtimeReadyType string
+
+// RealtimeResyncRequired The requested `last_event_id` is gone; reload over HTTP. `ready` follows.
+type RealtimeResyncRequired struct {
+	Type RealtimeResyncRequiredType `json:"type"`
+}
+
+// RealtimeResyncRequiredType defines model for RealtimeResyncRequired.Type.
+type RealtimeResyncRequiredType string
 
 // Role defines model for Role.
 type Role string
@@ -1466,6 +1701,261 @@ type FinishPasskeyRegistrationJSONRequestBody = PasskeyRegistration
 
 // UpdateMemberJSONRequestBody defines body for UpdateMember for application/json ContentType.
 type UpdateMemberJSONRequestBody = MemberUpdate
+
+// AsConversationEvent returns the union data inside the RealtimeMessage as a ConversationEvent
+func (t RealtimeMessage) AsConversationEvent() (ConversationEvent, error) {
+	var body ConversationEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationEvent overwrites any union data inside the RealtimeMessage as the provided ConversationEvent
+func (t *RealtimeMessage) FromConversationEvent(v ConversationEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationEvent performs a merge with any union data inside the RealtimeMessage, using the provided ConversationEvent
+func (t *RealtimeMessage) MergeConversationEvent(v ConversationEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsMessageCreatedEvent returns the union data inside the RealtimeMessage as a MessageCreatedEvent
+func (t RealtimeMessage) AsMessageCreatedEvent() (MessageCreatedEvent, error) {
+	var body MessageCreatedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromMessageCreatedEvent overwrites any union data inside the RealtimeMessage as the provided MessageCreatedEvent
+func (t *RealtimeMessage) FromMessageCreatedEvent(v MessageCreatedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeMessageCreatedEvent performs a merge with any union data inside the RealtimeMessage, using the provided MessageCreatedEvent
+func (t *RealtimeMessage) MergeMessageCreatedEvent(v MessageCreatedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsContactUpdatedEvent returns the union data inside the RealtimeMessage as a ContactUpdatedEvent
+func (t RealtimeMessage) AsContactUpdatedEvent() (ContactUpdatedEvent, error) {
+	var body ContactUpdatedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromContactUpdatedEvent overwrites any union data inside the RealtimeMessage as the provided ContactUpdatedEvent
+func (t *RealtimeMessage) FromContactUpdatedEvent(v ContactUpdatedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeContactUpdatedEvent performs a merge with any union data inside the RealtimeMessage, using the provided ContactUpdatedEvent
+func (t *RealtimeMessage) MergeContactUpdatedEvent(v ContactUpdatedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsContactDeletedEvent returns the union data inside the RealtimeMessage as a ContactDeletedEvent
+func (t RealtimeMessage) AsContactDeletedEvent() (ContactDeletedEvent, error) {
+	var body ContactDeletedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromContactDeletedEvent overwrites any union data inside the RealtimeMessage as the provided ContactDeletedEvent
+func (t *RealtimeMessage) FromContactDeletedEvent(v ContactDeletedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeContactDeletedEvent performs a merge with any union data inside the RealtimeMessage, using the provided ContactDeletedEvent
+func (t *RealtimeMessage) MergeContactDeletedEvent(v ContactDeletedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsInboxUpdatedEvent returns the union data inside the RealtimeMessage as a InboxUpdatedEvent
+func (t RealtimeMessage) AsInboxUpdatedEvent() (InboxUpdatedEvent, error) {
+	var body InboxUpdatedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromInboxUpdatedEvent overwrites any union data inside the RealtimeMessage as the provided InboxUpdatedEvent
+func (t *RealtimeMessage) FromInboxUpdatedEvent(v InboxUpdatedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeInboxUpdatedEvent performs a merge with any union data inside the RealtimeMessage, using the provided InboxUpdatedEvent
+func (t *RealtimeMessage) MergeInboxUpdatedEvent(v InboxUpdatedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsInboxAccessChangedEvent returns the union data inside the RealtimeMessage as a InboxAccessChangedEvent
+func (t RealtimeMessage) AsInboxAccessChangedEvent() (InboxAccessChangedEvent, error) {
+	var body InboxAccessChangedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromInboxAccessChangedEvent overwrites any union data inside the RealtimeMessage as the provided InboxAccessChangedEvent
+func (t *RealtimeMessage) FromInboxAccessChangedEvent(v InboxAccessChangedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeInboxAccessChangedEvent performs a merge with any union data inside the RealtimeMessage, using the provided InboxAccessChangedEvent
+func (t *RealtimeMessage) MergeInboxAccessChangedEvent(v InboxAccessChangedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsRealtimeReady returns the union data inside the RealtimeMessage as a RealtimeReady
+func (t RealtimeMessage) AsRealtimeReady() (RealtimeReady, error) {
+	var body RealtimeReady
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromRealtimeReady overwrites any union data inside the RealtimeMessage as the provided RealtimeReady
+func (t *RealtimeMessage) FromRealtimeReady(v RealtimeReady) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeRealtimeReady performs a merge with any union data inside the RealtimeMessage, using the provided RealtimeReady
+func (t *RealtimeMessage) MergeRealtimeReady(v RealtimeReady) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsRealtimeResyncRequired returns the union data inside the RealtimeMessage as a RealtimeResyncRequired
+func (t RealtimeMessage) AsRealtimeResyncRequired() (RealtimeResyncRequired, error) {
+	var body RealtimeResyncRequired
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromRealtimeResyncRequired overwrites any union data inside the RealtimeMessage as the provided RealtimeResyncRequired
+func (t *RealtimeMessage) FromRealtimeResyncRequired(v RealtimeResyncRequired) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeRealtimeResyncRequired performs a merge with any union data inside the RealtimeMessage, using the provided RealtimeResyncRequired
+func (t *RealtimeMessage) MergeRealtimeResyncRequired(v RealtimeResyncRequired) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t RealtimeMessage) Discriminator() (string, error) {
+	var discriminator struct {
+		Discriminator string `json:"type"`
+	}
+	err := json.Unmarshal(t.union, &discriminator)
+	return discriminator.Discriminator, err
+}
+
+func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
+	discriminator, err := t.Discriminator()
+	if err != nil {
+		return nil, err
+	}
+	switch discriminator {
+	case "contact.deleted":
+		return t.AsContactDeletedEvent()
+	case "contact.updated":
+		return t.AsContactUpdatedEvent()
+	case "conversation.created":
+		return t.AsConversationEvent()
+	case "conversation.updated":
+		return t.AsConversationEvent()
+	case "inbox.updated":
+		return t.AsInboxUpdatedEvent()
+	case "inbox_access.changed":
+		return t.AsInboxAccessChangedEvent()
+	case "message.created":
+		return t.AsMessageCreatedEvent()
+	case "ready":
+		return t.AsRealtimeReady()
+	case "resync_required":
+		return t.AsRealtimeResyncRequired()
+	default:
+		return nil, errors.New("unknown discriminator value: " + discriminator)
+	}
+}
+
+func (t RealtimeMessage) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *RealtimeMessage) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {

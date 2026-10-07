@@ -38,12 +38,12 @@ SELECT EXISTS (
     SELECT 1 FROM inbox_members WHERE workspace_id = $1 AND inbox_id = $2 AND member_id = $3
 ) AS access;
 
--- name: GrantInboxAccess :exec
+-- name: GrantInboxAccess :execrows
 INSERT INTO inbox_members (workspace_id, inbox_id, member_id, created_at)
 VALUES (@workspace_id, @inbox_id, @member_id, @now)
 ON CONFLICT DO NOTHING;
 
--- name: RevokeInboxAccess :exec
+-- name: RevokeInboxAccess :execrows
 DELETE FROM inbox_members WHERE workspace_id = $1 AND inbox_id = $2 AND member_id = $3;
 
 -- name: ListInboxMembers :many
@@ -58,3 +58,6 @@ ORDER BY m.created_at, m.id;
 SELECT a.storage_key FROM attachments a
 JOIN conversations c ON c.workspace_id = a.workspace_id AND c.id = a.conversation_id
 WHERE a.workspace_id = $1 AND c.inbox_id = $2;
+
+-- name: ListMemberInboxIDs :many
+SELECT inbox_id FROM inbox_members WHERE workspace_id = $1 AND member_id = $2;

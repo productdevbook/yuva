@@ -13,3 +13,6 @@ SELECT count(*) FROM workspaces;
 
 -- name: LockBootstrap :exec
 SELECT pg_advisory_xact_lock(hashtext('yuva.bootstrap'));
+
+-- name: ListWorkspaceIDs :many
+SELECT id FROM workspaces ORDER BY id;

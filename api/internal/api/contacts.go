@@ -7,6 +7,7 @@ import (
 	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
+	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
@@ -284,7 +285,7 @@ func (s *Server) UpdateContact(ctx context.Context, req oas.UpdateContactRequest
 	p := principalFrom(ctx)
 	b := req.Body
 	var out oas.Contact
-	err := s.st.InTx(ctx, func(q *store.Queries) error {
+	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		cur, err := q.LockContact(ctx, store.LockContactParams{WorkspaceID: p.workspaceID, ID: req.ContactId})
 		if store.IsNotFound(err) {
 			return errContactGone
@@ -325,8 +326,11 @@ func (s *Server) UpdateContact(ctx context.Context, req oas.UpdateContactRequest
 		if err := writeContactKeys(ctx, q, p.workspaceID, cur.ID, in, b.Emails != nil, b.ExternalIds != nil); err != nil {
 			return err
 		}
-		out, err = s.contactBody(ctx, q, p.workspaceID, contactRow(r))
-		return err
+		if out, err = s.contactBody(ctx, q, p.workspaceID, contactRow(r)); err != nil {
+			return err
+		}
+		events.add(realtime.ContactUpdated, nil, nil, out)
+		return nil
 	})
 	if err != nil {
 		return nil, err
@@ -340,7 +344,7 @@ func (s *Server) DeleteContact(ctx context.Context, req oas.DeleteContactRequest
 		return nil, err
 	}
 	var keys []string
-	err := s.st.InTx(ctx, func(q *store.Queries) error {
+	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		if _, err := q.LockContact(ctx, store.LockContactParams{WorkspaceID: p.workspaceID, ID: req.ContactId}); store.IsNotFound(err) {
 			return errContactGone
 		} else if err != nil {
@@ -350,8 +354,11 @@ func (s *Server) DeleteContact(ctx context.Context, req oas.DeleteContactRequest
 		if keys, err = q.ListContactStorageKeys(ctx, store.ListContactStorageKeysParams{WorkspaceID: p.workspaceID, ContactID: req.ContactId}); err != nil {
 			return err
 		}
-		_, err = q.DeleteContact(ctx, store.DeleteContactParams{WorkspaceID: p.workspaceID, ID: req.ContactId})
-		return err
+		if _, err = q.DeleteContact(ctx, store.DeleteContactParams{WorkspaceID: p.workspaceID, ID: req.ContactId}); err != nil {
+			return err
+		}
+		events.add(realtime.ContactDeleted, nil, nil, oas.ContactRef{Id: req.ContactId})
+		return nil
 	})
 	if err != nil {
 		return nil, err
