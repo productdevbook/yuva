@@ -425,26 +425,6 @@ func (q *Queries) FindThreadSentTo(ctx context.Context, arg FindThreadSentToPara
 	return contact_id, err
 }
 
-const firstMessageBody = `-- name: FirstMessageBody :one
-SELECT m.body FROM messages m
-WHERE m.workspace_id = $1 AND m.conversation_id = $2
-  AND m.kind = 'message' AND btrim(m.body) <> ''
-ORDER BY m.created_at, m.id
-LIMIT 1
-`
-
-type FirstMessageBodyParams struct {
-	WorkspaceID    uuid.UUID
-	ConversationID uuid.UUID
-}
-
-func (q *Queries) FirstMessageBody(ctx context.Context, arg FirstMessageBodyParams) (string, error) {
-	row := q.db.QueryRow(ctx, firstMessageBody, arg.WorkspaceID, arg.ConversationID)
-	var body string
-	err := row.Scan(&body)
-	return body, err
-}
-
 const getChatChannel = `-- name: GetChatChannel :one
 SELECT workspace_id, channel_id, public_key, allowed_origins, allow_anonymous, ask_email_offline, greeting, launcher_position, launcher_color, platforms FROM chat_channels WHERE workspace_id = $1 AND channel_id = $2
 `

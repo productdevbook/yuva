@@ -309,8 +309,10 @@ inline thread inside a product's own panel.
   contact's last connection closes: the members' replies the contact has not read, once the oldest
   is that old and the contact has been gone that long, go out as one e-mail through the inbox's
   e-mail channel, threaded so an answer finds the conversation, at most one e-mail per delay. Notes
-  are never sent. A conversation without a subject is mailed as the inbox name, ` — ` and the first
-  60 characters of its first message.
+  are never sent. The subject is the inbox name and a fixed "new reply" phrase in the contact's
+  language (else the inbox's), never visitor text: the e-mail may go to an address nobody has
+  confirmed. The contact's last seen time is saved before their connection is removed, so a check
+  never finds them both disconnected and not recently seen.
 
 ### In-app messaging (mobile)
 

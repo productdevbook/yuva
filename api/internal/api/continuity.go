@@ -9,13 +9,11 @@ import (
 
 	"github.com/riverqueue/river"
 
+	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
-const (
-	defaultChatEmailDelay  = 5 * time.Minute
-	continuitySubjectRunes = 60
-)
+const defaultChatEmailDelay = 5 * time.Minute
 
 type ContinuityArgs struct {
 	WorkspaceID    uuid.UUID `json:"workspace_id"`
@@ -139,10 +137,8 @@ func (s *Server) CheckContinuity(ctx context.Context, workspaceID, conversationI
 			}
 			return err
 		}
-		if c.Subject == "" {
-			if plan.subject, err = continuitySubject(ctx, q, c); err != nil {
-				return err
-			}
+		if plan.subject, err = continuitySubject(ctx, q, c); err != nil {
+			return err
 		}
 		ids := make([]uuid.UUID, len(pending))
 		for i, p := range pending {
@@ -166,21 +162,26 @@ func (s *Server) CheckContinuity(ctx context.Context, workspaceID, conversationI
 	return next, err
 }
 
-// continuitySubject names a conversation without a subject by its inbox and the start of its
-// first message.
+// continuitySubject names the inbox and says there is a new reply, in the contact's language; it
+// never quotes what the visitor wrote.
 func continuitySubject(ctx context.Context, q *store.Queries, c store.Conversation) (string, error) {
 	in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: c.WorkspaceID, ID: c.InboxID})
 	if err != nil {
 		return "", err
 	}
-	body, err := q.FirstMessageBody(ctx, store.FirstMessageBodyParams{WorkspaceID: c.WorkspaceID, ConversationID: c.ID})
-	if store.IsNotFound(err) {
-		return in.Name, nil
-	}
+	ct, err := q.GetContact(ctx, store.GetContactParams{WorkspaceID: c.WorkspaceID, ID: c.ContactID})
 	if err != nil {
 		return "", err
 	}
-	return in.Name + " — " + excerpt(body, continuitySubjectRunes), nil
+	locale := in.DefaultLocale
+	if ct.Locale != nil && *ct.Locale != "" {
+		locale = *ct.Locale
+	}
+	msg, err := mail.Render("continuity", locale, map[string]any{"Inbox": in.Name})
+	if err != nil {
+		return "", err
+	}
+	return msg.Subject, nil
 }
 
 // continuityAddress is a verified address of the conversation's contact, else the address they

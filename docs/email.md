@@ -174,7 +174,8 @@ send an automatic greeting to new conversations, at most once per contact within
 
 Chat and feedback replies that a contact has not read are e-mailed through the inbox's e-mail
 channel (see `YUVA_CHAT_EMAIL_DELAY` in [Configuration](configuration.md#chat)), so give an inbox
-that has chat or app channels an e-mail channel too.
+that has chat or app channels an e-mail channel too. Their subject names the inbox and says there
+is a new reply ("Support: new reply", in the contact's language), never what the visitor wrote.
 
 The SMTP host is checked when the channel is saved: a loopback, private, link-local or metadata
 address, or `localhost`, is refused (loopback and private ones are allowed with

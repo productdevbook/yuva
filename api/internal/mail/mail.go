@@ -43,7 +43,10 @@ var templates = map[string]*template.Template{
 func Render(name, locale string, data any) (Message, error) {
 	t, ok := templates[locale]
 	if !ok {
-		t = templates["en"]
+		base, _, _ := strings.Cut(strings.ReplaceAll(locale, "_", "-"), "-")
+		if t, ok = templates[strings.ToLower(base)]; !ok {
+			t = templates["en"]
+		}
 	}
 	var buf bytes.Buffer
 	if err := t.ExecuteTemplate(&buf, name+".txt", data); err != nil {

@@ -102,10 +102,12 @@ func (s *Server) clientStream(conn *websocket.Conn, r *http.Request, cp contactP
 	}
 	defer func() {
 		bg := context.WithoutCancel(ctx)
-		if err := s.st.CloseConnection(bg, store.CloseConnectionParams{WorkspaceID: cp.workspaceID, ID: connID}); err != nil {
+		// Last seen moves before the connection goes, so a continuity check never sees the contact
+		// neither connected nor recently seen.
+		if err := s.st.SeeContactSession(bg, store.SeeContactSessionParams{WorkspaceID: cp.workspaceID, ID: cp.sessionID, Now: s.now()}); err != nil {
 			s.log.WarnContext(bg, "client realtime close", slog.Any("error", err))
 		}
-		if err := s.st.SeeContactSession(bg, store.SeeContactSessionParams{WorkspaceID: cp.workspaceID, ID: cp.sessionID, Now: s.now()}); err != nil {
+		if err := s.st.CloseConnection(bg, store.CloseConnectionParams{WorkspaceID: cp.workspaceID, ID: connID}); err != nil {
 			s.log.WarnContext(bg, "client realtime close", slog.Any("error", err))
 		}
 		s.scheduleContactContinuity(bg, cp.workspaceID, cp.contactID)
