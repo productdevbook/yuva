@@ -1,0 +1,111 @@
+openapi: 3.1.1
+info:
+  title: Yuva API
+  version: 0.1.0
+  summary: Customer messaging for many products in one inbox.
+  license:
+    name: MIT
+    identifier: MIT
+  description: |
+    Yuva answers every user of every product you run: e-mail, live chat and in-app
+    conversations in one inbox.
+
+    ## Surfaces
+
+    - `/v1` is for members (panel session) and workspace API keys.
+    - `/client/v1` is for the web widget and the mobile SDKs.
+    - `/healthz` and `/readyz` are for load balancers and orchestrators.
+
+    ## Errors
+
+    Errors are `application/problem+json` documents (RFC 9457) with a stable `code`.
+servers:
+  - url: /
+tags:
+  - name: system
+    description: Health, readiness and build information.
+paths:
+  /healthz:
+    get:
+      operationId: getHealthz
+      summary: Liveness
+      description: Answers `200` while the process is running. It does not touch the database.
+      tags: [system]
+      security: []
+      responses:
+        "200":
+          description: The process is alive.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Health"
+  /readyz:
+    get:
+      operationId: getReadyz
+      summary: Readiness
+      description: Answers `200` when the server can reach its database, `503` otherwise.
+      tags: [system]
+      security: []
+      responses:
+        "200":
+          description: The server is ready to take traffic.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Health"
+        "503":
+          description: The database is not reachable.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /v1/version:
+    get:
+      operationId: getVersion
+      summary: Server version
+      description: The version of the running server build.
+      tags: [system]
+      security: []
+      responses:
+        "200":
+          description: The build version.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Version"
+components:
+  schemas:
+    Health:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [ok]
+    Version:
+      type: object
+      required: [version]
+      properties:
+        version:
+          type: string
+          description: A release tag, a commit hash, or `dev`.
+          examples: ["0.1.0"]
+    Problem:
+      type: object
+      description: An RFC 9457 problem document.
+      required: [type, title, status, code]
+      properties:
+        type:
+          type: string
+          description: A URI that identifies the problem type.
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+        code:
+          type: string
+          description: A stable, machine-readable error code.
+          examples: [not_found]
+        detail:
+          type: string

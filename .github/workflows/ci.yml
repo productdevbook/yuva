@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  openapi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - run: npx --yes @redocly/cli@2.54.3 lint --config openapi/redocly.yaml --format=stylish openapi/openapi.yaml
+        env:
+          REDOCLY_TELEMETRY: "off"
+
+  api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: api/go.mod
+          cache-dependency-path: api/go.sum
+      - name: api
+        working-directory: api
+        run: go generate ./... && go vet ./... && go test ./... && go build ./...
+      - name: generated code is committed
+        run: git diff --exit-code -- api
+      - name: sdk/go
+        working-directory: sdk/go
+        run: go vet ./... && go test ./... && go build ./...
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - id: present
+        run: echo "yes=$([ -f web/package.json ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - if: steps.present.outputs.yes == 'true'
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - if: steps.present.outputs.yes == 'true'
+        working-directory: web
+        run: npm ci && npm run -s extract && npx lingui compile --strict && npm run -s build
+
+  edge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - id: present
+        run: echo "yes=$([ -f edge/package.json ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - if: steps.present.outputs.yes == 'true'
+        uses: oven-sh/setup-bun@v2
+      - if: steps.present.outputs.yes == 'true'
+        working-directory: edge
+        run: bun install --frozen-lockfile && bun run check
+
+  sdk-js:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - id: present
+        run: echo "yes=$([ -f sdk/js/package.json ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - if: steps.present.outputs.yes == 'true'
+        uses: oven-sh/setup-bun@v2
+      - if: steps.present.outputs.yes == 'true'
+        working-directory: sdk/js
+        run: bun install --frozen-lockfile && bun run check && bun run build

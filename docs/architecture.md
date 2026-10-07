@@ -165,6 +165,8 @@ single-node install. Size limit and content-type allowlist per channel.
 ## Hosting for others later
 
 - `workspace_id` on every row; every store query is scoped by it.
+  Two exceptions: `workspaces` itself, whose `id` is the workspace, and River's `river_*` queue
+  tables, which the library owns; job arguments carry the `workspace_id` instead.
 - Usage counters (conversations, messages, members, storage) recorded per workspace per month.
 - Billing, plans and the signup flow are not part of the open-source core.
 
