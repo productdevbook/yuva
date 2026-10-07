@@ -10,6 +10,7 @@ import (
 	"log/slog"
 	"net/http"
 	"slices"
+	"time"
 	"strings"
 	"sync"
 	"uuid"
@@ -172,7 +173,20 @@ func (c *certCache) get(ctx context.Context, url string) (*x509.Certificate, err
 var (
 	errSNSForbidden   = problem(http.StatusForbidden, "forbidden", "the notification is not signed by Amazon SNS for an allowed topic")
 	errSNSUnavailable = problem(http.StatusServiceUnavailable, "unavailable", "try again later")
+	errSNSStale       = problem(http.StatusForbidden, "stale_notification", "the notification is older than an hour or from the future")
 )
+
+const snsMaxAge = time.Hour
+
+// snsFresh refuses replays of captured notifications: SNS delivers within minutes.
+func (s *Server) snsFresh(m *email.SNSMessage) bool {
+	t, err := time.Parse(time.RFC3339, m.Timestamp)
+	if err != nil {
+		return false
+	}
+	now := s.now()
+	return now.Sub(t) <= snsMaxAge && t.Sub(now) <= 5*time.Minute
+}
 
 func (s *Server) serveIngressSES(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(io.LimitReader(r.Body, maxSNSBodyBytes+1))
@@ -211,6 +225,10 @@ func (s *Server) serveIngressSES(w http.ResponseWriter, r *http.Request) {
 		}
 		s.log.InfoContext(r.Context(), "sns subscription confirmed", slog.String("topic", msg.TopicArn))
 	case "Notification":
+		if !s.snsFresh(msg) {
+			writeProblem(w, errSNSStale)
+			return
+		}
 		if err := s.applySES(r.Context(), msg.Message); err != nil {
 			s.log.ErrorContext(r.Context(), "ses notification", slog.Any("error", err))
 			writeProblem(w, errSNSUnavailable)

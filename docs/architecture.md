@@ -252,7 +252,8 @@ undeliverable. Anything else is stored as an ordinary automatic mail from its se
 nothing; a blocked sender is refused before the report is looked at. Amazon SES bounces and
 complaints arrive at `/ingress/ses` through SNS: the SNS signature is checked against the AWS
 certificate, only topics listed in `YUVA_SES_TOPIC_ARNS` are accepted, a subscription is confirmed
-only on an `sns.<region>.amazonaws.com` URL, and a notification counts only for a message we sent
+only on an `sns.<region>.amazonaws.com` URL, a notification whose `Timestamp` is more than an hour
+old (or ahead) is refused as a replay, and a notification counts only for a message we sent
 and for its recipients. Undeliverable addresses are shown on the
 contact, replies to them are refused until a member clears them.
 

@@ -889,6 +889,16 @@ func TestSESNotifications(t *testing.T) {
 	if st := h.postSNS(tampered); st != http.StatusForbidden {
 		t.Fatalf("tampered notification: %d", st)
 	}
+	for name, at := range map[string]time.Time{"old": h.clock.Now().Add(-2 * time.Hour), "future": h.clock.Now().Add(time.Hour)} {
+		stale := *note
+		stale.MessageId, stale.Timestamp = unique("m"), at.UTC().Format(time.RFC3339)
+		if st := h.postSNS(signer.sign(t, &stale)); st != http.StatusForbidden {
+			t.Fatalf("%s notification: %d", name, st)
+		}
+	}
+	if d := lastOf(messages(et.owner, conv), "message")["delivery"].(map[string]any); d["state"] == "failed" {
+		t.Fatalf("a stale notification failed the message: %v", d)
+	}
 	if st := h.postSNS(body); st != http.StatusOK {
 		t.Fatalf("bounce notification: %d", st)
 	}
