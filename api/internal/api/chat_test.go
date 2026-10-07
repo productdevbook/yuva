@@ -8,6 +8,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"mime"
 	"mime/multipart"
 	"net/http"
 	"strings"
@@ -643,6 +644,15 @@ func TestPresenceRules(t *testing.T) {
 	}
 }
 
+func decodeHeader(t *testing.T, v string) string {
+	t.Helper()
+	out, err := new(mime.WordDecoder).DecodeHeader(v)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return out
+}
+
 func TestChatEmailContinuity(t *testing.T) {
 	h := newHarness(t)
 	ct := newChatTeam(t, h, "live", true)
@@ -696,7 +706,7 @@ func TestChatEmailContinuity(t *testing.T) {
 	}
 
 	cs := ct.session(h, map[string]any{})
-	conv := cs.start("anyone there?")
+	conv := cs.start("anyone   there?\nI have a question about my order number 4711 and the delivery date of it")
 	typed := unique("visitor") + "@example.com"
 	cs.expect(http.StatusOK, "PUT", "/client/v1/contact/email", map[string]any{"email": typed})
 	start := h.clock.Now()
@@ -720,6 +730,9 @@ func TestChatEmailContinuity(t *testing.T) {
 	}
 	sent, parsed := h.smtp.last(t)
 	body := string(sent.raw)
+	if got, want := decodeHeader(t, parsed.Header.Get("Subject")), "Chat — anyone there? I have a question about my order number 4711 a…"; got != want {
+		t.Fatalf("subject %q, want %q", got, want)
+	}
 	if sent.to[0] != typed || !strings.Contains(body, "First answer") || !strings.Contains(body, "Second answer") || strings.Contains(body, "note") {
 		t.Fatalf("continuity e-mail to %v:\n%s", sent.to, body)
 	}

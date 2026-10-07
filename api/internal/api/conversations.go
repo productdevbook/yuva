@@ -94,9 +94,13 @@ func splitSearch(q *string) (pos, neg *string) {
 }
 
 func previewText(body string) string {
+	return excerpt(body, previewRunes)
+}
+
+func excerpt(body string, n int) string {
 	text := strings.Join(strings.Fields(body), " ")
-	if r := []rune(text); len(r) > previewRunes {
-		text = strings.TrimSpace(string(r[:previewRunes])) + "…"
+	if r := []rune(text); len(r) > n {
+		text = strings.TrimSpace(string(r[:n])) + "…"
 	}
 	return text
 }

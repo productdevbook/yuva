@@ -217,6 +217,13 @@ WHERE m.workspace_id = @workspace_id AND m.conversation_id = @conversation_id
 ORDER BY m.created_at, m.id
 LIMIT 50;
 
+-- name: FirstMessageBody :one
+SELECT m.body FROM messages m
+WHERE m.workspace_id = @workspace_id AND m.conversation_id = @conversation_id
+  AND m.kind = 'message' AND btrim(m.body) <> ''
+ORDER BY m.created_at, m.id
+LIMIT 1;
+
 -- name: ListConversationsWithPendingReplies :many
 SELECT DISTINCT c.id FROM conversations c
 JOIN messages m ON m.workspace_id = c.workspace_id AND m.conversation_id = c.id

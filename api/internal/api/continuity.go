@@ -13,7 +13,10 @@ import (
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
-const defaultChatEmailDelay = 5 * time.Minute
+const (
+	defaultChatEmailDelay  = 5 * time.Minute
+	continuitySubjectRunes = 60
+)
 
 type ContinuityArgs struct {
 	WorkspaceID    uuid.UUID `json:"workspace_id"`
@@ -137,6 +140,11 @@ func (s *Server) CheckContinuity(ctx context.Context, workspaceID, conversationI
 			}
 			return err
 		}
+		if c.Subject == "" {
+			if plan.subject, err = continuitySubject(ctx, q, c); err != nil {
+				return err
+			}
+		}
 		ids := make([]uuid.UUID, len(pending))
 		for i, p := range pending {
 			ids[i] = p.ID
@@ -157,6 +165,23 @@ func (s *Server) CheckContinuity(ctx context.Context, workspaceID, conversationI
 		})
 	})
 	return next, err
+}
+
+// continuitySubject names a conversation without a subject by its inbox and the start of its
+// first message.
+func continuitySubject(ctx context.Context, q *store.Queries, c store.Conversation) (string, error) {
+	in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: c.WorkspaceID, ID: c.InboxID})
+	if err != nil {
+		return "", err
+	}
+	body, err := q.FirstMessageBody(ctx, store.FirstMessageBodyParams{WorkspaceID: c.WorkspaceID, ConversationID: c.ID})
+	if store.IsNotFound(err) {
+		return in.Name, nil
+	}
+	if err != nil {
+		return "", err
+	}
+	return in.Name + " — " + excerpt(body, continuitySubjectRunes), nil
 }
 
 // continuityAddress is a verified address of the conversation's contact, else the address they
