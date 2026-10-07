@@ -2630,7 +2630,8 @@ type MessageEmail struct {
 	// Cc The `Cc` of an inbound mail, as received. Replies go to the contact only and copy no one.
 	Cc *[]Email `json:"cc,omitempty"`
 
-	// Dmarc The DMARC result from the receiving server's `Authentication-Results`.
+	// Dmarc The DMARC result from the topmost `Authentication-Results`, only when its authserv-id is
+	// the server's `YUVA_INGRESS_AUTHSERV_ID`; `unknown` otherwise.
 	Dmarc MessageEmailDmarc `json:"dmarc"`
 
 	// From Examples: owner@example.com
@@ -2648,9 +2649,15 @@ type MessageEmail struct {
 	Raw     bool    `json:"raw"`
 	Subject *string `json:"subject,omitempty"`
 	To      []Email `json:"to"`
+
+	// UnverifiedSender An inbound mail whose `from` is not one of the contact's addresses: a reply from the
+	// address a widget visitor typed and has not confirmed. It joined the visitor's
+	// conversation without linking the address; once the address is confirmed this is false.
+	UnverifiedSender bool `json:"unverified_sender"`
 }
 
-// MessageEmailDmarc The DMARC result from the receiving server's `Authentication-Results`.
+// MessageEmailDmarc The DMARC result from the topmost `Authentication-Results`, only when its authserv-id is
+// the server's `YUVA_INGRESS_AUTHSERV_ID`; `unknown` otherwise.
 type MessageEmailDmarc string
 
 // MessageEmailDetail defines model for MessageEmailDetail.

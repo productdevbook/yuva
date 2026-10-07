@@ -931,15 +931,48 @@ func TestChatEmailContinuity(t *testing.T) {
 		}
 		return out
 	}
+	replyMail := func(body string) []byte {
+		return []byte("From: Visitor <" + typed + ">\r\nTo: " + addr + "\r\nSubject: Re: Chat\r\nMessage-ID: <" + unique("r") + "@example.com>\r\n" +
+			"In-Reply-To: " + msgID + "\r\nReferences: " + msgID + "\r\nContent-Type: text/plain; charset=utf-8\r\n\r\n" + body + "\r\n")
+	}
+	unverified := func(id string) any {
+		t.Helper()
+		for _, m := range messages(ct.owner, conv) {
+			if m["id"] == id {
+				return m["email"].(map[string]any)["unverified_sender"]
+			}
+		}
+		t.Fatalf("message %s not in the conversation", id)
+		return nil
+	}
+	owners := func() int {
+		var n int
+		if err := h.st.Pool.QueryRow(context.Background(), "SELECT count(*) FROM contact_emails WHERE workspace_id = $1 AND email = $2", ct.ws, typed).Scan(&n); err != nil {
+			t.Fatal(err)
+		}
+		return n
+	}
+	early := h.ingest(addr, replyMail("Is anyone reading this?"), nil)
+	if early.status != http.StatusAccepted || early.str("conversation_id") != conv {
+		t.Fatalf("a reply from the unconfirmed typed address did not continue the chat: %d %v", early.status, early.body)
+	}
+	if unverified(early.str("message_id")) != true || owners() != 0 {
+		t.Fatalf("unconfirmed reply: unverified %v, %d contacts own the address", unverified(early.str("message_id")), owners())
+	}
+	if len(ct.owner.expect(http.StatusOK, "GET", "/v1/contacts/"+cs.contactID, nil).body["emails"].([]any)) != 0 {
+		t.Fatal("a reply linked the unconfirmed address")
+	}
+
 	link := confirmLink(t, h.mail.wait(t, typed, 1)[0].Text)
 	confirmTypedEmail(t, h, link)
+	if unverified(early.str("message_id")) != false {
+		t.Fatal("the earlier reply is still from an unverified address after confirmation")
+	}
 	if evs := contactEvents(); !strings.Contains(evs[len(evs)-1], `"emails": ["`+typed+`"]`) {
 		t.Fatalf("confirming the typed address: contact.updated events %v", evs)
 	}
-	raw := []byte("From: Visitor <" + typed + ">\r\nTo: " + addr + "\r\nSubject: Re: Chat\r\nMessage-ID: <" + unique("r") + "@example.com>\r\n" +
-		"In-Reply-To: " + msgID + "\r\nReferences: " + msgID + "\r\nContent-Type: text/plain; charset=utf-8\r\n\r\nThanks, that helped.\r\n")
-	res := h.ingest(addr, raw, nil)
-	if res.str("conversation_id") != conv {
+	res := h.ingest(addr, replyMail("Thanks, that helped."), nil)
+	if res.str("conversation_id") != conv || unverified(res.str("message_id")) != false {
 		t.Fatalf("the e-mail answer did not continue the chat: %v", res.body)
 	}
 	c := ct.owner.expect(http.StatusOK, "GET", "/v1/contacts/"+cs.contactID, nil)

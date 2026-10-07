@@ -6,6 +6,7 @@ import (
 	"mime"
 	"net/mail"
 	"os"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -18,25 +19,85 @@ func TestVerifyIngressMatchesEdgeWorker(t *testing.T) {
 	if err != nil {
 		t.Skip("edge fixture not present:", err)
 	}
-	const sig = "v1=2a6b3a29c5330e504f6ab4b1fb4a2c2c43900fa6a54f29f12425a8ccf0c6046a"
+	const (
+		sig      = "v2=317d9bc511a3882d471ab816c963a77c7efea5fc8c83f43916ed701e14e83646"
+		sigV1    = "v1=2a6b3a29c5330e504f6ab4b1fb4a2c2c43900fa6a54f29f12425a8ccf0c6046a"
+		ts       = "1791364364"
+		to, from = "support@example.com", "customer@example.org"
+	)
 	at := time.Unix(1791364364, 0)
-	if err := email.VerifyIngress("test-secret", "1791364364", "support@example.com", sig, raw, at.Add(time.Minute)); err != nil {
+	verify := func(secret, ts, to, from, sig string, at time.Time, acceptV1 bool) error {
+		_, err := email.VerifyIngress(secret, ts, to, from, sig, raw, at, acceptV1)
+		return err
+	}
+	if err := verify("test-secret", ts, to, from, sig, at.Add(time.Minute), false); err != nil {
 		t.Fatalf("edge signature rejected: %v", err)
 	}
-	if got := email.Sign("test-secret", "1791364364", "support@example.com", raw); got != sig {
+	if got := email.Sign("test-secret", ts, to, from, raw); got != sig {
 		t.Fatalf("Sign = %s", got)
 	}
-	if err := email.VerifyIngress("test-secret", "1791364364", "support@example.com", sig, raw, at.Add(6*time.Minute)); err != email.ErrStaleTimestamp {
+	if got := email.SignV1("test-secret", ts, to, raw); got != sigV1 {
+		t.Fatalf("SignV1 = %s", got)
+	}
+	if err := verify("test-secret", ts, to, "attacker@example.net", sig, at, false); err != email.ErrBadSignature {
+		t.Fatalf("envelope sender not covered: %v", err)
+	}
+	if err := verify("test-secret", ts, to, "", sig, at, false); err != email.ErrBadSignature {
+		t.Fatalf("emptied envelope sender accepted: %v", err)
+	}
+	if err := verify("test-secret", ts, to, from, sigV1, at, false); err != email.ErrBadSignature {
+		t.Fatalf("v1 accepted without the deprecation switch: %v", err)
+	}
+	c, err := email.VerifyIngress("test-secret", ts, to, "anything", sigV1, raw, at, true)
+	if err != nil || !c.V1() {
+		t.Fatalf("v1 with the switch: %v", err)
+	}
+	if err := verify("test-secret", ts, to, from, "v3="+sig[3:], at, true); err != email.ErrBadSignature {
+		t.Fatalf("unknown version: %v", err)
+	}
+	if err := verify("test-secret", ts, to, from, sig, at.Add(6*time.Minute), false); err != email.ErrStaleTimestamp {
 		t.Fatalf("replay outside the window: %v", err)
 	}
-	if err := email.VerifyIngress("test-secret", "1791364364", "support@example.com", sig, raw, at.Add(-6*time.Minute)); err != email.ErrStaleTimestamp {
+	if err := verify("test-secret", ts, to, from, sig, at.Add(-6*time.Minute), false); err != email.ErrStaleTimestamp {
 		t.Fatalf("timestamp from the future: %v", err)
 	}
-	if err := email.VerifyIngress("other", "1791364364", "support@example.com", sig, raw, at); err != email.ErrBadSignature {
+	if err := verify("other", ts, to, from, sig, at, false); err != email.ErrBadSignature {
 		t.Fatalf("wrong secret: %v", err)
 	}
-	if err := email.VerifyIngress("test-secret", "1791364364", "support@example.com", "v1=zz", raw, at); err != email.ErrBadSignature {
+	if err := verify("test-secret", ts, to, from, "v2=zz", at, false); err != email.ErrBadSignature {
 		t.Fatalf("malformed signature: %v", err)
+	}
+	if _, err := email.StartIngress("test-secret", ts, to, from, sig, at.Add(time.Hour), false); err != email.ErrStaleTimestamp {
+		t.Fatalf("stale timestamp must fail before the body: %v", err)
+	}
+	if _, err := email.StartIngress("test-secret", "", to, from, sig, at, false); err != email.ErrBadSignature {
+		t.Fatalf("missing timestamp must fail before the body: %v", err)
+	}
+	streamed, err := email.StartIngress("test-secret", ts, to, from, sig, at, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for chunk := range slices.Chunk(raw, 7) {
+		_, _ = streamed.Write(chunk)
+	}
+	if err := streamed.Verify(); err != nil {
+		t.Fatalf("streamed body: %v", err)
+	}
+}
+
+func TestTrustedDMARC(t *testing.T) {
+	for _, tc := range []struct{ header, id, want string }{
+		{"mx.cloudflare.net; dkim=pass header.d=example.net; dmarc=pass header.from=example.net", "mx.cloudflare.net", email.DMARCPass},
+		{"MX.Cloudflare.net; dmarc=fail (p=reject) header.from=example.net", "mx.cloudflare.net", email.DMARCFail},
+		{"mx.cloudflare.net 1; dmarc=fail header.from=example.net", "mx.cloudflare.net", email.DMARCFail},
+		{"attacker.example; dmarc=pass header.from=example.net", "mx.cloudflare.net", email.DMARCUnknown},
+		{"mx.cloudflare.net.evil; dmarc=pass", "mx.cloudflare.net", email.DMARCUnknown},
+		{"mx.cloudflare.net; dmarc=fail", "", email.DMARCUnknown},
+		{"", "mx.cloudflare.net", email.DMARCUnknown},
+	} {
+		if got := email.TrustedDMARC(tc.header, tc.id); got != tc.want {
+			t.Errorf("TrustedDMARC(%q, %q) = %q, want %q", tc.header, tc.id, got, tc.want)
+		}
 	}
 }
 

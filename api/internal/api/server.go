@@ -52,7 +52,9 @@ type Server struct {
 	hub      *realtime.Hub
 	jobs     *river.Client[pgx.Tx]
 	ingress  IngressSettings
+	ingestQ  chan struct{}
 	sender   email.Sender
+	smtpPriv bool
 	snsCerts *certCache
 	fetch    *http.Client
 	chat     ChatSettings
@@ -79,7 +81,7 @@ type Deps struct {
 	Ingress     IngressSettings
 	EmailSender email.Sender
 	// SMTPAllowPrivate lets e-mail channels use SMTP servers on private addresses (Mailpit in
-	// development); used only when EmailSender is nil.
+	// development): when a channel is saved, and at send time when EmailSender is nil.
 	SMTPAllowPrivate bool
 	HTTPClient       *http.Client
 
@@ -109,6 +111,13 @@ type IngressSettings struct {
 	SenderHourlyCap int
 	// OwnAddresses are addresses the server sends from besides its channels, such as YUVA_SMTP_FROM.
 	OwnAddresses []string
+	// AcceptV1 accepts the deprecated v1 signature, which leaves the envelope sender unsigned.
+	AcceptV1 bool
+	// AuthservID is the authserv-id of the receiving server whose Authentication-Results are
+	// trusted; without it DMARC verdicts are stored but not used.
+	AuthservID string
+	// MaxConcurrent caps messages processed at once; more are answered 503. 0 means 8.
+	MaxConcurrent int
 }
 
 type AttachmentSettings struct {
@@ -143,6 +152,10 @@ func New(d Deps) *Server {
 	if fetch == nil {
 		fetch = &http.Client{Timeout: 10 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
 	}
+	ingestSlots := d.Ingress.MaxConcurrent
+	if ingestSlots <= 0 {
+		ingestSlots = defaultIngestConcurrency
+	}
 	chat := d.Chat
 	if chat.EmailDelay <= 0 {
 		chat.EmailDelay = defaultChatEmailDelay
@@ -158,7 +171,7 @@ func New(d Deps) *Server {
 	return &Server{
 		log: d.Log, st: d.Store, version: d.Version, mailer: d.Mailer, webauthn: d.WebAuthn, auth: d.Auth, now: now,
 		secrets: d.Secrets, objects: d.Storage, attach: d.Attachments, sanitize: htmlPolicy(),
-		hub: d.Hub, jobs: jobs, ingress: d.Ingress, sender: sender, snsCerts: newCertCache(fetch), fetch: fetch,
+		hub: d.Hub, jobs: jobs, ingress: d.Ingress, ingestQ: make(chan struct{}, ingestSlots), sender: sender, smtpPriv: d.SMTPAllowPrivate, snsCerts: newCertCache(fetch), fetch: fetch,
 		chat: chat, limits: newRateLimiter(), webhooks: d.Webhooks, hooks: hooks, push: pusher,
 	}
 }

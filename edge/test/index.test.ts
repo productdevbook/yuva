@@ -55,7 +55,7 @@ describe("email handler", () => {
     expect(call.headers.get("X-Yuva-Envelope-From")).toBe("customer@example.org");
     expect(call.headers.get("X-Yuva-Timestamp")).toBe("1791364364");
     expect(call.headers.get("X-Yuva-Signature")).toBe(
-      "v1=2a6b3a29c5330e504f6ab4b1fb4a2c2c43900fa6a54f29f12425a8ccf0c6046a",
+      "v2=317d9bc511a3882d471ab816c963a77c7efea5fc8c83f43916ed701e14e83646",
     );
   });
 
@@ -66,10 +66,23 @@ describe("email handler", () => {
 
     const { createHmac } = await import("node:crypto");
     const expected = createHmac("sha256", env.INGRESS_SECRET)
-      .update(`${call.headers.get("X-Yuva-Timestamp")}.${call.headers.get("X-Yuva-Envelope-To")}.`)
+      .update(
+        `${call.headers.get("X-Yuva-Timestamp")}.${call.headers.get("X-Yuva-Envelope-To")}.${call.headers.get("X-Yuva-Envelope-From")}.`,
+      )
       .update(call.body)
       .digest("hex");
-    expect(call.headers.get("X-Yuva-Signature")).toBe(`v1=${expected}`);
+    expect(call.headers.get("X-Yuva-Signature")).toBe(`v2=${expected}`);
+  });
+
+  test("the signature covers the envelope sender", async () => {
+    const calls = serve(() => new Response(null, { status: 202 }));
+    await handleEmail(message().msg, env, now);
+    const other = message();
+    (other.msg as { from: string }).from = "";
+    await handleEmail(other.msg, env, now);
+
+    expect(calls[1].headers.get("X-Yuva-Envelope-From")).toBe("");
+    expect(calls[1].headers.get("X-Yuva-Signature")).not.toBe(calls[0].headers.get("X-Yuva-Signature"));
   });
 
   test("rejects with the server's reason on 4xx", async () => {

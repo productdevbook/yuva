@@ -54,7 +54,9 @@ signed with the ingress secret, and rejects the message with Yuva's reason when 
 Cloudflare Email Routing becomes the MX of the domain you enable it on, so use a domain (or
 subdomain) whose mail is not handled by another mail server.
 
-1. Set `YUVA_INGRESS_SECRET` on the server (`openssl rand -hex 32`) and restart it.
+1. Set `YUVA_INGRESS_SECRET` on the server (`openssl rand -hex 32`) and
+   `YUVA_INGRESS_AUTHSERV_ID=mx.cloudflare.net`, the authserv-id Cloudflare Email Routing stamps on
+   the `Authentication-Results` it adds, so its DMARC verdict is used; restart the server.
 2. Deploy the Worker with your own Cloudflare account:
 
    ```sh
@@ -79,7 +81,13 @@ sender, a sender over `YUVA_EMAIL_SENDER_HOURLY_CAP`) is rejected permanently wi
 When Yuva does not answer (5xx, network error, no answer within 20 seconds) the delivery fails and
 the sending server may retry. To keep such mail during an outage, deploy with
 `--var FALLBACK_FORWARD:you@example.org`, a verified destination address in Email Routing: the
-message is then forwarded there as a plain e-mail and does not appear in Yuva.
+message is then forwarded there as a plain e-mail and does not appear in Yuva. The same happens
+when the server is busy: it processes at most `YUVA_INGRESS_MAX_CONCURRENT` messages at once and
+answers further ones `503`.
+
+The Worker signs with the `v2` signature, which covers the envelope sender. A Worker deployed
+before it signs with `v1`, which the server refuses unless `YUVA_INGRESS_ACCEPT_V1=true`; redeploy
+the Worker, or set that variable only for the time between upgrading the server and redeploying.
 
 ### Any MTA: `yuva ingest-email`
 
@@ -120,8 +128,10 @@ and route the support addresses to the `yuva` transport (for example
 ### Any MTA: HTTP
 
 Anything that can send an HTTP request can post the raw message to `/ingress/email` with the
-envelope headers and an HMAC-SHA256 signature under `YUVA_INGRESS_SECRET`. The request format and
-the answers are in [edge/README.md](../edge/README.md#ingress-contract).
+envelope headers and an HMAC-SHA256 signature under `YUVA_INGRESS_SECRET` (version `v2`, over the
+timestamp, the envelope recipient, the envelope sender and the body). The request format and the
+answers are in [edge/README.md](../edge/README.md#ingress-contract). Set `YUVA_INGRESS_AUTHSERV_ID`
+to the authserv-id your MTA writes into `Authentication-Results`; without it DMARC is not used.
 
 ### What happens to inbound mail
 
@@ -137,8 +147,15 @@ the answers are in [edge/README.md](../edge/README.md#ingress-contract).
 - Volume does not bounce mail: a sender opens at most 20 new conversations per channel per hour,
   and further mail in that hour is added to their latest conversation on the channel. Only a sender
   over `YUVA_EMAIL_SENDER_HOURLY_CAP` inbound mails per hour (500 by default) is refused.
-- A new conversation whose first mail fails DMARC at the receiving server is marked spam. Contacts
-  can be blocked; their mail is refused.
+- DMARC comes only from the topmost `Authentication-Results`, and only when its authserv-id is
+  `YUVA_INGRESS_AUTHSERV_ID`; otherwise the header is shown but DMARC counts as unknown. A new
+  conversation whose first mail fails DMARC is marked spam, and a reply that fails DMARC never joins
+  the thread it names (its `From` may be forged): it opens a new spam conversation that points to
+  it. Contacts can be blocked; their mail is refused.
+- A reply to a chat continuity e-mail from the address a visitor typed in the widget, before they
+  confirmed it, joins the visitor's conversation and is marked as coming from an unverified
+  address; the address is not added to the contact. Once the visitor confirms it, it becomes one of
+  their addresses and the mark goes away.
 
 ## Outbound SMTP
 
@@ -158,6 +175,10 @@ send an automatic greeting to new conversations, at most once per contact within
 Chat and feedback replies that a contact has not read are e-mailed through the inbox's e-mail
 channel (see `YUVA_CHAT_EMAIL_DELAY` in [Configuration](configuration.md#chat)), so give an inbox
 that has chat or app channels an e-mail channel too.
+
+The SMTP host is checked when the channel is saved: a loopback, private, link-local or metadata
+address, or `localhost`, is refused (loopback and private ones are allowed with
+`YUVA_SMTP_ALLOW_PRIVATE`). A host name is resolved and checked again on every send.
 
 ## Bounces
 

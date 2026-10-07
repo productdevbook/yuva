@@ -216,6 +216,12 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 	if cfg.IngressSecret == "" {
 		log.Warn("YUVA_INGRESS_SECRET is not set; /ingress/email refuses all mail")
 	}
+	if cfg.IngressAcceptV1 {
+		log.Warn("YUVA_INGRESS_ACCEPT_V1 is set; /ingress/email accepts v1 signatures, which do not cover the envelope sender")
+	}
+	if cfg.IngressSecret != "" && cfg.IngressAuthservID == "" {
+		log.Warn("YUVA_INGRESS_AUTHSERV_ID is not set; DMARC results of inbound mail are stored but not used")
+	}
 	queue, err := jobs.New(st.Pool, st.Queries, log, srv.AddWorkers)
 	if err != nil {
 		return fmt.Errorf("job queue: %w", err)
@@ -345,7 +351,10 @@ const (
 // ingestEmail is for MTAs that pipe a message into a command; the exit codes follow sysexits.h,
 // which MTAs map to permanent or temporary failures.
 func ingressSettings(cfg config.Config) api.IngressSettings {
-	out := api.IngressSettings{Secret: cfg.IngressSecret, SESTopicARNs: cfg.SESTopicARNs, SenderHourlyCap: cfg.EmailSenderHourlyCap}
+	out := api.IngressSettings{
+		Secret: cfg.IngressSecret, SESTopicARNs: cfg.SESTopicARNs, SenderHourlyCap: cfg.EmailSenderHourlyCap,
+		AcceptV1: cfg.IngressAcceptV1, AuthservID: cfg.IngressAuthservID, MaxConcurrent: cfg.IngressMaxConcurrent,
+	}
 	if a, err := netmail.ParseAddress(cfg.SMTP.From); err == nil {
 		out.OwnAddresses = []string{strings.ToLower(a.Address)}
 	}
@@ -390,7 +399,7 @@ func ingestEmail(ctx context.Context, cfg config.Config, log *slog.Logger, args 
 		Attachments: api.AttachmentSettings{MaxBytes: cfg.Attachments.MaxBytes, Types: cfg.Attachments.Types},
 		Ingress:     ingressSettings(cfg),
 	})
-	res, err := srv.IngestEmail(ctx, *to, *from, raw)
+	res, err := srv.IngestEmail(ctx, *to, *from, true, raw)
 	var ie *api.IngestError
 	if errors.As(err, &ie) {
 		fmt.Fprintln(os.Stderr, ie.Reason)

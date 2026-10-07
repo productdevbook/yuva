@@ -39,10 +39,15 @@ VALUES (@workspace_id, @message_id, @conversation_id, @channel_id, @direction, @
 SELECT * FROM message_emails WHERE workspace_id = $1 AND message_id = $2;
 
 -- name: ListMessageEmails :many
-SELECT message_id, direction, header_message_id, from_address, to_addresses, cc_addresses, subject, quoted,
-       (raw_key IS NOT NULL)::bool AS has_raw, auto, dmarc
-FROM message_emails
-WHERE workspace_id = @workspace_id AND message_id = ANY(@message_ids::uuid[]);
+SELECT e.message_id, e.direction, e.header_message_id, e.from_address, e.to_addresses, e.cc_addresses, e.subject, e.quoted,
+       (e.raw_key IS NOT NULL)::bool AS has_raw, e.auto, e.dmarc,
+       (e.direction = 'in' AND NOT EXISTS (
+           SELECT 1 FROM contact_emails ce
+           WHERE ce.workspace_id = e.workspace_id AND ce.contact_id = c.contact_id AND ce.email = e.from_address
+       ))::bool AS unverified_sender
+FROM message_emails e
+JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
+WHERE e.workspace_id = @workspace_id AND e.message_id = ANY(@message_ids::uuid[]);
 
 -- name: FindInboundEmailByHeader :one
 SELECT message_id, conversation_id FROM message_emails

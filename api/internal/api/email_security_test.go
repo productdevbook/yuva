@@ -118,7 +118,7 @@ func TestForgedDeliveryReports(t *testing.T) {
 	otherRcpt := unique("other") + "@example.net"
 	o := h.ingest(et.address, buildMail(mailOpts{from: otherRcpt, to: et.address, subject: "Hi", messageID: newMessageID(), body: "Hi"}), nil)
 	otherContact := et.owner.expect(http.StatusOK, "GET", "/v1/conversations/"+o.str("conversation_id"), nil).str("contact_id")
-	wrongRcpt := h.ingest(et.address, dsnMail(et.address, ourID, otherRcpt, "5.1.1"), func(req *http.Request) { req.Header.Set("X-Yuva-Envelope-From", "") })
+	wrongRcpt := h.ingestFrom(et.address, "", dsnMail(et.address, ourID, otherRcpt, "5.1.1"), nil)
 	if wrongRcpt.str("status") == "bounce" || len(undeliverable(et.owner, otherContact)) != 0 {
 		t.Fatalf("a report for someone who was not a recipient counted: %v", wrongRcpt.body)
 	}
@@ -144,7 +144,7 @@ func TestForgedDeliveryReports(t *testing.T) {
 
 	third := strings.Replace(string(dsnMail(et.address, ourID, victim, "5.1.1")),
 		"From: Mail Delivery System <mailer-daemon@mx.example.net>", "From: <third@example.com>", 1)
-	sent := h.ingest(et.address, []byte(third), func(req *http.Request) { req.Header.Set("X-Yuva-Envelope-From", "third@example.com") })
+	sent := h.ingestFrom(et.address, "third@example.com", []byte(third), nil)
 	if sent.status != http.StatusAccepted || sent.str("status") != "stored" || len(undeliverable(et.owner, contactID)) != 0 {
 		t.Fatalf("a report with a sender counted: %d %v", sent.status, sent.body)
 	}
@@ -154,7 +154,7 @@ func TestForgedDeliveryReports(t *testing.T) {
 		}
 	}
 
-	genuine := h.ingest(et.address, []byte(third), func(req *http.Request) { req.Header.Set("X-Yuva-Envelope-From", "") })
+	genuine := h.ingestFrom(et.address, "", []byte(third), nil)
 	if genuine.str("status") != "bounce" || len(undeliverable(et.owner, contactID)) != 1 {
 		t.Fatalf("genuine report: %v", genuine.body)
 	}

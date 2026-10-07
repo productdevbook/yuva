@@ -138,13 +138,14 @@ func (r ingressResult) str(k string) string { s, _ := r.body[k].(string); return
 
 func (h *harness) ingest(to string, raw []byte, mutate func(*http.Request)) ingressResult {
 	h.t.Helper()
-	ts := strconv.FormatInt(h.clock.Now().Unix(), 10)
-	req, _ := http.NewRequest("POST", h.url+"/ingress/email", bytes.NewReader(raw))
-	req.Header.Set("Content-Type", "message/rfc822")
-	req.Header.Set("X-Yuva-Envelope-To", to)
-	req.Header.Set("X-Yuva-Envelope-From", "bounce@example.net")
-	req.Header.Set("X-Yuva-Timestamp", ts)
-	req.Header.Set("X-Yuva-Signature", email.Sign(testIngressSecret, ts, to, raw))
+	return h.ingestFrom(to, "bounce@example.net", raw, mutate)
+}
+
+// ingestFrom posts a message signed for the envelope recipient and sender; mutate changes the
+// request after signing.
+func (h *harness) ingestFrom(to, from string, raw []byte, mutate func(*http.Request)) ingressResult {
+	h.t.Helper()
+	req := h.ingressRequest(to, from, raw)
 	if mutate != nil {
 		mutate(req)
 	}
@@ -160,6 +161,18 @@ func (h *harness) ingest(to string, raw []byte, mutate func(*http.Request)) ingr
 		h.t.Fatalf("refusal content type %q: %s", ct, b)
 	}
 	return out
+}
+
+func (h *harness) ingressRequest(to, from string, raw []byte) *http.Request {
+	h.t.Helper()
+	ts := strconv.FormatInt(h.clock.Now().Unix(), 10)
+	req, _ := http.NewRequest("POST", h.url+"/ingress/email", bytes.NewReader(raw))
+	req.Header.Set("Content-Type", "message/rfc822")
+	req.Header.Set("X-Yuva-Envelope-To", to)
+	req.Header.Set("X-Yuva-Envelope-From", from)
+	req.Header.Set("X-Yuva-Timestamp", ts)
+	req.Header.Set("X-Yuva-Signature", email.Sign(testIngressSecret, ts, to, from, raw))
+	return req
 }
 
 type mailOpts struct {
@@ -263,19 +276,29 @@ func TestIngressSignatureAndRefusals(t *testing.T) {
 		t.Fatalf("bad signature: %d %v", r.status, r.body)
 	}
 	r = h.ingest(et.address, raw, func(req *http.Request) {
-		req.Header.Set("X-Yuva-Signature", strings.Replace(req.Header.Get("X-Yuva-Signature"), "v1=", "v2=", 1))
+		req.Header.Set("X-Yuva-Signature", strings.Replace(req.Header.Get("X-Yuva-Signature"), "v2=", "v3=", 1))
 	})
 	if r.status != http.StatusUnauthorized {
-		t.Fatalf("v2 prefix: %d", r.status)
+		t.Fatalf("v3 prefix: %d", r.status)
+	}
+	r = h.ingest(et.address, raw, func(req *http.Request) {
+		req.Header.Set("X-Yuva-Signature", email.SignV1(testIngressSecret, req.Header.Get("X-Yuva-Timestamp"), et.address, raw))
+	})
+	if r.status != http.StatusUnauthorized || r.str("code") != "bad_signature" {
+		t.Fatalf("v1 without YUVA_INGRESS_ACCEPT_V1: %d %v", r.status, r.body)
 	}
 	r = h.ingest(et.address, raw, func(req *http.Request) { req.Header.Set("X-Yuva-Envelope-To", "other@example.com") })
 	if r.status != http.StatusUnauthorized {
 		t.Fatalf("signature not bound to the recipient: %d", r.status)
 	}
+	r = h.ingest(et.address, raw, func(req *http.Request) { req.Header.Set("X-Yuva-Envelope-From", "") })
+	if r.status != http.StatusUnauthorized {
+		t.Fatalf("signature not bound to the envelope sender: %d", r.status)
+	}
 	stale := strconv.FormatInt(h.clock.Now().Add(-6*time.Minute).Unix(), 10)
 	r = h.ingest(et.address, raw, func(req *http.Request) {
 		req.Header.Set("X-Yuva-Timestamp", stale)
-		req.Header.Set("X-Yuva-Signature", email.Sign(testIngressSecret, stale, et.address, raw))
+		req.Header.Set("X-Yuva-Signature", email.Sign(testIngressSecret, stale, et.address, "bounce@example.net", raw))
 	})
 	if r.status != http.StatusUnauthorized || r.str("code") != "stale_timestamp" {
 		t.Fatalf("stale timestamp: %d %v", r.status, r.body)
@@ -760,8 +783,7 @@ func TestBounceDSN(t *testing.T) {
 	h.sendQueued(t, et.ws, reply.str("id"))
 	ourID := lastOf(messages(et.owner, conv), "message")["email"].(map[string]any)["message_id"].(string)
 
-	nullFrom := func(req *http.Request) { req.Header.Set("X-Yuva-Envelope-From", "") }
-	b := h.ingest(et.address, dsnMail(et.address, ourID, rcpt, "5.1.1"), nullFrom)
+	b := h.ingestFrom(et.address, "", dsnMail(et.address, ourID, rcpt, "5.1.1"), nil)
 	if b.status != http.StatusAccepted || b.str("status") != "bounce" || b.str("message_id") != reply.str("id") {
 		t.Fatalf("dsn: %d %v", b.status, b.body)
 	}
@@ -784,7 +806,7 @@ func TestBounceDSN(t *testing.T) {
 		t.Fatal("no messages")
 	}
 	before, _ := et.owner.expect(http.StatusOK, "GET", "/v1/conversations/counts", nil).body["all"].(float64)
-	delayed := h.ingest(et.address, dsnMail(et.address, ourID, rcpt, "4.4.1"), nullFrom)
+	delayed := h.ingestFrom(et.address, "", dsnMail(et.address, ourID, rcpt, "4.4.1"), nil)
 	if delayed.str("status") != "bounce" {
 		t.Fatalf("delayed dsn: %v", delayed.body)
 	}

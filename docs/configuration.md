@@ -48,7 +48,7 @@ send replies to contacts through their own SMTP account (see [E-mail](email.md#o
 | `YUVA_SMTP_USERNAME` | unset | SMTP user name. |
 | `YUVA_SMTP_PASSWORD` | unset | SMTP password. |
 | `YUVA_SMTP_FROM` | unset | Sender, e.g. `Yuva <yuva@example.com>`. Required when `YUVA_SMTP_HOST` is set. |
-| `YUVA_SMTP_ALLOW_PRIVATE` | `false` | Lets e-mail channels send through SMTP servers on loopback and private addresses, such as Mailpit in development (`deploy/compose.yaml` sets it). Without it, a channel whose SMTP host resolves to such an address fails to send. Link-local and cloud metadata addresses stay refused. Does not affect `YUVA_SMTP_HOST`. |
+| `YUVA_SMTP_ALLOW_PRIVATE` | `false` | Lets e-mail channels send through SMTP servers on loopback and private addresses, such as Mailpit in development (`deploy/compose.yaml` sets it). Without it, a channel cannot be saved with such a literal address or `localhost` as its SMTP host, and a channel whose host name resolves to such an address fails to send. Link-local and cloud metadata addresses stay refused. Does not affect `YUVA_SMTP_HOST`. |
 
 ## Attachments and storage
 
@@ -76,6 +76,9 @@ Inbound e-mail parts outside these rules are skipped; they stay in the stored or
 | Variable | Default | Meaning |
 |---|---|---|
 | `YUVA_INGRESS_SECRET` | unset | Shared secret that signs requests to `/ingress/email` (the Cloudflare Email Worker uses the same value). Unset, `/ingress/email` refuses all mail. `yuva ingest-email` does not need it. Generate it with `openssl rand -hex 32`. |
+| `YUVA_INGRESS_ACCEPT_V1` | `false` | Also accept the deprecated `v1` request signature, which does not cover `X-Yuva-Envelope-From` (see `edge/README.md`). Under `v1` the envelope sender is not trusted: an empty one never makes a message a delivery report or automatic. Set it only while an older Email Worker or relay still signs with `v1`; the server warns at start while it is on. |
+| `YUVA_INGRESS_AUTHSERV_ID` | unset | The authserv-id of the server that receives your mail and stamps `Authentication-Results`, e.g. `mx.cloudflare.net` for Cloudflare Email Routing. Only the topmost `Authentication-Results` is read, and its DMARC verdict is used (spam flag, threading) only when it starts with this id; any other header could have come with the message. Unset, the header is stored and shown but DMARC is treated as unknown. |
+| `YUVA_INGRESS_MAX_CONCURRENT` | `8` | Most messages `/ingress/email` processes at once per server process. Further requests are answered `503 unavailable` before their body is read; the Email Worker then forwards to its fallback address or fails the delivery so the sending server retries. |
 | `YUVA_SES_TOPIC_ARNS` | unset | Amazon SNS topic ARNs whose SES bounce and complaint notifications `/ingress/ses` accepts, comma-separated. Unset, none are accepted. |
 | `YUVA_EMAIL_SENDER_HOURLY_CAP` | `500` | Most inbound e-mails one sender may send to a workspace per hour. Mail beyond it is refused (`429 rate_limited`, a permanent rejection through the Email Worker). Below it no mail is refused for volume. |
 

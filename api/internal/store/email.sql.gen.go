@@ -893,10 +893,15 @@ func (q *Queries) ListInboxRawKeys(ctx context.Context, arg ListInboxRawKeysPara
 }
 
 const listMessageEmails = `-- name: ListMessageEmails :many
-SELECT message_id, direction, header_message_id, from_address, to_addresses, cc_addresses, subject, quoted,
-       (raw_key IS NOT NULL)::bool AS has_raw, auto, dmarc
-FROM message_emails
-WHERE workspace_id = $1 AND message_id = ANY($2::uuid[])
+SELECT e.message_id, e.direction, e.header_message_id, e.from_address, e.to_addresses, e.cc_addresses, e.subject, e.quoted,
+       (e.raw_key IS NOT NULL)::bool AS has_raw, e.auto, e.dmarc,
+       (e.direction = 'in' AND NOT EXISTS (
+           SELECT 1 FROM contact_emails ce
+           WHERE ce.workspace_id = e.workspace_id AND ce.contact_id = c.contact_id AND ce.email = e.from_address
+       ))::bool AS unverified_sender
+FROM message_emails e
+JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
+WHERE e.workspace_id = $1 AND e.message_id = ANY($2::uuid[])
 `
 
 type ListMessageEmailsParams struct {
@@ -905,17 +910,18 @@ type ListMessageEmailsParams struct {
 }
 
 type ListMessageEmailsRow struct {
-	MessageID       uuid.UUID
-	Direction       string
-	HeaderMessageID string
-	FromAddress     string
-	ToAddresses     []string
-	CcAddresses     []string
-	Subject         string
-	Quoted          bool
-	HasRaw          bool
-	Auto            bool
-	Dmarc           string
+	MessageID        uuid.UUID
+	Direction        string
+	HeaderMessageID  string
+	FromAddress      string
+	ToAddresses      []string
+	CcAddresses      []string
+	Subject          string
+	Quoted           bool
+	HasRaw           bool
+	Auto             bool
+	Dmarc            string
+	UnverifiedSender bool
 }
 
 func (q *Queries) ListMessageEmails(ctx context.Context, arg ListMessageEmailsParams) ([]ListMessageEmailsRow, error) {
@@ -939,6 +945,7 @@ func (q *Queries) ListMessageEmails(ctx context.Context, arg ListMessageEmailsPa
 			&i.HasRaw,
 			&i.Auto,
 			&i.Dmarc,
+			&i.UnverifiedSender,
 		); err != nil {
 			return nil, err
 		}

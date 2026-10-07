@@ -9,6 +9,7 @@ import (
 	"net/netip"
 	"net/smtp"
 	"net/textproto"
+	"strings"
 
 	"github.com/productdevbook/yuva/api/internal/webhook"
 )
@@ -50,6 +51,23 @@ func classify(err error) error {
 type SMTPSender struct {
 	AllowPrivate bool
 	Resolver     webhook.Resolver
+}
+
+// CheckSMTPHost refuses, when a channel is saved, a host that is a literal address or `localhost`
+// the sender would refuse; names are resolved and checked again on every send.
+func CheckSMTPHost(host string, allowPrivate bool) error {
+	host = strings.ToLower(strings.TrimSuffix(strings.Trim(host, "[]"), "."))
+	ip, ipErr := netip.ParseAddr(host)
+	if ipErr == nil && webhook.NeverAllowed(ip) {
+		return webhook.ErrRefusedAddress
+	}
+	if allowPrivate {
+		return nil
+	}
+	if host == "localhost" || strings.HasSuffix(host, ".localhost") || (ipErr == nil && webhook.Blocked(ip)) {
+		return webhook.ErrRefusedAddress
+	}
+	return nil
 }
 
 func (s SMTPSender) Send(ctx context.Context, cfg SMTPConfig, from string, to []string, msg []byte) error {

@@ -35,6 +35,9 @@ type Config struct {
 	Attachments Attachments
 
 	IngressSecret        string
+	IngressAcceptV1      bool
+	IngressAuthservID    string
+	IngressMaxConcurrent int
 	SESTopicARNs         []string
 	EmailSenderHourlyCap int
 
@@ -110,9 +113,10 @@ func Load(version string) (Config, error) {
 			S3AccessKeyID:     env("YUVA_S3_ACCESS_KEY_ID", ""),
 			S3SecretAccessKey: os.Getenv("YUVA_S3_SECRET_ACCESS_KEY"),
 		},
-		Attachments:   Attachments{Types: lowerList(env("YUVA_ATTACHMENT_TYPES", defaultAttachmentTypes))},
-		IngressSecret: strings.TrimSpace(os.Getenv("YUVA_INGRESS_SECRET")),
-		SESTopicARNs:  list(env("YUVA_SES_TOPIC_ARNS", "")),
+		Attachments:       Attachments{Types: lowerList(env("YUVA_ATTACHMENT_TYPES", defaultAttachmentTypes))},
+		IngressSecret:     strings.TrimSpace(os.Getenv("YUVA_INGRESS_SECRET")),
+		IngressAuthservID: env("YUVA_INGRESS_AUTHSERV_ID", ""),
+		SESTopicARNs:      list(env("YUVA_SES_TOPIC_ARNS", "")),
 		VAPID: VAPID{
 			PublicKey:  env("YUVA_VAPID_PUBLIC_KEY", ""),
 			PrivateKey: strings.TrimSpace(os.Getenv("YUVA_VAPID_PRIVATE_KEY")),
@@ -173,6 +177,12 @@ func Load(version string) (Config, error) {
 	}
 	if c.ChatEmailDelay, err = time.ParseDuration(env("YUVA_CHAT_EMAIL_DELAY", "5m")); err != nil || c.ChatEmailDelay < time.Second {
 		return c, errors.New("YUVA_CHAT_EMAIL_DELAY must be a duration of at least 1s, such as 5m")
+	}
+	if c.IngressAcceptV1, err = boolEnv("YUVA_INGRESS_ACCEPT_V1", false); err != nil {
+		return c, err
+	}
+	if c.IngressMaxConcurrent, err = strconv.Atoi(env("YUVA_INGRESS_MAX_CONCURRENT", "8")); err != nil || c.IngressMaxConcurrent < 1 {
+		return c, errors.New("YUVA_INGRESS_MAX_CONCURRENT must be a positive number of messages")
 	}
 	if err := c.loadVAPID(); err != nil {
 		return c, err

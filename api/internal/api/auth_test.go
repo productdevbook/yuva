@@ -141,6 +141,7 @@ type harness struct {
 const (
 	testIngressSecret = "test-ingress-secret"
 	testSESTopic      = "arn:aws:sns:eu-west-1:123456789012:yuva-ses"
+	testAuthservID    = "mx.example.com"
 )
 
 const testAttachmentMaxBytes = 1024
@@ -206,7 +207,7 @@ func newHarnessWith(t *testing.T, configure func(*api.Deps)) *harness {
 			Types:    []string{"text/plain", "image/*"},
 		},
 		Hub:         hub,
-		Ingress:     api.IngressSettings{Secret: testIngressSecret, SESTopicARNs: []string{testSESTopic}},
+		Ingress:     api.IngressSettings{Secret: testIngressSecret, SESTopicARNs: []string{testSESTopic}, AuthservID: testAuthservID},
 		EmailSender: h.smtp,
 		HTTPClient:  &http.Client{Transport: h.web},
 	}

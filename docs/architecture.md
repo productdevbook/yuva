@@ -163,16 +163,25 @@ addresses only when someone opens the confirmation link Yuva mails to it and con
 link (`/email/confirm?token=…`, valid 24 hours, at most 3 per contact and hour, not sent for an
 address a contact already has) opens a page whose button posts the token, so a mail scanner that
 fetches links confirms nothing; the mail names the inbox and never repeats visitor text. Answering
-a reply e-mail does not confirm the address.
+a reply e-mail does not confirm the address. Such an answer (from the typed address, naming the
+visitor's thread, while no contact has the address and DMARC does not fail) joins the visitor's
+conversation as their message, marked `unverified_sender` (its `from` is not one of the contact's
+addresses, computed when read), and links nothing; once the address is confirmed it is the
+contact's and the mark goes away.
 
 ### E-mail
 
 Inbound:
 1. A Cloudflare Email Worker (`edge/`) receives mail for the support addresses and POSTs the raw
-   message with the envelope recipient to `/ingress/email`, signed with HMAC-SHA256 under
-   `YUVA_INGRESS_SECRET` (one per install; the request format is in `edge/README.md`). The
-   timestamp must be within 5 minutes and a Message-ID already stored for the channel is accepted
-   again without a second copy. When the server cannot be reached (5xx, network error, no answer within 20
+   message with the envelope recipient and sender to `/ingress/email`, signed with HMAC-SHA256
+   under `YUVA_INGRESS_SECRET` (one per install; the request format is in `edge/README.md`). The
+   `v2` signature covers the timestamp, both envelope addresses and the body; the older `v1`, which
+   leaves the envelope sender out, is accepted only with `YUVA_INGRESS_ACCEPT_V1`, and then the
+   envelope sender is not trusted (an empty one marks nothing as a delivery report or automatic).
+   The signature headers and the timestamp (within 5 minutes) are checked before the body is read,
+   and the MAC while it is read; at most `YUVA_INGRESS_MAX_CONCURRENT` (8) messages are processed
+   at once per process, more are answered 503. A Message-ID already stored for the channel is
+   accepted again without a second copy. When the server cannot be reached (5xx, network error, no answer within 20
    seconds) the Worker forwards the message to an optional fallback address (`FALLBACK_FORWARD`, a
    verified Email Routing destination) instead of failing the delivery; refusals (4xx) still
    bounce. Any other MTA can do the same; the endpoint is not tied to
@@ -199,7 +208,9 @@ Inbound:
    colleague, a forward) could otherwise write into a customer's conversation. Mail that names the
    thread of another contact's conversation opens a new conversation for its sender, counted
    against the hourly limit, with `related_conversation_id` pointing to the conversation it named;
-   the panel shows that link, and nothing is added to the other conversation. The `Cc` of inbound
+   the panel shows that link, and nothing is added to the other conversation. `From` can be
+   forged, so a reply whose trusted DMARC result fails never joins a conversation that is not
+   flagged spam either: it opens a new spam conversation with `related_conversation_id`. The `Cc` of inbound
    mail is recorded and shown; nobody is copied automatically on replies.
 3. MIME parsing with enmime; visible text with quotes and signatures stripped (our own Go
    implementation in `api/internal/email/reply`, tested against a fixture corpus, which scans only
@@ -226,7 +237,10 @@ Inbound:
    Workers can only refuse a message permanently (`setReject`; a temporary failure is not
    documented), so that refusal is permanent and its text says the message was not accepted.
 5. Spam: the receiving server's verdict (the topmost `Authentication-Results`) is stored and
-   shown; a new conversation whose first mail fails DMARC is flagged `spam`, which keeps it out of
+   shown, and its DMARC result is used only when the header's authserv-id is
+   `YUVA_INGRESS_AUTHSERV_ID` (`mx.cloudflare.net` behind Cloudflare Email Routing); any other
+   header could have come with the message, so without a match DMARC is `unknown`. A new
+   conversation whose first mail fails DMARC is flagged `spam`, which keeps it out of
    lists and counts (they have a spam view) and away from automatic replies; contacts can be
    blocked.
 
@@ -234,7 +248,8 @@ Outbound: SMTP per channel (works with SES, Postmark, any relay); the password i
 encrypted under the master key and never returned, and it is only sent over TLS. The SMTP host is
 resolved once per send and refused when it resolves to a loopback, private or other non-public
 address (unless `YUVA_SMTP_ALLOW_PRIVATE`) or to a link-local or cloud metadata address (always),
-like webhooks, so a channel cannot probe the server's network. A member's reply
+like webhooks, so a channel cannot probe the server's network; a literal address or `localhost`
+that would be refused is already refused when the channel is saved. A member's reply
 in a conversation that started on an e-mail channel goes out through a River job: `From` is the
 channel address (or its per-channel sending address) with its display name, `Reply-To` the channel
 address, `To` the address the conversation's contact last wrote from among the contact's own

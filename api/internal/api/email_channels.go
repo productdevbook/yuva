@@ -7,6 +7,7 @@ import (
 	"strings"
 	"uuid"
 
+	"github.com/productdevbook/yuva/api/internal/email"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
@@ -79,6 +80,9 @@ func (s *Server) emailChannelParams(workspaceID, channelID uuid.UUID, in *oas.Em
 		host := strings.TrimSpace(sm.Host)
 		if host == "" || len(host) > 253 || !hostPattern.MatchString(host) {
 			return out, errValidation("email.smtp.host must be a host name or IP address")
+		}
+		if email.CheckSMTPHost(host, s.smtpPriv) != nil {
+			return out, errValidation("email.smtp.host points to a private, loopback or link-local address")
 		}
 		out.SmtpHost = host
 		if sm.Tls != nil {

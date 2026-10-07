@@ -3119,10 +3119,17 @@ paths:
       summary: Receive an e-mail
       description: |
         Called by the edge Email Worker or any MTA with the raw message and its envelope. The
-        signature is `v1=` and the lowercase hex HMAC-SHA256, keyed with the server's
-        `YUVA_INGRESS_SECRET`, over `<X-Yuva-Timestamp>.<X-Yuva-Envelope-To>.<raw body>`. The
-        timestamp must be within 5 minutes of the server's clock. A message with a Message-ID seen
-        before on the same channel is accepted again without being stored twice.
+        signature is `v2=` and the lowercase hex HMAC-SHA256, keyed with the server's
+        `YUVA_INGRESS_SECRET`, over
+        `<X-Yuva-Timestamp>.<X-Yuva-Envelope-To>.<X-Yuva-Envelope-From>.<raw body>` (an empty
+        envelope sender leaves its place empty). The deprecated `v1=`, over
+        `<X-Yuva-Timestamp>.<X-Yuva-Envelope-To>.<raw body>`, is accepted only when
+        `YUVA_INGRESS_ACCEPT_V1` is set, and then the envelope sender is not trusted (it never marks
+        a delivery report or automatic mail). The headers and the timestamp, which must be within 5
+        minutes of the server's clock, are checked before the body is read. A message with a
+        Message-ID seen before on the same channel is accepted again without being stored twice.
+        At most `YUVA_INGRESS_MAX_CONCURRENT` messages are processed at once; more are answered
+        `503 unavailable`.
 
         The recipient selects the channel: its exact address, then `local@` for `local+tag@`, then
         the domain's catch-all channel (`*@domain`). Volume never bounces mail: a sender over the
@@ -3157,7 +3164,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: "^v1=[0-9a-f]{64}$"
+            pattern: "^v[12]=[0-9a-f]{64}$"
       requestBody:
         required: true
         description: The raw RFC 5322 message, at most 25 MiB.
@@ -5371,7 +5378,7 @@ components:
         Set on messages that came or went by e-mail. `body` and `html` of the message show the new
         text only; `quoted` tells whether quoted history or a signature was hidden, which
         `GET /v1/messages/{id}/email` returns in full.
-      required: [message_id, from, to, quoted, raw, auto, dmarc, has_remote_images]
+      required: [message_id, from, to, quoted, raw, auto, dmarc, has_remote_images, unverified_sender]
       properties:
         message_id:
           type: string
@@ -5399,8 +5406,16 @@ components:
           description: Automatic mail (auto-reply, list, bulk) or our own automatic message.
         dmarc:
           type: string
-          description: The DMARC result from the receiving server's `Authentication-Results`.
+          description: |
+            The DMARC result from the topmost `Authentication-Results`, only when its authserv-id is
+            the server's `YUVA_INGRESS_AUTHSERV_ID`; `unknown` otherwise.
           enum: [pass, fail, none, unknown]
+        unverified_sender:
+          type: boolean
+          description: |
+            An inbound mail whose `from` is not one of the contact's addresses: a reply from the
+            address a widget visitor typed and has not confirmed. It joined the visitor's
+            conversation without linking the address; once the address is confirmed this is false.
         has_remote_images:
           type: boolean
           description: |

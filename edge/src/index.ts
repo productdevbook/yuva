@@ -8,9 +8,15 @@ export const INGRESS_TIMEOUT_MS = 20_000;
 
 const encoder = new TextEncoder();
 
-export async function sign(secret: string, timestamp: string, envelopeTo: string, body: Uint8Array): Promise<string> {
+export async function sign(
+  secret: string,
+  timestamp: string,
+  envelopeTo: string,
+  envelopeFrom: string,
+  body: Uint8Array,
+): Promise<string> {
   const key = await crypto.subtle.importKey("raw", encoder.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
-  const prefix = encoder.encode(`${timestamp}.${envelopeTo}.`);
+  const prefix = encoder.encode(`${timestamp}.${envelopeTo}.${envelopeFrom}.`);
   const data = new Uint8Array(prefix.length + body.length);
   data.set(prefix, 0);
   data.set(body, prefix.length);
@@ -31,7 +37,7 @@ async function deliver(message: ForwardableEmailMessage, env: Env, now: () => nu
 
   const body = new Uint8Array(await new Response(message.raw).arrayBuffer());
   const timestamp = Math.floor(now() / 1000).toString();
-  const signature = await sign(env.INGRESS_SECRET, timestamp, message.to, body);
+  const signature = await sign(env.INGRESS_SECRET, timestamp, message.to, message.from, body);
 
   const res = await fetch(`${env.YUVA_URL.replace(/\/+$/, "")}/ingress/email`, {
     method: "POST",
@@ -40,7 +46,7 @@ async function deliver(message: ForwardableEmailMessage, env: Env, now: () => nu
       "X-Yuva-Envelope-To": message.to,
       "X-Yuva-Envelope-From": message.from,
       "X-Yuva-Timestamp": timestamp,
-      "X-Yuva-Signature": `v1=${signature}`,
+      "X-Yuva-Signature": `v2=${signature}`,
     },
     body,
     signal: AbortSignal.timeout(INGRESS_TIMEOUT_MS),

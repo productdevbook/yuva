@@ -205,6 +205,7 @@ func withEmail(m oas.Message, e *store.ListMessageEmailsRow) oas.Message {
 	out := &oas.MessageEmail{
 		MessageId: e.HeaderMessageID, From: oas.Email(e.FromAddress), To: emailList(e.ToAddresses), Quoted: e.Quoted,
 		Raw: e.HasRaw, Auto: e.Auto, Dmarc: oas.MessageEmailDmarc(e.Dmarc), HasRemoteImages: m.Html != nil && email.HasRemoteImages(*m.Html),
+		UnverifiedSender: e.UnverifiedSender,
 	}
 	if len(e.CcAddresses) > 0 {
 		cc := emailList(e.CcAddresses)

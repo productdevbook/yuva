@@ -37,7 +37,6 @@ type Message struct {
 	Attachments []Attachment
 	Auto        bool
 	AuthResults string
-	DMARC       string
 	Headers     map[string]string
 	Bounce      *Bounce
 }
@@ -86,7 +85,6 @@ func Parse(raw []byte) (*Message, error) {
 	if ar := env.GetHeaderValues("Authentication-Results"); len(ar) > 0 {
 		m.AuthResults = strings.TrimSpace(ar[0])
 	}
-	m.DMARC = DMARCResult(m.AuthResults)
 	m.Auto = Automatic(m.Headers, m.From.Email)
 	m.Attachments = attachments(env)
 	if env.Root != nil {
@@ -136,6 +134,25 @@ func attachments(env *enmime.Envelope) []Attachment {
 		add(p, p.ContentID != "")
 	}
 	return out
+}
+
+// TrustedDMARC is the DMARC verdict of the topmost Authentication-Results only when its authserv-id
+// is authservID, the receiving server Yuva trusts: a header with any other id may have come with the
+// message itself.
+func TrustedDMARC(authResults, authservID string) string {
+	if authservID == "" || !strings.EqualFold(AuthservID(authResults), authservID) {
+		return DMARCUnknown
+	}
+	return DMARCResult(authResults)
+}
+
+// AuthservID is the authserv-id that starts an Authentication-Results value (RFC 8601).
+func AuthservID(authResults string) string {
+	head, _, _ := strings.Cut(authResults, ";")
+	if f := strings.Fields(head); len(f) > 0 {
+		return f[0]
+	}
+	return ""
 }
 
 var dmarcResult = regexp.MustCompile(`(?i)\bdmarc\s*=\s*([a-z]+)`)

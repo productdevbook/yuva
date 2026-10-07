@@ -9,7 +9,6 @@ import (
 
 	"github.com/riverqueue/river"
 
-	"github.com/productdevbook/yuva/api/internal/email"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
@@ -203,10 +202,4 @@ func continuityAddress(ctx context.Context, q *store.Queries, c store.Conversati
 		return "", err
 	}
 	return *ct.TypedEmail, nil
-}
-
-// claimTypedEmail no longer claims anything: a typed address joins its contact only through the
-// confirmation link (serveEmailConfirmPost). Kept until the ingress path stops calling it.
-func (s *Server) claimTypedEmail(context.Context, *store.Queries, *eventBatch, uuid.UUID, uuid.UUID, *email.Message, string) error {
-	return nil
 }

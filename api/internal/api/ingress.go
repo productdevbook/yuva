@@ -25,10 +25,11 @@ import (
 )
 
 const (
-	MaxIngressBytes         = 25 << 20
-	newConversationsPerHour = 20
-	defaultSenderHourlyCap  = 500
-	maxFullHTMLBytes        = 2 << 20
+	MaxIngressBytes          = 25 << 20
+	newConversationsPerHour  = 20
+	defaultSenderHourlyCap   = 500
+	maxFullHTMLBytes         = 2 << 20
+	defaultIngestConcurrency = 8
 )
 
 type IngestError struct {
@@ -42,6 +43,7 @@ func (e *IngestError) Error() string { return string(e.Code) + ": " + e.Reason }
 var (
 	errIngestNotConfigured = &IngestError{http.StatusServiceUnavailable, oas.NotConfigured, "Mail for this server is not set up yet"}
 	errIngestUnavailable   = &IngestError{http.StatusServiceUnavailable, oas.Unavailable, "Temporary failure, try again later"}
+	errIngestBusy          = &IngestError{http.StatusServiceUnavailable, oas.Unavailable, "Busy, try again later"}
 	errIngestTooLarge      = &IngestError{http.StatusRequestEntityTooLarge, oas.TooLarge, "Message too large"}
 	errIngestBadSignature  = &IngestError{http.StatusUnauthorized, oas.BadSignature, "Rejected by recipient server"}
 	errIngestStale         = &IngestError{http.StatusUnauthorized, oas.StaleTimestamp, "Rejected by recipient server"}
@@ -79,7 +81,28 @@ func (s *Server) serveIngressEmail(w http.ResponseWriter, r *http.Request) {
 		writeIngestError(w, errIngestNotConfigured)
 		return
 	}
-	body, err := io.ReadAll(io.LimitReader(r.Body, MaxIngressBytes+1))
+	if r.ContentLength > MaxIngressBytes {
+		writeIngestError(w, errIngestTooLarge)
+		return
+	}
+	to, from := r.Header.Get("X-Yuva-Envelope-To"), r.Header.Get("X-Yuva-Envelope-From")
+	check, err := email.StartIngress(s.ingress.Secret, r.Header.Get("X-Yuva-Timestamp"), to, from, r.Header.Get("X-Yuva-Signature"), s.now(), s.ingress.AcceptV1)
+	switch {
+	case errors.Is(err, email.ErrStaleTimestamp):
+		writeIngestError(w, errIngestStale)
+		return
+	case err != nil:
+		writeIngestError(w, errIngestBadSignature)
+		return
+	}
+	select {
+	case s.ingestQ <- struct{}{}:
+		defer func() { <-s.ingestQ }()
+	default:
+		writeIngestError(w, errIngestBusy)
+		return
+	}
+	body, err := io.ReadAll(io.TeeReader(io.LimitReader(r.Body, MaxIngressBytes+1), check))
 	var tooBig *http.MaxBytesError
 	if errors.As(err, &tooBig) || len(body) > MaxIngressBytes {
 		writeIngestError(w, errIngestTooLarge)
@@ -89,16 +112,11 @@ func (s *Server) serveIngressEmail(w http.ResponseWriter, r *http.Request) {
 		writeIngestError(w, errIngestMalformed)
 		return
 	}
-	to := r.Header.Get("X-Yuva-Envelope-To")
-	switch err := email.VerifyIngress(s.ingress.Secret, r.Header.Get("X-Yuva-Timestamp"), to, r.Header.Get("X-Yuva-Signature"), body, s.now()); {
-	case errors.Is(err, email.ErrStaleTimestamp):
-		writeIngestError(w, errIngestStale)
-		return
-	case err != nil:
+	if err := check.Verify(); err != nil {
 		writeIngestError(w, errIngestBadSignature)
 		return
 	}
-	res, err := s.IngestEmail(r.Context(), to, r.Header.Get("X-Yuva-Envelope-From"), body)
+	res, err := s.IngestEmail(r.Context(), to, from, !check.V1(), body)
 	var ie *IngestError
 	if errors.As(err, &ie) {
 		writeIngestError(w, ie)
@@ -230,8 +248,10 @@ func (s *Server) sanitizeHTML(v string, limit int) *string {
 }
 
 // IngestEmail stores one inbound message for the channel that receives mail at envelopeTo. It is
-// called by /ingress/email after the signature check and by `yuva ingest-email`.
-func (s *Server) IngestEmail(ctx context.Context, envelopeTo, envelopeFrom string, raw []byte) (IngestResult, error) {
+// called by /ingress/email after the signature check and by `yuva ingest-email`. An envelope sender
+// that is not fromTrusted (a deprecated v1 signature does not cover it) never marks the message as
+// a delivery report or automatic.
+func (s *Server) IngestEmail(ctx context.Context, envelopeTo, envelopeFrom string, fromTrusted bool, raw []byte) (IngestResult, error) {
 	if len(raw) > MaxIngressBytes {
 		return IngestResult{}, errIngestTooLarge
 	}
@@ -257,7 +277,8 @@ func (s *Server) IngestEmail(ctx context.Context, envelopeTo, envelopeFrom strin
 	if err := s.refuseBlockedSender(ctx, ch.WorkspaceID, sender); err != nil {
 		return IngestResult{}, err
 	}
-	if m.Bounce != nil && nullSender(envelopeFrom) {
+	nullFrom := fromTrusted && nullSender(envelopeFrom)
+	if m.Bounce != nil && nullFrom {
 		res, handled, err := s.applyDSN(ctx, ch, m)
 		if err != nil || handled {
 			return res, err
@@ -269,7 +290,7 @@ func (s *Server) IngestEmail(ctx context.Context, envelopeTo, envelopeFrom strin
 	if sender == "" {
 		return IngestResult{}, errIngestMalformed
 	}
-	auto := m.Auto || nullSender(envelopeFrom) || ownMessageID(m.MessageID, ch)
+	auto := m.Auto || nullFrom || ownMessageID(m.MessageID, ch)
 	ws := ch.WorkspaceID
 	headerID := m.MessageID
 	if headerID == "" {
@@ -310,16 +331,14 @@ func (s *Server) IngestEmail(ctx context.Context, envelopeTo, envelopeFrom strin
 	if m.AuthResults != "" {
 		authResults = &m.AuthResults
 	}
-	spam := m.DMARC == email.DMARCFail
+	dmarc := email.TrustedDMARC(m.AuthResults, s.ingress.AuthservID)
+	spam := dmarc == email.DMARCFail
 	rawSize := int64(len(raw))
 
 	var res IngestResult
 	err = s.inTx(ctx, ws, func(q *store.Queries, events *eventBatch) error {
 		now := s.now()
-		if err := s.claimTypedEmail(ctx, q, events, ws, ch.InboxID, m, sender); err != nil {
-			return err
-		}
-		contact, err := s.contactForSender(ctx, q, ws, sender, m.From.Name, now)
+		contact, unverified, err := s.contactForMail(ctx, q, ch, m, sender, spam, now)
 		if err != nil {
 			return err
 		}
@@ -353,14 +372,14 @@ func (s *Server) IngestEmail(ctx context.Context, envelopeTo, envelopeFrom strin
 		summary := store.ListMessageEmailsRow{
 			MessageID: msg.ID, Direction: direction, HeaderMessageID: headerID, FromAddress: sender,
 			ToAddresses: normalizedAddressList(m.To), CcAddresses: normalizedAddressList(m.Cc), Subject: subject,
-			Quoted: textQuoted || htmlQuoted, HasRaw: true, Auto: auto, Dmarc: m.DMARC,
+			Quoted: textQuoted || htmlQuoted, HasRaw: true, Auto: auto, Dmarc: dmarc, UnverifiedSender: unverified,
 		}
 		if err := q.CreateMessageEmail(ctx, store.CreateMessageEmailParams{
 			WorkspaceID: ws, MessageID: msg.ID, ConversationID: conv.ID, ChannelID: &ch.ChannelID, Direction: direction,
 			HeaderMessageID: headerID, InReplyTo: inReplyTo, ReferencesIds: refs, FromAddress: sender,
 			ToAddresses: summary.ToAddresses, CcAddresses: summary.CcAddresses, Subject: subject, FullText: m.Text,
 			FullHtml: s.sanitizeHTML(m.HTML, maxFullHTMLBytes), Quoted: summary.Quoted, Headers: headers, RawKey: &rawKey,
-			RawSize: &rawSize, AuthenticationResults: authResults, Dmarc: m.DMARC, Auto: auto, CreatedAt: now,
+			RawSize: &rawSize, AuthenticationResults: authResults, Dmarc: dmarc, Auto: auto, CreatedAt: now,
 		}); err != nil {
 			return err
 		}
@@ -457,39 +476,83 @@ func (s *Server) contactForSender(ctx context.Context, q *store.Queries, ws uuid
 	return contactRow(r), nil
 }
 
-// threadFor finds the conversation a reply belongs to, by the stored Message-IDs it names and then
-// by the conversation token inside our own Message-IDs, or starts a new one. A thread that belongs
-// to another contact is never joined: the sender gets its own conversation that points to it.
-func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventBatch, ch store.FindEmailChannelByAddressRow, m *email.Message, contactID uuid.UUID, subject string, spam bool, address *string, now time.Time) (store.Conversation, bool, error) {
+// threadOf is the conversation of the inbox that the mail's In-Reply-To and References name, by
+// stored Message-IDs and then by the conversation token inside our own Message-IDs, preferring
+// one of contactID.
+func threadOf(ctx context.Context, q *store.Queries, ch store.FindEmailChannelByAddressRow, m *email.Message, contactID uuid.UUID) (*store.Conversation, error) {
 	ws := ch.WorkspaceID
 	ids := slices.Concat(m.InReplyTo, m.References)
-	var found *store.Conversation
-	if len(ids) > 0 {
-		c, err := q.FindConversationByHeaders(ctx, store.FindConversationByHeadersParams{WorkspaceID: ws, InboxID: ch.InboxID, Ids: ids, ContactID: contactID})
-		if err == nil {
-			found = &c
-		} else if !store.IsNotFound(err) {
+	if len(ids) == 0 {
+		return nil, nil
+	}
+	c, err := q.FindConversationByHeaders(ctx, store.FindConversationByHeadersParams{WorkspaceID: ws, InboxID: ch.InboxID, Ids: ids, ContactID: contactID})
+	if err == nil {
+		return &c, nil
+	}
+	if !store.IsNotFound(err) {
+		return nil, err
+	}
+	var tokens []string
+	for _, id := range ids {
+		if t, _, ok := email.TokenFromID(id); ok {
+			tokens = append(tokens, t)
+		}
+	}
+	if len(tokens) == 0 {
+		return nil, nil
+	}
+	c, err = q.FindConversationByEmailToken(ctx, store.FindConversationByEmailTokenParams{WorkspaceID: ws, InboxID: ch.InboxID, Tokens: tokens, ContactID: contactID})
+	if store.IsNotFound(err) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &c, nil
+}
+
+// contactForMail is the contact the mail is from: the contact with the sender's address, else the
+// contact of the thread it answers when that contact typed the address in the widget and has not
+// confirmed it (the message joins their conversation from an unverified address and links
+// nothing; confirming the address later makes it theirs), else a new contact. Mail that fails
+// DMARC never takes the typed-address path.
+func (s *Server) contactForMail(ctx context.Context, q *store.Queries, ch store.FindEmailChannelByAddressRow, m *email.Message, sender string, spam bool, now time.Time) (contactRow, bool, error) {
+	ws := ch.WorkspaceID
+	if _, err := q.GetContactIDByEmail(ctx, store.GetContactIDByEmailParams{WorkspaceID: ws, Email: sender}); err == nil || !store.IsNotFound(err) || spam {
+		c, err := s.contactForSender(ctx, q, ws, sender, m.From.Name, now)
+		return c, false, err
+	}
+	thread, err := threadOf(ctx, q, ch, m, uuid.Nil())
+	if err != nil {
+		return contactRow{}, false, err
+	}
+	if thread != nil {
+		c, err := q.GetContact(ctx, store.GetContactParams{WorkspaceID: ws, ID: thread.ContactID})
+		if err != nil {
 			return c, false, err
 		}
+		if c.TypedEmail != nil && strings.EqualFold(*c.TypedEmail, sender) {
+			if c.Blocked {
+				return c, false, errIngestBlocked
+			}
+			return c, true, nil
+		}
 	}
-	if found == nil {
-		var tokens []string
-		for _, id := range ids {
-			if t, _, ok := email.TokenFromID(id); ok {
-				tokens = append(tokens, t)
-			}
-		}
-		if len(tokens) > 0 {
-			c, err := q.FindConversationByEmailToken(ctx, store.FindConversationByEmailTokenParams{WorkspaceID: ws, InboxID: ch.InboxID, Tokens: tokens, ContactID: contactID})
-			if err == nil {
-				found = &c
-			} else if !store.IsNotFound(err) {
-				return c, false, err
-			}
-		}
+	c, err := s.contactForSender(ctx, q, ws, sender, m.From.Name, now)
+	return c, false, err
+}
+
+// threadFor finds the conversation a reply belongs to (threadOf), or starts a new one. A thread
+// that belongs to another contact is never joined, and mail that fails DMARC never joins a
+// conversation not flagged spam: the sender gets its own conversation that points to it.
+func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventBatch, ch store.FindEmailChannelByAddressRow, m *email.Message, contactID uuid.UUID, subject string, spam bool, address *string, now time.Time) (store.Conversation, bool, error) {
+	ws := ch.WorkspaceID
+	found, err := threadOf(ctx, q, ch, m, contactID)
+	if err != nil {
+		return store.Conversation{}, false, err
 	}
 	var related *uuid.UUID
-	if found != nil && found.ContactID != contactID {
+	if found != nil && (found.ContactID != contactID || (spam && !found.Spam)) {
 		related = &found.ID
 		found = nil
 	}
@@ -505,7 +568,9 @@ func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventB
 			if err != nil {
 				return latest, false, err
 			}
-			found = &latest
+			if !spam || latest.Spam {
+				found = &latest
+			}
 		}
 	}
 	if found != nil {
