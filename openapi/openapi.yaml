@@ -49,6 +49,20 @@ tags:
     description: The current workspace, its members and invites.
   - name: api-keys
     description: Workspace API keys for host backends and scripts.
+  - name: inboxes
+    description: Inboxes (one per product or brand) and who may see them.
+  - name: channels
+    description: How messages reach an inbox. Settings only for now.
+  - name: contacts
+    description: The people writing in.
+  - name: conversations
+    description: Threads between a contact and an inbox.
+  - name: messages
+    description: Messages, notes, events and their attachments.
+  - name: labels
+    description: Workspace labels for conversations.
+  - name: canned-replies
+    description: Saved answers members insert into replies.
 paths:
   /healthz:
     get:
@@ -566,6 +580,970 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+  /v1/inboxes:
+    get:
+      operationId: listInboxes
+      summary: List inboxes
+      description: |
+        Owners, admins and API keys see every inbox; agents see the inboxes they were given access
+        to.
+      tags: [inboxes]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The visible inboxes.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InboxList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createInbox
+      summary: Create an inbox
+      description: |
+        Owners and admins only, with a member session. A new identity secret is generated; it is
+        returned here and on rotation only, and stored encrypted.
+      tags: [inboxes]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InboxCreate"
+      responses:
+        "201":
+          description: The inbox and its identity secret.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InboxCreated"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /v1/inboxes/{inboxId}:
+    get:
+      operationId: getInbox
+      summary: Get an inbox
+      description: An inbox the caller cannot see answers `404`.
+      tags: [inboxes]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InboxId"
+      responses:
+        "200":
+          description: The inbox.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Inbox"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    patch:
+      operationId: updateInbox
+      summary: Update an inbox
+      description: Owners and admins only, with a member session.
+      tags: [inboxes]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InboxId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InboxUpdate"
+      responses:
+        "200":
+          description: The updated inbox.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Inbox"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteInbox
+      summary: Delete an inbox
+      description: |
+        Owners and admins only, with a member session. Deletes its channels, conversations,
+        messages and attachments.
+      tags: [inboxes]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InboxId"
+      responses:
+        "204":
+          description: Deleted.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/inboxes/{inboxId}/identity-secret:
+    post:
+      operationId: rotateInboxIdentitySecret
+      summary: Rotate the identity secret
+      description: |
+        Owners and admins only, with a member session. Replaces the inbox's identity secret, which
+        host backends use to sign identity tokens; tokens signed with the old secret stop working.
+      tags: [inboxes]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InboxId"
+      responses:
+        "200":
+          description: The new secret. It is not shown again.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IdentitySecret"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/inboxes/{inboxId}/members:
+    get:
+      operationId: listInboxMembers
+      summary: List members with access
+      description: |
+        Members granted access to this inbox. Owners and admins see every inbox without a grant and
+        are not listed unless granted.
+      tags: [inboxes]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InboxId"
+      responses:
+        "200":
+          description: The members with access.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemberList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/inboxes/{inboxId}/members/{memberId}:
+    put:
+      operationId: grantInboxAccess
+      summary: Give a member access
+      description: Owners and admins only, with a member session. Granting twice is a no-op.
+      tags: [inboxes]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InboxId"
+        - $ref: "#/components/parameters/MemberId"
+      responses:
+        "204":
+          description: The member has access.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: revokeInboxAccess
+      summary: Take a member's access away
+      description: Owners and admins only, with a member session.
+      tags: [inboxes]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InboxId"
+        - $ref: "#/components/parameters/MemberId"
+      responses:
+        "204":
+          description: The access is gone.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/inboxes/{inboxId}/channels:
+    get:
+      operationId: listChannels
+      summary: List an inbox's channels
+      tags: [channels]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InboxId"
+      responses:
+        "200":
+          description: The channels.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChannelList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createChannel
+      summary: Add a channel
+      description: |
+        Owners and admins only, with a member session. Settings are stored as given; the channels
+        do not send or receive anything yet.
+      tags: [channels]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InboxId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChannelCreate"
+      responses:
+        "201":
+          description: The channel.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Channel"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/channels/{channelId}:
+    get:
+      operationId: getChannel
+      summary: Get a channel
+      tags: [channels]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ChannelId"
+      responses:
+        "200":
+          description: The channel.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Channel"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    patch:
+      operationId: updateChannel
+      summary: Update a channel
+      description: Owners and admins only, with a member session.
+      tags: [channels]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ChannelId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChannelUpdate"
+      responses:
+        "200":
+          description: The updated channel.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Channel"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteChannel
+      summary: Remove a channel
+      description: |
+        Owners and admins only, with a member session. Conversations that started on it keep
+        their messages and lose their `channel_id`.
+      tags: [channels]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ChannelId"
+      responses:
+        "204":
+          description: Removed.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/contacts:
+    get:
+      operationId: listContacts
+      summary: List contacts
+      description: Newest first. `q` searches names, e-mail addresses and external ids.
+      tags: [contacts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/Search"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: A page of contacts.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactPage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createContact
+      summary: Create a contact
+      tags: [contacts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactCreate"
+      responses:
+        "201":
+          description: The contact.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Contact"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /v1/contacts/lookup:
+    get:
+      operationId: lookupContact
+      summary: Find a contact by external id
+      description: The contact a host app knows by `external_id` in the given inbox.
+      tags: [contacts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - name: inbox_id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: external_id
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 200
+      responses:
+        "200":
+          description: The contact.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Contact"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/contacts/{contactId}:
+    get:
+      operationId: getContact
+      summary: Get a contact
+      tags: [contacts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ContactId"
+      responses:
+        "200":
+          description: The contact.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Contact"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    patch:
+      operationId: updateContact
+      summary: Update a contact
+      description: "`emails`, `external_ids` and `attributes` replace the stored values when given."
+      tags: [contacts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ContactId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactUpdate"
+      responses:
+        "200":
+          description: The updated contact.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Contact"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteContact
+      summary: Delete a contact
+      description: |
+        Owners, admins and API keys. Deletes the contact with all their conversations, messages
+        and attachments.
+      tags: [contacts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ContactId"
+      responses:
+        "204":
+          description: Deleted.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/conversations:
+    get:
+      operationId: listConversations
+      summary: List conversations
+      description: |
+        Most recent activity (message or note) first, in the inboxes the caller can see. `q` is a
+        full-text search over the subject, the messages and notes, and the contact.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - name: inbox_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: status
+          in: query
+          schema:
+            $ref: "#/components/schemas/ConversationStatus"
+        - name: assignee
+          in: query
+          description: A member id, `me` (member sessions only) or `unassigned`.
+          schema:
+            type: string
+            examples: [me]
+        - name: label_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - $ref: "#/components/parameters/Search"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: A page of conversations.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConversationPage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createConversation
+      summary: Start a conversation
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConversationCreate"
+      responses:
+        "201":
+          description: The conversation.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/conversations/{conversationId}:
+    get:
+      operationId: getConversation
+      summary: Get a conversation
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+      responses:
+        "200":
+          description: The conversation.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    patch:
+      operationId: updateConversation
+      summary: Update a conversation
+      description: |
+        Changes to the assignee, the status and the labels are recorded as `event` messages.
+        `snooze_until` is required with status `snoozed` and cleared by any other status.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConversationUpdate"
+      responses:
+        "200":
+          description: The updated conversation.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/conversations/{conversationId}/messages:
+    get:
+      operationId: listMessages
+      summary: List a conversation's messages
+      description: Oldest first, including notes and events.
+      tags: [messages]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: A page of messages.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessagePage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createMessage
+      summary: Post a message or a note
+      description: |
+        Members post replies (`message`, direction `out`) and notes. An `in` message is written on
+        behalf of the conversation's contact and is allowed with an API key only. Messages and notes
+        posted with an API key have a `system` author unless they are `in`.
+
+        Send `multipart/form-data` to attach files: the fields of `MessageCreate` as form fields
+        and up to 10 `files` parts. Each file must be within the server's size limit and have an
+        allowed content type.
+
+        A repeated `client_id` in the same conversation returns the stored message with `200`
+        instead of writing it again.
+      tags: [messages]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MessageCreate"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/MessageCreateMultipart"
+      responses:
+        "200":
+          description: The message stored earlier with this `client_id`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "201":
+          description: The message.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "413":
+          $ref: "#/components/responses/Problem"
+        "415":
+          $ref: "#/components/responses/Problem"
+  /v1/attachments/{attachmentId}:
+    get:
+      operationId: downloadAttachment
+      summary: Download an attachment
+      description: "Always served as a download (`Content-Disposition: attachment`)."
+      tags: [messages]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/AttachmentId"
+      responses:
+        "200":
+          description: The file.
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+            X-Content-Type-Options:
+              schema:
+                type: string
+                enum: [nosniff]
+          content:
+            "*/*":
+              schema:
+                type: string
+                format: binary
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/labels:
+    get:
+      operationId: listLabels
+      summary: List labels
+      tags: [labels]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The workspace's labels.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LabelList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createLabel
+      summary: Create a label
+      description: Owners and admins only, with a member session.
+      tags: [labels]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LabelCreate"
+      responses:
+        "201":
+          description: The label.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Label"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /v1/labels/{labelId}:
+    patch:
+      operationId: updateLabel
+      summary: Update a label
+      description: Owners and admins only, with a member session.
+      tags: [labels]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/LabelId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LabelUpdate"
+      responses:
+        "200":
+          description: The updated label.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Label"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteLabel
+      summary: Delete a label
+      description: Owners and admins only, with a member session. Removes it from every conversation.
+      tags: [labels]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/LabelId"
+      responses:
+        "204":
+          description: Deleted.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/canned-replies:
+    get:
+      operationId: listCannedReplies
+      summary: List canned replies
+      tags: [canned-replies]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The workspace's canned replies, by shortcut.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CannedReplyList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createCannedReply
+      summary: Create a canned reply
+      description: Owners and admins only, with a member session.
+      tags: [canned-replies]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CannedReplyCreate"
+      responses:
+        "201":
+          description: The canned reply.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CannedReply"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /v1/canned-replies/{cannedReplyId}:
+    patch:
+      operationId: updateCannedReply
+      summary: Update a canned reply
+      description: Owners and admins only, with a member session.
+      tags: [canned-replies]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/CannedReplyId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CannedReplyUpdate"
+      responses:
+        "200":
+          description: The updated canned reply.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CannedReply"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteCannedReply
+      summary: Delete a canned reply
+      description: Owners and admins only, with a member session.
+      tags: [canned-replies]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/CannedReplyId"
+      responses:
+        "204":
+          description: Deleted.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/usage:
+    get:
+      operationId: getUsage
+      summary: Usage per month
+      description: |
+        Counters of the workspace per calendar month (UTC), newest first: conversations and
+        messages (including notes, not events) created, and attachment bytes uploaded.
+      tags: [workspace]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The counters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsageList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
 components:
   securitySchemes:
     session:
@@ -614,6 +1592,79 @@ components:
       schema:
         type: string
         format: uuid
+    InboxId:
+      name: inboxId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ChannelId:
+      name: channelId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ContactId:
+      name: contactId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ConversationId:
+      name: conversationId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    AttachmentId:
+      name: attachmentId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    LabelId:
+      name: labelId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    CannedReplyId:
+      name: cannedReplyId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    Search:
+      name: q
+      in: query
+      description: Full-text search (Postgres `simple` configuration, `websearch` syntax).
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 200
+    Cursor:
+      name: cursor
+      in: query
+      description: The `next_cursor` of the previous page.
+      schema:
+        type: string
+        maxLength: 200
+    Limit:
+      name: limit
+      in: query
+      description: Page size, 1 to 100; 25 by default.
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 100
   responses:
     Problem:
       description: An error.
@@ -902,6 +1953,749 @@ components:
           type: object
           additionalProperties: true
           description: The `PublicKeyCredential` in its JSON form (`credential.toJSON()`).
+    Slug:
+      type: string
+      pattern: "^[a-z0-9]+(-[a-z0-9]+)*$"
+      minLength: 1
+      maxLength: 64
+      examples: [acme-app]
+    LanguageTag:
+      type: string
+      description: A BCP 47 language tag.
+      pattern: "^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$"
+      maxLength: 35
+      examples: [en, tr]
+    InboxMode:
+      type: string
+      description: |
+        `live` shows who is available, typing and read receipts; `async` shows the expected reply
+        time instead.
+      enum: [live, async]
+    Weekday:
+      type: string
+      enum: [mon, tue, wed, thu, fri, sat, sun]
+    BusinessHoursInterval:
+      type: object
+      required: [day, start, end]
+      properties:
+        day:
+          $ref: "#/components/schemas/Weekday"
+        start:
+          type: string
+          description: Local time in the inbox's timezone, `HH:MM`.
+          pattern: "^([01][0-9]|2[0-3]):[0-5][0-9]$"
+          examples: ["09:00"]
+        end:
+          type: string
+          description: Local time, `HH:MM` or `24:00`; after `start`.
+          pattern: "^(([01][0-9]|2[0-3]):[0-5][0-9]|24:00)$"
+          examples: ["17:30"]
+    BusinessHours:
+      type: object
+      description: When `enabled` is false the inbox counts as always open.
+      required: [enabled, intervals]
+      properties:
+        enabled:
+          type: boolean
+        intervals:
+          type: array
+          maxItems: 50
+          items:
+            $ref: "#/components/schemas/BusinessHoursInterval"
+    InboxBranding:
+      type: object
+      properties:
+        color:
+          type: string
+          pattern: "^#[0-9a-fA-F]{6}$"
+          examples: ["#2563eb"]
+        logo_url:
+          type: string
+          format: uri
+          maxLength: 2000
+        greeting:
+          type: string
+          maxLength: 500
+    Inbox:
+      type: object
+      required: [id, name, slug, branding, default_locale, timezone, mode, business_hours, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        slug:
+          $ref: "#/components/schemas/Slug"
+        branding:
+          $ref: "#/components/schemas/InboxBranding"
+        default_locale:
+          $ref: "#/components/schemas/LanguageTag"
+        timezone:
+          type: string
+          description: An IANA time zone name.
+          examples: [Europe/Istanbul]
+        mode:
+          $ref: "#/components/schemas/InboxMode"
+        expected_reply_minutes:
+          type: integer
+          format: int32
+          description: Shown to contacts in `async` mode; absent when not set.
+        business_hours:
+          $ref: "#/components/schemas/BusinessHours"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    InboxCreate:
+      type: object
+      required: [name, slug]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        slug:
+          $ref: "#/components/schemas/Slug"
+        branding:
+          $ref: "#/components/schemas/InboxBranding"
+        default_locale:
+          $ref: "#/components/schemas/LanguageTag"
+        timezone:
+          type: string
+          maxLength: 64
+          description: Defaults to `UTC`.
+        mode:
+          $ref: "#/components/schemas/InboxMode"
+        expected_reply_minutes:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 43200
+        business_hours:
+          $ref: "#/components/schemas/BusinessHours"
+    InboxUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        slug:
+          $ref: "#/components/schemas/Slug"
+        branding:
+          $ref: "#/components/schemas/InboxBranding"
+        default_locale:
+          $ref: "#/components/schemas/LanguageTag"
+        timezone:
+          type: string
+          maxLength: 64
+        mode:
+          $ref: "#/components/schemas/InboxMode"
+        expected_reply_minutes:
+          type: [integer, "null"]
+          format: int32
+          minimum: 1
+          maximum: 43200
+          description: "`null` clears it."
+        business_hours:
+          $ref: "#/components/schemas/BusinessHours"
+    InboxCreated:
+      type: object
+      required: [inbox, identity_secret]
+      properties:
+        inbox:
+          $ref: "#/components/schemas/Inbox"
+        identity_secret:
+          type: string
+          description: Signs identity tokens (HS256). It is not shown again.
+    IdentitySecret:
+      type: object
+      required: [identity_secret]
+      properties:
+        identity_secret:
+          type: string
+          description: Signs identity tokens (HS256). It is not shown again.
+    InboxList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Inbox"
+    ChannelKind:
+      type: string
+      description: |
+        `email`, `chat` (web widget), `app` (mobile SDKs) or `api` (server to server).
+      enum: [email, chat, app, api]
+    ChannelSettings:
+      type: object
+      additionalProperties: true
+      description: Kind-specific settings, stored as given. Not acted on yet.
+    Channel:
+      type: object
+      required: [id, inbox_id, kind, name, settings, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        kind:
+          $ref: "#/components/schemas/ChannelKind"
+        name:
+          type: string
+        settings:
+          $ref: "#/components/schemas/ChannelSettings"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ChannelCreate:
+      type: object
+      required: [kind, name]
+      properties:
+        kind:
+          $ref: "#/components/schemas/ChannelKind"
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        settings:
+          $ref: "#/components/schemas/ChannelSettings"
+    ChannelUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        settings:
+          $ref: "#/components/schemas/ChannelSettings"
+    ChannelList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Channel"
+    ExternalId:
+      type: object
+      required: [inbox_id, external_id]
+      properties:
+        inbox_id:
+          type: string
+          format: uuid
+        external_id:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: The host app's user id.
+    Attributes:
+      type: object
+      additionalProperties: true
+      description: Free-form data about the contact (plan, app version, …), at most 16 KiB.
+    Contact:
+      type: object
+      required: [id, name, emails, external_ids, attributes, blocked, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        emails:
+          type: array
+          items:
+            $ref: "#/components/schemas/Email"
+        external_ids:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExternalId"
+        attributes:
+          $ref: "#/components/schemas/Attributes"
+        blocked:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ContactCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 200
+        emails:
+          type: array
+          maxItems: 20
+          items:
+            $ref: "#/components/schemas/Email"
+        external_ids:
+          type: array
+          maxItems: 20
+          items:
+            $ref: "#/components/schemas/ExternalId"
+        attributes:
+          $ref: "#/components/schemas/Attributes"
+        blocked:
+          type: boolean
+    ContactUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          maxLength: 200
+        emails:
+          type: array
+          maxItems: 20
+          items:
+            $ref: "#/components/schemas/Email"
+        external_ids:
+          type: array
+          maxItems: 20
+          items:
+            $ref: "#/components/schemas/ExternalId"
+        attributes:
+          $ref: "#/components/schemas/Attributes"
+        blocked:
+          type: boolean
+    ContactPage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Contact"
+        next_cursor:
+          type: string
+          description: Absent on the last page.
+    ConversationStatus:
+      type: string
+      enum: [open, pending, snoozed, closed]
+    Priority:
+      type: string
+      enum: [low, normal, high, urgent]
+    Conversation:
+      type: object
+      required: [id, inbox_id, contact_id, subject, status, priority, labels, last_activity_at, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        contact_id:
+          type: string
+          format: uuid
+        channel_id:
+          type: string
+          format: uuid
+          description: The channel it started on; absent when unknown or removed.
+        subject:
+          type: string
+        status:
+          $ref: "#/components/schemas/ConversationStatus"
+        snooze_until:
+          type: string
+          format: date-time
+        priority:
+          $ref: "#/components/schemas/Priority"
+        assignee_id:
+          type: string
+          format: uuid
+          description: The assigned member; absent when unassigned.
+        labels:
+          type: array
+          description: Label ids.
+          items:
+            type: string
+            format: uuid
+        last_message_at:
+          type: string
+          format: date-time
+          description: The last `message` to or from the contact.
+        last_activity_at:
+          type: string
+          format: date-time
+          description: The last message or note, or the creation time.
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ConversationCreate:
+      type: object
+      required: [inbox_id, contact_id]
+      properties:
+        inbox_id:
+          type: string
+          format: uuid
+        contact_id:
+          type: string
+          format: uuid
+        channel_id:
+          type: string
+          format: uuid
+          description: A channel of the same inbox.
+        subject:
+          type: string
+          maxLength: 500
+        priority:
+          $ref: "#/components/schemas/Priority"
+        assignee_id:
+          type: string
+          format: uuid
+          description: A member with access to the inbox.
+        labels:
+          type: array
+          maxItems: 50
+          items:
+            type: string
+            format: uuid
+    ConversationUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        subject:
+          type: string
+          maxLength: 500
+        status:
+          $ref: "#/components/schemas/ConversationStatus"
+        snooze_until:
+          type: string
+          format: date-time
+        priority:
+          $ref: "#/components/schemas/Priority"
+        assignee_id:
+          type: [string, "null"]
+          format: uuid
+          description: A member with access to the inbox; `null` unassigns.
+        labels:
+          type: array
+          maxItems: 50
+          description: Replaces the labels.
+          items:
+            type: string
+            format: uuid
+    ConversationPage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Conversation"
+        next_cursor:
+          type: string
+          description: Absent on the last page.
+    MessageKind:
+      type: string
+      description: |
+        `message` goes to or comes from the contact, `note` is for members only, `event` records a
+        change (assignment, status, labels).
+      enum: [message, note, event]
+    Direction:
+      type: string
+      enum: [in, out]
+    AuthorType:
+      type: string
+      enum: [contact, member, system]
+    MessageAuthor:
+      type: object
+      required: [type]
+      properties:
+        type:
+          $ref: "#/components/schemas/AuthorType"
+        member_id:
+          type: string
+          format: uuid
+          description: Set for `member`; absent when that member was removed.
+        contact_id:
+          type: string
+          format: uuid
+          description: Set for `contact`.
+    EventType:
+      type: string
+      enum: [assigned, unassigned, status_changed, labels_changed]
+    MessageEvent:
+      type: object
+      required: [type]
+      properties:
+        type:
+          $ref: "#/components/schemas/EventType"
+        assignee_id:
+          type: string
+          format: uuid
+          description: The new assignee (`assigned`).
+        previous_assignee_id:
+          type: string
+          format: uuid
+          description: The previous assignee (`assigned`, `unassigned`).
+        status:
+          $ref: "#/components/schemas/ConversationStatus"
+        previous_status:
+          $ref: "#/components/schemas/ConversationStatus"
+        added_labels:
+          type: array
+          items:
+            type: string
+            format: uuid
+        removed_labels:
+          type: array
+          items:
+            type: string
+            format: uuid
+    Attachment:
+      type: object
+      required: [id, filename, content_type, size, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Download it from `/v1/attachments/{id}`.
+        filename:
+          type: string
+        content_type:
+          type: string
+        size:
+          type: integer
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+    Message:
+      type: object
+      required: [id, conversation_id, kind, author, body, attachments, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        kind:
+          $ref: "#/components/schemas/MessageKind"
+        direction:
+          $ref: "#/components/schemas/Direction"
+        author:
+          $ref: "#/components/schemas/MessageAuthor"
+        body:
+          type: string
+          description: Plain text.
+        html:
+          type: string
+          description: Sanitized HTML, when the message has an HTML form.
+        client_id:
+          type: string
+        event:
+          $ref: "#/components/schemas/MessageEvent"
+        attachments:
+          type: array
+          items:
+            $ref: "#/components/schemas/Attachment"
+        created_at:
+          type: string
+          format: date-time
+    MessageCreate:
+      type: object
+      required: [kind]
+      properties:
+        kind:
+          type: string
+          enum: [message, note]
+        direction:
+          $ref: "#/components/schemas/Direction"
+        body:
+          type: string
+          maxLength: 65536
+          description: Required unless files are attached.
+        html:
+          type: string
+          maxLength: 262144
+          description: Sanitized before it is stored.
+        client_id:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Makes the request idempotent within the conversation.
+    MessageCreateMultipart:
+      type: object
+      required: [kind]
+      properties:
+        kind:
+          type: string
+          enum: [message, note]
+        direction:
+          $ref: "#/components/schemas/Direction"
+        body:
+          type: string
+          maxLength: 65536
+        html:
+          type: string
+          maxLength: 262144
+        client_id:
+          type: string
+          minLength: 1
+          maxLength: 200
+        files:
+          type: array
+          maxItems: 10
+          items:
+            type: string
+            format: binary
+    MessagePage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Message"
+        next_cursor:
+          type: string
+          description: Absent on the last page.
+    Label:
+      type: object
+      required: [id, name, color, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        color:
+          type: string
+          pattern: "^#[0-9a-fA-F]{6}$"
+        created_at:
+          type: string
+          format: date-time
+    LabelCreate:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 64
+        color:
+          type: string
+          pattern: "^#[0-9a-fA-F]{6}$"
+          description: Defaults to `#6b7280`.
+    LabelUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 64
+        color:
+          type: string
+          pattern: "^#[0-9a-fA-F]{6}$"
+    LabelList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Label"
+    CannedReply:
+      type: object
+      required: [id, shortcut, title, body, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        shortcut:
+          $ref: "#/components/schemas/Slug"
+        title:
+          type: string
+        body:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CannedReplyCreate:
+      type: object
+      required: [shortcut, title, body]
+      properties:
+        shortcut:
+          $ref: "#/components/schemas/Slug"
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        body:
+          type: string
+          minLength: 1
+          maxLength: 65536
+    CannedReplyUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        shortcut:
+          $ref: "#/components/schemas/Slug"
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        body:
+          type: string
+          minLength: 1
+          maxLength: 65536
+    CannedReplyList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CannedReply"
+    UsageMonth:
+      type: object
+      required: [month, conversations, messages, attachment_bytes]
+      properties:
+        month:
+          type: string
+          pattern: "^[0-9]{4}-[0-9]{2}$"
+          examples: ["2026-10"]
+        conversations:
+          type: integer
+          format: int64
+        messages:
+          type: integer
+          format: int64
+        attachment_bytes:
+          type: integer
+          format: int64
+    UsageList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/UsageMonth"
     Health:
       type: object
       required: [status]

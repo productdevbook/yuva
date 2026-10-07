@@ -9,10 +9,13 @@ import (
 	"time"
 
 	"github.com/go-webauthn/webauthn/webauthn"
+	"github.com/microcosm-cc/bluemonday"
 
 	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/metrics"
 	"github.com/productdevbook/yuva/api/internal/oas"
+	"github.com/productdevbook/yuva/api/internal/secret"
+	"github.com/productdevbook/yuva/api/internal/storage"
 	"github.com/productdevbook/yuva/api/internal/store"
 	"github.com/productdevbook/yuva/api/internal/ui"
 )
@@ -31,6 +34,10 @@ type Server struct {
 	webauthn *webauthn.WebAuthn
 	auth     AuthSettings
 	now      func() time.Time
+	secrets  *secret.Key
+	objects  storage.Storage
+	attach   AttachmentSettings
+	sanitize *bluemonday.Policy
 }
 
 type Deps struct {
@@ -41,6 +48,15 @@ type Deps struct {
 	WebAuthn *webauthn.WebAuthn
 	Auth     AuthSettings
 	Now      func() time.Time
+
+	Secrets     *secret.Key
+	Storage     storage.Storage
+	Attachments AttachmentSettings
+}
+
+type AttachmentSettings struct {
+	MaxBytes int64
+	Types    []string
 }
 
 type AuthSettings struct {
@@ -54,7 +70,10 @@ func New(d Deps) *Server {
 	if now == nil {
 		now = time.Now
 	}
-	return &Server{log: d.Log, st: d.Store, version: d.Version, mailer: d.Mailer, webauthn: d.WebAuthn, auth: d.Auth, now: now}
+	return &Server{
+		log: d.Log, st: d.Store, version: d.Version, mailer: d.Mailer, webauthn: d.WebAuthn, auth: d.Auth, now: now,
+		secrets: d.Secrets, objects: d.Storage, attach: d.Attachments, sanitize: bluemonday.UGCPolicy(),
+	}
 }
 
 var _ oas.StrictServerInterface = (*Server)(nil)
@@ -79,7 +98,7 @@ func (s *Server) Handler() http.Handler {
 		}
 		panel.ServeHTTP(w, r)
 	})
-	return s.recoverer(s.logRequests(limitBody(mux)))
+	return s.recoverer(s.logRequests(s.limitBody(mux)))
 }
 
 func isAPIPath(p string) bool {
@@ -110,9 +129,13 @@ func (s *Server) writeError(w http.ResponseWriter, r *http.Request, err error) {
 	writeProblem(w, errInternal)
 }
 
-func limitBody(next http.Handler) http.Handler {
+func (s *Server) limitBody(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		r.Body = http.MaxBytesReader(w, r.Body, maxBodyBytes)
+		limit := int64(maxBodyBytes)
+		if strings.HasPrefix(strings.ToLower(r.Header.Get("Content-Type")), "multipart/form-data") {
+			limit += s.attach.MaxBytes * maxAttachmentsPerMessage
+		}
+		r.Body = http.MaxBytesReader(w, r.Body, limit)
 		next.ServeHTTP(w, r)
 	})
 }

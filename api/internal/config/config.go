@@ -24,7 +24,31 @@ type Config struct {
 	WebAuthnOrigins []string
 
 	SMTP SMTP
+
+	MasterKey string
+
+	Storage     Storage
+	Attachments Attachments
 }
+
+type Storage struct {
+	Driver            string
+	Dir               string
+	S3Endpoint        string
+	S3Region          string
+	S3Bucket          string
+	S3AccessKeyID     string
+	S3SecretAccessKey string
+	S3PathStyle       bool
+}
+
+type Attachments struct {
+	MaxBytes int64
+	Types    []string
+}
+
+var defaultAttachmentTypes = "image/png,image/jpeg,image/gif,image/webp,image/heic,application/pdf,text/plain,text/csv," +
+	"application/zip,application/json,video/mp4,video/quicktime,audio/mpeg,audio/mp4"
 
 type SMTP struct {
 	Host     string
@@ -53,6 +77,17 @@ func Load(version string) (Config, error) {
 			From:     env("YUVA_SMTP_FROM", ""),
 			TLS:      env("YUVA_SMTP_TLS", "starttls"),
 		},
+		MasterKey: os.Getenv("YUVA_MASTER_KEY"),
+		Storage: Storage{
+			Driver:            env("YUVA_STORAGE", "local"),
+			Dir:               env("YUVA_STORAGE_DIR", "data/attachments"),
+			S3Endpoint:        env("YUVA_S3_ENDPOINT", ""),
+			S3Region:          env("YUVA_S3_REGION", "auto"),
+			S3Bucket:          env("YUVA_S3_BUCKET", ""),
+			S3AccessKeyID:     env("YUVA_S3_ACCESS_KEY_ID", ""),
+			S3SecretAccessKey: os.Getenv("YUVA_S3_SECRET_ACCESS_KEY"),
+		},
+		Attachments: Attachments{Types: lowerList(env("YUVA_ATTACHMENT_TYPES", defaultAttachmentTypes))},
 	}
 	public, err := url.Parse(c.PublicURL)
 	if err != nil || (public.Scheme != "http" && public.Scheme != "https") || public.Host == "" {
@@ -75,6 +110,17 @@ func Load(version string) (Config, error) {
 	if c.SMTP.Port, err = strconv.Atoi(env("YUVA_SMTP_PORT", defaultPort)); err != nil {
 		return c, fmt.Errorf("YUVA_SMTP_PORT: %w", err)
 	}
+	switch c.Storage.Driver {
+	case "local", "s3":
+	default:
+		return c, fmt.Errorf("YUVA_STORAGE must be local or s3, got %q", c.Storage.Driver)
+	}
+	if c.Storage.S3PathStyle, err = boolEnv("YUVA_S3_PATH_STYLE", false); err != nil {
+		return c, err
+	}
+	if c.Attachments.MaxBytes, err = strconv.ParseInt(env("YUVA_ATTACHMENT_MAX_BYTES", "26214400"), 10, 64); err != nil || c.Attachments.MaxBytes < 1 {
+		return c, errors.New("YUVA_ATTACHMENT_MAX_BYTES must be a positive number of bytes")
+	}
 	if c.SMTP.Enabled() && c.SMTP.From == "" {
 		return c, errors.New("YUVA_SMTP_FROM is required when YUVA_SMTP_HOST is set")
 	}
@@ -86,6 +132,21 @@ func (c Config) RequireDatabase() error {
 		return errors.New("YUVA_DATABASE_URL is required")
 	}
 	return nil
+}
+
+func (c Config) RequireMasterKey() error {
+	if strings.TrimSpace(c.MasterKey) == "" {
+		return errors.New("YUVA_MASTER_KEY is required: 32 random bytes, base64-encoded (openssl rand -base64 32)")
+	}
+	return nil
+}
+
+func lowerList(v string) []string {
+	var out []string
+	for _, item := range list(v) {
+		out = append(out, strings.ToLower(item))
+	}
+	return out
 }
 
 func env(name, fallback string) string {

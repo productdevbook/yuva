@@ -12,6 +12,7 @@ import (
 	"runtime/debug"
 	"syscall"
 	"time"
+	_ "time/tzdata"
 
 	"github.com/go-webauthn/webauthn/webauthn"
 
@@ -20,6 +21,8 @@ import (
 	"github.com/productdevbook/yuva/api/internal/jobs"
 	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/metrics"
+	"github.com/productdevbook/yuva/api/internal/secret"
+	"github.com/productdevbook/yuva/api/internal/storage"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
@@ -103,6 +106,17 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 	if err := fs.Parse(args); err != nil {
 		return err
 	}
+	if err := cfg.RequireMasterKey(); err != nil {
+		return err
+	}
+	masterKey, err := secret.ParseKey(cfg.MasterKey)
+	if err != nil {
+		return fmt.Errorf("YUVA_MASTER_KEY: %w", err)
+	}
+	objects, err := openStorage(cfg.Storage)
+	if err != nil {
+		return err
+	}
 	st, err := openStore(ctx, cfg)
 	if err != nil {
 		return err
@@ -144,6 +158,12 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 			CookieSecure:   cfg.CookieSecure,
 			ClientIPHeader: cfg.ClientIPHeader,
 		},
+		Secrets: masterKey,
+		Storage: objects,
+		Attachments: api.AttachmentSettings{
+			MaxBytes: cfg.Attachments.MaxBytes,
+			Types:    cfg.Attachments.Types,
+		},
 	})
 	httpSrv := &http.Server{
 		Addr:              cfg.ListenAddr,
@@ -162,6 +182,16 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 		return err
 	}
 	return nil
+}
+
+func openStorage(c config.Storage) (storage.Storage, error) {
+	if c.Driver == "s3" {
+		return storage.NewS3(storage.S3Config{
+			Endpoint: c.S3Endpoint, Region: c.S3Region, Bucket: c.S3Bucket,
+			AccessKeyID: c.S3AccessKeyID, SecretAccessKey: c.S3SecretAccessKey, PathStyle: c.S3PathStyle,
+		})
+	}
+	return storage.NewLocal(c.Dir)
 }
 
 func migrate(ctx context.Context, cfg config.Config, log *slog.Logger, args []string) error {

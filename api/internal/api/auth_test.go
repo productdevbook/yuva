@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"crypto/rand"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -22,6 +23,8 @@ import (
 
 	"github.com/productdevbook/yuva/api/internal/api"
 	"github.com/productdevbook/yuva/api/internal/mail"
+	"github.com/productdevbook/yuva/api/internal/secret"
+	"github.com/productdevbook/yuva/api/internal/storage"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
@@ -84,12 +87,16 @@ func (o *outbox) code(t *testing.T, addr string) string {
 }
 
 type harness struct {
-	t     *testing.T
-	st    *store.Store
-	url   string
-	clock *clock
-	mail  *outbox
+	t       *testing.T
+	st      *store.Store
+	url     string
+	clock   *clock
+	mail    *outbox
+	secrets *secret.Key
+	storage *storage.Local
 }
+
+const testAttachmentMaxBytes = 1024
 
 var migrateOnce sync.Once
 
@@ -114,7 +121,15 @@ func newHarness(t *testing.T) *harness {
 	if err != nil {
 		t.Fatal(err)
 	}
-	h := &harness{t: t, st: st, clock: &clock{now: time.Now()}, mail: &outbox{}}
+	key, err := secret.ParseKey(base64.StdEncoding.EncodeToString(bytes.Repeat([]byte{7}, 32)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	objects, err := storage.NewLocal(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	h := &harness{t: t, st: st, clock: &clock{now: time.Now()}, mail: &outbox{}, secrets: key, storage: objects}
 	srv := api.New(api.Deps{
 		Log:      slog.New(slog.DiscardHandler),
 		Store:    st,
@@ -123,6 +138,12 @@ func newHarness(t *testing.T) *harness {
 		WebAuthn: wa,
 		Auth:     api.AuthSettings{PublicURL: testOrigin, ClientIPHeader: "X-Forwarded-For"},
 		Now:      h.clock.Now,
+		Secrets:  key,
+		Storage:  objects,
+		Attachments: api.AttachmentSettings{
+			MaxBytes: testAttachmentMaxBytes,
+			Types:    []string{"text/plain", "image/*"},
+		},
 	})
 	ts := httptest.NewServer(srv.Handler())
 	t.Cleanup(ts.Close)

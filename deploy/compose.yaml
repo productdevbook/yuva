@@ -25,8 +25,13 @@ services:
     environment:
       YUVA_DATABASE_URL: postgres://yuva:yuva@db:5432/yuva?sslmode=disable
       YUVA_PUBLIC_URL: ${YUVA_PUBLIC_URL:-http://localhost:8809}
+      YUVA_MASTER_KEY: ${YUVA_MASTER_KEY:-eXV2YS1kZXYtb25seS1tYXN0ZXIta2V5LTMyYnl0ZXM=}
+      YUVA_STORAGE: local
+      YUVA_STORAGE_DIR: /data/attachments
     ports:
       - "0.0.0.0:8809:8080"
+    volumes:
+      - attachments:/data
     depends_on:
       db:
         condition: service_healthy
@@ -34,3 +39,4 @@ services:
 
 volumes:
   db:
+  attachments:

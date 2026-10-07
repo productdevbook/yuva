@@ -24,10 +24,10 @@ Not goals: a CRM, a marketing e-mail tool, a public knowledge base, social-media
 | Concept | Meaning |
 |---|---|
 | Workspace | The tenant. A self-hosted install usually has one. Owns everything below. |
-| Member | A person who answers. Role `owner`, `admin` or `agent`; access is granted per inbox. |
+| Member | A person who answers. Role `owner`, `admin` or `agent`. Owners and admins see every inbox; agents see the inboxes they were granted. An inbox, conversation or attachment the caller cannot see answers `404`. |
 | Inbox | One product or brand. Branding, languages, business hours, mode (`live` or `async`), expected reply time, identity secret, webhooks. |
 | Channel | How messages reach an inbox: `email`, `chat` (web widget), `app` (mobile SDKs), `api` (server-to-server, e.g. a feedback form). An inbox has any number of channels. |
-| Contact | The person writing in. Known by an external user id from the host app, one or more e-mail addresses, or an anonymous visitor id. |
+| Contact | The person writing in. Known by an external user id from the host app (per inbox), one or more e-mail addresses (unique within the workspace), or an anonymous visitor id. Contacts belong to the workspace, not to an inbox. |
 | Conversation | A thread between a contact and an inbox. Status `open`, `pending`, `snoozed`, `closed`; assignee; labels; priority; the channel it started on. |
 | Message | One entry in a conversation: `message` (to or from the contact), `note` (members only) or `event` (assigned, closed, …). Has attachments and a per-channel delivery state. |
 
@@ -59,7 +59,9 @@ panel (embedded SPA) ─────────► /v1 + WS ──────�
   and fetch anything missed over HTTP.
 - The panel and the widget bundles are embedded with `go:embed`; one binary serves everything.
 - Configuration through environment variables. Secrets stored in the database (SMTP passwords,
-  identity secrets, webhook secrets) are encrypted with a master key.
+  identity secrets, webhook secrets) are encrypted with AES-256-GCM under a master key,
+  `YUVA_MASTER_KEY` (32 random bytes, base64, e.g. `openssl rand -base64 32`). The server does not
+  start without it, and losing it makes the stored secrets unreadable.
 - `slog` structured logs, Prometheus metrics, `/healthz` and `/readyz`.
 
 ### API surfaces
@@ -160,7 +162,13 @@ React, Vite, shadcn, TanStack Query, Lingui; built to static files and embedded 
 ### Storage
 
 Attachments and raw e-mails in S3-compatible storage (R2, S3, MinIO) or on local disk for a
-single-node install. Size limit and content-type allowlist per channel.
+single-node install: `YUVA_STORAGE=local|s3`, with `YUVA_STORAGE_DIR` for local disk and
+`YUVA_S3_ENDPOINT`, `YUVA_S3_REGION`, `YUVA_S3_BUCKET`, `YUVA_S3_ACCESS_KEY_ID`,
+`YUVA_S3_SECRET_ACCESS_KEY`, `YUVA_S3_PATH_STYLE` for S3. Objects are never public; members and API
+keys download them through `/v1/attachments/{id}`, which checks inbox access. The size limit
+(`YUVA_ATTACHMENT_MAX_BYTES`, 25 MiB by default) and the content-type allowlist
+(`YUVA_ATTACHMENT_TYPES`, comma-separated, `image/*` style wildcards allowed) are server-wide for
+now; per-channel limits can narrow them later.
 
 ## Privacy and data
 

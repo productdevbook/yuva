@@ -22,6 +22,110 @@ type ApiKey struct {
 	RevokedAt   *time.Time
 }
 
+type Attachment struct {
+	ID             uuid.UUID
+	WorkspaceID    uuid.UUID
+	ConversationID uuid.UUID
+	MessageID      uuid.UUID
+	StorageKey     string
+	Filename       string
+	ContentType    string
+	SizeBytes      int64
+	CreatedAt      time.Time
+}
+
+type CannedReply struct {
+	ID          uuid.UUID
+	WorkspaceID uuid.UUID
+	Shortcut    string
+	Title       string
+	Body        string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+type Channel struct {
+	ID          uuid.UUID
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	Kind        string
+	Name        string
+	Settings    []byte
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+type Contact struct {
+	ID          uuid.UUID
+	WorkspaceID uuid.UUID
+	Name        string
+	Attributes  []byte
+	Blocked     bool
+	Search      interface{}
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+type ContactEmail struct {
+	WorkspaceID uuid.UUID
+	ContactID   uuid.UUID
+	Email       string
+	Position    int32
+}
+
+type ContactExternalID struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	ExternalID  string
+	ContactID   uuid.UUID
+}
+
+type Conversation struct {
+	ID             uuid.UUID
+	WorkspaceID    uuid.UUID
+	InboxID        uuid.UUID
+	ContactID      uuid.UUID
+	ChannelID      *uuid.UUID
+	Subject        string
+	Status         string
+	SnoozeUntil    *time.Time
+	Priority       string
+	AssigneeID     *uuid.UUID
+	LastMessageAt  *time.Time
+	LastActivityAt time.Time
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+}
+
+type ConversationLabel struct {
+	WorkspaceID    uuid.UUID
+	ConversationID uuid.UUID
+	LabelID        uuid.UUID
+}
+
+type Inbox struct {
+	ID                   uuid.UUID
+	WorkspaceID          uuid.UUID
+	Name                 string
+	Slug                 string
+	Branding             []byte
+	DefaultLocale        string
+	Timezone             string
+	Mode                 string
+	ExpectedReplyMinutes *int32
+	BusinessHours        []byte
+	IdentitySecret       []byte
+	CreatedAt            time.Time
+	UpdatedAt            time.Time
+}
+
+type InboxMember struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	MemberID    uuid.UUID
+	CreatedAt   time.Time
+}
+
 type Invite struct {
 	ID          uuid.UUID
 	WorkspaceID uuid.UUID
@@ -31,6 +135,14 @@ type Invite struct {
 	InvitedBy   *uuid.UUID
 	CreatedAt   time.Time
 	ExpiresAt   time.Time
+}
+
+type Label struct {
+	ID          uuid.UUID
+	WorkspaceID uuid.UUID
+	Name        string
+	Color       string
+	CreatedAt   time.Time
 }
 
 type LoginCode struct {
@@ -50,6 +162,23 @@ type Member struct {
 	PersonID    uuid.UUID
 	Role        string
 	CreatedAt   time.Time
+}
+
+type Message struct {
+	ID              uuid.UUID
+	WorkspaceID     uuid.UUID
+	ConversationID  uuid.UUID
+	Kind            string
+	Direction       *string
+	AuthorType      string
+	AuthorMemberID  *uuid.UUID
+	AuthorContactID *uuid.UUID
+	Body            string
+	Html            *string
+	ClientID        *string
+	Event           []byte
+	Search          interface{}
+	CreatedAt       time.Time
 }
 
 type Passkey struct {
@@ -80,6 +209,14 @@ type Session struct {
 	CreatedAt  time.Time
 	ExpiresAt  time.Time
 	LastSeenAt time.Time
+}
+
+type UsageCounter struct {
+	WorkspaceID     uuid.UUID
+	Month           time.Time
+	Conversations   int64
+	Messages        int64
+	AttachmentBytes int64
 }
 
 type WebauthnCeremony struct {

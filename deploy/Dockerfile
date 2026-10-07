@@ -17,9 +17,11 @@ RUN if [ -f /tmp/web-dist/index.html ]; then \
 ARG VERSION=dev
 RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
     CGO_ENABLED=0 go build -trimpath -ldflags="-s -w -X main.version=${VERSION}" -o /out/yuva ./cmd/yuva
+RUN mkdir -p /out/data/attachments
 
 FROM gcr.io/distroless/static-debian13:nonroot
 COPY --from=build /out/yuva /yuva
+COPY --from=build --chown=65532:65532 /out/data /data
 USER 65532:65532
 EXPOSE 8080 9090
 ENTRYPOINT ["/yuva"]
