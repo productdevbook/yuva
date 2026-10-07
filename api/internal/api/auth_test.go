@@ -51,8 +51,9 @@ func (c *clock) Advance(d time.Duration) {
 }
 
 type outbox struct {
-	mu   sync.Mutex
-	sent []mail.Message
+	mu    sync.Mutex
+	sent  []mail.Message
+	codes map[string]int
 }
 
 func (o *outbox) Send(_ context.Context, m mail.Message) error {
@@ -92,14 +93,35 @@ func (o *outbox) wait(t *testing.T, addr string, n int) []mail.Message {
 	}
 }
 
+// code returns the code of the next sign-in mail to addr that no earlier call returned.
 func (o *outbox) code(t *testing.T, addr string) string {
 	t.Helper()
-	msgs := o.wait(t, addr, 1)
-	code := codePattern.FindString(msgs[len(msgs)-1].Text)
-	if code == "" {
-		t.Fatalf("no code in mail to %s: %q", addr, msgs[len(msgs)-1].Text)
+	deadline := time.Now().Add(3 * time.Second)
+	for {
+		o.mu.Lock()
+		n := 0
+		for _, m := range o.sent {
+			if m.To != addr {
+				continue
+			}
+			if c := codePattern.FindString(m.Text); c != "" {
+				n++
+				if n > o.codes[addr] {
+					if o.codes == nil {
+						o.codes = map[string]int{}
+					}
+					o.codes[addr] = n
+					o.mu.Unlock()
+					return c
+				}
+			}
+		}
+		o.mu.Unlock()
+		if time.Now().After(deadline) {
+			t.Fatalf("no new sign-in code mailed to %s", addr)
+		}
+		time.Sleep(5 * time.Millisecond)
 	}
-	return code
 }
 
 type harness struct {
