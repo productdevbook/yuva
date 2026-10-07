@@ -31,11 +31,12 @@ import "github.com/productdevbook/yuva/sdk/go/identity"
 func yuvaToken(w http.ResponseWriter, r *http.Request) {
 	user := currentUser(r)
 	token, err := identity.Sign(os.Getenv("YUVA_IDENTITY_SECRET"), identity.Claims{
-		Subject: user.ID,
-		Email:   user.Email,
-		Name:    user.Name,
-		Locale:  "en",
-		Attrs:   map[string]any{"plan": user.Plan},
+		Subject:       user.ID,
+		Email:         user.Email,
+		EmailVerified: user.EmailConfirmed,
+		Name:          user.Name,
+		Locale:        "en",
+		Attrs:         map[string]any{"plan": user.Plan},
 	})
 	if err != nil {
 		http.Error(w, "token", http.StatusInternalServerError)
@@ -66,7 +67,8 @@ Claims:
 | `sub` | yes | Your user id, 1 to 200 characters. The same `sub` always finds the same contact in the inbox. |
 | `exp` | yes | Expiry, Unix seconds. At most 10 minutes after now. |
 | `iat`, `nbf` | no | Unix seconds; must not be in the future. |
-| `email` | no | The user's verified address. Yuva trusts it: a contact with this address becomes this user. Send only addresses you have verified. |
+| `email` | no | The user's address. |
+| `email_verified` | no | `true` when your app has verified that the user owns `email`; default `false`. Only a verified `email` is used to find an existing contact. |
 | `name` | no | Display name, up to 200 characters. |
 | `locale` | no | Language tag such as `en` or `tr`. |
 | `attrs` | no | A JSON object shown to members next to the conversation (plan, app version, account id, …), up to 16 KiB. |
@@ -82,7 +84,8 @@ function yuvaToken(secret, user) {
   const now = Math.floor(Date.now() / 1000);
   const b64 = (value) => Buffer.from(JSON.stringify(value)).toString("base64url");
   const body = `${b64({ alg: "HS256", typ: "JWT" })}.${b64({
-    sub: user.id, email: user.email, name: user.name, iat: now, exp: now + 300,
+    sub: user.id, email: user.email, email_verified: user.emailConfirmed, name: user.name,
+    iat: now, exp: now + 300,
   })}`;
   return `${body}.${createHmac("sha256", secret).update(body).digest("base64url")}`;
 }
@@ -100,8 +103,11 @@ A failing token answers `401 invalid_identity_token` with the reason.
 
 ## What happens to the contact
 
-The contact is found by `sub` among the inbox's external ids, then by `email`, or created; `name`,
-`email`, `locale` and `attrs` are saved on it. When the same browser or app was writing as an
+The contact is found by `sub` among the inbox's external ids, then by `email` when the token says
+`email_verified: true` and the contact with that address has no other external id in this inbox,
+or created. `name`, `locale` and `attrs` are saved on it (a contact found by e-mail that is known in
+another inbox only gets what it is missing). A verified `email` becomes one of the contact's
+addresses; an unverified one is stored for replies but never used to link a contact. When the same browser or app was writing as an
 anonymous visitor of this inbox before, the visitor's conversations move to the signed-in contact.
 The contact session lasts 7 days after its last use; end it when the user signs out of your app
 (`signOut()` in the widget and the SDKs, or `DELETE /client/v1/session`).
