@@ -108,6 +108,24 @@ yuva api-key revoke <id>
 `--workspace` takes the workspace id or its exact name; a name that more than one workspace has
 is refused with their ids. A key made this way has no creating member.
 
+Inboxes and channels are managed by owners and admins; the same operator can create them from the
+command line, which runs the HTTP handlers as an owner of the workspace (same validation, SMTP
+password encryption and events):
+
+```sh
+yuva inbox create --workspace <id|name> --name <name> [--slug <slug>] [--locale <tag>] \
+  [--timezone <zone>] [--mode live|async] [--expected-reply-minutes <n>]   # prints the inbox id
+yuva inbox list --workspace <id|name>
+yuva channel create-email --workspace <id|name> --inbox <id|slug> --name <name> --address <address> \
+  [--display-name <name>] [--from-address <address>] [--smtp-host <host> [--smtp-port <n>] \
+  [--tls starttls|tls|none] [--smtp-username <name>] [--smtp-password-file <path|->]]   # prints the channel id
+yuva channel list --workspace <id|name> --inbox <id|slug>                 # never a password
+```
+
+The slug is made from the name when omitted. The SMTP password is read from a file or, with `-`,
+from stdin, never from the command line; the auto-reply stays off. The inbox's identity secret is
+not printed; rotate it when an app needs one.
+
 ### Identity
 
 The host app's backend knows who its user is; Yuva trusts it through a short-lived identity token:

@@ -39,6 +39,11 @@ const usageText = `usage:
   yuva api-key create --workspace <id|name> --name <name>   (prints only the secret, once)
   yuva api-key list --workspace <id|name>
   yuva api-key revoke <id>
+  yuva inbox create --workspace <id|name> --name <name> [--slug <slug>] [--locale <tag>] [--timezone <zone>] [--mode live|async] [--expected-reply-minutes <n>]
+  yuva inbox list --workspace <id|name>
+  yuva channel create-email --workspace <id|name> --inbox <id|slug> --name <name> --address <address> [--display-name <name>]
+      [--smtp-host <host> [--smtp-port <n>] [--tls starttls|tls|none] [--smtp-username <name>] [--smtp-password-file <path|->]]
+  yuva channel list --workspace <id|name> --inbox <id|slug>
   yuva vapid-keys                (prints a new Web Push key pair)`
 
 func main() {
@@ -68,6 +73,8 @@ func main() {
 			err = bootstrap(ctx, cfg, log, os.Args[2:])
 		case "api-key":
 			err = apiKeyCLI(ctx, cfg, os.Args[2:])
+		case "inbox", "channel":
+			err = operatorCLI(ctx, cfg, os.Args[1], os.Args[2:])
 		case "ingest-email":
 			os.Exit(ingestEmail(ctx, cfg, log, os.Args[2:]))
 		default:
