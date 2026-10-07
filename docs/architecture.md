@@ -93,6 +93,18 @@ panel (embedded SPA) ─────────► /v1 + WS ──────�
 A member session belongs to a person, not to a workspace. Workspace endpoints act on the workspace
 named in the `Yuva-Workspace` header, or on the person's only workspace when the header is absent.
 An API key acts on its own workspace only and cannot manage members or keys.
+Owners and admins make keys in the panel or with `/v1/api-keys`. An operator with access to the
+server's database makes them from the command line with the same code, for scripts and
+provisioning before anyone has signed in:
+
+```sh
+yuva api-key create --workspace <id|name> --name <name>   # prints only the secret, once, on stdout
+yuva api-key list --workspace <id|name>                   # id, prefix, name, dates; never a secret
+yuva api-key revoke <id>
+```
+
+`--workspace` takes the workspace id or its exact name; a name that more than one workspace has
+is refused with their ids. A key made this way has no creating member.
 
 ### Identity
 
@@ -386,6 +398,8 @@ now; per-channel limits can narrow them later.
     these rows belong to a person (or, for `login_codes`, an e-mail address before sign-in), not
     to a workspace. Their queries are scoped by the person id, the e-mail address or a secret
     hash instead; everything a person may do in a workspace goes through their `members` row.
+  - `yuva api-key revoke <id>` runs on the server with no workspace given: it finds the key by its
+    id, unique across the server, and revokes it scoped by the workspace that lookup returned.
 - Usage counters (conversations, messages, members, storage) recorded per workspace per month.
 - Billing, plans and the signup flow are not part of the open-source core.
 

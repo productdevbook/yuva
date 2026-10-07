@@ -74,6 +74,30 @@ func (q *Queries) ListWorkspaceIDs(ctx context.Context) ([]uuid.UUID, error) {
 	return items, nil
 }
 
+const listWorkspacesByName = `-- name: ListWorkspacesByName :many
+SELECT id, name, created_at FROM workspaces WHERE name = $1 ORDER BY created_at, id
+`
+
+func (q *Queries) ListWorkspacesByName(ctx context.Context, name string) ([]Workspace, error) {
+	rows, err := q.db.Query(ctx, listWorkspacesByName, name)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Workspace
+	for rows.Next() {
+		var i Workspace
+		if err := rows.Scan(&i.ID, &i.Name, &i.CreatedAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const lockBootstrap = `-- name: LockBootstrap :exec
 SELECT pg_advisory_xact_lock(hashtext('yuva.bootstrap'))
 `

@@ -36,6 +36,9 @@ const usageText = `usage:
   yuva migrate up|down|status
   yuva bootstrap --email <address> --workspace <name> [--name <name>] [--locale en|tr] [--allow-existing]
   yuva ingest-email --to <address> [--from <address>] < message.eml
+  yuva api-key create --workspace <id|name> --name <name>   (prints only the secret, once)
+  yuva api-key list --workspace <id|name>
+  yuva api-key revoke <id>
   yuva vapid-keys                (prints a new Web Push key pair)`
 
 func main() {
@@ -63,6 +66,8 @@ func main() {
 			err = migrate(ctx, cfg, log, os.Args[2:])
 		case "bootstrap":
 			err = bootstrap(ctx, cfg, log, os.Args[2:])
+		case "api-key":
+			err = apiKeyCLI(ctx, cfg, os.Args[2:])
 		case "ingest-email":
 			os.Exit(ingestEmail(ctx, cfg, log, os.Args[2:]))
 		default:
@@ -305,6 +310,15 @@ func bootstrap(ctx context.Context, cfg config.Config, log *slog.Logger, args []
 	}
 	fmt.Printf("workspace %s\nmember    %s\nowner     %s\n", res.WorkspaceID, res.MemberID, in.Email)
 	return nil
+}
+
+func apiKeyCLI(ctx context.Context, cfg config.Config, args []string) error {
+	st, err := openStore(ctx, cfg)
+	if err != nil {
+		return err
+	}
+	defer st.Close()
+	return apiKey(ctx, st, args, os.Stdout, os.Stderr)
 }
 
 const (

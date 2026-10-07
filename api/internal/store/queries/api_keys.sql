@@ -17,3 +17,6 @@ SELECT * FROM api_keys WHERE secret_hash = $1 AND revoked_at IS NULL;
 UPDATE api_keys SET last_used_at = @now::timestamptz
 WHERE workspace_id = @workspace_id AND id = @id
   AND (last_used_at IS NULL OR last_used_at < @stale_before::timestamptz);
+
+-- name: GetAPIKeyByID :one
+SELECT * FROM api_keys WHERE id = $1;

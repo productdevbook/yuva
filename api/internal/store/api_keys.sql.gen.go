@@ -51,6 +51,27 @@ func (q *Queries) CreateAPIKey(ctx context.Context, arg CreateAPIKeyParams) (Api
 	return i, err
 }
 
+const getAPIKeyByID = `-- name: GetAPIKeyByID :one
+SELECT id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at FROM api_keys WHERE id = $1
+`
+
+func (q *Queries) GetAPIKeyByID(ctx context.Context, id uuid.UUID) (ApiKey, error) {
+	row := q.db.QueryRow(ctx, getAPIKeyByID, id)
+	var i ApiKey
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Name,
+		&i.Prefix,
+		&i.SecretHash,
+		&i.CreatedBy,
+		&i.CreatedAt,
+		&i.LastUsedAt,
+		&i.RevokedAt,
+	)
+	return i, err
+}
+
 const getActiveAPIKeyByHash = `-- name: GetActiveAPIKeyByHash :one
 SELECT id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at FROM api_keys WHERE secret_hash = $1 AND revoked_at IS NULL
 `

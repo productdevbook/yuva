@@ -3,7 +3,10 @@ package api
 import (
 	"context"
 	"crypto/rand"
+	"errors"
+	"fmt"
 	"strings"
+	"time"
 	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
@@ -52,19 +55,86 @@ func (s *Server) CreateApiKey(ctx context.Context, req oas.CreateApiKeyRequestOb
 	if err := requireManager(p); err != nil {
 		return nil, err
 	}
-	name := strings.TrimSpace(req.Body.Name)
-	if name == "" || len([]rune(name)) > 200 {
+	name, ok := apiKeyName(req.Body.Name)
+	if !ok {
 		return nil, errValidation("name must be 1 to 200 characters")
 	}
-	prefix, secret := newAPIKey()
-	k, err := s.st.CreateAPIKey(ctx, store.CreateAPIKeyParams{
-		ID: uuid.New(), WorkspaceID: p.workspaceID, Name: name, Prefix: prefix,
-		SecretHash: hashSecret(secret), CreatedBy: &p.memberID,
-	})
+	k, secret, err := createAPIKey(ctx, s.st.Queries, p.workspaceID, name, &p.memberID)
 	if err != nil {
 		return nil, err
 	}
 	return oas.CreateApiKey201JSONResponse{ApiKey: apiKeyBody(k), Secret: secret}, nil
+}
+
+func apiKeyName(raw string) (string, bool) {
+	name := strings.TrimSpace(raw)
+	return name, name != "" && len([]rune(name)) <= 200
+}
+
+func createAPIKey(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, name string, createdBy *uuid.UUID) (store.ApiKey, string, error) {
+	prefix, secret := newAPIKey()
+	k, err := q.CreateAPIKey(ctx, store.CreateAPIKeyParams{
+		ID: uuid.New(), WorkspaceID: workspaceID, Name: name, Prefix: prefix,
+		SecretHash: hashSecret(secret), CreatedBy: createdBy,
+	})
+	if err != nil {
+		return store.ApiKey{}, "", err
+	}
+	return k, secret, nil
+}
+
+// FindWorkspace resolves a workspace id or an exact workspace name for the command line.
+func FindWorkspace(ctx context.Context, st *store.Store, ref string) (store.Workspace, error) {
+	ref = strings.TrimSpace(ref)
+	if ref == "" {
+		return store.Workspace{}, errors.New("--workspace is required")
+	}
+	if id, err := uuid.Parse(ref); err == nil {
+		ws, err := st.GetWorkspace(ctx, id)
+		if store.IsNotFound(err) {
+			return store.Workspace{}, fmt.Errorf("no workspace with id %s", id)
+		}
+		return ws, err
+	}
+	matches, err := st.ListWorkspacesByName(ctx, ref)
+	if err != nil {
+		return store.Workspace{}, err
+	}
+	switch len(matches) {
+	case 0:
+		return store.Workspace{}, fmt.Errorf("no workspace named %q", ref)
+	case 1:
+		return matches[0], nil
+	}
+	ids := make([]string, len(matches))
+	for i, ws := range matches {
+		ids[i] = ws.ID.String()
+	}
+	return store.Workspace{}, fmt.Errorf("%d workspaces are named %q; pass one of their ids: %s", len(matches), ref, strings.Join(ids, ", "))
+}
+
+// CreateWorkspaceAPIKey makes an API key for the command line; the secret is returned only here.
+func CreateWorkspaceAPIKey(ctx context.Context, st *store.Store, workspaceID uuid.UUID, name string) (store.ApiKey, string, error) {
+	name, ok := apiKeyName(name)
+	if !ok {
+		return store.ApiKey{}, "", errors.New("--name must be 1 to 200 characters")
+	}
+	return createAPIKey(ctx, st.Queries, workspaceID, name, nil)
+}
+
+// RevokeAPIKeyByID revokes a key of any workspace for the command line.
+func RevokeAPIKeyByID(ctx context.Context, st *store.Store, id uuid.UUID, now time.Time) (store.ApiKey, error) {
+	k, err := st.GetAPIKeyByID(ctx, id)
+	if store.IsNotFound(err) {
+		return store.ApiKey{}, fmt.Errorf("no API key with id %s", id)
+	}
+	if err != nil {
+		return store.ApiKey{}, err
+	}
+	if _, err := st.RevokeAPIKey(ctx, store.RevokeAPIKeyParams{Now: now, WorkspaceID: k.WorkspaceID, ID: k.ID}); err != nil {
+		return store.ApiKey{}, err
+	}
+	return k, nil
 }
 
 func (s *Server) RevokeApiKey(ctx context.Context, req oas.RevokeApiKeyRequestObject) (oas.RevokeApiKeyResponseObject, error) {
