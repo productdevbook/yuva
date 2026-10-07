@@ -26,6 +26,8 @@ info:
       `yuva_session` cookie (HttpOnly, SameSite=Lax).
     - Host backends and scripts send a workspace API key as `Authorization: Bearer <key>`. A key
       acts on its own workspace only.
+    - Contacts (widget, SDKs) send a contact session token as `Authorization: Bearer <token>` on
+      `/client/v1`; see the `client` tag.
 
     ## Workspace selection
 
@@ -67,6 +69,14 @@ tags:
     description: Saved answers members insert into replies.
   - name: realtime
     description: Live workspace events over WebSocket.
+  - name: client
+    description: |
+      The contact side, for the web widget and the mobile SDKs. A contact session starts at
+      `POST /client/v1/session` with a chat channel's public key and, for signed-in users of the
+      host app, an identity token; every other call sends the session token as a bearer token.
+      Browsers may call only from the channel's allowed origins (CORS). Contacts see their own
+      conversations in the session's inbox, never notes, internal events, other contacts or member
+      e-mail addresses; of members only their display name and initials.
   - name: ingress
     description: |
       Inbound mail and delivery reports from mail infrastructure. These endpoints are not called
@@ -834,7 +844,8 @@ paths:
       summary: Add a channel
       description: |
         Owners and admins only, with a member session. An `email` channel needs `email` (its
-        address and outbound SMTP account); `settings` of the other kinds are stored as given.
+        address and outbound SMTP account); a `chat` channel needs `chat` (at least one allowed
+        origin) and gets a generated public key; `settings` are stored as given.
         An address belongs to one channel of the whole server, because inbound mail picks its
         channel by the recipient alone; a taken address answers `409 email_address_taken`.
       tags: [channels]
@@ -892,7 +903,8 @@ paths:
       summary: Update a channel
       description: |
         Owners and admins only, with a member session. `email` replaces the e-mail settings as a
-        whole, except that an absent `smtp.password` keeps the stored one.
+        whole, except that an absent `smtp.password` keeps the stored one; `chat` replaces the chat
+        settings as a whole, except the public key.
       tags: [channels]
       security:
         - session: []
@@ -937,6 +949,35 @@ paths:
       responses:
         "204":
           description: Removed.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/channels/{channelId}/public-key:
+    post:
+      operationId: rotateChannelPublicKey
+      summary: Rotate a chat channel's public key
+      description: |
+        Owners and admins only, with a member session. Gives a `chat` channel a new public key;
+        widgets embedded with the old key can no longer start sessions, existing contact sessions
+        keep working. Other kinds answer `400`.
+      tags: [channels]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ChannelId"
+      responses:
+        "200":
+          description: The channel with its new key.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Channel"
+        "400":
+          $ref: "#/components/responses/Problem"
         "401":
           $ref: "#/components/responses/Problem"
         "403":
@@ -1404,6 +1445,38 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+  /v1/conversations/{conversationId}/typing:
+    post:
+      operationId: setMemberTyping
+      summary: Tell others you are typing
+      description: |
+        Shows the calling member as typing a reply in the conversation: other members with access
+        receive a `typing` event on `/v1/realtime`, and the conversation's contact receives one on
+        `/client/v1/realtime` when the inbox is `live`. Call it while the member composes a reply
+        (not a note), at most every few seconds; clients stop showing the indicator after about
+        6 seconds without another one, or at once on `typing: false`. Nothing is stored. Member
+        sessions only.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TypingCreate"
+      responses:
+        "204":
+          description: Sent.
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
   /v1/attachments/{attachmentId}:
     get:
       operationId: downloadAttachment
@@ -1754,7 +1827,11 @@ paths:
         re-read when such an event arrives and every 30 seconds. `inbox.created` reaches owners,
         admins and API keys (an agent learns of a new inbox from `inbox_access.changed`);
         `inbox.deleted` reaches everyone who could see the inbox. `conversation.read` reaches only
-        the connections of the member who read.
+        the connections of the member who read. `typing` (a contact or another member typing) has no
+        `id`, is not stored and is not replayed.
+
+        A member session's open connection also makes the member available to contacts of `live`
+        inboxes they can access (see `availability` on `/v1/me`).
 
         Resuming: after the replay (if any) the server sends `ready` with `last_event_id`, the
         stream position at that moment. Remember the larger of that value and the `id` of every
@@ -1795,6 +1872,449 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RealtimeMessage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "503":
+          $ref: "#/components/responses/Problem"
+  /client/v1/session:
+    post:
+      operationId: createClientSession
+      summary: Start a contact session
+      description: |
+        Exchanges a channel's public key, and optionally an identity token or a visitor id, for a
+        contact session. Send the returned `token` as `Authorization: Bearer <token>` on every other
+        `/client/v1` request and on `/client/v1/realtime`. Sessions last 7 days after their last
+        use.
+
+        - With `identity_token` (a JWT, HS256, signed by the host backend with the inbox's identity
+          secret; see `sdk/go`): the contact is found by `sub` (the host's user id, per inbox),
+          then by the token's `email`, or created. `name`, `email`, `locale` and `attrs` from the
+          token are saved on the contact. `exp` is required and at most 10 minutes ahead; tokens
+          with another `alg`, a wrong signature or a missing or past `exp` answer
+          `401 invalid_identity_token`. When `visitor_id` names an anonymous visitor of this inbox,
+          that visitor's conversations move to the identified contact and the visitor id ends.
+        - Without it, the visitor is anonymous, which the channel must allow
+          (`403 anonymous_not_allowed` otherwise). `visitor_id` from an earlier session of this
+          inbox resumes that visitor and their conversations; an unknown or ended one starts a new
+          visitor. Keep the returned `visitor_id` (e.g. in `localStorage`) and send it next time.
+
+        Browsers must call from one of the channel's allowed origins (`403 origin_not_allowed`).
+        Requests are rate limited per IP address and per channel (`429 rate_limited`). A blocked
+        contact answers `403 contact_blocked`.
+      tags: [client]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientSessionCreate"
+      responses:
+        "201":
+          description: The session, the contact and the inbox's public settings.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientSession"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "429":
+          $ref: "#/components/responses/Problem"
+    get:
+      operationId: getClientSession
+      summary: The current contact session
+      description: The contact and the inbox's public settings with the current presence, without the token.
+      tags: [client]
+      security:
+        - contactSession: []
+      responses:
+        "200":
+          description: The session.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientSessionInfo"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteClientSession
+      summary: End the contact session
+      description: Ends the session, e.g. when the host app's user signs out.
+      tags: [client]
+      security:
+        - contactSession: []
+      responses:
+        "204":
+          description: Ended.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+  /client/v1/conversations:
+    get:
+      operationId: listClientConversations
+      summary: List the contact's conversations
+      description: |
+        The contact's conversations in the session's inbox, on any channel, latest message first.
+        Members' notes and internal events are never shown to contacts.
+      tags: [client]
+      security:
+        - contactSession: []
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: A page of conversations.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientConversationPage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createClientConversation
+      summary: Start a conversation
+      description: |
+        Starts a conversation on the session's channel with its first message. Send
+        `multipart/form-data` to attach files (`body`, `subject`, `client_id` as form fields and up
+        to 10 `files` parts), with the same size and type rules as `/v1`. Rate limited per IP
+        address and per channel.
+      tags: [client]
+      security:
+        - contactSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientConversationCreate"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/ClientConversationCreateMultipart"
+      responses:
+        "201":
+          description: The conversation and its first message.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientConversationCreated"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "413":
+          $ref: "#/components/responses/Problem"
+        "415":
+          $ref: "#/components/responses/Problem"
+        "429":
+          $ref: "#/components/responses/Problem"
+  /client/v1/conversations/{conversationId}:
+    get:
+      operationId: getClientConversation
+      summary: Get one of the contact's conversations
+      description: Another contact's conversation, or one of another inbox, answers `404`.
+      tags: [client]
+      security:
+        - contactSession: []
+      parameters:
+        - $ref: "#/components/parameters/ConversationId"
+      responses:
+        "200":
+          description: The conversation.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientConversation"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /client/v1/conversations/{conversationId}/messages:
+    get:
+      operationId: listClientMessages
+      summary: List a conversation's messages
+      description: |
+        The messages to and from the contact, oldest first by default; with `order=desc` the newest
+        come first and `next_cursor` pages backward. Notes and events are left out.
+      tags: [client]
+      security:
+        - contactSession: []
+      parameters:
+        - $ref: "#/components/parameters/ConversationId"
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: A page of messages.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientMessagePage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createClientMessage
+      summary: Send a message
+      description: |
+        Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
+        repeated `client_id` in the same conversation returns the stored message with `200`.
+        Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
+        per IP address and per channel.
+      tags: [client]
+      security:
+        - contactSession: []
+      parameters:
+        - $ref: "#/components/parameters/ConversationId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientMessageCreate"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/ClientMessageCreateMultipart"
+      responses:
+        "200":
+          description: The message stored earlier with this `client_id`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientMessage"
+        "201":
+          description: The message.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientMessage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "413":
+          $ref: "#/components/responses/Problem"
+        "415":
+          $ref: "#/components/responses/Problem"
+        "429":
+          $ref: "#/components/responses/Problem"
+  /client/v1/conversations/{conversationId}/read:
+    post:
+      operationId: markClientConversationRead
+      summary: Mark a conversation read
+      description: |
+        Moves the contact's read cursor to `message_id`, or to the latest message when it is
+        absent; it only moves forward. Replies the contact has read are not e-mailed to them.
+      tags: [client]
+      security:
+        - contactSession: []
+      parameters:
+        - $ref: "#/components/parameters/ConversationId"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientReadCreate"
+      responses:
+        "200":
+          description: The contact's read state.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientReadState"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /client/v1/conversations/{conversationId}/typing:
+    post:
+      operationId: setClientTyping
+      summary: Tell members the contact is typing
+      description: |
+        Members with access receive a `typing` event on `/v1/realtime`. Call it at most every few
+        seconds while the contact types, and with `typing: false` when they stop. Nothing is
+        stored. Rate limited per session.
+      tags: [client]
+      security:
+        - contactSession: []
+      parameters:
+        - $ref: "#/components/parameters/ConversationId"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TypingCreate"
+      responses:
+        "204":
+          description: Sent.
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "429":
+          $ref: "#/components/responses/Problem"
+  /client/v1/contact/email:
+    put:
+      operationId: setClientContactEmail
+      summary: Leave an e-mail address for replies
+      description: |
+        Stores the address the contact typed (e.g. when nobody is available), so replies they have
+        not read can be e-mailed to them. A typed address is never used to find or merge an
+        existing contact; it is used only while the contact has no address from an identity token
+        or from their own mail, and becomes one of their addresses once they answer such an e-mail.
+        Allowed when the channel asks for an address (`ask_email_offline`), else `403 forbidden`.
+      tags: [client]
+      security:
+        - contactSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientEmailUpdate"
+      responses:
+        "200":
+          description: The contact.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientContact"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "429":
+          $ref: "#/components/responses/Problem"
+  /client/v1/attachments/{attachmentId}:
+    get:
+      operationId: downloadClientAttachment
+      summary: Download an attachment
+      description: |
+        An attachment of a message (not a note) in one of the contact's conversations, served as a
+        download. Fetch it with the `Authorization` header and show it from a blob URL.
+      tags: [client]
+      security:
+        - contactSession: []
+      parameters:
+        - $ref: "#/components/parameters/AttachmentId"
+      responses:
+        "200":
+          description: The file.
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+            X-Content-Type-Options:
+              schema:
+                type: string
+                enum: [nosniff]
+          content:
+            "*/*":
+              schema:
+                type: string
+                format: binary
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /client/v1/realtime:
+    get:
+      operationId: clientRealtime
+      summary: Live events for a contact (WebSocket)
+      description: |
+        Upgrades to a WebSocket that streams the events of the contact's own conversations in the
+        session's inbox. Authenticate with the session token, either as the `token` query
+        parameter or as a WebSocket subprotocol: offer `yuva` and `yuva.token.<token>`
+        (`new WebSocket(url, ["yuva", "yuva.token." + token])`); the server selects `yuva`.
+        Cookies are not used. A browser's `Origin` must be one of the channel's allowed origins.
+
+        Every server message is one JSON text frame matching `ClientRealtimeMessage`. Stored events
+        (`conversation.created`, `conversation.updated`, `message.created`, `message.updated`,
+        `read`) carry an increasing `id`; resume exactly as on `/v1/realtime`: remember the larger
+        of `ready.last_event_id` and the last `id` received, reconnect with `?last_event_id=`, and
+        reload over HTTP on `resync_required`. `typing` and `presence` have no `id` and are not
+        replayed. `message.*` carries only messages (no notes or internal events), and
+        `conversation.updated` only the status. `typing` (a member typing), `read` (how far members
+        have read) and `presence` (whether someone is available; sent after `ready` and whenever it
+        changes) come only for `live` inboxes.
+
+        The server pings every 30 seconds; the client sends nothing. Close codes as on
+        `/v1/realtime`: 1008 when the session ends or the contact is deleted (start a new session),
+        1013 and 1012 (reconnect with `last_event_id`).
+      tags: [client]
+      security:
+        - contactSession: []
+      parameters:
+        - name: token
+          in: query
+          description: The contact session token, when it is not sent as a subprotocol.
+          schema:
+            type: string
+        - name: last_event_id
+          in: query
+          description: Replay the events after this one before streaming live ones.
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+      responses:
+        "101":
+          description: |
+            Switching to the WebSocket protocol. Each text frame is one `ClientRealtimeMessage`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientRealtimeMessage"
         "400":
           $ref: "#/components/responses/Problem"
         "401":
@@ -1920,6 +2440,10 @@ components:
       type: http
       scheme: bearer
       description: A workspace API key, `yuva_<prefix>_<secret>`.
+    contactSession:
+      type: http
+      scheme: bearer
+      description: A contact session token from `POST /client/v1/session`, `yuva_cs_<secret>`.
   parameters:
     WorkspaceHeader:
       name: Yuva-Workspace
@@ -2092,7 +2616,7 @@ components:
           examples: ["042917"]
     Person:
       type: object
-      required: [id, email, name, locale]
+      required: [id, email, name, locale, availability]
       properties:
         id:
           type: string
@@ -2104,6 +2628,8 @@ components:
           description: Empty until the person sets it.
         locale:
           $ref: "#/components/schemas/Locale"
+        availability:
+          $ref: "#/components/schemas/Availability"
     Workspace:
       type: object
       required: [id, name, created_at]
@@ -2146,6 +2672,8 @@ components:
           maxLength: 200
         locale:
           $ref: "#/components/schemas/Locale"
+        availability:
+          $ref: "#/components/schemas/Availability"
     Member:
       type: object
       required: [id, person_id, email, name, role, created_at]
@@ -2513,7 +3041,7 @@ components:
     ChannelSettings:
       type: object
       additionalProperties: true
-      description: Settings of `chat`, `app` and `api` channels, stored as given. Not acted on yet.
+      description: Free-form settings, stored as given. The settings Yuva acts on are in `email` and `chat`.
     SmtpTls:
       type: string
       description: |
@@ -2642,6 +3170,8 @@ components:
           $ref: "#/components/schemas/ChannelSettings"
         email:
           $ref: "#/components/schemas/EmailChannel"
+        chat:
+          $ref: "#/components/schemas/ChatChannel"
         created_at:
           type: string
           format: date-time
@@ -2662,6 +3192,8 @@ components:
           $ref: "#/components/schemas/ChannelSettings"
         email:
           $ref: "#/components/schemas/EmailChannelInput"
+        chat:
+          $ref: "#/components/schemas/ChatChannelInput"
     ChannelUpdate:
       type: object
       minProperties: 1
@@ -2674,6 +3206,8 @@ components:
           $ref: "#/components/schemas/ChannelSettings"
         email:
           $ref: "#/components/schemas/EmailChannelInput"
+        chat:
+          $ref: "#/components/schemas/ChatChannelInput"
     ChannelList:
       type: object
       required: [items]
@@ -2735,7 +3269,10 @@ components:
           $ref: "#/components/schemas/Attributes"
         blocked:
           type: boolean
-          description: Mail from a blocked contact is refused.
+          description: Mail and chat from a blocked contact are refused.
+        locale:
+          $ref: "#/components/schemas/LanguageTag"
+          description: The language from the contact's identity token; absent when not known.
         undeliverable:
           type: array
           description: The contact's addresses that must not be mailed.
@@ -3726,6 +4263,7 @@ components:
         - $ref: "#/components/schemas/InboxDeletedEvent"
         - $ref: "#/components/schemas/InboxAccessChangedEvent"
         - $ref: "#/components/schemas/ConversationReadEvent"
+        - $ref: "#/components/schemas/TypingEvent"
         - $ref: "#/components/schemas/RealtimeReady"
         - $ref: "#/components/schemas/RealtimeResyncRequired"
       discriminator:
@@ -3742,6 +4280,646 @@ components:
           inbox.deleted: "#/components/schemas/InboxDeletedEvent"
           inbox_access.changed: "#/components/schemas/InboxAccessChangedEvent"
           conversation.read: "#/components/schemas/ConversationReadEvent"
+          typing: "#/components/schemas/TypingEvent"
+          ready: "#/components/schemas/RealtimeReady"
+          resync_required: "#/components/schemas/RealtimeResyncRequired"
+    Availability:
+      type: string
+      description: |
+        `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
+        hours. `away`: never shown as available.
+      enum: [auto, away]
+    Origin:
+      type: string
+      description: A web origin, `scheme://host[:port]`, without a path.
+      pattern: "^https?://[^/?#\\s]+$"
+      maxLength: 300
+      examples: ["https://www.example.com"]
+    ChatLauncherPosition:
+      type: string
+      enum: [right, left]
+    ChatLauncher:
+      type: object
+      description: The floating launcher. Absent values fall back to the inbox branding.
+      properties:
+        position:
+          $ref: "#/components/schemas/ChatLauncherPosition"
+        color:
+          type: string
+          pattern: "^#[0-9a-fA-F]{6}$"
+    ChatChannel:
+      type: object
+      description: Settings of a `chat` (web widget) channel.
+      required: [public_key, allowed_origins, allow_anonymous, ask_email_offline, greeting, launcher]
+      properties:
+        public_key:
+          type: string
+          description: |
+            Identifies the channel to the widget (`channel_key`). Not a secret: it is embedded in
+            web pages. Rotate it with `POST /v1/channels/{id}/public-key`.
+        allowed_origins:
+          type: array
+          description: The only origins whose pages may use the widget, compared exactly.
+          items:
+            $ref: "#/components/schemas/Origin"
+        allow_anonymous:
+          type: boolean
+          description: Visitors without an identity token may chat.
+        ask_email_offline:
+          type: boolean
+          description: The widget asks for an e-mail address when nobody is available.
+        greeting:
+          type: string
+          description: Shown before the first message; the inbox branding greeting when empty.
+        launcher:
+          $ref: "#/components/schemas/ChatLauncher"
+    ChatChannelInput:
+      type: object
+      required: [allowed_origins]
+      properties:
+        allowed_origins:
+          type: array
+          minItems: 1
+          maxItems: 20
+          items:
+            $ref: "#/components/schemas/Origin"
+        allow_anonymous:
+          type: boolean
+          description: Defaults to false.
+        ask_email_offline:
+          type: boolean
+          description: Defaults to true.
+        greeting:
+          type: string
+          maxLength: 500
+        launcher:
+          $ref: "#/components/schemas/ChatLauncher"
+    TypingCreate:
+      type: object
+      properties:
+        typing:
+          type: boolean
+          default: true
+          description: "`false` when the typist stopped or sent the message."
+    TypingAuthor:
+      type: object
+      required: [type]
+      properties:
+        type:
+          type: string
+          enum: [member, contact]
+        member_id:
+          type: string
+          format: uuid
+        contact_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          description: The member's display name.
+    Typing:
+      type: object
+      required: [conversation_id, typing, author]
+      properties:
+        conversation_id:
+          type: string
+          format: uuid
+        typing:
+          type: boolean
+        author:
+          $ref: "#/components/schemas/TypingAuthor"
+    TypingEvent:
+      type: object
+      description: |
+        Someone is typing in a conversation (`typing: true`) or stopped. Not stored: it has no `id`
+        and is not replayed. Members do not receive their own.
+      required: [type, workspace_id, inbox_id, conversation_id, created_at, data]
+      properties:
+        type:
+          type: string
+          enum: [typing]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/Typing"
+    ClientSessionCreate:
+      type: object
+      required: [channel_key]
+      properties:
+        channel_key:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: The chat channel's `public_key`.
+        identity_token:
+          type: string
+          maxLength: 8192
+          description: A JWT (HS256) from the host backend; see `sdk/go`.
+        visitor_id:
+          type: string
+          maxLength: 200
+          description: The `visitor_id` of an earlier anonymous session in this browser.
+    ClientMember:
+      type: object
+      description: What a contact may see of a member.
+      required: [name, initials]
+      properties:
+        name:
+          type: string
+          description: The display name; empty when the member has not set one.
+        initials:
+          type: string
+          description: Up to two letters for an avatar; empty when the name is.
+    ClientPresence:
+      type: object
+      description: Who can answer now, in a `live` inbox.
+      required: [available, members]
+      properties:
+        available:
+          type: boolean
+          description: |
+            Someone with access is connected, not set to away, and the inbox is within its business
+            hours.
+        members:
+          type: array
+          maxItems: 5
+          items:
+            $ref: "#/components/schemas/ClientMember"
+    ClientChatSettings:
+      type: object
+      required: [greeting, launcher_position, ask_email_offline, allow_anonymous]
+      properties:
+        greeting:
+          type: string
+          description: The channel greeting, else the inbox branding greeting, else empty.
+        launcher_position:
+          $ref: "#/components/schemas/ChatLauncherPosition"
+        launcher_color:
+          type: string
+          description: The channel's launcher color, else the inbox branding color; absent when neither is set.
+        ask_email_offline:
+          type: boolean
+        allow_anonymous:
+          type: boolean
+    ClientInbox:
+      type: object
+      description: |
+        The inbox's public settings. `live` inboxes carry `presence`; `async` inboxes never do and
+        show `expected_reply_minutes` instead.
+      required: [id, name, branding, default_locale, timezone, mode, business_hours, open_now, chat]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        branding:
+          $ref: "#/components/schemas/InboxBranding"
+        default_locale:
+          $ref: "#/components/schemas/LanguageTag"
+        timezone:
+          type: string
+        mode:
+          $ref: "#/components/schemas/InboxMode"
+        business_hours:
+          $ref: "#/components/schemas/BusinessHours"
+        open_now:
+          type: boolean
+          description: Within business hours now (always true when they are not enabled).
+        expected_reply_minutes:
+          type: integer
+          format: int32
+          description: "`async` inboxes only; absent when not set."
+        presence:
+          $ref: "#/components/schemas/ClientPresence"
+        chat:
+          $ref: "#/components/schemas/ClientChatSettings"
+    ClientContact:
+      type: object
+      required: [id, name, identified]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          $ref: "#/components/schemas/Email"
+          description: The contact's first verified address (from an identity token or their own mail).
+        typed_email:
+          $ref: "#/components/schemas/Email"
+          description: The address the contact typed, until it is verified.
+        identified:
+          type: boolean
+          description: The session was started with an identity token.
+    ClientSessionInfo:
+      type: object
+      required: [expires_at, contact, inbox]
+      properties:
+        expires_at:
+          type: string
+          format: date-time
+          description: Moves forward with every use.
+        visitor_id:
+          type: string
+          description: Anonymous sessions only. Keep it to resume this visitor later.
+        contact:
+          $ref: "#/components/schemas/ClientContact"
+        inbox:
+          $ref: "#/components/schemas/ClientInbox"
+    ClientSession:
+      allOf:
+        - $ref: "#/components/schemas/ClientSessionInfo"
+        - type: object
+          required: [token]
+          properties:
+            token:
+              type: string
+              description: The contact session token. It is not shown again.
+    ClientConversationStatus:
+      type: object
+      required: [id, status, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          $ref: "#/components/schemas/ConversationStatus"
+        updated_at:
+          type: string
+          format: date-time
+    ClientMessagePreview:
+      type: object
+      required: [id, author_type, text, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        author_type:
+          $ref: "#/components/schemas/AuthorType"
+        text:
+          type: string
+          description: The plain-text body on one line, cut to 140 characters with `…` when longer.
+        created_at:
+          type: string
+          format: date-time
+    ClientConversation:
+      type: object
+      required: [id, subject, status, unread, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        subject:
+          type: string
+        status:
+          $ref: "#/components/schemas/ConversationStatus"
+        last_message:
+          $ref: "#/components/schemas/ClientMessagePreview"
+        last_message_at:
+          type: string
+          format: date-time
+        unread:
+          type: boolean
+          description: A message from a member is newer than the contact's read cursor.
+        created_at:
+          type: string
+          format: date-time
+    ClientConversationPage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ClientConversation"
+        next_cursor:
+          type: string
+          description: Absent on the last page.
+    ClientMessageAuthor:
+      type: object
+      required: [type]
+      properties:
+        type:
+          $ref: "#/components/schemas/AuthorType"
+        name:
+          type: string
+          description: "`member` only: the member's display name, possibly empty."
+        initials:
+          type: string
+          description: "`member` only."
+    ClientAttachment:
+      type: object
+      required: [id, filename, content_type, size, inline]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Download it from `/client/v1/attachments/{id}`.
+        filename:
+          type: string
+        content_type:
+          type: string
+        size:
+          type: integer
+          format: int64
+        content_id:
+          type: string
+        inline:
+          type: boolean
+    ClientMessage:
+      type: object
+      required: [id, conversation_id, direction, author, body, attachments, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        direction:
+          $ref: "#/components/schemas/Direction"
+        author:
+          $ref: "#/components/schemas/ClientMessageAuthor"
+        body:
+          type: string
+        html:
+          type: string
+          description: Sanitized HTML, when the message has one.
+        client_id:
+          type: string
+          description: The contact's own messages only.
+        attachments:
+          type: array
+          items:
+            $ref: "#/components/schemas/ClientAttachment"
+        created_at:
+          type: string
+          format: date-time
+    ClientMessagePage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ClientMessage"
+        next_cursor:
+          type: string
+          description: Absent on the last page.
+    ClientMessageCreate:
+      type: object
+      properties:
+        body:
+          type: string
+          maxLength: 65536
+          description: Plain text. Required unless files are attached.
+        client_id:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Makes the request idempotent within the conversation.
+    ClientMessageCreateMultipart:
+      type: object
+      properties:
+        body:
+          type: string
+          maxLength: 65536
+        client_id:
+          type: string
+          minLength: 1
+          maxLength: 200
+        files:
+          type: array
+          maxItems: 10
+          items:
+            type: string
+            format: binary
+    ClientConversationCreate:
+      type: object
+      properties:
+        subject:
+          type: string
+          maxLength: 500
+        body:
+          type: string
+          maxLength: 65536
+          description: The first message. Required unless files are attached.
+        client_id:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: The first message's `client_id`.
+    ClientConversationCreateMultipart:
+      type: object
+      properties:
+        subject:
+          type: string
+          maxLength: 500
+        body:
+          type: string
+          maxLength: 65536
+        client_id:
+          type: string
+          minLength: 1
+          maxLength: 200
+        files:
+          type: array
+          maxItems: 10
+          items:
+            type: string
+            format: binary
+    ClientConversationCreated:
+      type: object
+      required: [conversation, message]
+      properties:
+        conversation:
+          $ref: "#/components/schemas/ClientConversation"
+        message:
+          $ref: "#/components/schemas/ClientMessage"
+    ClientReadCreate:
+      type: object
+      properties:
+        message_id:
+          type: string
+          format: uuid
+          description: A message of the conversation; the latest when absent.
+    ClientReadState:
+      type: object
+      required: [conversation_id, unread]
+      properties:
+        conversation_id:
+          type: string
+          format: uuid
+        last_read_message_id:
+          type: string
+          format: uuid
+        unread:
+          type: boolean
+    ClientEmailUpdate:
+      type: object
+      required: [email]
+      properties:
+        email:
+          $ref: "#/components/schemas/Email"
+    ClientRead:
+      type: object
+      required: [conversation_id, read_at]
+      properties:
+        conversation_id:
+          type: string
+          format: uuid
+        read_at:
+          type: string
+          format: date-time
+          description: Members have read every message created at or before this time.
+    ClientConversationCreatedEvent:
+      type: object
+      description: A conversation of the contact started (here, in another tab, or by a member).
+      required: [id, type, conversation_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [conversation.created]
+        conversation_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/ClientConversation"
+    ClientConversationUpdatedEvent:
+      type: object
+      description: The conversation's status changed.
+      required: [id, type, conversation_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [conversation.updated]
+        conversation_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/ClientConversationStatus"
+    ClientMessageEvent:
+      type: object
+      description: A message was added or changed.
+      required: [id, type, conversation_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [message.created, message.updated]
+        conversation_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/ClientMessage"
+    ClientReadEvent:
+      type: object
+      description: A member read the conversation (`live` inboxes).
+      required: [id, type, conversation_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [read]
+        conversation_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/ClientRead"
+    ClientTyping:
+      type: object
+      required: [conversation_id, typing, author]
+      properties:
+        conversation_id:
+          type: string
+          format: uuid
+        typing:
+          type: boolean
+        author:
+          $ref: "#/components/schemas/ClientMessageAuthor"
+    ClientTypingEvent:
+      type: object
+      description: A member is typing a reply (`live` inboxes). No `id`; not replayed.
+      required: [type, conversation_id, created_at, data]
+      properties:
+        type:
+          type: string
+          enum: [typing]
+        conversation_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/ClientTyping"
+    ClientPresenceEvent:
+      type: object
+      description: Who is available changed (`live` inboxes). No `id`; not replayed.
+      required: [type, created_at, data]
+      properties:
+        type:
+          type: string
+          enum: [presence]
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/ClientPresence"
+    ClientRealtimeMessage:
+      description: One server message on `/client/v1/realtime`, told apart by `type`.
+      oneOf:
+        - $ref: "#/components/schemas/ClientConversationCreatedEvent"
+        - $ref: "#/components/schemas/ClientConversationUpdatedEvent"
+        - $ref: "#/components/schemas/ClientMessageEvent"
+        - $ref: "#/components/schemas/ClientReadEvent"
+        - $ref: "#/components/schemas/ClientTypingEvent"
+        - $ref: "#/components/schemas/ClientPresenceEvent"
+        - $ref: "#/components/schemas/RealtimeReady"
+        - $ref: "#/components/schemas/RealtimeResyncRequired"
+      discriminator:
+        propertyName: type
+        mapping:
+          conversation.created: "#/components/schemas/ClientConversationCreatedEvent"
+          conversation.updated: "#/components/schemas/ClientConversationUpdatedEvent"
+          message.created: "#/components/schemas/ClientMessageEvent"
+          message.updated: "#/components/schemas/ClientMessageEvent"
+          read: "#/components/schemas/ClientReadEvent"
+          typing: "#/components/schemas/ClientTypingEvent"
+          presence: "#/components/schemas/ClientPresenceEvent"
           ready: "#/components/schemas/RealtimeReady"
           resync_required: "#/components/schemas/RealtimeResyncRequired"
     IngressResult:
