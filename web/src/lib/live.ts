@@ -33,6 +33,8 @@ export function previewText(body: string) {
 function matches(c: Conversation, f: ConversationFilters, memberId: string) {
   if (!!f.spam !== c.spam) return false
   if (f.status && c.status !== f.status) return false
+  if ((f.kind || f.category) && c.kind !== (f.kind ?? "feedback")) return false
+  if (f.category && c.feedback?.category !== f.category) return false
   if (f.inbox_id && c.inbox_id !== f.inbox_id) return false
   if (f.contact_id && c.contact_id !== f.contact_id) return false
   if (f.label_id && !c.labels.includes(f.label_id)) return false
@@ -212,10 +214,16 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
     case "conversation.updated":
       knowMember(qc, ctx.ws, event.data.assignee_id)
       setConversation(qc, ctx, event.data)
+      if (event.type === "conversation.created") {
+        void qc.invalidateQueries({ queryKey: keys.contactPresence(ctx.ws, event.data.contact_id) })
+      }
       return
     case "message.created":
       knowMember(qc, ctx.ws, event.data.author.member_id)
       addMessage(qc, ctx, event.data)
+      if (event.data.author.contact_id) {
+        void qc.invalidateQueries({ queryKey: keys.contactPresence(ctx.ws, event.data.author.contact_id) })
+      }
       return
     case "message.updated":
       replaceMessage(qc, ctx, event.data)
@@ -245,6 +253,7 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
     }
     case "contact.deleted":
       qc.removeQueries({ queryKey: keys.contact(ctx.ws, event.data.id) })
+      qc.removeQueries({ queryKey: keys.contactPresence(ctx.ws, event.data.id) })
       void qc.invalidateQueries({ queryKey: keys.conversationLists(ctx.ws) })
       refreshCounts(qc, ctx.ws)
       return

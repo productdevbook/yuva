@@ -8,6 +8,7 @@ import { ErrorLine, PersonAvatar, SecretDialog, useConfirm } from "@/components/
 import { MODES, useEnumText, WEEKDAYS } from "@/components/common/text"
 import { ChannelsSection } from "@/components/settings/ChannelsSection"
 import { Field, PageTitle, Section } from "@/components/settings/SettingsLayout"
+import { WebhooksSection } from "@/components/settings/WebhooksSettings"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
@@ -45,6 +46,7 @@ export function InboxSettings() {
           <AccessSection inbox={inbox.data} />
           <ChannelsSection inbox={inbox.data} />
           <IdentitySecretSection inbox={inbox.data} />
+          <WebhooksSection inboxId={inbox.data.id} />
           <DeleteSection inbox={inbox.data} />
         </>
       ) : (

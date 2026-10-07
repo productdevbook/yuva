@@ -6,7 +6,7 @@ import { Navigate, useNavigate, useParams, useSearchParams } from "react-router"
 import { TopBar, useViewLabels, VIEWS, type View } from "@/components/AppShell"
 import { EmptyState } from "@/components/common"
 import { SHORTCUTS } from "@/components/common/ShortcutSheet"
-import { STATUSES } from "@/components/common/text"
+import { FEEDBACK_CATEGORIES, STATUSES, useEnumText } from "@/components/common/text"
 import { ContactPanel } from "@/components/inbox/ContactPanel"
 import {
   ConversationList,
@@ -19,7 +19,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { useIsMobile } from "@/hooks/use-mobile"
-import { isGone, type ConversationStatus } from "@/lib/api"
+import { isGone, type ConversationStatus, type FeedbackCategory } from "@/lib/api"
 import type { ConversationFilters } from "@/lib/keys"
 import { useConversation, useConversations, useInboxes, useLabels } from "@/lib/queries"
 import { cn } from "@/lib/utils"
@@ -45,6 +45,10 @@ function toQuery(base: ListBase, f: ListFilters): ConversationFilters {
   else if (f.inbox) q.inbox_id = f.inbox
   if (base.kind === "label") q.label_id = base.id
   else if (f.label) q.label_id = f.label
+  if (base.kind === "feedback") {
+    q.kind = "feedback"
+    if (base.id !== "all") q.category = base.id as FeedbackCategory
+  }
   if (base.kind === "view") {
     if (base.id === "mine") q.assignee = "me"
     if (base.id === "unassigned") q.assignee = "unassigned"
@@ -56,11 +60,20 @@ function toQuery(base: ListBase, f: ListFilters): ConversationFilters {
 export function InboxPage() {
   const params = useParams()
   if (params.view !== undefined && !VIEWS.includes(params.view as View)) return <Navigate to="/all" replace />
+  if (
+    params.category !== undefined &&
+    params.category !== "all" &&
+    !FEEDBACK_CATEGORIES.includes(params.category as FeedbackCategory)
+  ) {
+    return <Navigate to="/feedback/all" replace />
+  }
   const base: ListBase = params.inboxId
     ? { kind: "inbox", id: params.inboxId }
     : params.labelId
       ? { kind: "label", id: params.labelId }
-      : { kind: "view", id: params.view ?? "all" }
+      : params.category
+        ? { kind: "feedback", id: params.category }
+        : { kind: "view", id: params.view ?? "all" }
   return <Inbox key={`${base.kind}:${base.id}`} base={base} conversationId={params.conversationId} />
 }
 
@@ -74,6 +87,7 @@ function Inbox({ base, conversationId }: { base: ListBase; conversationId?: stri
   const [sheetOpen, setSheetOpen] = useState(false)
   const searchRef = useRef<HTMLInputElement>(null)
   const viewLabels = useViewLabels()
+  const text = useEnumText()
   const inboxes = useInboxes().data ?? []
   const labels = useLabels().data ?? []
 
@@ -132,8 +146,13 @@ function Inbox({ base, conversationId }: { base: ListBase; conversationId?: stri
     [SHORTCUTS.search]: () => searchRef.current?.focus(),
   })
 
+  const category = base.kind === "feedback" && base.id !== "all" ? text.category[base.id as FeedbackCategory] : ""
   const title =
-    base.kind === "view"
+    base.kind === "feedback"
+      ? base.id === "all"
+        ? t`Feedback`
+        : t`Feedback: ${category}`
+      : base.kind === "view"
       ? viewLabels[base.id as View]
       : base.kind === "inbox"
         ? (inboxes.find((i) => i.id === base.id)?.name ?? "")

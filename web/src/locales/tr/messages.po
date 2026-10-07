@@ -44,6 +44,10 @@ msgstr "{actor} konuşmayı yeniden açtı"
 msgid "{actor} set the status to {status}"
 msgstr "{actor} durumu {status} olarak değiştirdi"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "{count} events"
+msgstr "{count} olay"
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "{keyCount} settings"
 msgstr "{keyCount} ayar"
@@ -56,9 +60,45 @@ msgstr "{list} yazıyor…"
 msgid "{list} is typing…"
 msgstr "{list} yazıyor…"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "{n} attempts"
+msgstr "{n} deneme"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "<0>Android:</0> add the library from <1>sdk/kotlin</1> in the Yuva repository and configure it with the same two values."
+msgstr "<0>Android:</0> Yuva deposundaki <1>sdk/kotlin</1> kütüphanesini ekleyin ve aynı iki değerle yapılandırın."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "<0>iOS:</0> add the Yuva repository as a Swift package and use the <1>YuvaKit</1> library; create the client with the server URL and this key."
+msgstr "<0>iOS:</0> Yuva deposunu Swift paketi olarak ekleyip <1>YuvaKit</1> kütüphanesini kullanın; istemciyi sunucu adresi ve bu anahtarla oluşturun."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "1 attempt"
+msgstr "1 deneme"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "1 event"
+msgstr "1 olay"
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "1 setting"
 msgstr "1 ayar"
+
+#: src/components/common/text.ts
+msgid "A contact changed"
+msgstr "Bir kişi değişti"
+
+#: src/components/common/text.ts
+msgid "A contact was deleted"
+msgstr "Bir kişi silindi"
+
+#: src/components/common/text.ts
+msgid "A conversation changed"
+msgstr "Bir konuşma değişti"
+
+#: src/components/common/text.ts
+msgid "A conversation started"
+msgstr "Bir konuşma başladı"
 
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
@@ -67,6 +107,10 @@ msgstr "Bir dosyanın içeriği türüyle uyuşmuyor. Dosyayı kontrol edip yeni
 #: src/components/settings/InboxSettings.tsx
 msgid "A language tag such as en or tr."
 msgstr "en veya tr gibi bir dil kodu."
+
+#: src/components/common/text.ts
+msgid "A message was added"
+msgstr "Bir mesaj eklendi"
 
 #: src/components/inbox/ThreadView.tsx
 msgid "A teammate"
@@ -104,6 +148,10 @@ msgstr "En az bir kaynak ekleyin."
 msgid "Add channel"
 msgstr "Kanal ekle"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Add endpoint"
+msgstr "Uç nokta ekle"
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Add hours"
 msgstr "Saat ekle"
@@ -134,16 +182,22 @@ msgstr "Temsilciler bu gelen kutusunu yalnızca erişim verildiğinde görür. S
 
 #: src/components/AppShell.tsx
 #: src/components/inbox/ConversationList.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "All"
 msgstr "Tümü"
 
 #: src/components/inbox/ConversationList.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "All inboxes"
 msgstr "Tüm gelen kutuları"
 
 #: src/components/settings/InboxSettings.tsx
 msgid "All of its conversations are deleted with it."
 msgstr "Tüm konuşmaları da onunla birlikte silinir."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Allow anonymous users"
+msgstr "Anonim kullanıcılara izin ver"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "Allow anonymous visitors"
@@ -153,9 +207,17 @@ msgstr "Anonim ziyaretçilere izin ver"
 msgid "Allowed origins"
 msgstr "İzin verilen kaynaklar"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Also send message.created for members' internal notes. Internal events are never sent."
+msgstr "Üyelerin iç notları için de message.created gönderilir. İç olaylar hiçbir zaman gönderilmez."
+
 #: src/components/settings/MembersSettings.tsx
 msgid "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
 msgstr "Davet, kişi o adrese gönderilen kodla giriş yaptığında kabul edilir. 7 gün sonra geçersiz olur."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "anonymous users allowed"
+msgstr "anonim kullanıcılara açık"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "anonymous visitors allowed"
@@ -186,6 +248,14 @@ msgstr "API"
 #: src/components/settings/SettingsLayout.tsx
 msgid "API keys"
 msgstr "API anahtarları"
+
+#: src/components/inbox/Feedback.tsx
+msgid "App"
+msgstr "Uygulama"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "App builds with the old key can no longer start sessions until you ship one with the new key. People already signed in keep their session."
+msgstr "Eski anahtarlı uygulama sürümleri, yeni anahtarlı bir sürüm yayımlayana kadar oturum başlatamaz. Oturumu açık olanların oturumu sürer."
 
 #: src/components/AppShell.tsx
 msgid "Ask an owner or admin of your workspace to invite you."
@@ -229,6 +299,14 @@ msgstr "Dosya ekle"
 msgid "Attachment"
 msgstr "Ek"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Attempt log"
+msgstr "Deneme kaydı"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Attempts"
+msgstr "Denemeler"
+
 #: src/components/inbox/ContactPanel.tsx
 msgid "Attributes"
 msgstr "Özellikler"
@@ -252,6 +330,7 @@ msgstr "Uzakta"
 
 #: src/components/inbox/InboxPage.tsx
 #: src/components/settings/InboxSettings.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Back"
 msgstr "Geri"
 
@@ -280,6 +359,10 @@ msgstr "Sağ alt"
 msgid "Brand color"
 msgstr "Marka rengi"
 
+#: src/components/common/text.ts
+msgid "Bug"
+msgstr "Hata"
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Business hours"
 msgstr "Çalışma saatleri"
@@ -293,6 +376,10 @@ msgstr "Vazgeç"
 #: src/components/settings/SettingsLayout.tsx
 msgid "Canned replies"
 msgstr "Hazır yanıtlar"
+
+#: src/components/inbox/Feedback.tsx
+msgid "Category"
+msgstr "Kategori"
 
 #: src/components/inbox/MessageItem.tsx
 msgid "Cc: {cc}"
@@ -386,6 +473,7 @@ msgid "Conversations that started on it keep their messages."
 msgstr "Bu kanalda başlayan konuşmaların mesajları korunur."
 
 #: src/components/common/index.tsx
+#: src/components/inbox/Feedback.tsx
 msgid "Copied"
 msgstr "Kopyalandı"
 
@@ -397,9 +485,22 @@ msgstr "Kopyala"
 msgid "Copy it now and store it safely; it is not shown again."
 msgstr "Şimdi kopyalayıp güvenli bir yerde saklayın; bir daha gösterilmeyecek."
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Copy it now and store it with your receiver; it is not shown again."
+msgstr "Şimdi kopyalayıp alıcı tarafında saklayın; bir daha gösterilmez."
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Copy it now and update your backend; it is not shown again."
 msgstr "Şimdi kopyalayıp sunucu tarafınızı güncelleyin; bir daha gösterilmeyecek."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Copy it now and update your receiver; the old secret keeps signing for 24 hours. It is not shown again."
+msgstr "Şimdi kopyalayıp alıcınızı güncelleyin; eski anahtar 24 saat daha imzalamaya devam eder. Bir daha gösterilmez."
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/components/inbox/Feedback.tsx
+msgid "Copy the feedback details"
+msgstr "Geri bildirim ayrıntılarını kopyala"
 
 #: src/components/AppShell.tsx
 msgid "Could not reach the server"
@@ -420,6 +521,10 @@ msgstr "Anahtar oluştur"
 #: src/components/settings/InboxesSettings.tsx
 msgid "Create one to start receiving conversations."
 msgstr "Konuşma almaya başlamak için bir tane oluşturun."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Created"
+msgstr "Oluşturulma"
 
 #: src/components/settings/ApiKeysSettings.tsx
 msgid "Created {created}"
@@ -458,6 +563,26 @@ msgstr "Bu hazır yanıt silinsin mi?"
 #: src/components/settings/InboxSettings.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
 msgstr "Kanalları, konuşmaları, mesajları ve ekleriyle birlikte silinir. Bu işlem geri alınamaz."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Deliveries"
+msgstr "Gönderimler"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Deliveries show up here once a subscribed event happens."
+msgstr "Abone olunan bir olay gerçekleştiğinde gönderimler burada görünür."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Delivery details"
+msgstr "Gönderim ayrıntıları"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Description (optional)"
+msgstr "Açıklama (isteğe bağlı)"
+
+#: src/components/inbox/Feedback.tsx
+msgid "Device"
+msgstr "Cihaz"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "Display name"
@@ -500,6 +625,7 @@ msgstr "E-posta dili"
 #: src/components/settings/CannedRepliesSettings.tsx
 #: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/LabelsSettings.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Edit"
 msgstr "Düzenle"
 
@@ -510,6 +636,10 @@ msgstr "Hazır yanıtı düzenle"
 #: src/components/settings/ChannelsSection.tsx
 msgid "Edit channel"
 msgstr "Kanalı düzenle"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Edit endpoint"
+msgstr "Uç noktayı düzenle"
 
 #: src/components/settings/LabelsSettings.tsx
 msgid "Edit label"
@@ -528,6 +658,10 @@ msgstr "Yerleştirme kodu"
 msgid "Encryption"
 msgstr "Şifreleme"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Endpoints"
+msgstr "Uç noktalar"
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "Enter a host name or IP address."
 msgstr "Bir sunucu adı ya da IP adresi girin."
@@ -539,6 +673,26 @@ msgstr "Geçerli bir e-posta adresi girin ya da boş bırakın."
 #: src/components/settings/ChannelsSection.tsx
 msgid "Enter a valid e-mail address."
 msgstr "Geçerli bir e-posta adresi girin."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Enter an http or https URL without a user name or password."
+msgstr "Kullanıcı adı ve parola içermeyen bir http veya https adresi girin."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Error or answer"
+msgstr "Hata veya yanıt"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Events"
+msgstr "Olaylar"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Every attempt has failed since {failingSince}. After 24 hours of failures Yuva turns the endpoint off."
+msgstr "{failingSince} tarihinden beri her deneme başarısız. 24 saat boyunca başarısız olursa Yuva uç noktayı kapatır."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Every request to this endpoint, newest first. The newest 100 are kept."
+msgstr "Bu uç noktaya yapılan her istek, en yenisi başta. En yeni 100 tanesi saklanır."
 
 #: src/components/settings/InboxSettings.tsx
 msgid "Expected reply time (minutes)"
@@ -552,6 +706,27 @@ msgstr "son geçerlilik: {expires}"
 msgid "External ids"
 msgstr "Harici kimlikler"
 
+#: src/components/common/text.ts
+msgid "Failed"
+msgstr "Başarısız"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Failing"
+msgstr "Başarısız oluyor"
+
+#: src/components/AppShell.tsx
+#: src/components/inbox/InboxPage.tsx
+msgid "Feedback"
+msgstr "Geri bildirim"
+
+#: src/components/common/text.ts
+msgid "Feedback arrived"
+msgstr "Geri bildirim geldi"
+
+#: src/components/inbox/InboxPage.tsx
+msgid "Feedback: {category}"
+msgstr "Geri bildirim: {category}"
+
 #: src/components/inbox/ConversationList.tsx
 msgid "Filters"
 msgstr "Filtreler"
@@ -559,6 +734,10 @@ msgstr "Filtreler"
 #: src/components/inbox/MessageItem.tsx
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "Adresi ya da kanalın SMTP ayarlarını düzeltin, sonra yanıtı yeniden gönderin."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "For signed-in users, your backend signs an identity token with the inbox's identity secret and the app passes it to the SDK."
+msgstr "Oturum açmış kullanıcılar için arka ucunuz gelen kutusunun kimlik anahtarıyla bir kimlik belirteci imzalar, uygulama da bunu SDK'ya iletir."
 
 #: src/components/settings/ApiKeysSettings.tsx
 msgid "For your backends and scripts. A key acts on this workspace only and cannot manage members or keys."
@@ -607,12 +786,16 @@ msgid "High"
 msgstr "Yüksek"
 
 #: src/components/settings/ChannelsSection.tsx
-msgid "How messages reach this inbox. E-mail channels receive and send mail, web chat channels power the chat widget; the other kinds store their settings for now."
-msgstr "Mesajların bu gelen kutusuna nasıl ulaştığı. E-posta kanalları posta alır ve gönderir, web sohbeti kanalları sohbet penceresini çalıştırır; diğer türler şimdilik yalnızca ayarlarını saklar."
+msgid "How messages reach this inbox. E-mail channels receive and send mail, web chat channels power the chat widget, mobile app channels the iOS and Android SDKs, and API channels take feedback from your backend."
+msgstr "Mesajların bu gelen kutusuna nasıl ulaştığı. E-posta kanalları posta alır ve gönderir, web sohbeti kanalları sohbet penceresini, mobil uygulama kanalları iOS ve Android SDK'larını çalıştırır, API kanalları ise arka ucunuzdan geri bildirim alır."
 
 #: src/components/common/index.tsx
 msgid "I saved it"
 msgstr "Kaydettim"
+
+#: src/components/common/text.ts
+msgid "Idea"
+msgstr "Fikir"
 
 #: src/components/settings/InboxesSettings.tsx
 #: src/components/settings/InboxSettings.tsx
@@ -623,8 +806,13 @@ msgstr "Kimlik anahtarı"
 msgid "In an hour"
 msgstr "Bir saat sonra"
 
+#: src/components/inbox/Feedback.tsx
+msgid "In the app and by e-mail"
+msgstr "Uygulamada ve e-postayla"
+
 #: src/components/inbox/ConversationList.tsx
 #: src/components/settings/InboxSettings.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Inbox"
 msgstr "Gelen kutusu"
 
@@ -638,6 +826,10 @@ msgstr "Gelen kutusu rengi"
 msgid "Inboxes"
 msgstr "Gelen kutuları"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Include notes"
+msgstr "Notları dahil et"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Insert a canned reply (in the composer)"
 msgstr "Hazır yanıt ekle (yazma alanında)"
@@ -645,6 +837,10 @@ msgstr "Hazır yanıt ekle (yazma alanında)"
 #: src/components/settings/ChannelsSection.tsx
 msgid "Install"
 msgstr "Kurulum"
+
+#: src/components/inbox/Feedback.tsx
+msgid "Installation"
+msgstr "Kurulum kimliği"
 
 #: src/components/inbox/MessageItem.tsx
 msgid "Internal note"
@@ -661,6 +857,10 @@ msgstr "Davet dili"
 #: src/components/settings/MembersSettings.tsx
 msgid "Invites"
 msgstr "Davetler"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "iOS and Android app"
+msgstr "iOS ve Android uygulaması"
 
 #: src/components/settings/LabelsSettings.tsx
 msgid "It is removed from every conversation."
@@ -704,9 +904,21 @@ msgstr "Etiketler"
 msgid "Language"
 msgstr "Dil"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Last attempt"
+msgstr "Son deneme"
+
+#: src/components/inbox/ContactPanel.tsx
+msgid "Last seen {seen}"
+msgstr "Son görülme: {seen}"
+
 #: src/components/settings/ApiKeysSettings.tsx
 msgid "last used {used}"
 msgstr "son kullanım: {used}"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Latency"
+msgstr "Süre"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "Launcher color"
@@ -735,12 +947,17 @@ msgstr "Görselleri yükle"
 
 #: src/components/inbox/ContactPanel.tsx
 #: src/components/inbox/ConversationList.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Load more"
 msgstr "Daha fazla yükle"
 
 #: src/components/inbox/ThreadView.tsx
 msgid "Load older messages"
 msgstr "Eski mesajları yükle"
+
+#: src/components/inbox/Feedback.tsx
+msgid "Locale"
+msgstr "Dil ve bölge"
 
 #: src/components/settings/InboxSettings.tsx
 msgid "Logo URL"
@@ -757,6 +974,10 @@ msgstr "Küçük harf, rakam ve tire."
 #: src/components/settings/InboxesSettings.tsx
 msgid "Lowercase letters, digits and dashes. Used in addresses and the widget."
 msgstr "Küçük harf, rakam ve tire. Adreslerde ve sohbet bileşeninde kullanılır."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "manual"
+msgstr "elle"
 
 #: src/components/inbox/ConversationControls.tsx
 msgid "Mark as spam"
@@ -788,6 +1009,7 @@ msgid "Mine"
 msgstr "Bana atananlar"
 
 #: src/components/common/text.ts
+#: src/components/settings/ChannelsSection.tsx
 msgid "Mobile app"
 msgstr "Mobil uygulama"
 
@@ -854,6 +1076,22 @@ msgstr "Yeni etiket"
 msgid "New password"
 msgstr "Yeni parola"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "New signing secret"
+msgstr "Yeni imzalama anahtarı"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Newest first. Finished deliveries are kept for 7 days."
+msgstr "En yenisi başta. Tamamlanan gönderimler 7 gün saklanır."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Next attempt"
+msgstr "Sonraki deneme"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "next attempt {when}"
+msgstr "sonraki deneme {when}"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Next conversation"
 msgstr "Sonraki konuşma"
@@ -861,6 +1099,18 @@ msgstr "Sonraki konuşma"
 #: src/components/inbox/ConversationControls.tsx
 msgid "Next week"
 msgstr "Gelecek hafta"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "no answer"
+msgstr "yanıt yok"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "No attempt yet."
+msgstr "Henüz deneme yok."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "No attempts yet."
+msgstr "Henüz deneme yok."
 
 #: src/components/settings/CannedRepliesSettings.tsx
 msgid "No canned replies yet"
@@ -873,6 +1123,14 @@ msgstr "Henüz kanal yok."
 #: src/components/inbox/ConversationList.tsx
 msgid "No conversations here"
 msgstr "Burada konuşma yok"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "No deliveries"
+msgstr "Gönderim yok"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "No endpoints yet."
+msgstr "Henüz uç nokta yok."
 
 #: src/components/settings/InboxesSettings.tsx
 msgid "No inboxes yet"
@@ -917,6 +1175,10 @@ msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds 
 msgstr "Gizli değildir, web sayfalarınızın bir parçasıdır. Eski yerleştirmelerin yeni sohbet başlatmasını durdurmak için yenileyin."
 
 #: src/components/settings/ChannelsSection.tsx
+msgid "Not a secret: it ships inside your app. Native apps send no origin, so the key is not tied to one."
+msgstr "Gizli değildir: uygulamanızın içinde dağıtılır. Yerel uygulamalar köken (origin) göndermediği için anahtar bir kökene bağlı değildir."
+
+#: src/components/settings/ChannelsSection.tsx
 msgid "Not an origin: {notOrigins}. Use scheme and host only, such as https://www.example.com."
 msgstr "Geçerli bir kaynak değil: {notOrigins}. Yalnızca şema ve alan adı yazın, örneğin https://www.example.com."
 
@@ -938,6 +1200,7 @@ msgstr "Aramanızla eşleşen bir şey yok."
 
 #: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/InboxSettings.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Off"
 msgstr "Kapalı"
 
@@ -947,6 +1210,7 @@ msgstr "Çevrimdışı"
 
 #: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/InboxSettings.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "On"
 msgstr "Açık"
 
@@ -957,6 +1221,14 @@ msgstr "Her ürün ya da marka için bir gelen kutusu. Her birinin kendi kanalla
 #: src/components/settings/ChannelsSection.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Her satıra bir tane, 1 ile 20 arası. Sohbet penceresini yalnızca bu kaynaklardaki sayfalar kullanabilir."
+
+#: src/components/inbox/ContactPanel.tsx
+msgid "Online now"
+msgstr "Şu an çevrimiçi"
+
+#: src/components/inbox/Feedback.tsx
+msgid "Only in the app"
+msgstr "Yalnızca uygulamada"
 
 #: src/components/inbox/Composer.tsx
 msgid "Only members see notes"
@@ -978,6 +1250,10 @@ msgstr "Açılış"
 #: src/components/auth/SignInPage.tsx
 msgid "or"
 msgstr "veya"
+
+#: src/components/common/text.ts
+msgid "Other"
+msgstr "Diğer"
 
 #: src/components/inbox/ContactPanel.tsx
 msgid "Other conversations"
@@ -1015,9 +1291,21 @@ msgstr "Kayıtlı"
 msgid "Paste it before the closing body tag of every page that should show the chat."
 msgstr "Sohbetin görüneceği her sayfada kapanış body etiketinden önce yapıştırın."
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Payload"
+msgstr "Gövde"
+
 #: src/components/common/text.ts
 msgid "Pending"
 msgstr "Beklemede"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Pending deliveries are dropped with it."
+msgstr "Bekleyen gönderimler de onunla birlikte silinir."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "People who are not signed in to your app can write without an identity token from your backend."
+msgstr "Uygulamanızda oturum açmamış kişiler, arka ucunuzdan kimlik belirteci olmadan yazabilir."
 
 #: src/components/settings/InboxSettings.tsx
 #: src/components/settings/LabelsSettings.tsx
@@ -1036,9 +1324,25 @@ msgstr "Bir konuşma seçin"
 msgid "Pick a TLS mode."
 msgstr "Bir TLS kipi seçin."
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Pick at least one event."
+msgstr "En az bir olay seçin."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Pick at least one platform."
+msgstr "En az bir platform seçin."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Platforms"
+msgstr "Platformlar"
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "Port"
 msgstr "Port"
+
+#: src/components/common/text.ts
+msgid "Praise"
+msgstr "Övgü"
 
 #: src/components/settings/LabelsSettings.tsx
 msgid "Preview"
@@ -1060,6 +1364,14 @@ msgstr "Profil"
 msgid "Public key"
 msgstr "Genel anahtar"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Push notifications"
+msgstr "Anlık bildirimler"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Queued. The new attempt shows up below in a moment."
+msgstr "Sıraya alındı. Yeni deneme birazdan aşağıda görünür."
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "receives only, no SMTP account"
 msgstr "yalnızca alır, SMTP hesabı yok"
@@ -1068,6 +1380,14 @@ msgstr "yalnızca alır, SMTP hesabı yok"
 msgid "Receiving"
 msgstr "Alma"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Redeliver"
+msgstr "Yeniden gönder"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Refresh"
+msgstr "Yenile"
+
 #: src/components/inbox/MessageItem.tsx
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Uzak görseller, postayı açtığınızı gönderene bildirebilir."
@@ -1075,6 +1395,7 @@ msgstr "Uzak görseller, postayı açtığınızı gönderene bildirebilir."
 #: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/MembersSettings.tsx
 #: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Remove"
 msgstr "Kaldır"
 
@@ -1101,6 +1422,10 @@ msgstr "Bu saatleri kaldır"
 msgid "Remove this channel?"
 msgstr "Bu kanal kaldırılsın mı?"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Remove this endpoint?"
+msgstr "Bu uç nokta kaldırılsın mı?"
+
 #: src/components/settings/ProfileSettings.tsx
 msgid "Remove this passkey?"
 msgstr "Bu geçiş anahtarı kaldırılsın mı?"
@@ -1124,6 +1449,10 @@ msgstr "<0>{title}</0> konuşmasının dizisinde yanıtlandı"
 #: src/components/inbox/ThreadView.tsx
 msgid "Replied in the thread of another conversation"
 msgstr "Başka bir konuşmanın dizisinde yanıtlandı"
+
+#: src/components/inbox/Feedback.tsx
+msgid "Replies"
+msgstr "Yanıtlar"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "Replies go out through your own SMTP account. Leave the host empty to only receive mail."
@@ -1168,10 +1497,12 @@ msgstr "{name} adlı üyenin rolü"
 
 #: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/InboxSettings.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Rotate"
 msgstr "Yenile"
 
 #: src/components/settings/InboxSettings.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Rotate secret"
 msgstr "Anahtarı yenile"
 
@@ -1183,6 +1514,10 @@ msgstr "Kimlik anahtarı yenilensin mi?"
 msgid "Rotate the public key?"
 msgstr "Genel anahtar yenilensin mi?"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Rotate the signing secret?"
+msgstr "İmzalama anahtarı yenilensin mi?"
+
 #: src/components/common/text.ts
 msgid "Saturday"
 msgstr "Cumartesi"
@@ -1192,6 +1527,7 @@ msgstr "Cumartesi"
 #: src/components/settings/InboxSettings.tsx
 #: src/components/settings/LabelsSettings.tsx
 #: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Save"
 msgstr "Kaydet"
 
@@ -1211,6 +1547,10 @@ msgstr "Kayıtlı yanıtlar"
 #: src/components/settings/ChannelsSection.tsx
 msgid "Saving removes the stored password."
 msgstr "Kaydedince kayıtlı parola silinir."
+
+#: src/components/inbox/Feedback.tsx
+msgid "Screen"
+msgstr "Ekran"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search"
@@ -1233,6 +1573,10 @@ msgstr "Yeni kod gönder"
 msgid "Send an auto-reply"
 msgstr "Otomatik yanıt gönder"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Send events"
+msgstr "Olayları gönder"
+
 #: src/components/auth/SignInPage.tsx
 msgid "Send me a code"
 msgstr "Bana kod gönder"
@@ -1253,6 +1597,10 @@ msgstr "{0} üzerinden gönderir"
 #: src/components/inbox/MessageItem.tsx
 msgid "Sent by e-mail"
 msgstr "E-postayla gönderildi"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Server URL"
+msgstr "Sunucu adresi"
 
 #: src/components/AppShell.tsx
 #: src/components/settings/SettingsLayout.tsx
@@ -1312,9 +1660,21 @@ msgstr "Kod yerine cihazınızın parmak izi, yüz tanıma veya ekran kilidiyle 
 msgid "Sign out"
 msgstr "Çıkış yap"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Signed HTTP calls to your backend for this inbox's conversations, messages and feedback."
+msgstr "Bu gelen kutusunun konuşmaları, mesajları ve geri bildirimleri için arka ucunuza imzalı HTTP çağrıları."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Signed HTTP calls to your backend when conversations, messages, feedback or contacts change. Endpoints of the workspace receive every inbox; inbox endpoints only their inbox."
+msgstr "Konuşmalar, mesajlar, geri bildirimler veya kişiler değiştiğinde arka ucunuza imzalı HTTP çağrıları. Çalışma alanı uç noktaları tüm gelen kutularını, gelen kutusu uç noktaları yalnızca kendi kutusunu alır."
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "signed-in users only"
 msgstr "yalnızca oturum açmış kullanıcılar"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Signing secret"
+msgstr "İmzalama anahtarı"
 
 #: src/components/inbox/ContactPanel.tsx
 msgid "Since {since}"
@@ -1360,8 +1720,13 @@ msgstr "STARTTLS (port 587)"
 
 #: src/components/AppShell.tsx
 #: src/components/inbox/ConversationControls.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Status"
 msgstr "Durum"
+
+#: src/components/common/text.ts
+msgid "Succeeded"
+msgstr "Başarılı"
 
 #: src/components/common/text.ts
 msgid "Sunday"
@@ -1375,6 +1740,7 @@ msgstr "Destek adresi"
 msgid "Support e-mail"
 msgstr "Destek e-postası"
 
+#: src/components/inbox/Feedback.tsx
 #: src/components/inbox/MessageItem.tsx
 msgid "System"
 msgstr "Sistem"
@@ -1405,8 +1771,16 @@ msgid "The code is wrong or has expired."
 msgstr "Kod yanlış ya da süresi dolmuş."
 
 #: src/components/common/text.ts
+msgid "The endpoint is disabled. Enable it to send deliveries again."
+msgstr "Uç nokta kapalı. Yeniden göndermek için önce açın."
+
+#: src/components/common/text.ts
 msgid "The file is too large."
 msgstr "Dosya çok büyük."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "The inbox cannot be changed later."
+msgstr "Gelen kutusu sonradan değiştirilemez."
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "The kind cannot be changed later."
@@ -1432,6 +1806,10 @@ msgstr "Parola şifreli saklanır ve bir daha gösterilmez."
 msgid "The password is too long."
 msgstr "Parola çok uzun."
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "The previous secret also signs until {rotatedUntil}."
+msgstr "Önceki anahtar {rotatedUntil} tarihine kadar imzalamaya devam eder."
+
 #: src/components/inbox/MessageItem.tsx
 msgid "The sender's domain did not authorize this mail. It may be forged."
 msgstr "Gönderenin alan adı bu postayı onaylamadı. Sahte olabilir."
@@ -1447,6 +1825,10 @@ msgstr "Konuşmaları yerinde kalır; erişimleri hemen kalkar."
 #: src/components/settings/InboxSettings.tsx
 msgid "There are no agents in this workspace."
 msgstr "Bu çalışma alanında temsilci yok."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "This address is private, loopback or link-local. Webhooks only reach public servers."
+msgstr "Bu adres özel, yerel (loopback) veya bağlantı-yerel bir adres. Webhook'lar yalnızca herkese açık sunuculara ulaşır."
 
 #: src/components/inbox/Composer.tsx
 msgid "This address is undeliverable. Clear it on the contact before you reply."
@@ -1488,6 +1870,10 @@ msgstr "Açık konuşmada"
 msgid "Thursday"
 msgstr "Perşembe"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Time"
+msgstr "Zaman"
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Time zone"
 msgstr "Saat dilimi"
@@ -1527,6 +1913,14 @@ msgstr "Yeniden dene"
 #: src/components/common/text.ts
 msgid "Tuesday"
 msgstr "Salı"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Turn it on again once the receiver works; send failed deliveries again from the log below."
+msgstr "Alıcı çalışınca yeniden açın; başarısız gönderimleri aşağıdaki kayıttan yeniden gönderin."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Turned off by Yuva"
+msgstr "Yuva kapattı"
 
 #: src/components/settings/CannedRepliesSettings.tsx
 msgid "Type / and the shortcut in the composer to insert one."
@@ -1572,6 +1966,10 @@ msgstr "Okunmadı"
 msgid "Urgent"
 msgstr "Acil"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "URL"
+msgstr "Adres"
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "Use 1 to 8760 hours."
 msgstr "1 ile 8760 saat arası girin."
@@ -1608,6 +2006,10 @@ msgstr "https://www.example.com gibi, yol içermeyen kaynaklar kullanın."
 msgid "Username"
 msgstr "Kullanıcı adı"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
+msgstr "Her isteğe güvenmeden önce doğrulayın: <0>webhook-signature</0> başlığı <1>Standard Webhooks</1> belirtimine uyar, bu yüzden onun kütüphanelerinden herhangi biri uç noktanın anahtarıyla imzayı denetleyebilir. Go arka uçları Yuva deposundaki <2>sdk/go/webhook</2> paketini kullanabilir."
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "Visitors can chat without an identity token from your backend."
 msgstr "Ziyaretçiler, sunucunuzdan bir kimlik belirteci olmadan da sohbet edebilir."
@@ -1620,6 +2022,15 @@ msgstr "<0>{email}</0> adresine 6 haneli bir kod gönderdik. Kod 10 dakika geçe
 #: src/components/settings/ChannelsSection.tsx
 msgid "Web chat"
 msgstr "Web sohbeti"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Webhook endpoint"
+msgstr "Webhook uç noktası"
+
+#: src/components/settings/SettingsLayout.tsx
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Webhooks"
+msgstr "Webhook'lar"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "Website chat"
@@ -1637,9 +2048,17 @@ msgstr "Kimse müsait değilken sohbet penceresi yanıtın nereye gönderileceğ
 msgid "When your provider sends from another address. Replies still come to the support address."
 msgstr "Sağlayıcınız başka bir adresten gönderiyorsa. Yanıtlar yine destek adresine gelir."
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "While off, no deliveries are made."
+msgstr "Kapalıyken hiçbir gönderim yapılmaz."
+
 #: src/components/AppShell.tsx
 msgid "While the panel is open, in business hours"
 msgstr "Panel açıkken, çalışma saatlerinde"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "with notes"
+msgstr "notlarla"
 
 #: src/components/settings/MembersSettings.tsx
 msgid "Withdraw"
@@ -1698,6 +2117,10 @@ msgstr "Bunu yapma izniniz yok."
 msgid "You can change hours, branding and channels after creating it."
 msgstr "Saatleri, markayı ve kanalları oluşturduktan sonra değiştirebilirsiniz."
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "You get a new secret once. For 24 hours every delivery carries two signatures, one with the new and one with the old secret, so you can update your receiver without losing events."
+msgstr "Yeni anahtar yalnızca bir kez gösterilir. 24 saat boyunca her gönderim biri yeni, biri eski anahtarla olmak üzere iki imza taşır; böylece alıcınızı olay kaybetmeden güncelleyebilirsiniz."
+
 #: src/components/settings/ProfileSettings.tsx
 msgid "You have no passkeys yet."
 msgstr "Henüz geçiş anahtarınız yok."
@@ -1733,3 +2156,15 @@ msgstr "Oturumunuz sona erdi. Yeniden giriş yapın."
 #: src/components/AppShell.tsx
 msgid "Yuva {version}"
 msgstr "Yuva {version}"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Yuva sends a signed POST request with a JSON body for every event you pick."
+msgstr "Yuva seçtiğiniz her olay için JSON gövdeli, imzalı bir POST isteği gönderir."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Yuva turned this endpoint off on {disabledAt}."
+msgstr "Yuva bu uç noktayı {disabledAt} tarihinde kapattı."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Yuva turned this endpoint off."
+msgstr "Yuva bu uç noktayı kapattı."

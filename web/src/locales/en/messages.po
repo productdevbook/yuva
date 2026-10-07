@@ -44,6 +44,10 @@ msgstr "{actor} reopened the conversation"
 msgid "{actor} set the status to {status}"
 msgstr "{actor} set the status to {status}"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "{count} events"
+msgstr "{count} events"
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "{keyCount} settings"
 msgstr "{keyCount} settings"
@@ -56,9 +60,45 @@ msgstr "{list} are typing…"
 msgid "{list} is typing…"
 msgstr "{list} is typing…"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "{n} attempts"
+msgstr "{n} attempts"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "<0>Android:</0> add the library from <1>sdk/kotlin</1> in the Yuva repository and configure it with the same two values."
+msgstr "<0>Android:</0> add the library from <1>sdk/kotlin</1> in the Yuva repository and configure it with the same two values."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "<0>iOS:</0> add the Yuva repository as a Swift package and use the <1>YuvaKit</1> library; create the client with the server URL and this key."
+msgstr "<0>iOS:</0> add the Yuva repository as a Swift package and use the <1>YuvaKit</1> library; create the client with the server URL and this key."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "1 attempt"
+msgstr "1 attempt"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "1 event"
+msgstr "1 event"
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "1 setting"
 msgstr "1 setting"
+
+#: src/components/common/text.ts
+msgid "A contact changed"
+msgstr "A contact changed"
+
+#: src/components/common/text.ts
+msgid "A contact was deleted"
+msgstr "A contact was deleted"
+
+#: src/components/common/text.ts
+msgid "A conversation changed"
+msgstr "A conversation changed"
+
+#: src/components/common/text.ts
+msgid "A conversation started"
+msgstr "A conversation started"
 
 #: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
@@ -67,6 +107,10 @@ msgstr "A file's content does not match its type. Check the file and try again."
 #: src/components/settings/InboxSettings.tsx
 msgid "A language tag such as en or tr."
 msgstr "A language tag such as en or tr."
+
+#: src/components/common/text.ts
+msgid "A message was added"
+msgstr "A message was added"
 
 #: src/components/inbox/ThreadView.tsx
 msgid "A teammate"
@@ -104,6 +148,10 @@ msgstr "Add at least one origin."
 msgid "Add channel"
 msgstr "Add channel"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Add endpoint"
+msgstr "Add endpoint"
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Add hours"
 msgstr "Add hours"
@@ -134,16 +182,22 @@ msgstr "Agents see this inbox only when they are given access. Owners and admins
 
 #: src/components/AppShell.tsx
 #: src/components/inbox/ConversationList.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "All"
 msgstr "All"
 
 #: src/components/inbox/ConversationList.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "All inboxes"
 msgstr "All inboxes"
 
 #: src/components/settings/InboxSettings.tsx
 msgid "All of its conversations are deleted with it."
 msgstr "All of its conversations are deleted with it."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Allow anonymous users"
+msgstr "Allow anonymous users"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "Allow anonymous visitors"
@@ -153,9 +207,17 @@ msgstr "Allow anonymous visitors"
 msgid "Allowed origins"
 msgstr "Allowed origins"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Also send message.created for members' internal notes. Internal events are never sent."
+msgstr "Also send message.created for members' internal notes. Internal events are never sent."
+
 #: src/components/settings/MembersSettings.tsx
 msgid "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
 msgstr "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "anonymous users allowed"
+msgstr "anonymous users allowed"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "anonymous visitors allowed"
@@ -186,6 +248,14 @@ msgstr "API"
 #: src/components/settings/SettingsLayout.tsx
 msgid "API keys"
 msgstr "API keys"
+
+#: src/components/inbox/Feedback.tsx
+msgid "App"
+msgstr "App"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "App builds with the old key can no longer start sessions until you ship one with the new key. People already signed in keep their session."
+msgstr "App builds with the old key can no longer start sessions until you ship one with the new key. People already signed in keep their session."
 
 #: src/components/AppShell.tsx
 msgid "Ask an owner or admin of your workspace to invite you."
@@ -229,6 +299,14 @@ msgstr "Attach files"
 msgid "Attachment"
 msgstr "Attachment"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Attempt log"
+msgstr "Attempt log"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Attempts"
+msgstr "Attempts"
+
 #: src/components/inbox/ContactPanel.tsx
 msgid "Attributes"
 msgstr "Attributes"
@@ -252,6 +330,7 @@ msgstr "Away"
 
 #: src/components/inbox/InboxPage.tsx
 #: src/components/settings/InboxSettings.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Back"
 msgstr "Back"
 
@@ -280,6 +359,10 @@ msgstr "Bottom right"
 msgid "Brand color"
 msgstr "Brand color"
 
+#: src/components/common/text.ts
+msgid "Bug"
+msgstr "Bug"
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Business hours"
 msgstr "Business hours"
@@ -293,6 +376,10 @@ msgstr "Cancel"
 #: src/components/settings/SettingsLayout.tsx
 msgid "Canned replies"
 msgstr "Canned replies"
+
+#: src/components/inbox/Feedback.tsx
+msgid "Category"
+msgstr "Category"
 
 #: src/components/inbox/MessageItem.tsx
 msgid "Cc: {cc}"
@@ -386,6 +473,7 @@ msgid "Conversations that started on it keep their messages."
 msgstr "Conversations that started on it keep their messages."
 
 #: src/components/common/index.tsx
+#: src/components/inbox/Feedback.tsx
 msgid "Copied"
 msgstr "Copied"
 
@@ -397,9 +485,22 @@ msgstr "Copy"
 msgid "Copy it now and store it safely; it is not shown again."
 msgstr "Copy it now and store it safely; it is not shown again."
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Copy it now and store it with your receiver; it is not shown again."
+msgstr "Copy it now and store it with your receiver; it is not shown again."
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Copy it now and update your backend; it is not shown again."
 msgstr "Copy it now and update your backend; it is not shown again."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Copy it now and update your receiver; the old secret keeps signing for 24 hours. It is not shown again."
+msgstr "Copy it now and update your receiver; the old secret keeps signing for 24 hours. It is not shown again."
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/components/inbox/Feedback.tsx
+msgid "Copy the feedback details"
+msgstr "Copy the feedback details"
 
 #: src/components/AppShell.tsx
 msgid "Could not reach the server"
@@ -420,6 +521,10 @@ msgstr "Create key"
 #: src/components/settings/InboxesSettings.tsx
 msgid "Create one to start receiving conversations."
 msgstr "Create one to start receiving conversations."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Created"
+msgstr "Created"
 
 #: src/components/settings/ApiKeysSettings.tsx
 msgid "Created {created}"
@@ -458,6 +563,26 @@ msgstr "Delete this canned reply?"
 #: src/components/settings/InboxSettings.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
 msgstr "Deletes its channels, conversations, messages and attachments. This cannot be undone."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Deliveries"
+msgstr "Deliveries"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Deliveries show up here once a subscribed event happens."
+msgstr "Deliveries show up here once a subscribed event happens."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Delivery details"
+msgstr "Delivery details"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Description (optional)"
+msgstr "Description (optional)"
+
+#: src/components/inbox/Feedback.tsx
+msgid "Device"
+msgstr "Device"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "Display name"
@@ -500,6 +625,7 @@ msgstr "E-mail language"
 #: src/components/settings/CannedRepliesSettings.tsx
 #: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/LabelsSettings.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Edit"
 msgstr "Edit"
 
@@ -510,6 +636,10 @@ msgstr "Edit canned reply"
 #: src/components/settings/ChannelsSection.tsx
 msgid "Edit channel"
 msgstr "Edit channel"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Edit endpoint"
+msgstr "Edit endpoint"
 
 #: src/components/settings/LabelsSettings.tsx
 msgid "Edit label"
@@ -528,6 +658,10 @@ msgstr "Embed snippet"
 msgid "Encryption"
 msgstr "Encryption"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Endpoints"
+msgstr "Endpoints"
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "Enter a host name or IP address."
 msgstr "Enter a host name or IP address."
@@ -539,6 +673,26 @@ msgstr "Enter a valid e-mail address, or leave it empty."
 #: src/components/settings/ChannelsSection.tsx
 msgid "Enter a valid e-mail address."
 msgstr "Enter a valid e-mail address."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Enter an http or https URL without a user name or password."
+msgstr "Enter an http or https URL without a user name or password."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Error or answer"
+msgstr "Error or answer"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Events"
+msgstr "Events"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Every attempt has failed since {failingSince}. After 24 hours of failures Yuva turns the endpoint off."
+msgstr "Every attempt has failed since {failingSince}. After 24 hours of failures Yuva turns the endpoint off."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Every request to this endpoint, newest first. The newest 100 are kept."
+msgstr "Every request to this endpoint, newest first. The newest 100 are kept."
 
 #: src/components/settings/InboxSettings.tsx
 msgid "Expected reply time (minutes)"
@@ -552,6 +706,27 @@ msgstr "expires {expires}"
 msgid "External ids"
 msgstr "External ids"
 
+#: src/components/common/text.ts
+msgid "Failed"
+msgstr "Failed"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Failing"
+msgstr "Failing"
+
+#: src/components/AppShell.tsx
+#: src/components/inbox/InboxPage.tsx
+msgid "Feedback"
+msgstr "Feedback"
+
+#: src/components/common/text.ts
+msgid "Feedback arrived"
+msgstr "Feedback arrived"
+
+#: src/components/inbox/InboxPage.tsx
+msgid "Feedback: {category}"
+msgstr "Feedback: {category}"
+
 #: src/components/inbox/ConversationList.tsx
 msgid "Filters"
 msgstr "Filters"
@@ -559,6 +734,10 @@ msgstr "Filters"
 #: src/components/inbox/MessageItem.tsx
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "Fix the address or the channel's SMTP settings, then send the reply again."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "For signed-in users, your backend signs an identity token with the inbox's identity secret and the app passes it to the SDK."
+msgstr "For signed-in users, your backend signs an identity token with the inbox's identity secret and the app passes it to the SDK."
 
 #: src/components/settings/ApiKeysSettings.tsx
 msgid "For your backends and scripts. A key acts on this workspace only and cannot manage members or keys."
@@ -607,12 +786,16 @@ msgid "High"
 msgstr "High"
 
 #: src/components/settings/ChannelsSection.tsx
-msgid "How messages reach this inbox. E-mail channels receive and send mail, web chat channels power the chat widget; the other kinds store their settings for now."
-msgstr "How messages reach this inbox. E-mail channels receive and send mail, web chat channels power the chat widget; the other kinds store their settings for now."
+msgid "How messages reach this inbox. E-mail channels receive and send mail, web chat channels power the chat widget, mobile app channels the iOS and Android SDKs, and API channels take feedback from your backend."
+msgstr "How messages reach this inbox. E-mail channels receive and send mail, web chat channels power the chat widget, mobile app channels the iOS and Android SDKs, and API channels take feedback from your backend."
 
 #: src/components/common/index.tsx
 msgid "I saved it"
 msgstr "I saved it"
+
+#: src/components/common/text.ts
+msgid "Idea"
+msgstr "Idea"
 
 #: src/components/settings/InboxesSettings.tsx
 #: src/components/settings/InboxSettings.tsx
@@ -623,8 +806,13 @@ msgstr "Identity secret"
 msgid "In an hour"
 msgstr "In an hour"
 
+#: src/components/inbox/Feedback.tsx
+msgid "In the app and by e-mail"
+msgstr "In the app and by e-mail"
+
 #: src/components/inbox/ConversationList.tsx
 #: src/components/settings/InboxSettings.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Inbox"
 msgstr "Inbox"
 
@@ -638,6 +826,10 @@ msgstr "Inbox color"
 msgid "Inboxes"
 msgstr "Inboxes"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Include notes"
+msgstr "Include notes"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Insert a canned reply (in the composer)"
 msgstr "Insert a canned reply (in the composer)"
@@ -645,6 +837,10 @@ msgstr "Insert a canned reply (in the composer)"
 #: src/components/settings/ChannelsSection.tsx
 msgid "Install"
 msgstr "Install"
+
+#: src/components/inbox/Feedback.tsx
+msgid "Installation"
+msgstr "Installation"
 
 #: src/components/inbox/MessageItem.tsx
 msgid "Internal note"
@@ -661,6 +857,10 @@ msgstr "Invite language"
 #: src/components/settings/MembersSettings.tsx
 msgid "Invites"
 msgstr "Invites"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "iOS and Android app"
+msgstr "iOS and Android app"
 
 #: src/components/settings/LabelsSettings.tsx
 msgid "It is removed from every conversation."
@@ -704,9 +904,21 @@ msgstr "Labels"
 msgid "Language"
 msgstr "Language"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Last attempt"
+msgstr "Last attempt"
+
+#: src/components/inbox/ContactPanel.tsx
+msgid "Last seen {seen}"
+msgstr "Last seen {seen}"
+
 #: src/components/settings/ApiKeysSettings.tsx
 msgid "last used {used}"
 msgstr "last used {used}"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Latency"
+msgstr "Latency"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "Launcher color"
@@ -735,12 +947,17 @@ msgstr "Load images"
 
 #: src/components/inbox/ContactPanel.tsx
 #: src/components/inbox/ConversationList.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Load more"
 msgstr "Load more"
 
 #: src/components/inbox/ThreadView.tsx
 msgid "Load older messages"
 msgstr "Load older messages"
+
+#: src/components/inbox/Feedback.tsx
+msgid "Locale"
+msgstr "Locale"
 
 #: src/components/settings/InboxSettings.tsx
 msgid "Logo URL"
@@ -757,6 +974,10 @@ msgstr "Lowercase letters, digits and dashes."
 #: src/components/settings/InboxesSettings.tsx
 msgid "Lowercase letters, digits and dashes. Used in addresses and the widget."
 msgstr "Lowercase letters, digits and dashes. Used in addresses and the widget."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "manual"
+msgstr "manual"
 
 #: src/components/inbox/ConversationControls.tsx
 msgid "Mark as spam"
@@ -788,6 +1009,7 @@ msgid "Mine"
 msgstr "Mine"
 
 #: src/components/common/text.ts
+#: src/components/settings/ChannelsSection.tsx
 msgid "Mobile app"
 msgstr "Mobile app"
 
@@ -854,6 +1076,22 @@ msgstr "New label"
 msgid "New password"
 msgstr "New password"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "New signing secret"
+msgstr "New signing secret"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Newest first. Finished deliveries are kept for 7 days."
+msgstr "Newest first. Finished deliveries are kept for 7 days."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Next attempt"
+msgstr "Next attempt"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "next attempt {when}"
+msgstr "next attempt {when}"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Next conversation"
 msgstr "Next conversation"
@@ -861,6 +1099,18 @@ msgstr "Next conversation"
 #: src/components/inbox/ConversationControls.tsx
 msgid "Next week"
 msgstr "Next week"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "no answer"
+msgstr "no answer"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "No attempt yet."
+msgstr "No attempt yet."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "No attempts yet."
+msgstr "No attempts yet."
 
 #: src/components/settings/CannedRepliesSettings.tsx
 msgid "No canned replies yet"
@@ -873,6 +1123,14 @@ msgstr "No channels yet."
 #: src/components/inbox/ConversationList.tsx
 msgid "No conversations here"
 msgstr "No conversations here"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "No deliveries"
+msgstr "No deliveries"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "No endpoints yet."
+msgstr "No endpoints yet."
 
 #: src/components/settings/InboxesSettings.tsx
 msgid "No inboxes yet"
@@ -917,6 +1175,10 @@ msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds 
 msgstr "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
 
 #: src/components/settings/ChannelsSection.tsx
+msgid "Not a secret: it ships inside your app. Native apps send no origin, so the key is not tied to one."
+msgstr "Not a secret: it ships inside your app. Native apps send no origin, so the key is not tied to one."
+
+#: src/components/settings/ChannelsSection.tsx
 msgid "Not an origin: {notOrigins}. Use scheme and host only, such as https://www.example.com."
 msgstr "Not an origin: {notOrigins}. Use scheme and host only, such as https://www.example.com."
 
@@ -938,6 +1200,7 @@ msgstr "Nothing matches your search."
 
 #: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/InboxSettings.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Off"
 msgstr "Off"
 
@@ -947,6 +1210,7 @@ msgstr "Offline"
 
 #: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/InboxSettings.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "On"
 msgstr "On"
 
@@ -957,6 +1221,14 @@ msgstr "One inbox per product or brand. Each has its own channels, hours and tea
 #: src/components/settings/ChannelsSection.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "One per line, 1 to 20. Only pages on these origins can use the widget."
+
+#: src/components/inbox/ContactPanel.tsx
+msgid "Online now"
+msgstr "Online now"
+
+#: src/components/inbox/Feedback.tsx
+msgid "Only in the app"
+msgstr "Only in the app"
 
 #: src/components/inbox/Composer.tsx
 msgid "Only members see notes"
@@ -978,6 +1250,10 @@ msgstr "Opens"
 #: src/components/auth/SignInPage.tsx
 msgid "or"
 msgstr "or"
+
+#: src/components/common/text.ts
+msgid "Other"
+msgstr "Other"
 
 #: src/components/inbox/ContactPanel.tsx
 msgid "Other conversations"
@@ -1015,9 +1291,21 @@ msgstr "Password set"
 msgid "Paste it before the closing body tag of every page that should show the chat."
 msgstr "Paste it before the closing body tag of every page that should show the chat."
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Payload"
+msgstr "Payload"
+
 #: src/components/common/text.ts
 msgid "Pending"
 msgstr "Pending"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Pending deliveries are dropped with it."
+msgstr "Pending deliveries are dropped with it."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "People who are not signed in to your app can write without an identity token from your backend."
+msgstr "People who are not signed in to your app can write without an identity token from your backend."
 
 #: src/components/settings/InboxSettings.tsx
 #: src/components/settings/LabelsSettings.tsx
@@ -1036,9 +1324,25 @@ msgstr "Pick a conversation"
 msgid "Pick a TLS mode."
 msgstr "Pick a TLS mode."
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Pick at least one event."
+msgstr "Pick at least one event."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Pick at least one platform."
+msgstr "Pick at least one platform."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Platforms"
+msgstr "Platforms"
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "Port"
 msgstr "Port"
+
+#: src/components/common/text.ts
+msgid "Praise"
+msgstr "Praise"
 
 #: src/components/settings/LabelsSettings.tsx
 msgid "Preview"
@@ -1060,6 +1364,14 @@ msgstr "Profile"
 msgid "Public key"
 msgstr "Public key"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Push notifications"
+msgstr "Push notifications"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Queued. The new attempt shows up below in a moment."
+msgstr "Queued. The new attempt shows up below in a moment."
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "receives only, no SMTP account"
 msgstr "receives only, no SMTP account"
@@ -1068,6 +1380,14 @@ msgstr "receives only, no SMTP account"
 msgid "Receiving"
 msgstr "Receiving"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Redeliver"
+msgstr "Redeliver"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Refresh"
+msgstr "Refresh"
+
 #: src/components/inbox/MessageItem.tsx
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Remote images can tell the sender that you opened the mail."
@@ -1075,6 +1395,7 @@ msgstr "Remote images can tell the sender that you opened the mail."
 #: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/MembersSettings.tsx
 #: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Remove"
 msgstr "Remove"
 
@@ -1101,6 +1422,10 @@ msgstr "Remove these hours"
 msgid "Remove this channel?"
 msgstr "Remove this channel?"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Remove this endpoint?"
+msgstr "Remove this endpoint?"
+
 #: src/components/settings/ProfileSettings.tsx
 msgid "Remove this passkey?"
 msgstr "Remove this passkey?"
@@ -1124,6 +1449,10 @@ msgstr "Replied in the thread of <0>{title}</0>"
 #: src/components/inbox/ThreadView.tsx
 msgid "Replied in the thread of another conversation"
 msgstr "Replied in the thread of another conversation"
+
+#: src/components/inbox/Feedback.tsx
+msgid "Replies"
+msgstr "Replies"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "Replies go out through your own SMTP account. Leave the host empty to only receive mail."
@@ -1168,10 +1497,12 @@ msgstr "Role of {name}"
 
 #: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/InboxSettings.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Rotate"
 msgstr "Rotate"
 
 #: src/components/settings/InboxSettings.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Rotate secret"
 msgstr "Rotate secret"
 
@@ -1183,6 +1514,10 @@ msgstr "Rotate the identity secret?"
 msgid "Rotate the public key?"
 msgstr "Rotate the public key?"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Rotate the signing secret?"
+msgstr "Rotate the signing secret?"
+
 #: src/components/common/text.ts
 msgid "Saturday"
 msgstr "Saturday"
@@ -1192,6 +1527,7 @@ msgstr "Saturday"
 #: src/components/settings/InboxSettings.tsx
 #: src/components/settings/LabelsSettings.tsx
 #: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Save"
 msgstr "Save"
 
@@ -1211,6 +1547,10 @@ msgstr "Saved answers"
 #: src/components/settings/ChannelsSection.tsx
 msgid "Saving removes the stored password."
 msgstr "Saving removes the stored password."
+
+#: src/components/inbox/Feedback.tsx
+msgid "Screen"
+msgstr "Screen"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search"
@@ -1233,6 +1573,10 @@ msgstr "Send a new code"
 msgid "Send an auto-reply"
 msgstr "Send an auto-reply"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Send events"
+msgstr "Send events"
+
 #: src/components/auth/SignInPage.tsx
 msgid "Send me a code"
 msgstr "Send me a code"
@@ -1253,6 +1597,10 @@ msgstr "sends through {0}"
 #: src/components/inbox/MessageItem.tsx
 msgid "Sent by e-mail"
 msgstr "Sent by e-mail"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Server URL"
+msgstr "Server URL"
 
 #: src/components/AppShell.tsx
 #: src/components/settings/SettingsLayout.tsx
@@ -1312,9 +1660,21 @@ msgstr "Sign in with your device's fingerprint, face or screen lock instead of a
 msgid "Sign out"
 msgstr "Sign out"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Signed HTTP calls to your backend for this inbox's conversations, messages and feedback."
+msgstr "Signed HTTP calls to your backend for this inbox's conversations, messages and feedback."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Signed HTTP calls to your backend when conversations, messages, feedback or contacts change. Endpoints of the workspace receive every inbox; inbox endpoints only their inbox."
+msgstr "Signed HTTP calls to your backend when conversations, messages, feedback or contacts change. Endpoints of the workspace receive every inbox; inbox endpoints only their inbox."
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "signed-in users only"
 msgstr "signed-in users only"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Signing secret"
+msgstr "Signing secret"
 
 #: src/components/inbox/ContactPanel.tsx
 msgid "Since {since}"
@@ -1360,8 +1720,13 @@ msgstr "STARTTLS (port 587)"
 
 #: src/components/AppShell.tsx
 #: src/components/inbox/ConversationControls.tsx
+#: src/components/settings/WebhooksSettings.tsx
 msgid "Status"
 msgstr "Status"
+
+#: src/components/common/text.ts
+msgid "Succeeded"
+msgstr "Succeeded"
 
 #: src/components/common/text.ts
 msgid "Sunday"
@@ -1375,6 +1740,7 @@ msgstr "Support address"
 msgid "Support e-mail"
 msgstr "Support e-mail"
 
+#: src/components/inbox/Feedback.tsx
 #: src/components/inbox/MessageItem.tsx
 msgid "System"
 msgstr "System"
@@ -1405,8 +1771,16 @@ msgid "The code is wrong or has expired."
 msgstr "The code is wrong or has expired."
 
 #: src/components/common/text.ts
+msgid "The endpoint is disabled. Enable it to send deliveries again."
+msgstr "The endpoint is disabled. Enable it to send deliveries again."
+
+#: src/components/common/text.ts
 msgid "The file is too large."
 msgstr "The file is too large."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "The inbox cannot be changed later."
+msgstr "The inbox cannot be changed later."
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "The kind cannot be changed later."
@@ -1432,6 +1806,10 @@ msgstr "The password is stored encrypted and never shown again."
 msgid "The password is too long."
 msgstr "The password is too long."
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "The previous secret also signs until {rotatedUntil}."
+msgstr "The previous secret also signs until {rotatedUntil}."
+
 #: src/components/inbox/MessageItem.tsx
 msgid "The sender's domain did not authorize this mail. It may be forged."
 msgstr "The sender's domain did not authorize this mail. It may be forged."
@@ -1447,6 +1825,10 @@ msgstr "Their conversations stay; they lose access at once."
 #: src/components/settings/InboxSettings.tsx
 msgid "There are no agents in this workspace."
 msgstr "There are no agents in this workspace."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "This address is private, loopback or link-local. Webhooks only reach public servers."
+msgstr "This address is private, loopback or link-local. Webhooks only reach public servers."
 
 #: src/components/inbox/Composer.tsx
 msgid "This address is undeliverable. Clear it on the contact before you reply."
@@ -1488,6 +1870,10 @@ msgstr "Thread"
 msgid "Thursday"
 msgstr "Thursday"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Time"
+msgstr "Time"
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Time zone"
 msgstr "Time zone"
@@ -1527,6 +1913,14 @@ msgstr "Try again"
 #: src/components/common/text.ts
 msgid "Tuesday"
 msgstr "Tuesday"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Turn it on again once the receiver works; send failed deliveries again from the log below."
+msgstr "Turn it on again once the receiver works; send failed deliveries again from the log below."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Turned off by Yuva"
+msgstr "Turned off by Yuva"
 
 #: src/components/settings/CannedRepliesSettings.tsx
 msgid "Type / and the shortcut in the composer to insert one."
@@ -1572,6 +1966,10 @@ msgstr "Unread"
 msgid "Urgent"
 msgstr "Urgent"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "URL"
+msgstr "URL"
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "Use 1 to 8760 hours."
 msgstr "Use 1 to 8760 hours."
@@ -1608,6 +2006,10 @@ msgstr "Use origins such as https://www.example.com, without a path."
 msgid "Username"
 msgstr "Username"
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
+msgstr "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "Visitors can chat without an identity token from your backend."
 msgstr "Visitors can chat without an identity token from your backend."
@@ -1620,6 +2022,15 @@ msgstr "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
 #: src/components/settings/ChannelsSection.tsx
 msgid "Web chat"
 msgstr "Web chat"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Webhook endpoint"
+msgstr "Webhook endpoint"
+
+#: src/components/settings/SettingsLayout.tsx
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Webhooks"
+msgstr "Webhooks"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "Website chat"
@@ -1637,9 +2048,17 @@ msgstr "When nobody is available, the widget asks where to send the reply."
 msgid "When your provider sends from another address. Replies still come to the support address."
 msgstr "When your provider sends from another address. Replies still come to the support address."
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "While off, no deliveries are made."
+msgstr "While off, no deliveries are made."
+
 #: src/components/AppShell.tsx
 msgid "While the panel is open, in business hours"
 msgstr "While the panel is open, in business hours"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "with notes"
+msgstr "with notes"
 
 #: src/components/settings/MembersSettings.tsx
 msgid "Withdraw"
@@ -1698,6 +2117,10 @@ msgstr "You are not allowed to do this."
 msgid "You can change hours, branding and channels after creating it."
 msgstr "You can change hours, branding and channels after creating it."
 
+#: src/components/settings/WebhooksSettings.tsx
+msgid "You get a new secret once. For 24 hours every delivery carries two signatures, one with the new and one with the old secret, so you can update your receiver without losing events."
+msgstr "You get a new secret once. For 24 hours every delivery carries two signatures, one with the new and one with the old secret, so you can update your receiver without losing events."
+
 #: src/components/settings/ProfileSettings.tsx
 msgid "You have no passkeys yet."
 msgstr "You have no passkeys yet."
@@ -1733,3 +2156,15 @@ msgstr "Your session has ended. Sign in again."
 #: src/components/AppShell.tsx
 msgid "Yuva {version}"
 msgstr "Yuva {version}"
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Yuva sends a signed POST request with a JSON body for every event you pick."
+msgstr "Yuva sends a signed POST request with a JSON body for every event you pick."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Yuva turned this endpoint off on {disabledAt}."
+msgstr "Yuva turned this endpoint off on {disabledAt}."
+
+#: src/components/settings/WebhooksSettings.tsx
+msgid "Yuva turned this endpoint off."
+msgstr "Yuva turned this endpoint off."

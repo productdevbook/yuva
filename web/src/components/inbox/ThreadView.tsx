@@ -15,6 +15,7 @@ import {
   StatusMenu,
   type MenuName,
 } from "@/components/inbox/ConversationControls"
+import { CategoryChip, FeedbackDetails } from "@/components/inbox/Feedback"
 import { MessageItem } from "@/components/inbox/MessageItem"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -250,6 +251,7 @@ export function ThreadView({
               <h2 className="truncate text-base font-semibold" data-testid="thread-subject">
                 {c.subject || <Trans>No subject</Trans>}
               </h2>
+              {c.kind === "feedback" && c.feedback && <CategoryChip category={c.feedback.category} className="py-0.5" />}
               {channel.data?.kind === "chat" && (
                 <Badge variant="secondary" data-testid="chat-badge">
                   <MessageCircleIcon />
@@ -273,6 +275,7 @@ export function ThreadView({
             <PanelRightIcon />
           </Button>
         </div>
+        {c.kind === "feedback" && c.feedback && <FeedbackDetails feedback={c.feedback} />}
         <div className="flex flex-wrap items-center gap-1.5">
           <AssigneeMenu {...controls} />
           <StatusMenu {...controls} />

@@ -3,12 +3,12 @@ import { BanIcon, LanguagesIcon, MailIcon, MailWarningIcon } from "lucide-react"
 import { Link } from "react-router"
 
 import { ErrorLine, PersonAvatar } from "@/components/common"
-import { formatDateTime, formatShort, useEnumText } from "@/components/common/text"
+import { formatDateTime, formatRelative, formatShort, useEnumText } from "@/components/common/text"
 import { statusIcons } from "@/components/inbox/ConversationControls"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { UndeliverableEmail } from "@/lib/api"
-import { useClearUndeliverable, useContact, useConversations, useInboxes } from "@/lib/queries"
+import { useClearUndeliverable, useContact, useContactPresence, useConversations, useInboxes } from "@/lib/queries"
 import { cn } from "@/lib/utils"
 
 function Section({ title, children }: { title: React.ReactNode; children: React.ReactNode }) {
@@ -73,6 +73,24 @@ function Undeliverable({ contactId, u }: { contactId: string; u: UndeliverableEm
   )
 }
 
+function Presence({ contactId }: { contactId: string }) {
+  const { i18n } = useLingui()
+  const presence = useContactPresence(contactId).data
+  if (!presence || (!presence.online && !presence.last_seen_at)) return null
+  const seen = presence.last_seen_at ? formatRelative(presence.last_seen_at, i18n.locale) : ""
+  return (
+    <p
+      className="flex items-center gap-1.5 text-xs text-muted-foreground"
+      data-testid="contact-presence"
+      data-online={presence.online}
+      title={presence.last_seen_at ? formatDateTime(presence.last_seen_at, i18n.locale) : undefined}
+    >
+      <span className={cn("size-2 shrink-0 rounded-full", presence.online ? "bg-success" : "bg-muted-foreground/50")} />
+      {presence.online ? <Trans>Online now</Trans> : <Trans>Last seen {seen}</Trans>}
+    </p>
+  )
+}
+
 export function ContactPanel({
   contactId,
   conversationId,
@@ -109,6 +127,7 @@ export function ContactPanel({
         <PersonAvatar name={name} className="size-10 text-sm" />
         <div className="min-w-0">
           <p className="truncate font-medium">{name}</p>
+          <Presence contactId={c.id} />
           <p className="text-xs text-muted-foreground">
             <Trans>Since {since}</Trans>
           </p>

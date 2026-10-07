@@ -83,6 +83,17 @@ export function useContact(id: string | undefined) {
   })
 }
 
+export function useContactPresence(id: string | undefined) {
+  const { workspaceId: ws } = useSession()
+  return useQuery({
+    queryKey: keys.contactPresence(ws, id ?? ""),
+    queryFn: () =>
+      unwrap(api.GET("/v1/contacts/{contactId}/presence", { params: { path: { contactId: id! } } })),
+    enabled: !!id,
+    refetchOnWindowFocus: "always",
+  })
+}
+
 export function useClearUndeliverable(contactId: string) {
   const qc = useQueryClient()
   const { workspaceId: ws } = useSession()

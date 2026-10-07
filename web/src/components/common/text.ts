@@ -1,6 +1,18 @@
 import { useLingui } from "@lingui/react/macro"
 
-import { ApiError, type ChannelKind, type ConversationStatus, type InboxMode, type Priority, type Role, type Weekday } from "@/lib/api"
+import {
+  ApiError,
+  type AppPlatform,
+  type ChannelKind,
+  type ConversationStatus,
+  type FeedbackCategory,
+  type InboxMode,
+  type Priority,
+  type Role,
+  type WebhookDeliveryState,
+  type WebhookEventType,
+  type Weekday,
+} from "@/lib/api"
 
 export const STATUSES: ConversationStatus[] = ["open", "pending", "snoozed", "closed"]
 export const PRIORITIES: Priority[] = ["urgent", "high", "normal", "low"]
@@ -8,6 +20,17 @@ export const ROLES: Role[] = ["owner", "admin", "agent"]
 export const CHANNEL_KINDS: ChannelKind[] = ["email", "chat", "app", "api"]
 export const MODES: InboxMode[] = ["async", "live"]
 export const WEEKDAYS: Weekday[] = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+export const FEEDBACK_CATEGORIES: FeedbackCategory[] = ["bug", "idea", "praise", "other"]
+export const PLATFORMS: AppPlatform[] = ["ios", "android"]
+export const WEBHOOK_EVENTS: WebhookEventType[] = [
+  "conversation.created",
+  "conversation.updated",
+  "message.created",
+  "feedback.created",
+  "contact.updated",
+  "contact.deleted",
+]
+export const DELIVERY_STATES: WebhookDeliveryState[] = ["pending", "succeeded", "failed"]
 
 export function useEnumText() {
   const { t } = useLingui()
@@ -23,6 +46,23 @@ export function useEnumText() {
       string
     >,
     mode: { live: t`Live`, async: t`Async` } satisfies Record<InboxMode, string>,
+    category: { bug: t`Bug`, idea: t`Idea`, praise: t`Praise`, other: t`Other` } satisfies Record<
+      FeedbackCategory,
+      string
+    >,
+    platform: { ios: "iOS", android: "Android" } satisfies Record<AppPlatform, string>,
+    event: {
+      "conversation.created": t`A conversation started`,
+      "conversation.updated": t`A conversation changed`,
+      "message.created": t`A message was added`,
+      "feedback.created": t`Feedback arrived`,
+      "contact.updated": t`A contact changed`,
+      "contact.deleted": t`A contact was deleted`,
+    } satisfies Record<WebhookEventType, string>,
+    delivery: { pending: t`Pending`, succeeded: t`Succeeded`, failed: t`Failed` } satisfies Record<
+      WebhookDeliveryState,
+      string
+    >,
     weekday: {
       mon: t`Monday`,
       tue: t`Tuesday`,
@@ -44,6 +84,7 @@ export function useErrorText() {
     if (err.code === "email_not_configured")
       return t`This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings.`
     if (err.code === "email_address_taken") return t`Another channel already receives mail at this address.`
+    if (err.code === "webhook_disabled") return t`The endpoint is disabled. Enable it to send deliveries again.`
     if (err.code === "attachment_type_mismatch") return t`A file's content does not match its type. Check the file and try again.`
     switch (err.status) {
       case 400:
@@ -81,6 +122,18 @@ export function formatBytes(n: number, locale: string) {
 
 export function formatDateTime(iso: string, locale: string) {
   return new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso))
+}
+
+export function formatRelative(iso: string, locale: string, now = Date.now()) {
+  const sec = Math.round((new Date(iso).getTime() - now) / 1000)
+  const abs = Math.abs(sec)
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" })
+  if (abs < 5) return rtf.format(0, "second")
+  if (abs < 60) return rtf.format(sec, "second")
+  if (abs < 3600) return rtf.format(Math.round(sec / 60), "minute")
+  if (abs < 86400) return rtf.format(Math.round(sec / 3600), "hour")
+  if (abs < 7 * 86400) return rtf.format(Math.round(sec / 86400), "day")
+  return formatDateTime(iso, locale)
 }
 
 export function formatShort(iso: string, locale: string, now = new Date()) {

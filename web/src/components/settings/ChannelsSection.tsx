@@ -4,10 +4,11 @@ import { CheckIcon, InfoIcon, PencilIcon, PlusIcon, RefreshCwIcon, Trash2Icon } 
 import { useState } from "react"
 
 import { CopyButton, ErrorLine, useConfirm } from "@/components/common"
-import { CHANNEL_KINDS, useEnumText } from "@/components/common/text"
+import { CHANNEL_KINDS, PLATFORMS, useEnumText } from "@/components/common/text"
 import { Field, Section } from "@/components/settings/SettingsLayout"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Dialog,
   DialogContent,
@@ -24,6 +25,9 @@ import {
   api,
   ApiError,
   unwrap,
+  type AppChannel,
+  type AppChannelInput,
+  type AppPlatform,
   type Channel,
   type ChannelKind,
   type ChatChannel,
@@ -69,7 +73,7 @@ export function ChannelsSection({ inbox }: { inbox: Inbox }) {
     <Section
       title={<Trans>Channels</Trans>}
       description={
-        <Trans>How messages reach this inbox. E-mail channels receive and send mail, web chat channels power the chat widget; the other kinds store their settings for now.</Trans>
+        <Trans>How messages reach this inbox. E-mail channels receive and send mail, web chat channels power the chat widget, mobile app channels the iOS and Android SDKs, and API channels take feedback from your backend.</Trans>
       }
       action={
         canManage && (
@@ -98,6 +102,8 @@ export function ChannelsSection({ inbox }: { inbox: Inbox }) {
                       <EmailSummary e={ch.email} />
                     ) : ch.chat ? (
                       <ChatSummary c={ch.chat} />
+                    ) : ch.app ? (
+                      <AppSummary c={ch.app} />
                     ) : keyCount === 0 ? (
                       <Trans>No settings</Trans>
                     ) : keyCount === 1 ? (
@@ -141,7 +147,7 @@ export function ChannelsSection({ inbox }: { inbox: Inbox }) {
           inboxId={inbox.id}
           channel={editing === "new" ? null : editing}
           onClose={() => setEditing(null)}
-          onCreated={(ch) => setEditing(ch.kind === "chat" ? ch : null)}
+          onCreated={(ch) => setEditing(ch.kind === "chat" || ch.kind === "app" ? ch : null)}
         />
       )}
       {confirmDialog}
@@ -168,6 +174,18 @@ function ChatSummary({ c }: { c: ChatChannel }) {
       {more > 0 && <> +{more}</>}
       {" · "}
       {c.allow_anonymous ? <Trans>anonymous visitors allowed</Trans> : <Trans>signed-in users only</Trans>}
+    </>
+  )
+}
+
+function AppSummary({ c }: { c: AppChannel }) {
+  const text = useEnumText()
+  const platforms = c.platforms.map((p) => text.platform[p]).join(", ")
+  return (
+    <>
+      {platforms}
+      {" · "}
+      {c.allow_anonymous ? <Trans>anonymous users allowed</Trans> : <Trans>signed-in users only</Trans>}
     </>
   )
 }
@@ -284,18 +302,23 @@ function ChannelDialog({
   const [raw, setRaw] = useState(channel ? JSON.stringify(channel.settings, null, 2) : "{}")
   const [email, setEmail] = useState<EmailForm>(() => emailForm(channel?.email))
   const [chat, setChat] = useState<ChatForm>(() => chatForm(channel?.chat))
+  const [app, setApp] = useState<AppForm>(() => appForm(channel?.app))
   const isEmail = kind === "email"
   const isChat = kind === "chat"
-  const settings = isEmail || isChat ? {} : parseSettings(raw)
+  const isApp = kind === "app"
+  const settings = isEmail || isChat || isApp ? {} : parseSettings(raw)
   const chatInput = isChat ? chatChannelInput(chat) : null
-  const valid = !!settings && (!isChat || chatInput?.ok === true)
+  const appInput = isApp ? appChannelInput(app) : null
+  const valid = !!settings && (!isChat || chatInput?.ok === true) && (!isApp || !!appInput)
   const save = useMutation({
     mutationFn: () => {
       const typed = isEmail
         ? { email: emailInput(email) }
         : isChat && chatInput?.ok
           ? { chat: chatInput.value }
-          : { settings: settings ?? {} }
+          : isApp && appInput
+            ? { app: appInput }
+            : { settings: settings ?? {} }
       return channel
         ? unwrap(
             api.PATCH("/v1/channels/{channelId}", {
@@ -328,6 +351,7 @@ function ChannelDialog({
           className="flex min-w-0 flex-col gap-4"
           onSubmit={(e) => {
             e.preventDefault()
+            setApp((a) => ({ ...a, touched: true }))
             if (valid) {
               setChat((c) => ({ ...c, touched: true }))
               save.mutate()
@@ -365,7 +389,7 @@ function ChannelDialog({
               required
               maxLength={200}
               value={name}
-              placeholder={isChat ? t`Website chat` : t`Support e-mail`}
+              placeholder={isChat ? t`Website chat` : isApp ? t`iOS and Android app` : t`Support e-mail`}
               onChange={(e) => setName(e.target.value)}
             />
           </Field>
@@ -385,6 +409,11 @@ function ChannelDialog({
                 serverError={badChat}
               />
               {channel?.chat && <ChatEmbed channel={channel} />}
+            </>
+          ) : isApp ? (
+            <>
+              <AppFields f={app} set={(patch) => setApp((f) => ({ ...f, ...patch }))} />
+              {channel?.app && <AppInstall channel={channel} />}
             </>
           ) : (
             <Field
@@ -902,64 +931,87 @@ function embedSnippet(publicKey: string) {
   return `<script src="${origin}/yuva.js"></script>\n<yuva-chat channel="${publicKey}" server="${origin}"></yuva-chat>`
 }
 
-function ChatEmbed({ channel }: { channel: Channel }) {
+function PublicKeyField({
+  channel,
+  value,
+  onRotated,
+  hint,
+  warning,
+}: {
+  channel: Channel
+  value: string
+  onRotated: (key: string) => void
+  hint: React.ReactNode
+  warning: React.ReactNode
+}) {
   const qc = useQueryClient()
   const { workspaceId: ws } = useSession()
   const [confirm, confirmDialog] = useConfirm()
-  const [publicKey, setPublicKey] = useState(channel.chat!.public_key)
   const rotate = useMutation({
     mutationFn: () =>
       unwrap(api.POST("/v1/channels/{channelId}/public-key", { params: { path: { channelId: channel.id } } })),
     onSuccess: (data) => {
-      if (data.chat) setPublicKey(data.chat.public_key)
+      const key = data.chat?.public_key ?? data.app?.public_key
+      if (key) onRotated(key)
       void qc.invalidateQueries({ queryKey: keys.channels(ws, channel.inbox_id) })
       qc.setQueryData(keys.channel(ws, channel.id), data)
     },
   })
+  return (
+    <Field label={<Trans>Public key</Trans>} hint={hint}>
+      <div className="flex items-center gap-2">
+        <code
+          className="min-w-0 flex-1 truncate rounded-md border bg-muted px-2 py-1.5 font-mono text-xs"
+          data-testid="channel-public-key"
+        >
+          {value}
+        </code>
+        <CopyButton value={value} />
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={rotate.isPending}
+          data-testid="rotate-public-key"
+          onClick={() =>
+            confirm({
+              title: <Trans>Rotate the public key?</Trans>,
+              description: warning,
+              confirm: <Trans>Rotate</Trans>,
+              run: () => rotate.mutate(),
+            })
+          }
+        >
+          <RefreshCwIcon />
+          <Trans>Rotate</Trans>
+        </Button>
+      </div>
+      <ErrorLine error={rotate.error} className="text-xs" />
+      {confirmDialog}
+    </Field>
+  )
+}
+
+function ChatEmbed({ channel }: { channel: Channel }) {
+  const [publicKey, setPublicKey] = useState(channel.chat!.public_key)
   const snippet = embedSnippet(publicKey)
   return (
     <fieldset className="flex min-w-0 flex-col gap-4" data-testid="chat-embed">
       <legend className="mb-3 text-sm font-semibold">
         <Trans>Install</Trans>
       </legend>
-      <Field
-        label={<Trans>Public key</Trans>}
+      <PublicKeyField
+        channel={channel}
+        value={publicKey}
+        onRotated={setPublicKey}
         hint={<Trans>Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats.</Trans>}
-      >
-        <div className="flex items-center gap-2">
-          <code
-            className="min-w-0 flex-1 truncate rounded-md border bg-muted px-2 py-1.5 font-mono text-xs"
-            data-testid="chat-public-key"
-          >
-            {publicKey}
-          </code>
-          <CopyButton value={publicKey} />
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            disabled={rotate.isPending}
-            data-testid="chat-rotate-key"
-            onClick={() =>
-              confirm({
-                title: <Trans>Rotate the public key?</Trans>,
-                description: (
-                  <Trans>
-                    Pages that embed the old key can no longer start chats until you update the snippet. Visitors already
-                    chatting keep their session.
-                  </Trans>
-                ),
-                confirm: <Trans>Rotate</Trans>,
-                run: () => rotate.mutate(),
-              })
-            }
-          >
-            <RefreshCwIcon />
-            <Trans>Rotate</Trans>
-          </Button>
-        </div>
-        <ErrorLine error={rotate.error} className="text-xs" />
-      </Field>
+        warning={
+          <Trans>
+            Pages that embed the old key can no longer start chats until you update the snippet. Visitors already
+            chatting keep their session.
+          </Trans>
+        }
+      />
       <Field
         label={<Trans>Embed snippet</Trans>}
         hint={<Trans>Paste it before the closing body tag of every page that should show the chat.</Trans>}
@@ -974,7 +1026,118 @@ function ChatEmbed({ channel }: { channel: Channel }) {
           <CopyButton value={snippet} className="self-start" />
         </div>
       </Field>
-      {confirmDialog}
+    </fieldset>
+  )
+}
+
+type AppForm = { allowAnonymous: boolean; platforms: AppPlatform[]; touched: boolean }
+
+function appForm(c?: AppChannel): AppForm {
+  return { allowAnonymous: c?.allow_anonymous ?? false, platforms: c?.platforms ?? ["ios", "android"], touched: false }
+}
+
+function appChannelInput(f: AppForm): AppChannelInput | null {
+  if (f.platforms.length === 0) return null
+  return { allow_anonymous: f.allowAnonymous, platforms: PLATFORMS.filter((p) => f.platforms.includes(p)) }
+}
+
+function AppFields({ f, set }: { f: AppForm; set: (patch: Partial<AppForm>) => void }) {
+  const { t } = useLingui()
+  const text = useEnumText()
+  const none = f.platforms.length === 0
+  return (
+    <fieldset className="flex min-w-0 flex-col gap-4">
+      <legend className="mb-3 text-sm font-semibold">
+        <Trans>Mobile app</Trans>
+      </legend>
+      <div className="flex flex-col gap-1.5">
+        <span className="text-sm font-medium" id="app-platforms">
+          <Trans>Platforms</Trans>
+        </span>
+        <div className="flex gap-4" role="group" aria-labelledby="app-platforms">
+          {PLATFORMS.map((p) => (
+            <label key={p} className="flex items-center gap-2 text-sm">
+              <Checkbox
+                checked={f.platforms.includes(p)}
+                onCheckedChange={(on) =>
+                  set({ platforms: on ? [...f.platforms, p] : f.platforms.filter((x) => x !== p) })
+                }
+                aria-invalid={(none && f.touched) || undefined}
+              />
+              {text.platform[p]}
+            </label>
+          ))}
+        </div>
+        <FieldError id="err-app-platforms">{none && <Trans>Pick at least one platform.</Trans>}</FieldError>
+      </div>
+      <label className="flex items-start justify-between gap-3 text-sm">
+        <span className="flex flex-col gap-0.5">
+          <Trans>Allow anonymous users</Trans>
+          <span className="text-xs text-muted-foreground">
+            <Trans>People who are not signed in to your app can write without an identity token from your backend.</Trans>
+          </span>
+        </span>
+        <Switch
+          checked={f.allowAnonymous}
+          onCheckedChange={(allowAnonymous) => set({ allowAnonymous })}
+          aria-label={t`Allow anonymous users`}
+        />
+      </label>
+    </fieldset>
+  )
+}
+
+function AppInstall({ channel }: { channel: Channel }) {
+  const [publicKey, setPublicKey] = useState(channel.app!.public_key)
+  const server = window.location.origin
+  return (
+    <fieldset className="flex min-w-0 flex-col gap-4" data-testid="app-install">
+      <legend className="mb-3 text-sm font-semibold">
+        <Trans>Install</Trans>
+      </legend>
+      <Field label={<Trans>Server URL</Trans>}>
+        <div className="flex items-center gap-2">
+          <code className="min-w-0 flex-1 truncate rounded-md border bg-muted px-2 py-1.5 font-mono text-xs">{server}</code>
+          <CopyButton value={server} />
+        </div>
+      </Field>
+      <PublicKeyField
+        channel={channel}
+        value={publicKey}
+        onRotated={setPublicKey}
+        hint={<Trans>Not a secret: it ships inside your app. Native apps send no origin, so the key is not tied to one.</Trans>}
+        warning={
+          <Trans>
+            App builds with the old key can no longer start sessions until you ship one with the new key. People already
+            signed in keep their session.
+          </Trans>
+        }
+      />
+      <div className="flex gap-2 rounded-lg border bg-muted/40 p-3 text-xs text-muted-foreground" data-testid="app-hint">
+        <InfoIcon className="mt-px size-4 shrink-0" />
+        <ul className="flex min-w-0 flex-col gap-1.5">
+          <li>
+            <Trans>
+              <span className="font-medium text-foreground">iOS:</span> add the Yuva repository as a Swift package and
+              use the <code className="font-mono">YuvaKit</code> library; create the client with the server URL and
+              this key.
+            </Trans>
+          </li>
+          <li>
+            <Trans>
+              <span className="font-medium text-foreground">Android:</span> add the library from{" "}
+              <code className="font-mono">sdk/kotlin</code> in the Yuva repository and configure it with the same two
+              values.
+            </Trans>
+          </li>
+          <li>
+            <Trans>
+              For signed-in users, your backend signs an identity token with the inbox's identity secret and the app
+              passes it to the SDK.
+            </Trans>
+          </li>
+        </ul>
+      </div>
     </fieldset>
   )
 }

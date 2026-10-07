@@ -23,6 +23,7 @@ export const SHORTCUTS = {
   spam: "!",
   quoted: "q",
   contact: "c",
+  copyDetails: "y",
   help: "?",
 } as const
 
@@ -64,6 +65,7 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
         [[SHORTCUTS.labels], t`Edit labels`],
         [[SHORTCUTS.spam], t`Mark or unmark as spam`],
         [[SHORTCUTS.quoted], t`Show or hide quoted text`],
+        [[SHORTCUTS.copyDetails], t`Copy the feedback details`],
       ],
     },
     { title: t`General`, items: [[[SHORTCUTS.help], t`Keyboard shortcuts`]] },

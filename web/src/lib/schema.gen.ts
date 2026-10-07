@@ -527,7 +527,8 @@ export interface paths {
          * Add a channel
          * @description Owners and admins only, with a member session. An `email` channel needs `email` (its
          *     address and outbound SMTP account); a `chat` channel needs `chat` (at least one allowed
-         *     origin) and gets a generated public key; `settings` are stored as given.
+         *     origin) and gets a generated public key; an `app` channel takes `app` (optional, defaults
+         *     apply) and gets a generated public key; `settings` are stored as given.
          *     An address belongs to one channel of the whole server, because inbound mail picks its
          *     channel by the recipient alone; a taken address answers `409 email_address_taken`.
          */
@@ -560,8 +561,8 @@ export interface paths {
         /**
          * Update a channel
          * @description Owners and admins only, with a member session. `email` replaces the e-mail settings as a
-         *     whole, except that an absent `smtp.password` keeps the stored one; `chat` replaces the chat
-         *     settings as a whole, except the public key.
+         *     whole, except that an absent `smtp.password` keeps the stored one; `chat` and `app` replace
+         *     those settings as a whole, except the public key.
          */
         patch: operations["updateChannel"];
         trace?: never;
@@ -576,10 +577,10 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Rotate a chat channel's public key
-         * @description Owners and admins only, with a member session. Gives a `chat` channel a new public key;
-         *     widgets embedded with the old key can no longer start sessions, existing contact sessions
-         *     keep working. Other kinds answer `400`.
+         * Rotate a chat or app channel's public key
+         * @description Owners and admins only, with a member session. Gives a `chat` or `app` channel a new public
+         *     key; widgets and apps built with the old key can no longer start sessions, existing contact
+         *     sessions keep working. Other kinds answer `400`.
          */
         post: operations["rotateChannelPublicKey"];
         delete?: never;
@@ -630,6 +631,31 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/contacts/by-external-id": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete a contact by external id
+         * @description Owners, admins and API keys. Deletes the contact the host app knows by `external_id` in the
+         *     given inbox, exactly like `DELETE /v1/contacts/{contactId}`: all their conversations,
+         *     messages, attachments, sessions and addresses, in every inbox. Call it when a user deletes
+         *     their account in the host app (GDPR, KVKK). Emits `contact.deleted`, whose webhook payload
+         *     still carries the external ids. An unknown external id, or an inbox the caller cannot see,
+         *     answers `404`.
+         */
+        delete: operations["deleteContactByExternalId"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/contacts/{contactId}": {
         parameters: {
             query?: never;
@@ -654,6 +680,29 @@ export interface paths {
          * @description `emails`, `external_ids` and `attributes` replace the stored values when given.
          */
         patch: operations["updateContact"];
+        trace?: never;
+    };
+    "/v1/contacts/{contactId}/presence": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Whether a contact is connected
+         * @description Whether the contact has a live `/client/v1/realtime` connection (widget or app in the
+         *     foreground), and when one was last seen. A host backend that sends its own push
+         *     notifications can skip the push while the contact is online; webhooks carry the same
+         *     `contact.online`.
+         */
+        get: operations["getContactPresence"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/v1/conversations": {
@@ -997,6 +1046,196 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Post feedback for a host app's user
+         * @description API keys only: a host backend posts feedback its own (server-rendered) form collected,
+         *     for its user `contact.external_id` in `inbox_id`. The inbox needs an `api` channel, which
+         *     the conversation starts on (`400 api_channel_required` otherwise).
+         *
+         *     The contact is found by the external id in the inbox, then by `contact.email`, or created;
+         *     `name` and `email` are saved on it (an address that belongs to another contact is left
+         *     there). The conversation has `kind: feedback` and is answered like any other; with
+         *     `allow_email: true` members' replies are e-mailed to the contact through the inbox's
+         *     e-mail channel. `client_id` makes the request idempotent: the same `client_id` for the
+         *     same contact answers `200` with the first conversation.
+         */
+        post: operations["createFeedback"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/webhooks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List webhook endpoints
+         * @description Owners, admins and API keys. Workspace endpoints (no `inbox_id`) and inbox endpoints;
+         *     `inbox_id` lists only that inbox's endpoints.
+         */
+        get: operations["listWebhooks"];
+        put?: never;
+        /**
+         * Add a webhook endpoint
+         * @description Owners, admins and API keys. Without `inbox_id` the endpoint receives the events of the
+         *     whole workspace; with it, only those of that inbox (contact events for contacts with an
+         *     external id or a conversation there). The signing secret is returned once.
+         *
+         *     The URL must be `http` or `https` and may not point to a private, loopback or link-local
+         *     address (checked again on every delivery, after resolving the name) unless the server
+         *     runs with `YUVA_WEBHOOK_ALLOW_PRIVATE=true`.
+         */
+        post: operations["createWebhook"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/webhooks/{webhookId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a webhook endpoint */
+        get: operations["getWebhook"];
+        put?: never;
+        post?: never;
+        /**
+         * Remove a webhook endpoint
+         * @description Owners, admins and API keys. Pending deliveries are dropped with it.
+         */
+        delete: operations["deleteWebhook"];
+        options?: never;
+        head?: never;
+        /**
+         * Update a webhook endpoint
+         * @description Owners, admins and API keys. `enabled: true` turns an endpoint back on after it was
+         *     disabled, clearing `disabled_reason`; deliveries that failed meanwhile can be sent again
+         *     with redeliver.
+         */
+        patch: operations["updateWebhook"];
+        trace?: never;
+    };
+    "/v1/webhooks/{webhookId}/secret": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Rotate the signing secret
+         * @description Owners, admins and API keys. Returns a new secret once. For 24 hours deliveries carry
+         *     signatures with both the new and the old secret (`webhook-signature` lists both), so the
+         *     receiver can switch without dropping events.
+         */
+        post: operations["rotateWebhookSecret"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/webhooks/{webhookId}/deliveries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List an endpoint's deliveries
+         * @description Owners, admins and API keys. Newest first, with the last attempt of each. Finished
+         *     deliveries are kept 7 days.
+         */
+        get: operations["listWebhookDeliveries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/webhooks/{webhookId}/deliveries/{deliveryId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a delivery with its payload and attempts */
+        get: operations["getWebhookDelivery"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/webhooks/{webhookId}/deliveries/{deliveryId}/redeliver": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send a delivery again
+         * @description Owners, admins and API keys. Queues one more attempt now with the same `webhook-id` and
+         *     payload (a new timestamp and signature), whatever the delivery's state. A disabled
+         *     endpoint answers `409 webhook_disabled`.
+         */
+        post: operations["redeliverWebhook"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/webhooks/{webhookId}/attempts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The endpoint's delivery log
+         * @description Owners, admins and API keys. The last attempts to the endpoint, newest first: status code,
+         *     latency, the first 1 KiB of the response body and the error. The newest 100 are kept.
+         */
+        get: operations["listWebhookAttempts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/realtime": {
         parameters: {
             query?: never;
@@ -1081,9 +1320,10 @@ export interface paths {
          *       inbox resumes that visitor and their conversations; an unknown or ended one starts a new
          *       visitor. Keep the returned `visitor_id` (e.g. in `localStorage`) and send it next time.
          *
-         *     Browsers must call from one of the channel's allowed origins (`403 origin_not_allowed`).
-         *     Requests are rate limited per IP address and per channel (`429 rate_limited`). A blocked
-         *     contact answers `403 contact_blocked`.
+         *     For a `chat` channel, browsers must call from one of the channel's allowed origins
+         *     (`403 origin_not_allowed`, also without an `Origin` header); an `app` channel's key needs no
+         *     origin. Requests are rate limited per IP address and per channel (`429 rate_limited`). A
+         *     blocked contact answers `403 contact_blocked`.
          */
         post: operations["createClientSession"];
         /**
@@ -1091,6 +1331,34 @@ export interface paths {
          * @description Ends the session, e.g. when the host app's user signs out.
          */
         delete: operations["deleteClientSession"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/client/v1/channels/{channel_key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A chat or app channel's public settings
+         * @description The inbox's public settings for a `chat` or `app` channel's public key, without a session:
+         *     name, branding, mode, business hours, presence or the expected reply time, the chat
+         *     settings and the feedback categories. Nothing is created, so a widget can show its
+         *     launcher and greeting before the visitor writes and start a session
+         *     (`POST /client/v1/session`) only then.
+         *
+         *     For a `chat` channel, browsers must call from one of the channel's allowed origins
+         *     (`403 origin_not_allowed`, also without an `Origin` header); an `app` channel's key needs no
+         *     origin. Requests are rate limited per IP address (`429 rate_limited`).
+         */
+        get: operations["getClientChannel"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -1209,6 +1477,40 @@ export interface paths {
          *     stored. Rate limited per session.
          */
         post: operations["setClientTyping"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/client/v1/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send feedback
+         * @description Starts a `feedback` conversation on the session's channel with its first message: a
+         *     category, the text and what the app knows about where it was sent from (app version,
+         *     build, OS, device, locale, screen, installation id). It is answered like any other
+         *     conversation and listed with the contact's conversations (`kind: feedback`).
+         *
+         *     `allow_email: true` lets members' replies the contact has not read in the app be e-mailed
+         *     to them (after the same delay as chat replies); `email` is the address to use while the
+         *     contact has no address from an identity token or their own mail, kept like
+         *     `PUT /client/v1/contact/email`. Without `allow_email`, replies reach the contact only in
+         *     the app.
+         *
+         *     Send `multipart/form-data` to attach screenshots (the other fields as form fields and up to
+         *     10 `files` parts), with the same size and type rules as messages. `client_id` makes the
+         *     request idempotent: the same `client_id` again answers `201` with the first conversation.
+         *     Rate limited per IP address and per channel.
+         */
+        post: operations["createClientFeedback"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1351,7 +1653,132 @@ export interface paths {
         trace?: never;
     };
 }
-export type webhooks = Record<string, never>;
+export interface webhooks {
+    "conversation.created": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A conversation started
+         * @description Any channel, feedback included (which also sends `feedback.created`).
+         */
+        post: operations["webhookConversationCreated"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "conversation.updated": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A conversation changed
+         * @description Status, assignee, priority, labels, subject or spam flag changed, or it moved to
+         *     another contact.
+         */
+        post: operations["webhookConversationUpdated"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "message.created": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A message was added
+         * @description A message to or from the contact. Members' notes only for endpoints with
+         *     `include_notes`; internal events never. When a member answers and `contact.online` is
+         *     false, the contact has no live connection: send your push notification.
+         */
+        post: operations["webhookMessageCreated"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "feedback.created": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Feedback arrived
+         * @description A `feedback` conversation started, from an app or with `POST /v1/feedback`, with its
+         *     first message.
+         */
+        post: operations["webhookFeedbackCreated"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "contact.updated": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A contact changed
+         * @description Name, addresses, external ids, attributes or the blocked flag changed.
+         */
+        post: operations["webhookContactUpdated"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "contact.deleted": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A contact was deleted
+         * @description With the external ids the contact had, so the host can match its own user.
+         */
+        post: operations["webhookContactDeleted"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+}
 export interface components {
     schemas: {
         /** @enum {string} */
@@ -1703,6 +2130,7 @@ export interface components {
             settings: components["schemas"]["ChannelSettings"];
             email?: components["schemas"]["EmailChannel"];
             chat?: components["schemas"]["ChatChannel"];
+            app?: components["schemas"]["AppChannel"];
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
@@ -1714,12 +2142,14 @@ export interface components {
             settings?: components["schemas"]["ChannelSettings"];
             email?: components["schemas"]["EmailChannelInput"];
             chat?: components["schemas"]["ChatChannelInput"];
+            app?: components["schemas"]["AppChannelInput"];
         };
         ChannelUpdate: {
             name?: string;
             settings?: components["schemas"]["ChannelSettings"];
             email?: components["schemas"]["EmailChannelInput"];
             chat?: components["schemas"]["ChatChannelInput"];
+            app?: components["schemas"]["AppChannelInput"];
         };
         ChannelList: {
             items: components["schemas"]["Channel"][];
@@ -1762,6 +2192,243 @@ export interface components {
             /** Format: date-time */
             updated_at: string;
         };
+        ContactPresence: {
+            /** Format: uuid */
+            contact_id: string;
+            /** @description A `/client/v1/realtime` connection of the contact was seen in the last 75 seconds. */
+            online: boolean;
+            /**
+             * Format: date-time
+             * @description The contact's last client activity (a connection or a session use); absent when never seen.
+             */
+            last_seen_at?: string;
+        };
+        FeedbackContact: {
+            /** @description The host app's id for this user, per inbox. */
+            external_id: string;
+            email?: components["schemas"]["Email"];
+            name?: string;
+        };
+        FeedbackCreate: components["schemas"]["FeedbackFields"] & {
+            /** Format: uuid */
+            inbox_id: string;
+            contact: components["schemas"]["FeedbackContact"];
+            category: components["schemas"]["FeedbackCategory"];
+            subject?: string;
+            body: string;
+            client_id?: string;
+            /** @default false */
+            allow_email: boolean;
+        };
+        FeedbackCreated: {
+            conversation: components["schemas"]["Conversation"];
+            message: components["schemas"]["Message"];
+            contact: components["schemas"]["Contact"];
+        };
+        FeedbackCount: {
+            category: components["schemas"]["FeedbackCategory"];
+            /** Format: int64 */
+            count: number;
+        };
+        /** @enum {string} */
+        WebhookEventType: "conversation.created" | "conversation.updated" | "message.created" | "feedback.created" | "contact.updated" | "contact.deleted";
+        WebhookEndpoint: {
+            /** Format: uuid */
+            id: string;
+            /**
+             * Format: uuid
+             * @description Absent for workspace endpoints.
+             */
+            inbox_id?: string;
+            /** Format: uri */
+            url: string;
+            description: string;
+            events: components["schemas"]["WebhookEventType"][];
+            /** @description `message.created` also for members' notes. */
+            include_notes: boolean;
+            enabled: boolean;
+            /** Format: date-time */
+            disabled_at?: string;
+            /**
+             * @description Why Yuva turned the endpoint off: every attempt failed for 24 hours, or it answered
+             *     `410 Gone`. Absent while enabled or when a member turned it off.
+             */
+            disabled_reason?: string;
+            /**
+             * Format: date-time
+             * @description Every attempt since then failed; absent while deliveries succeed.
+             */
+            failing_since?: string;
+            /**
+             * Format: date-time
+             * @description While the previous secret still signs (24 hours after a rotation), when it was replaced.
+             */
+            secret_rotated_at?: string;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        WebhookEndpointCreate: {
+            /** Format: uri */
+            url: string;
+            /** Format: uuid */
+            inbox_id?: string;
+            description?: string;
+            events: components["schemas"]["WebhookEventType"][];
+            /** @default false */
+            include_notes: boolean;
+            /** @default true */
+            enabled: boolean;
+        };
+        WebhookEndpointUpdate: {
+            /** Format: uri */
+            url?: string;
+            description?: string;
+            events?: components["schemas"]["WebhookEventType"][];
+            include_notes?: boolean;
+            enabled?: boolean;
+        };
+        WebhookEndpointSecret: {
+            endpoint: components["schemas"]["WebhookEndpoint"];
+            /** @description `whsec_` and 32 random bytes in base64. Shown only now. */
+            secret: string;
+        };
+        WebhookEndpointList: {
+            items: components["schemas"]["WebhookEndpoint"][];
+        };
+        /**
+         * @description `pending` while attempts remain, `succeeded` after a 2xx answer, `failed` when the retries
+         *     (about 24 hours) ran out or the endpoint was disabled.
+         * @enum {string}
+         */
+        WebhookDeliveryState: "pending" | "succeeded" | "failed";
+        WebhookAttempt: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            delivery_id: string;
+            /** Format: date-time */
+            attempted_at: string;
+            /** @description Sent by a redeliver. */
+            manual: boolean;
+            success: boolean;
+            /**
+             * Format: int32
+             * @description Absent when no HTTP answer arrived.
+             */
+            status_code?: number;
+            /** Format: int32 */
+            latency_ms: number;
+            /** @description The first 1 KiB of the answer. */
+            response_body: string;
+            /** @description Why the attempt failed (timeout, refused address, non-2xx status, …). */
+            error?: string;
+        };
+        WebhookAttemptList: {
+            items: components["schemas"]["WebhookAttempt"][];
+        };
+        WebhookDelivery: {
+            /** Format: uuid */
+            id: string;
+            /** @description The `webhook-id` header. */
+            message_id: string;
+            event_type: components["schemas"]["WebhookEventType"];
+            state: components["schemas"]["WebhookDeliveryState"];
+            /** Format: int32 */
+            attempts: number;
+            /**
+             * Format: date-time
+             * @description Pending deliveries only.
+             */
+            next_attempt_at?: string;
+            last_attempt?: components["schemas"]["WebhookAttempt"];
+            /** Format: date-time */
+            created_at: string;
+        };
+        WebhookDeliveryDetail: components["schemas"]["WebhookDelivery"] & {
+            /** @description The body sent, one of the webhook payloads. */
+            payload: {
+                [key: string]: unknown;
+            };
+            /** @description The delivery's attempts that are still kept, newest first. */
+            attempt_log: components["schemas"]["WebhookAttempt"][];
+        };
+        WebhookDeliveryPage: {
+            items: components["schemas"]["WebhookDelivery"][];
+            /** @description Absent on the last page. */
+            next_cursor?: string;
+        };
+        /** @description The contact as a host backend needs it. */
+        WebhookContact: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            emails: components["schemas"]["Email"][];
+            /** @description The host app's ids for this person, per inbox. */
+            external_ids: components["schemas"]["ExternalId"][];
+            attributes: components["schemas"]["Attributes"];
+            locale?: string;
+            /**
+             * @description The contact had a live `/client/v1/realtime` connection when the webhook was prepared.
+             *     When false, the app is closed or in the background: a push notification is the way to
+             *     reach them.
+             */
+            online: boolean;
+            /** Format: date-time */
+            last_seen_at?: string;
+        };
+        WebhookDeletedContact: {
+            /** Format: uuid */
+            id: string;
+            external_ids: components["schemas"]["ExternalId"][];
+        };
+        WebhookConversationData: {
+            conversation: components["schemas"]["Conversation"];
+            contact: components["schemas"]["WebhookContact"];
+        };
+        WebhookMessageData: {
+            message: components["schemas"]["Message"];
+            conversation: components["schemas"]["Conversation"];
+            contact: components["schemas"]["WebhookContact"];
+        };
+        WebhookContactData: {
+            contact: components["schemas"]["WebhookContact"];
+        };
+        WebhookContactDeletedData: {
+            contact: components["schemas"]["WebhookDeletedContact"];
+        };
+        /** @description Standard Webhooks payload envelope. */
+        WebhookPayloadBase: {
+            type: components["schemas"]["WebhookEventType"];
+            /**
+             * Format: date-time
+             * @description When the event happened (not when it was sent).
+             */
+            timestamp: string;
+            /** Format: uuid */
+            workspace_id: string;
+            /**
+             * Format: uuid
+             * @description The conversation's inbox; absent for contact events.
+             */
+            inbox_id?: string;
+        };
+        WebhookConversationPayload: components["schemas"]["WebhookPayloadBase"] & {
+            data: components["schemas"]["WebhookConversationData"];
+        };
+        WebhookMessagePayload: components["schemas"]["WebhookPayloadBase"] & {
+            data: components["schemas"]["WebhookMessageData"];
+        };
+        WebhookFeedbackPayload: components["schemas"]["WebhookPayloadBase"] & {
+            data: components["schemas"]["WebhookMessageData"];
+        };
+        WebhookContactPayload: components["schemas"]["WebhookPayloadBase"] & {
+            data: components["schemas"]["WebhookContactData"];
+        };
+        WebhookContactDeletedPayload: components["schemas"]["WebhookPayloadBase"] & {
+            data: components["schemas"]["WebhookContactDeletedData"];
+        };
         ContactCreate: {
             name?: string;
             emails?: components["schemas"]["Email"][];
@@ -1794,6 +2461,9 @@ export interface components {
             inbox_id: string;
             /** Format: uuid */
             contact_id: string;
+            kind: components["schemas"]["ConversationKind"];
+            /** @description `feedback` conversations only: category and what the app sent with it. */
+            feedback?: components["schemas"]["Feedback"];
             /**
              * Format: uuid
              * @description The channel it started on; absent when unknown or removed.
@@ -1916,6 +2586,13 @@ export interface components {
         };
         /** @description Open conversations in the inboxes the caller can see. */
         ConversationCounts: {
+            /**
+             * Format: int64
+             * @description Open feedback conversations (included in the other counts too).
+             */
+            feedback: number;
+            /** @description Open feedback per category; categories without any are left out. */
+            feedback_categories: components["schemas"]["FeedbackCount"][];
             /** Format: int64 */
             all: number;
             /**
@@ -2426,6 +3103,81 @@ export interface components {
             greeting?: string;
             launcher?: components["schemas"]["ChatLauncher"];
         };
+        /** @enum {string} */
+        AppPlatform: "ios" | "android";
+        /**
+         * @description Settings of an `app` (mobile SDKs) channel. Native apps send no `Origin`, so the key is not
+         *     tied to origins; anonymous use is off unless allowed.
+         */
+        AppChannel: {
+            /**
+             * @description Identifies the channel to the SDKs (`channel_key`). Not a secret: it ships inside the
+             *     app. Rotate it with `POST /v1/channels/{id}/public-key`.
+             */
+            public_key: string;
+            /** @description Users without an identity token may write. */
+            allow_anonymous: boolean;
+            /** @description The platforms the app ships on, for the panel. */
+            platforms: components["schemas"]["AppPlatform"][];
+        };
+        AppChannelInput: {
+            /** @description Defaults to false. */
+            allow_anonymous?: boolean;
+            /** @description Defaults to both. */
+            platforms?: components["schemas"]["AppPlatform"][];
+        };
+        /**
+         * @description `feedback` conversations carry `feedback` metadata; everything else is `conversation`.
+         * @enum {string}
+         */
+        ConversationKind: "conversation" | "feedback";
+        /** @enum {string} */
+        FeedbackCategory: "bug" | "idea" | "praise" | "other";
+        /** @description What a `feedback` conversation was sent with. Absent fields were not sent. */
+        Feedback: {
+            category: components["schemas"]["FeedbackCategory"];
+            /** @description The contact allowed replies by e-mail. */
+            allow_email: boolean;
+            app_version?: string;
+            build?: string;
+            /**
+             * @example iOS
+             * @example Android
+             */
+            os?: string;
+            os_version?: string;
+            /** @example iPhone17,1 */
+            device_model?: string;
+            locale?: string;
+            /** @description The app screen or route the feedback was sent from. */
+            screen?: string;
+            /** @description The app's own id for this installation. */
+            installation_id?: string;
+        };
+        FeedbackFields: {
+            app_version?: string;
+            build?: string;
+            os?: string;
+            os_version?: string;
+            device_model?: string;
+            locale?: string;
+            screen?: string;
+            installation_id?: string;
+        };
+        ClientFeedbackCreate: components["schemas"]["FeedbackFields"] & {
+            category: components["schemas"]["FeedbackCategory"];
+            subject?: string;
+            /** @description The feedback text. Required unless files are attached. */
+            body?: string;
+            /** @description The first message's `client_id`. */
+            client_id?: string;
+            /** @default false */
+            allow_email: boolean;
+            email?: components["schemas"]["Email"];
+        };
+        ClientFeedbackCreateMultipart: components["schemas"]["ClientFeedbackCreate"] & {
+            files?: string[];
+        };
         TypingCreate: {
             /**
              * @description `false` when the typist stopped or sent the message.
@@ -2470,7 +3222,7 @@ export interface components {
             data: components["schemas"]["Typing"];
         };
         ClientSessionCreate: {
-            /** @description The chat channel's `public_key`. */
+            /** @description The chat or app channel's `public_key`. */
             channel_key: string;
             /** @description A JWT (HS256) from the host backend; see `sdk/go`. */
             identity_token?: string;
@@ -2524,6 +3276,8 @@ export interface components {
             expected_reply_minutes?: number;
             presence?: components["schemas"]["ClientPresence"];
             chat: components["schemas"]["ClientChatSettings"];
+            /** @description The categories `POST /client/v1/feedback` accepts, in display order. */
+            feedback_categories: components["schemas"]["FeedbackCategory"][];
         };
         ClientContact: {
             /** Format: uuid */
@@ -2570,6 +3324,9 @@ export interface components {
         ClientConversation: {
             /** Format: uuid */
             id: string;
+            kind: components["schemas"]["ConversationKind"];
+            /** @description `feedback` conversations only. */
+            feedback?: components["schemas"]["Feedback"];
             subject: string;
             status: components["schemas"]["ConversationStatus"];
             last_message?: components["schemas"]["ClientMessagePreview"];
@@ -2577,6 +3334,13 @@ export interface components {
             last_message_at?: string;
             /** @description A message from a member is newer than the contact's read cursor. */
             unread: boolean;
+            /**
+             * Format: date-time
+             * @description `live` inboxes only: members have read every message created at or before this time
+             *     (the latest read position of any member, as in the `read` realtime frame). Absent
+             *     when no member has read the conversation, and in `async` inboxes.
+             */
+            last_read_by_member_at?: string;
             /** Format: date-time */
             created_at: string;
         };
@@ -2857,6 +3621,18 @@ export interface components {
         PasskeyId: string;
         InboxId: string;
         ChannelId: string;
+        WebhookId: string;
+        DeliveryId: string;
+        /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+        WebhookIdHeader: string;
+        /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+        WebhookTimestampHeader: string;
+        /**
+         * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+         *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+         *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+         */
+        WebhookSignatureHeader: string;
         ContactId: string;
         ConversationId: string;
         AttachmentId: string;
@@ -4011,6 +4787,34 @@ export interface operations {
             404: components["responses"]["Problem"];
         };
     };
+    deleteContactByExternalId: {
+        parameters: {
+            query: {
+                inbox_id: string;
+                external_id: string;
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     getContact: {
         parameters: {
             query?: never;
@@ -4099,6 +4903,34 @@ export interface operations {
             409: components["responses"]["Problem"];
         };
     };
+    getContactPresence: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                contactId: components["parameters"]["ContactId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The contact's presence. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactPresence"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     listConversations: {
         parameters: {
             query?: {
@@ -4114,6 +4946,10 @@ export interface operations {
                  *     `false`, spam is left out.
                  */
                 spam?: boolean;
+                /** @description Only conversations of this kind, e.g. `feedback` for the feedback view. */
+                kind?: components["schemas"]["ConversationKind"];
+                /** @description Only feedback of this category (implies `kind=feedback`). */
+                category?: components["schemas"]["FeedbackCategory"];
                 /** @description Full-text search (Postgres `simple` configuration, `websearch` syntax). */
                 q?: components["parameters"]["Search"];
                 /** @description The `next_cursor` of the previous page. */
@@ -4760,6 +5596,343 @@ export interface operations {
             403: components["responses"]["Problem"];
         };
     };
+    createFeedback: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FeedbackCreate"];
+            };
+        };
+        responses: {
+            /** @description Feedback with this `client_id` was already posted. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedbackCreated"];
+                };
+            };
+            /** @description The feedback conversation, its first message and the contact. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedbackCreated"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    listWebhooks: {
+        parameters: {
+            query?: {
+                inbox_id?: string;
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The endpoints. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookEndpointList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    createWebhook: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookEndpointCreate"];
+            };
+        };
+        responses: {
+            /** @description The endpoint and its secret. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookEndpointSecret"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    getWebhook: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                webhookId: components["parameters"]["WebhookId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The endpoint. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookEndpoint"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    deleteWebhook: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                webhookId: components["parameters"]["WebhookId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    updateWebhook: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                webhookId: components["parameters"]["WebhookId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookEndpointUpdate"];
+            };
+        };
+        responses: {
+            /** @description The updated endpoint. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookEndpoint"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    rotateWebhookSecret: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                webhookId: components["parameters"]["WebhookId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The endpoint and its new secret. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookEndpointSecret"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    listWebhookDeliveries: {
+        parameters: {
+            query?: {
+                state?: components["schemas"]["WebhookDeliveryState"];
+                /** @description The `next_cursor` of the previous page. */
+                cursor?: components["parameters"]["Cursor"];
+                /** @description Page size, 1 to 100; 25 by default. */
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                webhookId: components["parameters"]["WebhookId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of deliveries. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookDeliveryPage"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    getWebhookDelivery: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                webhookId: components["parameters"]["WebhookId"];
+                deliveryId: components["parameters"]["DeliveryId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The delivery. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookDeliveryDetail"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    redeliverWebhook: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                webhookId: components["parameters"]["WebhookId"];
+                deliveryId: components["parameters"]["DeliveryId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Queued. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookDelivery"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    listWebhookAttempts: {
+        parameters: {
+            query?: {
+                /** @description Page size, 1 to 100; 25 by default. */
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                webhookId: components["parameters"]["WebhookId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The attempts. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookAttemptList"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     realtime: {
         parameters: {
             query?: {
@@ -4864,6 +6037,32 @@ export interface operations {
             };
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
+        };
+    };
+    getClientChannel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The chat or app channel's public key. */
+                channel_key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The inbox's public settings. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientInbox"];
+                };
+            };
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
         };
     };
     listClientConversations: {
@@ -5084,6 +6283,37 @@ export interface operations {
             429: components["responses"]["Problem"];
         };
     };
+    createClientFeedback: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClientFeedbackCreate"];
+                "multipart/form-data": components["schemas"]["ClientFeedbackCreateMultipart"];
+            };
+        };
+        responses: {
+            /** @description The feedback conversation and its first message. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientConversationCreated"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            413: components["responses"]["Problem"];
+            415: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
+        };
+    };
     setClientContactEmail: {
         parameters: {
             query?: never;
@@ -5240,6 +6470,204 @@ export interface operations {
             400: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             503: components["responses"]["Problem"];
+        };
+    };
+    webhookConversationCreated: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookConversationPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookConversationUpdated: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookConversationPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookMessageCreated: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookMessagePayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookFeedbackCreated: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookFeedbackPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookContactUpdated: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookContactPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookContactDeleted: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookContactDeletedPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
     };
 }

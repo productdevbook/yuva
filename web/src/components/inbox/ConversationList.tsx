@@ -6,6 +6,7 @@ import { Link } from "react-router"
 import { EmptyState, ErrorLine, LabelChip, PersonAvatar, TypingDots } from "@/components/common"
 import { formatShort, STATUSES, useEnumText } from "@/components/common/text"
 import { priorityClass, statusIcons } from "@/components/inbox/ConversationControls"
+import { CategoryChip } from "@/components/inbox/Feedback"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -33,7 +34,7 @@ export type ListFilters = {
   assignee: string
 }
 
-export type ListBase = { kind: "view" | "inbox" | "label"; id: string }
+export type ListBase = { kind: "view" | "inbox" | "label" | "feedback"; id: string }
 
 type Props = {
   base: ListBase
@@ -232,6 +233,7 @@ function Row({
             </p>
           )}
           <div className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
+            {c.kind === "feedback" && c.feedback && <CategoryChip category={c.feedback.category} />}
             {chat && (
               <span className="inline-flex shrink-0 items-center gap-1" data-testid="chat-badge">
                 <MessageCircleIcon className="size-3.5" />

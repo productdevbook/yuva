@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { InboxIcon, KeyIcon, MessageSquareTextIcon, TagIcon, UserIcon, UsersIcon } from "lucide-react"
+import { InboxIcon, KeyIcon, MessageSquareTextIcon, TagIcon, UserIcon, UsersIcon, WebhookIcon } from "lucide-react"
 import { NavLink, Outlet } from "react-router"
 
 import { TopBar } from "@/components/AppShell"
@@ -16,7 +16,12 @@ export function SettingsLayout() {
     { to: "inboxes", label: t`Inboxes`, icon: InboxIcon },
     { to: "labels", label: t`Labels`, icon: TagIcon },
     { to: "canned-replies", label: t`Canned replies`, icon: MessageSquareTextIcon },
-    ...(canManage ? [{ to: "api-keys", label: t`API keys`, icon: KeyIcon }] : []),
+    ...(canManage
+      ? [
+          { to: "api-keys", label: t`API keys`, icon: KeyIcon },
+          { to: "webhooks", label: t`Webhooks`, icon: WebhookIcon },
+        ]
+      : []),
   ]
   return (
     <div className="flex h-full min-h-0 flex-col">

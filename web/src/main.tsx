@@ -16,6 +16,7 @@ import { LabelsSettings } from "@/components/settings/LabelsSettings"
 import { MembersSettings } from "@/components/settings/MembersSettings"
 import { ProfileSettings } from "@/components/settings/ProfileSettings"
 import { SettingsLayout } from "@/components/settings/SettingsLayout"
+import { WebhookSettings, WebhooksSettings } from "@/components/settings/WebhooksSettings"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { activate, i18n, initialLocale } from "@/i18n"
 import { ApiError } from "@/lib/api"
@@ -53,9 +54,13 @@ createRoot(document.getElementById("root")!).render(
                   <Route path="labels" element={<LabelsSettings />} />
                   <Route path="canned-replies" element={<CannedRepliesSettings />} />
                   <Route path="api-keys" element={<ApiKeysSettings />} />
+                  <Route path="webhooks" element={<WebhooksSettings />} />
+                  <Route path="webhooks/:webhookId" element={<WebhookSettings />} />
                 </Route>
                 <Route path="inbox/:inboxId/:conversationId?" element={<InboxPage />} />
                 <Route path="label/:labelId/:conversationId?" element={<InboxPage />} />
+                <Route path="feedback" element={<Navigate to="/feedback/all" replace />} />
+                <Route path="feedback/:category/:conversationId?" element={<InboxPage />} />
                 <Route path=":view/:conversationId?" element={<InboxPage />} />
               </Route>
             </Routes>

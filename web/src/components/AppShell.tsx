@@ -6,6 +6,7 @@ import {
   ChevronsUpDownIcon,
   InboxIcon,
   KeyboardIcon,
+  MessageSquareHeartIcon,
   LogOutIcon,
   RefreshCwIcon,
   WifiOffIcon,
@@ -15,10 +16,12 @@ import {
   UserIcon,
   UserXIcon,
 } from "lucide-react"
-import { useCallback, useEffect, useState } from "react"
+import { Fragment, useCallback, useEffect, useState } from "react"
 import { Link, Navigate, Outlet, useLocation, useNavigate } from "react-router"
 
 import { EmptyState, PersonAvatar } from "@/components/common"
+import { FEEDBACK_CATEGORIES, useEnumText } from "@/components/common/text"
+import { categoryIcons } from "@/components/inbox/Feedback"
 import { ShortcutSheet, useShortcutSheet } from "@/components/common/ShortcutSheet"
 import { LanguageMenu } from "@/components/LanguageMenu"
 import { Button } from "@/components/ui/button"
@@ -46,6 +49,9 @@ import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarProvider,
   SidebarTrigger,
   useSidebar,
@@ -107,6 +113,61 @@ function NavLink({
   )
 }
 
+function compact(n: number, locale: string) {
+  return new Intl.NumberFormat(locale, { notation: "compact" }).format(n)
+}
+
+function FeedbackNav({ active, category }: { active: boolean; category?: string }) {
+  const { isMobile, setOpenMobile } = useSidebar()
+  const { i18n } = useLingui()
+  const text = useEnumText()
+  const counts = useCounts().data
+  const byCategory = new Map(counts?.feedback_categories.map((x) => [x.category, x.count]))
+  const close = () => isMobile && setOpenMobile(false)
+  const shown = FEEDBACK_CATEGORIES.filter((c) => byCategory.has(c))
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton
+        isActive={active && category === "all"}
+        render={<Link to="/feedback/all" onClick={close} />}
+        data-testid="nav-feedback"
+      >
+        <MessageSquareHeartIcon />
+        <span>
+          <Trans>Feedback</Trans>
+        </span>
+      </SidebarMenuButton>
+      {!!counts?.feedback && (
+        <SidebarMenuBadge className="text-muted-foreground" data-testid="nav-count">
+          {compact(counts.feedback, i18n.locale)}
+        </SidebarMenuBadge>
+      )}
+      {shown.length > 0 && (
+        <SidebarMenuSub>
+          {shown.map((c) => {
+            const Icon = categoryIcons[c]
+            return (
+              <SidebarMenuSubItem key={c}>
+                <SidebarMenuSubButton
+                  isActive={active && category === c}
+                  render={<Link to={`/feedback/${c}`} onClick={close} />}
+                  data-testid="nav-feedback-category"
+                >
+                  <Icon />
+                  <span className="flex-1">{text.category[c]}</span>
+                  <span className="text-xs text-muted-foreground tabular-nums">
+                    {compact(byCategory.get(c) ?? 0, i18n.locale)}
+                  </span>
+                </SidebarMenuSubButton>
+              </SidebarMenuSubItem>
+            )
+          })}
+        </SidebarMenuSub>
+      )}
+    </SidebarMenuItem>
+  )
+}
+
 function Nav() {
   const { pathname } = useLocation()
   const labels = useViewLabels()
@@ -125,10 +186,13 @@ function Nav() {
             {VIEWS.map((v) => {
               const Icon = viewIcons[v]
               return (
-                <NavLink key={v} to={`/${v}`} active={first === v} count={counts?.[v]}>
-                  <Icon />
-                  <span>{labels[v]}</span>
-                </NavLink>
+                <Fragment key={v}>
+                  {v === "spam" && <FeedbackNav active={first === "feedback"} category={second} />}
+                  <NavLink to={`/${v}`} active={first === v} count={counts?.[v]}>
+                    <Icon />
+                    <span>{labels[v]}</span>
+                  </NavLink>
+                </Fragment>
               )
             })}
           </SidebarMenu>
