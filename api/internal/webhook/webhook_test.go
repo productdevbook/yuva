@@ -51,7 +51,7 @@ func TestBlocked(t *testing.T) {
 
 func TestCheckURL(t *testing.T) {
 	for _, u := range []string{
-		"http://127.0.0.1/hook", "http://10.1.2.3:8080/", "http://[::1]/", "http://169.254.169.254/latest/meta-data",
+		"http://127.0.0.1/hook", "http://10.1.2.3:8080/", "http://[::1]/",
 		"http://localhost:3000/", "http://api.localhost/", "http://[::ffff:192.168.0.1]/",
 	} {
 		if _, err := CheckURL(u, false); !errors.Is(err, ErrRefusedAddress) {
@@ -68,6 +68,65 @@ func TestCheckURL(t *testing.T) {
 	}
 	if _, err := CheckURL("https://hooks.example.com/yuva?x=1", false); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestNeverAllowed(t *testing.T) {
+	for _, ip := range []string{
+		"169.254.169.254", "169.254.0.1", "169.254.255.255", "::ffff:169.254.169.254", "fe80::1", "fe80::1%eth0",
+		"febf::1", "fd00:ec2::254",
+	} {
+		if !NeverAllowed(netip.MustParseAddr(ip)) {
+			t.Errorf("%s is allowed", ip)
+		}
+	}
+	for _, ip := range []string{"127.0.0.1", "10.0.0.1", "192.168.1.1", "::1", "fd12::1", "fec0::1", "169.253.255.255", "169.255.0.1", "1.1.1.1"} {
+		if NeverAllowed(netip.MustParseAddr(ip)) {
+			t.Errorf("%s is never allowed", ip)
+		}
+	}
+}
+
+func TestCheckURLRefusesLinkLocalWhenPrivateAllowed(t *testing.T) {
+	for _, u := range []string{
+		"http://169.254.169.254/latest/meta-data", "http://169.254.1.1:8080/", "http://[fe80::1]/",
+		"http://[fe80::1%25eth0]/", "http://[::ffff:169.254.169.254]/", "http://[::ffff:a9fe:a9fe]/", "http://[fd00:ec2::254]/",
+	} {
+		for _, allow := range []bool{false, true} {
+			if _, err := CheckURL(u, allow); !errors.Is(err, ErrRefusedAddress) {
+				t.Errorf("%s (private allowed %v): %v", u, allow, err)
+			}
+		}
+	}
+}
+
+func TestSendRefusesLinkLocalWhenPrivateAllowed(t *testing.T) {
+	hit := false
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { hit = true }))
+	defer srv.Close()
+	port := srv.URL[strings.LastIndex(srv.URL, ":"):]
+	c := NewClient(true, fakeResolver{
+		"metadata.example": {netip.MustParseAddr("169.254.169.254")},
+		"mapped.example":   {netip.MustParseAddr("::ffff:169.254.169.254")},
+		"v6ll.example":     {netip.MustParseAddr("fe80::1")},
+		"mixed.example":    {netip.MustParseAddr("127.0.0.1"), netip.MustParseAddr("169.254.10.10")},
+		"loop.example":     {netip.MustParseAddr("127.0.0.1")},
+	})
+	for _, u := range []string{
+		"http://metadata.example" + port, "http://mapped.example" + port, "http://v6ll.example" + port, "http://mixed.example" + port,
+		"http://169.254.169.254" + port,
+	} {
+		res := c.Send(context.Background(), Request{URL: u, MessageID: "msg_1", Timestamp: time.Now(), Body: []byte("{}"), Keys: [][]byte{[]byte("k")}})
+		if !errors.Is(res.Err, ErrRefusedAddress) || res.OK() {
+			t.Errorf("%s: %+v", u, res)
+		}
+	}
+	if hit {
+		t.Fatal("a never allowed target was reached")
+	}
+	res := c.Send(context.Background(), Request{URL: "http://loop.example" + port, MessageID: "msg_2", Timestamp: time.Now(), Body: []byte("{}"), Keys: [][]byte{[]byte("k")}})
+	if !res.OK() || !hit {
+		t.Fatalf("loopback with private allowed: %+v", res)
 	}
 }
 

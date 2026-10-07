@@ -1979,7 +1979,9 @@ paths:
 
         The URL must be `http` or `https` and may not point to a private, loopback or link-local
         address (checked again on every delivery, after resolving the name) unless the server
-        runs with `YUVA_WEBHOOK_ALLOW_PRIVATE=true`.
+        runs with `YUVA_WEBHOOK_ALLOW_PRIVATE=true`. Link-local and cloud metadata addresses
+        (169.254.0.0/16, fe80::/10, fd00:ec2::254, IPv4-mapped forms included) are refused even
+        then.
       tags: [webhooks]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"

@@ -61,6 +61,24 @@ var blockedPrefixes = func() []netip.Prefix {
 	return out
 }()
 
+var neverAllowedPrefixes = []netip.Prefix{
+	netip.MustParsePrefix("169.254.0.0/16"),
+	netip.MustParsePrefix("fe80::/10"),
+	netip.MustParsePrefix("fd00:ec2::254/128"),
+}
+
+// NeverAllowed reports whether ip is link-local or a cloud metadata address, which webhooks may
+// not reach even when private targets are allowed.
+func NeverAllowed(ip netip.Addr) bool {
+	ip = ip.WithZone("").Unmap()
+	for _, p := range neverAllowedPrefixes {
+		if p.Contains(ip) {
+			return true
+		}
+	}
+	return false
+}
+
 // Blocked reports whether ip is private, loopback, link-local, multicast, reserved or otherwise
 // not a public unicast address.
 func Blocked(ip netip.Addr) bool {
@@ -77,20 +95,25 @@ func Blocked(ip netip.Addr) bool {
 }
 
 // CheckURL validates an endpoint URL when it is saved: http(s), a host, no credentials, and no
-// literal address or `localhost` that Blocked refuses. Names are resolved on every attempt.
+// literal address or `localhost` that Blocked refuses, and never a literal address NeverAllowed
+// refuses. Names are resolved on every attempt.
 func CheckURL(raw string, allowPrivate bool) (*url.URL, error) {
 	u, err := url.Parse(strings.TrimSpace(raw))
 	if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Hostname() == "" || u.User != nil || u.Fragment != "" {
 		return nil, errors.New("url must be an http or https URL with a host and no credentials")
 	}
+	host := strings.ToLower(strings.TrimSuffix(u.Hostname(), "."))
+	ip, ipErr := netip.ParseAddr(host)
+	if ipErr == nil && NeverAllowed(ip) {
+		return nil, ErrRefusedAddress
+	}
 	if allowPrivate {
 		return u, nil
 	}
-	host := strings.ToLower(strings.TrimSuffix(u.Hostname(), "."))
 	if host == "localhost" || strings.HasSuffix(host, ".localhost") {
 		return nil, ErrRefusedAddress
 	}
-	if ip, err := netip.ParseAddr(host); err == nil && Blocked(ip) {
+	if ipErr == nil && Blocked(ip) {
 		return nil, ErrRefusedAddress
 	}
 	return u, nil
@@ -101,7 +124,7 @@ type Resolver interface {
 }
 
 // Client sends webhook requests. Every request resolves the host once, refuses it when any
-// address is blocked (unless AllowPrivate), connects to the resolved address only, follows no
+// address is blocked (unless AllowPrivate) or never allowed, connects to the resolved address only, follows no
 // redirects and reads at most MaxBodyBytes of the answer.
 type Client struct {
 	AllowPrivate bool
@@ -147,11 +170,9 @@ func (c *Client) dial(ctx context.Context, network, addr string) (net.Conn, erro
 	if len(ips) == 0 {
 		return nil, fmt.Errorf("%s has no address", host)
 	}
-	if !c.AllowPrivate {
-		for _, ip := range ips {
-			if Blocked(ip) {
-				return nil, fmt.Errorf("%w %s for %s", ErrRefusedAddress, ip.Unmap(), host)
-			}
+	for _, ip := range ips {
+		if NeverAllowed(ip) || (!c.AllowPrivate && Blocked(ip)) {
+			return nil, fmt.Errorf("%w %s for %s", ErrRefusedAddress, ip.Unmap(), host)
 		}
 	}
 	d := net.Dialer{Timeout: Timeout}

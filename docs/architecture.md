@@ -271,7 +271,9 @@ on every attempt the host is resolved once, refused when any address is loopback
 link-local (cloud metadata included), CGNAT, multicast or otherwise reserved, and the connection
 goes to that resolved address only. No proxy, no redirects (a 3xx is a failure), a 10 second
 timeout and at most 64 KiB of the answer read. `YUVA_WEBHOOK_ALLOW_PRIVATE=true` lifts the address
-check for development (the dev compose file sets it); never set it on a shared server.
+check for development (the dev compose file sets it); never set it on a shared server. Link-local
+and cloud metadata addresses (169.254.0.0/16, fe80::/10, fd00:ec2::254, IPv4-mapped forms
+included) are refused even then, when the endpoint is saved and on every attempt.
 
 `sdk/go/webhook` verifies the signatures for Go backends.
 

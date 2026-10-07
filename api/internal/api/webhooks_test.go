@@ -561,6 +561,42 @@ func (r staticResolver) LookupNetIP(_ context.Context, _, host string) ([]netip.
 	return nil, &net.DNSError{Err: "no such host", Name: host, IsNotFound: true}
 }
 
+func TestWebhookLinkLocalRefusedWhenPrivateAllowed(t *testing.T) {
+	h := newHarnessWith(t, func(d *api.Deps) {
+		d.Webhooks.AllowPrivate = true
+		d.Webhooks.Resolver = staticResolver{"hooks.example.com": "127.0.0.1", "metadata.example.com": "169.254.169.254"}
+	})
+	tm := newTeam(t, h)
+	for _, u := range []string{
+		"http://169.254.169.254/latest/meta-data/", "http://169.254.1.1:8080/hook", "http://[fe80::1]/hook",
+		"http://[::ffff:169.254.169.254]/hook", "http://[fd00:ec2::254]/",
+	} {
+		tm.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", "/v1/webhooks", map[string]any{"url": u, "events": []string{"message.created"}})
+	}
+	rcv := newReceiver(t)
+	created := tm.owner.expect(http.StatusCreated, "POST", "/v1/webhooks", map[string]any{
+		"url": strings.Replace(rcv.srv.URL, "127.0.0.1", "hooks.example.com", 1), "events": []string{"conversation.created"},
+	})
+	hookID := created.body["endpoint"].(map[string]any)["id"].(string)
+	tm.owner.expectProblem(http.StatusBadRequest, "validation_failed", "PATCH", "/v1/webhooks/"+hookID, map[string]any{"url": "http://[fe80::1]/"})
+	tm.conversation(tm.owner)
+	h.runWebhooks(tm.ws)
+	if got := rcv.take(); len(got) != 1 {
+		t.Fatalf("loopback target with private allowed got %d deliveries", len(got))
+	}
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/webhooks/"+hookID, map[string]any{"url": "http://metadata.example.com/latest/meta-data/"})
+	tm.conversation(tm.owner)
+	h.runWebhooks(tm.ws)
+	log := tm.owner.expect(http.StatusOK, "GET", "/v1/webhooks/"+hookID+"/attempts", nil)
+	items := log.body["items"].([]any)
+	if len(items) != 2 {
+		t.Fatalf("attempt log: %s", log.raw)
+	}
+	if e, _ := items[0].(map[string]any)["error"].(string); !strings.Contains(e, "refused address 169.254.169.254") {
+		t.Fatalf("metadata attempt not refused: %s", log.raw)
+	}
+}
+
 func TestWebhookSSRFRefused(t *testing.T) {
 	h := newHarnessWith(t, func(d *api.Deps) {
 		d.Webhooks.Resolver = staticResolver{"hooks.example.com": "127.0.0.1", "intranet.example.com": "10.1.2.3"}
