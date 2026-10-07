@@ -82,6 +82,38 @@ tags:
       a browser on an origin no chat channel allows is still refused. Contacts see their own
       conversations in the session's inbox, never notes, internal events, other contacts or member
       e-mail addresses; of members only their display name and initials.
+  - name: notifications
+    description: |
+      Notifying members of new conversations, messages and assignments: Web Push to the panel
+      installed as a PWA (VAPID, RFC 8030/8291/8292) and e-mail as a fallback. A push
+      subscription belongs to the browser that created it and to the session that registered it
+      (it ends with sign-out); it receives notifications from every workspace of the person.
+      Preferences are per member, with per-inbox overrides.
+
+      What causes a notification (`event` in `PushNotification`, keys of `NotificationEvents`):
+
+      - `new_live_conversation`, `new_async_conversation`: the first message of a conversation,
+        from the contact, in a `live` or `async` inbox. Every member with access to the inbox is a
+        candidate.
+      - `message_in_my_conversation`: a later contact message in a conversation assigned to the
+        member.
+      - `message_in_unassigned_conversation`: a later contact message in an unassigned
+        conversation; every member with access is a candidate.
+      - `assigned_to_me`: someone else assigned a conversation to the member.
+
+      Never notified: the member who caused it (their own assignment), conversations marked spam,
+      a member whose open panel reports that it is showing that conversation (the `viewing` frame
+      on `/v1/realtime`), and, while the member's `availability` is `away`, everything except
+      `message_in_my_conversation` and `assigned_to_me`.
+
+      Defaults by role (`defaults` in `NotificationSettings`): push for everything except, for
+      agents, `new_async_conversation` and `message_in_unassigned_conversation`; e-mail only for
+      `message_in_my_conversation` and `assigned_to_me`, for every role.
+
+      E-mail fallback: when an event with `email: true` is still unread after
+      `email_delay_minutes` (15 by default), one e-mail lists the conversation's unread contact
+      messages and links to it; at most one e-mail per conversation and member per hour. It goes
+      to the person's sign-in address in their locale.
   - name: webhooks
     description: |
       Signed HTTP callbacks to host backends per the Standard Webhooks specification
@@ -350,6 +382,212 @@ paths:
         "204":
           description: Removed.
         "401":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/push/vapid-public-key:
+    get:
+      operationId: getVapidPublicKey
+      summary: The server's Web Push key
+      description: |
+        The VAPID public key to pass as `applicationServerKey` to `PushManager.subscribe()`: an
+        uncompressed P-256 point, base64url without padding. 404 `push_disabled` when the server
+        has no VAPID keys configured; hide push settings then.
+      tags: [notifications]
+      security:
+        - session: []
+      responses:
+        "200":
+          description: The key.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VapidPublicKey"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/me/push-subscriptions:
+    get:
+      operationId: listPushSubscriptions
+      summary: List push subscriptions
+      description: The signed-in person's push subscriptions, newest first.
+      tags: [notifications]
+      security:
+        - session: []
+      responses:
+        "200":
+          description: The subscriptions.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PushSubscriptionList"
+        "401":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createPushSubscription
+      summary: Register a push subscription
+      description: |
+        Saves the browser's `PushSubscription` (`subscription.toJSON()`) for the current session.
+        Registering an endpoint that is already saved updates it and moves it to this session and
+        person, so call it on every panel start while notification permission is granted. The
+        endpoint must be an `https` URL on a public address. At most 20 subscriptions per person.
+        404 `push_disabled` when the server has no VAPID keys.
+      tags: [notifications]
+      security:
+        - session: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PushSubscriptionCreate"
+      responses:
+        "201":
+          description: The saved subscription.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PushSubscription"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/me/push-subscriptions/{pushSubscriptionId}:
+    delete:
+      operationId: deletePushSubscription
+      summary: Remove a push subscription
+      description: Call it before `PushSubscription.unsubscribe()` when the member turns push off.
+      tags: [notifications]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/PushSubscriptionId"
+      responses:
+        "204":
+          description: Removed.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/me/push-subscriptions/{pushSubscriptionId}/test:
+    post:
+      operationId: testPushSubscription
+      summary: Send a test notification
+      description: |
+        Queues a test notification to the subscription and returns its payload. The outcome shows
+        up as `last_success_at` or `last_error` on the subscription.
+      tags: [notifications]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/PushSubscriptionId"
+      responses:
+        "202":
+          description: Queued; the push carries this payload.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PushNotification"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/me/notifications:
+    get:
+      operationId: getNotificationSettings
+      summary: Your notification settings
+      description: The calling member's notification settings in the workspace. Member sessions only.
+      tags: [notifications]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The settings.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationSettings"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    patch:
+      operationId: updateNotificationSettings
+      summary: Change your notification settings
+      description: |
+        Each event sent replaces that event's channels; events not sent keep theirs. Member
+        sessions only.
+      tags: [notifications]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NotificationSettingsUpdate"
+      responses:
+        "200":
+          description: The settings.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationSettings"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+  /v1/me/notifications/inboxes/{inboxId}:
+    put:
+      operationId: setInboxNotifications
+      summary: Override your notifications for one inbox
+      description: |
+        Replaces the member's override for the inbox: the events sent here win over the
+        workspace-wide settings in that inbox; the others follow them. Member sessions only.
+      tags: [notifications]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InboxId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InboxNotificationsUpdate"
+      responses:
+        "200":
+          description: The override.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InboxNotifications"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteInboxNotifications
+      summary: Remove your override for one inbox
+      description: The inbox follows the workspace-wide settings again. Member sessions only.
+      tags: [notifications]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InboxId"
+      responses:
+        "204":
+          description: Removed.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
@@ -2242,8 +2480,12 @@ paths:
         everything over HTTP) followed by `ready` and continues live. Without `last_event_id` there
         is no replay.
 
-        The server pings every 30 seconds. The client sends nothing; data messages from the client
-        close the connection. Close codes: 1008 (`unauthenticated`, `forbidden`) when the session
+        The server pings every 30 seconds. A member's panel reports the conversation it shows with
+        a text frame `{"type": "viewing", "conversation_id": "<id>"}`, and
+        `{"type": "viewing", "conversation_id": null}` when it shows none or the page is hidden;
+        send it again after every reconnect. While a connection of the member views a
+        conversation, the member gets no push or e-mail notification about it. Other client
+        frames are ignored. Close codes: 1008 (`unauthenticated`, `forbidden`) when the session
         or membership ends, 1013 (`slow_consumer`) when the client does not read fast enough, 1012
         (`restart`) when the server restarts or loses its event feed. Reconnect with
         `last_event_id` after any of them except 1008. While the server is reconnecting its own event
@@ -3118,6 +3360,13 @@ components:
       schema:
         type: string
         format: uuid
+    PushSubscriptionId:
+      name: pushSubscriptionId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
     InboxId:
       name: inboxId
       in: path
@@ -3498,6 +3747,199 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Passkey"
+    VapidPublicKey:
+      type: object
+      required: [public_key]
+      properties:
+        public_key:
+          type: string
+          description: Uncompressed P-256 public key, base64url without padding.
+    PushSubscriptionKeys:
+      type: object
+      required: [p256dh, auth]
+      properties:
+        p256dh:
+          type: string
+          maxLength: 200
+          description: The browser's P-256 key, base64url (65 bytes decoded).
+        auth:
+          type: string
+          maxLength: 100
+          description: The authentication secret, base64url (16 bytes decoded).
+    PushSubscriptionCreate:
+      type: object
+      required: [endpoint, keys]
+      properties:
+        endpoint:
+          type: string
+          format: uri
+          maxLength: 2000
+        keys:
+          $ref: "#/components/schemas/PushSubscriptionKeys"
+        user_agent:
+          type: string
+          maxLength: 200
+          description: A label to tell devices apart in the list, such as "Chrome on Android".
+    PushSubscription:
+      type: object
+      required: [id, endpoint, user_agent, current, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        endpoint:
+          type: string
+          description: Compare with `PushSubscription.endpoint` to find this browser's entry.
+        user_agent:
+          type: string
+        current:
+          type: boolean
+          description: Registered by the calling session.
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        last_success_at:
+          type: string
+          format: date-time
+        last_failure_at:
+          type: string
+          format: date-time
+        last_error:
+          type: string
+          description: Why the last failed push failed.
+    PushSubscriptionList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/PushSubscription"
+    NotificationChannels:
+      type: object
+      required: [push, email]
+      properties:
+        push:
+          type: boolean
+          description: Web Push to every subscribed browser of the person.
+        email:
+          type: boolean
+          description: An e-mail when it is still unread after `email_delay_minutes`.
+    NotificationEvents:
+      type: object
+      required: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me]
+      properties:
+        new_live_conversation:
+          $ref: "#/components/schemas/NotificationChannels"
+        new_async_conversation:
+          $ref: "#/components/schemas/NotificationChannels"
+        message_in_my_conversation:
+          $ref: "#/components/schemas/NotificationChannels"
+        message_in_unassigned_conversation:
+          $ref: "#/components/schemas/NotificationChannels"
+        assigned_to_me:
+          $ref: "#/components/schemas/NotificationChannels"
+    NotificationEventsUpdate:
+      type: object
+      description: Some events and their channels.
+      properties:
+        new_live_conversation:
+          $ref: "#/components/schemas/NotificationChannels"
+        new_async_conversation:
+          $ref: "#/components/schemas/NotificationChannels"
+        message_in_my_conversation:
+          $ref: "#/components/schemas/NotificationChannels"
+        message_in_unassigned_conversation:
+          $ref: "#/components/schemas/NotificationChannels"
+        assigned_to_me:
+          $ref: "#/components/schemas/NotificationChannels"
+    NotificationSettings:
+      type: object
+      required: [events, defaults, email_delay_minutes, inboxes]
+      properties:
+        events:
+          $ref: "#/components/schemas/NotificationEvents"
+        defaults:
+          $ref: "#/components/schemas/NotificationEvents"
+        email_delay_minutes:
+          type: integer
+          minimum: 5
+          maximum: 1440
+          description: How long an event stays unread before the e-mail fallback is sent.
+        inboxes:
+          type: array
+          description: Per-inbox overrides, for inboxes the member can still see.
+          items:
+            $ref: "#/components/schemas/InboxNotifications"
+    NotificationSettingsUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        events:
+          $ref: "#/components/schemas/NotificationEventsUpdate"
+        email_delay_minutes:
+          type: integer
+          minimum: 5
+          maximum: 1440
+    InboxNotifications:
+      type: object
+      required: [inbox_id, events, updated_at]
+      properties:
+        inbox_id:
+          type: string
+          format: uuid
+        events:
+          $ref: "#/components/schemas/NotificationEventsUpdate"
+        updated_at:
+          type: string
+          format: date-time
+    InboxNotificationsUpdate:
+      type: object
+      required: [events]
+      properties:
+        events:
+          $ref: "#/components/schemas/NotificationEventsUpdate"
+    PushNotification:
+      type: object
+      description: |
+        The JSON a push delivers to the service worker (`event.data.json()`), encrypted per
+        RFC 8291 (`aes128gcm`). Show it with `registration.showNotification(title, {body, tag,
+        data})` and open `url` on click. Pushes of one conversation share `tag` (and the push
+        `Topic`), so a newer one replaces the older.
+      required: [event, title, body, url, tag]
+      properties:
+        event:
+          type: string
+          description: What caused it (see the `notifications` tag), or `test`.
+          enum: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me, test]
+        title:
+          type: string
+          description: The inbox name and the contact's name.
+          examples: ["Support · Ayşe Yılmaz"]
+        body:
+          type: string
+          description: The start of the message (at most 140 characters), or what happened.
+        url:
+          type: string
+          description: |
+            Path to open, relative to the server's public URL:
+            `/conversations/{id}?workspace_id={workspace}` (`/` for a test).
+          examples: ["/conversations/0199a3f0-7c1e-7b4a-9d2e-3f1c2b4a5d6e?workspace_id=0199a3f0-0000-7000-8000-000000000001"]
+        tag:
+          type: string
+          description: "`conversation-{id}`, or `test`."
+        conversation_id:
+          type: string
+          format: uuid
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
     PasskeyCeremony:
       type: object
       required: [ceremony_id, options]
