@@ -25,6 +25,23 @@ channel of `local@domain` when no channel has the tagged address. `--from-addres
 another address than the one mail arrives at (replies still go to the channel address through
 `Reply-To`).
 
+### Catch-all channels
+
+A channel whose address is `*@example.com` is the catch-all of that domain (one per domain): it
+receives mail to every address of the domain that no other channel has exactly, after the
+`local+tag` fallback. Each conversation remembers the address the contact wrote to, and replies go
+out `From` and `Reply-To` that address, so the channel's SMTP account must be allowed to send from
+the whole domain. The channel's `from_address` (which cannot itself be a catch-all) is used only
+for conversations without such an address, such as a chat that continues by e-mail; without
+either, the reply is refused (`email_no_sender`). When an inbox has both, chat and feedback replies
+go out through the exact-address channel.
+
+```sh
+yuva channel create-email --workspace Example --inbox support --name "Everything else" \
+  --address '*@example.com' --from-address support@example.com \
+  --smtp-host smtp.example.com --smtp-username support@example.com --smtp-password-file -
+```
+
 ## Inbound
 
 Yuva does not listen for SMTP. Mail reaches it in one of three ways; all of them pass the raw
@@ -52,13 +69,17 @@ subdomain) whose mail is not handled by another mail server.
 3. In the Cloudflare dashboard, open the domain → Email → Email Routing, enable it and let it add
    its MX and SPF records.
 4. Under Routing rules, add each support address with the action **Send to a Worker** →
-   `yuva-edge`. (A catch-all rule sending to the Worker works too; mail to an address that is no
-   channel's is then rejected by Yuva with "No such recipient".)
+   `yuva-edge`. For a [catch-all channel](#catch-all-channels), set the catch-all rule of Email
+   Routing to the Worker. Mail to an address that no channel receives is rejected by Yuva with
+   "No such recipient".
 5. Send a test mail to the address and watch the conversation appear in the panel.
 
 Cloudflare accepts messages up to 25 MiB. A message Yuva refuses (unknown recipient, blocked
-sender, too many new conversations) is rejected permanently with Yuva's reason; when Yuva is down
-the Worker fails and the sending server retries later.
+sender, a sender over `YUVA_EMAIL_SENDER_HOURLY_CAP`) is rejected permanently with Yuva's reason.
+When Yuva does not answer (5xx, network error, no answer within 20 seconds) the delivery fails and
+the sending server may retry. To keep such mail during an outage, deploy with
+`--var FALLBACK_FORWARD:you@example.org`, a verified destination address in Email Routing: the
+message is then forwarded there as a plain e-mail and does not appear in Yuva.
 
 ### Any MTA: `yuva ingest-email`
 
@@ -110,8 +131,12 @@ the answers are in [edge/README.md](../edge/README.md#ingress-contract).
   and the original message are kept. Remote images are blocked in the panel until a member loads
   them.
 - Automatic mail (auto-replies, bulk and list mail, delivery reports, mail from our own domain) is
-  stored but never answered automatically.
-- A sender can open at most 20 new conversations per channel per hour; more are refused.
+  stored but never answered automatically. Mail from an address Yuva sends from (any channel's
+  address or sending address, and `YUVA_SMTP_FROM`) is dropped, so notifications and replies that
+  reach a catch-all never loop.
+- Volume does not bounce mail: a sender opens at most 20 new conversations per channel per hour,
+  and further mail in that hour is added to their latest conversation on the channel. Only a sender
+  over `YUVA_EMAIL_SENDER_HOURLY_CAP` inbound mails per hour (500 by default) is refused.
 - A new conversation whose first mail fails DMARC at the receiving server is marked spam. Contacts
   can be blocked; their mail is refused.
 
@@ -171,8 +196,3 @@ For every domain a channel sends from:
 
 Send a test reply to a mailbox you control and check that the headers show `spf=pass`,
 `dkim=pass` and `dmarc=pass`.
-
-## Not in 0.0.1
-
-Catch-all channels (one channel receiving every address of a domain) are not shipped; every
-address is set up as its own channel.

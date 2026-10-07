@@ -75,6 +75,7 @@ Inbound e-mail parts outside these rules are skipped; they stay in the stored or
 |---|---|---|
 | `YUVA_INGRESS_SECRET` | unset | Shared secret that signs requests to `/ingress/email` (the Cloudflare Email Worker uses the same value). Unset, `/ingress/email` refuses all mail. `yuva ingest-email` does not need it. Generate it with `openssl rand -hex 32`. |
 | `YUVA_SES_TOPIC_ARNS` | unset | Amazon SNS topic ARNs whose SES bounce and complaint notifications `/ingress/ses` accepts, comma-separated. Unset, none are accepted. |
+| `YUVA_EMAIL_SENDER_HOURLY_CAP` | `500` | Most inbound e-mails one sender may send to a workspace per hour. Mail beyond it is refused (`429 rate_limited`, a permanent rejection through the Email Worker). Below it no mail is refused for volume. |
 
 ## Chat
 
