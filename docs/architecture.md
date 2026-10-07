@@ -241,7 +241,10 @@ inline thread inside a product's own panel.
 - Push: Yuva sends `message.created` webhooks to the host backend, which already holds the device
   tokens and APNs/FCM keys. The payload's `contact.online` says whether the contact had a live
   `/client/v1/realtime` connection (seen in the last 75 seconds) when the webhook was prepared;
-  when it is false the app is closed or in the background and the host sends its push.
+  when it is false the app is closed or in the background and the host sends its push. The host
+  puts the conversation's id (`data.message.conversation_id`) in the push payload as
+  `yuva_conversation_id` (APNs: a top-level key next to `aps`; FCM: a `data` entry);
+  `Yuva.handleNotification` in both SDKs reads it and returns the conversation to open.
   `GET /v1/contacts/{id}/presence` answers the same question on demand. Yuva sending push itself
   is a later, optional channel setting.
 

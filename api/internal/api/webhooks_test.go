@@ -435,6 +435,9 @@ func TestWebhookDeliveryRetriesAndDisable(t *testing.T) {
 		reply[0].data["contact"].(map[string]any)["online"] != false {
 		t.Fatalf("member reply: %v", reply)
 	}
+	if reply[0].data["message"].(map[string]any)["conversation_id"] != conv || reply[0].data["conversation"].(map[string]any)["id"] != conv {
+		t.Fatalf("member reply names no conversation for the push: %v", reply[0].data)
+	}
 	presence := at.owner.expect(http.StatusOK, "GET", "/v1/contacts/"+cs.contactID+"/presence", nil)
 	if presence.body["online"] != false || presence.body["last_seen_at"] == nil {
 		t.Fatalf("presence: %s", presence.raw)

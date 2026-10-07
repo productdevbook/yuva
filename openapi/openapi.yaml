@@ -2981,6 +2981,12 @@ webhooks:
         A message to or from the contact. Members' notes only for endpoints with
         `include_notes`; internal events never. When a member answers and `contact.online` is
         false, the contact has no live connection: send your push notification.
+
+        The conversation is `data.message.conversation_id` (the same as `data.conversation.id`).
+        Put it in the push payload as `yuva_conversation_id` (APNs: a top-level key next to `aps`;
+        FCM: a `data` entry); `Yuva.handleNotification` in the Swift and Kotlin SDKs reads it and
+        returns the conversation to open. Map the contact to your user with
+        `data.contact.external_ids`.
       tags: [webhooks]
       security: []
       parameters:
