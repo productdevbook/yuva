@@ -72,6 +72,10 @@ panel (embedded SPA) ─────────► /v1 + WS ──────�
 | `/ingress/ses` | SES bounce and complaint notifications via SNS | SNS signature |
 | `/v1/realtime`, `/client/v1/realtime` | panel, widget, SDKs | as above |
 
+A member session belongs to a person, not to a workspace. Workspace endpoints act on the workspace
+named in the `Yuva-Workspace` header, or on the person's only workspace when the header is absent.
+An API key acts on its own workspace only and cannot manage members or keys.
+
 ### Identity
 
 The host app's backend knows who its user is; Yuva trusts it through a short-lived identity token:
@@ -149,7 +153,9 @@ React, Vite, shadcn, TanStack Query, Lingui; built to static files and embedded 
   auto-replies, webhooks, API keys.
 - Installable PWA with Web Push (VAPID), so members get notifications on phones without a native
   app. E-mail notifications as a fallback.
-- Sign-in with an e-mailed one-time code and passkeys.
+- Sign-in with an e-mailed one-time code and passkeys. There is no open sign-up: the first owner
+  is created with `yuva bootstrap`, everyone else is invited. Sign-in and invitation e-mails are
+  sent directly, not through the job queue, so a code never lands in job arguments.
 
 ### Storage
 
@@ -165,8 +171,15 @@ single-node install. Size limit and content-type allowlist per channel.
 ## Hosting for others later
 
 - `workspace_id` on every row; every store query is scoped by it.
-  Two exceptions: `workspaces` itself, whose `id` is the workspace, and River's `river_*` queue
-  tables, which the library owns; job arguments carry the `workspace_id` instead.
+  Exceptions:
+  - `workspaces` itself, whose `id` is the workspace.
+  - River's `river_*` queue tables, which the library owns; job arguments carry the
+    `workspace_id` instead.
+  - The person-level identity tables `people`, `sessions`, `login_codes`, `passkeys` and
+    `webauthn_ceremonies`. A person signs in once and can be a member of several workspaces, so
+    these rows belong to a person (or, for `login_codes`, an e-mail address before sign-in), not
+    to a workspace. Their queries are scoped by the person id, the e-mail address or a secret
+    hash instead; everything a person may do in a workspace goes through their `members` row.
 - Usage counters (conversations, messages, members, storage) recorded per workspace per month.
 - Billing, plans and the signup flow are not part of the open-source core.
 

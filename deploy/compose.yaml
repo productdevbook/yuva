@@ -24,6 +24,7 @@ services:
       dockerfile: deploy/Dockerfile
     environment:
       YUVA_DATABASE_URL: postgres://yuva:yuva@db:5432/yuva?sslmode=disable
+      YUVA_PUBLIC_URL: ${YUVA_PUBLIC_URL:-http://localhost:8809}
     ports:
       - "0.0.0.0:8809:8080"
     depends_on:

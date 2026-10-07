@@ -13,9 +13,12 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/go-webauthn/webauthn/webauthn"
+
 	"github.com/productdevbook/yuva/api/internal/api"
 	"github.com/productdevbook/yuva/api/internal/config"
 	"github.com/productdevbook/yuva/api/internal/jobs"
+	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/metrics"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
@@ -24,7 +27,8 @@ var version = ""
 
 const usageText = `usage:
   yuva serve [--migrate=false]   (applies database migrations first unless disabled)
-  yuva migrate up|down|status`
+  yuva migrate up|down|status
+  yuva bootstrap --email <address> --workspace <name> [--name <name>] [--locale en|tr] [--allow-existing]`
 
 func main() {
 	log := slog.New(slog.NewJSONHandler(os.Stderr, nil))
@@ -42,6 +46,8 @@ func main() {
 			err = serve(ctx, cfg, log, os.Args[2:])
 		case "migrate":
 			err = migrate(ctx, cfg, log, os.Args[2:])
+		case "bootstrap":
+			err = bootstrap(ctx, cfg, log, os.Args[2:])
 		default:
 			fmt.Fprintln(os.Stderr, usageText)
 			os.Exit(2)
@@ -113,7 +119,32 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 	if cfg.MetricsAddr != "" {
 		go metrics.Serve(ctx, cfg.MetricsAddr, log)
 	}
-	srv := api.New(api.Deps{Log: log, Store: st, Version: cfg.Version})
+	wa, err := webauthn.New(&webauthn.Config{
+		RPID:          cfg.WebAuthnRPID,
+		RPDisplayName: cfg.WebAuthnRPName,
+		RPOrigins:     cfg.WebAuthnOrigins,
+	})
+	if err != nil {
+		return fmt.Errorf("webauthn: %w", err)
+	}
+	var mailer mail.Mailer = mail.Log{Log: log}
+	if cfg.SMTP.Enabled() {
+		mailer = mail.SMTP{Config: cfg.SMTP}
+	} else {
+		log.Warn("YUVA_SMTP_HOST is not set; e-mails are written to the log instead of being sent")
+	}
+	srv := api.New(api.Deps{
+		Log:      log,
+		Store:    st,
+		Version:  cfg.Version,
+		Mailer:   mail.Async{Mailer: mailer, Log: log, Timeout: 30 * time.Second},
+		WebAuthn: wa,
+		Auth: api.AuthSettings{
+			PublicURL:      cfg.PublicURL,
+			CookieSecure:   cfg.CookieSecure,
+			ClientIPHeader: cfg.ClientIPHeader,
+		},
+	})
 	httpSrv := &http.Server{
 		Addr:              cfg.ListenAddr,
 		Handler:           srv.Handler(),
@@ -163,4 +194,31 @@ func migrate(ctx context.Context, cfg config.Config, log *slog.Logger, args []st
 	default:
 		return fmt.Errorf("unknown migrate command %q", args[0])
 	}
+}
+
+func bootstrap(ctx context.Context, cfg config.Config, log *slog.Logger, args []string) error {
+	fs := flag.NewFlagSet("bootstrap", flag.ContinueOnError)
+	var in api.BootstrapInput
+	fs.StringVar(&in.Email, "email", "", "e-mail address of the first owner")
+	fs.StringVar(&in.Workspace, "workspace", "", "name of the workspace")
+	fs.StringVar(&in.Name, "name", "", "display name of the owner")
+	fs.StringVar(&in.Locale, "locale", "en", "language of e-mails to the owner: en or tr")
+	fs.BoolVar(&in.AllowExisting, "allow-existing", false, "create a workspace even if one exists")
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
+	st, err := openStore(ctx, cfg)
+	if err != nil {
+		return err
+	}
+	defer st.Close()
+	if err := migrateUp(ctx, st, log); err != nil {
+		return err
+	}
+	res, err := api.Bootstrap(ctx, st, in)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("workspace %s\nmember    %s\nowner     %s\n", res.WorkspaceID, res.MemberID, in.Email)
+	return nil
 }

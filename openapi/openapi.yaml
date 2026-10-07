@@ -19,11 +19,36 @@ info:
     ## Errors
 
     Errors are `application/problem+json` documents (RFC 9457) with a stable `code`.
+
+    ## Authentication
+
+    - Members sign in with a one-time code sent by e-mail or with a passkey. Both set the
+      `yuva_session` cookie (HttpOnly, SameSite=Lax).
+    - Host backends and scripts send a workspace API key as `Authorization: Bearer <key>`. A key
+      acts on its own workspace only.
+
+    ## Workspace selection
+
+    A member session belongs to a person, who can be a member of several workspaces. Workspace
+    endpoints act on the workspace named in the `Yuva-Workspace` header; when the header is absent
+    and the person belongs to exactly one workspace, that workspace is used. An API key always acts
+    on its own workspace; a `Yuva-Workspace` header naming another workspace is refused.
 servers:
   - url: /
+security:
+  - session: []
+  - apiKey: []
 tags:
   - name: system
     description: Health, readiness and build information.
+  - name: auth
+    description: Sign-in with an e-mailed code or a passkey, sign-out.
+  - name: me
+    description: The signed-in person and their passkeys.
+  - name: workspace
+    description: The current workspace, its members and invites.
+  - name: api-keys
+    description: Workspace API keys for host backends and scripts.
 paths:
   /healthz:
     get:
@@ -73,8 +98,810 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Version"
+  /v1/auth/code:
+    post:
+      operationId: requestSignInCode
+      summary: Request a sign-in code
+      description: |
+        Sends a one-time code to the address when it belongs to a member or has a pending invite.
+        The answer is the same either way, so it does not reveal whether an address is known.
+        Codes expire after 10 minutes; only the most recent code of an address is accepted.
+      tags: [auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignInCodeRequest"
+      responses:
+        "202":
+          description: Accepted. A code is on its way if the address is known.
+        "400":
+          $ref: "#/components/responses/Problem"
+        "429":
+          $ref: "#/components/responses/Problem"
+  /v1/auth/code/verify:
+    post:
+      operationId: verifySignInCode
+      summary: Sign in with a code
+      description: |
+        Exchanges a valid code for a member session. Each code accepts five attempts. Pending
+        invites for the address are accepted on success.
+      tags: [auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignInCodeVerify"
+      responses:
+        "200":
+          $ref: "#/components/responses/SignedIn"
+        "400":
+          $ref: "#/components/responses/Problem"
+  /v1/auth/passkey/options:
+    post:
+      operationId: beginPasskeySignIn
+      summary: Start a passkey sign-in
+      description: |
+        Returns the options for `navigator.credentials.get()` (discoverable credentials) and a
+        ceremony id to send back with the result. The ceremony expires after 5 minutes.
+      tags: [auth]
+      security: []
+      responses:
+        "200":
+          description: The ceremony options.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PasskeyCeremony"
+  /v1/auth/passkey:
+    post:
+      operationId: finishPasskeySignIn
+      summary: Sign in with a passkey
+      tags: [auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PasskeyCeremonyResult"
+      responses:
+        "200":
+          $ref: "#/components/responses/SignedIn"
+        "400":
+          $ref: "#/components/responses/Problem"
+  /v1/auth/sign-out:
+    post:
+      operationId: signOut
+      summary: Sign out
+      description: Ends the current member session and clears the cookie.
+      tags: [auth]
+      security:
+        - session: []
+      responses:
+        "204":
+          description: Signed out.
+          headers:
+            Set-Cookie:
+              description: Clears `yuva_session`.
+              schema:
+                type: string
+        "401":
+          $ref: "#/components/responses/Problem"
+  /v1/me:
+    get:
+      operationId: getMe
+      summary: The signed-in person
+      description: The person behind the session and the workspaces they belong to.
+      tags: [me]
+      security:
+        - session: []
+      responses:
+        "200":
+          description: The person and their memberships.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Me"
+        "401":
+          $ref: "#/components/responses/Problem"
+    patch:
+      operationId: updateMe
+      summary: Update the signed-in person
+      tags: [me]
+      security:
+        - session: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MeUpdate"
+      responses:
+        "200":
+          description: The updated person and their memberships.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Me"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+  /v1/me/passkeys:
+    get:
+      operationId: listPasskeys
+      summary: List passkeys
+      tags: [me]
+      security:
+        - session: []
+      responses:
+        "200":
+          description: The person's passkeys.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PasskeyList"
+        "401":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: finishPasskeyRegistration
+      summary: Register a passkey
+      description: Completes a registration started with `POST /v1/me/passkeys/options`.
+      tags: [me]
+      security:
+        - session: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PasskeyRegistration"
+      responses:
+        "201":
+          description: The registered passkey.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Passkey"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /v1/me/passkeys/options:
+    post:
+      operationId: beginPasskeyRegistration
+      summary: Start a passkey registration
+      description: |
+        Returns the options for `navigator.credentials.create()` and a ceremony id to send back
+        with the result. The ceremony expires after 5 minutes.
+      tags: [me]
+      security:
+        - session: []
+      responses:
+        "200":
+          description: The ceremony options.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PasskeyCeremony"
+        "401":
+          $ref: "#/components/responses/Problem"
+  /v1/me/passkeys/{passkeyId}:
+    delete:
+      operationId: deletePasskey
+      summary: Remove a passkey
+      tags: [me]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/PasskeyId"
+      responses:
+        "204":
+          description: Removed.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/workspace:
+    get:
+      operationId: getWorkspace
+      summary: The current workspace
+      tags: [workspace]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The workspace.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Workspace"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+  /v1/members:
+    get:
+      operationId: listMembers
+      summary: List members
+      tags: [workspace]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The workspace's members.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemberList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+  /v1/members/{memberId}:
+    get:
+      operationId: getMember
+      summary: Get a member
+      tags: [workspace]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/MemberId"
+      responses:
+        "200":
+          description: The member.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    patch:
+      operationId: updateMember
+      summary: Change a member's role
+      description: |
+        Owners and admins only, with a member session. Only an owner grants or takes away the
+        `owner` role. The last owner cannot be demoted.
+      tags: [workspace]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/MemberId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MemberUpdate"
+      responses:
+        "200":
+          description: The updated member.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: removeMember
+      summary: Remove a member
+      description: |
+        Owners and admins only, with a member session; only an owner removes an owner. The last
+        owner cannot be removed.
+      tags: [workspace]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/MemberId"
+      responses:
+        "204":
+          description: Removed.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /v1/invites:
+    get:
+      operationId: listInvites
+      summary: List pending invites
+      tags: [workspace]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: Invites that are not accepted yet.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InviteList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createInvite
+      summary: Invite a member
+      description: |
+        Owners and admins only, with a member session; only an owner invites an owner. Sends an
+        invitation e-mail; the invite is accepted when the person signs in with a code sent to
+        that address. Inviting the same address again replaces the pending invite. Invites expire
+        after 7 days.
+      tags: [workspace]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InviteCreate"
+      responses:
+        "201":
+          description: The invite.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invite"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /v1/invites/{inviteId}:
+    delete:
+      operationId: deleteInvite
+      summary: Withdraw an invite
+      tags: [workspace]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InviteId"
+      responses:
+        "204":
+          description: Withdrawn.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/api-keys:
+    get:
+      operationId: listApiKeys
+      summary: List API keys
+      description: Owners and admins only, with a member session. Revoked keys are included.
+      tags: [api-keys]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The workspace's API keys.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiKeyList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createApiKey
+      summary: Create an API key
+      description: |
+        Owners and admins only, with a member session. The secret is returned once and stored
+        only as a hash.
+      tags: [api-keys]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApiKeyCreate"
+      responses:
+        "201":
+          description: The key and its secret.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiKeyCreated"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+  /v1/api-keys/{apiKeyId}:
+    delete:
+      operationId: revokeApiKey
+      summary: Revoke an API key
+      description: Owners and admins only, with a member session. The key stops working at once.
+      tags: [api-keys]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ApiKeyId"
+      responses:
+        "204":
+          description: Revoked.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
 components:
+  securitySchemes:
+    session:
+      type: apiKey
+      in: cookie
+      name: yuva_session
+      description: Member session set by a successful sign-in.
+    apiKey:
+      type: http
+      scheme: bearer
+      description: A workspace API key, `yuva_<prefix>_<secret>`.
+  parameters:
+    WorkspaceHeader:
+      name: Yuva-Workspace
+      in: header
+      required: false
+      description: The workspace to act on; see "Workspace selection".
+      schema:
+        type: string
+        format: uuid
+    MemberId:
+      name: memberId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    InviteId:
+      name: inviteId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ApiKeyId:
+      name: apiKeyId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    PasskeyId:
+      name: passkeyId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    Problem:
+      description: An error.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    SignedIn:
+      description: Signed in; the session cookie is set.
+      headers:
+        Set-Cookie:
+          description: "`yuva_session`, HttpOnly, SameSite=Lax."
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Me"
   schemas:
+    Role:
+      type: string
+      enum: [owner, admin, agent]
+    Locale:
+      type: string
+      description: The language of e-mails sent to the person.
+      enum: [en, tr]
+    Email:
+      type: string
+      format: email
+      maxLength: 320
+      examples: [owner@example.com]
+    SignInCodeRequest:
+      type: object
+      required: [email]
+      properties:
+        email:
+          $ref: "#/components/schemas/Email"
+    SignInCodeVerify:
+      type: object
+      required: [email, code]
+      properties:
+        email:
+          $ref: "#/components/schemas/Email"
+        code:
+          type: string
+          pattern: "^[0-9]{6}$"
+          examples: ["042917"]
+    Person:
+      type: object
+      required: [id, email, name, locale]
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          $ref: "#/components/schemas/Email"
+        name:
+          type: string
+          description: Empty until the person sets it.
+        locale:
+          $ref: "#/components/schemas/Locale"
+    Workspace:
+      type: object
+      required: [id, name, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    Membership:
+      type: object
+      required: [workspace, member_id, role]
+      properties:
+        workspace:
+          $ref: "#/components/schemas/Workspace"
+        member_id:
+          type: string
+          format: uuid
+        role:
+          $ref: "#/components/schemas/Role"
+    Me:
+      type: object
+      required: [person, memberships]
+      properties:
+        person:
+          $ref: "#/components/schemas/Person"
+        memberships:
+          type: array
+          items:
+            $ref: "#/components/schemas/Membership"
+    MeUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          maxLength: 200
+        locale:
+          $ref: "#/components/schemas/Locale"
+    Member:
+      type: object
+      required: [id, person_id, email, name, role, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        person_id:
+          type: string
+          format: uuid
+        email:
+          $ref: "#/components/schemas/Email"
+        name:
+          type: string
+        role:
+          $ref: "#/components/schemas/Role"
+        created_at:
+          type: string
+          format: date-time
+    MemberList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Member"
+    MemberUpdate:
+      type: object
+      required: [role]
+      properties:
+        role:
+          $ref: "#/components/schemas/Role"
+    InviteCreate:
+      type: object
+      required: [email, role]
+      properties:
+        email:
+          $ref: "#/components/schemas/Email"
+        role:
+          $ref: "#/components/schemas/Role"
+        locale:
+          $ref: "#/components/schemas/Locale"
+    Invite:
+      type: object
+      required: [id, email, role, locale, created_at, expires_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          $ref: "#/components/schemas/Email"
+        role:
+          $ref: "#/components/schemas/Role"
+        locale:
+          $ref: "#/components/schemas/Locale"
+        invited_by:
+          type: string
+          format: uuid
+          description: The inviting member, absent when that member was removed.
+        created_at:
+          type: string
+          format: date-time
+        expires_at:
+          type: string
+          format: date-time
+    InviteList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Invite"
+    ApiKey:
+      type: object
+      required: [id, name, prefix, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        prefix:
+          type: string
+          description: The visible start of the key, `yuva_<prefix>`.
+          examples: [yuva_k3x9q2mf]
+        created_by:
+          type: string
+          format: uuid
+          description: The member who created the key, absent when that member was removed.
+        created_at:
+          type: string
+          format: date-time
+        last_used_at:
+          type: string
+          format: date-time
+        revoked_at:
+          type: string
+          format: date-time
+    ApiKeyCreate:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+    ApiKeyCreated:
+      type: object
+      required: [api_key, secret]
+      properties:
+        api_key:
+          $ref: "#/components/schemas/ApiKey"
+        secret:
+          type: string
+          description: The full key. It is not shown again.
+    ApiKeyList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ApiKey"
+    Passkey:
+      type: object
+      required: [id, name, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        last_used_at:
+          type: string
+          format: date-time
+    PasskeyList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Passkey"
+    PasskeyCeremony:
+      type: object
+      required: [ceremony_id, options]
+      properties:
+        ceremony_id:
+          type: string
+        options:
+          type: object
+          additionalProperties: true
+          description: |
+            WebAuthn options in their JSON form (`{"publicKey": …}`), for
+            `PublicKeyCredential.parseCreationOptionsFromJSON` or
+            `parseRequestOptionsFromJSON`.
+    PasskeyCeremonyResult:
+      type: object
+      required: [ceremony_id, credential]
+      properties:
+        ceremony_id:
+          type: string
+        credential:
+          type: object
+          additionalProperties: true
+          description: The `PublicKeyCredential` in its JSON form (`credential.toJSON()`).
+    PasskeyRegistration:
+      type: object
+      required: [ceremony_id, credential]
+      properties:
+        ceremony_id:
+          type: string
+        name:
+          type: string
+          maxLength: 200
+          description: A label for the passkey; defaults to "Passkey".
+        credential:
+          type: object
+          additionalProperties: true
+          description: The `PublicKeyCredential` in its JSON form (`credential.toJSON()`).
     Health:
       type: object
       required: [status]

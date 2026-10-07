@@ -10,6 +10,86 @@ import (
 	"uuid"
 )
 
+type ApiKey struct {
+	ID          uuid.UUID
+	WorkspaceID uuid.UUID
+	Name        string
+	Prefix      string
+	SecretHash  []byte
+	CreatedBy   *uuid.UUID
+	CreatedAt   time.Time
+	LastUsedAt  *time.Time
+	RevokedAt   *time.Time
+}
+
+type Invite struct {
+	ID          uuid.UUID
+	WorkspaceID uuid.UUID
+	Email       string
+	Role        string
+	Locale      string
+	InvitedBy   *uuid.UUID
+	CreatedAt   time.Time
+	ExpiresAt   time.Time
+}
+
+type LoginCode struct {
+	ID         uuid.UUID
+	Email      string
+	CodeHash   []byte
+	Ip         string
+	Attempts   int32
+	CreatedAt  time.Time
+	ExpiresAt  time.Time
+	ConsumedAt *time.Time
+}
+
+type Member struct {
+	ID          uuid.UUID
+	WorkspaceID uuid.UUID
+	PersonID    uuid.UUID
+	Role        string
+	CreatedAt   time.Time
+}
+
+type Passkey struct {
+	ID           uuid.UUID
+	PersonID     uuid.UUID
+	RpID         string
+	CredentialID []byte
+	Name         string
+	Credential   []byte
+	CreatedAt    time.Time
+	LastUsedAt   *time.Time
+}
+
+type Person struct {
+	ID             uuid.UUID
+	Email          string
+	Name           string
+	Locale         string
+	WebauthnHandle []byte
+	CreatedAt      time.Time
+}
+
+type Session struct {
+	ID         uuid.UUID
+	PersonID   uuid.UUID
+	TokenHash  []byte
+	Method     string
+	CreatedAt  time.Time
+	ExpiresAt  time.Time
+	LastSeenAt time.Time
+}
+
+type WebauthnCeremony struct {
+	IDHash      []byte
+	Kind        string
+	PersonID    *uuid.UUID
+	SessionData []byte
+	ExpiresAt   time.Time
+}
+
 type Workspace struct {
 	ID        uuid.UUID
 	Name      string

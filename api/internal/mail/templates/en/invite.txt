@@ -1,0 +1,7 @@
+You are invited to {{.Workspace}} on Yuva
+
+{{if .Inviter}}{{.Inviter}} invited you{{else}}You are invited{{end}} to answer customers in {{.Workspace}} on Yuva as {{if eq .Role "owner"}}an owner{{else if eq .Role "admin"}}an admin{{else}}an agent{{end}}.
+
+Sign in with this e-mail address to accept: {{.URL}}
+
+The invitation expires in {{.Days}} days.

@@ -1,0 +1,7 @@
+Yuva'da {{.Workspace}} çalışma alanına davet edildiniz
+
+{{if .Inviter}}{{.Inviter}} sizi{{else}}Siz{{end}} Yuva'da {{.Workspace}} çalışma alanına {{if eq .Role "owner"}}sahip{{else if eq .Role "admin"}}yönetici{{else}}temsilci{{end}} olarak davet {{if .Inviter}}etti{{else}}edildiniz{{end}}.
+
+Daveti kabul etmek için bu e-posta adresiyle giriş yapın: {{.URL}}
+
+Davet {{.Days}} gün içinde geçersiz olur.

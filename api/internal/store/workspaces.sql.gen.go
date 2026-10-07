@@ -11,6 +11,17 @@ import (
 	"uuid"
 )
 
+const countWorkspaces = `-- name: CountWorkspaces :one
+SELECT count(*) FROM workspaces
+`
+
+func (q *Queries) CountWorkspaces(ctx context.Context) (int64, error) {
+	row := q.db.QueryRow(ctx, countWorkspaces)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createWorkspace = `-- name: CreateWorkspace :one
 INSERT INTO workspaces (id, name) VALUES ($1, $2)
 RETURNING id, name, created_at
@@ -37,4 +48,24 @@ func (q *Queries) GetWorkspace(ctx context.Context, id uuid.UUID) (Workspace, er
 	var i Workspace
 	err := row.Scan(&i.ID, &i.Name, &i.CreatedAt)
 	return i, err
+}
+
+const lockBootstrap = `-- name: LockBootstrap :exec
+SELECT pg_advisory_xact_lock(hashtext('yuva.bootstrap'))
+`
+
+func (q *Queries) LockBootstrap(ctx context.Context) error {
+	_, err := q.db.Exec(ctx, lockBootstrap)
+	return err
+}
+
+const lockWorkspace = `-- name: LockWorkspace :one
+SELECT id FROM workspaces WHERE id = $1 FOR UPDATE
+`
+
+func (q *Queries) LockWorkspace(ctx context.Context, id uuid.UUID) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, lockWorkspace, id)
+	var id_2 uuid.UUID
+	err := row.Scan(&id_2)
+	return id_2, err
 }

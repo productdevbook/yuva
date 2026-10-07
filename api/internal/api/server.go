@@ -8,6 +8,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-webauthn/webauthn/webauthn"
+
+	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/metrics"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -21,26 +24,44 @@ var apiPrefixes = []string{"/v1/", "/client/v1/", "/ingress/"}
 var apiPaths = []string{"/v1", "/client/v1", "/healthz", "/readyz"}
 
 type Server struct {
-	log     *slog.Logger
-	st      *store.Store
-	version string
+	log      *slog.Logger
+	st       *store.Store
+	version  string
+	mailer   mail.Mailer
+	webauthn *webauthn.WebAuthn
+	auth     AuthSettings
+	now      func() time.Time
 }
 
 type Deps struct {
-	Log     *slog.Logger
-	Store   *store.Store
-	Version string
+	Log      *slog.Logger
+	Store    *store.Store
+	Version  string
+	Mailer   mail.Mailer
+	WebAuthn *webauthn.WebAuthn
+	Auth     AuthSettings
+	Now      func() time.Time
+}
+
+type AuthSettings struct {
+	PublicURL      string
+	CookieSecure   bool
+	ClientIPHeader string
 }
 
 func New(d Deps) *Server {
-	return &Server{log: d.Log, st: d.Store, version: d.Version}
+	now := d.Now
+	if now == nil {
+		now = time.Now
+	}
+	return &Server{log: d.Log, st: d.Store, version: d.Version, mailer: d.Mailer, webauthn: d.WebAuthn, auth: d.Auth, now: now}
 }
 
 var _ oas.StrictServerInterface = (*Server)(nil)
 
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
-	strict := oas.NewStrictHandlerWithOptions(s, nil, oas.StrictHTTPServerOptions{
+	strict := oas.NewStrictHandlerWithOptions(s, []oas.StrictMiddlewareFunc{s.authenticate}, oas.StrictHTTPServerOptions{
 		RequestErrorHandlerFunc:  s.writeRequestError,
 		ResponseErrorHandlerFunc: s.writeError,
 	})

@@ -22,6 +22,22 @@ jobs:
 
   api:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: yuva
+          POSTGRES_PASSWORD: yuva
+          POSTGRES_DB: yuva_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U yuva -d yuva_test"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 30
+    env:
+      YUVA_TEST_DATABASE_URL: postgres://yuva:yuva@localhost:5432/yuva_test?sslmode=disable
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-go@v5
