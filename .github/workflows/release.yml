@@ -110,24 +110,19 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v7.0.1
-      - name: notes from CHANGELOG.md
+        with:
+          fetch-depth: 0
+      - name: release notes
         env:
           VERSION: ${{ needs.version.outputs.version }}
+          TAG: ${{ github.ref_name }}
+        run: python3 .github/scripts/release-notes.py "$VERSION" "$TAG" "$IMAGE" > notes.md
+      - name: tag the Go module
+        env:
+          TAG: ${{ github.ref_name }}
         run: |
-          awk -v v="$VERSION" '
-            index($0, "## [" v "]") == 1 { on = 1; next }
-            on && /^## \[/ { exit }
-            on && /^\[[^]]+\]: / { exit }
-            on { print }
-          ' CHANGELOG.md > notes.md
-          {
-            echo
-            echo "Image: \`${IMAGE}:${VERSION}\` (linux/amd64, linux/arm64)."
-          } >> notes.md
-          if ! grep -q '[^[:space:]]' notes.md; then
-            echo "::error::empty release notes"
-            exit 1
-          fi
+          git tag "sdk/go/$TAG" "$TAG"
+          git push origin "sdk/go/$TAG"
       - name: GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
