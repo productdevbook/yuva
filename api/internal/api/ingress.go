@@ -27,6 +27,7 @@ import (
 const (
 	MaxIngressBytes         = 25 << 20
 	newConversationsPerHour = 20
+	defaultSenderHourlyCap  = 500
 	maxFullHTMLBytes        = 2 << 20
 )
 
@@ -47,7 +48,7 @@ var (
 	errIngestUnknown       = &IngestError{http.StatusNotFound, oas.UnknownRecipient, "No such recipient"}
 	errIngestBlocked       = &IngestError{http.StatusForbidden, oas.BlockedSender, "Messages from this sender are not accepted"}
 	errIngestMalformed     = &IngestError{http.StatusBadRequest, oas.Malformed, "The message could not be read"}
-	errIngestRateLimited   = &IngestError{http.StatusTooManyRequests, oas.RateLimited, "Too many new conversations from this sender in the last hour; this message was not accepted"}
+	errIngestRateLimited   = &IngestError{http.StatusTooManyRequests, oas.RateLimited, "Too many messages from this sender in the last hour; this message was not accepted"}
 )
 
 const (
@@ -116,19 +117,34 @@ func (s *Server) serveIngressEmail(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, status, out)
 }
 
-func (s *Server) findEmailChannel(ctx context.Context, to string) (store.FindEmailChannelByAddressRow, error) {
+// findEmailChannel returns the channel for the envelope recipient and the recipient address itself,
+// normalized: the exact address, then local@ for local+tag@, then the domain's catch-all channel.
+func (s *Server) findEmailChannel(ctx context.Context, to string) (store.FindEmailChannelByAddressRow, string, error) {
 	addr := strings.ToLower(strings.Trim(strings.TrimSpace(to), "<>"))
 	ch, err := s.st.FindEmailChannelByAddress(ctx, addr)
+	local, domain, ok := strings.Cut(addr, "@")
 	if store.IsNotFound(err) {
-		local, domain, ok := strings.Cut(addr, "@")
 		if base, _, tagged := strings.Cut(local, "+"); ok && tagged {
 			ch, err = s.st.FindEmailChannelByAddress(ctx, base+"@"+domain)
 		}
 	}
-	if store.IsNotFound(err) {
-		return ch, errIngestUnknown
+	if store.IsNotFound(err) && ok && local != "" && local != catchAllLocal && domain != "" {
+		ch, err = s.st.FindEmailChannelByAddress(ctx, catchAllLocal+"@"+domain)
 	}
-	return ch, err
+	if store.IsNotFound(err) {
+		return ch, addr, errIngestUnknown
+	}
+	return ch, addr, err
+}
+
+func (s *Server) ownSender(ctx context.Context, ch store.FindEmailChannelByAddressRow, sender string) (bool, error) {
+	if sender == "" {
+		return false, nil
+	}
+	if sender == ch.Address || (ch.FromAddress != nil && sender == *ch.FromAddress) || slices.Contains(s.ingress.OwnAddresses, sender) {
+		return true, nil
+	}
+	return s.st.IsEmailChannelSender(ctx, sender)
 }
 
 func nullSender(envelopeFrom string) bool {
@@ -219,7 +235,7 @@ func (s *Server) IngestEmail(ctx context.Context, envelopeTo, envelopeFrom strin
 	if len(raw) > MaxIngressBytes {
 		return IngestResult{}, errIngestTooLarge
 	}
-	ch, err := s.findEmailChannel(ctx, envelopeTo)
+	ch, recipient, err := s.findEmailChannel(ctx, envelopeTo)
 	if err != nil {
 		return IngestResult{}, err
 	}
@@ -233,7 +249,9 @@ func (s *Server) IngestEmail(ctx context.Context, envelopeTo, envelopeFrom strin
 			sender = a.Email
 		}
 	}
-	if sender == ch.Address || (ch.FromAddress != nil && sender == *ch.FromAddress) {
+	if own, err := s.ownSender(ctx, ch, sender); err != nil {
+		return IngestResult{}, err
+	} else if own {
 		return IngestResult{Status: IngestDropped}, nil
 	}
 	if err := s.refuseBlockedSender(ctx, ch.WorkspaceID, sender); err != nil {
@@ -305,7 +323,14 @@ func (s *Server) IngestEmail(ctx context.Context, envelopeTo, envelopeFrom strin
 		if err != nil {
 			return err
 		}
-		conv, isNew, err := s.threadFor(ctx, q, events, ch, m, contact.ID, subject, spam, now)
+		if err := s.checkSenderCap(ctx, q, ws, contact.ID, now); err != nil {
+			return err
+		}
+		var convAddress *string
+		if isCatchAll(ch.Address) {
+			convAddress = &recipient
+		}
+		conv, isNew, err := s.threadFor(ctx, q, events, ch, m, contact.ID, subject, spam, convAddress, now)
 		if err != nil {
 			return err
 		}
@@ -435,7 +460,7 @@ func (s *Server) contactForSender(ctx context.Context, q *store.Queries, ws uuid
 // threadFor finds the conversation a reply belongs to, by the stored Message-IDs it names and then
 // by the conversation token inside our own Message-IDs, or starts a new one. A thread that belongs
 // to another contact is never joined: the sender gets its own conversation that points to it.
-func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventBatch, ch store.FindEmailChannelByAddressRow, m *email.Message, contactID uuid.UUID, subject string, spam bool, now time.Time) (store.Conversation, bool, error) {
+func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventBatch, ch store.FindEmailChannelByAddressRow, m *email.Message, contactID uuid.UUID, subject string, spam bool, address *string, now time.Time) (store.Conversation, bool, error) {
 	ws := ch.WorkspaceID
 	ids := slices.Concat(m.InReplyTo, m.References)
 	var found *store.Conversation
@@ -468,6 +493,21 @@ func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventB
 		related = &found.ID
 		found = nil
 	}
+	if found == nil {
+		n, err := q.CountRecentConversations(ctx, store.CountRecentConversationsParams{
+			WorkspaceID: ws, ChannelID: &ch.ChannelID, ContactID: contactID, Since: now.Add(-time.Hour),
+		})
+		if err != nil {
+			return store.Conversation{}, false, err
+		}
+		if n >= newConversationsPerHour {
+			latest, err := q.LatestContactConversation(ctx, store.LatestContactConversationParams{WorkspaceID: ws, ChannelID: &ch.ChannelID, ContactID: contactID})
+			if err != nil {
+				return latest, false, err
+			}
+			found = &latest
+		}
+	}
 	if found != nil {
 		c, err := q.LockConversation(ctx, store.LockConversationParams{WorkspaceID: ws, ID: found.ID})
 		if err != nil {
@@ -494,24 +534,31 @@ func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventB
 		}
 		return updated, false, nil
 	}
-	n, err := q.CountRecentConversations(ctx, store.CountRecentConversationsParams{
-		WorkspaceID: ws, ChannelID: &ch.ChannelID, ContactID: contactID, Since: now.Add(-time.Hour),
-	})
-	if err != nil {
-		return store.Conversation{}, false, err
-	}
-	if n >= newConversationsPerHour {
-		return store.Conversation{}, false, errIngestRateLimited
-	}
 	c, err := q.CreateConversation(ctx, store.CreateConversationParams{
 		ID: newID(), WorkspaceID: ws, InboxID: ch.InboxID, ContactID: contactID, ChannelID: &ch.ChannelID,
-		Subject: subject, Priority: string(oas.Normal), Spam: spam, RelatedConversationID: related, Now: now,
+		Subject: subject, Priority: string(oas.Normal), Spam: spam, RelatedConversationID: related,
+		EmailAddress: address, Now: now,
 	})
 	if err != nil {
 		return c, false, err
 	}
 	events.conversation(realtime.ConversationCreated, c, conversationBody(c, nil))
 	return c, true, nil
+}
+
+func (s *Server) checkSenderCap(ctx context.Context, q *store.Queries, ws, contactID uuid.UUID, now time.Time) error {
+	limit := s.ingress.SenderHourlyCap
+	if limit <= 0 {
+		limit = defaultSenderHourlyCap
+	}
+	n, err := q.CountRecentInboundEmails(ctx, store.CountRecentInboundEmailsParams{WorkspaceID: ws, ContactID: contactID, Since: now.Add(-time.Hour)})
+	if err != nil {
+		return err
+	}
+	if n >= int64(limit) {
+		return errIngestRateLimited
+	}
+	return nil
 }
 
 func (s *Server) systemEvent(ctx context.Context, q *store.Queries, events *eventBatch, c store.Conversation, ev oas.MessageEvent, at time.Time) error {

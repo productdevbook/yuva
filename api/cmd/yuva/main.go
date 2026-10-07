@@ -8,9 +8,11 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	netmail "net/mail"
 	"os"
 	"os/signal"
 	"runtime/debug"
+	"strings"
 	"syscall"
 	"time"
 	_ "time/tzdata"
@@ -198,7 +200,7 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 			Types:    cfg.Attachments.Types,
 		},
 		Hub:      hub,
-		Ingress:  api.IngressSettings{Secret: cfg.IngressSecret, SESTopicARNs: cfg.SESTopicARNs},
+		Ingress:  ingressSettings(cfg),
 		Chat:     api.ChatSettings{EmailDelay: cfg.ChatEmailDelay},
 		Webhooks: api.WebhookSettings{AllowPrivate: cfg.WebhookAllowPrivate},
 		Push:     api.PushSettings{Keys: pushKeys},
@@ -337,6 +339,14 @@ const (
 
 // ingestEmail is for MTAs that pipe a message into a command; the exit codes follow sysexits.h,
 // which MTAs map to permanent or temporary failures.
+func ingressSettings(cfg config.Config) api.IngressSettings {
+	out := api.IngressSettings{Secret: cfg.IngressSecret, SESTopicARNs: cfg.SESTopicARNs, SenderHourlyCap: cfg.EmailSenderHourlyCap}
+	if a, err := netmail.ParseAddress(cfg.SMTP.From); err == nil {
+		out.OwnAddresses = []string{strings.ToLower(a.Address)}
+	}
+	return out
+}
+
 func ingestEmail(ctx context.Context, cfg config.Config, log *slog.Logger, args []string) int {
 	fs := flag.NewFlagSet("ingest-email", flag.ContinueOnError)
 	to := fs.String("to", "", "envelope recipient")
@@ -373,6 +383,7 @@ func ingestEmail(ctx context.Context, cfg config.Config, log *slog.Logger, args 
 	srv := api.New(api.Deps{
 		Log: log, Store: st, Version: cfg.Version, Mailer: mail.Log{Log: log}, Secrets: masterKey, Storage: objects,
 		Attachments: api.AttachmentSettings{MaxBytes: cfg.Attachments.MaxBytes, Types: cfg.Attachments.Types},
+		Ingress:     ingressSettings(cfg),
 	})
 	res, err := srv.IngestEmail(ctx, *to, *from, raw)
 	var ie *api.IngestError

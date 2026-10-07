@@ -241,7 +241,7 @@ WHERE workspace_id = @workspace_id AND id = @id;
 SELECT e.* FROM email_channels e
 JOIN channels c ON c.workspace_id = e.workspace_id AND c.id = e.channel_id
 WHERE e.workspace_id = $1 AND c.inbox_id = $2
-ORDER BY c.created_at, c.id
+ORDER BY (e.address LIKE '*@%'), c.created_at, c.id
 LIMIT 1;
 
 -- name: ListPersonWorkspaceIDs :many

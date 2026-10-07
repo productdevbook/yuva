@@ -2049,7 +2049,14 @@ type EmailAutoReplyInput struct {
 
 // EmailChannel Settings of an `email` channel.
 type EmailChannel struct {
-	// Address Examples: owner@example.com
+	// Address The address the channel receives mail at, unique on the server. `*@example.com` makes a
+	// catch-all channel (one per domain): it receives mail to every address of the domain that
+	// no other channel has, and replies go out from the address the contact wrote to, so the
+	// SMTP account must be allowed to send from the whole domain. `from_address` is then used
+	// only for conversations that have no such address and cannot itself be a catch-all.
+	//
+	//
+	// Examples: owner@example.com
 	Address Email `json:"address"`
 
 	// AutoReply A greeting e-mailed when a new conversation starts by e-mail, at most once per contact
@@ -2069,7 +2076,14 @@ type EmailChannel struct {
 
 // EmailChannelInput defines model for EmailChannelInput.
 type EmailChannelInput struct {
-	// Address Examples: owner@example.com
+	// Address The address the channel receives mail at, unique on the server. `*@example.com` makes a
+	// catch-all channel (one per domain): it receives mail to every address of the domain that
+	// no other channel has, and replies go out from the address the contact wrote to, so the
+	// SMTP account must be allowed to send from the whole domain. `from_address` is then used
+	// only for conversations that have no such address and cannot itself be a catch-all.
+	//
+	//
+	// Examples: owner@example.com
 	Address     Email                `json:"address"`
 	AutoReply   *EmailAutoReplyInput `json:"auto_reply,omitempty"`
 	DisplayName *string              `json:"display_name,omitempty"`

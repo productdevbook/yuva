@@ -27,6 +27,7 @@ import (
 	"time"
 	"uuid"
 
+	"github.com/productdevbook/yuva/api/internal/api"
 	"github.com/productdevbook/yuva/api/internal/email"
 )
 
@@ -584,12 +585,115 @@ func TestLoopProtection(t *testing.T) {
 	}
 
 	flood := unique("flood") + "@example.net"
+	convs := map[string]bool{}
 	var last ingressResult
-	for i := 0; i <= 20; i++ {
+	for i := 0; i < 25; i++ {
 		last = h.ingest(et.address, buildMail(mailOpts{from: flood, to: et.address, subject: "Flood " + strconv.Itoa(i), messageID: newMessageID(), body: "x"}), nil)
+		if last.status != http.StatusAccepted || last.str("status") != "stored" {
+			t.Fatalf("mail %d of a burst: %d %v", i+1, last.status, last.body)
+		}
+		convs[last.str("conversation_id")] = true
 	}
-	if last.status != http.StatusTooManyRequests || last.str("code") != "rate_limited" {
-		t.Fatalf("21st new conversation in an hour: %d %v", last.status, last.body)
+	if len(convs) != 20 {
+		t.Fatalf("a burst of 25 mails opened %d conversations, want 20", len(convs))
+	}
+	if n := len(messages(et.owner, last.str("conversation_id"))); n < 6 {
+		t.Fatalf("mails over the limit were not added to the latest conversation: %d messages", n)
+	}
+	if autoReplies(last.str("conversation_id")) != 0 {
+		t.Fatal("mails over the limit triggered auto-replies")
+	}
+}
+
+func TestSenderHourlyCap(t *testing.T) {
+	h := newHarnessWith(t, func(d *api.Deps) { d.Ingress.SenderHourlyCap = 3 })
+	et := newEmailTeam(t, h, false)
+	sender := unique("abuse") + "@example.net"
+	for i := 0; i < 3; i++ {
+		r := h.ingest(et.address, buildMail(mailOpts{from: sender, to: et.address, subject: "Spam", messageID: newMessageID(), body: "x"}), nil)
+		if r.status != http.StatusAccepted {
+			t.Fatalf("mail %d under the cap: %d %v", i+1, r.status, r.body)
+		}
+	}
+	r := h.ingest(et.address, buildMail(mailOpts{from: sender, to: et.address, subject: "Spam", messageID: newMessageID(), body: "x"}), nil)
+	if r.status != http.StatusTooManyRequests || r.str("code") != "rate_limited" {
+		t.Fatalf("mail over the cap: %d %v", r.status, r.body)
+	}
+	h.clock.Advance(61 * time.Minute)
+	r = h.ingest(et.address, buildMail(mailOpts{from: sender, to: et.address, subject: "Later", messageID: newMessageID(), body: "x"}), nil)
+	if r.status != http.StatusAccepted {
+		t.Fatalf("mail an hour later: %d %v", r.status, r.body)
+	}
+}
+
+func TestCatchAllChannel(t *testing.T) {
+	h := newHarnessWith(t, func(d *api.Deps) { d.Ingress.OwnAddresses = []string{"no-reply@yuva.example"} })
+	tm := newTeam(t, h)
+	domain := unique("shop") + ".example"
+	smtp := map[string]any{"host": "smtp.example.com", "port": 2525, "username": "mailer", "password": "smtp-secret", "tls": "starttls"}
+	create := func(c *client, status int, inbox, address string, extra map[string]any) response {
+		settings := map[string]any{"address": address, "display_name": "Shop", "smtp": smtp}
+		for k, v := range extra {
+			settings[k] = v
+		}
+		return c.expect(status, "POST", "/v1/inboxes/"+inbox+"/channels", map[string]any{"kind": "email", "name": address, "email": settings})
+	}
+	catchAll := create(tm.owner, http.StatusCreated, tm.inbox, "*@"+strings.ToUpper(domain), nil)
+	if got := catchAll.body["email"].(map[string]any)["address"]; got != "*@"+domain {
+		t.Fatalf("catch-all address %v", got)
+	}
+	exact := create(tm.owner, http.StatusCreated, tm.inbox, "sales@"+domain, nil)
+	other := newTeam(t, h)
+	create(other.owner, http.StatusConflict, other.inbox, "*@"+domain, nil)
+	create(tm.owner, http.StatusBadRequest, tm.inbox, "a*@"+unique("x")+".example", nil)
+	create(tm.owner, http.StatusBadRequest, tm.inbox, unique("y")+"@"+unique("x")+".example", map[string]any{"from_address": "*@" + domain})
+
+	channelOf := func(r ingressResult) string {
+		t.Helper()
+		if r.status != http.StatusAccepted || r.str("status") != "stored" {
+			t.Fatalf("ingest: %d %v", r.status, r.body)
+		}
+		c := tm.owner.expect(http.StatusOK, "GET", "/v1/conversations/"+r.str("conversation_id"), nil)
+		return c.str("channel_id")
+	}
+	random := "Test-" + unique("r") + "@" + strings.ToUpper(domain)
+	r := h.ingest(random, buildMail(mailOpts{from: "buyer@example.net", to: random, subject: "Order", messageID: newMessageID(), body: "Where is it?"}), nil)
+	if channelOf(r) != catchAll.str("id") {
+		t.Fatal("mail to an unknown address of the domain did not reach the catch-all channel")
+	}
+	conv := r.str("conversation_id")
+	if got := channelOf(h.ingest("sales@"+domain, buildMail(mailOpts{from: "buyer@example.net", to: "sales@" + domain, subject: "Quote", messageID: newMessageID(), body: "Price?"}), nil)); got != exact.str("id") {
+		t.Fatal("an exact address lost to the catch-all")
+	}
+	if u := h.ingest("someone@"+unique("nowhere")+".example", buildMail(mailOpts{from: "buyer@example.net", to: "x", subject: "x", messageID: newMessageID(), body: "x"}), nil); u.status != http.StatusNotFound {
+		t.Fatalf("unknown domain: %d %v", u.status, u.body)
+	}
+	for _, from := range []string{"sales@" + domain, "no-reply@yuva.example"} {
+		d := h.ingest(random, buildMail(mailOpts{from: from, to: random, subject: "Loop", messageID: newMessageID(), body: "x"}), nil)
+		if d.status != http.StatusAccepted || d.str("status") != "dropped" {
+			t.Fatalf("mail from our own sender %s: %d %v", from, d.status, d.body)
+		}
+	}
+
+	reply := tm.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "body": "On its way."})
+	h.sendQueued(t, tm.ws, reply.str("id"))
+	sent, parsed := h.smtp.last(t)
+	want := strings.ToLower(random)
+	if sent.from != want || sent.to[0] != "buyer@example.net" {
+		t.Fatalf("envelope: %+v", sent)
+	}
+	if parsed.Header.Get("From") != `"Shop" <`+want+">" || parsed.Header.Get("Reply-To") != `"Shop" <`+want+">" {
+		t.Fatalf("From %q Reply-To %q", parsed.Header.Get("From"), parsed.Header.Get("Reply-To"))
+	}
+	if _, d, ok := email.TokenFromID(email.NormalizeID(parsed.Header.Get("Message-ID"))); !ok || d != domain {
+		t.Fatalf("Message-ID %q", parsed.Header.Get("Message-ID"))
+	}
+	answer := h.ingest(random, buildMail(mailOpts{
+		from: "buyer@example.net", to: random, subject: "Re: Order", messageID: newMessageID(), body: "Thanks",
+		headers: map[string]string{"In-Reply-To": parsed.Header.Get("Message-ID")},
+	}), nil)
+	if answer.str("conversation_id") != conv {
+		t.Fatalf("reply to the catch-all thread opened %s, want %s", answer.str("conversation_id"), conv)
 	}
 }
 

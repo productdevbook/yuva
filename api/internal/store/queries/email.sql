@@ -95,6 +95,21 @@ LIMIT 1;
 SELECT count(*) FROM conversations
 WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND contact_id = @contact_id AND created_at > @since;
 
+-- name: LatestContactConversation :one
+SELECT * FROM conversations
+WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND contact_id = @contact_id
+ORDER BY created_at DESC, id DESC
+LIMIT 1;
+
+-- name: CountRecentInboundEmails :one
+SELECT count(*) FROM message_emails e
+JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
+WHERE e.workspace_id = @workspace_id AND c.contact_id = @contact_id AND e.direction = 'in' AND e.created_at > @since;
+
+-- Mail from an address the server sends from is dropped, whichever workspace it belongs to.
+-- name: IsEmailChannelSender :one
+SELECT EXISTS (SELECT 1 FROM email_channels WHERE address = @address::text OR from_address = @address::text);
+
 -- name: ClaimAutoReply :one
 INSERT INTO email_auto_replies (workspace_id, channel_id, contact_id, sent_at)
 VALUES (@workspace_id, @channel_id, @contact_id, @now)

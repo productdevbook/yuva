@@ -131,7 +131,7 @@ func channelCommand(ctx context.Context, st *store.Store, srv *api.Server, args 
 	switch args[0] {
 	case "create-email":
 		name := fs.String("name", "", "name of the channel")
-		address := fs.String("address", "", "address the channel receives mail at")
+		address := fs.String("address", "", "address the channel receives mail at; *@domain receives every other address of the domain")
 		displayName := fs.String("display-name", "", "name in From; the channel name when empty")
 		fromAddress := fs.String("from-address", "", "sending address when it differs from --address")
 		smtpHost := fs.String("smtp-host", "", "outbound SMTP host")

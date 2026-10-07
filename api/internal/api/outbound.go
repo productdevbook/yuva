@@ -33,6 +33,7 @@ const (
 var (
 	errEmailUndeliverable = problem(http.StatusConflict, "email_undeliverable", "the contact's e-mail address bounced or complained; clear it on the contact to send again")
 	errEmailNotConfigured = problem(http.StatusConflict, "email_not_configured", "the conversation's e-mail channel has no SMTP account")
+	errEmailNoSender      = problem(http.StatusConflict, "email_no_sender", "the catch-all channel has no address to send this conversation from; set its from_address")
 )
 
 type emailPlan struct {
@@ -86,18 +87,36 @@ func (s *Server) planEmail(ctx context.Context, q *store.Queries, c store.Conver
 	return s.emailPlanFor(ctx, q, c, ch, to)
 }
 
+// sendingAddress is the From address of mail in c: for a catch-all channel the address of its
+// domain that the contact wrote to.
+func sendingAddress(ch store.EmailChannel, c store.Conversation) (string, error) {
+	if isCatchAll(ch.Address) {
+		if c.EmailAddress != nil && email.Domain(*c.EmailAddress) == email.Domain(ch.Address) && !isCatchAll(*c.EmailAddress) {
+			return *c.EmailAddress, nil
+		}
+		if ch.FromAddress != nil {
+			return *ch.FromAddress, nil
+		}
+		return "", errEmailNoSender
+	}
+	if ch.FromAddress != nil {
+		return *ch.FromAddress, nil
+	}
+	return ch.Address, nil
+}
+
 // emailPlanFor prepares the headers of a message to `to` in c, sent through the e-mail channel ch
 // and threaded with the conversation's earlier mail.
 func (s *Server) emailPlanFor(ctx context.Context, q *store.Queries, c store.Conversation, ch store.EmailChannel, to string) (*emailPlan, error) {
+	fromAddr, err := sendingAddress(ch, c)
+	if err != nil {
+		return nil, err
+	}
 	token, err := q.SetConversationEmailToken(ctx, store.SetConversationEmailTokenParams{
 		WorkspaceID: c.WorkspaceID, ID: c.ID, Token: email.NewConversationToken(),
 	})
 	if err != nil {
 		return nil, err
-	}
-	fromAddr := ch.Address
-	if ch.FromAddress != nil {
-		fromAddr = *ch.FromAddress
 	}
 	name := ch.DisplayName
 	if name == "" {
@@ -340,9 +359,13 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 			channelName = c.Name
 		}
 	}
+	replyTo := ch.Address
+	if isCatchAll(replyTo) {
+		replyTo = me.FromAddress
+	}
 	out := email.Outgoing{
 		From:          email.Address{Name: channelName, Email: me.FromAddress},
-		ReplyTo:       email.Address{Name: channelName, Email: ch.Address},
+		ReplyTo:       email.Address{Name: channelName, Email: replyTo},
 		To:            email.Address{Name: toName, Email: to},
 		Subject:       me.Subject,
 		MessageID:     me.HeaderMessageID,

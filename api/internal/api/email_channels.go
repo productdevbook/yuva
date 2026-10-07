@@ -16,6 +16,7 @@ const (
 	smtpTLSStartTLS       = "starttls"
 	smtpTLSImplicit       = "tls"
 	smtpTLSNone           = "none"
+	catchAllLocal         = "*"
 )
 
 var (
@@ -56,6 +57,9 @@ func (s *Server) emailChannelParams(workspaceID, channelID uuid.UUID, in *oas.Em
 	if out.Address, err = normalizeEmail(in.Address); err != nil {
 		return out, errValidation("email.address is not a valid address")
 	}
+	if local, _, _ := strings.Cut(out.Address, "@"); strings.Contains(local, catchAllLocal) && local != catchAllLocal {
+		return out, errValidation("email.address: a catch-all address is *@domain")
+	}
 	if in.DisplayName != nil {
 		if out.DisplayName, err = trimmed(*in.DisplayName, 0, 200, "email.display_name"); err != nil {
 			return out, err
@@ -65,6 +69,9 @@ func (s *Server) emailChannelParams(workspaceID, channelID uuid.UUID, in *oas.Em
 		from, err := normalizeEmail(*in.FromAddress)
 		if err != nil {
 			return out, errValidation("email.from_address is not a valid address")
+		}
+		if isCatchAll(from) {
+			return out, errValidation("email.from_address cannot be a catch-all address")
 		}
 		out.FromAddress = &from
 	}
@@ -147,6 +154,10 @@ func emailChannelsByID(ctx context.Context, q *store.Queries, workspaceID uuid.U
 		out[r.ChannelID] = r
 	}
 	return out, nil
+}
+
+func isCatchAll(address string) bool {
+	return strings.HasPrefix(address, catchAllLocal+"@")
 }
 
 func loopbackHost(h string) bool {

@@ -32,8 +32,9 @@ type Config struct {
 	Storage     Storage
 	Attachments Attachments
 
-	IngressSecret string
-	SESTopicARNs  []string
+	IngressSecret        string
+	SESTopicARNs         []string
+	EmailSenderHourlyCap int
 
 	ChatEmailDelay time.Duration
 
@@ -149,6 +150,9 @@ func Load(version string) (Config, error) {
 	}
 	if c.Attachments.MaxBytes, err = strconv.ParseInt(env("YUVA_ATTACHMENT_MAX_BYTES", "26214400"), 10, 64); err != nil || c.Attachments.MaxBytes < 1 {
 		return c, errors.New("YUVA_ATTACHMENT_MAX_BYTES must be a positive number of bytes")
+	}
+	if c.EmailSenderHourlyCap, err = strconv.Atoi(env("YUVA_EMAIL_SENDER_HOURLY_CAP", "500")); err != nil || c.EmailSenderHourlyCap < 1 {
+		return c, errors.New("YUVA_EMAIL_SENDER_HOURLY_CAP must be a positive number of messages")
 	}
 	if c.ChatEmailDelay, err = time.ParseDuration(env("YUVA_CHAT_EMAIL_DELAY", "5m")); err != nil || c.ChatEmailDelay < time.Second {
 		return c, errors.New("YUVA_CHAT_EMAIL_DELAY must be a duration of at least 1s, such as 5m")

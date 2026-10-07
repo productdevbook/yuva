@@ -149,6 +149,20 @@ func TestInboxAndChannelCommands(t *testing.T) {
 		"--address", address); err == nil {
 		t.Fatal("address taken twice")
 	}
+	catchAll := "*@" + uniqueName("domain") + ".example"
+	out, err = runChannel(t, st, srv, "", "create-email", "--workspace", name, "--inbox", "support-desk", "--name", "Everything else",
+		"--address", catchAll, "--smtp-host", "smtp.example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	e, err = st.GetEmailChannel(ctx, store.GetEmailChannelParams{WorkspaceID: ws.WorkspaceID, ChannelID: uuid.MustParse(strings.TrimSpace(out))})
+	if err != nil || e.Address != catchAll {
+		t.Fatalf("catch-all channel stored as %+v %v", e, err)
+	}
+	if _, err := runChannel(t, st, srv, "", "create-email", "--workspace", name, "--inbox", "support-desk", "--name", "Twice",
+		"--address", catchAll); err == nil {
+		t.Fatal("second catch-all for a domain accepted")
+	}
 	if _, err := runChannel(t, st, srv, "", "create-email", "--workspace", name, "--inbox", "support-desk", "--name", "Plain",
 		"--address", uniqueName("plain")+"@example.com", "--smtp-host", "smtp.example.com", "--tls", "none",
 		"--smtp-username", "user"); err == nil {

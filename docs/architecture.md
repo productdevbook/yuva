@@ -164,7 +164,13 @@ Inbound:
    exits with sysexits codes (67 unknown recipient, 77 refused, 75 try later).
 2. The recipient selects the channel: an e-mail address belongs to one channel of the whole server
    (case-insensitive; `local+tag@` falls back to `local@`), because the request names nothing
-   else. Threading uses `In-Reply-To` and `References` against stored Message-IDs of the inbox;
+   else. A channel with the address `*@domain` is the domain's catch-all (one per domain, unique on
+   the server like any address): it receives mail to every address of the domain that no channel
+   has exactly. Its conversations remember the address the contact wrote to, and replies go out
+   from that address (`From` and `Reply-To`), so its SMTP account must be allowed to send from the
+   whole domain; its `from_address` is used only for a conversation without such an address
+   (a chat that continues by e-mail), and without either the reply is refused (`email_no_sender`).
+   An inbox's chat continuity prefers an exact-address channel over a catch-all. Threading uses `In-Reply-To` and `References` against stored Message-IDs of the inbox;
    our outbound Message-IDs are `<token.random@sending domain>` where the token is an opaque random
    value stored on the conversation, so a reply finds its conversation even when the client drops
    `References` or a relay rewrites the domain. Otherwise a new conversation starts, with the
@@ -190,10 +196,16 @@ Inbound:
 4. Loops: messages with `Auto-Submitted` other than `no`, `Precedence: bulk|junk|list|auto_reply`,
    `X-Autoreply`, `X-Autorespond`, `X-Auto-Response-Suppress` (other than `None`), `List-Id`, a
    null sender, a delivery report, or our own Message-ID domain are stored but never trigger an
-   automatic message. A sender opens at most 20 new conversations per channel and hour; more are
-   refused (429 `rate_limited`) until the hour has passed. Cloudflare Email Workers can only refuse
-   a message permanently (`setReject`; a temporary failure is not documented), so the refusal is
-   permanent and its text says the message was not accepted rather than asking for a retry.
+   automatic message. Mail from an address the server sends from (any channel's address or
+   `from_address`, and `YUVA_SMTP_FROM`) is dropped, so notifications and replies that reach a
+   catch-all never loop. Volume never loses mail: a sender opens at most 20 new conversations per
+   channel and hour, and further mail in that hour is added to the sender's latest conversation on
+   the channel (reopened if needed, no greeting) instead of opening a new one. We chose this over a
+   separate "bulk" state because it needs no new view and keeps every message in front of a member.
+   Only a sender over a hard cap of inbound mails per hour in the workspace
+   (`YUVA_EMAIL_SENDER_HOURLY_CAP`, default 500) is refused (429 `rate_limited`). Cloudflare Email
+   Workers can only refuse a message permanently (`setReject`; a temporary failure is not
+   documented), so that refusal is permanent and its text says the message was not accepted.
 5. Spam: the receiving server's verdict (the topmost `Authentication-Results`) is stored and
    shown; a new conversation whose first mail fails DMARC is flagged `spam`, which keeps it out of
    lists and counts (they have a spam view) and away from automatic replies; contacts can be

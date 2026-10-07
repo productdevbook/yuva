@@ -101,6 +101,10 @@ type ChatSettings struct {
 type IngressSettings struct {
 	Secret       string
 	SESTopicARNs []string
+	// SenderHourlyCap refuses mail from a sender beyond this many inbound mails per hour; 0 means 500.
+	SenderHourlyCap int
+	// OwnAddresses are addresses the server sends from besides its channels, such as YUVA_SMTP_FROM.
+	OwnAddresses []string
 }
 
 type AttachmentSettings struct {

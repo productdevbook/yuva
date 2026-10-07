@@ -589,7 +589,7 @@ const inboxEmailChannel = `-- name: InboxEmailChannel :one
 SELECT e.workspace_id, e.channel_id, e.address, e.display_name, e.from_address, e.smtp_host, e.smtp_port, e.smtp_username, e.smtp_password, e.smtp_tls, e.auto_reply_enabled, e.auto_reply_text, e.auto_reply_interval_hours FROM email_channels e
 JOIN channels c ON c.workspace_id = e.workspace_id AND c.id = e.channel_id
 WHERE e.workspace_id = $1 AND c.inbox_id = $2
-ORDER BY c.created_at, c.id
+ORDER BY (e.address LIKE '*@%'), c.created_at, c.id
 LIMIT 1
 `
 
@@ -754,7 +754,7 @@ func (q *Queries) ListContactConversationIDs(ctx context.Context, arg ListContac
 }
 
 const listContactConversations = `-- name: ListContactConversations :many
-SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback FROM conversations c
+SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address FROM conversations c
 WHERE c.workspace_id = $1 AND c.inbox_id = $2 AND c.contact_id = $3
   AND ($4::timestamptz IS NULL
        OR (coalesce(c.last_message_at, c.created_at), c.id) < ($4::timestamptz, $5::uuid))
@@ -809,6 +809,7 @@ func (q *Queries) ListContactConversations(ctx context.Context, arg ListContactC
 			&i.ContinuitySentAt,
 			&i.Kind,
 			&i.Feedback,
+			&i.EmailAddress,
 		); err != nil {
 			return nil, err
 		}
@@ -1232,7 +1233,7 @@ func (q *Queries) MarkContactRead(ctx context.Context, arg MarkContactReadParams
 const moveContactConversations = `-- name: MoveContactConversations :many
 UPDATE conversations SET contact_id = $1, updated_at = $2
 WHERE workspace_id = $3 AND contact_id = $4
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address
 `
 
 type MoveContactConversationsParams struct {
@@ -1278,6 +1279,7 @@ func (q *Queries) MoveContactConversations(ctx context.Context, arg MoveContactC
 			&i.ContinuitySentAt,
 			&i.Kind,
 			&i.Feedback,
+			&i.EmailAddress,
 		); err != nil {
 			return nil, err
 		}

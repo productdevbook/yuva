@@ -101,6 +101,25 @@ func (q *Queries) CountRecentConversations(ctx context.Context, arg CountRecentC
 	return count, err
 }
 
+const countRecentInboundEmails = `-- name: CountRecentInboundEmails :one
+SELECT count(*) FROM message_emails e
+JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
+WHERE e.workspace_id = $1 AND c.contact_id = $2 AND e.direction = 'in' AND e.created_at > $3
+`
+
+type CountRecentInboundEmailsParams struct {
+	WorkspaceID uuid.UUID
+	ContactID   uuid.UUID
+	Since       time.Time
+}
+
+func (q *Queries) CountRecentInboundEmails(ctx context.Context, arg CountRecentInboundEmailsParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countRecentInboundEmails, arg.WorkspaceID, arg.ContactID, arg.Since)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createEmailChannel = `-- name: CreateEmailChannel :one
 INSERT INTO email_channels (workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port,
                             smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text,
@@ -232,7 +251,7 @@ func (q *Queries) CreateMessageEmail(ctx context.Context, arg CreateMessageEmail
 }
 
 const findConversationByEmailToken = `-- name: FindConversationByEmailToken :one
-SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback FROM conversations WHERE workspace_id = $1 AND inbox_id = $2 AND email_token = ANY($3::text[])
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address FROM conversations WHERE workspace_id = $1 AND inbox_id = $2 AND email_token = ANY($3::text[])
 ORDER BY (contact_id = $4) DESC, created_at DESC
 LIMIT 1
 `
@@ -274,12 +293,13 @@ func (q *Queries) FindConversationByEmailToken(ctx context.Context, arg FindConv
 		&i.ContinuitySentAt,
 		&i.Kind,
 		&i.Feedback,
+		&i.EmailAddress,
 	)
 	return i, err
 }
 
 const findConversationByHeaders = `-- name: FindConversationByHeaders :one
-SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback FROM message_emails e
+SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
 WHERE e.workspace_id = $1 AND c.inbox_id = $2 AND e.header_message_id = ANY($3::text[])
 ORDER BY (c.contact_id = $4) DESC, e.created_at DESC, e.message_id DESC
@@ -323,6 +343,7 @@ func (q *Queries) FindConversationByHeaders(ctx context.Context, arg FindConvers
 		&i.ContinuitySentAt,
 		&i.Kind,
 		&i.Feedback,
+		&i.EmailAddress,
 	)
 	return i, err
 }
@@ -534,6 +555,18 @@ func (q *Queries) GetMessageEmail(ctx context.Context, arg GetMessageEmailParams
 	return i, err
 }
 
+const isEmailChannelSender = `-- name: IsEmailChannelSender :one
+SELECT EXISTS (SELECT 1 FROM email_channels WHERE address = $1::text OR from_address = $1::text)
+`
+
+// Mail from an address the server sends from is dropped, whichever workspace it belongs to.
+func (q *Queries) IsEmailChannelSender(ctx context.Context, address string) (bool, error) {
+	row := q.db.QueryRow(ctx, isEmailChannelSender, address)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
 const isEmailSuppressed = `-- name: IsEmailSuppressed :one
 SELECT EXISTS (SELECT 1 FROM email_suppressions WHERE workspace_id = $1 AND email = $2) AS suppressed
 `
@@ -548,6 +581,49 @@ func (q *Queries) IsEmailSuppressed(ctx context.Context, arg IsEmailSuppressedPa
 	var suppressed bool
 	err := row.Scan(&suppressed)
 	return suppressed, err
+}
+
+const latestContactConversation = `-- name: LatestContactConversation :one
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address FROM conversations
+WHERE workspace_id = $1 AND channel_id = $2 AND contact_id = $3
+ORDER BY created_at DESC, id DESC
+LIMIT 1
+`
+
+type LatestContactConversationParams struct {
+	WorkspaceID uuid.UUID
+	ChannelID   *uuid.UUID
+	ContactID   uuid.UUID
+}
+
+func (q *Queries) LatestContactConversation(ctx context.Context, arg LatestContactConversationParams) (Conversation, error) {
+	row := q.db.QueryRow(ctx, latestContactConversation, arg.WorkspaceID, arg.ChannelID, arg.ContactID)
+	var i Conversation
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.InboxID,
+		&i.ContactID,
+		&i.ChannelID,
+		&i.Subject,
+		&i.Status,
+		&i.SnoozeUntil,
+		&i.Priority,
+		&i.AssigneeID,
+		&i.LastMessageAt,
+		&i.LastActivityAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Spam,
+		&i.EmailToken,
+		&i.RelatedConversationID,
+		&i.ContinuityThrough,
+		&i.ContinuitySentAt,
+		&i.Kind,
+		&i.Feedback,
+		&i.EmailAddress,
+	)
+	return i, err
 }
 
 const latestThreadEmail = `-- name: LatestThreadEmail :one

@@ -1,10 +1,10 @@
 -- name: CreateConversation :one
 INSERT INTO conversations (id, workspace_id, inbox_id, contact_id, channel_id, subject, priority,
                            assignee_id, spam, email_token, related_conversation_id, kind, feedback,
-                           last_activity_at, created_at, updated_at)
+                           email_address, last_activity_at, created_at, updated_at)
 VALUES (@id, @workspace_id, @inbox_id, @contact_id, @channel_id, @subject, @priority,
         @assignee_id, @spam, sqlc.narg(email_token), sqlc.narg(related_conversation_id),
-        coalesce(sqlc.narg(kind)::text, 'conversation'), sqlc.narg(feedback), @now, @now, @now)
+        coalesce(sqlc.narg(kind)::text, 'conversation'), sqlc.narg(feedback), sqlc.narg(email_address), @now, @now, @now)
 RETURNING *;
 
 -- name: GetConversation :one

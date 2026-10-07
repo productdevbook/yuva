@@ -148,6 +148,7 @@ type Conversation struct {
 	ContinuitySentAt      *time.Time
 	Kind                  string
 	Feedback              []byte
+	EmailAddress          *string
 }
 
 type ConversationLabel struct {
