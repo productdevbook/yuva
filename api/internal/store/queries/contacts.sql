@@ -33,6 +33,15 @@ WHERE c.workspace_id = $1 AND c.id = $2;
 SELECT id, workspace_id, name, attributes, blocked, created_at, updated_at, locale, typed_email
 FROM contacts c
 WHERE c.workspace_id = @workspace_id
+  AND (sqlc.narg(member_id)::uuid IS NULL OR (
+      EXISTS (SELECT 1 FROM conversations cv JOIN inbox_members im
+              ON im.workspace_id = cv.workspace_id AND im.inbox_id = cv.inbox_id AND im.member_id = sqlc.narg(member_id)::uuid
+              WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id)
+   OR EXISTS (SELECT 1 FROM contact_external_ids x JOIN inbox_members im
+              ON im.workspace_id = x.workspace_id AND im.inbox_id = x.inbox_id AND im.member_id = sqlc.narg(member_id)::uuid
+              WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+   OR (NOT EXISTS (SELECT 1 FROM conversations cv WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id)
+       AND NOT EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id))))
   AND (sqlc.narg(q)::text IS NULL OR c.search @@ websearch_to_tsquery('simple', translate(sqlc.narg(q)::text, 'İı', 'ii')))
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL
        OR (c.created_at, c.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
@@ -79,3 +88,14 @@ WHERE c.workspace_id = @workspace_id AND c.id = ANY(@ids::uuid[]);
 
 -- name: ContactExists :one
 SELECT EXISTS (SELECT 1 FROM contacts WHERE workspace_id = $1 AND id = $2) AS found;
+
+-- name: ContactVisibleToMember :one
+SELECT coalesce(EXISTS (SELECT 1 FROM conversations cv JOIN inbox_members im
+               ON im.workspace_id = cv.workspace_id AND im.inbox_id = cv.inbox_id AND im.member_id = @member_id
+               WHERE cv.workspace_id = @workspace_id AND cv.contact_id = @contact_id)
+    OR EXISTS (SELECT 1 FROM contact_external_ids x JOIN inbox_members im
+               ON im.workspace_id = x.workspace_id AND im.inbox_id = x.inbox_id AND im.member_id = @member_id
+               WHERE x.workspace_id = @workspace_id AND x.contact_id = @contact_id)
+    OR (NOT EXISTS (SELECT 1 FROM conversations cv WHERE cv.workspace_id = @workspace_id AND cv.contact_id = @contact_id)
+        AND NOT EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = @workspace_id AND x.contact_id = @contact_id)), false)::bool
+    AS visible;

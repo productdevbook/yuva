@@ -368,3 +368,53 @@ func TestUsageCounters(t *testing.T) {
 		t.Fatalf("stored counter %d, %v", stored, err)
 	}
 }
+
+func TestAgentContactScope(t *testing.T) {
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	hidden := tm.owner.expect(http.StatusCreated, "POST", "/v1/inboxes", map[string]any{"name": "Hidden", "slug": "hidden"}).body["inbox"].(map[string]any)["id"].(string)
+	tm.owner.expect(http.StatusNoContent, "PUT", "/v1/inboxes/"+tm.inbox+"/members/"+tm.agentID, nil)
+	victimEmail := unique("victim") + "@example.com"
+	victim := tm.owner.expect(http.StatusCreated, "POST", "/v1/contacts", map[string]any{
+		"name": "Victim", "emails": []string{victimEmail}, "external_ids": []map[string]any{{"inbox_id": hidden, "external_id": "user-42"}},
+	}).str("id")
+	mine := tm.owner.expect(http.StatusCreated, "POST", "/v1/contacts", map[string]any{
+		"name": "Mine", "external_ids": []map[string]any{{"inbox_id": tm.inbox, "external_id": "a-1"}},
+	}).str("id")
+	a := tm.agent
+
+	a.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/contacts/"+victim, nil)
+	a.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/contacts/"+victim+"/presence", nil)
+	a.expectProblem(http.StatusNotFound, "not_found", "PATCH", "/v1/contacts/"+victim, map[string]any{"emails": []string{}, "external_ids": []any{}})
+	a.expectProblem(http.StatusNotFound, "not_found", "POST", "/v1/conversations", map[string]any{"inbox_id": tm.inbox, "contact_id": victim, "subject": "x"})
+	a.expect(http.StatusOK, "GET", "/v1/contacts/"+mine, nil)
+	a.expect(http.StatusOK, "GET", "/v1/contacts/"+tm.contact, nil)
+	ids := map[string]bool{}
+	for _, it := range a.expect(http.StatusOK, "GET", "/v1/contacts?limit=100", nil).body["items"].([]any) {
+		ids[it.(map[string]any)["id"].(string)] = true
+	}
+	if ids[victim] || !ids[mine] || !ids[tm.contact] {
+		t.Fatalf("agent's contact list: %v", ids)
+	}
+	if n := len(tm.owner.expect(http.StatusOK, "GET", "/v1/contacts?limit=100", nil).body["items"].([]any)); n != 3 {
+		t.Fatalf("owner sees %d contacts", n)
+	}
+
+	a.expectProblem(http.StatusBadRequest, "validation_failed", "POST", "/v1/contacts", map[string]any{
+		"external_ids": []map[string]any{{"inbox_id": hidden, "external_id": "user-42b"}},
+	})
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/contacts/"+mine, map[string]any{"external_ids": []map[string]any{
+		{"inbox_id": tm.inbox, "external_id": "a-1"}, {"inbox_id": hidden, "external_id": "h-1"},
+	}})
+	r := a.expect(http.StatusOK, "PATCH", "/v1/contacts/"+mine, map[string]any{"external_ids": []map[string]any{{"inbox_id": tm.inbox, "external_id": "a-2"}}})
+	got := map[string]bool{}
+	for _, x := range r.body["external_ids"].([]any) {
+		got[x.(map[string]any)["external_id"].(string)] = true
+	}
+	if !got["a-2"] || !got["h-1"] || got["a-1"] {
+		t.Fatalf("external ids after the agent's change: %s", r.raw)
+	}
+	a.expectProblem(http.StatusForbidden, "forbidden", "PATCH", "/v1/contacts/"+mine, map[string]any{"emails": []string{unique("x") + "@example.com"}})
+	a.expect(http.StatusOK, "PATCH", "/v1/contacts/"+tm.contact, map[string]any{"name": "Renamed", "emails": []string{"ayse@example.com"}})
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/contacts/"+victim, map[string]any{"name": "Owner can"})
+}

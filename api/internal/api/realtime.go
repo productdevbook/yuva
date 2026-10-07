@@ -299,7 +299,19 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 		}
 		return !f.p.isKey() && r.MemberId == f.p.memberID, nil
 	}
-	if f.p.seesAllInboxes() || e.InboxID == nil {
+	if f.p.seesAllInboxes() {
+		return true, nil
+	}
+	if e.Type == realtime.ContactUpdated {
+		var c struct {
+			ID uuid.UUID `json:"id"`
+		}
+		if err := json.Unmarshal(e.Data, &c); err != nil {
+			return false, err
+		}
+		return q.ContactVisibleToMember(ctx, store.ContactVisibleToMemberParams{WorkspaceID: f.p.workspaceID, MemberID: f.p.memberID, ContactID: c.ID})
+	}
+	if e.InboxID == nil {
 		return true, nil
 	}
 	ok := f.inboxes[*e.InboxID]

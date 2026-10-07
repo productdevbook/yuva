@@ -24,7 +24,7 @@ Not goals: a CRM, a marketing e-mail tool, a public knowledge base, social-media
 | Concept | Meaning |
 |---|---|
 | Workspace | The tenant. A self-hosted install usually has one. Owns everything below. |
-| Member | A person who answers. Role `owner`, `admin` or `agent`. Owners and admins see every inbox; agents see the inboxes they were granted. An inbox, conversation or attachment the caller cannot see answers `404`. |
+| Member | A person who answers. Role `owner`, `admin` or `agent`. Owners and admins see every inbox; agents see the inboxes they were granted, and only contacts with a conversation or external id in one of them or in no inbox at all; they set external ids only in their inboxes (ids in other inboxes are kept) and change e-mail addresses only of contacts that appear in no other inbox (`403 forbidden`). An inbox, conversation, contact or attachment the caller cannot see answers `404`. |
 | Inbox | One product or brand. Branding, languages, business hours, mode (`live` or `async`), expected reply time, identity secret, webhooks. |
 | Channel | How messages reach an inbox: `email`, `chat` (web widget), `app` (mobile SDKs), `api` (server-to-server, e.g. a feedback form). An inbox has any number of channels. |
 | Contact | The person writing in. Known by an external user id from the host app (per inbox), one or more e-mail addresses (unique within the workspace), or an anonymous visitor id. Contacts belong to the workspace, not to an inbox. |

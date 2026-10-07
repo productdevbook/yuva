@@ -874,6 +874,9 @@ func (s *Server) GetContactPresence(ctx context.Context, req oas.GetContactPrese
 	if !found {
 		return nil, errContactGone
 	}
+	if err := visibleContact(ctx, s.st.Queries, p, req.ContactId); err != nil {
+		return nil, err
+	}
 	out := oas.GetContactPresence200JSONResponse{ContactId: req.ContactId}
 	out.Online, out.LastSeenAt, err = s.contactPresence(ctx, s.st.Queries, p.workspaceID, req.ContactId)
 	if err != nil {

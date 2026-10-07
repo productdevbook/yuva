@@ -60,7 +60,11 @@ tags:
       have a public key that starts contact sessions on `/client/v1`; `api` channels let host
       backends post feedback with an API key (`POST /v1/feedback`).
   - name: contacts
-    description: The people writing in.
+    description: |
+      The people writing in. Agents see only contacts with a conversation or external id in an
+      inbox they can access, or in no inbox at all (others answer `404`); they set external ids
+      only in their inboxes, keeping the contact's ids in other inboxes, and change `emails` only
+      of contacts that appear in no other inbox (`403 forbidden`).
   - name: conversations
     description: Threads between a contact and an inbox.
   - name: messages

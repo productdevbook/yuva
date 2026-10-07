@@ -147,6 +147,78 @@ func contactAttributes(a *oas.Attributes) ([]byte, error) {
 	return b, nil
 }
 
+// visibleContact refuses an agent a contact that has conversations or external ids only in inboxes
+// the agent cannot access.
+func visibleContact(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) error {
+	if p.seesAllInboxes() {
+		return nil
+	}
+	ok, err := q.ContactVisibleToMember(ctx, store.ContactVisibleToMemberParams{WorkspaceID: p.workspaceID, MemberID: p.memberID, ContactID: id})
+	if err != nil {
+		return err
+	}
+	if !ok {
+		return errContactGone
+	}
+	return nil
+}
+
+// agentInboxes is the set of inboxes an agent can access, nil for principals that see all.
+func agentInboxes(ctx context.Context, q *store.Queries, p principal) (map[uuid.UUID]bool, error) {
+	if p.seesAllInboxes() {
+		return nil, nil
+	}
+	ids, err := q.ListMemberInboxIDs(ctx, store.ListMemberInboxIDsParams{WorkspaceID: p.workspaceID, MemberID: p.memberID})
+	out := make(map[uuid.UUID]bool, len(ids))
+	for _, id := range ids {
+		out[id] = true
+	}
+	return out, err
+}
+
+var errExternalIDInbox = errValidation("external_ids names an inbox that does not exist")
+
+// limitAgentKeys checks an agent's contact write: external ids only in inboxes the agent can
+// access, keeping the contact's ids in other inboxes, and e-mails only on a contact that appears
+// in no other inbox.
+func limitAgentKeys(ctx context.Context, q *store.Queries, p principal, contactID *uuid.UUID, in *contactInput, setEmails, setExternal bool) error {
+	allowed, err := agentInboxes(ctx, q, p)
+	if err != nil || allowed == nil {
+		return err
+	}
+	for _, x := range in.externalIDs {
+		if !allowed[x.InboxId] {
+			return errExternalIDInbox
+		}
+	}
+	if contactID == nil {
+		return nil
+	}
+	if setEmails {
+		inboxes, err := q.ContactInboxIDs(ctx, store.ContactInboxIDsParams{WorkspaceID: p.workspaceID, ContactID: *contactID})
+		if err != nil {
+			return err
+		}
+		for _, id := range inboxes {
+			if !allowed[id] {
+				return problem(http.StatusForbidden, "forbidden", "the contact also writes to an inbox you cannot access; ask an admin to change its e-mail addresses")
+			}
+		}
+	}
+	if setExternal {
+		cur, err := q.ListContactExternalIDs(ctx, store.ListContactExternalIDsParams{WorkspaceID: p.workspaceID, ContactIds: []uuid.UUID{*contactID}})
+		if err != nil {
+			return err
+		}
+		for _, x := range cur {
+			if !allowed[x.InboxID] {
+				in.externalIDs = append(in.externalIDs, oas.ExternalId{InboxId: x.InboxID, ExternalId: x.ExternalID})
+			}
+		}
+	}
+	return nil
+}
+
 func writeContactKeys(ctx context.Context, q *store.Queries, workspaceID, contactID uuid.UUID, in contactInput, setEmails, setExternal bool) error {
 	if setEmails {
 		if err := q.DeleteContactEmails(ctx, store.DeleteContactEmailsParams{WorkspaceID: workspaceID, ContactID: contactID}); err != nil {
@@ -172,7 +244,7 @@ func writeContactKeys(ctx context.Context, q *store.Queries, workspaceID, contac
 				return errExternalIDTaken
 			}
 			if store.IsForeignKeyViolation(err) {
-				return errValidation("external_ids names an inbox that does not exist")
+				return errExternalIDInbox
 			}
 			if err != nil {
 				return err
@@ -196,7 +268,11 @@ func (s *Server) ListContacts(ctx context.Context, req oas.ListContactsRequestOb
 	if err != nil {
 		return nil, err
 	}
-	rows, err := s.st.ListContacts(ctx, store.ListContactsParams{WorkspaceID: p.workspaceID, Q: q, CursorAt: at, CursorID: id, Lim: lim + 1})
+	var member *uuid.UUID
+	if !p.seesAllInboxes() {
+		member = &p.memberID
+	}
+	rows, err := s.st.ListContacts(ctx, store.ListContactsParams{WorkspaceID: p.workspaceID, MemberID: member, Q: q, CursorAt: at, CursorID: id, Lim: lim + 1})
 	if err != nil {
 		return nil, err
 	}
@@ -243,6 +319,9 @@ func (s *Server) CreateContact(ctx context.Context, req oas.CreateContactRequest
 	in.blocked = b.Blocked != nil && *b.Blocked
 	var out oas.Contact
 	err = s.st.InTx(ctx, func(q *store.Queries) error {
+		if err := limitAgentKeys(ctx, q, p, nil, &in, true, true); err != nil {
+			return err
+		}
 		r, err := q.CreateContact(ctx, store.CreateContactParams{
 			ID: newID(), WorkspaceID: p.workspaceID, Name: in.name, Attributes: in.attributes, Blocked: in.blocked, Now: s.now(),
 		})
@@ -268,6 +347,9 @@ func (s *Server) GetContact(ctx context.Context, req oas.GetContactRequestObject
 		return nil, errContactGone
 	}
 	if err != nil {
+		return nil, err
+	}
+	if err := visibleContact(ctx, s.st.Queries, p, r.ID); err != nil {
 		return nil, err
 	}
 	out, err := s.contactBody(ctx, s.st.Queries, p.workspaceID, r)
@@ -314,6 +396,9 @@ func (s *Server) UpdateContact(ctx context.Context, req oas.UpdateContactRequest
 		if err != nil {
 			return err
 		}
+		if err := visibleContact(ctx, q, p, cur.ID); err != nil {
+			return err
+		}
 		in := contactInput{name: cur.Name, attributes: cur.Attributes, blocked: cur.Blocked}
 		if b.Name != nil {
 			if in.name, err = trimmed(*b.Name, 0, 200, "name"); err != nil {
@@ -337,6 +422,9 @@ func (s *Server) UpdateContact(ctx context.Context, req oas.UpdateContactRequest
 		}
 		if b.Blocked != nil {
 			in.blocked = *b.Blocked
+		}
+		if err := limitAgentKeys(ctx, q, p, &cur.ID, &in, b.Emails != nil, b.ExternalIds != nil); err != nil {
+			return err
 		}
 		if b.ClearUndeliverable != nil {
 			addrs, err := contactEmails(*b.ClearUndeliverable)

@@ -458,6 +458,9 @@ func (s *Server) CreateConversation(ctx context.Context, req oas.CreateConversat
 		} else if err != nil {
 			return err
 		}
+		if err := visibleContact(ctx, q, p, b.ContactId); err != nil {
+			return err
+		}
 		if b.ChannelId != nil {
 			ch, err := q.GetChannel(ctx, store.GetChannelParams{WorkspaceID: p.workspaceID, ID: *b.ChannelId})
 			if store.IsNotFound(err) || (err == nil && ch.InboxID != b.InboxId) {
