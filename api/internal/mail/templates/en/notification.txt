@@ -1,0 +1,12 @@
+{{.Inbox}}: {{if .Contact}}{{.Contact}}{{else}}a visitor{{end}} is waiting for an answer
+
+{{if .Assigned}}{{if .AssignedBy}}{{.AssignedBy}} assigned you{{else}}You were assigned{{end}} a conversation in {{.Inbox}}{{if .Subject}}: {{.Subject}}{{end}}.
+
+{{end}}{{if .Messages}}{{if .Contact}}{{.Contact}}{{else}}A visitor{{end}} wrote{{if and .Subject (not .Assigned)}} about "{{.Subject}}"{{end}}:
+{{range .Messages}}
+> {{.}}{{end}}
+{{if .More}}…and {{.More}} more.
+{{end}}
+{{end}}Open the conversation: {{.URL}}
+
+You get this e-mail because it was still unread after {{.Minutes}} minutes. Choose which e-mails you get: {{.SettingsURL}}

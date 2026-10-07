@@ -26,7 +26,7 @@ func (q *Queries) CountOwners(ctx context.Context, workspaceID uuid.UUID) (int64
 const createMember = `-- name: CreateMember :one
 INSERT INTO members (id, workspace_id, person_id, role) VALUES ($1, $2, $3, $4)
 ON CONFLICT (workspace_id, person_id) DO NOTHING
-RETURNING id, workspace_id, person_id, role, created_at
+RETURNING id, workspace_id, person_id, role, created_at, notification_events, notification_email_delay
 `
 
 type CreateMemberParams struct {
@@ -50,6 +50,8 @@ func (q *Queries) CreateMember(ctx context.Context, arg CreateMemberParams) (Mem
 		&i.PersonID,
 		&i.Role,
 		&i.CreatedAt,
+		&i.NotificationEvents,
+		&i.NotificationEmailDelay,
 	)
 	return i, err
 }
@@ -105,7 +107,7 @@ func (q *Queries) GetMember(ctx context.Context, arg GetMemberParams) (GetMember
 }
 
 const getMemberByPerson = `-- name: GetMemberByPerson :one
-SELECT id, workspace_id, person_id, role, created_at FROM members WHERE workspace_id = $1 AND person_id = $2
+SELECT id, workspace_id, person_id, role, created_at, notification_events, notification_email_delay FROM members WHERE workspace_id = $1 AND person_id = $2
 `
 
 type GetMemberByPersonParams struct {
@@ -122,6 +124,8 @@ func (q *Queries) GetMemberByPerson(ctx context.Context, arg GetMemberByPersonPa
 		&i.PersonID,
 		&i.Role,
 		&i.CreatedAt,
+		&i.NotificationEvents,
+		&i.NotificationEmailDelay,
 	)
 	return i, err
 }

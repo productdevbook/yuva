@@ -54,7 +54,10 @@ func (s *Server) inTx(ctx context.Context, workspaceID uuid.UUID, fn func(q *sto
 		if err != nil {
 			return err
 		}
-		return s.queueWebhooks(ctx, tx, q, workspaceID, ev.items, ids)
+		if err := s.queueWebhooks(ctx, tx, q, workspaceID, ev.items, ids); err != nil {
+			return err
+		}
+		return s.queueNotifications(ctx, tx, workspaceID, ev.items)
 	})
 }
 

@@ -746,6 +746,36 @@ func (e Priority) Valid() bool {
 	}
 }
 
+// Defines values for PushNotificationEvent.
+const (
+	AssignedToMe                    PushNotificationEvent = "assigned_to_me"
+	MessageInMyConversation         PushNotificationEvent = "message_in_my_conversation"
+	MessageInUnassignedConversation PushNotificationEvent = "message_in_unassigned_conversation"
+	NewAsyncConversation            PushNotificationEvent = "new_async_conversation"
+	NewLiveConversation             PushNotificationEvent = "new_live_conversation"
+	Test                            PushNotificationEvent = "test"
+)
+
+// Valid indicates whether the value is a known member of the PushNotificationEvent enum.
+func (e PushNotificationEvent) Valid() bool {
+	switch e {
+	case AssignedToMe:
+		return true
+	case MessageInMyConversation:
+		return true
+	case MessageInUnassignedConversation:
+		return true
+	case NewAsyncConversation:
+		return true
+	case NewLiveConversation:
+		return true
+	case Test:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for RealtimeReadyType.
 const (
 	Ready RealtimeReadyType = "ready"
@@ -2280,6 +2310,20 @@ type InboxList struct {
 // time instead.
 type InboxMode string
 
+// InboxNotifications defines model for InboxNotifications.
+type InboxNotifications struct {
+	// Events Some events and their channels.
+	Events    NotificationEventsUpdate `json:"events"`
+	InboxId   uuid.UUID                `json:"inbox_id"`
+	UpdatedAt time.Time                `json:"updated_at"`
+}
+
+// InboxNotificationsUpdate defines model for InboxNotificationsUpdate.
+type InboxNotificationsUpdate struct {
+	// Events Some events and their channels.
+	Events NotificationEventsUpdate `json:"events"`
+}
+
 // InboxRef defines model for InboxRef.
 type InboxRef struct {
 	Id uuid.UUID `json:"id"`
@@ -2671,6 +2715,53 @@ type MessageUpdatedEvent struct {
 // MessageUpdatedEventType defines model for MessageUpdatedEvent.Type.
 type MessageUpdatedEventType string
 
+// NotificationChannels defines model for NotificationChannels.
+type NotificationChannels struct {
+	// Email An e-mail when it is still unread after `email_delay_minutes`.
+	Email bool `json:"email"`
+
+	// Push Web Push to every subscribed browser of the person.
+	Push bool `json:"push"`
+}
+
+// NotificationEvents defines model for NotificationEvents.
+type NotificationEvents struct {
+	AssignedToMe                    NotificationChannels `json:"assigned_to_me"`
+	MessageInMyConversation         NotificationChannels `json:"message_in_my_conversation"`
+	MessageInUnassignedConversation NotificationChannels `json:"message_in_unassigned_conversation"`
+	NewAsyncConversation            NotificationChannels `json:"new_async_conversation"`
+	NewLiveConversation             NotificationChannels `json:"new_live_conversation"`
+}
+
+// NotificationEventsUpdate Some events and their channels.
+type NotificationEventsUpdate struct {
+	AssignedToMe                    *NotificationChannels `json:"assigned_to_me,omitempty"`
+	MessageInMyConversation         *NotificationChannels `json:"message_in_my_conversation,omitempty"`
+	MessageInUnassignedConversation *NotificationChannels `json:"message_in_unassigned_conversation,omitempty"`
+	NewAsyncConversation            *NotificationChannels `json:"new_async_conversation,omitempty"`
+	NewLiveConversation             *NotificationChannels `json:"new_live_conversation,omitempty"`
+}
+
+// NotificationSettings defines model for NotificationSettings.
+type NotificationSettings struct {
+	Defaults NotificationEvents `json:"defaults"`
+
+	// EmailDelayMinutes How long an event stays unread before the e-mail fallback is sent.
+	EmailDelayMinutes int                `json:"email_delay_minutes"`
+	Events            NotificationEvents `json:"events"`
+
+	// Inboxes Per-inbox overrides, for inboxes the member can still see.
+	Inboxes []InboxNotifications `json:"inboxes"`
+}
+
+// NotificationSettingsUpdate defines model for NotificationSettingsUpdate.
+type NotificationSettingsUpdate struct {
+	EmailDelayMinutes *int `json:"email_delay_minutes,omitempty"`
+
+	// Events Some events and their channels.
+	Events *NotificationEventsUpdate `json:"events,omitempty"`
+}
+
 // Origin A web origin, `scheme://host[:port]`, without a path.
 //
 // Examples: https://www.example.com
@@ -2750,6 +2841,81 @@ type Problem struct {
 
 	// Type A URI that identifies the problem type.
 	Type string `json:"type"`
+}
+
+// PushNotification The JSON a push delivers to the service worker (`event.data.json()`), encrypted per
+// RFC 8291 (`aes128gcm`). Show it with `registration.showNotification(title, {body, tag,
+// data})` and open `url` on click. Pushes of one conversation share `tag` (and the push
+// `Topic`), so a newer one replaces the older.
+type PushNotification struct {
+	// Body The start of the message (at most 140 characters), or what happened.
+	Body           string     `json:"body"`
+	ConversationId *uuid.UUID `json:"conversation_id,omitempty"`
+
+	// Event What caused it (see the `notifications` tag), or `test`.
+	Event   PushNotificationEvent `json:"event"`
+	InboxId *uuid.UUID            `json:"inbox_id,omitempty"`
+
+	// Tag `conversation-{id}`, or `test`.
+	Tag string `json:"tag"`
+
+	// Title The inbox name and the contact's name.
+	//
+	// Examples: Support · Ayşe Yılmaz
+	Title string `json:"title"`
+
+	// Url Path to open, relative to the server's public URL:
+	// `/conversations/{id}?workspace_id={workspace}` (`/` for a test).
+	//
+	//
+	// Examples: /conversations/0199a3f0-7c1e-7b4a-9d2e-3f1c2b4a5d6e?workspace_id=0199a3f0-0000-7000-8000-000000000001
+	Url         string     `json:"url"`
+	WorkspaceId *uuid.UUID `json:"workspace_id,omitempty"`
+}
+
+// PushNotificationEvent What caused it (see the `notifications` tag), or `test`.
+type PushNotificationEvent string
+
+// PushSubscription defines model for PushSubscription.
+type PushSubscription struct {
+	CreatedAt time.Time `json:"created_at"`
+
+	// Current Registered by the calling session.
+	Current bool `json:"current"`
+
+	// Endpoint Compare with `PushSubscription.endpoint` to find this browser's entry.
+	Endpoint string    `json:"endpoint"`
+	Id       uuid.UUID `json:"id"`
+
+	// LastError Why the last failed push failed.
+	LastError     *string    `json:"last_error,omitempty"`
+	LastFailureAt *time.Time `json:"last_failure_at,omitempty"`
+	LastSuccessAt *time.Time `json:"last_success_at,omitempty"`
+	UpdatedAt     time.Time  `json:"updated_at"`
+	UserAgent     string     `json:"user_agent"`
+}
+
+// PushSubscriptionCreate defines model for PushSubscriptionCreate.
+type PushSubscriptionCreate struct {
+	Endpoint string               `json:"endpoint"`
+	Keys     PushSubscriptionKeys `json:"keys"`
+
+	// UserAgent A label to tell devices apart in the list, such as "Chrome on Android".
+	UserAgent *string `json:"user_agent,omitempty"`
+}
+
+// PushSubscriptionKeys defines model for PushSubscriptionKeys.
+type PushSubscriptionKeys struct {
+	// Auth The authentication secret, base64url (16 bytes decoded).
+	Auth string `json:"auth"`
+
+	// P256dh The browser's P-256 key, base64url (65 bytes decoded).
+	P256dh string `json:"p256dh"`
+}
+
+// PushSubscriptionList defines model for PushSubscriptionList.
+type PushSubscriptionList struct {
+	Items []PushSubscription `json:"items"`
 }
 
 // RealtimeMessage One server message on `/v1/realtime`, told apart by `type`.
@@ -2895,6 +3061,12 @@ type UsageMonth struct {
 
 	// Month Examples: 2026-10
 	Month string `json:"month"`
+}
+
+// VapidPublicKey defines model for VapidPublicKey.
+type VapidPublicKey struct {
+	// PublicKey Uncompressed P-256 public key, base64url without padding.
+	PublicKey string `json:"public_key"`
 }
 
 // Version defines model for Version.
@@ -3230,6 +3402,9 @@ type MessageId = uuid.UUID
 
 // PasskeyId defines model for PasskeyId.
 type PasskeyId = uuid.UUID
+
+// PushSubscriptionId defines model for PushSubscriptionId.
+type PushSubscriptionId = uuid.UUID
 
 // Search defines model for Search.
 type Search = string
@@ -3615,6 +3790,30 @@ type UpdateLabelParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// GetNotificationSettingsParams defines parameters for GetNotificationSettings.
+type GetNotificationSettingsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateNotificationSettingsParams defines parameters for UpdateNotificationSettings.
+type UpdateNotificationSettingsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteInboxNotificationsParams defines parameters for DeleteInboxNotifications.
+type DeleteInboxNotificationsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// SetInboxNotificationsParams defines parameters for SetInboxNotifications.
+type SetInboxNotificationsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // ListMembersParams defines parameters for ListMembers.
 type ListMembersParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -3922,8 +4121,17 @@ type UpdateLabelJSONRequestBody = LabelUpdate
 // UpdateMeJSONRequestBody defines body for UpdateMe for application/json ContentType.
 type UpdateMeJSONRequestBody = MeUpdate
 
+// UpdateNotificationSettingsJSONRequestBody defines body for UpdateNotificationSettings for application/json ContentType.
+type UpdateNotificationSettingsJSONRequestBody = NotificationSettingsUpdate
+
+// SetInboxNotificationsJSONRequestBody defines body for SetInboxNotifications for application/json ContentType.
+type SetInboxNotificationsJSONRequestBody = InboxNotificationsUpdate
+
 // FinishPasskeyRegistrationJSONRequestBody defines body for FinishPasskeyRegistration for application/json ContentType.
 type FinishPasskeyRegistrationJSONRequestBody = PasskeyRegistration
+
+// CreatePushSubscriptionJSONRequestBody defines body for CreatePushSubscription for application/json ContentType.
+type CreatePushSubscriptionJSONRequestBody = PushSubscriptionCreate
 
 // UpdateMemberJSONRequestBody defines body for UpdateMember for application/json ContentType.
 type UpdateMemberJSONRequestBody = MemberUpdate
@@ -4845,6 +5053,18 @@ type ServerInterface interface {
 	// UpdateMe Update the signed-in person
 	// (PATCH /v1/me)
 	UpdateMe(w http.ResponseWriter, r *http.Request)
+	// GetNotificationSettings Your notification settings
+	// (GET /v1/me/notifications)
+	GetNotificationSettings(w http.ResponseWriter, r *http.Request, params GetNotificationSettingsParams)
+	// UpdateNotificationSettings Change your notification settings
+	// (PATCH /v1/me/notifications)
+	UpdateNotificationSettings(w http.ResponseWriter, r *http.Request, params UpdateNotificationSettingsParams)
+	// DeleteInboxNotifications Remove your override for one inbox
+	// (DELETE /v1/me/notifications/inboxes/{inboxId})
+	DeleteInboxNotifications(w http.ResponseWriter, r *http.Request, inboxId InboxId, params DeleteInboxNotificationsParams)
+	// SetInboxNotifications Override your notifications for one inbox
+	// (PUT /v1/me/notifications/inboxes/{inboxId})
+	SetInboxNotifications(w http.ResponseWriter, r *http.Request, inboxId InboxId, params SetInboxNotificationsParams)
 	// ListPasskeys List passkeys
 	// (GET /v1/me/passkeys)
 	ListPasskeys(w http.ResponseWriter, r *http.Request)
@@ -4857,6 +5077,18 @@ type ServerInterface interface {
 	// DeletePasskey Remove a passkey
 	// (DELETE /v1/me/passkeys/{passkeyId})
 	DeletePasskey(w http.ResponseWriter, r *http.Request, passkeyId PasskeyId)
+	// ListPushSubscriptions List push subscriptions
+	// (GET /v1/me/push-subscriptions)
+	ListPushSubscriptions(w http.ResponseWriter, r *http.Request)
+	// CreatePushSubscription Register a push subscription
+	// (POST /v1/me/push-subscriptions)
+	CreatePushSubscription(w http.ResponseWriter, r *http.Request)
+	// DeletePushSubscription Remove a push subscription
+	// (DELETE /v1/me/push-subscriptions/{pushSubscriptionId})
+	DeletePushSubscription(w http.ResponseWriter, r *http.Request, pushSubscriptionId PushSubscriptionId)
+	// TestPushSubscription Send a test notification
+	// (POST /v1/me/push-subscriptions/{pushSubscriptionId}/test)
+	TestPushSubscription(w http.ResponseWriter, r *http.Request, pushSubscriptionId PushSubscriptionId)
 	// ListMembers List members
 	// (GET /v1/members)
 	ListMembers(w http.ResponseWriter, r *http.Request, params ListMembersParams)
@@ -4875,6 +5107,9 @@ type ServerInterface interface {
 	// DownloadMessageRaw Download the original e-mail
 	// (GET /v1/messages/{messageId}/raw)
 	DownloadMessageRaw(w http.ResponseWriter, r *http.Request, messageId MessageId, params DownloadMessageRawParams)
+	// GetVapidPublicKey The server's Web Push key
+	// (GET /v1/push/vapid-public-key)
+	GetVapidPublicKey(w http.ResponseWriter, r *http.Request)
 	// GetUsage Usage per month
 	// (GET /v1/usage)
 	GetUsage(w http.ResponseWriter, r *http.Request, params GetUsageParams)
@@ -7920,6 +8155,188 @@ func (siw *ServerInterfaceWrapper) UpdateMe(w http.ResponseWriter, r *http.Reque
 	handler.ServeHTTP(w, r)
 }
 
+// GetNotificationSettings operation middleware
+func (siw *ServerInterfaceWrapper) GetNotificationSettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetNotificationSettingsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetNotificationSettings(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateNotificationSettings operation middleware
+func (siw *ServerInterfaceWrapper) UpdateNotificationSettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateNotificationSettingsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateNotificationSettings(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteInboxNotifications operation middleware
+func (siw *ServerInterfaceWrapper) DeleteInboxNotifications(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "inboxId" -------------
+	var inboxId InboxId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "inboxId", r.PathValue("inboxId"), &inboxId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inboxId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteInboxNotificationsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteInboxNotifications(w, r, inboxId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SetInboxNotifications operation middleware
+func (siw *ServerInterfaceWrapper) SetInboxNotifications(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "inboxId" -------------
+	var inboxId InboxId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "inboxId", r.PathValue("inboxId"), &inboxId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inboxId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SetInboxNotificationsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SetInboxNotifications(w, r, inboxId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListPasskeys operation middleware
 func (siw *ServerInterfaceWrapper) ListPasskeys(w http.ResponseWriter, r *http.Request) {
 
@@ -7979,6 +8396,86 @@ func (siw *ServerInterfaceWrapper) DeletePasskey(w http.ResponseWriter, r *http.
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DeletePasskey(w, r, passkeyId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListPushSubscriptions operation middleware
+func (siw *ServerInterfaceWrapper) ListPushSubscriptions(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListPushSubscriptions(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreatePushSubscription operation middleware
+func (siw *ServerInterfaceWrapper) CreatePushSubscription(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreatePushSubscription(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeletePushSubscription operation middleware
+func (siw *ServerInterfaceWrapper) DeletePushSubscription(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "pushSubscriptionId" -------------
+	var pushSubscriptionId PushSubscriptionId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "pushSubscriptionId", r.PathValue("pushSubscriptionId"), &pushSubscriptionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "pushSubscriptionId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeletePushSubscription(w, r, pushSubscriptionId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// TestPushSubscription operation middleware
+func (siw *ServerInterfaceWrapper) TestPushSubscription(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "pushSubscriptionId" -------------
+	var pushSubscriptionId PushSubscriptionId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "pushSubscriptionId", r.PathValue("pushSubscriptionId"), &pushSubscriptionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "pushSubscriptionId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.TestPushSubscription(w, r, pushSubscriptionId)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -8283,6 +8780,20 @@ func (siw *ServerInterfaceWrapper) DownloadMessageRaw(w http.ResponseWriter, r *
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DownloadMessageRaw(w, r, messageId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetVapidPublicKey operation middleware
+func (siw *ServerInterfaceWrapper) GetVapidPublicKey(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetVapidPublicKey(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -9087,6 +9598,15 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/me/passkeys", wrapper.FinishPasskeyRegistration)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/me/passkeys/options", wrapper.BeginPasskeyRegistration)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/me/passkeys/{passkeyId}", wrapper.DeletePasskey)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/push/vapid-public-key", wrapper.GetVapidPublicKey)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/me/push-subscriptions", wrapper.ListPushSubscriptions)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/me/push-subscriptions", wrapper.CreatePushSubscription)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/me/push-subscriptions/{pushSubscriptionId}", wrapper.DeletePushSubscription)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/me/push-subscriptions/{pushSubscriptionId}/test", wrapper.TestPushSubscription)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/me/notifications", wrapper.GetNotificationSettings)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/me/notifications", wrapper.UpdateNotificationSettings)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/me/notifications/inboxes/{inboxId}", wrapper.DeleteInboxNotifications)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/me/notifications/inboxes/{inboxId}", wrapper.SetInboxNotifications)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/workspace", wrapper.GetWorkspace)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/members", wrapper.ListMembers)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/members/{memberId}", wrapper.RemoveMember)
@@ -14822,6 +15342,268 @@ func (response UpdateMe401ApplicationProblemPlusJSONResponse) VisitUpdateMeRespo
 	return err
 }
 
+type GetNotificationSettingsRequestObject struct {
+	Params GetNotificationSettingsParams
+}
+
+type GetNotificationSettingsResponseObject interface {
+	VisitGetNotificationSettingsResponse(w http.ResponseWriter) error
+}
+
+type GetNotificationSettings200JSONResponse NotificationSettings
+
+func (response GetNotificationSettings200JSONResponse) VisitGetNotificationSettingsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetNotificationSettings401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetNotificationSettings401ApplicationProblemPlusJSONResponse) VisitGetNotificationSettingsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetNotificationSettings403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetNotificationSettings403ApplicationProblemPlusJSONResponse) VisitGetNotificationSettingsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateNotificationSettingsRequestObject struct {
+	Params UpdateNotificationSettingsParams
+	Body   *UpdateNotificationSettingsJSONRequestBody
+}
+
+type UpdateNotificationSettingsResponseObject interface {
+	VisitUpdateNotificationSettingsResponse(w http.ResponseWriter) error
+}
+
+type UpdateNotificationSettings200JSONResponse NotificationSettings
+
+func (response UpdateNotificationSettings200JSONResponse) VisitUpdateNotificationSettingsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateNotificationSettings400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UpdateNotificationSettings400ApplicationProblemPlusJSONResponse) VisitUpdateNotificationSettingsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateNotificationSettings401ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateNotificationSettings401ApplicationProblemPlusJSONResponse) VisitUpdateNotificationSettingsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateNotificationSettings403ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateNotificationSettings403ApplicationProblemPlusJSONResponse) VisitUpdateNotificationSettingsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteInboxNotificationsRequestObject struct {
+	InboxId InboxId `json:"inboxId"`
+	Params  DeleteInboxNotificationsParams
+}
+
+type DeleteInboxNotificationsResponseObject interface {
+	VisitDeleteInboxNotificationsResponse(w http.ResponseWriter) error
+}
+
+type DeleteInboxNotifications204Response struct {
+}
+
+func (response DeleteInboxNotifications204Response) VisitDeleteInboxNotificationsResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteInboxNotifications401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteInboxNotifications401ApplicationProblemPlusJSONResponse) VisitDeleteInboxNotificationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteInboxNotifications403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteInboxNotifications403ApplicationProblemPlusJSONResponse) VisitDeleteInboxNotificationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteInboxNotifications404ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteInboxNotifications404ApplicationProblemPlusJSONResponse) VisitDeleteInboxNotificationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetInboxNotificationsRequestObject struct {
+	InboxId InboxId `json:"inboxId"`
+	Params  SetInboxNotificationsParams
+	Body    *SetInboxNotificationsJSONRequestBody
+}
+
+type SetInboxNotificationsResponseObject interface {
+	VisitSetInboxNotificationsResponse(w http.ResponseWriter) error
+}
+
+type SetInboxNotifications200JSONResponse InboxNotifications
+
+func (response SetInboxNotifications200JSONResponse) VisitSetInboxNotificationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetInboxNotifications400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response SetInboxNotifications400ApplicationProblemPlusJSONResponse) VisitSetInboxNotificationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetInboxNotifications401ApplicationProblemPlusJSONResponse Problem
+
+func (response SetInboxNotifications401ApplicationProblemPlusJSONResponse) VisitSetInboxNotificationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetInboxNotifications403ApplicationProblemPlusJSONResponse Problem
+
+func (response SetInboxNotifications403ApplicationProblemPlusJSONResponse) VisitSetInboxNotificationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetInboxNotifications404ApplicationProblemPlusJSONResponse Problem
+
+func (response SetInboxNotifications404ApplicationProblemPlusJSONResponse) VisitSetInboxNotificationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type ListPasskeysRequestObject struct {
 }
 
@@ -14997,6 +15779,207 @@ func (response DeletePasskey401ApplicationProblemPlusJSONResponse) VisitDeletePa
 type DeletePasskey404ApplicationProblemPlusJSONResponse Problem
 
 func (response DeletePasskey404ApplicationProblemPlusJSONResponse) VisitDeletePasskeyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListPushSubscriptionsRequestObject struct {
+}
+
+type ListPushSubscriptionsResponseObject interface {
+	VisitListPushSubscriptionsResponse(w http.ResponseWriter) error
+}
+
+type ListPushSubscriptions200JSONResponse PushSubscriptionList
+
+func (response ListPushSubscriptions200JSONResponse) VisitListPushSubscriptionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListPushSubscriptions401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListPushSubscriptions401ApplicationProblemPlusJSONResponse) VisitListPushSubscriptionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreatePushSubscriptionRequestObject struct {
+	Body *CreatePushSubscriptionJSONRequestBody
+}
+
+type CreatePushSubscriptionResponseObject interface {
+	VisitCreatePushSubscriptionResponse(w http.ResponseWriter) error
+}
+
+type CreatePushSubscription201JSONResponse PushSubscription
+
+func (response CreatePushSubscription201JSONResponse) VisitCreatePushSubscriptionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreatePushSubscription400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response CreatePushSubscription400ApplicationProblemPlusJSONResponse) VisitCreatePushSubscriptionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreatePushSubscription401ApplicationProblemPlusJSONResponse Problem
+
+func (response CreatePushSubscription401ApplicationProblemPlusJSONResponse) VisitCreatePushSubscriptionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreatePushSubscription404ApplicationProblemPlusJSONResponse Problem
+
+func (response CreatePushSubscription404ApplicationProblemPlusJSONResponse) VisitCreatePushSubscriptionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeletePushSubscriptionRequestObject struct {
+	PushSubscriptionId PushSubscriptionId `json:"pushSubscriptionId"`
+}
+
+type DeletePushSubscriptionResponseObject interface {
+	VisitDeletePushSubscriptionResponse(w http.ResponseWriter) error
+}
+
+type DeletePushSubscription204Response struct {
+}
+
+func (response DeletePushSubscription204Response) VisitDeletePushSubscriptionResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeletePushSubscription401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeletePushSubscription401ApplicationProblemPlusJSONResponse) VisitDeletePushSubscriptionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeletePushSubscription404ApplicationProblemPlusJSONResponse Problem
+
+func (response DeletePushSubscription404ApplicationProblemPlusJSONResponse) VisitDeletePushSubscriptionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type TestPushSubscriptionRequestObject struct {
+	PushSubscriptionId PushSubscriptionId `json:"pushSubscriptionId"`
+}
+
+type TestPushSubscriptionResponseObject interface {
+	VisitTestPushSubscriptionResponse(w http.ResponseWriter) error
+}
+
+type TestPushSubscription202JSONResponse PushNotification
+
+func (response TestPushSubscription202JSONResponse) VisitTestPushSubscriptionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(202)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type TestPushSubscription401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response TestPushSubscription401ApplicationProblemPlusJSONResponse) VisitTestPushSubscriptionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type TestPushSubscription404ApplicationProblemPlusJSONResponse Problem
+
+func (response TestPushSubscription404ApplicationProblemPlusJSONResponse) VisitTestPushSubscriptionResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -15453,6 +16436,57 @@ func (response DownloadMessageRaw403ApplicationProblemPlusJSONResponse) VisitDow
 type DownloadMessageRaw404ApplicationProblemPlusJSONResponse Problem
 
 func (response DownloadMessageRaw404ApplicationProblemPlusJSONResponse) VisitDownloadMessageRawResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetVapidPublicKeyRequestObject struct {
+}
+
+type GetVapidPublicKeyResponseObject interface {
+	VisitGetVapidPublicKeyResponse(w http.ResponseWriter) error
+}
+
+type GetVapidPublicKey200JSONResponse VapidPublicKey
+
+func (response GetVapidPublicKey200JSONResponse) VisitGetVapidPublicKeyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetVapidPublicKey401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetVapidPublicKey401ApplicationProblemPlusJSONResponse) VisitGetVapidPublicKeyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetVapidPublicKey404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetVapidPublicKey404ApplicationProblemPlusJSONResponse) VisitGetVapidPublicKeyResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -16540,6 +17574,18 @@ type StrictServerInterface interface {
 	// UpdateMe Update the signed-in person
 	// (PATCH /v1/me)
 	UpdateMe(ctx context.Context, request UpdateMeRequestObject) (UpdateMeResponseObject, error)
+	// GetNotificationSettings Your notification settings
+	// (GET /v1/me/notifications)
+	GetNotificationSettings(ctx context.Context, request GetNotificationSettingsRequestObject) (GetNotificationSettingsResponseObject, error)
+	// UpdateNotificationSettings Change your notification settings
+	// (PATCH /v1/me/notifications)
+	UpdateNotificationSettings(ctx context.Context, request UpdateNotificationSettingsRequestObject) (UpdateNotificationSettingsResponseObject, error)
+	// DeleteInboxNotifications Remove your override for one inbox
+	// (DELETE /v1/me/notifications/inboxes/{inboxId})
+	DeleteInboxNotifications(ctx context.Context, request DeleteInboxNotificationsRequestObject) (DeleteInboxNotificationsResponseObject, error)
+	// SetInboxNotifications Override your notifications for one inbox
+	// (PUT /v1/me/notifications/inboxes/{inboxId})
+	SetInboxNotifications(ctx context.Context, request SetInboxNotificationsRequestObject) (SetInboxNotificationsResponseObject, error)
 	// ListPasskeys List passkeys
 	// (GET /v1/me/passkeys)
 	ListPasskeys(ctx context.Context, request ListPasskeysRequestObject) (ListPasskeysResponseObject, error)
@@ -16552,6 +17598,18 @@ type StrictServerInterface interface {
 	// DeletePasskey Remove a passkey
 	// (DELETE /v1/me/passkeys/{passkeyId})
 	DeletePasskey(ctx context.Context, request DeletePasskeyRequestObject) (DeletePasskeyResponseObject, error)
+	// ListPushSubscriptions List push subscriptions
+	// (GET /v1/me/push-subscriptions)
+	ListPushSubscriptions(ctx context.Context, request ListPushSubscriptionsRequestObject) (ListPushSubscriptionsResponseObject, error)
+	// CreatePushSubscription Register a push subscription
+	// (POST /v1/me/push-subscriptions)
+	CreatePushSubscription(ctx context.Context, request CreatePushSubscriptionRequestObject) (CreatePushSubscriptionResponseObject, error)
+	// DeletePushSubscription Remove a push subscription
+	// (DELETE /v1/me/push-subscriptions/{pushSubscriptionId})
+	DeletePushSubscription(ctx context.Context, request DeletePushSubscriptionRequestObject) (DeletePushSubscriptionResponseObject, error)
+	// TestPushSubscription Send a test notification
+	// (POST /v1/me/push-subscriptions/{pushSubscriptionId}/test)
+	TestPushSubscription(ctx context.Context, request TestPushSubscriptionRequestObject) (TestPushSubscriptionResponseObject, error)
 	// ListMembers List members
 	// (GET /v1/members)
 	ListMembers(ctx context.Context, request ListMembersRequestObject) (ListMembersResponseObject, error)
@@ -16570,6 +17628,9 @@ type StrictServerInterface interface {
 	// DownloadMessageRaw Download the original e-mail
 	// (GET /v1/messages/{messageId}/raw)
 	DownloadMessageRaw(ctx context.Context, request DownloadMessageRawRequestObject) (DownloadMessageRawResponseObject, error)
+	// GetVapidPublicKey The server's Web Push key
+	// (GET /v1/push/vapid-public-key)
+	GetVapidPublicKey(ctx context.Context, request GetVapidPublicKeyRequestObject) (GetVapidPublicKeyResponseObject, error)
 	// GetUsage Usage per month
 	// (GET /v1/usage)
 	GetUsage(ctx context.Context, request GetUsageRequestObject) (GetUsageResponseObject, error)
@@ -18758,6 +19819,126 @@ func (sh *strictHandler) UpdateMe(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GetNotificationSettings operation middleware
+func (sh *strictHandler) GetNotificationSettings(w http.ResponseWriter, r *http.Request, params GetNotificationSettingsParams) {
+	var request GetNotificationSettingsRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetNotificationSettings(ctx, request.(GetNotificationSettingsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetNotificationSettings")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetNotificationSettingsResponseObject); ok {
+		if err := validResponse.VisitGetNotificationSettingsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UpdateNotificationSettings operation middleware
+func (sh *strictHandler) UpdateNotificationSettings(w http.ResponseWriter, r *http.Request, params UpdateNotificationSettingsParams) {
+	var request UpdateNotificationSettingsRequestObject
+
+	request.Params = params
+
+	var body UpdateNotificationSettingsJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateNotificationSettings(ctx, request.(UpdateNotificationSettingsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateNotificationSettings")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UpdateNotificationSettingsResponseObject); ok {
+		if err := validResponse.VisitUpdateNotificationSettingsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteInboxNotifications operation middleware
+func (sh *strictHandler) DeleteInboxNotifications(w http.ResponseWriter, r *http.Request, inboxId InboxId, params DeleteInboxNotificationsParams) {
+	var request DeleteInboxNotificationsRequestObject
+
+	request.InboxId = inboxId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteInboxNotifications(ctx, request.(DeleteInboxNotificationsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteInboxNotifications")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteInboxNotificationsResponseObject); ok {
+		if err := validResponse.VisitDeleteInboxNotificationsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// SetInboxNotifications operation middleware
+func (sh *strictHandler) SetInboxNotifications(w http.ResponseWriter, r *http.Request, inboxId InboxId, params SetInboxNotificationsParams) {
+	var request SetInboxNotificationsRequestObject
+
+	request.InboxId = inboxId
+	request.Params = params
+
+	var body SetInboxNotificationsJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.SetInboxNotifications(ctx, request.(SetInboxNotificationsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "SetInboxNotifications")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(SetInboxNotificationsResponseObject); ok {
+		if err := validResponse.VisitSetInboxNotificationsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // ListPasskeys operation middleware
 func (sh *strictHandler) ListPasskeys(w http.ResponseWriter, r *http.Request) {
 	var request ListPasskeysRequestObject
@@ -18856,6 +20037,113 @@ func (sh *strictHandler) DeletePasskey(w http.ResponseWriter, r *http.Request, p
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(DeletePasskeyResponseObject); ok {
 		if err := validResponse.VisitDeletePasskeyResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListPushSubscriptions operation middleware
+func (sh *strictHandler) ListPushSubscriptions(w http.ResponseWriter, r *http.Request) {
+	var request ListPushSubscriptionsRequestObject
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListPushSubscriptions(ctx, request.(ListPushSubscriptionsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListPushSubscriptions")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListPushSubscriptionsResponseObject); ok {
+		if err := validResponse.VisitListPushSubscriptionsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreatePushSubscription operation middleware
+func (sh *strictHandler) CreatePushSubscription(w http.ResponseWriter, r *http.Request) {
+	var request CreatePushSubscriptionRequestObject
+
+	var body CreatePushSubscriptionJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.CreatePushSubscription(ctx, request.(CreatePushSubscriptionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreatePushSubscription")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(CreatePushSubscriptionResponseObject); ok {
+		if err := validResponse.VisitCreatePushSubscriptionResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeletePushSubscription operation middleware
+func (sh *strictHandler) DeletePushSubscription(w http.ResponseWriter, r *http.Request, pushSubscriptionId PushSubscriptionId) {
+	var request DeletePushSubscriptionRequestObject
+
+	request.PushSubscriptionId = pushSubscriptionId
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeletePushSubscription(ctx, request.(DeletePushSubscriptionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeletePushSubscription")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeletePushSubscriptionResponseObject); ok {
+		if err := validResponse.VisitDeletePushSubscriptionResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// TestPushSubscription operation middleware
+func (sh *strictHandler) TestPushSubscription(w http.ResponseWriter, r *http.Request, pushSubscriptionId PushSubscriptionId) {
+	var request TestPushSubscriptionRequestObject
+
+	request.PushSubscriptionId = pushSubscriptionId
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.TestPushSubscription(ctx, request.(TestPushSubscriptionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "TestPushSubscription")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(TestPushSubscriptionResponseObject); ok {
+		if err := validResponse.VisitTestPushSubscriptionResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -19024,6 +20312,30 @@ func (sh *strictHandler) DownloadMessageRaw(w http.ResponseWriter, r *http.Reque
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(DownloadMessageRawResponseObject); ok {
 		if err := validResponse.VisitDownloadMessageRawResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetVapidPublicKey operation middleware
+func (sh *strictHandler) GetVapidPublicKey(w http.ResponseWriter, r *http.Request) {
+	var request GetVapidPublicKeyRequestObject
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetVapidPublicKey(ctx, request.(GetVapidPublicKeyRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetVapidPublicKey")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetVapidPublicKeyResponseObject); ok {
+		if err := validResponse.VisitGetVapidPublicKeyResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

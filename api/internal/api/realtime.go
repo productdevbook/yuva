@@ -20,6 +20,7 @@ import (
 )
 
 const (
+	realtimeFrameLimit   = 1024
 	realtimeHeartbeat    = 30 * time.Second
 	realtimeWriteTimeout = 10 * time.Second
 	replayPageSize       = 500
@@ -112,7 +113,8 @@ func (s *Server) serveRealtime(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) stream(conn *websocket.Conn, r *http.Request, p principal, resumeFrom *int64) (websocket.StatusCode, string, error) {
-	ctx := conn.CloseRead(r.Context())
+	ctx, cancel := context.WithCancel(r.Context())
+	defer cancel()
 	sub := s.hub.Subscribe(p.workspaceID)
 	defer s.hub.Unsubscribe(sub)
 	var connID uuid.UUID
@@ -131,6 +133,7 @@ func (s *Server) stream(conn *websocket.Conn, r *http.Request, p principal, resu
 			s.presenceHint(bg, p.workspaceID)
 		}()
 	}
+	go s.readMemberFrames(ctx, cancel, conn, p.workspaceID, connID)
 	f := &eventFilter{p: p}
 	if err := f.reload(ctx, s.st.Queries); err != nil {
 		return websocket.StatusInternalError, "internal", err
@@ -304,4 +307,32 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 		delete(f.inboxes, *e.InboxID)
 	}
 	return ok, nil
+}
+
+type realtimeClientFrame struct {
+	Type           string     `json:"type"`
+	ConversationID *uuid.UUID `json:"conversation_id"`
+}
+
+// readMemberFrames reads what the panel sends: `viewing` records the conversation a member's
+// connection shows, so notifications about it stay quiet; anything else is ignored. The
+// connection ends when reading fails.
+func (s *Server) readMemberFrames(ctx context.Context, cancel context.CancelFunc, conn *websocket.Conn, workspaceID, connID uuid.UUID) {
+	defer cancel()
+	conn.SetReadLimit(realtimeFrameLimit)
+	for {
+		typ, b, err := conn.Read(ctx)
+		if err != nil {
+			return
+		}
+		var f realtimeClientFrame
+		if typ != websocket.MessageText || connID == uuid.Nil() || json.Unmarshal(b, &f) != nil || f.Type != "viewing" {
+			continue
+		}
+		if err := s.st.SetConnectionViewing(ctx, store.SetConnectionViewingParams{
+			WorkspaceID: workspaceID, ID: connID, ConversationID: f.ConversationID, Now: s.now(),
+		}); err != nil && ctx.Err() == nil {
+			s.log.WarnContext(ctx, "realtime viewing", slog.Any("error", err))
+		}
+	}
 }

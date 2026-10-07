@@ -1,0 +1,12 @@
+{{.Inbox}}: {{if .Contact}}{{.Contact}}{{else}}bir ziyaretçi{{end}} yanıt bekliyor
+
+{{if .Assigned}}{{if .AssignedBy}}{{.AssignedBy}} size {{.Inbox}} gelen kutusunda bir konuşma atadı{{else}}{{.Inbox}} gelen kutusunda size bir konuşma atandı{{end}}{{if .Subject}}: {{.Subject}}{{end}}.
+
+{{end}}{{if .Messages}}{{if .Contact}}{{.Contact}}{{else}}Bir ziyaretçi{{end}} yazdı{{if and .Subject (not .Assigned)}} ("{{.Subject}}"){{end}}:
+{{range .Messages}}
+> {{.}}{{end}}
+{{if .More}}…ve {{.More}} mesaj daha.
+{{end}}
+{{end}}Konuşmayı açın: {{.URL}}
+
+Bu e-postayı, konuşma {{.Minutes}} dakika boyunca okunmadığı için alıyorsunuz. Hangi e-postaları alacağınızı seçin: {{.SettingsURL}}

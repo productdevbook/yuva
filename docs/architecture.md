@@ -297,10 +297,47 @@ React, Vite, shadcn, TanStack Query, Lingui; built to static files and embedded 
 - Settings: inboxes, channels, members and access, labels, canned replies, business hours,
   auto-replies, webhooks, API keys.
 - Installable PWA with Web Push (VAPID), so members get notifications on phones without a native
-  app. E-mail notifications as a fallback.
+  app. E-mail notifications as a fallback (see Member notifications).
 - Sign-in with an e-mailed one-time code and passkeys. There is no open sign-up: the first owner
   is created with `yuva bootstrap`, everyone else is invited. Sign-in and invitation e-mails are
   sent directly, not through the job queue, so a code never lands in job arguments.
+
+### Member notifications
+
+Five events notify members: the first message of a conversation, from the contact, in a `live`
+or an `async` inbox (every member with access is a candidate); a later contact message in a
+conversation assigned to the member, or in an unassigned one (every member with access); and
+someone else assigning a conversation to the member. A River job queued in the transaction that
+stored the message picks the recipients. Nobody is notified about their own action, about a
+conversation marked spam, or about a conversation their open panel shows: the panel reports it
+with a `viewing` frame on `/v1/realtime`, stored on the connection's row and trusted while the
+connection is fresh (75 seconds). A member set to `away` gets only the events about
+conversations assigned to them.
+
+Each member chooses push and e-mail per event, and can override events per inbox. Defaults by
+role: push for everything, except that agents get no push for new `async` conversations and for
+messages in unassigned conversations (owners and admins triage those); e-mail only for messages
+in conversations assigned to the member and for assignments, for every role, since being
+assigned makes anyone responsible.
+
+Web Push follows RFC 8030, 8291 and 8292 through `webpush-go`, with the server's VAPID keys
+(`YUVA_VAPID_PUBLIC_KEY`, `YUVA_VAPID_PRIVATE_KEY`, `YUVA_VAPID_SUBJECT`; `yuva vapid-keys` makes
+a pair; push is off without them). A subscription belongs to the browser and to the session that
+registered it, so sign-out ends it; it receives notifications from every workspace of the person.
+One River job sends each push, with a TTL (4 hours for `live` inboxes, 24 for `async`), an
+urgency (`high` for `live`) and the conversation as `Topic`, so a newer push replaces an
+undelivered one. The payload is minimal: inbox and contact name, the start of the message (140
+characters), the conversation's path, a per-conversation `tag`, the conversation, inbox and
+workspace ids. 404 and 410 from the push service delete the subscription, 429, 5xx and network
+errors are retried (5 attempts), other answers are recorded on the subscription. Push endpoints
+pass the webhook address checks: `https` only, never a private or link-local address, resolved
+and checked on every attempt.
+
+E-mail fallback: an event with e-mail on schedules one check per member and conversation after the
+member's delay (15 minutes by default). If the conversation still has contact messages (or an
+assignment) newer than the member's read position and the previous notification e-mail, one
+e-mail through the server's own mailer, in the member's locale, lists them and links to the
+conversation and to the notification settings; at most one per member and conversation per hour.
 
 ### Storage
 
@@ -341,8 +378,9 @@ now; per-channel limits can narrow them later.
     carries neither the key nor the session, asks whether any chat channel allows its origin. A
     contact session token is looked up by its hash in `contact_sessions` before its workspace is
     known. Everything after those lookups is scoped by the workspace they returned.
-  - The person-level identity tables `people`, `sessions`, `login_codes`, `passkeys` and
-    `webauthn_ceremonies`. A person signs in once and can be a member of several workspaces, so
+  - The person-level identity tables `people`, `sessions`, `login_codes`, `passkeys`,
+    `webauthn_ceremonies` and `push_subscriptions` (a browser's subscription follows the person
+    into every workspace; the send job finds it by its id). A person signs in once and can be a member of several workspaces, so
     these rows belong to a person (or, for `login_codes`, an e-mail address before sign-in), not
     to a workspace. Their queries are scoped by the person id, the e-mail address or a secret
     hash instead; everything a person may do in a workspace goes through their `members` row.

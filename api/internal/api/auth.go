@@ -58,6 +58,16 @@ var operationAccess = map[string]access{
 	"MarkConversationRead": accessMember,
 	"SetMemberTyping":      accessMember,
 
+	"GetVapidPublicKey":          accessPerson,
+	"ListPushSubscriptions":      accessPerson,
+	"CreatePushSubscription":     accessPerson,
+	"DeletePushSubscription":     accessPerson,
+	"TestPushSubscription":       accessPerson,
+	"GetNotificationSettings":    accessMember,
+	"UpdateNotificationSettings": accessMember,
+	"SetInboxNotifications":      accessMember,
+	"DeleteInboxNotifications":   accessMember,
+
 	"CreateClientSession":        accessPublic,
 	"GetClientChannel":           accessPublic,
 	"GetClientSession":           accessContact,

@@ -22,6 +22,7 @@ import (
 	"github.com/productdevbook/yuva/api/internal/jobs"
 	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/metrics"
+	"github.com/productdevbook/yuva/api/internal/push"
 	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/secret"
 	"github.com/productdevbook/yuva/api/internal/storage"
@@ -34,7 +35,8 @@ const usageText = `usage:
   yuva serve [--migrate=false]   (applies database migrations first unless disabled)
   yuva migrate up|down|status
   yuva bootstrap --email <address> --workspace <name> [--name <name>] [--locale en|tr] [--allow-existing]
-  yuva ingest-email --to <address> [--from <address>] < message.eml`
+  yuva ingest-email --to <address> [--from <address>] < message.eml
+  yuva vapid-keys                (prints a new Web Push key pair)`
 
 func main() {
 	log := slog.New(slog.NewJSONHandler(os.Stderr, nil))
@@ -45,6 +47,13 @@ func main() {
 	}
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
+	if os.Args[1] == "vapid-keys" {
+		if err := vapidKeys(); err != nil {
+			log.Error("fatal", slog.Any("error", err))
+			os.Exit(1)
+		}
+		return
+	}
 	cfg, err := config.Load(buildVersion())
 	if err == nil {
 		switch os.Args[1] {
@@ -122,6 +131,14 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 	if err != nil {
 		return err
 	}
+	pushKeys := push.Keys{PublicKey: cfg.VAPID.PublicKey, PrivateKey: cfg.VAPID.PrivateKey, Subject: cfg.VAPID.Subject}
+	if cfg.VAPID.Enabled() {
+		if err := pushKeys.Check(); err != nil {
+			return fmt.Errorf("YUVA_VAPID_PRIVATE_KEY, YUVA_VAPID_PUBLIC_KEY: %w", err)
+		}
+	} else {
+		log.Warn("YUVA_VAPID_PUBLIC_KEY is not set; Web Push notifications are off (yuva vapid-keys makes a pair)")
+	}
 	st, err := openStore(ctx, cfg)
 	if err != nil {
 		return err
@@ -172,6 +189,7 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 		Ingress:  api.IngressSettings{Secret: cfg.IngressSecret, SESTopicARNs: cfg.SESTopicARNs},
 		Chat:     api.ChatSettings{EmailDelay: cfg.ChatEmailDelay},
 		Webhooks: api.WebhookSettings{AllowPrivate: cfg.WebhookAllowPrivate},
+		Push:     api.PushSettings{Keys: pushKeys},
 	})
 	if cfg.WebhookAllowPrivate {
 		log.Warn("YUVA_WEBHOOK_ALLOW_PRIVATE is set; webhooks may reach private and loopback addresses")
@@ -208,6 +226,15 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 	if err := httpSrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return err
 	}
+	return nil
+}
+
+func vapidKeys() error {
+	public, private, err := push.GenerateKeys()
+	if err != nil {
+		return err
+	}
+	fmt.Printf("YUVA_VAPID_PUBLIC_KEY=%s\nYUVA_VAPID_PRIVATE_KEY=%s\n", public, private)
 	return nil
 }
 

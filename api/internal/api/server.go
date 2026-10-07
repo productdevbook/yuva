@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/SherClockHolmes/webpush-go"
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/jackc/pgx/v5"
 	"github.com/microcosm-cc/bluemonday"
@@ -19,6 +20,7 @@ import (
 	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/metrics"
 	"github.com/productdevbook/yuva/api/internal/oas"
+	"github.com/productdevbook/yuva/api/internal/push"
 	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/secret"
 	"github.com/productdevbook/yuva/api/internal/storage"
@@ -56,6 +58,7 @@ type Server struct {
 	limits   *rateLimiter
 	webhooks WebhookSettings
 	hooks    *webhook.Client
+	push     *push.Sender
 }
 
 type Deps struct {
@@ -79,6 +82,15 @@ type Deps struct {
 	Chat ChatSettings
 
 	Webhooks WebhookSettings
+
+	Push PushSettings
+}
+
+// PushSettings holds the VAPID keys; push is off without them.
+type PushSettings struct {
+	Keys push.Keys
+	// HTTPClient replaces the client that refuses private addresses; for tests.
+	HTTPClient webpush.HTTPClient
 }
 
 type ChatSettings struct {
@@ -123,11 +135,19 @@ func New(d Deps) *Server {
 	if chat.EmailDelay <= 0 {
 		chat.EmailDelay = defaultChatEmailDelay
 	}
+	hooks := webhook.NewClient(d.Webhooks.AllowPrivate, d.Webhooks.Resolver)
+	var pusher *push.Sender
+	if d.Push.Keys.PublicKey != "" {
+		pusher = &push.Sender{Keys: d.Push.Keys, Client: hooks}
+		if d.Push.HTTPClient != nil {
+			pusher.Client = d.Push.HTTPClient
+		}
+	}
 	return &Server{
 		log: d.Log, st: d.Store, version: d.Version, mailer: d.Mailer, webauthn: d.WebAuthn, auth: d.Auth, now: now,
 		secrets: d.Secrets, objects: d.Storage, attach: d.Attachments, sanitize: htmlPolicy(),
 		hub: d.Hub, jobs: jobs, ingress: d.Ingress, sender: sender, snsCerts: newCertCache(fetch), fetch: fetch,
-		chat: chat, limits: newRateLimiter(), webhooks: d.Webhooks, hooks: webhook.NewClient(d.Webhooks.AllowPrivate, d.Webhooks.Resolver),
+		chat: chat, limits: newRateLimiter(), webhooks: d.Webhooks, hooks: hooks, push: pusher,
 	}
 }
 

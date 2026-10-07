@@ -228,6 +228,9 @@ func (s *Server) AddWorkers(workers *river.Workers) {
 	river.AddWorker(workers, &continuityWorker{s: s})
 	river.AddWorker(workers, &webhookFanoutWorker{s: s})
 	river.AddWorker(workers, &webhookDeliveryWorker{s: s})
+	river.AddWorker(workers, &notifyWorker{s: s})
+	river.AddWorker(workers, &pushWorker{s: s})
+	river.AddWorker(workers, &notificationEmailWorker{s: s})
 }
 
 func truncateRunes(v string, n int) string {

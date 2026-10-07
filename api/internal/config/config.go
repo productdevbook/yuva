@@ -3,6 +3,7 @@ package config
 import (
 	"errors"
 	"fmt"
+	"net/mail"
 	"net/url"
 	"os"
 	"strconv"
@@ -37,7 +38,17 @@ type Config struct {
 	ChatEmailDelay time.Duration
 
 	WebhookAllowPrivate bool
+
+	VAPID VAPID
 }
+
+type VAPID struct {
+	PublicKey  string
+	PrivateKey string
+	Subject    string
+}
+
+func (v VAPID) Enabled() bool { return v.PublicKey != "" }
 
 type Storage struct {
 	Driver            string
@@ -98,6 +109,11 @@ func Load(version string) (Config, error) {
 		Attachments:   Attachments{Types: lowerList(env("YUVA_ATTACHMENT_TYPES", defaultAttachmentTypes))},
 		IngressSecret: strings.TrimSpace(os.Getenv("YUVA_INGRESS_SECRET")),
 		SESTopicARNs:  list(env("YUVA_SES_TOPIC_ARNS", "")),
+		VAPID: VAPID{
+			PublicKey:  env("YUVA_VAPID_PUBLIC_KEY", ""),
+			PrivateKey: strings.TrimSpace(os.Getenv("YUVA_VAPID_PRIVATE_KEY")),
+			Subject:    env("YUVA_VAPID_SUBJECT", ""),
+		},
 	}
 	public, err := url.Parse(c.PublicURL)
 	if err != nil || (public.Scheme != "http" && public.Scheme != "https") || public.Host == "" {
@@ -137,10 +153,41 @@ func Load(version string) (Config, error) {
 	if c.ChatEmailDelay, err = time.ParseDuration(env("YUVA_CHAT_EMAIL_DELAY", "5m")); err != nil || c.ChatEmailDelay < time.Second {
 		return c, errors.New("YUVA_CHAT_EMAIL_DELAY must be a duration of at least 1s, such as 5m")
 	}
+	if err := c.loadVAPID(); err != nil {
+		return c, err
+	}
 	if c.SMTP.Enabled() && c.SMTP.From == "" {
 		return c, errors.New("YUVA_SMTP_FROM is required when YUVA_SMTP_HOST is set")
 	}
 	return c, nil
+}
+
+func (c *Config) loadVAPID() error {
+	v := &c.VAPID
+	if (v.PublicKey == "") != (v.PrivateKey == "") {
+		return errors.New("set both YUVA_VAPID_PUBLIC_KEY and YUVA_VAPID_PRIVATE_KEY, or neither (yuva vapid-keys makes a pair)")
+	}
+	if !v.Enabled() {
+		return nil
+	}
+	if v.Subject == "" {
+		switch {
+		case c.SMTP.From != "":
+			addr, err := mail.ParseAddress(c.SMTP.From)
+			if err != nil {
+				return fmt.Errorf("YUVA_SMTP_FROM: %w", err)
+			}
+			v.Subject = "mailto:" + addr.Address
+		case strings.HasPrefix(c.PublicURL, "https://"):
+			v.Subject = c.PublicURL
+		default:
+			return errors.New("YUVA_VAPID_SUBJECT is required (mailto:you@example.com or an https URL)")
+		}
+	}
+	if !strings.HasPrefix(v.Subject, "mailto:") && !strings.HasPrefix(v.Subject, "https://") {
+		return fmt.Errorf("YUVA_VAPID_SUBJECT must start with mailto: or https://, got %q", v.Subject)
+	}
+	return nil
 }
 
 func (c Config) RequireDatabase() error {

@@ -152,6 +152,9 @@ func NewClient(allowPrivate bool, r Resolver) *Client {
 	return c
 }
 
+// Do sends a request through the same address checks, without redirects.
+func (c *Client) Do(req *http.Request) (*http.Response, error) { return c.http.Do(req) }
+
 func (c *Client) dial(ctx context.Context, network, addr string) (net.Conn, error) {
 	host, port, err := net.SplitHostPort(addr)
 	if err != nil {

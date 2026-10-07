@@ -229,6 +229,14 @@ type InboxMember struct {
 	CreatedAt   time.Time
 }
 
+type InboxNotification struct {
+	WorkspaceID uuid.UUID
+	MemberID    uuid.UUID
+	InboxID     uuid.UUID
+	Events      []byte
+	UpdatedAt   time.Time
+}
+
 type Invite struct {
 	ID          uuid.UUID
 	WorkspaceID uuid.UUID
@@ -260,11 +268,13 @@ type LoginCode struct {
 }
 
 type Member struct {
-	ID          uuid.UUID
-	WorkspaceID uuid.UUID
-	PersonID    uuid.UUID
-	Role        string
-	CreatedAt   time.Time
+	ID                     uuid.UUID
+	WorkspaceID            uuid.UUID
+	PersonID               uuid.UUID
+	Role                   string
+	CreatedAt              time.Time
+	NotificationEvents     []byte
+	NotificationEmailDelay *int32
 }
 
 type Message struct {
@@ -312,6 +322,14 @@ type MessageEmail struct {
 	CreatedAt             time.Time
 }
 
+type NotificationEmail struct {
+	WorkspaceID    uuid.UUID
+	MemberID       uuid.UUID
+	ConversationID uuid.UUID
+	SentAt         time.Time
+	Through        time.Time
+}
+
 type Passkey struct {
 	ID           uuid.UUID
 	PersonID     uuid.UUID
@@ -333,12 +351,28 @@ type Person struct {
 	Availability   string
 }
 
+type PushSubscription struct {
+	ID            uuid.UUID
+	PersonID      uuid.UUID
+	SessionID     uuid.UUID
+	Endpoint      string
+	P256dh        string
+	Auth          string
+	UserAgent     string
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	LastSuccessAt *time.Time
+	LastFailureAt *time.Time
+	LastError     *string
+}
+
 type RealtimeConnection struct {
-	ID          uuid.UUID
-	WorkspaceID uuid.UUID
-	MemberID    *uuid.UUID
-	ContactID   *uuid.UUID
-	SeenAt      time.Time
+	ID                    uuid.UUID
+	WorkspaceID           uuid.UUID
+	MemberID              *uuid.UUID
+	ContactID             *uuid.UUID
+	SeenAt                time.Time
+	ViewingConversationID *uuid.UUID
 }
 
 type Session struct {
