@@ -1129,8 +1129,13 @@ type ClientConversation struct {
 	Id            uuid.UUID             `json:"id"`
 	LastMessage   *ClientMessagePreview `json:"last_message,omitempty"`
 	LastMessageAt *time.Time            `json:"last_message_at,omitempty"`
-	Status        ConversationStatus    `json:"status"`
-	Subject       string                `json:"subject"`
+
+	// LastReadByMemberAt `live` inboxes only: members have read every message created at or before this time
+	// (the latest read position of any member, as in the `read` realtime frame). Absent
+	// when no member has read the conversation, and in `async` inboxes.
+	LastReadByMemberAt *time.Time         `json:"last_read_by_member_at,omitempty"`
+	Status             ConversationStatus `json:"status"`
+	Subject            string             `json:"subject"`
 
 	// Unread A message from a member is newer than the contact's read cursor.
 	Unread bool `json:"unread"`
@@ -3764,6 +3769,9 @@ type ServerInterface interface {
 	// DownloadClientAttachment Download an attachment
 	// (GET /client/v1/attachments/{attachmentId})
 	DownloadClientAttachment(w http.ResponseWriter, r *http.Request, attachmentId AttachmentId)
+	// GetClientChannel A chat channel's public settings
+	// (GET /client/v1/channels/{channel_key})
+	GetClientChannel(w http.ResponseWriter, r *http.Request, channelKey string)
 	// SetClientContactEmail Leave an e-mail address for replies
 	// (PUT /client/v1/contact/email)
 	SetClientContactEmail(w http.ResponseWriter, r *http.Request)
@@ -4026,6 +4034,32 @@ func (siw *ServerInterfaceWrapper) DownloadClientAttachment(w http.ResponseWrite
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DownloadClientAttachment(w, r, attachmentId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetClientChannel operation middleware
+func (siw *ServerInterfaceWrapper) GetClientChannel(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "channel_key" -------------
+	var channelKey string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "channel_key", r.PathValue("channel_key"), &channelKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "channel_key", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetClientChannel(w, r, channelKey)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -7465,6 +7499,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/client/v1/session", wrapper.DeleteClientSession)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/session", wrapper.GetClientSession)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/session", wrapper.CreateClientSession)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/channels/{channel_key}", wrapper.GetClientChannel)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/conversations", wrapper.ListClientConversations)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/conversations", wrapper.CreateClientConversation)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/conversations/{conversationId}", wrapper.GetClientConversation)
@@ -7572,6 +7607,72 @@ func (response DownloadClientAttachment404ApplicationProblemPlusJSONResponse) Vi
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetClientChannelRequestObject struct {
+	ChannelKey string `json:"channel_key"`
+}
+
+type GetClientChannelResponseObject interface {
+	VisitGetClientChannelResponse(w http.ResponseWriter) error
+}
+
+type GetClientChannel200JSONResponse ClientInbox
+
+func (response GetClientChannel200JSONResponse) VisitGetClientChannelResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetClientChannel403ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetClientChannel403ApplicationProblemPlusJSONResponse) VisitGetClientChannelResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetClientChannel404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetClientChannel404ApplicationProblemPlusJSONResponse) VisitGetClientChannelResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetClientChannel429ApplicationProblemPlusJSONResponse Problem
+
+func (response GetClientChannel429ApplicationProblemPlusJSONResponse) VisitGetClientChannelResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -12909,6 +13010,9 @@ type StrictServerInterface interface {
 	// DownloadClientAttachment Download an attachment
 	// (GET /client/v1/attachments/{attachmentId})
 	DownloadClientAttachment(ctx context.Context, request DownloadClientAttachmentRequestObject) (DownloadClientAttachmentResponseObject, error)
+	// GetClientChannel A chat channel's public settings
+	// (GET /client/v1/channels/{channel_key})
+	GetClientChannel(ctx context.Context, request GetClientChannelRequestObject) (GetClientChannelResponseObject, error)
 	// SetClientContactEmail Leave an e-mail address for replies
 	// (PUT /client/v1/contact/email)
 	SetClientContactEmail(ctx context.Context, request SetClientContactEmailRequestObject) (SetClientContactEmailResponseObject, error)
@@ -13203,6 +13307,32 @@ func (sh *strictHandler) DownloadClientAttachment(w http.ResponseWriter, r *http
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(DownloadClientAttachmentResponseObject); ok {
 		if err := validResponse.VisitDownloadClientAttachmentResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetClientChannel operation middleware
+func (sh *strictHandler) GetClientChannel(w http.ResponseWriter, r *http.Request, channelKey string) {
+	var request GetClientChannelRequestObject
+
+	request.ChannelKey = channelKey
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetClientChannel(ctx, request.(GetClientChannelRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetClientChannel")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetClientChannelResponseObject); ok {
+		if err := validResponse.VisitGetClientChannelResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

@@ -113,10 +113,18 @@ func clientConversationItems(ctx context.Context, q *store.Queries, workspaceID 
 	for _, id := range unreadIDs {
 		unread[id] = true
 	}
+	reads, err := q.ListMemberReadPositions(ctx, store.ListMemberReadPositionsParams{WorkspaceID: workspaceID, ConversationIds: ids})
+	if err != nil {
+		return nil, err
+	}
+	readAt := map[uuid.UUID]*time.Time{}
+	for _, r := range reads {
+		readAt[r.ConversationID] = &r.ReadAt
+	}
 	out := make([]oas.ClientConversation, len(rows))
 	for i, r := range rows {
 		out[i] = clientConversationBody(r)
-		out[i].LastMessage, out[i].Unread = byConv[r.ID], unread[r.ID]
+		out[i].LastMessage, out[i].Unread, out[i].LastReadByMemberAt = byConv[r.ID], unread[r.ID], readAt[r.ID]
 	}
 	return out, nil
 }

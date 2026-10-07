@@ -59,6 +59,7 @@ var operationAccess = map[string]access{
 	"SetMemberTyping":      accessMember,
 
 	"CreateClientSession":        accessPublic,
+	"GetClientChannel":           accessPublic,
 	"GetClientSession":           accessContact,
 	"DeleteClientSession":        accessContact,
 	"ListClientConversations":    accessContact,

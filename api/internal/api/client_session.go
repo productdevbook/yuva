@@ -69,11 +69,7 @@ func (s *Server) CreateClientSession(ctx context.Context, req oas.CreateClientSe
 	if b.VisitorId != nil {
 		visitor = strings.TrimSpace(*b.VisitorId)
 	}
-	chat := store.ChatChannel{
-		WorkspaceID: ws, ChannelID: ch.ChannelID, PublicKey: ch.PublicKey, AllowedOrigins: ch.AllowedOrigins,
-		AllowAnonymous: ch.AllowAnonymous, AskEmailOffline: ch.AskEmailOffline, Greeting: ch.Greeting,
-		LauncherPosition: ch.LauncherPosition, LauncherColor: ch.LauncherColor,
-	}
+	chat := chatChannelOf(ch)
 	var out oas.ClientSession
 	for attempt := 0; ; attempt++ {
 		out, err = s.startContactSession(ctx, chat, inbox, claims, visitor)
@@ -85,6 +81,43 @@ func (s *Server) CreateClientSession(ctx context.Context, req oas.CreateClientSe
 		return nil, err
 	}
 	return oas.CreateClientSession201JSONResponse(out), nil
+}
+
+func chatChannelOf(ch store.FindChatChannelByKeyRow) store.ChatChannel {
+	return store.ChatChannel{
+		WorkspaceID: ch.WorkspaceID, ChannelID: ch.ChannelID, PublicKey: ch.PublicKey, AllowedOrigins: ch.AllowedOrigins,
+		AllowAnonymous: ch.AllowAnonymous, AskEmailOffline: ch.AskEmailOffline, Greeting: ch.Greeting,
+		LauncherPosition: ch.LauncherPosition, LauncherColor: ch.LauncherColor,
+	}
+}
+
+func (s *Server) GetClientChannel(ctx context.Context, req oas.GetClientChannelRequestObject) (oas.GetClientChannelResponseObject, error) {
+	if err := s.rateLimit(rateCheck{"channel:ip:" + s.clientIP(requestFrom(ctx)), limitChannelPerIP}); err != nil {
+		return nil, err
+	}
+	key := strings.TrimSpace(req.ChannelKey)
+	if key == "" || len(key) > 200 {
+		return nil, errUnknownChannelKey
+	}
+	ch, err := s.st.FindChatChannelByKey(ctx, key)
+	if store.IsNotFound(err) {
+		return nil, errUnknownChannelKey
+	}
+	if err != nil {
+		return nil, err
+	}
+	if !originAllowedFor(originFrom(ctx), ch.AllowedOrigins) {
+		return nil, errOriginRefused
+	}
+	inbox, err := s.st.GetInbox(ctx, store.GetInboxParams{WorkspaceID: ch.WorkspaceID, ID: ch.InboxID})
+	if err != nil {
+		return nil, err
+	}
+	out, err := s.clientInbox(ctx, s.st.Queries, inbox, chatChannelOf(ch))
+	if err != nil {
+		return nil, err
+	}
+	return oas.GetClientChannel200JSONResponse(out), nil
 }
 
 func (s *Server) startContactSession(ctx context.Context, chat store.ChatChannel, inbox store.Inbox, claims *identityClaims, visitor string) (oas.ClientSession, error) {

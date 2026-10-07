@@ -818,6 +818,45 @@ func (q *Queries) ListMemberNames(ctx context.Context, arg ListMemberNamesParams
 	return items, nil
 }
 
+const listMemberReadPositions = `-- name: ListMemberReadPositions :many
+SELECT r.conversation_id, max(r.last_read_at)::timestamptz AS read_at
+FROM conversation_reads r
+JOIN conversations c ON c.workspace_id = r.workspace_id AND c.id = r.conversation_id
+JOIN inboxes i ON i.workspace_id = c.workspace_id AND i.id = c.inbox_id
+WHERE r.workspace_id = $1 AND r.conversation_id = ANY($2::uuid[]) AND i.mode = 'live'
+GROUP BY r.conversation_id
+`
+
+type ListMemberReadPositionsParams struct {
+	WorkspaceID     uuid.UUID
+	ConversationIds []uuid.UUID
+}
+
+type ListMemberReadPositionsRow struct {
+	ConversationID uuid.UUID
+	ReadAt         time.Time
+}
+
+func (q *Queries) ListMemberReadPositions(ctx context.Context, arg ListMemberReadPositionsParams) ([]ListMemberReadPositionsRow, error) {
+	rows, err := q.db.Query(ctx, listMemberReadPositions, arg.WorkspaceID, arg.ConversationIds)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListMemberReadPositionsRow
+	for rows.Next() {
+		var i ListMemberReadPositionsRow
+		if err := rows.Scan(&i.ConversationID, &i.ReadAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listPendingReplies = `-- name: ListPendingReplies :many
 SELECT m.id, m.created_at FROM messages m
 JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id

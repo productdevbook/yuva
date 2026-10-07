@@ -1962,6 +1962,41 @@ paths:
           $ref: "#/components/responses/Problem"
         "403":
           $ref: "#/components/responses/Problem"
+  /client/v1/channels/{channel_key}:
+    get:
+      operationId: getClientChannel
+      summary: A chat channel's public settings
+      description: |
+        The inbox's public settings for a chat channel's public key, without a session: name,
+        branding, mode, business hours, presence or the expected reply time, and the chat
+        settings. Nothing is created, so a widget can show its launcher and greeting before the
+        visitor writes and start a session (`POST /client/v1/session`) only then.
+
+        Browsers must call from one of the channel's allowed origins (`403 origin_not_allowed`).
+        Requests are rate limited per IP address (`429 rate_limited`).
+      tags: [client]
+      security: []
+      parameters:
+        - name: channel_key
+          in: path
+          required: true
+          description: The chat channel's public key.
+          schema:
+            type: string
+            maxLength: 200
+      responses:
+        "200":
+          description: The inbox's public settings.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientInbox"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "429":
+          $ref: "#/components/responses/Problem"
   /client/v1/conversations:
     get:
       operationId: listClientConversations
@@ -4592,6 +4627,13 @@ components:
         unread:
           type: boolean
           description: A message from a member is newer than the contact's read cursor.
+        last_read_by_member_at:
+          type: string
+          format: date-time
+          description: |
+            `live` inboxes only: members have read every message created at or before this time
+            (the latest read position of any member, as in the `read` realtime frame). Absent
+            when no member has read the conversation, and in `async` inboxes.
         created_at:
           type: string
           format: date-time

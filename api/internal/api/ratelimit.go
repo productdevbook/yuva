@@ -15,6 +15,7 @@ type limit struct {
 
 var (
 	limitSessionPerIP      = limit{30, time.Minute}
+	limitChannelPerIP      = limit{120, time.Minute}
 	limitSessionPerChannel = limit{600, time.Minute}
 	limitWritePerIP        = limit{60, time.Minute}
 	limitWritePerChannel   = limit{1200, time.Minute}

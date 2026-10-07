@@ -117,6 +117,14 @@ WHERE c.workspace_id = @workspace_id AND c.id = ANY(@conversation_ids::uuid[])
         AND m.kind = 'message' AND m.direction = 'out'
         AND (r.last_read_at IS NULL OR (m.created_at, m.id) > (r.last_read_at, r.last_read_message_id)));
 
+-- name: ListMemberReadPositions :many
+SELECT r.conversation_id, max(r.last_read_at)::timestamptz AS read_at
+FROM conversation_reads r
+JOIN conversations c ON c.workspace_id = r.workspace_id AND c.id = r.conversation_id
+JOIN inboxes i ON i.workspace_id = c.workspace_id AND i.id = c.inbox_id
+WHERE r.workspace_id = @workspace_id AND r.conversation_id = ANY(@conversation_ids::uuid[]) AND i.mode = 'live'
+GROUP BY r.conversation_id;
+
 -- name: ListPublicMessages :many
 SELECT id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
        author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at
