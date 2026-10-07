@@ -321,7 +321,7 @@ SELECT c.contact_id FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
 WHERE e.workspace_id = $1 AND c.inbox_id = $2 AND e.direction = 'out'
   AND e.header_message_id = ANY($3::text[]) AND $4::text = ANY(e.to_addresses)
-ORDER BY e.created_at DESC
+ORDER BY e.created_at DESC, e.message_id DESC
 LIMIT 1
 `
 

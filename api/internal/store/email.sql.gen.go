@@ -60,7 +60,7 @@ SELECT e.from_address FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
 JOIN contact_emails ce ON ce.workspace_id = e.workspace_id AND ce.contact_id = c.contact_id AND ce.email = e.from_address
 WHERE e.workspace_id = $1 AND e.conversation_id = $2 AND e.direction = 'in'
-ORDER BY e.created_at DESC
+ORDER BY e.created_at DESC, e.message_id DESC
 LIMIT 1
 `
 
@@ -280,7 +280,7 @@ const findConversationByHeaders = `-- name: FindConversationByHeaders :one
 SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
 WHERE e.workspace_id = $1 AND c.inbox_id = $2 AND e.header_message_id = ANY($3::text[])
-ORDER BY (c.contact_id = $4) DESC, e.created_at DESC
+ORDER BY (c.contact_id = $4) DESC, e.created_at DESC, e.message_id DESC
 LIMIT 1
 `
 
@@ -549,7 +549,7 @@ func (q *Queries) IsEmailSuppressed(ctx context.Context, arg IsEmailSuppressedPa
 const latestThreadEmail = `-- name: LatestThreadEmail :one
 SELECT header_message_id, in_reply_to, references_ids, from_address, direction FROM message_emails
 WHERE workspace_id = $1 AND conversation_id = $2 AND message_id <> $3
-ORDER BY created_at DESC
+ORDER BY created_at DESC, message_id DESC
 LIMIT 1
 `
 

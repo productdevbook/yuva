@@ -52,7 +52,7 @@ WHERE workspace_id = $1 AND channel_id = $2 AND direction = 'in' AND header_mess
 SELECT c.* FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
 WHERE e.workspace_id = @workspace_id AND c.inbox_id = @inbox_id AND e.header_message_id = ANY(@ids::text[])
-ORDER BY (c.contact_id = @contact_id) DESC, e.created_at DESC
+ORDER BY (c.contact_id = @contact_id) DESC, e.created_at DESC, e.message_id DESC
 LIMIT 1;
 
 -- name: FindConversationByEmailToken :one
@@ -68,7 +68,7 @@ RETURNING email_token::text;
 -- name: LatestThreadEmail :one
 SELECT header_message_id, in_reply_to, references_ids, from_address, direction FROM message_emails
 WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id AND message_id <> @exclude_message_id
-ORDER BY created_at DESC
+ORDER BY created_at DESC, message_id DESC
 LIMIT 1;
 
 -- Replies go only to an address of the conversation's contact, never to another sender in the thread.
@@ -77,7 +77,7 @@ SELECT e.from_address FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
 JOIN contact_emails ce ON ce.workspace_id = e.workspace_id AND ce.contact_id = c.contact_id AND ce.email = e.from_address
 WHERE e.workspace_id = $1 AND e.conversation_id = $2 AND e.direction = 'in'
-ORDER BY e.created_at DESC
+ORDER BY e.created_at DESC, e.message_id DESC
 LIMIT 1;
 
 -- name: FindOutboundEmailByHeader :one
