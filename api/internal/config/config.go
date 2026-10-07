@@ -41,6 +41,7 @@ type Config struct {
 	ChatEmailDelay time.Duration
 
 	WebhookAllowPrivate bool
+	SMTPAllowPrivate    bool
 
 	VAPID VAPID
 }
@@ -159,6 +160,9 @@ func Load(version string) (Config, error) {
 		c.TrustedProxies = append(c.TrustedProxies, p.Masked())
 	}
 	if c.WebhookAllowPrivate, err = boolEnv("YUVA_WEBHOOK_ALLOW_PRIVATE", false); err != nil {
+		return c, err
+	}
+	if c.SMTPAllowPrivate, err = boolEnv("YUVA_SMTP_ALLOW_PRIVATE", false); err != nil {
 		return c, err
 	}
 	if c.Attachments.MaxBytes, err = strconv.ParseInt(env("YUVA_ATTACHMENT_MAX_BYTES", "26214400"), 10, 64); err != nil || c.Attachments.MaxBytes < 1 {

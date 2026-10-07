@@ -4,10 +4,13 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
+	"fmt"
 	"net"
+	"net/netip"
 	"net/smtp"
 	"net/textproto"
-	"strconv"
+
+	"github.com/productdevbook/yuva/api/internal/webhook"
 )
 
 type SMTPConfig struct {
@@ -41,19 +44,58 @@ func classify(err error) error {
 	return err
 }
 
-type SMTPSender struct{}
-
-func (SMTPSender) Send(ctx context.Context, cfg SMTPConfig, from string, to []string, msg []byte) error {
-	return classify(send(ctx, cfg, from, to, msg))
+// SMTPSender sends through a channel's SMTP server. It resolves the host once and refuses
+// private, loopback and other non-public addresses unless AllowPrivate, and link-local and cloud
+// metadata addresses always, so a channel cannot be used to probe the server's own network.
+type SMTPSender struct {
+	AllowPrivate bool
+	Resolver     webhook.Resolver
 }
 
-func send(ctx context.Context, cfg SMTPConfig, from string, to []string, msg []byte) error {
-	addr := net.JoinHostPort(cfg.Host, strconv.Itoa(cfg.Port))
-	var d net.Dialer
-	conn, err := d.DialContext(ctx, "tcp", addr)
+func (s SMTPSender) Send(ctx context.Context, cfg SMTPConfig, from string, to []string, msg []byte) error {
+	conn, err := s.dial(ctx, cfg)
 	if err != nil {
 		return err
 	}
+	return classify(send(ctx, conn, cfg, from, to, msg))
+}
+
+func (s SMTPSender) dial(ctx context.Context, cfg SMTPConfig) (net.Conn, error) {
+	var ips []netip.Addr
+	if ip, err := netip.ParseAddr(cfg.Host); err == nil {
+		ips = []netip.Addr{ip}
+	} else {
+		r := s.Resolver
+		if r == nil {
+			r = net.DefaultResolver
+		}
+		if ips, err = r.LookupNetIP(ctx, "ip", cfg.Host); err != nil {
+			return nil, err
+		}
+	}
+	if len(ips) == 0 {
+		return nil, fmt.Errorf("%s has no address", cfg.Host)
+	}
+	for _, ip := range ips {
+		if webhook.NeverAllowed(ip) || (!s.AllowPrivate && webhook.Blocked(ip)) {
+			return nil, &PermanentError{Err: fmt.Errorf("%w %s for %s", webhook.ErrRefusedAddress, ip.Unmap(), cfg.Host)}
+		}
+	}
+	var (
+		d    net.Dialer
+		last error
+	)
+	for _, ip := range ips {
+		conn, err := d.DialContext(ctx, "tcp", netip.AddrPortFrom(ip.Unmap(), uint16(cfg.Port)).String())
+		if err == nil {
+			return conn, nil
+		}
+		last = err
+	}
+	return nil, last
+}
+
+func send(ctx context.Context, conn net.Conn, cfg SMTPConfig, from string, to []string, msg []byte) error {
 	if deadline, ok := ctx.Deadline(); ok {
 		_ = conn.SetDeadline(deadline)
 	}

@@ -231,7 +231,10 @@ Inbound:
    blocked.
 
 Outbound: SMTP per channel (works with SES, Postmark, any relay); the password is stored
-encrypted under the master key and never returned, and it is only sent over TLS. A member's reply
+encrypted under the master key and never returned, and it is only sent over TLS. The SMTP host is
+resolved once per send and refused when it resolves to a loopback, private or other non-public
+address (unless `YUVA_SMTP_ALLOW_PRIVATE`) or to a link-local or cloud metadata address (always),
+like webhooks, so a channel cannot probe the server's network. A member's reply
 in a conversation that started on an e-mail channel goes out through a River job: `From` is the
 channel address (or its per-channel sending address) with its display name, `Reply-To` the channel
 address, `To` the address the conversation's contact last wrote from among the contact's own

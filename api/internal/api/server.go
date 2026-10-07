@@ -78,7 +78,10 @@ type Deps struct {
 
 	Ingress     IngressSettings
 	EmailSender email.Sender
-	HTTPClient  *http.Client
+	// SMTPAllowPrivate lets e-mail channels use SMTP servers on private addresses (Mailpit in
+	// development); used only when EmailSender is nil.
+	SMTPAllowPrivate bool
+	HTTPClient       *http.Client
 
 	Chat ChatSettings
 
@@ -134,7 +137,7 @@ func New(d Deps) *Server {
 	}
 	sender := d.EmailSender
 	if sender == nil {
-		sender = email.SMTPSender{}
+		sender = email.SMTPSender{AllowPrivate: d.SMTPAllowPrivate, Resolver: d.Webhooks.Resolver}
 	}
 	fetch := d.HTTPClient
 	if fetch == nil {

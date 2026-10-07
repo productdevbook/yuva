@@ -31,6 +31,7 @@ services:
       YUVA_INGRESS_SECRET: ${YUVA_INGRESS_SECRET:-yuva-dev-only-ingress-secret}
       YUVA_CHAT_EMAIL_DELAY: ${YUVA_CHAT_EMAIL_DELAY:-5m}
       YUVA_WEBHOOK_ALLOW_PRIVATE: ${YUVA_WEBHOOK_ALLOW_PRIVATE:-true}
+      YUVA_SMTP_ALLOW_PRIVATE: ${YUVA_SMTP_ALLOW_PRIVATE:-true}
       # A fixed Web Push key pair for development only; make your own with `yuva vapid-keys`.
       YUVA_VAPID_PUBLIC_KEY: ${YUVA_VAPID_PUBLIC_KEY:-BPYSppApTkGFOkzs7iZDdPoXx6ATIRdrtgl9S_b9nPsiNMfD006LUtc3Qtm0UPcwX6mmHHA3Ur29eY97BDnUesw}
       YUVA_VAPID_PRIVATE_KEY: ${YUVA_VAPID_PRIVATE_KEY:-151tODJ-wlzzEOSc3wpPlKPbCSxI8fEO8P6IKs-EPeg}

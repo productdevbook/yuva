@@ -48,6 +48,7 @@ send replies to contacts through their own SMTP account (see [E-mail](email.md#o
 | `YUVA_SMTP_USERNAME` | unset | SMTP user name. |
 | `YUVA_SMTP_PASSWORD` | unset | SMTP password. |
 | `YUVA_SMTP_FROM` | unset | Sender, e.g. `Yuva <yuva@example.com>`. Required when `YUVA_SMTP_HOST` is set. |
+| `YUVA_SMTP_ALLOW_PRIVATE` | `false` | Lets e-mail channels send through SMTP servers on loopback and private addresses, such as Mailpit in development (`deploy/compose.yaml` sets it). Without it, a channel whose SMTP host resolves to such an address fails to send. Link-local and cloud metadata addresses stay refused. Does not affect `YUVA_SMTP_HOST`. |
 
 ## Attachments and storage
 
