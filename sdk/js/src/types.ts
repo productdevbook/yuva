@@ -1,3 +1,5 @@
+import type { components } from "./schema.gen";
+
 export type Layout = "launcher" | "embedded";
 
 export type IdentityTokenSource = () => string | null | undefined | Promise<string | null | undefined>;
@@ -5,6 +7,10 @@ export type IdentityTokenSource = () => string | null | undefined | Promise<stri
 export interface LauncherStyle {
   position: "right" | "left";
   color?: string;
+}
+
+export function launcherOf(inbox: components["schemas"]["ClientInbox"]): LauncherStyle {
+  return { position: inbox.chat.launcher_position, color: inbox.chat.launcher_color ?? inbox.branding.color };
 }
 
 export interface ChatConfig {

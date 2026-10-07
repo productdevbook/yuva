@@ -1,8 +1,11 @@
 import type { Messages } from "@lingui/core";
 import { msg } from "@lingui/core/macro";
 import { catalogFor, directionOf, resolveLocale, translatePlain } from "./i18n";
+import type { components } from "./schema.gen";
 import {
+  launcherOf,
   readStored,
+  writeStored,
   type ChatConfig,
   type IdentityTokenSource,
   type Layout,
@@ -204,13 +207,25 @@ export class YuvaChatElement extends HTMLElement {
     if (this.layout === "embedded" || this.hasAttribute("open") || !channel) return;
     const stored = readStored(channel);
     if (stored.launcher) this.#applyLauncher(stored.launcher);
-    if (stored.session) {
-      const preload = () => {
-        if (this.isConnected) void this.#ensureController();
-      };
-      if ("requestIdleCallback" in window) requestIdleCallback(preload, { timeout: 3000 });
-      else setTimeout(preload, 1000);
-    }
+    const idle = () => {
+      if (!this.isConnected || this.#controller || this.channel !== channel) return;
+      if (stored.session) void this.#ensureController();
+      else this.#styleLauncher(channel);
+    };
+    if ("requestIdleCallback" in window) requestIdleCallback(idle, { timeout: 3000 });
+    else setTimeout(idle, 1000);
+  }
+
+  #styleLauncher(channel: string): void {
+    fetch(`${this.server}/client/v1/channels/${encodeURIComponent(channel)}`, { credentials: "omit" })
+      .then((response) => (response.ok ? (response.json() as Promise<components["schemas"]["ClientInbox"]>) : null))
+      .then((inbox) => {
+        if (!inbox || this.channel !== channel || this.#controller) return;
+        const launcher = launcherOf(inbox);
+        this.#applyLauncher(launcher);
+        writeStored(channel, { ...readStored(channel), launcher });
+      })
+      .catch(() => undefined);
   }
 
   disconnectedCallback(): void {

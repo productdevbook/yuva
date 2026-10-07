@@ -189,6 +189,9 @@ contact, replies to them are refused until a member clears them.
 loaded by one script tag. Two layouts: a floating launcher for websites, and `embedded` for an
 inline thread inside a product's own panel.
 
+- The server hosts the widget scripts itself at `/yuva.js` and `/yuva-chat.js`.
+- Public channel settings come from `GET /client/v1/channels/{key}` without creating a contact.
+
 - A `chat` channel has a public key (not a secret; it is embedded in pages and can be rotated), the
   exact origins whose pages may use it, whether anonymous visitors may chat, whether to ask for an
   e-mail address when nobody is available, a greeting and launcher overrides. `/client/v1` answers

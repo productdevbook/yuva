@@ -1096,6 +1096,32 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/client/v1/channels/{channel_key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A chat channel's public settings
+         * @description The inbox's public settings for a chat channel's public key, without a session: name,
+         *     branding, mode, business hours, presence or the expected reply time, and the chat
+         *     settings. Nothing is created, so a widget can show its launcher and greeting before the
+         *     visitor writes and start a session (`POST /client/v1/session`) only then.
+         *
+         *     Browsers must call from one of the channel's allowed origins (`403 origin_not_allowed`).
+         *     Requests are rate limited per IP address (`429 rate_limited`).
+         */
+        get: operations["getClientChannel"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/client/v1/conversations": {
         parameters: {
             query?: never;
@@ -2577,6 +2603,13 @@ export interface components {
             last_message_at?: string;
             /** @description A message from a member is newer than the contact's read cursor. */
             unread: boolean;
+            /**
+             * Format: date-time
+             * @description `live` inboxes only: members have read every message created at or before this time
+             *     (the latest read position of any member, as in the `read` realtime frame). Absent
+             *     when no member has read the conversation, and in `async` inboxes.
+             */
+            last_read_by_member_at?: string;
             /** Format: date-time */
             created_at: string;
         };
@@ -4864,6 +4897,32 @@ export interface operations {
             };
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
+        };
+    };
+    getClientChannel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The chat channel's public key. */
+                channel_key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The inbox's public settings. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientInbox"];
+                };
+            };
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
         };
     };
     listClientConversations: {

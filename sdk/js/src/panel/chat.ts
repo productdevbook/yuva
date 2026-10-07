@@ -2,7 +2,7 @@ import { setupI18n, type I18n, type MessageDescriptor, type Messages } from "@li
 import { msg } from "@lingui/core/macro";
 import { messages as en } from "../locales/en/panel";
 import { messages as tr } from "../locales/tr/panel";
-import { readStored, writeStored, type PanelController, type PanelHost } from "../types";
+import { launcherOf, readStored, writeStored, type PanelController, type PanelHost } from "../types";
 import {
   ApiError,
   call,
@@ -42,7 +42,6 @@ interface Thread {
   cursor?: string;
   complete: boolean;
   loading: boolean;
-  readAt?: string;
 }
 
 const icons = {
@@ -102,6 +101,7 @@ export class Chat implements PanelController {
   #phase: "loading" | "ready" | "error" = "loading";
   #error = "";
   #starting: Promise<void> | null = null;
+  #beginning: Promise<void> | null = null;
   #conversations = new Map<string, ClientConversation>();
   #conversationCursor: string | undefined;
   #threads = new Map<string, Thread>();
@@ -197,7 +197,7 @@ export class Chat implements PanelController {
       void this.#start();
       return;
     }
-    if (this.#phase === "ready") void this.#refreshSession();
+    if (this.#phase === "ready") void (this.#token ? this.#refreshSession() : this.#preview().then(() => this.#render()).catch(() => undefined));
     this.#render();
     this.#scrollToEnd();
     this.#markRead();
@@ -239,6 +239,7 @@ export class Chat implements PanelController {
     this.#realtime?.stop();
     this.#realtime = null;
     this.#starting = null;
+    this.#beginning = null;
     this.#token = null;
     this.#inbox = null;
     this.#contact = null;
@@ -270,9 +271,13 @@ export class Chat implements PanelController {
     this.#starting ??= (async () => {
       this.#phase = "loading";
       this.#render();
-      await this.#session(false);
-      await this.#loadConversations();
-      this.#connect();
+      const { channel } = this.#host.config();
+      if (!channel) throw new ApiError(0, "not_configured");
+      if ((await this.#host.identityToken()) || readStored(channel).session) await this.#begin();
+      else {
+        await this.#preview();
+        if (!this.#inbox?.chat.allow_anonymous) throw new ApiError(403, "anonymous_not_allowed");
+      }
       this.#phase = "ready";
       if (!this.#view) {
         const list = this.#sorted();
@@ -289,6 +294,28 @@ export class Chat implements PanelController {
       this.#render();
     });
     return this.#starting;
+  }
+
+  async #preview(): Promise<void> {
+    const { channel, server } = this.#host.config();
+    if (!channel) throw new ApiError(0, "not_configured");
+    const inbox = await call<ClientInbox>(server, `/client/v1/channels/${encodeURIComponent(channel)}`);
+    if (this.#token) return;
+    this.#inbox = inbox;
+    const launcher = launcherOf(inbox);
+    this.#host.setLauncher(launcher);
+    writeStored(channel, { ...readStored(channel), launcher });
+  }
+
+  #begin(): Promise<void> {
+    this.#beginning ??= (async () => {
+      await this.#session(false);
+      await this.#loadConversations();
+      this.#connect();
+    })().finally(() => {
+      this.#beginning = null;
+    });
+    return this.#beginning;
   }
 
   async #session(fresh: boolean): Promise<void> {
@@ -319,7 +346,7 @@ export class Chat implements PanelController {
     this.#token = token;
     this.#inbox = info.inbox;
     this.#contact = info.contact;
-    const launcher = { position: info.inbox.chat.launcher_position, color: info.inbox.chat.launcher_color ?? info.inbox.branding.color };
+    const launcher = launcherOf(info.inbox);
     this.#host.setLauncher(launcher);
     if (!channel) return;
     const stored = readStored(channel);
@@ -349,6 +376,7 @@ export class Chat implements PanelController {
 
   async #authed<T>(path: string, request: Request = {}, retry = true): Promise<T> {
     const { server } = this.#host.config();
+    if (!this.#token) await this.#begin();
     try {
       return await call<T>(server, path, { ...request, token: this.#token });
     } catch (error) {
@@ -447,8 +475,11 @@ export class Chat implements PanelController {
         this.#upsertMessage(message.data, message.type === "message.created");
         break;
       case "read": {
-        const thread = this.#threads.get(message.data.conversation_id);
-        if (thread && (!thread.readAt || time(message.data.read_at) > time(thread.readAt))) thread.readAt = message.data.read_at;
+        const conversation = this.#conversations.get(message.data.conversation_id);
+        const previous = conversation?.last_read_by_member_at;
+        if (conversation && (!previous || time(message.data.read_at) > time(previous))) {
+          this.#conversations.set(conversation.id, { ...conversation, last_read_by_member_at: message.data.read_at });
+        }
         break;
       }
       case "typing": {
@@ -905,7 +936,8 @@ export class Chat implements PanelController {
       if (ends) {
         let meta = this.#formatTime(message.created_at);
         if (mine && i === messages.length - 1 && pending.length === 0) {
-          const seen = thread?.readAt && time(thread.readAt) >= time(message.created_at);
+          const readAt = id ? this.#conversations.get(id)?.last_read_by_member_at : undefined;
+          const seen = readAt && time(readAt) >= time(message.created_at);
           meta += ` · ${seen ? this.#t(msg`Seen`) : this.#t(msg`Sent`)}`;
         }
         const line = el("div", "meta", meta);
