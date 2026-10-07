@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Yuva widget example</title>
+    <style>
+      :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+      body { margin: 0; padding: 24px 16px; background: Canvas; color: CanvasText; }
+      main { max-width: 720px; margin: 0 auto; }
+      nav { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-block: 16px; }
+      .embedded { block-size: 480px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Yuva widget</h1>
+      <p>Query parameters: <code>layout</code> (launcher, embedded), <code>locale</code>, <code>dir</code>, <code>open</code>.</p>
+      <nav>
+        <a href="?layout=launcher&amp;locale=en">launcher en</a>
+        <a href="?layout=launcher&amp;locale=tr&amp;open=1">launcher tr, open</a>
+        <a href="?layout=embedded&amp;locale=en">embedded en</a>
+        <a href="?layout=embedded&amp;locale=tr">embedded tr</a>
+        <a href="?layout=launcher&amp;locale=en&amp;dir=rtl&amp;open=1">launcher rtl</a>
+      </nav>
+      <div id="slot"></div>
+    </main>
+    <script src="../dist/yuva.js"></script>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const chat = document.createElement("yuva-chat");
+      chat.setAttribute("inbox", "inb_example");
+      chat.setAttribute("layout", params.get("layout") ?? "launcher");
+      if (params.get("locale")) chat.setAttribute("locale", params.get("locale"));
+      if (params.get("dir")) chat.setAttribute("dir", params.get("dir"));
+      const slot = document.getElementById("slot");
+      if (chat.getAttribute("layout") === "embedded") slot.className = "embedded";
+      slot.append(chat);
+      if (params.get("open")) chat.open();
+    </script>
+  </body>
+</html>
