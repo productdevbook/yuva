@@ -21,17 +21,17 @@ single host with Docker Compose behind a TLS reverse proxy.
 
 ## Docker image
 
-The image is built from [`deploy/Dockerfile`](../deploy/Dockerfile) at the root of the repository.
-It contains the server, the panel and the widget scripts, runs as a non-root user, and exposes
+Each release publishes `ghcr.io/productdevbook/yuva:<version>` for `linux/amd64` and
+`linux/arm64`, built from [`deploy/Dockerfile`](../deploy/Dockerfile). It contains the server, the panel and the widget scripts, runs as a non-root user, and exposes
 `8080` (HTTP) and `9090` (metrics). Its entrypoint is the `yuva` binary, so every
 [command](operations.md#operator-commands) runs in the same image.
 
 ```sh
-git clone https://github.com/productdevbook/yuva.git
-cd yuva
-git checkout v0.0.1
-docker build -f deploy/Dockerfile --build-arg VERSION=0.0.1 -t yuva:0.0.1 .
+docker pull ghcr.io/productdevbook/yuva:0.0.1
 ```
+
+To build it yourself instead: check out the release tag and run
+`docker build -f deploy/Dockerfile --build-arg VERSION=0.0.1 -t ghcr.io/productdevbook/yuva:0.0.1 .`
 
 `deploy/compose.yaml` in the repository is the development setup (a fixed master key, Mailpit,
 private webhooks allowed). Do not run it in production; use the file below.
@@ -62,7 +62,7 @@ services:
     restart: unless-stopped
 
   yuva:
-    image: yuva:0.0.1
+    image: ghcr.io/productdevbook/yuva:0.0.1
     env_file: .env
     environment:
       YUVA_DATABASE_URL: postgres://yuva:${POSTGRES_PASSWORD}@db:5432/yuva?sslmode=disable
@@ -101,7 +101,7 @@ Fill in the generated values (`openssl rand …` prints them), add a Web Push ke
 [VAPID keys](#vapid-keys)), and start:
 
 ```sh
-docker run --rm yuva:0.0.1 vapid-keys >> .env
+docker run --rm ghcr.io/productdevbook/yuva:0.0.1 vapid-keys >> .env
 docker compose up -d
 curl -s http://127.0.0.1:8080/readyz     # {"status":"ok"}
 ```
@@ -202,7 +202,7 @@ Members get notifications on their phones and desktops by installing the panel a
 turning on Web Push. That needs a VAPID key pair:
 
 ```sh
-docker run --rm yuva:0.0.1 vapid-keys
+docker run --rm ghcr.io/productdevbook/yuva:0.0.1 vapid-keys
 # YUVA_VAPID_PUBLIC_KEY=…
 # YUVA_VAPID_PRIVATE_KEY=…
 ```

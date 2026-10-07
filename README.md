@@ -33,8 +33,7 @@ Website: https://useyuva.com
 ## Quick start
 
 ```sh
-git clone https://github.com/productdevbook/yuva.git && cd yuva
-docker build -f deploy/Dockerfile --build-arg VERSION=0.0.1 -t yuva:0.0.1 .
+docker pull ghcr.io/productdevbook/yuva:0.0.1
 ```
 
 Then follow [docs/install.md](docs/install.md): a Compose file with Postgres, a `.env` with your
