@@ -69,7 +69,7 @@ Accept: a new conversation in a `live` inbox notifies a member's phone within se
 
 ## M7 — First internal rollout
 
-- Our own instance; Minare's feedback moved from e-mail to Yuva; e-mail channels for the products
+- Our own instance; an existing in-app feedback form moved from e-mail to Yuva; e-mail channels for the products
   that already receive support mail.
 
 Accept: one week of real support handled only in Yuva.

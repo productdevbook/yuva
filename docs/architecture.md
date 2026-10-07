@@ -25,7 +25,7 @@ Not goals: a CRM, a marketing e-mail tool, a public knowledge base, social-media
 |---|---|
 | Workspace | The tenant. A self-hosted install usually has one. Owns everything below. |
 | Member | A person who answers. Role `owner`, `admin` or `agent`; access is granted per inbox. |
-| Inbox | One product or brand, e.g. "Durma". Branding, languages, business hours, mode (`live` or `async`), expected reply time, identity secret, webhooks. |
+| Inbox | One product or brand. Branding, languages, business hours, mode (`live` or `async`), expected reply time, identity secret, webhooks. |
 | Channel | How messages reach an inbox: `email`, `chat` (web widget), `app` (mobile SDKs), `api` (server-to-server, e.g. a feedback form). An inbox has any number of channels. |
 | Contact | The person writing in. Known by an external user id from the host app, one or more e-mail addresses, or an anonymous visitor id. |
 | Conversation | A thread between a contact and an inbox. Status `open`, `pending`, `snoozed`, `closed`; assignee; labels; priority; the channel it started on. |
