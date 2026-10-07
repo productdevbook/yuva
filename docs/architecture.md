@@ -354,6 +354,10 @@ included) are refused even then, when the endpoint is saved and on every attempt
 ### Panel (`web/`)
 
 React, Vite, shadcn, TanStack Query, Lingui; built to static files and embedded in the binary.
+The server sends the panel with `X-Frame-Options: DENY`, `Referrer-Policy: same-origin` and a CSP
+that allows only its own scripts, connections and workers, no framing (`frame-ancestors 'none'`) and
+no plugins; inline styles and any http(s) image stay allowed for the sandboxed e-mail frame, which
+inherits the policy. Every response carries `X-Content-Type-Options: nosniff`.
 
 - Sidebar: all, mine, unassigned, per inbox, per label. Conversation list with filters and
   full-text search (Postgres FTS).

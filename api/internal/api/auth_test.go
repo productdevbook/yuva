@@ -629,3 +629,24 @@ func TestCookieWritesNeedPanelOrigin(t *testing.T) {
 		t.Fatalf("API key request refused: %d", got)
 	}
 }
+
+func TestSecurityHeaders(t *testing.T) {
+	h := newHarness(t)
+	res, err := http.Get(h.url + "/settings")
+	if err != nil {
+		t.Fatal(err)
+	}
+	res.Body.Close()
+	csp := res.Header.Get("Content-Security-Policy")
+	for _, want := range []string{"frame-ancestors 'none'", "object-src 'none'", "script-src 'self'"} {
+		if !strings.Contains(csp, want) {
+			t.Errorf("panel CSP %q lacks %q", csp, want)
+		}
+	}
+	if res.Header.Get("X-Frame-Options") != "DENY" || res.Header.Get("Referrer-Policy") != "same-origin" {
+		t.Errorf("panel headers: %v", res.Header)
+	}
+	if r := h.client().do("GET", "/v1/me", nil); r.header.Get("X-Content-Type-Options") != "nosniff" {
+		t.Errorf("API headers: %v", r.header)
+	}
+}

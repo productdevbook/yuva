@@ -195,7 +195,14 @@ func (s *Server) Handler() http.Handler {
 		}
 		panel.ServeHTTP(w, r)
 	})
-	return s.recoverer(s.logRequests(s.clientCORS(s.guardCookieWrites(s.limitBody(mux)))))
+	return s.recoverer(s.logRequests(noSniff(s.clientCORS(s.guardCookieWrites(s.limitBody(mux))))))
+}
+
+func noSniff(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		next.ServeHTTP(w, r)
+	})
 }
 
 func isAPIPath(p string) bool {
