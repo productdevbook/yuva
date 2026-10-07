@@ -66,11 +66,32 @@ self.addEventListener("notificationclick", (event) => {
       const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true })
       const panel = windows.find((c) => c.focused) ?? windows[0]
       if (panel) {
-        await panel.focus()
         panel.postMessage({ type: "navigate", url: target.pathname + target.search + target.hash })
+        await panel.focus().catch(() => {})
         return
       }
       await self.clients.openWindow(target.href)
+    })(),
+  )
+})
+
+self.addEventListener("pushsubscriptionchange", (event) => {
+  event.waitUntil(
+    (async () => {
+      let sub = event.newSubscription
+      if (!sub) {
+        const res = await fetch("/v1/push/vapid-public-key", { credentials: "same-origin" })
+        if (!res.ok) return
+        const { public_key: key } = await res.json()
+        sub = await self.registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: key })
+      }
+      const json = sub.toJSON()
+      await fetch("/v1/me/push-subscriptions", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ endpoint: sub.endpoint, keys: json.keys }),
+      })
     })(),
   )
 })

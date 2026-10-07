@@ -8,13 +8,14 @@ import "./index.css"
 import { Gate } from "@/components/AppShell"
 import { SignInPage } from "@/components/auth/SignInPage"
 import { ServiceWorkerBridge } from "@/components/common/ServiceWorkerBridge"
-import { InboxPage } from "@/components/inbox/InboxPage"
+import { InboxPage, OpenConversation } from "@/components/inbox/InboxPage"
 import { ApiKeysSettings } from "@/components/settings/ApiKeysSettings"
 import { CannedRepliesSettings } from "@/components/settings/CannedRepliesSettings"
 import { InboxSettings } from "@/components/settings/InboxSettings"
 import { InboxesSettings } from "@/components/settings/InboxesSettings"
 import { LabelsSettings } from "@/components/settings/LabelsSettings"
 import { MembersSettings } from "@/components/settings/MembersSettings"
+import { NotificationsSettings } from "@/components/settings/NotificationsSettings"
 import { ProfileSettings } from "@/components/settings/ProfileSettings"
 import { SettingsLayout } from "@/components/settings/SettingsLayout"
 import { WebhookSettings, WebhooksSettings } from "@/components/settings/WebhooksSettings"
@@ -52,6 +53,7 @@ createRoot(document.getElementById("root")!).render(
                 <Route path="settings" element={<SettingsLayout />}>
                   <Route index element={<Navigate to="profile" replace />} />
                   <Route path="profile" element={<ProfileSettings />} />
+                  <Route path="notifications" element={<NotificationsSettings />} />
                   <Route path="members" element={<MembersSettings />} />
                   <Route path="inboxes" element={<InboxesSettings />} />
                   <Route path="inboxes/:inboxId" element={<InboxSettings />} />
@@ -61,6 +63,7 @@ createRoot(document.getElementById("root")!).render(
                   <Route path="webhooks" element={<WebhooksSettings />} />
                   <Route path="webhooks/:webhookId" element={<WebhookSettings />} />
                 </Route>
+                <Route path="conversations/:conversationId" element={<OpenConversation />} />
                 <Route path="inbox/:inboxId/:conversationId?" element={<InboxPage />} />
                 <Route path="label/:labelId/:conversationId?" element={<InboxPage />} />
                 <Route path="feedback" element={<Navigate to="/feedback/all" replace />} />

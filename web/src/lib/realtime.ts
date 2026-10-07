@@ -11,6 +11,31 @@ export type RealtimeStatus = "connecting" | "live" | "offline"
 let status: { ws: string | null; value: RealtimeStatus } = { ws: null, value: "offline" }
 const listeners = new Set<() => void>()
 let retryNow: (() => void) | null = null
+let viewing: string | null = null
+let viewingSocket: WebSocket | null = null
+let viewingSent: string | null = null
+
+function reportViewing() {
+  const s = viewingSocket
+  if (!s || s.readyState !== WebSocket.OPEN) return
+  const id = document.visibilityState === "visible" ? viewing : null
+  if (id === viewingSent) return
+  viewingSent = id
+  s.send(JSON.stringify({ type: "viewing", conversation_id: id }))
+}
+
+export function useViewing(conversationId: string | undefined) {
+  useEffect(() => {
+    const id = conversationId ?? null
+    viewing = id
+    reportViewing()
+    return () => {
+      if (viewing !== id) return
+      viewing = null
+      queueMicrotask(reportViewing)
+    }
+  }, [conversationId])
+}
 
 export function reconnectNow() {
   retryNow?.()
@@ -66,6 +91,9 @@ export function useRealtime(ws: string, memberId: string) {
           if (attempt > 0) void qc.refetchQueries({ predicate: (q) => q.state.status === "error", type: "active" })
           attempt = 0
           setStatus(ws, "live")
+          viewingSocket = s
+          viewingSent = null
+          reportViewing()
           return
         }
         if (msg.type === "resync_required") {
@@ -83,6 +111,7 @@ export function useRealtime(ws: string, memberId: string) {
         applyEvent(qc, ctx, { type: msg.type, data: msg.data } as LiveEvent)
       }
       s.onclose = (e) => {
+        if (viewingSocket === s) viewingSocket = null
         if (socket !== s) return
         socket = null
         clearTyping()
@@ -105,6 +134,7 @@ export function useRealtime(ws: string, memberId: string) {
       connect()
     }
     const onVisible = () => {
+      reportViewing()
       if (document.visibilityState === "visible") retry()
     }
     const onPageHide = () => {

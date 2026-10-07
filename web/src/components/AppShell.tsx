@@ -59,6 +59,7 @@ import {
 } from "@/components/ui/sidebar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { api, unwrap, useVersion, type Availability, type Me } from "@/lib/api"
+import { useRegisterPushOnStart } from "@/lib/push"
 import { useInstallPrompt } from "@/lib/pwa"
 import { useCounts, useInboxes, useLabels } from "@/lib/queries"
 import { reconnectNow, useRealtime, useRealtimeStatus } from "@/lib/realtime"
@@ -375,7 +376,7 @@ function UserMenu({ onShortcuts }: { onShortcuts: () => void }) {
               <span className="flex flex-col">
                 <Trans>Away</Trans>
                 <span className="text-xs text-muted-foreground">
-                  <Trans>Live chat shows nobody available</Trans>
+                  <Trans>Live chat shows nobody available. Notifications pause, except for conversations assigned to you.</Trans>
                 </span>
               </span>
             </DropdownMenuRadioItem>
@@ -470,6 +471,7 @@ export function AppShell() {
   const sheet = useShortcutSheet()
   const { workspaceId, membership } = useSession()
   useRealtime(workspaceId, membership.member_id)
+  useRegisterPushOnStart()
   return (
     <SidebarProvider className="h-svh overflow-hidden">
       <Sidebar>
@@ -550,6 +552,11 @@ export function Gate() {
   const location = useLocation()
   const navigate = useNavigate()
   const [chosen, choose] = useWorkspaceChoice()
+  const linked = new URLSearchParams(location.search).get("workspace_id")
+  const linkedMember = !!linked && !!me.data?.memberships.some((m) => m.workspace.id === linked)
+  useEffect(() => {
+    if (linkedMember && linked !== chosen) choose(linked)
+  }, [linkedMember, linked, chosen, choose])
   const onSwitch = useCallback(
     (id: string) => {
       choose(id)
@@ -588,7 +595,7 @@ export function Gate() {
       </FullPage>
     )
   }
-  const membership = pickMembership(me.data, chosen)
+  const membership = pickMembership(me.data, linkedMember ? linked : chosen)
   if (!membership) return <WorkspacePicker me={me.data} onChoose={choose} />
   return (
     <SessionProvider key={membership.workspace.id} me={me.data} membership={membership} onSwitch={onSwitch}>

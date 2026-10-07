@@ -22,6 +22,7 @@ import { useIsMobile } from "@/hooks/use-mobile"
 import { isGone, type ConversationStatus, type FeedbackCategory } from "@/lib/api"
 import type { ConversationFilters } from "@/lib/keys"
 import { useConversation, useConversations, useInboxes, useLabels } from "@/lib/queries"
+import { useViewing } from "@/lib/realtime"
 import { cn } from "@/lib/utils"
 
 const FILTER_KEYS = ["status", "q", "inbox", "label", "assignee"] as const
@@ -55,6 +56,11 @@ function toQuery(base: ListBase, f: ListFilters): ConversationFilters {
     if (base.id === "spam") q.spam = true
   } else if (f.assignee) q.assignee = f.assignee
   return q
+}
+
+export function OpenConversation() {
+  const { conversationId } = useParams()
+  return <Navigate to={`/all/${conversationId}`} replace />
 }
 
 export function InboxPage() {
@@ -95,6 +101,7 @@ function Inbox({ base, conversationId }: { base: ListBase; conversationId?: stri
   const list = useConversations(toQuery(base, filters))
   const conversations = useMemo(() => list.data?.pages.flatMap((p) => p.items) ?? [], [list.data])
   const selected = useConversation(conversationId)
+  useViewing(conversationId)
 
   const basePath = base.kind === "view" ? `/${base.id}` : `/${base.kind}/${base.id}`
   const listSearch = useMemo(() => {

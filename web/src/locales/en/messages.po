@@ -96,6 +96,10 @@ msgstr "A contact was deleted"
 msgid "A conversation changed"
 msgstr "A conversation changed"
 
+#: src/components/settings/NotificationsSettings.tsx
+msgid "A conversation is assigned to me"
+msgstr "A conversation is assigned to me"
+
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "A conversation started"
@@ -107,6 +111,14 @@ msgstr "A file's content does not match its type. Check the file and try again."
 #: src/components/settings/InboxSettings.tsx
 msgid "A language tag such as en or tr."
 msgstr "A language tag such as en or tr."
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "A later message from the contact while nobody is assigned."
+msgstr "A later message from the contact while nobody is assigned."
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "A later message from the contact."
+msgstr "A later message from the contact."
 
 #: src/components/common/text.ts
 msgid "A message was added"
@@ -144,6 +156,10 @@ msgstr "Acme Support"
 msgid "Add a passkey"
 msgstr "Add a passkey"
 
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Add an inbox"
+msgstr "Add an inbox"
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "Add at least one origin."
 msgstr "Add at least one origin."
@@ -164,9 +180,14 @@ msgstr "Add hours"
 msgid "Add note"
 msgstr "Add note"
 
+#: src/components/settings/NotificationsSettings.tsx
 #: src/components/settings/ProfileSettings.tsx
 msgid "Added {created}"
 msgstr "Added {created}"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Added {created}, last delivered {delivered}"
+msgstr "Added {created}, last delivered {delivered}"
 
 #: src/components/settings/ProfileSettings.tsx
 msgid "Added {created}, last used {used}"
@@ -215,6 +236,10 @@ msgstr "Allowed origins"
 msgid "Also send message.created for members' internal notes. Internal events are never sent."
 msgstr "Also send message.created for members' internal notes. Internal events are never sent."
 
+#: src/components/settings/NotificationsSettings.tsx
+msgid "An e-mail goes out only if the conversation is still unread by then."
+msgstr "An e-mail goes out only if the conversation is still unread by then."
+
 #: src/components/settings/MembersSettings.tsx
 msgid "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
 msgstr "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
@@ -260,6 +285,10 @@ msgstr "App"
 #: src/components/settings/ChannelsSection.tsx
 msgid "App builds with the old key can no longer start sessions until you ship one with the new key. People already signed in keep their session."
 msgstr "App builds with the old key can no longer start sessions until you ship one with the new key. People already signed in keep their session."
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "As above ({current})"
+msgstr "As above ({current})"
 
 #: src/components/AppShell.tsx
 msgid "Ask an owner or admin of your workspace to invite you."
@@ -542,6 +571,10 @@ msgstr "Created {created} by {by}"
 msgid "Default language"
 msgstr "Default language"
 
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Default: {fallback}"
+msgstr "Default: {fallback}"
+
 #: src/components/settings/CannedRepliesSettings.tsx
 #: src/components/settings/InboxSettings.tsx
 #: src/components/settings/LabelsSettings.tsx
@@ -606,6 +639,7 @@ msgid "Download the original e-mail (.eml)"
 msgstr "Download the original e-mail (.eml)"
 
 #: src/components/common/text.ts
+#: src/components/settings/NotificationsSettings.tsx
 msgid "E-mail"
 msgstr "E-mail"
 
@@ -625,6 +659,14 @@ msgstr "E-mail content"
 #: src/components/settings/ProfileSettings.tsx
 msgid "E-mail language"
 msgstr "E-mail language"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "E-mail only"
+msgstr "E-mail only"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "E-mail: {label}"
+msgstr "E-mail: {label}"
 
 #: src/components/settings/CannedRepliesSettings.tsx
 #: src/components/settings/ChannelsSection.tsx
@@ -694,6 +736,10 @@ msgstr "Events"
 msgid "Every attempt has failed since {failingSince}. After 24 hours of failures Yuva turns the endpoint off."
 msgstr "Every attempt has failed since {failingSince}. After 24 hours of failures Yuva turns the endpoint off."
 
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Every inbox follows the settings above."
+msgstr "Every inbox follows the settings above."
+
 #: src/components/settings/WebhooksSettings.tsx
 msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Every request to this endpoint, newest first. The newest 100 are kept."
@@ -739,6 +785,10 @@ msgstr "Filters"
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "Fix the address or the channel's SMTP settings, then send the reply again."
 
+#: src/components/settings/NotificationsSettings.tsx
+msgid "For every inbox in this workspace, unless an inbox below says otherwise."
+msgstr "For every inbox in this workspace, unless an inbox below says otherwise."
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "For signed-in users, your backend signs an identity token with the inbox's identity secret and the app passes it to the SDK."
 msgstr "For signed-in users, your backend signs an identity token with the inbox's identity secret and the app passes it to the SDK."
@@ -763,6 +813,10 @@ msgstr "From address (optional)"
 #: src/components/settings/InboxSettings.tsx
 msgid "General"
 msgstr "General"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Get notified on your phone or computer, even when the panel is closed."
+msgstr "Get notified on your phone or computer, even when the panel is closed."
 
 #: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/InboxSettings.tsx
@@ -878,6 +932,10 @@ msgstr "It is removed from every conversation."
 msgid "It no longer exists or you cannot see it."
 msgstr "It no longer exists or you cannot see it."
 
+#: src/components/settings/NotificationsSettings.tsx
+msgid "It will no longer receive notifications."
+msgstr "It will no longer receive notifications."
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "Keep"
 msgstr "Keep"
@@ -916,6 +974,10 @@ msgstr "Language"
 msgid "Last attempt"
 msgstr "Last attempt"
 
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Last push failed: {failed}"
+msgstr "Last push failed: {failed}"
+
 #: src/components/inbox/ContactPanel.tsx
 msgid "Last seen {seen}"
 msgstr "Last seen {seen}"
@@ -950,8 +1012,8 @@ msgid "Live"
 msgstr "Live"
 
 #: src/components/AppShell.tsx
-msgid "Live chat shows nobody available"
-msgstr "Live chat shows nobody available"
+msgid "Live chat shows nobody available. Notifications pause, except for conversations assigned to you."
+msgstr "Live chat shows nobody available. Notifications pause, except for conversations assigned to you."
 
 #: src/components/inbox/MessageItem.tsx
 msgid "Load images"
@@ -1068,6 +1130,14 @@ msgstr "never used"
 msgid "New canned reply"
 msgstr "New canned reply"
 
+#: src/components/settings/NotificationsSettings.tsx
+msgid "New conversation in a live inbox"
+msgstr "New conversation in a live inbox"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "New conversation in an async inbox"
+msgstr "New conversation in an async inbox"
+
 #: src/components/inbox/ConversationList.tsx
 msgid "New conversations show up here."
 msgstr "New conversations show up here."
@@ -1083,6 +1153,14 @@ msgstr "New inbox"
 #: src/components/settings/LabelsSettings.tsx
 msgid "New label"
 msgstr "New label"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "New message in a conversation assigned to me"
+msgstr "New message in a conversation assigned to me"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "New message in an unassigned conversation"
+msgstr "New message in an unassigned conversation"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "New password"
@@ -1206,15 +1284,40 @@ msgstr "Not spam"
 msgid "Note"
 msgstr "Note"
 
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Nothing"
+msgstr "Nothing"
+
 #: src/components/inbox/ConversationList.tsx
 msgid "Nothing matches your search."
 msgstr "Nothing matches your search."
+
+#: src/components/settings/NotificationsSettings.tsx
+#: src/components/settings/SettingsLayout.tsx
+msgid "Notifications"
+msgstr "Notifications"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Notifications are blocked for this site. Allow them in your browser's site settings, then reload."
+msgstr "Notifications are blocked for this site. Allow them in your browser's site settings, then reload."
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Notifications were not allowed."
+msgstr "Notifications were not allowed."
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Notify differently for one inbox. Anything left on “As above” follows the settings above."
+msgstr "Notify differently for one inbox. Anything left on “As above” follows the settings above."
 
 #: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/InboxSettings.tsx
 #: src/components/settings/WebhooksSettings.tsx
 msgid "Off"
 msgstr "Off"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Off for this device."
+msgstr "Off for this device."
 
 #: src/components/AppShell.tsx
 msgid "Offline"
@@ -1225,6 +1328,14 @@ msgstr "Offline"
 #: src/components/settings/WebhooksSettings.tsx
 msgid "On"
 msgstr "On"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "On for this device."
+msgstr "On for this device."
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "On iPhone and iPad, add Yuva to your Home Screen with Share › Add to Home Screen, then open it from there to turn on notifications."
+msgstr "On iPhone and iPad, add Yuva to your Home Screen with Share › Add to Home Screen, then open it from there to turn on notifications."
 
 #: src/components/settings/InboxesSettings.tsx
 msgid "One inbox per product or brand. Each has its own channels, hours and team."
@@ -1319,6 +1430,10 @@ msgstr "Pending deliveries are dropped with it."
 msgid "People who are not signed in to your app can write without an identity token from your backend."
 msgstr "People who are not signed in to your app can write without an identity token from your backend."
 
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Per inbox"
+msgstr "Per inbox"
+
 #: src/components/settings/InboxSettings.tsx
 #: src/components/settings/LabelsSettings.tsx
 msgid "Pick a color"
@@ -1376,9 +1491,26 @@ msgstr "Profile"
 msgid "Public key"
 msgstr "Public key"
 
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Push"
+msgstr "Push"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Push and e-mail"
+msgstr "Push and e-mail"
+
+#: src/components/settings/NotificationsSettings.tsx
 #: src/components/settings/WebhooksSettings.tsx
 msgid "Push notifications"
 msgstr "Push notifications"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Push only"
+msgstr "Push only"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Push: {label}"
+msgstr "Push: {label}"
 
 #: src/components/settings/WebhooksSettings.tsx
 msgid "Queued. The new attempt shows up below in a moment."
@@ -1410,6 +1542,7 @@ msgstr "Remote images can tell the sender that you opened the mail."
 
 #: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/MembersSettings.tsx
+#: src/components/settings/NotificationsSettings.tsx
 #: src/components/settings/ProfileSettings.tsx
 #: src/components/settings/WebhooksSettings.tsx
 msgid "Remove"
@@ -1423,6 +1556,7 @@ msgid "Remove {0}"
 msgstr "Remove {0}"
 
 #: src/components/settings/MembersSettings.tsx
+#: src/components/settings/NotificationsSettings.tsx
 msgid "Remove {name}"
 msgstr "Remove {name}"
 
@@ -1437,6 +1571,10 @@ msgstr "Remove these hours"
 #: src/components/settings/ChannelsSection.tsx
 msgid "Remove this channel?"
 msgstr "Remove this channel?"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Remove this device?"
+msgstr "Remove this device?"
 
 #: src/components/settings/WebhooksSettings.tsx
 msgid "Remove this endpoint?"
@@ -1486,6 +1624,10 @@ msgstr "Reply"
 #: src/components/inbox/Composer.tsx
 msgid "Reply by e-mail to {emailTo}"
 msgstr "Reply by e-mail to {emailTo}"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Reset to defaults"
+msgstr "Reset to defaults"
 
 #: src/components/AppShell.tsx
 msgid "Retry now"
@@ -1585,6 +1727,14 @@ msgstr "Send"
 msgid "Send a new code"
 msgstr "Send a new code"
 
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Send a test notification"
+msgstr "Send a test notification"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Send a test notification to {name}"
+msgstr "Send a test notification to {name}"
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "Send an auto-reply"
 msgstr "Send an auto-reply"
@@ -1596,6 +1746,10 @@ msgstr "Send events"
 #: src/components/auth/SignInPage.tsx
 msgid "Send me a code"
 msgstr "Send me a code"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Send the e-mail after"
+msgstr "Send the e-mail after"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "Sending"
@@ -1740,6 +1894,10 @@ msgstr "STARTTLS (port 587)"
 msgid "Status"
 msgstr "Status"
 
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Stop overriding {name}"
+msgstr "Stop overriding {name}"
+
 #: src/components/common/text.ts
 msgid "Succeeded"
 msgstr "Succeeded"
@@ -1764,6 +1922,10 @@ msgstr "System"
 #: src/components/settings/MembersSettings.tsx
 msgid "teammate@company.com"
 msgstr "teammate@company.com"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Test sent. It should arrive in a few seconds."
+msgstr "Test sent. It should arrive in a few seconds."
 
 #: src/components/settings/CannedRepliesSettings.tsx
 #: src/components/settings/ChannelsSection.tsx
@@ -1793,6 +1955,14 @@ msgstr "The endpoint is disabled. Enable it to send deliveries again."
 #: src/components/common/text.ts
 msgid "The file is too large."
 msgstr "The file is too large."
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "The first message of a conversation in an inbox that shows a reply time."
+msgstr "The first message of a conversation in an inbox that shows a reply time."
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "The first message of a conversation in an inbox that shows who is available."
+msgstr "The first message of a conversation in an inbox that shows who is available."
 
 #: src/components/settings/WebhooksSettings.tsx
 msgid "The inbox cannot be changed later."
@@ -1850,6 +2020,10 @@ msgstr "This address is private, loopback or link-local. Webhooks only reach pub
 msgid "This address is undeliverable. Clear it on the contact before you reply."
 msgstr "This address is undeliverable. Clear it on the contact before you reply."
 
+#: src/components/settings/NotificationsSettings.tsx
+msgid "This browser cannot receive push notifications."
+msgstr "This browser cannot receive push notifications."
+
 #: src/components/settings/ProfileSettings.tsx
 msgid "This browser does not support passkeys."
 msgstr "This browser does not support passkeys."
@@ -1866,6 +2040,10 @@ msgstr "This conversation is not available"
 msgid "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
 msgstr "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
 
+#: src/components/settings/NotificationsSettings.tsx
+msgid "This device"
+msgstr "This device"
+
 #: src/components/common/text.ts
 msgid "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
 msgstr "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
@@ -1877,6 +2055,10 @@ msgstr "This file type is not allowed."
 #: src/components/settings/ChannelsSection.tsx
 msgid "This is not a JSON object."
 msgstr "This is not a JSON object."
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "This server is not set up to send push notifications."
+msgstr "This server is not set up to send push notifications."
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Thread"
@@ -1934,6 +2116,14 @@ msgstr "Tuesday"
 msgid "Turn it on again once the receiver works; send failed deliveries again from the log below."
 msgstr "Turn it on again once the receiver works; send failed deliveries again from the log below."
 
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Turn off"
+msgstr "Turn off"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Turn on for this device"
+msgstr "Turn on for this device"
+
 #: src/components/settings/WebhooksSettings.tsx
 msgid "Turned off by Yuva"
 msgstr "Turned off by Yuva"
@@ -1967,6 +2157,10 @@ msgstr "Undeliverable: bounced, {since}"
 #: src/components/inbox/ContactPanel.tsx
 msgid "Undeliverable: marked as spam by the recipient, {since}"
 msgstr "Undeliverable: marked as spam by the recipient, {since}"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "Unknown device"
+msgstr "Unknown device"
 
 #: src/components/inbox/ContactPanel.tsx
 #: src/components/inbox/ConversationList.tsx
@@ -2060,6 +2254,14 @@ msgstr "Wednesday"
 msgid "When nobody is available, the widget asks where to send the reply."
 msgstr "When nobody is available, the widget asks where to send the reply."
 
+#: src/components/settings/NotificationsSettings.tsx
+msgid "When someone else assigns it to you."
+msgstr "When someone else assigns it to you."
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "When to notify me"
+msgstr "When to notify me"
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "When your provider sends from another address. Replies still come to the support address."
 msgstr "When your provider sends from another address. Replies still come to the support address."
@@ -2071,6 +2273,10 @@ msgstr "While off, no deliveries are made."
 #: src/components/AppShell.tsx
 msgid "While the panel is open, in business hours"
 msgstr "While the panel is open, in business hours"
+
+#: src/components/settings/NotificationsSettings.tsx
+msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
+msgstr "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 
 #: src/components/settings/WebhooksSettings.tsx
 msgid "with notes"

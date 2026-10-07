@@ -29,4 +29,5 @@ export const keys = {
   messages: (ws: string, id: string) => ["ws", ws, "messages", id] as const,
   messageEmail: (ws: string, id: string) => ["ws", ws, "message-email", id] as const,
   passkeys: ["me", "passkeys"] as const,
+  notifications: (ws: string) => ["ws", ws, "notifications"] as const,
 }

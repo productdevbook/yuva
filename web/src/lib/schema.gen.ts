@@ -245,6 +245,147 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/push/vapid-public-key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The server's Web Push key
+         * @description The VAPID public key to pass as `applicationServerKey` to `PushManager.subscribe()`: an
+         *     uncompressed P-256 point, base64url without padding. 404 `push_disabled` when the server
+         *     has no VAPID keys configured; hide push settings then.
+         */
+        get: operations["getVapidPublicKey"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/push-subscriptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List push subscriptions
+         * @description The signed-in person's push subscriptions, newest first.
+         */
+        get: operations["listPushSubscriptions"];
+        put?: never;
+        /**
+         * Register a push subscription
+         * @description Saves the browser's `PushSubscription` (`subscription.toJSON()`) for the current session.
+         *     Registering an endpoint that is already saved updates it and moves it to this session and
+         *     person, so call it on every panel start while notification permission is granted. The
+         *     endpoint must be an `https` URL on a public address. At most 20 subscriptions per person.
+         *     404 `push_disabled` when the server has no VAPID keys.
+         */
+        post: operations["createPushSubscription"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/push-subscriptions/{pushSubscriptionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove a push subscription
+         * @description Call it before `PushSubscription.unsubscribe()` when the member turns push off.
+         */
+        delete: operations["deletePushSubscription"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/push-subscriptions/{pushSubscriptionId}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send a test notification
+         * @description Queues a test notification to the subscription and returns its payload. The outcome shows
+         *     up as `last_success_at` or `last_error` on the subscription.
+         */
+        post: operations["testPushSubscription"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Your notification settings
+         * @description The calling member's notification settings in the workspace. Member sessions only.
+         */
+        get: operations["getNotificationSettings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Change your notification settings
+         * @description Each event sent replaces that event's channels; events not sent keep theirs. Member
+         *     sessions only.
+         */
+        patch: operations["updateNotificationSettings"];
+        trace?: never;
+    };
+    "/v1/me/notifications/inboxes/{inboxId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Override your notifications for one inbox
+         * @description Replaces the member's override for the inbox: the events sent here win over the
+         *     workspace-wide settings in that inbox; the others follow them. Member sessions only.
+         */
+        put: operations["setInboxNotifications"];
+        post?: never;
+        /**
+         * Remove your override for one inbox
+         * @description The inbox follows the workspace-wide settings again. Member sessions only.
+         */
+        delete: operations["deleteInboxNotifications"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/workspace": {
         parameters: {
             query?: never;
@@ -1097,7 +1238,9 @@ export interface paths {
          *
          *     The URL must be `http` or `https` and may not point to a private, loopback or link-local
          *     address (checked again on every delivery, after resolving the name) unless the server
-         *     runs with `YUVA_WEBHOOK_ALLOW_PRIVATE=true`.
+         *     runs with `YUVA_WEBHOOK_ALLOW_PRIVATE=true`. Link-local and cloud metadata addresses
+         *     (169.254.0.0/16, fe80::/10, fd00:ec2::254, IPv4-mapped forms included) are refused even
+         *     then.
          */
         post: operations["createWebhook"];
         delete?: never;
@@ -1272,8 +1415,12 @@ export interface paths {
          *     everything over HTTP) followed by `ready` and continues live. Without `last_event_id` there
          *     is no replay.
          *
-         *     The server pings every 30 seconds. The client sends nothing; data messages from the client
-         *     close the connection. Close codes: 1008 (`unauthenticated`, `forbidden`) when the session
+         *     The server pings every 30 seconds. A member's panel reports the conversation it shows with
+         *     a text frame `{"type": "viewing", "conversation_id": "<id>"}`, and
+         *     `{"type": "viewing", "conversation_id": null}` when it shows none or the page is hidden;
+         *     send it again after every reconnect. While a connection of the member views a
+         *     conversation, the member gets no push or e-mail notification about it. Other client
+         *     frames are ignored. Close codes: 1008 (`unauthenticated`, `forbidden`) when the session
          *     or membership ends, 1013 (`slow_consumer`) when the client does not read fast enough, 1012
          *     (`restart`) when the server restarts or loses its event feed. Reconnect with
          *     `last_event_id` after any of them except 1008. While the server is reconnecting its own event
@@ -1354,6 +1501,12 @@ export interface paths {
          *     For a `chat` channel, browsers must call from one of the channel's allowed origins
          *     (`403 origin_not_allowed`, also without an `Origin` header); an `app` channel's key needs no
          *     origin. Requests are rate limited per IP address (`429 rate_limited`).
+         *
+         *     A widget that gets `403 origin_not_allowed` is embedded on a page the channel does not
+         *     allow: it should show nothing (no launcher, no offline notice), not retry, and leave a
+         *     console message naming the origin. Every other `/client/v1` call from that page is refused
+         *     the same way, so there is nothing it could offer. `404` (unknown key) is treated alike;
+         *     network errors and `429` are worth retrying.
          */
         get: operations["getClientChannel"];
         put?: never;
@@ -1581,11 +1734,15 @@ export interface paths {
          *     (`conversation.created`, `conversation.updated`, `message.created`, `message.updated`,
          *     `read`) carry an increasing `id`; resume exactly as on `/v1/realtime`: remember the larger
          *     of `ready.last_event_id` and the last `id` received, reconnect with `?last_event_id=`, and
-         *     reload over HTTP on `resync_required`. `typing` and `presence` have no `id` and are not
-         *     replayed. `message.*` carries only messages (no notes or internal events), and
-         *     `conversation.updated` only the status. `typing` (a member typing), `read` (how far members
-         *     have read) and `presence` (whether someone is available; sent after `ready` and whenever it
-         *     changes) come only for `live` inboxes.
+         *     reload over HTTP on `resync_required`. `typing`, `presence` and `inbox.updated` have no
+         *     `id` and are not replayed. `message.*` carries only messages (no notes or internal events),
+         *     and `conversation.updated` only the status. `typing` (a member typing), `read` (how far
+         *     members have read) and `presence` (whether someone is available; sent after `ready` and
+         *     whenever it changes) come only for `live` inboxes. `inbox.updated` carries the inbox's
+         *     public settings, the same `ClientInbox` as `GET /client/v1/channels/{channel_key}`, whenever
+         *     a member changes the inbox (mode, business hours, branding, greeting) or the session's
+         *     channel; replace the settings shown with it. After a reconnect, fetch the channel settings
+         *     again, since a change made while disconnected is not replayed.
          *
          *     The server pings every 30 seconds; the client sends nothing. Close codes as on
          *     `/v1/realtime`: 1008 when the session ends or the contact is deleted (start a new session),
@@ -1709,6 +1866,12 @@ export interface webhooks {
          * @description A message to or from the contact. Members' notes only for endpoints with
          *     `include_notes`; internal events never. When a member answers and `contact.online` is
          *     false, the contact has no live connection: send your push notification.
+         *
+         *     The conversation is `data.message.conversation_id` (the same as `data.conversation.id`).
+         *     Put it in the push payload as `yuva_conversation_id` (APNs: a top-level key next to `aps`;
+         *     FCM: a `data` entry); `Yuva.handleNotification` in the Swift and Kotlin SDKs reads it and
+         *     returns the conversation to open. Map the contact to your user with
+         *     `data.contact.external_ids`.
          */
         post: operations["webhookMessageCreated"];
         delete?: never;
@@ -1916,6 +2079,122 @@ export interface components {
         };
         PasskeyList: {
             items: components["schemas"]["Passkey"][];
+        };
+        VapidPublicKey: {
+            /** @description Uncompressed P-256 public key, base64url without padding. */
+            public_key: string;
+        };
+        PushSubscriptionKeys: {
+            /** @description The browser's P-256 key, base64url (65 bytes decoded). */
+            p256dh: string;
+            /** @description The authentication secret, base64url (16 bytes decoded). */
+            auth: string;
+        };
+        PushSubscriptionCreate: {
+            /** Format: uri */
+            endpoint: string;
+            keys: components["schemas"]["PushSubscriptionKeys"];
+            /** @description A label to tell devices apart in the list, such as "Chrome on Android". */
+            user_agent?: string;
+        };
+        PushSubscription: {
+            /** Format: uuid */
+            id: string;
+            /** @description Compare with `PushSubscription.endpoint` to find this browser's entry. */
+            endpoint: string;
+            user_agent: string;
+            /** @description Registered by the calling session. */
+            current: boolean;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+            /** Format: date-time */
+            last_success_at?: string;
+            /** Format: date-time */
+            last_failure_at?: string;
+            /** @description Why the last failed push failed. */
+            last_error?: string;
+        };
+        PushSubscriptionList: {
+            items: components["schemas"]["PushSubscription"][];
+        };
+        NotificationChannels: {
+            /** @description Web Push to every subscribed browser of the person. */
+            push: boolean;
+            /** @description An e-mail when it is still unread after `email_delay_minutes`. */
+            email: boolean;
+        };
+        NotificationEvents: {
+            new_live_conversation: components["schemas"]["NotificationChannels"];
+            new_async_conversation: components["schemas"]["NotificationChannels"];
+            message_in_my_conversation: components["schemas"]["NotificationChannels"];
+            message_in_unassigned_conversation: components["schemas"]["NotificationChannels"];
+            assigned_to_me: components["schemas"]["NotificationChannels"];
+        };
+        /** @description Some events and their channels. */
+        NotificationEventsUpdate: {
+            new_live_conversation?: components["schemas"]["NotificationChannels"];
+            new_async_conversation?: components["schemas"]["NotificationChannels"];
+            message_in_my_conversation?: components["schemas"]["NotificationChannels"];
+            message_in_unassigned_conversation?: components["schemas"]["NotificationChannels"];
+            assigned_to_me?: components["schemas"]["NotificationChannels"];
+        };
+        NotificationSettings: {
+            events: components["schemas"]["NotificationEvents"];
+            defaults: components["schemas"]["NotificationEvents"];
+            /** @description How long an event stays unread before the e-mail fallback is sent. */
+            email_delay_minutes: number;
+            /** @description Per-inbox overrides, for inboxes the member can still see. */
+            inboxes: components["schemas"]["InboxNotifications"][];
+        };
+        NotificationSettingsUpdate: {
+            events?: components["schemas"]["NotificationEventsUpdate"];
+            email_delay_minutes?: number;
+        };
+        InboxNotifications: {
+            /** Format: uuid */
+            inbox_id: string;
+            events: components["schemas"]["NotificationEventsUpdate"];
+            /** Format: date-time */
+            updated_at: string;
+        };
+        InboxNotificationsUpdate: {
+            events: components["schemas"]["NotificationEventsUpdate"];
+        };
+        /**
+         * @description The JSON a push delivers to the service worker (`event.data.json()`), encrypted per
+         *     RFC 8291 (`aes128gcm`). Show it with `registration.showNotification(title, {body, tag,
+         *     data})` and open `url` on click. Pushes of one conversation share `tag` (and the push
+         *     `Topic`), so a newer one replaces the older.
+         */
+        PushNotification: {
+            /**
+             * @description What caused it (see the `notifications` tag), or `test`.
+             * @enum {string}
+             */
+            event: "new_live_conversation" | "new_async_conversation" | "message_in_my_conversation" | "message_in_unassigned_conversation" | "assigned_to_me" | "test";
+            /**
+             * @description The inbox name and the contact's name.
+             * @example Support · Ayşe Yılmaz
+             */
+            title: string;
+            /** @description The start of the message (at most 140 characters), or what happened. */
+            body: string;
+            /**
+             * @description Path to open, relative to the server's public URL:
+             *     `/conversations/{id}?workspace_id={workspace}` (`/` for a test).
+             * @example /conversations/0199a3f0-7c1e-7b4a-9d2e-3f1c2b4a5d6e?workspace_id=0199a3f0-0000-7000-8000-000000000001
+             */
+            url: string;
+            /** @description `conversation-{id}`, or `test`. */
+            tag: string;
+            /** Format: uuid */
+            conversation_id?: string;
+            /** Format: uuid */
+            workspace_id?: string;
+            /** Format: uuid */
+            inbox_id?: string;
         };
         PasskeyCeremony: {
             ceremony_id: string;
@@ -3534,8 +3813,19 @@ export interface components {
             created_at: string;
             data: components["schemas"]["ClientPresence"];
         };
+        /** @description The inbox's or the session channel's public settings changed. No `id`; not replayed. */
+        ClientInboxUpdatedEvent: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "inbox.updated";
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["ClientInbox"];
+        };
         /** @description One server message on `/client/v1/realtime`, told apart by `type`. */
-        ClientRealtimeMessage: components["schemas"]["ClientConversationCreatedEvent"] | components["schemas"]["ClientConversationUpdatedEvent"] | components["schemas"]["ClientMessageEvent"] | components["schemas"]["ClientReadEvent"] | components["schemas"]["ClientTypingEvent"] | components["schemas"]["ClientPresenceEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        ClientRealtimeMessage: components["schemas"]["ClientConversationCreatedEvent"] | components["schemas"]["ClientConversationUpdatedEvent"] | components["schemas"]["ClientMessageEvent"] | components["schemas"]["ClientReadEvent"] | components["schemas"]["ClientTypingEvent"] | components["schemas"]["ClientPresenceEvent"] | components["schemas"]["ClientInboxUpdatedEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
         IngressResult: {
             /**
              * @description `stored` (a message was added), `duplicate` (seen before), `bounce` (a delivery report
@@ -3619,6 +3909,7 @@ export interface components {
         InviteId: string;
         ApiKeyId: string;
         PasskeyId: string;
+        PushSubscriptionId: string;
         InboxId: string;
         ChannelId: string;
         WebhookId: string;
@@ -3955,6 +4246,236 @@ export interface operations {
                 content?: never;
             };
             401: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    getVapidPublicKey: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The key. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VapidPublicKey"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    listPushSubscriptions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The subscriptions. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PushSubscriptionList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+        };
+    };
+    createPushSubscription: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PushSubscriptionCreate"];
+            };
+        };
+        responses: {
+            /** @description The saved subscription. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PushSubscription"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    deletePushSubscription: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pushSubscriptionId: components["parameters"]["PushSubscriptionId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    testPushSubscription: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pushSubscriptionId: components["parameters"]["PushSubscriptionId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Queued; the push carries this payload. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PushNotification"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    getNotificationSettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The settings. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationSettings"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    updateNotificationSettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NotificationSettingsUpdate"];
+            };
+        };
+        responses: {
+            /** @description The settings. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationSettings"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    setInboxNotifications: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                inboxId: components["parameters"]["InboxId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InboxNotificationsUpdate"];
+            };
+        };
+        responses: {
+            /** @description The override. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InboxNotifications"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    deleteInboxNotifications: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                inboxId: components["parameters"]["InboxId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
         };
     };

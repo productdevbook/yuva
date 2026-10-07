@@ -94,7 +94,12 @@ export function startPwa() {
     window.location.reload()
   })
   navigator.serviceWorker.addEventListener("message", (e: MessageEvent<{ type?: string; url?: string }>) => {
-    if (e.data?.type !== "navigate" || typeof e.data.url !== "string" || !e.data.url.startsWith("/") || e.data.url.startsWith("//"))
+    if (
+      e.data?.type !== "navigate" ||
+      typeof e.data.url !== "string" ||
+      !e.data.url.startsWith("/") ||
+      e.data.url.startsWith("//")
+    )
       return
     if (navigateTo) navigateTo(e.data.url)
     else pendingPath = e.data.url
