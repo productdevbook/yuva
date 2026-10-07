@@ -152,6 +152,7 @@ export class YuvaChatElement extends HTMLElement {
   #open = false;
   #unread = 0;
   #identity: IdentityTokenSource | null = null;
+  #refused = false;
 
   constructor() {
     super();
@@ -218,7 +219,10 @@ export class YuvaChatElement extends HTMLElement {
 
   #styleLauncher(channel: string): void {
     fetch(`${this.server}/client/v1/channels/${encodeURIComponent(channel)}`, { credentials: "omit" })
-      .then((response) => (response.ok ? (response.json() as Promise<components["schemas"]["ClientInbox"]>) : null))
+      .then((response) => {
+        if (response.status === 403 || response.status === 404) this.#refuse();
+        return response.ok ? (response.json() as Promise<components["schemas"]["ClientInbox"]>) : null;
+      })
       .then((inbox) => {
         if (!inbox || this.channel !== channel || this.#controller) return;
         const launcher = launcherOf(inbox);
@@ -246,6 +250,7 @@ export class YuvaChatElement extends HTMLElement {
     }
     if (name === "channel" || name === "server") {
       this.disconnectedCallback();
+      this.#refused = false;
       this.#render();
       return;
     }
@@ -254,7 +259,7 @@ export class YuvaChatElement extends HTMLElement {
   }
 
   async open(): Promise<void> {
-    if (this.#open) return;
+    if (this.#open || this.#refused) return;
     this.#open = true;
     this.toggleAttribute("open-panel", true);
     this.#syncLauncher();
@@ -296,9 +301,20 @@ export class YuvaChatElement extends HTMLElement {
           this.dispatchEvent(new CustomEvent("yuva-unread", { detail: { count } }));
         },
         setLauncher: (style) => this.#applyLauncher(style),
+        refused: () => this.#refuse(),
       }),
     );
     return this.#controller;
+  }
+
+  #refuse(): void {
+    if (this.#refused) return;
+    this.#refused = true;
+    console.warn(`Yuva: channel ${this.channel} is unknown or does not allow ${location.origin}`);
+    this.#open = false;
+    this.toggleAttribute("open-panel", false);
+    this.disconnectedCallback();
+    this.#render();
   }
 
   #applyLauncher(style: LauncherStyle): void {
@@ -317,6 +333,12 @@ export class YuvaChatElement extends HTMLElement {
     style.textContent = styles;
     this.#panel.dir = this.getAttribute("dir") ?? directionOf(locale);
     this.#panel.setAttribute("aria-modal", "false");
+    if (this.#refused) {
+      this.#launcher = null;
+      this.#badge = null;
+      this.#root.replaceChildren();
+      return;
+    }
 
     if (this.layout === "embedded") {
       this.#launcher = null;

@@ -28,6 +28,7 @@ export interface PanelHost {
   close(): void;
   setUnread(count: number): void;
   setLauncher(style: LauncherStyle): void;
+  refused(): void;
 }
 
 export interface PanelController {

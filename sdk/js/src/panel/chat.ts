@@ -34,7 +34,8 @@ interface Pending {
   conversation: string | null;
   body: string;
   files: File[];
-  state: "sending" | "failed";
+  state: "sending" | "failed" | "refused";
+  status?: number;
 }
 
 interface Thread {
@@ -116,6 +117,7 @@ export class Chat implements PanelController {
   #blobLoads = new Map<string, Promise<string>>();
   #emailSaved = false;
   #emailError = "";
+  #connectedBefore = false;
 
   #header = el("header", "header");
   #banner = el("div", "banner");
@@ -248,6 +250,7 @@ export class Chat implements PanelController {
     this.#threads.clear();
     this.#pending = [];
     this.#view = null;
+    this.#connectedBefore = false;
     this.#host.setUnread(0);
   }
 
@@ -255,6 +258,7 @@ export class Chat implements PanelController {
     if (document.visibilityState !== "visible") return;
     this.#realtime?.nudge();
     this.#markRead();
+    void this.#refreshInbox();
   };
 
   #setLocale(): void {
@@ -289,6 +293,7 @@ export class Chat implements PanelController {
       this.#markRead();
     })().catch((error: unknown) => {
       this.#starting = null;
+      if (this.#refusal(error)) return;
       this.#phase = "error";
       this.#error = error instanceof ApiError ? error.code : "error";
       this.#render();
@@ -297,14 +302,38 @@ export class Chat implements PanelController {
   }
 
   async #preview(): Promise<void> {
+    const inbox = await this.#fetchInbox();
+    if (!this.#token) this.#setInbox(inbox);
+  }
+
+  #fetchInbox(): Promise<ClientInbox> {
     const { channel, server } = this.#host.config();
     if (!channel) throw new ApiError(0, "not_configured");
-    const inbox = await call<ClientInbox>(server, `/client/v1/channels/${encodeURIComponent(channel)}`);
-    if (this.#token) return;
+    return call<ClientInbox>(server, `/client/v1/channels/${encodeURIComponent(channel)}`);
+  }
+
+  #setInbox(inbox: ClientInbox): void {
+    const { channel } = this.#host.config();
     this.#inbox = inbox;
     const launcher = launcherOf(inbox);
     this.#host.setLauncher(launcher);
-    writeStored(channel, { ...readStored(channel), launcher });
+    if (channel) writeStored(channel, { ...readStored(channel), launcher });
+  }
+
+  async #refreshInbox(): Promise<void> {
+    if (this.#phase !== "ready") return;
+    try {
+      this.#setInbox(await this.#fetchInbox());
+      this.#render();
+    } catch (error) {
+      this.#refusal(error, true);
+    }
+  }
+
+  #refusal(error: unknown, channelRequest = !this.#token): boolean {
+    const refused = error instanceof ApiError && (error.code === "origin_not_allowed" || (error.status === 404 && channelRequest));
+    if (refused) this.#host.refused();
+    return refused;
   }
 
   #begin(): Promise<void> {
@@ -451,7 +480,12 @@ export class Chat implements PanelController {
       case "ready":
         this.#reconnecting = false;
         this.#renderBanner();
+        if (this.#connectedBefore) void this.#refreshInbox();
+        this.#connectedBefore = true;
         return;
+      case "inbox.updated":
+        this.#setInbox(message.data);
+        break;
       case "resync_required":
         void this.#reload();
         return;
@@ -648,8 +682,10 @@ export class Chat implements PanelController {
         this.#upsertMessage(message, true);
       }
       this.#pending = this.#pending.filter((p) => p !== pending);
-    } catch {
-      pending.state = "failed";
+    } catch (error) {
+      const status = error instanceof ApiError ? error.status : 0;
+      pending.state = status === 413 || status === 415 ? "refused" : "failed";
+      pending.status = status;
     }
     this.#render();
     this.#scrollToEnd();
@@ -966,6 +1002,9 @@ export class Chat implements PanelController {
         retry.addEventListener("click", () => void this.#deliver(item));
         line.append(retry);
         nodes.push(line);
+      } else if (item.state === "refused") {
+        const reason = item.status === 413 ? this.#t(msg`The file is too large.`) : this.#t(msg`This file type is not accepted.`);
+        nodes.push(el("div", "meta failed", `${this.#t(msg`Not sent.`)} ${reason}`));
       } else if (i === pending.length - 1) nodes.push(el("div", "meta", this.#t(msg`Sending…`)));
     });
 
