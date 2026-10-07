@@ -5,14 +5,24 @@ COPY . .
 RUN --mount=type=cache,target=/root/.npm \
     if [ -f web/package.json ]; then cd web && npm ci && npm run build; else mkdir -p web/dist; fi
 
+FROM oven/bun:1.4.2 AS widget
+WORKDIR /src
+COPY . .
+RUN --mount=type=cache,target=/root/.bun/install/cache \
+    mkdir -p sdk/js/dist && if [ -f sdk/js/package.json ]; then cd sdk/js && bun install --frozen-lockfile && bun run build; fi
+
 FROM golang:1.27.1-trixie AS build
 WORKDIR /src/api
 COPY api/go.mod api/go.sum ./
 RUN --mount=type=cache,target=/go/pkg/mod go mod download
 COPY api/ ./
 COPY --from=web /src/web/dist /tmp/web-dist
+COPY --from=widget /src/sdk/js/dist /tmp/widget-dist
 RUN if [ -f /tmp/web-dist/index.html ]; then \
       find internal/ui/dist -mindepth 1 -delete && cp -R /tmp/web-dist/. internal/ui/dist/; \
+    fi; \
+    if [ -f /tmp/widget-dist/yuva.js ] && [ -f /tmp/widget-dist/yuva-chat.js ]; then \
+      cp /tmp/widget-dist/yuva.js /tmp/widget-dist/yuva-chat.js internal/widget/dist/; \
     fi
 ARG VERSION=dev
 RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \

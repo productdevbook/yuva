@@ -24,6 +24,7 @@ import (
 	"github.com/productdevbook/yuva/api/internal/storage"
 	"github.com/productdevbook/yuva/api/internal/store"
 	"github.com/productdevbook/yuva/api/internal/ui"
+	"github.com/productdevbook/yuva/api/internal/widget"
 )
 
 const maxBodyBytes = 8 << 20
@@ -150,6 +151,9 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /client/v1/realtime", s.serveClientRealtime)
 	mux.HandleFunc("POST /ingress/email", s.serveIngressEmail)
 	mux.HandleFunc("POST /ingress/ses", s.serveIngressSES)
+	for _, name := range widget.Files {
+		mux.Handle("GET /"+name, widget.Handler(name))
+	}
 	panel := ui.Handler()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if isAPIPath(r.URL.Path) {
