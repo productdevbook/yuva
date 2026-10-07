@@ -15,8 +15,8 @@ import (
 	"net/http/httptest"
 	"os"
 	"regexp"
-	"sync"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 

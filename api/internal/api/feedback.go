@@ -199,7 +199,7 @@ func (s *Server) CreateClientFeedback(ctx context.Context, req oas.CreateClientF
 		return nil, err
 	}
 	if confirm != nil {
-		s.sendAsync(*confirm)
+		s.sendMail(ctx, *confirm)
 	}
 	out, err := s.clientConversationCreated(ctx, cp, convID, msgID)
 	if err != nil {

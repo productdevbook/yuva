@@ -28,9 +28,9 @@ type identityClaims struct {
 	sub           string
 	email         string
 	emailVerified bool
-	name   *string
-	locale *string
-	attrs  []byte
+	name          *string
+	locale        *string
+	attrs         []byte
 }
 
 type jwtHeader struct {

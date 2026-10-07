@@ -478,7 +478,7 @@ func (s *Server) SetClientContactEmail(ctx context.Context, req oas.SetClientCon
 		return nil, err
 	}
 	if confirm != nil {
-		s.sendAsync(*confirm)
+		s.sendMail(ctx, *confirm)
 	}
 	return oas.SetClientContactEmail200JSONResponse(out), nil
 }

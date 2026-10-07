@@ -19,18 +19,14 @@ const (
 	emailConfirmTTL      = 24 * time.Hour
 	emailConfirmsPerHour = 3
 	emailConfirmPath     = "/email/confirm"
-	asyncMailTimeout     = time.Minute
 )
 
-// sendAsync sends a mail after the request has answered, so its timing reveals nothing.
-func (s *Server) sendAsync(msg mail.Message) {
-	go func() {
-		ctx, cancel := context.WithTimeout(context.Background(), asyncMailTimeout)
-		defer cancel()
-		if err := s.mailer.Send(ctx, msg); err != nil {
-			s.log.WarnContext(ctx, "mail", slog.String("subject", msg.Subject), slog.Any("error", err))
-		}
-	}()
+// sendMail hands a mail to the server mailer, which sends it after the request has answered
+// (mail.Async), and only logs a failure.
+func (s *Server) sendMail(ctx context.Context, msg mail.Message) {
+	if err := s.mailer.Send(context.WithoutCancel(ctx), msg); err != nil {
+		s.log.WarnContext(ctx, "mail", slog.String("subject", msg.Subject), slog.Any("error", err))
+	}
 }
 
 // requestEmailConfirmation records a typed address for confirmation and returns the mail to send

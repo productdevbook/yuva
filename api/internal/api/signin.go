@@ -119,7 +119,7 @@ func (s *Server) RequestSignInCode(ctx context.Context, req oas.RequestSignInCod
 		return nil, err
 	}
 	msg.To = email
-	s.sendAsync(msg)
+	s.sendMail(ctx, msg)
 	return oas.RequestSignInCode202Response{}, nil
 }
 
@@ -138,7 +138,7 @@ func (s *Server) noticeSignInPaused(ctx context.Context, email string, now time.
 		return err
 	}
 	msg.To = email
-	s.sendAsync(msg)
+	s.sendMail(ctx, msg)
 	return nil
 }
 

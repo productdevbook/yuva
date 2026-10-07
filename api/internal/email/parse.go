@@ -219,9 +219,9 @@ func ParseIDList(v string) []string {
 
 const (
 	maxInboundRefs = 50
-	maxInReplyTo  = 5
-	maxIDBytes    = 998
-	idHeaderScan  = 64 << 10
+	maxInReplyTo   = 5
+	maxIDBytes     = 998
+	idHeaderScan   = 64 << 10
 )
 
 // boundedIDs reads at most the first and last idHeaderScan bytes of an id list header and keeps
