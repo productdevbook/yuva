@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"net/netip"
 	"sync"
 	"time"
 )
@@ -22,12 +23,17 @@ var (
 	limitTypingPerSession  = limit{60, time.Minute}
 )
 
+const maxBuckets = 100_000
+
 type bucket struct {
-	start time.Time
-	n     int
+	start  time.Time
+	window time.Duration
+	n      int
 }
 
-// rateLimiter counts requests per key in fixed windows, in this process only.
+// rateLimiter counts requests per key in fixed windows, in this process only. Finished windows
+// are swept every minute; when maxBuckets windows are open, new keys are refused until a sweep
+// frees room, so rotating source addresses cannot grow it without bound.
 type rateLimiter struct {
 	mu      sync.Mutex
 	buckets map[string]*bucket
@@ -36,20 +42,27 @@ type rateLimiter struct {
 
 func newRateLimiter() *rateLimiter { return &rateLimiter{buckets: map[string]*bucket{}} }
 
+func (l *rateLimiter) sweep(now time.Time) {
+	for k, b := range l.buckets {
+		if now.Sub(b.start) >= b.window || now.Before(b.start) {
+			delete(l.buckets, k)
+		}
+	}
+	l.swept = now
+}
+
 func (l *rateLimiter) allow(key string, lim limit, now time.Time) bool {
 	l.mu.Lock()
 	defer l.mu.Unlock()
-	if now.Sub(l.swept) > 10*time.Minute {
-		for k, b := range l.buckets {
-			if now.Sub(b.start) > time.Hour {
-				delete(l.buckets, k)
-			}
-		}
-		l.swept = now
+	if now.Sub(l.swept) >= time.Minute || now.Before(l.swept) {
+		l.sweep(now)
 	}
 	b := l.buckets[key]
 	if b == nil || now.Sub(b.start) >= lim.window || now.Before(b.start) {
-		b = &bucket{start: now}
+		if b == nil && len(l.buckets) >= maxBuckets {
+			return false
+		}
+		b = &bucket{start: now, window: lim.window}
 		l.buckets[key] = b
 	}
 	if b.n >= lim.n {
@@ -57,6 +70,18 @@ func (l *rateLimiter) allow(key string, lim limit, now time.Time) bool {
 	}
 	b.n++
 	return true
+}
+
+// rateIP is the client address as a rate limit key: IPv6 clients usually hold a whole /64.
+func rateIP(ip string) string {
+	a, err := netip.ParseAddr(ip)
+	if err != nil {
+		return ip
+	}
+	if a = a.Unmap(); a.Is6() {
+		return netip.PrefixFrom(a, 64).Masked().String()
+	}
+	return a.String()
 }
 
 func (s *Server) rateLimit(checks ...rateCheck) error {

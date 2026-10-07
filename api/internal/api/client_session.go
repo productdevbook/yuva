@@ -26,7 +26,7 @@ func identitySecretContext(workspaceID, inboxID uuid.UUID) []byte {
 
 func (s *Server) CreateClientSession(ctx context.Context, req oas.CreateClientSessionRequestObject) (oas.CreateClientSessionResponseObject, error) {
 	b := req.Body
-	ip := s.clientIP(requestFrom(ctx))
+	ip := rateIP(s.clientIP(requestFrom(ctx)))
 	if err := s.rateLimit(rateCheck{"session:ip:" + ip, limitSessionPerIP}); err != nil {
 		return nil, err
 	}
@@ -93,7 +93,7 @@ func chatChannelOf(ch store.FindChatChannelByKeyRow) store.ChatChannel {
 }
 
 func (s *Server) GetClientChannel(ctx context.Context, req oas.GetClientChannelRequestObject) (oas.GetClientChannelResponseObject, error) {
-	if err := s.rateLimit(rateCheck{"channel:ip:" + s.clientIP(requestFrom(ctx)), limitChannelPerIP}); err != nil {
+	if err := s.rateLimit(rateCheck{"channel:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitChannelPerIP}); err != nil {
 		return nil, err
 	}
 	key := strings.TrimSpace(req.ChannelKey)
@@ -516,7 +516,7 @@ func (s *Server) confirmTypedEmail(ctx context.Context, q *store.Queries, cp con
 
 func (s *Server) writeChecks(ctx context.Context, cp contactPrincipal) []rateCheck {
 	return []rateCheck{
-		{"write:ip:" + s.clientIP(requestFrom(ctx)), limitWritePerIP},
+		{"write:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitWritePerIP},
 		{"write:channel:" + cp.channelID.String(), limitWritePerChannel},
 	}
 }

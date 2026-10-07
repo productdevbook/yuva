@@ -270,8 +270,9 @@ inline thread inside a product's own panel.
   e-mail address when nobody is available, a greeting and launcher overrides. `/client/v1` answers
   browsers only from origins some chat channel allows (CORS) and then checks the session's own
   channel: a request for a chat channel must carry one of its origins, and one without an `Origin`
-  header is refused. Session starts and contact writes are rate limited per IP address and per
-  channel, counted in each process.
+  header is refused. Session starts and contact writes are rate limited per IP address (per /64
+  for IPv6) and per channel, counted in each process; finished windows are swept every minute and
+  at most 100,000 are open at once (new keys beyond that are refused until a sweep).
 - Contacts see their own conversations of the inbox, messages only (no notes, no internal events),
   conversation status, and of members only the display name and initials.
 - `live` inboxes show who is available: members with access to the inbox, with an open
