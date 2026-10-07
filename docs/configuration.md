@@ -22,7 +22,7 @@ made in the panel, through `/v1`, or with the [operator commands](operations.md#
 | Variable | Default | Meaning |
 |---|---|---|
 | `YUVA_LISTEN_ADDR` | `:8080` | Address of the HTTP server: panel, API, WebSockets, widget scripts, ingress, `/healthz`, `/readyz`. |
-| `YUVA_METRICS_ADDR` | `:9090` | Address of the Prometheus listener (`GET /metrics`). Keep it off the public internet. |
+| `YUVA_METRICS_ADDR` | `:9090` | Address of the Prometheus listener (`GET /metrics`). Keep it off the public internet. `off` or an empty value turns the listener off. |
 | `YUVA_CLIENT_IP_HEADER` | unset | Header your reverse proxy puts the client's IP address in, e.g. `X-Real-IP`. Rate limits are counted per client IP; unset, the TCP peer address is used, which behind a proxy is the proxy. With a comma-separated list such as `X-Forwarded-For`, Yuva takes the rightmost address that is not in `YUVA_TRUSTED_PROXIES` (the one your proxy appended); values further left are whatever the client sent. |
 | `YUVA_TRUSTED_PROXIES` | unset | Comma-separated addresses or CIDR ranges of your reverse proxies, e.g. `10.0.0.0/8,fd00::/8`. When set, `YUVA_CLIENT_IP_HEADER` is used only for requests whose TCP peer is one of them, and their own entries are skipped when reading the header from the right. Set it when more than one proxy appends to the header. |
 | `YUVA_COOKIE_SECURE` | `true` when `YUVA_PUBLIC_URL` is `https` | Marks the member session cookie `Secure`. |

@@ -88,7 +88,7 @@ func Load(version string) (Config, error) {
 	c := Config{
 		Version:        version,
 		ListenAddr:     env("YUVA_LISTEN_ADDR", ":8080"),
-		MetricsAddr:    env("YUVA_METRICS_ADDR", ":9090"),
+		MetricsAddr:    metricsAddr(),
 		DatabaseURL:    env("YUVA_DATABASE_URL", ""),
 		PublicURL:      strings.TrimRight(env("YUVA_PUBLIC_URL", "http://localhost:8080"), "/"),
 		ClientIPHeader: env("YUVA_CLIENT_IP_HEADER", ""),
@@ -231,6 +231,18 @@ func lowerList(v string) []string {
 		out = append(out, strings.ToLower(item))
 	}
 	return out
+}
+
+func metricsAddr() string {
+	v, ok := os.LookupEnv("YUVA_METRICS_ADDR")
+	if !ok {
+		return ":9090"
+	}
+	v = strings.TrimSpace(v)
+	if strings.EqualFold(v, "off") {
+		return ""
+	}
+	return v
 }
 
 func env(name, fallback string) string {
