@@ -192,6 +192,7 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 			PublicURL:      cfg.PublicURL,
 			CookieSecure:   cfg.CookieSecure,
 			ClientIPHeader: cfg.ClientIPHeader,
+			TrustedProxies: cfg.TrustedProxies,
 		},
 		Secrets: masterKey,
 		Storage: objects,

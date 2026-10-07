@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/mail"
+	"net/netip"
 	"net/url"
 	"os"
 	"strconv"
@@ -20,6 +21,7 @@ type Config struct {
 	PublicURL      string
 	CookieSecure   bool
 	ClientIPHeader string
+	TrustedProxies []netip.Prefix
 
 	WebAuthnRPID    string
 	WebAuthnRPName  string
@@ -144,6 +146,17 @@ func Load(version string) (Config, error) {
 	}
 	if c.Storage.S3PathStyle, err = boolEnv("YUVA_S3_PATH_STYLE", false); err != nil {
 		return c, err
+	}
+	for _, v := range list(env("YUVA_TRUSTED_PROXIES", "")) {
+		p, err := netip.ParsePrefix(v)
+		if err != nil {
+			a, aerr := netip.ParseAddr(v)
+			if aerr != nil {
+				return c, fmt.Errorf("YUVA_TRUSTED_PROXIES: %q is not an IP address or CIDR range", v)
+			}
+			p = netip.PrefixFrom(a, a.BitLen())
+		}
+		c.TrustedProxies = append(c.TrustedProxies, p.Masked())
 	}
 	if c.WebhookAllowPrivate, err = boolEnv("YUVA_WEBHOOK_ALLOW_PRIVATE", false); err != nil {
 		return c, err

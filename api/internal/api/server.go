@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
+	"net/netip"
 	"net/url"
 	"strconv"
 	"strings"
@@ -116,6 +117,8 @@ type AuthSettings struct {
 	PublicURL      string
 	CookieSecure   bool
 	ClientIPHeader string
+	// TrustedProxies are the proxies whose entries in ClientIPHeader are skipped from the right.
+	TrustedProxies []netip.Prefix
 	// CodeReplyDelay is how long every sign-in code request takes; 0 means 800 ms.
 	CodeReplyDelay time.Duration
 }

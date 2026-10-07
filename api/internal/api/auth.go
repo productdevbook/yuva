@@ -8,6 +8,7 @@ import (
 	"mime"
 	"net"
 	"net/http"
+	"net/netip"
 	"strings"
 	"time"
 	"uuid"
@@ -309,18 +310,49 @@ func (s *Server) guardCookieWrites(next http.Handler) http.Handler {
 	})
 }
 
-func (s *Server) clientIP(r *http.Request) string {
-	if s.auth.ClientIPHeader != "" {
-		if v := r.Header.Get(s.auth.ClientIPHeader); v != "" {
-			first, _, _ := strings.Cut(v, ",")
-			return strings.TrimSpace(first)
+func (s *Server) trusted(v string) bool {
+	a, err := netip.ParseAddr(v)
+	if err != nil {
+		return false
+	}
+	a = a.Unmap()
+	for _, p := range s.auth.TrustedProxies {
+		if p.Contains(a) {
+			return true
 		}
 	}
-	host, _, err := net.SplitHostPort(r.RemoteAddr)
+	return false
+}
+
+// clientIP is the TCP peer, or with a client IP header the rightmost address in it that is not
+// one of the trusted proxies: proxies append to X-Forwarded-For, so everything left of the hop
+// our own proxy added is whatever the client sent. With trusted proxies configured, the header
+// counts only when the peer is one of them.
+func (s *Server) clientIP(r *http.Request) string {
+	peer, _, err := net.SplitHostPort(r.RemoteAddr)
 	if err != nil {
-		return r.RemoteAddr
+		peer = r.RemoteAddr
 	}
-	return host
+	if s.auth.ClientIPHeader == "" || (len(s.auth.TrustedProxies) > 0 && !s.trusted(peer)) {
+		return peer
+	}
+	var hops []string
+	for _, v := range r.Header.Values(s.auth.ClientIPHeader) {
+		for h := range strings.SplitSeq(v, ",") {
+			if h = strings.TrimSpace(h); h != "" {
+				hops = append(hops, h)
+			}
+		}
+	}
+	if len(hops) == 0 {
+		return peer
+	}
+	for i := len(hops) - 1; i > 0; i-- {
+		if !s.trusted(hops[i]) {
+			return hops[i]
+		}
+	}
+	return hops[0]
 }
 
 func randomToken(n int) string {
