@@ -24,7 +24,8 @@ WHERE m.workspace_id = $1
 ORDER BY m.created_at, m.id;
 
 -- name: ListMemberships :many
-SELECT m.id AS member_id, m.role, w.id AS workspace_id, w.name AS workspace_name, w.created_at AS workspace_created_at
+SELECT m.id AS member_id, m.role, w.id AS workspace_id, w.name AS workspace_name, w.created_at AS workspace_created_at,
+       w.retention_days AS workspace_retention_days
 FROM members m JOIN workspaces w ON w.id = m.workspace_id
 WHERE m.person_id = $1
 ORDER BY m.created_at, m.id;

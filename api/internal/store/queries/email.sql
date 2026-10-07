@@ -149,3 +149,17 @@ WHERE e.workspace_id = $1 AND c.contact_id = $2 AND e.raw_key IS NOT NULL;
 SELECT e.raw_key::text FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
 WHERE e.workspace_id = $1 AND c.inbox_id = $2 AND e.raw_key IS NOT NULL;
+
+-- name: ListConversationsRawKeys :many
+SELECT raw_key::text FROM message_emails
+WHERE workspace_id = @workspace_id AND conversation_id = ANY(@ids::uuid[]) AND raw_key IS NOT NULL;
+
+-- name: ListExpiredRawKeys :many
+SELECT raw_key::text FROM message_emails
+WHERE workspace_id = @workspace_id AND raw_key IS NOT NULL AND created_at < @before
+ORDER BY created_at
+LIMIT @max_rows;
+
+-- name: ClearRawKeys :execrows
+UPDATE message_emails SET raw_key = NULL, raw_size = NULL
+WHERE workspace_id = @workspace_id AND raw_key = ANY(@keys::text[]);

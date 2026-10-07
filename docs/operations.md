@@ -140,8 +140,18 @@ What Yuva deletes by itself, once an hour:
 
 Conversations, messages, attachments and raw e-mails are kept until their contact is deleted (in
 the panel, with `DELETE /v1/contacts/{contactId}`, or with `DELETE /v1/contacts/by-external-id`
-from your backend), which removes the contact's conversations and files with it. Retention periods per workspace for closed
-conversations and raw e-mails are not in 0.0.1.
+from your backend), which removes the contact's conversations and files with it.
+
+A workspace owner can set a retention period in days under **Settings → Workspace** or with
+`PATCH /v1/workspace` and `{"retention_days": 90}` (`null` keeps everything, the default). Once
+an hour Yuva then deletes, in that workspace:
+
+- closed conversations that have not changed for that many days, with their messages, notes,
+  events and attachments, including the stored files;
+- raw e-mails older than that many days, in every conversation. The message, its text and its
+  attachments stay; only the original `.eml` download goes.
+
+Deleted data cannot be restored except from a backup.
 
 ## Monitoring
 

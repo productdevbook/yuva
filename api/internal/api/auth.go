@@ -259,6 +259,16 @@ func requireManager(p principal) error {
 	return nil
 }
 
+func requireOwner(p principal) error {
+	if p.isKey() {
+		return errMemberSessionRequired
+	}
+	if p.role != roleOwner {
+		return errForbidden
+	}
+	return nil
+}
+
 func bearerToken(r *http.Request) (string, bool) {
 	h := r.Header.Get("Authorization")
 	scheme, token, ok := strings.Cut(h, " ")

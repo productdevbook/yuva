@@ -31,7 +31,7 @@ func buildMe(ctx context.Context, q *store.Queries, personID uuid.UUID) (oas.Me,
 		me.Memberships = append(me.Memberships, oas.Membership{
 			MemberId:  r.MemberID,
 			Role:      oas.Role(r.Role),
-			Workspace: oas.Workspace{Id: r.WorkspaceID, Name: r.WorkspaceName, CreatedAt: r.WorkspaceCreatedAt},
+			Workspace: oas.Workspace{Id: r.WorkspaceID, Name: r.WorkspaceName, RetentionDays: r.WorkspaceRetentionDays, CreatedAt: r.WorkspaceCreatedAt},
 		})
 	}
 	return me, nil

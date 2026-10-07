@@ -176,18 +176,20 @@ func (q *Queries) ListMembers(ctx context.Context, workspaceID uuid.UUID) ([]Lis
 }
 
 const listMemberships = `-- name: ListMemberships :many
-SELECT m.id AS member_id, m.role, w.id AS workspace_id, w.name AS workspace_name, w.created_at AS workspace_created_at
+SELECT m.id AS member_id, m.role, w.id AS workspace_id, w.name AS workspace_name, w.created_at AS workspace_created_at,
+       w.retention_days AS workspace_retention_days
 FROM members m JOIN workspaces w ON w.id = m.workspace_id
 WHERE m.person_id = $1
 ORDER BY m.created_at, m.id
 `
 
 type ListMembershipsRow struct {
-	MemberID           uuid.UUID
-	Role               string
-	WorkspaceID        uuid.UUID
-	WorkspaceName      string
-	WorkspaceCreatedAt time.Time
+	MemberID               uuid.UUID
+	Role                   string
+	WorkspaceID            uuid.UUID
+	WorkspaceName          string
+	WorkspaceCreatedAt     time.Time
+	WorkspaceRetentionDays *int32
 }
 
 func (q *Queries) ListMemberships(ctx context.Context, personID uuid.UUID) ([]ListMembershipsRow, error) {
@@ -205,6 +207,7 @@ func (q *Queries) ListMemberships(ctx context.Context, personID uuid.UUID) ([]Li
 			&i.WorkspaceID,
 			&i.WorkspaceName,
 			&i.WorkspaceCreatedAt,
+			&i.WorkspaceRetentionDays,
 		); err != nil {
 			return nil, err
 		}

@@ -129,3 +129,16 @@ LIMIT 1;
 
 -- name: InboxAPIChannel :one
 SELECT * FROM channels WHERE workspace_id = $1 AND inbox_id = $2 AND kind = 'api' ORDER BY created_at, id LIMIT 1;
+
+-- name: ListExpiredConversationIDs :many
+SELECT id FROM conversations
+WHERE workspace_id = @workspace_id AND status = 'closed'
+  AND updated_at < @before AND last_activity_at < @before
+ORDER BY updated_at, id
+LIMIT @max_rows;
+
+-- name: ListConversationsStorageKeys :many
+SELECT storage_key FROM attachments WHERE workspace_id = @workspace_id AND conversation_id = ANY(@ids::uuid[]);
+
+-- name: DeleteConversations :execrows
+DELETE FROM conversations WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[]);

@@ -250,6 +250,7 @@ func (s *Server) AddWorkers(workers *river.Workers) {
 	river.AddWorker(workers, &notifyWorker{s: s})
 	river.AddWorker(workers, &pushWorker{s: s})
 	river.AddWorker(workers, &notificationEmailWorker{s: s})
+	river.AddWorker(workers, &retentionWorker{s: s})
 }
 
 func truncateRunes(v string, n int) string {

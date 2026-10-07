@@ -49,9 +49,17 @@ func New(pool *pgxpool.Pool, q *store.Queries, log *slog.Logger, register ...fun
 			river.NewPeriodicJob(river.PeriodicInterval(time.Hour), func() (river.JobArgs, *river.InsertOpts) {
 				return EventCleanupArgs{}, nil
 			}, &river.PeriodicJobOpts{ID: "event_cleanup", RunOnStart: true}),
+			river.NewPeriodicJob(river.PeriodicInterval(time.Hour), func() (river.JobArgs, *river.InsertOpts) {
+				return RetentionArgs{}, nil
+			}, &river.PeriodicJobOpts{ID: "retention", RunOnStart: true}),
 		},
 	})
 }
+
+// RetentionArgs is worked by the api package, which owns object storage.
+type RetentionArgs struct{}
+
+func (RetentionArgs) Kind() string { return "retention" }
 
 type EventCleanupArgs struct{}
 

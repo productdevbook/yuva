@@ -41,6 +41,24 @@ func (q *Queries) ClaimAutoReply(ctx context.Context, arg ClaimAutoReplyParams) 
 	return sent_at, err
 }
 
+const clearRawKeys = `-- name: ClearRawKeys :execrows
+UPDATE message_emails SET raw_key = NULL, raw_size = NULL
+WHERE workspace_id = $1 AND raw_key = ANY($2::text[])
+`
+
+type ClearRawKeysParams struct {
+	WorkspaceID uuid.UUID
+	Keys        []string
+}
+
+func (q *Queries) ClearRawKeys(ctx context.Context, arg ClearRawKeysParams) (int64, error) {
+	result, err := q.db.Exec(ctx, clearRawKeys, arg.WorkspaceID, arg.Keys)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
 const clearSuppression = `-- name: ClearSuppression :exec
 DELETE FROM email_suppressions WHERE workspace_id = $1 AND email = $2
 `
@@ -737,6 +755,36 @@ func (q *Queries) ListContactSuppressions(ctx context.Context, arg ListContactSu
 	return items, nil
 }
 
+const listConversationsRawKeys = `-- name: ListConversationsRawKeys :many
+SELECT raw_key::text FROM message_emails
+WHERE workspace_id = $1 AND conversation_id = ANY($2::uuid[]) AND raw_key IS NOT NULL
+`
+
+type ListConversationsRawKeysParams struct {
+	WorkspaceID uuid.UUID
+	Ids         []uuid.UUID
+}
+
+func (q *Queries) ListConversationsRawKeys(ctx context.Context, arg ListConversationsRawKeysParams) ([]string, error) {
+	rows, err := q.db.Query(ctx, listConversationsRawKeys, arg.WorkspaceID, arg.Ids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var raw_key string
+		if err := rows.Scan(&raw_key); err != nil {
+			return nil, err
+		}
+		items = append(items, raw_key)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listEmailChannels = `-- name: ListEmailChannels :many
 SELECT workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours FROM email_channels WHERE workspace_id = $1 AND channel_id = ANY($2::uuid[])
 `
@@ -773,6 +821,39 @@ func (q *Queries) ListEmailChannels(ctx context.Context, arg ListEmailChannelsPa
 			return nil, err
 		}
 		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listExpiredRawKeys = `-- name: ListExpiredRawKeys :many
+SELECT raw_key::text FROM message_emails
+WHERE workspace_id = $1 AND raw_key IS NOT NULL AND created_at < $2
+ORDER BY created_at
+LIMIT $3
+`
+
+type ListExpiredRawKeysParams struct {
+	WorkspaceID uuid.UUID
+	Before      time.Time
+	MaxRows     int32
+}
+
+func (q *Queries) ListExpiredRawKeys(ctx context.Context, arg ListExpiredRawKeysParams) ([]string, error) {
+	rows, err := q.db.Query(ctx, listExpiredRawKeys, arg.WorkspaceID, arg.Before, arg.MaxRows)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var raw_key string
+		if err := rows.Scan(&raw_key); err != nil {
+			return nil, err
+		}
+		items = append(items, raw_key)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

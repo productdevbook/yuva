@@ -238,6 +238,23 @@ func (q *Queries) CreateConversation(ctx context.Context, arg CreateConversation
 	return i, err
 }
 
+const deleteConversations = `-- name: DeleteConversations :execrows
+DELETE FROM conversations WHERE workspace_id = $1 AND id = ANY($2::uuid[])
+`
+
+type DeleteConversationsParams struct {
+	WorkspaceID uuid.UUID
+	Ids         []uuid.UUID
+}
+
+func (q *Queries) DeleteConversations(ctx context.Context, arg DeleteConversationsParams) (int64, error) {
+	result, err := q.db.Exec(ctx, deleteConversations, arg.WorkspaceID, arg.Ids)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
 const getConversation = `-- name: GetConversation :one
 SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address FROM conversations WHERE workspace_id = $1 AND id = $2
 `
@@ -526,6 +543,69 @@ func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsPa
 			return nil, err
 		}
 		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listConversationsStorageKeys = `-- name: ListConversationsStorageKeys :many
+SELECT storage_key FROM attachments WHERE workspace_id = $1 AND conversation_id = ANY($2::uuid[])
+`
+
+type ListConversationsStorageKeysParams struct {
+	WorkspaceID uuid.UUID
+	Ids         []uuid.UUID
+}
+
+func (q *Queries) ListConversationsStorageKeys(ctx context.Context, arg ListConversationsStorageKeysParams) ([]string, error) {
+	rows, err := q.db.Query(ctx, listConversationsStorageKeys, arg.WorkspaceID, arg.Ids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var storage_key string
+		if err := rows.Scan(&storage_key); err != nil {
+			return nil, err
+		}
+		items = append(items, storage_key)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listExpiredConversationIDs = `-- name: ListExpiredConversationIDs :many
+SELECT id FROM conversations
+WHERE workspace_id = $1 AND status = 'closed'
+  AND updated_at < $2 AND last_activity_at < $2
+ORDER BY updated_at, id
+LIMIT $3
+`
+
+type ListExpiredConversationIDsParams struct {
+	WorkspaceID uuid.UUID
+	Before      time.Time
+	MaxRows     int32
+}
+
+func (q *Queries) ListExpiredConversationIDs(ctx context.Context, arg ListExpiredConversationIDsParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listExpiredConversationIDs, arg.WorkspaceID, arg.Before, arg.MaxRows)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var id uuid.UUID
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

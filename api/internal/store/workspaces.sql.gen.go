@@ -24,7 +24,7 @@ func (q *Queries) CountWorkspaces(ctx context.Context) (int64, error) {
 
 const createWorkspace = `-- name: CreateWorkspace :one
 INSERT INTO workspaces (id, name) VALUES ($1, $2)
-RETURNING id, name, created_at
+RETURNING id, name, created_at, retention_days
 `
 
 type CreateWorkspaceParams struct {
@@ -35,18 +35,28 @@ type CreateWorkspaceParams struct {
 func (q *Queries) CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams) (Workspace, error) {
 	row := q.db.QueryRow(ctx, createWorkspace, arg.ID, arg.Name)
 	var i Workspace
-	err := row.Scan(&i.ID, &i.Name, &i.CreatedAt)
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.RetentionDays,
+	)
 	return i, err
 }
 
 const getWorkspace = `-- name: GetWorkspace :one
-SELECT id, name, created_at FROM workspaces WHERE id = $1
+SELECT id, name, created_at, retention_days FROM workspaces WHERE id = $1
 `
 
 func (q *Queries) GetWorkspace(ctx context.Context, id uuid.UUID) (Workspace, error) {
 	row := q.db.QueryRow(ctx, getWorkspace, id)
 	var i Workspace
-	err := row.Scan(&i.ID, &i.Name, &i.CreatedAt)
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.RetentionDays,
+	)
 	return i, err
 }
 
@@ -74,8 +84,37 @@ func (q *Queries) ListWorkspaceIDs(ctx context.Context) ([]uuid.UUID, error) {
 	return items, nil
 }
 
+const listWorkspaceRetention = `-- name: ListWorkspaceRetention :many
+SELECT id, retention_days::integer AS retention_days FROM workspaces WHERE retention_days IS NOT NULL ORDER BY id
+`
+
+type ListWorkspaceRetentionRow struct {
+	ID            uuid.UUID
+	RetentionDays int32
+}
+
+func (q *Queries) ListWorkspaceRetention(ctx context.Context) ([]ListWorkspaceRetentionRow, error) {
+	rows, err := q.db.Query(ctx, listWorkspaceRetention)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListWorkspaceRetentionRow
+	for rows.Next() {
+		var i ListWorkspaceRetentionRow
+		if err := rows.Scan(&i.ID, &i.RetentionDays); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listWorkspacesByName = `-- name: ListWorkspacesByName :many
-SELECT id, name, created_at FROM workspaces WHERE name = $1 ORDER BY created_at, id
+SELECT id, name, created_at, retention_days FROM workspaces WHERE name = $1 ORDER BY created_at, id
 `
 
 func (q *Queries) ListWorkspacesByName(ctx context.Context, name string) ([]Workspace, error) {
@@ -87,7 +126,12 @@ func (q *Queries) ListWorkspacesByName(ctx context.Context, name string) ([]Work
 	var items []Workspace
 	for rows.Next() {
 		var i Workspace
-		if err := rows.Scan(&i.ID, &i.Name, &i.CreatedAt); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.CreatedAt,
+			&i.RetentionDays,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -116,4 +160,27 @@ func (q *Queries) LockWorkspace(ctx context.Context, id uuid.UUID) (uuid.UUID, e
 	var id_2 uuid.UUID
 	err := row.Scan(&id_2)
 	return id_2, err
+}
+
+const setWorkspaceRetention = `-- name: SetWorkspaceRetention :one
+UPDATE workspaces SET retention_days = $1
+WHERE id = $2
+RETURNING id, name, created_at, retention_days
+`
+
+type SetWorkspaceRetentionParams struct {
+	RetentionDays *int32
+	ID            uuid.UUID
+}
+
+func (q *Queries) SetWorkspaceRetention(ctx context.Context, arg SetWorkspaceRetentionParams) (Workspace, error) {
+	row := q.db.QueryRow(ctx, setWorkspaceRetention, arg.RetentionDays, arg.ID)
+	var i Workspace
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.RetentionDays,
+	)
+	return i, err
 }

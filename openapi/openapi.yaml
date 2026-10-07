@@ -618,6 +618,34 @@ paths:
           $ref: "#/components/responses/Problem"
         "403":
           $ref: "#/components/responses/Problem"
+    patch:
+      operationId: updateWorkspace
+      summary: Update the workspace
+      description: Owners only, with a member session.
+      tags: [workspace]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WorkspaceUpdate"
+      responses:
+        "200":
+          description: The updated workspace.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Workspace"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
   /v1/members:
     get:
       operationId: listMembers
@@ -3594,9 +3622,25 @@ components:
           format: uuid
         name:
           type: string
+        retention_days:
+          type: integer
+          format: int32
+          description: >-
+            Closed conversations untouched for this many days are deleted with their messages and
+            attachments, and raw e-mails older than this are deleted. Absent when everything is kept.
         created_at:
           type: string
           format: date-time
+    WorkspaceUpdate:
+      type: object
+      required: [retention_days]
+      properties:
+        retention_days:
+          type: [integer, "null"]
+          format: int32
+          minimum: 1
+          maximum: 36500
+          description: "`null` keeps everything."
     Membership:
       type: object
       required: [workspace, member_id, role]

@@ -433,7 +433,10 @@ now; per-channel limits can narrow them later.
 
 ## Privacy and data
 
-- Retention per workspace: closed conversations and raw e-mails deleted after a set period.
+- Retention per workspace: `workspaces.retention_days`, set by an owner (`PATCH /v1/workspace`);
+  `null` keeps everything. An hourly River job deletes closed conversations whose last change and
+  last activity are older than that, with their messages, attachments and stored files, and
+  removes raw e-mails older than that from storage (the parsed message stays).
 - Contact deletion and export through the API, for GDPR and KVKK requests. A host backend deletes
   a user who deleted their account with `DELETE /v1/contacts/by-external-id?inbox_id=&external_id=`
   (an API key or an owner or admin): the contact goes with all their conversations, messages,

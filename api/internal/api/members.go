@@ -26,7 +26,11 @@ func (s *Server) GetWorkspace(ctx context.Context, _ oas.GetWorkspaceRequestObje
 	if err != nil {
 		return nil, err
 	}
-	return oas.GetWorkspace200JSONResponse{Id: w.ID, Name: w.Name, CreatedAt: w.CreatedAt}, nil
+	return oas.GetWorkspace200JSONResponse(workspaceBody(w)), nil
+}
+
+func workspaceBody(w store.Workspace) oas.Workspace {
+	return oas.Workspace{Id: w.ID, Name: w.Name, RetentionDays: w.RetentionDays, CreatedAt: w.CreatedAt}
 }
 
 func (s *Server) ListMembers(ctx context.Context, _ oas.ListMembersRequestObject) (oas.ListMembersResponseObject, error) {
