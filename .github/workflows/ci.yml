@@ -92,3 +92,22 @@ jobs:
       - if: steps.present.outputs.yes == 'true'
         working-directory: sdk/js
         run: bun install --frozen-lockfile && bun run check && bun run build
+
+  sdk-swift:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: swift build
+      - working-directory: sdk/swift/Example
+        run: xcodebuild -project YuvaExample.xcodeproj -scheme YuvaExample -destination "generic/platform=iOS Simulator" CODE_SIGNING_ALLOWED=NO build
+
+  sdk-kotlin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - working-directory: sdk/kotlin
+        run: ./gradlew --console=plain check :sample:assembleDebug

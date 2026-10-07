@@ -19,8 +19,8 @@ Keep this table current when a command changes.
 | `web/` | yuva-panel | in `web/`: `npm run -s extract && npx lingui compile --strict && npm run -s build` |
 | `edge/` | yuva-edge | in `edge/`: `bun run check` |
 | `sdk/js` | yuva-widget | in `sdk/js/`: `bun run check && bun run build` (reports the gzip size) |
-| `sdk/swift` | yuva-mobile | `swift build` and the sample app built on the Mac |
-| `sdk/kotlin` | yuva-mobile | `./gradlew check` on the Mac, never on a machine without swap |
+| `sdk/swift` | yuva-mobile | on the Mac, at the root: `swift build`; in `sdk/swift/Example/`: `xcodebuild -project YuvaExample.xcodeproj -scheme YuvaExample -destination "generic/platform=iOS Simulator" build` |
+| `sdk/kotlin` | yuva-mobile | in `sdk/kotlin/` on the Mac (JDK 21 as `JAVA_HOME`, `ANDROID_HOME` set), never on a machine without swap: `./gradlew check :sample:assembleDebug` |
 | `docs/`, site | yuva-docs | links resolve; every documented endpoint exists in `openapi/` |
 
 - OpenAPI is 3.1: no `nullable`. Contract first: change the spec, lint, regenerate, then implement.
