@@ -37,9 +37,11 @@ id). The categories are fixed for now (`bug`, `idea`, `praise`, `other`; a per-i
 later) and `/client/v1` returns them with the inbox so the SDKs never hard-code them. Apps send it
 with `POST /client/v1/feedback` (JSON, or multipart with screenshots); host backends whose forms
 are server-rendered send it with an API key to `POST /v1/feedback`, naming the user by their
-external id, through the inbox's `api` channel. It is answered like any other conversation; the
-answer reaches the contact in the app, or by e-mail when they allowed it (`allow_email`): members'
-replies the contact has not read go out through the same delayed e-mail as chat replies. The panel
+external id, into any inbox of the key's workspace. The conversation starts on the inbox's `api`
+channel, which the first such request creates (named `API`) when the inbox has none. It is
+answered like any other conversation; the answer reaches the contact in the app, or by e-mail when
+they allowed it (`allow_email`): members' replies the contact has not read go out through the same
+delayed e-mail as chat replies. The panel
 filters conversations by `kind` and feedback `category` and counts open feedback per category.
 
 ## Components

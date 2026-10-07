@@ -2144,8 +2144,9 @@ paths:
       summary: Post feedback for a host app's user
       description: |
         API keys only: a host backend posts feedback its own (server-rendered) form collected,
-        for its user `contact.external_id` in `inbox_id`. The inbox needs an `api` channel, which
-        the conversation starts on (`400 api_channel_required` otherwise).
+        for its user `contact.external_id` in `inbox_id`, which may be any inbox of the key's
+        workspace. The conversation starts on the inbox's oldest `api` channel; an inbox without one
+        gets an `api` channel named `API` on the first request.
 
         The contact is found by the external id in the inbox, then by `contact.email`, or created;
         `name` and `email` are saved on it (an address that belongs to another contact is left

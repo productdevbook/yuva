@@ -335,8 +335,6 @@ func TestAPIFeedbackAndDeleteByExternalID(t *testing.T) {
 		"inbox_id": tm.inbox, "category": "praise", "body": "Love the new release", "client_id": "form-1", "app_version": "web-5",
 		"contact": map[string]any{"external_id": "acct-7", "email": "success+fb@simulator.amazonses.com", "name": "Form User"},
 	}
-	key.expectProblem(http.StatusBadRequest, "api_channel_required", "POST", "/v1/feedback", body)
-	tm.owner.expect(http.StatusCreated, "POST", "/v1/inboxes/"+tm.inbox+"/channels", map[string]any{"kind": "api", "name": "Website form"})
 	tm.owner.expectProblem(http.StatusForbidden, "forbidden", "POST", "/v1/feedback", body)
 	r := key.expect(http.StatusCreated, "POST", "/v1/feedback", body)
 	contact := r.body["contact"].(map[string]any)
@@ -348,9 +346,26 @@ func TestAPIFeedbackAndDeleteByExternalID(t *testing.T) {
 	if again := key.expect(http.StatusOK, "POST", "/v1/feedback", body); again.body["conversation"].(map[string]any)["id"] != conv["id"] {
 		t.Fatalf("idempotent api feedback: %s", again.raw)
 	}
+	apiChannels := func(team team, inbox string) []map[string]any {
+		var out []map[string]any
+		for _, it := range team.owner.expect(http.StatusOK, "GET", "/v1/inboxes/"+inbox+"/channels", nil).body["items"].([]any) {
+			if c := it.(map[string]any); c["kind"] == "api" {
+				out = append(out, c)
+			}
+		}
+		return out
+	}
+	made := apiChannels(tm, tm.inbox)
+	if len(made) != 1 || made[0]["name"] != "API" || made[0]["id"] != conv["channel_id"] {
+		t.Fatalf("api channel on first use: %v, conversation %s", made, r.raw)
+	}
 	body["client_id"] = "form-2"
-	if second := key.expect(http.StatusCreated, "POST", "/v1/feedback", body); second.body["contact"].(map[string]any)["id"] != contact["id"] {
+	second := key.expect(http.StatusCreated, "POST", "/v1/feedback", body)
+	if second.body["contact"].(map[string]any)["id"] != contact["id"] {
 		t.Fatalf("same external id made a new contact: %s", second.raw)
+	}
+	if second.body["conversation"].(map[string]any)["channel_id"] != conv["channel_id"] || len(apiChannels(tm, tm.inbox)) != 1 {
+		t.Fatalf("second feedback did not reuse the api channel: %s", second.raw)
 	}
 	h.runWebhooks(tm.ws)
 	var feedbackHooks int
@@ -370,6 +385,13 @@ func TestAPIFeedbackAndDeleteByExternalID(t *testing.T) {
 
 	other := newTeam(t, h)
 	otherKey := other.apiKey(h)
+	own := other.owner.expect(http.StatusCreated, "POST", "/v1/inboxes/"+other.inbox+"/channels", map[string]any{"kind": "api", "name": "Website form"})
+	otherBody := map[string]any{"inbox_id": other.inbox, "category": "idea", "body": "Dark mode", "contact": map[string]any{"external_id": "acct-9"}}
+	otherKey.expectProblem(http.StatusNotFound, "not_found", "POST", "/v1/feedback", body)
+	viaOwn := otherKey.expect(http.StatusCreated, "POST", "/v1/feedback", otherBody)
+	if viaOwn.body["conversation"].(map[string]any)["channel_id"] != own.body["id"] || len(apiChannels(other, other.inbox)) != 1 {
+		t.Fatalf("existing api channel not used: %s", viaOwn.raw)
+	}
 	otherKey.expectProblem(http.StatusNotFound, "not_found", "DELETE", "/v1/contacts/by-external-id?inbox_id="+tm.inbox+"&external_id=acct-7", nil)
 	tm.agent.expectProblem(http.StatusForbidden, "forbidden", "DELETE", "/v1/contacts/by-external-id?inbox_id="+tm.inbox+"&external_id=acct-7", nil)
 	key.expectProblem(http.StatusNotFound, "not_found", "DELETE", "/v1/contacts/by-external-id?inbox_id="+tm.inbox+"&external_id=nobody", nil)

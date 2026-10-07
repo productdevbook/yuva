@@ -18,7 +18,6 @@ var feedbackCategories = []oas.FeedbackCategory{oas.Bug, oas.Idea, oas.Praise, o
 var (
 	errFeedbackChannel     = problem(http.StatusForbidden, "forbidden", "feedback is sent from app channels")
 	errFeedbackNeedsKey    = problem(http.StatusForbidden, "forbidden", "only an API key can post feedback for a contact")
-	errAPIChannelRequired  = problem(http.StatusBadRequest, "api_channel_required", "the inbox needs an api channel to take feedback")
 	clientFeedbackFields   = []string{"category", "subject", "body", "client_id", "allow_email", "email", "app_version", "build", "os", "os_version", "device_model", "locale", "screen", "installation_id"}
 	feedbackFieldMaxLength = map[string]int{
 		"app_version": 50, "build": 50, "os": 50, "os_version": 50, "device_model": 100, "locale": 35, "screen": 200, "installation_id": 200,
@@ -255,13 +254,6 @@ func (s *Server) CreateFeedback(ctx context.Context, req oas.CreateFeedbackReque
 	if err != nil {
 		return nil, err
 	}
-	ch, err := s.st.InboxAPIChannel(ctx, store.InboxAPIChannelParams{WorkspaceID: p.workspaceID, InboxID: inbox.ID})
-	if store.IsNotFound(err) {
-		return nil, errAPIChannelRequired
-	}
-	if err != nil {
-		return nil, err
-	}
 	var (
 		out     oas.FeedbackCreated
 		created = true
@@ -299,6 +291,10 @@ func (s *Server) CreateFeedback(ctx context.Context, req oas.CreateFeedbackReque
 				return err
 			}
 		}
+		ch, err := s.inboxAPIChannel(ctx, q, inbox)
+		if err != nil {
+			return err
+		}
 		c, err := s.createFeedbackConversation(ctx, q, events, p.workspaceID, inbox.ID, contact.ID, ch.ID, in.subject, fb)
 		if err != nil {
 			return err
@@ -319,6 +315,29 @@ func (s *Server) CreateFeedback(ctx context.Context, req oas.CreateFeedbackReque
 		return oas.CreateFeedback200JSONResponse(out), nil
 	}
 	return oas.CreateFeedback201JSONResponse(out), nil
+}
+
+// inboxAPIChannel returns the inbox's oldest api channel, creating one named "API" on first use.
+func (s *Server) inboxAPIChannel(ctx context.Context, q *store.Queries, inbox store.Inbox) (store.Channel, error) {
+	arg := store.InboxAPIChannelParams{WorkspaceID: inbox.WorkspaceID, InboxID: inbox.ID}
+	ch, err := q.InboxAPIChannel(ctx, arg)
+	if !store.IsNotFound(err) {
+		return ch, err
+	}
+	if _, err := q.LockInbox(ctx, store.LockInboxParams{WorkspaceID: inbox.WorkspaceID, ID: inbox.ID}); err != nil {
+		if store.IsNotFound(err) {
+			return ch, errInboxGone
+		}
+		return ch, err
+	}
+	ch, err = q.InboxAPIChannel(ctx, arg)
+	if !store.IsNotFound(err) {
+		return ch, err
+	}
+	return q.CreateChannel(ctx, store.CreateChannelParams{
+		ID: newID(), WorkspaceID: inbox.WorkspaceID, InboxID: inbox.ID, Kind: string(oas.ChannelKindApi),
+		Name: "API", Settings: []byte("{}"), Now: s.now(),
+	})
 }
 
 // feedbackContact finds the host's user by external id in the inbox, then by e-mail, or creates
