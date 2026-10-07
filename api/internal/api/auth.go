@@ -54,6 +54,8 @@ var operationAccess = map[string]access{
 	"FinishPasskeyRegistration": accessPerson,
 	"DeletePasskey":             accessPerson,
 
+	"MarkConversationRead": accessMember,
+
 	"UpdateMember": accessMember,
 	"RemoveMember": accessMember,
 	"CreateInvite": accessMember,
@@ -90,12 +92,33 @@ var (
 	errForbidden             = problem(http.StatusForbidden, "forbidden", "your role does not allow this")
 )
 
+var workspaceQueryOperations = map[string]bool{"DownloadAttachment": true}
+
+// workspaceFromQuery lets clients that cannot set headers (WebSocket, links) name the workspace
+// with ?workspace_id=.
+func workspaceFromQuery(r *http.Request) error {
+	v := r.URL.Query().Get("workspace_id")
+	if v == "" {
+		return nil
+	}
+	if h := r.Header.Get(workspaceHeader); h != "" && h != v {
+		return errValidation("workspace_id and Yuva-Workspace name different workspaces")
+	}
+	r.Header.Set(workspaceHeader, v)
+	return nil
+}
+
 func (s *Server) authenticate(next oas.StrictHandlerFunc, operationID string) oas.StrictHandlerFunc {
 	return func(ctx context.Context, w http.ResponseWriter, r *http.Request, request any) (any, error) {
 		ctx = context.WithValue(ctx, requestKey, r)
 		kind := operationAccess[operationID]
 		if kind == accessPublic {
 			return next(ctx, w, r, request)
+		}
+		if workspaceQueryOperations[operationID] {
+			if err := workspaceFromQuery(r); err != nil {
+				return nil, err
+			}
 		}
 		p, err := s.resolvePrincipal(ctx, r, kind)
 		if err != nil {

@@ -22,6 +22,24 @@ WHERE m.workspace_id = @workspace_id AND m.conversation_id = @conversation_id
 ORDER BY m.created_at, m.id
 LIMIT @lim;
 
+-- name: ListMessagesDesc :many
+SELECT id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
+       author_contact_id, body, html, client_id, event, created_at
+FROM messages m
+WHERE m.workspace_id = @workspace_id AND m.conversation_id = @conversation_id
+  AND (sqlc.narg(cursor_at)::timestamptz IS NULL
+       OR (m.created_at, m.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
+ORDER BY m.created_at DESC, m.id DESC
+LIMIT @lim;
+
+-- name: GetMessagePosition :one
+SELECT id, created_at FROM messages WHERE workspace_id = $1 AND conversation_id = $2 AND id = $3;
+
+-- name: GetLatestMessagePosition :one
+SELECT id, created_at FROM messages WHERE workspace_id = $1 AND conversation_id = $2
+ORDER BY created_at DESC, id DESC
+LIMIT 1;
+
 -- name: CreateAttachment :one
 INSERT INTO attachments (id, workspace_id, conversation_id, message_id, storage_key, filename,
                          content_type, size_bytes, created_at)

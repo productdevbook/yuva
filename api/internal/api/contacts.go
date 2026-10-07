@@ -261,6 +261,9 @@ func (s *Server) GetContact(ctx context.Context, req oas.GetContactRequestObject
 
 func (s *Server) LookupContact(ctx context.Context, req oas.LookupContactRequestObject) (oas.LookupContactResponseObject, error) {
 	p := principalFrom(ctx)
+	if _, err := visibleInbox(ctx, s.st.Queries, p, req.Params.InboxId); err != nil {
+		return nil, err
+	}
 	id, err := s.st.GetContactIDByExternalID(ctx, store.GetContactIDByExternalIDParams{
 		WorkspaceID: p.workspaceID, InboxID: req.Params.InboxId, ExternalID: req.Params.ExternalId,
 	})

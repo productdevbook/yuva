@@ -28,6 +28,98 @@ func (q *Queries) AddConversationLabel(ctx context.Context, arg AddConversationL
 	return err
 }
 
+const countOpenConversations = `-- name: CountOpenConversations :many
+SELECT c.inbox_id, coalesce(c.assignee_id = $1::uuid, false)::bool AS mine,
+       (c.assignee_id IS NULL)::bool AS unassigned, count(*) AS n
+FROM conversations c
+WHERE c.workspace_id = $2 AND c.status = 'open'
+  AND ($3::bool OR EXISTS (
+      SELECT 1 FROM inbox_members im
+      WHERE im.workspace_id = c.workspace_id AND im.inbox_id = c.inbox_id AND im.member_id = $1::uuid))
+GROUP BY 1, 2, 3
+`
+
+type CountOpenConversationsParams struct {
+	MemberID    *uuid.UUID
+	WorkspaceID uuid.UUID
+	AllInboxes  bool
+}
+
+type CountOpenConversationsRow struct {
+	InboxID    uuid.UUID
+	Mine       bool
+	Unassigned bool
+	N          int64
+}
+
+func (q *Queries) CountOpenConversations(ctx context.Context, arg CountOpenConversationsParams) ([]CountOpenConversationsRow, error) {
+	rows, err := q.db.Query(ctx, countOpenConversations, arg.MemberID, arg.WorkspaceID, arg.AllInboxes)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []CountOpenConversationsRow
+	for rows.Next() {
+		var i CountOpenConversationsRow
+		if err := rows.Scan(
+			&i.InboxID,
+			&i.Mine,
+			&i.Unassigned,
+			&i.N,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const countOpenConversationsByLabel = `-- name: CountOpenConversationsByLabel :many
+SELECT cl.label_id, count(*) AS n
+FROM conversations c
+JOIN conversation_labels cl ON cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id
+WHERE c.workspace_id = $1 AND c.status = 'open'
+  AND ($2::bool OR EXISTS (
+      SELECT 1 FROM inbox_members im
+      WHERE im.workspace_id = c.workspace_id AND im.inbox_id = c.inbox_id AND im.member_id = $3::uuid))
+GROUP BY cl.label_id
+ORDER BY cl.label_id
+`
+
+type CountOpenConversationsByLabelParams struct {
+	WorkspaceID uuid.UUID
+	AllInboxes  bool
+	MemberID    *uuid.UUID
+}
+
+type CountOpenConversationsByLabelRow struct {
+	LabelID uuid.UUID
+	N       int64
+}
+
+func (q *Queries) CountOpenConversationsByLabel(ctx context.Context, arg CountOpenConversationsByLabelParams) ([]CountOpenConversationsByLabelRow, error) {
+	rows, err := q.db.Query(ctx, countOpenConversationsByLabel, arg.WorkspaceID, arg.AllInboxes, arg.MemberID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []CountOpenConversationsByLabelRow
+	for rows.Next() {
+		var i CountOpenConversationsByLabelRow
+		if err := rows.Scan(&i.LabelID, &i.N); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const createConversation = `-- name: CreateConversation :one
 INSERT INTO conversations (id, workspace_id, inbox_id, contact_id, channel_id, subject, priority,
                            assignee_id, last_activity_at, created_at, updated_at)
@@ -147,6 +239,58 @@ func (q *Queries) ListConversationLabels(ctx context.Context, arg ListConversati
 	return items, nil
 }
 
+const listConversationPreviews = `-- name: ListConversationPreviews :many
+SELECT c.id AS conversation_id, m.id, m.kind, m.author_type, left(m.body, 1000)::text AS body, m.created_at
+FROM conversations c
+CROSS JOIN LATERAL (
+    SELECT lm.id, lm.kind, lm.author_type, lm.body, lm.created_at FROM messages lm
+    WHERE lm.workspace_id = c.workspace_id AND lm.conversation_id = c.id AND lm.kind = 'message'
+    ORDER BY lm.created_at DESC, lm.id DESC
+    LIMIT 1) m
+WHERE c.workspace_id = $1 AND c.id = ANY($2::uuid[])
+`
+
+type ListConversationPreviewsParams struct {
+	WorkspaceID     uuid.UUID
+	ConversationIds []uuid.UUID
+}
+
+type ListConversationPreviewsRow struct {
+	ConversationID uuid.UUID
+	ID             uuid.UUID
+	Kind           string
+	AuthorType     string
+	Body           string
+	CreatedAt      time.Time
+}
+
+func (q *Queries) ListConversationPreviews(ctx context.Context, arg ListConversationPreviewsParams) ([]ListConversationPreviewsRow, error) {
+	rows, err := q.db.Query(ctx, listConversationPreviews, arg.WorkspaceID, arg.ConversationIds)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListConversationPreviewsRow
+	for rows.Next() {
+		var i ListConversationPreviewsRow
+		if err := rows.Scan(
+			&i.ConversationID,
+			&i.ID,
+			&i.Kind,
+			&i.AuthorType,
+			&i.Body,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listConversations = `-- name: ListConversations :many
 SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at FROM conversations c
 WHERE c.workspace_id = $1
@@ -154,26 +298,37 @@ WHERE c.workspace_id = $1
       SELECT 1 FROM inbox_members im
       WHERE im.workspace_id = c.workspace_id AND im.inbox_id = c.inbox_id AND im.member_id = $3))
   AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid)
-  AND ($5::text IS NULL OR c.status = $5::text)
-  AND (NOT $6::bool OR c.assignee_id IS NULL)
-  AND ($7::uuid IS NULL OR c.assignee_id = $7::uuid)
-  AND ($8::uuid IS NULL OR EXISTS (
+  AND ($5::uuid IS NULL OR c.contact_id = $5::uuid)
+  AND ($6::text IS NULL OR c.status = $6::text)
+  AND (NOT $7::bool OR c.assignee_id IS NULL)
+  AND ($8::uuid IS NULL OR c.assignee_id = $8::uuid)
+  AND ($9::uuid IS NULL OR EXISTS (
       SELECT 1 FROM conversation_labels cl
-      WHERE cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id AND cl.label_id = $8::uuid))
-  AND ($9::text IS NULL OR (
-      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($9::text, 'İı', 'ii'))
+      WHERE cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id AND cl.label_id = $9::uuid))
+  AND ($10::text IS NULL OR (
+      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($10::text, 'İı', 'ii'))
       OR EXISTS (
           SELECT 1 FROM messages m
           WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id
-            AND m.search @@ websearch_to_tsquery('simple', translate($9::text, 'İı', 'ii')))
+            AND m.search @@ websearch_to_tsquery('simple', translate($10::text, 'İı', 'ii')))
       OR EXISTS (
           SELECT 1 FROM contacts ct
           WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
-            AND ct.search @@ websearch_to_tsquery('simple', translate($9::text, 'İı', 'ii')))))
-  AND ($10::timestamptz IS NULL
-       OR (c.last_activity_at, c.id) < ($10::timestamptz, $11::uuid))
+            AND ct.search @@ websearch_to_tsquery('simple', translate($10::text, 'İı', 'ii')))))
+  AND ($11::text IS NULL OR NOT (
+      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($11::text, 'İı', 'ii'))
+      OR EXISTS (
+          SELECT 1 FROM messages m
+          WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id
+            AND m.search @@ websearch_to_tsquery('simple', translate($11::text, 'İı', 'ii')))
+      OR EXISTS (
+          SELECT 1 FROM contacts ct
+          WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
+            AND ct.search @@ websearch_to_tsquery('simple', translate($11::text, 'İı', 'ii')))))
+  AND ($12::timestamptz IS NULL
+       OR (c.last_activity_at, c.id) < ($12::timestamptz, $13::uuid))
 ORDER BY c.last_activity_at DESC, c.id DESC
-LIMIT $12
+LIMIT $14
 `
 
 type ListConversationsParams struct {
@@ -181,11 +336,13 @@ type ListConversationsParams struct {
 	AllInboxes  bool
 	MemberID    uuid.UUID
 	InboxID     *uuid.UUID
+	ContactID   *uuid.UUID
 	Status      *string
 	Unassigned  bool
 	AssigneeID  *uuid.UUID
 	LabelID     *uuid.UUID
 	Q           *string
+	QNot        *string
 	CursorAt    *time.Time
 	CursorID    *uuid.UUID
 	Lim         int32
@@ -197,11 +354,13 @@ func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsPa
 		arg.AllInboxes,
 		arg.MemberID,
 		arg.InboxID,
+		arg.ContactID,
 		arg.Status,
 		arg.Unassigned,
 		arg.AssigneeID,
 		arg.LabelID,
 		arg.Q,
+		arg.QNot,
 		arg.CursorAt,
 		arg.CursorID,
 		arg.Lim,

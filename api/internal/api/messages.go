@@ -31,6 +31,7 @@ var (
 	errIncomingNeedsKey   = problem(http.StatusForbidden, "forbidden", "only an API key can post an incoming message on behalf of the contact")
 	errAttachmentTooLarge = problem(http.StatusRequestEntityTooLarge, "attachment_too_large", "an attachment is larger than the server allows")
 	errAttachmentType     = problem(http.StatusUnsupportedMediaType, "attachment_type_not_allowed", "an attachment has a content type the server does not allow")
+	errAttachmentMismatch = problem(http.StatusUnsupportedMediaType, "attachment_type_mismatch", "an attachment's content does not match its declared content type")
 	errTooManyAttachments = errValidation("at most 10 files per message")
 )
 
@@ -160,13 +161,20 @@ func (s *Server) spool(workspaceID uuid.UUID, part *multipart.Part) (*upload, er
 }
 
 func (s *Server) contentType(declared string, f *os.File) (string, error) {
+	head := make([]byte, 512)
+	n, _ := f.ReadAt(head, 0)
+	sniffed := sniffType(head[:n])
 	ct, _, err := mime.ParseMediaType(declared)
-	if err != nil || ct == "" || ct == "application/octet-stream" {
-		head := make([]byte, 512)
-		n, _ := f.ReadAt(head, 0)
-		ct, _, _ = mime.ParseMediaType(http.DetectContentType(head[:n]))
+	ct = canonicalType(strings.ToLower(ct))
+	switch {
+	case err != nil || ct == "" || ct == octetStream:
+		ct = sniffed
+	case !contentMatches(ct, sniffed):
+		if !s.typeAllowed(ct) {
+			return "", errAttachmentType
+		}
+		return "", errAttachmentMismatch
 	}
-	ct = strings.ToLower(ct)
 	if !s.typeAllowed(ct) {
 		return "", errAttachmentType
 	}
@@ -292,9 +300,23 @@ func (s *Server) ListMessages(ctx context.Context, req oas.ListMessagesRequestOb
 	if err != nil {
 		return nil, err
 	}
-	rows, err := s.st.ListMessages(ctx, store.ListMessagesParams{
-		WorkspaceID: p.workspaceID, ConversationID: c.ID, CursorAt: at, CursorID: id, Lim: lim + 1,
-	})
+	var rows []store.ListMessagesRow
+	switch order := req.Params.Order; {
+	case order == nil || *order == oas.Asc:
+		rows, err = s.st.ListMessages(ctx, store.ListMessagesParams{
+			WorkspaceID: p.workspaceID, ConversationID: c.ID, CursorAt: at, CursorID: id, Lim: lim + 1,
+		})
+	case *order == oas.Desc:
+		var desc []store.ListMessagesDescRow
+		desc, err = s.st.ListMessagesDesc(ctx, store.ListMessagesDescParams{
+			WorkspaceID: p.workspaceID, ConversationID: c.ID, CursorAt: at, CursorID: id, Lim: lim + 1,
+		})
+		for _, r := range desc {
+			rows = append(rows, store.ListMessagesRow(r))
+		}
+	default:
+		return nil, errValidation("order must be asc or desc")
+	}
 	if err != nil {
 		return nil, err
 	}

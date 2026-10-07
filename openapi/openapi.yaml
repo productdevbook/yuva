@@ -984,7 +984,9 @@ paths:
     get:
       operationId: lookupContact
       summary: Find a contact by external id
-      description: The contact a host app knows by `external_id` in the given inbox.
+      description: |
+        The contact a host app knows by `external_id` in the given inbox. An inbox the caller
+        cannot see answers `404`.
       tags: [contacts]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
@@ -1093,12 +1095,22 @@ paths:
       summary: List conversations
       description: |
         Most recent activity (message or note) first, in the inboxes the caller can see. `q` is a
-        full-text search over the subject, the messages and notes, and the contact.
+        full-text search over the subject, the messages and notes, and the contact; a negated term
+        (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
+
+        Each item carries the contact (id, name, first e-mail address), a preview of the last
+        `message` (notes and events are not previewed) and `unread` for the calling member.
       tags: [conversations]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
         - name: inbox_id
           in: query
+          schema:
+            type: string
+            format: uuid
+        - name: contact_id
+          in: query
+          description: Only this contact's conversations. A contact of another workspace answers `404`.
           schema:
             type: string
             format: uuid
@@ -1162,6 +1174,28 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+  /v1/conversations/counts:
+    get:
+      operationId: getConversationCounts
+      summary: Count open conversations
+      description: |
+        Open conversations in the inboxes the caller can see: all of them, those assigned to the
+        calling member (`0` for API keys), unassigned ones, and per inbox and per label. Inboxes and
+        labels without open conversations are left out of their lists.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The counts.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConversationCounts"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
   /v1/conversations/{conversationId}:
     get:
       operationId: getConversation
@@ -1218,11 +1252,20 @@ paths:
     get:
       operationId: listMessages
       summary: List a conversation's messages
-      description: Oldest first, including notes and events.
+      description: |
+        Messages, notes and events, oldest first by default. With `order=desc` the newest come
+        first and `next_cursor` pages backward, so a thread can load its latest page and then
+        older ones.
       tags: [messages]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
         - $ref: "#/components/parameters/ConversationId"
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
         - $ref: "#/components/parameters/Cursor"
         - $ref: "#/components/parameters/Limit"
       responses:
@@ -1250,7 +1293,10 @@ paths:
 
         Send `multipart/form-data` to attach files: the fields of `MessageCreate` as form fields
         and up to 10 `files` parts. Each file must be within the server's size limit and have an
-        allowed content type.
+        allowed content type. The type is checked against the content: a file whose content does
+        not match its declared type (a text file sent as `image/png`) is refused with 415
+        `attachment_type_mismatch`; a file declared without a type or as
+        `application/octet-stream` gets the type detected from its content.
 
         A repeated `client_id` in the same conversation returns the stored message with `200`
         instead of writing it again.
@@ -1292,15 +1338,58 @@ paths:
           $ref: "#/components/responses/Problem"
         "415":
           $ref: "#/components/responses/Problem"
+  /v1/conversations/{conversationId}/read:
+    post:
+      operationId: markConversationRead
+      summary: Mark a conversation read
+      description: |
+        Moves the calling member's read cursor to `message_id`, or to the latest message, note or
+        event when it is absent. The cursor only moves forward; an older `message_id` leaves it
+        where it is. When it moves, a `conversation.read` event reaches the member's other
+        connections. Member sessions only.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConversationReadCreate"
+      responses:
+        "200":
+          description: The member's read state.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConversationRead"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
   /v1/attachments/{attachmentId}:
     get:
       operationId: downloadAttachment
       summary: Download an attachment
-      description: "Always served as a download (`Content-Disposition: attachment`)."
+      description: |
+        Always served as a download (`Content-Disposition: attachment`). Links cannot carry
+        headers, so the workspace can also be named with the `workspace_id` query parameter
+        instead of `Yuva-Workspace`.
       tags: [messages]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
         - $ref: "#/components/parameters/AttachmentId"
+        - name: workspace_id
+          in: query
+          description: The workspace to act on, for links that cannot send `Yuva-Workspace`.
+          schema:
+            type: string
+            format: uuid
       responses:
         "200":
           description: The file.
@@ -1317,6 +1406,8 @@ paths:
               schema:
                 type: string
                 format: binary
+        "400":
+          $ref: "#/components/responses/Problem"
         "401":
           $ref: "#/components/responses/Problem"
         "403":
@@ -1561,7 +1652,10 @@ paths:
         increasing `id`; within a workspace ids are in commit order. Owners, admins and API keys
         receive every event of the workspace. Agents receive the events of the inboxes they can
         access, contact events, and `inbox_access.changed` events about themselves; their access is
-        re-read when such an event arrives and every 30 seconds.
+        re-read when such an event arrives and every 30 seconds. `inbox.created` reaches owners,
+        admins and API keys (an agent learns of a new inbox from `inbox_access.changed`);
+        `inbox.deleted` reaches everyone who could see the inbox. `conversation.read` reaches only
+        the connections of the member who read.
 
         Resuming: after the replay (if any) the server sends `ready` with `last_event_id`, the
         stream position at that moment. Remember the larger of that value and the `id` of every
@@ -2459,6 +2553,53 @@ components:
           items:
             type: string
             format: uuid
+    ConversationContact:
+      type: object
+      description: The conversation's contact, enough for a list row.
+      required: [id, name]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          $ref: "#/components/schemas/Email"
+          description: The contact's first e-mail address; absent when none is known.
+    MessagePreview:
+      type: object
+      description: The last `message` of a conversation, for a list row.
+      required: [id, kind, author_type, text, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        kind:
+          $ref: "#/components/schemas/MessageKind"
+        author_type:
+          $ref: "#/components/schemas/AuthorType"
+        text:
+          type: string
+          description: The plain-text body on one line, cut to 140 characters with `…` when longer.
+        created_at:
+          type: string
+          format: date-time
+    ConversationListItem:
+      description: A conversation with what a list row shows.
+      allOf:
+        - $ref: "#/components/schemas/Conversation"
+        - type: object
+          required: [contact, unread]
+          properties:
+            contact:
+              $ref: "#/components/schemas/ConversationContact"
+            last_message:
+              $ref: "#/components/schemas/MessagePreview"
+            unread:
+              type: boolean
+              description: |
+                A message or note from someone other than the calling member is newer than the
+                member's read cursor. Always `false` for API keys.
     ConversationPage:
       type: object
       required: [items]
@@ -2466,10 +2607,68 @@ components:
         items:
           type: array
           items:
-            $ref: "#/components/schemas/Conversation"
+            $ref: "#/components/schemas/ConversationListItem"
         next_cursor:
           type: string
           description: Absent on the last page.
+    CountByID:
+      type: object
+      required: [id, count]
+      properties:
+        id:
+          type: string
+          format: uuid
+        count:
+          type: integer
+          format: int64
+    ConversationCounts:
+      type: object
+      description: Open conversations in the inboxes the caller can see.
+      required: [all, mine, unassigned, inboxes, labels]
+      properties:
+        all:
+          type: integer
+          format: int64
+        mine:
+          type: integer
+          format: int64
+        unassigned:
+          type: integer
+          format: int64
+        inboxes:
+          type: array
+          description: Per inbox id.
+          items:
+            $ref: "#/components/schemas/CountByID"
+        labels:
+          type: array
+          description: Per label id.
+          items:
+            $ref: "#/components/schemas/CountByID"
+    ConversationReadCreate:
+      type: object
+      properties:
+        message_id:
+          type: string
+          format: uuid
+          description: A message, note or event of the conversation; the latest when absent.
+    ConversationRead:
+      type: object
+      description: A member's read cursor in a conversation.
+      required: [conversation_id, member_id, unread]
+      properties:
+        conversation_id:
+          type: string
+          format: uuid
+        member_id:
+          type: string
+          format: uuid
+        last_read_message_id:
+          type: string
+          format: uuid
+          description: Absent when the conversation has nothing to read yet.
+        unread:
+          type: boolean
     MessageKind:
       type: string
       description: |
@@ -2872,6 +3071,75 @@ components:
           format: date-time
         data:
           $ref: "#/components/schemas/Inbox"
+    InboxCreatedEvent:
+      type: object
+      description: An inbox was created.
+      required: [id, type, workspace_id, inbox_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [inbox.created]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/Inbox"
+    InboxDeletedEvent:
+      type: object
+      description: An inbox was deleted with its channels and conversations.
+      required: [id, type, workspace_id, inbox_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [inbox.deleted]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/InboxRef"
+    ConversationReadEvent:
+      type: object
+      description: The receiving member's read cursor moved, in this or another tab or device.
+      required: [id, type, workspace_id, inbox_id, conversation_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [conversation.read]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/ConversationRead"
     InboxAccessChangedEvent:
       type: object
       description: A member was given or lost access to an inbox. Reload the inboxes and conversations when it is about you.
@@ -2895,6 +3163,13 @@ components:
         data:
           $ref: "#/components/schemas/InboxAccessChange"
     ContactRef:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: string
+          format: uuid
+    InboxRef:
       type: object
       required: [id]
       properties:
@@ -2939,8 +3214,11 @@ components:
         - $ref: "#/components/schemas/MessageCreatedEvent"
         - $ref: "#/components/schemas/ContactUpdatedEvent"
         - $ref: "#/components/schemas/ContactDeletedEvent"
+        - $ref: "#/components/schemas/InboxCreatedEvent"
         - $ref: "#/components/schemas/InboxUpdatedEvent"
+        - $ref: "#/components/schemas/InboxDeletedEvent"
         - $ref: "#/components/schemas/InboxAccessChangedEvent"
+        - $ref: "#/components/schemas/ConversationReadEvent"
         - $ref: "#/components/schemas/RealtimeReady"
         - $ref: "#/components/schemas/RealtimeResyncRequired"
       discriminator:
@@ -2951,8 +3229,11 @@ components:
           message.created: "#/components/schemas/MessageCreatedEvent"
           contact.updated: "#/components/schemas/ContactUpdatedEvent"
           contact.deleted: "#/components/schemas/ContactDeletedEvent"
+          inbox.created: "#/components/schemas/InboxCreatedEvent"
           inbox.updated: "#/components/schemas/InboxUpdatedEvent"
+          inbox.deleted: "#/components/schemas/InboxDeletedEvent"
           inbox_access.changed: "#/components/schemas/InboxAccessChangedEvent"
+          conversation.read: "#/components/schemas/ConversationReadEvent"
           ready: "#/components/schemas/RealtimeReady"
           resync_required: "#/components/schemas/RealtimeResyncRequired"
     Health:

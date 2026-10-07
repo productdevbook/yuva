@@ -41,6 +41,9 @@ func (c *client) upload(path string, fields map[string]string, files []file) res
 	if c.bearer != "" {
 		req.Header.Set("Authorization", "Bearer "+c.bearer)
 	}
+	if c.workspace != "" {
+		req.Header.Set("Yuva-Workspace", c.workspace)
+	}
 	res, err := c.http.Do(req)
 	if err != nil {
 		c.h.t.Fatal(err)

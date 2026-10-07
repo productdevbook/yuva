@@ -68,3 +68,14 @@ SELECT contact_id FROM contact_external_ids WHERE workspace_id = $1 AND inbox_id
 SELECT a.storage_key FROM attachments a
 JOIN conversations c ON c.workspace_id = a.workspace_id AND c.id = a.conversation_id
 WHERE a.workspace_id = $1 AND c.contact_id = $2;
+
+-- name: ListContactSummaries :many
+SELECT c.id, c.name,
+       coalesce((SELECT e.email FROM contact_emails e
+                 WHERE e.workspace_id = c.workspace_id AND e.contact_id = c.id
+                 ORDER BY e.position LIMIT 1), '')::text AS email
+FROM contacts c
+WHERE c.workspace_id = @workspace_id AND c.id = ANY(@ids::uuid[]);
+
+-- name: ContactExists :one
+SELECT EXISTS (SELECT 1 FROM contacts WHERE workspace_id = $1 AND id = $2) AS found;

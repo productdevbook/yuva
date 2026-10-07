@@ -171,14 +171,23 @@ func (s *Server) CreateInbox(ctx context.Context, req oas.CreateInboxRequestObje
 	}
 	id := newID()
 	plain, sealed := s.sealIdentitySecret(p.workspaceID, id)
-	in, err := s.st.CreateInbox(ctx, store.CreateInboxParams{
-		ID: id, WorkspaceID: p.workspaceID, Name: f.name, Slug: f.slug, Branding: mustJSON(f.branding),
-		DefaultLocale: f.locale, Timezone: f.timezone, Mode: f.mode, ExpectedReplyMinutes: f.replyMinutes,
-		BusinessHours: mustJSON(f.hours), IdentitySecret: sealed, Now: s.now(),
+	var in store.Inbox
+	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
+		var err error
+		in, err = q.CreateInbox(ctx, store.CreateInboxParams{
+			ID: id, WorkspaceID: p.workspaceID, Name: f.name, Slug: f.slug, Branding: mustJSON(f.branding),
+			DefaultLocale: f.locale, Timezone: f.timezone, Mode: f.mode, ExpectedReplyMinutes: f.replyMinutes,
+			BusinessHours: mustJSON(f.hours), IdentitySecret: sealed, Now: s.now(),
+		})
+		if store.IsUniqueViolation(err) {
+			return errSlugTaken
+		}
+		if err != nil {
+			return err
+		}
+		events.add(realtime.InboxCreated, &in.ID, nil, inboxBody(in))
+		return nil
 	})
-	if store.IsUniqueViolation(err) {
-		return nil, errSlugTaken
-	}
 	if err != nil {
 		return nil, err
 	}
@@ -271,7 +280,7 @@ func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObje
 		return nil, err
 	}
 	var keys []string
-	err := s.st.InTx(ctx, func(q *store.Queries) error {
+	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		if _, err := q.LockInbox(ctx, store.LockInboxParams{WorkspaceID: p.workspaceID, ID: req.InboxId}); store.IsNotFound(err) {
 			return errInboxGone
 		} else if err != nil {
@@ -281,8 +290,12 @@ func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObje
 		if keys, err = q.ListInboxStorageKeys(ctx, store.ListInboxStorageKeysParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId}); err != nil {
 			return err
 		}
-		_, err = q.DeleteInbox(ctx, store.DeleteInboxParams{WorkspaceID: p.workspaceID, ID: req.InboxId})
-		return err
+		if _, err = q.DeleteInbox(ctx, store.DeleteInboxParams{WorkspaceID: p.workspaceID, ID: req.InboxId}); err != nil {
+			return err
+		}
+		id := req.InboxId
+		events.add(realtime.InboxDeleted, &id, nil, oas.InboxRef{Id: id})
+		return nil
 	})
 	if err != nil {
 		return nil, err

@@ -18,8 +18,11 @@ const (
 	MessageCreated      = "message.created"
 	ContactUpdated      = "contact.updated"
 	ContactDeleted      = "contact.deleted"
+	InboxCreated        = "inbox.created"
 	InboxUpdated        = "inbox.updated"
+	InboxDeleted        = "inbox.deleted"
 	InboxAccessChanged  = "inbox_access.changed"
+	ConversationRead    = "conversation.read"
 )
 
 type Event struct {

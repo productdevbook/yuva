@@ -78,12 +78,9 @@ func (s *Server) serveRealtime(w http.ResponseWriter, r *http.Request) {
 		}
 		resumeFrom = &id
 	}
-	if v := query.Get("workspace_id"); v != "" {
-		if h := r.Header.Get(workspaceHeader); h != "" && h != v {
-			writeProblem(w, errValidation("workspace_id and Yuva-Workspace name different workspaces"))
-			return
-		}
-		r.Header.Set(workspaceHeader, v)
+	if err := workspaceFromQuery(r); err != nil {
+		writeProblem(w, err.(*apiError))
+		return
 	}
 	if _, bearer := bearerToken(r); !bearer && !s.originAllowed(r.Header.Get("Origin")) {
 		writeProblem(w, errOriginNotAllowed)
@@ -257,8 +254,19 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 		}
 		return f.p.seesAllInboxes(), nil
 	}
+	if e.Type == realtime.ConversationRead {
+		var r oas.ConversationRead
+		if err := json.Unmarshal(e.Data, &r); err != nil {
+			return false, err
+		}
+		return !f.p.isKey() && r.MemberId == f.p.memberID, nil
+	}
 	if f.p.seesAllInboxes() || e.InboxID == nil {
 		return true, nil
 	}
-	return f.inboxes[*e.InboxID], nil
+	ok := f.inboxes[*e.InboxID]
+	if e.Type == realtime.InboxDeleted {
+		delete(f.inboxes, *e.InboxID)
+	}
+	return ok, nil
 }

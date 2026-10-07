@@ -178,6 +178,29 @@ func (q *Queries) GetAttachment(ctx context.Context, arg GetAttachmentParams) (G
 	return i, err
 }
 
+const getLatestMessagePosition = `-- name: GetLatestMessagePosition :one
+SELECT id, created_at FROM messages WHERE workspace_id = $1 AND conversation_id = $2
+ORDER BY created_at DESC, id DESC
+LIMIT 1
+`
+
+type GetLatestMessagePositionParams struct {
+	WorkspaceID    uuid.UUID
+	ConversationID uuid.UUID
+}
+
+type GetLatestMessagePositionRow struct {
+	ID        uuid.UUID
+	CreatedAt time.Time
+}
+
+func (q *Queries) GetLatestMessagePosition(ctx context.Context, arg GetLatestMessagePositionParams) (GetLatestMessagePositionRow, error) {
+	row := q.db.QueryRow(ctx, getLatestMessagePosition, arg.WorkspaceID, arg.ConversationID)
+	var i GetLatestMessagePositionRow
+	err := row.Scan(&i.ID, &i.CreatedAt)
+	return i, err
+}
+
 const getMessageByClientID = `-- name: GetMessageByClientID :one
 SELECT id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
        author_contact_id, body, html, client_id, event, created_at
@@ -224,6 +247,28 @@ func (q *Queries) GetMessageByClientID(ctx context.Context, arg GetMessageByClie
 		&i.Event,
 		&i.CreatedAt,
 	)
+	return i, err
+}
+
+const getMessagePosition = `-- name: GetMessagePosition :one
+SELECT id, created_at FROM messages WHERE workspace_id = $1 AND conversation_id = $2 AND id = $3
+`
+
+type GetMessagePositionParams struct {
+	WorkspaceID    uuid.UUID
+	ConversationID uuid.UUID
+	ID             uuid.UUID
+}
+
+type GetMessagePositionRow struct {
+	ID        uuid.UUID
+	CreatedAt time.Time
+}
+
+func (q *Queries) GetMessagePosition(ctx context.Context, arg GetMessagePositionParams) (GetMessagePositionRow, error) {
+	row := q.db.QueryRow(ctx, getMessagePosition, arg.WorkspaceID, arg.ConversationID, arg.ID)
+	var i GetMessagePositionRow
+	err := row.Scan(&i.ID, &i.CreatedAt)
 	return i, err
 }
 
@@ -318,6 +363,81 @@ func (q *Queries) ListMessages(ctx context.Context, arg ListMessagesParams) ([]L
 	var items []ListMessagesRow
 	for rows.Next() {
 		var i ListMessagesRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.WorkspaceID,
+			&i.ConversationID,
+			&i.Kind,
+			&i.Direction,
+			&i.AuthorType,
+			&i.AuthorMemberID,
+			&i.AuthorContactID,
+			&i.Body,
+			&i.Html,
+			&i.ClientID,
+			&i.Event,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listMessagesDesc = `-- name: ListMessagesDesc :many
+SELECT id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
+       author_contact_id, body, html, client_id, event, created_at
+FROM messages m
+WHERE m.workspace_id = $1 AND m.conversation_id = $2
+  AND ($3::timestamptz IS NULL
+       OR (m.created_at, m.id) < ($3::timestamptz, $4::uuid))
+ORDER BY m.created_at DESC, m.id DESC
+LIMIT $5
+`
+
+type ListMessagesDescParams struct {
+	WorkspaceID    uuid.UUID
+	ConversationID uuid.UUID
+	CursorAt       *time.Time
+	CursorID       *uuid.UUID
+	Lim            int32
+}
+
+type ListMessagesDescRow struct {
+	ID              uuid.UUID
+	WorkspaceID     uuid.UUID
+	ConversationID  uuid.UUID
+	Kind            string
+	Direction       *string
+	AuthorType      string
+	AuthorMemberID  *uuid.UUID
+	AuthorContactID *uuid.UUID
+	Body            string
+	Html            *string
+	ClientID        *string
+	Event           []byte
+	CreatedAt       time.Time
+}
+
+func (q *Queries) ListMessagesDesc(ctx context.Context, arg ListMessagesDescParams) ([]ListMessagesDescRow, error) {
+	rows, err := q.db.Query(ctx, listMessagesDesc,
+		arg.WorkspaceID,
+		arg.ConversationID,
+		arg.CursorAt,
+		arg.CursorID,
+		arg.Lim,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListMessagesDescRow
+	for rows.Next() {
+		var i ListMessagesDescRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.WorkspaceID,

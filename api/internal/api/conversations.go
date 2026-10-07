@@ -5,6 +5,7 @@ import (
 	"slices"
 	"strings"
 	"time"
+	"unicode"
 	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
@@ -16,6 +17,7 @@ const (
 	assigneeMe         = "me"
 	assigneeUnassigned = "unassigned"
 	maxLabels          = 50
+	previewRunes       = 140
 )
 
 var errAssigneeAccess = errValidation("assignee_id must be a member with access to the inbox")
@@ -32,6 +34,130 @@ func searchQuery(q *string) (*string, error) {
 		return nil, errValidation("q must be at most 200 characters")
 	}
 	return &v, nil
+}
+
+// splitSearch separates the negated terms of a websearch query, so that a conversation is
+// excluded when any of its parts contains one, not only when a single message does.
+func splitSearch(q *string) (pos, neg *string) {
+	if q == nil {
+		return nil, nil
+	}
+	var keep, drop []string
+	rs := []rune(*q)
+	for i := 0; i < len(rs); {
+		if unicode.IsSpace(rs[i]) {
+			i++
+			continue
+		}
+		negated := rs[i] == '-'
+		if negated {
+			i++
+		}
+		var tok string
+		if i < len(rs) && rs[i] == '"' {
+			j := i + 1
+			for j < len(rs) && rs[j] != '"' {
+				j++
+			}
+			if inner := strings.TrimSpace(string(rs[i+1 : j])); inner != "" {
+				tok = `"` + inner + `"`
+			}
+			i = j + 1
+		} else {
+			j := i
+			for j < len(rs) && !unicode.IsSpace(rs[j]) && rs[j] != '"' {
+				j++
+			}
+			tok = string(rs[i:j])
+			i = j
+		}
+		switch {
+		case tok == "":
+		case negated:
+			drop = append(drop, tok)
+		default:
+			keep = append(keep, tok)
+		}
+	}
+	if !slices.ContainsFunc(keep, func(t string) bool { return !strings.EqualFold(t, "or") }) {
+		keep = nil
+	}
+	if len(keep) > 0 {
+		v := strings.Join(keep, " ")
+		pos = &v
+	}
+	if len(drop) > 0 {
+		v := strings.Join(drop, " or ")
+		neg = &v
+	}
+	return pos, neg
+}
+
+func previewText(body string) string {
+	text := strings.Join(strings.Fields(body), " ")
+	if r := []rune(text); len(r) > previewRunes {
+		text = strings.TrimSpace(string(r[:previewRunes])) + "…"
+	}
+	return text
+}
+
+func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conversation) ([]oas.ConversationListItem, error) {
+	ids := make([]uuid.UUID, len(rows))
+	contactIDs := make([]uuid.UUID, 0, len(rows))
+	for i, r := range rows {
+		ids[i] = r.ID
+		if !slices.Contains(contactIDs, r.ContactID) {
+			contactIDs = append(contactIDs, r.ContactID)
+		}
+	}
+	labels, err := conversationLabels(ctx, s.st.Queries, p.workspaceID, ids)
+	if err != nil {
+		return nil, err
+	}
+	contactRows, err := s.st.ListContactSummaries(ctx, store.ListContactSummariesParams{WorkspaceID: p.workspaceID, Ids: contactIDs})
+	if err != nil {
+		return nil, err
+	}
+	contacts := make(map[uuid.UUID]oas.ConversationContact, len(contactRows))
+	for _, c := range contactRows {
+		cc := oas.ConversationContact{Id: c.ID, Name: c.Name}
+		if c.Email != "" {
+			e := oas.Email(c.Email)
+			cc.Email = &e
+		}
+		contacts[c.ID] = cc
+	}
+	previewRows, err := s.st.ListConversationPreviews(ctx, store.ListConversationPreviewsParams{WorkspaceID: p.workspaceID, ConversationIds: ids})
+	if err != nil {
+		return nil, err
+	}
+	previews := make(map[uuid.UUID]*oas.MessagePreview, len(previewRows))
+	for _, m := range previewRows {
+		previews[m.ConversationID] = &oas.MessagePreview{
+			Id: m.ID, Kind: oas.MessageKind(m.Kind), AuthorType: oas.AuthorType(m.AuthorType), Text: previewText(m.Body), CreatedAt: m.CreatedAt,
+		}
+	}
+	unread := map[uuid.UUID]bool{}
+	if !p.isKey() {
+		ur, err := s.st.ListUnreadConversations(ctx, store.ListUnreadConversationsParams{WorkspaceID: p.workspaceID, MemberID: p.memberID, ConversationIds: ids})
+		if err != nil {
+			return nil, err
+		}
+		for _, id := range ur {
+			unread[id] = true
+		}
+	}
+	out := make([]oas.ConversationListItem, len(rows))
+	for i, r := range rows {
+		c := conversationBody(r, labels[r.ID])
+		out[i] = oas.ConversationListItem{
+			Id: c.Id, InboxId: c.InboxId, ContactId: c.ContactId, ChannelId: c.ChannelId, Subject: c.Subject,
+			Status: c.Status, SnoozeUntil: c.SnoozeUntil, Priority: c.Priority, AssigneeId: c.AssigneeId, Labels: c.Labels,
+			LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt, CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt,
+			Contact: contacts[r.ContactID], LastMessage: previews[r.ID], Unread: unread[r.ID],
+		}
+	}
+	return out, nil
 }
 
 func conversationBody(c store.Conversation, labels []uuid.UUID) oas.Conversation {
@@ -173,13 +299,24 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 	if err != nil {
 		return nil, err
 	}
+	pos, neg := splitSearch(q)
 	arg := store.ListConversationsParams{
 		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), MemberID: p.memberID,
-		InboxID: prm.InboxId, LabelID: prm.LabelId, Q: q, CursorAt: at, CursorID: cid, Lim: lim + 1,
+		InboxID: prm.InboxId, ContactID: prm.ContactId, LabelID: prm.LabelId, Q: pos, QNot: neg,
+		CursorAt: at, CursorID: cid, Lim: lim + 1,
 	}
 	if prm.InboxId != nil {
 		if _, err := visibleInbox(ctx, s.st.Queries, p, *prm.InboxId); err != nil {
 			return nil, err
+		}
+	}
+	if prm.ContactId != nil {
+		found, err := s.st.ContactExists(ctx, store.ContactExistsParams{WorkspaceID: p.workspaceID, ID: *prm.ContactId})
+		if err != nil {
+			return nil, err
+		}
+		if !found {
+			return nil, errContactGone
 		}
 	}
 	if prm.Status != nil {
@@ -216,17 +353,45 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 		c := encodeCursor(rows[lim-1].LastActivityAt, rows[lim-1].ID)
 		next = &c
 	}
-	ids := make([]uuid.UUID, len(rows))
-	for i, r := range rows {
-		ids[i] = r.ID
-	}
-	labels, err := conversationLabels(ctx, s.st.Queries, p.workspaceID, ids)
+	items, err := s.listItems(ctx, p, rows)
 	if err != nil {
 		return nil, err
 	}
-	out := oas.ListConversations200JSONResponse{Items: make([]oas.Conversation, len(rows)), NextCursor: next}
-	for i, r := range rows {
-		out.Items[i] = conversationBody(r, labels[r.ID])
+	return oas.ListConversations200JSONResponse{Items: items, NextCursor: next}, nil
+}
+
+func (s *Server) GetConversationCounts(ctx context.Context, _ oas.GetConversationCountsRequestObject) (oas.GetConversationCountsResponseObject, error) {
+	p := principalFrom(ctx)
+	var member *uuid.UUID
+	if !p.isKey() {
+		member = &p.memberID
+	}
+	rows, err := s.st.CountOpenConversations(ctx, store.CountOpenConversationsParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), MemberID: member})
+	if err != nil {
+		return nil, err
+	}
+	byLabel, err := s.st.CountOpenConversationsByLabel(ctx, store.CountOpenConversationsByLabelParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), MemberID: member})
+	if err != nil {
+		return nil, err
+	}
+	out := oas.GetConversationCounts200JSONResponse{Inboxes: []oas.CountByID{}, Labels: make([]oas.CountByID, 0, len(byLabel))}
+	perInbox := map[uuid.UUID]int64{}
+	for _, r := range rows {
+		out.All += r.N
+		if r.Mine {
+			out.Mine += r.N
+		}
+		if r.Unassigned {
+			out.Unassigned += r.N
+		}
+		perInbox[r.InboxID] += r.N
+	}
+	for id, n := range perInbox {
+		out.Inboxes = append(out.Inboxes, oas.CountByID{Id: id, Count: n})
+	}
+	slices.SortFunc(out.Inboxes, func(a, b oas.CountByID) int { return a.Id.Compare(b.Id) })
+	for _, r := range byLabel {
+		out.Labels = append(out.Labels, oas.CountByID{Id: r.LabelID, Count: r.N})
 	}
 	return out, nil
 }

@@ -31,6 +31,7 @@ WHERE c.workspace_id = @workspace_id
       SELECT 1 FROM inbox_members im
       WHERE im.workspace_id = c.workspace_id AND im.inbox_id = c.inbox_id AND im.member_id = @member_id))
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
+  AND (sqlc.narg(contact_id)::uuid IS NULL OR c.contact_id = sqlc.narg(contact_id)::uuid)
   AND (sqlc.narg(status)::text IS NULL OR c.status = sqlc.narg(status)::text)
   AND (NOT @unassigned::bool OR c.assignee_id IS NULL)
   AND (sqlc.narg(assignee_id)::uuid IS NULL OR c.assignee_id = sqlc.narg(assignee_id)::uuid)
@@ -47,6 +48,16 @@ WHERE c.workspace_id = @workspace_id
           SELECT 1 FROM contacts ct
           WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
             AND ct.search @@ websearch_to_tsquery('simple', translate(sqlc.narg(q)::text, 'İı', 'ii')))))
+  AND (sqlc.narg(q_not)::text IS NULL OR NOT (
+      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate(sqlc.narg(q_not)::text, 'İı', 'ii'))
+      OR EXISTS (
+          SELECT 1 FROM messages m
+          WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id
+            AND m.search @@ websearch_to_tsquery('simple', translate(sqlc.narg(q_not)::text, 'İı', 'ii')))
+      OR EXISTS (
+          SELECT 1 FROM contacts ct
+          WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
+            AND ct.search @@ websearch_to_tsquery('simple', translate(sqlc.narg(q_not)::text, 'İı', 'ii')))))
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL
        OR (c.last_activity_at, c.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
 ORDER BY c.last_activity_at DESC, c.id DESC
@@ -63,3 +74,34 @@ ON CONFLICT DO NOTHING;
 
 -- name: RemoveConversationLabel :exec
 DELETE FROM conversation_labels WHERE workspace_id = $1 AND conversation_id = $2 AND label_id = $3;
+
+-- name: ListConversationPreviews :many
+SELECT c.id AS conversation_id, m.id, m.kind, m.author_type, left(m.body, 1000)::text AS body, m.created_at
+FROM conversations c
+CROSS JOIN LATERAL (
+    SELECT lm.id, lm.kind, lm.author_type, lm.body, lm.created_at FROM messages lm
+    WHERE lm.workspace_id = c.workspace_id AND lm.conversation_id = c.id AND lm.kind = 'message'
+    ORDER BY lm.created_at DESC, lm.id DESC
+    LIMIT 1) m
+WHERE c.workspace_id = @workspace_id AND c.id = ANY(@conversation_ids::uuid[]);
+
+-- name: CountOpenConversations :many
+SELECT c.inbox_id, coalesce(c.assignee_id = sqlc.narg(member_id)::uuid, false)::bool AS mine,
+       (c.assignee_id IS NULL)::bool AS unassigned, count(*) AS n
+FROM conversations c
+WHERE c.workspace_id = @workspace_id AND c.status = 'open'
+  AND (@all_inboxes::bool OR EXISTS (
+      SELECT 1 FROM inbox_members im
+      WHERE im.workspace_id = c.workspace_id AND im.inbox_id = c.inbox_id AND im.member_id = sqlc.narg(member_id)::uuid))
+GROUP BY 1, 2, 3;
+
+-- name: CountOpenConversationsByLabel :many
+SELECT cl.label_id, count(*) AS n
+FROM conversations c
+JOIN conversation_labels cl ON cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id
+WHERE c.workspace_id = @workspace_id AND c.status = 'open'
+  AND (@all_inboxes::bool OR EXISTS (
+      SELECT 1 FROM inbox_members im
+      WHERE im.workspace_id = c.workspace_id AND im.inbox_id = c.inbox_id AND im.member_id = sqlc.narg(member_id)::uuid))
+GROUP BY cl.label_id
+ORDER BY cl.label_id;

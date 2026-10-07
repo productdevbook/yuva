@@ -54,6 +54,22 @@ func (q *Queries) AddContactExternalID(ctx context.Context, arg AddContactExtern
 	return err
 }
 
+const contactExists = `-- name: ContactExists :one
+SELECT EXISTS (SELECT 1 FROM contacts WHERE workspace_id = $1 AND id = $2) AS found
+`
+
+type ContactExistsParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) ContactExists(ctx context.Context, arg ContactExistsParams) (bool, error) {
+	row := q.db.QueryRow(ctx, contactExists, arg.WorkspaceID, arg.ID)
+	var found bool
+	err := row.Scan(&found)
+	return found, err
+}
+
 const createContact = `-- name: CreateContact :one
 INSERT INTO contacts (id, workspace_id, name, attributes, blocked, created_at, updated_at)
 VALUES ($1, $2, $3, $4, $5, $6, $6)
@@ -295,6 +311,46 @@ func (q *Queries) ListContactStorageKeys(ctx context.Context, arg ListContactSto
 			return nil, err
 		}
 		items = append(items, storage_key)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listContactSummaries = `-- name: ListContactSummaries :many
+SELECT c.id, c.name,
+       coalesce((SELECT e.email FROM contact_emails e
+                 WHERE e.workspace_id = c.workspace_id AND e.contact_id = c.id
+                 ORDER BY e.position LIMIT 1), '')::text AS email
+FROM contacts c
+WHERE c.workspace_id = $1 AND c.id = ANY($2::uuid[])
+`
+
+type ListContactSummariesParams struct {
+	WorkspaceID uuid.UUID
+	Ids         []uuid.UUID
+}
+
+type ListContactSummariesRow struct {
+	ID    uuid.UUID
+	Name  string
+	Email string
+}
+
+func (q *Queries) ListContactSummaries(ctx context.Context, arg ListContactSummariesParams) ([]ListContactSummariesRow, error) {
+	rows, err := q.db.Query(ctx, listContactSummaries, arg.WorkspaceID, arg.Ids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListContactSummariesRow
+	for rows.Next() {
+		var i ListContactSummariesRow
+		if err := rows.Scan(&i.ID, &i.Name, &i.Email); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
