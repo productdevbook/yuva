@@ -1,13 +1,12 @@
 ---
-import "@fontsource-variable/fraunces"
 import "@fontsource-variable/geist"
 import "@/styles/global.css"
-import frauncesLatin from "@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url"
-import frauncesLatinExt from "@fontsource-variable/fraunces/files/fraunces-latin-ext-wght-normal.woff2?url"
 import geistLatin from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url"
 import geistLatinExt from "@fontsource-variable/geist/files/geist-latin-ext-wght-normal.woff2?url"
 import { msg } from "@lingui/core/macro"
 import Logo from "@/components/Logo.astro"
+import { buttonVariants } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 import { i18nFor } from "@/i18n"
 import { absolute, bcp47, home, links, ogLocale, other, type Locale } from "@/lib/routes"
 
@@ -25,7 +24,7 @@ const canonical = absolute(home[locale])
 const ogImage = absolute(`/og/${locale}.png`)
 const serialize = (o: object) => JSON.stringify(o).replace(/</g, "\\u003c")
 const year = new Date().getFullYear()
-const preload = locale === "tr" ? [frauncesLatin, frauncesLatinExt, geistLatin, geistLatinExt] : [frauncesLatin, geistLatin]
+const preload = locale === "tr" ? [geistLatin, geistLatinExt] : [geistLatin]
 
 const nav = [
   { href: "#how", label: i18n._(msg`How it works`) },
@@ -80,8 +79,8 @@ const appUrl = import.meta.env.PUBLIC_APP_URL
     <link rel="alternate" hreflang="tr" href={absolute(home.tr)} />
     <link rel="alternate" hreflang="x-default" href={absolute(home.en)} />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#fbf7f1" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#15110e" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
     {preload.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -100,27 +99,30 @@ const appUrl = import.meta.env.PUBLIC_APP_URL
     <meta name="twitter:image" content={ogImage} />
     {jsonLd.map((o) => <script is:inline type="application/ld+json" set:html={serialize(o)} />)}
   </head>
-  <body>
-    <a class="skip" href="#main">{i18n._(msg`Skip to content`)}</a>
-    <header class="site-header">
-      <div class="wrap header-row">
-        <a class="brand" href={home[locale]} aria-label={i18n._(msg`Yuva home`)}>
-          <Logo size={30} />
-          <span>Yuva</span>
+  <body class="min-h-dvh overflow-x-clip">
+    <a
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:bg-background focus:px-3 focus:py-2 focus:ring-3 focus:ring-ring/50"
+      href="#main">{i18n._(msg`Skip to content`)}</a
+    >
+    <header class="sticky top-0 z-40 border-b bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
+      <div class="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4 sm:px-6">
+        <a class="flex shrink-0 items-center gap-2 font-semibold" href={home[locale]} aria-label={i18n._(msg`Yuva home`)}>
+          <Logo size={26} />
+          <span class="text-lg tracking-tight">Yuva</span>
         </a>
-        <nav class="site-nav" aria-label={i18n._(msg`Sections`)}>
-          {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+        <nav class="hidden flex-1 items-center gap-1 lg:flex" aria-label={i18n._(msg`Sections`)}>
+          {nav.map((n) => <a class={buttonVariants({ variant: "ghost", size: "sm" })} href={n.href}>{n.label}</a>)}
         </nav>
-        <div class="header-actions">
-          <a class="lang" href={home[alt]} hreflang={alt} lang={bcp47[alt]}>{switchLabel}</a>
-          {appUrl && <a class="lang" href={appUrl}>{i18n._(msg`Sign in`)}</a>}
-          <a class="btn btn-small" href={links.repo}>
+        <div class="ml-auto flex items-center gap-1">
+          <a class={buttonVariants({ variant: "ghost", size: "sm" })} href={home[alt]} hreflang={alt} lang={bcp47[alt]}>{switchLabel}</a>
+          {appUrl && <a class={buttonVariants({ variant: "ghost", size: "sm" })} href={appUrl}>{i18n._(msg`Sign in`)}</a>}
+          <a class={buttonVariants({ variant: "outline", size: "sm" })} href={links.repo}>
             <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"
               ><path
                 d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
               ></path></svg
             >
-            <span>GitHub</span>
+            <span class="max-[379px]:sr-only">GitHub</span>
           </a>
         </div>
       </div>
@@ -128,24 +130,26 @@ const appUrl = import.meta.env.PUBLIC_APP_URL
     <main id="main">
       <slot />
     </main>
-    <footer class="site-footer">
-      <div class="wrap footer-grid">
-        <div class="footer-brand">
-          <a class="brand" href={home[locale]}>
-            <Logo size={28} />
+    <footer class="border-t bg-muted/40">
+      <div class="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:grid-cols-2 sm:px-6 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <div class="space-y-3">
+          <a class="flex items-center gap-2 font-semibold" href={home[locale]}>
+            <Logo size={24} />
             <span>Yuva</span>
           </a>
-          <p>{i18n._(msg`Open-source customer messaging for teams that run many products.`)}</p>
-          <p class="muted small">{i18n._(msg`“Yuva” is Turkish for nest, or home.`)}</p>
+          <p class="max-w-xs text-sm text-muted-foreground">{i18n._(msg`Open-source customer messaging for teams that run many products.`)}</p>
+          <p class="text-xs text-muted-foreground">{i18n._(msg`“Yuva” is Turkish for nest, or home.`)}</p>
         </div>
         {
           footer.map((col) => (
             <div>
-              <h2 class="footer-title">{col.title}</h2>
-              <ul>
+              <h2 class="mb-3 text-sm font-semibold">{col.title}</h2>
+              <ul class="space-y-2 text-sm">
                 {col.items.map((i) => (
                   <li>
-                    <a href={i.href}>{i.label}</a>
+                    <a class="text-muted-foreground hover:text-foreground hover:underline" href={i.href}>
+                      {i.label}
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -153,12 +157,15 @@ const appUrl = import.meta.env.PUBLIC_APP_URL
           ))
         }
       </div>
-      <div class="wrap footer-base">
-        <p>
-          {i18n._(msg`Server and panel under AGPL-3.0, SDKs and API contract under MIT.`)}
-          <span> © {year} productdevbook</span>
-        </p>
-        <a href={home[alt]} hreflang={alt} lang={bcp47[alt]}>{switchLabel}</a>
+      <div class="mx-auto max-w-6xl px-4 sm:px-6">
+        <Separator />
+        <div class="flex flex-col gap-3 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            {i18n._(msg`Server and panel under AGPL-3.0, SDKs and API contract under MIT.`)}
+            <span> © {year} productdevbook</span>
+          </p>
+          <a class="hover:text-foreground hover:underline" href={home[alt]} hreflang={alt} lang={bcp47[alt]}>{switchLabel}</a>
+        </div>
       </div>
     </footer>
   </body>

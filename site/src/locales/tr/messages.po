@@ -32,12 +32,8 @@ msgid "A host with Docker, Postgres 16 or newer, an SMTP account for sign-in cod
 msgstr "Docker çalışan bir sunucu, Postgres 16 ya da üstü, giriş kodları ve bildirimler için bir SMTP hesabı ve WebSocket'leri geçiren bir ters vekil sunucunun arkasında TLS'li bir alan adı. Ekler bir diskte ya da S3 uyumlu bir kovada durur."
 
 #: src/views/HomeView.astro
-msgid "A support inbox holds other people's words. Yuva is built with that in mind, and says plainly that it has not had a security review yet."
-msgstr "Bir destek kutusunda başkalarının sözleri durur. Yuva bunu bilerek yapıldı ve henüz güvenlik denetiminden geçmediğini de açıkça söylüyor."
-
-#: src/views/HomeView.astro
-msgid "A tagged release and its Docker image, and a security review of sign-in, client sessions, ingress and attachment handling."
-msgstr "Etiketli bir sürüm ve Docker imajı; girişin, istemci oturumlarının, gelen postanın ve eklerin güvenlik denetimi."
+msgid "A support inbox holds other people's words. Yuva is built with that in mind, and says plainly that it has not had an independent security audit yet."
+msgstr "Bir destek kutusunda başkalarının sözleri durur. Yuva bunu bilerek yapıldı ve henüz bağımsız bir güvenlik denetiminden geçmediğini de açıkça söylüyor."
 
 #: src/views/HomeView.astro
 msgid "Add a Web Push key pair, start the stack, and check that it is ready. Migrations run on start."
@@ -105,10 +101,6 @@ msgid "Bounces from delivery reports and Amazon SES mark an address undeliverabl
 msgstr "Teslim raporlarından ve Amazon SES'ten gelen geri dönmeler, adresi ulaşılamaz olarak işaretler."
 
 #: src/views/HomeView.astro
-msgid "Build the image"
-msgstr "İmajı derleyin"
-
-#: src/views/HomeView.astro
 msgid "Built for the people who answer."
 msgstr "Yanıtlayan insanlar için yapıldı."
 
@@ -132,10 +124,6 @@ msgstr "Alan adı başına tümünü yakalayan adresler ve kendi kanalına ulaş
 #: src/views/HomeView.astro
 msgid "Channels"
 msgstr "Kanallar"
-
-#: src/views/HomeView.astro
-msgid "Clone the repository and build the image from its Dockerfile."
-msgstr "Depoyu klonlayın ve imajı içindeki Dockerfile ile derleyin."
 
 #: src/views/HomeView.astro
 msgid "Connect your products"
@@ -520,10 +508,6 @@ msgid "New messages, typing and teammates' changes appear live over WebSocket."
 msgstr "Yeni mesajlar, yazıyor bilgisi ve ekip arkadaşlarınızın değişiklikleri WebSocket üzerinden anında görünür."
 
 #: src/views/HomeView.astro
-msgid "Next"
-msgstr "Sırada"
-
-#: src/views/HomeView.astro
 msgid "No passwords"
 msgstr "Parola yok"
 
@@ -532,8 +516,8 @@ msgid "No requests into your network"
 msgstr "Ağınızın içine istek yok"
 
 #: src/views/HomeView.astro
-msgid "Not yet. It is pre-alpha: the API and the database schema can change without migration paths, and the code has not had a security review. Try it with test data and watch the repository for the first release."
-msgstr "Henüz değil. Yuva alfa öncesi aşamada: API ve veritabanı şeması geçiş yolu sunulmadan değişebilir, kod da henüz güvenlik denetiminden geçmedi. Test verisiyle deneyin, ilk sürüm için depoyu takip edin."
+msgid "Not yet. It is pre-alpha: the API and the database schema can change without migration paths, and the code has not had an independent security audit. Try 0.0.1 with test data and watch the repository for the next releases."
+msgstr "Henüz değil. Yuva alfa öncesi aşamada: API ve veritabanı şeması geçiş yolu sunulmadan değişebilir, kod da henüz bağımsız bir güvenlik denetiminden geçmedi. 0.0.1'i test verisiyle deneyin, sonraki sürümler için depoyu takip edin."
 
 #: src/views/HomeView.astro
 msgid "Notes sit next to the replies and never reach the contact."
@@ -633,10 +617,6 @@ msgid "Postgres 16 or newer"
 msgstr "Postgres 16 ya da üstü"
 
 #: src/views/HomeView.astro
-msgid "Pre-alpha."
-msgstr "Alfa öncesi."
-
-#: src/views/HomeView.astro
 msgid "Presence, typing and read receipts in live inboxes; an expected reply time in async ones."
 msgstr "Canlı gelen kutularında çevrimiçi durumu, yazıyor bilgisi ve okundu bilgisi; eşzamansız olanlarda tahmini yanıt süresi."
 
@@ -647,6 +627,14 @@ msgstr "Proje"
 #: src/views/HomeView.astro
 msgid "Project status"
 msgstr "Projenin durumu"
+
+#: src/views/HomeView.astro
+msgid "Pull the image"
+msgstr "İmajı çekin"
+
+#: src/views/HomeView.astro
+msgid "Pull the published image from GitHub Container Registry; it is built for linux/amd64 and linux/arm64."
+msgstr "Yayımlanan imajı GitHub Container Registry'den çekin; linux/amd64 ve linux/arm64 için hazır."
 
 #: src/views/HomeView.astro
 msgid "Push stays yours: Yuva sends a webhook, your backend sends the notification through APNs or FCM."
@@ -677,8 +665,8 @@ msgid "Read LICENSING.md"
 msgstr "LICENSING.md'yi okuyun"
 
 #: src/views/HomeView.astro
-msgid "Read the code, run it on your machine, and follow along as it heads to its first release."
-msgstr "Kodu okuyun, kendi makinenizde çalıştırın ve ilk sürüme giden yolu birlikte izleyin."
+msgid "Read the code, run 0.0.1 on your machine, and follow along as it grows."
+msgstr "Kodu okuyun, 0.0.1'i kendi makinenizde çalıştırın ve Yuva büyürken birlikte izleyin."
 
 #: src/views/HomeView.astro
 msgid "Read the quick start"
@@ -816,14 +804,14 @@ msgstr "Durum ve yol haritası"
 msgid "Support mail is scattered"
 msgstr "Destek postası dağınık"
 
+#: src/views/HomeView.astro
+msgid "Tagged v0.0.1 with its Docker image on GitHub Container Registry, after hardening sign-in, client sessions, ingress and attachment handling."
+msgstr "Giriş, istemci oturumları, gelen posta ve ek işleme sıkılaştırıldıktan sonra v0.0.1 etiketlendi; Docker imajı GitHub Container Registry'de."
+
 #: src/components/Diagram.astro
 #: src/views/HomeView.astro
 msgid "Team panel"
 msgstr "Ekip paneli"
-
-#: src/views/HomeView.astro
-msgid "The API and database schema still change without migration paths, and the code has not had a security review yet. Try it, read it and tell us what breaks, but do not put real customer data in it yet."
-msgstr "API ve veritabanı şeması hâlâ geçiş yolu sunulmadan değişiyor ve kod henüz güvenlik denetiminden geçmedi. Deneyin, okuyun, neyin bozulduğunu bize söyleyin; ama şimdilik içine gerçek müşteri verisi koymayın."
 
 #: src/views/HomeView.astro
 msgid "The licenses cover the code, not the name. Say that you use or build on Yuva; give a fork you publish or host for others its own name."
@@ -900,6 +888,14 @@ msgstr "Kullanın, değiştirin, çalıştırın. Değiştirdiğiniz bir Yuva'y�
 #: src/views/HomeView.astro
 msgid "Users write as themselves through a short-lived token signed by your backend; Yuva never sees your user database."
 msgstr "Kullanıcılar, sunucunuzun imzaladığı kısa ömürlü bir jetonla kendi adlarına yazar; Yuva kullanıcı veritabanınızı hiç görmez."
+
+#: src/views/HomeView.astro
+msgid "Version 0.0.1 is out"
+msgstr "0.0.1 sürümü çıktı"
+
+#: src/views/HomeView.astro
+msgid "Version 0.0.1 is out, and Yuva is still pre-alpha: the API and database schema can change without migration paths. Try it, read it and tell us what breaks, but do not put real customer data in it yet."
+msgstr "0.0.1 sürümü çıktı, ama Yuva hâlâ alfa öncesi aşamada: API ve veritabanı şeması geçiş yolu sunulmadan değişebilir. Deneyin, okuyun, neyin bozulduğunu bize söyleyin; ama şimdilik içine gerçek müşteri verisi koymayın."
 
 #: src/views/HomeView.astro
 msgid "View on GitHub"
@@ -1039,8 +1035,8 @@ msgid "Yuva is one Go binary and a Postgres database. The job queue, realtime ev
 msgstr "Yuva tek bir Go programı ve bir Postgres veritabanıdır. İş kuyruğu, canlı olaylar ve arama Postgres'te durur; işletmeniz gereken başka bir şey yoktur."
 
 #: src/views/HomeView.astro
-msgid "Yuva is pre-alpha and built in the open. Versions start at 0.0.1, there is no 1.0 until the project is ready, and the first release is being prepared now."
-msgstr "Yuva alfa öncesi aşamada ve herkesin gözü önünde geliştiriliyor. Sürümler 0.0.1'den başlıyor, proje hazır olana kadar 1.0 yok ve ilk sürüm şu an hazırlanıyor."
+msgid "Yuva is pre-alpha and built in the open. Versions start at 0.0.1, there is no 1.0 until the project is ready, and the first release, 0.0.1, is out now."
+msgstr "Yuva alfa öncesi aşamada ve herkesin gözü önünde geliştiriliyor. Sürümler 0.0.1'den başlıyor, proje hazır olana kadar 1.0 yok ve ilk sürüm olan 0.0.1 artık yayında."
 
 #: src/views/HomeView.astro
 msgid "Yuva uses a split license: the server stays open, and the pieces you embed in your own apps carry no copyleft obligations."

@@ -32,12 +32,8 @@ msgid "A host with Docker, Postgres 16 or newer, an SMTP account for sign-in cod
 msgstr "A host with Docker, Postgres 16 or newer, an SMTP account for sign-in codes and notifications, and a host name with TLS behind a reverse proxy that passes WebSockets. Attachments go on a volume or into an S3-compatible bucket."
 
 #: src/views/HomeView.astro
-msgid "A support inbox holds other people's words. Yuva is built with that in mind, and says plainly that it has not had a security review yet."
-msgstr "A support inbox holds other people's words. Yuva is built with that in mind, and says plainly that it has not had a security review yet."
-
-#: src/views/HomeView.astro
-msgid "A tagged release and its Docker image, and a security review of sign-in, client sessions, ingress and attachment handling."
-msgstr "A tagged release and its Docker image, and a security review of sign-in, client sessions, ingress and attachment handling."
+msgid "A support inbox holds other people's words. Yuva is built with that in mind, and says plainly that it has not had an independent security audit yet."
+msgstr "A support inbox holds other people's words. Yuva is built with that in mind, and says plainly that it has not had an independent security audit yet."
 
 #: src/views/HomeView.astro
 msgid "Add a Web Push key pair, start the stack, and check that it is ready. Migrations run on start."
@@ -105,10 +101,6 @@ msgid "Bounces from delivery reports and Amazon SES mark an address undeliverabl
 msgstr "Bounces from delivery reports and Amazon SES mark an address undeliverable."
 
 #: src/views/HomeView.astro
-msgid "Build the image"
-msgstr "Build the image"
-
-#: src/views/HomeView.astro
 msgid "Built for the people who answer."
 msgstr "Built for the people who answer."
 
@@ -132,10 +124,6 @@ msgstr "Catch-all addresses per domain, and local+tag addresses that reach their
 #: src/views/HomeView.astro
 msgid "Channels"
 msgstr "Channels"
-
-#: src/views/HomeView.astro
-msgid "Clone the repository and build the image from its Dockerfile."
-msgstr "Clone the repository and build the image from its Dockerfile."
 
 #: src/views/HomeView.astro
 msgid "Connect your products"
@@ -520,10 +508,6 @@ msgid "New messages, typing and teammates' changes appear live over WebSocket."
 msgstr "New messages, typing and teammates' changes appear live over WebSocket."
 
 #: src/views/HomeView.astro
-msgid "Next"
-msgstr "Next"
-
-#: src/views/HomeView.astro
 msgid "No passwords"
 msgstr "No passwords"
 
@@ -532,8 +516,8 @@ msgid "No requests into your network"
 msgstr "No requests into your network"
 
 #: src/views/HomeView.astro
-msgid "Not yet. It is pre-alpha: the API and the database schema can change without migration paths, and the code has not had a security review. Try it with test data and watch the repository for the first release."
-msgstr "Not yet. It is pre-alpha: the API and the database schema can change without migration paths, and the code has not had a security review. Try it with test data and watch the repository for the first release."
+msgid "Not yet. It is pre-alpha: the API and the database schema can change without migration paths, and the code has not had an independent security audit. Try 0.0.1 with test data and watch the repository for the next releases."
+msgstr "Not yet. It is pre-alpha: the API and the database schema can change without migration paths, and the code has not had an independent security audit. Try 0.0.1 with test data and watch the repository for the next releases."
 
 #: src/views/HomeView.astro
 msgid "Notes sit next to the replies and never reach the contact."
@@ -633,10 +617,6 @@ msgid "Postgres 16 or newer"
 msgstr "Postgres 16 or newer"
 
 #: src/views/HomeView.astro
-msgid "Pre-alpha."
-msgstr "Pre-alpha."
-
-#: src/views/HomeView.astro
 msgid "Presence, typing and read receipts in live inboxes; an expected reply time in async ones."
 msgstr "Presence, typing and read receipts in live inboxes; an expected reply time in async ones."
 
@@ -647,6 +627,14 @@ msgstr "Project"
 #: src/views/HomeView.astro
 msgid "Project status"
 msgstr "Project status"
+
+#: src/views/HomeView.astro
+msgid "Pull the image"
+msgstr "Pull the image"
+
+#: src/views/HomeView.astro
+msgid "Pull the published image from GitHub Container Registry; it is built for linux/amd64 and linux/arm64."
+msgstr "Pull the published image from GitHub Container Registry; it is built for linux/amd64 and linux/arm64."
 
 #: src/views/HomeView.astro
 msgid "Push stays yours: Yuva sends a webhook, your backend sends the notification through APNs or FCM."
@@ -677,8 +665,8 @@ msgid "Read LICENSING.md"
 msgstr "Read LICENSING.md"
 
 #: src/views/HomeView.astro
-msgid "Read the code, run it on your machine, and follow along as it heads to its first release."
-msgstr "Read the code, run it on your machine, and follow along as it heads to its first release."
+msgid "Read the code, run 0.0.1 on your machine, and follow along as it grows."
+msgstr "Read the code, run 0.0.1 on your machine, and follow along as it grows."
 
 #: src/views/HomeView.astro
 msgid "Read the quick start"
@@ -816,14 +804,14 @@ msgstr "Status and roadmap"
 msgid "Support mail is scattered"
 msgstr "Support mail is scattered"
 
+#: src/views/HomeView.astro
+msgid "Tagged v0.0.1 with its Docker image on GitHub Container Registry, after hardening sign-in, client sessions, ingress and attachment handling."
+msgstr "Tagged v0.0.1 with its Docker image on GitHub Container Registry, after hardening sign-in, client sessions, ingress and attachment handling."
+
 #: src/components/Diagram.astro
 #: src/views/HomeView.astro
 msgid "Team panel"
 msgstr "Team panel"
-
-#: src/views/HomeView.astro
-msgid "The API and database schema still change without migration paths, and the code has not had a security review yet. Try it, read it and tell us what breaks, but do not put real customer data in it yet."
-msgstr "The API and database schema still change without migration paths, and the code has not had a security review yet. Try it, read it and tell us what breaks, but do not put real customer data in it yet."
 
 #: src/views/HomeView.astro
 msgid "The licenses cover the code, not the name. Say that you use or build on Yuva; give a fork you publish or host for others its own name."
@@ -900,6 +888,14 @@ msgstr "Use it, change it, run it. If you run a modified Yuva as a network servi
 #: src/views/HomeView.astro
 msgid "Users write as themselves through a short-lived token signed by your backend; Yuva never sees your user database."
 msgstr "Users write as themselves through a short-lived token signed by your backend; Yuva never sees your user database."
+
+#: src/views/HomeView.astro
+msgid "Version 0.0.1 is out"
+msgstr "Version 0.0.1 is out"
+
+#: src/views/HomeView.astro
+msgid "Version 0.0.1 is out, and Yuva is still pre-alpha: the API and database schema can change without migration paths. Try it, read it and tell us what breaks, but do not put real customer data in it yet."
+msgstr "Version 0.0.1 is out, and Yuva is still pre-alpha: the API and database schema can change without migration paths. Try it, read it and tell us what breaks, but do not put real customer data in it yet."
 
 #: src/views/HomeView.astro
 msgid "View on GitHub"
@@ -1039,8 +1035,8 @@ msgid "Yuva is one Go binary and a Postgres database. The job queue, realtime ev
 msgstr "Yuva is one Go binary and a Postgres database. The job queue, realtime events and search all live in Postgres, so there is nothing else to operate."
 
 #: src/views/HomeView.astro
-msgid "Yuva is pre-alpha and built in the open. Versions start at 0.0.1, there is no 1.0 until the project is ready, and the first release is being prepared now."
-msgstr "Yuva is pre-alpha and built in the open. Versions start at 0.0.1, there is no 1.0 until the project is ready, and the first release is being prepared now."
+msgid "Yuva is pre-alpha and built in the open. Versions start at 0.0.1, there is no 1.0 until the project is ready, and the first release, 0.0.1, is out now."
+msgstr "Yuva is pre-alpha and built in the open. Versions start at 0.0.1, there is no 1.0 until the project is ready, and the first release, 0.0.1, is out now."
 
 #: src/views/HomeView.astro
 msgid "Yuva uses a split license: the server stays open, and the pieces you embed in your own apps carry no copyleft obligations."

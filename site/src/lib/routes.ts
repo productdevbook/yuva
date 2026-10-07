@@ -30,6 +30,7 @@ export const links = {
   security: doc("SECURITY.md"),
   contributing: doc("CONTRIBUTING.md"),
   issues: `${REPO}/issues`,
+  release: `${REPO}/releases/tag/v0.0.1`,
 }
 
 export function other(locale: Locale): Locale {

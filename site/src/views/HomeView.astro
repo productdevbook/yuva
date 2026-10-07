@@ -1,7 +1,14 @@
 ---
 import { msg } from "@lingui/core/macro"
 import { Code } from "astro:components"
+import { ArrowRight, Check } from "lucide-react"
 import Diagram from "@/components/Diagram.astro"
+import Faq from "@/components/Faq"
+import Snippets from "@/components/Snippets"
+import { Badge } from "@/components/ui/badge"
+import { buttonVariants } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
 import Shot from "@/components/Shot.astro"
 import { i18nFor } from "@/i18n"
 import Base from "@/layouts/Base.astro"
@@ -208,10 +215,9 @@ const hosting = [
 
 const install = [
   {
-    title: i18n._(msg`Build the image`),
-    body: i18n._(msg`Clone the repository and build the image from its Dockerfile.`),
-    code: `git clone https://github.com/productdevbook/yuva.git && cd yuva
-docker build -f deploy/Dockerfile --build-arg VERSION=0.0.1 -t yuva:0.0.1 .`,
+    title: i18n._(msg`Pull the image`),
+    body: i18n._(msg`Pull the published image from GitHub Container Registry; it is built for linux/amd64 and linux/arm64.`),
+    code: `docker pull ghcr.io/productdevbook/yuva:0.0.1`,
   },
   {
     title: i18n._(msg`Write compose.yaml and .env`),
@@ -221,7 +227,7 @@ docker build -f deploy/Dockerfile --build-arg VERSION=0.0.1 -t yuva:0.0.1 .`,
   {
     title: i18n._(msg`Start it`),
     body: i18n._(msg`Add a Web Push key pair, start the stack, and check that it is ready. Migrations run on start.`),
-    code: `docker run --rm yuva:0.0.1 vapid-keys >> .env
+    code: `docker run --rm ghcr.io/productdevbook/yuva:0.0.1 vapid-keys >> .env
 docker compose up -d
 curl -s http://127.0.0.1:8080/readyz     # {"status":"ok"}`,
   },
@@ -291,15 +297,15 @@ const roadmap = [
   { state: "done", title: i18n._(msg`Web widget`), body: i18n._(msg`Live chat, embedded threads, identity tokens, presence and e-mail continuity.`) },
   { state: "done", title: i18n._(msg`Mobile SDKs, feedback and webhooks`), body: i18n._(msg`iOS and Android, feedback with device details, Standard Webhooks.`) },
   { state: "done", title: i18n._(msg`Member notifications`), body: i18n._(msg`Installable panel, Web Push, preferences per event and inbox, e-mail fallback.`) },
+  { state: "done", title: i18n._(msg`First public release, 0.0.1`), body: i18n._(msg`Tagged v0.0.1 with its Docker image on GitHub Container Registry, after hardening sign-in, client sessions, ingress and attachment handling.`) },
   { state: "now", title: i18n._(msg`First real use`), body: i18n._(msg`Running real support for a set of products on Yuva alone.`) },
-  { state: "next", title: i18n._(msg`First public release, 0.0.1`), body: i18n._(msg`A tagged release and its Docker image, and a security review of sign-in, client sessions, ingress and attachment handling.`) },
 ]
-const stateLabel: Record<string, string> = { done, now: i18n._(msg`In progress`), next: i18n._(msg`Next`) }
+const stateLabel: Record<string, string> = { done, now: i18n._(msg`In progress`) }
 
 const faq = [
   {
     q: i18n._(msg`Is Yuva ready for production?`),
-    a: i18n._(msg`Not yet. It is pre-alpha: the API and the database schema can change without migration paths, and the code has not had a security review. Try it with test data and watch the repository for the first release.`),
+    a: i18n._(msg`Not yet. It is pre-alpha: the API and the database schema can change without migration paths, and the code has not had an independent security audit. Try 0.0.1 with test data and watch the repository for the next releases.`),
   },
   {
     q: i18n._(msg`How is it different from hosted support tools?`),
@@ -330,32 +336,56 @@ const faq = [
     a: i18n._(msg`Inside your own company, modified or not, yes. Offering a hosted service or a product under the Yuva name needs written permission; a renamed fork that keeps the AGPL is always allowed.`),
   },
 ]
+const tabLabels: Record<string, string> = { web: "Web", go: "Go", swift: "iOS", kotlin: "Android", webhook: i18n._(msg`Webhooks`) }
+const tabs = snippets.map((sn) => ({ id: sn.id, label: tabLabels[sn.id]!, title: sn.title }))
+const themes = { light: "github-light", dark: "github-dark" } as const
+const stateVariant: Record<string, "secondary" | "default"> = { done: "secondary", now: "default" }
+
+const wrap = "mx-auto w-full max-w-6xl px-4 sm:px-6"
+const section = "scroll-mt-16 py-20 sm:py-28"
+const alt = "border-y bg-muted/40"
+const kicker = "text-sm font-semibold text-primary"
+const h2 = "mt-2 text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+const lead = "mt-4 max-w-3xl text-lg text-pretty text-muted-foreground"
+const more = "inline-flex items-center gap-1 text-sm font-medium text-primary underline-offset-4 hover:underline"
+const windowBar = "flex gap-1.5 border-b bg-muted px-3 py-2.5"
+const dot = "size-2.5 rounded-full bg-foreground/15"
+const phone = "overflow-hidden rounded-[34px] border-8 border-neutral-900 bg-neutral-900 shadow-xl dark:border-neutral-700 dark:bg-neutral-700 [&_img]:aspect-[9/16] [&_img]:rounded-[26px] [&_img]:object-cover [&_img]:object-top"
+
 ---
 
 <Base locale={locale} title={title} description={description} jsonLd={jsonLd}>
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="wrap hero-copy">
-      <p class="eyebrow">
-        <span class="dot" aria-hidden="true"></span>
-        {i18n._(msg`Open source · Self-hosted · Pre-alpha`)}
-      </p>
-      <h1 id="hero-title">{i18n._(msg`One inbox for every product you run.`)}</h1>
-      <p class="lead hero-lead">
-        {
-          i18n._(
-            msg`Yuva brings support e-mail, live chat and in-app conversations from all of your products into one shared inbox for your team. It is open source, you host it yourself, and it runs as one Go binary with Postgres.`
-          )
-        }
-      </p>
-      <div class="cta-row">
-        <a class="btn btn-primary" href={links.repo}>{i18n._(msg`View on GitHub`)}</a>
-        <a class="btn btn-ghost" href={links.quickStart}>{i18n._(msg`Read the quick start`)}</a>
+  <section
+    class="relative isolate overflow-hidden pt-14 pb-8 sm:pt-24 before:absolute before:inset-x-0 before:top-0 before:-z-10 before:h-[36rem] before:bg-[radial-gradient(60%_60%_at_50%_0%,var(--accent),transparent)]"
+    aria-labelledby="hero-title"
+  >
+    <div class={wrap}>
+      <div class="mx-auto max-w-3xl text-center">
+        <a href={links.release} class="inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border bg-background/70 px-3 py-1 text-xs hover:bg-muted sm:text-sm">
+          <Badge>{i18n._(msg`Version 0.0.1 is out`)}</Badge>
+          <span class="text-muted-foreground">{i18n._(msg`Open source · Self-hosted · Pre-alpha`)}</span>
+        </a>
+        <h1 id="hero-title" class="mt-6 text-4xl font-semibold tracking-tight text-balance sm:text-6xl">
+          {i18n._(msg`One inbox for every product you run.`)}
+        </h1>
+        <p class="mx-auto mt-6 max-w-2xl text-lg text-pretty text-muted-foreground">
+          {
+            i18n._(
+              msg`Yuva brings support e-mail, live chat and in-app conversations from all of your products into one shared inbox for your team. It is open source, you host it yourself, and it runs as one Go binary with Postgres.`
+            )
+          }
+        </p>
+        <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+          <a class={buttonVariants({ size: "lg", className: "px-5" })} href={links.repo}>{i18n._(msg`View on GitHub`)}</a>
+          <a class={buttonVariants({ variant: "outline", size: "lg", className: "px-5" })} href={links.quickStart}>{i18n._(msg`Read the quick start`)}</a>
+        </div>
+        <p class="mt-5 text-sm text-muted-foreground">{i18n._(msg`AGPL-3.0 server, MIT SDKs. Your conversations stay on your servers.`)}</p>
       </div>
-      <p class="hero-note">{i18n._(msg`AGPL-3.0 server, MIT SDKs. Your conversations stay on your servers.`)}</p>
-    </div>
-    <div class="wrap hero-shot">
-      <div class="window">
-        <div class="window-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="mx-auto mt-14 rounded-2xl bg-foreground/5 p-1.5 ring-1 ring-foreground/10 max-sm:max-w-[312px] max-sm:rounded-[42px] sm:p-2.5">
+      <div
+        class="overflow-hidden rounded-xl border bg-card shadow-xl max-sm:max-w-[300px] max-sm:rounded-[36px] max-sm:border-8 max-sm:border-neutral-900 max-sm:[&_img]:rounded-[28px] dark:max-sm:border-neutral-700"
+      >
+        <div class={`${windowBar} max-sm:hidden`} aria-hidden="true"><span class={dot}></span><span class={dot}></span><span class={dot}></span></div>
         <Shot
           light={s.thread.light}
           dark={s.thread.dark}
@@ -363,52 +393,58 @@ const faq = [
             msg`The Yuva panel: conversations from three products in one list, an in-app conversation with an internal note and a reply, and the contact's details sent by the host app.`
           )}
           widths={[720, 1080, 1440, 2160, 2880]}
-          sizes="(min-width: 1240px) 1180px, calc(100vw - 32px)"
+          sizes="(min-width: 1180px) 1104px, calc(100vw - 48px)"
           small={{ light: s.phoneThread.light, dark: s.phoneThread.dark, widths: [390, 585, 780], sizes: "300px" }}
           eager
         />
       </div>
+      </div>
     </div>
   </section>
 
-  <aside class="wrap" aria-label={i18n._(msg`Project status`)}>
-    <div class="status-note">
-      <strong>{i18n._(msg`Pre-alpha.`)}</strong>
-      <span>
-        {
-          i18n._(
-            msg`The API and database schema still change without migration paths, and the code has not had a security review yet. Try it, read it and tell us what breaks, but do not put real customer data in it yet.`
-          )
-        }
-      </span>
+  <aside class={`${wrap} py-8`} aria-label={i18n._(msg`Project status`)}>
+    <div class="rounded-xl border border-primary/30 bg-accent p-5 text-accent-foreground sm:p-6">
+      <p class="text-base sm:text-lg">
+        <span>
+          {
+            i18n._(
+              msg`Version 0.0.1 is out, and Yuva is still pre-alpha: the API and database schema can change without migration paths. Try it, read it and tell us what breaks, but do not put real customer data in it yet.`
+            )
+          }
+        </span>
+      </p>
     </div>
   </aside>
 
-  <section class="section" id="why" aria-labelledby="why-title">
-    <div class="wrap">
-      <p class="kicker">{i18n._(msg`Why Yuva`)}</p>
-      <h2 id="why-title">{i18n._(msg`Several products means answering people in several places.`)}</h2>
-      <p class="lead">
+  <section class={section} id="why" aria-labelledby="why-title">
+    <div class={wrap}>
+      <p class={kicker}>{i18n._(msg`Why Yuva`)}</p>
+      <h2 id="why-title" class={h2}>{i18n._(msg`Several products means answering people in several places.`)}</h2>
+      <p class={lead}>
         {
           i18n._(
             msg`Small teams rarely run just one product. There is an app, its website, a side project and the tool that pays the bills, and each one collects messages somewhere else.`
           )
         }
       </p>
-      <div class="grid-3 problems">
+      <div class="mt-10 grid gap-4 md:grid-cols-3">
         {
           problems.map((p, i) => (
-            <article class="card">
-              <span class="card-num" aria-hidden="true">
-                0{i + 1}
-              </span>
-              <h3>{p.title}</h3>
-              <p>{p.body}</p>
-            </article>
+            <Card>
+              <CardHeader>
+                <span class="font-mono text-sm text-primary" aria-hidden="true">
+                  0{i + 1}
+                </span>
+                <CardTitle>
+                  <h3>{p.title}</h3>
+                </CardTitle>
+                <CardDescription>{p.body}</CardDescription>
+              </CardHeader>
+            </Card>
           ))
         }
       </div>
-      <p class="answer">
+      <p class="mt-10 max-w-3xl text-xl font-medium text-pretty">
         {
           i18n._(
             msg`Yuva gives all of it one home: every product is an inbox, every channel lands in the same conversation model, and the whole team answers from one panel on servers you control.`
@@ -418,11 +454,11 @@ const faq = [
     </div>
   </section>
 
-  <section class="section section-alt" id="how" aria-labelledby="how-title">
-    <div class="wrap">
-      <p class="kicker">{i18n._(msg`How it works`)}</p>
-      <h2 id="how-title">{i18n._(msg`Messages come in on any channel. Your team answers in one place.`)}</h2>
-      <p class="lead">
+  <section class={`${section} ${alt}`} id="how" aria-labelledby="how-title">
+    <div class={wrap}>
+      <p class={kicker}>{i18n._(msg`How it works`)}</p>
+      <h2 id="how-title" class={h2}>{i18n._(msg`Messages come in on any channel. Your team answers in one place.`)}</h2>
+      <p class={lead}>
         {
           i18n._(
             msg`Each message becomes part of a conversation in an inbox, and members answer from the panel. Yuva tells your backend what happened through signed webhooks, so your own apps can send their push notifications.`
@@ -430,15 +466,17 @@ const faq = [
         }
       </p>
       <Diagram locale={locale} />
-      <ol class="steps">
+      <ol class="mt-10 grid gap-6 md:grid-cols-3">
         {
           steps.map((st, i) => (
-            <li>
-              <span class="step-num" aria-hidden="true">
+            <li class="flex gap-4">
+              <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground" aria-hidden="true">
                 {i + 1}
               </span>
-              <h3>{st.title}</h3>
-              <p>{st.body}</p>
+              <div>
+                <h3 class="font-semibold">{st.title}</h3>
+                <p class="mt-1 text-sm text-muted-foreground">{st.body}</p>
+              </div>
             </li>
           ))
         }
@@ -446,11 +484,11 @@ const faq = [
     </div>
   </section>
 
-  <section class="section" id="channels" aria-labelledby="channels-title">
-    <div class="wrap">
-      <p class="kicker">{i18n._(msg`Channels`)}</p>
-      <h2 id="channels-title">{i18n._(msg`Every channel, one conversation model.`)}</h2>
-      <p class="lead">
+  <section class={section} id="channels" aria-labelledby="channels-title">
+    <div class={wrap}>
+      <p class={kicker}>{i18n._(msg`Channels`)}</p>
+      <h2 id="channels-title" class={h2}>{i18n._(msg`Every channel, one conversation model.`)}</h2>
+      <p class={lead}>
         {
           i18n._(
             msg`Live chat and asynchronous messaging differ only in settings. Whatever channel a conversation starts on, it looks and works the same in the panel, and each inbox chooses live or async.`
@@ -458,78 +496,111 @@ const faq = [
         }
       </p>
 
-      <div class="feature">
-        <div class="feature-copy">
-          <h3 class="feature-title"><span class="chip">{i18n._(msg`E-mail`)}</span>{i18n._(msg`E-mail done properly`)}</h3>
-          <p>
+      <div class="mt-14 grid items-center gap-10 lg:grid-cols-2">
+        <div class="min-w-0">
+          <h3 class="flex flex-wrap items-center gap-3 text-2xl font-semibold tracking-tight">
+            <Badge variant="secondary">{i18n._(msg`E-mail`)}</Badge>{i18n._(msg`E-mail done properly`)}
+          </h3>
+          <p class="mt-4 text-muted-foreground">
             {
               i18n._(
                 msg`Point a support address at Yuva through a Cloudflare Email Worker, any MTA or a signed HTTP request. Replies go out through each channel's own SMTP account: SES, Postmark or your own relay.`
               )
             }
           </p>
-          <ul class="ticks">{email.map((e) => <li>{e}</li>)}</ul>
-          <a class="more" href={links.email}>{i18n._(msg`E-mail guide`)}</a>
+          <ul class="mt-5 space-y-2.5 text-sm">
+            {
+              email.map((e) => (
+                <li class="flex gap-2.5">
+                  <Check className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
+                  <span>{e}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <a class={`${more} mt-5`} href={links.email}>{i18n._(msg`E-mail guide`)}<ArrowRight className="size-4" aria-hidden="true" /></a>
         </div>
-        <div class="feature-media mail-card" aria-hidden="true">
-          <div class="mail-head">
-            <span class="mail-from">{i18n._(msg`Amara Okafor`)}</span>
-            <span class="mail-subject">{i18n._(msg`Custom domain still shows as unverified`)}</span>
-          </div>
-          <p class="mail-body">{i18n._(msg`I added the CNAME record two days ago, but the dashboard still says “unverified”. Is there anything else I need to do?`)}</p>
-          <p class="mail-quote">{i18n._(msg`On Monday, Paperboat Support wrote: …`)}</p>
-          <div class="mail-tags">
-            <span>{i18n._(msg`quote hidden`)}</span>
-            <span>{i18n._(msg`threaded`)}</span>
-            <span>DMARC pass</span>
-          </div>
-        </div>
+        <Card className="min-w-0 shadow-lg" aria-hidden="true">
+          <CardHeader className="border-b">
+            <CardDescription>{i18n._(msg`Amara Okafor`)}</CardDescription>
+            <CardTitle>{i18n._(msg`Custom domain still shows as unverified`)}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p class="text-sm">{i18n._(msg`I added the CNAME record two days ago, but the dashboard still says “unverified”. Is there anything else I need to do?`)}</p>
+            <p class="border-l-2 pl-3 text-sm text-muted-foreground line-through decoration-muted-foreground/50">{i18n._(msg`On Monday, Paperboat Support wrote: …`)}</p>
+            <div class="flex flex-wrap gap-2 pt-1">
+              <Badge variant="outline">{i18n._(msg`quote hidden`)}</Badge>
+              <Badge variant="outline">{i18n._(msg`threaded`)}</Badge>
+              <Badge variant="outline">DMARC pass</Badge>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      <div class="feature feature-flip">
-        <div class="feature-copy">
-          <h3 class="feature-title"><span class="chip">{i18n._(msg`Live chat`)}</span>{i18n._(msg`Live chat and embedded threads`)}</h3>
-          <p>
+      <div class="mt-20 grid items-center gap-10 lg:grid-cols-2">
+        <div class="min-w-0 lg:order-2">
+          <h3 class="flex flex-wrap items-center gap-3 text-2xl font-semibold tracking-tight">
+            <Badge variant="secondary">{i18n._(msg`Live chat`)}</Badge>{i18n._(msg`Live chat and embedded threads`)}
+          </h3>
+          <p class="mt-4 text-muted-foreground">
             {
               i18n._(
                 msg`One web component loaded by one script tag. Use it as a floating launcher on a website, or embed a conversation thread inside your own product's panel.`
               )
             }
           </p>
-          <ul class="ticks">{chat.map((e) => <li>{e}</li>)}</ul>
-          <a class="more" href={links.widget}>{i18n._(msg`Widget guide`)}</a>
+          <ul class="mt-5 space-y-2.5 text-sm">
+            {
+              chat.map((e) => (
+                <li class="flex gap-2.5">
+                  <Check className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
+                  <span>{e}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <a class={`${more} mt-5`} href={links.widget}>{i18n._(msg`Widget guide`)}<ArrowRight className="size-4" aria-hidden="true" /></a>
         </div>
-        <div class="feature-media">
-          <div class="window">
-            <div class="window-bar" aria-hidden="true"><span></span><span></span><span></span></div>
-            <Shot
-              light={s.widget.light}
-              dark={s.widget.dark}
-              alt={i18n._(msg`The Yuva chat widget open on a newsletter tool's website: the visitor's question and a member's reply, with the member shown online.`)}
-              widths={[640, 960, 1280, 1920, 2560]}
-              sizes="(min-width: 1000px) 1000px, 180vw"
-              crop={{ x: 0.45, y: 0.08, w: 0.55, h: 0.92 }}
-            />
-          </div>
+        <div class="min-w-0 overflow-hidden rounded-xl border bg-card shadow-lg lg:order-1">
+          <div class={windowBar} aria-hidden="true"><span class={dot}></span><span class={dot}></span><span class={dot}></span></div>
+          <Shot
+            light={s.widget.light}
+            dark={s.widget.dark}
+            alt={i18n._(msg`The Yuva chat widget open on a newsletter tool's website: the visitor's question and a member's reply, with the member shown online.`)}
+            widths={[640, 960, 1280, 1920, 2560]}
+            sizes="(min-width: 1000px) 1000px, 180vw"
+            crop={{ x: 0.45, y: 0.08, w: 0.55, h: 0.92 }}
+          />
         </div>
       </div>
 
-      <div class="feature">
-        <div class="feature-copy">
-          <h3 class="feature-title"><span class="chip">{i18n._(msg`In-app`)}</span>{i18n._(msg`In-app messaging and feedback`)}</h3>
-          <p>
+      <div class="mt-20 grid items-center gap-10 lg:grid-cols-2">
+        <div class="min-w-0">
+          <h3 class="flex flex-wrap items-center gap-3 text-2xl font-semibold tracking-tight">
+            <Badge variant="secondary">{i18n._(msg`In-app`)}</Badge>{i18n._(msg`In-app messaging and feedback`)}
+          </h3>
+          <p class="mt-4 text-muted-foreground">
             {
               i18n._(
                 msg`Native SDKs for iOS (YuvaKit, SwiftUI) and Android (Kotlin, Jetpack Compose) give your app a conversation list, threads with attachments and a feedback form, or a headless client for your own interface.`
               )
             }
           </p>
-          <ul class="ticks">{inApp.map((e) => <li>{e}</li>)}</ul>
-          <a class="more" href={links.mobile}>{i18n._(msg`Mobile SDK guide`)}</a>
+          <ul class="mt-5 space-y-2.5 text-sm">
+            {
+              inApp.map((e) => (
+                <li class="flex gap-2.5">
+                  <Check className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
+                  <span>{e}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <a class={`${more} mt-5`} href={links.mobile}>{i18n._(msg`Mobile SDK guide`)}<ArrowRight className="size-4" aria-hidden="true" /></a>
         </div>
-        <div class="feature-media inapp-media">
-          <div class="window inapp-panel">
-            <div class="window-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div class="relative min-w-0 pb-10">
+          <div class="me-[26%] overflow-hidden rounded-xl border bg-card shadow-lg">
+            <div class={windowBar} aria-hidden="true"><span class={dot}></span><span class={dot}></span><span class={dot}></span></div>
             <Shot
               light={s.feedback.light}
               dark={s.feedback.dark}
@@ -539,7 +610,7 @@ const faq = [
               crop={{ x: 0.445, y: 0, w: 0.33, h: 0.5 }}
             />
           </div>
-          <div class="phone">
+          <div class={`${phone} absolute end-0 bottom-0 w-[34%] max-w-[210px]`}>
             <Shot
               light={s.ios}
               alt={i18n._(msg`The messages screen of the iOS SDK in a sample app, with a feedback thread and a conversation.`)}
@@ -550,44 +621,50 @@ const faq = [
         </div>
       </div>
 
-      <div class="api-strip">
-        <h3>{i18n._(msg`And an API for everything else`)}</h3>
-        <p>
-          {
-            i18n._(
-              msg`A feedback form rendered by your own backend posts to /v1/feedback with a workspace API key. Scripts create inboxes, channels and keys, and host backends look up or delete contacts by their own user id.`
-            )
-          }
-        </p>
-        <a class="more" href={links.openapi}>{i18n._(msg`API contract`)}</a>
-      </div>
+      <Card className="mt-20 bg-gradient-to-br from-accent to-card">
+        <CardHeader>
+          <CardTitle className="text-xl">
+            <h3>{i18n._(msg`And an API for everything else`)}</h3>
+          </CardTitle>
+          <CardDescription className="max-w-3xl text-base">
+            {
+              i18n._(
+                msg`A feedback form rendered by your own backend posts to /v1/feedback with a workspace API key. Scripts create inboxes, channels and keys, and host backends look up or delete contacts by their own user id.`
+              )
+            }
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <a class={more} href={links.openapi}>{i18n._(msg`API contract`)}<ArrowRight className="size-4" aria-hidden="true" /></a>
+        </CardContent>
+      </Card>
     </div>
   </section>
 
-  <section class="section section-alt" id="panel" aria-labelledby="panel-title">
-    <div class="wrap panel-layout">
-      <div>
-        <p class="kicker">{i18n._(msg`The team panel`)}</p>
-        <h2 id="panel-title">{i18n._(msg`Built for the people who answer.`)}</h2>
-        <p class="lead">
+  <section class={`${section} ${alt}`} id="panel" aria-labelledby="panel-title">
+    <div class={`${wrap} grid items-start gap-12 lg:grid-cols-[1fr_320px] lg:gap-16`}>
+      <div class="min-w-0">
+        <p class={kicker}>{i18n._(msg`The team panel`)}</p>
+        <h2 id="panel-title" class={h2}>{i18n._(msg`Built for the people who answer.`)}</h2>
+        <p class={lead}>
           {
             i18n._(
               msg`The panel ships inside the binary. It is fast, made for the keyboard, and works on phones as an installable app.`
             )
           }
         </p>
-        <dl class="feature-list">
+        <dl class="mt-10 grid gap-x-8 sm:grid-cols-2">
           {
             panel.map((f) => (
-              <div>
-                <dt>{f.title}</dt>
-                <dd>{f.body}</dd>
+              <div class="border-t py-4">
+                <dt class="font-semibold">{f.title}</dt>
+                <dd class="mt-1 text-sm text-muted-foreground">{f.body}</dd>
               </div>
             ))
           }
         </dl>
       </div>
-      <div class="phone phone-large">
+      <div class={`${phone} mx-auto w-[min(320px,78vw)] rounded-[44px] border-[10px] lg:sticky lg:top-24 [&_img]:aspect-[390/760] [&_img]:rounded-[34px]`}>
         <Shot
           light={s.phone.light}
           dark={s.phone.dark}
@@ -599,230 +676,255 @@ const faq = [
     </div>
   </section>
 
-  <section class="section" id="developers" aria-labelledby="dev-title">
-    <div class="wrap">
-      <p class="kicker">{i18n._(msg`For developers`)}</p>
-      <h2 id="dev-title">{i18n._(msg`Made to be embedded in your products.`)}</h2>
-      <p class="lead">
+  <section class={section} id="developers" aria-labelledby="dev-title">
+    <div class={wrap}>
+      <p class={kicker}>{i18n._(msg`For developers`)}</p>
+      <h2 id="dev-title" class={h2}>{i18n._(msg`Made to be embedded in your products.`)}</h2>
+      <p class={lead}>
         {
           i18n._(
             msg`Yuva is built for teams that make their own software. Every surface has a typed contract and a small, documented integration.`
           )
         }
       </p>
-      <div class="grid-4">
+      <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {
           devFacts.map((f) => (
-            <article class="card card-plain">
-              <h3>{f.title}</h3>
-              <p>{f.body}</p>
-            </article>
+            <Card size="sm">
+              <CardHeader>
+                <CardTitle>
+                  <h3>{f.title}</h3>
+                </CardTitle>
+                <CardDescription>{f.body}</CardDescription>
+              </CardHeader>
+            </Card>
           ))
         }
       </div>
-      <div class="snippets">
-        {
-          snippets.map((sn) => (
-            <figure class={`snippet snippet-${sn.id}`}>
-              <figcaption>{sn.title}</figcaption>
-              <Code code={sn.code} lang={sn.lang as "go"} themes={{ light: "github-light", dark: "github-dark" }} />
-            </figure>
-          ))
-        }
+      <div class="mt-10">
+        <Snippets client:visible tabs={tabs}>
+          {snippets.map((sn) => <Code slot={sn.id} code={sn.code} lang={sn.lang as "go"} themes={themes} />)}
+        </Snippets>
       </div>
-      <p class="doc-links">
-        <a href={links.widget}>{i18n._(msg`Web widget`)}</a>
-        <a href={links.identity}>{i18n._(msg`Identity tokens`)}</a>
-        <a href={links.mobile}>{i18n._(msg`Mobile SDKs`)}</a>
-        <a href={links.webhooks}>{i18n._(msg`Webhooks`)}</a>
-        <a href={links.openapi}>OpenAPI</a>
+      <p class="mt-6 flex flex-wrap gap-x-6 gap-y-2">
+        <a class={more} href={links.widget}>{i18n._(msg`Web widget`)}</a>
+        <a class={more} href={links.identity}>{i18n._(msg`Identity tokens`)}</a>
+        <a class={more} href={links.mobile}>{i18n._(msg`Mobile SDKs`)}</a>
+        <a class={more} href={links.webhooks}>{i18n._(msg`Webhooks`)}</a>
+        <a class={more} href={links.openapi}>OpenAPI</a>
       </p>
     </div>
   </section>
 
-  <section class="section section-alt" id="self-host" aria-labelledby="host-title">
-    <div class="wrap">
-      <p class="kicker">{i18n._(msg`Self-hosting`)}</p>
-      <h2 id="host-title">{i18n._(msg`Yours to run, on one small server.`)}</h2>
-      <p class="lead">
+  <section class={`${section} ${alt}`} id="self-host" aria-labelledby="host-title">
+    <div class={wrap}>
+      <p class={kicker}>{i18n._(msg`Self-hosting`)}</p>
+      <h2 id="host-title" class={h2}>{i18n._(msg`Yours to run, on one small server.`)}</h2>
+      <p class={lead}>
         {
           i18n._(
             msg`Yuva is one Go binary and a Postgres database. The job queue, realtime events and search all live in Postgres, so there is nothing else to operate.`
           )
         }
       </p>
-      <div class="grid-4">
+      <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {
           hosting.map((f) => (
-            <article class="card card-plain">
-              <h3>{f.title}</h3>
-              <p>{f.body}</p>
-            </article>
+            <Card size="sm">
+              <CardHeader>
+                <CardTitle>
+                  <h3>{f.title}</h3>
+                </CardTitle>
+                <CardDescription>{f.body}</CardDescription>
+              </CardHeader>
+            </Card>
           ))
         }
       </div>
-      <ol class="install">
+      <ol class="mt-12 grid gap-8">
         {
           install.map((st, i) => (
-            <li>
-              <div class="install-head">
-                <span class="step-num" aria-hidden="true">
-                  {i + 1}
-                </span>
+            <li class="grid min-w-0 gap-3 sm:grid-cols-[2rem_1fr] sm:gap-x-4">
+              <span class="flex size-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground" aria-hidden="true">
+                {i + 1}
+              </span>
+              <div class="min-w-0 space-y-3">
                 <div>
-                  <h3>{st.title}</h3>
-                  <p>{st.body}</p>
+                  <h3 class="font-semibold">{st.title}</h3>
+                  <p class="mt-1 text-sm text-muted-foreground">{st.body}</p>
                 </div>
+                {st.code && (
+                  <div class="overflow-hidden rounded-xl border">
+                    <Code code={st.code} lang="sh" themes={themes} />
+                  </div>
+                )}
+                {st.link && (
+                  <a class={more} href={st.link.href}>
+                    {st.link.label}
+                    <ArrowRight className="size-4" aria-hidden="true" />
+                  </a>
+                )}
               </div>
-              {st.code && <Code code={st.code} lang="sh" themes={{ light: "github-light", dark: "github-dark" }} />}
-              {st.link && (
-                <a class="more" href={st.link.href}>
-                  {st.link.label}
-                </a>
-              )}
             </li>
           ))
         }
       </ol>
-      <p class="fine">
+      <p class="mt-10 max-w-3xl text-sm text-muted-foreground">
         {
           i18n._(
             msg`Put it behind a TLS reverse proxy that passes WebSockets; Caddy works as it is. The install guide also covers nginx, backups, upgrades and every setting.`
           )
         }
-        <a href={links.operations}>{i18n._(msg`Operations guide`)}</a>
+        {" "}
+        <a class="font-medium text-primary underline-offset-4 hover:underline" href={links.operations}>{i18n._(msg`Operations guide`)}</a>
       </p>
     </div>
   </section>
 
-  <section class="section" id="security" aria-labelledby="sec-title">
-    <div class="wrap">
-      <p class="kicker">{i18n._(msg`Security and privacy`)}</p>
-      <h2 id="sec-title">{i18n._(msg`Careful with what it holds.`)}</h2>
-      <p class="lead">
+  <section class={section} id="security" aria-labelledby="sec-title">
+    <div class={wrap}>
+      <p class={kicker}>{i18n._(msg`Security and privacy`)}</p>
+      <h2 id="sec-title" class={h2}>{i18n._(msg`Careful with what it holds.`)}</h2>
+      <p class={lead}>
         {
           i18n._(
-            msg`A support inbox holds other people's words. Yuva is built with that in mind, and says plainly that it has not had a security review yet.`
+            msg`A support inbox holds other people's words. Yuva is built with that in mind, and says plainly that it has not had an independent security audit yet.`
           )
         }
       </p>
-      <div class="grid-3">
+      <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {
           security.map((f) => (
-            <article class="card card-plain">
-              <h3>{f.title}</h3>
-              <p>{f.body}</p>
-            </article>
+            <Card size="sm">
+              <CardHeader>
+                <CardTitle>
+                  <h3>{f.title}</h3>
+                </CardTitle>
+                <CardDescription>{f.body}</CardDescription>
+              </CardHeader>
+            </Card>
           ))
         }
       </div>
-      <p class="report">
+      <p class="mt-8 text-sm text-muted-foreground">
         {i18n._(msg`Found a vulnerability? Report it privately through GitHub, not in a public issue.`)}
-        <a href={links.security}>{i18n._(msg`Security policy`)}</a>
+        {" "}
+        <a class="font-medium text-primary underline-offset-4 hover:underline" href={links.security}>{i18n._(msg`Security policy`)}</a>
       </p>
     </div>
   </section>
 
-  <section class="section section-warm" id="open-source" aria-labelledby="oss-title">
-    <div class="wrap">
-      <p class="kicker">{i18n._(msg`Open source and licensing`)}</p>
-      <h2 id="oss-title">{i18n._(msg`Open source, and meant to stay that way.`)}</h2>
-      <p class="lead">
+  <section class={`${section} ${alt}`} id="open-source" aria-labelledby="oss-title">
+    <div class={wrap}>
+      <p class={kicker}>{i18n._(msg`Open source and licensing`)}</p>
+      <h2 id="oss-title" class={h2}>{i18n._(msg`Open source, and meant to stay that way.`)}</h2>
+      <p class={lead}>
         {
           i18n._(
             msg`Yuva uses a split license: the server stays open, and the pieces you embed in your own apps carry no copyleft obligations.`
           )
         }
       </p>
-      <div class="grid-4 licenses">
+      <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {
           licensing.map((l) => (
-            <article class="card">
-              <span class="tag">{l.tag}</span>
-              <h3>{l.title}</h3>
-              <p>{l.body}</p>
-            </article>
+            <Card size="sm">
+              <CardHeader>
+                <Badge variant="outline" className="mb-2">{l.tag}</Badge>
+                <CardTitle>
+                  <h3>{l.title}</h3>
+                </CardTitle>
+                <CardDescription>{l.body}</CardDescription>
+              </CardHeader>
+            </Card>
           ))
         }
       </div>
-      <div class="why-box">
-        <h3>{i18n._(msg`Why this split?`)}</h3>
-        <p>
-          {
-            i18n._(
-              msg`A copyleft core keeps improvements to the server in the open. Permissive SDKs remove friction for every app that embeds them. And the CLA leaves a way to pay for development without ever closing the code, so the project can stay open and keep going.`
-            )
-          }
-        </p>
-        <a class="more" href={links.licensing}>{i18n._(msg`Read LICENSING.md`)}</a>
-      </div>
+      <Card className="mt-8">
+        <CardHeader>
+          <CardTitle className="text-lg">
+            <h3>{i18n._(msg`Why this split?`)}</h3>
+          </CardTitle>
+          <CardDescription className="max-w-3xl text-base">
+            {
+              i18n._(
+                msg`A copyleft core keeps improvements to the server in the open. Permissive SDKs remove friction for every app that embeds them. And the CLA leaves a way to pay for development without ever closing the code, so the project can stay open and keep going.`
+              )
+            }
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <a class={more} href={links.licensing}>{i18n._(msg`Read LICENSING.md`)}<ArrowRight className="size-4" aria-hidden="true" /></a>
+        </CardContent>
+      </Card>
     </div>
   </section>
 
-  <section class="section" id="roadmap" aria-labelledby="road-title">
-    <div class="wrap">
-      <p class="kicker">{i18n._(msg`Status and roadmap`)}</p>
-      <h2 id="road-title">{i18n._(msg`Where it stands today.`)}</h2>
-      <p class="lead">
+  <section class={section} id="roadmap" aria-labelledby="road-title">
+    <div class={wrap}>
+      <p class={kicker}>{i18n._(msg`Status and roadmap`)}</p>
+      <h2 id="road-title" class={h2}>{i18n._(msg`Where it stands today.`)}</h2>
+      <p class={lead}>
         {
           i18n._(
-            msg`Yuva is pre-alpha and built in the open. Versions start at 0.0.1, there is no 1.0 until the project is ready, and the first release is being prepared now.`
+            msg`Yuva is pre-alpha and built in the open. Versions start at 0.0.1, there is no 1.0 until the project is ready, and the first release, 0.0.1, is out now.`
           )
         }
       </p>
-      <ol class="timeline">
+      <ol class="mt-10 max-w-3xl border-s ps-6">
         {
           roadmap.map((r) => (
-            <li class={`t-${r.state}`}>
-              <span class="t-mark" aria-hidden="true" />
-              <div>
-                <p class="t-state">{stateLabel[r.state]}</p>
-                <h3>{r.title}</h3>
-                <p>{r.body}</p>
-              </div>
+            <li class="relative pb-8 last:pb-0">
+              <span
+                class:list={[
+                  "absolute -start-[31px] top-1.5 size-3 rounded-full border-2 border-background",
+                  r.state === "done" ? "bg-muted-foreground" : "bg-primary ring-4 ring-primary/20",
+                ]}
+                aria-hidden="true"
+              />
+              <Badge variant={stateVariant[r.state]}>{stateLabel[r.state]}</Badge>
+              <h3 class="mt-2 font-semibold">{r.title}</h3>
+              <p class="mt-1 text-sm text-muted-foreground">{r.body}</p>
             </li>
           ))
         }
       </ol>
-      <p class="fine">
+      <p class="mt-10 max-w-3xl text-sm text-muted-foreground">
         {
           i18n._(
             msg`Later: a Helm chart and optional push sent by Yuva itself. Not planned for now: a CRM, marketing e-mail, a public knowledge base or social-media channels.`
           )
         }
-        <a href={links.roadmap}>{i18n._(msg`Full roadmap`)}</a>
+        {" "}
+        <a class="font-medium text-primary underline-offset-4 hover:underline" href={links.roadmap}>{i18n._(msg`Full roadmap`)}</a>
       </p>
     </div>
   </section>
 
-  <section class="section section-alt" id="faq" aria-labelledby="faq-title">
-    <div class="wrap faq-layout">
+  <section class={`${section} ${alt}`} id="faq" aria-labelledby="faq-title">
+    <div class={`${wrap} grid gap-10 lg:grid-cols-[1fr_2fr]`}>
       <div>
-        <p class="kicker">{i18n._(msg`FAQ`)}</p>
-        <h2 id="faq-title">{i18n._(msg`Questions people ask.`)}</h2>
-        <p class="lead">{i18n._(msg`Something missing? Open an issue on GitHub.`)}</p>
+        <p class={kicker}>{i18n._(msg`FAQ`)}</p>
+        <h2 id="faq-title" class={h2}>{i18n._(msg`Questions people ask.`)}</h2>
+        <p class={lead}>{i18n._(msg`Something missing? Open an issue on GitHub.`)}</p>
       </div>
-      <div class="faq">
-        {
-          faq.map((f) => (
-            <details>
-              <summary>{f.q}</summary>
-              <p>{f.a}</p>
-            </details>
-          ))
-        }
+      <div class="min-w-0">
+        <Faq client:visible items={faq} />
       </div>
     </div>
   </section>
 
-  <section class="section closing" aria-labelledby="close-title">
-    <div class="wrap closing-inner">
-      <h2 id="close-title">{i18n._(msg`Give every product's users a way to reach you.`)}</h2>
-      <p class="lead">{i18n._(msg`Read the code, run it on your machine, and follow along as it heads to its first release.`)}</p>
-      <div class="cta-row">
-        <a class="btn btn-primary" href={links.repo}>{i18n._(msg`View on GitHub`)}</a>
-        <a class="btn btn-ghost" href={links.quickStart}>{i18n._(msg`Read the quick start`)}</a>
+  <section class={section} aria-labelledby="close-title">
+    <div class={wrap}>
+    <div class="rounded-3xl border bg-[radial-gradient(80%_100%_at_50%_0%,var(--accent),var(--card))] px-5 py-16 text-center sm:px-10 sm:py-24">
+      <h2 id="close-title" class={`${h2} mx-auto max-w-3xl`}>{i18n._(msg`Give every product's users a way to reach you.`)}</h2>
+      <p class={`${lead} mx-auto`}>{i18n._(msg`Read the code, run 0.0.1 on your machine, and follow along as it grows.`)}</p>
+      <Separator className="mx-auto my-8 max-w-24" />
+      <div class="flex flex-col justify-center gap-3 sm:flex-row">
+        <a class={buttonVariants({ size: "lg", className: "px-5" })} href={links.repo}>{i18n._(msg`View on GitHub`)}</a>
+        <a class={buttonVariants({ variant: "outline", size: "lg", className: "px-5" })} href={links.quickStart}>{i18n._(msg`Read the quick start`)}</a>
       </div>
+    </div>
     </div>
   </section>
 </Base>

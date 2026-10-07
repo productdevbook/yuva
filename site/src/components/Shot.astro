@@ -34,12 +34,13 @@ const shift = crop
   : undefined
 ---
 
-<picture class:list={[Astro.props.class, crop && "crop"]} style={frame}>
+<picture class:list={["block", Astro.props.class, crop && "overflow-hidden"]} style={frame}>
   {small && sd && <source media={`${narrow} and (prefers-color-scheme: dark)`} srcset={sd.srcSet.attribute} sizes={small.sizes} width={sw} height={sh} type="image/webp" />}
   {small && sl && <source media={narrow} srcset={sl.srcSet.attribute} sizes={small.sizes} width={sw} height={sh} type="image/webp" />}
   {d && <source media="(prefers-color-scheme: dark)" srcset={d.srcSet.attribute} sizes={sizes} type="image/webp" />}
   <source srcset={l.srcSet.attribute} sizes={sizes} type="image/webp" />
   <img
+    class="block h-auto w-full"
     src={l.src}
     alt={alt}
     width={largest}
