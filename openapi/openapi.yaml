@@ -3329,7 +3329,11 @@ components:
       type: apiKey
       in: cookie
       name: yuva_session
-      description: Member session set by a successful sign-in.
+      description: |
+        Member session set by a successful sign-in. Requests other than `GET` and `HEAD` with this
+        cookie must send an `Origin` of the server's public origin (or a WebAuthn origin), or
+        `Sec-Fetch-Site: same-origin` without `Origin` (`403 origin_not_allowed`), and a body as
+        `application/json` or `multipart/form-data` (`415 unsupported_media_type`).
     apiKey:
       type: http
       scheme: bearer

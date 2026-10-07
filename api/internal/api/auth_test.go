@@ -16,6 +16,7 @@ import (
 	"os"
 	"regexp"
 	"sync"
+	"strings"
 	"testing"
 	"time"
 
@@ -215,7 +216,18 @@ func (h *harness) client() *client {
 	jar, _ := cookiejar.New(nil)
 	b := make([]byte, 3)
 	_, _ = rand.Read(b)
-	return &client{h: h, http: &http.Client{Jar: jar}, ip: fmt.Sprintf("10.%d.%d.%d", b[0], b[1], b[2])}
+	return &client{h: h, http: &http.Client{Jar: jar, Transport: panelOrigin{}}, ip: fmt.Sprintf("10.%d.%d.%d", b[0], b[1], b[2])}
+}
+
+// panelOrigin sends the Origin a browser on the panel sends with every non-GET request.
+type panelOrigin struct{}
+
+func (panelOrigin) RoundTrip(r *http.Request) (*http.Response, error) {
+	if r.Method != http.MethodGet && r.Header.Get("Origin") == "" && r.Header.Get("Authorization") == "" && strings.HasPrefix(r.URL.Path, "/v1/") {
+		r = r.Clone(r.Context())
+		r.Header.Set("Origin", testOrigin)
+	}
+	return http.DefaultTransport.RoundTrip(r)
 }
 
 type response struct {
@@ -485,4 +497,51 @@ func TestInvitesAndAPIKeys(t *testing.T) {
 
 	owner.expect(http.StatusNoContent, "DELETE", "/v1/api-keys/"+key["id"].(string), nil)
 	keyClient.expectProblem(http.StatusUnauthorized, "unauthenticated", "GET", "/v1/workspace", nil)
+}
+
+func TestCookieWritesNeedPanelOrigin(t *testing.T) {
+	h := newHarness(t)
+	email := unique("owner") + "@example.com"
+	h.bootstrap(email, unique("ws"))
+	owner := h.client()
+	owner.signIn(email)
+	send := func(c *client, headers map[string]string) int {
+		t.Helper()
+		req, _ := http.NewRequest("POST", h.url+"/v1/contacts", strings.NewReader(fmt.Sprintf(`{"name":%q}`, unique("contact"))))
+		req.Header.Set("X-Forwarded-For", c.ip)
+		if c.bearer != "" {
+			req.Header.Set("Authorization", "Bearer "+c.bearer)
+		}
+		for k, v := range headers {
+			req.Header.Set(k, v)
+		}
+		res, err := (&http.Client{Jar: c.http.Jar}).Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		res.Body.Close()
+		return res.StatusCode
+	}
+	for name, tc := range map[string]struct {
+		headers map[string]string
+		want    int
+	}{
+		"sibling origin":        {map[string]string{"Origin": "https://www.sibling.example", "Content-Type": "text/plain"}, http.StatusForbidden},
+		"sibling json":          {map[string]string{"Origin": "https://www.sibling.example", "Content-Type": "application/json"}, http.StatusForbidden},
+		"no origin":             {map[string]string{"Content-Type": "application/json"}, http.StatusForbidden},
+		"cross-site fetch":      {map[string]string{"Sec-Fetch-Site": "same-site", "Content-Type": "application/json"}, http.StatusForbidden},
+		"panel origin, text":    {map[string]string{"Origin": testOrigin, "Content-Type": "text/plain"}, http.StatusUnsupportedMediaType},
+		"panel origin, no type": {map[string]string{"Origin": testOrigin}, http.StatusUnsupportedMediaType},
+		"panel origin":          {map[string]string{"Origin": testOrigin, "Content-Type": "application/json"}, http.StatusCreated},
+		"same-origin fetch":     {map[string]string{"Sec-Fetch-Site": "same-origin", "Content-Type": "application/json; charset=utf-8"}, http.StatusCreated},
+	} {
+		if got := send(owner, tc.headers); got != tc.want {
+			t.Errorf("%s: %d, want %d", name, got, tc.want)
+		}
+	}
+	key := h.client()
+	key.bearer = owner.expect(http.StatusCreated, "POST", "/v1/api-keys", map[string]any{"name": "backend"}).str("secret")
+	if got := send(key, map[string]string{"Content-Type": "text/plain"}); got != http.StatusCreated {
+		t.Fatalf("API key request refused: %d", got)
+	}
 }

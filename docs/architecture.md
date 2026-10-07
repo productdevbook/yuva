@@ -95,6 +95,12 @@ panel (embedded SPA) ─────────► /v1 + WS ──────�
 A member session belongs to a person, not to a workspace. Workspace endpoints act on the workspace
 named in the `Yuva-Workspace` header, or on the person's only workspace when the header is absent.
 An API key acts on its own workspace only and cannot manage members or keys.
+A `/v1` request other than `GET`/`HEAD` that carries the session cookie (and no bearer token) must
+come from the panel: its `Origin` must be `YUVA_PUBLIC_URL` or a WebAuthn origin (without
+`Origin`, `Sec-Fetch-Site: same-origin` is required; else `403 origin_not_allowed`), and a body
+must be `application/json` or `multipart/form-data` (else `415 unsupported_media_type`), which a
+cross-site form or a no-cors `fetch` cannot send. `SameSite=Lax` alone lets sibling subdomains
+post with the cookie.
 Owners and admins make keys in the panel or with `/v1/api-keys`. An operator with access to the
 server's database makes them from the command line with the same code, for scripts and
 provisioning before anyone has signed in:

@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
+	"mime"
 	"net"
 	"net/http"
 	"strings"
@@ -265,6 +266,47 @@ func bearerToken(r *http.Request) (string, bool) {
 	}
 	token = strings.TrimSpace(token)
 	return token, token != ""
+}
+
+var (
+	errCrossSite       = problem(http.StatusForbidden, "origin_not_allowed", "requests with the session cookie must come from the panel's origin")
+	errUnsupportedType = problem(http.StatusUnsupportedMediaType, "unsupported_media_type", "send the body as application/json or multipart/form-data")
+)
+
+// guardCookieWrites refuses state-changing /v1 requests that carry the session cookie unless the
+// browser says they come from the panel's origin and the body has a type a plain form cannot send.
+func (s *Server) guardCookieWrites(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !strings.HasPrefix(r.URL.Path, "/v1/") || r.Method == http.MethodGet || r.Method == http.MethodHead || r.Method == http.MethodOptions {
+			next.ServeHTTP(w, r)
+			return
+		}
+		if _, bearer := bearerToken(r); bearer {
+			next.ServeHTTP(w, r)
+			return
+		}
+		if c, err := r.Cookie(sessionCookie); err != nil || c.Value == "" {
+			next.ServeHTTP(w, r)
+			return
+		}
+		if origin := r.Header.Get("Origin"); origin != "" {
+			if !s.originAllowed(origin) {
+				writeProblem(w, errCrossSite)
+				return
+			}
+		} else if r.Header.Get("Sec-Fetch-Site") != "same-origin" {
+			writeProblem(w, errCrossSite)
+			return
+		}
+		if r.ContentLength != 0 {
+			mt, _, _ := mime.ParseMediaType(r.Header.Get("Content-Type"))
+			if mt != "application/json" && mt != "multipart/form-data" {
+				writeProblem(w, errUnsupportedType)
+				return
+			}
+		}
+		next.ServeHTTP(w, r)
+	})
 }
 
 func (s *Server) clientIP(r *http.Request) string {

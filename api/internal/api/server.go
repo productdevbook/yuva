@@ -191,7 +191,7 @@ func (s *Server) Handler() http.Handler {
 		}
 		panel.ServeHTTP(w, r)
 	})
-	return s.recoverer(s.logRequests(s.clientCORS(s.limitBody(mux))))
+	return s.recoverer(s.logRequests(s.clientCORS(s.guardCookieWrites(s.limitBody(mux)))))
 }
 
 func isAPIPath(p string) bool {
