@@ -56,7 +56,9 @@ tags:
   - name: channels
     description: |
       How messages reach an inbox. E-mail channels receive mail through `/ingress/email` and send
-      replies through their own SMTP account; the other kinds store their settings only for now.
+      replies through their own SMTP account. `chat` (web widget) and `app` (mobile SDKs) channels
+      have a public key that starts contact sessions on `/client/v1`; `api` channels let host
+      backends post feedback with an API key (`POST /v1/feedback`).
   - name: contacts
     description: The people writing in.
   - name: conversations
@@ -72,9 +74,12 @@ tags:
   - name: client
     description: |
       The contact side, for the web widget and the mobile SDKs. A contact session starts at
-      `POST /client/v1/session` with a chat channel's public key and, for signed-in users of the
-      host app, an identity token; every other call sends the session token as a bearer token.
-      Browsers may call only from the channel's allowed origins (CORS). Contacts see their own
+      `POST /client/v1/session` with a `chat` or `app` channel's public key and, for signed-in
+      users of the host app, an identity token; every other call sends the session token as a
+      bearer token. Requests for a `chat` channel must come from a browser on one of its allowed
+      origins (CORS; a request without an `Origin` header is refused). Requests for an `app`
+      channel come from native apps, which send no `Origin`, and are not checked against origins;
+      a browser on an origin no chat channel allows is still refused. Contacts see their own
       conversations in the session's inbox, never notes, internal events, other contacts or member
       e-mail addresses; of members only their display name and initials.
   - name: ingress
@@ -845,7 +850,8 @@ paths:
       description: |
         Owners and admins only, with a member session. An `email` channel needs `email` (its
         address and outbound SMTP account); a `chat` channel needs `chat` (at least one allowed
-        origin) and gets a generated public key; `settings` are stored as given.
+        origin) and gets a generated public key; an `app` channel takes `app` (optional, defaults
+        apply) and gets a generated public key; `settings` are stored as given.
         An address belongs to one channel of the whole server, because inbound mail picks its
         channel by the recipient alone; a taken address answers `409 email_address_taken`.
       tags: [channels]
@@ -903,8 +909,8 @@ paths:
       summary: Update a channel
       description: |
         Owners and admins only, with a member session. `email` replaces the e-mail settings as a
-        whole, except that an absent `smtp.password` keeps the stored one; `chat` replaces the chat
-        settings as a whole, except the public key.
+        whole, except that an absent `smtp.password` keeps the stored one; `chat` and `app` replace
+        those settings as a whole, except the public key.
       tags: [channels]
       security:
         - session: []
@@ -958,11 +964,11 @@ paths:
   /v1/channels/{channelId}/public-key:
     post:
       operationId: rotateChannelPublicKey
-      summary: Rotate a chat channel's public key
+      summary: Rotate a chat or app channel's public key
       description: |
-        Owners and admins only, with a member session. Gives a `chat` channel a new public key;
-        widgets embedded with the old key can no longer start sessions, existing contact sessions
-        keep working. Other kinds answer `400`.
+        Owners and admins only, with a member session. Gives a `chat` or `app` channel a new public
+        key; widgets and apps built with the old key can no longer start sessions, existing contact
+        sessions keep working. Other kinds answer `400`.
       tags: [channels]
       security:
         - session: []
@@ -1902,9 +1908,10 @@ paths:
           inbox resumes that visitor and their conversations; an unknown or ended one starts a new
           visitor. Keep the returned `visitor_id` (e.g. in `localStorage`) and send it next time.
 
-        Browsers must call from one of the channel's allowed origins (`403 origin_not_allowed`).
-        Requests are rate limited per IP address and per channel (`429 rate_limited`). A blocked
-        contact answers `403 contact_blocked`.
+        For a `chat` channel, browsers must call from one of the channel's allowed origins
+        (`403 origin_not_allowed`, also without an `Origin` header); an `app` channel's key needs no
+        origin. Requests are rate limited per IP address and per channel (`429 rate_limited`). A
+        blocked contact answers `403 contact_blocked`.
       tags: [client]
       security: []
       requestBody:
@@ -1965,22 +1972,24 @@ paths:
   /client/v1/channels/{channel_key}:
     get:
       operationId: getClientChannel
-      summary: A chat channel's public settings
+      summary: A chat or app channel's public settings
       description: |
-        The inbox's public settings for a chat channel's public key, without a session: name,
-        branding, mode, business hours, presence or the expected reply time, and the chat
-        settings. Nothing is created, so a widget can show its launcher and greeting before the
-        visitor writes and start a session (`POST /client/v1/session`) only then.
+        The inbox's public settings for a `chat` or `app` channel's public key, without a session:
+        name, branding, mode, business hours, presence or the expected reply time, the chat
+        settings and the feedback categories. Nothing is created, so a widget can show its
+        launcher and greeting before the visitor writes and start a session
+        (`POST /client/v1/session`) only then.
 
-        Browsers must call from one of the channel's allowed origins (`403 origin_not_allowed`).
-        Requests are rate limited per IP address (`429 rate_limited`).
+        For a `chat` channel, browsers must call from one of the channel's allowed origins
+        (`403 origin_not_allowed`, also without an `Origin` header); an `app` channel's key needs no
+        origin. Requests are rate limited per IP address (`429 rate_limited`).
       tags: [client]
       security: []
       parameters:
         - name: channel_key
           in: path
           required: true
-          description: The chat channel's public key.
+          description: The chat or app channel's public key.
           schema:
             type: string
             maxLength: 200
@@ -2231,6 +2240,57 @@ paths:
         "403":
           $ref: "#/components/responses/Problem"
         "404":
+          $ref: "#/components/responses/Problem"
+        "429":
+          $ref: "#/components/responses/Problem"
+  /client/v1/feedback:
+    post:
+      operationId: createClientFeedback
+      summary: Send feedback
+      description: |
+        Starts a `feedback` conversation on the session's channel with its first message: a
+        category, the text and what the app knows about where it was sent from (app version,
+        build, OS, device, locale, screen, installation id). It is answered like any other
+        conversation and listed with the contact's conversations (`kind: feedback`).
+
+        `allow_email: true` lets members' replies the contact has not read in the app be e-mailed
+        to them (after the same delay as chat replies); `email` is the address to use while the
+        contact has no address from an identity token or their own mail, kept like
+        `PUT /client/v1/contact/email`. Without `allow_email`, replies reach the contact only in
+        the app.
+
+        Send `multipart/form-data` to attach screenshots (the other fields as form fields and up to
+        10 `files` parts), with the same size and type rules as messages. `client_id` makes the
+        request idempotent: the same `client_id` again answers `201` with the first conversation.
+        Rate limited per IP address and per channel.
+      tags: [client]
+      security:
+        - contactSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientFeedbackCreate"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/ClientFeedbackCreateMultipart"
+      responses:
+        "201":
+          description: The feedback conversation and its first message.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientConversationCreated"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "413":
+          $ref: "#/components/responses/Problem"
+        "415":
           $ref: "#/components/responses/Problem"
         "429":
           $ref: "#/components/responses/Problem"
@@ -3207,6 +3267,8 @@ components:
           $ref: "#/components/schemas/EmailChannel"
         chat:
           $ref: "#/components/schemas/ChatChannel"
+        app:
+          $ref: "#/components/schemas/AppChannel"
         created_at:
           type: string
           format: date-time
@@ -3229,6 +3291,8 @@ components:
           $ref: "#/components/schemas/EmailChannelInput"
         chat:
           $ref: "#/components/schemas/ChatChannelInput"
+        app:
+          $ref: "#/components/schemas/AppChannelInput"
     ChannelUpdate:
       type: object
       minProperties: 1
@@ -3243,6 +3307,8 @@ components:
           $ref: "#/components/schemas/EmailChannelInput"
         chat:
           $ref: "#/components/schemas/ChatChannelInput"
+        app:
+          $ref: "#/components/schemas/AppChannelInput"
     ChannelList:
       type: object
       required: [items]
@@ -4389,6 +4455,143 @@ components:
           maxLength: 500
         launcher:
           $ref: "#/components/schemas/ChatLauncher"
+    AppPlatform:
+      type: string
+      enum: [ios, android]
+    AppChannel:
+      type: object
+      description: |
+        Settings of an `app` (mobile SDKs) channel. Native apps send no `Origin`, so the key is not
+        tied to origins; anonymous use is off unless allowed.
+      required: [public_key, allow_anonymous, platforms]
+      properties:
+        public_key:
+          type: string
+          description: |
+            Identifies the channel to the SDKs (`channel_key`). Not a secret: it ships inside the
+            app. Rotate it with `POST /v1/channels/{id}/public-key`.
+        allow_anonymous:
+          type: boolean
+          description: Users without an identity token may write.
+        platforms:
+          type: array
+          description: The platforms the app ships on, for the panel.
+          items:
+            $ref: "#/components/schemas/AppPlatform"
+    AppChannelInput:
+      type: object
+      properties:
+        allow_anonymous:
+          type: boolean
+          description: Defaults to false.
+        platforms:
+          type: array
+          minItems: 1
+          maxItems: 2
+          uniqueItems: true
+          description: Defaults to both.
+          items:
+            $ref: "#/components/schemas/AppPlatform"
+    ConversationKind:
+      type: string
+      description: "`feedback` conversations carry `feedback` metadata; everything else is `conversation`."
+      enum: [conversation, feedback]
+    FeedbackCategory:
+      type: string
+      enum: [bug, idea, praise, other]
+    Feedback:
+      type: object
+      description: What a `feedback` conversation was sent with. Absent fields were not sent.
+      required: [category, allow_email]
+      properties:
+        category:
+          $ref: "#/components/schemas/FeedbackCategory"
+        allow_email:
+          type: boolean
+          description: The contact allowed replies by e-mail.
+        app_version:
+          type: string
+        build:
+          type: string
+        os:
+          type: string
+          examples: [iOS, Android]
+        os_version:
+          type: string
+        device_model:
+          type: string
+          examples: ["iPhone17,1"]
+        locale:
+          type: string
+        screen:
+          type: string
+          description: The app screen or route the feedback was sent from.
+        installation_id:
+          type: string
+          description: The app's own id for this installation.
+    FeedbackFields:
+      type: object
+      properties:
+        app_version:
+          type: string
+          maxLength: 50
+        build:
+          type: string
+          maxLength: 50
+        os:
+          type: string
+          maxLength: 50
+        os_version:
+          type: string
+          maxLength: 50
+        device_model:
+          type: string
+          maxLength: 100
+        locale:
+          type: string
+          maxLength: 35
+        screen:
+          type: string
+          maxLength: 200
+        installation_id:
+          type: string
+          maxLength: 200
+    ClientFeedbackCreate:
+      allOf:
+        - $ref: "#/components/schemas/FeedbackFields"
+        - type: object
+          required: [category]
+          properties:
+            category:
+              $ref: "#/components/schemas/FeedbackCategory"
+            subject:
+              type: string
+              maxLength: 500
+            body:
+              type: string
+              maxLength: 65536
+              description: The feedback text. Required unless files are attached.
+            client_id:
+              type: string
+              minLength: 1
+              maxLength: 200
+              description: The first message's `client_id`.
+            allow_email:
+              type: boolean
+              default: false
+            email:
+              $ref: "#/components/schemas/Email"
+    ClientFeedbackCreateMultipart:
+      allOf:
+        - $ref: "#/components/schemas/ClientFeedbackCreate"
+        - type: object
+          properties:
+            files:
+              type: array
+              maxItems: 10
+              items:
+                type: string
+                format: binary
     TypingCreate:
       type: object
       properties:
@@ -4455,7 +4658,7 @@ components:
           type: string
           minLength: 1
           maxLength: 200
-          description: The chat channel's `public_key`.
+          description: The chat or app channel's `public_key`.
         identity_token:
           type: string
           maxLength: 8192
@@ -4511,7 +4714,7 @@ components:
       description: |
         The inbox's public settings. `live` inboxes carry `presence`; `async` inboxes never do and
         show `expected_reply_minutes` instead.
-      required: [id, name, branding, default_locale, timezone, mode, business_hours, open_now, chat]
+      required: [id, name, branding, default_locale, timezone, mode, business_hours, open_now, chat, feedback_categories]
       properties:
         id:
           type: string
@@ -4539,6 +4742,11 @@ components:
           $ref: "#/components/schemas/ClientPresence"
         chat:
           $ref: "#/components/schemas/ClientChatSettings"
+        feedback_categories:
+          type: array
+          description: The categories `POST /client/v1/feedback` accepts, in display order.
+          items:
+            $ref: "#/components/schemas/FeedbackCategory"
     ClientContact:
       type: object
       required: [id, name, identified]
@@ -4610,11 +4818,16 @@ components:
           format: date-time
     ClientConversation:
       type: object
-      required: [id, subject, status, unread, created_at]
+      required: [id, kind, subject, status, unread, created_at]
       properties:
         id:
           type: string
           format: uuid
+        kind:
+          $ref: "#/components/schemas/ConversationKind"
+        feedback:
+          $ref: "#/components/schemas/Feedback"
+          description: "`feedback` conversations only."
         subject:
           type: string
         status:
