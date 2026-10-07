@@ -43,10 +43,11 @@ export function useRealtime(ws: string, memberId: string) {
     let attempt = 0
     let timer: ReturnType<typeof setTimeout> | undefined
     let stopped = false
+    let hidden = false
     const ctx = { ws, memberId }
 
     const connect = () => {
-      if (stopped) return
+      if (stopped || hidden) return
       if (attempt === 0) setStatus(ws, "connecting")
       const url = new URL("/v1/realtime", window.location.href)
       url.protocol = url.protocol === "https:" ? "wss:" : "ws:"
@@ -82,9 +83,10 @@ export function useRealtime(ws: string, memberId: string) {
         applyEvent(qc, ctx, { type: msg.type, data: msg.data } as LiveEvent)
       }
       s.onclose = (e) => {
+        if (socket !== s) return
         socket = null
         clearTyping()
-        if (stopped) return
+        if (stopped || hidden) return
         setStatus(ws, "offline")
         if (e.code === 1008) {
           void qc.invalidateQueries({ queryKey: meKey })
@@ -98,15 +100,29 @@ export function useRealtime(ws: string, memberId: string) {
     }
 
     const retry = () => {
-      if (socket || stopped) return
+      if (socket || stopped || hidden) return
       clearTimeout(timer)
       connect()
     }
     const onVisible = () => {
       if (document.visibilityState === "visible") retry()
     }
+    const onPageHide = () => {
+      hidden = true
+      clearTimeout(timer)
+      const s = socket
+      socket = null
+      s?.close(1000)
+      clearTyping()
+    }
+    const onPageShow = () => {
+      hidden = false
+      retry()
+    }
     retryNow = retry
     window.addEventListener("online", retry)
+    window.addEventListener("pagehide", onPageHide)
+    window.addEventListener("pageshow", onPageShow)
     document.addEventListener("visibilitychange", onVisible)
     connect()
     return () => {
@@ -114,6 +130,8 @@ export function useRealtime(ws: string, memberId: string) {
       clearTimeout(timer)
       if (retryNow === retry) retryNow = null
       window.removeEventListener("online", retry)
+      window.removeEventListener("pagehide", onPageHide)
+      window.removeEventListener("pageshow", onPageShow)
       document.removeEventListener("visibilitychange", onVisible)
       socket?.close(1000)
       setStatus(ws, "offline")

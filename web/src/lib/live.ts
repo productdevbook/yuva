@@ -223,6 +223,7 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
       addMessage(qc, ctx, event.data)
       if (event.data.author.contact_id) {
         void qc.invalidateQueries({ queryKey: keys.contactPresence(ctx.ws, event.data.author.contact_id) })
+        if (event.data.email) void qc.invalidateQueries({ queryKey: keys.contact(ctx.ws, event.data.author.contact_id) })
       }
       return
     case "message.updated":
