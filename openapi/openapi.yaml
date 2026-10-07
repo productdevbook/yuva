@@ -82,6 +82,13 @@ tags:
       a browser on an origin no chat channel allows is still refused. Contacts see their own
       conversations in the session's inbox, never notes, internal events, other contacts or member
       e-mail addresses; of members only their display name and initials.
+  - name: webhooks
+    description: |
+      Signed HTTP callbacks to host backends per the Standard Webhooks specification
+      (https://www.standardwebhooks.com): `webhook-id`, `webhook-timestamp` and
+      `webhook-signature` headers, JSON payloads `{type, timestamp, workspace_id, data}`, retries
+      with exponential backoff for about 24 hours, then the endpoint is disabled. `sdk/go/webhook`
+      verifies them. The payloads are described under `webhooks`.
   - name: ingress
     description: |
       Inbound mail and delivery reports from mail infrastructure. These endpoints are not called
@@ -1079,6 +1086,44 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+  /v1/contacts/by-external-id:
+    delete:
+      operationId: deleteContactByExternalId
+      summary: Delete a contact by external id
+      description: |
+        Owners, admins and API keys. Deletes the contact the host app knows by `external_id` in the
+        given inbox, exactly like `DELETE /v1/contacts/{contactId}`: all their conversations,
+        messages, attachments, sessions and addresses, in every inbox. Call it when a user deletes
+        their account in the host app (GDPR, KVKK). Emits `contact.deleted`, whose webhook payload
+        still carries the external ids. An unknown external id, or an inbox the caller cannot see,
+        answers `404`.
+      tags: [contacts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - name: inbox_id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: external_id
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 200
+      responses:
+        "204":
+          description: Deleted.
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
   /v1/contacts/{contactId}:
     get:
       operationId: getContact
@@ -1150,6 +1195,32 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+  /v1/contacts/{contactId}/presence:
+    get:
+      operationId: getContactPresence
+      summary: Whether a contact is connected
+      description: |
+        Whether the contact has a live `/client/v1/realtime` connection (widget or app in the
+        foreground), and when one was last seen. A host backend that sends its own push
+        notifications can skip the push while the contact is online; webhooks carry the same
+        `contact.online`.
+      tags: [contacts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ContactId"
+      responses:
+        "200":
+          description: The contact's presence.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactPresence"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
   /v1/conversations:
     get:
       operationId: listConversations
@@ -1198,6 +1269,16 @@ paths:
           schema:
             type: boolean
             default: false
+        - name: kind
+          in: query
+          description: Only conversations of this kind, e.g. `feedback` for the feedback view.
+          schema:
+            $ref: "#/components/schemas/ConversationKind"
+        - name: category
+          in: query
+          description: Only feedback of this category (implies `kind=feedback`).
+          schema:
+            $ref: "#/components/schemas/FeedbackCategory"
         - $ref: "#/components/parameters/Search"
         - $ref: "#/components/parameters/Cursor"
         - $ref: "#/components/parameters/Limit"
@@ -1814,6 +1895,318 @@ paths:
         "401":
           $ref: "#/components/responses/Problem"
         "403":
+          $ref: "#/components/responses/Problem"
+  /v1/feedback:
+    post:
+      operationId: createFeedback
+      summary: Post feedback for a host app's user
+      description: |
+        API keys only: a host backend posts feedback its own (server-rendered) form collected,
+        for its user `contact.external_id` in `inbox_id`. The inbox needs an `api` channel, which
+        the conversation starts on (`400 api_channel_required` otherwise).
+
+        The contact is found by the external id in the inbox, then by `contact.email`, or created;
+        `name` and `email` are saved on it (an address that belongs to another contact is left
+        there). The conversation has `kind: feedback` and is answered like any other; with
+        `allow_email: true` members' replies are e-mailed to the contact through the inbox's
+        e-mail channel. `client_id` makes the request idempotent: the same `client_id` for the
+        same contact answers `200` with the first conversation.
+      tags: [conversations]
+      security:
+        - apiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FeedbackCreate"
+      responses:
+        "200":
+          description: Feedback with this `client_id` was already posted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeedbackCreated"
+        "201":
+          description: The feedback conversation, its first message and the contact.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeedbackCreated"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/webhooks:
+    get:
+      operationId: listWebhooks
+      summary: List webhook endpoints
+      description: |
+        Owners, admins and API keys. Workspace endpoints (no `inbox_id`) and inbox endpoints;
+        `inbox_id` lists only that inbox's endpoints.
+      tags: [webhooks]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - name: inbox_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: The endpoints.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookEndpointList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createWebhook
+      summary: Add a webhook endpoint
+      description: |
+        Owners, admins and API keys. Without `inbox_id` the endpoint receives the events of the
+        whole workspace; with it, only those of that inbox (contact events for contacts with an
+        external id or a conversation there). The signing secret is returned once.
+
+        The URL must be `http` or `https` and may not point to a private, loopback or link-local
+        address (checked again on every delivery, after resolving the name) unless the server
+        runs with `YUVA_WEBHOOK_ALLOW_PRIVATE=true`.
+      tags: [webhooks]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookEndpointCreate"
+      responses:
+        "201":
+          description: The endpoint and its secret.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookEndpointSecret"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/webhooks/{webhookId}:
+    get:
+      operationId: getWebhook
+      summary: Get a webhook endpoint
+      tags: [webhooks]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/WebhookId"
+      responses:
+        "200":
+          description: The endpoint.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookEndpoint"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    patch:
+      operationId: updateWebhook
+      summary: Update a webhook endpoint
+      description: |
+        Owners, admins and API keys. `enabled: true` turns an endpoint back on after it was
+        disabled, clearing `disabled_reason`; deliveries that failed meanwhile can be sent again
+        with redeliver.
+      tags: [webhooks]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/WebhookId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookEndpointUpdate"
+      responses:
+        "200":
+          description: The updated endpoint.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookEndpoint"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteWebhook
+      summary: Remove a webhook endpoint
+      description: Owners, admins and API keys. Pending deliveries are dropped with it.
+      tags: [webhooks]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/WebhookId"
+      responses:
+        "204":
+          description: Removed.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/webhooks/{webhookId}/secret:
+    post:
+      operationId: rotateWebhookSecret
+      summary: Rotate the signing secret
+      description: |
+        Owners, admins and API keys. Returns a new secret once. For 24 hours deliveries carry
+        signatures with both the new and the old secret (`webhook-signature` lists both), so the
+        receiver can switch without dropping events.
+      tags: [webhooks]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/WebhookId"
+      responses:
+        "200":
+          description: The endpoint and its new secret.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookEndpointSecret"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/webhooks/{webhookId}/deliveries:
+    get:
+      operationId: listWebhookDeliveries
+      summary: List an endpoint's deliveries
+      description: |
+        Owners, admins and API keys. Newest first, with the last attempt of each. Finished
+        deliveries are kept 7 days.
+      tags: [webhooks]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/WebhookId"
+        - name: state
+          in: query
+          schema:
+            $ref: "#/components/schemas/WebhookDeliveryState"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: A page of deliveries.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookDeliveryPage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/webhooks/{webhookId}/deliveries/{deliveryId}:
+    get:
+      operationId: getWebhookDelivery
+      summary: Get a delivery with its payload and attempts
+      tags: [webhooks]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/WebhookId"
+        - $ref: "#/components/parameters/DeliveryId"
+      responses:
+        "200":
+          description: The delivery.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookDeliveryDetail"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/webhooks/{webhookId}/deliveries/{deliveryId}/redeliver:
+    post:
+      operationId: redeliverWebhook
+      summary: Send a delivery again
+      description: |
+        Owners, admins and API keys. Queues one more attempt now with the same `webhook-id` and
+        payload (a new timestamp and signature), whatever the delivery's state. A disabled
+        endpoint answers `409 webhook_disabled`.
+      tags: [webhooks]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/WebhookId"
+        - $ref: "#/components/parameters/DeliveryId"
+      responses:
+        "202":
+          description: Queued.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookDelivery"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /v1/webhooks/{webhookId}/attempts:
+    get:
+      operationId: listWebhookAttempts
+      summary: The endpoint's delivery log
+      description: |
+        Owners, admins and API keys. The last attempts to the endpoint, newest first: status code,
+        latency, the first 1 KiB of the response body and the error. The newest 100 are kept.
+      tags: [webhooks]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/WebhookId"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: The attempts.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookAttemptList"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
           $ref: "#/components/responses/Problem"
   /v1/realtime:
     get:
@@ -2524,6 +2917,137 @@ paths:
           $ref: "#/components/responses/Problem"
         "503":
           $ref: "#/components/responses/Problem"
+webhooks:
+  conversation.created:
+    post:
+      operationId: webhookConversationCreated
+      summary: A conversation started
+      description: |
+        Any channel, feedback included (which also sends `feedback.created`).
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookConversationPayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
+  conversation.updated:
+    post:
+      operationId: webhookConversationUpdated
+      summary: A conversation changed
+      description: |
+        Status, assignee, priority, labels, subject or spam flag changed, or it moved to
+        another contact.
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookConversationPayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
+  message.created:
+    post:
+      operationId: webhookMessageCreated
+      summary: A message was added
+      description: |
+        A message to or from the contact. Members' notes only for endpoints with
+        `include_notes`; internal events never. When a member answers and `contact.online` is
+        false, the contact has no live connection: send your push notification.
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookMessagePayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
+  feedback.created:
+    post:
+      operationId: webhookFeedbackCreated
+      summary: Feedback arrived
+      description: |
+        A `feedback` conversation started, from an app or with `POST /v1/feedback`, with its
+        first message.
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookFeedbackPayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
+  contact.updated:
+    post:
+      operationId: webhookContactUpdated
+      summary: A contact changed
+      description: |
+        Name, addresses, external ids, attributes or the blocked flag changed.
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookContactPayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
+  contact.deleted:
+    post:
+      operationId: webhookContactDeleted
+      summary: A contact was deleted
+      description: |
+        With the external ids the contact had, so the host can match its own user.
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookContactDeletedPayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
 components:
   securitySchemes:
     session:
@@ -2590,6 +3114,45 @@ components:
       schema:
         type: string
         format: uuid
+    WebhookId:
+      name: webhookId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    DeliveryId:
+      name: deliveryId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    WebhookIdHeader:
+      name: webhook-id
+      in: header
+      required: true
+      description: The delivery's id, the same on every retry; use it to ignore duplicates.
+      schema:
+        type: string
+        examples: [msg_2KWPBgLlAfxdpx2AI54pPJ85f4W]
+    WebhookTimestampHeader:
+      name: webhook-timestamp
+      in: header
+      required: true
+      description: Unix seconds of this attempt. Refuse values far from your clock.
+      schema:
+        type: string
+    WebhookSignatureHeader:
+      name: webhook-signature
+      in: header
+      required: true
+      description: |
+        Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+        `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+        `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+      schema:
+        type: string
     ContactId:
       name: contactId
       in: path
@@ -3385,6 +3948,422 @@ components:
         updated_at:
           type: string
           format: date-time
+    ContactPresence:
+      type: object
+      required: [contact_id, online]
+      properties:
+        contact_id:
+          type: string
+          format: uuid
+        online:
+          type: boolean
+          description: A `/client/v1/realtime` connection of the contact was seen in the last 75 seconds.
+        last_seen_at:
+          type: string
+          format: date-time
+          description: The contact's last client activity (a connection or a session use); absent when never seen.
+    FeedbackContact:
+      type: object
+      required: [external_id]
+      properties:
+        external_id:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: The host app's id for this user, per inbox.
+        email:
+          $ref: "#/components/schemas/Email"
+        name:
+          type: string
+          maxLength: 200
+    FeedbackCreate:
+      allOf:
+        - $ref: "#/components/schemas/FeedbackFields"
+        - type: object
+          required: [inbox_id, contact, category, body]
+          properties:
+            inbox_id:
+              type: string
+              format: uuid
+            contact:
+              $ref: "#/components/schemas/FeedbackContact"
+            category:
+              $ref: "#/components/schemas/FeedbackCategory"
+            subject:
+              type: string
+              maxLength: 500
+            body:
+              type: string
+              minLength: 1
+              maxLength: 65536
+            client_id:
+              type: string
+              minLength: 1
+              maxLength: 200
+            allow_email:
+              type: boolean
+              default: false
+    FeedbackCreated:
+      type: object
+      required: [conversation, message, contact]
+      properties:
+        conversation:
+          $ref: "#/components/schemas/Conversation"
+        message:
+          $ref: "#/components/schemas/Message"
+        contact:
+          $ref: "#/components/schemas/Contact"
+    FeedbackCount:
+      type: object
+      required: [category, count]
+      properties:
+        category:
+          $ref: "#/components/schemas/FeedbackCategory"
+        count:
+          type: integer
+          format: int64
+    WebhookEventType:
+      type: string
+      enum: [conversation.created, conversation.updated, message.created, feedback.created, contact.updated, contact.deleted]
+    WebhookEndpoint:
+      type: object
+      required: [id, url, description, events, include_notes, enabled, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+          description: Absent for workspace endpoints.
+        url:
+          type: string
+          format: uri
+        description:
+          type: string
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/WebhookEventType"
+        include_notes:
+          type: boolean
+          description: "`message.created` also for members' notes."
+        enabled:
+          type: boolean
+        disabled_at:
+          type: string
+          format: date-time
+        disabled_reason:
+          type: string
+          description: |
+            Why Yuva turned the endpoint off: every attempt failed for 24 hours, or it answered
+            `410 Gone`. Absent while enabled or when a member turned it off.
+        failing_since:
+          type: string
+          format: date-time
+          description: Every attempt since then failed; absent while deliveries succeed.
+        secret_rotated_at:
+          type: string
+          format: date-time
+          description: While the previous secret still signs (24 hours after a rotation), when it was replaced.
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    WebhookEndpointCreate:
+      type: object
+      required: [url, events]
+      properties:
+        url:
+          type: string
+          format: uri
+          maxLength: 2000
+        inbox_id:
+          type: string
+          format: uuid
+        description:
+          type: string
+          maxLength: 200
+        events:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/WebhookEventType"
+        include_notes:
+          type: boolean
+          default: false
+        enabled:
+          type: boolean
+          default: true
+    WebhookEndpointUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        url:
+          type: string
+          format: uri
+          maxLength: 2000
+        description:
+          type: string
+          maxLength: 200
+        events:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/WebhookEventType"
+        include_notes:
+          type: boolean
+        enabled:
+          type: boolean
+    WebhookEndpointSecret:
+      type: object
+      required: [endpoint, secret]
+      properties:
+        endpoint:
+          $ref: "#/components/schemas/WebhookEndpoint"
+        secret:
+          type: string
+          description: "`whsec_` and 32 random bytes in base64. Shown only now."
+    WebhookEndpointList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/WebhookEndpoint"
+    WebhookDeliveryState:
+      type: string
+      description: |
+        `pending` while attempts remain, `succeeded` after a 2xx answer, `failed` when the retries
+        (about 24 hours) ran out or the endpoint was disabled.
+      enum: [pending, succeeded, failed]
+    WebhookAttempt:
+      type: object
+      required: [id, delivery_id, attempted_at, manual, success, latency_ms, response_body]
+      properties:
+        id:
+          type: string
+          format: uuid
+        delivery_id:
+          type: string
+          format: uuid
+        attempted_at:
+          type: string
+          format: date-time
+        manual:
+          type: boolean
+          description: Sent by a redeliver.
+        success:
+          type: boolean
+        status_code:
+          type: integer
+          format: int32
+          description: Absent when no HTTP answer arrived.
+        latency_ms:
+          type: integer
+          format: int32
+        response_body:
+          type: string
+          description: The first 1 KiB of the answer.
+        error:
+          type: string
+          description: Why the attempt failed (timeout, refused address, non-2xx status, …).
+    WebhookAttemptList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/WebhookAttempt"
+    WebhookDelivery:
+      type: object
+      required: [id, message_id, event_type, state, attempts, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        message_id:
+          type: string
+          description: The `webhook-id` header.
+        event_type:
+          $ref: "#/components/schemas/WebhookEventType"
+        state:
+          $ref: "#/components/schemas/WebhookDeliveryState"
+        attempts:
+          type: integer
+          format: int32
+        next_attempt_at:
+          type: string
+          format: date-time
+          description: Pending deliveries only.
+        last_attempt:
+          $ref: "#/components/schemas/WebhookAttempt"
+        created_at:
+          type: string
+          format: date-time
+    WebhookDeliveryDetail:
+      allOf:
+        - $ref: "#/components/schemas/WebhookDelivery"
+        - type: object
+          required: [payload, attempt_log]
+          properties:
+            payload:
+              type: object
+              additionalProperties: true
+              description: The body sent, one of the webhook payloads.
+            attempt_log:
+              type: array
+              description: The delivery's attempts that are still kept, newest first.
+              items:
+                $ref: "#/components/schemas/WebhookAttempt"
+    WebhookDeliveryPage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/WebhookDelivery"
+        next_cursor:
+          type: string
+          description: Absent on the last page.
+    WebhookContact:
+      type: object
+      description: The contact as a host backend needs it.
+      required: [id, name, emails, external_ids, attributes, online]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        emails:
+          type: array
+          items:
+            $ref: "#/components/schemas/Email"
+        external_ids:
+          type: array
+          description: The host app's ids for this person, per inbox.
+          items:
+            $ref: "#/components/schemas/ExternalId"
+        attributes:
+          $ref: "#/components/schemas/Attributes"
+        locale:
+          type: string
+        online:
+          type: boolean
+          description: |
+            The contact had a live `/client/v1/realtime` connection when the webhook was prepared.
+            When false, the app is closed or in the background: a push notification is the way to
+            reach them.
+        last_seen_at:
+          type: string
+          format: date-time
+    WebhookDeletedContact:
+      type: object
+      required: [id, external_ids]
+      properties:
+        id:
+          type: string
+          format: uuid
+        external_ids:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExternalId"
+    WebhookConversationData:
+      type: object
+      required: [conversation, contact]
+      properties:
+        conversation:
+          $ref: "#/components/schemas/Conversation"
+        contact:
+          $ref: "#/components/schemas/WebhookContact"
+    WebhookMessageData:
+      type: object
+      required: [message, conversation, contact]
+      properties:
+        message:
+          $ref: "#/components/schemas/Message"
+        conversation:
+          $ref: "#/components/schemas/Conversation"
+        contact:
+          $ref: "#/components/schemas/WebhookContact"
+    WebhookContactData:
+      type: object
+      required: [contact]
+      properties:
+        contact:
+          $ref: "#/components/schemas/WebhookContact"
+    WebhookContactDeletedData:
+      type: object
+      required: [contact]
+      properties:
+        contact:
+          $ref: "#/components/schemas/WebhookDeletedContact"
+    WebhookPayloadBase:
+      type: object
+      description: Standard Webhooks payload envelope.
+      required: [type, timestamp, workspace_id]
+      properties:
+        type:
+          $ref: "#/components/schemas/WebhookEventType"
+        timestamp:
+          type: string
+          format: date-time
+          description: When the event happened (not when it was sent).
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+          description: The conversation's inbox; absent for contact events.
+    WebhookConversationPayload:
+      allOf:
+        - $ref: "#/components/schemas/WebhookPayloadBase"
+        - type: object
+          required: [data]
+          properties:
+            data:
+              $ref: "#/components/schemas/WebhookConversationData"
+    WebhookMessagePayload:
+      allOf:
+        - $ref: "#/components/schemas/WebhookPayloadBase"
+        - type: object
+          required: [data]
+          properties:
+            data:
+              $ref: "#/components/schemas/WebhookMessageData"
+    WebhookFeedbackPayload:
+      allOf:
+        - $ref: "#/components/schemas/WebhookPayloadBase"
+        - type: object
+          required: [data]
+          properties:
+            data:
+              $ref: "#/components/schemas/WebhookMessageData"
+    WebhookContactPayload:
+      allOf:
+        - $ref: "#/components/schemas/WebhookPayloadBase"
+        - type: object
+          required: [data]
+          properties:
+            data:
+              $ref: "#/components/schemas/WebhookContactData"
+    WebhookContactDeletedPayload:
+      allOf:
+        - $ref: "#/components/schemas/WebhookPayloadBase"
+        - type: object
+          required: [data]
+          properties:
+            data:
+              $ref: "#/components/schemas/WebhookContactDeletedData"
     ContactCreate:
       type: object
       properties:
@@ -3451,7 +4430,7 @@ components:
       enum: [low, normal, high, urgent]
     Conversation:
       type: object
-      required: [id, inbox_id, contact_id, subject, status, priority, spam, labels, last_activity_at, created_at, updated_at]
+      required: [id, inbox_id, contact_id, kind, subject, status, priority, spam, labels, last_activity_at, created_at, updated_at]
       properties:
         id:
           type: string
@@ -3462,6 +4441,11 @@ components:
         contact_id:
           type: string
           format: uuid
+        kind:
+          $ref: "#/components/schemas/ConversationKind"
+        feedback:
+          $ref: "#/components/schemas/Feedback"
+          description: "`feedback` conversations only: category and what the app sent with it."
         channel_id:
           type: string
           format: uuid
@@ -3640,8 +4624,17 @@ components:
     ConversationCounts:
       type: object
       description: Open conversations in the inboxes the caller can see.
-      required: [all, mine, unassigned, spam, inboxes, labels]
+      required: [all, mine, unassigned, spam, inboxes, labels, feedback, feedback_categories]
       properties:
+        feedback:
+          type: integer
+          format: int64
+          description: Open feedback conversations (included in the other counts too).
+        feedback_categories:
+          type: array
+          description: Open feedback per category; categories without any are left out.
+          items:
+            $ref: "#/components/schemas/FeedbackCount"
         all:
           type: integer
           format: int64
