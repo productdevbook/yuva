@@ -218,6 +218,13 @@ type Event struct {
 	CreatedAt      time.Time
 }
 
+type IdentityTokenID struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	Jti         string
+	ExpiresAt   time.Time
+}
+
 type Inbox struct {
 	ID                   uuid.UUID
 	WorkspaceID          uuid.UUID

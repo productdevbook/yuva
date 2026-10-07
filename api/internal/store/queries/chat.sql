@@ -286,3 +286,11 @@ RETURNING contact_id, inbox_id, email;
 
 -- name: DeleteContactEmailConfirmations :exec
 DELETE FROM email_confirmations WHERE workspace_id = @workspace_id AND (contact_id = @contact_id OR expires_at <= @now);
+
+-- name: DeleteExpiredIdentityTokenIDs :exec
+DELETE FROM identity_token_ids WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id AND expires_at <= @now;
+
+-- name: UseIdentityTokenID :execrows
+INSERT INTO identity_token_ids (workspace_id, inbox_id, jti, expires_at)
+VALUES (@workspace_id, @inbox_id, @jti, @expires_at)
+ON CONFLICT DO NOTHING;

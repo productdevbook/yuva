@@ -289,6 +289,21 @@ func (q *Queries) DeleteExpiredContactSessions(ctx context.Context, arg DeleteEx
 	return result.RowsAffected(), nil
 }
 
+const deleteExpiredIdentityTokenIDs = `-- name: DeleteExpiredIdentityTokenIDs :exec
+DELETE FROM identity_token_ids WHERE workspace_id = $1 AND inbox_id = $2 AND expires_at <= $3
+`
+
+type DeleteExpiredIdentityTokenIDsParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	Now         time.Time
+}
+
+func (q *Queries) DeleteExpiredIdentityTokenIDs(ctx context.Context, arg DeleteExpiredIdentityTokenIDsParams) error {
+	_, err := q.db.Exec(ctx, deleteExpiredIdentityTokenIDs, arg.WorkspaceID, arg.InboxID, arg.Now)
+	return err
+}
+
 const deleteStaleConnections = `-- name: DeleteStaleConnections :execrows
 DELETE FROM realtime_connections WHERE workspace_id = $1 AND seen_at < $2
 `
@@ -1708,4 +1723,30 @@ func (q *Queries) TouchContactSession(ctx context.Context, arg TouchContactSessi
 		arg.StaleBefore,
 	)
 	return err
+}
+
+const useIdentityTokenID = `-- name: UseIdentityTokenID :execrows
+INSERT INTO identity_token_ids (workspace_id, inbox_id, jti, expires_at)
+VALUES ($1, $2, $3, $4)
+ON CONFLICT DO NOTHING
+`
+
+type UseIdentityTokenIDParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	Jti         string
+	ExpiresAt   time.Time
+}
+
+func (q *Queries) UseIdentityTokenID(ctx context.Context, arg UseIdentityTokenIDParams) (int64, error) {
+	result, err := q.db.Exec(ctx, useIdentityTokenID,
+		arg.WorkspaceID,
+		arg.InboxID,
+		arg.Jti,
+		arg.ExpiresAt,
+	)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
 }

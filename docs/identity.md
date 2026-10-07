@@ -67,6 +67,7 @@ Claims:
 | `sub` | yes | Your user id, 1 to 200 characters. The same `sub` always finds the same contact in the inbox. |
 | `exp` | yes | Expiry, Unix seconds. At most 10 minutes after now. |
 | `iat`, `nbf` | no | Unix seconds; must not be in the future. |
+| `jti` | no | A unique token id, 1 to 200 characters. A token with a `jti` starts one session only; without it, a token can be used again until it expires. |
 | `email` | no | The user's address. |
 | `email_verified` | no | `true` when your app has verified that the user owns `email`; default `false`. Only a verified `email` is used to find an existing contact. |
 | `name` | no | Display name, up to 200 characters. |

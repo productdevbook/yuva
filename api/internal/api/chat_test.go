@@ -343,6 +343,24 @@ func TestContactMergeRules(t *testing.T) {
 	}
 }
 
+func TestIdentityTokenJTI(t *testing.T) {
+	h := newHarness(t)
+	ct := newChatTeam(t, h, "live", false)
+	once := ct.token(h, map[string]any{"sub": "u-1", "jti": "token-1"})
+	ct.session(h, map[string]any{"identity_token": once})
+	if r := ct.sessionStatus(h, ct.origin, map[string]any{"identity_token": once}); r.status != http.StatusUnauthorized || r.str("code") != "invalid_identity_token" {
+		t.Fatalf("reused jti: %d %s", r.status, r.raw)
+	}
+	plain := ct.token(h, map[string]any{"sub": "u-1"})
+	ct.session(h, map[string]any{"identity_token": plain})
+	ct.session(h, map[string]any{"identity_token": plain})
+	if r := ct.sessionStatus(h, ct.origin, map[string]any{"identity_token": ct.token(h, map[string]any{"sub": "u-1", "jti": 7})}); r.status != http.StatusUnauthorized {
+		t.Fatalf("jti as a number: %d %s", r.status, r.raw)
+	}
+	h.clock.Advance(6 * time.Minute)
+	ct.session(h, map[string]any{"identity_token": ct.token(h, map[string]any{"sub": "u-1", "jti": "token-1"})})
+}
+
 func TestIdentityTokenEmailLinking(t *testing.T) {
 	h := newHarness(t)
 	ct := newChatTeam(t, h, "live", true)

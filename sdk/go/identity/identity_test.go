@@ -27,7 +27,7 @@ func TestSign(t *testing.T) {
 	const secret = "yuva_is_test-secret"
 	at := time.Unix(1_800_000_000, 0)
 	token, err := identity.Sign(secret, identity.Claims{
-		Subject: "user-42", Email: "success@simulator.amazonses.com", EmailVerified: true, Name: "Ada", Locale: "tr",
+		Subject: "user-42", Email: "success@simulator.amazonses.com", EmailVerified: true, Name: "Ada", ID: "t-1", Locale: "tr",
 		Attrs: map[string]any{"plan": "pro"}, IssuedAt: at,
 	})
 	if err != nil {
@@ -49,7 +49,7 @@ func TestSign(t *testing.T) {
 	}
 	var c map[string]any
 	decode(t, parts[1], &c)
-	if c["sub"] != "user-42" || c["email"] != "success@simulator.amazonses.com" || c["name"] != "Ada" || c["locale"] != "tr" || c["email_verified"] != true {
+	if c["sub"] != "user-42" || c["email"] != "success@simulator.amazonses.com" || c["name"] != "Ada" || c["locale"] != "tr" || c["email_verified"] != true || c["jti"] != "t-1" {
 		t.Fatalf("claims %v", c)
 	}
 	if c["attrs"].(map[string]any)["plan"] != "pro" {
@@ -71,7 +71,7 @@ func TestSignDefaultsAndLimits(t *testing.T) {
 	if iat := int64(c["iat"].(float64)); iat < before || int64(c["exp"].(float64)) != iat+300 {
 		t.Fatalf("claims %v", c)
 	}
-	for _, k := range []string{"email", "email_verified", "name", "locale", "attrs"} {
+	for _, k := range []string{"email", "email_verified", "name", "locale", "attrs", "jti"} {
 		if _, ok := c[k]; ok {
 			t.Fatalf("empty %s is sent: %v", k, c)
 		}

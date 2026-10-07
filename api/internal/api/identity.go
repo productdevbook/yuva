@@ -31,6 +31,8 @@ type identityClaims struct {
 	name          *string
 	locale        *string
 	attrs         []byte
+	jti           string
+	exp           time.Time
 }
 
 type jwtHeader struct {
@@ -126,6 +128,14 @@ func verifyIdentityToken(token string, secret []byte, now time.Time) (identityCl
 		if t.After(now.Add(identityLeeway)) {
 			return c, errIdentity(k + " is in the future")
 		}
+	}
+	c.exp = exp
+	if v, present := claims["jti"]; present && v != nil {
+		s, ok := v.(string)
+		if !ok || strings.TrimSpace(s) == "" || len(s) > 200 {
+			return c, errIdentity("jti must be a string of 1 to 200 characters")
+		}
+		c.jti = s
 	}
 	sub, _ := claims["sub"].(string)
 	if c.sub = strings.TrimSpace(sub); c.sub == "" || len([]rune(c.sub)) > 200 {

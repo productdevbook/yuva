@@ -129,6 +129,11 @@ func (s *Server) startContactSession(ctx context.Context, chat store.ChatChannel
 			contact contactRow
 			err     error
 		)
+		if claims != nil && claims.jti != "" {
+			if err := s.useTokenID(ctx, q, inbox, *claims); err != nil {
+				return err
+			}
+		}
 		if claims != nil {
 			contact, err = s.identifyContact(ctx, q, events, inbox, *claims, visitor)
 		} else {
@@ -158,6 +163,24 @@ func (s *Server) startContactSession(ctx context.Context, chat store.ChatChannel
 		return err
 	})
 	return out, err
+}
+
+var errTokenReused = errIdentity("the token's jti was already used")
+
+// useTokenID makes a token that carries a jti single-use within its lifetime.
+func (s *Server) useTokenID(ctx context.Context, q *store.Queries, inbox store.Inbox, c identityClaims) error {
+	now := s.now()
+	if err := q.DeleteExpiredIdentityTokenIDs(ctx, store.DeleteExpiredIdentityTokenIDsParams{WorkspaceID: inbox.WorkspaceID, InboxID: inbox.ID, Now: now.Add(-identityLeeway)}); err != nil {
+		return err
+	}
+	n, err := q.UseIdentityTokenID(ctx, store.UseIdentityTokenIDParams{WorkspaceID: inbox.WorkspaceID, InboxID: inbox.ID, Jti: c.jti, ExpiresAt: c.exp})
+	if err != nil {
+		return err
+	}
+	if n == 0 {
+		return errTokenReused
+	}
+	return nil
 }
 
 func (s *Server) anonymousContact(ctx context.Context, q *store.Queries, inbox store.Inbox, visitor string) (contactRow, string, error) {

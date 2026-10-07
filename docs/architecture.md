@@ -142,7 +142,8 @@ session. `sdk/go` signs these tokens and verifies webhooks.
 
 The token is checked strictly: `alg` must be `HS256` (anything else, `none` included, is
 refused), the signature must match the inbox secret, `exp` is required and at most 10 minutes
-ahead, `sub` is required. The contact is found by `sub` among the inbox's external ids, then by the
+ahead, `sub` is required. A token with a `jti` is accepted once: its id is remembered per inbox
+until the token expires (tokens without one can be replayed until `exp`). The contact is found by `sub` among the inbox's external ids, then by the
 token's `email` when the token says `email_verified: true` and the contact with that address has no
 external id in this inbox, or created; a contact already bound to another `sub` of the inbox is
 never taken over. `name`, `locale` and `attrs` are saved on the contact; when it was found by

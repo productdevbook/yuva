@@ -41,6 +41,8 @@ type Claims struct {
 	// Attrs are shown to members next to the conversation (plan, app version, …); at most 16 KiB
 	// as JSON.
 	Attrs map[string]any
+	// ID, when set, becomes the token's jti: Yuva then accepts the token only once.
+	ID string
 	// IssuedAt defaults to the current time.
 	IssuedAt time.Time
 	// TTL defaults to DefaultTTL and may be at most MaxTTL.
@@ -54,6 +56,7 @@ type payload struct {
 	Name          string         `json:"name,omitempty"`
 	Locale        string         `json:"locale,omitempty"`
 	Attrs         map[string]any `json:"attrs,omitempty"`
+	Jti           string         `json:"jti,omitempty"`
 	Iat           int64          `json:"iat"`
 	Exp           int64          `json:"exp"`
 }
@@ -82,7 +85,7 @@ func Sign(secret string, c Claims) (string, error) {
 	}
 	body, err := json.Marshal(payload{
 		Sub: sub, Email: c.Email, EmailVerified: c.EmailVerified, Name: c.Name, Locale: c.Locale, Attrs: c.Attrs,
-		Iat: iat.Unix(), Exp: iat.Add(ttl).Unix(),
+		Jti: c.ID, Iat: iat.Unix(), Exp: iat.Add(ttl).Unix(),
 	})
 	if err != nil {
 		return "", err
