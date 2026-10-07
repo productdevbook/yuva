@@ -233,3 +233,36 @@ func TestSMTPHostCheckedOnSave(t *testing.T) {
 		t.Fatalf("YUVA_SMTP_ALLOW_PRIVATE: metadata address answered %d", s)
 	}
 }
+
+func TestAnonymousContactCap(t *testing.T) {
+	h := newHarnessWith(t, func(d *api.Deps) { d.Chat.AnonymousContactsPerHour = 2 })
+	ct := newChatTeam(t, h, "live", true)
+	c := h.client()
+	c.origin = ct.origin
+	start := func(c *client, visitor string) response {
+		req := map[string]any{"channel_key": ct.key}
+		if visitor != "" {
+			req["visitor_id"] = visitor
+		}
+		return c.do("POST", "/client/v1/session", req)
+	}
+	first := start(c, "")
+	if first.status != http.StatusCreated || start(c, "").status != http.StatusCreated {
+		t.Fatal("first visitors refused")
+	}
+	if r := start(c, ""); r.status != http.StatusTooManyRequests || r.str("code") != "anonymous_limit" {
+		t.Fatalf("third new visitor from one address: %d %s", r.status, r.raw)
+	}
+	if r := start(c, first.str("visitor_id")); r.status != http.StatusCreated {
+		t.Fatalf("resuming a visitor: %d %s", r.status, r.raw)
+	}
+	other := h.client()
+	other.origin = ct.origin
+	if r := start(other, ""); r.status != http.StatusCreated {
+		t.Fatalf("another address: %d %s", r.status, r.raw)
+	}
+	h.clock.Advance(time.Hour + time.Second)
+	if r := start(c, ""); r.status != http.StatusCreated {
+		t.Fatalf("after an hour: %d %s", r.status, r.raw)
+	}
+}

@@ -23,7 +23,10 @@ var (
 	limitTypingPerSession  = limit{60, time.Minute}
 )
 
-const maxBuckets = 100_000
+const (
+	maxBuckets                      = 100_000
+	defaultAnonymousContactsPerHour = 20
+)
 
 type bucket struct {
 	start  time.Time

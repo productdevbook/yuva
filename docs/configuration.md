@@ -87,6 +87,7 @@ Inbound e-mail parts outside these rules are skipped; they stay in the stored or
 | Variable | Default | Meaning |
 |---|---|---|
 | `YUVA_CHAT_EMAIL_DELAY` | `5m` | How long a member's reply stays unread, and the contact gone, before it is e-mailed to a contact who left the chat. A Go duration of at least `1s`, such as `90s` or `10m`. |
+| `YUVA_ANONYMOUS_CONTACTS_PER_HOUR` | `20` | Most new anonymous visitors one IP address (an IPv6 /64) may start per chat or app channel and hour; more answer `429 anonymous_limit`. Resuming a visitor with its `visitor_id` does not count. Counted per server process. |
 
 ## Webhooks
 

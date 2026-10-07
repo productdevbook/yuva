@@ -41,7 +41,8 @@ type Config struct {
 	SESTopicARNs         []string
 	EmailSenderHourlyCap int
 
-	ChatEmailDelay time.Duration
+	ChatEmailDelay           time.Duration
+	AnonymousContactsPerHour int
 
 	WebhookAllowPrivate bool
 	SMTPAllowPrivate    bool
@@ -183,6 +184,9 @@ func Load(version string) (Config, error) {
 	}
 	if c.IngressMaxConcurrent, err = strconv.Atoi(env("YUVA_INGRESS_MAX_CONCURRENT", "8")); err != nil || c.IngressMaxConcurrent < 1 {
 		return c, errors.New("YUVA_INGRESS_MAX_CONCURRENT must be a positive number of messages")
+	}
+	if c.AnonymousContactsPerHour, err = strconv.Atoi(env("YUVA_ANONYMOUS_CONTACTS_PER_HOUR", "20")); err != nil || c.AnonymousContactsPerHour < 1 {
+		return c, errors.New("YUVA_ANONYMOUS_CONTACTS_PER_HOUR must be a positive number of visitors")
 	}
 	if err := c.loadVAPID(); err != nil {
 		return c, err

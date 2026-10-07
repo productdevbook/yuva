@@ -2593,7 +2593,9 @@ paths:
 
         For a `chat` channel, browsers must call from one of the channel's allowed origins
         (`403 origin_not_allowed`, also without an `Origin` header); an `app` channel's key needs no
-        origin. Requests are rate limited per IP address and per channel (`429 rate_limited`). A
+        origin. Requests are rate limited per IP address and per channel (`429 rate_limited`), and an
+        IP address starts at most `YUVA_ANONYMOUS_CONTACTS_PER_HOUR` new anonymous visitors per
+        channel and hour (default 20; `429 anonymous_limit`; resuming a visitor does not count). A
         blocked contact answers `403 contact_blocked`.
       tags: [client]
       security: []

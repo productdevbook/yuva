@@ -291,7 +291,9 @@ inline thread inside a product's own panel.
   channel: a request for a chat channel must carry one of its origins, and one without an `Origin`
   header is refused. Session starts and contact writes are rate limited per IP address (per /64
   for IPv6) and per channel, counted in each process; finished windows are swept every minute and
-  at most 100,000 are open at once (new keys beyond that are refused until a sweep).
+  at most 100,000 are open at once (new keys beyond that are refused until a sweep). An IP address
+  starts at most `YUVA_ANONYMOUS_CONTACTS_PER_HOUR` (20) new anonymous visitors per channel and
+  hour (`429 anonymous_limit`); resuming a visitor does not count.
 - Contacts see their own conversations of the inbox, messages only (no notes, no internal events),
   conversation status, and of members only the display name and initials.
 - `live` inboxes show who is available: members with access to the inbox, with an open

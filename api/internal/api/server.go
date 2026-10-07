@@ -102,6 +102,8 @@ type PushSettings struct {
 type ChatSettings struct {
 	// EmailDelay is how long a chat contact must be gone, and a reply unread, before it is e-mailed.
 	EmailDelay time.Duration
+	// AnonymousContactsPerHour caps new anonymous visitors per channel, IP address and hour; 0 means 20.
+	AnonymousContactsPerHour int
 }
 
 type IngressSettings struct {
@@ -159,6 +161,9 @@ func New(d Deps) *Server {
 	chat := d.Chat
 	if chat.EmailDelay <= 0 {
 		chat.EmailDelay = defaultChatEmailDelay
+	}
+	if chat.AnonymousContactsPerHour <= 0 {
+		chat.AnonymousContactsPerHour = defaultAnonymousContactsPerHour
 	}
 	hooks := webhook.NewClient(d.Webhooks.AllowPrivate, d.Webhooks.Resolver)
 	var pusher *push.Sender

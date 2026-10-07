@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
+	"time"
 	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/mail"
@@ -18,6 +19,7 @@ const visitorPrefix = "yuva_v_"
 var (
 	errUnknownChannelKey  = problem(http.StatusNotFound, "not_found", "no chat or app channel has this key")
 	errAnonymousForbidden = problem(http.StatusForbidden, "anonymous_not_allowed", "this channel needs an identity token")
+	errAnonymousLimit     = problem(http.StatusTooManyRequests, "anonymous_limit", "too many new visitors from this address in the last hour; try again later")
 )
 
 func identitySecretContext(workspaceID, inboxID uuid.UUID) []byte {
@@ -137,7 +139,7 @@ func (s *Server) startContactSession(ctx context.Context, chat store.ChatChannel
 		if claims != nil {
 			contact, err = s.identifyContact(ctx, q, events, inbox, *claims, visitor)
 		} else {
-			contact, visitor, err = s.anonymousContact(ctx, q, inbox, visitor)
+			contact, visitor, err = s.anonymousContact(ctx, q, chat.ChannelID, inbox, visitor)
 			out.VisitorId = &visitor
 		}
 		if err != nil {
@@ -183,7 +185,7 @@ func (s *Server) useTokenID(ctx context.Context, q *store.Queries, inbox store.I
 	return nil
 }
 
-func (s *Server) anonymousContact(ctx context.Context, q *store.Queries, inbox store.Inbox, visitor string) (contactRow, string, error) {
+func (s *Server) anonymousContact(ctx context.Context, q *store.Queries, channelID uuid.UUID, inbox store.Inbox, visitor string) (contactRow, string, error) {
 	ws := inbox.WorkspaceID
 	if visitor != "" {
 		id, err := q.GetChatVisitor(ctx, store.GetChatVisitorParams{WorkspaceID: ws, InboxID: inbox.ID, VisitorHash: hashSecret(visitor)})
@@ -196,6 +198,10 @@ func (s *Server) anonymousContact(ctx context.Context, q *store.Queries, inbox s
 		}
 	}
 	now := s.now()
+	key := "anonymous:" + channelID.String() + ":" + rateIP(s.clientIP(requestFrom(ctx)))
+	if !s.limits.allow(key, limit{s.chat.AnonymousContactsPerHour, time.Hour}, now) {
+		return contactRow{}, "", errAnonymousLimit
+	}
 	r, err := q.CreateContact(ctx, store.CreateContactParams{ID: newID(), WorkspaceID: ws, Attributes: []byte("{}"), Now: now})
 	if err != nil {
 		return contactRow{}, "", err
