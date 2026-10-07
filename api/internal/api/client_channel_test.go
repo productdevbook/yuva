@@ -51,7 +51,7 @@ func TestClientChannelSettings(t *testing.T) {
 	c.origin = async.origin
 	c.expectProblem(http.StatusForbidden, "origin_not_allowed", "GET", "/client/v1/channels/"+ct.key, nil)
 	c.origin = "https://evil.example"
-	if r := c.do("GET", "/client/v1/channels/"+ct.key, nil); r.status != http.StatusForbidden || r.header.Get("Access-Control-Allow-Origin") != "" {
+	if r := c.do("GET", "/client/v1/channels/"+ct.key, nil); r.status != http.StatusForbidden || r.str("code") != "origin_not_allowed" || !readableRefusal(r.header, c.origin) {
 		t.Fatalf("unknown origin: %d %s", r.status, r.raw)
 	}
 	c.origin = ct.origin

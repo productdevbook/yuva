@@ -55,7 +55,8 @@ func originFrom(ctx context.Context) string {
 // clientCORS answers preflights for /client/v1 and refuses browsers from origins that no chat
 // channel allows. Whether the origin is allowed for the channel in question is checked once the
 // channel is known (from the public key or the session); requests without an Origin, which native
-// apps send, pass here and are refused later unless the channel is an app channel.
+// apps send, pass here and are refused later unless the channel is an app channel. Refusals carry
+// Access-Control-Allow-Origin so the widget can read them and hide itself.
 func (s *Server) clientCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !strings.HasPrefix(r.URL.Path, clientPrefix) {
@@ -78,11 +79,11 @@ func (s *Server) clientCORS(next http.Handler) http.Handler {
 			}
 		}
 		w.Header().Add("Vary", "Origin")
+		w.Header().Set("Access-Control-Allow-Origin", raw)
 		if !known {
 			writeProblem(w, errOriginRefused)
 			return
 		}
-		w.Header().Set("Access-Control-Allow-Origin", raw)
 		if r.Method == http.MethodOptions {
 			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
 			w.Header().Set("Access-Control-Allow-Headers", "Authorization, Content-Type")

@@ -10,6 +10,7 @@ import (
 	"github.com/riverqueue/river"
 
 	"github.com/productdevbook/yuva/api/internal/email"
+	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
@@ -207,7 +208,7 @@ func continuityAddress(ctx context.Context, q *store.Queries, c store.Conversati
 
 // claimTypedEmail makes the address a chat contact typed one of their addresses once mail from it
 // answers our e-mail to that very address, before the sender is matched to a contact.
-func (s *Server) claimTypedEmail(ctx context.Context, q *store.Queries, ws, inboxID uuid.UUID, m *email.Message, sender string) error {
+func (s *Server) claimTypedEmail(ctx context.Context, q *store.Queries, events *eventBatch, ws, inboxID uuid.UUID, m *email.Message, sender string) error {
 	if _, err := q.GetContactIDByEmail(ctx, store.GetContactIDByEmailParams{WorkspaceID: ws, Email: sender}); !store.IsNotFound(err) {
 		return err
 	}
@@ -233,8 +234,17 @@ func (s *Server) claimTypedEmail(ctx context.Context, q *store.Queries, ws, inbo
 	if err := q.AddContactEmail(ctx, store.AddContactEmailParams{WorkspaceID: ws, ContactID: ct.ID, Email: sender, Position: int32(n)}); err != nil {
 		return err
 	}
-	if _, err := q.SetContactTypedEmail(ctx, store.SetContactTypedEmailParams{WorkspaceID: ws, ID: ct.ID, Now: s.now()}); err != nil {
+	r, err := q.SetContactTypedEmail(ctx, store.SetContactTypedEmailParams{WorkspaceID: ws, ID: ct.ID, Now: s.now()})
+	if err != nil {
 		return err
 	}
-	return q.RefreshContactSearch(ctx, store.RefreshContactSearchParams{WorkspaceID: ws, ID: ct.ID})
+	if err := q.RefreshContactSearch(ctx, store.RefreshContactSearchParams{WorkspaceID: ws, ID: ct.ID}); err != nil {
+		return err
+	}
+	body, err := s.contactBody(ctx, q, ws, contactRow(r))
+	if err != nil {
+		return err
+	}
+	events.add(realtime.ContactUpdated, nil, nil, body)
+	return nil
 }

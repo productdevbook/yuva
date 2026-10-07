@@ -11,6 +11,7 @@ import (
 	"mime"
 	"mime/multipart"
 	"net/http"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -175,7 +176,7 @@ func TestClientOriginsAndAnonymous(t *testing.T) {
 		!strings.Contains(res.Header.Get("Access-Control-Allow-Headers"), "Authorization") {
 		t.Fatalf("preflight from an allowed origin: %d %v", res.StatusCode, res.Header)
 	}
-	if res := preflight("https://evil.example"); res.StatusCode != http.StatusForbidden || res.Header.Get("Access-Control-Allow-Origin") != "" {
+	if res := preflight("https://evil.example"); res.StatusCode != http.StatusForbidden || !readableRefusal(res.Header, "https://evil.example") {
 		t.Fatalf("preflight from an unknown origin: %d %v", res.StatusCode, res.Header)
 	}
 
@@ -188,8 +189,8 @@ func TestClientOriginsAndAnonymous(t *testing.T) {
 		t.Fatalf("session from another channel's origin: %d %s", r.status, r.raw)
 	}
 	r = ct.sessionStatus(h, "https://evil.example", map[string]any{"identity_token": ct.token(h, map[string]any{"sub": "u"})})
-	if r.status != http.StatusForbidden || r.header.Get("Access-Control-Allow-Origin") != "" {
-		t.Fatalf("session from an unknown origin: %d %s", r.status, r.raw)
+	if r.status != http.StatusForbidden || r.str("code") != "origin_not_allowed" || !readableRefusal(r.header, "https://evil.example") {
+		t.Fatalf("session from an unknown origin: %d %v %s", r.status, r.header, r.raw)
 	}
 	r = ct.sessionStatus(h, "", map[string]any{"identity_token": ct.token(h, map[string]any{"sub": "u"})})
 	if r.status != http.StatusForbidden || r.str("code") != "origin_not_allowed" {
@@ -203,9 +204,39 @@ func TestClientOriginsAndAnonymous(t *testing.T) {
 	if got := cs.do("GET", "/client/v1/conversations", nil).header.Get("Access-Control-Allow-Origin"); got != ct.origin {
 		t.Fatalf("Access-Control-Allow-Origin %q", got)
 	}
-	cs.origin = other.origin
-	cs.expectProblem(http.StatusForbidden, "origin_not_allowed", "GET", "/client/v1/conversations", nil)
+	conv := cs.start("hello")
+	for _, origin := range []string{other.origin, "https://evil.example"} {
+		cs.origin = origin
+		for _, call := range []struct {
+			method, path string
+			body         any
+		}{
+			{"GET", "/client/v1/channels/" + ct.key, nil},
+			{"POST", "/client/v1/session", map[string]any{"channel_key": ct.key}},
+			{"GET", "/client/v1/session", nil},
+			{"GET", "/client/v1/conversations", nil},
+			{"POST", "/client/v1/conversations", map[string]any{"body": "x", "client_id": unique("c")}},
+			{"GET", "/client/v1/conversations/" + conv, nil},
+			{"GET", "/client/v1/conversations/" + conv + "/messages", nil},
+			{"POST", "/client/v1/conversations/" + conv + "/messages", map[string]any{"body": "x", "client_id": unique("c")}},
+			{"POST", "/client/v1/conversations/" + conv + "/read", map[string]any{}},
+			{"PUT", "/client/v1/contact/email", map[string]any{"email": "success@simulator.amazonses.com"}},
+			{"DELETE", "/client/v1/session", nil},
+		} {
+			r := cs.do(call.method, call.path, call.body)
+			if r.status != http.StatusForbidden || r.str("code") != "origin_not_allowed" {
+				t.Fatalf("%s %s from %s: %d %s", call.method, call.path, origin, r.status, r.raw)
+			}
+			if acao := r.header.Get("Access-Control-Allow-Origin"); acao != "" && acao != origin {
+				t.Fatalf("%s %s from %s: Access-Control-Allow-Origin %q", call.method, call.path, origin, acao)
+			}
+			if r.header.Get("Access-Control-Allow-Credentials") != "" || !slices.Contains(r.header.Values("Vary"), "Origin") {
+				t.Fatalf("%s %s from %s: %v", call.method, call.path, origin, r.header)
+			}
+		}
+	}
 	cs.origin = ct.origin
+	cs.expect(http.StatusOK, "GET", "/client/v1/session", nil)
 	_, status, err := dialContact(h, cs.token, other.origin, "")
 	if err == nil || status != http.StatusForbidden {
 		t.Fatalf("socket from another origin: %d %v", status, err)
@@ -795,6 +826,23 @@ func TestChatEmailContinuity(t *testing.T) {
 	_, parsed = h.smtp.last(t)
 	msgID := parsed.Header.Get("Message-ID")
 
+	contactEvents := func() []string {
+		rows, err := h.st.Pool.Query(context.Background(), "SELECT payload::text FROM events WHERE workspace_id = $1 AND type = 'contact.updated' AND payload->>'id' = $2 ORDER BY id", ct.ws, cs.contactID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer rows.Close()
+		var out []string
+		for rows.Next() {
+			var p string
+			if err := rows.Scan(&p); err != nil {
+				t.Fatal(err)
+			}
+			out = append(out, p)
+		}
+		return out
+	}
+	eventsBefore := len(contactEvents())
 	raw := []byte("From: Visitor <" + typed + ">\r\nTo: " + addr + "\r\nSubject: Re: Chat\r\nMessage-ID: <" + unique("r") + "@example.com>\r\n" +
 		"In-Reply-To: " + msgID + "\r\nReferences: " + msgID + "\r\nContent-Type: text/plain; charset=utf-8\r\n\r\nThanks, that helped.\r\n")
 	res := h.ingest(addr, raw, nil)
@@ -805,6 +853,9 @@ func TestChatEmailContinuity(t *testing.T) {
 	if len(c.body["emails"].([]any)) != 1 || c.body["emails"].([]any)[0] != typed {
 		t.Fatalf("answered typed address is now the contact's: %s", c.raw)
 	}
+	if evs := contactEvents(); len(evs) != eventsBefore+1 || !strings.Contains(evs[len(evs)-1], `"emails": ["`+typed+`"]`) {
+		t.Fatalf("verifying the typed address: contact.updated events %v", evs[eventsBefore:])
+	}
 	found := false
 	for _, it := range cs.expect(http.StatusOK, "GET", "/client/v1/conversations/"+conv+"/messages", nil).body["items"].([]any) {
 		found = found || it.(map[string]any)["body"] == "Thanks, that helped."
@@ -812,4 +863,10 @@ func TestChatEmailContinuity(t *testing.T) {
 	if !found {
 		t.Fatal("the e-mail answer is not in the widget thread")
 	}
+}
+
+func readableRefusal(h http.Header, origin string) bool {
+	return h.Get("Access-Control-Allow-Origin") == origin && slices.Contains(h.Values("Vary"), "Origin") &&
+		h.Get("Access-Control-Allow-Credentials") == "" && h.Get("Access-Control-Allow-Methods") == "" &&
+		h.Get("Access-Control-Allow-Headers") == ""
 }
