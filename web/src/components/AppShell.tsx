@@ -4,6 +4,7 @@ import {
   BuildingIcon,
   CheckIcon,
   ChevronsUpDownIcon,
+  DownloadIcon,
   InboxIcon,
   KeyboardIcon,
   MessageSquareHeartIcon,
@@ -58,6 +59,7 @@ import {
 } from "@/components/ui/sidebar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { api, unwrap, useVersion, type Availability, type Me } from "@/lib/api"
+import { useInstallPrompt } from "@/lib/pwa"
 import { useCounts, useInboxes, useLabels } from "@/lib/queries"
 import { reconnectNow, useRealtime, useRealtimeStatus } from "@/lib/realtime"
 import { cn } from "@/lib/utils"
@@ -318,6 +320,7 @@ function UserMenu({ onShortcuts }: { onShortcuts: () => void }) {
   })
   const statusText = availability === "away" ? t`Away` : live ? t`Available` : t`Offline`
   const signOut = useSignOut()
+  const install = useInstallPrompt()
   const navigate = useNavigate()
   const { isMobile, setOpenMobile } = useSidebar()
   const name = me.person.name || me.person.email
@@ -392,6 +395,12 @@ function UserMenu({ onShortcuts }: { onShortcuts: () => void }) {
           <KeyboardIcon />
           <Trans>Keyboard shortcuts</Trans>
         </DropdownMenuItem>
+        {install && (
+          <DropdownMenuItem onClick={() => void install()} data-testid="install-app">
+            <DownloadIcon />
+            <Trans>Install app</Trans>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={async () => {

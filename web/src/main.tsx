@@ -7,6 +7,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router"
 import "./index.css"
 import { Gate } from "@/components/AppShell"
 import { SignInPage } from "@/components/auth/SignInPage"
+import { ServiceWorkerBridge } from "@/components/common/ServiceWorkerBridge"
 import { InboxPage } from "@/components/inbox/InboxPage"
 import { ApiKeysSettings } from "@/components/settings/ApiKeysSettings"
 import { CannedRepliesSettings } from "@/components/settings/CannedRepliesSettings"
@@ -20,9 +21,11 @@ import { WebhookSettings, WebhooksSettings } from "@/components/settings/Webhook
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { activate, i18n, initialLocale } from "@/i18n"
 import { ApiError } from "@/lib/api"
+import { startPwa } from "@/lib/pwa"
 import { meKey } from "@/lib/session"
 
 activate(initialLocale())
+startPwa()
 
 const queryClient: QueryClient = new QueryClient({
   queryCache: new QueryCache({
@@ -41,6 +44,7 @@ createRoot(document.getElementById("root")!).render(
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <BrowserRouter>
+            <ServiceWorkerBridge />
             <Routes>
               <Route path="sign-in" element={<SignInPage />} />
               <Route element={<Gate />}>
