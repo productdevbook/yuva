@@ -1,0 +1,157 @@
+import { Trans, useLingui } from "@lingui/react/macro"
+import { BanIcon, MailIcon } from "lucide-react"
+import { Link } from "react-router"
+
+import { ErrorLine, PersonAvatar } from "@/components/common"
+import { formatDateTime, formatShort, useEnumText } from "@/components/common/text"
+import { statusIcons } from "@/components/inbox/ConversationControls"
+import { Skeleton } from "@/components/ui/skeleton"
+import { useContact, useContactConversations, useInboxes } from "@/lib/queries"
+import { cn } from "@/lib/utils"
+
+function Section({ title, children }: { title: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <section className="flex flex-col gap-2 border-b px-4 py-3">
+      <h3 className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{title}</h3>
+      {children}
+    </section>
+  )
+}
+
+function attrValue(v: unknown) {
+  if (v === null || v === undefined) return "—"
+  if (typeof v === "object") return JSON.stringify(v)
+  return String(v)
+}
+
+export function ContactPanel({
+  contactId,
+  conversationId,
+  hrefFor,
+}: {
+  contactId: string
+  conversationId: string
+  hrefFor: (id: string) => string
+}) {
+  const { t, i18n } = useLingui()
+  const text = useEnumText()
+  const contact = useContact(contactId)
+  const inboxes = useInboxes().data ?? []
+  const others = useContactConversations(contact.data)
+  const c = contact.data
+
+  if (contact.isPending) {
+    return (
+      <div className="flex flex-col gap-3 p-4">
+        <Skeleton className="h-10 w-40" />
+        <Skeleton className="h-24 w-full" />
+      </div>
+    )
+  }
+  if (!c) return <ErrorLine error={contact.error} className="p-4" />
+
+  const name = c.name || c.emails[0] || t`Unnamed contact`
+  const since = formatDateTime(c.created_at, i18n.locale)
+  const attrs = Object.entries(c.attributes ?? {})
+  const otherList = (others.data ?? []).filter((x) => x.id !== conversationId)
+  return (
+    <div className="flex min-h-0 flex-1 flex-col overflow-y-auto" data-testid="contact-panel">
+      <div className="flex items-center gap-3 border-b px-4 py-4">
+        <PersonAvatar name={name} className="size-10 text-sm" />
+        <div className="min-w-0">
+          <p className="truncate font-medium">{name}</p>
+          <p className="text-xs text-muted-foreground">
+            <Trans>Since {since}</Trans>
+          </p>
+        </div>
+        {c.blocked && (
+          <span className="ml-auto inline-flex items-center gap-1 rounded bg-destructive/10 px-1.5 py-0.5 text-xs text-destructive">
+            <BanIcon className="size-3" />
+            <Trans>Blocked</Trans>
+          </span>
+        )}
+      </div>
+      <Section title={<Trans>E-mail addresses</Trans>}>
+        {c.emails.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            <Trans>None</Trans>
+          </p>
+        ) : (
+          <ul className="flex flex-col gap-1">
+            {c.emails.map((e) => (
+              <li key={e} className="flex items-center gap-2 text-sm">
+                <MailIcon className="size-3.5 shrink-0 text-muted-foreground" />
+                <span className="truncate">{e}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Section>
+      <Section title={<Trans>External ids</Trans>}>
+        {c.external_ids.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            <Trans>None</Trans>
+          </p>
+        ) : (
+          <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm">
+            {c.external_ids.map((x) => (
+              <div key={`${x.inbox_id}:${x.external_id}`} className="contents">
+                <dt className="truncate text-muted-foreground">
+                  {inboxes.find((i) => i.id === x.inbox_id)?.name ?? "?"}
+                </dt>
+                <dd className="truncate font-mono text-xs leading-5">{x.external_id}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+      </Section>
+      <Section title={<Trans>Attributes</Trans>}>
+        {attrs.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            <Trans>None</Trans>
+          </p>
+        ) : (
+          <dl className="grid grid-cols-[minmax(0,auto)_minmax(0,1fr)] gap-x-3 gap-y-1 text-sm">
+            {attrs.map(([k, v]) => (
+              <div key={k} className="contents">
+                <dt className="truncate text-muted-foreground">{k}</dt>
+                <dd className="break-words">{attrValue(v)}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+      </Section>
+      <Section title={<Trans>Other conversations</Trans>}>
+        {others.isPending && others.fetchStatus !== "idle" ? (
+          <Skeleton className="h-10 w-full" />
+        ) : otherList.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            <Trans>None</Trans>
+          </p>
+        ) : (
+          <ul className="-mx-2 flex flex-col">
+            {otherList.map((o) => {
+              const Icon = statusIcons[o.status]
+              return (
+                <li key={o.id}>
+                  <Link
+                    to={hrefFor(o.id)}
+                    className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-muted"
+                  >
+                    <Icon className="size-3.5 shrink-0 text-muted-foreground" aria-label={text.status[o.status]} />
+                    <span className={cn("min-w-0 flex-1 truncate", !o.subject && "text-muted-foreground italic")}>
+                      {o.subject || <Trans>No subject</Trans>}
+                    </span>
+                    <span className="shrink-0 text-xs text-muted-foreground">
+                      {formatShort(o.last_activity_at, i18n.locale)}
+                    </span>
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+        )}
+      </Section>
+    </div>
+  )
+}

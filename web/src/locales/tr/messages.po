@@ -7,29 +7,1237 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: tr\n"
 
+#: src/components/inbox/ConversationControls.tsx
+#: src/components/settings/MembersSettings.tsx
+msgid "(you)"
+msgstr "(siz)"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "{actor} added {added} and removed {removed}"
+msgstr "{actor} etiket ekledi: {added}; kaldırdı: {removed}"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "{actor} added the label {added}"
+msgstr "{actor} etiket ekledi: {added}"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "{actor} assigned this to {assignee}"
+msgstr "{actor}, konuşmayı {assignee} adlı üyeye atadı"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "{actor} closed the conversation"
+msgstr "{actor} konuşmayı kapattı"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "{actor} removed the assignee"
+msgstr "{actor} atamayı kaldırdı"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "{actor} removed the label {removed}"
+msgstr "{actor} etiketi kaldırdı: {removed}"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "{actor} reopened the conversation"
+msgstr "{actor} konuşmayı yeniden açtı"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "{actor} set the status to {status}"
+msgstr "{actor} durumu {status} olarak değiştirdi"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "{keyCount} settings"
+msgstr "{keyCount} ayar"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "1 setting"
+msgstr "1 ayar"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "A language tag such as en or tr."
+msgstr "en veya tr gibi bir dil kodu."
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Access"
+msgstr "Erişim"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Access for {name}"
+msgstr "{name} için erişim"
+
+#: src/components/settings/InboxesSettings.tsx
+msgid "Acme App"
+msgstr "Acme Uygulaması"
+
+#: src/components/settings/ProfileSettings.tsx
+msgid "Add a passkey"
+msgstr "Geçiş anahtarı ekle"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Add channel"
+msgstr "Kanal ekle"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Add hours"
+msgstr "Saat ekle"
+
+#: src/components/inbox/Composer.tsx
+msgid "Add note"
+msgstr "Not ekle"
+
+#: src/components/settings/ProfileSettings.tsx
+msgid "Added {created}"
+msgstr "Eklenme: {created}"
+
+#: src/components/settings/ProfileSettings.tsx
+msgid "Added {created}, last used {used}"
+msgstr "Eklenme: {created}, son kullanım: {used}"
+
+#: src/components/common/text.ts
+msgid "Admin"
+msgstr "Yönetici"
+
+#: src/components/common/text.ts
+msgid "Agent"
+msgstr "Temsilci"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Agents see this inbox only when they are given access. Owners and admins always see it."
+msgstr "Temsilciler bu gelen kutusunu yalnızca erişim verildiğinde görür. Sahipler ve yöneticiler her zaman görür."
+
 #: src/components/AppShell.tsx
+#: src/components/inbox/ConversationList.tsx
 msgid "All"
 msgstr "Tümü"
 
+#: src/components/inbox/ConversationList.tsx
+msgid "All inboxes"
+msgstr "Tüm gelen kutuları"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "All of its conversations are deleted with it."
+msgstr "Tüm konuşmaları da onunla birlikte silinir."
+
+#: src/components/settings/MembersSettings.tsx
+msgid "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
+msgstr "Davet, kişi o adrese gönderilen kodla giriş yaptığında kabul edilir. 7 gün sonra geçersiz olur."
+
+#: src/components/inbox/ConversationList.tsx
+msgid "Any label"
+msgstr "Herhangi bir etiket"
+
+#: src/components/inbox/ConversationList.tsx
+msgid "Anyone"
+msgstr "Herkes"
+
+#: src/components/settings/ApiKeysSettings.tsx
+msgid "Anything using this key stops working at once."
+msgstr "Bu anahtarı kullanan her şey hemen çalışmayı durdurur."
+
+#: src/components/common/text.ts
+msgid "API"
+msgstr "API"
+
+#: src/components/settings/ApiKeysSettings.tsx
+#: src/components/settings/SettingsLayout.tsx
+msgid "API keys"
+msgstr "API anahtarları"
+
 #: src/components/AppShell.tsx
+msgid "Ask an owner or admin of your workspace to invite you."
+msgstr "Çalışma alanınızın sahibinden ya da bir yöneticisinden sizi davet etmesini isteyin."
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/components/inbox/ConversationControls.tsx
+msgid "Assign"
+msgstr "Ata"
+
+#: src/components/inbox/ConversationControls.tsx
+msgid "Assign to"
+msgstr "Şuna ata"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Assign to me"
+msgstr "Bana ata"
+
+#: src/components/inbox/ConversationList.tsx
+msgid "Assignee"
+msgstr "Atanan kişi"
+
+#: src/components/common/text.ts
+msgid "Async"
+msgstr "Eşzamansız"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/components/inbox/Composer.tsx
+msgid "Attach files"
+msgstr "Dosya ekle"
+
+#: src/components/inbox/ContactPanel.tsx
+msgid "Attributes"
+msgstr "Özellikler"
+
+#: src/components/inbox/InboxPage.tsx
+#: src/components/settings/InboxSettings.tsx
+msgid "Back"
+msgstr "Geri"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/components/inbox/ThreadView.tsx
+msgid "Back to the list"
+msgstr "Listeye dön"
+
+#: src/components/settings/LabelsSettings.tsx
+msgid "Billing"
+msgstr "Faturalama"
+
+#: src/components/inbox/ContactPanel.tsx
+msgid "Blocked"
+msgstr "Engelli"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Brand color"
+msgstr "Marka rengi"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Business hours"
+msgstr "Çalışma saatleri"
+
+#: src/components/common/index.tsx
+msgid "Cancel"
+msgstr "Vazgeç"
+
+#: src/components/inbox/Composer.tsx
+#: src/components/settings/CannedRepliesSettings.tsx
+#: src/components/settings/SettingsLayout.tsx
+msgid "Canned replies"
+msgstr "Hazır yanıtlar"
+
+#: src/components/auth/SignInPage.tsx
+msgid "Change address"
+msgstr "Adresi değiştir"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/components/inbox/ConversationControls.tsx
+msgid "Change priority"
+msgstr "Önceliği değiştir"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/components/inbox/ConversationControls.tsx
+msgid "Change status"
+msgstr "Durumu değiştir"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Channels"
+msgstr "Kanallar"
+
+#: src/components/auth/SignInPage.tsx
+msgid "Check your e-mail"
+msgstr "E-postanızı kontrol edin"
+
+#: src/components/AppShell.tsx
+msgid "Choose a workspace"
+msgstr "Bir çalışma alanı seçin"
+
+#: src/components/inbox/ConversationList.tsx
+msgid "Clear filters"
+msgstr "Filtreleri temizle"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/components/ui/dialog.tsx
+#: src/components/ui/sheet.tsx
+msgid "Close"
+msgstr "Kapat"
+
+#: src/components/common/text.ts
+#: src/components/settings/InboxSettings.tsx
+msgid "Closed"
+msgstr "Kapalı"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Closes"
+msgstr "Kapanış"
+
+#: src/components/auth/SignInPage.tsx
+msgid "Code"
+msgstr "Kod"
+
+#: src/components/settings/LabelsSettings.tsx
+msgid "Color"
+msgstr "Renk"
+
+#: src/components/AppShell.tsx
+msgid "Connecting…"
+msgstr "Bağlanıyor…"
+
+#: src/components/inbox/InboxPage.tsx
+#: src/components/inbox/MessageItem.tsx
+msgid "Contact"
+msgstr "Kişi"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Contacts see the expected reply time instead of who is online."
+msgstr "Kişiler kimin çevrimiçi olduğu yerine beklenen yanıt süresini görür."
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Contacts see who is available, typing and read receipts."
+msgstr "Kişiler kimin müsait olduğunu, yazma göstergesini ve okundu bilgisini görür."
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/components/inbox/InboxPage.tsx
+msgid "Conversations"
+msgstr "Konuşmalar"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Conversations that started on it keep their messages."
+msgstr "Bu kanalda başlayan konuşmaların mesajları korunur."
+
+#: src/components/common/index.tsx
+msgid "Copied"
+msgstr "Kopyalandı"
+
+#: src/components/common/index.tsx
+msgid "Copy"
+msgstr "Kopyala"
+
+#: src/components/settings/ApiKeysSettings.tsx
+msgid "Copy it now and store it safely; it is not shown again."
+msgstr "Şimdi kopyalayıp güvenli bir yerde saklayın; bir daha gösterilmeyecek."
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Copy it now and update your backend; it is not shown again."
+msgstr "Şimdi kopyalayıp sunucu tarafınızı güncelleyin; bir daha gösterilmeyecek."
+
+#: src/components/AppShell.tsx
+msgid "Could not reach the server"
+msgstr "Sunucuya ulaşılamadı"
+
+#: src/components/common/text.ts
+msgid "Could not reach the server. Check your connection and try again."
+msgstr "Sunucuya ulaşılamadı. Bağlantınızı kontrol edip yeniden deneyin."
+
+#: src/components/settings/InboxesSettings.tsx
+msgid "Create inbox"
+msgstr "Gelen kutusu oluştur"
+
+#: src/components/settings/ApiKeysSettings.tsx
+msgid "Create key"
+msgstr "Anahtar oluştur"
+
+#: src/components/settings/InboxesSettings.tsx
+msgid "Create one to start receiving conversations."
+msgstr "Konuşma almaya başlamak için bir tane oluşturun."
+
+#: src/components/settings/ApiKeysSettings.tsx
+msgid "Created {created}"
+msgstr "Oluşturulma: {created}"
+
+#: src/components/settings/ApiKeysSettings.tsx
+msgid "Created {created} by {by}"
+msgstr "Oluşturulma: {created}, oluşturan: {by}"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Default language"
+msgstr "Varsayılan dil"
+
+#: src/components/settings/CannedRepliesSettings.tsx
+#: src/components/settings/InboxSettings.tsx
+#: src/components/settings/LabelsSettings.tsx
+msgid "Delete"
+msgstr "Sil"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Delete {name}?"
+msgstr "{name} silinsin mi?"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Delete inbox"
+msgstr "Gelen kutusunu sil"
+
+#: src/components/settings/LabelsSettings.tsx
+msgid "Delete the label {name}?"
+msgstr "{name} etiketi silinsin mi?"
+
+#: src/components/settings/CannedRepliesSettings.tsx
+msgid "Delete this canned reply?"
+msgstr "Bu hazır yanıt silinsin mi?"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
+msgstr "Kanalları, konuşmaları, mesajları ve ekleriyle birlikte silinir. Bu işlem geri alınamaz."
+
+#. placeholder {0}: a.filename
+#: src/components/inbox/MessageItem.tsx
+msgid "Download {0}"
+msgstr "{0} dosyasını indir"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Download failed"
+msgstr "İndirme başarısız oldu"
+
+#: src/components/common/text.ts
+msgid "E-mail"
+msgstr "E-posta"
+
+#: src/components/auth/SignInPage.tsx
+#: src/components/settings/MembersSettings.tsx
+msgid "E-mail address"
+msgstr "E-posta adresi"
+
+#: src/components/inbox/ContactPanel.tsx
+msgid "E-mail addresses"
+msgstr "E-posta adresleri"
+
+#: src/components/settings/ProfileSettings.tsx
+msgid "E-mail language"
+msgstr "E-posta dili"
+
+#: src/components/settings/CannedRepliesSettings.tsx
+#: src/components/settings/ChannelsSection.tsx
+#: src/components/settings/LabelsSettings.tsx
+msgid "Edit"
+msgstr "Düzenle"
+
+#: src/components/settings/CannedRepliesSettings.tsx
+msgid "Edit canned reply"
+msgstr "Hazır yanıtı düzenle"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Edit channel"
+msgstr "Kanalı düzenle"
+
+#: src/components/settings/LabelsSettings.tsx
+msgid "Edit label"
+msgstr "Etiketi düzenle"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/components/inbox/ConversationControls.tsx
+msgid "Edit labels"
+msgstr "Etiketleri düzenle"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Expected reply time (minutes)"
+msgstr "Beklenen yanıt süresi (dakika)"
+
+#: src/components/settings/MembersSettings.tsx
+msgid "expires {expires}"
+msgstr "son geçerlilik: {expires}"
+
+#: src/components/inbox/ContactPanel.tsx
+msgid "External ids"
+msgstr "Harici kimlikler"
+
+#: src/components/inbox/ConversationList.tsx
+msgid "Filters"
+msgstr "Filtreler"
+
+#: src/components/settings/ApiKeysSettings.tsx
+msgid "For your backends and scripts. A key acts on this workspace only and cannot manage members or keys."
+msgstr "Sunucularınız ve betikleriniz için. Bir anahtar yalnızca bu çalışma alanında işlem yapar; üyeleri ve anahtarları yönetemez."
+
+#: src/components/common/text.ts
+msgid "Friday"
+msgstr "Cuma"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/components/settings/InboxSettings.tsx
+msgid "General"
+msgstr "Genel"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Greeting"
+msgstr "Karşılama mesajı"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Hi! Ask us anything."
+msgstr "Merhaba! Bize her şeyi sorabilirsiniz."
+
+#: src/components/common/text.ts
+msgid "High"
+msgstr "Yüksek"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "How messages reach this inbox. Settings are stored as given for now."
+msgstr "Mesajların bu gelen kutusuna nasıl ulaştığı. Ayarlar şimdilik girildiği gibi saklanır."
+
+#: src/components/common/index.tsx
+msgid "I saved it"
+msgstr "Kaydettim"
+
+#: src/components/settings/InboxesSettings.tsx
+#: src/components/settings/InboxSettings.tsx
+msgid "Identity secret"
+msgstr "Kimlik anahtarı"
+
+#: src/components/inbox/ConversationControls.tsx
+msgid "In an hour"
+msgstr "Bir saat sonra"
+
+#: src/components/inbox/ConversationList.tsx
+#: src/components/settings/InboxSettings.tsx
+msgid "Inbox"
+msgstr "Gelen kutusu"
+
+#: src/components/AppShell.tsx
+#: src/components/settings/InboxesSettings.tsx
+#: src/components/settings/SettingsLayout.tsx
+msgid "Inboxes"
+msgstr "Gelen kutuları"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Insert a canned reply (in the composer)"
+msgstr "Hazır yanıt ekle (yazma alanında)"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Internal note"
+msgstr "İç not"
+
+#: src/components/settings/MembersSettings.tsx
+msgid "Invite"
+msgstr "Davet et"
+
+#: src/components/settings/MembersSettings.tsx
+msgid "Invite language"
+msgstr "Davet dili"
+
+#: src/components/settings/MembersSettings.tsx
+msgid "Invites"
+msgstr "Davetler"
+
+#: src/components/settings/LabelsSettings.tsx
+msgid "It is removed from every conversation."
+msgstr "Tüm konuşmalardan kaldırılır."
+
+#: src/components/common/text.ts
+msgid "It no longer exists or you cannot see it."
+msgstr "Artık yok ya da görme izniniz yok."
+
+#: src/components/settings/ApiKeysSettings.tsx
+msgid "Key name"
+msgstr "Anahtar adı"
+
+#: src/components/AppShell.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Keyboard shortcuts"
+msgstr "Klavye kısayolları"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Kind"
+msgstr "Tür"
+
+#: src/components/inbox/ConversationList.tsx
+msgid "Label"
+msgstr "Etiket"
+
+#: src/components/AppShell.tsx
+#: src/components/inbox/ConversationControls.tsx
+#: src/components/settings/LabelsSettings.tsx
+#: src/components/settings/SettingsLayout.tsx
+msgid "Labels"
+msgstr "Etiketler"
+
+#: src/components/LanguageMenu.tsx
+#: src/components/settings/MembersSettings.tsx
 msgid "Language"
 msgstr "Dil"
+
+#: src/components/settings/ApiKeysSettings.tsx
+msgid "last used {used}"
+msgstr "son kullanım: {used}"
+
+#: src/components/AppShell.tsx
+#: src/components/common/text.ts
+msgid "Live"
+msgstr "Canlı"
+
+#: src/components/inbox/ConversationList.tsx
+msgid "Load more"
+msgstr "Daha fazla yükle"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Logo URL"
+msgstr "Logo adresi"
+
+#: src/components/common/text.ts
+msgid "Low"
+msgstr "Düşük"
+
+#: src/components/settings/CannedRepliesSettings.tsx
+msgid "Lowercase letters, digits and dashes."
+msgstr "Küçük harf, rakam ve tire."
+
+#: src/components/settings/InboxesSettings.tsx
+msgid "Lowercase letters, digits and dashes. Used in addresses and the widget."
+msgstr "Küçük harf, rakam ve tire. Adreslerde ve sohbet bileşeninde kullanılır."
+
+#: src/components/inbox/ConversationList.tsx
+msgid "Me"
+msgstr "Ben"
+
+#: src/components/settings/MembersSettings.tsx
+#: src/components/settings/SettingsLayout.tsx
+msgid "Members"
+msgstr "Üyeler"
+
+#: src/components/inbox/Composer.tsx
+msgid "Message type"
+msgstr "Mesaj türü"
 
 #: src/components/AppShell.tsx
 msgid "Mine"
 msgstr "Bana atananlar"
 
+#: src/components/common/text.ts
+msgid "Mobile app"
+msgstr "Mobil uygulama"
+
+#: src/components/settings/InboxesSettings.tsx
+#: src/components/settings/InboxSettings.tsx
+msgid "Mode"
+msgstr "Mod"
+
+#: src/components/common/text.ts
+msgid "Monday"
+msgstr "Pazartesi"
+
 #: src/components/AppShell.tsx
-msgid "No conversations yet"
-msgstr "Henüz konuşma yok"
+#: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/SettingsLayout.tsx
+msgid "My profile"
+msgstr "Profilim"
+
+#: src/components/settings/ChannelsSection.tsx
+#: src/components/settings/InboxesSettings.tsx
+#: src/components/settings/InboxSettings.tsx
+#: src/components/settings/LabelsSettings.tsx
+#: src/components/settings/ProfileSettings.tsx
+msgid "Name"
+msgstr "Ad"
+
+#: src/components/settings/ApiKeysSettings.tsx
+msgid "Name, e.g. Production backend"
+msgstr "Ad, ör. Canlı sunucu"
+
+#: src/components/settings/ProfileSettings.tsx
+msgid "Name, e.g. Work laptop"
+msgstr "Ad, ör. İş bilgisayarı"
+
+#: src/components/settings/ApiKeysSettings.tsx
+msgid "never used"
+msgstr "hiç kullanılmadı"
+
+#: src/components/settings/CannedRepliesSettings.tsx
+msgid "New canned reply"
+msgstr "Yeni hazır yanıt"
+
+#: src/components/inbox/ConversationList.tsx
+msgid "New conversations show up here."
+msgstr "Yeni konuşmalar burada görünür."
+
+#: src/components/settings/InboxSettings.tsx
+msgid "New identity secret"
+msgstr "Yeni kimlik anahtarı"
+
+#: src/components/settings/InboxesSettings.tsx
+msgid "New inbox"
+msgstr "Yeni gelen kutusu"
+
+#: src/components/settings/LabelsSettings.tsx
+msgid "New label"
+msgstr "Yeni etiket"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Next conversation"
+msgstr "Sonraki konuşma"
+
+#: src/components/inbox/ConversationControls.tsx
+msgid "Next week"
+msgstr "Gelecek hafta"
+
+#: src/components/settings/CannedRepliesSettings.tsx
+msgid "No canned replies yet"
+msgstr "Henüz hazır yanıt yok"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "No channels yet."
+msgstr "Henüz kanal yok."
+
+#: src/components/inbox/ConversationList.tsx
+msgid "No conversations here"
+msgstr "Burada konuşma yok"
+
+#: src/components/settings/InboxesSettings.tsx
+msgid "No inboxes yet"
+msgstr "Henüz gelen kutusu yok"
+
+#: src/components/settings/LabelsSettings.tsx
+msgid "No labels yet"
+msgstr "Henüz etiket yok"
+
+#: src/components/inbox/ConversationControls.tsx
+msgid "No labels yet. Add them in settings."
+msgstr "Henüz etiket yok. Ayarlardan ekleyebilirsiniz."
+
+#: src/components/settings/MembersSettings.tsx
+msgid "No pending invites."
+msgstr "Bekleyen davet yok."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "No settings"
+msgstr "Ayar yok"
+
+#: src/components/inbox/ContactPanel.tsx
+#: src/components/inbox/ConversationList.tsx
+#: src/components/inbox/ThreadView.tsx
+msgid "No subject"
+msgstr "Konu yok"
+
+#: src/components/inbox/ContactPanel.tsx
+msgid "None"
+msgstr "Yok"
+
+#: src/components/common/text.ts
+msgid "Normal"
+msgstr "Normal"
+
+#: src/components/inbox/Composer.tsx
+msgid "Note"
+msgstr "Not"
+
+#: src/components/inbox/ConversationList.tsx
+msgid "Nothing matches your search."
+msgstr "Aramanızla eşleşen bir şey yok."
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Off"
+msgstr "Kapalı"
+
+#: src/components/AppShell.tsx
+msgid "Offline"
+msgstr "Çevrimdışı"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "On"
+msgstr "Açık"
+
+#: src/components/settings/InboxesSettings.tsx
+msgid "One inbox per product or brand. Each has its own channels, hours and team."
+msgstr "Her ürün ya da marka için bir gelen kutusu. Her birinin kendi kanalları, saatleri ve ekibi olur."
+
+#: src/components/inbox/Composer.tsx
+msgid "Only members see notes"
+msgstr "Notları yalnızca üyeler görür"
+
+#: src/components/common/text.ts
+msgid "Open"
+msgstr "Açık"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Opens"
+msgstr "Açılış"
+
+#: src/components/auth/SignInPage.tsx
+msgid "or"
+msgstr "veya"
+
+#: src/components/inbox/ContactPanel.tsx
+msgid "Other conversations"
+msgstr "Diğer konuşmalar"
+
+#: src/components/common/text.ts
+msgid "Owner"
+msgstr "Sahip"
+
+#: src/components/settings/MembersSettings.tsx
+msgid "Owners and admins see every inbox; agents see the inboxes they were given."
+msgstr "Sahipler ve yöneticiler tüm gelen kutularını görür; temsilciler yalnızca kendilerine verilenleri görür."
+
+#: src/components/settings/ProfileSettings.tsx
+msgid "Passkey name"
+msgstr "Geçiş anahtarı adı"
+
+#: src/components/settings/ProfileSettings.tsx
+msgid "Passkeys"
+msgstr "Geçiş anahtarları"
+
+#: src/components/common/text.ts
+msgid "Pending"
+msgstr "Beklemede"
+
+#: src/components/settings/InboxSettings.tsx
+#: src/components/settings/LabelsSettings.tsx
+msgid "Pick a color"
+msgstr "Renk seç"
+
+#: src/components/inbox/InboxPage.tsx
+msgid "Pick a conversation"
+msgstr "Bir konuşma seçin"
+
+#: src/components/settings/LabelsSettings.tsx
+msgid "Preview"
+msgstr "Önizleme"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Previous conversation"
+msgstr "Önceki konuşma"
+
+#: src/components/inbox/ConversationControls.tsx
+msgid "Priority"
+msgstr "Öncelik"
+
+#: src/components/settings/ProfileSettings.tsx
+msgid "Profile"
+msgstr "Profil"
+
+#: src/components/settings/ChannelsSection.tsx
+#: src/components/settings/MembersSettings.tsx
+#: src/components/settings/ProfileSettings.tsx
+msgid "Remove"
+msgstr "Kaldır"
+
+#. placeholder {0}: f.name
+#. placeholder {0}: p.name
+#: src/components/inbox/Composer.tsx
+#: src/components/settings/ProfileSettings.tsx
+msgid "Remove {0}"
+msgstr "{0} öğesini kaldır"
+
+#: src/components/settings/MembersSettings.tsx
+msgid "Remove {name}"
+msgstr "{name} adlı üyeyi çıkar"
+
+#: src/components/settings/MembersSettings.tsx
+msgid "Remove {name} from the workspace?"
+msgstr "{name} çalışma alanından çıkarılsın mı?"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Remove these hours"
+msgstr "Bu saatleri kaldır"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Remove this channel?"
+msgstr "Bu kanal kaldırılsın mı?"
+
+#: src/components/settings/ProfileSettings.tsx
+msgid "Remove this passkey?"
+msgstr "Bu geçiş anahtarı kaldırılsın mı?"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Removed member"
+msgstr "Ayrılmış üye"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reopen"
+msgstr "Yeniden aç"
+
+#: src/components/inbox/Composer.tsx
+msgid "Reply"
+msgstr "Yanıt"
+
+#: src/components/settings/ApiKeysSettings.tsx
+msgid "Revoke"
+msgstr "İptal et"
+
+#: src/components/settings/ApiKeysSettings.tsx
+msgid "Revoke {keyName}?"
+msgstr "{keyName} iptal edilsin mi?"
+
+#: src/components/settings/ApiKeysSettings.tsx
+msgid "Revoked"
+msgstr "İptal edildi"
+
+#: src/components/settings/MembersSettings.tsx
+msgid "Role"
+msgstr "Rol"
+
+#: src/components/settings/MembersSettings.tsx
+msgid "Role of {name}"
+msgstr "{name} adlı üyenin rolü"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Rotate"
+msgstr "Yenile"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Rotate secret"
+msgstr "Anahtarı yenile"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Rotate the identity secret?"
+msgstr "Kimlik anahtarı yenilensin mi?"
+
+#: src/components/common/text.ts
+msgid "Saturday"
+msgstr "Cumartesi"
+
+#: src/components/settings/CannedRepliesSettings.tsx
+#: src/components/settings/ChannelsSection.tsx
+#: src/components/settings/InboxSettings.tsx
+#: src/components/settings/LabelsSettings.tsx
+#: src/components/settings/ProfileSettings.tsx
+msgid "Save"
+msgstr "Kaydet"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Save hours"
+msgstr "Saatleri kaydet"
+
+#: src/components/settings/InboxSettings.tsx
+#: src/components/settings/ProfileSettings.tsx
+msgid "Saved"
+msgstr "Kaydedildi"
+
+#: src/components/settings/CannedRepliesSettings.tsx
+msgid "Saved answers"
+msgstr "Kayıtlı yanıtlar"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Search"
+msgstr "Ara"
+
+#: src/components/inbox/ConversationList.tsx
+msgid "Search conversations"
+msgstr "Konuşmalarda ara"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/components/inbox/Composer.tsx
+msgid "Send"
+msgstr "Gönder"
+
+#: src/components/auth/SignInPage.tsx
+msgid "Send a new code"
+msgstr "Yeni kod gönder"
+
+#: src/components/auth/SignInPage.tsx
+msgid "Send me a code"
+msgstr "Bana kod gönder"
+
+#: src/components/AppShell.tsx
+#: src/components/settings/SettingsLayout.tsx
+msgid "Settings"
+msgstr "Ayarlar"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Settings (JSON)"
+msgstr "Ayarlar (JSON)"
+
+#: src/components/settings/CannedRepliesSettings.tsx
+msgid "Shortcut"
+msgstr "Kısayol"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/components/inbox/ThreadView.tsx
+msgid "Show or hide the contact"
+msgstr "Kişi bilgilerini göster veya gizle"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Shown to contacts in async mode. Leave empty to hide it."
+msgstr "Eşzamansız modda kişilere gösterilir. Gizlemek için boş bırakın."
+
+#: src/components/settings/ProfileSettings.tsx
+msgid "Shown to your team and to contacts."
+msgstr "Ekibinize ve kişilere gösterilir."
+
+#: src/components/auth/SignInPage.tsx
+msgid "Sign in"
+msgstr "Giriş yap"
+
+#: src/components/auth/SignInPage.tsx
+msgid "Sign in to Yuva"
+msgstr "Yuva'ya giriş yapın"
+
+#: src/components/auth/SignInPage.tsx
+msgid "Sign in with a passkey"
+msgstr "Geçiş anahtarıyla giriş yap"
+
+#: src/components/settings/ProfileSettings.tsx
+msgid "Sign in with your device's fingerprint, face or screen lock instead of a code."
+msgstr "Kod yerine cihazınızın parmak izi, yüz tanıma veya ekran kilidiyle giriş yapın."
+
+#: src/components/AppShell.tsx
+msgid "Sign out"
+msgstr "Çıkış yap"
+
+#: src/components/inbox/ContactPanel.tsx
+msgid "Since {since}"
+msgstr "Kayıt: {since}"
+
+#: src/components/settings/InboxesSettings.tsx
+#: src/components/settings/InboxSettings.tsx
+msgid "Slug"
+msgstr "Kısa ad"
+
+#: src/components/inbox/ConversationControls.tsx
+msgid "Snooze until"
+msgstr "Şu zamana kadar ertele"
+
+#: src/components/common/text.ts
+msgid "Snoozed"
+msgstr "Ertelendi"
+
+#: src/components/common/text.ts
+msgid "Some of the values are not valid."
+msgstr "Girilen değerlerden bazıları geçerli değil."
+
+#: src/components/common/text.ts
+msgid "Something went wrong on the server. Try again."
+msgstr "Sunucuda bir sorun oluştu. Yeniden deneyin."
+
+#: src/components/settings/LabelsSettings.tsx
+msgid "Sort conversations by topic. Each label also gets its own view in the sidebar."
+msgstr "Konuşmaları konuya göre ayırın. Her etiketin kenar çubuğunda kendi görünümü de olur."
+
+#: src/components/inbox/ConversationControls.tsx
+msgid "Status"
+msgstr "Durum"
+
+#: src/components/common/text.ts
+msgid "Sunday"
+msgstr "Pazar"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Support e-mail"
+msgstr "Destek e-postası"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "System"
+msgstr "Sistem"
+
+#: src/components/settings/MembersSettings.tsx
+msgid "teammate@company.com"
+msgstr "ekiparkadasi@sirket.com"
+
+#: src/components/settings/CannedRepliesSettings.tsx
+msgid "Text"
+msgstr "Metin"
+
+#: src/components/settings/CannedRepliesSettings.tsx
+msgid "Thanks for writing"
+msgstr "Yazdığınız için teşekkürler"
+
+#: src/components/auth/SignInPage.tsx
+msgid "The code is wrong or has expired."
+msgstr "Kod yanlış ya da süresi dolmuş."
+
+#: src/components/common/text.ts
+msgid "The file is too large."
+msgstr "Dosya çok büyük."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "The kind cannot be changed later."
+msgstr "Tür daha sonra değiştirilemez."
+
+#: src/components/settings/ProfileSettings.tsx
+msgid "The language of sign-in and notification e-mails."
+msgstr "Giriş ve bildirim e-postalarının dili."
+
+#: src/components/auth/SignInPage.tsx
+msgid "The passkey sign-in did not complete. Try again or use an e-mailed code."
+msgstr "Geçiş anahtarıyla giriş tamamlanmadı. Yeniden deneyin ya da e-postayla gelen kodu kullanın."
+
+#: src/components/settings/ProfileSettings.tsx
+msgid "The passkey was not added. Try again."
+msgstr "Geçiş anahtarı eklenmedi. Yeniden deneyin."
+
+#: src/components/settings/MembersSettings.tsx
+msgid "Their conversations stay; they lose access at once."
+msgstr "Konuşmaları yerinde kalır; erişimleri hemen kalkar."
+
+#: src/components/settings/InboxSettings.tsx
+msgid "There are no agents in this workspace."
+msgstr "Bu çalışma alanında temsilci yok."
+
+#: src/components/settings/ProfileSettings.tsx
+msgid "This browser does not support passkeys."
+msgstr "Bu tarayıcı geçiş anahtarlarını desteklemiyor."
+
+#: src/components/common/text.ts
+msgid "This conflicts with something that already exists."
+msgstr "Bu, var olan bir kayıtla çakışıyor."
+
+#: src/components/common/text.ts
+msgid "This file type is not allowed."
+msgstr "Bu dosya türüne izin verilmiyor."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "This is not a JSON object."
+msgstr "Bu bir JSON nesnesi değil."
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Thread"
+msgstr "Açık konuşmada"
+
+#: src/components/common/text.ts
+msgid "Thursday"
+msgstr "Perşembe"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Time zone"
+msgstr "Saat dilimi"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Times are in the inbox's time zone. When off, the inbox counts as always open."
+msgstr "Saatler gelen kutusunun saat dilimine göredir. Kapalıyken gelen kutusu her zaman açık sayılır."
+
+#: src/components/settings/CannedRepliesSettings.tsx
+msgid "Title"
+msgstr "Başlık"
 
 #: src/components/ui/sidebar.tsx
 msgid "Toggle sidebar"
 msgstr "Kenar çubuğunu aç/kapat"
 
+#: src/components/settings/InboxSettings.tsx
+msgid "Tokens signed with the current secret stop working at once."
+msgstr "Mevcut anahtarla imzalanmış belirteçler hemen geçersiz olur."
+
+#: src/components/inbox/ConversationControls.tsx
+msgid "Tomorrow morning"
+msgstr "Yarın sabah"
+
+#: src/components/common/text.ts
+msgid "Too many attempts. Wait a little and try again."
+msgstr "Çok fazla deneme yapıldı. Biraz bekleyip yeniden deneyin."
+
 #: src/components/AppShell.tsx
+msgid "Try again"
+msgstr "Yeniden dene"
+
+#: src/components/common/text.ts
+msgid "Tuesday"
+msgstr "Salı"
+
+#: src/components/settings/CannedRepliesSettings.tsx
+msgid "Type / and the shortcut in the composer to insert one."
+msgstr "Eklemek için yazma alanında / ve ardından kısayolu yazın."
+
+#: src/components/inbox/Composer.tsx
+msgid "Type / for canned replies"
+msgstr "Hazır yanıtlar için / yazın"
+
+#: src/components/inbox/ConversationControls.tsx
+msgid "Unassign"
+msgstr "Atamayı kaldır"
+
+#: src/components/AppShell.tsx
+#: src/components/inbox/ConversationControls.tsx
+#: src/components/inbox/ConversationList.tsx
 msgid "Unassigned"
 msgstr "Atanmamış"
+
+#: src/components/inbox/ContactPanel.tsx
+#: src/components/inbox/ConversationList.tsx
+#: src/components/inbox/ThreadView.tsx
+msgid "Unnamed contact"
+msgstr "Adsız kişi"
+
+#: src/components/common/text.ts
+msgid "Urgent"
+msgstr "Acil"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Use business hours"
+msgstr "Çalışma saatlerini kullan"
+
+#: src/components/inbox/InboxPage.tsx
+msgid "Use j and k to move through the list, ? for all shortcuts."
+msgstr "Listede gezinmek için j ve k, tüm kısayollar için ? tuşunu kullanın."
+
+#: src/components/auth/SignInPage.tsx
+msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
+msgstr "<0>{email}</0> adresine 6 haneli bir kod gönderdik. Kod 10 dakika geçerlidir."
+
+#: src/components/common/text.ts
+msgid "Web chat"
+msgstr "Web sohbeti"
+
+#: src/components/common/text.ts
+msgid "Wednesday"
+msgstr "Çarşamba"
+
+#: src/components/settings/MembersSettings.tsx
+msgid "Withdraw"
+msgstr "Geri çek"
+
+#. placeholder {0}: inv.email
+#: src/components/settings/MembersSettings.tsx
+msgid "Withdraw the invite for {0}"
+msgstr "{0} davetini geri çek"
+
+#: src/components/settings/ApiKeysSettings.tsx
+msgid "Workspace API keys"
+msgstr "Çalışma alanı API anahtarları"
+
+#: src/components/settings/LabelsSettings.tsx
+msgid "Workspace labels"
+msgstr "Çalışma alanı etiketleri"
+
+#: src/components/settings/MembersSettings.tsx
+msgid "Workspace members"
+msgstr "Çalışma alanı üyeleri"
+
+#: src/components/AppShell.tsx
+msgid "Workspaces"
+msgstr "Çalışma alanları"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Write a note"
+msgstr "Not yaz"
+
+#: src/components/inbox/Composer.tsx
+msgid "Write a note for your team…"
+msgstr "Ekibiniz için bir not yazın…"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Write a reply"
+msgstr "Yanıt yaz"
+
+#: src/components/inbox/Composer.tsx
+msgid "Write a reply…"
+msgstr "Bir yanıt yazın…"
+
+#: src/components/AppShell.tsx
+msgid "You are not a member of any workspace"
+msgstr "Hiçbir çalışma alanına üye değilsiniz"
+
+#: src/components/common/text.ts
+msgid "You are not allowed to do this."
+msgstr "Bunu yapma izniniz yok."
+
+#: src/components/settings/InboxesSettings.tsx
+msgid "You can change hours, branding and channels after creating it."
+msgstr "Saatleri, markayı ve kanalları oluşturduktan sonra değiştirebilirsiniz."
+
+#: src/components/settings/ProfileSettings.tsx
+msgid "You have no passkeys yet."
+msgstr "Henüz geçiş anahtarınız yok."
+
+#: src/components/settings/ProfileSettings.tsx
+msgid "You will no longer be able to sign in with it."
+msgstr "Artık bununla giriş yapamayacaksınız."
+
+#: src/components/auth/SignInPage.tsx
+msgid "you@company.com"
+msgstr "siz@sirket.com"
+
+#: src/components/settings/InboxSettings.tsx
+msgid "Your backend signs identity tokens with this secret so Yuva knows who your signed-in users are. It is shown only when created or rotated."
+msgstr "Sunucu tarafınız kimlik belirteçlerini bu anahtarla imzalar; böylece Yuva giriş yapmış kullanıcılarınızın kim olduğunu bilir. Anahtar yalnızca oluşturulduğunda veya yenilendiğinde gösterilir."
+
+#: src/components/settings/InboxesSettings.tsx
+msgid "Your backend signs identity tokens with this secret. Copy it now and store it safely; it is not shown again."
+msgstr "Sunucu tarafınız kimlik belirteçlerini bu anahtarla imzalar. Şimdi kopyalayıp güvenli bir yerde saklayın; bir daha gösterilmeyecek."
+
+#: src/components/settings/InboxesSettings.tsx
+msgid "Your inboxes"
+msgstr "Gelen kutularınız"
+
+#: src/components/settings/ApiKeysSettings.tsx
+msgid "Your new API key"
+msgstr "Yeni API anahtarınız"
+
+#: src/components/common/text.ts
+msgid "Your session has ended. Sign in again."
+msgstr "Oturumunuz sona erdi. Yeniden giriş yapın."
 
 #: src/components/AppShell.tsx
 msgid "Yuva {version}"

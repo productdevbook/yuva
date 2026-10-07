@@ -1,19 +1,40 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { CheckIcon, InboxIcon, LanguagesIcon, MessagesSquareIcon, UserIcon, UserXIcon } from "lucide-react"
-import { Link, Navigate, Outlet, useParams } from "react-router"
+import {
+  BuildingIcon,
+  CheckIcon,
+  ChevronsUpDownIcon,
+  InboxIcon,
+  KeyboardIcon,
+  LogOutIcon,
+  RefreshCwIcon,
+  SettingsIcon,
+  TagIcon,
+  UserIcon,
+  UserXIcon,
+} from "lucide-react"
+import { useCallback } from "react"
+import { Link, Navigate, Outlet, useLocation, useNavigate } from "react-router"
 
+import { EmptyState, PersonAvatar } from "@/components/common"
+import { ShortcutSheet, useShortcutSheet } from "@/components/common/ShortcutSheet"
+import { LanguageMenu } from "@/components/LanguageMenu"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
@@ -23,13 +44,17 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { activate, locales, type Locale } from "@/i18n"
-import { useVersion } from "@/lib/api"
+import { Skeleton } from "@/components/ui/skeleton"
+import { useVersion, type Me } from "@/lib/api"
+import { useInboxes, useLabels } from "@/lib/queries"
+import { useRealtime, useRealtimeStatus } from "@/lib/realtime"
+import { cn } from "@/lib/utils"
+import { pickMembership, SessionProvider, useMe, useSession, useSignOut, useWorkspaceChoice } from "@/lib/session"
 
-const VIEWS = ["all", "mine", "unassigned"] as const
-type View = (typeof VIEWS)[number]
+export const VIEWS = ["all", "mine", "unassigned"] as const
+export type View = (typeof VIEWS)[number]
 
-function useViewLabels(): Record<View, string> {
+export function useViewLabels(): Record<View, string> {
   const { t } = useLingui()
   return { all: t`All`, mine: t`Mine`, unassigned: t`Unassigned` }
 }
@@ -40,115 +65,331 @@ const viewIcons: Record<View, React.ComponentType> = {
   unassigned: UserXIcon,
 }
 
-function isView(v: string | undefined): v is View {
-  return VIEWS.includes(v as View)
-}
-
-function Nav() {
-  const { view } = useParams()
-  const labels = useViewLabels()
+function NavLink({
+  to,
+  active,
+  children,
+}: {
+  to: string
+  active: boolean
+  children: React.ReactNode
+}) {
   const { isMobile, setOpenMobile } = useSidebar()
   return (
-    <SidebarMenu>
-      {VIEWS.map((v) => {
-        const Icon = viewIcons[v]
-        return (
-          <SidebarMenuItem key={v}>
-            <SidebarMenuButton
-              isActive={view === v}
-              render={<Link to={`/${v}`} onClick={() => isMobile && setOpenMobile(false)} />}
-            >
-              <Icon />
-              <span>{labels[v]}</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        )
-      })}
-    </SidebarMenu>
+    <SidebarMenuItem>
+      <SidebarMenuButton isActive={active} render={<Link to={to} onClick={() => isMobile && setOpenMobile(false)} />}>
+        {children}
+      </SidebarMenuButton>
+    </SidebarMenuItem>
   )
 }
 
-function LanguageMenu() {
-  const { t, i18n } = useLingui()
+function Nav() {
+  const { pathname } = useLocation()
+  const labels = useViewLabels()
+  const inboxes = useInboxes().data ?? []
+  const tags = useLabels().data ?? []
+  const first = pathname.split("/")[1]
+  const second = pathname.split("/")[2]
+  return (
+    <>
+      <SidebarGroup>
+        <SidebarGroupContent>
+          <SidebarMenu>
+            {VIEWS.map((v) => {
+              const Icon = viewIcons[v]
+              return (
+                <NavLink key={v} to={`/${v}`} active={first === v}>
+                  <Icon />
+                  <span>{labels[v]}</span>
+                </NavLink>
+              )
+            })}
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+      {inboxes.length > 0 && (
+        <SidebarGroup>
+          <SidebarGroupLabel>
+            <Trans>Inboxes</Trans>
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {inboxes.map((inbox) => (
+                <NavLink key={inbox.id} to={`/inbox/${inbox.id}`} active={first === "inbox" && second === inbox.id}>
+                  <span
+                    className="size-2.5 shrink-0 rounded-sm"
+                    style={{ backgroundColor: inbox.branding.color ?? "var(--muted-foreground)" }}
+                  />
+                  <span>{inbox.name}</span>
+                </NavLink>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      )}
+      {tags.length > 0 && (
+        <SidebarGroup>
+          <SidebarGroupLabel>
+            <Trans>Labels</Trans>
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {tags.map((label) => (
+                <NavLink key={label.id} to={`/label/${label.id}`} active={first === "label" && second === label.id}>
+                  <TagIcon style={{ color: label.color }} />
+                  <span>{label.name}</span>
+                </NavLink>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      )}
+      <SidebarGroup className="mt-auto">
+        <SidebarGroupContent>
+          <SidebarMenu>
+            <NavLink to="/settings" active={first === "settings"}>
+              <SettingsIcon />
+              <span>
+                <Trans>Settings</Trans>
+              </span>
+            </NavLink>
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+    </>
+  )
+}
+
+function WorkspaceSwitcher() {
+  const { me, membership, switchWorkspace } = useSession()
+  const name = membership.workspace.name
+  const header = (
+    <>
+      <img src="/favicon.svg" alt="" className="size-7 rounded-md" />
+      <span className="min-w-0 flex-1 truncate text-left font-semibold">{name}</span>
+    </>
+  )
+  if (me.memberships.length < 2) {
+    return <div className="flex items-center gap-2 px-2 py-1.5">{header}</div>
+  }
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<Button variant="ghost" size="sm" aria-label={t`Language`} />}>
-        <LanguagesIcon />
-        <span className="uppercase">{i18n.locale}</span>
+      <DropdownMenuTrigger
+        render={<SidebarMenuButton size="lg" />}
+        aria-label={name}
+        data-testid="workspace-switcher"
+      >
+        {header}
+        <ChevronsUpDownIcon className="text-muted-foreground" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-36">
-        {Object.entries(locales).map(([k, v]) => (
-          <DropdownMenuItem key={k} onClick={() => activate(k as Locale)}>
-            <span className="flex-1">{v}</span>
-            {i18n.locale === k && <CheckIcon />}
-          </DropdownMenuItem>
-        ))}
+      <DropdownMenuContent align="start" className="min-w-56">
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>
+            <Trans>Workspaces</Trans>
+          </DropdownMenuLabel>
+          {me.memberships.map((m) => (
+            <DropdownMenuItem key={m.workspace.id} onClick={() => switchWorkspace(m.workspace.id)}>
+              <BuildingIcon />
+              <span className="flex-1 truncate">{m.workspace.name}</span>
+              {m.workspace.id === membership.workspace.id && <CheckIcon />}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   )
 }
 
-function VersionFooter() {
-  const version = useVersion().data?.version
+function UserMenu({ onShortcuts }: { onShortcuts: () => void }) {
+  const { me } = useSession()
+  const signOut = useSignOut()
+  const navigate = useNavigate()
+  const { isMobile, setOpenMobile } = useSidebar()
+  const name = me.person.name || me.person.email
+  const go = (to: string) => {
+    if (isMobile) setOpenMobile(false)
+    navigate(to)
+  }
   return (
-    <footer className="flex h-10 shrink-0 items-center border-t px-4 text-xs text-muted-foreground">
-      {version && <Trans>Yuva {version}</Trans>}
-    </footer>
+    <DropdownMenu>
+      <DropdownMenuTrigger render={<SidebarMenuButton size="lg" />} data-testid="user-menu">
+        <PersonAvatar name={name} />
+        <span className="flex min-w-0 flex-1 flex-col text-left leading-tight">
+          <span className="truncate text-sm font-medium">{name}</span>
+          <span className="truncate text-xs text-muted-foreground">{me.person.email}</span>
+        </span>
+        <ChevronsUpDownIcon className="text-muted-foreground" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" side="top" className="min-w-56">
+        <DropdownMenuItem onClick={() => go("/settings/profile")}>
+          <UserIcon />
+          <Trans>My profile</Trans>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={onShortcuts}>
+          <KeyboardIcon />
+          <Trans>Keyboard shortcuts</Trans>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onClick={async () => {
+            await signOut()
+            navigate("/sign-in", { replace: true })
+          }}
+        >
+          <LogOutIcon />
+          <Trans>Sign out</Trans>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+function Footer() {
+  const version = useVersion().data?.version
+  const live = useRealtimeStatus()
+  return (
+    <div className="flex items-center gap-2 px-2 pb-1 text-xs text-muted-foreground">
+      <span className="min-w-0 flex-1 truncate">{version && <Trans>Yuva {version}</Trans>}</span>
+      <span className="flex items-center gap-1.5" data-testid="realtime-status" data-status={live}>
+        <span
+          className={cn(
+            "size-2 rounded-full",
+            live === "live" ? "bg-success" : live === "connecting" ? "bg-amber-500" : "bg-destructive",
+          )}
+        />
+        {live === "live" ? <Trans>Live</Trans> : live === "connecting" ? <Trans>Connecting…</Trans> : <Trans>Offline</Trans>}
+      </span>
+    </div>
   )
 }
 
 export function AppShell() {
+  const sheet = useShortcutSheet()
+  const { workspaceId, membership } = useSession()
+  useRealtime(workspaceId, membership.member_id)
   return (
-    <SidebarProvider>
+    <SidebarProvider className="h-svh overflow-hidden">
       <Sidebar>
         <SidebarHeader>
-          <div className="flex items-center gap-2 px-2 py-1.5">
-            <img src="/favicon.svg" alt="" className="size-7 rounded-md" />
-            <span className="font-semibold">Yuva</span>
-          </div>
+          <WorkspaceSwitcher />
         </SidebarHeader>
         <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupContent>
-              <Nav />
-            </SidebarGroupContent>
-          </SidebarGroup>
+          <Nav />
         </SidebarContent>
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <UserMenu onShortcuts={() => sheet.setOpen(true)} />
+            </SidebarMenuItem>
+          </SidebarMenu>
+          <Footer />
+        </SidebarFooter>
       </Sidebar>
-      <SidebarInset className="min-h-svh">
-        <header className="flex h-12 shrink-0 items-center gap-2 border-b px-3">
-          <SidebarTrigger />
-          <ViewTitle />
-          <div className="ml-auto">
-            <LanguageMenu />
-          </div>
-        </header>
-        <main className="flex flex-1 flex-col">
-          <Outlet />
-        </main>
-        <VersionFooter />
+      <SidebarInset className="min-h-0 min-w-0 overflow-hidden">
+        <Outlet />
       </SidebarInset>
+      <ShortcutSheet open={sheet.open} onOpenChange={sheet.setOpen} />
     </SidebarProvider>
   )
 }
 
-function ViewTitle() {
-  const { view } = useParams()
-  const labels = useViewLabels()
-  return <h1 className="truncate text-sm font-medium">{isView(view) ? labels[view] : ""}</h1>
+export function TopBar({ title, children }: { title: React.ReactNode; children?: React.ReactNode }) {
+  return (
+    <header className="flex h-12 shrink-0 items-center gap-2 border-b px-3">
+      <SidebarTrigger />
+      <h1 className="min-w-0 truncate text-sm font-medium">{title}</h1>
+      <div className="ml-auto flex items-center gap-1">
+        {children}
+        <LanguageMenu />
+      </div>
+    </header>
+  )
 }
 
-export function ConversationsPage() {
-  const { view } = useParams()
-  if (!isView(view)) return <Navigate to="/all" replace />
+function FullPage({ children }: { children: React.ReactNode }) {
+  return <div className="flex min-h-svh flex-col bg-background">{children}</div>
+}
+
+function WorkspacePicker({ me, onChoose }: { me: Me; onChoose: (id: string) => void }) {
   return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-3 p-6 text-center">
-      <div className="flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
-        <MessagesSquareIcon className="size-6" />
-      </div>
-      <p className="text-sm text-muted-foreground">
-        <Trans>No conversations yet</Trans>
-      </p>
-    </div>
+    <FullPage>
+      <header className="flex h-12 items-center justify-end px-3">
+        <LanguageMenu />
+      </header>
+      <main className="flex flex-1 items-start justify-center px-4 pt-[12vh]">
+        <div className="w-full max-w-sm">
+          <h1 className="mb-6 text-center text-xl font-semibold">
+            <Trans>Choose a workspace</Trans>
+          </h1>
+          <ul className="flex flex-col gap-2">
+            {me.memberships.map((m) => (
+              <li key={m.workspace.id}>
+                <button
+                  type="button"
+                  onClick={() => onChoose(m.workspace.id)}
+                  className="flex w-full items-center gap-3 rounded-lg border bg-card px-4 py-3 text-left transition-colors hover:bg-muted"
+                >
+                  <BuildingIcon className="size-5 text-muted-foreground" />
+                  <span className="flex-1 truncate font-medium">{m.workspace.name}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </main>
+    </FullPage>
+  )
+}
+
+export function Gate() {
+  const me = useMe()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [chosen, choose] = useWorkspaceChoice()
+  const onSwitch = useCallback(
+    (id: string) => {
+      choose(id)
+      navigate("/all")
+    },
+    [choose, navigate],
+  )
+
+  if (me.isPending) {
+    return (
+      <FullPage>
+        <div className="flex flex-1 items-center justify-center">
+          <Skeleton className="h-8 w-40" />
+        </div>
+      </FullPage>
+    )
+  }
+  if (me.error) {
+    return (
+      <FullPage>
+        <EmptyState icon={RefreshCwIcon} title={<Trans>Could not reach the server</Trans>}>
+          <Button className="mt-2" onClick={() => me.refetch()}>
+            <Trans>Try again</Trans>
+          </Button>
+        </EmptyState>
+      </FullPage>
+    )
+  }
+  if (!me.data) return <Navigate to="/sign-in" replace state={{ from: location.pathname }} />
+  if (me.data.memberships.length === 0) {
+    return (
+      <FullPage>
+        <EmptyState icon={BuildingIcon} title={<Trans>You are not a member of any workspace</Trans>}>
+          <Trans>Ask an owner or admin of your workspace to invite you.</Trans>
+        </EmptyState>
+      </FullPage>
+    )
+  }
+  const membership = pickMembership(me.data, chosen)
+  if (!membership) return <WorkspacePicker me={me.data} onChoose={choose} />
+  return (
+    <SessionProvider key={membership.workspace.id} me={me.data} membership={membership} onSwitch={onSwitch}>
+      <AppShell />
+    </SessionProvider>
   )
 }
