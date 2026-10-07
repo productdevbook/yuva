@@ -74,7 +74,7 @@ Accept: a new conversation in a `live` inbox notifies a member's phone within se
 
 Accept: one week of real support handled only in Yuva.
 
-## M8 — Public v0.1
+## M8 — First public release (0.0.1)
 
 - Docker image, install guide, configuration reference, upgrade notes, backup guide.
 - Security review of authentication, client sessions, ingress and attachment handling.

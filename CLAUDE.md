@@ -29,6 +29,14 @@ Keep this table current when a command changes.
 - Every table has `workspace_id`; every query filters by it. No exception without a written reason
   in `docs/architecture.md`.
 
+## Versions
+
+- One version for the whole repository, SemVer, starting at `0.0.1`. Tags are `v0.0.1`, `v0.0.2`, …;
+  there is no `1.0` until the owner says so.
+- The server reports it from `-X main.version` (`VERSION` build arg); `openapi/openapi.yaml`
+  `info.version`, `sdk/js/package.json` and later SDK versions move with it.
+- `/v1` and `/client/v1` in URLs are the API contract version, not the release version.
+
 ## Licensing in practice
 
 - `sdk/` and `openapi/` are MIT, everything else AGPL-3.0 (`LICENSING.md`). Never move code from
