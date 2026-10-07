@@ -1,0 +1,52 @@
+---
+import type { ImageMetadata } from "astro"
+import { getImage } from "astro:assets"
+
+interface Props {
+  light: ImageMetadata
+  dark?: ImageMetadata
+  alt: string
+  widths: number[]
+  sizes: string
+  eager?: boolean
+  class?: string
+  crop?: { x: number; y: number; w: number; h: number }
+  small?: { light: ImageMetadata; dark: ImageMetadata; widths: number[]; sizes: string }
+}
+
+const { light, dark, alt, widths, sizes, eager = false } = Astro.props
+const opts = { widths, format: "webp" as const, quality: 82 }
+const l = await getImage({ src: light, ...opts })
+const d = dark ? await getImage({ src: dark, ...opts }) : undefined
+const small = Astro.props.small
+const narrow = "(max-width: 639px)"
+const sl = small ? await getImage({ src: small.light, widths: small.widths, format: "webp", quality: 82 }) : undefined
+const sd = small ? await getImage({ src: small.dark, widths: small.widths, format: "webp", quality: 82 }) : undefined
+const sw = small ? small.widths[small.widths.length - 1]! : 0
+const sh = small ? Math.round((small.light.height / small.light.width) * sw) : 0
+const largest = widths[widths.length - 1]!
+const height = Math.round((light.height / light.width) * largest)
+const crop = Astro.props.crop
+const ratio = light.height / light.width
+const frame = crop ? `aspect-ratio:${((crop.w * light.width) / (crop.h * light.height)).toFixed(4)}` : undefined
+const shift = crop
+  ? `width:${(100 / crop.w).toFixed(3)}%;max-width:none;margin-inline-start:${((-crop.x / crop.w) * 100).toFixed(3)}%;margin-top:${((-crop.y / crop.w) * ratio * 100).toFixed(3)}%`
+  : undefined
+---
+
+<picture class:list={[Astro.props.class, crop && "crop"]} style={frame}>
+  {small && sd && <source media={`${narrow} and (prefers-color-scheme: dark)`} srcset={sd.srcSet.attribute} sizes={small.sizes} width={sw} height={sh} type="image/webp" />}
+  {small && sl && <source media={narrow} srcset={sl.srcSet.attribute} sizes={small.sizes} width={sw} height={sh} type="image/webp" />}
+  {d && <source media="(prefers-color-scheme: dark)" srcset={d.srcSet.attribute} sizes={sizes} type="image/webp" />}
+  <source srcset={l.srcSet.attribute} sizes={sizes} type="image/webp" />
+  <img
+    src={l.src}
+    alt={alt}
+    width={largest}
+    height={height}
+    loading={eager ? "eager" : "lazy"}
+    decoding={eager ? "sync" : "async"}
+    fetchpriority={eager ? "high" : "auto"}
+    style={shift}
+  />
+</picture>
