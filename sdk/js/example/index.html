@@ -8,35 +8,62 @@
       :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
       body { margin: 0; padding: 24px 16px; background: Canvas; color: CanvasText; }
       main { max-width: 720px; margin: 0 auto; }
-      nav { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-block: 16px; }
-      .embedded { block-size: 480px; }
+      form { display: grid; grid-template-columns: max-content 1fr; gap: 8px 12px; align-items: center; margin-block: 16px; }
+      input, select { font: inherit; padding: 4px 6px; min-width: 0; }
+      .actions { grid-column: 1 / -1; display: flex; gap: 8px; flex-wrap: wrap; }
+      .embedded { block-size: 520px; margin-block-start: 16px; }
+      @media (max-width: 480px) { .embedded { block-size: 70vh; } }
     </style>
   </head>
   <body>
     <main>
       <h1>Yuva widget</h1>
-      <p>Query parameters: <code>layout</code> (launcher, embedded), <code>locale</code>, <code>dir</code>, <code>open</code>.</p>
-      <nav>
-        <a href="?layout=launcher&amp;locale=en">launcher en</a>
-        <a href="?layout=launcher&amp;locale=tr&amp;open=1">launcher tr, open</a>
-        <a href="?layout=embedded&amp;locale=en">embedded en</a>
-        <a href="?layout=embedded&amp;locale=tr">embedded tr</a>
-        <a href="?layout=launcher&amp;locale=en&amp;dir=rtl&amp;open=1">launcher rtl</a>
-      </nav>
+      <p>
+        Point the widget at a chat channel. In identified mode this page asks its dev server for an identity token
+        (<code>/example/identity-token</code>, signed with <code>YUVA_IDENTITY_SECRET</code>), as your backend would.
+      </p>
+      <form id="settings">
+        <label for="server">Server</label><input id="server" name="server" placeholder="http://127.0.0.1:8809" />
+        <label for="channel">Channel key</label><input id="channel" name="channel" />
+        <label for="layout">Layout</label>
+        <select id="layout" name="layout"><option>launcher</option><option>embedded</option></select>
+        <label for="locale">Locale</label><input id="locale" name="locale" placeholder="browser" />
+        <label for="user">User id</label><input id="user" name="user" placeholder="empty: anonymous visitor" />
+        <label for="name">Name</label><input id="name" name="name" />
+        <label for="email">E-mail</label><input id="email" name="email" type="email" />
+        <div class="actions"><button>Apply</button><button type="button" id="signout">Sign out</button></div>
+      </form>
       <div id="slot"></div>
     </main>
     <script src="../dist/yuva.js"></script>
     <script>
       const params = new URLSearchParams(location.search);
+      const form = document.getElementById("settings");
+      for (const field of form.elements) if (field.name && params.has(field.name)) field.value = params.get(field.name);
+
       const chat = document.createElement("yuva-chat");
-      chat.setAttribute("inbox", "inb_example");
-      chat.setAttribute("layout", params.get("layout") ?? "launcher");
-      if (params.get("locale")) chat.setAttribute("locale", params.get("locale"));
-      if (params.get("dir")) chat.setAttribute("dir", params.get("dir"));
+      for (const name of ["server", "channel", "layout", "locale", "dir"]) {
+        if (params.get(name)) chat.setAttribute(name, params.get(name));
+      }
+      const user = params.get("user");
+      if (user) {
+        chat.setIdentityToken(async () => {
+          const query = new URLSearchParams({ sub: user });
+          for (const name of ["name", "email", "locale"]) if (params.get(name)) query.set(name, params.get(name));
+          const response = await fetch(`identity-token?${query}`);
+          return response.ok ? (await response.json()).token : null;
+        });
+      }
+      if (params.get("open")) chat.setAttribute("open", "");
       const slot = document.getElementById("slot");
       if (chat.getAttribute("layout") === "embedded") slot.className = "embedded";
       slot.append(chat);
-      if (params.get("open")) chat.open();
+
+      document.getElementById("signout").addEventListener("click", async () => {
+        await chat.signOut();
+        params.delete("user");
+        location.search = params.toString();
+      });
     </script>
   </body>
 </html>

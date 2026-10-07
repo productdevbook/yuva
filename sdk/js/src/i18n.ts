@@ -1,6 +1,6 @@
 import type { MessageDescriptor, Messages } from "@lingui/core";
-import { messages as en } from "./locales/en/messages";
-import { messages as tr } from "./locales/tr/messages";
+import { messages as en } from "./locales/en/loader";
+import { messages as tr } from "./locales/tr/loader";
 
 const catalogs: Record<string, Messages> = { en, tr };
 const rtlLanguages = new Set(["ar", "fa", "he", "ur"]);
@@ -26,10 +26,15 @@ export function catalogFor(locale: string): Messages {
   return catalogs[locale] ?? en;
 }
 
-// Keeps @lingui/core out of the loader; only plain messages (no placeholders or plurals) belong here.
+// Keeps @lingui/core out of the loader; only plain messages and simple placeholders (no plurals) belong here.
 export function translatePlain(messages: Messages, descriptor: MessageDescriptor): string {
   const entry = messages[descriptor.id] ?? en[descriptor.id];
+  const values = (descriptor.values ?? {}) as Record<string, unknown>;
   if (typeof entry === "string") return entry;
-  if (Array.isArray(entry) && entry.every((part) => typeof part === "string")) return entry.join("");
+  if (Array.isArray(entry)) {
+    return entry
+      .map((part) => (typeof part === "string" ? part : Array.isArray(part) ? String(values[part[0] as string] ?? "") : ""))
+      .join("");
+  }
   return descriptor.message ?? descriptor.id;
 }

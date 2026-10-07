@@ -5,7 +5,10 @@ import { createSwcExtractor } from "@lingui/native-tools";
 export default defineConfig({
   sourceLocale: "en",
   locales: ["en", "tr"],
-  catalogs: [{ path: "<rootDir>/src/locales/{locale}/messages", include: ["<rootDir>/src"] }],
+  catalogs: [
+    { path: "<rootDir>/src/locales/{locale}/loader", include: ["<rootDir>/src/element.ts"] },
+    { path: "<rootDir>/src/locales/{locale}/panel", include: ["<rootDir>/src/panel"] },
+  ],
   format: formatter({ lineNumbers: false }),
   extractors: [createSwcExtractor()],
 });

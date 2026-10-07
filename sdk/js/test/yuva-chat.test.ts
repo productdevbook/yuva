@@ -33,7 +33,7 @@ const until = async (condition: () => boolean) => {
 
 describe("<yuva-chat> launcher", () => {
   test("renders a closed launcher without loading the panel", () => {
-    const element = mount({ inbox: "inb_1", locale: "en" });
+    const element = mount({ locale: "en" });
     expect(launcher(element)?.getAttribute("aria-label")).toBe("Open chat");
     expect(launcher(element)?.getAttribute("aria-expanded")).toBe("false");
     expect(panel(element).hidden).toBe(true);
@@ -41,14 +41,14 @@ describe("<yuva-chat> launcher", () => {
   });
 
   test("opens and closes, loading the panel once", async () => {
-    const element = mount({ inbox: "inb_1", locale: "en" });
+    const element = mount({ locale: "en" });
     launcher(element)!.click();
     await until(() => !panel(element).hidden);
     expect(element.isOpen).toBe(true);
     expect(panel(element).querySelector(".title")?.textContent).toBe("Messages");
     expect(launcher(element)?.getAttribute("aria-label")).toBe("Close chat");
 
-    panel(element).querySelector<HTMLButtonElement>(".close")!.click();
+    panel(element).querySelector<HTMLButtonElement>('button[aria-label="Close"]')!.click();
     expect(element.isOpen).toBe(false);
     expect(panel(element).hidden).toBe(true);
 
@@ -82,8 +82,9 @@ describe("<yuva-chat> embedded", () => {
     const element = mount({ layout: "embedded", locale: "tr" });
     await until(() => !panel(element).hidden);
     expect(launcher(element)).toBeNull();
-    expect(panel(element).querySelector(".close")).toBeNull();
-    expect(panel(element).querySelector(".empty")?.textContent).toBe("Henüz konuşma yok");
+    expect(panel(element).querySelector('button[aria-label="Kapat"]')).toBeNull();
+    await until(() => panel(element).querySelector(".empty") !== null);
+    expect(panel(element).querySelector(".empty")?.textContent).toBe("Sohbet şu anda kullanılamıyor.");
     element.close();
     expect(panel(element).hidden).toBe(false);
   });

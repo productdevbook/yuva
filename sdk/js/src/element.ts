@@ -1,7 +1,15 @@
 import type { Messages } from "@lingui/core";
 import { msg } from "@lingui/core/macro";
 import { catalogFor, directionOf, resolveLocale, translatePlain } from "./i18n";
-import type { Layout, PanelModule } from "./types";
+import {
+  readStored,
+  type ChatConfig,
+  type IdentityTokenSource,
+  type Layout,
+  type LauncherStyle,
+  type PanelController,
+  type PanelModule,
+} from "./types";
 
 const styles = `
 :host {
@@ -11,25 +19,28 @@ const styles = `
   --yuva-fg: #111827;
   --yuva-muted: #6b7280;
   --yuva-border: #e5e7eb;
+  --yuva-soft: #f3f4f6;
+  --yuva-danger: #dc2626;
   --yuva-shadow: 0 12px 40px rgb(15 23 42 / 0.18);
   color-scheme: light;
   position: fixed;
-  inset-block-end: 20px;
-  inset-inline-end: 20px;
+  bottom: 20px;
+  right: 20px;
   z-index: 2147483000;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-size: 15px;
   line-height: 1.45;
   color: var(--yuva-fg);
 }
+:host([position="left"]) { right: auto; left: 20px; }
 @media (prefers-color-scheme: dark) {
   :host {
-    --yuva-accent: #60a5fa;
-    --yuva-on-accent: #0b1220;
     --yuva-bg: #1c1f24;
     --yuva-fg: #f3f4f6;
     --yuva-muted: #9ca3af;
     --yuva-border: #30343b;
+    --yuva-soft: #2a2e35;
+    --yuva-danger: #f87171;
     --yuva-shadow: 0 12px 40px rgb(0 0 0 / 0.5);
     color-scheme: dark;
   }
@@ -42,6 +53,7 @@ const styles = `
   block-size: 100%;
 }
 .launcher {
+  position: relative;
   display: grid;
   place-items: center;
   inline-size: 56px;
@@ -55,6 +67,23 @@ const styles = `
   cursor: pointer;
 }
 .launcher:focus-visible { outline: 3px solid var(--yuva-accent); outline-offset: 3px; }
+.badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-inline-size: 20px;
+  block-size: 20px;
+  padding-inline: 5px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  background: var(--yuva-danger);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+}
+.badge[hidden] { display: none; }
 .panel {
   display: flex;
   flex-direction: column;
@@ -67,11 +96,23 @@ const styles = `
 .panel[hidden] { display: none; }
 :host(:not([layout="embedded"])) .panel {
   position: absolute;
-  inset-block-end: 72px;
-  inset-inline-end: 0;
+  bottom: 72px;
+  right: 0;
   inline-size: min(380px, calc(100vw - 32px));
-  block-size: min(560px, calc(100vh - 112px));
+  block-size: min(600px, calc(100vh - 112px));
   box-shadow: var(--yuva-shadow);
+}
+:host([position="left"]:not([layout="embedded"])) .panel { right: auto; left: 0; }
+@media (max-width: 480px) {
+  :host(:not([layout="embedded"])) .panel {
+    position: fixed;
+    inset: 0;
+    inline-size: auto;
+    block-size: auto;
+    border: 0;
+    border-radius: 0;
+  }
+  :host([open-panel]:not([layout="embedded"])) .launcher { display: none; }
 }
 :host([layout="embedded"]) .panel {
   inline-size: 100%;
@@ -85,17 +126,29 @@ const closeIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" s
 
 const scriptSrc = document.currentScript instanceof HTMLScriptElement ? document.currentScript.src : "";
 
+export function contrastOn(color: string): string {
+  const n = Number.parseInt(color.slice(1), 16);
+  const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((c) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  }) as [number, number, number];
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.4 ? "#111827" : "#ffffff";
+}
+
 export class YuvaChatElement extends HTMLElement {
-  static observedAttributes = ["inbox", "layout", "locale"];
+  static observedAttributes = ["channel", "server", "layout", "locale", "dir", "identity-token", "open"];
   static loadPanel: () => Promise<PanelModule> = () =>
     import(/* @vite-ignore */ new URL("yuva-chat.js", scriptSrc || location.href).href);
 
   #root: ShadowRoot;
   #launcher: HTMLButtonElement | null = null;
+  #badge: HTMLElement | null = null;
   #panel: HTMLElement;
-  #panelModule: Promise<PanelModule> | null = null;
+  #controller: Promise<PanelController> | null = null;
   #messages: Messages = {};
   #open = false;
+  #unread = 0;
+  #identity: IdentityTokenSource | null = null;
 
   constructor() {
     super();
@@ -113,8 +166,13 @@ export class YuvaChatElement extends HTMLElement {
     return this.getAttribute("layout") === "embedded" ? "embedded" : "launcher";
   }
 
-  get inbox(): string | null {
-    return this.getAttribute("inbox");
+  get channel(): string | null {
+    return this.getAttribute("channel");
+  }
+
+  get server(): string {
+    const base = this.getAttribute("server") || (scriptSrc ? new URL(scriptSrc).origin : location.origin);
+    return base.replace(/\/+$/, "");
   }
 
   get locale(): string {
@@ -125,40 +183,121 @@ export class YuvaChatElement extends HTMLElement {
     return this.#open;
   }
 
-  connectedCallback(): void {
-    this.#render();
+  get unread(): number {
+    return this.#unread;
   }
 
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.#render();
+  setIdentityToken(source: IdentityTokenSource | null): void {
+    this.#identity = source;
+    if (this.#controller) void this.#controller.then((controller) => controller.identityChanged());
+  }
+
+  async signOut(): Promise<void> {
+    this.#identity = null;
+    this.removeAttribute("identity-token");
+    if (this.#controller) await (await this.#controller).signOut();
+  }
+
+  connectedCallback(): void {
+    this.#render();
+    const channel = this.channel;
+    if (this.layout === "embedded" || this.hasAttribute("open") || !channel) return;
+    const stored = readStored(channel);
+    if (stored.launcher) this.#applyLauncher(stored.launcher);
+    if (stored.session) {
+      const preload = () => {
+        if (this.isConnected) void this.#ensureController();
+      };
+      if ("requestIdleCallback" in window) requestIdleCallback(preload, { timeout: 3000 });
+      else setTimeout(preload, 1000);
+    }
+  }
+
+  disconnectedCallback(): void {
+    const controller = this.#controller;
+    this.#controller = null;
+    if (controller) void controller.then((c) => c.destroy());
+  }
+
+  attributeChangedCallback(name: string, previous: string | null, value: string | null): void {
+    if (!this.isConnected || previous === value) return;
+    if (name === "open") {
+      void (value === null ? this.close() : this.open());
+      return;
+    }
+    if (name === "identity-token") {
+      if (this.#controller) void this.#controller.then((controller) => controller.identityChanged());
+      return;
+    }
+    if (name === "channel" || name === "server") {
+      this.disconnectedCallback();
+      this.#render();
+      return;
+    }
+    this.#render();
+    if (this.#controller) void this.#controller.then((controller) => controller.update());
   }
 
   async open(): Promise<void> {
     if (this.#open) return;
     this.#open = true;
+    this.toggleAttribute("open-panel", true);
     this.#syncLauncher();
-    await this.#renderPanel();
+    const controller = await this.#ensureController();
     if (!this.#open) return;
     this.#panel.hidden = false;
-    if (this.layout === "launcher") this.#panel.querySelector<HTMLElement>("button")?.focus();
+    controller.opened();
   }
 
   close(): void {
     if (!this.#open || this.layout === "embedded") return;
     this.#open = false;
+    this.toggleAttribute("open-panel", false);
     this.#panel.hidden = true;
     this.#syncLauncher();
     this.#launcher?.focus();
+    if (this.#controller) void this.#controller.then((controller) => controller.closed());
   }
 
   toggle(): Promise<void> | void {
     return this.#open ? this.close() : this.open();
   }
 
+  #config(): ChatConfig {
+    return { channel: this.channel, server: this.server, layout: this.layout, locale: this.locale };
+  }
+
+  #ensureController(): Promise<PanelController> {
+    this.#controller ??= YuvaChatElement.loadPanel().then(({ mount }) =>
+      mount({
+        panel: this.#panel,
+        config: () => this.#config(),
+        identityToken: async () => (this.#identity ? ((await this.#identity()) ?? null) : this.getAttribute("identity-token")),
+        isOpen: () => this.#open,
+        close: () => this.close(),
+        setUnread: (count) => {
+          this.#unread = count;
+          this.#syncLauncher();
+          this.dispatchEvent(new CustomEvent("yuva-unread", { detail: { count } }));
+        },
+        setLauncher: (style) => this.#applyLauncher(style),
+      }),
+    );
+    return this.#controller;
+  }
+
+  #applyLauncher(style: LauncherStyle): void {
+    this.setAttribute("position", style.position === "left" ? "left" : "right");
+    if (style.color && /^#[0-9a-f]{6}$/i.test(style.color)) {
+      this.style.setProperty("--yuva-accent", style.color);
+      this.style.setProperty("--yuva-on-accent", contrastOn(style.color));
+    }
+  }
+
   #render(): void {
     const locale = this.locale;
     this.#messages = catalogFor(locale);
-    this.#root.host.setAttribute("lang", locale);
+    this.setAttribute("lang", locale);
     const style = document.createElement("style");
     style.textContent = styles;
     this.#panel.dir = this.getAttribute("dir") ?? directionOf(locale);
@@ -166,6 +305,7 @@ export class YuvaChatElement extends HTMLElement {
 
     if (this.layout === "embedded") {
       this.#launcher = null;
+      this.#badge = null;
       this.#root.replaceChildren(style, this.#panel);
       this.#open = false;
       void this.open();
@@ -177,29 +317,32 @@ export class YuvaChatElement extends HTMLElement {
     launcher.className = "launcher";
     launcher.addEventListener("click", () => void this.toggle());
     this.#launcher = launcher;
+    this.#badge = document.createElement("span");
+    this.#badge.className = "badge";
+    this.#badge.setAttribute("aria-hidden", "true");
     this.#root.replaceChildren(style, this.#panel, launcher);
     this.#syncLauncher();
-    if (this.#open) void this.#renderPanel();
+    if (this.hasAttribute("open") && !this.#open) void this.open();
   }
 
   #syncLauncher(): void {
     const launcher = this.#launcher;
-    if (!launcher) return;
+    const badge = this.#badge;
+    if (!launcher || !badge) return;
+    const count = this.#unread;
     launcher.setAttribute("aria-expanded", String(this.#open));
-    launcher.setAttribute("aria-label", translatePlain(this.#messages, this.#open ? msg`Close chat` : msg`Open chat`));
+    launcher.setAttribute(
+      "aria-label",
+      this.#open
+        ? translatePlain(this.#messages, msg`Close chat`)
+        : count > 0
+          ? translatePlain(this.#messages, msg`Open chat, ${count} unread`)
+          : translatePlain(this.#messages, msg`Open chat`),
+    );
     launcher.innerHTML = this.#open ? closeIcon : chatIcon;
-  }
-
-  async #renderPanel(): Promise<void> {
-    this.#panelModule ??= YuvaChatElement.loadPanel();
-    const { renderPanel } = await this.#panelModule;
-    renderPanel(this.#panel, {
-      locale: this.locale,
-      messages: this.#messages,
-      layout: this.layout,
-      inbox: this.inbox,
-      onClose: () => this.close(),
-    });
+    badge.textContent = count > 9 ? "9+" : String(count);
+    badge.hidden = this.#open || count === 0;
+    launcher.append(badge);
   }
 }
 
