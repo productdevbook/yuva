@@ -16,12 +16,13 @@ import { passkeysSupported, registerPasskey } from "@/lib/passkey"
 import { meKey, useSession } from "@/lib/session"
 
 export function ProfileSettings() {
+  const { me } = useSession()
   return (
     <>
       <PageTitle>
         <Trans>My profile</Trans>
       </PageTitle>
-      <ProfileForm />
+      <ProfileForm key={me.person.locale} />
       <Passkeys />
     </>
   )
@@ -51,11 +52,11 @@ function ProfileForm() {
           <Input id="name" value={name} maxLength={200} onChange={(e) => setName(e.target.value)} />
         </Field>
         <Field
-          label={<Trans>E-mail language</Trans>}
-          hint={<Trans>The language of sign-in and notification e-mails.</Trans>}
+          label={<Trans>Language</Trans>}
+          hint={<Trans>The language of the panel and of sign-in and notification e-mails.</Trans>}
         >
           <Select value={locale} onValueChange={(v) => setLocale(v as Locale)} items={locales}>
-            <SelectTrigger className="w-full" aria-label={t`E-mail language`}>
+            <SelectTrigger className="w-full" aria-label={t`Language`}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

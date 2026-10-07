@@ -58,7 +58,9 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { Skeleton } from "@/components/ui/skeleton"
+import { activate, i18n } from "@/i18n"
 import { api, unwrap, useVersion, type Availability, type Me } from "@/lib/api"
+import { signInPath } from "@/lib/next"
 import { useRegisterPushOnStart } from "@/lib/push"
 import { useInstallPrompt } from "@/lib/pwa"
 import { useCounts, useInboxes, useLabels } from "@/lib/queries"
@@ -557,6 +559,10 @@ export function Gate() {
   useEffect(() => {
     if (linkedMember && linked !== chosen) choose(linked)
   }, [linkedMember, linked, chosen, choose])
+  const personLocale = me.data?.person.locale
+  useEffect(() => {
+    if (personLocale && personLocale !== i18n.locale) activate(personLocale)
+  }, [personLocale])
   const onSwitch = useCallback(
     (id: string) => {
       choose(id)
@@ -585,7 +591,7 @@ export function Gate() {
       </FullPage>
     )
   }
-  if (!me.data) return <Navigate to="/sign-in" replace state={{ from: location.pathname }} />
+  if (!me.data) return <Navigate to={signInPath(location.pathname, location.search)} replace />
   if (me.data.memberships.length === 0) {
     return (
       <FullPage>

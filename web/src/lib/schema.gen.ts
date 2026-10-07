@@ -948,6 +948,9 @@ export interface paths {
          *     A repeated `client_id` in the same conversation returns the stored message with `200`
          *     instead of writing it again.
          *
+         *     A message or note posted by a member moves that member's read cursor to it in the same
+         *     transaction, with the same `conversation.read` event as `POST .../read`.
+         *
          *     A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
          *     e-mailed to the contact through the channel's SMTP account by a background job: the message
          *     is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
@@ -976,7 +979,8 @@ export interface paths {
          * @description Moves the calling member's read cursor to `message_id`, or to the latest message, note or
          *     event when it is absent. The cursor only moves forward; an older `message_id` leaves it
          *     where it is. When it moves, a `conversation.read` event reaches the member's other
-         *     connections. Member sessions only.
+         *     connections. Posting a message or note moves the author's cursor the same way. Member
+         *     sessions only.
          */
         post: operations["markConversationRead"];
         delete?: never;

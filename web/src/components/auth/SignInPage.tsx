@@ -2,7 +2,7 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { ArrowLeftIcon, KeyRoundIcon, MailIcon } from "lucide-react"
 import { useState } from "react"
-import { Navigate, useNavigate } from "react-router"
+import { Navigate, useNavigate, useSearchParams } from "react-router"
 
 import { ErrorLine } from "@/components/common"
 import { LanguageMenu } from "@/components/LanguageMenu"
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { api, unwrap } from "@/lib/api"
+import { safeNext } from "@/lib/next"
 import { signInWithPasskey } from "@/lib/passkey"
 import { meKey, useMe } from "@/lib/session"
 
@@ -18,13 +19,15 @@ export function SignInPage() {
   const qc = useQueryClient()
   const navigate = useNavigate()
   const me = useMe()
+  const [params] = useSearchParams()
+  const next = safeNext(params.get("next"))
   const [email, setEmail] = useState("")
   const [code, setCode] = useState("")
   const [step, setStep] = useState<"email" | "code">("email")
 
   const done = (data: unknown) => {
     qc.setQueryData(meKey, data)
-    navigate("/", { replace: true })
+    navigate(next, { replace: true })
   }
 
   const request = useMutation({
@@ -37,7 +40,7 @@ export function SignInPage() {
   })
   const passkey = useMutation({ mutationFn: signInWithPasskey, onSuccess: done })
 
-  if (me.data) return <Navigate to="/" replace />
+  if (me.data) return <Navigate to={next} replace />
 
   return (
     <div className="flex min-h-svh flex-col bg-background">
