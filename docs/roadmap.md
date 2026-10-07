@@ -5,6 +5,8 @@ on a running instance, not when the code exists.
 
 ## M0 — Foundation
 
+Status: done.
+
 - `api/` Go module, `web/` panel, `edge/`, `sdk/js`, `sdk/go` skeletons with their check commands.
 - `openapi/openapi.yaml` with health and version, linted; generated strict server.
 - Goose migrations, sqlc, River set up; `deploy/compose.yaml` starts Postgres and the server.
@@ -13,6 +15,8 @@ on a running instance, not when the code exists.
 Accept: `docker compose up` serves `/healthz` and an empty panel; CI is green.
 
 ## M1 — Core model and panel sign-in
+
+Status: done.
 
 - Workspaces, members, roles, per-inbox access; sign-in with e-mailed code and passkeys.
 - Inboxes and channels (settings only), contacts, conversations, messages, notes, events,
@@ -24,6 +28,8 @@ note, assign and close it.
 
 ## M2 — Agent panel
 
+Status: done.
+
 - Conversation list with filters and search, thread view, composer (reply/note, canned replies,
   attachments), contact sidebar, assignment, status, labels.
 - Settings screens for M1 objects. Realtime updates over WebSocket. Turkish and English.
@@ -32,6 +38,8 @@ Accept: two members answer and hand over a conversation in the panel and see eac
 live.
 
 ## M3 — E-mail channel
+
+Status: done.
 
 - `/ingress/email`, the Cloudflare Email Worker in `edge/`, threading, quote stripping, HTML
   sanitizing, attachments, raw message storage.
@@ -43,6 +51,8 @@ loop.
 
 ## M4 — Web widget: live chat and embedded threads
 
+Status: done.
+
 - `/client/v1`, contact sessions, identity tokens, anonymous visitors, allowed origins.
 - `<yuva-chat>` launcher and embedded layouts, presence, typing, read receipts, business hours,
   `live`/`async` modes, e-mail continuity.
@@ -52,6 +62,8 @@ Accept: on a test page an anonymous visitor chats live with a member; a signed-i
 app sees their earlier conversations; after leaving, the visitor gets the reply by e-mail.
 
 ## M5 — Mobile SDKs, feedback and webhooks
+
+Status: done.
 
 - `sdk/swift` and `sdk/kotlin`: client, conversation list, thread, composer, feedback form.
 - Feedback kind and metadata; `api` channel for server-side forms.
@@ -63,11 +75,15 @@ host backend receives the webhook and the app shows the reply.
 
 ## M6 — Member notifications
 
+Status: done.
+
 - PWA install, Web Push, per-member notification preferences, e-mail fallback.
 
 Accept: a new conversation in a `live` inbox notifies a member's phone within seconds.
 
 ## M7 — First internal rollout
+
+Status: in progress.
 
 - Our own instance; an existing in-app feedback form moved from e-mail to Yuva; e-mail channels for the products
   that already receive support mail.
@@ -75,6 +91,8 @@ Accept: a new conversation in a `live` inbox notifies a member's phone within se
 Accept: one week of real support handled only in Yuva.
 
 ## M8 — First public release (0.0.1)
+
+Status: in progress; ships as `v0.0.1` (see `CHANGELOG.md`).
 
 - Docker image, install guide, configuration reference, upgrade notes, backup guide.
 - Security review of authentication, client sessions, ingress and attachment handling.
