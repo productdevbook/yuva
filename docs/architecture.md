@@ -158,7 +158,11 @@ the visitor's conversations move to the identified contact (or, for a contact Yu
 yet, the visitor becomes it) and the visitor id ends. E-mail addresses are matched to contacts only
 when they arrive by e-mail or inside a valid identity token: an address a visitor types in the
 widget is kept apart (`typed_email`) and used only to e-mail them replies; it becomes one of their
-addresses when mail from it answers our e-mail to that address in the conversation's thread.
+addresses only when someone opens the confirmation link Yuva mails to it and confirms there. The
+link (`/email/confirm?token=…`, valid 24 hours, at most 3 per contact and hour, not sent for an
+address a contact already has) opens a page whose button posts the token, so a mail scanner that
+fetches links confirms nothing; the mail names the inbox and never repeats visitor text. Answering
+a reply e-mail does not confirm the address.
 
 ### E-mail
 

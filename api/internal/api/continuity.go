@@ -10,7 +10,6 @@ import (
 	"github.com/riverqueue/river"
 
 	"github.com/productdevbook/yuva/api/internal/email"
-	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
@@ -206,45 +205,8 @@ func continuityAddress(ctx context.Context, q *store.Queries, c store.Conversati
 	return *ct.TypedEmail, nil
 }
 
-// claimTypedEmail makes the address a chat contact typed one of their addresses once mail from it
-// answers our e-mail to that very address, before the sender is matched to a contact.
-func (s *Server) claimTypedEmail(ctx context.Context, q *store.Queries, events *eventBatch, ws, inboxID uuid.UUID, m *email.Message, sender string) error {
-	if _, err := q.GetContactIDByEmail(ctx, store.GetContactIDByEmailParams{WorkspaceID: ws, Email: sender}); !store.IsNotFound(err) {
-		return err
-	}
-	ids := append(append([]string{}, m.InReplyTo...), m.References...)
-	if len(ids) == 0 {
-		return nil
-	}
-	contactID, err := q.FindThreadSentTo(ctx, store.FindThreadSentToParams{WorkspaceID: ws, InboxID: inboxID, Ids: ids, Address: sender})
-	if store.IsNotFound(err) {
-		return nil
-	}
-	if err != nil {
-		return err
-	}
-	ct, err := q.LockContact(ctx, store.LockContactParams{WorkspaceID: ws, ID: contactID})
-	if err != nil || ct.TypedEmail == nil || *ct.TypedEmail != sender {
-		return err
-	}
-	n, err := q.CountContactEmails(ctx, store.CountContactEmailsParams{WorkspaceID: ws, ContactID: ct.ID})
-	if err != nil {
-		return err
-	}
-	if err := q.AddContactEmail(ctx, store.AddContactEmailParams{WorkspaceID: ws, ContactID: ct.ID, Email: sender, Position: int32(n)}); err != nil {
-		return err
-	}
-	r, err := q.SetContactTypedEmail(ctx, store.SetContactTypedEmailParams{WorkspaceID: ws, ID: ct.ID, Now: s.now()})
-	if err != nil {
-		return err
-	}
-	if err := q.RefreshContactSearch(ctx, store.RefreshContactSearchParams{WorkspaceID: ws, ID: ct.ID}); err != nil {
-		return err
-	}
-	body, err := s.contactBody(ctx, q, ws, contactRow(r))
-	if err != nil {
-		return err
-	}
-	events.add(realtime.ContactUpdated, nil, nil, body)
+// claimTypedEmail no longer claims anything: a typed address joins its contact only through the
+// confirmation link (serveEmailConfirmPost). Kept until the ingress path stops calling it.
+func (s *Server) claimTypedEmail(context.Context, *store.Queries, *eventBatch, uuid.UUID, uuid.UUID, *email.Message, string) error {
 	return nil
 }

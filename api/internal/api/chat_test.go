@@ -10,7 +10,10 @@ import (
 	"fmt"
 	"mime"
 	"mime/multipart"
+	"io"
 	"net/http"
+	"net/url"
+	"regexp"
 	"slices"
 	"strings"
 	"testing"
@@ -910,7 +913,11 @@ func TestChatEmailContinuity(t *testing.T) {
 		}
 		return out
 	}
-	eventsBefore := len(contactEvents())
+	link := confirmLink(t, h.mail.wait(t, typed, 1)[0].Text)
+	confirmTypedEmail(t, h, link)
+	if evs := contactEvents(); !strings.Contains(evs[len(evs)-1], `"emails": ["`+typed+`"]`) {
+		t.Fatalf("confirming the typed address: contact.updated events %v", evs)
+	}
 	raw := []byte("From: Visitor <" + typed + ">\r\nTo: " + addr + "\r\nSubject: Re: Chat\r\nMessage-ID: <" + unique("r") + "@example.com>\r\n" +
 		"In-Reply-To: " + msgID + "\r\nReferences: " + msgID + "\r\nContent-Type: text/plain; charset=utf-8\r\n\r\nThanks, that helped.\r\n")
 	res := h.ingest(addr, raw, nil)
@@ -919,10 +926,7 @@ func TestChatEmailContinuity(t *testing.T) {
 	}
 	c := ct.owner.expect(http.StatusOK, "GET", "/v1/contacts/"+cs.contactID, nil)
 	if len(c.body["emails"].([]any)) != 1 || c.body["emails"].([]any)[0] != typed {
-		t.Fatalf("answered typed address is now the contact's: %s", c.raw)
-	}
-	if evs := contactEvents(); len(evs) != eventsBefore+1 || !strings.Contains(evs[len(evs)-1], `"emails": ["`+typed+`"]`) {
-		t.Fatalf("verifying the typed address: contact.updated events %v", evs[eventsBefore:])
+		t.Fatalf("confirmed typed address is the contact's: %s", c.raw)
 	}
 	found := false
 	for _, it := range cs.expect(http.StatusOK, "GET", "/client/v1/conversations/"+conv+"/messages", nil).body["items"].([]any) {
@@ -930,6 +934,107 @@ func TestChatEmailContinuity(t *testing.T) {
 	}
 	if !found {
 		t.Fatal("the e-mail answer is not in the widget thread")
+	}
+}
+
+var confirmURL = regexp.MustCompile(`https?://\S+/email/confirm\?token=\S+`)
+
+func confirmLink(t *testing.T, text string) string {
+	t.Helper()
+	link := confirmURL.FindString(text)
+	if link == "" {
+		t.Fatalf("no confirmation link in %q", text)
+	}
+	u, err := url.Parse(link)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return u.Query().Get("token")
+}
+
+func confirmStatus(t *testing.T, h *harness, method, token string) (int, string) {
+	t.Helper()
+	var (
+		res *http.Response
+		err error
+	)
+	if method == "GET" {
+		res, err = http.Get(h.url + "/email/confirm?token=" + url.QueryEscape(token))
+	} else {
+		res, err = http.PostForm(h.url+"/email/confirm", url.Values{"token": {token}})
+	}
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer res.Body.Close()
+	b, _ := io.ReadAll(res.Body)
+	return res.StatusCode, string(b)
+}
+
+func confirmTypedEmail(t *testing.T, h *harness, token string) {
+	t.Helper()
+	if status, page := confirmStatus(t, h, "POST", token); status != http.StatusOK || !strings.Contains(page, "Address confirmed") {
+		t.Fatalf("confirming: %d %s", status, page)
+	}
+}
+
+func TestTypedEmailConfirmation(t *testing.T) {
+	h := newHarness(t)
+	ct := newChatTeam(t, h, "live", true)
+	emails := func(contact string) []any {
+		return ct.owner.expect(http.StatusOK, "GET", "/v1/contacts/"+contact, nil).body["emails"].([]any)
+	}
+	cs := ct.session(h, map[string]any{})
+	cs.start("hello")
+	typed := unique("visitor") + "@example.com"
+	cs.expect(http.StatusOK, "PUT", "/client/v1/contact/email", map[string]any{"email": typed})
+	msg := h.mail.wait(t, typed, 1)[0]
+	if !strings.Contains(msg.Subject, "Chat") || strings.Contains(msg.Text, "hello") {
+		t.Fatalf("confirmation mail: %q %q", msg.Subject, msg.Text)
+	}
+	token := confirmLink(t, msg.Text)
+
+	status, page := confirmStatus(t, h, "GET", token)
+	if status != http.StatusOK || !strings.Contains(page, `method="post"`) {
+		t.Fatalf("opening the link: %d %s", status, page)
+	}
+	if len(emails(cs.contactID)) != 0 {
+		t.Fatal("opening the link confirmed the address")
+	}
+	if status, _ := confirmStatus(t, h, "POST", token+"x"); status != http.StatusNotFound {
+		t.Fatalf("wrong token: %d", status)
+	}
+	confirmTypedEmail(t, h, token)
+	if got := emails(cs.contactID); len(got) != 1 || got[0] != typed {
+		t.Fatalf("confirmed address: %v", got)
+	}
+	if status, _ := confirmStatus(t, h, "POST", token); status != http.StatusNotFound {
+		t.Fatalf("second use: %d", status)
+	}
+
+	other := ct.session(h, map[string]any{})
+	other.expect(http.StatusOK, "PUT", "/client/v1/contact/email", map[string]any{"email": typed})
+	time.Sleep(50 * time.Millisecond)
+	if n := len(h.mail.to(typed)); n != 1 {
+		t.Fatalf("%d confirmation mails for an address a contact owns", n)
+	}
+
+	late := ct.session(h, map[string]any{})
+	lateAddr := unique("late") + "@example.com"
+	for range 4 {
+		late.expect(http.StatusOK, "PUT", "/client/v1/contact/email", map[string]any{"email": lateAddr})
+	}
+	msgs := h.mail.wait(t, lateAddr, 3)
+	time.Sleep(50 * time.Millisecond)
+	if n := len(h.mail.to(lateAddr)); n != 3 {
+		t.Fatalf("%d confirmation mails in an hour, want 3", n)
+	}
+	h.clock.Advance(25 * time.Hour)
+	if status, _ := confirmStatus(t, h, "POST", confirmLink(t, msgs[2].Text)); status != http.StatusNotFound {
+		t.Fatalf("expired link: %d", status)
+	}
+	if len(emails(late.contactID)) != 0 {
+		t.Fatal("an expired link confirmed the address")
 	}
 }
 

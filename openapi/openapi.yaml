@@ -2958,7 +2958,9 @@ paths:
         Stores the address the contact typed (e.g. when nobody is available), so replies they have
         not read can be e-mailed to them. A typed address is never used to find or merge an
         existing contact; it is used only while the contact has no address from an identity token
-        or from their own mail, and becomes one of their addresses once they answer such an e-mail.
+        or from their own mail. Yuva mails the address a confirmation link (unless a contact already
+        has it; at most 3 per hour); it becomes one of the contact's addresses only once that link
+        is confirmed.
         Allowed when the channel asks for an address (`ask_email_offline`), else `403 forbidden`.
       tags: [client]
       security:

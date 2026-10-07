@@ -268,3 +268,21 @@ LIMIT 1;
 
 -- name: DeleteExpiredContactSessions :execrows
 DELETE FROM contact_sessions WHERE workspace_id = @workspace_id AND expires_at < @before;
+
+-- name: CreateEmailConfirmation :exec
+INSERT INTO email_confirmations (workspace_id, id, contact_id, inbox_id, email, token_hash, created_at, expires_at)
+VALUES (@workspace_id, @id, @contact_id, @inbox_id, @email, @token_hash, @now, @expires_at);
+
+-- name: CountEmailConfirmations :one
+SELECT count(*) FROM email_confirmations WHERE workspace_id = @workspace_id AND contact_id = @contact_id AND created_at > @since;
+
+-- name: GetEmailConfirmation :one
+SELECT contact_id, inbox_id, email FROM email_confirmations
+WHERE workspace_id = @workspace_id AND token_hash = @token_hash AND expires_at > @now;
+
+-- name: TakeEmailConfirmation :one
+DELETE FROM email_confirmations WHERE workspace_id = @workspace_id AND token_hash = @token_hash AND expires_at > @now
+RETURNING contact_id, inbox_id, email;
+
+-- name: DeleteContactEmailConfirmations :exec
+DELETE FROM email_confirmations WHERE workspace_id = @workspace_id AND (contact_id = @contact_id OR expires_at <= @now);

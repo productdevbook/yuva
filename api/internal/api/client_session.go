@@ -7,6 +7,7 @@ import (
 	"strings"
 	"uuid"
 
+	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -451,10 +452,16 @@ func (s *Server) SetClientContactEmail(ctx context.Context, req oas.SetClientCon
 	if err != nil {
 		return nil, err
 	}
-	var out oas.ClientContact
+	var (
+		out     oas.ClientContact
+		confirm *mail.Message
+	)
 	err = s.inTx(ctx, cp.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		r, err := q.SetContactTypedEmail(ctx, store.SetContactTypedEmailParams{WorkspaceID: cp.workspaceID, ID: cp.contactID, TypedEmail: &addr, Now: s.now()})
 		if err != nil {
+			return err
+		}
+		if confirm, err = s.confirmTypedEmail(ctx, q, cp, addr); err != nil {
 			return err
 		}
 		if out, err = clientContactBody(ctx, q, contactRow(r), cp.identified); err != nil {
@@ -470,7 +477,18 @@ func (s *Server) SetClientContactEmail(ctx context.Context, req oas.SetClientCon
 	if err != nil {
 		return nil, err
 	}
+	if confirm != nil {
+		s.sendAsync(*confirm)
+	}
 	return oas.SetClientContactEmail200JSONResponse(out), nil
+}
+
+func (s *Server) confirmTypedEmail(ctx context.Context, q *store.Queries, cp contactPrincipal, addr string) (*mail.Message, error) {
+	inbox, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: cp.workspaceID, ID: cp.inboxID})
+	if err != nil {
+		return nil, err
+	}
+	return s.requestEmailConfirmation(ctx, q, inbox, cp.contactID, addr)
 }
 
 func (s *Server) writeChecks(ctx context.Context, cp contactPrincipal) []rateCheck {

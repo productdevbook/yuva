@@ -105,8 +105,9 @@ the name, e-mail and attributes from the token.
 - In a `live` inbox, who is available (members with access, online in the panel, not away, within
   business hours), typing and read receipts. In an `async` inbox, the expected reply time.
 - When nobody answers while they are on the page, they can leave an e-mail address; a reply they
-  have not read is e-mailed to them after `YUVA_CHAT_EMAIL_DELAY`, and their answer by e-mail
-  continues the conversation. This needs an e-mail channel in the same inbox.
+  have not read is e-mailed to them after `YUVA_CHAT_EMAIL_DELAY`. Yuva also mails the address a
+  confirmation link; once they confirm it, their answers by e-mail continue the conversation. This
+  needs an e-mail channel in the same inbox.
 
 ## Content Security Policy
 

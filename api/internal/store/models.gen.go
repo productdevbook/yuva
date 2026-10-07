@@ -189,6 +189,17 @@ type EmailChannel struct {
 	AutoReplyIntervalHours int32
 }
 
+type EmailConfirmation struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+	ContactID   uuid.UUID
+	InboxID     uuid.UUID
+	Email       string
+	TokenHash   []byte
+	CreatedAt   time.Time
+	ExpiresAt   time.Time
+}
+
 type EmailSuppression struct {
 	WorkspaceID uuid.UUID
 	Email       string

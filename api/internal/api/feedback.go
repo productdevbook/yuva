@@ -8,6 +8,7 @@ import (
 	"strings"
 	"uuid"
 
+	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -166,11 +167,17 @@ func (s *Server) CreateClientFeedback(ctx context.Context, req oas.CreateClientF
 	if err != nil {
 		return nil, err
 	}
-	var convID, msgID uuid.UUID
+	var (
+		convID, msgID uuid.UUID
+		confirm       *mail.Message
+	)
 	err = s.inTx(ctx, cp.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		if fb.AllowEmail && addr != nil {
 			r, err := q.SetContactTypedEmail(ctx, store.SetContactTypedEmailParams{WorkspaceID: cp.workspaceID, ID: cp.contactID, TypedEmail: addr, Now: s.now()})
 			if err != nil {
+				return err
+			}
+			if confirm, err = s.confirmTypedEmail(ctx, q, cp, *addr); err != nil {
 				return err
 			}
 			body, err := s.contactBody(ctx, q, cp.workspaceID, contactRow(r))
@@ -190,6 +197,9 @@ func (s *Server) CreateClientFeedback(ctx context.Context, req oas.CreateClientF
 	if err != nil {
 		s.deleteObjects(ctx, stored)
 		return nil, err
+	}
+	if confirm != nil {
+		s.sendAsync(*confirm)
 	}
 	out, err := s.clientConversationCreated(ctx, cp, convID, msgID)
 	if err != nil {

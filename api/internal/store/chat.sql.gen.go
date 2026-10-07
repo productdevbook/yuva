@@ -111,6 +111,23 @@ func (q *Queries) CountContactEmails(ctx context.Context, arg CountContactEmails
 	return count, err
 }
 
+const countEmailConfirmations = `-- name: CountEmailConfirmations :one
+SELECT count(*) FROM email_confirmations WHERE workspace_id = $1 AND contact_id = $2 AND created_at > $3
+`
+
+type CountEmailConfirmationsParams struct {
+	WorkspaceID uuid.UUID
+	ContactID   uuid.UUID
+	Since       time.Time
+}
+
+func (q *Queries) CountEmailConfirmations(ctx context.Context, arg CountEmailConfirmationsParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countEmailConfirmations, arg.WorkspaceID, arg.ContactID, arg.Since)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createChatVisitor = `-- name: CreateChatVisitor :exec
 INSERT INTO chat_visitors (workspace_id, inbox_id, visitor_hash, contact_id, created_at) VALUES ($1, $2, $3, $4, $5)
 `
@@ -181,6 +198,36 @@ func (q *Queries) CreateContactSession(ctx context.Context, arg CreateContactSes
 	return i, err
 }
 
+const createEmailConfirmation = `-- name: CreateEmailConfirmation :exec
+INSERT INTO email_confirmations (workspace_id, id, contact_id, inbox_id, email, token_hash, created_at, expires_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+`
+
+type CreateEmailConfirmationParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+	ContactID   uuid.UUID
+	InboxID     uuid.UUID
+	Email       string
+	TokenHash   []byte
+	Now         time.Time
+	ExpiresAt   time.Time
+}
+
+func (q *Queries) CreateEmailConfirmation(ctx context.Context, arg CreateEmailConfirmationParams) error {
+	_, err := q.db.Exec(ctx, createEmailConfirmation,
+		arg.WorkspaceID,
+		arg.ID,
+		arg.ContactID,
+		arg.InboxID,
+		arg.Email,
+		arg.TokenHash,
+		arg.Now,
+		arg.ExpiresAt,
+	)
+	return err
+}
+
 const deleteChatVisitor = `-- name: DeleteChatVisitor :exec
 DELETE FROM chat_visitors WHERE workspace_id = $1 AND inbox_id = $2 AND visitor_hash = $3
 `
@@ -193,6 +240,21 @@ type DeleteChatVisitorParams struct {
 
 func (q *Queries) DeleteChatVisitor(ctx context.Context, arg DeleteChatVisitorParams) error {
 	_, err := q.db.Exec(ctx, deleteChatVisitor, arg.WorkspaceID, arg.InboxID, arg.VisitorHash)
+	return err
+}
+
+const deleteContactEmailConfirmations = `-- name: DeleteContactEmailConfirmations :exec
+DELETE FROM email_confirmations WHERE workspace_id = $1 AND (contact_id = $2 OR expires_at <= $3)
+`
+
+type DeleteContactEmailConfirmationsParams struct {
+	WorkspaceID uuid.UUID
+	ContactID   uuid.UUID
+	Now         time.Time
+}
+
+func (q *Queries) DeleteContactEmailConfirmations(ctx context.Context, arg DeleteContactEmailConfirmationsParams) error {
+	_, err := q.db.Exec(ctx, deleteContactEmailConfirmations, arg.WorkspaceID, arg.ContactID, arg.Now)
 	return err
 }
 
@@ -515,6 +577,30 @@ func (q *Queries) GetContactSessionByTokenHash(ctx context.Context, arg GetConta
 		&i.LastSeenAt,
 		&i.ContactBlocked,
 	)
+	return i, err
+}
+
+const getEmailConfirmation = `-- name: GetEmailConfirmation :one
+SELECT contact_id, inbox_id, email FROM email_confirmations
+WHERE workspace_id = $1 AND token_hash = $2 AND expires_at > $3
+`
+
+type GetEmailConfirmationParams struct {
+	WorkspaceID uuid.UUID
+	TokenHash   []byte
+	Now         time.Time
+}
+
+type GetEmailConfirmationRow struct {
+	ContactID uuid.UUID
+	InboxID   uuid.UUID
+	Email     string
+}
+
+func (q *Queries) GetEmailConfirmation(ctx context.Context, arg GetEmailConfirmationParams) (GetEmailConfirmationRow, error) {
+	row := q.db.QueryRow(ctx, getEmailConfirmation, arg.WorkspaceID, arg.TokenHash, arg.Now)
+	var i GetEmailConfirmationRow
+	err := row.Scan(&i.ContactID, &i.InboxID, &i.Email)
 	return i, err
 }
 
@@ -1574,6 +1660,30 @@ type SetPersonAvailabilityParams struct {
 func (q *Queries) SetPersonAvailability(ctx context.Context, arg SetPersonAvailabilityParams) error {
 	_, err := q.db.Exec(ctx, setPersonAvailability, arg.ID, arg.Availability)
 	return err
+}
+
+const takeEmailConfirmation = `-- name: TakeEmailConfirmation :one
+DELETE FROM email_confirmations WHERE workspace_id = $1 AND token_hash = $2 AND expires_at > $3
+RETURNING contact_id, inbox_id, email
+`
+
+type TakeEmailConfirmationParams struct {
+	WorkspaceID uuid.UUID
+	TokenHash   []byte
+	Now         time.Time
+}
+
+type TakeEmailConfirmationRow struct {
+	ContactID uuid.UUID
+	InboxID   uuid.UUID
+	Email     string
+}
+
+func (q *Queries) TakeEmailConfirmation(ctx context.Context, arg TakeEmailConfirmationParams) (TakeEmailConfirmationRow, error) {
+	row := q.db.QueryRow(ctx, takeEmailConfirmation, arg.WorkspaceID, arg.TokenHash, arg.Now)
+	var i TakeEmailConfirmationRow
+	err := row.Scan(&i.ContactID, &i.InboxID, &i.Email)
+	return i, err
 }
 
 const touchContactSession = `-- name: TouchContactSession :exec

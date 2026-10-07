@@ -76,12 +76,25 @@ func (o *outbox) to(addr string) []mail.Message {
 
 var codePattern = regexp.MustCompile(`\b\d{6}\b`)
 
+// wait returns the mails to addr once there are at least n; mail is sent after the response.
+func (o *outbox) wait(t *testing.T, addr string, n int) []mail.Message {
+	t.Helper()
+	deadline := time.Now().Add(3 * time.Second)
+	for {
+		msgs := o.to(addr)
+		if len(msgs) >= n {
+			return msgs
+		}
+		if time.Now().After(deadline) {
+			t.Fatalf("%d mails to %s, want %d", len(msgs), addr, n)
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+}
+
 func (o *outbox) code(t *testing.T, addr string) string {
 	t.Helper()
-	msgs := o.to(addr)
-	if len(msgs) == 0 {
-		t.Fatalf("no mail to %s", addr)
-	}
+	msgs := o.wait(t, addr, 1)
 	code := codePattern.FindString(msgs[len(msgs)-1].Text)
 	if code == "" {
 		t.Fatalf("no code in mail to %s: %q", addr, msgs[len(msgs)-1].Text)

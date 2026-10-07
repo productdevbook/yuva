@@ -180,6 +180,8 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /client/v1/realtime", s.serveClientRealtime)
 	mux.HandleFunc("POST /ingress/email", s.serveIngressEmail)
 	mux.HandleFunc("POST /ingress/ses", s.serveIngressSES)
+	mux.HandleFunc("GET "+emailConfirmPath, s.serveEmailConfirm)
+	mux.HandleFunc("POST "+emailConfirmPath, s.serveEmailConfirmPost)
 	for _, name := range widget.Files {
 		mux.Handle("GET /"+name, widget.Handler(name))
 	}
