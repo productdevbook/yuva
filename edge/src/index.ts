@@ -1,7 +1,10 @@
 export interface Env {
   YUVA_URL: string;
   INGRESS_SECRET: string;
+  FALLBACK_FORWARD?: string;
 }
+
+export const INGRESS_TIMEOUT_MS = 20_000;
 
 const encoder = new TextEncoder();
 
@@ -23,7 +26,7 @@ async function rejectReason(res: Response): Promise<string> {
   return `Rejected by recipient server (${res.status})`;
 }
 
-export async function handleEmail(message: ForwardableEmailMessage, env: Env, now: () => number = Date.now): Promise<void> {
+async function deliver(message: ForwardableEmailMessage, env: Env, now: () => number): Promise<void> {
   if (!env.YUVA_URL || !env.INGRESS_SECRET) throw new Error("YUVA_URL and INGRESS_SECRET must be set");
 
   const body = new Uint8Array(await new Response(message.raw).arrayBuffer());
@@ -40,6 +43,7 @@ export async function handleEmail(message: ForwardableEmailMessage, env: Env, no
       "X-Yuva-Signature": `v1=${signature}`,
     },
     body,
+    signal: AbortSignal.timeout(INGRESS_TIMEOUT_MS),
   });
 
   if (res.ok) return;
@@ -48,6 +52,17 @@ export async function handleEmail(message: ForwardableEmailMessage, env: Env, no
     return;
   }
   throw new Error(`ingress returned ${res.status}`);
+}
+
+export async function handleEmail(message: ForwardableEmailMessage, env: Env, now: () => number = Date.now): Promise<void> {
+  try {
+    await deliver(message, env, now);
+  } catch (err) {
+    const fallback = env.FALLBACK_FORWARD?.trim();
+    if (!fallback) throw err;
+    console.error(`ingress failed, forwarding to the fallback address: ${err}`);
+    await message.forward(fallback);
+  }
 }
 
 export default {

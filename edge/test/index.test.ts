@@ -10,6 +10,7 @@ type Captured = { url: string; headers: Headers; body: Uint8Array };
 
 function message() {
   const rejects: string[] = [];
+  const forwards: string[] = [];
   const msg = {
     from: "customer@example.org",
     to: "support@example.com",
@@ -17,8 +18,11 @@ function message() {
     rawSize: raw.length,
     headers: new Headers(),
     setReject: (reason: string) => rejects.push(reason),
+    forward: async (to: string) => {
+      forwards.push(to);
+    },
   } as unknown as ForwardableEmailMessage;
-  return { msg, rejects };
+  return { msg, rejects, forwards };
 }
 
 function serve(respond: () => Response | Promise<Response>): Captured[] {
@@ -102,5 +106,92 @@ describe("email handler", () => {
 
     await expect(handleEmail(msg, env, now)).rejects.toThrow("connection refused");
     expect(rejects).toEqual([]);
+  });
+});
+
+describe("fallback forwarding", () => {
+  const withFallback: Env = { ...env, FALLBACK_FORWARD: "owner@example.org" };
+
+  test("forwards to the fallback address on 5xx", async () => {
+    serve(() => new Response(null, { status: 502 }));
+    const { msg, rejects, forwards } = message();
+
+    await handleEmail(msg, withFallback, now);
+
+    expect(forwards).toEqual(["owner@example.org"]);
+    expect(rejects).toEqual([]);
+  });
+
+  test("forwards to the fallback address on a network error", async () => {
+    serve(() => {
+      throw new TypeError("connection refused");
+    });
+    const { msg, rejects, forwards } = message();
+
+    await handleEmail(msg, withFallback, now);
+
+    expect(forwards).toEqual(["owner@example.org"]);
+    expect(rejects).toEqual([]);
+  });
+
+  test("forwards to the fallback address on a timeout", async () => {
+    const calls = serve(() => {
+      throw new DOMException("The operation timed out.", "TimeoutError");
+    });
+    const { msg, forwards } = message();
+
+    await handleEmail(msg, withFallback, now);
+
+    expect(calls).toHaveLength(1);
+    expect(forwards).toEqual(["owner@example.org"]);
+  });
+
+  test("sends the ingress request with a timeout", async () => {
+    let signal: AbortSignal | null | undefined;
+    globalThis.fetch = mock(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      signal = init?.signal;
+      return new Response(null, { status: 202 });
+    }) as unknown as typeof fetch;
+
+    await handleEmail(message().msg, withFallback, now);
+
+    expect(signal).toBeInstanceOf(AbortSignal);
+  });
+
+  test("forwards when the Worker is not configured", async () => {
+    const calls = serve(() => new Response(null, { status: 202 }));
+    const { msg, forwards } = message();
+
+    await handleEmail(msg, { YUVA_URL: "", INGRESS_SECRET: "", FALLBACK_FORWARD: "owner@example.org" }, now);
+
+    expect(calls).toHaveLength(0);
+    expect(forwards).toEqual(["owner@example.org"]);
+  });
+
+  test("still rejects on 4xx", async () => {
+    serve(() => Response.json({ reason: "No such recipient" }, { status: 404 }));
+    const { msg, rejects, forwards } = message();
+
+    await handleEmail(msg, withFallback, now);
+
+    expect(rejects).toEqual(["No such recipient"]);
+    expect(forwards).toEqual([]);
+  });
+
+  test("does not forward accepted mail", async () => {
+    serve(() => new Response(null, { status: 202 }));
+    const { msg, forwards } = message();
+
+    await handleEmail(msg, withFallback, now);
+
+    expect(forwards).toEqual([]);
+  });
+
+  test("a blank fallback address keeps the retry behaviour", async () => {
+    serve(() => new Response(null, { status: 503 }));
+    const { msg, forwards } = message();
+
+    await expect(handleEmail(msg, { ...env, FALLBACK_FORWARD: " " }, now)).rejects.toThrow("ingress returned 503");
+    expect(forwards).toEqual([]);
   });
 });

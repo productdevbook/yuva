@@ -156,7 +156,10 @@ Inbound:
    message with the envelope recipient to `/ingress/email`, signed with HMAC-SHA256 under
    `YUVA_INGRESS_SECRET` (one per install; the request format is in `edge/README.md`). The
    timestamp must be within 5 minutes and a Message-ID already stored for the channel is accepted
-   again without a second copy. Any other MTA can do the same; the endpoint is not tied to
+   again without a second copy. When the server cannot be reached (5xx, network error, no answer within 20
+   seconds) the Worker forwards the message to an optional fallback address (`FALLBACK_FORWARD`, a
+   verified Email Routing destination) instead of failing the delivery; refusals (4xx) still
+   bounce. Any other MTA can do the same; the endpoint is not tied to
    Cloudflare. An MTA that pipes into a command uses `yuva ingest-email --to <address>`, which
    exits with sysexits codes (67 unknown recipient, 77 refused, 75 try later).
 2. The recipient selects the channel: an e-mail address belongs to one channel of the whole server
