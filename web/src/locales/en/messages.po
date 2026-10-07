@@ -48,6 +48,14 @@ msgstr "{actor} set the status to {status}"
 msgid "{keyCount} settings"
 msgstr "{keyCount} settings"
 
+#: src/components/inbox/ThreadView.tsx
+msgid "{list} are typing…"
+msgstr "{list} are typing…"
+
+#: src/components/inbox/ThreadView.tsx
+msgid "{list} is typing…"
+msgstr "{list} is typing…"
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "1 setting"
 msgstr "1 setting"
@@ -59,6 +67,10 @@ msgstr "A file's content does not match its type. Check the file and try again."
 #: src/components/settings/InboxSettings.tsx
 msgid "A language tag such as en or tr."
 msgstr "A language tag such as en or tr."
+
+#: src/components/inbox/ThreadView.tsx
+msgid "A teammate"
+msgstr "A teammate"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "A username needs TLS or STARTTLS: the password is never sent unencrypted."
@@ -83,6 +95,10 @@ msgstr "Acme Support"
 #: src/components/settings/ProfileSettings.tsx
 msgid "Add a passkey"
 msgstr "Add a passkey"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Add at least one origin."
+msgstr "Add at least one origin."
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "Add channel"
@@ -129,9 +145,21 @@ msgstr "All inboxes"
 msgid "All of its conversations are deleted with it."
 msgstr "All of its conversations are deleted with it."
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Allow anonymous visitors"
+msgstr "Allow anonymous visitors"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Allowed origins"
+msgstr "Allowed origins"
+
 #: src/components/settings/MembersSettings.tsx
 msgid "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
 msgstr "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "anonymous visitors allowed"
+msgstr "anonymous visitors allowed"
 
 #: src/components/common/text.ts
 #: src/components/settings/ChannelsSection.tsx
@@ -162,6 +190,10 @@ msgstr "API keys"
 #: src/components/AppShell.tsx
 msgid "Ask an owner or admin of your workspace to invite you."
 msgstr "Ask an owner or admin of your workspace to invite you."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Ask for an e-mail address when offline"
+msgstr "Ask for an e-mail address when offline"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/inbox/ConversationControls.tsx
@@ -210,6 +242,14 @@ msgstr "Auto-reply"
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "Automatic mail never triggers an automatic reply."
 
+#: src/components/AppShell.tsx
+msgid "Available"
+msgstr "Available"
+
+#: src/components/AppShell.tsx
+msgid "Away"
+msgstr "Away"
+
 #: src/components/inbox/InboxPage.tsx
 #: src/components/settings/InboxSettings.tsx
 msgid "Back"
@@ -227,6 +267,14 @@ msgstr "Billing"
 #: src/components/inbox/ContactPanel.tsx
 msgid "Blocked"
 msgstr "Blocked"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Bottom left"
+msgstr "Bottom left"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Bottom right"
+msgstr "Bottom right"
 
 #: src/components/settings/InboxSettings.tsx
 msgid "Brand color"
@@ -473,6 +521,10 @@ msgid "Edit labels"
 msgstr "Edit labels"
 
 #: src/components/settings/ChannelsSection.tsx
+msgid "Embed snippet"
+msgstr "Embed snippet"
+
+#: src/components/settings/ChannelsSection.tsx
 msgid "Encryption"
 msgstr "Encryption"
 
@@ -529,6 +581,7 @@ msgstr "From address (optional)"
 msgid "General"
 msgstr "General"
 
+#: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/InboxSettings.tsx
 msgid "Greeting"
 msgstr "Greeting"
@@ -541,6 +594,10 @@ msgstr "Greets new conversations by e-mail, once per contact within the interval
 msgid "Hi! Ask us anything."
 msgstr "Hi! Ask us anything."
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Hi! How can we help?"
+msgstr "Hi! How can we help?"
+
 #: src/components/inbox/MessageItem.tsx
 msgid "Hide quoted text"
 msgstr "Hide quoted text"
@@ -550,8 +607,8 @@ msgid "High"
 msgstr "High"
 
 #: src/components/settings/ChannelsSection.tsx
-msgid "How messages reach this inbox. E-mail channels receive and send mail; the other kinds store their settings for now."
-msgstr "How messages reach this inbox. E-mail channels receive and send mail; the other kinds store their settings for now."
+msgid "How messages reach this inbox. E-mail channels receive and send mail, web chat channels power the chat widget; the other kinds store their settings for now."
+msgstr "How messages reach this inbox. E-mail channels receive and send mail, web chat channels power the chat widget; the other kinds store their settings for now."
 
 #: src/components/common/index.tsx
 msgid "I saved it"
@@ -571,6 +628,10 @@ msgstr "In an hour"
 msgid "Inbox"
 msgstr "Inbox"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Inbox color"
+msgstr "Inbox color"
+
 #: src/components/AppShell.tsx
 #: src/components/settings/InboxesSettings.tsx
 #: src/components/settings/SettingsLayout.tsx
@@ -580,6 +641,10 @@ msgstr "Inboxes"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Insert a canned reply (in the composer)"
 msgstr "Insert a canned reply (in the composer)"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Install"
+msgstr "Install"
 
 #: src/components/inbox/MessageItem.tsx
 msgid "Internal note"
@@ -633,6 +698,7 @@ msgstr "Label"
 msgid "Labels"
 msgstr "Labels"
 
+#: src/components/inbox/ContactPanel.tsx
 #: src/components/LanguageMenu.tsx
 #: src/components/settings/MembersSettings.tsx
 msgid "Language"
@@ -642,10 +708,26 @@ msgstr "Language"
 msgid "last used {used}"
 msgstr "last used {used}"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Launcher color"
+msgstr "Launcher color"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Launcher position"
+msgstr "Launcher position"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "List at most 20 origins."
+msgstr "List at most 20 origins."
+
 #: src/components/AppShell.tsx
 #: src/components/common/text.ts
 msgid "Live"
 msgstr "Live"
+
+#: src/components/AppShell.tsx
+msgid "Live chat shows nobody available"
+msgstr "Live chat shows nobody available"
 
 #: src/components/inbox/MessageItem.tsx
 msgid "Load images"
@@ -830,6 +912,14 @@ msgstr "None (local relays and test servers only)"
 msgid "Normal"
 msgstr "Normal"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
+msgstr "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Not an origin: {notOrigins}. Use scheme and host only, such as https://www.example.com."
+msgstr "Not an origin: {notOrigins}. Use scheme and host only, such as https://www.example.com."
+
 #: src/components/inbox/MessageItem.tsx
 msgid "Not delivered"
 msgstr "Not delivered"
@@ -864,6 +954,10 @@ msgstr "On"
 msgid "One inbox per product or brand. Each has its own channels, hours and team."
 msgstr "One inbox per product or brand. Each has its own channels, hours and team."
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
+msgstr "One per line, 1 to 20. Only pages on these origins can use the widget."
+
 #: src/components/inbox/Composer.tsx
 msgid "Only members see notes"
 msgstr "Only members see notes"
@@ -897,6 +991,10 @@ msgstr "Owner"
 msgid "Owners and admins see every inbox; agents see the inboxes they were given."
 msgstr "Owners and admins see every inbox; agents see the inboxes they were given."
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Pages that embed the old key can no longer start chats until you update the snippet. Visitors already chatting keep their session."
+msgstr "Pages that embed the old key can no longer start chats until you update the snippet. Visitors already chatting keep their session."
+
 #: src/components/settings/ProfileSettings.tsx
 msgid "Passkey name"
 msgstr "Passkey name"
@@ -913,6 +1011,10 @@ msgstr "Password"
 msgid "Password set"
 msgstr "Password set"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Paste it before the closing body tag of every page that should show the chat."
+msgstr "Paste it before the closing body tag of every page that should show the chat."
+
 #: src/components/common/text.ts
 msgid "Pending"
 msgstr "Pending"
@@ -921,6 +1023,10 @@ msgstr "Pending"
 #: src/components/settings/LabelsSettings.tsx
 msgid "Pick a color"
 msgstr "Pick a color"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Pick a color."
+msgstr "Pick a color."
 
 #: src/components/inbox/InboxPage.tsx
 msgid "Pick a conversation"
@@ -949,6 +1055,10 @@ msgstr "Priority"
 #: src/components/settings/ProfileSettings.tsx
 msgid "Profile"
 msgstr "Profile"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Public key"
+msgstr "Public key"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "receives only, no SMTP account"
@@ -1056,6 +1166,7 @@ msgstr "Role"
 msgid "Role of {name}"
 msgstr "Role of {name}"
 
+#: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/InboxSettings.tsx
 msgid "Rotate"
 msgstr "Rotate"
@@ -1067,6 +1178,10 @@ msgstr "Rotate secret"
 #: src/components/settings/InboxSettings.tsx
 msgid "Rotate the identity secret?"
 msgstr "Rotate the identity secret?"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Rotate the public key?"
+msgstr "Rotate the public key?"
 
 #: src/components/common/text.ts
 msgid "Saturday"
@@ -1165,6 +1280,10 @@ msgstr "Show or hide the contact"
 msgid "Show quoted text"
 msgstr "Show quoted text"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Shown before the first message. The inbox greeting when empty."
+msgstr "Shown before the first message. The inbox greeting when empty."
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Shown to contacts in async mode. Leave empty to hide it."
 msgstr "Shown to contacts in async mode. Leave empty to hide it."
@@ -1192,6 +1311,10 @@ msgstr "Sign in with your device's fingerprint, face or screen lock instead of a
 #: src/components/AppShell.tsx
 msgid "Sign out"
 msgstr "Sign out"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "signed-in users only"
+msgstr "signed-in users only"
 
 #: src/components/inbox/ContactPanel.tsx
 msgid "Since {since}"
@@ -1235,6 +1358,7 @@ msgstr "Spam"
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (port 587)"
 
+#: src/components/AppShell.tsx
 #: src/components/inbox/ConversationControls.tsx
 msgid "Status"
 msgstr "Status"
@@ -1311,6 +1435,10 @@ msgstr "The password is too long."
 #: src/components/inbox/MessageItem.tsx
 msgid "The sender's domain did not authorize this mail. It may be forged."
 msgstr "The sender's domain did not authorize this mail. It may be forged."
+
+#: src/components/AppShell.tsx
+msgid "The status was not changed. Try again."
+msgstr "The status was not changed. Try again."
 
 #: src/components/settings/MembersSettings.tsx
 msgid "Their conversations stay; they lose access at once."
@@ -1408,6 +1536,10 @@ msgstr "Type / and the shortcut in the composer to insert one."
 msgid "Type / for canned replies"
 msgstr "Type / for canned replies"
 
+#: src/components/inbox/ConversationList.tsx
+msgid "typing…"
+msgstr "typing…"
+
 #: src/components/inbox/ConversationControls.tsx
 msgid "Unassign"
 msgstr "Unassign"
@@ -1445,12 +1577,20 @@ msgid "Use 1 to 8760 hours."
 msgstr "Use 1 to 8760 hours."
 
 #: src/components/settings/ChannelsSection.tsx
+msgid "Use a custom launcher color"
+msgstr "Use a custom launcher color"
+
+#: src/components/settings/ChannelsSection.tsx
 msgid "Use a port from 1 to 65535."
 msgstr "Use a port from 1 to 65535."
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "Use at most 200 characters."
 msgstr "Use at most 200 characters."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Use at most 500 characters."
+msgstr "Use at most 500 characters."
 
 #: src/components/settings/InboxSettings.tsx
 msgid "Use business hours"
@@ -1461,24 +1601,45 @@ msgid "Use j and k to move through the list, ? for all shortcuts."
 msgstr "Use j and k to move through the list, ? for all shortcuts."
 
 #: src/components/settings/ChannelsSection.tsx
+msgid "Use origins such as https://www.example.com, without a path."
+msgstr "Use origins such as https://www.example.com, without a path."
+
+#: src/components/settings/ChannelsSection.tsx
 msgid "Username"
 msgstr "Username"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Visitors can chat without an identity token from your backend."
+msgstr "Visitors can chat without an identity token from your backend."
 
 #: src/components/auth/SignInPage.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
 msgstr "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
 
 #: src/components/common/text.ts
+#: src/components/settings/ChannelsSection.tsx
 msgid "Web chat"
 msgstr "Web chat"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Website chat"
+msgstr "Website chat"
 
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Wednesday"
 
 #: src/components/settings/ChannelsSection.tsx
+msgid "When nobody is available, the widget asks where to send the reply."
+msgstr "When nobody is available, the widget asks where to send the reply."
+
+#: src/components/settings/ChannelsSection.tsx
 msgid "When your provider sends from another address. Replies still come to the support address."
 msgstr "When your provider sends from another address. Replies still come to the support address."
+
+#: src/components/AppShell.tsx
+msgid "While the panel is open, in business hours"
+msgstr "While the panel is open, in business hours"
 
 #: src/components/settings/MembersSettings.tsx
 msgid "Withdraw"

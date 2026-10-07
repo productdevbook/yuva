@@ -1,6 +1,6 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { AlertCircleIcon, LockIcon, MailIcon, MessageSquareIcon, PaperclipIcon, SendIcon, XIcon } from "lucide-react"
-import { forwardRef, useImperativeHandle, useMemo, useRef, useState } from "react"
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 
 import { ErrorLine, Kbd } from "@/components/common"
 import { formatBytes } from "@/components/common/text"
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import type { CannedReply } from "@/lib/api"
 import { useCannedReplies, useSendMessage } from "@/lib/queries"
+import { useTypingSender } from "@/lib/typing"
 import { cn } from "@/lib/utils"
 
 export type ComposerHandle = {
@@ -39,6 +40,12 @@ export const Composer = forwardRef<
   const clientId = useRef(crypto.randomUUID())
   const textarea = useRef<HTMLTextAreaElement>(null)
   const fileInput = useRef<HTMLInputElement>(null)
+  const typing = useTypingSender(conversationId)
+  const stopTyping = typing.stop
+
+  useEffect(() => {
+    if (mode === "note") stopTyping()
+  }, [mode, stopTyping])
 
   useImperativeHandle(ref, () => ({
     focus: (m) => {
@@ -73,6 +80,7 @@ export const Composer = forwardRef<
   const canSend = (body.trim() !== "" || files.length > 0) && !send.isPending
   const submit = () => {
     if (!canSend) return
+    typing.stop()
     const sent = { body, files, clientId: clientId.current, mode }
     setBody("")
     setFiles([])
@@ -196,7 +204,11 @@ export const Composer = forwardRef<
             setBody(e.target.value)
             setCaret(e.target.selectionStart)
             setPick(0)
+            if (note) return
+            if (e.target.value.trim() === "") typing.stop()
+            else typing.typed()
           }}
+          onBlur={typing.stop}
           onSelect={(e) => setCaret(e.currentTarget.selectionStart)}
           onKeyDown={(e) => {
             if (menuOpen) {

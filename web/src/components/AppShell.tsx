@@ -1,4 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import {
   BuildingIcon,
   CheckIcon,
@@ -27,6 +28,8 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -48,11 +51,19 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useVersion, type Me } from "@/lib/api"
+import { api, unwrap, useVersion, type Availability, type Me } from "@/lib/api"
 import { useCounts, useInboxes, useLabels } from "@/lib/queries"
 import { reconnectNow, useRealtime, useRealtimeStatus } from "@/lib/realtime"
 import { cn } from "@/lib/utils"
-import { pickMembership, SessionProvider, useMe, useSession, useSignOut, useWorkspaceChoice } from "@/lib/session"
+import {
+  meKey,
+  pickMembership,
+  SessionProvider,
+  useMe,
+  useSession,
+  useSignOut,
+  useWorkspaceChoice,
+} from "@/lib/session"
 
 export const VIEWS = ["all", "mine", "unassigned", "spam"] as const
 export type View = (typeof VIEWS)[number]
@@ -226,8 +237,22 @@ function WorkspaceSwitcher() {
   )
 }
 
+function availabilityClass(a: Availability, live: boolean) {
+  if (a === "away") return "bg-amber-500"
+  return live ? "bg-success" : "bg-muted-foreground"
+}
+
 function UserMenu({ onShortcuts }: { onShortcuts: () => void }) {
+  const { t } = useLingui()
   const { me } = useSession()
+  const qc = useQueryClient()
+  const live = useRealtimeStatus() === "live"
+  const availability = me.person.availability
+  const setAvailability = useMutation({
+    mutationFn: (value: Availability) => unwrap(api.PATCH("/v1/me", { body: { availability: value } })),
+    onSuccess: (data) => qc.setQueryData(meKey, data),
+  })
+  const statusText = availability === "away" ? t`Away` : live ? t`Available` : t`Offline`
   const signOut = useSignOut()
   const navigate = useNavigate()
   const { isMobile, setOpenMobile } = useSidebar()
@@ -239,14 +264,62 @@ function UserMenu({ onShortcuts }: { onShortcuts: () => void }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger render={<SidebarMenuButton size="lg" />} data-testid="user-menu">
-        <PersonAvatar name={name} />
+        <span className="relative shrink-0">
+          <PersonAvatar name={name} />
+          <span
+            className={cn(
+              "absolute -right-0.5 -bottom-0.5 size-2.5 rounded-full ring-2 ring-sidebar",
+              availabilityClass(availability, live),
+            )}
+            title={statusText}
+            data-testid="availability-dot"
+            data-availability={availability}
+          />
+          <span className="sr-only">{statusText}</span>
+        </span>
         <span className="flex min-w-0 flex-1 flex-col text-left leading-tight">
           <span className="truncate text-sm font-medium">{name}</span>
           <span className="truncate text-xs text-muted-foreground">{me.person.email}</span>
         </span>
         <ChevronsUpDownIcon className="text-muted-foreground" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" side="top" className="min-w-56">
+      <DropdownMenuContent align="start" side="top" className="min-w-64">
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>
+            <Trans>Status</Trans>
+          </DropdownMenuLabel>
+          <DropdownMenuRadioGroup
+            value={availability}
+            onValueChange={(v) => {
+              if (v !== availability) setAvailability.mutate(v as Availability)
+            }}
+          >
+            <DropdownMenuRadioItem value="auto" data-testid="availability-auto">
+              <span className={cn("size-2 shrink-0 rounded-full", availabilityClass("auto", true))} />
+              <span className="flex flex-col">
+                <Trans>Available</Trans>
+                <span className="text-xs text-muted-foreground">
+                  <Trans>While the panel is open, in business hours</Trans>
+                </span>
+              </span>
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="away" data-testid="availability-away">
+              <span className={cn("size-2 shrink-0 rounded-full", availabilityClass("away", true))} />
+              <span className="flex flex-col">
+                <Trans>Away</Trans>
+                <span className="text-xs text-muted-foreground">
+                  <Trans>Live chat shows nobody available</Trans>
+                </span>
+              </span>
+            </DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+          {setAvailability.error && (
+            <p role="alert" className="px-2 py-1 text-xs text-destructive">
+              <Trans>The status was not changed. Try again.</Trans>
+            </p>
+          )}
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => go("/settings/profile")}>
           <UserIcon />
           <Trans>My profile</Trans>

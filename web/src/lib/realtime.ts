@@ -4,6 +4,7 @@ import { useEffect, useSyncExternalStore } from "react"
 import type { RealtimeMessage } from "@/lib/api"
 import { applyEvent, type LiveEvent } from "@/lib/live"
 import { meKey } from "@/lib/session"
+import { applyTyping, clearTyping, stopTyping } from "@/lib/typing"
 
 export type RealtimeStatus = "connecting" | "live" | "offline"
 
@@ -70,11 +71,19 @@ export function useRealtime(ws: string, memberId: string) {
           void qc.invalidateQueries({ queryKey: ["ws", ws] })
           return
         }
+        if (msg.type === "typing") {
+          applyTyping(msg.data)
+          return
+        }
         cursor = Math.max(cursor ?? 0, msg.id)
+        if (msg.type === "message.created" && msg.data.kind === "message" && msg.data.author.type === "contact") {
+          stopTyping(msg.data.conversation_id, { type: "contact", contact_id: msg.data.author.contact_id })
+        }
         applyEvent(qc, ctx, { type: msg.type, data: msg.data } as LiveEvent)
       }
       s.onclose = (e) => {
         socket = null
+        clearTyping()
         if (stopped) return
         setStatus(ws, "offline")
         if (e.code === 1008) {

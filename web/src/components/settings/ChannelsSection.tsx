@@ -1,6 +1,6 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { CheckIcon, InfoIcon, PencilIcon, PlusIcon, Trash2Icon } from "lucide-react"
+import { CheckIcon, InfoIcon, PencilIcon, PlusIcon, RefreshCwIcon, Trash2Icon } from "lucide-react"
 import { useState } from "react"
 
 import { CopyButton, ErrorLine, useConfirm } from "@/components/common"
@@ -26,6 +26,9 @@ import {
   unwrap,
   type Channel,
   type ChannelKind,
+  type ChatChannel,
+  type ChatChannelInput,
+  type ChatLauncherPosition,
   type EmailChannel,
   type EmailChannelInput,
   type Inbox,
@@ -66,7 +69,7 @@ export function ChannelsSection({ inbox }: { inbox: Inbox }) {
     <Section
       title={<Trans>Channels</Trans>}
       description={
-        <Trans>How messages reach this inbox. E-mail channels receive and send mail; the other kinds store their settings for now.</Trans>
+        <Trans>How messages reach this inbox. E-mail channels receive and send mail, web chat channels power the chat widget; the other kinds store their settings for now.</Trans>
       }
       action={
         canManage && (
@@ -93,6 +96,8 @@ export function ChannelsSection({ inbox }: { inbox: Inbox }) {
                   <p className="truncate text-xs text-muted-foreground">
                     {ch.email ? (
                       <EmailSummary e={ch.email} />
+                    ) : ch.chat ? (
+                      <ChatSummary c={ch.chat} />
                     ) : keyCount === 0 ? (
                       <Trans>No settings</Trans>
                     ) : keyCount === 1 ? (
@@ -132,9 +137,11 @@ export function ChannelsSection({ inbox }: { inbox: Inbox }) {
       <ErrorLine error={channels.error ?? remove.error} />
       {editing && (
         <ChannelDialog
+          key={editing === "new" ? "new" : editing.id}
           inboxId={inbox.id}
           channel={editing === "new" ? null : editing}
           onClose={() => setEditing(null)}
+          onCreated={(ch) => setEditing(ch.kind === "chat" ? ch : null)}
         />
       )}
       {confirmDialog}
@@ -148,6 +155,19 @@ function EmailSummary({ e }: { e: EmailChannel }) {
       {e.address}
       {" · "}
       {e.smtp ? <Trans>sends through {e.smtp.host}</Trans> : <Trans>receives only, no SMTP account</Trans>}
+    </>
+  )
+}
+
+function ChatSummary({ c }: { c: ChatChannel }) {
+  const first = c.allowed_origins[0] ?? ""
+  const more = c.allowed_origins.length - 1
+  return (
+    <>
+      {first}
+      {more > 0 && <> +{more}</>}
+      {" · "}
+      {c.allow_anonymous ? <Trans>anonymous visitors allowed</Trans> : <Trans>signed-in users only</Trans>}
     </>
   )
 }
@@ -247,10 +267,12 @@ function ChannelDialog({
   inboxId,
   channel,
   onClose,
+  onCreated,
 }: {
   inboxId: string
   channel: Channel | null
   onClose: () => void
+  onCreated: (ch: Channel) => void
 }) {
   const { t } = useLingui()
   const qc = useQueryClient()
@@ -261,30 +283,42 @@ function ChannelDialog({
   const [name, setName] = useState(channel?.name ?? "")
   const [raw, setRaw] = useState(channel ? JSON.stringify(channel.settings, null, 2) : "{}")
   const [email, setEmail] = useState<EmailForm>(() => emailForm(channel?.email))
+  const [chat, setChat] = useState<ChatForm>(() => chatForm(channel?.chat))
   const isEmail = kind === "email"
-  const settings = isEmail ? {} : parseSettings(raw)
+  const isChat = kind === "chat"
+  const settings = isEmail || isChat ? {} : parseSettings(raw)
+  const chatInput = isChat ? chatChannelInput(chat) : null
+  const valid = !!settings && (!isChat || chatInput?.ok === true)
   const save = useMutation({
-    mutationFn: () =>
-      channel
+    mutationFn: () => {
+      const typed = isEmail
+        ? { email: emailInput(email) }
+        : isChat && chatInput?.ok
+          ? { chat: chatInput.value }
+          : { settings: settings ?? {} }
+      return channel
         ? unwrap(
             api.PATCH("/v1/channels/{channelId}", {
               params: { path: { channelId: channel.id } },
-              body: isEmail ? { name, email: emailInput(email) } : { name, settings: settings ?? {} },
+              body: { name, ...typed },
             }),
           )
         : unwrap(
             api.POST("/v1/inboxes/{inboxId}/channels", {
               params: { path: { inboxId } },
-              body: isEmail ? { kind, name, email: emailInput(email) } : { kind, name, settings: settings ?? {} },
+              body: { kind, name, ...typed },
             }),
-          ),
-    onSuccess: () => {
+          )
+    },
+    onSuccess: (saved) => {
       void qc.invalidateQueries({ queryKey: keys.channels(ws, inboxId) })
       void qc.invalidateQueries({ queryKey: ["ws", ws, "channel"] })
-      onClose()
+      if (channel) onClose()
+      else onCreated(saved)
     },
   })
   const bad = errorField(save.error)
+  const badChat = chatErrorField(save.error)
   const taken = save.error instanceof ApiError && save.error.code === "email_address_taken"
   const fieldError = (f: EmailField) => (bad === f && !taken ? fieldErrors[f] : undefined)
   return (
@@ -294,7 +328,10 @@ function ChannelDialog({
           className="flex min-w-0 flex-col gap-4"
           onSubmit={(e) => {
             e.preventDefault()
-            if (settings) save.mutate()
+            if (valid) {
+              setChat((c) => ({ ...c, touched: true }))
+              save.mutate()
+            } else if (isChat) setChat((c) => ({ ...c, touched: true }))
           }}
         >
           <DialogHeader>
@@ -328,7 +365,7 @@ function ChannelDialog({
               required
               maxLength={200}
               value={name}
-              placeholder={t`Support e-mail`}
+              placeholder={isChat ? t`Website chat` : t`Support e-mail`}
               onChange={(e) => setName(e.target.value)}
             />
           </Field>
@@ -339,6 +376,16 @@ function ChannelDialog({
               error={fieldError}
               taken={taken}
             />
+          ) : isChat ? (
+            <>
+              <ChatFields
+                f={chat}
+                set={(patch) => setChat((f) => ({ ...f, ...patch }))}
+                invalid={chatInput && !chatInput.ok ? chatInput : null}
+                serverError={badChat}
+              />
+              {channel?.chat && <ChatEmbed channel={channel} />}
+            </>
           ) : (
             <Field
               label={<Trans>Settings (JSON)</Trans>}
@@ -356,7 +403,7 @@ function ChannelDialog({
               />
             </Field>
           )}
-          {!bad && <ErrorLine error={save.error} />}
+          {!bad && !badChat && <ErrorLine error={save.error} />}
           <DialogFooter className="sticky -bottom-6 z-10 -mx-6 -mb-6 border-t bg-popover px-6 py-3">
             <Button type="submit" disabled={save.isPending || !settings}>
               <Trans>Save</Trans>
@@ -628,5 +675,306 @@ function EmailFields({
         )}
       </fieldset>
     </>
+  )
+}
+
+const MAX_ORIGINS = 20
+const DEFAULT_COLOR = "#2563eb"
+const POSITIONS: ChatLauncherPosition[] = ["right", "left"]
+
+type ChatForm = {
+  origins: string
+  allowAnonymous: boolean
+  askEmailOffline: boolean
+  greeting: string
+  position: ChatLauncherPosition
+  customColor: boolean
+  color: string
+  touched: boolean
+}
+
+function chatForm(c?: ChatChannel): ChatForm {
+  return {
+    origins: c?.allowed_origins.join("\n") ?? "",
+    allowAnonymous: c?.allow_anonymous ?? false,
+    askEmailOffline: c?.ask_email_offline ?? true,
+    greeting: c?.greeting ?? "",
+    position: c?.launcher.position ?? "right",
+    customColor: !!c?.launcher.color,
+    color: c?.launcher.color ?? DEFAULT_COLOR,
+    touched: false,
+  }
+}
+
+function normalizeOrigin(raw: string): string | null {
+  const v = raw.trim().replace(/\/$/, "")
+  if (!/^https?:\/\/[^/?#\s]+$/i.test(v)) return null
+  try {
+    const u = new URL(v)
+    if (u.username || u.password) return null
+    return u.origin.length <= 300 ? u.origin : null
+  } catch {
+    return null
+  }
+}
+
+type ChatInputResult =
+  | { ok: true; value: ChatChannelInput }
+  | { ok: false; empty: boolean; tooMany: boolean; bad: string[] }
+
+function chatChannelInput(f: ChatForm): ChatInputResult {
+  const lines = f.origins
+    .split(/[\n,]+/)
+    .map((x) => x.trim())
+    .filter(Boolean)
+  const bad = lines.filter((l) => !normalizeOrigin(l))
+  const origins = [...new Set(lines.map(normalizeOrigin).filter((x): x is string => !!x))]
+  if (bad.length > 0 || origins.length === 0 || origins.length > MAX_ORIGINS) {
+    return { ok: false, empty: lines.length === 0, tooMany: origins.length > MAX_ORIGINS, bad }
+  }
+  return {
+    ok: true,
+    value: {
+      allowed_origins: origins,
+      allow_anonymous: f.allowAnonymous,
+      ask_email_offline: f.askEmailOffline,
+      greeting: f.greeting.trim(),
+      launcher: { position: f.position, ...(f.customColor ? { color: f.color.toLowerCase() } : {}) },
+    },
+  }
+}
+
+type ChatField = "allowed_origins" | "greeting" | "launcher.color" | "launcher.position"
+
+function chatErrorField(err: unknown): ChatField | null {
+  if (!(err instanceof ApiError) || err.status !== 400 || !err.detail) return null
+  const m = /\bchat\.([a-z_]+(?:\.[a-z_]+)?)/.exec(err.detail)
+  return (m?.[1] as ChatField | undefined) ?? null
+}
+
+function ChatFields({
+  f,
+  set,
+  invalid,
+  serverError,
+}: {
+  f: ChatForm
+  set: (patch: Partial<ChatForm>) => void
+  invalid: Extract<ChatInputResult, { ok: false }> | null
+  serverError: ChatField | null
+}) {
+  const { t } = useLingui()
+  const positionText: Record<ChatLauncherPosition, string> = { right: t`Bottom right`, left: t`Bottom left` }
+  const notOrigins = invalid?.bad.join(", ") ?? ""
+  const originsError =
+    serverError === "allowed_origins" ? (
+      <Trans>Use origins such as https://www.example.com, without a path.</Trans>
+    ) : invalid && (f.touched || invalid.bad.length > 0) ? (
+      invalid.bad.length > 0 ? (
+        <Trans>Not an origin: {notOrigins}. Use scheme and host only, such as https://www.example.com.</Trans>
+      ) : invalid.tooMany ? (
+        <Trans>List at most 20 origins.</Trans>
+      ) : (
+        <Trans>Add at least one origin.</Trans>
+      )
+    ) : null
+  return (
+    <>
+      <fieldset className="flex min-w-0 flex-col gap-4">
+        <legend className="mb-3 text-sm font-semibold">
+          <Trans>Web chat</Trans>
+        </legend>
+        <Field
+          label={<Trans>Allowed origins</Trans>}
+          htmlFor="chat-origins"
+          hint={<Trans>One per line, 1 to 20. Only pages on these origins can use the widget.</Trans>}
+        >
+          <Textarea
+            id="chat-origins"
+            rows={3}
+            spellCheck={false}
+            className="font-mono text-xs"
+            value={f.origins}
+            placeholder={"https://www.example.com\nhttps://app.example.com"}
+            onChange={(e) => set({ origins: e.target.value })}
+            aria-invalid={!!originsError || undefined}
+            aria-describedby={originsError ? "err-chat-origins" : undefined}
+            data-testid="chat-origins"
+          />
+          <FieldError id="err-chat-origins">{originsError}</FieldError>
+        </Field>
+        <label className="flex items-start justify-between gap-3 text-sm">
+          <span className="flex flex-col gap-0.5">
+            <Trans>Allow anonymous visitors</Trans>
+            <span className="text-xs text-muted-foreground">
+              <Trans>Visitors can chat without an identity token from your backend.</Trans>
+            </span>
+          </span>
+          <Switch
+            checked={f.allowAnonymous}
+            onCheckedChange={(allowAnonymous) => set({ allowAnonymous })}
+            aria-label={t`Allow anonymous visitors`}
+          />
+        </label>
+        <label className="flex items-start justify-between gap-3 text-sm">
+          <span className="flex flex-col gap-0.5">
+            <Trans>Ask for an e-mail address when offline</Trans>
+            <span className="text-xs text-muted-foreground">
+              <Trans>When nobody is available, the widget asks where to send the reply.</Trans>
+            </span>
+          </span>
+          <Switch
+            checked={f.askEmailOffline}
+            onCheckedChange={(askEmailOffline) => set({ askEmailOffline })}
+            aria-label={t`Ask for an e-mail address when offline`}
+          />
+        </label>
+        <Field
+          label={<Trans>Greeting</Trans>}
+          htmlFor="chat-greeting"
+          hint={<Trans>Shown before the first message. The inbox greeting when empty.</Trans>}
+        >
+          <Textarea
+            id="chat-greeting"
+            rows={2}
+            maxLength={500}
+            value={f.greeting}
+            placeholder={t`Hi! How can we help?`}
+            onChange={(e) => set({ greeting: e.target.value })}
+            aria-invalid={serverError === "greeting" || undefined}
+          />
+          <FieldError id="err-chat-greeting">
+            {serverError === "greeting" && <Trans>Use at most 500 characters.</Trans>}
+          </FieldError>
+        </Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label={<Trans>Launcher position</Trans>}>
+            <Select value={f.position} onValueChange={(v) => set({ position: v as ChatLauncherPosition })} items={positionText}>
+              <SelectTrigger className="w-full" aria-label={t`Launcher position`}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {POSITIONS.map((x) => (
+                  <SelectItem key={x} value={x}>
+                    {positionText[x]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field>
+          <Field label={<Trans>Launcher color</Trans>} htmlFor="chat-color">
+            <div className="flex h-8 items-center gap-2">
+              <Switch
+                checked={f.customColor}
+                onCheckedChange={(customColor) => set({ customColor })}
+                aria-label={t`Use a custom launcher color`}
+              />
+              {f.customColor ? (
+                <>
+                  <input
+                    id="chat-color"
+                    type="color"
+                    value={f.color}
+                    onChange={(e) => set({ color: e.target.value })}
+                    className="h-8 w-10 cursor-pointer rounded-md border bg-background p-0.5"
+                    aria-label={t`Launcher color`}
+                  />
+                  <code className="font-mono text-xs text-muted-foreground">{f.color}</code>
+                </>
+              ) : (
+                <span className="text-sm text-muted-foreground">
+                  <Trans>Inbox color</Trans>
+                </span>
+              )}
+            </div>
+            <FieldError id="err-chat-color">
+              {serverError === "launcher.color" && <Trans>Pick a color.</Trans>}
+            </FieldError>
+          </Field>
+        </div>
+      </fieldset>
+    </>
+  )
+}
+
+function embedSnippet(publicKey: string) {
+  const origin = window.location.origin
+  return `<script src="${origin}/yuva.js"></script>\n<yuva-chat channel="${publicKey}" server="${origin}"></yuva-chat>`
+}
+
+function ChatEmbed({ channel }: { channel: Channel }) {
+  const qc = useQueryClient()
+  const { workspaceId: ws } = useSession()
+  const [confirm, confirmDialog] = useConfirm()
+  const [publicKey, setPublicKey] = useState(channel.chat!.public_key)
+  const rotate = useMutation({
+    mutationFn: () =>
+      unwrap(api.POST("/v1/channels/{channelId}/public-key", { params: { path: { channelId: channel.id } } })),
+    onSuccess: (data) => {
+      if (data.chat) setPublicKey(data.chat.public_key)
+      void qc.invalidateQueries({ queryKey: keys.channels(ws, channel.inbox_id) })
+      qc.setQueryData(keys.channel(ws, channel.id), data)
+    },
+  })
+  const snippet = embedSnippet(publicKey)
+  return (
+    <fieldset className="flex min-w-0 flex-col gap-4" data-testid="chat-embed">
+      <legend className="mb-3 text-sm font-semibold">
+        <Trans>Install</Trans>
+      </legend>
+      <Field
+        label={<Trans>Public key</Trans>}
+        hint={<Trans>Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats.</Trans>}
+      >
+        <div className="flex items-center gap-2">
+          <code
+            className="min-w-0 flex-1 truncate rounded-md border bg-muted px-2 py-1.5 font-mono text-xs"
+            data-testid="chat-public-key"
+          >
+            {publicKey}
+          </code>
+          <CopyButton value={publicKey} />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={rotate.isPending}
+            data-testid="chat-rotate-key"
+            onClick={() =>
+              confirm({
+                title: <Trans>Rotate the public key?</Trans>,
+                description: (
+                  <Trans>
+                    Pages that embed the old key can no longer start chats until you update the snippet. Visitors already
+                    chatting keep their session.
+                  </Trans>
+                ),
+                confirm: <Trans>Rotate</Trans>,
+                run: () => rotate.mutate(),
+              })
+            }
+          >
+            <RefreshCwIcon />
+            <Trans>Rotate</Trans>
+          </Button>
+        </div>
+        <ErrorLine error={rotate.error} className="text-xs" />
+      </Field>
+      <Field
+        label={<Trans>Embed snippet</Trans>}
+        hint={<Trans>Paste it before the closing body tag of every page that should show the chat.</Trans>}
+      >
+        <div className="flex flex-col gap-2">
+          <pre
+            className="max-w-full rounded-md border bg-muted px-2 py-1.5 font-mono text-xs break-all whitespace-pre-wrap"
+            data-testid="chat-snippet"
+          >
+            {snippet}
+          </pre>
+          <CopyButton value={snippet} className="self-start" />
+        </div>
+      </Field>
+      {confirmDialog}
+    </fieldset>
   )
 }

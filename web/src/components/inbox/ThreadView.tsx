@@ -1,11 +1,11 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ArrowLeftIcon, CornerDownRightIcon, PanelRightIcon, SearchXIcon, ShieldAlertIcon } from "lucide-react"
+import { ArrowLeftIcon, CornerDownRightIcon, MessageCircleIcon, PanelRightIcon, SearchXIcon, ShieldAlertIcon } from "lucide-react"
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
-import { EmptyState, ErrorLine } from "@/components/common"
+import { EmptyState, ErrorLine, TypingDots } from "@/components/common"
 import { SHORTCUTS } from "@/components/common/ShortcutSheet"
-import { useErrorText } from "@/components/common/text"
+import { useEnumText, useErrorText } from "@/components/common/text"
 import { Composer, type ComposerHandle } from "@/components/inbox/Composer"
 import {
   AssigneeMenu,
@@ -16,6 +16,7 @@ import {
   type MenuName,
 } from "@/components/inbox/ConversationControls"
 import { MessageItem } from "@/components/inbox/MessageItem"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useHotkeys } from "@/hooks/use-hotkeys"
@@ -32,6 +33,7 @@ import {
   useUpdateConversation,
 } from "@/lib/queries"
 import { useSession } from "@/lib/session"
+import { useTyping } from "@/lib/typing"
 
 function RelatedLine({ id, hrefFor }: { id: string; hrefFor: (id: string) => string }) {
   const { t } = useLingui()
@@ -60,6 +62,29 @@ function RelatedLine({ id, hrefFor }: { id: string; hrefFor: (id: string) => str
   )
 }
 
+function TypingLine({ conversationId, contactName }: { conversationId: string; contactName: string }) {
+  const { t, i18n } = useLingui()
+  const members = useMemberMap()
+  const typists = useTyping(conversationId)
+  if (typists.length === 0) return null
+  const names = typists.map((a) =>
+    a.type === "contact"
+      ? contactName
+      : a.name || (a.member_id && (members.get(a.member_id)?.name || members.get(a.member_id)?.email)) || t`A teammate`,
+  )
+  const list = new Intl.ListFormat(i18n.locale, { type: "conjunction" }).format(names)
+  return (
+    <p
+      className="flex shrink-0 items-center gap-2 px-4 pb-1 text-xs text-muted-foreground"
+      role="status"
+      data-testid="typing"
+    >
+      <TypingDots />
+      {names.length === 1 ? <Trans>{list} is typing…</Trans> : <Trans>{list} are typing…</Trans>}
+    </p>
+  )
+}
+
 function dayLabel(iso: string, locale: string) {
   return new Intl.DateTimeFormat(locale, { dateStyle: "full" }).format(new Date(iso))
 }
@@ -81,6 +106,7 @@ export function ThreadView({
   const navigate = useNavigate()
   const { membership } = useSession()
   const errorText = useErrorText()
+  const text = useEnumText()
   const conversation = useConversation(conversationId)
   const messages = useMessages(conversationId)
   const contact = useContact(conversation.data?.contact_id)
@@ -220,9 +246,17 @@ export function ThreadView({
             <ArrowLeftIcon />
           </Button>
           <div className="min-w-0 flex-1">
-            <h2 className="truncate text-base font-semibold" data-testid="thread-subject">
-              {c.subject || <Trans>No subject</Trans>}
-            </h2>
+            <div className="flex min-w-0 items-center gap-2">
+              <h2 className="truncate text-base font-semibold" data-testid="thread-subject">
+                {c.subject || <Trans>No subject</Trans>}
+              </h2>
+              {channel.data?.kind === "chat" && (
+                <Badge variant="secondary" data-testid="chat-badge">
+                  <MessageCircleIcon />
+                  {text.channel.chat}
+                </Badge>
+              )}
+            </div>
             <p className="truncate text-xs text-muted-foreground">
               {contactName}
               {inbox && <> · {inbox.name}</>}
@@ -304,6 +338,7 @@ export function ThreadView({
           })
         )}
       </div>
+      <TypingLine conversationId={conversationId} contactName={contactName} />
       <Composer ref={composer} conversationId={conversationId} emailTo={emailTo} undeliverable={undeliverable} />
     </div>
   )

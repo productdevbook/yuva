@@ -87,6 +87,16 @@ export function PersonAvatar({ name, className }: { name: string; className?: st
   )
 }
 
+export function TypingDots({ className }: { className?: string }) {
+  return (
+    <span aria-hidden className={cn("inline-flex items-center gap-0.5", className)}>
+      {[0, 150, 300].map((d) => (
+        <span key={d} className="size-1 animate-bounce rounded-full bg-current" style={{ animationDelay: `${d}ms` }} />
+      ))}
+    </span>
+  )
+}
+
 export function LabelChip({ name, color, className }: { name: string; color: string; className?: string }) {
   return (
     <span

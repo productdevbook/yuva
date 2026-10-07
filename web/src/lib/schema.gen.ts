@@ -526,7 +526,8 @@ export interface paths {
         /**
          * Add a channel
          * @description Owners and admins only, with a member session. An `email` channel needs `email` (its
-         *     address and outbound SMTP account); `settings` of the other kinds are stored as given.
+         *     address and outbound SMTP account); a `chat` channel needs `chat` (at least one allowed
+         *     origin) and gets a generated public key; `settings` are stored as given.
          *     An address belongs to one channel of the whole server, because inbound mail picks its
          *     channel by the recipient alone; a taken address answers `409 email_address_taken`.
          */
@@ -559,9 +560,32 @@ export interface paths {
         /**
          * Update a channel
          * @description Owners and admins only, with a member session. `email` replaces the e-mail settings as a
-         *     whole, except that an absent `smtp.password` keeps the stored one.
+         *     whole, except that an absent `smtp.password` keeps the stored one; `chat` replaces the chat
+         *     settings as a whole, except the public key.
          */
         patch: operations["updateChannel"];
+        trace?: never;
+    };
+    "/v1/channels/{channelId}/public-key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Rotate a chat channel's public key
+         * @description Owners and admins only, with a member session. Gives a `chat` channel a new public key;
+         *     widgets embedded with the old key can no longer start sessions, existing contact sessions
+         *     keep working. Other kinds answer `400`.
+         */
+        post: operations["rotateChannelPublicKey"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/v1/contacts": {
@@ -771,6 +795,31 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/conversations/{conversationId}/typing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Tell others you are typing
+         * @description Shows the calling member as typing a reply in the conversation: other members with access
+         *     receive a `typing` event on `/v1/realtime`, and the conversation's contact receives one on
+         *     `/client/v1/realtime` when the inbox is `live`. Call it while the member composes a reply
+         *     (not a note), at most every few seconds; clients stop showing the indicator after about
+         *     6 seconds without another one, or at once on `typing: false`. Nothing is stored. Member
+         *     sessions only.
+         */
+        post: operations["setMemberTyping"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/attachments/{attachmentId}": {
         parameters: {
             query?: never;
@@ -970,7 +1019,11 @@ export interface paths {
          *     re-read when such an event arrives and every 30 seconds. `inbox.created` reaches owners,
          *     admins and API keys (an agent learns of a new inbox from `inbox_access.changed`);
          *     `inbox.deleted` reaches everyone who could see the inbox. `conversation.read` reaches only
-         *     the connections of the member who read.
+         *     the connections of the member who read. `typing` (a contact or another member typing) has no
+         *     `id`, is not stored and is not replayed.
+         *
+         *     A member session's open connection also makes the member available to contacts of `live`
+         *     inboxes they can access (see `availability` on `/v1/me`).
          *
          *     Resuming: after the replay (if any) the server sends `ready` with `last_event_id`, the
          *     stream position at that moment. Remember the larger of that value and the `id` of every
@@ -988,6 +1041,255 @@ export interface paths {
          *     feed the upgrade is refused with 503 `realtime_unavailable`; retry with backoff.
          */
         get: operations["realtime"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/client/v1/session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The current contact session
+         * @description The contact and the inbox's public settings with the current presence, without the token.
+         */
+        get: operations["getClientSession"];
+        put?: never;
+        /**
+         * Start a contact session
+         * @description Exchanges a channel's public key, and optionally an identity token or a visitor id, for a
+         *     contact session. Send the returned `token` as `Authorization: Bearer <token>` on every other
+         *     `/client/v1` request and on `/client/v1/realtime`. Sessions last 7 days after their last
+         *     use.
+         *
+         *     - With `identity_token` (a JWT, HS256, signed by the host backend with the inbox's identity
+         *       secret; see `sdk/go`): the contact is found by `sub` (the host's user id, per inbox),
+         *       then by the token's `email`, or created. `name`, `email`, `locale` and `attrs` from the
+         *       token are saved on the contact. `exp` is required and at most 10 minutes ahead; tokens
+         *       with another `alg`, a wrong signature or a missing or past `exp` answer
+         *       `401 invalid_identity_token`. When `visitor_id` names an anonymous visitor of this inbox,
+         *       that visitor's conversations move to the identified contact and the visitor id ends.
+         *     - Without it, the visitor is anonymous, which the channel must allow
+         *       (`403 anonymous_not_allowed` otherwise). `visitor_id` from an earlier session of this
+         *       inbox resumes that visitor and their conversations; an unknown or ended one starts a new
+         *       visitor. Keep the returned `visitor_id` (e.g. in `localStorage`) and send it next time.
+         *
+         *     Browsers must call from one of the channel's allowed origins (`403 origin_not_allowed`).
+         *     Requests are rate limited per IP address and per channel (`429 rate_limited`). A blocked
+         *     contact answers `403 contact_blocked`.
+         */
+        post: operations["createClientSession"];
+        /**
+         * End the contact session
+         * @description Ends the session, e.g. when the host app's user signs out.
+         */
+        delete: operations["deleteClientSession"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/client/v1/conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List the contact's conversations
+         * @description The contact's conversations in the session's inbox, on any channel, latest message first.
+         *     Members' notes and internal events are never shown to contacts.
+         */
+        get: operations["listClientConversations"];
+        put?: never;
+        /**
+         * Start a conversation
+         * @description Starts a conversation on the session's channel with its first message. Send
+         *     `multipart/form-data` to attach files (`body`, `subject`, `client_id` as form fields and up
+         *     to 10 `files` parts), with the same size and type rules as `/v1`. Rate limited per IP
+         *     address and per channel.
+         */
+        post: operations["createClientConversation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/client/v1/conversations/{conversationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get one of the contact's conversations
+         * @description Another contact's conversation, or one of another inbox, answers `404`.
+         */
+        get: operations["getClientConversation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/client/v1/conversations/{conversationId}/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List a conversation's messages
+         * @description The messages to and from the contact, oldest first by default; with `order=desc` the newest
+         *     come first and `next_cursor` pages backward. Notes and events are left out.
+         */
+        get: operations["listClientMessages"];
+        put?: never;
+        /**
+         * Send a message
+         * @description Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
+         *     repeated `client_id` in the same conversation returns the stored message with `200`.
+         *     Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
+         *     per IP address and per channel.
+         */
+        post: operations["createClientMessage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/client/v1/conversations/{conversationId}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark a conversation read
+         * @description Moves the contact's read cursor to `message_id`, or to the latest message when it is
+         *     absent; it only moves forward. Replies the contact has read are not e-mailed to them.
+         */
+        post: operations["markClientConversationRead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/client/v1/conversations/{conversationId}/typing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Tell members the contact is typing
+         * @description Members with access receive a `typing` event on `/v1/realtime`. Call it at most every few
+         *     seconds while the contact types, and with `typing: false` when they stop. Nothing is
+         *     stored. Rate limited per session.
+         */
+        post: operations["setClientTyping"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/client/v1/contact/email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Leave an e-mail address for replies
+         * @description Stores the address the contact typed (e.g. when nobody is available), so replies they have
+         *     not read can be e-mailed to them. A typed address is never used to find or merge an
+         *     existing contact; it is used only while the contact has no address from an identity token
+         *     or from their own mail, and becomes one of their addresses once they answer such an e-mail.
+         *     Allowed when the channel asks for an address (`ask_email_offline`), else `403 forbidden`.
+         */
+        put: operations["setClientContactEmail"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/client/v1/attachments/{attachmentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Download an attachment
+         * @description An attachment of a message (not a note) in one of the contact's conversations, served as a
+         *     download. Fetch it with the `Authorization` header and show it from a blob URL.
+         */
+        get: operations["downloadClientAttachment"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/client/v1/realtime": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Live events for a contact (WebSocket)
+         * @description Upgrades to a WebSocket that streams the events of the contact's own conversations in the
+         *     session's inbox. Authenticate with the session token, either as the `token` query
+         *     parameter or as a WebSocket subprotocol: offer `yuva` and `yuva.token.<token>`
+         *     (`new WebSocket(url, ["yuva", "yuva.token." + token])`); the server selects `yuva`.
+         *     Cookies are not used. A browser's `Origin` must be one of the channel's allowed origins.
+         *
+         *     Every server message is one JSON text frame matching `ClientRealtimeMessage`. Stored events
+         *     (`conversation.created`, `conversation.updated`, `message.created`, `message.updated`,
+         *     `read`) carry an increasing `id`; resume exactly as on `/v1/realtime`: remember the larger
+         *     of `ready.last_event_id` and the last `id` received, reconnect with `?last_event_id=`, and
+         *     reload over HTTP on `resync_required`. `typing` and `presence` have no `id` and are not
+         *     replayed. `message.*` carries only messages (no notes or internal events), and
+         *     `conversation.updated` only the status. `typing` (a member typing), `read` (how far members
+         *     have read) and `presence` (whether someone is available; sent after `ready` and whenever it
+         *     changes) come only for `live` inboxes.
+         *
+         *     The server pings every 30 seconds; the client sends nothing. Close codes as on
+         *     `/v1/realtime`: 1008 when the session ends or the contact is deleted (start a new session),
+         *     1013 and 1012 (reconnect with `last_event_id`).
+         */
+        get: operations["clientRealtime"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1079,6 +1381,7 @@ export interface components {
             /** @description Empty until the person sets it. */
             name: string;
             locale: components["schemas"]["Locale"];
+            availability: components["schemas"]["Availability"];
         };
         Workspace: {
             /** Format: uuid */
@@ -1100,6 +1403,7 @@ export interface components {
         MeUpdate: {
             name?: string;
             locale?: components["schemas"]["Locale"];
+            availability?: components["schemas"]["Availability"];
         };
         Member: {
             /** Format: uuid */
@@ -1321,7 +1625,7 @@ export interface components {
          * @enum {string}
          */
         ChannelKind: "email" | "chat" | "app" | "api";
-        /** @description Settings of `chat`, `app` and `api` channels, stored as given. Not acted on yet. */
+        /** @description Free-form settings, stored as given. The settings Yuva acts on are in `email` and `chat`. */
         ChannelSettings: {
             [key: string]: unknown;
         };
@@ -1398,6 +1702,7 @@ export interface components {
             name: string;
             settings: components["schemas"]["ChannelSettings"];
             email?: components["schemas"]["EmailChannel"];
+            chat?: components["schemas"]["ChatChannel"];
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
@@ -1408,11 +1713,13 @@ export interface components {
             name: string;
             settings?: components["schemas"]["ChannelSettings"];
             email?: components["schemas"]["EmailChannelInput"];
+            chat?: components["schemas"]["ChatChannelInput"];
         };
         ChannelUpdate: {
             name?: string;
             settings?: components["schemas"]["ChannelSettings"];
             email?: components["schemas"]["EmailChannelInput"];
+            chat?: components["schemas"]["ChatChannelInput"];
         };
         ChannelList: {
             items: components["schemas"]["Channel"][];
@@ -1444,8 +1751,10 @@ export interface components {
             emails: components["schemas"]["Email"][];
             external_ids: components["schemas"]["ExternalId"][];
             attributes: components["schemas"]["Attributes"];
-            /** @description Mail from a blocked contact is refused. */
+            /** @description Mail and chat from a blocked contact are refused. */
             blocked: boolean;
+            /** @description The language from the contact's identity token; absent when not known. */
+            locale?: components["schemas"]["LanguageTag"];
             /** @description The contact's addresses that must not be mailed. */
             undeliverable: components["schemas"]["UndeliverableEmail"][];
             /** Format: date-time */
@@ -2072,7 +2381,397 @@ export interface components {
             type: "resync_required";
         };
         /** @description One server message on `/v1/realtime`, told apart by `type`. */
-        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        /**
+         * @description `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
+         *     hours. `away`: never shown as available.
+         * @enum {string}
+         */
+        Availability: "auto" | "away";
+        /**
+         * @description A web origin, `scheme://host[:port]`, without a path.
+         * @example https://www.example.com
+         */
+        Origin: string;
+        /** @enum {string} */
+        ChatLauncherPosition: "right" | "left";
+        /** @description The floating launcher. Absent values fall back to the inbox branding. */
+        ChatLauncher: {
+            position?: components["schemas"]["ChatLauncherPosition"];
+            color?: string;
+        };
+        /** @description Settings of a `chat` (web widget) channel. */
+        ChatChannel: {
+            /**
+             * @description Identifies the channel to the widget (`channel_key`). Not a secret: it is embedded in
+             *     web pages. Rotate it with `POST /v1/channels/{id}/public-key`.
+             */
+            public_key: string;
+            /** @description The only origins whose pages may use the widget, compared exactly. */
+            allowed_origins: components["schemas"]["Origin"][];
+            /** @description Visitors without an identity token may chat. */
+            allow_anonymous: boolean;
+            /** @description The widget asks for an e-mail address when nobody is available. */
+            ask_email_offline: boolean;
+            /** @description Shown before the first message; the inbox branding greeting when empty. */
+            greeting: string;
+            launcher: components["schemas"]["ChatLauncher"];
+        };
+        ChatChannelInput: {
+            allowed_origins: components["schemas"]["Origin"][];
+            /** @description Defaults to false. */
+            allow_anonymous?: boolean;
+            /** @description Defaults to true. */
+            ask_email_offline?: boolean;
+            greeting?: string;
+            launcher?: components["schemas"]["ChatLauncher"];
+        };
+        TypingCreate: {
+            /**
+             * @description `false` when the typist stopped or sent the message.
+             * @default true
+             */
+            typing: boolean;
+        };
+        TypingAuthor: {
+            /** @enum {string} */
+            type: "member" | "contact";
+            /** Format: uuid */
+            member_id?: string;
+            /** Format: uuid */
+            contact_id?: string;
+            /** @description The member's display name. */
+            name?: string;
+        };
+        Typing: {
+            /** Format: uuid */
+            conversation_id: string;
+            typing: boolean;
+            author: components["schemas"]["TypingAuthor"];
+        };
+        /**
+         * @description Someone is typing in a conversation (`typing: true`) or stopped. Not stored: it has no `id`
+         *     and is not replayed. Members do not receive their own.
+         */
+        TypingEvent: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "typing";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["Typing"];
+        };
+        ClientSessionCreate: {
+            /** @description The chat channel's `public_key`. */
+            channel_key: string;
+            /** @description A JWT (HS256) from the host backend; see `sdk/go`. */
+            identity_token?: string;
+            /** @description The `visitor_id` of an earlier anonymous session in this browser. */
+            visitor_id?: string;
+        };
+        /** @description What a contact may see of a member. */
+        ClientMember: {
+            /** @description The display name; empty when the member has not set one. */
+            name: string;
+            /** @description Up to two letters for an avatar; empty when the name is. */
+            initials: string;
+        };
+        /** @description Who can answer now, in a `live` inbox. */
+        ClientPresence: {
+            /**
+             * @description Someone with access is connected, not set to away, and the inbox is within its business
+             *     hours.
+             */
+            available: boolean;
+            members: components["schemas"]["ClientMember"][];
+        };
+        ClientChatSettings: {
+            /** @description The channel greeting, else the inbox branding greeting, else empty. */
+            greeting: string;
+            launcher_position: components["schemas"]["ChatLauncherPosition"];
+            /** @description The channel's launcher color, else the inbox branding color; absent when neither is set. */
+            launcher_color?: string;
+            ask_email_offline: boolean;
+            allow_anonymous: boolean;
+        };
+        /**
+         * @description The inbox's public settings. `live` inboxes carry `presence`; `async` inboxes never do and
+         *     show `expected_reply_minutes` instead.
+         */
+        ClientInbox: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            branding: components["schemas"]["InboxBranding"];
+            default_locale: components["schemas"]["LanguageTag"];
+            timezone: string;
+            mode: components["schemas"]["InboxMode"];
+            business_hours: components["schemas"]["BusinessHours"];
+            /** @description Within business hours now (always true when they are not enabled). */
+            open_now: boolean;
+            /**
+             * Format: int32
+             * @description `async` inboxes only; absent when not set.
+             */
+            expected_reply_minutes?: number;
+            presence?: components["schemas"]["ClientPresence"];
+            chat: components["schemas"]["ClientChatSettings"];
+        };
+        ClientContact: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            /** @description The contact's first verified address (from an identity token or their own mail). */
+            email?: components["schemas"]["Email"];
+            /** @description The address the contact typed, until it is verified. */
+            typed_email?: components["schemas"]["Email"];
+            /** @description The session was started with an identity token. */
+            identified: boolean;
+        };
+        ClientSessionInfo: {
+            /**
+             * Format: date-time
+             * @description Moves forward with every use.
+             */
+            expires_at: string;
+            /** @description Anonymous sessions only. Keep it to resume this visitor later. */
+            visitor_id?: string;
+            contact: components["schemas"]["ClientContact"];
+            inbox: components["schemas"]["ClientInbox"];
+        };
+        ClientSession: components["schemas"]["ClientSessionInfo"] & {
+            /** @description The contact session token. It is not shown again. */
+            token: string;
+        };
+        ClientConversationStatus: {
+            /** Format: uuid */
+            id: string;
+            status: components["schemas"]["ConversationStatus"];
+            /** Format: date-time */
+            updated_at: string;
+        };
+        ClientMessagePreview: {
+            /** Format: uuid */
+            id: string;
+            author_type: components["schemas"]["AuthorType"];
+            /** @description The plain-text body on one line, cut to 140 characters with `…` when longer. */
+            text: string;
+            /** Format: date-time */
+            created_at: string;
+        };
+        ClientConversation: {
+            /** Format: uuid */
+            id: string;
+            subject: string;
+            status: components["schemas"]["ConversationStatus"];
+            last_message?: components["schemas"]["ClientMessagePreview"];
+            /** Format: date-time */
+            last_message_at?: string;
+            /** @description A message from a member is newer than the contact's read cursor. */
+            unread: boolean;
+            /** Format: date-time */
+            created_at: string;
+        };
+        ClientConversationPage: {
+            items: components["schemas"]["ClientConversation"][];
+            /** @description Absent on the last page. */
+            next_cursor?: string;
+        };
+        ClientMessageAuthor: {
+            type: components["schemas"]["AuthorType"];
+            /** @description `member` only: the member's display name, possibly empty. */
+            name?: string;
+            /** @description `member` only. */
+            initials?: string;
+        };
+        ClientAttachment: {
+            /**
+             * Format: uuid
+             * @description Download it from `/client/v1/attachments/{id}`.
+             */
+            id: string;
+            filename: string;
+            content_type: string;
+            /** Format: int64 */
+            size: number;
+            content_id?: string;
+            inline: boolean;
+        };
+        ClientMessage: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            conversation_id: string;
+            direction: components["schemas"]["Direction"];
+            author: components["schemas"]["ClientMessageAuthor"];
+            body: string;
+            /** @description Sanitized HTML, when the message has one. */
+            html?: string;
+            /** @description The contact's own messages only. */
+            client_id?: string;
+            attachments: components["schemas"]["ClientAttachment"][];
+            /** Format: date-time */
+            created_at: string;
+        };
+        ClientMessagePage: {
+            items: components["schemas"]["ClientMessage"][];
+            /** @description Absent on the last page. */
+            next_cursor?: string;
+        };
+        ClientMessageCreate: {
+            /** @description Plain text. Required unless files are attached. */
+            body?: string;
+            /** @description Makes the request idempotent within the conversation. */
+            client_id?: string;
+        };
+        ClientMessageCreateMultipart: {
+            body?: string;
+            client_id?: string;
+            files?: string[];
+        };
+        ClientConversationCreate: {
+            subject?: string;
+            /** @description The first message. Required unless files are attached. */
+            body?: string;
+            /** @description The first message's `client_id`. */
+            client_id?: string;
+        };
+        ClientConversationCreateMultipart: {
+            subject?: string;
+            body?: string;
+            client_id?: string;
+            files?: string[];
+        };
+        ClientConversationCreated: {
+            conversation: components["schemas"]["ClientConversation"];
+            message: components["schemas"]["ClientMessage"];
+        };
+        ClientReadCreate: {
+            /**
+             * Format: uuid
+             * @description A message of the conversation; the latest when absent.
+             */
+            message_id?: string;
+        };
+        ClientReadState: {
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: uuid */
+            last_read_message_id?: string;
+            unread: boolean;
+        };
+        ClientEmailUpdate: {
+            email: components["schemas"]["Email"];
+        };
+        ClientRead: {
+            /** Format: uuid */
+            conversation_id: string;
+            /**
+             * Format: date-time
+             * @description Members have read every message created at or before this time.
+             */
+            read_at: string;
+        };
+        /** @description A conversation of the contact started (here, in another tab, or by a member). */
+        ClientConversationCreatedEvent: {
+            /** Format: int64 */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "conversation.created";
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["ClientConversation"];
+        };
+        /** @description The conversation's status changed. */
+        ClientConversationUpdatedEvent: {
+            /** Format: int64 */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "conversation.updated";
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["ClientConversationStatus"];
+        };
+        /** @description A message was added or changed. */
+        ClientMessageEvent: {
+            /** Format: int64 */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "message.created" | "message.updated";
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["ClientMessage"];
+        };
+        /** @description A member read the conversation (`live` inboxes). */
+        ClientReadEvent: {
+            /** Format: int64 */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "read";
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["ClientRead"];
+        };
+        ClientTyping: {
+            /** Format: uuid */
+            conversation_id: string;
+            typing: boolean;
+            author: components["schemas"]["ClientMessageAuthor"];
+        };
+        /** @description A member is typing a reply (`live` inboxes). No `id`; not replayed. */
+        ClientTypingEvent: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "typing";
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["ClientTyping"];
+        };
+        /** @description Who is available changed (`live` inboxes). No `id`; not replayed. */
+        ClientPresenceEvent: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "presence";
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["ClientPresence"];
+        };
+        /** @description One server message on `/client/v1/realtime`, told apart by `type`. */
+        ClientRealtimeMessage: components["schemas"]["ClientConversationCreatedEvent"] | components["schemas"]["ClientConversationUpdatedEvent"] | components["schemas"]["ClientMessageEvent"] | components["schemas"]["ClientReadEvent"] | components["schemas"]["ClientTypingEvent"] | components["schemas"]["ClientPresenceEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
         IngressResult: {
             /**
              * @description `stored` (a message was added), `duplicate` (seen before), `bounce` (a delivery report
@@ -3189,6 +3888,35 @@ export interface operations {
             409: components["responses"]["Problem"];
         };
     };
+    rotateChannelPublicKey: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                channelId: components["parameters"]["ChannelId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The channel with its new key. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Channel"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     listContacts: {
         parameters: {
             query?: {
@@ -3648,6 +4376,37 @@ export interface operations {
             404: components["responses"]["Problem"];
         };
     };
+    setMemberTyping: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["TypingCreate"];
+            };
+        };
+        responses: {
+            /** @description Sent. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     downloadAttachment: {
         parameters: {
             query?: {
@@ -4028,6 +4787,379 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RealtimeMessage"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            503: components["responses"]["Problem"];
+        };
+    };
+    getClientSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The session. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientSessionInfo"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    createClientSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClientSessionCreate"];
+            };
+        };
+        responses: {
+            /** @description The session, the contact and the inbox's public settings. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientSession"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
+        };
+    };
+    deleteClientSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ended. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    listClientConversations: {
+        parameters: {
+            query?: {
+                /** @description The `next_cursor` of the previous page. */
+                cursor?: components["parameters"]["Cursor"];
+                /** @description Page size, 1 to 100; 25 by default. */
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of conversations. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientConversationPage"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    createClientConversation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClientConversationCreate"];
+                "multipart/form-data": components["schemas"]["ClientConversationCreateMultipart"];
+            };
+        };
+        responses: {
+            /** @description The conversation and its first message. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientConversationCreated"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            413: components["responses"]["Problem"];
+            415: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
+        };
+    };
+    getClientConversation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The conversation. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientConversation"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    listClientMessages: {
+        parameters: {
+            query?: {
+                order?: "asc" | "desc";
+                /** @description The `next_cursor` of the previous page. */
+                cursor?: components["parameters"]["Cursor"];
+                /** @description Page size, 1 to 100; 25 by default. */
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of messages. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientMessagePage"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    createClientMessage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClientMessageCreate"];
+                "multipart/form-data": components["schemas"]["ClientMessageCreateMultipart"];
+            };
+        };
+        responses: {
+            /** @description The message stored earlier with this `client_id`. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientMessage"];
+                };
+            };
+            /** @description The message. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientMessage"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            413: components["responses"]["Problem"];
+            415: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
+        };
+    };
+    markClientConversationRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ClientReadCreate"];
+            };
+        };
+        responses: {
+            /** @description The contact's read state. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientReadState"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    setClientTyping: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["TypingCreate"];
+            };
+        };
+        responses: {
+            /** @description Sent. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
+        };
+    };
+    setClientContactEmail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClientEmailUpdate"];
+            };
+        };
+        responses: {
+            /** @description The contact. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientContact"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
+        };
+    };
+    downloadClientAttachment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attachmentId: components["parameters"]["AttachmentId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The file. */
+            200: {
+                headers: {
+                    "Content-Disposition"?: string;
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    clientRealtime: {
+        parameters: {
+            query?: {
+                /** @description The contact session token, when it is not sent as a subprotocol. */
+                token?: string;
+                /** @description Replay the events after this one before streaming live ones. */
+                last_event_id?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Switching to the WebSocket protocol. Each text frame is one `ClientRealtimeMessage`. */
+            101: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientRealtimeMessage"];
                 };
             };
             400: components["responses"]["Problem"];

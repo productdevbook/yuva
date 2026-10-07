@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { BanIcon, MailIcon, MailWarningIcon } from "lucide-react"
+import { BanIcon, LanguagesIcon, MailIcon, MailWarningIcon } from "lucide-react"
 import { Link } from "react-router"
 
 import { ErrorLine, PersonAvatar } from "@/components/common"
@@ -18,6 +18,15 @@ function Section({ title, children }: { title: React.ReactNode; children: React.
       {children}
     </section>
   )
+}
+
+function languageName(tag: string, locale: string) {
+  try {
+    const name = new Intl.DisplayNames([locale], { type: "language" }).of(tag)
+    return name && name !== tag ? `${name} (${tag})` : tag
+  } catch {
+    return tag
+  }
 }
 
 function attrValue(v: unknown) {
@@ -103,6 +112,12 @@ export function ContactPanel({
           <p className="text-xs text-muted-foreground">
             <Trans>Since {since}</Trans>
           </p>
+          {c.locale && (
+            <p className="flex items-center gap-1 text-xs text-muted-foreground" data-testid="contact-locale">
+              <LanguagesIcon className="size-3.5 shrink-0" aria-label={t`Language`} />
+              <span className="truncate">{languageName(c.locale, i18n.locale)}</span>
+            </p>
+          )}
         </div>
         {c.blocked && (
           <span className="ml-auto inline-flex items-center gap-1 rounded bg-destructive/10 px-1.5 py-0.5 text-xs text-destructive">

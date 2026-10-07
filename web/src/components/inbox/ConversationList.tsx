@@ -1,9 +1,9 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { FilterIcon, FlagIcon, InboxIcon, ReplyIcon, SearchIcon, XIcon } from "lucide-react"
+import { FilterIcon, FlagIcon, InboxIcon, MessageCircleIcon, ReplyIcon, SearchIcon, XIcon } from "lucide-react"
 import { forwardRef, useEffect, useRef, useState } from "react"
 import { Link } from "react-router"
 
-import { EmptyState, ErrorLine, LabelChip, PersonAvatar } from "@/components/common"
+import { EmptyState, ErrorLine, LabelChip, PersonAvatar, TypingDots } from "@/components/common"
 import { formatShort, STATUSES, useEnumText } from "@/components/common/text"
 import { priorityClass, statusIcons } from "@/components/inbox/ConversationControls"
 import { Button } from "@/components/ui/button"
@@ -21,7 +21,8 @@ import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { ConversationListItem, ConversationStatus } from "@/lib/api"
-import { useInboxes, useLabels, useMemberMap, useMembers } from "@/lib/queries"
+import { useChannel, useInboxes, useLabels, useMemberMap, useMembers } from "@/lib/queries"
+import { useContactTyping } from "@/lib/typing"
 import { cn } from "@/lib/utils"
 
 export type ListFilters = {
@@ -170,6 +171,8 @@ function Row({
   const assignee = c.assignee_id ? members.get(c.assignee_id) : undefined
   const name = c.contact.name || c.contact.email || t`Unnamed contact`
   const preview = c.last_message
+  const typing = useContactTyping(c.id)
+  const chat = useChannel(c.channel_id).data?.kind === "chat"
   const StatusIcon = statusIcons[c.status]
   return (
     <li>
@@ -212,7 +215,14 @@ function Row({
           >
             {c.subject || <Trans>No subject</Trans>}
           </p>
-          {preview && (
+          {typing ? (
+            <p className="flex min-w-0 items-center gap-1.5 text-xs text-primary" data-testid="row-typing">
+              <TypingDots />
+              <span className="truncate">
+                <Trans>typing…</Trans>
+              </span>
+            </p>
+          ) : preview && (
             <p
               className={cn("flex min-w-0 items-center gap-1 text-xs", c.unread ? "text-foreground" : "text-muted-foreground")}
               data-testid="conversation-preview"
@@ -222,6 +232,12 @@ function Row({
             </p>
           )}
           <div className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
+            {chat && (
+              <span className="inline-flex shrink-0 items-center gap-1" data-testid="chat-badge">
+                <MessageCircleIcon className="size-3.5" />
+                {text.channel.chat}
+              </span>
+            )}
             {showStatus && (
               <span className="inline-flex items-center gap-1">
                 <StatusIcon className="size-3.5" />

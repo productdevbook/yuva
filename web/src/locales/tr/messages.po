@@ -48,6 +48,14 @@ msgstr "{actor} durumu {status} olarak değiştirdi"
 msgid "{keyCount} settings"
 msgstr "{keyCount} ayar"
 
+#: src/components/inbox/ThreadView.tsx
+msgid "{list} are typing…"
+msgstr "{list} yazıyor…"
+
+#: src/components/inbox/ThreadView.tsx
+msgid "{list} is typing…"
+msgstr "{list} yazıyor…"
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "1 setting"
 msgstr "1 ayar"
@@ -59,6 +67,10 @@ msgstr "Bir dosyanın içeriği türüyle uyuşmuyor. Dosyayı kontrol edip yeni
 #: src/components/settings/InboxSettings.tsx
 msgid "A language tag such as en or tr."
 msgstr "en veya tr gibi bir dil kodu."
+
+#: src/components/inbox/ThreadView.tsx
+msgid "A teammate"
+msgstr "Bir ekip arkadaşı"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "A username needs TLS or STARTTLS: the password is never sent unencrypted."
@@ -83,6 +95,10 @@ msgstr "Acme Destek"
 #: src/components/settings/ProfileSettings.tsx
 msgid "Add a passkey"
 msgstr "Geçiş anahtarı ekle"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Add at least one origin."
+msgstr "En az bir kaynak ekleyin."
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "Add channel"
@@ -129,9 +145,21 @@ msgstr "Tüm gelen kutuları"
 msgid "All of its conversations are deleted with it."
 msgstr "Tüm konuşmaları da onunla birlikte silinir."
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Allow anonymous visitors"
+msgstr "Anonim ziyaretçilere izin ver"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Allowed origins"
+msgstr "İzin verilen kaynaklar"
+
 #: src/components/settings/MembersSettings.tsx
 msgid "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
 msgstr "Davet, kişi o adrese gönderilen kodla giriş yaptığında kabul edilir. 7 gün sonra geçersiz olur."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "anonymous visitors allowed"
+msgstr "anonim ziyaretçilere açık"
 
 #: src/components/common/text.ts
 #: src/components/settings/ChannelsSection.tsx
@@ -162,6 +190,10 @@ msgstr "API anahtarları"
 #: src/components/AppShell.tsx
 msgid "Ask an owner or admin of your workspace to invite you."
 msgstr "Çalışma alanınızın sahibinden ya da bir yöneticisinden sizi davet etmesini isteyin."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Ask for an e-mail address when offline"
+msgstr "Çevrimdışıyken e-posta adresi iste"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/inbox/ConversationControls.tsx
@@ -210,6 +242,14 @@ msgstr "Otomatik yanıt"
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "Otomatik postalar hiçbir zaman otomatik yanıt tetiklemez."
 
+#: src/components/AppShell.tsx
+msgid "Available"
+msgstr "Müsait"
+
+#: src/components/AppShell.tsx
+msgid "Away"
+msgstr "Uzakta"
+
 #: src/components/inbox/InboxPage.tsx
 #: src/components/settings/InboxSettings.tsx
 msgid "Back"
@@ -227,6 +267,14 @@ msgstr "Faturalama"
 #: src/components/inbox/ContactPanel.tsx
 msgid "Blocked"
 msgstr "Engelli"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Bottom left"
+msgstr "Sol alt"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Bottom right"
+msgstr "Sağ alt"
 
 #: src/components/settings/InboxSettings.tsx
 msgid "Brand color"
@@ -473,6 +521,10 @@ msgid "Edit labels"
 msgstr "Etiketleri düzenle"
 
 #: src/components/settings/ChannelsSection.tsx
+msgid "Embed snippet"
+msgstr "Yerleştirme kodu"
+
+#: src/components/settings/ChannelsSection.tsx
 msgid "Encryption"
 msgstr "Şifreleme"
 
@@ -529,6 +581,7 @@ msgstr "Gönderen adresi (isteğe bağlı)"
 msgid "General"
 msgstr "Genel"
 
+#: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/InboxSettings.tsx
 msgid "Greeting"
 msgstr "Karşılama mesajı"
@@ -541,6 +594,10 @@ msgstr "Yeni konuşmaları e-postayla karşılar; bu süre içinde her kişiye b
 msgid "Hi! Ask us anything."
 msgstr "Merhaba! Bize her şeyi sorabilirsiniz."
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Hi! How can we help?"
+msgstr "Merhaba! Size nasıl yardımcı olabiliriz?"
+
 #: src/components/inbox/MessageItem.tsx
 msgid "Hide quoted text"
 msgstr "Alıntıyı gizle"
@@ -550,8 +607,8 @@ msgid "High"
 msgstr "Yüksek"
 
 #: src/components/settings/ChannelsSection.tsx
-msgid "How messages reach this inbox. E-mail channels receive and send mail; the other kinds store their settings for now."
-msgstr "İletilerin bu gelen kutusuna nasıl ulaştığı. E-posta kanalları posta alır ve gönderir; diğer türler şimdilik yalnızca ayarlarını saklar."
+msgid "How messages reach this inbox. E-mail channels receive and send mail, web chat channels power the chat widget; the other kinds store their settings for now."
+msgstr "Mesajların bu gelen kutusuna nasıl ulaştığı. E-posta kanalları posta alır ve gönderir, web sohbeti kanalları sohbet penceresini çalıştırır; diğer türler şimdilik yalnızca ayarlarını saklar."
 
 #: src/components/common/index.tsx
 msgid "I saved it"
@@ -571,6 +628,10 @@ msgstr "Bir saat sonra"
 msgid "Inbox"
 msgstr "Gelen kutusu"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Inbox color"
+msgstr "Gelen kutusu rengi"
+
 #: src/components/AppShell.tsx
 #: src/components/settings/InboxesSettings.tsx
 #: src/components/settings/SettingsLayout.tsx
@@ -580,6 +641,10 @@ msgstr "Gelen kutuları"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Insert a canned reply (in the composer)"
 msgstr "Hazır yanıt ekle (yazma alanında)"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Install"
+msgstr "Kurulum"
 
 #: src/components/inbox/MessageItem.tsx
 msgid "Internal note"
@@ -633,6 +698,7 @@ msgstr "Etiket"
 msgid "Labels"
 msgstr "Etiketler"
 
+#: src/components/inbox/ContactPanel.tsx
 #: src/components/LanguageMenu.tsx
 #: src/components/settings/MembersSettings.tsx
 msgid "Language"
@@ -642,10 +708,26 @@ msgstr "Dil"
 msgid "last used {used}"
 msgstr "son kullanım: {used}"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Launcher color"
+msgstr "Düğme rengi"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Launcher position"
+msgstr "Düğme konumu"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "List at most 20 origins."
+msgstr "En fazla 20 kaynak yazın."
+
 #: src/components/AppShell.tsx
 #: src/components/common/text.ts
 msgid "Live"
 msgstr "Canlı"
+
+#: src/components/AppShell.tsx
+msgid "Live chat shows nobody available"
+msgstr "Canlı sohbette kimse müsait görünmez"
 
 #: src/components/inbox/MessageItem.tsx
 msgid "Load images"
@@ -830,6 +912,14 @@ msgstr "Yok (yalnızca yerel aktarıcılar ve test sunucuları)"
 msgid "Normal"
 msgstr "Normal"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
+msgstr "Gizli değildir, web sayfalarınızın bir parçasıdır. Eski yerleştirmelerin yeni sohbet başlatmasını durdurmak için yenileyin."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Not an origin: {notOrigins}. Use scheme and host only, such as https://www.example.com."
+msgstr "Geçerli bir kaynak değil: {notOrigins}. Yalnızca şema ve alan adı yazın, örneğin https://www.example.com."
+
 #: src/components/inbox/MessageItem.tsx
 msgid "Not delivered"
 msgstr "Teslim edilemedi"
@@ -864,6 +954,10 @@ msgstr "Açık"
 msgid "One inbox per product or brand. Each has its own channels, hours and team."
 msgstr "Her ürün ya da marka için bir gelen kutusu. Her birinin kendi kanalları, saatleri ve ekibi olur."
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
+msgstr "Her satıra bir tane, 1 ile 20 arası. Sohbet penceresini yalnızca bu kaynaklardaki sayfalar kullanabilir."
+
 #: src/components/inbox/Composer.tsx
 msgid "Only members see notes"
 msgstr "Notları yalnızca üyeler görür"
@@ -897,6 +991,10 @@ msgstr "Sahip"
 msgid "Owners and admins see every inbox; agents see the inboxes they were given."
 msgstr "Sahipler ve yöneticiler tüm gelen kutularını görür; temsilciler yalnızca kendilerine verilenleri görür."
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Pages that embed the old key can no longer start chats until you update the snippet. Visitors already chatting keep their session."
+msgstr "Eski anahtarı kullanan sayfalar, kodu güncelleyene kadar sohbet başlatamaz. Şu anda sohbet eden ziyaretçilerin oturumu sürer."
+
 #: src/components/settings/ProfileSettings.tsx
 msgid "Passkey name"
 msgstr "Geçiş anahtarı adı"
@@ -913,6 +1011,10 @@ msgstr "Parola"
 msgid "Password set"
 msgstr "Kayıtlı"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Paste it before the closing body tag of every page that should show the chat."
+msgstr "Sohbetin görüneceği her sayfada kapanış body etiketinden önce yapıştırın."
+
 #: src/components/common/text.ts
 msgid "Pending"
 msgstr "Beklemede"
@@ -921,6 +1023,10 @@ msgstr "Beklemede"
 #: src/components/settings/LabelsSettings.tsx
 msgid "Pick a color"
 msgstr "Renk seç"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Pick a color."
+msgstr "Bir renk seçin."
 
 #: src/components/inbox/InboxPage.tsx
 msgid "Pick a conversation"
@@ -949,6 +1055,10 @@ msgstr "Öncelik"
 #: src/components/settings/ProfileSettings.tsx
 msgid "Profile"
 msgstr "Profil"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Public key"
+msgstr "Genel anahtar"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "receives only, no SMTP account"
@@ -1056,6 +1166,7 @@ msgstr "Rol"
 msgid "Role of {name}"
 msgstr "{name} adlı üyenin rolü"
 
+#: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/InboxSettings.tsx
 msgid "Rotate"
 msgstr "Yenile"
@@ -1067,6 +1178,10 @@ msgstr "Anahtarı yenile"
 #: src/components/settings/InboxSettings.tsx
 msgid "Rotate the identity secret?"
 msgstr "Kimlik anahtarı yenilensin mi?"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Rotate the public key?"
+msgstr "Genel anahtar yenilensin mi?"
 
 #: src/components/common/text.ts
 msgid "Saturday"
@@ -1165,6 +1280,10 @@ msgstr "Kişi bilgilerini göster veya gizle"
 msgid "Show quoted text"
 msgstr "Alıntıyı göster"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Shown before the first message. The inbox greeting when empty."
+msgstr "İlk mesajdan önce gösterilir. Boşsa gelen kutusunun karşılama mesajı kullanılır."
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Shown to contacts in async mode. Leave empty to hide it."
 msgstr "Eşzamansız modda kişilere gösterilir. Gizlemek için boş bırakın."
@@ -1192,6 +1311,10 @@ msgstr "Kod yerine cihazınızın parmak izi, yüz tanıma veya ekran kilidiyle 
 #: src/components/AppShell.tsx
 msgid "Sign out"
 msgstr "Çıkış yap"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "signed-in users only"
+msgstr "yalnızca oturum açmış kullanıcılar"
 
 #: src/components/inbox/ContactPanel.tsx
 msgid "Since {since}"
@@ -1235,6 +1358,7 @@ msgstr "Spam"
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (port 587)"
 
+#: src/components/AppShell.tsx
 #: src/components/inbox/ConversationControls.tsx
 msgid "Status"
 msgstr "Durum"
@@ -1311,6 +1435,10 @@ msgstr "Parola çok uzun."
 #: src/components/inbox/MessageItem.tsx
 msgid "The sender's domain did not authorize this mail. It may be forged."
 msgstr "Gönderenin alan adı bu postayı onaylamadı. Sahte olabilir."
+
+#: src/components/AppShell.tsx
+msgid "The status was not changed. Try again."
+msgstr "Durum değiştirilemedi. Tekrar deneyin."
 
 #: src/components/settings/MembersSettings.tsx
 msgid "Their conversations stay; they lose access at once."
@@ -1408,6 +1536,10 @@ msgstr "Eklemek için yazma alanında / ve ardından kısayolu yazın."
 msgid "Type / for canned replies"
 msgstr "Hazır yanıtlar için / yazın"
 
+#: src/components/inbox/ConversationList.tsx
+msgid "typing…"
+msgstr "yazıyor…"
+
 #: src/components/inbox/ConversationControls.tsx
 msgid "Unassign"
 msgstr "Atamayı kaldır"
@@ -1445,12 +1577,20 @@ msgid "Use 1 to 8760 hours."
 msgstr "1 ile 8760 saat arası girin."
 
 #: src/components/settings/ChannelsSection.tsx
+msgid "Use a custom launcher color"
+msgstr "Özel düğme rengi kullan"
+
+#: src/components/settings/ChannelsSection.tsx
 msgid "Use a port from 1 to 65535."
 msgstr "1 ile 65535 arası bir port girin."
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "Use at most 200 characters."
 msgstr "En fazla 200 karakter girin."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Use at most 500 characters."
+msgstr "En fazla 500 karakter kullanın."
 
 #: src/components/settings/InboxSettings.tsx
 msgid "Use business hours"
@@ -1461,24 +1601,45 @@ msgid "Use j and k to move through the list, ? for all shortcuts."
 msgstr "Listede gezinmek için j ve k, tüm kısayollar için ? tuşunu kullanın."
 
 #: src/components/settings/ChannelsSection.tsx
+msgid "Use origins such as https://www.example.com, without a path."
+msgstr "https://www.example.com gibi, yol içermeyen kaynaklar kullanın."
+
+#: src/components/settings/ChannelsSection.tsx
 msgid "Username"
 msgstr "Kullanıcı adı"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Visitors can chat without an identity token from your backend."
+msgstr "Ziyaretçiler, sunucunuzdan bir kimlik belirteci olmadan da sohbet edebilir."
 
 #: src/components/auth/SignInPage.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
 msgstr "<0>{email}</0> adresine 6 haneli bir kod gönderdik. Kod 10 dakika geçerlidir."
 
 #: src/components/common/text.ts
+#: src/components/settings/ChannelsSection.tsx
 msgid "Web chat"
 msgstr "Web sohbeti"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Website chat"
+msgstr "Web sitesi sohbeti"
 
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Çarşamba"
 
 #: src/components/settings/ChannelsSection.tsx
+msgid "When nobody is available, the widget asks where to send the reply."
+msgstr "Kimse müsait değilken sohbet penceresi yanıtın nereye gönderileceğini sorar."
+
+#: src/components/settings/ChannelsSection.tsx
 msgid "When your provider sends from another address. Replies still come to the support address."
 msgstr "Sağlayıcınız başka bir adresten gönderiyorsa. Yanıtlar yine destek adresine gelir."
+
+#: src/components/AppShell.tsx
+msgid "While the panel is open, in business hours"
+msgstr "Panel açıkken, çalışma saatlerinde"
 
 #: src/components/settings/MembersSettings.tsx
 msgid "Withdraw"
