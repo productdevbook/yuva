@@ -22,6 +22,7 @@ Keep this table current when a command changes.
 | `sdk/swift` | yuva-mobile | on the Mac, at the root: `swift build && swift test`; in `sdk/swift/Example/`: `xcodebuild -project YuvaExample.xcodeproj -scheme YuvaExample -destination "generic/platform=iOS Simulator" build` |
 | `sdk/kotlin` | yuva-mobile | in `sdk/kotlin/` on the Mac (JDK 21 as `JAVA_HOME`, `ANDROID_HOME` set), never on a machine without swap: `./gradlew check :sample:assembleDebug` |
 | `docs/`, site | yuva-docs | links resolve; every documented endpoint exists in `openapi/` |
+| `site/` | yuva-docs | in `site/`: `bun run i18n && bun run build && bun run links` (Lingui extract and `compile --strict`, Astro static build, link check over `dist/`) |
 
 - OpenAPI is 3.1: no `nullable`. Contract first: change the spec, lint, regenerate, then implement.
 - Migrations: `api/internal/store/migrations/000NN_name.sql` (goose). Take the next free number

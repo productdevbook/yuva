@@ -93,6 +93,16 @@ jobs:
         working-directory: sdk/js
         run: bun install --frozen-lockfile && bun run check && bun run build
 
+  site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+      - working-directory: site
+        run: bun install --frozen-lockfile && bun run i18n && bun run build && bun run links
+      - name: catalogs are committed
+        run: git diff --exit-code -- site/src/locales
+
   sdk-swift:
     runs-on: macos-latest
     steps:
