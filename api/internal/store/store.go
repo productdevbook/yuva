@@ -62,6 +62,12 @@ func (s *Store) InTx(ctx context.Context, fn func(q *Queries) error) error {
 	})
 }
 
+func (s *Store) InTxRaw(ctx context.Context, fn func(tx pgx.Tx, q *Queries) error) error {
+	return pgx.BeginFunc(ctx, s.Pool, func(tx pgx.Tx) error {
+		return fn(tx, s.WithTx(tx))
+	})
+}
+
 func (s *Store) migrations(log *slog.Logger) (*goose.Provider, error) {
 	sub, err := fs.Sub(migrationsFS, "migrations")
 	if err != nil {

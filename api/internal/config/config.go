@@ -29,6 +29,9 @@ type Config struct {
 
 	Storage     Storage
 	Attachments Attachments
+
+	IngressSecret string
+	SESTopicARNs  []string
 }
 
 type Storage struct {
@@ -87,7 +90,9 @@ func Load(version string) (Config, error) {
 			S3AccessKeyID:     env("YUVA_S3_ACCESS_KEY_ID", ""),
 			S3SecretAccessKey: os.Getenv("YUVA_S3_SECRET_ACCESS_KEY"),
 		},
-		Attachments: Attachments{Types: lowerList(env("YUVA_ATTACHMENT_TYPES", defaultAttachmentTypes))},
+		Attachments:   Attachments{Types: lowerList(env("YUVA_ATTACHMENT_TYPES", defaultAttachmentTypes))},
+		IngressSecret: strings.TrimSpace(os.Getenv("YUVA_INGRESS_SECRET")),
+		SESTopicARNs:  list(env("YUVA_SES_TOPIC_ARNS", "")),
 	}
 	public, err := url.Parse(c.PublicURL)
 	if err != nil || (public.Scheme != "http" && public.Scheme != "https") || public.Host == "" {

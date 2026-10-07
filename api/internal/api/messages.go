@@ -160,7 +160,7 @@ func (s *Server) spool(workspaceID uuid.UUID, part *multipart.Part) (*upload, er
 	return u, nil
 }
 
-func (s *Server) contentType(declared string, f *os.File) (string, error) {
+func (s *Server) contentType(declared string, f io.ReaderAt) (string, error) {
 	head := make([]byte, 512)
 	n, _ := f.ReadAt(head, 0)
 	sniffed := sniffType(head[:n])
@@ -271,6 +271,12 @@ func messageBody(m messageRow, atts []store.Attachment) oas.Message {
 	for _, a := range atts {
 		out.Attachments = append(out.Attachments, attachmentBody(a))
 	}
+	if m.DeliveryState != nil && m.DeliveryUpdatedAt != nil {
+		out.Delivery = &oas.MessageDelivery{
+			Channel: oas.MessageDeliveryChannelEmail, State: oas.MessageDeliveryState(*m.DeliveryState),
+			Error: m.DeliveryError, UpdatedAt: *m.DeliveryUpdatedAt,
+		}
+	}
 	return out
 }
 
@@ -334,9 +340,13 @@ func (s *Server) ListMessages(ctx context.Context, req oas.ListMessagesRequestOb
 	if err != nil {
 		return nil, err
 	}
+	emails, err := emailSummaries(ctx, s.st.Queries, p.workspaceID, ids)
+	if err != nil {
+		return nil, err
+	}
 	out := oas.ListMessages200JSONResponse{Items: make([]oas.Message, len(rows)), NextCursor: next}
 	for i, r := range rows {
-		out.Items[i] = messageBody(messageRow(r), atts[r.ID])
+		out.Items[i] = withEmail(messageBody(messageRow(r), atts[r.ID]), emails[r.ID])
 	}
 	return out, nil
 }
@@ -380,6 +390,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 	var (
 		msg     messageRow
 		atts    []store.Attachment
+		summary *store.ListMessageEmailsRow
 		created = true
 	)
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
@@ -393,6 +404,11 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 				msg, created = messageRow(prev), false
 				m, err := messageAttachments(ctx, q, p.workspaceID, []uuid.UUID{prev.ID})
 				atts = m[prev.ID]
+				if err != nil {
+					return err
+				}
+				em, err := emailSummaries(ctx, q, p.workspaceID, []uuid.UUID{prev.ID})
+				summary = em[prev.ID]
 				return err
 			}
 			if !store.IsNotFound(err) {
@@ -400,6 +416,12 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 			}
 		}
 		now := s.now()
+		var plan *emailPlan
+		if in.kind == string(oas.MessageKindMessage) && in.direction == string(oas.Out) {
+			if plan, err = s.planEmail(ctx, q, c); err != nil {
+				return err
+			}
+		}
 		arg := store.CreateMessageParams{
 			ID: newID(), WorkspaceID: p.workspaceID, ConversationID: c.ID, Kind: in.kind, Body: in.body,
 			Html: in.html, ClientID: in.clientID, CreatedAt: now,
@@ -412,8 +434,17 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		} else {
 			arg.AuthorType, arg.AuthorMemberID = authorFor(p)
 		}
+		if plan != nil {
+			queued := deliveryQueued
+			arg.DeliveryState = &queued
+		}
 		if msg, err = q.CreateMessage(ctx, arg); err != nil {
 			return err
+		}
+		if plan != nil {
+			if summary, err = s.queueEmail(ctx, q, events, plan, msg); err != nil {
+				return err
+			}
 		}
 		var total int64
 		for _, f := range in.files {
@@ -435,7 +466,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		if err := s.addUsage(ctx, q, p.workspaceID, 0, 1, total); err != nil {
 			return err
 		}
-		events.conversation(realtime.MessageCreated, c, messageBody(msg, atts))
+		events.conversation(realtime.MessageCreated, c, withEmail(messageBody(msg, atts), summary))
 		return nil
 	})
 	if err != nil || !created {
@@ -445,9 +476,9 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		return nil, err
 	}
 	if !created {
-		return oas.CreateMessage200JSONResponse(messageBody(msg, atts)), nil
+		return oas.CreateMessage200JSONResponse(withEmail(messageBody(msg, atts), summary)), nil
 	}
-	return oas.CreateMessage201JSONResponse(messageBody(msg, atts)), nil
+	return oas.CreateMessage201JSONResponse(withEmail(messageBody(msg, atts), summary)), nil
 }
 
 func (s *Server) DownloadAttachment(ctx context.Context, req oas.DownloadAttachmentRequestObject) (oas.DownloadAttachmentResponseObject, error) {

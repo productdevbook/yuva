@@ -30,13 +30,13 @@ func (q *Queries) AddConversationLabel(ctx context.Context, arg AddConversationL
 
 const countOpenConversations = `-- name: CountOpenConversations :many
 SELECT c.inbox_id, coalesce(c.assignee_id = $1::uuid, false)::bool AS mine,
-       (c.assignee_id IS NULL)::bool AS unassigned, count(*) AS n
+       (c.assignee_id IS NULL)::bool AS unassigned, c.spam, count(*) AS n
 FROM conversations c
 WHERE c.workspace_id = $2 AND c.status = 'open'
   AND ($3::bool OR EXISTS (
       SELECT 1 FROM inbox_members im
       WHERE im.workspace_id = c.workspace_id AND im.inbox_id = c.inbox_id AND im.member_id = $1::uuid))
-GROUP BY 1, 2, 3
+GROUP BY 1, 2, 3, 4
 `
 
 type CountOpenConversationsParams struct {
@@ -49,6 +49,7 @@ type CountOpenConversationsRow struct {
 	InboxID    uuid.UUID
 	Mine       bool
 	Unassigned bool
+	Spam       bool
 	N          int64
 }
 
@@ -65,6 +66,7 @@ func (q *Queries) CountOpenConversations(ctx context.Context, arg CountOpenConve
 			&i.InboxID,
 			&i.Mine,
 			&i.Unassigned,
+			&i.Spam,
 			&i.N,
 		); err != nil {
 			return nil, err
@@ -81,7 +83,7 @@ const countOpenConversationsByLabel = `-- name: CountOpenConversationsByLabel :m
 SELECT cl.label_id, count(*) AS n
 FROM conversations c
 JOIN conversation_labels cl ON cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id
-WHERE c.workspace_id = $1 AND c.status = 'open'
+WHERE c.workspace_id = $1 AND c.status = 'open' AND NOT c.spam
   AND ($2::bool OR EXISTS (
       SELECT 1 FROM inbox_members im
       WHERE im.workspace_id = c.workspace_id AND im.inbox_id = c.inbox_id AND im.member_id = $3::uuid))
@@ -122,10 +124,10 @@ func (q *Queries) CountOpenConversationsByLabel(ctx context.Context, arg CountOp
 
 const createConversation = `-- name: CreateConversation :one
 INSERT INTO conversations (id, workspace_id, inbox_id, contact_id, channel_id, subject, priority,
-                           assignee_id, last_activity_at, created_at, updated_at)
+                           assignee_id, spam, email_token, last_activity_at, created_at, updated_at)
 VALUES ($1, $2, $3, $4, $5, $6, $7,
-        $8, $9, $9, $9)
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at
+        $8, $9, $10, $11, $11, $11)
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token
 `
 
 type CreateConversationParams struct {
@@ -137,6 +139,8 @@ type CreateConversationParams struct {
 	Subject     string
 	Priority    string
 	AssigneeID  *uuid.UUID
+	Spam        bool
+	EmailToken  *string
 	Now         time.Time
 }
 
@@ -150,6 +154,8 @@ func (q *Queries) CreateConversation(ctx context.Context, arg CreateConversation
 		arg.Subject,
 		arg.Priority,
 		arg.AssigneeID,
+		arg.Spam,
+		arg.EmailToken,
 		arg.Now,
 	)
 	var i Conversation
@@ -168,12 +174,14 @@ func (q *Queries) CreateConversation(ctx context.Context, arg CreateConversation
 		&i.LastActivityAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Spam,
+		&i.EmailToken,
 	)
 	return i, err
 }
 
 const getConversation = `-- name: GetConversation :one
-SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at FROM conversations WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token FROM conversations WHERE workspace_id = $1 AND id = $2
 `
 
 type GetConversationParams struct {
@@ -199,6 +207,8 @@ func (q *Queries) GetConversation(ctx context.Context, arg GetConversationParams
 		&i.LastActivityAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Spam,
+		&i.EmailToken,
 	)
 	return i, err
 }
@@ -292,30 +302,21 @@ func (q *Queries) ListConversationPreviews(ctx context.Context, arg ListConversa
 }
 
 const listConversations = `-- name: ListConversations :many
-SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at FROM conversations c
+SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token FROM conversations c
 WHERE c.workspace_id = $1
   AND ($2::bool OR EXISTS (
       SELECT 1 FROM inbox_members im
       WHERE im.workspace_id = c.workspace_id AND im.inbox_id = c.inbox_id AND im.member_id = $3))
   AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid)
   AND ($5::uuid IS NULL OR c.contact_id = $5::uuid)
-  AND ($6::text IS NULL OR c.status = $6::text)
-  AND (NOT $7::bool OR c.assignee_id IS NULL)
-  AND ($8::uuid IS NULL OR c.assignee_id = $8::uuid)
-  AND ($9::uuid IS NULL OR EXISTS (
+  AND c.spam = $6::bool
+  AND ($7::text IS NULL OR c.status = $7::text)
+  AND (NOT $8::bool OR c.assignee_id IS NULL)
+  AND ($9::uuid IS NULL OR c.assignee_id = $9::uuid)
+  AND ($10::uuid IS NULL OR EXISTS (
       SELECT 1 FROM conversation_labels cl
-      WHERE cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id AND cl.label_id = $9::uuid))
-  AND ($10::text IS NULL OR (
-      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($10::text, 'İı', 'ii'))
-      OR EXISTS (
-          SELECT 1 FROM messages m
-          WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id
-            AND m.search @@ websearch_to_tsquery('simple', translate($10::text, 'İı', 'ii')))
-      OR EXISTS (
-          SELECT 1 FROM contacts ct
-          WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
-            AND ct.search @@ websearch_to_tsquery('simple', translate($10::text, 'İı', 'ii')))))
-  AND ($11::text IS NULL OR NOT (
+      WHERE cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id AND cl.label_id = $10::uuid))
+  AND ($11::text IS NULL OR (
       to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($11::text, 'İı', 'ii'))
       OR EXISTS (
           SELECT 1 FROM messages m
@@ -325,10 +326,20 @@ WHERE c.workspace_id = $1
           SELECT 1 FROM contacts ct
           WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
             AND ct.search @@ websearch_to_tsquery('simple', translate($11::text, 'İı', 'ii')))))
-  AND ($12::timestamptz IS NULL
-       OR (c.last_activity_at, c.id) < ($12::timestamptz, $13::uuid))
+  AND ($12::text IS NULL OR NOT (
+      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($12::text, 'İı', 'ii'))
+      OR EXISTS (
+          SELECT 1 FROM messages m
+          WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id
+            AND m.search @@ websearch_to_tsquery('simple', translate($12::text, 'İı', 'ii')))
+      OR EXISTS (
+          SELECT 1 FROM contacts ct
+          WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
+            AND ct.search @@ websearch_to_tsquery('simple', translate($12::text, 'İı', 'ii')))))
+  AND ($13::timestamptz IS NULL
+       OR (c.last_activity_at, c.id) < ($13::timestamptz, $14::uuid))
 ORDER BY c.last_activity_at DESC, c.id DESC
-LIMIT $14
+LIMIT $15
 `
 
 type ListConversationsParams struct {
@@ -337,6 +348,7 @@ type ListConversationsParams struct {
 	MemberID    uuid.UUID
 	InboxID     *uuid.UUID
 	ContactID   *uuid.UUID
+	Spam        bool
 	Status      *string
 	Unassigned  bool
 	AssigneeID  *uuid.UUID
@@ -355,6 +367,7 @@ func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsPa
 		arg.MemberID,
 		arg.InboxID,
 		arg.ContactID,
+		arg.Spam,
 		arg.Status,
 		arg.Unassigned,
 		arg.AssigneeID,
@@ -387,6 +400,8 @@ func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsPa
 			&i.LastActivityAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.Spam,
+			&i.EmailToken,
 		); err != nil {
 			return nil, err
 		}
@@ -399,7 +414,7 @@ func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsPa
 }
 
 const lockConversation = `-- name: LockConversation :one
-SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at FROM conversations WHERE workspace_id = $1 AND id = $2 FOR UPDATE
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token FROM conversations WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
 
 type LockConversationParams struct {
@@ -425,6 +440,8 @@ func (q *Queries) LockConversation(ctx context.Context, arg LockConversationPara
 		&i.LastActivityAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Spam,
+		&i.EmailToken,
 	)
 	return i, err
 }
@@ -471,9 +488,9 @@ func (q *Queries) TouchConversation(ctx context.Context, arg TouchConversationPa
 
 const updateConversation = `-- name: UpdateConversation :one
 UPDATE conversations SET subject = $1, status = $2, snooze_until = $3,
-    priority = $4, assignee_id = $5, updated_at = $6
-WHERE workspace_id = $7 AND id = $8
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at
+    priority = $4, assignee_id = $5, spam = $6, updated_at = $7
+WHERE workspace_id = $8 AND id = $9
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token
 `
 
 type UpdateConversationParams struct {
@@ -482,6 +499,7 @@ type UpdateConversationParams struct {
 	SnoozeUntil *time.Time
 	Priority    string
 	AssigneeID  *uuid.UUID
+	Spam        bool
 	Now         time.Time
 	WorkspaceID uuid.UUID
 	ID          uuid.UUID
@@ -494,6 +512,7 @@ func (q *Queries) UpdateConversation(ctx context.Context, arg UpdateConversation
 		arg.SnoozeUntil,
 		arg.Priority,
 		arg.AssigneeID,
+		arg.Spam,
 		arg.Now,
 		arg.WorkspaceID,
 		arg.ID,
@@ -514,6 +533,8 @@ func (q *Queries) UpdateConversation(ctx context.Context, arg UpdateConversation
 		&i.LastActivityAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Spam,
+		&i.EmailToken,
 	)
 	return i, err
 }

@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -10,13 +11,30 @@ import (
 
 const maxChannelSettingsBytes = 64 << 10
 
-func channelBody(c store.Channel) oas.Channel {
+func channelBody(c store.Channel, e *store.EmailChannel) oas.Channel {
 	out := oas.Channel{
 		Id: c.ID, InboxId: c.InboxID, Kind: oas.ChannelKind(c.Kind), Name: c.Name,
 		CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt, Settings: oas.ChannelSettings{},
 	}
 	_ = json.Unmarshal(c.Settings, &out.Settings)
+	if e != nil {
+		out.Email = emailChannelBody(*e)
+	}
 	return out
+}
+
+func (s *Server) oneChannelBody(ctx context.Context, q *store.Queries, c store.Channel) (oas.Channel, error) {
+	if c.Kind != string(oas.ChannelKindEmail) {
+		return channelBody(c, nil), nil
+	}
+	e, err := q.GetEmailChannel(ctx, store.GetEmailChannelParams{WorkspaceID: c.WorkspaceID, ChannelID: c.ID})
+	if store.IsNotFound(err) {
+		return channelBody(c, nil), nil
+	}
+	if err != nil {
+		return oas.Channel{}, err
+	}
+	return channelBody(c, &e), nil
 }
 
 func channelSettings(v *oas.ChannelSettings) ([]byte, error) {
@@ -39,9 +57,21 @@ func (s *Server) ListChannels(ctx context.Context, req oas.ListChannelsRequestOb
 	if err != nil {
 		return nil, err
 	}
+	ids := make([]uuid.UUID, len(rows))
+	for i, r := range rows {
+		ids[i] = r.ID
+	}
+	emails, err := emailChannelsByID(ctx, s.st.Queries, p.workspaceID, ids)
+	if err != nil {
+		return nil, err
+	}
 	out := oas.ListChannels200JSONResponse{Items: make([]oas.Channel, 0, len(rows))}
 	for _, r := range rows {
-		out.Items = append(out.Items, channelBody(r))
+		var e *store.EmailChannel
+		if v, ok := emails[r.ID]; ok {
+			e = &v
+		}
+		out.Items = append(out.Items, channelBody(r, e))
 	}
 	return out, nil
 }
@@ -62,20 +92,50 @@ func (s *Server) CreateChannel(ctx context.Context, req oas.CreateChannelRequest
 	if err != nil {
 		return nil, err
 	}
+	isEmail := req.Body.Kind == oas.ChannelKindEmail
+	if isEmail && req.Body.Email == nil {
+		return nil, errEmailRequired
+	}
+	if !isEmail && req.Body.Email != nil {
+		return nil, errEmailNotAllowed
+	}
+	id := newID()
+	var emailArg store.CreateEmailChannelParams
+	if isEmail {
+		if emailArg, err = s.emailChannelParams(p.workspaceID, id, req.Body.Email, nil); err != nil {
+			return nil, err
+		}
+	}
 	if _, err := visibleInbox(ctx, s.st.Queries, p, req.InboxId); err != nil {
 		return nil, err
 	}
-	c, err := s.st.CreateChannel(ctx, store.CreateChannelParams{
-		ID: newID(), WorkspaceID: p.workspaceID, InboxID: req.InboxId, Kind: string(req.Body.Kind),
-		Name: name, Settings: settings, Now: s.now(),
+	var out oas.Channel
+	err = s.st.InTx(ctx, func(q *store.Queries) error {
+		c, err := q.CreateChannel(ctx, store.CreateChannelParams{
+			ID: id, WorkspaceID: p.workspaceID, InboxID: req.InboxId, Kind: string(req.Body.Kind),
+			Name: name, Settings: settings, Now: s.now(),
+		})
+		if store.IsForeignKeyViolation(err) {
+			return errInboxGone
+		}
+		if err != nil {
+			return err
+		}
+		if !isEmail {
+			out = channelBody(c, nil)
+			return nil
+		}
+		e, err := saveEmailChannel(ctx, q, emailArg)
+		if err != nil {
+			return err
+		}
+		out = channelBody(c, &e)
+		return nil
 	})
-	if store.IsForeignKeyViolation(err) {
-		return nil, errInboxGone
-	}
 	if err != nil {
 		return nil, err
 	}
-	return oas.CreateChannel201JSONResponse(channelBody(c)), nil
+	return oas.CreateChannel201JSONResponse(out), nil
 }
 
 func (s *Server) visibleChannel(ctx context.Context, p principal, id oas.ChannelId) (store.Channel, error) {
@@ -101,7 +161,11 @@ func (s *Server) GetChannel(ctx context.Context, req oas.GetChannelRequestObject
 	if err != nil {
 		return nil, err
 	}
-	return oas.GetChannel200JSONResponse(channelBody(c)), nil
+	out, err := s.oneChannelBody(ctx, s.st.Queries, c)
+	if err != nil {
+		return nil, err
+	}
+	return oas.GetChannel200JSONResponse(out), nil
 }
 
 func (s *Server) UpdateChannel(ctx context.Context, req oas.UpdateChannelRequestObject) (oas.UpdateChannelResponseObject, error) {
@@ -124,14 +188,41 @@ func (s *Server) UpdateChannel(ctx context.Context, req oas.UpdateChannelRequest
 			return nil, err
 		}
 	}
-	c, err := s.st.UpdateChannel(ctx, store.UpdateChannelParams{WorkspaceID: p.workspaceID, ID: cur.ID, Name: name, Settings: settings, Now: s.now()})
-	if store.IsNotFound(err) {
-		return nil, errChannelGone
+	if req.Body.Email != nil && cur.Kind != string(oas.ChannelKindEmail) {
+		return nil, errEmailNotAllowed
 	}
+	var out oas.Channel
+	err = s.st.InTx(ctx, func(q *store.Queries) error {
+		c, err := q.UpdateChannel(ctx, store.UpdateChannelParams{WorkspaceID: p.workspaceID, ID: cur.ID, Name: name, Settings: settings, Now: s.now()})
+		if store.IsNotFound(err) {
+			return errChannelGone
+		}
+		if err != nil {
+			return err
+		}
+		if req.Body.Email != nil {
+			var prev *store.EmailChannel
+			e, err := q.GetEmailChannel(ctx, store.GetEmailChannelParams{WorkspaceID: p.workspaceID, ChannelID: c.ID})
+			if err == nil {
+				prev = &e
+			} else if !store.IsNotFound(err) {
+				return err
+			}
+			arg, err := s.emailChannelParams(p.workspaceID, c.ID, req.Body.Email, prev)
+			if err != nil {
+				return err
+			}
+			if _, err := saveEmailChannel(ctx, q, arg); err != nil {
+				return err
+			}
+		}
+		out, err = s.oneChannelBody(ctx, q, c)
+		return err
+	})
 	if err != nil {
 		return nil, err
 	}
-	return oas.UpdateChannel200JSONResponse(channelBody(c)), nil
+	return oas.UpdateChannel200JSONResponse(out), nil
 }
 
 func (s *Server) DeleteChannel(ctx context.Context, req oas.DeleteChannelRequestObject) (oas.DeleteChannelResponseObject, error) {

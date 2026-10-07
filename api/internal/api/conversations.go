@@ -152,7 +152,7 @@ func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conver
 		c := conversationBody(r, labels[r.ID])
 		out[i] = oas.ConversationListItem{
 			Id: c.Id, InboxId: c.InboxId, ContactId: c.ContactId, ChannelId: c.ChannelId, Subject: c.Subject,
-			Status: c.Status, SnoozeUntil: c.SnoozeUntil, Priority: c.Priority, AssigneeId: c.AssigneeId, Labels: c.Labels,
+			Status: c.Status, SnoozeUntil: c.SnoozeUntil, Priority: c.Priority, Spam: c.Spam, AssigneeId: c.AssigneeId, Labels: c.Labels,
 			LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt, CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt,
 			Contact: contacts[r.ContactID], LastMessage: previews[r.ID], Unread: unread[r.ID],
 		}
@@ -166,7 +166,7 @@ func conversationBody(c store.Conversation, labels []uuid.UUID) oas.Conversation
 	}
 	return oas.Conversation{
 		Id: c.ID, InboxId: c.InboxID, ContactId: c.ContactID, ChannelId: c.ChannelID, Subject: c.Subject,
-		Status: oas.ConversationStatus(c.Status), SnoozeUntil: c.SnoozeUntil, Priority: oas.Priority(c.Priority),
+		Status: oas.ConversationStatus(c.Status), SnoozeUntil: c.SnoozeUntil, Priority: oas.Priority(c.Priority), Spam: c.Spam,
 		AssigneeId: c.AssigneeID, Labels: labels, LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt,
 		CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt,
 	}
@@ -266,7 +266,7 @@ func (s *Server) recordChanges(ctx context.Context, q *store.Queries, events *ev
 }
 
 func conversationChanged(a, b store.Conversation) bool {
-	return a.Subject != b.Subject || a.Status != b.Status || a.Priority != b.Priority ||
+	return a.Subject != b.Subject || a.Status != b.Status || a.Priority != b.Priority || a.Spam != b.Spam ||
 		!sameID(a.AssigneeID, b.AssigneeID) || !sameTime(a.SnoozeUntil, b.SnoozeUntil)
 }
 
@@ -303,7 +303,7 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 	arg := store.ListConversationsParams{
 		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), MemberID: p.memberID,
 		InboxID: prm.InboxId, ContactID: prm.ContactId, LabelID: prm.LabelId, Q: pos, QNot: neg,
-		CursorAt: at, CursorID: cid, Lim: lim + 1,
+		CursorAt: at, CursorID: cid, Lim: lim + 1, Spam: prm.Spam != nil && *prm.Spam,
 	}
 	if prm.InboxId != nil {
 		if _, err := visibleInbox(ctx, s.st.Queries, p, *prm.InboxId); err != nil {
@@ -377,6 +377,10 @@ func (s *Server) GetConversationCounts(ctx context.Context, _ oas.GetConversatio
 	out := oas.GetConversationCounts200JSONResponse{Inboxes: []oas.CountByID{}, Labels: make([]oas.CountByID, 0, len(byLabel))}
 	perInbox := map[uuid.UUID]int64{}
 	for _, r := range rows {
+		if r.Spam {
+			out.Spam += r.N
+			continue
+		}
 		out.All += r.N
 		if r.Mine {
 			out.Mine += r.N
@@ -510,6 +514,9 @@ func (s *Server) UpdateConversation(ctx context.Context, req oas.UpdateConversat
 			}
 			next.Priority = string(*b.Priority)
 		}
+		if b.Spam != nil {
+			next.Spam = *b.Spam
+		}
 		if b.Status != nil {
 			if !b.Status.Valid() {
 				return errValidation("status must be open, pending, snoozed or closed")
@@ -579,7 +586,7 @@ func (s *Server) UpdateConversation(ctx context.Context, req oas.UpdateConversat
 		}
 		updated, err := q.UpdateConversation(ctx, store.UpdateConversationParams{
 			WorkspaceID: p.workspaceID, ID: cur.ID, Subject: next.Subject, Status: next.Status, SnoozeUntil: next.SnoozeUntil,
-			Priority: next.Priority, AssigneeID: next.AssigneeID, Now: now,
+			Priority: next.Priority, AssigneeID: next.AssigneeID, Spam: next.Spam, Now: now,
 		})
 		if err != nil {
 			return err

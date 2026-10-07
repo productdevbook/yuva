@@ -28,6 +28,7 @@ services:
       YUVA_MASTER_KEY: ${YUVA_MASTER_KEY:-eXV2YS1kZXYtb25seS1tYXN0ZXIta2V5LTMyYnl0ZXM=}
       YUVA_STORAGE: local
       YUVA_STORAGE_DIR: /data/attachments
+      YUVA_INGRESS_SECRET: ${YUVA_INGRESS_SECRET:-yuva-dev-only-ingress-secret}
     ports:
       - "0.0.0.0:8809:8080"
     volumes:
@@ -35,6 +36,18 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      mailpit:
+        condition: service_started
+    restart: unless-stopped
+
+  mailpit:
+    image: axllent/mailpit:v1.27
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: "true"
+      MP_SMTP_AUTH_ALLOW_INSECURE: "true"
+    ports:
+      - "127.0.0.1:58025:8025"
+      - "127.0.0.1:51025:1025"
     restart: unless-stopped
 
 volumes:

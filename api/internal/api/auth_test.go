@@ -22,6 +22,7 @@ import (
 	"github.com/go-webauthn/webauthn/webauthn"
 
 	"github.com/productdevbook/yuva/api/internal/api"
+	"github.com/productdevbook/yuva/api/internal/jobs"
 	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/secret"
@@ -96,7 +97,15 @@ type harness struct {
 	secrets *secret.Key
 	storage *storage.Local
 	hub     *realtime.Hub
+	srv     *api.Server
+	smtp    *smtpCapture
+	web     *fakeWeb
 }
+
+const (
+	testIngressSecret = "test-ingress-secret"
+	testSESTopic      = "arn:aws:sns:eu-west-1:123456789012:yuva-ses"
+)
 
 const testAttachmentMaxBytes = 1024
 
@@ -115,7 +124,11 @@ func newHarness(t *testing.T) *harness {
 	}
 	t.Cleanup(st.Close)
 	var migrateErr error
-	migrateOnce.Do(func() { migrateErr = st.MigrateUp(ctx, slog.New(slog.DiscardHandler)) })
+	migrateOnce.Do(func() {
+		if migrateErr = st.MigrateUp(ctx, slog.New(slog.DiscardHandler)); migrateErr == nil {
+			migrateErr = jobs.Migrate(ctx, st.Pool, slog.New(slog.DiscardHandler))
+		}
+	})
 	if migrateErr != nil {
 		t.Fatal(migrateErr)
 	}
@@ -135,7 +148,8 @@ func newHarness(t *testing.T) *harness {
 	listenCtx, stopListening := context.WithCancel(ctx)
 	t.Cleanup(stopListening)
 	go realtime.Listen(listenCtx, dsn, st.Queries, hub, slog.New(slog.DiscardHandler))
-	h := &harness{t: t, st: st, clock: &clock{now: time.Now()}, mail: &outbox{}, secrets: key, storage: objects, hub: hub}
+	h := &harness{t: t, st: st, clock: &clock{now: time.Now()}, mail: &outbox{}, secrets: key, storage: objects, hub: hub,
+		smtp: &smtpCapture{}, web: newFakeWeb()}
 	srv := api.New(api.Deps{
 		Log:      slog.New(slog.DiscardHandler),
 		Store:    st,
@@ -150,8 +164,12 @@ func newHarness(t *testing.T) *harness {
 			MaxBytes: testAttachmentMaxBytes,
 			Types:    []string{"text/plain", "image/*"},
 		},
-		Hub: hub,
+		Hub:         hub,
+		Ingress:     api.IngressSettings{Secret: testIngressSecret, SESTopicARNs: []string{testSESTopic}},
+		EmailSender: h.smtp,
+		HTTPClient:  &http.Client{Transport: h.web},
 	})
+	h.srv = srv
 	ts := httptest.NewServer(srv.Handler())
 	t.Cleanup(ts.Close)
 	h.url = ts.URL

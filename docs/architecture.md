@@ -99,24 +99,54 @@ matched to contacts only when they arrive by e-mail or inside a valid identity t
 
 Inbound:
 1. A Cloudflare Email Worker (`edge/`) receives mail for the support addresses and POSTs the raw
-   message with the envelope recipient to `/ingress/email`. Any other MTA can do the same; the
-   endpoint is not tied to Cloudflare.
-2. The recipient selects the channel. Threading uses `In-Reply-To` and `References` against stored
-   Message-IDs; our outbound Message-IDs carry the conversation token, so a reply finds its
-   conversation even when the client drops `References`. Otherwise a new conversation starts.
+   message with the envelope recipient to `/ingress/email`, signed with HMAC-SHA256 under
+   `YUVA_INGRESS_SECRET` (one per install; the request format is in `edge/README.md`). The
+   timestamp must be within 5 minutes and a Message-ID already stored for the channel is accepted
+   again without a second copy. Any other MTA can do the same; the endpoint is not tied to
+   Cloudflare. An MTA that pipes into a command uses `yuva ingest-email --to <address>`, which
+   exits with sysexits codes (67 unknown recipient, 77 refused, 75 try later).
+2. The recipient selects the channel: an e-mail address belongs to one channel of the whole server
+   (case-insensitive; `local+tag@` falls back to `local@`), because the request names nothing
+   else. Threading uses `In-Reply-To` and `References` against stored Message-IDs of the inbox;
+   our outbound Message-IDs are `<token.random@sending domain>` where the token is an opaque random
+   value stored on the conversation, so a reply finds its conversation even when the client drops
+   `References` or a relay rewrites the domain. Otherwise a new conversation starts, with the
+   subject of the mail. A closed, pending or snoozed conversation that gets a reply is reopened.
+   The sender is matched to a contact by address or becomes a new contact; mail from a blocked
+   contact is refused, mail from the channel's own address is dropped.
 3. MIME parsing with enmime; visible text with quotes and signatures stripped (our own Go
-   implementation, tested against a fixture corpus); HTML sanitized with bluemonday for display;
-   the original message kept in object storage.
+   implementation in `api/internal/email/reply`, tested against a fixture corpus); the quoted
+   containers that clients mark in HTML are removed too; HTML sanitized with bluemonday for
+   display. The full text and full sanitized HTML stay available, and the original message is kept
+   in object storage for members to download. Attachments and inline images follow the server's
+   attachment size and type rules; the rest is skipped (it stays in the original).
 4. Loops: messages with `Auto-Submitted` other than `no`, `Precedence: bulk|junk|list|auto_reply`,
-   `X-Autoreply`, or our own Message-ID domain never trigger an automatic message. Per-sender rate
-   limits stop runaway loops.
-5. Spam: the upstream verdict (`Authentication-Results`) is stored and shown; DMARC failures go to
-   a spam view; contacts can be blocked.
+   `X-Autoreply`, `X-Autorespond`, `X-Auto-Response-Suppress` (other than `None`), `List-Id`, a
+   null sender, a delivery report, or our own Message-ID domain are stored but never trigger an
+   automatic message. A sender opens at most 20 new conversations per channel and hour; more are
+   refused until the hour has passed.
+5. Spam: the receiving server's verdict (the topmost `Authentication-Results`) is stored and
+   shown; a new conversation whose first mail fails DMARC is flagged `spam`, which keeps it out of
+   lists and counts (they have a spam view) and away from automatic replies; contacts can be
+   blocked.
 
-Outbound: SMTP per channel (works with SES, Postmark, any relay). `From` is the channel address,
-`Message-ID`, `In-Reply-To` and `References` keep the thread, automatic messages carry
-`Auto-Submitted: auto-replied`. Bounces and complaints mark the address as undeliverable and are
-shown in the conversation.
+Outbound: SMTP per channel (works with SES, Postmark, any relay); the password is stored
+encrypted under the master key and never returned, and it is only sent over TLS. A member's reply
+in a conversation that started on an e-mail channel goes out through a River job: `From` is the
+channel address (or its per-channel sending address) with its display name, `Reply-To` the channel
+address, `To` the address the contact last wrote from, `Subject` `Re: …`, and `In-Reply-To` and
+`References` keep the thread. Notes are never sent. The message carries its delivery state
+(`queued`, `sent`, `failed` with the error), reported live as `message.updated`; temporary SMTP
+errors are retried, 5xx replies fail at once. An e-mail channel can greet new conversations once
+per contact within a set interval; the greeting is a `system` message with
+`Auto-Submitted: auto-replied`.
+
+Bounces: inbound delivery reports (`multipart/report; report-type=delivery-status`) to a channel
+address fail the original message and mark permanently failed recipients undeliverable. Amazon SES
+bounces and complaints arrive at `/ingress/ses` through SNS: the SNS signature is checked against
+the AWS certificate, only topics listed in `YUVA_SES_TOPIC_ARNS` are accepted, and a subscription
+is confirmed only on an `sns.<region>.amazonaws.com` URL. Undeliverable addresses are shown on the
+contact, replies to them are refused until a member clears them.
 
 ### Live chat and async messaging (web)
 
@@ -188,6 +218,11 @@ now; per-channel limits can narrow them later.
   - `workspaces` itself, whose `id` is the workspace.
   - River's `river_*` queue tables, which the library owns; job arguments carry the
     `workspace_id` instead.
+  - Inbound e-mail arrives before any workspace is known: `/ingress/email` finds its channel by
+    the recipient address (`email_channels.address`, unique across the server), and
+    `/ingress/ses` finds the message a bounce refers to by our Message-ID
+    (`message_emails.header_message_id` of outbound mail). Everything after that lookup is scoped
+    by the workspace it returned.
   - The person-level identity tables `people`, `sessions`, `login_codes`, `passkeys` and
     `webauthn_ceremonies`. A person signs in once and can be a member of several workspaces, so
     these rows belong to a person (or, for `login_codes`, an e-mail address before sign-in), not

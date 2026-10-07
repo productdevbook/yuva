@@ -290,6 +290,69 @@ func (e InboxUpdatedEventType) Valid() bool {
 	}
 }
 
+// Defines values for IngressRejectionCode.
+const (
+	BadSignature     IngressRejectionCode = "bad_signature"
+	BlockedSender    IngressRejectionCode = "blocked_sender"
+	Malformed        IngressRejectionCode = "malformed"
+	NotConfigured    IngressRejectionCode = "not_configured"
+	RateLimited      IngressRejectionCode = "rate_limited"
+	StaleTimestamp   IngressRejectionCode = "stale_timestamp"
+	TooLarge         IngressRejectionCode = "too_large"
+	Unavailable      IngressRejectionCode = "unavailable"
+	UnknownRecipient IngressRejectionCode = "unknown_recipient"
+)
+
+// Valid indicates whether the value is a known member of the IngressRejectionCode enum.
+func (e IngressRejectionCode) Valid() bool {
+	switch e {
+	case BadSignature:
+		return true
+	case BlockedSender:
+		return true
+	case Malformed:
+		return true
+	case NotConfigured:
+		return true
+	case RateLimited:
+		return true
+	case StaleTimestamp:
+		return true
+	case TooLarge:
+		return true
+	case Unavailable:
+		return true
+	case UnknownRecipient:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for IngressResultStatus.
+const (
+	IngressResultStatusBounce    IngressResultStatus = "bounce"
+	IngressResultStatusDropped   IngressResultStatus = "dropped"
+	IngressResultStatusDuplicate IngressResultStatus = "duplicate"
+	IngressResultStatusStored    IngressResultStatus = "stored"
+)
+
+// Valid indicates whether the value is a known member of the IngressResultStatus enum.
+func (e IngressResultStatus) Valid() bool {
+	switch e {
+	case IngressResultStatusBounce:
+		return true
+	case IngressResultStatusDropped:
+		return true
+	case IngressResultStatusDuplicate:
+		return true
+	case IngressResultStatusStored:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for Locale.
 const (
 	En Locale = "en"
@@ -359,6 +422,66 @@ func (e MessageCreatedEventType) Valid() bool {
 	}
 }
 
+// Defines values for MessageDeliveryChannel.
+const (
+	MessageDeliveryChannelEmail MessageDeliveryChannel = "email"
+)
+
+// Valid indicates whether the value is a known member of the MessageDeliveryChannel enum.
+func (e MessageDeliveryChannel) Valid() bool {
+	switch e {
+	case MessageDeliveryChannelEmail:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MessageDeliveryState.
+const (
+	Failed MessageDeliveryState = "failed"
+	Queued MessageDeliveryState = "queued"
+	Sent   MessageDeliveryState = "sent"
+)
+
+// Valid indicates whether the value is a known member of the MessageDeliveryState enum.
+func (e MessageDeliveryState) Valid() bool {
+	switch e {
+	case Failed:
+		return true
+	case Queued:
+		return true
+	case Sent:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MessageEmailDmarc.
+const (
+	MessageEmailDmarcFail    MessageEmailDmarc = "fail"
+	MessageEmailDmarcNone    MessageEmailDmarc = "none"
+	MessageEmailDmarcPass    MessageEmailDmarc = "pass"
+	MessageEmailDmarcUnknown MessageEmailDmarc = "unknown"
+)
+
+// Valid indicates whether the value is a known member of the MessageEmailDmarc enum.
+func (e MessageEmailDmarc) Valid() bool {
+	switch e {
+	case MessageEmailDmarcFail:
+		return true
+	case MessageEmailDmarcNone:
+		return true
+	case MessageEmailDmarcPass:
+		return true
+	case MessageEmailDmarcUnknown:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for MessageKind.
 const (
 	MessageKindEvent   MessageKind = "event"
@@ -374,6 +497,21 @@ func (e MessageKind) Valid() bool {
 	case MessageKindMessage:
 		return true
 	case MessageKindNote:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MessageUpdatedEventType.
+const (
+	MessageUpdated MessageUpdatedEventType = "message.updated"
+)
+
+// Valid indicates whether the value is a known member of the MessageUpdatedEventType enum.
+func (e MessageUpdatedEventType) Valid() bool {
+	switch e {
+	case MessageUpdated:
 		return true
 	default:
 		return false
@@ -449,6 +587,45 @@ func (e Role) Valid() bool {
 	case Agent:
 		return true
 	case Owner:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SmtpTls.
+const (
+	SmtpTlsNone     SmtpTls = "none"
+	SmtpTlsStarttls SmtpTls = "starttls"
+	SmtpTlsTls      SmtpTls = "tls"
+)
+
+// Valid indicates whether the value is a known member of the SmtpTls enum.
+func (e SmtpTls) Valid() bool {
+	switch e {
+	case SmtpTlsNone:
+		return true
+	case SmtpTlsStarttls:
+		return true
+	case SmtpTlsTls:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UndeliverableEmailReason.
+const (
+	UndeliverableEmailReasonBounce    UndeliverableEmailReason = "bounce"
+	UndeliverableEmailReasonComplaint UndeliverableEmailReason = "complaint"
+)
+
+// Valid indicates whether the value is a known member of the UndeliverableEmailReason enum.
+func (e UndeliverableEmailReason) Valid() bool {
+	switch e {
+	case UndeliverableEmailReasonBounce:
+		return true
+	case UndeliverableEmailReasonComplaint:
 		return true
 	default:
 		return false
@@ -617,25 +794,30 @@ type CannedReplyUpdate struct {
 // Channel defines model for Channel.
 type Channel struct {
 	CreatedAt time.Time `json:"created_at"`
-	Id        uuid.UUID `json:"id"`
-	InboxId   uuid.UUID `json:"inbox_id"`
+
+	// Email Settings of an `email` channel.
+	Email   *EmailChannel `json:"email,omitempty"`
+	Id      uuid.UUID     `json:"id"`
+	InboxId uuid.UUID     `json:"inbox_id"`
 
 	// Kind `email`, `chat` (web widget), `app` (mobile SDKs) or `api` (server to server).
 	Kind ChannelKind `json:"kind"`
 	Name string      `json:"name"`
 
-	// Settings Kind-specific settings, stored as given. Not acted on yet.
+	// Settings Settings of `chat`, `app` and `api` channels, stored as given. Not acted on yet.
 	Settings  ChannelSettings `json:"settings"`
 	UpdatedAt time.Time       `json:"updated_at"`
 }
 
 // ChannelCreate defines model for ChannelCreate.
 type ChannelCreate struct {
+	Email *EmailChannelInput `json:"email,omitempty"`
+
 	// Kind `email`, `chat` (web widget), `app` (mobile SDKs) or `api` (server to server).
 	Kind ChannelKind `json:"kind"`
 	Name string      `json:"name"`
 
-	// Settings Kind-specific settings, stored as given. Not acted on yet.
+	// Settings Settings of `chat`, `app` and `api` channels, stored as given. Not acted on yet.
 	Settings *ChannelSettings `json:"settings,omitempty"`
 }
 
@@ -647,28 +829,34 @@ type ChannelList struct {
 	Items []Channel `json:"items"`
 }
 
-// ChannelSettings Kind-specific settings, stored as given. Not acted on yet.
+// ChannelSettings Settings of `chat`, `app` and `api` channels, stored as given. Not acted on yet.
 type ChannelSettings map[string]interface{}
 
 // ChannelUpdate defines model for ChannelUpdate.
 type ChannelUpdate struct {
-	Name *string `json:"name,omitempty"`
+	Email *EmailChannelInput `json:"email,omitempty"`
+	Name  *string            `json:"name,omitempty"`
 
-	// Settings Kind-specific settings, stored as given. Not acted on yet.
+	// Settings Settings of `chat`, `app` and `api` channels, stored as given. Not acted on yet.
 	Settings *ChannelSettings `json:"settings,omitempty"`
 }
 
 // Contact defines model for Contact.
 type Contact struct {
 	// Attributes Free-form data about the contact (plan, app version, …), at most 16 KiB.
-	Attributes  Attributes   `json:"attributes"`
+	Attributes Attributes `json:"attributes"`
+
+	// Blocked Mail from a blocked contact is refused.
 	Blocked     bool         `json:"blocked"`
 	CreatedAt   time.Time    `json:"created_at"`
 	Emails      []Email      `json:"emails"`
 	ExternalIds []ExternalId `json:"external_ids"`
 	Id          uuid.UUID    `json:"id"`
 	Name        string       `json:"name"`
-	UpdatedAt   time.Time    `json:"updated_at"`
+
+	// Undeliverable The contact's addresses that must not be mailed.
+	Undeliverable []UndeliverableEmail `json:"undeliverable"`
+	UpdatedAt     time.Time            `json:"updated_at"`
 }
 
 // ContactCreate defines model for ContactCreate.
@@ -709,11 +897,14 @@ type ContactRef struct {
 // ContactUpdate defines model for ContactUpdate.
 type ContactUpdate struct {
 	// Attributes Free-form data about the contact (plan, app version, …), at most 16 KiB.
-	Attributes  *Attributes   `json:"attributes,omitempty"`
-	Blocked     *bool         `json:"blocked,omitempty"`
-	Emails      *[]Email      `json:"emails,omitempty"`
-	ExternalIds *[]ExternalId `json:"external_ids,omitempty"`
-	Name        *string       `json:"name,omitempty"`
+	Attributes *Attributes `json:"attributes,omitempty"`
+	Blocked    *bool       `json:"blocked,omitempty"`
+
+	// ClearUndeliverable Addresses to mail again, e.g. after the recipient fixed their mailbox.
+	ClearUndeliverable *[]Email      `json:"clear_undeliverable,omitempty"`
+	Emails             *[]Email      `json:"emails,omitempty"`
+	ExternalIds        *[]ExternalId `json:"external_ids,omitempty"`
+	Name               *string       `json:"name,omitempty"`
 }
 
 // ContactUpdatedEvent A contact changed.
@@ -747,12 +938,16 @@ type Conversation struct {
 	LastActivityAt time.Time `json:"last_activity_at"`
 
 	// LastMessageAt The last `message` to or from the contact.
-	LastMessageAt *time.Time         `json:"last_message_at,omitempty"`
-	Priority      Priority           `json:"priority"`
-	SnoozeUntil   *time.Time         `json:"snooze_until,omitempty"`
-	Status        ConversationStatus `json:"status"`
-	Subject       string             `json:"subject"`
-	UpdatedAt     time.Time          `json:"updated_at"`
+	LastMessageAt *time.Time `json:"last_message_at,omitempty"`
+	Priority      Priority   `json:"priority"`
+	SnoozeUntil   *time.Time `json:"snooze_until,omitempty"`
+
+	// Spam Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
+	// and counts unless asked for, and gets no automatic reply.
+	Spam      bool               `json:"spam"`
+	Status    ConversationStatus `json:"status"`
+	Subject   string             `json:"subject"`
+	UpdatedAt time.Time          `json:"updated_at"`
 }
 
 // ConversationContact The conversation's contact, enough for a list row.
@@ -773,9 +968,12 @@ type ConversationCounts struct {
 	Inboxes []CountByID `json:"inboxes"`
 
 	// Labels Per label id.
-	Labels     []CountByID `json:"labels"`
-	Mine       int64       `json:"mine"`
-	Unassigned int64       `json:"unassigned"`
+	Labels []CountByID `json:"labels"`
+	Mine   int64       `json:"mine"`
+
+	// Spam Open conversations flagged as spam (not included in the other counts).
+	Spam       int64 `json:"spam"`
+	Unassigned int64 `json:"unassigned"`
 }
 
 // ConversationCreate defines model for ConversationCreate.
@@ -831,11 +1029,15 @@ type ConversationListItem struct {
 	LastMessage *MessagePreview `json:"last_message,omitempty"`
 
 	// LastMessageAt The last `message` to or from the contact.
-	LastMessageAt *time.Time         `json:"last_message_at,omitempty"`
-	Priority      Priority           `json:"priority"`
-	SnoozeUntil   *time.Time         `json:"snooze_until,omitempty"`
-	Status        ConversationStatus `json:"status"`
-	Subject       string             `json:"subject"`
+	LastMessageAt *time.Time `json:"last_message_at,omitempty"`
+	Priority      Priority   `json:"priority"`
+	SnoozeUntil   *time.Time `json:"snooze_until,omitempty"`
+
+	// Spam Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
+	// and counts unless asked for, and gets no automatic reply.
+	Spam    bool               `json:"spam"`
+	Status  ConversationStatus `json:"status"`
+	Subject string             `json:"subject"`
 
 	// Unread A message or note from someone other than the calling member is newer than the
 	// member's read cursor. Always `false` for API keys.
@@ -892,11 +1094,14 @@ type ConversationUpdate struct {
 	AssigneeId nullable.Nullable[uuid.UUID] `json:"assignee_id,omitempty"`
 
 	// Labels Replaces the labels.
-	Labels      *[]uuid.UUID        `json:"labels,omitempty"`
-	Priority    *Priority           `json:"priority,omitempty"`
-	SnoozeUntil *time.Time          `json:"snooze_until,omitempty"`
-	Status      *ConversationStatus `json:"status,omitempty"`
-	Subject     *string             `json:"subject,omitempty"`
+	Labels      *[]uuid.UUID `json:"labels,omitempty"`
+	Priority    *Priority    `json:"priority,omitempty"`
+	SnoozeUntil *time.Time   `json:"snooze_until,omitempty"`
+
+	// Spam Flag or unflag as spam.
+	Spam    *bool               `json:"spam,omitempty"`
+	Status  *ConversationStatus `json:"status,omitempty"`
+	Subject *string             `json:"subject,omitempty"`
 }
 
 // CountByID defines model for CountByID.
@@ -910,6 +1115,58 @@ type Direction string
 
 // Email Examples: owner@example.com
 type Email = openapi_types.Email
+
+// EmailAutoReply A greeting e-mailed when a new conversation starts by e-mail, at most once per contact
+// within `interval_hours`. It carries `Auto-Submitted: auto-replied` and is never sent in
+// answer to automatic mail.
+type EmailAutoReply struct {
+	Enabled       bool   `json:"enabled"`
+	IntervalHours int32  `json:"interval_hours"`
+	Text          string `json:"text"`
+}
+
+// EmailAutoReplyInput defines model for EmailAutoReplyInput.
+type EmailAutoReplyInput struct {
+	Enabled bool `json:"enabled"`
+
+	// IntervalHours Defaults to 24.
+	IntervalHours *int32 `json:"interval_hours,omitempty"`
+
+	// Text Required when `enabled`.
+	Text *string `json:"text,omitempty"`
+}
+
+// EmailChannel Settings of an `email` channel.
+type EmailChannel struct {
+	// Address Examples: owner@example.com
+	Address Email `json:"address"`
+
+	// AutoReply A greeting e-mailed when a new conversation starts by e-mail, at most once per contact
+	// within `interval_hours`. It carries `Auto-Submitted: auto-replied` and is never sent in
+	// answer to automatic mail.
+	AutoReply EmailAutoReply `json:"auto_reply"`
+
+	// DisplayName The name in `From`; the channel name when empty.
+	DisplayName string `json:"display_name"`
+
+	// FromAddress Examples: owner@example.com
+	FromAddress *Email `json:"from_address,omitempty"`
+
+	// Smtp The outbound SMTP account. The password is never returned.
+	Smtp *SmtpSettings `json:"smtp,omitempty"`
+}
+
+// EmailChannelInput defines model for EmailChannelInput.
+type EmailChannelInput struct {
+	// Address Examples: owner@example.com
+	Address     Email                `json:"address"`
+	AutoReply   *EmailAutoReplyInput `json:"auto_reply,omitempty"`
+	DisplayName *string              `json:"display_name,omitempty"`
+
+	// FromAddress Examples: owner@example.com
+	FromAddress *Email             `json:"from_address,omitempty"`
+	Smtp        *SmtpSettingsInput `json:"smtp,omitempty"`
+}
 
 // EventType defines model for EventType.
 type EventType string
@@ -1105,6 +1362,33 @@ type InboxUpdatedEvent struct {
 // InboxUpdatedEventType defines model for InboxUpdatedEvent.Type.
 type InboxUpdatedEventType string
 
+// IngressRejection defines model for IngressRejection.
+type IngressRejection struct {
+	Code IngressRejectionCode `json:"code"`
+
+	// Reason Shown to the sender of the mail.
+	Reason string `json:"reason"`
+}
+
+// IngressRejectionCode defines model for IngressRejection.Code.
+type IngressRejectionCode string
+
+// IngressResult defines model for IngressResult.
+type IngressResult struct {
+	ConversationId *uuid.UUID `json:"conversation_id,omitempty"`
+	MessageId      *uuid.UUID `json:"message_id,omitempty"`
+
+	// Status `stored` (a message was added), `duplicate` (seen before), `bounce` (a delivery report
+	// was applied) or `dropped` (deliberately ignored, e.g. mail from the channel's own
+	// address).
+	Status IngressResultStatus `json:"status"`
+}
+
+// IngressResultStatus `stored` (a message was added), `duplicate` (seen before), `bounce` (a delivery report
+// was applied) or `dropped` (deliberately ignored, e.g. mail from the channel's own
+// address).
+type IngressResultStatus string
+
 // Invite defines model for Invite.
 type Invite struct {
 	CreatedAt time.Time `json:"created_at"`
@@ -1219,12 +1503,20 @@ type Message struct {
 	Author      MessageAuthor `json:"author"`
 
 	// Body Plain text.
-	Body           string        `json:"body"`
-	ClientId       *string       `json:"client_id,omitempty"`
-	ConversationId uuid.UUID     `json:"conversation_id"`
-	CreatedAt      time.Time     `json:"created_at"`
-	Direction      *Direction    `json:"direction,omitempty"`
-	Event          *MessageEvent `json:"event,omitempty"`
+	Body           string    `json:"body"`
+	ClientId       *string   `json:"client_id,omitempty"`
+	ConversationId uuid.UUID `json:"conversation_id"`
+	CreatedAt      time.Time `json:"created_at"`
+
+	// Delivery Delivery of an outgoing message by e-mail.
+	Delivery  *MessageDelivery `json:"delivery,omitempty"`
+	Direction *Direction       `json:"direction,omitempty"`
+
+	// Email Set on messages that came or went by e-mail. `body` and `html` of the message show the new
+	// text only; `quoted` tells whether quoted history or a signature was hidden, which
+	// `GET /v1/messages/{id}/email` returns in full.
+	Email *MessageEmail `json:"email,omitempty"`
+	Event *MessageEvent `json:"event,omitempty"`
 
 	// Html Sanitized HTML, when the message has an HTML form.
 	Html *string   `json:"html,omitempty"`
@@ -1289,6 +1581,67 @@ type MessageCreatedEvent struct {
 // MessageCreatedEventType defines model for MessageCreatedEvent.Type.
 type MessageCreatedEventType string
 
+// MessageDelivery Delivery of an outgoing message by e-mail.
+type MessageDelivery struct {
+	Channel MessageDeliveryChannel `json:"channel"`
+
+	// Error Why it failed (`failed` only).
+	Error     *string              `json:"error,omitempty"`
+	State     MessageDeliveryState `json:"state"`
+	UpdatedAt time.Time            `json:"updated_at"`
+}
+
+// MessageDeliveryChannel defines model for MessageDelivery.Channel.
+type MessageDeliveryChannel string
+
+// MessageDeliveryState defines model for MessageDelivery.State.
+type MessageDeliveryState string
+
+// MessageEmail Set on messages that came or went by e-mail. `body` and `html` of the message show the new
+// text only; `quoted` tells whether quoted history or a signature was hidden, which
+// `GET /v1/messages/{id}/email` returns in full.
+type MessageEmail struct {
+	// Auto Automatic mail (auto-reply, list, bulk) or our own automatic message.
+	Auto bool     `json:"auto"`
+	Cc   *[]Email `json:"cc,omitempty"`
+
+	// Dmarc The DMARC result from the receiving server's `Authentication-Results`.
+	Dmarc MessageEmailDmarc `json:"dmarc"`
+
+	// From Examples: owner@example.com
+	From Email `json:"from"`
+
+	// MessageId The `Message-ID` header without angle brackets.
+	MessageId string `json:"message_id"`
+	Quoted    bool   `json:"quoted"`
+
+	// Raw The original is kept; download it from `/v1/messages/{id}/raw`.
+	Raw     bool    `json:"raw"`
+	Subject *string `json:"subject,omitempty"`
+	To      []Email `json:"to"`
+}
+
+// MessageEmailDmarc The DMARC result from the receiving server's `Authentication-Results`.
+type MessageEmailDmarc string
+
+// MessageEmailDetail defines model for MessageEmailDetail.
+type MessageEmailDetail struct {
+	// AuthenticationResults The receiving server's `Authentication-Results` header, as received.
+	AuthenticationResults *string `json:"authentication_results,omitempty"`
+
+	// FullHtml The whole HTML part, sanitized.
+	FullHtml *string `json:"full_html,omitempty"`
+
+	// FullText The whole text part, quoted history and signature included.
+	FullText string `json:"full_text"`
+
+	// Headers Selected headers as received (Date, Reply-To, Auto-Submitted, Precedence, …).
+	Headers    map[string]string `json:"headers"`
+	InReplyTo  *string           `json:"in_reply_to,omitempty"`
+	MessageId  string            `json:"message_id"`
+	References *[]string         `json:"references,omitempty"`
+}
+
 // MessageEvent defines model for MessageEvent.
 type MessageEvent struct {
 	AddedLabels *[]uuid.UUID `json:"added_labels,omitempty"`
@@ -1329,6 +1682,20 @@ type MessagePreview struct {
 	// Text The plain-text body on one line, cut to 140 characters with `…` when longer.
 	Text string `json:"text"`
 }
+
+// MessageUpdatedEvent A message changed, e.g. its e-mail delivery state.
+type MessageUpdatedEvent struct {
+	ConversationId uuid.UUID               `json:"conversation_id"`
+	CreatedAt      time.Time               `json:"created_at"`
+	Data           Message                 `json:"data"`
+	Id             int64                   `json:"id"`
+	InboxId        uuid.UUID               `json:"inbox_id"`
+	Type           MessageUpdatedEventType `json:"type"`
+	WorkspaceId    uuid.UUID               `json:"workspace_id"`
+}
+
+// MessageUpdatedEventType defines model for MessageUpdatedEvent.Type.
+type MessageUpdatedEventType string
 
 // Passkey defines model for Passkey.
 type Passkey struct {
@@ -1445,6 +1812,53 @@ type SignInCodeVerify struct {
 // Slug Examples: acme-app
 type Slug = string
 
+// SmtpSettings The outbound SMTP account. The password is never returned.
+type SmtpSettings struct {
+	Host        string `json:"host"`
+	PasswordSet bool   `json:"password_set"`
+	Port        int32  `json:"port"`
+
+	// Tls `starttls` upgrades a plain connection (port 587), `tls` connects with TLS (port 465),
+	// `none` sends in the clear (local relays and test servers only).
+	Tls      SmtpTls `json:"tls"`
+	Username string  `json:"username"`
+}
+
+// SmtpSettingsInput defines model for SmtpSettingsInput.
+type SmtpSettingsInput struct {
+	Host string `json:"host"`
+
+	// Password Stored encrypted. Absent keeps the stored password; empty removes it.
+	Password *string `json:"password,omitempty"`
+
+	// Port Defaults to 465 with `tls`, else 587.
+	Port *int32 `json:"port,omitempty"`
+
+	// Tls `starttls` upgrades a plain connection (port 587), `tls` connects with TLS (port 465),
+	// `none` sends in the clear (local relays and test servers only).
+	Tls      *SmtpTls `json:"tls,omitempty"`
+	Username *string  `json:"username,omitempty"`
+}
+
+// SmtpTls `starttls` upgrades a plain connection (port 587), `tls` connects with TLS (port 465),
+// `none` sends in the clear (local relays and test servers only).
+type SmtpTls string
+
+// UndeliverableEmail An address that bounced permanently or complained; replies to it are refused.
+type UndeliverableEmail struct {
+	CreatedAt time.Time `json:"created_at"`
+
+	// Detail The diagnostic from the receiving server, when there was one.
+	Detail *string `json:"detail,omitempty"`
+
+	// Email Examples: owner@example.com
+	Email  Email                    `json:"email"`
+	Reason UndeliverableEmailReason `json:"reason"`
+}
+
+// UndeliverableEmailReason defines model for UndeliverableEmail.Reason.
+type UndeliverableEmailReason string
+
 // UsageList defines model for UsageList.
 type UsageList struct {
 	Items []UsageMonth `json:"items"`
@@ -1513,6 +1927,9 @@ type Limit = int32
 
 // MemberId defines model for MemberId.
 type MemberId = uuid.UUID
+
+// MessageId defines model for MessageId.
+type MessageId = uuid.UUID
 
 // PasskeyId defines model for PasskeyId.
 type PasskeyId = uuid.UUID
@@ -1654,6 +2071,10 @@ type ListConversationsParams struct {
 	// Assignee A member id, `me` (member sessions only) or `unassigned`.
 	Assignee *string    `form:"assignee,omitempty" json:"assignee,omitempty"`
 	LabelId  *uuid.UUID `form:"label_id,omitempty" json:"label_id,omitempty"`
+
+	// Spam `true` lists only conversations flagged as spam (the spam view); without it, or with
+	// `false`, spam is left out.
+	Spam *bool `form:"spam,omitempty" json:"spam,omitempty"`
 
 	// Q Full-text search (Postgres `simple` configuration, `websearch` syntax).
 	Q *Search `form:"q,omitempty" json:"q,omitempty"`
@@ -1853,6 +2274,21 @@ type UpdateMemberParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// GetMessageEmailParams defines parameters for GetMessageEmail.
+type GetMessageEmailParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DownloadMessageRawParams defines parameters for DownloadMessageRaw.
+type DownloadMessageRawParams struct {
+	// WorkspaceId The workspace to act on, for links that cannot send `Yuva-Workspace`.
+	WorkspaceId *uuid.UUID `form:"workspace_id,omitempty" json:"workspace_id,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetUsageParams defines parameters for GetUsage.
 type GetUsageParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -1976,6 +2412,32 @@ func (t *RealtimeMessage) FromMessageCreatedEvent(v MessageCreatedEvent) error {
 
 // MergeMessageCreatedEvent performs a merge with any union data inside the RealtimeMessage, using the provided MessageCreatedEvent
 func (t *RealtimeMessage) MergeMessageCreatedEvent(v MessageCreatedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsMessageUpdatedEvent returns the union data inside the RealtimeMessage as a MessageUpdatedEvent
+func (t RealtimeMessage) AsMessageUpdatedEvent() (MessageUpdatedEvent, error) {
+	var body MessageUpdatedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromMessageUpdatedEvent overwrites any union data inside the RealtimeMessage as the provided MessageUpdatedEvent
+func (t *RealtimeMessage) FromMessageUpdatedEvent(v MessageUpdatedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeMessageUpdatedEvent performs a merge with any union data inside the RealtimeMessage, using the provided MessageUpdatedEvent
+func (t *RealtimeMessage) MergeMessageUpdatedEvent(v MessageUpdatedEvent) error {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -2254,6 +2716,8 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsInboxAccessChangedEvent()
 	case "message.created":
 		return t.AsMessageCreatedEvent()
+	case "message.updated":
+		return t.AsMessageUpdatedEvent()
 	case "ready":
 		return t.AsRealtimeReady()
 	case "resync_required":
@@ -2455,6 +2919,12 @@ type ServerInterface interface {
 	// UpdateMember Change a member's role
 	// (PATCH /v1/members/{memberId})
 	UpdateMember(w http.ResponseWriter, r *http.Request, memberId MemberId, params UpdateMemberParams)
+	// GetMessageEmail Get a message's e-mail details
+	// (GET /v1/messages/{messageId}/email)
+	GetMessageEmail(w http.ResponseWriter, r *http.Request, messageId MessageId, params GetMessageEmailParams)
+	// DownloadMessageRaw Download the original e-mail
+	// (GET /v1/messages/{messageId}/raw)
+	DownloadMessageRaw(w http.ResponseWriter, r *http.Request, messageId MessageId, params DownloadMessageRawParams)
 	// GetUsage Usage per month
 	// (GET /v1/usage)
 	GetUsage(w http.ResponseWriter, r *http.Request, params GetUsageParams)
@@ -3508,6 +3978,19 @@ func (siw *ServerInterfaceWrapper) ListConversations(w http.ResponseWriter, r *h
 			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "label_id"})
 		} else {
 			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "label_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "spam" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "spam", r.URL.Query(), &params.Spam, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "spam"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "spam", Err: err})
 		}
 		return
 	}
@@ -5105,6 +5588,119 @@ func (siw *ServerInterfaceWrapper) UpdateMember(w http.ResponseWriter, r *http.R
 	handler.ServeHTTP(w, r)
 }
 
+// GetMessageEmail operation middleware
+func (siw *ServerInterfaceWrapper) GetMessageEmail(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "messageId" -------------
+	var messageId MessageId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "messageId", r.PathValue("messageId"), &messageId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "messageId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetMessageEmailParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMessageEmail(w, r, messageId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DownloadMessageRaw operation middleware
+func (siw *ServerInterfaceWrapper) DownloadMessageRaw(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "messageId" -------------
+	var messageId MessageId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "messageId", r.PathValue("messageId"), &messageId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "messageId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DownloadMessageRawParams
+
+	// ------------- Optional query parameter "workspace_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "workspace_id", r.URL.Query(), &params.WorkspaceId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "workspace_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "workspace_id", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DownloadMessageRaw(w, r, messageId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetUsage operation middleware
 func (siw *ServerInterfaceWrapper) GetUsage(w http.ResponseWriter, r *http.Request) {
 
@@ -5375,6 +5971,8 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/messages", wrapper.CreateMessage)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/read", wrapper.MarkConversationRead)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/attachments/{attachmentId}", wrapper.DownloadAttachment)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/messages/{messageId}/email", wrapper.GetMessageEmail)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/messages/{messageId}/raw", wrapper.DownloadMessageRaw)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/labels", wrapper.ListLabels)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/labels", wrapper.CreateLabel)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/labels/{labelId}", wrapper.DeleteLabel)
@@ -5387,6 +5985,8 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 
 	return m
 }
+
+type IngressRejectionJSONResponse IngressRejection
 
 type ProblemApplicationProblemPlusJSONResponse Problem
 
@@ -6423,6 +7023,20 @@ func (response UpdateChannel404ApplicationProblemPlusJSONResponse) VisitUpdateCh
 	return err
 }
 
+type UpdateChannel409ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateChannel409ApplicationProblemPlusJSONResponse) VisitUpdateChannelResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type ListContactsRequestObject struct {
 	Params ListContactsParams
 }
@@ -7414,6 +8028,20 @@ func (response CreateMessage404ApplicationProblemPlusJSONResponse) VisitCreateMe
 	return err
 }
 
+type CreateMessage409ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateMessage409ApplicationProblemPlusJSONResponse) VisitCreateMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type CreateMessage413ApplicationProblemPlusJSONResponse Problem
 
 func (response CreateMessage413ApplicationProblemPlusJSONResponse) VisitCreateMessageResponse(w http.ResponseWriter) error {
@@ -8026,6 +8654,20 @@ func (response CreateChannel404ApplicationProblemPlusJSONResponse) VisitCreateCh
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateChannel409ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateChannel409ApplicationProblemPlusJSONResponse) VisitCreateChannelResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -9337,6 +9979,172 @@ func (response UpdateMember409ApplicationProblemPlusJSONResponse) VisitUpdateMem
 	return err
 }
 
+type GetMessageEmailRequestObject struct {
+	MessageId MessageId `json:"messageId"`
+	Params    GetMessageEmailParams
+}
+
+type GetMessageEmailResponseObject interface {
+	VisitGetMessageEmailResponse(w http.ResponseWriter) error
+}
+
+type GetMessageEmail200JSONResponse MessageEmailDetail
+
+func (response GetMessageEmail200JSONResponse) VisitGetMessageEmailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetMessageEmail401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetMessageEmail401ApplicationProblemPlusJSONResponse) VisitGetMessageEmailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetMessageEmail403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetMessageEmail403ApplicationProblemPlusJSONResponse) VisitGetMessageEmailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetMessageEmail404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetMessageEmail404ApplicationProblemPlusJSONResponse) VisitGetMessageEmailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DownloadMessageRawRequestObject struct {
+	MessageId MessageId `json:"messageId"`
+	Params    DownloadMessageRawParams
+}
+
+type DownloadMessageRawResponseObject interface {
+	VisitDownloadMessageRawResponse(w http.ResponseWriter) error
+}
+
+type DownloadMessageRaw200ResponseHeaders struct {
+	ContentDisposition  *string
+	XContentTypeOptions *string
+}
+
+type DownloadMessageRaw200Messagerfc822Response struct {
+	Body          io.Reader
+	Headers       DownloadMessageRaw200ResponseHeaders
+	ContentLength int64
+}
+
+func (response DownloadMessageRaw200Messagerfc822Response) VisitDownloadMessageRawResponse(w http.ResponseWriter) error {
+
+	w.Header().Set("Content-Type", "message/rfc822")
+	if response.ContentLength != 0 {
+		w.Header().Set("Content-Length", fmt.Sprint(response.ContentLength))
+	}
+	if response.Headers.ContentDisposition != nil {
+		w.Header().Set("Content-Disposition", fmt.Sprint(*response.Headers.ContentDisposition))
+	}
+	if response.Headers.XContentTypeOptions != nil {
+		w.Header().Set("X-Content-Type-Options", fmt.Sprint(*response.Headers.XContentTypeOptions))
+	}
+	w.WriteHeader(200)
+
+	if closer, ok := response.Body.(io.ReadCloser); ok {
+		defer closer.Close()
+	}
+	_, err := io.Copy(w, response.Body)
+	return err
+}
+
+type DownloadMessageRaw400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DownloadMessageRaw400ApplicationProblemPlusJSONResponse) VisitDownloadMessageRawResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DownloadMessageRaw401ApplicationProblemPlusJSONResponse Problem
+
+func (response DownloadMessageRaw401ApplicationProblemPlusJSONResponse) VisitDownloadMessageRawResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DownloadMessageRaw403ApplicationProblemPlusJSONResponse Problem
+
+func (response DownloadMessageRaw403ApplicationProblemPlusJSONResponse) VisitDownloadMessageRawResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DownloadMessageRaw404ApplicationProblemPlusJSONResponse Problem
+
+func (response DownloadMessageRaw404ApplicationProblemPlusJSONResponse) VisitDownloadMessageRawResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type GetUsageRequestObject struct {
 	Params GetUsageParams
 }
@@ -9644,6 +10452,12 @@ type StrictServerInterface interface {
 	// UpdateMember Change a member's role
 	// (PATCH /v1/members/{memberId})
 	UpdateMember(ctx context.Context, request UpdateMemberRequestObject) (UpdateMemberResponseObject, error)
+	// GetMessageEmail Get a message's e-mail details
+	// (GET /v1/messages/{messageId}/email)
+	GetMessageEmail(ctx context.Context, request GetMessageEmailRequestObject) (GetMessageEmailResponseObject, error)
+	// DownloadMessageRaw Download the original e-mail
+	// (GET /v1/messages/{messageId}/raw)
+	DownloadMessageRaw(ctx context.Context, request DownloadMessageRawRequestObject) (DownloadMessageRawResponseObject, error)
 	// GetUsage Usage per month
 	// (GET /v1/usage)
 	GetUsage(ctx context.Context, request GetUsageRequestObject) (GetUsageResponseObject, error)
@@ -11423,6 +12237,60 @@ func (sh *strictHandler) UpdateMember(w http.ResponseWriter, r *http.Request, me
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(UpdateMemberResponseObject); ok {
 		if err := validResponse.VisitUpdateMemberResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetMessageEmail operation middleware
+func (sh *strictHandler) GetMessageEmail(w http.ResponseWriter, r *http.Request, messageId MessageId, params GetMessageEmailParams) {
+	var request GetMessageEmailRequestObject
+
+	request.MessageId = messageId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetMessageEmail(ctx, request.(GetMessageEmailRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetMessageEmail")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetMessageEmailResponseObject); ok {
+		if err := validResponse.VisitGetMessageEmailResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DownloadMessageRaw operation middleware
+func (sh *strictHandler) DownloadMessageRaw(w http.ResponseWriter, r *http.Request, messageId MessageId, params DownloadMessageRawParams) {
+	var request DownloadMessageRawRequestObject
+
+	request.MessageId = messageId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DownloadMessageRaw(ctx, request.(DownloadMessageRawRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DownloadMessageRaw")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DownloadMessageRawResponseObject); ok {
+		if err := validResponse.VisitDownloadMessageRawResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

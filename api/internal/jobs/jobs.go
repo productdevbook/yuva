@@ -32,9 +32,12 @@ func Migrate(ctx context.Context, pool *pgxpool.Pool, log *slog.Logger) error {
 
 const EventRetention = 24 * time.Hour
 
-func New(pool *pgxpool.Pool, q *store.Queries, log *slog.Logger) (*river.Client[pgx.Tx], error) {
+func New(pool *pgxpool.Pool, q *store.Queries, log *slog.Logger, register ...func(*river.Workers)) (*river.Client[pgx.Tx], error) {
 	workers := river.NewWorkers()
 	river.AddWorker(workers, &EventCleanupWorker{Queries: q, Now: time.Now})
+	for _, r := range register {
+		r(workers)
+	}
 	return river.NewClient(riverpgxv5.New(pool), &river.Config{
 		Logger:  log,
 		Queues:  map[string]river.QueueConfig{river.QueueDefault: {MaxWorkers: 10}},

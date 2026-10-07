@@ -43,6 +43,13 @@ Keep this table current when a command changes.
 
 - Test e-mail goes only to simulator addresses (`success@simulator.amazonses.com`), never to a real
   person.
+- `deploy/compose.yaml` runs Mailpit, which catches everything e-mail channels send in
+  development. Give a channel SMTP host `mailpit`, port `1025`, TLS `none` and no username. Read
+  caught mail at `127.0.0.1:58025`: the web UI, `curl -s 127.0.0.1:58025/api/v1/messages`, one
+  message's headers or source at `/api/v1/message/<ID>/headers` and `/api/v1/message/<ID>/raw`;
+  delete what you created with `DELETE /api/v1/messages` and `{"IDs": [...]}`. Mail into the dev
+  server is a POST to `/ingress/email` signed with the compose `YUVA_INGRESS_SECRET` (format in
+  `edge/README.md`).
 - Keep temporary files in your own subdirectory of the scratch dir; other agents share the root.
 - Test data on a shared instance is created in a throwaway workspace and deleted afterwards.
 - Screenshots are WebP.

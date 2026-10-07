@@ -290,6 +290,11 @@ func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObje
 		if keys, err = q.ListInboxStorageKeys(ctx, store.ListInboxStorageKeysParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId}); err != nil {
 			return err
 		}
+		raw, err := q.ListInboxRawKeys(ctx, store.ListInboxRawKeysParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId})
+		if err != nil {
+			return err
+		}
+		keys = append(keys, raw...)
 		if _, err = q.DeleteInbox(ctx, store.DeleteInboxParams{WorkspaceID: p.workspaceID, ID: req.InboxId}); err != nil {
 			return err
 		}

@@ -9,8 +9,12 @@ import (
 	"time"
 
 	"github.com/go-webauthn/webauthn/webauthn"
+	"github.com/jackc/pgx/v5"
 	"github.com/microcosm-cc/bluemonday"
+	"github.com/riverqueue/river"
+	"github.com/riverqueue/river/riverdriver/riverpgxv5"
 
+	"github.com/productdevbook/yuva/api/internal/email"
 	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/metrics"
 	"github.com/productdevbook/yuva/api/internal/oas"
@@ -40,6 +44,11 @@ type Server struct {
 	attach   AttachmentSettings
 	sanitize *bluemonday.Policy
 	hub      *realtime.Hub
+	jobs     *river.Client[pgx.Tx]
+	ingress  IngressSettings
+	sender   email.Sender
+	snsCerts *certCache
+	fetch    *http.Client
 }
 
 type Deps struct {
@@ -55,6 +64,15 @@ type Deps struct {
 	Storage     storage.Storage
 	Attachments AttachmentSettings
 	Hub         *realtime.Hub
+
+	Ingress     IngressSettings
+	EmailSender email.Sender
+	HTTPClient  *http.Client
+}
+
+type IngressSettings struct {
+	Secret       string
+	SESTopicARNs []string
 }
 
 type AttachmentSettings struct {
@@ -73,10 +91,22 @@ func New(d Deps) *Server {
 	if now == nil {
 		now = time.Now
 	}
+	jobs, err := river.NewClient(riverpgxv5.New(d.Store.Pool), &river.Config{Logger: d.Log})
+	if err != nil {
+		panic(err)
+	}
+	sender := d.EmailSender
+	if sender == nil {
+		sender = email.SMTPSender{}
+	}
+	fetch := d.HTTPClient
+	if fetch == nil {
+		fetch = &http.Client{Timeout: 10 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
+	}
 	return &Server{
 		log: d.Log, st: d.Store, version: d.Version, mailer: d.Mailer, webauthn: d.WebAuthn, auth: d.Auth, now: now,
 		secrets: d.Secrets, objects: d.Storage, attach: d.Attachments, sanitize: bluemonday.UGCPolicy(),
-		hub: d.Hub,
+		hub: d.Hub, jobs: jobs, ingress: d.Ingress, sender: sender, snsCerts: newCertCache(fetch), fetch: fetch,
 	}
 }
 
@@ -95,6 +125,8 @@ func (s *Server) Handler() http.Handler {
 		},
 	})
 	mux.HandleFunc("GET /v1/realtime", s.serveRealtime)
+	mux.HandleFunc("POST /ingress/email", s.serveIngressEmail)
+	mux.HandleFunc("POST /ingress/ses", s.serveIngressSES)
 	panel := ui.Handler()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if isAPIPath(r.URL.Path) {
@@ -137,6 +169,9 @@ func (s *Server) writeError(w http.ResponseWriter, r *http.Request, err error) {
 func (s *Server) limitBody(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		limit := int64(maxBodyBytes)
+		if r.URL.Path == "/ingress/email" {
+			limit = MaxIngressBytes + 1
+		}
 		if strings.HasPrefix(strings.ToLower(r.Header.Get("Content-Type")), "multipart/form-data") {
 			limit += s.attach.MaxBytes * maxAttachmentsPerMessage
 		}

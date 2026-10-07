@@ -1,0 +1,40 @@
+{
+  "notificationType": "Bounce",
+  "bounce": {
+    "feedbackId": "0102019a00000000-11111111-2222-3333-4444-555555555555-000000",
+    "bounceType": "Permanent",
+    "bounceSubType": "General",
+    "bouncedRecipients": [
+      {
+        "emailAddress": "{{RECIPIENT}}",
+        "action": "failed",
+        "status": "5.1.1",
+        "diagnosticCode": "smtp; 550 5.1.1 user unknown"
+      }
+    ],
+    "timestamp": "2026-10-07T10:15:00.000Z",
+    "remoteMtaIp": "192.0.2.10",
+    "reportingMTA": "dns; a1-2.smtp-out.eu-west-1.amazonses.com"
+  },
+  "mail": {
+    "timestamp": "2026-10-07T10:14:58.000Z",
+    "source": "support@example.com",
+    "sourceArn": "arn:aws:ses:eu-west-1:123456789012:identity/example.com",
+    "sendingAccountId": "123456789012",
+    "messageId": "0102019a00000000-66666666-7777-8888-9999-000000000000-000000",
+    "destination": ["{{RECIPIENT}}"],
+    "headersTruncated": false,
+    "headers": [
+      {"name": "From", "value": "Acme Support <support@example.com>"},
+      {"name": "To", "value": "{{RECIPIENT}}"},
+      {"name": "Message-ID", "value": "<{{MESSAGE_ID}}>"},
+      {"name": "Subject", "value": "Re: Q"}
+    ],
+    "commonHeaders": {
+      "from": ["Acme Support <support@example.com>"],
+      "to": ["{{RECIPIENT}}"],
+      "messageId": "<{{MESSAGE_ID}}>",
+      "subject": "Re: Q"
+    }
+  }
+}

@@ -61,12 +61,13 @@ func (q *Queries) CreateAttachment(ctx context.Context, arg CreateAttachmentPara
 
 const createMessage = `-- name: CreateMessage :one
 INSERT INTO messages (id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-                      author_contact_id, body, html, client_id, event, created_at)
+                      author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_updated_at)
 VALUES ($1, $2, $3, $4, $5, $6, $7,
-        $8, $9, $10, $11, $12, $13)
+        $8, $9, $10, $11, $12, $13, $14,
+        CASE WHEN $14::text IS NULL THEN NULL ELSE $13::timestamptz END)
 ON CONFLICT (workspace_id, conversation_id, client_id) DO NOTHING
 RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-          author_contact_id, body, html, client_id, event, created_at
+          author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at
 `
 
 type CreateMessageParams struct {
@@ -83,22 +84,26 @@ type CreateMessageParams struct {
 	ClientID        *string
 	Event           []byte
 	CreatedAt       time.Time
+	DeliveryState   *string
 }
 
 type CreateMessageRow struct {
-	ID              uuid.UUID
-	WorkspaceID     uuid.UUID
-	ConversationID  uuid.UUID
-	Kind            string
-	Direction       *string
-	AuthorType      string
-	AuthorMemberID  *uuid.UUID
-	AuthorContactID *uuid.UUID
-	Body            string
-	Html            *string
-	ClientID        *string
-	Event           []byte
-	CreatedAt       time.Time
+	ID                uuid.UUID
+	WorkspaceID       uuid.UUID
+	ConversationID    uuid.UUID
+	Kind              string
+	Direction         *string
+	AuthorType        string
+	AuthorMemberID    *uuid.UUID
+	AuthorContactID   *uuid.UUID
+	Body              string
+	Html              *string
+	ClientID          *string
+	Event             []byte
+	CreatedAt         time.Time
+	DeliveryState     *string
+	DeliveryError     *string
+	DeliveryUpdatedAt *time.Time
 }
 
 func (q *Queries) CreateMessage(ctx context.Context, arg CreateMessageParams) (CreateMessageRow, error) {
@@ -116,6 +121,7 @@ func (q *Queries) CreateMessage(ctx context.Context, arg CreateMessageParams) (C
 		arg.ClientID,
 		arg.Event,
 		arg.CreatedAt,
+		arg.DeliveryState,
 	)
 	var i CreateMessageRow
 	err := row.Scan(
@@ -132,6 +138,9 @@ func (q *Queries) CreateMessage(ctx context.Context, arg CreateMessageParams) (C
 		&i.ClientID,
 		&i.Event,
 		&i.CreatedAt,
+		&i.DeliveryState,
+		&i.DeliveryError,
+		&i.DeliveryUpdatedAt,
 	)
 	return i, err
 }
@@ -201,9 +210,64 @@ func (q *Queries) GetLatestMessagePosition(ctx context.Context, arg GetLatestMes
 	return i, err
 }
 
+const getMessage = `-- name: GetMessage :one
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at
+FROM messages m WHERE m.workspace_id = $1 AND m.id = $2
+`
+
+type GetMessageParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+type GetMessageRow struct {
+	ID                uuid.UUID
+	WorkspaceID       uuid.UUID
+	ConversationID    uuid.UUID
+	Kind              string
+	Direction         *string
+	AuthorType        string
+	AuthorMemberID    *uuid.UUID
+	AuthorContactID   *uuid.UUID
+	Body              string
+	Html              *string
+	ClientID          *string
+	Event             []byte
+	CreatedAt         time.Time
+	DeliveryState     *string
+	DeliveryError     *string
+	DeliveryUpdatedAt *time.Time
+}
+
+func (q *Queries) GetMessage(ctx context.Context, arg GetMessageParams) (GetMessageRow, error) {
+	row := q.db.QueryRow(ctx, getMessage, arg.WorkspaceID, arg.ID)
+	var i GetMessageRow
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.ConversationID,
+		&i.Kind,
+		&i.Direction,
+		&i.AuthorType,
+		&i.AuthorMemberID,
+		&i.AuthorContactID,
+		&i.Body,
+		&i.Html,
+		&i.ClientID,
+		&i.Event,
+		&i.CreatedAt,
+		&i.DeliveryState,
+		&i.DeliveryError,
+		&i.DeliveryUpdatedAt,
+	)
+	return i, err
+}
+
 const getMessageByClientID = `-- name: GetMessageByClientID :one
 SELECT id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-       author_contact_id, body, html, client_id, event, created_at
+       author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at
 FROM messages WHERE workspace_id = $1 AND conversation_id = $2 AND client_id = $3
 `
 
@@ -214,19 +278,22 @@ type GetMessageByClientIDParams struct {
 }
 
 type GetMessageByClientIDRow struct {
-	ID              uuid.UUID
-	WorkspaceID     uuid.UUID
-	ConversationID  uuid.UUID
-	Kind            string
-	Direction       *string
-	AuthorType      string
-	AuthorMemberID  *uuid.UUID
-	AuthorContactID *uuid.UUID
-	Body            string
-	Html            *string
-	ClientID        *string
-	Event           []byte
-	CreatedAt       time.Time
+	ID                uuid.UUID
+	WorkspaceID       uuid.UUID
+	ConversationID    uuid.UUID
+	Kind              string
+	Direction         *string
+	AuthorType        string
+	AuthorMemberID    *uuid.UUID
+	AuthorContactID   *uuid.UUID
+	Body              string
+	Html              *string
+	ClientID          *string
+	Event             []byte
+	CreatedAt         time.Time
+	DeliveryState     *string
+	DeliveryError     *string
+	DeliveryUpdatedAt *time.Time
 }
 
 func (q *Queries) GetMessageByClientID(ctx context.Context, arg GetMessageByClientIDParams) (GetMessageByClientIDRow, error) {
@@ -246,6 +313,9 @@ func (q *Queries) GetMessageByClientID(ctx context.Context, arg GetMessageByClie
 		&i.ClientID,
 		&i.Event,
 		&i.CreatedAt,
+		&i.DeliveryState,
+		&i.DeliveryError,
+		&i.DeliveryUpdatedAt,
 	)
 	return i, err
 }
@@ -313,9 +383,48 @@ func (q *Queries) ListAttachments(ctx context.Context, arg ListAttachmentsParams
 	return items, nil
 }
 
+const listAttachmentsOfMessage = `-- name: ListAttachmentsOfMessage :many
+SELECT id, workspace_id, conversation_id, message_id, storage_key, filename, content_type, size_bytes, created_at FROM attachments WHERE workspace_id = $1 AND message_id = $2 ORDER BY created_at, id
+`
+
+type ListAttachmentsOfMessageParams struct {
+	WorkspaceID uuid.UUID
+	MessageID   uuid.UUID
+}
+
+func (q *Queries) ListAttachmentsOfMessage(ctx context.Context, arg ListAttachmentsOfMessageParams) ([]Attachment, error) {
+	rows, err := q.db.Query(ctx, listAttachmentsOfMessage, arg.WorkspaceID, arg.MessageID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Attachment
+	for rows.Next() {
+		var i Attachment
+		if err := rows.Scan(
+			&i.ID,
+			&i.WorkspaceID,
+			&i.ConversationID,
+			&i.MessageID,
+			&i.StorageKey,
+			&i.Filename,
+			&i.ContentType,
+			&i.SizeBytes,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listMessages = `-- name: ListMessages :many
 SELECT id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-       author_contact_id, body, html, client_id, event, created_at
+       author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at
 FROM messages m
 WHERE m.workspace_id = $1 AND m.conversation_id = $2
   AND ($3::timestamptz IS NULL
@@ -333,19 +442,22 @@ type ListMessagesParams struct {
 }
 
 type ListMessagesRow struct {
-	ID              uuid.UUID
-	WorkspaceID     uuid.UUID
-	ConversationID  uuid.UUID
-	Kind            string
-	Direction       *string
-	AuthorType      string
-	AuthorMemberID  *uuid.UUID
-	AuthorContactID *uuid.UUID
-	Body            string
-	Html            *string
-	ClientID        *string
-	Event           []byte
-	CreatedAt       time.Time
+	ID                uuid.UUID
+	WorkspaceID       uuid.UUID
+	ConversationID    uuid.UUID
+	Kind              string
+	Direction         *string
+	AuthorType        string
+	AuthorMemberID    *uuid.UUID
+	AuthorContactID   *uuid.UUID
+	Body              string
+	Html              *string
+	ClientID          *string
+	Event             []byte
+	CreatedAt         time.Time
+	DeliveryState     *string
+	DeliveryError     *string
+	DeliveryUpdatedAt *time.Time
 }
 
 func (q *Queries) ListMessages(ctx context.Context, arg ListMessagesParams) ([]ListMessagesRow, error) {
@@ -377,6 +489,9 @@ func (q *Queries) ListMessages(ctx context.Context, arg ListMessagesParams) ([]L
 			&i.ClientID,
 			&i.Event,
 			&i.CreatedAt,
+			&i.DeliveryState,
+			&i.DeliveryError,
+			&i.DeliveryUpdatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -390,7 +505,7 @@ func (q *Queries) ListMessages(ctx context.Context, arg ListMessagesParams) ([]L
 
 const listMessagesDesc = `-- name: ListMessagesDesc :many
 SELECT id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-       author_contact_id, body, html, client_id, event, created_at
+       author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at
 FROM messages m
 WHERE m.workspace_id = $1 AND m.conversation_id = $2
   AND ($3::timestamptz IS NULL
@@ -408,19 +523,22 @@ type ListMessagesDescParams struct {
 }
 
 type ListMessagesDescRow struct {
-	ID              uuid.UUID
-	WorkspaceID     uuid.UUID
-	ConversationID  uuid.UUID
-	Kind            string
-	Direction       *string
-	AuthorType      string
-	AuthorMemberID  *uuid.UUID
-	AuthorContactID *uuid.UUID
-	Body            string
-	Html            *string
-	ClientID        *string
-	Event           []byte
-	CreatedAt       time.Time
+	ID                uuid.UUID
+	WorkspaceID       uuid.UUID
+	ConversationID    uuid.UUID
+	Kind              string
+	Direction         *string
+	AuthorType        string
+	AuthorMemberID    *uuid.UUID
+	AuthorContactID   *uuid.UUID
+	Body              string
+	Html              *string
+	ClientID          *string
+	Event             []byte
+	CreatedAt         time.Time
+	DeliveryState     *string
+	DeliveryError     *string
+	DeliveryUpdatedAt *time.Time
 }
 
 func (q *Queries) ListMessagesDesc(ctx context.Context, arg ListMessagesDescParams) ([]ListMessagesDescRow, error) {
@@ -452,6 +570,9 @@ func (q *Queries) ListMessagesDesc(ctx context.Context, arg ListMessagesDescPara
 			&i.ClientID,
 			&i.Event,
 			&i.CreatedAt,
+			&i.DeliveryState,
+			&i.DeliveryError,
+			&i.DeliveryUpdatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -461,4 +582,68 @@ func (q *Queries) ListMessagesDesc(ctx context.Context, arg ListMessagesDescPara
 		return nil, err
 	}
 	return items, nil
+}
+
+const setMessageDelivery = `-- name: SetMessageDelivery :one
+UPDATE messages SET delivery_state = $1::text, delivery_error = $2, delivery_updated_at = $3::timestamptz
+WHERE workspace_id = $4 AND id = $5
+RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
+          author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at
+`
+
+type SetMessageDeliveryParams struct {
+	State       string
+	Error       *string
+	Now         time.Time
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+type SetMessageDeliveryRow struct {
+	ID                uuid.UUID
+	WorkspaceID       uuid.UUID
+	ConversationID    uuid.UUID
+	Kind              string
+	Direction         *string
+	AuthorType        string
+	AuthorMemberID    *uuid.UUID
+	AuthorContactID   *uuid.UUID
+	Body              string
+	Html              *string
+	ClientID          *string
+	Event             []byte
+	CreatedAt         time.Time
+	DeliveryState     *string
+	DeliveryError     *string
+	DeliveryUpdatedAt *time.Time
+}
+
+func (q *Queries) SetMessageDelivery(ctx context.Context, arg SetMessageDeliveryParams) (SetMessageDeliveryRow, error) {
+	row := q.db.QueryRow(ctx, setMessageDelivery,
+		arg.State,
+		arg.Error,
+		arg.Now,
+		arg.WorkspaceID,
+		arg.ID,
+	)
+	var i SetMessageDeliveryRow
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.ConversationID,
+		&i.Kind,
+		&i.Direction,
+		&i.AuthorType,
+		&i.AuthorMemberID,
+		&i.AuthorContactID,
+		&i.Body,
+		&i.Html,
+		&i.ClientID,
+		&i.Event,
+		&i.CreatedAt,
+		&i.DeliveryState,
+		&i.DeliveryError,
+		&i.DeliveryUpdatedAt,
+	)
+	return i, err
 }

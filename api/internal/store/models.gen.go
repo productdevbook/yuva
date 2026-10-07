@@ -95,6 +95,8 @@ type Conversation struct {
 	LastActivityAt time.Time
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
+	Spam           bool
+	EmailToken     *string
 }
 
 type ConversationLabel struct {
@@ -110,6 +112,37 @@ type ConversationRead struct {
 	LastReadMessageID uuid.UUID
 	LastReadAt        time.Time
 	UpdatedAt         time.Time
+}
+
+type EmailAutoReply struct {
+	WorkspaceID uuid.UUID
+	ChannelID   uuid.UUID
+	ContactID   uuid.UUID
+	SentAt      time.Time
+}
+
+type EmailChannel struct {
+	WorkspaceID            uuid.UUID
+	ChannelID              uuid.UUID
+	Address                string
+	DisplayName            string
+	FromAddress            *string
+	SmtpHost               string
+	SmtpPort               int32
+	SmtpUsername           string
+	SmtpPassword           []byte
+	SmtpTls                string
+	AutoReplyEnabled       bool
+	AutoReplyText          string
+	AutoReplyIntervalHours int32
+}
+
+type EmailSuppression struct {
+	WorkspaceID uuid.UUID
+	Email       string
+	Reason      string
+	Detail      string
+	CreatedAt   time.Time
 }
 
 type Event struct {
@@ -184,20 +217,48 @@ type Member struct {
 }
 
 type Message struct {
-	ID              uuid.UUID
-	WorkspaceID     uuid.UUID
-	ConversationID  uuid.UUID
-	Kind            string
-	Direction       *string
-	AuthorType      string
-	AuthorMemberID  *uuid.UUID
-	AuthorContactID *uuid.UUID
-	Body            string
-	Html            *string
-	ClientID        *string
-	Event           []byte
-	Search          interface{}
-	CreatedAt       time.Time
+	ID                uuid.UUID
+	WorkspaceID       uuid.UUID
+	ConversationID    uuid.UUID
+	Kind              string
+	Direction         *string
+	AuthorType        string
+	AuthorMemberID    *uuid.UUID
+	AuthorContactID   *uuid.UUID
+	Body              string
+	Html              *string
+	ClientID          *string
+	Event             []byte
+	Search            interface{}
+	CreatedAt         time.Time
+	DeliveryState     *string
+	DeliveryError     *string
+	DeliveryUpdatedAt *time.Time
+}
+
+type MessageEmail struct {
+	WorkspaceID           uuid.UUID
+	MessageID             uuid.UUID
+	ConversationID        uuid.UUID
+	ChannelID             *uuid.UUID
+	Direction             string
+	HeaderMessageID       string
+	InReplyTo             *string
+	ReferencesIds         []string
+	FromAddress           string
+	ToAddresses           []string
+	CcAddresses           []string
+	Subject               string
+	FullText              string
+	FullHtml              *string
+	Quoted                bool
+	Headers               []byte
+	RawKey                *string
+	RawSize               *int64
+	AuthenticationResults *string
+	Dmarc                 string
+	Auto                  bool
+	CreatedAt             time.Time
 }
 
 type Passkey struct {

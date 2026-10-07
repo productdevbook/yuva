@@ -5,6 +5,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
 	"os"
@@ -32,7 +33,8 @@ var version = ""
 const usageText = `usage:
   yuva serve [--migrate=false]   (applies database migrations first unless disabled)
   yuva migrate up|down|status
-  yuva bootstrap --email <address> --workspace <name> [--name <name>] [--locale en|tr] [--allow-existing]`
+  yuva bootstrap --email <address> --workspace <name> [--name <name>] [--locale en|tr] [--allow-existing]
+  yuva ingest-email --to <address> [--from <address>] < message.eml`
 
 func main() {
 	log := slog.New(slog.NewJSONHandler(os.Stderr, nil))
@@ -52,6 +54,8 @@ func main() {
 			err = migrate(ctx, cfg, log, os.Args[2:])
 		case "bootstrap":
 			err = bootstrap(ctx, cfg, log, os.Args[2:])
+		case "ingest-email":
+			os.Exit(ingestEmail(ctx, cfg, log, os.Args[2:]))
 		default:
 			fmt.Fprintln(os.Stderr, usageText)
 			os.Exit(2)
@@ -128,18 +132,6 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 			return err
 		}
 	}
-	queue, err := jobs.New(st.Pool, st.Queries, log)
-	if err != nil {
-		return fmt.Errorf("job queue: %w", err)
-	}
-	if err := queue.Start(ctx); err != nil {
-		return fmt.Errorf("job queue: %w", err)
-	}
-	defer func() {
-		stopCtx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
-		defer cancel()
-		_ = queue.Stop(stopCtx)
-	}()
 	hub := realtime.NewHub(256)
 	go realtime.Listen(ctx, cfg.DatabaseURL, st.Queries, hub, log)
 	if cfg.MetricsAddr != "" {
@@ -176,8 +168,24 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 			MaxBytes: cfg.Attachments.MaxBytes,
 			Types:    cfg.Attachments.Types,
 		},
-		Hub: hub,
+		Hub:     hub,
+		Ingress: api.IngressSettings{Secret: cfg.IngressSecret, SESTopicARNs: cfg.SESTopicARNs},
 	})
+	if cfg.IngressSecret == "" {
+		log.Warn("YUVA_INGRESS_SECRET is not set; /ingress/email refuses all mail")
+	}
+	queue, err := jobs.New(st.Pool, st.Queries, log, srv.AddWorkers)
+	if err != nil {
+		return fmt.Errorf("job queue: %w", err)
+	}
+	if err := queue.Start(ctx); err != nil {
+		return fmt.Errorf("job queue: %w", err)
+	}
+	defer func() {
+		stopCtx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+		defer cancel()
+		_ = queue.Stop(stopCtx)
+	}()
 	httpSrv := &http.Server{
 		Addr:              cfg.ListenAddr,
 		Handler:           srv.Handler(),
@@ -265,4 +273,74 @@ func bootstrap(ctx context.Context, cfg config.Config, log *slog.Logger, args []
 	}
 	fmt.Printf("workspace %s\nmember    %s\nowner     %s\n", res.WorkspaceID, res.MemberID, in.Email)
 	return nil
+}
+
+const (
+	exitDataErr  = 65
+	exitNoUser   = 67
+	exitTempFail = 75
+	exitNoPerm   = 77
+)
+
+// ingestEmail is for MTAs that pipe a message into a command; the exit codes follow sysexits.h,
+// which MTAs map to permanent or temporary failures.
+func ingestEmail(ctx context.Context, cfg config.Config, log *slog.Logger, args []string) int {
+	fs := flag.NewFlagSet("ingest-email", flag.ContinueOnError)
+	to := fs.String("to", "", "envelope recipient")
+	from := fs.String("from", "", "envelope sender")
+	if err := fs.Parse(args); err != nil || *to == "" {
+		fmt.Fprintln(os.Stderr, "usage: yuva ingest-email --to <address> [--from <address>] < message.eml")
+		return 64
+	}
+	raw, err := io.ReadAll(io.LimitReader(os.Stdin, api.MaxIngressBytes+1))
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "read message:", err)
+		return exitTempFail
+	}
+	if err := cfg.RequireMasterKey(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return exitTempFail
+	}
+	masterKey, err := secret.ParseKey(cfg.MasterKey)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "YUVA_MASTER_KEY:", err)
+		return exitTempFail
+	}
+	objects, err := openStorage(cfg.Storage)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return exitTempFail
+	}
+	st, err := openStore(ctx, cfg)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return exitTempFail
+	}
+	defer st.Close()
+	srv := api.New(api.Deps{
+		Log: log, Store: st, Version: cfg.Version, Mailer: mail.Log{Log: log}, Secrets: masterKey, Storage: objects,
+		Attachments: api.AttachmentSettings{MaxBytes: cfg.Attachments.MaxBytes, Types: cfg.Attachments.Types},
+	})
+	res, err := srv.IngestEmail(ctx, *to, *from, raw)
+	var ie *api.IngestError
+	if errors.As(err, &ie) {
+		fmt.Fprintln(os.Stderr, ie.Reason)
+		switch {
+		case ie.Status >= 500:
+			return exitTempFail
+		case ie.Status == http.StatusNotFound:
+			return exitNoUser
+		case ie.Status == http.StatusBadRequest || ie.Status == http.StatusRequestEntityTooLarge:
+			return exitDataErr
+		default:
+			return exitNoPerm
+		}
+	}
+	if err != nil {
+		log.Error("ingest email", slog.Any("error", err))
+		fmt.Fprintln(os.Stderr, "Temporary failure, try again later")
+		return exitTempFail
+	}
+	fmt.Println(res.Status)
+	return 0
 }

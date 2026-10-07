@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"slices"
 	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
@@ -45,6 +46,19 @@ func (s *Server) contactBodies(ctx context.Context, q *store.Queries, workspaceI
 	for _, e := range emails {
 		byEmail[e.ContactID] = append(byEmail[e.ContactID], oas.Email(e.Email))
 	}
+	suppressions, err := q.ListContactSuppressions(ctx, store.ListContactSuppressionsParams{WorkspaceID: workspaceID, ContactIds: ids})
+	if err != nil {
+		return nil, err
+	}
+	byUndeliverable := map[uuid.UUID][]oas.UndeliverableEmail{}
+	for _, x := range suppressions {
+		u := oas.UndeliverableEmail{Email: oas.Email(x.Email), Reason: oas.UndeliverableEmailReason(x.Reason), CreatedAt: x.CreatedAt}
+		if x.Detail != "" {
+			d := x.Detail
+			u.Detail = &d
+		}
+		byUndeliverable[x.ContactID] = append(byUndeliverable[x.ContactID], u)
+	}
 	byExternal := map[uuid.UUID][]oas.ExternalId{}
 	for _, x := range externals {
 		byExternal[x.ContactID] = append(byExternal[x.ContactID], oas.ExternalId{InboxId: x.InboxID, ExternalId: x.ExternalID})
@@ -54,6 +68,10 @@ func (s *Server) contactBodies(ctx context.Context, q *store.Queries, workspaceI
 		c := oas.Contact{
 			Id: r.ID, Name: r.Name, Blocked: r.Blocked, CreatedAt: r.CreatedAt, UpdatedAt: r.UpdatedAt,
 			Emails: byEmail[r.ID], ExternalIds: byExternal[r.ID], Attributes: oas.Attributes{},
+			Undeliverable: byUndeliverable[r.ID],
+		}
+		if c.Undeliverable == nil {
+			c.Undeliverable = []oas.UndeliverableEmail{}
 		}
 		if c.Emails == nil {
 			c.Emails = []oas.Email{}
@@ -320,6 +338,24 @@ func (s *Server) UpdateContact(ctx context.Context, req oas.UpdateContactRequest
 		if b.Blocked != nil {
 			in.blocked = *b.Blocked
 		}
+		if b.ClearUndeliverable != nil {
+			addrs, err := contactEmails(*b.ClearUndeliverable)
+			if err != nil {
+				return err
+			}
+			own, err := q.ListContactEmails(ctx, store.ListContactEmailsParams{WorkspaceID: p.workspaceID, ContactIds: []uuid.UUID{cur.ID}})
+			if err != nil {
+				return err
+			}
+			for _, e := range addrs {
+				if !slices.ContainsFunc(own, func(o store.ListContactEmailsRow) bool { return o.Email == e }) {
+					return errValidation("clear_undeliverable names an address the contact does not have")
+				}
+				if err := q.ClearSuppression(ctx, store.ClearSuppressionParams{WorkspaceID: p.workspaceID, Email: e}); err != nil {
+					return err
+				}
+			}
+		}
 		r, err := q.UpdateContact(ctx, store.UpdateContactParams{
 			WorkspaceID: p.workspaceID, ID: cur.ID, Name: in.name, Attributes: in.attributes, Blocked: in.blocked, Now: s.now(),
 		})
@@ -357,6 +393,11 @@ func (s *Server) DeleteContact(ctx context.Context, req oas.DeleteContactRequest
 		if keys, err = q.ListContactStorageKeys(ctx, store.ListContactStorageKeysParams{WorkspaceID: p.workspaceID, ContactID: req.ContactId}); err != nil {
 			return err
 		}
+		raw, err := q.ListContactRawKeys(ctx, store.ListContactRawKeysParams{WorkspaceID: p.workspaceID, ContactID: req.ContactId})
+		if err != nil {
+			return err
+		}
+		keys = append(keys, raw...)
 		if _, err = q.DeleteContact(ctx, store.DeleteContactParams{WorkspaceID: p.workspaceID, ID: req.ContactId}); err != nil {
 			return err
 		}

@@ -16,6 +16,7 @@ const (
 	ConversationCreated = "conversation.created"
 	ConversationUpdated = "conversation.updated"
 	MessageCreated      = "message.created"
+	MessageUpdated      = "message.updated"
 	ContactUpdated      = "contact.updated"
 	ContactDeleted      = "contact.deleted"
 	InboxCreated        = "inbox.created"

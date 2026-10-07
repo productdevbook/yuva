@@ -52,7 +52,9 @@ tags:
   - name: inboxes
     description: Inboxes (one per product or brand) and who may see them.
   - name: channels
-    description: How messages reach an inbox. Settings only for now.
+    description: |
+      How messages reach an inbox. E-mail channels receive mail through `/ingress/email` and send
+      replies through their own SMTP account; the other kinds store their settings only for now.
   - name: contacts
     description: The people writing in.
   - name: conversations
@@ -65,6 +67,10 @@ tags:
     description: Saved answers members insert into replies.
   - name: realtime
     description: Live workspace events over WebSocket.
+  - name: ingress
+    description: |
+      Inbound mail and delivery reports from mail infrastructure. These endpoints are not called
+      by members or API keys; they authenticate with a signature over the request.
 paths:
   /healthz:
     get:
@@ -827,8 +833,10 @@ paths:
       operationId: createChannel
       summary: Add a channel
       description: |
-        Owners and admins only, with a member session. Settings are stored as given; the channels
-        do not send or receive anything yet.
+        Owners and admins only, with a member session. An `email` channel needs `email` (its
+        address and outbound SMTP account); `settings` of the other kinds are stored as given.
+        An address belongs to one channel of the whole server, because inbound mail picks its
+        channel by the recipient alone; a taken address answers `409 email_address_taken`.
       tags: [channels]
       security:
         - session: []
@@ -856,6 +864,8 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
   /v1/channels/{channelId}:
     get:
       operationId: getChannel
@@ -880,7 +890,9 @@ paths:
     patch:
       operationId: updateChannel
       summary: Update a channel
-      description: Owners and admins only, with a member session.
+      description: |
+        Owners and admins only, with a member session. `email` replaces the e-mail settings as a
+        whole, except that an absent `smtp.password` keeps the stored one.
       tags: [channels]
       security:
         - session: []
@@ -907,6 +919,8 @@ paths:
         "403":
           $ref: "#/components/responses/Problem"
         "404":
+          $ref: "#/components/responses/Problem"
+        "409":
           $ref: "#/components/responses/Problem"
     delete:
       operationId: deleteChannel
@@ -1129,6 +1143,14 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: spam
+          in: query
+          description: |
+            `true` lists only conversations flagged as spam (the spam view); without it, or with
+            `false`, spam is left out.
+          schema:
+            type: boolean
+            default: false
         - $ref: "#/components/parameters/Search"
         - $ref: "#/components/parameters/Cursor"
         - $ref: "#/components/parameters/Limit"
@@ -1181,7 +1203,8 @@ paths:
       description: |
         Open conversations in the inboxes the caller can see: all of them, those assigned to the
         calling member (`0` for API keys), unassigned ones, and per inbox and per label. Inboxes and
-        labels without open conversations are left out of their lists.
+        labels without open conversations are left out of their lists. Conversations flagged as
+        spam are counted only in `spam`.
       tags: [conversations]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
@@ -1300,6 +1323,13 @@ paths:
 
         A repeated `client_id` in the same conversation returns the stored message with `200`
         instead of writing it again.
+
+        A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
+        e-mailed to the contact through the channel's SMTP account by a background job: the message
+        is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
+        `failed`. Notes are never e-mailed. When the recipient address is undeliverable (bounced or
+        complained) the reply is refused with `409 email_undeliverable`; when the channel has no
+        SMTP account, with `409 email_not_configured`.
       tags: [messages]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
@@ -1333,6 +1363,8 @@ paths:
         "403":
           $ref: "#/components/responses/Problem"
         "404":
+          $ref: "#/components/responses/Problem"
+        "409":
           $ref: "#/components/responses/Problem"
         "413":
           $ref: "#/components/responses/Problem"
@@ -1403,6 +1435,73 @@ paths:
                 enum: [nosniff]
           content:
             "*/*":
+              schema:
+                type: string
+                format: binary
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/messages/{messageId}/email:
+    get:
+      operationId: getMessageEmail
+      summary: Get a message's e-mail details
+      description: |
+        The full text with the quoted history and signature that the thread hides, the full
+        sanitized HTML, and the headers that matter. Only messages that came or went by e-mail
+        have them; others answer `404`.
+      tags: [messages]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/MessageId"
+      responses:
+        "200":
+          description: The e-mail details.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageEmailDetail"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/messages/{messageId}/raw:
+    get:
+      operationId: downloadMessageRaw
+      summary: Download the original e-mail
+      description: |
+        The message exactly as it was received, as `message/rfc822` (an `.eml` download). Only
+        inbound e-mail keeps its original; others answer `404`. Links cannot carry headers, so the
+        workspace can also be named with the `workspace_id` query parameter.
+      tags: [messages]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/MessageId"
+        - name: workspace_id
+          in: query
+          description: The workspace to act on, for links that cannot send `Yuva-Workspace`.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: The original message.
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+            X-Content-Type-Options:
+              schema:
+                type: string
+                enum: [nosniff]
+          content:
+            message/rfc822:
               schema:
                 type: string
                 format: binary
@@ -1704,6 +1803,112 @@ paths:
           $ref: "#/components/responses/Problem"
         "503":
           $ref: "#/components/responses/Problem"
+  /ingress/email:
+    post:
+      operationId: ingestEmail
+      summary: Receive an e-mail
+      description: |
+        Called by the edge Email Worker or any MTA with the raw message and its envelope. The
+        signature is `v1=` and the lowercase hex HMAC-SHA256, keyed with the server's
+        `YUVA_INGRESS_SECRET`, over `<X-Yuva-Timestamp>.<X-Yuva-Envelope-To>.<raw body>`. The
+        timestamp must be within 5 minutes of the server's clock. A message with a Message-ID seen
+        before on the same channel is accepted again without being stored twice.
+
+        Refusals are permanent (4xx) and carry a `reason` that the sending server shows to the
+        sender. 5xx means try again later.
+      tags: [ingress]
+      security: []
+      parameters:
+        - name: X-Yuva-Envelope-To
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: X-Yuva-Envelope-From
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: X-Yuva-Timestamp
+          in: header
+          required: true
+          description: Unix time in seconds.
+          schema:
+            type: string
+            pattern: "^[0-9]+$"
+        - name: X-Yuva-Signature
+          in: header
+          required: true
+          schema:
+            type: string
+            pattern: "^v1=[0-9a-f]{64}$"
+      requestBody:
+        required: true
+        description: The raw RFC 5322 message, at most 25 MiB.
+        content:
+          message/rfc822:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "200":
+          description: Accepted earlier (same Message-ID on the same channel).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IngressResult"
+        "202":
+          description: Accepted, stored or deliberately dropped.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IngressResult"
+        "400":
+          $ref: "#/components/responses/IngressRejection"
+        "401":
+          $ref: "#/components/responses/IngressRejection"
+        "403":
+          $ref: "#/components/responses/IngressRejection"
+        "404":
+          $ref: "#/components/responses/IngressRejection"
+        "413":
+          $ref: "#/components/responses/IngressRejection"
+        "429":
+          $ref: "#/components/responses/IngressRejection"
+        "503":
+          $ref: "#/components/responses/IngressRejection"
+  /ingress/ses:
+    post:
+      operationId: ingestSes
+      summary: Receive an SES notification
+      description: |
+        Amazon SNS delivers Amazon SES bounce and complaint notifications here. The SNS signature
+        is verified against the AWS signing certificate, and the topic must be one of
+        `YUVA_SES_TOPIC_ARNS`. A subscription confirmation is confirmed by fetching its
+        `SubscribeURL` (only on an `sns.<region>.amazonaws.com` host). A permanent bounce or a
+        complaint marks the recipient undeliverable in the workspace that sent the message and the
+        message `failed`.
+      tags: [ingress]
+      security: []
+      requestBody:
+        required: true
+        description: The SNS message (SNS sends it as `text/plain`).
+        content:
+          text/plain:
+            schema:
+              type: string
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Handled or ignored.
+        "400":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "503":
+          $ref: "#/components/responses/Problem"
 components:
   securitySchemes:
     session:
@@ -1787,6 +1992,13 @@ components:
       schema:
         type: string
         format: uuid
+    MessageId:
+      name: messageId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
     LabelId:
       name: labelId
       in: path
@@ -1832,6 +2044,12 @@ components:
         application/problem+json:
           schema:
             $ref: "#/components/schemas/Problem"
+    IngressRejection:
+      description: The message is refused; `reason` is shown to the sender.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/IngressRejection"
     SignedIn:
       description: Signed in; the session cookie is set.
       headers:
@@ -2295,7 +2513,117 @@ components:
     ChannelSettings:
       type: object
       additionalProperties: true
-      description: Kind-specific settings, stored as given. Not acted on yet.
+      description: Settings of `chat`, `app` and `api` channels, stored as given. Not acted on yet.
+    SmtpTls:
+      type: string
+      description: |
+        `starttls` upgrades a plain connection (port 587), `tls` connects with TLS (port 465),
+        `none` sends in the clear (local relays and test servers only).
+      enum: [starttls, tls, none]
+    SmtpSettings:
+      type: object
+      description: The outbound SMTP account. The password is never returned.
+      required: [host, port, username, tls, password_set]
+      properties:
+        host:
+          type: string
+        port:
+          type: integer
+          format: int32
+        username:
+          type: string
+        tls:
+          $ref: "#/components/schemas/SmtpTls"
+        password_set:
+          type: boolean
+    SmtpSettingsInput:
+      type: object
+      required: [host]
+      properties:
+        host:
+          type: string
+          minLength: 1
+          maxLength: 253
+        port:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 65535
+          description: Defaults to 465 with `tls`, else 587.
+        username:
+          type: string
+          maxLength: 320
+        password:
+          type: string
+          maxLength: 1024
+          description: Stored encrypted. Absent keeps the stored password; empty removes it.
+        tls:
+          $ref: "#/components/schemas/SmtpTls"
+    EmailAutoReply:
+      type: object
+      description: |
+        A greeting e-mailed when a new conversation starts by e-mail, at most once per contact
+        within `interval_hours`. It carries `Auto-Submitted: auto-replied` and is never sent in
+        answer to automatic mail.
+      required: [enabled, text, interval_hours]
+      properties:
+        enabled:
+          type: boolean
+        text:
+          type: string
+          maxLength: 5000
+        interval_hours:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 8760
+    EmailAutoReplyInput:
+      type: object
+      required: [enabled]
+      properties:
+        enabled:
+          type: boolean
+        text:
+          type: string
+          maxLength: 5000
+          description: Required when `enabled`.
+        interval_hours:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 8760
+          description: Defaults to 24.
+    EmailChannel:
+      type: object
+      description: Settings of an `email` channel.
+      required: [address, display_name, auto_reply]
+      properties:
+        address:
+          $ref: "#/components/schemas/Email"
+        display_name:
+          type: string
+          description: The name in `From`; the channel name when empty.
+        from_address:
+          $ref: "#/components/schemas/Email"
+        smtp:
+          $ref: "#/components/schemas/SmtpSettings"
+        auto_reply:
+          $ref: "#/components/schemas/EmailAutoReply"
+    EmailChannelInput:
+      type: object
+      required: [address]
+      properties:
+        address:
+          $ref: "#/components/schemas/Email"
+        display_name:
+          type: string
+          maxLength: 200
+        from_address:
+          $ref: "#/components/schemas/Email"
+        smtp:
+          $ref: "#/components/schemas/SmtpSettingsInput"
+        auto_reply:
+          $ref: "#/components/schemas/EmailAutoReplyInput"
     Channel:
       type: object
       required: [id, inbox_id, kind, name, settings, created_at, updated_at]
@@ -2312,6 +2640,8 @@ components:
           type: string
         settings:
           $ref: "#/components/schemas/ChannelSettings"
+        email:
+          $ref: "#/components/schemas/EmailChannel"
         created_at:
           type: string
           format: date-time
@@ -2330,6 +2660,8 @@ components:
           maxLength: 200
         settings:
           $ref: "#/components/schemas/ChannelSettings"
+        email:
+          $ref: "#/components/schemas/EmailChannelInput"
     ChannelUpdate:
       type: object
       minProperties: 1
@@ -2340,6 +2672,8 @@ components:
           maxLength: 200
         settings:
           $ref: "#/components/schemas/ChannelSettings"
+        email:
+          $ref: "#/components/schemas/EmailChannelInput"
     ChannelList:
       type: object
       required: [items]
@@ -2364,9 +2698,25 @@ components:
       type: object
       additionalProperties: true
       description: Free-form data about the contact (plan, app version, …), at most 16 KiB.
+    UndeliverableEmail:
+      type: object
+      description: An address that bounced permanently or complained; replies to it are refused.
+      required: [email, reason, created_at]
+      properties:
+        email:
+          $ref: "#/components/schemas/Email"
+        reason:
+          type: string
+          enum: [bounce, complaint]
+        detail:
+          type: string
+          description: The diagnostic from the receiving server, when there was one.
+        created_at:
+          type: string
+          format: date-time
     Contact:
       type: object
-      required: [id, name, emails, external_ids, attributes, blocked, created_at, updated_at]
+      required: [id, name, emails, external_ids, attributes, blocked, undeliverable, created_at, updated_at]
       properties:
         id:
           type: string
@@ -2385,6 +2735,12 @@ components:
           $ref: "#/components/schemas/Attributes"
         blocked:
           type: boolean
+          description: Mail from a blocked contact is refused.
+        undeliverable:
+          type: array
+          description: The contact's addresses that must not be mailed.
+          items:
+            $ref: "#/components/schemas/UndeliverableEmail"
         created_at:
           type: string
           format: date-time
@@ -2432,6 +2788,12 @@ components:
           $ref: "#/components/schemas/Attributes"
         blocked:
           type: boolean
+        clear_undeliverable:
+          type: array
+          maxItems: 20
+          description: Addresses to mail again, e.g. after the recipient fixed their mailbox.
+          items:
+            $ref: "#/components/schemas/Email"
     ContactPage:
       type: object
       required: [items]
@@ -2451,7 +2813,7 @@ components:
       enum: [low, normal, high, urgent]
     Conversation:
       type: object
-      required: [id, inbox_id, contact_id, subject, status, priority, labels, last_activity_at, created_at, updated_at]
+      required: [id, inbox_id, contact_id, subject, status, priority, spam, labels, last_activity_at, created_at, updated_at]
       properties:
         id:
           type: string
@@ -2475,6 +2837,11 @@ components:
           format: date-time
         priority:
           $ref: "#/components/schemas/Priority"
+        spam:
+          type: boolean
+          description: |
+            Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
+            and counts unless asked for, and gets no automatic reply.
         assignee_id:
           type: string
           format: uuid
@@ -2542,6 +2909,9 @@ components:
           format: date-time
         priority:
           $ref: "#/components/schemas/Priority"
+        spam:
+          type: boolean
+          description: Flag or unflag as spam.
         assignee_id:
           type: [string, "null"]
           format: uuid
@@ -2624,11 +2994,15 @@ components:
     ConversationCounts:
       type: object
       description: Open conversations in the inboxes the caller can see.
-      required: [all, mine, unassigned, inboxes, labels]
+      required: [all, mine, unassigned, spam, inboxes, labels]
       properties:
         all:
           type: integer
           format: int64
+        spam:
+          type: integer
+          format: int64
+          description: Open conversations flagged as spam (not included in the other counts).
         mine:
           type: integer
           format: int64
@@ -2774,9 +3148,91 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Attachment"
+        delivery:
+          $ref: "#/components/schemas/MessageDelivery"
+        email:
+          $ref: "#/components/schemas/MessageEmail"
         created_at:
           type: string
           format: date-time
+    MessageDelivery:
+      type: object
+      description: Delivery of an outgoing message by e-mail.
+      required: [channel, state, updated_at]
+      properties:
+        channel:
+          type: string
+          enum: [email]
+        state:
+          type: string
+          enum: [queued, sent, failed]
+        error:
+          type: string
+          description: Why it failed (`failed` only).
+        updated_at:
+          type: string
+          format: date-time
+    MessageEmail:
+      type: object
+      description: |
+        Set on messages that came or went by e-mail. `body` and `html` of the message show the new
+        text only; `quoted` tells whether quoted history or a signature was hidden, which
+        `GET /v1/messages/{id}/email` returns in full.
+      required: [message_id, from, to, quoted, raw, auto, dmarc]
+      properties:
+        message_id:
+          type: string
+          description: The `Message-ID` header without angle brackets.
+        from:
+          $ref: "#/components/schemas/Email"
+        to:
+          type: array
+          items:
+            $ref: "#/components/schemas/Email"
+        cc:
+          type: array
+          items:
+            $ref: "#/components/schemas/Email"
+        subject:
+          type: string
+        quoted:
+          type: boolean
+        raw:
+          type: boolean
+          description: The original is kept; download it from `/v1/messages/{id}/raw`.
+        auto:
+          type: boolean
+          description: Automatic mail (auto-reply, list, bulk) or our own automatic message.
+        dmarc:
+          type: string
+          description: The DMARC result from the receiving server's `Authentication-Results`.
+          enum: [pass, fail, none, unknown]
+    MessageEmailDetail:
+      type: object
+      required: [message_id, full_text, headers]
+      properties:
+        message_id:
+          type: string
+        full_text:
+          type: string
+          description: The whole text part, quoted history and signature included.
+        full_html:
+          type: string
+          description: The whole HTML part, sanitized.
+        in_reply_to:
+          type: string
+        references:
+          type: array
+          items:
+            type: string
+        authentication_results:
+          type: string
+          description: The receiving server's `Authentication-Results` header, as received.
+        headers:
+          type: object
+          description: Selected headers as received (Date, Reply-To, Auto-Submitted, Precedence, …).
+          additionalProperties:
+            type: string
     MessageCreate:
       type: object
       required: [kind]
@@ -3011,6 +3467,31 @@ components:
           format: date-time
         data:
           $ref: "#/components/schemas/Message"
+    MessageUpdatedEvent:
+      type: object
+      description: A message changed, e.g. its e-mail delivery state.
+      required: [id, type, workspace_id, inbox_id, conversation_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [message.updated]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/Message"
     ContactUpdatedEvent:
       type: object
       description: A contact changed.
@@ -3212,6 +3693,7 @@ components:
       oneOf:
         - $ref: "#/components/schemas/ConversationEvent"
         - $ref: "#/components/schemas/MessageCreatedEvent"
+        - $ref: "#/components/schemas/MessageUpdatedEvent"
         - $ref: "#/components/schemas/ContactUpdatedEvent"
         - $ref: "#/components/schemas/ContactDeletedEvent"
         - $ref: "#/components/schemas/InboxCreatedEvent"
@@ -3227,6 +3709,7 @@ components:
           conversation.created: "#/components/schemas/ConversationEvent"
           conversation.updated: "#/components/schemas/ConversationEvent"
           message.created: "#/components/schemas/MessageCreatedEvent"
+          message.updated: "#/components/schemas/MessageUpdatedEvent"
           contact.updated: "#/components/schemas/ContactUpdatedEvent"
           contact.deleted: "#/components/schemas/ContactDeletedEvent"
           inbox.created: "#/components/schemas/InboxCreatedEvent"
@@ -3236,6 +3719,33 @@ components:
           conversation.read: "#/components/schemas/ConversationReadEvent"
           ready: "#/components/schemas/RealtimeReady"
           resync_required: "#/components/schemas/RealtimeResyncRequired"
+    IngressResult:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          description: |
+            `stored` (a message was added), `duplicate` (seen before), `bounce` (a delivery report
+            was applied) or `dropped` (deliberately ignored, e.g. mail from the channel's own
+            address).
+          enum: [stored, duplicate, bounce, dropped]
+        conversation_id:
+          type: string
+          format: uuid
+        message_id:
+          type: string
+          format: uuid
+    IngressRejection:
+      type: object
+      required: [reason, code]
+      properties:
+        reason:
+          type: string
+          description: Shown to the sender of the mail.
+        code:
+          type: string
+          enum: [bad_signature, stale_timestamp, unknown_recipient, blocked_sender, too_large, malformed, rate_limited, not_configured, unavailable]
     Health:
       type: object
       required: [status]
