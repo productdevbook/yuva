@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"slices"
 	"strings"
 	"unicode"
 	"uuid"
@@ -52,8 +53,11 @@ type messageInput struct {
 	body      string
 	html      *string
 	clientID  *string
+	subject   *string
 	files     []*upload
 }
+
+var memberFormFields = []string{"kind", "direction", "body", "html", "client_id"}
 
 func (in *messageInput) close() {
 	for _, f := range in.files {
@@ -181,7 +185,7 @@ func (s *Server) contentType(declared string, f io.ReaderAt) (string, error) {
 	return ct, nil
 }
 
-func (s *Server) readMultipart(r *multipart.Reader, workspaceID uuid.UUID) (*messageInput, error) {
+func (s *Server) readMultipart(r *multipart.Reader, workspaceID uuid.UUID, fields []string) (*messageInput, error) {
 	in := &messageInput{}
 	for {
 		part, err := r.NextPart()
@@ -215,6 +219,10 @@ func (s *Server) readMultipart(r *multipart.Reader, workspaceID uuid.UUID) (*mes
 			return nil, errValidation(part.FormName() + " is too long")
 		}
 		v := string(b)
+		if !slices.Contains(fields, part.FormName()) {
+			in.close()
+			return nil, errValidation("unknown form field " + part.FormName())
+		}
 		switch part.FormName() {
 		case "kind":
 			in.kind = v
@@ -226,6 +234,8 @@ func (s *Server) readMultipart(r *multipart.Reader, workspaceID uuid.UUID) (*mes
 			in.html = &v
 		case "client_id":
 			in.clientID = &v
+		case "subject":
+			in.subject = &v
 		default:
 			in.close()
 			return nil, errValidation("unknown form field " + part.FormName())
@@ -311,11 +321,11 @@ func (s *Server) ListMessages(ctx context.Context, req oas.ListMessagesRequestOb
 	}
 	var rows []store.ListMessagesRow
 	switch order := req.Params.Order; {
-	case order == nil || *order == oas.Asc:
+	case order == nil || *order == oas.ListMessagesParamsOrderAsc:
 		rows, err = s.st.ListMessages(ctx, store.ListMessagesParams{
 			WorkspaceID: p.workspaceID, ConversationID: c.ID, CursorAt: at, CursorID: id, Lim: lim + 1,
 		})
-	case *order == oas.Desc:
+	case *order == oas.ListMessagesParamsOrderDesc:
 		var desc []store.ListMessagesDescRow
 		desc, err = s.st.ListMessagesDesc(ctx, store.ListMessagesDescParams{
 			WorkspaceID: p.workspaceID, ConversationID: c.ID, CursorAt: at, CursorID: id, Lim: lim + 1,
@@ -372,7 +382,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		}
 	case req.MultipartBody != nil:
 		var err error
-		if in, err = s.readMultipart(req.MultipartBody, p.workspaceID); err != nil {
+		if in, err = s.readMultipart(req.MultipartBody, p.workspaceID, memberFormFields); err != nil {
 			return nil, err
 		}
 	default:
@@ -447,6 +457,14 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		if plan != nil {
 			if summary, err = s.queueEmail(ctx, q, events, plan, msg); err != nil {
 				return err
+			}
+		} else if in.kind == string(oas.MessageKindMessage) && in.direction == string(oas.Out) && !p.isKey() && c.ChannelID != nil {
+			ch, err := q.GetChannel(ctx, store.GetChannelParams{WorkspaceID: p.workspaceID, ID: *c.ChannelID})
+			if err != nil {
+				return err
+			}
+			if ch.Kind == string(oas.ChannelKindChat) {
+				s.scheduleContinuity(events, c, now)
 			}
 		}
 		var total int64

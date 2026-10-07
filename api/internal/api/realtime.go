@@ -115,6 +115,22 @@ func (s *Server) stream(conn *websocket.Conn, r *http.Request, p principal, resu
 	ctx := conn.CloseRead(r.Context())
 	sub := s.hub.Subscribe(p.workspaceID)
 	defer s.hub.Unsubscribe(sub)
+	var connID uuid.UUID
+	if !p.isKey() {
+		connID = newID()
+		memberID := p.memberID
+		if err := s.st.OpenConnection(ctx, store.OpenConnectionParams{ID: connID, WorkspaceID: p.workspaceID, MemberID: &memberID, Now: s.now()}); err != nil {
+			return websocket.StatusInternalError, "internal", err
+		}
+		s.presenceHint(ctx, p.workspaceID)
+		defer func() {
+			bg := context.WithoutCancel(ctx)
+			if err := s.st.CloseConnection(bg, store.CloseConnectionParams{WorkspaceID: p.workspaceID, ID: connID}); err != nil {
+				s.log.WarnContext(bg, "realtime close", slog.Any("error", err))
+			}
+			s.presenceHint(bg, p.workspaceID)
+		}()
+	}
 	f := &eventFilter{p: p}
 	if err := f.reload(ctx, s.st.Queries); err != nil {
 		return websocket.StatusInternalError, "internal", err
@@ -188,10 +204,12 @@ func (s *Server) stream(conn *websocket.Conn, r *http.Request, p principal, resu
 				return websocket.StatusServiceRestart, realtime.ReasonRestart, nil
 			}
 		case e := <-sub.Events():
-			if e.ID <= last {
-				continue
+			if !e.Ephemeral() {
+				if e.ID <= last {
+					continue
+				}
+				last = e.ID
 			}
-			last = e.ID
 			if err := deliver(e); err != nil {
 				return 0, "", err
 			}
@@ -201,6 +219,11 @@ func (s *Server) stream(conn *websocket.Conn, r *http.Request, p principal, resu
 			cancel()
 			if err != nil {
 				return 0, "", err
+			}
+			if connID != uuid.Nil() {
+				if err := s.st.SeeConnection(ctx, store.SeeConnectionParams{WorkspaceID: p.workspaceID, ID: connID, Now: s.now()}); err != nil {
+					s.log.WarnContext(ctx, "realtime presence", slog.Any("error", err))
+				}
 			}
 			next, err := s.resolvePrincipal(ctx, r, accessMemberOrKey)
 			var e *apiError
@@ -253,6 +276,18 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 			return true, f.reload(ctx, q)
 		}
 		return f.p.seesAllInboxes(), nil
+	}
+	switch e.Type {
+	case realtime.PresenceHint:
+		return false, nil
+	case realtime.Typing:
+		var ty oas.Typing
+		if err := json.Unmarshal(e.Data, &ty); err != nil {
+			return false, err
+		}
+		if !f.p.isKey() && ty.Author.MemberId != nil && *ty.Author.MemberId == f.p.memberID {
+			return false, nil
+		}
 	}
 	if e.Type == realtime.ConversationRead {
 		var r oas.ConversationRead

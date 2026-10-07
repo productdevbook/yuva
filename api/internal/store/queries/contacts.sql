@@ -1,20 +1,20 @@
 -- name: CreateContact :one
 INSERT INTO contacts (id, workspace_id, name, attributes, blocked, created_at, updated_at)
 VALUES (@id, @workspace_id, @name, @attributes, @blocked, @now, @now)
-RETURNING id, workspace_id, name, attributes, blocked, created_at, updated_at;
+RETURNING id, workspace_id, name, attributes, blocked, created_at, updated_at, locale, typed_email;
 
 -- name: GetContact :one
-SELECT id, workspace_id, name, attributes, blocked, created_at, updated_at
+SELECT id, workspace_id, name, attributes, blocked, created_at, updated_at, locale, typed_email
 FROM contacts WHERE workspace_id = $1 AND id = $2;
 
 -- name: LockContact :one
-SELECT id, workspace_id, name, attributes, blocked, created_at, updated_at
+SELECT id, workspace_id, name, attributes, blocked, created_at, updated_at, locale, typed_email
 FROM contacts WHERE workspace_id = $1 AND id = $2 FOR UPDATE;
 
 -- name: UpdateContact :one
 UPDATE contacts SET name = @name, attributes = @attributes, blocked = @blocked, updated_at = @now
 WHERE workspace_id = @workspace_id AND id = @id
-RETURNING id, workspace_id, name, attributes, blocked, created_at, updated_at;
+RETURNING id, workspace_id, name, attributes, blocked, created_at, updated_at, locale, typed_email;
 
 -- name: DeleteContact :execrows
 DELETE FROM contacts WHERE workspace_id = $1 AND id = $2;
@@ -30,7 +30,7 @@ UPDATE contacts c SET search = to_tsvector('simple', translate(concat_ws(' ',
 WHERE c.workspace_id = $1 AND c.id = $2;
 
 -- name: ListContacts :many
-SELECT id, workspace_id, name, attributes, blocked, created_at, updated_at
+SELECT id, workspace_id, name, attributes, blocked, created_at, updated_at, locale, typed_email
 FROM contacts c
 WHERE c.workspace_id = @workspace_id
   AND (sqlc.narg(q)::text IS NULL OR c.search @@ websearch_to_tsquery('simple', translate(sqlc.narg(q)::text, 'İı', 'ii')))

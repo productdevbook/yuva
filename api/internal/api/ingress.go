@@ -298,6 +298,9 @@ func (s *Server) IngestEmail(ctx context.Context, envelopeTo, envelopeFrom strin
 	var res IngestResult
 	err = s.inTx(ctx, ws, func(q *store.Queries, events *eventBatch) error {
 		now := s.now()
+		if err := s.claimTypedEmail(ctx, q, ws, ch.InboxID, m, sender); err != nil {
+			return err
+		}
 		contact, err := s.contactForSender(ctx, q, ws, sender, m.From.Name, now)
 		if err != nil {
 			return err

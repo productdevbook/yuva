@@ -50,6 +50,8 @@ type Server struct {
 	sender   email.Sender
 	snsCerts *certCache
 	fetch    *http.Client
+	chat     ChatSettings
+	limits   *rateLimiter
 }
 
 type Deps struct {
@@ -69,6 +71,13 @@ type Deps struct {
 	Ingress     IngressSettings
 	EmailSender email.Sender
 	HTTPClient  *http.Client
+
+	Chat ChatSettings
+}
+
+type ChatSettings struct {
+	// EmailDelay is how long a chat contact must be gone, and a reply unread, before it is e-mailed.
+	EmailDelay time.Duration
 }
 
 type IngressSettings struct {
@@ -104,10 +113,15 @@ func New(d Deps) *Server {
 	if fetch == nil {
 		fetch = &http.Client{Timeout: 10 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
 	}
+	chat := d.Chat
+	if chat.EmailDelay <= 0 {
+		chat.EmailDelay = defaultChatEmailDelay
+	}
 	return &Server{
 		log: d.Log, st: d.Store, version: d.Version, mailer: d.Mailer, webauthn: d.WebAuthn, auth: d.Auth, now: now,
 		secrets: d.Secrets, objects: d.Storage, attach: d.Attachments, sanitize: htmlPolicy(),
 		hub: d.Hub, jobs: jobs, ingress: d.Ingress, sender: sender, snsCerts: newCertCache(fetch), fetch: fetch,
+		chat: chat, limits: newRateLimiter(),
 	}
 }
 
@@ -133,6 +147,7 @@ func (s *Server) Handler() http.Handler {
 		},
 	})
 	mux.HandleFunc("GET /v1/realtime", s.serveRealtime)
+	mux.HandleFunc("GET /client/v1/realtime", s.serveClientRealtime)
 	mux.HandleFunc("POST /ingress/email", s.serveIngressEmail)
 	mux.HandleFunc("POST /ingress/ses", s.serveIngressSES)
 	panel := ui.Handler()
@@ -143,7 +158,7 @@ func (s *Server) Handler() http.Handler {
 		}
 		panel.ServeHTTP(w, r)
 	})
-	return s.recoverer(s.logRequests(s.limitBody(mux)))
+	return s.recoverer(s.logRequests(s.clientCORS(s.limitBody(mux))))
 }
 
 func isAPIPath(p string) bool {

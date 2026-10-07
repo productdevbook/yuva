@@ -73,7 +73,7 @@ func (q *Queries) ContactExists(ctx context.Context, arg ContactExistsParams) (b
 const createContact = `-- name: CreateContact :one
 INSERT INTO contacts (id, workspace_id, name, attributes, blocked, created_at, updated_at)
 VALUES ($1, $2, $3, $4, $5, $6, $6)
-RETURNING id, workspace_id, name, attributes, blocked, created_at, updated_at
+RETURNING id, workspace_id, name, attributes, blocked, created_at, updated_at, locale, typed_email
 `
 
 type CreateContactParams struct {
@@ -93,6 +93,8 @@ type CreateContactRow struct {
 	Blocked     bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	Locale      *string
+	TypedEmail  *string
 }
 
 func (q *Queries) CreateContact(ctx context.Context, arg CreateContactParams) (CreateContactRow, error) {
@@ -113,6 +115,8 @@ func (q *Queries) CreateContact(ctx context.Context, arg CreateContactParams) (C
 		&i.Blocked,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Locale,
+		&i.TypedEmail,
 	)
 	return i, err
 }
@@ -163,7 +167,7 @@ func (q *Queries) DeleteContactExternalIDs(ctx context.Context, arg DeleteContac
 }
 
 const getContact = `-- name: GetContact :one
-SELECT id, workspace_id, name, attributes, blocked, created_at, updated_at
+SELECT id, workspace_id, name, attributes, blocked, created_at, updated_at, locale, typed_email
 FROM contacts WHERE workspace_id = $1 AND id = $2
 `
 
@@ -180,6 +184,8 @@ type GetContactRow struct {
 	Blocked     bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	Locale      *string
+	TypedEmail  *string
 }
 
 func (q *Queries) GetContact(ctx context.Context, arg GetContactParams) (GetContactRow, error) {
@@ -193,6 +199,8 @@ func (q *Queries) GetContact(ctx context.Context, arg GetContactParams) (GetCont
 		&i.Blocked,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Locale,
+		&i.TypedEmail,
 	)
 	return i, err
 }
@@ -359,7 +367,7 @@ func (q *Queries) ListContactSummaries(ctx context.Context, arg ListContactSumma
 }
 
 const listContacts = `-- name: ListContacts :many
-SELECT id, workspace_id, name, attributes, blocked, created_at, updated_at
+SELECT id, workspace_id, name, attributes, blocked, created_at, updated_at, locale, typed_email
 FROM contacts c
 WHERE c.workspace_id = $1
   AND ($2::text IS NULL OR c.search @@ websearch_to_tsquery('simple', translate($2::text, 'İı', 'ii')))
@@ -385,6 +393,8 @@ type ListContactsRow struct {
 	Blocked     bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	Locale      *string
+	TypedEmail  *string
 }
 
 func (q *Queries) ListContacts(ctx context.Context, arg ListContactsParams) ([]ListContactsRow, error) {
@@ -410,6 +420,8 @@ func (q *Queries) ListContacts(ctx context.Context, arg ListContactsParams) ([]L
 			&i.Blocked,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.Locale,
+			&i.TypedEmail,
 		); err != nil {
 			return nil, err
 		}
@@ -422,7 +434,7 @@ func (q *Queries) ListContacts(ctx context.Context, arg ListContactsParams) ([]L
 }
 
 const lockContact = `-- name: LockContact :one
-SELECT id, workspace_id, name, attributes, blocked, created_at, updated_at
+SELECT id, workspace_id, name, attributes, blocked, created_at, updated_at, locale, typed_email
 FROM contacts WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
 
@@ -439,6 +451,8 @@ type LockContactRow struct {
 	Blocked     bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	Locale      *string
+	TypedEmail  *string
 }
 
 func (q *Queries) LockContact(ctx context.Context, arg LockContactParams) (LockContactRow, error) {
@@ -452,6 +466,8 @@ func (q *Queries) LockContact(ctx context.Context, arg LockContactParams) (LockC
 		&i.Blocked,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Locale,
+		&i.TypedEmail,
 	)
 	return i, err
 }
@@ -480,7 +496,7 @@ func (q *Queries) RefreshContactSearch(ctx context.Context, arg RefreshContactSe
 const updateContact = `-- name: UpdateContact :one
 UPDATE contacts SET name = $1, attributes = $2, blocked = $3, updated_at = $4
 WHERE workspace_id = $5 AND id = $6
-RETURNING id, workspace_id, name, attributes, blocked, created_at, updated_at
+RETURNING id, workspace_id, name, attributes, blocked, created_at, updated_at, locale, typed_email
 `
 
 type UpdateContactParams struct {
@@ -500,6 +516,8 @@ type UpdateContactRow struct {
 	Blocked     bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	Locale      *string
+	TypedEmail  *string
 }
 
 func (q *Queries) UpdateContact(ctx context.Context, arg UpdateContactParams) (UpdateContactRow, error) {
@@ -520,6 +538,8 @@ func (q *Queries) UpdateContact(ctx context.Context, arg UpdateContactParams) (U
 		&i.Blocked,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Locale,
+		&i.TypedEmail,
 	)
 	return i, err
 }

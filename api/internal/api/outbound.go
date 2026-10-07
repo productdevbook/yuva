@@ -83,6 +83,12 @@ func (s *Server) planEmail(ctx context.Context, q *store.Queries, c store.Conver
 	if suppressed {
 		return nil, errEmailUndeliverable
 	}
+	return s.emailPlanFor(ctx, q, c, ch, to)
+}
+
+// emailPlanFor prepares the headers of a message to `to` in c, sent through the e-mail channel ch
+// and threaded with the conversation's earlier mail.
+func (s *Server) emailPlanFor(ctx context.Context, q *store.Queries, c store.Conversation, ch store.EmailChannel, to string) (*emailPlan, error) {
 	token, err := q.SetConversationEmailToken(ctx, store.SetConversationEmailTokenParams{
 		WorkspaceID: c.WorkspaceID, ID: c.ID, Token: email.NewConversationToken(),
 	})
@@ -95,14 +101,14 @@ func (s *Server) planEmail(ctx context.Context, q *store.Queries, c store.Conver
 	}
 	name := ch.DisplayName
 	if name == "" {
-		chRow, err := q.GetChannel(ctx, store.GetChannelParams{WorkspaceID: c.WorkspaceID, ID: *c.ChannelID})
+		chRow, err := q.GetChannel(ctx, store.GetChannelParams{WorkspaceID: c.WorkspaceID, ID: ch.ChannelID})
 		if err != nil {
 			return nil, err
 		}
 		name = chRow.Name
 	}
 	plan := &emailPlan{
-		channel: ch, channelID: *c.ChannelID, from: email.Address{Name: name, Email: fromAddr}, to: to,
+		channel: ch, channelID: ch.ChannelID, from: email.Address{Name: name, Email: fromAddr}, to: to,
 		subject:  email.ReplySubject(c.Subject),
 		headerID: email.NewMessageID(token, email.Domain(fromAddr)),
 	}
@@ -124,20 +130,23 @@ func (s *Server) planEmail(ctx context.Context, q *store.Queries, c store.Conver
 	return plan, nil
 }
 
-func (s *Server) queueEmail(ctx context.Context, q *store.Queries, events *eventBatch, plan *emailPlan, msg messageRow) (*store.ListMessageEmailsRow, error) {
+func (s *Server) recordOutboundEmail(ctx context.Context, q *store.Queries, plan *emailPlan, msg messageRow) error {
 	refs := plan.references
 	if refs == nil {
 		refs = []string{}
 	}
 	chID := plan.channelID
-	err := q.CreateMessageEmail(ctx, store.CreateMessageEmailParams{
+	return q.CreateMessageEmail(ctx, store.CreateMessageEmailParams{
 		WorkspaceID: msg.WorkspaceID, MessageID: msg.ID, ConversationID: msg.ConversationID, ChannelID: &chID,
 		Direction: string(oas.Out), HeaderMessageID: plan.headerID, InReplyTo: plan.inReplyTo, ReferencesIds: refs,
 		FromAddress: plan.from.Email, ToAddresses: []string{plan.to}, CcAddresses: []string{}, Subject: plan.subject,
 		FullText: msg.Body, FullHtml: msg.Html, Headers: []byte("{}"), Dmarc: email.DMARCUnknown, Auto: plan.auto,
 		CreatedAt: msg.CreatedAt,
 	})
-	if err != nil {
+}
+
+func (s *Server) queueEmail(ctx context.Context, q *store.Queries, events *eventBatch, plan *emailPlan, msg messageRow) (*store.ListMessageEmailsRow, error) {
+	if err := s.recordOutboundEmail(ctx, q, plan, msg); err != nil {
 		return nil, err
 	}
 	events.job(EmailSendArgs{WorkspaceID: msg.WorkspaceID, MessageID: msg.ID}, &river.InsertOpts{MaxAttempts: emailSendAttempts})
@@ -193,6 +202,8 @@ func withEmail(m oas.Message, e *store.ListMessageEmailsRow) oas.Message {
 type EmailSendArgs struct {
 	WorkspaceID uuid.UUID `json:"workspace_id"`
 	MessageID   uuid.UUID `json:"message_id"`
+	// Batch lists the messages sent together in one e-mail, MessageID last; empty for one message.
+	Batch []uuid.UUID `json:"batch,omitempty"`
 }
 
 func (EmailSendArgs) Kind() string { return "email_send" }
@@ -203,13 +214,18 @@ type emailSendWorker struct {
 }
 
 func (w *emailSendWorker) Work(ctx context.Context, job *river.Job[EmailSendArgs]) error {
-	return w.s.SendEmail(ctx, job.Args.WorkspaceID, job.Args.MessageID, job.Attempt >= job.MaxAttempts)
+	ids := job.Args.Batch
+	if len(ids) == 0 {
+		ids = []uuid.UUID{job.Args.MessageID}
+	}
+	return w.s.SendEmails(ctx, job.Args.WorkspaceID, ids, job.Attempt >= job.MaxAttempts)
 }
 
 func (w *emailSendWorker) Timeout(*river.Job[EmailSendArgs]) time.Duration { return 2 * time.Minute }
 
 func (s *Server) AddWorkers(workers *river.Workers) {
 	river.AddWorker(workers, &emailSendWorker{s: s})
+	river.AddWorker(workers, &continuityWorker{s: s})
 }
 
 func truncateRunes(v string, n int) string {
@@ -223,29 +239,52 @@ func truncateRunes(v string, n int) string {
 // SendEmail delivers a queued outgoing message through its channel's SMTP account. A temporary
 // failure is returned so the job is retried, unless it is the last attempt.
 func (s *Server) SendEmail(ctx context.Context, workspaceID, messageID uuid.UUID, lastAttempt bool) error {
-	msg, err := s.st.GetMessage(ctx, store.GetMessageParams{WorkspaceID: workspaceID, ID: messageID})
-	if store.IsNotFound(err) {
+	return s.SendEmails(ctx, workspaceID, []uuid.UUID{messageID}, lastAttempt)
+}
+
+// SendEmails delivers queued outgoing messages as one e-mail, with the headers stored for the
+// last of them.
+func (s *Server) SendEmails(ctx context.Context, workspaceID uuid.UUID, ids []uuid.UUID, lastAttempt bool) error {
+	var msgs []messageRow
+	for _, id := range ids {
+		msg, err := s.st.GetMessage(ctx, store.GetMessageParams{WorkspaceID: workspaceID, ID: id})
+		if store.IsNotFound(err) {
+			continue
+		}
+		if err != nil {
+			return err
+		}
+		if msg.DeliveryState != nil && *msg.DeliveryState == deliveryQueued {
+			msgs = append(msgs, messageRow(msg))
+		}
+	}
+	if len(msgs) == 0 || msgs[len(msgs)-1].ID != ids[len(ids)-1] {
 		return nil
 	}
-	if err != nil {
-		return err
+	set := func(state string, detail *string) error {
+		return s.inTx(ctx, workspaceID, func(q *store.Queries, events *eventBatch) error {
+			for _, m := range msgs {
+				if err := s.setDeliveryTx(ctx, q, events, workspaceID, m.ID, state, detail); err != nil {
+					return err
+				}
+			}
+			return nil
+		})
 	}
-	if msg.DeliveryState == nil || *msg.DeliveryState != deliveryQueued {
-		return nil
-	}
-	sendErr := s.sendQueued(ctx, workspaceID, messageRow(msg))
+	sendErr := s.sendQueued(ctx, workspaceID, msgs)
 	if sendErr == nil {
-		return s.setDelivery(ctx, workspaceID, messageID, deliverySent, nil)
+		return set(deliverySent, nil)
 	}
 	if !email.IsPermanent(sendErr) && !lastAttempt {
-		s.log.WarnContext(ctx, "email send failed, retrying", slog.String("message_id", messageID.String()), slog.Any("error", sendErr))
+		s.log.WarnContext(ctx, "email send failed, retrying", slog.String("message_id", ids[len(ids)-1].String()), slog.Any("error", sendErr))
 		return sendErr
 	}
 	detail := truncateRunes(sendErr.Error(), maxDeliveryError)
-	return s.setDelivery(ctx, workspaceID, messageID, deliveryFailed, &detail)
+	return set(deliveryFailed, &detail)
 }
 
-func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msg messageRow) error {
+func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []messageRow) error {
+	msg := msgs[len(msgs)-1]
 	me, err := s.st.GetMessageEmail(ctx, store.GetMessageEmailParams{WorkspaceID: workspaceID, MessageID: msg.ID})
 	if err != nil {
 		return fmt.Errorf("message e-mail: %w", err)
@@ -302,7 +341,7 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msg mess
 		To:            email.Address{Name: toName, Email: to},
 		Subject:       me.Subject,
 		MessageID:     me.HeaderMessageID,
-		Text:          msg.Body,
+		Text:          batchText(msgs),
 		Date:          msg.CreatedAt,
 		References:    me.ReferencesIds,
 		AutoSubmitted: me.Auto,
@@ -310,19 +349,21 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msg mess
 	if me.InReplyTo != nil {
 		out.InReplyTo = *me.InReplyTo
 	}
-	if msg.Html != nil {
+	if msg.Html != nil && len(msgs) == 1 {
 		out.HTML = *msg.Html
 	}
-	atts, err := s.st.ListAttachmentsOfMessage(ctx, store.ListAttachmentsOfMessageParams{WorkspaceID: workspaceID, MessageID: msg.ID})
-	if err != nil {
-		return err
-	}
-	for _, a := range atts {
-		data, err := s.readObject(ctx, a.StorageKey)
+	for _, m := range msgs {
+		atts, err := s.st.ListAttachmentsOfMessage(ctx, store.ListAttachmentsOfMessageParams{WorkspaceID: workspaceID, MessageID: m.ID})
 		if err != nil {
 			return err
 		}
-		out.Attachments = append(out.Attachments, email.Attachment{Filename: a.Filename, ContentType: a.ContentType, Data: data})
+		for _, a := range atts {
+			data, err := s.readObject(ctx, a.StorageKey)
+			if err != nil {
+				return err
+			}
+			out.Attachments = append(out.Attachments, email.Attachment{Filename: a.Filename, ContentType: a.ContentType, Data: data})
+		}
 	}
 	raw, err := email.Build(out)
 	if err != nil {
@@ -334,6 +375,16 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msg mess
 	return s.sender.Send(sendCtx, cfg, me.FromAddress, []string{to}, raw)
 }
 
+func batchText(msgs []messageRow) string {
+	parts := make([]string, 0, len(msgs))
+	for _, m := range msgs {
+		if b := strings.TrimSpace(m.Body); b != "" {
+			parts = append(parts, b)
+		}
+	}
+	return strings.Join(parts, "\n\n")
+}
+
 func (s *Server) readObject(ctx context.Context, key string) ([]byte, error) {
 	r, err := s.objects.Open(ctx, key)
 	if err != nil {
@@ -341,12 +392,6 @@ func (s *Server) readObject(ctx context.Context, key string) ([]byte, error) {
 	}
 	defer r.Close()
 	return io.ReadAll(r)
-}
-
-func (s *Server) setDelivery(ctx context.Context, workspaceID, messageID uuid.UUID, state string, detail *string) error {
-	return s.inTx(ctx, workspaceID, func(q *store.Queries, events *eventBatch) error {
-		return s.setDeliveryTx(ctx, q, events, workspaceID, messageID, state, detail)
-	})
 }
 
 func (s *Server) setDeliveryTx(ctx context.Context, q *store.Queries, events *eventBatch, workspaceID, messageID uuid.UUID, state string, detail *string) error {

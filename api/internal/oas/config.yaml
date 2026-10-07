@@ -6,7 +6,7 @@ generate:
   strict-server: true
 output-options:
   skip-prune: true
-  exclude-operation-ids: [realtime, ingestEmail, ingestSes]
+  exclude-operation-ids: [realtime, clientRealtime, ingestEmail, ingestSes]
   nullable-type: true
   type-mapping:
     string:

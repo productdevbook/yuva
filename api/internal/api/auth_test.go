@@ -199,6 +199,7 @@ type client struct {
 	ip        string
 	bearer    string
 	workspace string
+	origin    string
 }
 
 func (h *harness) client() *client {
@@ -243,6 +244,9 @@ func (c *client) do(method, path string, body any) response {
 	}
 	if c.workspace != "" {
 		req.Header.Set("Yuva-Workspace", c.workspace)
+	}
+	if c.origin != "" {
+		req.Header.Set("Origin", c.origin)
 	}
 	res, err := c.http.Do(req)
 	if err != nil {

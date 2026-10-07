@@ -232,7 +232,7 @@ func (q *Queries) CreateMessageEmail(ctx context.Context, arg CreateMessageEmail
 }
 
 const findConversationByEmailToken = `-- name: FindConversationByEmailToken :one
-SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id FROM conversations WHERE workspace_id = $1 AND inbox_id = $2 AND email_token = ANY($3::text[])
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at FROM conversations WHERE workspace_id = $1 AND inbox_id = $2 AND email_token = ANY($3::text[])
 ORDER BY (contact_id = $4) DESC, created_at DESC
 LIMIT 1
 `
@@ -270,12 +270,14 @@ func (q *Queries) FindConversationByEmailToken(ctx context.Context, arg FindConv
 		&i.Spam,
 		&i.EmailToken,
 		&i.RelatedConversationID,
+		&i.ContinuityThrough,
+		&i.ContinuitySentAt,
 	)
 	return i, err
 }
 
 const findConversationByHeaders = `-- name: FindConversationByHeaders :one
-SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id FROM message_emails e
+SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
 WHERE e.workspace_id = $1 AND c.inbox_id = $2 AND e.header_message_id = ANY($3::text[])
 ORDER BY (c.contact_id = $4) DESC, e.created_at DESC
@@ -315,6 +317,8 @@ func (q *Queries) FindConversationByHeaders(ctx context.Context, arg FindConvers
 		&i.Spam,
 		&i.EmailToken,
 		&i.RelatedConversationID,
+		&i.ContinuityThrough,
+		&i.ContinuitySentAt,
 	)
 	return i, err
 }

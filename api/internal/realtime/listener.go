@@ -41,8 +41,10 @@ func listenOnce(ctx context.Context, dsn string, q *store.Queries, hub *Hub) (bo
 		return false, err
 	}
 	defer conn.Close(context.WithoutCancel(ctx))
-	if _, err := conn.Exec(ctx, "LISTEN "+Channel); err != nil {
-		return false, err
+	for _, ch := range []string{Channel, SignalChannel} {
+		if _, err := conn.Exec(ctx, "LISTEN "+ch); err != nil {
+			return false, err
+		}
 	}
 	// Connections that subscribed while nothing was listening may have missed events; they resume.
 	hub.StopAll(ReasonRestart)
@@ -52,6 +54,12 @@ func listenOnce(ctx context.Context, dsn string, q *store.Queries, hub *Hub) (bo
 		n, err := conn.WaitForNotification(ctx)
 		if err != nil {
 			return true, err
+		}
+		if n.Channel == SignalChannel {
+			if e, err := parseSignal(n.Payload); err == nil {
+				hub.Publish(e)
+			}
+			continue
 		}
 		workspaceID, id, err := parsePayload(n.Payload)
 		if err != nil {

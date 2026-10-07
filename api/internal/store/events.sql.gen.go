@@ -168,3 +168,17 @@ func (q *Queries) NotifyEvent(ctx context.Context, arg NotifyEventParams) error 
 	_, err := q.db.Exec(ctx, notifyEvent, arg.Channel, arg.WorkspaceID, arg.ID)
 	return err
 }
+
+const notifySignal = `-- name: NotifySignal :exec
+SELECT pg_notify($1::text, $2::text)
+`
+
+type NotifySignalParams struct {
+	Channel string
+	Payload string
+}
+
+func (q *Queries) NotifySignal(ctx context.Context, arg NotifySignalParams) error {
+	_, err := q.db.Exec(ctx, notifySignal, arg.Channel, arg.Payload)
+	return err
+}

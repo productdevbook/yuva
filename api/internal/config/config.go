@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Config struct {
@@ -32,6 +33,8 @@ type Config struct {
 
 	IngressSecret string
 	SESTopicARNs  []string
+
+	ChatEmailDelay time.Duration
 }
 
 type Storage struct {
@@ -125,6 +128,9 @@ func Load(version string) (Config, error) {
 	}
 	if c.Attachments.MaxBytes, err = strconv.ParseInt(env("YUVA_ATTACHMENT_MAX_BYTES", "26214400"), 10, 64); err != nil || c.Attachments.MaxBytes < 1 {
 		return c, errors.New("YUVA_ATTACHMENT_MAX_BYTES must be a positive number of bytes")
+	}
+	if c.ChatEmailDelay, err = time.ParseDuration(env("YUVA_CHAT_EMAIL_DELAY", "5m")); err != nil || c.ChatEmailDelay < time.Second {
+		return c, errors.New("YUVA_CHAT_EMAIL_DELAY must be a duration of at least 1s, such as 5m")
 	}
 	if c.SMTP.Enabled() && c.SMTP.From == "" {
 		return c, errors.New("YUVA_SMTP_FROM is required when YUVA_SMTP_HOST is set")

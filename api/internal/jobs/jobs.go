@@ -70,6 +70,12 @@ func (w *EventCleanupWorker) Work(ctx context.Context, _ *river.Job[EventCleanup
 		if _, err := w.Queries.DeleteEventsBefore(ctx, store.DeleteEventsBeforeParams{WorkspaceID: id, Before: before}); err != nil {
 			return fmt.Errorf("workspace %s: %w", id, err)
 		}
+		if _, err := w.Queries.DeleteStaleConnections(ctx, store.DeleteStaleConnectionsParams{WorkspaceID: id, Before: w.Now().Add(-time.Hour)}); err != nil {
+			return fmt.Errorf("workspace %s: %w", id, err)
+		}
+		if _, err := w.Queries.DeleteExpiredContactSessions(ctx, store.DeleteExpiredContactSessionsParams{WorkspaceID: id, Before: w.Now()}); err != nil {
+			return fmt.Errorf("workspace %s: %w", id, err)
+		}
 	}
 	return nil
 }

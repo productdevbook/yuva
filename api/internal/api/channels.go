@@ -11,7 +11,7 @@ import (
 
 const maxChannelSettingsBytes = 64 << 10
 
-func channelBody(c store.Channel, e *store.EmailChannel) oas.Channel {
+func channelBody(c store.Channel, e *store.EmailChannel, chat *store.ChatChannel) oas.Channel {
 	out := oas.Channel{
 		Id: c.ID, InboxId: c.InboxID, Kind: oas.ChannelKind(c.Kind), Name: c.Name,
 		CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt, Settings: oas.ChannelSettings{},
@@ -20,21 +20,34 @@ func channelBody(c store.Channel, e *store.EmailChannel) oas.Channel {
 	if e != nil {
 		out.Email = emailChannelBody(*e)
 	}
+	if chat != nil {
+		out.Chat = chatChannelBody(*chat)
+	}
 	return out
 }
 
 func (s *Server) oneChannelBody(ctx context.Context, q *store.Queries, c store.Channel) (oas.Channel, error) {
+	if c.Kind == string(oas.ChannelKindChat) {
+		chat, err := q.GetChatChannel(ctx, store.GetChatChannelParams{WorkspaceID: c.WorkspaceID, ChannelID: c.ID})
+		if store.IsNotFound(err) {
+			return channelBody(c, nil, nil), nil
+		}
+		if err != nil {
+			return oas.Channel{}, err
+		}
+		return channelBody(c, nil, &chat), nil
+	}
 	if c.Kind != string(oas.ChannelKindEmail) {
-		return channelBody(c, nil), nil
+		return channelBody(c, nil, nil), nil
 	}
 	e, err := q.GetEmailChannel(ctx, store.GetEmailChannelParams{WorkspaceID: c.WorkspaceID, ChannelID: c.ID})
 	if store.IsNotFound(err) {
-		return channelBody(c, nil), nil
+		return channelBody(c, nil, nil), nil
 	}
 	if err != nil {
 		return oas.Channel{}, err
 	}
-	return channelBody(c, &e), nil
+	return channelBody(c, &e, nil), nil
 }
 
 func channelSettings(v *oas.ChannelSettings) ([]byte, error) {
@@ -65,13 +78,21 @@ func (s *Server) ListChannels(ctx context.Context, req oas.ListChannelsRequestOb
 	if err != nil {
 		return nil, err
 	}
+	chats, err := chatChannelsByID(ctx, s.st.Queries, p.workspaceID, ids)
+	if err != nil {
+		return nil, err
+	}
 	out := oas.ListChannels200JSONResponse{Items: make([]oas.Channel, 0, len(rows))}
 	for _, r := range rows {
 		var e *store.EmailChannel
 		if v, ok := emails[r.ID]; ok {
 			e = &v
 		}
-		out.Items = append(out.Items, channelBody(r, e))
+		var chat *store.ChatChannel
+		if v, ok := chats[r.ID]; ok {
+			chat = &v
+		}
+		out.Items = append(out.Items, channelBody(r, e, chat))
 	}
 	return out, nil
 }
@@ -99,10 +120,23 @@ func (s *Server) CreateChannel(ctx context.Context, req oas.CreateChannelRequest
 	if !isEmail && req.Body.Email != nil {
 		return nil, errEmailNotAllowed
 	}
+	isChat := req.Body.Kind == oas.ChannelKindChat
+	if isChat && req.Body.Chat == nil {
+		return nil, errChatRequired
+	}
+	if !isChat && req.Body.Chat != nil {
+		return nil, errChatNotAllowed
+	}
 	id := newID()
 	var emailArg store.CreateEmailChannelParams
 	if isEmail {
 		if emailArg, err = s.emailChannelParams(p.workspaceID, id, req.Body.Email, nil); err != nil {
+			return nil, err
+		}
+	}
+	var chatArg store.SaveChatChannelParams
+	if isChat {
+		if chatArg, err = chatChannelParams(p.workspaceID, id, req.Body.Chat, nil); err != nil {
 			return nil, err
 		}
 	}
@@ -121,15 +155,23 @@ func (s *Server) CreateChannel(ctx context.Context, req oas.CreateChannelRequest
 		if err != nil {
 			return err
 		}
+		if isChat {
+			chat, err := q.SaveChatChannel(ctx, chatArg)
+			if err != nil {
+				return err
+			}
+			out = channelBody(c, nil, &chat)
+			return nil
+		}
 		if !isEmail {
-			out = channelBody(c, nil)
+			out = channelBody(c, nil, nil)
 			return nil
 		}
 		e, err := saveEmailChannel(ctx, q, emailArg)
 		if err != nil {
 			return err
 		}
-		out = channelBody(c, &e)
+		out = channelBody(c, &e, nil)
 		return nil
 	})
 	if err != nil {
@@ -191,6 +233,9 @@ func (s *Server) UpdateChannel(ctx context.Context, req oas.UpdateChannelRequest
 	if req.Body.Email != nil && cur.Kind != string(oas.ChannelKindEmail) {
 		return nil, errEmailNotAllowed
 	}
+	if req.Body.Chat != nil && cur.Kind != string(oas.ChannelKindChat) {
+		return nil, errChatNotAllowed
+	}
 	var out oas.Channel
 	err = s.st.InTx(ctx, func(q *store.Queries) error {
 		c, err := q.UpdateChannel(ctx, store.UpdateChannelParams{WorkspaceID: p.workspaceID, ID: cur.ID, Name: name, Settings: settings, Now: s.now()})
@@ -213,6 +258,22 @@ func (s *Server) UpdateChannel(ctx context.Context, req oas.UpdateChannelRequest
 				return err
 			}
 			if _, err := saveEmailChannel(ctx, q, arg); err != nil {
+				return err
+			}
+		}
+		if req.Body.Chat != nil {
+			var prev *store.ChatChannel
+			cc, err := q.GetChatChannel(ctx, store.GetChatChannelParams{WorkspaceID: p.workspaceID, ChannelID: c.ID})
+			if err == nil {
+				prev = &cc
+			} else if !store.IsNotFound(err) {
+				return err
+			}
+			arg, err := chatChannelParams(p.workspaceID, c.ID, req.Body.Chat, prev)
+			if err != nil {
+				return err
+			}
+			if _, err := q.SaveChatChannel(ctx, arg); err != nil {
 				return err
 			}
 		}

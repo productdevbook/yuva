@@ -44,6 +44,24 @@ func (e AuthorType) Valid() bool {
 	}
 }
 
+// Defines values for Availability.
+const (
+	Auto Availability = "auto"
+	Away Availability = "away"
+)
+
+// Valid indicates whether the value is a known member of the Availability enum.
+func (e Availability) Valid() bool {
+	switch e {
+	case Auto:
+		return true
+	case Away:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ChannelKind.
 const (
 	ChannelKindApi   ChannelKind = "api"
@@ -62,6 +80,117 @@ func (e ChannelKind) Valid() bool {
 	case ChannelKindChat:
 		return true
 	case ChannelKindEmail:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ChatLauncherPosition.
+const (
+	Left  ChatLauncherPosition = "left"
+	Right ChatLauncherPosition = "right"
+)
+
+// Valid indicates whether the value is a known member of the ChatLauncherPosition enum.
+func (e ChatLauncherPosition) Valid() bool {
+	switch e {
+	case Left:
+		return true
+	case Right:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ClientConversationCreatedEventType.
+const (
+	ClientConversationCreatedEventTypeConversationCreated ClientConversationCreatedEventType = "conversation.created"
+)
+
+// Valid indicates whether the value is a known member of the ClientConversationCreatedEventType enum.
+func (e ClientConversationCreatedEventType) Valid() bool {
+	switch e {
+	case ClientConversationCreatedEventTypeConversationCreated:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ClientConversationUpdatedEventType.
+const (
+	ClientConversationUpdatedEventTypeConversationUpdated ClientConversationUpdatedEventType = "conversation.updated"
+)
+
+// Valid indicates whether the value is a known member of the ClientConversationUpdatedEventType enum.
+func (e ClientConversationUpdatedEventType) Valid() bool {
+	switch e {
+	case ClientConversationUpdatedEventTypeConversationUpdated:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ClientMessageEventType.
+const (
+	ClientMessageEventTypeMessageCreated ClientMessageEventType = "message.created"
+	ClientMessageEventTypeMessageUpdated ClientMessageEventType = "message.updated"
+)
+
+// Valid indicates whether the value is a known member of the ClientMessageEventType enum.
+func (e ClientMessageEventType) Valid() bool {
+	switch e {
+	case ClientMessageEventTypeMessageCreated:
+		return true
+	case ClientMessageEventTypeMessageUpdated:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ClientPresenceEventType.
+const (
+	Presence ClientPresenceEventType = "presence"
+)
+
+// Valid indicates whether the value is a known member of the ClientPresenceEventType enum.
+func (e ClientPresenceEventType) Valid() bool {
+	switch e {
+	case Presence:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ClientReadEventType.
+const (
+	Read ClientReadEventType = "read"
+)
+
+// Valid indicates whether the value is a known member of the ClientReadEventType enum.
+func (e ClientReadEventType) Valid() bool {
+	switch e {
+	case Read:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ClientTypingEventType.
+const (
+	ClientTypingEventTypeTyping ClientTypingEventType = "typing"
+)
+
+// Valid indicates whether the value is a known member of the ClientTypingEventType enum.
+func (e ClientTypingEventType) Valid() bool {
+	switch e {
+	case ClientTypingEventTypeTyping:
 		return true
 	default:
 		return false
@@ -100,16 +229,16 @@ func (e ContactUpdatedEventType) Valid() bool {
 
 // Defines values for ConversationEventType.
 const (
-	ConversationCreated ConversationEventType = "conversation.created"
-	ConversationUpdated ConversationEventType = "conversation.updated"
+	ConversationEventTypeConversationCreated ConversationEventType = "conversation.created"
+	ConversationEventTypeConversationUpdated ConversationEventType = "conversation.updated"
 )
 
 // Valid indicates whether the value is a known member of the ConversationEventType enum.
 func (e ConversationEventType) Valid() bool {
 	switch e {
-	case ConversationCreated:
+	case ConversationEventTypeConversationCreated:
 		return true
-	case ConversationUpdated:
+	case ConversationEventTypeConversationUpdated:
 		return true
 	default:
 		return false
@@ -409,13 +538,13 @@ func (e MessageCreateMultipartKind) Valid() bool {
 
 // Defines values for MessageCreatedEventType.
 const (
-	MessageCreated MessageCreatedEventType = "message.created"
+	MessageCreatedEventTypeMessageCreated MessageCreatedEventType = "message.created"
 )
 
 // Valid indicates whether the value is a known member of the MessageCreatedEventType enum.
 func (e MessageCreatedEventType) Valid() bool {
 	switch e {
-	case MessageCreated:
+	case MessageCreatedEventTypeMessageCreated:
 		return true
 	default:
 		return false
@@ -505,13 +634,13 @@ func (e MessageKind) Valid() bool {
 
 // Defines values for MessageUpdatedEventType.
 const (
-	MessageUpdated MessageUpdatedEventType = "message.updated"
+	MessageUpdatedEventTypeMessageUpdated MessageUpdatedEventType = "message.updated"
 )
 
 // Valid indicates whether the value is a known member of the MessageUpdatedEventType enum.
 func (e MessageUpdatedEventType) Valid() bool {
 	switch e {
-	case MessageUpdated:
+	case MessageUpdatedEventTypeMessageUpdated:
 		return true
 	default:
 		return false
@@ -614,6 +743,39 @@ func (e SmtpTls) Valid() bool {
 	}
 }
 
+// Defines values for TypingAuthorType.
+const (
+	TypingAuthorTypeContact TypingAuthorType = "contact"
+	TypingAuthorTypeMember  TypingAuthorType = "member"
+)
+
+// Valid indicates whether the value is a known member of the TypingAuthorType enum.
+func (e TypingAuthorType) Valid() bool {
+	switch e {
+	case TypingAuthorTypeContact:
+		return true
+	case TypingAuthorTypeMember:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for TypingEventType.
+const (
+	TypingEventTypeTyping TypingEventType = "typing"
+)
+
+// Valid indicates whether the value is a known member of the TypingEventType enum.
+func (e TypingEventType) Valid() bool {
+	switch e {
+	case TypingEventTypeTyping:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for UndeliverableEmailReason.
 const (
 	UndeliverableEmailReasonBounce    UndeliverableEmailReason = "bounce"
@@ -665,18 +827,36 @@ func (e Weekday) Valid() bool {
 	}
 }
 
+// Defines values for ListClientMessagesParamsOrder.
+const (
+	ListClientMessagesParamsOrderAsc  ListClientMessagesParamsOrder = "asc"
+	ListClientMessagesParamsOrderDesc ListClientMessagesParamsOrder = "desc"
+)
+
+// Valid indicates whether the value is a known member of the ListClientMessagesParamsOrder enum.
+func (e ListClientMessagesParamsOrder) Valid() bool {
+	switch e {
+	case ListClientMessagesParamsOrderAsc:
+		return true
+	case ListClientMessagesParamsOrderDesc:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ListMessagesParamsOrder.
 const (
-	Asc  ListMessagesParamsOrder = "asc"
-	Desc ListMessagesParamsOrder = "desc"
+	ListMessagesParamsOrderAsc  ListMessagesParamsOrder = "asc"
+	ListMessagesParamsOrderDesc ListMessagesParamsOrder = "desc"
 )
 
 // Valid indicates whether the value is a known member of the ListMessagesParamsOrder enum.
 func (e ListMessagesParamsOrder) Valid() bool {
 	switch e {
-	case Asc:
+	case ListMessagesParamsOrderAsc:
 		return true
-	case Desc:
+	case ListMessagesParamsOrderDesc:
 		return true
 	default:
 		return false
@@ -741,6 +921,10 @@ type Attributes map[string]interface{}
 // AuthorType defines model for AuthorType.
 type AuthorType string
 
+// Availability `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
+// hours. `away`: never shown as available.
+type Availability string
+
 // BusinessHours When `enabled` is false the inbox counts as always open.
 type BusinessHours struct {
 	Enabled   bool                    `json:"enabled"`
@@ -799,7 +983,9 @@ type CannedReplyUpdate struct {
 
 // Channel defines model for Channel.
 type Channel struct {
-	CreatedAt time.Time `json:"created_at"`
+	// Chat Settings of a `chat` (web widget) channel.
+	Chat      *ChatChannel `json:"chat,omitempty"`
+	CreatedAt time.Time    `json:"created_at"`
 
 	// Email Settings of an `email` channel.
 	Email   *EmailChannel `json:"email,omitempty"`
@@ -810,20 +996,21 @@ type Channel struct {
 	Kind ChannelKind `json:"kind"`
 	Name string      `json:"name"`
 
-	// Settings Settings of `chat`, `app` and `api` channels, stored as given. Not acted on yet.
+	// Settings Free-form settings, stored as given. The settings Yuva acts on are in `email` and `chat`.
 	Settings  ChannelSettings `json:"settings"`
 	UpdatedAt time.Time       `json:"updated_at"`
 }
 
 // ChannelCreate defines model for ChannelCreate.
 type ChannelCreate struct {
+	Chat  *ChatChannelInput  `json:"chat,omitempty"`
 	Email *EmailChannelInput `json:"email,omitempty"`
 
 	// Kind `email`, `chat` (web widget), `app` (mobile SDKs) or `api` (server to server).
 	Kind ChannelKind `json:"kind"`
 	Name string      `json:"name"`
 
-	// Settings Settings of `chat`, `app` and `api` channels, stored as given. Not acted on yet.
+	// Settings Free-form settings, stored as given. The settings Yuva acts on are in `email` and `chat`.
 	Settings *ChannelSettings `json:"settings,omitempty"`
 }
 
@@ -835,30 +1022,440 @@ type ChannelList struct {
 	Items []Channel `json:"items"`
 }
 
-// ChannelSettings Settings of `chat`, `app` and `api` channels, stored as given. Not acted on yet.
+// ChannelSettings Free-form settings, stored as given. The settings Yuva acts on are in `email` and `chat`.
 type ChannelSettings map[string]interface{}
 
 // ChannelUpdate defines model for ChannelUpdate.
 type ChannelUpdate struct {
+	Chat  *ChatChannelInput  `json:"chat,omitempty"`
 	Email *EmailChannelInput `json:"email,omitempty"`
 	Name  *string            `json:"name,omitempty"`
 
-	// Settings Settings of `chat`, `app` and `api` channels, stored as given. Not acted on yet.
+	// Settings Free-form settings, stored as given. The settings Yuva acts on are in `email` and `chat`.
 	Settings *ChannelSettings `json:"settings,omitempty"`
 }
+
+// ChatChannel Settings of a `chat` (web widget) channel.
+type ChatChannel struct {
+	// AllowAnonymous Visitors without an identity token may chat.
+	AllowAnonymous bool `json:"allow_anonymous"`
+
+	// AllowedOrigins The only origins whose pages may use the widget, compared exactly.
+	AllowedOrigins []Origin `json:"allowed_origins"`
+
+	// AskEmailOffline The widget asks for an e-mail address when nobody is available.
+	AskEmailOffline bool `json:"ask_email_offline"`
+
+	// Greeting Shown before the first message; the inbox branding greeting when empty.
+	Greeting string `json:"greeting"`
+
+	// Launcher The floating launcher. Absent values fall back to the inbox branding.
+	Launcher ChatLauncher `json:"launcher"`
+
+	// PublicKey Identifies the channel to the widget (`channel_key`). Not a secret: it is embedded in
+	// web pages. Rotate it with `POST /v1/channels/{id}/public-key`.
+	PublicKey string `json:"public_key"`
+}
+
+// ChatChannelInput defines model for ChatChannelInput.
+type ChatChannelInput struct {
+	// AllowAnonymous Defaults to false.
+	AllowAnonymous *bool    `json:"allow_anonymous,omitempty"`
+	AllowedOrigins []Origin `json:"allowed_origins"`
+
+	// AskEmailOffline Defaults to true.
+	AskEmailOffline *bool   `json:"ask_email_offline,omitempty"`
+	Greeting        *string `json:"greeting,omitempty"`
+
+	// Launcher The floating launcher. Absent values fall back to the inbox branding.
+	Launcher *ChatLauncher `json:"launcher,omitempty"`
+}
+
+// ChatLauncher The floating launcher. Absent values fall back to the inbox branding.
+type ChatLauncher struct {
+	Color    *string               `json:"color,omitempty"`
+	Position *ChatLauncherPosition `json:"position,omitempty"`
+}
+
+// ChatLauncherPosition defines model for ChatLauncherPosition.
+type ChatLauncherPosition string
+
+// ClientAttachment defines model for ClientAttachment.
+type ClientAttachment struct {
+	ContentId   *string `json:"content_id,omitempty"`
+	ContentType string  `json:"content_type"`
+	Filename    string  `json:"filename"`
+
+	// Id Download it from `/client/v1/attachments/{id}`.
+	Id     uuid.UUID `json:"id"`
+	Inline bool      `json:"inline"`
+	Size   int64     `json:"size"`
+}
+
+// ClientChatSettings defines model for ClientChatSettings.
+type ClientChatSettings struct {
+	AllowAnonymous  bool `json:"allow_anonymous"`
+	AskEmailOffline bool `json:"ask_email_offline"`
+
+	// Greeting The channel greeting, else the inbox branding greeting, else empty.
+	Greeting string `json:"greeting"`
+
+	// LauncherColor The channel's launcher color, else the inbox branding color; absent when neither is set.
+	LauncherColor    *string              `json:"launcher_color,omitempty"`
+	LauncherPosition ChatLauncherPosition `json:"launcher_position"`
+}
+
+// ClientContact defines model for ClientContact.
+type ClientContact struct {
+	// Email The contact's first verified address (from an identity token or their own mail).
+	//
+	// Examples: owner@example.com
+	Email *Email    `json:"email,omitempty"`
+	Id    uuid.UUID `json:"id"`
+
+	// Identified The session was started with an identity token.
+	Identified bool   `json:"identified"`
+	Name       string `json:"name"`
+
+	// TypedEmail The address the contact typed, until it is verified.
+	//
+	// Examples: owner@example.com
+	TypedEmail *Email `json:"typed_email,omitempty"`
+}
+
+// ClientConversation defines model for ClientConversation.
+type ClientConversation struct {
+	CreatedAt     time.Time             `json:"created_at"`
+	Id            uuid.UUID             `json:"id"`
+	LastMessage   *ClientMessagePreview `json:"last_message,omitempty"`
+	LastMessageAt *time.Time            `json:"last_message_at,omitempty"`
+	Status        ConversationStatus    `json:"status"`
+	Subject       string                `json:"subject"`
+
+	// Unread A message from a member is newer than the contact's read cursor.
+	Unread bool `json:"unread"`
+}
+
+// ClientConversationCreate defines model for ClientConversationCreate.
+type ClientConversationCreate struct {
+	// Body The first message. Required unless files are attached.
+	Body *string `json:"body,omitempty"`
+
+	// ClientId The first message's `client_id`.
+	ClientId *string `json:"client_id,omitempty"`
+	Subject  *string `json:"subject,omitempty"`
+}
+
+// ClientConversationCreateMultipart defines model for ClientConversationCreateMultipart.
+type ClientConversationCreateMultipart struct {
+	Body     *string               `json:"body,omitempty"`
+	ClientId *string               `json:"client_id,omitempty"`
+	Files    *[]openapi_types.File `json:"files,omitempty"`
+	Subject  *string               `json:"subject,omitempty"`
+}
+
+// ClientConversationCreated defines model for ClientConversationCreated.
+type ClientConversationCreated struct {
+	Conversation ClientConversation `json:"conversation"`
+	Message      ClientMessage      `json:"message"`
+}
+
+// ClientConversationCreatedEvent A conversation of the contact started (here, in another tab, or by a member).
+type ClientConversationCreatedEvent struct {
+	ConversationId uuid.UUID                          `json:"conversation_id"`
+	CreatedAt      time.Time                          `json:"created_at"`
+	Data           ClientConversation                 `json:"data"`
+	Id             int64                              `json:"id"`
+	Type           ClientConversationCreatedEventType `json:"type"`
+}
+
+// ClientConversationCreatedEventType defines model for ClientConversationCreatedEvent.Type.
+type ClientConversationCreatedEventType string
+
+// ClientConversationPage defines model for ClientConversationPage.
+type ClientConversationPage struct {
+	Items []ClientConversation `json:"items"`
+
+	// NextCursor Absent on the last page.
+	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// ClientConversationStatus defines model for ClientConversationStatus.
+type ClientConversationStatus struct {
+	Id        uuid.UUID          `json:"id"`
+	Status    ConversationStatus `json:"status"`
+	UpdatedAt time.Time          `json:"updated_at"`
+}
+
+// ClientConversationUpdatedEvent The conversation's status changed.
+type ClientConversationUpdatedEvent struct {
+	ConversationId uuid.UUID                          `json:"conversation_id"`
+	CreatedAt      time.Time                          `json:"created_at"`
+	Data           ClientConversationStatus           `json:"data"`
+	Id             int64                              `json:"id"`
+	Type           ClientConversationUpdatedEventType `json:"type"`
+}
+
+// ClientConversationUpdatedEventType defines model for ClientConversationUpdatedEvent.Type.
+type ClientConversationUpdatedEventType string
+
+// ClientEmailUpdate defines model for ClientEmailUpdate.
+type ClientEmailUpdate struct {
+	// Email Examples: owner@example.com
+	Email Email `json:"email"`
+}
+
+// ClientInbox The inbox's public settings. `live` inboxes carry `presence`; `async` inboxes never do and
+// show `expected_reply_minutes` instead.
+type ClientInbox struct {
+	Branding InboxBranding `json:"branding"`
+
+	// BusinessHours When `enabled` is false the inbox counts as always open.
+	BusinessHours BusinessHours      `json:"business_hours"`
+	Chat          ClientChatSettings `json:"chat"`
+
+	// DefaultLocale A BCP 47 language tag.
+	//
+	// Examples: en, tr
+	DefaultLocale LanguageTag `json:"default_locale"`
+
+	// ExpectedReplyMinutes `async` inboxes only; absent when not set.
+	ExpectedReplyMinutes *int32    `json:"expected_reply_minutes,omitempty"`
+	Id                   uuid.UUID `json:"id"`
+
+	// Mode `live` shows who is available, typing and read receipts; `async` shows the expected reply
+	// time instead.
+	Mode InboxMode `json:"mode"`
+	Name string    `json:"name"`
+
+	// OpenNow Within business hours now (always true when they are not enabled).
+	OpenNow bool `json:"open_now"`
+
+	// Presence Who can answer now, in a `live` inbox.
+	Presence *ClientPresence `json:"presence,omitempty"`
+	Timezone string          `json:"timezone"`
+}
+
+// ClientMember What a contact may see of a member.
+type ClientMember struct {
+	// Initials Up to two letters for an avatar; empty when the name is.
+	Initials string `json:"initials"`
+
+	// Name The display name; empty when the member has not set one.
+	Name string `json:"name"`
+}
+
+// ClientMessage defines model for ClientMessage.
+type ClientMessage struct {
+	Attachments []ClientAttachment  `json:"attachments"`
+	Author      ClientMessageAuthor `json:"author"`
+	Body        string              `json:"body"`
+
+	// ClientId The contact's own messages only.
+	ClientId       *string   `json:"client_id,omitempty"`
+	ConversationId uuid.UUID `json:"conversation_id"`
+	CreatedAt      time.Time `json:"created_at"`
+	Direction      Direction `json:"direction"`
+
+	// Html Sanitized HTML, when the message has one.
+	Html *string   `json:"html,omitempty"`
+	Id   uuid.UUID `json:"id"`
+}
+
+// ClientMessageAuthor defines model for ClientMessageAuthor.
+type ClientMessageAuthor struct {
+	// Initials `member` only.
+	Initials *string `json:"initials,omitempty"`
+
+	// Name `member` only: the member's display name, possibly empty.
+	Name *string    `json:"name,omitempty"`
+	Type AuthorType `json:"type"`
+}
+
+// ClientMessageCreate defines model for ClientMessageCreate.
+type ClientMessageCreate struct {
+	// Body Plain text. Required unless files are attached.
+	Body *string `json:"body,omitempty"`
+
+	// ClientId Makes the request idempotent within the conversation.
+	ClientId *string `json:"client_id,omitempty"`
+}
+
+// ClientMessageCreateMultipart defines model for ClientMessageCreateMultipart.
+type ClientMessageCreateMultipart struct {
+	Body     *string               `json:"body,omitempty"`
+	ClientId *string               `json:"client_id,omitempty"`
+	Files    *[]openapi_types.File `json:"files,omitempty"`
+}
+
+// ClientMessageEvent A message was added or changed.
+type ClientMessageEvent struct {
+	ConversationId uuid.UUID              `json:"conversation_id"`
+	CreatedAt      time.Time              `json:"created_at"`
+	Data           ClientMessage          `json:"data"`
+	Id             int64                  `json:"id"`
+	Type           ClientMessageEventType `json:"type"`
+}
+
+// ClientMessageEventType defines model for ClientMessageEvent.Type.
+type ClientMessageEventType string
+
+// ClientMessagePage defines model for ClientMessagePage.
+type ClientMessagePage struct {
+	Items []ClientMessage `json:"items"`
+
+	// NextCursor Absent on the last page.
+	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// ClientMessagePreview defines model for ClientMessagePreview.
+type ClientMessagePreview struct {
+	AuthorType AuthorType `json:"author_type"`
+	CreatedAt  time.Time  `json:"created_at"`
+	Id         uuid.UUID  `json:"id"`
+
+	// Text The plain-text body on one line, cut to 140 characters with `…` when longer.
+	Text string `json:"text"`
+}
+
+// ClientPresence Who can answer now, in a `live` inbox.
+type ClientPresence struct {
+	// Available Someone with access is connected, not set to away, and the inbox is within its business
+	// hours.
+	Available bool           `json:"available"`
+	Members   []ClientMember `json:"members"`
+}
+
+// ClientPresenceEvent Who is available changed (`live` inboxes). No `id`; not replayed.
+type ClientPresenceEvent struct {
+	CreatedAt time.Time `json:"created_at"`
+
+	// Data Who can answer now, in a `live` inbox.
+	Data ClientPresence          `json:"data"`
+	Type ClientPresenceEventType `json:"type"`
+}
+
+// ClientPresenceEventType defines model for ClientPresenceEvent.Type.
+type ClientPresenceEventType string
+
+// ClientRead defines model for ClientRead.
+type ClientRead struct {
+	ConversationId uuid.UUID `json:"conversation_id"`
+
+	// ReadAt Members have read every message created at or before this time.
+	ReadAt time.Time `json:"read_at"`
+}
+
+// ClientReadCreate defines model for ClientReadCreate.
+type ClientReadCreate struct {
+	// MessageId A message of the conversation; the latest when absent.
+	MessageId *uuid.UUID `json:"message_id,omitempty"`
+}
+
+// ClientReadEvent A member read the conversation (`live` inboxes).
+type ClientReadEvent struct {
+	ConversationId uuid.UUID           `json:"conversation_id"`
+	CreatedAt      time.Time           `json:"created_at"`
+	Data           ClientRead          `json:"data"`
+	Id             int64               `json:"id"`
+	Type           ClientReadEventType `json:"type"`
+}
+
+// ClientReadEventType defines model for ClientReadEvent.Type.
+type ClientReadEventType string
+
+// ClientReadState defines model for ClientReadState.
+type ClientReadState struct {
+	ConversationId    uuid.UUID  `json:"conversation_id"`
+	LastReadMessageId *uuid.UUID `json:"last_read_message_id,omitempty"`
+	Unread            bool       `json:"unread"`
+}
+
+// ClientRealtimeMessage One server message on `/client/v1/realtime`, told apart by `type`.
+type ClientRealtimeMessage struct {
+	union json.RawMessage
+}
+
+// ClientSession defines model for ClientSession.
+type ClientSession struct {
+	Contact ClientContact `json:"contact"`
+
+	// ExpiresAt Moves forward with every use.
+	ExpiresAt time.Time `json:"expires_at"`
+
+	// Inbox The inbox's public settings. `live` inboxes carry `presence`; `async` inboxes never do and
+	// show `expected_reply_minutes` instead.
+	Inbox ClientInbox `json:"inbox"`
+
+	// Token The contact session token. It is not shown again.
+	Token string `json:"token"`
+
+	// VisitorId Anonymous sessions only. Keep it to resume this visitor later.
+	VisitorId *string `json:"visitor_id,omitempty"`
+}
+
+// ClientSessionCreate defines model for ClientSessionCreate.
+type ClientSessionCreate struct {
+	// ChannelKey The chat channel's `public_key`.
+	ChannelKey string `json:"channel_key"`
+
+	// IdentityToken A JWT (HS256) from the host backend; see `sdk/go`.
+	IdentityToken *string `json:"identity_token,omitempty"`
+
+	// VisitorId The `visitor_id` of an earlier anonymous session in this browser.
+	VisitorId *string `json:"visitor_id,omitempty"`
+}
+
+// ClientSessionInfo defines model for ClientSessionInfo.
+type ClientSessionInfo struct {
+	Contact ClientContact `json:"contact"`
+
+	// ExpiresAt Moves forward with every use.
+	ExpiresAt time.Time `json:"expires_at"`
+
+	// Inbox The inbox's public settings. `live` inboxes carry `presence`; `async` inboxes never do and
+	// show `expected_reply_minutes` instead.
+	Inbox ClientInbox `json:"inbox"`
+
+	// VisitorId Anonymous sessions only. Keep it to resume this visitor later.
+	VisitorId *string `json:"visitor_id,omitempty"`
+}
+
+// ClientTyping defines model for ClientTyping.
+type ClientTyping struct {
+	Author         ClientMessageAuthor `json:"author"`
+	ConversationId uuid.UUID           `json:"conversation_id"`
+	Typing         bool                `json:"typing"`
+}
+
+// ClientTypingEvent A member is typing a reply (`live` inboxes). No `id`; not replayed.
+type ClientTypingEvent struct {
+	ConversationId uuid.UUID             `json:"conversation_id"`
+	CreatedAt      time.Time             `json:"created_at"`
+	Data           ClientTyping          `json:"data"`
+	Type           ClientTypingEventType `json:"type"`
+}
+
+// ClientTypingEventType defines model for ClientTypingEvent.Type.
+type ClientTypingEventType string
 
 // Contact defines model for Contact.
 type Contact struct {
 	// Attributes Free-form data about the contact (plan, app version, …), at most 16 KiB.
 	Attributes Attributes `json:"attributes"`
 
-	// Blocked Mail from a blocked contact is refused.
+	// Blocked Mail and chat from a blocked contact are refused.
 	Blocked     bool         `json:"blocked"`
 	CreatedAt   time.Time    `json:"created_at"`
 	Emails      []Email      `json:"emails"`
 	ExternalIds []ExternalId `json:"external_ids"`
 	Id          uuid.UUID    `json:"id"`
-	Name        string       `json:"name"`
+
+	// Locale The language from the contact's identity token; absent when not known.
+	//
+	// Examples: en, tr
+	Locale *LanguageTag `json:"locale,omitempty"`
+	Name   string       `json:"name"`
 
 	// Undeliverable The contact's addresses that must not be mailed.
 	Undeliverable []UndeliverableEmail `json:"undeliverable"`
@@ -1481,6 +2078,10 @@ type Me struct {
 
 // MeUpdate defines model for MeUpdate.
 type MeUpdate struct {
+	// Availability `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
+	// hours. `away`: never shown as available.
+	Availability *Availability `json:"availability,omitempty"`
+
 	// Locale The language of e-mails sent to the person.
 	Locale *Locale `json:"locale,omitempty"`
 	Name   *string `json:"name,omitempty"`
@@ -1724,6 +2325,11 @@ type MessageUpdatedEvent struct {
 // MessageUpdatedEventType defines model for MessageUpdatedEvent.Type.
 type MessageUpdatedEventType string
 
+// Origin A web origin, `scheme://host[:port]`, without a path.
+//
+// Examples: https://www.example.com
+type Origin = string
+
 // Passkey defines model for Passkey.
 type Passkey struct {
 	CreatedAt  time.Time  `json:"created_at"`
@@ -1768,6 +2374,10 @@ type PasskeyRegistration struct {
 
 // Person defines model for Person.
 type Person struct {
+	// Availability `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
+	// hours. `away`: never shown as available.
+	Availability Availability `json:"availability"`
+
 	// Email Examples: owner@example.com
 	Email Email     `json:"email"`
 	Id    uuid.UUID `json:"id"`
@@ -1871,6 +2481,46 @@ type SmtpSettingsInput struct {
 // `none` sends in the clear (local relays and test servers only).
 type SmtpTls string
 
+// Typing defines model for Typing.
+type Typing struct {
+	Author         TypingAuthor `json:"author"`
+	ConversationId uuid.UUID    `json:"conversation_id"`
+	Typing         bool         `json:"typing"`
+}
+
+// TypingAuthor defines model for TypingAuthor.
+type TypingAuthor struct {
+	ContactId *uuid.UUID `json:"contact_id,omitempty"`
+	MemberId  *uuid.UUID `json:"member_id,omitempty"`
+
+	// Name The member's display name.
+	Name *string          `json:"name,omitempty"`
+	Type TypingAuthorType `json:"type"`
+}
+
+// TypingAuthorType defines model for TypingAuthor.Type.
+type TypingAuthorType string
+
+// TypingCreate defines model for TypingCreate.
+type TypingCreate struct {
+	// Typing `false` when the typist stopped or sent the message.
+	Typing *bool `json:"typing,omitempty"`
+}
+
+// TypingEvent Someone is typing in a conversation (`typing: true`) or stopped. Not stored: it has no `id`
+// and is not replayed. Members do not receive their own.
+type TypingEvent struct {
+	ConversationId uuid.UUID       `json:"conversation_id"`
+	CreatedAt      time.Time       `json:"created_at"`
+	Data           Typing          `json:"data"`
+	InboxId        uuid.UUID       `json:"inbox_id"`
+	Type           TypingEventType `json:"type"`
+	WorkspaceId    uuid.UUID       `json:"workspace_id"`
+}
+
+// TypingEventType defines model for TypingEvent.Type.
+type TypingEventType string
+
 // UndeliverableEmail An address that bounced permanently or complained; replies to it are refused.
 type UndeliverableEmail struct {
 	CreatedAt time.Time `json:"created_at"`
@@ -1970,6 +2620,29 @@ type WorkspaceHeader = uuid.UUID
 // SignedIn defines model for SignedIn.
 type SignedIn = Me
 
+// ListClientConversationsParams defines parameters for ListClientConversations.
+type ListClientConversationsParams struct {
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// ListClientMessagesParams defines parameters for ListClientMessages.
+type ListClientMessagesParams struct {
+	Order *ListClientMessagesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// ListClientMessagesParamsOrder defines parameters for ListClientMessages.
+type ListClientMessagesParamsOrder string
+
 // ListApiKeysParams defines parameters for ListApiKeys.
 type ListApiKeysParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -2035,6 +2708,12 @@ type GetChannelParams struct {
 
 // UpdateChannelParams defines parameters for UpdateChannel.
 type UpdateChannelParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// RotateChannelPublicKeyParams defines parameters for RotateChannelPublicKey.
+type RotateChannelPublicKeyParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -2165,6 +2844,12 @@ type CreateMessageParams struct {
 
 // MarkConversationReadParams defines parameters for MarkConversationRead.
 type MarkConversationReadParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// SetMemberTypingParams defines parameters for SetMemberTyping.
+type SetMemberTypingParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -2328,6 +3013,30 @@ type GetWorkspaceParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// SetClientContactEmailJSONRequestBody defines body for SetClientContactEmail for application/json ContentType.
+type SetClientContactEmailJSONRequestBody = ClientEmailUpdate
+
+// CreateClientConversationJSONRequestBody defines body for CreateClientConversation for application/json ContentType.
+type CreateClientConversationJSONRequestBody = ClientConversationCreate
+
+// CreateClientConversationMultipartRequestBody defines body for CreateClientConversation for multipart/form-data ContentType.
+type CreateClientConversationMultipartRequestBody = ClientConversationCreateMultipart
+
+// CreateClientMessageJSONRequestBody defines body for CreateClientMessage for application/json ContentType.
+type CreateClientMessageJSONRequestBody = ClientMessageCreate
+
+// CreateClientMessageMultipartRequestBody defines body for CreateClientMessage for multipart/form-data ContentType.
+type CreateClientMessageMultipartRequestBody = ClientMessageCreateMultipart
+
+// MarkClientConversationReadJSONRequestBody defines body for MarkClientConversationRead for application/json ContentType.
+type MarkClientConversationReadJSONRequestBody = ClientReadCreate
+
+// SetClientTypingJSONRequestBody defines body for SetClientTyping for application/json ContentType.
+type SetClientTypingJSONRequestBody = TypingCreate
+
+// CreateClientSessionJSONRequestBody defines body for CreateClientSession for application/json ContentType.
+type CreateClientSessionJSONRequestBody = ClientSessionCreate
+
 // CreateApiKeyJSONRequestBody defines body for CreateApiKey for application/json ContentType.
 type CreateApiKeyJSONRequestBody = ApiKeyCreate
 
@@ -2370,6 +3079,9 @@ type CreateMessageMultipartRequestBody = MessageCreateMultipart
 // MarkConversationReadJSONRequestBody defines body for MarkConversationRead for application/json ContentType.
 type MarkConversationReadJSONRequestBody = ConversationReadCreate
 
+// SetMemberTypingJSONRequestBody defines body for SetMemberTyping for application/json ContentType.
+type SetMemberTypingJSONRequestBody = TypingCreate
+
 // CreateInboxJSONRequestBody defines body for CreateInbox for application/json ContentType.
 type CreateInboxJSONRequestBody = InboxCreate
 
@@ -2396,6 +3108,261 @@ type FinishPasskeyRegistrationJSONRequestBody = PasskeyRegistration
 
 // UpdateMemberJSONRequestBody defines body for UpdateMember for application/json ContentType.
 type UpdateMemberJSONRequestBody = MemberUpdate
+
+// AsClientConversationCreatedEvent returns the union data inside the ClientRealtimeMessage as a ClientConversationCreatedEvent
+func (t ClientRealtimeMessage) AsClientConversationCreatedEvent() (ClientConversationCreatedEvent, error) {
+	var body ClientConversationCreatedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromClientConversationCreatedEvent overwrites any union data inside the ClientRealtimeMessage as the provided ClientConversationCreatedEvent
+func (t *ClientRealtimeMessage) FromClientConversationCreatedEvent(v ClientConversationCreatedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeClientConversationCreatedEvent performs a merge with any union data inside the ClientRealtimeMessage, using the provided ClientConversationCreatedEvent
+func (t *ClientRealtimeMessage) MergeClientConversationCreatedEvent(v ClientConversationCreatedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsClientConversationUpdatedEvent returns the union data inside the ClientRealtimeMessage as a ClientConversationUpdatedEvent
+func (t ClientRealtimeMessage) AsClientConversationUpdatedEvent() (ClientConversationUpdatedEvent, error) {
+	var body ClientConversationUpdatedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromClientConversationUpdatedEvent overwrites any union data inside the ClientRealtimeMessage as the provided ClientConversationUpdatedEvent
+func (t *ClientRealtimeMessage) FromClientConversationUpdatedEvent(v ClientConversationUpdatedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeClientConversationUpdatedEvent performs a merge with any union data inside the ClientRealtimeMessage, using the provided ClientConversationUpdatedEvent
+func (t *ClientRealtimeMessage) MergeClientConversationUpdatedEvent(v ClientConversationUpdatedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsClientMessageEvent returns the union data inside the ClientRealtimeMessage as a ClientMessageEvent
+func (t ClientRealtimeMessage) AsClientMessageEvent() (ClientMessageEvent, error) {
+	var body ClientMessageEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromClientMessageEvent overwrites any union data inside the ClientRealtimeMessage as the provided ClientMessageEvent
+func (t *ClientRealtimeMessage) FromClientMessageEvent(v ClientMessageEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeClientMessageEvent performs a merge with any union data inside the ClientRealtimeMessage, using the provided ClientMessageEvent
+func (t *ClientRealtimeMessage) MergeClientMessageEvent(v ClientMessageEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsClientReadEvent returns the union data inside the ClientRealtimeMessage as a ClientReadEvent
+func (t ClientRealtimeMessage) AsClientReadEvent() (ClientReadEvent, error) {
+	var body ClientReadEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromClientReadEvent overwrites any union data inside the ClientRealtimeMessage as the provided ClientReadEvent
+func (t *ClientRealtimeMessage) FromClientReadEvent(v ClientReadEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeClientReadEvent performs a merge with any union data inside the ClientRealtimeMessage, using the provided ClientReadEvent
+func (t *ClientRealtimeMessage) MergeClientReadEvent(v ClientReadEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsClientTypingEvent returns the union data inside the ClientRealtimeMessage as a ClientTypingEvent
+func (t ClientRealtimeMessage) AsClientTypingEvent() (ClientTypingEvent, error) {
+	var body ClientTypingEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromClientTypingEvent overwrites any union data inside the ClientRealtimeMessage as the provided ClientTypingEvent
+func (t *ClientRealtimeMessage) FromClientTypingEvent(v ClientTypingEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeClientTypingEvent performs a merge with any union data inside the ClientRealtimeMessage, using the provided ClientTypingEvent
+func (t *ClientRealtimeMessage) MergeClientTypingEvent(v ClientTypingEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsClientPresenceEvent returns the union data inside the ClientRealtimeMessage as a ClientPresenceEvent
+func (t ClientRealtimeMessage) AsClientPresenceEvent() (ClientPresenceEvent, error) {
+	var body ClientPresenceEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromClientPresenceEvent overwrites any union data inside the ClientRealtimeMessage as the provided ClientPresenceEvent
+func (t *ClientRealtimeMessage) FromClientPresenceEvent(v ClientPresenceEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeClientPresenceEvent performs a merge with any union data inside the ClientRealtimeMessage, using the provided ClientPresenceEvent
+func (t *ClientRealtimeMessage) MergeClientPresenceEvent(v ClientPresenceEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsRealtimeReady returns the union data inside the ClientRealtimeMessage as a RealtimeReady
+func (t ClientRealtimeMessage) AsRealtimeReady() (RealtimeReady, error) {
+	var body RealtimeReady
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromRealtimeReady overwrites any union data inside the ClientRealtimeMessage as the provided RealtimeReady
+func (t *ClientRealtimeMessage) FromRealtimeReady(v RealtimeReady) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeRealtimeReady performs a merge with any union data inside the ClientRealtimeMessage, using the provided RealtimeReady
+func (t *ClientRealtimeMessage) MergeRealtimeReady(v RealtimeReady) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsRealtimeResyncRequired returns the union data inside the ClientRealtimeMessage as a RealtimeResyncRequired
+func (t ClientRealtimeMessage) AsRealtimeResyncRequired() (RealtimeResyncRequired, error) {
+	var body RealtimeResyncRequired
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromRealtimeResyncRequired overwrites any union data inside the ClientRealtimeMessage as the provided RealtimeResyncRequired
+func (t *ClientRealtimeMessage) FromRealtimeResyncRequired(v RealtimeResyncRequired) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeRealtimeResyncRequired performs a merge with any union data inside the ClientRealtimeMessage, using the provided RealtimeResyncRequired
+func (t *ClientRealtimeMessage) MergeRealtimeResyncRequired(v RealtimeResyncRequired) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t ClientRealtimeMessage) Discriminator() (string, error) {
+	var discriminator struct {
+		Discriminator string `json:"type"`
+	}
+	err := json.Unmarshal(t.union, &discriminator)
+	return discriminator.Discriminator, err
+}
+
+func (t ClientRealtimeMessage) ValueByDiscriminator() (interface{}, error) {
+	discriminator, err := t.Discriminator()
+	if err != nil {
+		return nil, err
+	}
+	switch discriminator {
+	case "conversation.created":
+		return t.AsClientConversationCreatedEvent()
+	case "conversation.updated":
+		return t.AsClientConversationUpdatedEvent()
+	case "message.created":
+		return t.AsClientMessageEvent()
+	case "message.updated":
+		return t.AsClientMessageEvent()
+	case "presence":
+		return t.AsClientPresenceEvent()
+	case "read":
+		return t.AsClientReadEvent()
+	case "ready":
+		return t.AsRealtimeReady()
+	case "resync_required":
+		return t.AsRealtimeResyncRequired()
+	case "typing":
+		return t.AsClientTypingEvent()
+	default:
+		return nil, errors.New("unknown discriminator value: " + discriminator)
+	}
+}
+
+func (t ClientRealtimeMessage) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *ClientRealtimeMessage) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
 
 // AsConversationEvent returns the union data inside the RealtimeMessage as a ConversationEvent
 func (t RealtimeMessage) AsConversationEvent() (ConversationEvent, error) {
@@ -2657,6 +3624,32 @@ func (t *RealtimeMessage) MergeConversationReadEvent(v ConversationReadEvent) er
 	return err
 }
 
+// AsTypingEvent returns the union data inside the RealtimeMessage as a TypingEvent
+func (t RealtimeMessage) AsTypingEvent() (TypingEvent, error) {
+	var body TypingEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromTypingEvent overwrites any union data inside the RealtimeMessage as the provided TypingEvent
+func (t *RealtimeMessage) FromTypingEvent(v TypingEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeTypingEvent performs a merge with any union data inside the RealtimeMessage, using the provided TypingEvent
+func (t *RealtimeMessage) MergeTypingEvent(v TypingEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsRealtimeReady returns the union data inside the RealtimeMessage as a RealtimeReady
 func (t RealtimeMessage) AsRealtimeReady() (RealtimeReady, error) {
 	var body RealtimeReady
@@ -2749,6 +3742,8 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsRealtimeReady()
 	case "resync_required":
 		return t.AsRealtimeResyncRequired()
+	case "typing":
+		return t.AsTypingEvent()
 	default:
 		return nil, errors.New("unknown discriminator value: " + discriminator)
 	}
@@ -2766,6 +3761,42 @@ func (t *RealtimeMessage) UnmarshalJSON(b []byte) error {
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// DownloadClientAttachment Download an attachment
+	// (GET /client/v1/attachments/{attachmentId})
+	DownloadClientAttachment(w http.ResponseWriter, r *http.Request, attachmentId AttachmentId)
+	// SetClientContactEmail Leave an e-mail address for replies
+	// (PUT /client/v1/contact/email)
+	SetClientContactEmail(w http.ResponseWriter, r *http.Request)
+	// ListClientConversations List the contact's conversations
+	// (GET /client/v1/conversations)
+	ListClientConversations(w http.ResponseWriter, r *http.Request, params ListClientConversationsParams)
+	// CreateClientConversation Start a conversation
+	// (POST /client/v1/conversations)
+	CreateClientConversation(w http.ResponseWriter, r *http.Request)
+	// GetClientConversation Get one of the contact's conversations
+	// (GET /client/v1/conversations/{conversationId})
+	GetClientConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId)
+	// ListClientMessages List a conversation's messages
+	// (GET /client/v1/conversations/{conversationId}/messages)
+	ListClientMessages(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params ListClientMessagesParams)
+	// CreateClientMessage Send a message
+	// (POST /client/v1/conversations/{conversationId}/messages)
+	CreateClientMessage(w http.ResponseWriter, r *http.Request, conversationId ConversationId)
+	// MarkClientConversationRead Mark a conversation read
+	// (POST /client/v1/conversations/{conversationId}/read)
+	MarkClientConversationRead(w http.ResponseWriter, r *http.Request, conversationId ConversationId)
+	// SetClientTyping Tell members the contact is typing
+	// (POST /client/v1/conversations/{conversationId}/typing)
+	SetClientTyping(w http.ResponseWriter, r *http.Request, conversationId ConversationId)
+	// DeleteClientSession End the contact session
+	// (DELETE /client/v1/session)
+	DeleteClientSession(w http.ResponseWriter, r *http.Request)
+	// GetClientSession The current contact session
+	// (GET /client/v1/session)
+	GetClientSession(w http.ResponseWriter, r *http.Request)
+	// CreateClientSession Start a contact session
+	// (POST /client/v1/session)
+	CreateClientSession(w http.ResponseWriter, r *http.Request)
 	// GetHealthz Liveness
 	// (GET /healthz)
 	GetHealthz(w http.ResponseWriter, r *http.Request)
@@ -2820,6 +3851,9 @@ type ServerInterface interface {
 	// UpdateChannel Update a channel
 	// (PATCH /v1/channels/{channelId})
 	UpdateChannel(w http.ResponseWriter, r *http.Request, channelId ChannelId, params UpdateChannelParams)
+	// RotateChannelPublicKey Rotate a chat channel's public key
+	// (POST /v1/channels/{channelId}/public-key)
+	RotateChannelPublicKey(w http.ResponseWriter, r *http.Request, channelId ChannelId, params RotateChannelPublicKeyParams)
 	// ListContacts List contacts
 	// (GET /v1/contacts)
 	ListContacts(w http.ResponseWriter, r *http.Request, params ListContactsParams)
@@ -2862,6 +3896,9 @@ type ServerInterface interface {
 	// MarkConversationRead Mark a conversation read
 	// (POST /v1/conversations/{conversationId}/read)
 	MarkConversationRead(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params MarkConversationReadParams)
+	// SetMemberTyping Tell others you are typing
+	// (POST /v1/conversations/{conversationId}/typing)
+	SetMemberTyping(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params SetMemberTypingParams)
 	// ListInboxes List inboxes
 	// (GET /v1/inboxes)
 	ListInboxes(w http.ResponseWriter, r *http.Request, params ListInboxesParams)
@@ -2971,6 +4008,320 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(http.Handler) http.Handler
+
+// DownloadClientAttachment operation middleware
+func (siw *ServerInterfaceWrapper) DownloadClientAttachment(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "attachmentId" -------------
+	var attachmentId AttachmentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "attachmentId", r.PathValue("attachmentId"), &attachmentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "attachmentId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DownloadClientAttachment(w, r, attachmentId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SetClientContactEmail operation middleware
+func (siw *ServerInterfaceWrapper) SetClientContactEmail(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SetClientContactEmail(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListClientConversations operation middleware
+func (siw *ServerInterfaceWrapper) ListClientConversations(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListClientConversationsParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int32"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListClientConversations(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateClientConversation operation middleware
+func (siw *ServerInterfaceWrapper) CreateClientConversation(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateClientConversation(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetClientConversation operation middleware
+func (siw *ServerInterfaceWrapper) GetClientConversation(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetClientConversation(w, r, conversationId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListClientMessages operation middleware
+func (siw *ServerInterfaceWrapper) ListClientMessages(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListClientMessagesParams
+
+	// ------------- Optional query parameter "order" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "order", r.URL.Query(), &params.Order, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "order"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "order", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int32"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListClientMessages(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateClientMessage operation middleware
+func (siw *ServerInterfaceWrapper) CreateClientMessage(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateClientMessage(w, r, conversationId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// MarkClientConversationRead operation middleware
+func (siw *ServerInterfaceWrapper) MarkClientConversationRead(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.MarkClientConversationRead(w, r, conversationId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SetClientTyping operation middleware
+func (siw *ServerInterfaceWrapper) SetClientTyping(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SetClientTyping(w, r, conversationId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteClientSession operation middleware
+func (siw *ServerInterfaceWrapper) DeleteClientSession(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteClientSession(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetClientSession operation middleware
+func (siw *ServerInterfaceWrapper) GetClientSession(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetClientSession(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateClientSession operation middleware
+func (siw *ServerInterfaceWrapper) CreateClientSession(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateClientSession(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
 
 // GetHealthz operation middleware
 func (siw *ServerInterfaceWrapper) GetHealthz(w http.ResponseWriter, r *http.Request) {
@@ -3588,6 +4939,56 @@ func (siw *ServerInterfaceWrapper) UpdateChannel(w http.ResponseWriter, r *http.
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.UpdateChannel(w, r, channelId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RotateChannelPublicKey operation middleware
+func (siw *ServerInterfaceWrapper) RotateChannelPublicKey(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "channelId" -------------
+	var channelId ChannelId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "channelId", r.PathValue("channelId"), &channelId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "channelId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RotateChannelPublicKeyParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RotateChannelPublicKey(w, r, channelId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -4455,6 +5856,56 @@ func (siw *ServerInterfaceWrapper) MarkConversationRead(w http.ResponseWriter, r
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.MarkConversationRead(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SetMemberTyping operation middleware
+func (siw *ServerInterfaceWrapper) SetMemberTyping(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SetMemberTypingParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SetMemberTyping(w, r, conversationId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -5983,6 +7434,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/channels/{channelId}", wrapper.DeleteChannel)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/channels/{channelId}", wrapper.GetChannel)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/channels/{channelId}", wrapper.UpdateChannel)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/channels/{channelId}/public-key", wrapper.RotateChannelPublicKey)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts", wrapper.ListContacts)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/contacts", wrapper.CreateContact)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/lookup", wrapper.LookupContact)
@@ -5997,6 +7449,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}/messages", wrapper.ListMessages)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/messages", wrapper.CreateMessage)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/read", wrapper.MarkConversationRead)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/typing", wrapper.SetMemberTyping)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/attachments/{attachmentId}", wrapper.DownloadAttachment)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/messages/{messageId}/email", wrapper.GetMessageEmail)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/messages/{messageId}/raw", wrapper.DownloadMessageRaw)
@@ -6009,6 +7462,18 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/canned-replies/{cannedReplyId}", wrapper.DeleteCannedReply)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/canned-replies/{cannedReplyId}", wrapper.UpdateCannedReply)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/usage", wrapper.GetUsage)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/client/v1/session", wrapper.DeleteClientSession)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/session", wrapper.GetClientSession)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/session", wrapper.CreateClientSession)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/conversations", wrapper.ListClientConversations)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/conversations", wrapper.CreateClientConversation)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/conversations/{conversationId}", wrapper.GetClientConversation)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/conversations/{conversationId}/messages", wrapper.ListClientMessages)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/conversations/{conversationId}/messages", wrapper.CreateClientMessage)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/conversations/{conversationId}/read", wrapper.MarkClientConversationRead)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/conversations/{conversationId}/typing", wrapper.SetClientTyping)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/client/v1/contact/email", wrapper.SetClientContactEmail)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/attachments/{attachmentId}", wrapper.DownloadClientAttachment)
 
 	return m
 }
@@ -6024,6 +7489,991 @@ type SignedInJSONResponse struct {
 	Body Me
 
 	Headers SignedInResponseHeaders
+}
+
+type DownloadClientAttachmentRequestObject struct {
+	AttachmentId AttachmentId `json:"attachmentId"`
+}
+
+type DownloadClientAttachmentResponseObject interface {
+	VisitDownloadClientAttachmentResponse(w http.ResponseWriter) error
+}
+
+type DownloadClientAttachment200ResponseHeaders struct {
+	ContentDisposition  *string
+	XContentTypeOptions *string
+}
+
+type DownloadClientAttachment200AsteriskResponse struct {
+	Body          io.Reader
+	Headers       DownloadClientAttachment200ResponseHeaders
+	ContentType   string
+	ContentLength int64
+}
+
+func (response DownloadClientAttachment200AsteriskResponse) VisitDownloadClientAttachmentResponse(w http.ResponseWriter) error {
+
+	w.Header().Set("Content-Type", response.ContentType)
+	if response.ContentLength != 0 {
+		w.Header().Set("Content-Length", fmt.Sprint(response.ContentLength))
+	}
+	if response.Headers.ContentDisposition != nil {
+		w.Header().Set("Content-Disposition", fmt.Sprint(*response.Headers.ContentDisposition))
+	}
+	if response.Headers.XContentTypeOptions != nil {
+		w.Header().Set("X-Content-Type-Options", fmt.Sprint(*response.Headers.XContentTypeOptions))
+	}
+	w.WriteHeader(200)
+
+	if closer, ok := response.Body.(io.ReadCloser); ok {
+		defer closer.Close()
+	}
+	_, err := io.Copy(w, response.Body)
+	return err
+}
+
+type DownloadClientAttachment401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DownloadClientAttachment401ApplicationProblemPlusJSONResponse) VisitDownloadClientAttachmentResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DownloadClientAttachment403ApplicationProblemPlusJSONResponse Problem
+
+func (response DownloadClientAttachment403ApplicationProblemPlusJSONResponse) VisitDownloadClientAttachmentResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DownloadClientAttachment404ApplicationProblemPlusJSONResponse Problem
+
+func (response DownloadClientAttachment404ApplicationProblemPlusJSONResponse) VisitDownloadClientAttachmentResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetClientContactEmailRequestObject struct {
+	Body *SetClientContactEmailJSONRequestBody
+}
+
+type SetClientContactEmailResponseObject interface {
+	VisitSetClientContactEmailResponse(w http.ResponseWriter) error
+}
+
+type SetClientContactEmail200JSONResponse ClientContact
+
+func (response SetClientContactEmail200JSONResponse) VisitSetClientContactEmailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetClientContactEmail400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response SetClientContactEmail400ApplicationProblemPlusJSONResponse) VisitSetClientContactEmailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetClientContactEmail401ApplicationProblemPlusJSONResponse Problem
+
+func (response SetClientContactEmail401ApplicationProblemPlusJSONResponse) VisitSetClientContactEmailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetClientContactEmail403ApplicationProblemPlusJSONResponse Problem
+
+func (response SetClientContactEmail403ApplicationProblemPlusJSONResponse) VisitSetClientContactEmailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetClientContactEmail429ApplicationProblemPlusJSONResponse Problem
+
+func (response SetClientContactEmail429ApplicationProblemPlusJSONResponse) VisitSetClientContactEmailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListClientConversationsRequestObject struct {
+	Params ListClientConversationsParams
+}
+
+type ListClientConversationsResponseObject interface {
+	VisitListClientConversationsResponse(w http.ResponseWriter) error
+}
+
+type ListClientConversations200JSONResponse ClientConversationPage
+
+func (response ListClientConversations200JSONResponse) VisitListClientConversationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListClientConversations400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListClientConversations400ApplicationProblemPlusJSONResponse) VisitListClientConversationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListClientConversations401ApplicationProblemPlusJSONResponse Problem
+
+func (response ListClientConversations401ApplicationProblemPlusJSONResponse) VisitListClientConversationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListClientConversations403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListClientConversations403ApplicationProblemPlusJSONResponse) VisitListClientConversationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientConversationRequestObject struct {
+	JSONBody      *CreateClientConversationJSONRequestBody
+	MultipartBody *multipart.Reader
+}
+
+type CreateClientConversationResponseObject interface {
+	VisitCreateClientConversationResponse(w http.ResponseWriter) error
+}
+
+type CreateClientConversation201JSONResponse ClientConversationCreated
+
+func (response CreateClientConversation201JSONResponse) VisitCreateClientConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientConversation400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response CreateClientConversation400ApplicationProblemPlusJSONResponse) VisitCreateClientConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientConversation401ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientConversation401ApplicationProblemPlusJSONResponse) VisitCreateClientConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientConversation403ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientConversation403ApplicationProblemPlusJSONResponse) VisitCreateClientConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientConversation413ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientConversation413ApplicationProblemPlusJSONResponse) VisitCreateClientConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(413)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientConversation415ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientConversation415ApplicationProblemPlusJSONResponse) VisitCreateClientConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(415)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientConversation429ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientConversation429ApplicationProblemPlusJSONResponse) VisitCreateClientConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetClientConversationRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+}
+
+type GetClientConversationResponseObject interface {
+	VisitGetClientConversationResponse(w http.ResponseWriter) error
+}
+
+type GetClientConversation200JSONResponse ClientConversation
+
+func (response GetClientConversation200JSONResponse) VisitGetClientConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetClientConversation401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetClientConversation401ApplicationProblemPlusJSONResponse) VisitGetClientConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetClientConversation403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetClientConversation403ApplicationProblemPlusJSONResponse) VisitGetClientConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetClientConversation404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetClientConversation404ApplicationProblemPlusJSONResponse) VisitGetClientConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListClientMessagesRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Params         ListClientMessagesParams
+}
+
+type ListClientMessagesResponseObject interface {
+	VisitListClientMessagesResponse(w http.ResponseWriter) error
+}
+
+type ListClientMessages200JSONResponse ClientMessagePage
+
+func (response ListClientMessages200JSONResponse) VisitListClientMessagesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListClientMessages400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListClientMessages400ApplicationProblemPlusJSONResponse) VisitListClientMessagesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListClientMessages401ApplicationProblemPlusJSONResponse Problem
+
+func (response ListClientMessages401ApplicationProblemPlusJSONResponse) VisitListClientMessagesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListClientMessages403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListClientMessages403ApplicationProblemPlusJSONResponse) VisitListClientMessagesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListClientMessages404ApplicationProblemPlusJSONResponse Problem
+
+func (response ListClientMessages404ApplicationProblemPlusJSONResponse) VisitListClientMessagesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientMessageRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	JSONBody       *CreateClientMessageJSONRequestBody
+	MultipartBody  *multipart.Reader
+}
+
+type CreateClientMessageResponseObject interface {
+	VisitCreateClientMessageResponse(w http.ResponseWriter) error
+}
+
+type CreateClientMessage200JSONResponse ClientMessage
+
+func (response CreateClientMessage200JSONResponse) VisitCreateClientMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientMessage201JSONResponse ClientMessage
+
+func (response CreateClientMessage201JSONResponse) VisitCreateClientMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientMessage400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response CreateClientMessage400ApplicationProblemPlusJSONResponse) VisitCreateClientMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientMessage401ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientMessage401ApplicationProblemPlusJSONResponse) VisitCreateClientMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientMessage403ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientMessage403ApplicationProblemPlusJSONResponse) VisitCreateClientMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientMessage404ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientMessage404ApplicationProblemPlusJSONResponse) VisitCreateClientMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientMessage413ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientMessage413ApplicationProblemPlusJSONResponse) VisitCreateClientMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(413)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientMessage415ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientMessage415ApplicationProblemPlusJSONResponse) VisitCreateClientMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(415)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientMessage429ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientMessage429ApplicationProblemPlusJSONResponse) VisitCreateClientMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MarkClientConversationReadRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Body           *MarkClientConversationReadJSONRequestBody
+}
+
+type MarkClientConversationReadResponseObject interface {
+	VisitMarkClientConversationReadResponse(w http.ResponseWriter) error
+}
+
+type MarkClientConversationRead200JSONResponse ClientReadState
+
+func (response MarkClientConversationRead200JSONResponse) VisitMarkClientConversationReadResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MarkClientConversationRead400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response MarkClientConversationRead400ApplicationProblemPlusJSONResponse) VisitMarkClientConversationReadResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MarkClientConversationRead401ApplicationProblemPlusJSONResponse Problem
+
+func (response MarkClientConversationRead401ApplicationProblemPlusJSONResponse) VisitMarkClientConversationReadResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MarkClientConversationRead403ApplicationProblemPlusJSONResponse Problem
+
+func (response MarkClientConversationRead403ApplicationProblemPlusJSONResponse) VisitMarkClientConversationReadResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MarkClientConversationRead404ApplicationProblemPlusJSONResponse Problem
+
+func (response MarkClientConversationRead404ApplicationProblemPlusJSONResponse) VisitMarkClientConversationReadResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetClientTypingRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Body           *SetClientTypingJSONRequestBody
+}
+
+type SetClientTypingResponseObject interface {
+	VisitSetClientTypingResponse(w http.ResponseWriter) error
+}
+
+type SetClientTyping204Response struct {
+}
+
+func (response SetClientTyping204Response) VisitSetClientTypingResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type SetClientTyping400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response SetClientTyping400ApplicationProblemPlusJSONResponse) VisitSetClientTypingResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetClientTyping401ApplicationProblemPlusJSONResponse Problem
+
+func (response SetClientTyping401ApplicationProblemPlusJSONResponse) VisitSetClientTypingResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetClientTyping403ApplicationProblemPlusJSONResponse Problem
+
+func (response SetClientTyping403ApplicationProblemPlusJSONResponse) VisitSetClientTypingResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetClientTyping404ApplicationProblemPlusJSONResponse Problem
+
+func (response SetClientTyping404ApplicationProblemPlusJSONResponse) VisitSetClientTypingResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetClientTyping429ApplicationProblemPlusJSONResponse Problem
+
+func (response SetClientTyping429ApplicationProblemPlusJSONResponse) VisitSetClientTypingResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteClientSessionRequestObject struct {
+}
+
+type DeleteClientSessionResponseObject interface {
+	VisitDeleteClientSessionResponse(w http.ResponseWriter) error
+}
+
+type DeleteClientSession204Response struct {
+}
+
+func (response DeleteClientSession204Response) VisitDeleteClientSessionResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteClientSession401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteClientSession401ApplicationProblemPlusJSONResponse) VisitDeleteClientSessionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteClientSession403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteClientSession403ApplicationProblemPlusJSONResponse) VisitDeleteClientSessionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetClientSessionRequestObject struct {
+}
+
+type GetClientSessionResponseObject interface {
+	VisitGetClientSessionResponse(w http.ResponseWriter) error
+}
+
+type GetClientSession200JSONResponse ClientSessionInfo
+
+func (response GetClientSession200JSONResponse) VisitGetClientSessionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetClientSession401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetClientSession401ApplicationProblemPlusJSONResponse) VisitGetClientSessionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetClientSession403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetClientSession403ApplicationProblemPlusJSONResponse) VisitGetClientSessionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientSessionRequestObject struct {
+	Body *CreateClientSessionJSONRequestBody
+}
+
+type CreateClientSessionResponseObject interface {
+	VisitCreateClientSessionResponse(w http.ResponseWriter) error
+}
+
+type CreateClientSession201JSONResponse ClientSession
+
+func (response CreateClientSession201JSONResponse) VisitCreateClientSessionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientSession400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response CreateClientSession400ApplicationProblemPlusJSONResponse) VisitCreateClientSessionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientSession401ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientSession401ApplicationProblemPlusJSONResponse) VisitCreateClientSessionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientSession403ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientSession403ApplicationProblemPlusJSONResponse) VisitCreateClientSessionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientSession404ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientSession404ApplicationProblemPlusJSONResponse) VisitCreateClientSessionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientSession429ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientSession429ApplicationProblemPlusJSONResponse) VisitCreateClientSessionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
 }
 
 type GetHealthzRequestObject struct {
@@ -7060,6 +9510,87 @@ func (response UpdateChannel409ApplicationProblemPlusJSONResponse) VisitUpdateCh
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RotateChannelPublicKeyRequestObject struct {
+	ChannelId ChannelId `json:"channelId"`
+	Params    RotateChannelPublicKeyParams
+}
+
+type RotateChannelPublicKeyResponseObject interface {
+	VisitRotateChannelPublicKeyResponse(w http.ResponseWriter) error
+}
+
+type RotateChannelPublicKey200JSONResponse Channel
+
+func (response RotateChannelPublicKey200JSONResponse) VisitRotateChannelPublicKeyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RotateChannelPublicKey400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response RotateChannelPublicKey400ApplicationProblemPlusJSONResponse) VisitRotateChannelPublicKeyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RotateChannelPublicKey401ApplicationProblemPlusJSONResponse Problem
+
+func (response RotateChannelPublicKey401ApplicationProblemPlusJSONResponse) VisitRotateChannelPublicKeyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RotateChannelPublicKey403ApplicationProblemPlusJSONResponse Problem
+
+func (response RotateChannelPublicKey403ApplicationProblemPlusJSONResponse) VisitRotateChannelPublicKeyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RotateChannelPublicKey404ApplicationProblemPlusJSONResponse Problem
+
+func (response RotateChannelPublicKey404ApplicationProblemPlusJSONResponse) VisitRotateChannelPublicKeyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -8168,6 +10699,82 @@ func (response MarkConversationRead403ApplicationProblemPlusJSONResponse) VisitM
 type MarkConversationRead404ApplicationProblemPlusJSONResponse Problem
 
 func (response MarkConversationRead404ApplicationProblemPlusJSONResponse) VisitMarkConversationReadResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetMemberTypingRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Params         SetMemberTypingParams
+	Body           *SetMemberTypingJSONRequestBody
+}
+
+type SetMemberTypingResponseObject interface {
+	VisitSetMemberTypingResponse(w http.ResponseWriter) error
+}
+
+type SetMemberTyping204Response struct {
+}
+
+func (response SetMemberTyping204Response) VisitSetMemberTypingResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type SetMemberTyping400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response SetMemberTyping400ApplicationProblemPlusJSONResponse) VisitSetMemberTypingResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetMemberTyping401ApplicationProblemPlusJSONResponse Problem
+
+func (response SetMemberTyping401ApplicationProblemPlusJSONResponse) VisitSetMemberTypingResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetMemberTyping403ApplicationProblemPlusJSONResponse Problem
+
+func (response SetMemberTyping403ApplicationProblemPlusJSONResponse) VisitSetMemberTypingResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SetMemberTyping404ApplicationProblemPlusJSONResponse Problem
+
+func (response SetMemberTyping404ApplicationProblemPlusJSONResponse) VisitSetMemberTypingResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -10299,6 +12906,42 @@ func (response GetWorkspace403ApplicationProblemPlusJSONResponse) VisitGetWorksp
 
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
+	// DownloadClientAttachment Download an attachment
+	// (GET /client/v1/attachments/{attachmentId})
+	DownloadClientAttachment(ctx context.Context, request DownloadClientAttachmentRequestObject) (DownloadClientAttachmentResponseObject, error)
+	// SetClientContactEmail Leave an e-mail address for replies
+	// (PUT /client/v1/contact/email)
+	SetClientContactEmail(ctx context.Context, request SetClientContactEmailRequestObject) (SetClientContactEmailResponseObject, error)
+	// ListClientConversations List the contact's conversations
+	// (GET /client/v1/conversations)
+	ListClientConversations(ctx context.Context, request ListClientConversationsRequestObject) (ListClientConversationsResponseObject, error)
+	// CreateClientConversation Start a conversation
+	// (POST /client/v1/conversations)
+	CreateClientConversation(ctx context.Context, request CreateClientConversationRequestObject) (CreateClientConversationResponseObject, error)
+	// GetClientConversation Get one of the contact's conversations
+	// (GET /client/v1/conversations/{conversationId})
+	GetClientConversation(ctx context.Context, request GetClientConversationRequestObject) (GetClientConversationResponseObject, error)
+	// ListClientMessages List a conversation's messages
+	// (GET /client/v1/conversations/{conversationId}/messages)
+	ListClientMessages(ctx context.Context, request ListClientMessagesRequestObject) (ListClientMessagesResponseObject, error)
+	// CreateClientMessage Send a message
+	// (POST /client/v1/conversations/{conversationId}/messages)
+	CreateClientMessage(ctx context.Context, request CreateClientMessageRequestObject) (CreateClientMessageResponseObject, error)
+	// MarkClientConversationRead Mark a conversation read
+	// (POST /client/v1/conversations/{conversationId}/read)
+	MarkClientConversationRead(ctx context.Context, request MarkClientConversationReadRequestObject) (MarkClientConversationReadResponseObject, error)
+	// SetClientTyping Tell members the contact is typing
+	// (POST /client/v1/conversations/{conversationId}/typing)
+	SetClientTyping(ctx context.Context, request SetClientTypingRequestObject) (SetClientTypingResponseObject, error)
+	// DeleteClientSession End the contact session
+	// (DELETE /client/v1/session)
+	DeleteClientSession(ctx context.Context, request DeleteClientSessionRequestObject) (DeleteClientSessionResponseObject, error)
+	// GetClientSession The current contact session
+	// (GET /client/v1/session)
+	GetClientSession(ctx context.Context, request GetClientSessionRequestObject) (GetClientSessionResponseObject, error)
+	// CreateClientSession Start a contact session
+	// (POST /client/v1/session)
+	CreateClientSession(ctx context.Context, request CreateClientSessionRequestObject) (CreateClientSessionResponseObject, error)
 	// GetHealthz Liveness
 	// (GET /healthz)
 	GetHealthz(ctx context.Context, request GetHealthzRequestObject) (GetHealthzResponseObject, error)
@@ -10353,6 +12996,9 @@ type StrictServerInterface interface {
 	// UpdateChannel Update a channel
 	// (PATCH /v1/channels/{channelId})
 	UpdateChannel(ctx context.Context, request UpdateChannelRequestObject) (UpdateChannelResponseObject, error)
+	// RotateChannelPublicKey Rotate a chat channel's public key
+	// (POST /v1/channels/{channelId}/public-key)
+	RotateChannelPublicKey(ctx context.Context, request RotateChannelPublicKeyRequestObject) (RotateChannelPublicKeyResponseObject, error)
 	// ListContacts List contacts
 	// (GET /v1/contacts)
 	ListContacts(ctx context.Context, request ListContactsRequestObject) (ListContactsResponseObject, error)
@@ -10395,6 +13041,9 @@ type StrictServerInterface interface {
 	// MarkConversationRead Mark a conversation read
 	// (POST /v1/conversations/{conversationId}/read)
 	MarkConversationRead(ctx context.Context, request MarkConversationReadRequestObject) (MarkConversationReadResponseObject, error)
+	// SetMemberTyping Tell others you are typing
+	// (POST /v1/conversations/{conversationId}/typing)
+	SetMemberTyping(ctx context.Context, request SetMemberTypingRequestObject) (SetMemberTypingResponseObject, error)
 	// ListInboxes List inboxes
 	// (GET /v1/inboxes)
 	ListInboxes(ctx context.Context, request ListInboxesRequestObject) (ListInboxesResponseObject, error)
@@ -10533,6 +13182,380 @@ type strictHandler struct {
 	ssi         StrictServerInterface
 	middlewares []StrictMiddlewareFunc
 	options     StrictHTTPServerOptions
+}
+
+// DownloadClientAttachment operation middleware
+func (sh *strictHandler) DownloadClientAttachment(w http.ResponseWriter, r *http.Request, attachmentId AttachmentId) {
+	var request DownloadClientAttachmentRequestObject
+
+	request.AttachmentId = attachmentId
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DownloadClientAttachment(ctx, request.(DownloadClientAttachmentRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DownloadClientAttachment")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DownloadClientAttachmentResponseObject); ok {
+		if err := validResponse.VisitDownloadClientAttachmentResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// SetClientContactEmail operation middleware
+func (sh *strictHandler) SetClientContactEmail(w http.ResponseWriter, r *http.Request) {
+	var request SetClientContactEmailRequestObject
+
+	var body SetClientContactEmailJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.SetClientContactEmail(ctx, request.(SetClientContactEmailRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "SetClientContactEmail")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(SetClientContactEmailResponseObject); ok {
+		if err := validResponse.VisitSetClientContactEmailResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListClientConversations operation middleware
+func (sh *strictHandler) ListClientConversations(w http.ResponseWriter, r *http.Request, params ListClientConversationsParams) {
+	var request ListClientConversationsRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListClientConversations(ctx, request.(ListClientConversationsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListClientConversations")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListClientConversationsResponseObject); ok {
+		if err := validResponse.VisitListClientConversationsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreateClientConversation operation middleware
+func (sh *strictHandler) CreateClientConversation(w http.ResponseWriter, r *http.Request) {
+	var request CreateClientConversationRequestObject
+
+	if strings.HasPrefix(r.Header.Get("Content-Type"), "application/json") {
+
+		var body CreateClientConversationJSONRequestBody
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+			return
+		}
+		request.JSONBody = &body
+
+	}
+	if strings.HasPrefix(r.Header.Get("Content-Type"), "multipart/form-data") {
+		if reader, err := r.MultipartReader(); err != nil {
+			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode multipart body: %w", err))
+			return
+		} else {
+			request.MultipartBody = reader
+		}
+	}
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateClientConversation(ctx, request.(CreateClientConversationRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateClientConversation")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(CreateClientConversationResponseObject); ok {
+		if err := validResponse.VisitCreateClientConversationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetClientConversation operation middleware
+func (sh *strictHandler) GetClientConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId) {
+	var request GetClientConversationRequestObject
+
+	request.ConversationId = conversationId
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetClientConversation(ctx, request.(GetClientConversationRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetClientConversation")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetClientConversationResponseObject); ok {
+		if err := validResponse.VisitGetClientConversationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListClientMessages operation middleware
+func (sh *strictHandler) ListClientMessages(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params ListClientMessagesParams) {
+	var request ListClientMessagesRequestObject
+
+	request.ConversationId = conversationId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListClientMessages(ctx, request.(ListClientMessagesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListClientMessages")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListClientMessagesResponseObject); ok {
+		if err := validResponse.VisitListClientMessagesResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreateClientMessage operation middleware
+func (sh *strictHandler) CreateClientMessage(w http.ResponseWriter, r *http.Request, conversationId ConversationId) {
+	var request CreateClientMessageRequestObject
+
+	request.ConversationId = conversationId
+	if strings.HasPrefix(r.Header.Get("Content-Type"), "application/json") {
+
+		var body CreateClientMessageJSONRequestBody
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+			return
+		}
+		request.JSONBody = &body
+
+	}
+	if strings.HasPrefix(r.Header.Get("Content-Type"), "multipart/form-data") {
+		if reader, err := r.MultipartReader(); err != nil {
+			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode multipart body: %w", err))
+			return
+		} else {
+			request.MultipartBody = reader
+		}
+	}
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateClientMessage(ctx, request.(CreateClientMessageRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateClientMessage")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(CreateClientMessageResponseObject); ok {
+		if err := validResponse.VisitCreateClientMessageResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// MarkClientConversationRead operation middleware
+func (sh *strictHandler) MarkClientConversationRead(w http.ResponseWriter, r *http.Request, conversationId ConversationId) {
+	var request MarkClientConversationReadRequestObject
+
+	request.ConversationId = conversationId
+
+	var body MarkClientConversationReadJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		if !errors.Is(err, io.EOF) {
+			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+			return
+		}
+	} else {
+		request.Body = &body
+	}
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.MarkClientConversationRead(ctx, request.(MarkClientConversationReadRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "MarkClientConversationRead")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(MarkClientConversationReadResponseObject); ok {
+		if err := validResponse.VisitMarkClientConversationReadResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// SetClientTyping operation middleware
+func (sh *strictHandler) SetClientTyping(w http.ResponseWriter, r *http.Request, conversationId ConversationId) {
+	var request SetClientTypingRequestObject
+
+	request.ConversationId = conversationId
+
+	var body SetClientTypingJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		if !errors.Is(err, io.EOF) {
+			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+			return
+		}
+	} else {
+		request.Body = &body
+	}
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.SetClientTyping(ctx, request.(SetClientTypingRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "SetClientTyping")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(SetClientTypingResponseObject); ok {
+		if err := validResponse.VisitSetClientTypingResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteClientSession operation middleware
+func (sh *strictHandler) DeleteClientSession(w http.ResponseWriter, r *http.Request) {
+	var request DeleteClientSessionRequestObject
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteClientSession(ctx, request.(DeleteClientSessionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteClientSession")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteClientSessionResponseObject); ok {
+		if err := validResponse.VisitDeleteClientSessionResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetClientSession operation middleware
+func (sh *strictHandler) GetClientSession(w http.ResponseWriter, r *http.Request) {
+	var request GetClientSessionRequestObject
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetClientSession(ctx, request.(GetClientSessionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetClientSession")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetClientSessionResponseObject); ok {
+		if err := validResponse.VisitGetClientSessionResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreateClientSession operation middleware
+func (sh *strictHandler) CreateClientSession(w http.ResponseWriter, r *http.Request) {
+	var request CreateClientSessionRequestObject
+
+	var body CreateClientSessionJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateClientSession(ctx, request.(CreateClientSessionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateClientSession")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(CreateClientSessionResponseObject); ok {
+		if err := validResponse.VisitCreateClientSessionResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
 }
 
 // GetHealthz operation middleware
@@ -11045,6 +14068,33 @@ func (sh *strictHandler) UpdateChannel(w http.ResponseWriter, r *http.Request, c
 	}
 }
 
+// RotateChannelPublicKey operation middleware
+func (sh *strictHandler) RotateChannelPublicKey(w http.ResponseWriter, r *http.Request, channelId ChannelId, params RotateChannelPublicKeyParams) {
+	var request RotateChannelPublicKeyRequestObject
+
+	request.ChannelId = channelId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.RotateChannelPublicKey(ctx, request.(RotateChannelPublicKeyRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "RotateChannelPublicKey")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(RotateChannelPublicKeyResponseObject); ok {
+		if err := validResponse.VisitRotateChannelPublicKeyResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // ListContacts operation middleware
 func (sh *strictHandler) ListContacts(w http.ResponseWriter, r *http.Request, params ListContactsParams) {
 	var request ListContactsRequestObject
@@ -11466,6 +14516,43 @@ func (sh *strictHandler) MarkConversationRead(w http.ResponseWriter, r *http.Req
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(MarkConversationReadResponseObject); ok {
 		if err := validResponse.VisitMarkConversationReadResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// SetMemberTyping operation middleware
+func (sh *strictHandler) SetMemberTyping(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params SetMemberTypingParams) {
+	var request SetMemberTypingRequestObject
+
+	request.ConversationId = conversationId
+	request.Params = params
+
+	var body SetMemberTypingJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		if !errors.Is(err, io.EOF) {
+			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+			return
+		}
+	} else {
+		request.Body = &body
+	}
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.SetMemberTyping(ctx, request.(SetMemberTypingRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "SetMemberTyping")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(SetMemberTypingResponseObject); ok {
+		if err := validResponse.VisitSetMemberTypingResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

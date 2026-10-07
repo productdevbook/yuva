@@ -23,3 +23,6 @@ SELECT * FROM events WHERE workspace_id = @workspace_id AND id > @after ORDER BY
 
 -- name: DeleteEventsBefore :execrows
 DELETE FROM events WHERE workspace_id = @workspace_id AND created_at < @before;
+
+-- name: NotifySignal :exec
+SELECT pg_notify(sqlc.arg(channel)::text, sqlc.arg(payload)::text);

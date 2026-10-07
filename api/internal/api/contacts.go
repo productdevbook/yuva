@@ -68,7 +68,7 @@ func (s *Server) contactBodies(ctx context.Context, q *store.Queries, workspaceI
 		c := oas.Contact{
 			Id: r.ID, Name: r.Name, Blocked: r.Blocked, CreatedAt: r.CreatedAt, UpdatedAt: r.UpdatedAt,
 			Emails: byEmail[r.ID], ExternalIds: byExternal[r.ID], Attributes: oas.Attributes{},
-			Undeliverable: byUndeliverable[r.ID],
+			Undeliverable: byUndeliverable[r.ID], Locale: r.Locale,
 		}
 		if c.Undeliverable == nil {
 			c.Undeliverable = []oas.UndeliverableEmail{}

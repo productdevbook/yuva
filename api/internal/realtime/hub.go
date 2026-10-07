@@ -12,6 +12,10 @@ import (
 
 const Channel = "yuva_events"
 
+// SignalChannel carries short-lived notices (typing, presence) as the NOTIFY payload itself:
+// they are not stored, have no id and are never replayed.
+const SignalChannel = "yuva_signals"
+
 const (
 	ConversationCreated = "conversation.created"
 	ConversationUpdated = "conversation.updated"
@@ -24,10 +28,12 @@ const (
 	InboxDeleted        = "inbox.deleted"
 	InboxAccessChanged  = "inbox_access.changed"
 	ConversationRead    = "conversation.read"
+	Typing              = "typing"
+	PresenceHint        = "presence.hint"
 )
 
 type Event struct {
-	ID             int64           `json:"id"`
+	ID             int64           `json:"id,omitempty"`
 	Type           string          `json:"type"`
 	WorkspaceID    uuid.UUID       `json:"workspace_id"`
 	InboxID        *uuid.UUID      `json:"inbox_id,omitempty"`
@@ -41,6 +47,30 @@ func FromRow(e store.Event) Event {
 		ID: e.ID, Type: e.Type, WorkspaceID: e.WorkspaceID, InboxID: e.InboxID, ConversationID: e.ConversationID,
 		CreatedAt: e.CreatedAt, Data: e.Payload,
 	}
+}
+
+func (e Event) Ephemeral() bool { return e.ID == 0 }
+
+type signal struct {
+	Type           string          `json:"t"`
+	WorkspaceID    uuid.UUID       `json:"w"`
+	InboxID        *uuid.UUID      `json:"i,omitempty"`
+	ConversationID *uuid.UUID      `json:"c,omitempty"`
+	CreatedAt      time.Time       `json:"at"`
+	Data           json.RawMessage `json:"d,omitempty"`
+}
+
+func SignalPayload(e Event) (string, error) {
+	b, err := json.Marshal(signal{Type: e.Type, WorkspaceID: e.WorkspaceID, InboxID: e.InboxID, ConversationID: e.ConversationID, CreatedAt: e.CreatedAt, Data: e.Data})
+	return string(b), err
+}
+
+func parseSignal(p string) (Event, error) {
+	var s signal
+	if err := json.Unmarshal([]byte(p), &s); err != nil {
+		return Event{}, err
+	}
+	return Event{Type: s.Type, WorkspaceID: s.WorkspaceID, InboxID: s.InboxID, ConversationID: s.ConversationID, CreatedAt: s.CreatedAt, Data: s.Data}, nil
 }
 
 type Subscription struct {

@@ -35,6 +35,7 @@ const (
 	accessPublic
 	accessPerson
 	accessMember
+	accessContact
 )
 
 var operationAccess = map[string]access{
@@ -55,6 +56,20 @@ var operationAccess = map[string]access{
 	"DeletePasskey":             accessPerson,
 
 	"MarkConversationRead": accessMember,
+	"SetMemberTyping":      accessMember,
+
+	"CreateClientSession":        accessPublic,
+	"GetClientSession":           accessContact,
+	"DeleteClientSession":        accessContact,
+	"ListClientConversations":    accessContact,
+	"CreateClientConversation":   accessContact,
+	"GetClientConversation":      accessContact,
+	"ListClientMessages":         accessContact,
+	"CreateClientMessage":        accessContact,
+	"MarkClientConversationRead": accessContact,
+	"SetClientTyping":            accessContact,
+	"SetClientContactEmail":      accessContact,
+	"DownloadClientAttachment":   accessContact,
 
 	"UpdateMember": accessMember,
 	"RemoveMember": accessMember,
@@ -114,6 +129,14 @@ func (s *Server) authenticate(next oas.StrictHandlerFunc, operationID string) oa
 		kind := operationAccess[operationID]
 		if kind == accessPublic {
 			return next(ctx, w, r, request)
+		}
+		if kind == accessContact {
+			token, _ := bearerToken(r)
+			c, err := s.resolveContact(ctx, token)
+			if err != nil {
+				return nil, err
+			}
+			return next(context.WithValue(ctx, contactKey, c), w, r, request)
 		}
 		if workspaceQueryOperations[operationID] {
 			if err := workspaceFromQuery(r); err != nil {

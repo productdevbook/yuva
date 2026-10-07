@@ -57,6 +57,26 @@ type Channel struct {
 	UpdatedAt   time.Time
 }
 
+type ChatChannel struct {
+	WorkspaceID      uuid.UUID
+	ChannelID        uuid.UUID
+	PublicKey        string
+	AllowedOrigins   []string
+	AllowAnonymous   bool
+	AskEmailOffline  bool
+	Greeting         string
+	LauncherPosition *string
+	LauncherColor    *string
+}
+
+type ChatVisitor struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	VisitorHash []byte
+	ContactID   uuid.UUID
+	CreatedAt   time.Time
+}
+
 type Contact struct {
 	ID          uuid.UUID
 	WorkspaceID uuid.UUID
@@ -66,6 +86,8 @@ type Contact struct {
 	Search      interface{}
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	Locale      *string
+	TypedEmail  *string
 }
 
 type ContactEmail struct {
@@ -80,6 +102,27 @@ type ContactExternalID struct {
 	InboxID     uuid.UUID
 	ExternalID  string
 	ContactID   uuid.UUID
+}
+
+type ContactRead struct {
+	WorkspaceID       uuid.UUID
+	ConversationID    uuid.UUID
+	LastReadMessageID uuid.UUID
+	LastReadAt        time.Time
+	UpdatedAt         time.Time
+}
+
+type ContactSession struct {
+	ID          uuid.UUID
+	WorkspaceID uuid.UUID
+	ChannelID   uuid.UUID
+	InboxID     uuid.UUID
+	ContactID   uuid.UUID
+	TokenHash   []byte
+	Identified  bool
+	CreatedAt   time.Time
+	ExpiresAt   time.Time
+	LastSeenAt  time.Time
 }
 
 type Conversation struct {
@@ -100,6 +143,8 @@ type Conversation struct {
 	Spam                  bool
 	EmailToken            *string
 	RelatedConversationID *uuid.UUID
+	ContinuityThrough     *time.Time
+	ContinuitySentAt      *time.Time
 }
 
 type ConversationLabel struct {
@@ -282,6 +327,15 @@ type Person struct {
 	Locale         string
 	WebauthnHandle []byte
 	CreatedAt      time.Time
+	Availability   string
+}
+
+type RealtimeConnection struct {
+	ID          uuid.UUID
+	WorkspaceID uuid.UUID
+	MemberID    *uuid.UUID
+	ContactID   *uuid.UUID
+	SeenAt      time.Time
 }
 
 type Session struct {

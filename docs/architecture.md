@@ -62,6 +62,10 @@ panel (embedded SPA) ─────────► /v1 + WS ──────�
   replays newer events (kept 24 hours, cleaned by a River job) before live ones, or answers
   `resync_required` and the client reloads over HTTP. A slow connection is closed instead of
   holding up the hub; when the listener reconnects, every connection is closed so it resumes.
+  Typing and presence notices are not stored: they travel as the payload of a second `NOTIFY`
+  channel, have no id and are never replayed. Each open realtime connection is a row in
+  `realtime_connections`, seen on every heartbeat; presence is read from the rows seen in the last
+  75 seconds.
 - The panel and the widget bundles are embedded with `go:embed`; one binary serves everything.
 - Configuration through environment variables. Secrets stored in the database (SMTP passwords,
   identity secrets, webhook secrets) are encrypted with AES-256-GCM under a master key,
@@ -91,9 +95,20 @@ a JWT (HS256) signed with the inbox's identity secret, with `sub` (the host's us
 `exp` at most 10 minutes ahead. The client exchanges it at `/client/v1/session` for a contact
 session. `sdk/go` signs these tokens and verifies webhooks.
 
-Channels can allow anonymous visitors (web chat on a public site). An anonymous contact is merged
-into the identified one when the same browser later sends an identity token. E-mail addresses are
-matched to contacts only when they arrive by e-mail or inside a valid identity token.
+The token is checked strictly: `alg` must be `HS256` (anything else, `none` included, is
+refused), the signature must match the inbox secret, `exp` is required and at most 10 minutes
+ahead, `sub` is required. The contact is found by `sub` among the inbox's external ids, then by the
+token's `email`, or created; `name`, `email`, `locale` and `attrs` are saved on it. Contact
+sessions are opaque tokens, stored as hashes, valid for 7 days after their last use.
+
+Channels can allow anonymous visitors (web chat on a public site). An anonymous visitor is a
+contact plus a random visitor id that the browser keeps; the id resumes that visitor, and only in
+the inbox that issued it. When the same browser later sends an identity token with its visitor id,
+the visitor's conversations move to the identified contact (or, for a contact Yuva has not seen
+yet, the visitor becomes it) and the visitor id ends. E-mail addresses are matched to contacts only
+when they arrive by e-mail or inside a valid identity token: an address a visitor types in the
+widget is kept apart (`typed_email`) and used only to e-mail them replies; it becomes one of their
+addresses when mail from it answers our e-mail to that address in the conversation's thread.
 
 ### E-mail
 
@@ -174,11 +189,25 @@ contact, replies to them are refused until a member clears them.
 loaded by one script tag. Two layouts: a floating launcher for websites, and `embedded` for an
 inline thread inside a product's own panel.
 
-- `live` inboxes show who is available (members with access, active, within business hours),
-  typing indicators and read receipts.
+- A `chat` channel has a public key (not a secret; it is embedded in pages and can be rotated), the
+  exact origins whose pages may use it, whether anonymous visitors may chat, whether to ask for an
+  e-mail address when nobody is available, a greeting and launcher overrides. `/client/v1` answers
+  browsers only from origins some chat channel allows (CORS) and then checks the session's own
+  channel. Session starts and contact writes are rate limited per IP address and per channel,
+  counted in each process.
+- Contacts see their own conversations of the inbox, messages only (no notes, no internal events),
+  conversation status, and of members only the display name and initials.
+- `live` inboxes show who is available: members with access to the inbox, with an open
+  `/v1/realtime` connection, not set to `away`, while the inbox is within business hours. They also
+  show members typing and how far members have read.
 - `async` inboxes show the expected reply time instead and no presence.
 - If the contact has left when a reply arrives and an e-mail address is known, the reply is e-mailed
-  after a delay; their e-mail answer continues the same conversation.
+  after a delay; their e-mail answer continues the same conversation. A River job checks the
+  conversation `YUVA_CHAT_EMAIL_DELAY` (5 minutes by default) after a member's reply and after the
+  contact's last connection closes: the members' replies the contact has not read, once the oldest
+  is that old and the contact has been gone that long, go out as one e-mail through the inbox's
+  e-mail channel, threaded so an answer finds the conversation, at most one e-mail per delay. Notes
+  are never sent.
 
 ### In-app messaging (mobile)
 
@@ -243,6 +272,11 @@ now; per-channel limits can narrow them later.
     `/ingress/ses` finds the message a bounce refers to by our Message-ID
     (`message_emails.header_message_id` of outbound mail). Everything after that lookup is scoped
     by the workspace it returned.
+  - The widget names only a chat channel's public key, which is unique across the server: a new
+    contact session finds its channel by `chat_channels.public_key`, and a CORS preflight, which
+    carries neither the key nor the session, asks whether any chat channel allows its origin. A
+    contact session token is looked up by its hash in `contact_sessions` before its workspace is
+    known. Everything after those lookups is scoped by the workspace they returned.
   - The person-level identity tables `people`, `sessions`, `login_codes`, `passkeys` and
     `webauthn_ceremonies`. A person signs in once and can be a member of several workspaces, so
     these rows belong to a person (or, for `login_codes`, an e-mail address before sign-in), not

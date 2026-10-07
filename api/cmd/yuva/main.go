@@ -170,6 +170,7 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 		},
 		Hub:     hub,
 		Ingress: api.IngressSettings{Secret: cfg.IngressSecret, SESTopicARNs: cfg.SESTopicARNs},
+		Chat:    api.ChatSettings{EmailDelay: cfg.ChatEmailDelay},
 	})
 	if cfg.IngressSecret == "" {
 		log.Warn("YUVA_INGRESS_SECRET is not set; /ingress/email refuses all mail")

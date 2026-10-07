@@ -14,7 +14,7 @@ import (
 
 const createPerson = `-- name: CreatePerson :one
 INSERT INTO people (id, email, name, locale, webauthn_handle) VALUES ($1, $2, $3, $4, $5)
-RETURNING id, email, name, locale, webauthn_handle, created_at
+RETURNING id, email, name, locale, webauthn_handle, created_at, availability
 `
 
 type CreatePersonParams struct {
@@ -41,12 +41,13 @@ func (q *Queries) CreatePerson(ctx context.Context, arg CreatePersonParams) (Per
 		&i.Locale,
 		&i.WebauthnHandle,
 		&i.CreatedAt,
+		&i.Availability,
 	)
 	return i, err
 }
 
 const getPerson = `-- name: GetPerson :one
-SELECT id, email, name, locale, webauthn_handle, created_at FROM people WHERE id = $1
+SELECT id, email, name, locale, webauthn_handle, created_at, availability FROM people WHERE id = $1
 `
 
 func (q *Queries) GetPerson(ctx context.Context, id uuid.UUID) (Person, error) {
@@ -59,12 +60,13 @@ func (q *Queries) GetPerson(ctx context.Context, id uuid.UUID) (Person, error) {
 		&i.Locale,
 		&i.WebauthnHandle,
 		&i.CreatedAt,
+		&i.Availability,
 	)
 	return i, err
 }
 
 const getPersonByEmail = `-- name: GetPersonByEmail :one
-SELECT id, email, name, locale, webauthn_handle, created_at FROM people WHERE email = $1
+SELECT id, email, name, locale, webauthn_handle, created_at, availability FROM people WHERE email = $1
 `
 
 func (q *Queries) GetPersonByEmail(ctx context.Context, email string) (Person, error) {
@@ -77,12 +79,13 @@ func (q *Queries) GetPersonByEmail(ctx context.Context, email string) (Person, e
 		&i.Locale,
 		&i.WebauthnHandle,
 		&i.CreatedAt,
+		&i.Availability,
 	)
 	return i, err
 }
 
 const getPersonByWebauthnHandle = `-- name: GetPersonByWebauthnHandle :one
-SELECT id, email, name, locale, webauthn_handle, created_at FROM people WHERE webauthn_handle = $1
+SELECT id, email, name, locale, webauthn_handle, created_at, availability FROM people WHERE webauthn_handle = $1
 `
 
 func (q *Queries) GetPersonByWebauthnHandle(ctx context.Context, webauthnHandle []byte) (Person, error) {
@@ -95,6 +98,7 @@ func (q *Queries) GetPersonByWebauthnHandle(ctx context.Context, webauthnHandle 
 		&i.Locale,
 		&i.WebauthnHandle,
 		&i.CreatedAt,
+		&i.Availability,
 	)
 	return i, err
 }
@@ -122,7 +126,7 @@ UPDATE people SET
     name = coalesce($2, name),
     locale = coalesce($3, locale)
 WHERE id = $1
-RETURNING id, email, name, locale, webauthn_handle, created_at
+RETURNING id, email, name, locale, webauthn_handle, created_at, availability
 `
 
 type UpdatePersonParams struct {
@@ -141,6 +145,7 @@ func (q *Queries) UpdatePerson(ctx context.Context, arg UpdatePersonParams) (Per
 		&i.Locale,
 		&i.WebauthnHandle,
 		&i.CreatedAt,
+		&i.Availability,
 	)
 	return i, err
 }
