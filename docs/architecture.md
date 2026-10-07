@@ -113,18 +113,30 @@ Inbound:
    `References` or a relay rewrites the domain. Otherwise a new conversation starts, with the
    subject of the mail. A closed, pending or snoozed conversation that gets a reply is reopened.
    The sender is matched to a contact by address or becomes a new contact; mail from a blocked
-   contact is refused, mail from the channel's own address is dropped.
+   contact is refused, mail from the channel's own address is dropped. A thread joins only a
+   conversation of the sender's own contact: anyone who holds one of our Message-IDs (a CC'd
+   colleague, a forward) could otherwise write into a customer's conversation. Mail that names the
+   thread of another contact's conversation opens a new conversation for its sender, counted
+   against the hourly limit, with `related_conversation_id` pointing to the conversation it named;
+   the panel shows that link, and nothing is added to the other conversation. The `Cc` of inbound
+   mail is recorded and shown; nobody is copied automatically on replies.
 3. MIME parsing with enmime; visible text with quotes and signatures stripped (our own Go
    implementation in `api/internal/email/reply`, tested against a fixture corpus); the quoted
    containers that clients mark in HTML are removed too; HTML sanitized with bluemonday for
    display. The full text and full sanitized HTML stay available, and the original message is kept
    in object storage for members to download. Attachments and inline images follow the server's
-   attachment size and type rules; the rest is skipped (it stays in the original).
+   attachment size and type rules; the rest is skipped (it stays in the original). Inline parts
+   keep their `Content-ID` (`content_id`, `inline` on the attachment) and the sanitized HTML keeps
+   `cid:` image sources, so the panel can show them from the attachment. Remote images stay in the
+   stored HTML; `has_remote_images` on the message's e-mail data tells the panel to block them
+   until the member asks.
 4. Loops: messages with `Auto-Submitted` other than `no`, `Precedence: bulk|junk|list|auto_reply`,
    `X-Autoreply`, `X-Autorespond`, `X-Auto-Response-Suppress` (other than `None`), `List-Id`, a
    null sender, a delivery report, or our own Message-ID domain are stored but never trigger an
    automatic message. A sender opens at most 20 new conversations per channel and hour; more are
-   refused until the hour has passed.
+   refused (429 `rate_limited`) until the hour has passed. Cloudflare Email Workers can only refuse
+   a message permanently (`setReject`; a temporary failure is not documented), so the refusal is
+   permanent and its text says the message was not accepted rather than asking for a retry.
 5. Spam: the receiving server's verdict (the topmost `Authentication-Results`) is stored and
    shown; a new conversation whose first mail fails DMARC is flagged `spam`, which keeps it out of
    lists and counts (they have a spam view) and away from automatic replies; contacts can be
@@ -134,18 +146,25 @@ Outbound: SMTP per channel (works with SES, Postmark, any relay); the password i
 encrypted under the master key and never returned, and it is only sent over TLS. A member's reply
 in a conversation that started on an e-mail channel goes out through a River job: `From` is the
 channel address (or its per-channel sending address) with its display name, `Reply-To` the channel
-address, `To` the address the contact last wrote from, `Subject` `Re: …`, and `In-Reply-To` and
+address, `To` the address the conversation's contact last wrote from among the contact's own
+addresses (or the contact's first address) and never another sender in the thread, no `Cc`,
+`Subject` `Re: …`, and `In-Reply-To` and
 `References` keep the thread. Notes are never sent. The message carries its delivery state
 (`queued`, `sent`, `failed` with the error), reported live as `message.updated`; temporary SMTP
 errors are retried, 5xx replies fail at once. An e-mail channel can greet new conversations once
 per contact within a set interval; the greeting is a `system` message with
 `Auto-Submitted: auto-replied`.
 
-Bounces: inbound delivery reports (`multipart/report; report-type=delivery-status`) to a channel
-address fail the original message and mark permanently failed recipients undeliverable. Amazon SES
-bounces and complaints arrive at `/ingress/ses` through SNS: the SNS signature is checked against
-the AWS certificate, only topics listed in `YUVA_SES_TOPIC_ARNS` are accepted, and a subscription
-is confirmed only on an `sns.<region>.amazonaws.com` URL. Undeliverable addresses are shown on the
+Bounces: an inbound delivery report (`multipart/report; report-type=delivery-status`) to a channel
+address counts only when it names a message we sent from that workspace (its Message-ID in the
+returned headers, `In-Reply-To` or `References`) and a `Final-Recipient` that was a recipient of
+that message; then it fails the message and marks the permanently failed recipients
+undeliverable. Anything else is stored as an ordinary automatic mail from its sender and changes
+nothing; a blocked sender is refused before the report is looked at. Amazon SES bounces and
+complaints arrive at `/ingress/ses` through SNS: the SNS signature is checked against the AWS
+certificate, only topics listed in `YUVA_SES_TOPIC_ARNS` are accepted, a subscription is confirmed
+only on an `sns.<region>.amazonaws.com` URL, and a notification counts only for a message we sent
+and for its recipients. Undeliverable addresses are shown on the
 contact, replies to them are refused until a member clears them.
 
 ### Live chat and async messaging (web)

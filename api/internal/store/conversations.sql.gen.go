@@ -124,24 +124,25 @@ func (q *Queries) CountOpenConversationsByLabel(ctx context.Context, arg CountOp
 
 const createConversation = `-- name: CreateConversation :one
 INSERT INTO conversations (id, workspace_id, inbox_id, contact_id, channel_id, subject, priority,
-                           assignee_id, spam, email_token, last_activity_at, created_at, updated_at)
+                           assignee_id, spam, email_token, related_conversation_id, last_activity_at, created_at, updated_at)
 VALUES ($1, $2, $3, $4, $5, $6, $7,
-        $8, $9, $10, $11, $11, $11)
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token
+        $8, $9, $10, $11, $12, $12, $12)
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id
 `
 
 type CreateConversationParams struct {
-	ID          uuid.UUID
-	WorkspaceID uuid.UUID
-	InboxID     uuid.UUID
-	ContactID   uuid.UUID
-	ChannelID   *uuid.UUID
-	Subject     string
-	Priority    string
-	AssigneeID  *uuid.UUID
-	Spam        bool
-	EmailToken  *string
-	Now         time.Time
+	ID                    uuid.UUID
+	WorkspaceID           uuid.UUID
+	InboxID               uuid.UUID
+	ContactID             uuid.UUID
+	ChannelID             *uuid.UUID
+	Subject               string
+	Priority              string
+	AssigneeID            *uuid.UUID
+	Spam                  bool
+	EmailToken            *string
+	RelatedConversationID *uuid.UUID
+	Now                   time.Time
 }
 
 func (q *Queries) CreateConversation(ctx context.Context, arg CreateConversationParams) (Conversation, error) {
@@ -156,6 +157,7 @@ func (q *Queries) CreateConversation(ctx context.Context, arg CreateConversation
 		arg.AssigneeID,
 		arg.Spam,
 		arg.EmailToken,
+		arg.RelatedConversationID,
 		arg.Now,
 	)
 	var i Conversation
@@ -176,12 +178,13 @@ func (q *Queries) CreateConversation(ctx context.Context, arg CreateConversation
 		&i.UpdatedAt,
 		&i.Spam,
 		&i.EmailToken,
+		&i.RelatedConversationID,
 	)
 	return i, err
 }
 
 const getConversation = `-- name: GetConversation :one
-SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token FROM conversations WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id FROM conversations WHERE workspace_id = $1 AND id = $2
 `
 
 type GetConversationParams struct {
@@ -209,6 +212,7 @@ func (q *Queries) GetConversation(ctx context.Context, arg GetConversationParams
 		&i.UpdatedAt,
 		&i.Spam,
 		&i.EmailToken,
+		&i.RelatedConversationID,
 	)
 	return i, err
 }
@@ -302,7 +306,7 @@ func (q *Queries) ListConversationPreviews(ctx context.Context, arg ListConversa
 }
 
 const listConversations = `-- name: ListConversations :many
-SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token FROM conversations c
+SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id FROM conversations c
 WHERE c.workspace_id = $1
   AND ($2::bool OR EXISTS (
       SELECT 1 FROM inbox_members im
@@ -402,6 +406,7 @@ func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsPa
 			&i.UpdatedAt,
 			&i.Spam,
 			&i.EmailToken,
+			&i.RelatedConversationID,
 		); err != nil {
 			return nil, err
 		}
@@ -414,7 +419,7 @@ func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsPa
 }
 
 const lockConversation = `-- name: LockConversation :one
-SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token FROM conversations WHERE workspace_id = $1 AND id = $2 FOR UPDATE
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id FROM conversations WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
 
 type LockConversationParams struct {
@@ -442,6 +447,7 @@ func (q *Queries) LockConversation(ctx context.Context, arg LockConversationPara
 		&i.UpdatedAt,
 		&i.Spam,
 		&i.EmailToken,
+		&i.RelatedConversationID,
 	)
 	return i, err
 }
@@ -490,7 +496,7 @@ const updateConversation = `-- name: UpdateConversation :one
 UPDATE conversations SET subject = $1, status = $2, snooze_until = $3,
     priority = $4, assignee_id = $5, spam = $6, updated_at = $7
 WHERE workspace_id = $8 AND id = $9
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id
 `
 
 type UpdateConversationParams struct {
@@ -535,6 +541,7 @@ func (q *Queries) UpdateConversation(ctx context.Context, arg UpdateConversation
 		&i.UpdatedAt,
 		&i.Spam,
 		&i.EmailToken,
+		&i.RelatedConversationID,
 	)
 	return i, err
 }

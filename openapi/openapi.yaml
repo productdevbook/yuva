@@ -2828,6 +2828,14 @@ components:
           type: string
           format: uuid
           description: The channel it started on; absent when unknown or removed.
+        related_conversation_id:
+          type: string
+          format: uuid
+          description: |
+            Set when this conversation was opened for a sender who answered in the e-mail thread of
+            another contact's conversation (a forward, a CC'd colleague): the conversation whose
+            thread the mail named. That mail never joins the other conversation and replies here go
+            only to this conversation's contact. Absent otherwise or when that conversation is gone.
         subject:
           type: string
         status:
@@ -3102,7 +3110,7 @@ components:
             format: uuid
     Attachment:
       type: object
-      required: [id, filename, content_type, size, created_at]
+      required: [id, filename, content_type, size, inline, created_at]
       properties:
         id:
           type: string
@@ -3115,6 +3123,14 @@ components:
         size:
           type: integer
           format: int64
+        content_id:
+          type: string
+          description: |
+            The `Content-ID` of an inbound e-mail part, without angle brackets. The message HTML
+            refers to it as `cid:<content_id>` in `img` sources.
+        inline:
+          type: boolean
+          description: An inline part of an inbound e-mail (shown in the HTML) rather than an attachment.
         created_at:
           type: string
           format: date-time
@@ -3178,7 +3194,7 @@ components:
         Set on messages that came or went by e-mail. `body` and `html` of the message show the new
         text only; `quoted` tells whether quoted history or a signature was hidden, which
         `GET /v1/messages/{id}/email` returns in full.
-      required: [message_id, from, to, quoted, raw, auto, dmarc]
+      required: [message_id, from, to, quoted, raw, auto, dmarc, has_remote_images]
       properties:
         message_id:
           type: string
@@ -3191,6 +3207,7 @@ components:
             $ref: "#/components/schemas/Email"
         cc:
           type: array
+          description: The `Cc` of an inbound mail, as received. Replies go to the contact only and copy no one.
           items:
             $ref: "#/components/schemas/Email"
         subject:
@@ -3207,9 +3224,14 @@ components:
           type: string
           description: The DMARC result from the receiving server's `Authentication-Results`.
           enum: [pass, fail, none, unknown]
+        has_remote_images:
+          type: boolean
+          description: |
+            The message's `html` loads images from other servers. They are kept as received; show
+            them only when the member asks, since loading them tells the sender the mail was read.
     MessageEmailDetail:
       type: object
-      required: [message_id, full_text, headers]
+      required: [message_id, full_text, headers, has_remote_images]
       properties:
         message_id:
           type: string
@@ -3219,6 +3241,9 @@ components:
         full_html:
           type: string
           description: The whole HTML part, sanitized.
+        has_remote_images:
+          type: boolean
+          description: "`full_html` loads images from other servers; block them until the member asks."
         in_reply_to:
           type: string
         references:

@@ -448,7 +448,7 @@ func TestReplyThreading(t *testing.T) {
 
 	mangled := strings.ToUpper(token) + ".AAAAAAAAAAAAAAAA@RELAY.EXAMPLE.ORG"
 	viaToken := h.ingest(et.address, buildMail(mailOpts{
-		from: "colleague@example.net", to: et.address, subject: "Invoice (fwd)", messageID: newMessageID(),
+		from: "thread@example.net", to: et.address, subject: "Invoice (fwd)", messageID: newMessageID(),
 		headers: map[string]string{"In-Reply-To": "<" + mangled + ">"}, body: "Via token.",
 	}), nil)
 	if viaToken.str("conversation_id") != conv {

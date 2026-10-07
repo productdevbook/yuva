@@ -168,7 +168,7 @@ func conversationBody(c store.Conversation, labels []uuid.UUID) oas.Conversation
 		Id: c.ID, InboxId: c.InboxID, ContactId: c.ContactID, ChannelId: c.ChannelID, Subject: c.Subject,
 		Status: oas.ConversationStatus(c.Status), SnoozeUntil: c.SnoozeUntil, Priority: oas.Priority(c.Priority), Spam: c.Spam,
 		AssigneeId: c.AssigneeID, Labels: labels, LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt,
-		CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt,
+		CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt, RelatedConversationId: c.RelatedConversationID,
 	}
 }
 

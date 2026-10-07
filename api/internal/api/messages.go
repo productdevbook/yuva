@@ -249,7 +249,10 @@ func uploadError(err error) error {
 }
 
 func attachmentBody(a store.Attachment) oas.Attachment {
-	return oas.Attachment{Id: a.ID, Filename: a.Filename, ContentType: a.ContentType, Size: a.SizeBytes, CreatedAt: a.CreatedAt}
+	return oas.Attachment{
+		Id: a.ID, Filename: a.Filename, ContentType: a.ContentType, Size: a.SizeBytes, ContentId: a.ContentID,
+		Inline: a.Inline, CreatedAt: a.CreatedAt,
+	}
 }
 
 func messageBody(m messageRow, atts []store.Attachment) oas.Message {

@@ -32,6 +32,8 @@ type Attachment struct {
 	ContentType    string
 	SizeBytes      int64
 	CreatedAt      time.Time
+	ContentID      *string
+	Inline         bool
 }
 
 type CannedReply struct {
@@ -81,22 +83,23 @@ type ContactExternalID struct {
 }
 
 type Conversation struct {
-	ID             uuid.UUID
-	WorkspaceID    uuid.UUID
-	InboxID        uuid.UUID
-	ContactID      uuid.UUID
-	ChannelID      *uuid.UUID
-	Subject        string
-	Status         string
-	SnoozeUntil    *time.Time
-	Priority       string
-	AssigneeID     *uuid.UUID
-	LastMessageAt  *time.Time
-	LastActivityAt time.Time
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	Spam           bool
-	EmailToken     *string
+	ID                    uuid.UUID
+	WorkspaceID           uuid.UUID
+	InboxID               uuid.UUID
+	ContactID             uuid.UUID
+	ChannelID             *uuid.UUID
+	Subject               string
+	Status                string
+	SnoozeUntil           *time.Time
+	Priority              string
+	AssigneeID            *uuid.UUID
+	LastMessageAt         *time.Time
+	LastActivityAt        time.Time
+	CreatedAt             time.Time
+	UpdatedAt             time.Time
+	Spam                  bool
+	EmailToken            *string
+	RelatedConversationID *uuid.UUID
 }
 
 type ConversationLabel struct {

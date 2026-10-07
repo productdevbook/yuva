@@ -47,7 +47,7 @@ var (
 	errIngestUnknown       = &IngestError{http.StatusNotFound, oas.UnknownRecipient, "No such recipient"}
 	errIngestBlocked       = &IngestError{http.StatusForbidden, oas.BlockedSender, "Messages from this sender are not accepted"}
 	errIngestMalformed     = &IngestError{http.StatusBadRequest, oas.Malformed, "The message could not be read"}
-	errIngestRateLimited   = &IngestError{http.StatusTooManyRequests, oas.RateLimited, "Too many new conversations from this sender, try again later"}
+	errIngestRateLimited   = &IngestError{http.StatusTooManyRequests, oas.RateLimited, "Too many new conversations from this sender in the last hour; this message was not accepted"}
 )
 
 const (
@@ -155,6 +155,8 @@ type storedFile struct {
 	filename    string
 	contentType string
 	size        int64
+	contentID   *string
+	inline      bool
 }
 
 func (s *Server) inboundAttachments(ctx context.Context, workspaceID uuid.UUID, atts []email.Attachment) ([]storedFile, error) {
@@ -182,7 +184,10 @@ func (s *Server) inboundAttachments(ctx context.Context, workspaceID uuid.UUID, 
 				name += exts[0]
 			}
 		}
-		f := storedFile{id: newID(), filename: cleanFilename(name), contentType: ct, size: size}
+		f := storedFile{id: newID(), filename: cleanFilename(name), contentType: ct, size: size, inline: a.Inline}
+		if cid := truncateRunes(a.ContentID, 998); cid != "" {
+			f.contentID = &cid
+		}
 		f.key = workspaceID.String() + "/attachments/" + f.id.String()
 		if err := s.objects.Put(ctx, f.key, bytes.NewReader(a.Data), size, ct); err != nil {
 			return out, err
@@ -231,8 +236,17 @@ func (s *Server) IngestEmail(ctx context.Context, envelopeTo, envelopeFrom strin
 	if sender == ch.Address || (ch.FromAddress != nil && sender == *ch.FromAddress) {
 		return IngestResult{Status: IngestDropped}, nil
 	}
+	if err := s.refuseBlockedSender(ctx, ch.WorkspaceID, sender); err != nil {
+		return IngestResult{}, err
+	}
 	if m.Bounce != nil {
-		return s.applyDSN(ctx, ch, m)
+		res, handled, err := s.applyDSN(ctx, ch, m)
+		if err != nil || handled {
+			return res, err
+		}
+		if sender == "" {
+			return IngestResult{Status: IngestDropped}, nil
+		}
 	}
 	if sender == "" {
 		return IngestResult{}, errIngestMalformed
@@ -327,7 +341,7 @@ func (s *Server) IngestEmail(ctx context.Context, envelopeTo, envelopeFrom strin
 		for _, f := range files {
 			a, err := q.CreateAttachment(ctx, store.CreateAttachmentParams{
 				ID: f.id, WorkspaceID: ws, ConversationID: conv.ID, MessageID: msg.ID, StorageKey: f.key,
-				Filename: f.filename, ContentType: f.contentType, SizeBytes: f.size, CreatedAt: now,
+				Filename: f.filename, ContentType: f.contentType, SizeBytes: f.size, ContentID: f.contentID, Inline: f.inline, CreatedAt: now,
 			})
 			if err != nil {
 				return err
@@ -364,6 +378,27 @@ func (s *Server) IngestEmail(ctx context.Context, envelopeTo, envelopeFrom strin
 	return res, nil
 }
 
+func (s *Server) refuseBlockedSender(ctx context.Context, ws uuid.UUID, addr string) error {
+	if addr == "" {
+		return nil
+	}
+	id, err := s.st.GetContactIDByEmail(ctx, store.GetContactIDByEmailParams{WorkspaceID: ws, Email: addr})
+	if store.IsNotFound(err) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	c, err := s.st.GetContact(ctx, store.GetContactParams{WorkspaceID: ws, ID: id})
+	if err != nil {
+		return err
+	}
+	if c.Blocked {
+		return errIngestBlocked
+	}
+	return nil
+}
+
 func (s *Server) contactForSender(ctx context.Context, q *store.Queries, ws uuid.UUID, addr, name string, now time.Time) (contactRow, error) {
 	id, err := q.GetContactIDByEmail(ctx, store.GetContactIDByEmailParams{WorkspaceID: ws, Email: addr})
 	if err == nil {
@@ -395,13 +430,14 @@ func (s *Server) contactForSender(ctx context.Context, q *store.Queries, ws uuid
 }
 
 // threadFor finds the conversation a reply belongs to, by the stored Message-IDs it names and then
-// by the conversation token inside our own Message-IDs, or starts a new one.
+// by the conversation token inside our own Message-IDs, or starts a new one. A thread that belongs
+// to another contact is never joined: the sender gets its own conversation that points to it.
 func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventBatch, ch store.FindEmailChannelByAddressRow, m *email.Message, contactID uuid.UUID, subject string, spam bool, now time.Time) (store.Conversation, bool, error) {
 	ws := ch.WorkspaceID
 	ids := slices.Concat(m.InReplyTo, m.References)
 	var found *store.Conversation
 	if len(ids) > 0 {
-		c, err := q.FindConversationByHeaders(ctx, store.FindConversationByHeadersParams{WorkspaceID: ws, InboxID: ch.InboxID, Ids: ids})
+		c, err := q.FindConversationByHeaders(ctx, store.FindConversationByHeadersParams{WorkspaceID: ws, InboxID: ch.InboxID, Ids: ids, ContactID: contactID})
 		if err == nil {
 			found = &c
 		} else if !store.IsNotFound(err) {
@@ -416,13 +452,18 @@ func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventB
 			}
 		}
 		if len(tokens) > 0 {
-			c, err := q.FindConversationByEmailToken(ctx, store.FindConversationByEmailTokenParams{WorkspaceID: ws, InboxID: ch.InboxID, Tokens: tokens})
+			c, err := q.FindConversationByEmailToken(ctx, store.FindConversationByEmailTokenParams{WorkspaceID: ws, InboxID: ch.InboxID, Tokens: tokens, ContactID: contactID})
 			if err == nil {
 				found = &c
 			} else if !store.IsNotFound(err) {
 				return c, false, err
 			}
 		}
+	}
+	var related *uuid.UUID
+	if found != nil && found.ContactID != contactID {
+		related = &found.ID
+		found = nil
 	}
 	if found != nil {
 		c, err := q.LockConversation(ctx, store.LockConversationParams{WorkspaceID: ws, ID: found.ID})
@@ -461,7 +502,7 @@ func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventB
 	}
 	c, err := q.CreateConversation(ctx, store.CreateConversationParams{
 		ID: newID(), WorkspaceID: ws, InboxID: ch.InboxID, ContactID: contactID, ChannelID: &ch.ChannelID,
-		Subject: subject, Priority: string(oas.Normal), Spam: spam, Now: now,
+		Subject: subject, Priority: string(oas.Normal), Spam: spam, RelatedConversationID: related, Now: now,
 	})
 	if err != nil {
 		return c, false, err

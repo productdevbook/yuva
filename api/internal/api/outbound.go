@@ -60,7 +60,7 @@ func (s *Server) planEmail(ctx context.Context, q *store.Queries, c store.Conver
 	if err != nil {
 		return nil, err
 	}
-	to, err := q.LatestInboundSender(ctx, store.LatestInboundSenderParams{WorkspaceID: c.WorkspaceID, ConversationID: c.ID})
+	to, err := q.ContactReplyAddress(ctx, store.ContactReplyAddressParams{WorkspaceID: c.WorkspaceID, ConversationID: c.ID})
 	if store.IsNotFound(err) {
 		emails, err := q.ListContactEmails(ctx, store.ListContactEmailsParams{WorkspaceID: c.WorkspaceID, ContactIds: []uuid.UUID{c.ContactID}})
 		if err != nil {
@@ -176,7 +176,7 @@ func withEmail(m oas.Message, e *store.ListMessageEmailsRow) oas.Message {
 	}
 	out := &oas.MessageEmail{
 		MessageId: e.HeaderMessageID, From: oas.Email(e.FromAddress), To: emailList(e.ToAddresses), Quoted: e.Quoted,
-		Raw: e.HasRaw, Auto: e.Auto, Dmarc: oas.MessageEmailDmarc(e.Dmarc),
+		Raw: e.HasRaw, Auto: e.Auto, Dmarc: oas.MessageEmailDmarc(e.Dmarc), HasRemoteImages: m.Html != nil && email.HasRemoteImages(*m.Html),
 	}
 	if len(e.CcAddresses) > 0 {
 		cc := emailList(e.CcAddresses)
@@ -384,6 +384,7 @@ func (s *Server) GetMessageEmail(ctx context.Context, req oas.GetMessageEmailReq
 	out := oas.GetMessageEmail200JSONResponse{
 		MessageId: me.HeaderMessageID, FullText: me.FullText, FullHtml: me.FullHtml, InReplyTo: me.InReplyTo,
 		AuthenticationResults: me.AuthenticationResults, Headers: map[string]string{},
+		HasRemoteImages: me.FullHtml != nil && email.HasRemoteImages(*me.FullHtml),
 	}
 	if len(me.ReferencesIds) > 0 {
 		refs := me.ReferencesIds

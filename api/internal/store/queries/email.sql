@@ -52,11 +52,12 @@ WHERE workspace_id = $1 AND channel_id = $2 AND direction = 'in' AND header_mess
 SELECT c.* FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
 WHERE e.workspace_id = @workspace_id AND c.inbox_id = @inbox_id AND e.header_message_id = ANY(@ids::text[])
-ORDER BY e.created_at DESC
+ORDER BY (c.contact_id = @contact_id) DESC, e.created_at DESC
 LIMIT 1;
 
 -- name: FindConversationByEmailToken :one
 SELECT * FROM conversations WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id AND email_token = ANY(@tokens::text[])
+ORDER BY (contact_id = @contact_id) DESC, created_at DESC
 LIMIT 1;
 
 -- name: SetConversationEmailToken :one
@@ -70,10 +71,13 @@ WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id AND me
 ORDER BY created_at DESC
 LIMIT 1;
 
--- name: LatestInboundSender :one
-SELECT from_address FROM message_emails
-WHERE workspace_id = $1 AND conversation_id = $2 AND direction = 'in'
-ORDER BY created_at DESC
+-- Replies go only to an address of the conversation's contact, never to another sender in the thread.
+-- name: ContactReplyAddress :one
+SELECT e.from_address FROM message_emails e
+JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
+JOIN contact_emails ce ON ce.workspace_id = e.workspace_id AND ce.contact_id = c.contact_id AND ce.email = e.from_address
+WHERE e.workspace_id = $1 AND e.conversation_id = $2 AND e.direction = 'in'
+ORDER BY e.created_at DESC
 LIMIT 1;
 
 -- name: FindOutboundEmailByHeader :one
@@ -83,7 +87,7 @@ WHERE e.workspace_id = $1 AND e.direction = 'out' AND e.header_message_id = $2;
 -- SES reports name only our Message-ID, so the message is found before the workspace is known
 -- (see "Hosting for others later" in docs/architecture.md).
 -- name: FindOutboundEmailAnyWorkspace :one
-SELECT e.workspace_id, e.message_id, e.conversation_id FROM message_emails e
+SELECT e.workspace_id, e.message_id, e.conversation_id, e.to_addresses FROM message_emails e
 WHERE e.direction = 'out' AND e.header_message_id = $1
 LIMIT 1;
 

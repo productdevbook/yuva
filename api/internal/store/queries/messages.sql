@@ -43,9 +43,9 @@ LIMIT 1;
 
 -- name: CreateAttachment :one
 INSERT INTO attachments (id, workspace_id, conversation_id, message_id, storage_key, filename,
-                         content_type, size_bytes, created_at)
+                         content_type, size_bytes, content_id, inline, created_at)
 VALUES (@id, @workspace_id, @conversation_id, @message_id, @storage_key, @filename, @content_type,
-        @size_bytes, @created_at)
+        @size_bytes, sqlc.narg(content_id), @inline, @created_at)
 RETURNING *;
 
 -- name: ListAttachments :many

@@ -55,6 +55,28 @@ func (q *Queries) ClearSuppression(ctx context.Context, arg ClearSuppressionPara
 	return err
 }
 
+const contactReplyAddress = `-- name: ContactReplyAddress :one
+SELECT e.from_address FROM message_emails e
+JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
+JOIN contact_emails ce ON ce.workspace_id = e.workspace_id AND ce.contact_id = c.contact_id AND ce.email = e.from_address
+WHERE e.workspace_id = $1 AND e.conversation_id = $2 AND e.direction = 'in'
+ORDER BY e.created_at DESC
+LIMIT 1
+`
+
+type ContactReplyAddressParams struct {
+	WorkspaceID    uuid.UUID
+	ConversationID uuid.UUID
+}
+
+// Replies go only to an address of the conversation's contact, never to another sender in the thread.
+func (q *Queries) ContactReplyAddress(ctx context.Context, arg ContactReplyAddressParams) (string, error) {
+	row := q.db.QueryRow(ctx, contactReplyAddress, arg.WorkspaceID, arg.ConversationID)
+	var from_address string
+	err := row.Scan(&from_address)
+	return from_address, err
+}
+
 const countRecentConversations = `-- name: CountRecentConversations :one
 SELECT count(*) FROM conversations
 WHERE workspace_id = $1 AND channel_id = $2 AND contact_id = $3 AND created_at > $4
@@ -210,7 +232,8 @@ func (q *Queries) CreateMessageEmail(ctx context.Context, arg CreateMessageEmail
 }
 
 const findConversationByEmailToken = `-- name: FindConversationByEmailToken :one
-SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token FROM conversations WHERE workspace_id = $1 AND inbox_id = $2 AND email_token = ANY($3::text[])
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id FROM conversations WHERE workspace_id = $1 AND inbox_id = $2 AND email_token = ANY($3::text[])
+ORDER BY (contact_id = $4) DESC, created_at DESC
 LIMIT 1
 `
 
@@ -218,10 +241,16 @@ type FindConversationByEmailTokenParams struct {
 	WorkspaceID uuid.UUID
 	InboxID     uuid.UUID
 	Tokens      []string
+	ContactID   uuid.UUID
 }
 
 func (q *Queries) FindConversationByEmailToken(ctx context.Context, arg FindConversationByEmailTokenParams) (Conversation, error) {
-	row := q.db.QueryRow(ctx, findConversationByEmailToken, arg.WorkspaceID, arg.InboxID, arg.Tokens)
+	row := q.db.QueryRow(ctx, findConversationByEmailToken,
+		arg.WorkspaceID,
+		arg.InboxID,
+		arg.Tokens,
+		arg.ContactID,
+	)
 	var i Conversation
 	err := row.Scan(
 		&i.ID,
@@ -240,15 +269,16 @@ func (q *Queries) FindConversationByEmailToken(ctx context.Context, arg FindConv
 		&i.UpdatedAt,
 		&i.Spam,
 		&i.EmailToken,
+		&i.RelatedConversationID,
 	)
 	return i, err
 }
 
 const findConversationByHeaders = `-- name: FindConversationByHeaders :one
-SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token FROM message_emails e
+SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
 WHERE e.workspace_id = $1 AND c.inbox_id = $2 AND e.header_message_id = ANY($3::text[])
-ORDER BY e.created_at DESC
+ORDER BY (c.contact_id = $4) DESC, e.created_at DESC
 LIMIT 1
 `
 
@@ -256,10 +286,16 @@ type FindConversationByHeadersParams struct {
 	WorkspaceID uuid.UUID
 	InboxID     uuid.UUID
 	Ids         []string
+	ContactID   uuid.UUID
 }
 
 func (q *Queries) FindConversationByHeaders(ctx context.Context, arg FindConversationByHeadersParams) (Conversation, error) {
-	row := q.db.QueryRow(ctx, findConversationByHeaders, arg.WorkspaceID, arg.InboxID, arg.Ids)
+	row := q.db.QueryRow(ctx, findConversationByHeaders,
+		arg.WorkspaceID,
+		arg.InboxID,
+		arg.Ids,
+		arg.ContactID,
+	)
 	var i Conversation
 	err := row.Scan(
 		&i.ID,
@@ -278,6 +314,7 @@ func (q *Queries) FindConversationByHeaders(ctx context.Context, arg FindConvers
 		&i.UpdatedAt,
 		&i.Spam,
 		&i.EmailToken,
+		&i.RelatedConversationID,
 	)
 	return i, err
 }
@@ -355,7 +392,7 @@ func (q *Queries) FindInboundEmailByHeader(ctx context.Context, arg FindInboundE
 }
 
 const findOutboundEmailAnyWorkspace = `-- name: FindOutboundEmailAnyWorkspace :one
-SELECT e.workspace_id, e.message_id, e.conversation_id FROM message_emails e
+SELECT e.workspace_id, e.message_id, e.conversation_id, e.to_addresses FROM message_emails e
 WHERE e.direction = 'out' AND e.header_message_id = $1
 LIMIT 1
 `
@@ -364,6 +401,7 @@ type FindOutboundEmailAnyWorkspaceRow struct {
 	WorkspaceID    uuid.UUID
 	MessageID      uuid.UUID
 	ConversationID uuid.UUID
+	ToAddresses    []string
 }
 
 // SES reports name only our Message-ID, so the message is found before the workspace is known
@@ -371,7 +409,12 @@ type FindOutboundEmailAnyWorkspaceRow struct {
 func (q *Queries) FindOutboundEmailAnyWorkspace(ctx context.Context, headerMessageID string) (FindOutboundEmailAnyWorkspaceRow, error) {
 	row := q.db.QueryRow(ctx, findOutboundEmailAnyWorkspace, headerMessageID)
 	var i FindOutboundEmailAnyWorkspaceRow
-	err := row.Scan(&i.WorkspaceID, &i.MessageID, &i.ConversationID)
+	err := row.Scan(
+		&i.WorkspaceID,
+		&i.MessageID,
+		&i.ConversationID,
+		&i.ToAddresses,
+	)
 	return i, err
 }
 
@@ -497,25 +540,6 @@ func (q *Queries) IsEmailSuppressed(ctx context.Context, arg IsEmailSuppressedPa
 	var suppressed bool
 	err := row.Scan(&suppressed)
 	return suppressed, err
-}
-
-const latestInboundSender = `-- name: LatestInboundSender :one
-SELECT from_address FROM message_emails
-WHERE workspace_id = $1 AND conversation_id = $2 AND direction = 'in'
-ORDER BY created_at DESC
-LIMIT 1
-`
-
-type LatestInboundSenderParams struct {
-	WorkspaceID    uuid.UUID
-	ConversationID uuid.UUID
-}
-
-func (q *Queries) LatestInboundSender(ctx context.Context, arg LatestInboundSenderParams) (string, error) {
-	row := q.db.QueryRow(ctx, latestInboundSender, arg.WorkspaceID, arg.ConversationID)
-	var from_address string
-	err := row.Scan(&from_address)
-	return from_address, err
 }
 
 const latestThreadEmail = `-- name: LatestThreadEmail :one

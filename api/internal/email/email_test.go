@@ -156,3 +156,22 @@ func TestDMARCAndAutomatic(t *testing.T) {
 		t.Error("mailer-daemon not automatic")
 	}
 }
+
+func TestHasRemoteImages(t *testing.T) {
+	cases := map[string]bool{
+		``: false,
+		`<p>plain <a href="https://x.example">link</a></p>`: false,
+		`<img src="cid:part1@x">`:                           false,
+		`<img src="data:image/png;base64,AAAA">`:            false,
+		`<img alt="no source">`:                             false,
+		`<p><img src="https://t.example/p.gif"></p>`:        true,
+		`<IMG SRC="HTTP://T.EXAMPLE/P.GIF">`:                true,
+		`<img src="//t.example/p.gif">`:                     true,
+		`<img src="/\t.example/p.gif">`:                     true,
+	}
+	for in, want := range cases {
+		if got := email.HasRemoteImages(in); got != want {
+			t.Errorf("HasRemoteImages(%q) = %v, want %v", in, got, want)
+		}
+	}
+}

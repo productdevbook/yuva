@@ -14,10 +14,10 @@ import (
 
 const createAttachment = `-- name: CreateAttachment :one
 INSERT INTO attachments (id, workspace_id, conversation_id, message_id, storage_key, filename,
-                         content_type, size_bytes, created_at)
+                         content_type, size_bytes, content_id, inline, created_at)
 VALUES ($1, $2, $3, $4, $5, $6, $7,
-        $8, $9)
-RETURNING id, workspace_id, conversation_id, message_id, storage_key, filename, content_type, size_bytes, created_at
+        $8, $9, $10, $11)
+RETURNING id, workspace_id, conversation_id, message_id, storage_key, filename, content_type, size_bytes, created_at, content_id, inline
 `
 
 type CreateAttachmentParams struct {
@@ -29,6 +29,8 @@ type CreateAttachmentParams struct {
 	Filename       string
 	ContentType    string
 	SizeBytes      int64
+	ContentID      *string
+	Inline         bool
 	CreatedAt      time.Time
 }
 
@@ -42,6 +44,8 @@ func (q *Queries) CreateAttachment(ctx context.Context, arg CreateAttachmentPara
 		arg.Filename,
 		arg.ContentType,
 		arg.SizeBytes,
+		arg.ContentID,
+		arg.Inline,
 		arg.CreatedAt,
 	)
 	var i Attachment
@@ -55,6 +59,8 @@ func (q *Queries) CreateAttachment(ctx context.Context, arg CreateAttachmentPara
 		&i.ContentType,
 		&i.SizeBytes,
 		&i.CreatedAt,
+		&i.ContentID,
+		&i.Inline,
 	)
 	return i, err
 }
@@ -146,7 +152,7 @@ func (q *Queries) CreateMessage(ctx context.Context, arg CreateMessageParams) (C
 }
 
 const getAttachment = `-- name: GetAttachment :one
-SELECT a.id, a.workspace_id, a.conversation_id, a.message_id, a.storage_key, a.filename, a.content_type, a.size_bytes, a.created_at, c.inbox_id FROM attachments a
+SELECT a.id, a.workspace_id, a.conversation_id, a.message_id, a.storage_key, a.filename, a.content_type, a.size_bytes, a.created_at, a.content_id, a.inline, c.inbox_id FROM attachments a
 JOIN conversations c ON c.workspace_id = a.workspace_id AND c.id = a.conversation_id
 WHERE a.workspace_id = $1 AND a.id = $2
 `
@@ -166,6 +172,8 @@ type GetAttachmentRow struct {
 	ContentType    string
 	SizeBytes      int64
 	CreatedAt      time.Time
+	ContentID      *string
+	Inline         bool
 	InboxID        uuid.UUID
 }
 
@@ -182,6 +190,8 @@ func (q *Queries) GetAttachment(ctx context.Context, arg GetAttachmentParams) (G
 		&i.ContentType,
 		&i.SizeBytes,
 		&i.CreatedAt,
+		&i.ContentID,
+		&i.Inline,
 		&i.InboxID,
 	)
 	return i, err
@@ -343,7 +353,7 @@ func (q *Queries) GetMessagePosition(ctx context.Context, arg GetMessagePosition
 }
 
 const listAttachments = `-- name: ListAttachments :many
-SELECT id, workspace_id, conversation_id, message_id, storage_key, filename, content_type, size_bytes, created_at FROM attachments
+SELECT id, workspace_id, conversation_id, message_id, storage_key, filename, content_type, size_bytes, created_at, content_id, inline FROM attachments
 WHERE workspace_id = $1 AND message_id = ANY($2::uuid[])
 ORDER BY message_id, created_at, id
 `
@@ -372,6 +382,8 @@ func (q *Queries) ListAttachments(ctx context.Context, arg ListAttachmentsParams
 			&i.ContentType,
 			&i.SizeBytes,
 			&i.CreatedAt,
+			&i.ContentID,
+			&i.Inline,
 		); err != nil {
 			return nil, err
 		}
@@ -384,7 +396,7 @@ func (q *Queries) ListAttachments(ctx context.Context, arg ListAttachmentsParams
 }
 
 const listAttachmentsOfMessage = `-- name: ListAttachmentsOfMessage :many
-SELECT id, workspace_id, conversation_id, message_id, storage_key, filename, content_type, size_bytes, created_at FROM attachments WHERE workspace_id = $1 AND message_id = $2 ORDER BY created_at, id
+SELECT id, workspace_id, conversation_id, message_id, storage_key, filename, content_type, size_bytes, created_at, content_id, inline FROM attachments WHERE workspace_id = $1 AND message_id = $2 ORDER BY created_at, id
 `
 
 type ListAttachmentsOfMessageParams struct {
@@ -411,6 +423,8 @@ func (q *Queries) ListAttachmentsOfMessage(ctx context.Context, arg ListAttachme
 			&i.ContentType,
 			&i.SizeBytes,
 			&i.CreatedAt,
+			&i.ContentID,
+			&i.Inline,
 		); err != nil {
 			return nil, err
 		}

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -105,12 +106,19 @@ func New(d Deps) *Server {
 	}
 	return &Server{
 		log: d.Log, st: d.Store, version: d.Version, mailer: d.Mailer, webauthn: d.WebAuthn, auth: d.Auth, now: now,
-		secrets: d.Secrets, objects: d.Storage, attach: d.Attachments, sanitize: bluemonday.UGCPolicy(),
+		secrets: d.Secrets, objects: d.Storage, attach: d.Attachments, sanitize: htmlPolicy(),
 		hub: d.Hub, jobs: jobs, ingress: d.Ingress, sender: sender, snsCerts: newCertCache(fetch), fetch: fetch,
 	}
 }
 
 var _ oas.StrictServerInterface = (*Server)(nil)
+
+// htmlPolicy keeps `cid:` sources so the panel can show inline parts of an e-mail from their attachments.
+func htmlPolicy() *bluemonday.Policy {
+	p := bluemonday.UGCPolicy()
+	p.AllowURLSchemeWithCustomPolicy("cid", func(u *url.URL) bool { return u.Opaque != "" })
+	return p
+}
 
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()

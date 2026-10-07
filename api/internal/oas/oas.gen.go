@@ -720,13 +720,19 @@ type ApiKeyList struct {
 
 // Attachment defines model for Attachment.
 type Attachment struct {
+	// ContentId The `Content-ID` of an inbound e-mail part, without angle brackets. The message HTML
+	// refers to it as `cid:<content_id>` in `img` sources.
+	ContentId   *string   `json:"content_id,omitempty"`
 	ContentType string    `json:"content_type"`
 	CreatedAt   time.Time `json:"created_at"`
 	Filename    string    `json:"filename"`
 
 	// Id Download it from `/v1/attachments/{id}`.
-	Id   uuid.UUID `json:"id"`
-	Size int64     `json:"size"`
+	Id uuid.UUID `json:"id"`
+
+	// Inline An inline part of an inbound e-mail (shown in the HTML) rather than an attachment.
+	Inline bool  `json:"inline"`
+	Size   int64 `json:"size"`
 }
 
 // Attributes Free-form data about the contact (plan, app version, …), at most 16 KiB.
@@ -940,7 +946,13 @@ type Conversation struct {
 	// LastMessageAt The last `message` to or from the contact.
 	LastMessageAt *time.Time `json:"last_message_at,omitempty"`
 	Priority      Priority   `json:"priority"`
-	SnoozeUntil   *time.Time `json:"snooze_until,omitempty"`
+
+	// RelatedConversationId Set when this conversation was opened for a sender who answered in the e-mail thread of
+	// another contact's conversation (a forward, a CC'd colleague): the conversation whose
+	// thread the mail named. That mail never joins the other conversation and replies here go
+	// only to this conversation's contact. Absent otherwise or when that conversation is gone.
+	RelatedConversationId *uuid.UUID `json:"related_conversation_id,omitempty"`
+	SnoozeUntil           *time.Time `json:"snooze_until,omitempty"`
 
 	// Spam Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
 	// and counts unless asked for, and gets no automatic reply.
@@ -1031,7 +1043,13 @@ type ConversationListItem struct {
 	// LastMessageAt The last `message` to or from the contact.
 	LastMessageAt *time.Time `json:"last_message_at,omitempty"`
 	Priority      Priority   `json:"priority"`
-	SnoozeUntil   *time.Time `json:"snooze_until,omitempty"`
+
+	// RelatedConversationId Set when this conversation was opened for a sender who answered in the e-mail thread of
+	// another contact's conversation (a forward, a CC'd colleague): the conversation whose
+	// thread the mail named. That mail never joins the other conversation and replies here go
+	// only to this conversation's contact. Absent otherwise or when that conversation is gone.
+	RelatedConversationId *uuid.UUID `json:"related_conversation_id,omitempty"`
+	SnoozeUntil           *time.Time `json:"snooze_until,omitempty"`
 
 	// Spam Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
 	// and counts unless asked for, and gets no automatic reply.
@@ -1602,14 +1620,20 @@ type MessageDeliveryState string
 // `GET /v1/messages/{id}/email` returns in full.
 type MessageEmail struct {
 	// Auto Automatic mail (auto-reply, list, bulk) or our own automatic message.
-	Auto bool     `json:"auto"`
-	Cc   *[]Email `json:"cc,omitempty"`
+	Auto bool `json:"auto"`
+
+	// Cc The `Cc` of an inbound mail, as received. Replies go to the contact only and copy no one.
+	Cc *[]Email `json:"cc,omitempty"`
 
 	// Dmarc The DMARC result from the receiving server's `Authentication-Results`.
 	Dmarc MessageEmailDmarc `json:"dmarc"`
 
 	// From Examples: owner@example.com
 	From Email `json:"from"`
+
+	// HasRemoteImages The message's `html` loads images from other servers. They are kept as received; show
+	// them only when the member asks, since loading them tells the sender the mail was read.
+	HasRemoteImages bool `json:"has_remote_images"`
 
 	// MessageId The `Message-ID` header without angle brackets.
 	MessageId string `json:"message_id"`
@@ -1634,6 +1658,9 @@ type MessageEmailDetail struct {
 
 	// FullText The whole text part, quoted history and signature included.
 	FullText string `json:"full_text"`
+
+	// HasRemoteImages `full_html` loads images from other servers; block them until the member asks.
+	HasRemoteImages bool `json:"has_remote_images"`
 
 	// Headers Selected headers as received (Date, Reply-To, Auto-Submitted, Precedence, …).
 	Headers    map[string]string `json:"headers"`

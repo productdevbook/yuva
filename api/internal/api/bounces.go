@@ -78,35 +78,45 @@ func (s *Server) recordBounce(ctx context.Context, ws uuid.UUID, messageID *uuid
 	})
 }
 
-func (s *Server) applyDSN(ctx context.Context, ch store.FindEmailChannelByAddressRow, m *email.Message) (IngestResult, error) {
-	failed := m.Bounce.Failed()
-	if len(failed) == 0 {
-		return IngestResult{Status: IngestDropped}, nil
-	}
-	var msgID *uuid.UUID
-	var convID *uuid.UUID
+// applyDSN handles a delivery report only when it names a message we sent from this workspace and
+// reports a recipient of that message; anything else is not ours to act on and handled is false.
+func (s *Server) applyDSN(ctx context.Context, ch store.FindEmailChannelByAddressRow, m *email.Message) (IngestResult, bool, error) {
+	var sent *store.FindOutboundEmailByHeaderRow
 	for _, id := range slices.Concat([]string{m.Bounce.OriginalMessageID}, m.InReplyTo, m.References) {
 		if id == "" {
 			continue
 		}
 		row, err := s.st.FindOutboundEmailByHeader(ctx, store.FindOutboundEmailByHeaderParams{WorkspaceID: ch.WorkspaceID, HeaderMessageID: id})
 		if err == nil {
-			msgID, convID = &row.MessageID, &row.ConversationID
+			sent = &row
 			break
 		}
 		if !store.IsNotFound(err) {
-			return IngestResult{}, err
+			return IngestResult{}, false, err
 		}
+	}
+	if sent == nil {
+		return IngestResult{}, false, nil
+	}
+	failed := m.Bounce.Failed()
+	if len(failed) == 0 {
+		return IngestResult{Status: IngestDropped}, true, nil
 	}
 	recipients := make([]bounced, 0, len(failed))
 	for _, r := range failed {
+		if !slices.Contains(sent.ToAddresses, r.Email) {
+			continue
+		}
 		detail := strings.TrimSpace(r.Status + " " + r.Diagnostic)
 		recipients = append(recipients, bounced{email: r.Email, reason: suppressBounce, detail: detail, permanent: r.Permanent()})
 	}
-	if err := s.recordBounce(ctx, ch.WorkspaceID, msgID, recipients, true); err != nil {
-		return IngestResult{}, err
+	if len(recipients) == 0 {
+		return IngestResult{}, false, nil
 	}
-	return IngestResult{Status: IngestBounce, ConversationID: convID, MessageID: msgID}, nil
+	if err := s.recordBounce(ctx, ch.WorkspaceID, &sent.MessageID, recipients, true); err != nil {
+		return IngestResult{}, false, err
+	}
+	return IngestResult{Status: IngestBounce, ConversationID: &sent.ConversationID, MessageID: &sent.MessageID}, true, nil
 }
 
 type certCache struct {
@@ -271,6 +281,11 @@ func (s *Server) applySES(ctx context.Context, payload string) error {
 	}
 	if err != nil {
 		return err
+	}
+	recipients = slices.DeleteFunc(recipients, func(r bounced) bool { return !slices.Contains(row.ToAddresses, r.email) })
+	if len(recipients) == 0 {
+		s.log.InfoContext(ctx, "ses notification names no recipient of the message", slog.String("message_id", id))
+		return nil
 	}
 	return s.recordBounce(ctx, row.WorkspaceID, &row.MessageID, recipients, failMessage)
 }
