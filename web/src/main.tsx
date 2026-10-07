@@ -19,6 +19,7 @@ import { NotificationsSettings } from "@/components/settings/NotificationsSettin
 import { ProfileSettings } from "@/components/settings/ProfileSettings"
 import { SettingsLayout } from "@/components/settings/SettingsLayout"
 import { WebhookSettings, WebhooksSettings } from "@/components/settings/WebhooksSettings"
+import { WorkspaceSettings } from "@/components/settings/WorkspaceSettings"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { activate, i18n, initialLocale } from "@/i18n"
 import { ApiError } from "@/lib/api"
@@ -54,6 +55,7 @@ createRoot(document.getElementById("root")!).render(
                   <Route index element={<Navigate to="profile" replace />} />
                   <Route path="profile" element={<ProfileSettings />} />
                   <Route path="notifications" element={<NotificationsSettings />} />
+                  <Route path="workspace" element={<WorkspaceSettings />} />
                   <Route path="members" element={<MembersSettings />} />
                   <Route path="inboxes" element={<InboxesSettings />} />
                   <Route path="inboxes/:inboxId" element={<InboxSettings />} />

@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { BellIcon, InboxIcon, KeyIcon, MessageSquareTextIcon, TagIcon, UserIcon, UsersIcon, WebhookIcon } from "lucide-react"
+import { BellIcon, BuildingIcon, InboxIcon, KeyIcon, MessageSquareTextIcon, TagIcon, UserIcon, UsersIcon, WebhookIcon } from "lucide-react"
 import { NavLink, Outlet } from "react-router"
 
 import { TopBar } from "@/components/AppShell"
@@ -13,6 +13,7 @@ export function SettingsLayout() {
   const items = [
     { to: "profile", label: t`My profile`, icon: UserIcon },
     { to: "notifications", label: t`Notifications`, icon: BellIcon },
+    { to: "workspace", label: t`Workspace`, icon: BuildingIcon },
     { to: "members", label: t`Members`, icon: UsersIcon },
     { to: "inboxes", label: t`Inboxes`, icon: InboxIcon },
     { to: "labels", label: t`Labels`, icon: TagIcon },

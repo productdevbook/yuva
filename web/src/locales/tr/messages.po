@@ -467,6 +467,10 @@ msgstr "Kapat"
 msgid "Closed"
 msgstr "Kapalı"
 
+#: src/components/settings/WorkspaceSettings.tsx
+msgid "Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Leave empty to keep everything."
+msgstr "Bu kadar gündür dokunulmamış kapalı konuşmalar mesajları ve ekleriyle birlikte, bundan eski ham e-postalar da silinir. Her şeyi saklamak için boş bırakın."
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Closes"
 msgstr "Kapanış"
@@ -571,6 +575,10 @@ msgstr "Oluşturulma: {created}"
 msgid "Created {created} by {by}"
 msgstr "Oluşturulma: {created}, oluşturan: {by}"
 
+#: src/components/settings/WorkspaceSettings.tsx
+msgid "Data retention"
+msgstr "Veri saklama"
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Default language"
 msgstr "Varsayılan dil"
@@ -588,6 +596,10 @@ msgstr "Sil"
 #: src/components/settings/InboxSettings.tsx
 msgid "Delete {name}?"
 msgstr "{name} silinsin mi?"
+
+#: src/components/settings/WorkspaceSettings.tsx
+msgid "Delete after (days)"
+msgstr "Silme süresi (gün)"
 
 #: src/components/settings/InboxSettings.tsx
 msgid "Delete inbox"
@@ -1358,6 +1370,10 @@ msgstr "Yalnızca uygulamada"
 msgid "Only members see notes"
 msgstr "Notları yalnızca üyeler görür"
 
+#: src/components/settings/WorkspaceSettings.tsx
+msgid "Only owners can change this."
+msgstr "Bunu yalnızca sahipler değiştirebilir."
+
 #: src/components/common/text.ts
 msgid "Open"
 msgstr "Açık"
@@ -1687,6 +1703,7 @@ msgstr "Cumartesi"
 #: src/components/settings/LabelsSettings.tsx
 #: src/components/settings/ProfileSettings.tsx
 #: src/components/settings/WebhooksSettings.tsx
+#: src/components/settings/WorkspaceSettings.tsx
 msgid "Save"
 msgstr "Kaydet"
 
@@ -1696,6 +1713,7 @@ msgstr "Saatleri kaydet"
 
 #: src/components/settings/InboxSettings.tsx
 #: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/WorkspaceSettings.tsx
 msgid "Saved"
 msgstr "Kaydedildi"
 
@@ -2291,6 +2309,11 @@ msgstr "Geri çek"
 #: src/components/settings/MembersSettings.tsx
 msgid "Withdraw the invite for {0}"
 msgstr "{0} davetini geri çek"
+
+#: src/components/settings/SettingsLayout.tsx
+#: src/components/settings/WorkspaceSettings.tsx
+msgid "Workspace"
+msgstr "Çalışma alanı"
 
 #: src/components/settings/ApiKeysSettings.tsx
 msgid "Workspace API keys"

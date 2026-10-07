@@ -76,8 +76,9 @@ export interface paths {
         /**
          * Request a sign-in code
          * @description Sends a one-time code to the address when it belongs to a member or has a pending invite.
-         *     The answer is the same either way, so it does not reveal whether an address is known.
-         *     Codes expire after 10 minutes; only the most recent code of an address is accepted.
+         *     The answer is the same either way and takes the same time (the mail is sent after it), so
+         *     it does not reveal whether an address is known. Codes expire after 10 minutes; only the
+         *     most recent code of an address is accepted.
          */
         post: operations["requestSignInCode"];
         delete?: never;
@@ -97,8 +98,10 @@ export interface paths {
         put?: never;
         /**
          * Sign in with a code
-         * @description Exchanges a valid code for a member session. Each code accepts five attempts. Pending
-         *     invites for the address are accepted on success.
+         * @description Exchanges a valid code for a member session. Each code accepts five attempts. After 20
+         *     wrong codes for an address within 24 hours, codes for it are refused
+         *     (`429 sign_in_paused`) until older failures leave that window, and the member is told by
+         *     e-mail; passkeys still work. Pending invites for the address are accepted on success.
          */
         post: operations["verifySignInCode"];
         delete?: never;
@@ -400,7 +403,11 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update the workspace
+         * @description Owners only, with a member session.
+         */
+        patch: operations["updateWorkspace"];
         trace?: never;
     };
     "/v1/members": {
@@ -1464,10 +1471,12 @@ export interface paths {
          *
          *     - With `identity_token` (a JWT, HS256, signed by the host backend with the inbox's identity
          *       secret; see `sdk/go`): the contact is found by `sub` (the host's user id, per inbox),
-         *       then by the token's `email`, or created. `name`, `email`, `locale` and `attrs` from the
-         *       token are saved on the contact. `exp` is required and at most 10 minutes ahead; tokens
-         *       with another `alg`, a wrong signature or a missing or past `exp` answer
-         *       `401 invalid_identity_token`. When `visitor_id` names an anonymous visitor of this inbox,
+         *       then by the token's `email` when it carries `email_verified: true` and that contact has
+         *       no external id in this inbox, or created. `name`, `locale` and `attrs` from the token
+         *       are saved on the contact; a verified `email` becomes one of its addresses, an unverified
+         *       one is kept like a typed address and never used to find a contact. `exp` is required and at most 10 minutes ahead; tokens
+         *       with another `alg`, a wrong signature or a missing or past `exp`, and a token whose
+         *       `jti` was already used, answer `401 invalid_identity_token`. When `visitor_id` names an anonymous visitor of this inbox,
          *       that visitor's conversations move to the identified contact and the visitor id ends.
          *     - Without it, the visitor is anonymous, which the channel must allow
          *       (`403 anonymous_not_allowed` otherwise). `visitor_id` from an earlier session of this
@@ -1690,7 +1699,9 @@ export interface paths {
          * @description Stores the address the contact typed (e.g. when nobody is available), so replies they have
          *     not read can be e-mailed to them. A typed address is never used to find or merge an
          *     existing contact; it is used only while the contact has no address from an identity token
-         *     or from their own mail, and becomes one of their addresses once they answer such an e-mail.
+         *     or from their own mail. Yuva mails the address a confirmation link (unless a contact already
+         *     has it; at most 3 per hour); it becomes one of the contact's addresses only once that link
+         *     is confirmed.
          *     Allowed when the channel asks for an address (`ask_email_offline`), else `403 forbidden`.
          */
         put: operations["setClientContactEmail"];
@@ -1990,8 +2001,20 @@ export interface components {
             /** Format: uuid */
             id: string;
             name: string;
+            /**
+             * Format: int32
+             * @description Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Absent when everything is kept.
+             */
+            retention_days?: number;
             /** Format: date-time */
             created_at: string;
+        };
+        WorkspaceUpdate: {
+            /**
+             * Format: int32
+             * @description `null` keeps everything.
+             */
+            retention_days: number | null;
         };
         Membership: {
             workspace: components["schemas"]["Workspace"];
@@ -4078,6 +4101,7 @@ export interface operations {
         responses: {
             200: components["responses"]["SignedIn"];
             400: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
         };
     };
     beginPasskeySignIn: {
@@ -4527,6 +4551,36 @@ export interface operations {
                     "application/json": components["schemas"]["Workspace"];
                 };
             };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    updateWorkspace: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkspaceUpdate"];
+            };
+        };
+        responses: {
+            /** @description The updated workspace. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Workspace"];
+                };
+            };
+            400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
         };
