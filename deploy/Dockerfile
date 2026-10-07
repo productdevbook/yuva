@@ -1,17 +1,17 @@
 # syntax=docker/dockerfile:1
-FROM node:24-trixie-slim AS web
+FROM --platform=$BUILDPLATFORM node:24-trixie-slim AS web
 WORKDIR /src
 COPY . .
 RUN --mount=type=cache,target=/root/.npm \
     if [ -f web/package.json ]; then cd web && npm ci && npm run build; else mkdir -p web/dist; fi
 
-FROM oven/bun:1.4.2 AS widget
+FROM --platform=$BUILDPLATFORM oven/bun:1.4.2 AS widget
 WORKDIR /src
 COPY . .
 RUN --mount=type=cache,target=/root/.bun/install/cache \
     mkdir -p sdk/js/dist && if [ -f sdk/js/package.json ]; then cd sdk/js && bun install --frozen-lockfile && bun run build; fi
 
-FROM golang:1.27.1-trixie AS build
+FROM --platform=$BUILDPLATFORM golang:1.27.1-trixie AS build
 WORKDIR /src/api
 COPY api/go.mod api/go.sum ./
 RUN --mount=type=cache,target=/go/pkg/mod go mod download
@@ -25,8 +25,9 @@ RUN if [ -f /tmp/web-dist/index.html ]; then \
       cp /tmp/widget-dist/yuva.js /tmp/widget-dist/yuva-chat.js internal/widget/dist/; \
     fi
 ARG VERSION=dev
+ARG TARGETOS TARGETARCH
 RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
-    CGO_ENABLED=0 go build -trimpath -ldflags="-s -w -X main.version=${VERSION}" -o /out/yuva ./cmd/yuva
+    CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -trimpath -ldflags="-s -w -X main.version=${VERSION}" -o /out/yuva ./cmd/yuva
 RUN mkdir -p /out/data/attachments
 
 FROM gcr.io/distroless/static-debian13:nonroot
