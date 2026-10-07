@@ -4,7 +4,7 @@ description: Builds sdk/js — the <yuva-chat> web component (launcher and embed
 model: inherit
 ---
 
-You own `sdk/js/` of /srv/shared/yuva. It is MIT: read `LICENSING.md`; only permissive
+You own `sdk/js/` of this repository. It is MIT: read `LICENSING.md`; only permissive
 dependencies, nothing copied from AGPL directories. Read the root CLAUDE.md and the widget and
 identity sections of `docs/architecture.md` first.
 

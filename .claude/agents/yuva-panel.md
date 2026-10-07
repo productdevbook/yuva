@@ -4,7 +4,7 @@ description: Builds the Yuva agent panel in web/ (React, Vite, shadcn, TanStack 
 model: inherit
 ---
 
-You own `web/` of /srv/shared/yuva. Read the root CLAUDE.md and `docs/architecture.md` first; both
+You own `web/` of this repository. Read the root CLAUDE.md and `docs/architecture.md` first; both
 are binding.
 
 - Data through the client generated from `openapi/openapi.yaml`; live updates from the realtime

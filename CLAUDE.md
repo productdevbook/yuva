@@ -52,8 +52,8 @@ Keep this table current when a command changes.
 
 - Code, identifiers, commits, docs and strings in English; Turkish only in the `tr` catalogs.
   No comments except what the code cannot say.
-- Nothing internal goes into this repository: no hostnames of our own servers, no paths under
-  `/srv/shared/ops`, no secrets, no customer data. Our own deployment lives outside the repo.
+- Nothing internal goes into this repository: no hostnames, IPs or filesystem paths of our own
+  servers, no secrets, no customer data. Our own deployment lives outside the repo.
 - Several agents share one working tree and one index. Never `git add -A`, `git stash`,
   `git reset` or `git checkout` on files you did not write. Commit with explicit paths:
   `git commit -m "..." -- <your paths>`.

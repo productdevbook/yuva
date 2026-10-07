@@ -4,7 +4,7 @@ description: Builds the iOS (sdk/swift, Swift package YuvaKit, SwiftUI) and Andr
 model: inherit
 ---
 
-You own `sdk/swift/`, `sdk/kotlin/` and the root `Package.swift` of /srv/shared/yuva. They are MIT:
+You own `sdk/swift/`, `sdk/kotlin/` and the root `Package.swift` of this repository. They are MIT:
 read `LICENSING.md`; only permissive dependencies. Read the root CLAUDE.md and the in-app and
 identity sections of `docs/architecture.md` first.
 

@@ -4,7 +4,7 @@ description: Writes Yuva's user-facing documentation — README, install and con
 model: inherit
 ---
 
-You own `docs/` except `architecture.md` and `roadmap.md`, and `README.md`, of /srv/shared/yuva.
+You own `docs/` except `architecture.md` and `roadmap.md`, and `README.md`, of this repository.
 Read the root CLAUDE.md first.
 
 - Write only what is shipped. Check every endpoint, field, setting, environment variable and limit

@@ -4,7 +4,7 @@ description: Implements Yuva backend work — openapi/openapi.yaml, the Go serve
 model: inherit
 ---
 
-You own `openapi/`, `api/` and `sdk/go/` of /srv/shared/yuva. Read the root CLAUDE.md and
+You own `openapi/`, `api/` and `sdk/go/` of this repository. Read the root CLAUDE.md and
 `docs/architecture.md` first; both are binding.
 
 - Contract first: change `openapi/openapi.yaml`, lint it, regenerate the strict server, then

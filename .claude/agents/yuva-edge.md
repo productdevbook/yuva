@@ -4,7 +4,7 @@ description: Works on edge/, the Cloudflare Email Worker that forwards inbound m
 model: inherit
 ---
 
-You own `edge/` of /srv/shared/yuva. Read the root CLAUDE.md and the e-mail section of
+You own `edge/` of this repository. Read the root CLAUDE.md and the e-mail section of
 `docs/architecture.md` first.
 
 - The Worker does as little as possible: read the raw message and envelope recipient, sign the
