@@ -24,6 +24,9 @@ const (
 	codeRateWindow    = 15 * time.Minute
 	codesPerEmail     = 5
 	codesPerIP        = 30
+	failuresPerDay    = 20
+	failureWindow     = 24 * time.Hour
+	codeReplyDelay    = 800 * time.Millisecond
 	webauthnHandleLen = 32
 )
 
@@ -32,6 +35,7 @@ var (
 	errInvalidCode     = problem(http.StatusBadRequest, "invalid_code", "the code is not valid")
 	errCodeExpired     = problem(http.StatusBadRequest, "code_expired", "the code has expired; request a new one")
 	errTooManyAttempts = problem(http.StatusBadRequest, "code_attempts_exceeded", "too many wrong attempts; request a new code")
+	errSignInPaused    = problem(http.StatusTooManyRequests, "sign_in_paused", "too many wrong codes for this address today; try again later or use a passkey")
 )
 
 func normalizeEmail(e oas.Email) (string, error) {
@@ -57,7 +61,23 @@ func newCode() string {
 	return fmt.Sprintf("%06d", n.Int64())
 }
 
+// padReply holds the answer until the same time has passed for every address, so the response
+// time does not tell whether an address belongs to a member.
+func (s *Server) padReply(ctx context.Context, start time.Time) {
+	d := s.auth.CodeReplyDelay
+	if d == 0 {
+		d = codeReplyDelay
+	}
+	t := time.NewTimer(time.Until(start.Add(d)))
+	defer t.Stop()
+	select {
+	case <-t.C:
+	case <-ctx.Done():
+	}
+}
+
 func (s *Server) RequestSignInCode(ctx context.Context, req oas.RequestSignInCodeRequestObject) (oas.RequestSignInCodeResponseObject, error) {
+	defer s.padReply(ctx, time.Now())
 	email, err := normalizeEmail(req.Body.Email)
 	if err != nil {
 		return nil, err
@@ -99,10 +119,27 @@ func (s *Server) RequestSignInCode(ctx context.Context, req oas.RequestSignInCod
 		return nil, err
 	}
 	msg.To = email
-	if err := s.mailer.Send(ctx, msg); err != nil {
-		return nil, err
-	}
+	s.sendAsync(msg)
 	return oas.RequestSignInCode202Response{}, nil
+}
+
+func (s *Server) noticeSignInPaused(ctx context.Context, email string, now time.Time) error {
+	if _, err := s.st.GetPersonByEmail(ctx, email); store.IsNotFound(err) {
+		return nil
+	} else if err != nil {
+		return err
+	}
+	locale, err := s.localeFor(ctx, email, now)
+	if err != nil {
+		return err
+	}
+	msg, err := yuvamail.Render("sign_in_locked", locale, map[string]any{"Failures": failuresPerDay, "Hours": int(failureWindow / time.Hour)})
+	if err != nil {
+		return err
+	}
+	msg.To = email
+	s.sendAsync(msg)
+	return nil
 }
 
 func (s *Server) localeFor(ctx context.Context, email string, now time.Time) (string, error) {
@@ -133,6 +170,7 @@ func (s *Server) VerifySignInCode(ctx context.Context, req oas.VerifySignInCodeR
 		fail   *apiError
 		cookie string
 		me     oas.Me
+		paused bool
 	)
 	err = s.st.InTx(ctx, func(q *store.Queries) error {
 		lc, err := q.LatestLoginCode(ctx, email)
@@ -142,6 +180,14 @@ func (s *Server) VerifySignInCode(ctx context.Context, req oas.VerifySignInCodeR
 		}
 		if err != nil {
 			return err
+		}
+		failed, err := q.CountFailedLoginAttempts(ctx, store.CountFailedLoginAttemptsParams{Email: email, CreatedAt: now.Add(-failureWindow)})
+		if err != nil {
+			return err
+		}
+		if failed >= failuresPerDay {
+			fail = errSignInPaused
+			return nil
 		}
 		if !lc.ExpiresAt.After(now) {
 			fail = errCodeExpired
@@ -160,6 +206,7 @@ func (s *Server) VerifySignInCode(ctx context.Context, req oas.VerifySignInCodeR
 			if attempts >= codeAttempts {
 				fail = errTooManyAttempts
 			}
+			paused = failed+1 >= failuresPerDay
 			return nil
 		}
 		if err := q.ConsumeLoginCode(ctx, store.ConsumeLoginCodeParams{ID: lc.ID, ConsumedAt: &now}); err != nil {
@@ -185,6 +232,11 @@ func (s *Server) VerifySignInCode(ctx context.Context, req oas.VerifySignInCodeR
 	})
 	if err != nil {
 		return nil, err
+	}
+	if paused {
+		if err := s.noticeSignInPaused(ctx, email, now); err != nil {
+			return nil, err
+		}
 	}
 	if fail != nil {
 		return nil, fail

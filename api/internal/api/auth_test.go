@@ -175,7 +175,7 @@ func newHarnessWith(t *testing.T, configure func(*api.Deps)) *harness {
 		Version:  "test",
 		Mailer:   h.mail,
 		WebAuthn: wa,
-		Auth:     api.AuthSettings{PublicURL: testOrigin, ClientIPHeader: "X-Forwarded-For"},
+		Auth:     api.AuthSettings{PublicURL: testOrigin, ClientIPHeader: "X-Forwarded-For", CodeReplyDelay: time.Millisecond},
 		Now:      h.clock.Now,
 		Secrets:  key,
 		Storage:  objects,
@@ -400,6 +400,55 @@ func TestSignInCodeRateLimitAndUnknownAddress(t *testing.T) {
 		t.Fatalf("%d mails sent to an unknown address", n)
 	}
 	c.expectProblem(http.StatusBadRequest, "invalid_code", "POST", "/v1/auth/code/verify", map[string]any{"email": stranger, "code": "123456"})
+}
+
+func TestSignInDailyFailureCap(t *testing.T) {
+	h := newHarness(t)
+	email := unique("owner") + "@example.com"
+	h.bootstrap(email, unique("ws"))
+	c := h.client()
+	for i := range 4 {
+		c.expect(http.StatusAccepted, "POST", "/v1/auth/code", map[string]any{"email": email})
+		code := h.mail.code(t, email)
+		wrong := "000000"
+		if code == wrong {
+			wrong = "111111"
+		}
+		for range 5 {
+			r := c.do("POST", "/v1/auth/code/verify", map[string]any{"email": email, "code": wrong})
+			if r.status != http.StatusBadRequest {
+				t.Fatalf("round %d: %d %s", i, r.status, r.raw)
+			}
+		}
+		h.clock.Advance(4 * time.Minute)
+	}
+	notices := h.mail.wait(t, email, 5)
+	if last := notices[len(notices)-1]; !strings.Contains(last.Subject, "paused") {
+		t.Fatalf("no notice after the cap: %q", last.Subject)
+	}
+	c.expect(http.StatusAccepted, "POST", "/v1/auth/code", map[string]any{"email": email})
+	code := h.mail.code(t, email)
+	c.expectProblem(http.StatusTooManyRequests, "sign_in_paused", "POST", "/v1/auth/code/verify", map[string]any{"email": email, "code": code})
+	if n := len(h.mail.to(email)); n != 6 {
+		t.Fatalf("%d mails, want 4 codes, 1 notice and 1 code", n)
+	}
+	h.clock.Advance(24 * time.Hour)
+	c.signIn(email)
+}
+
+func TestSignInCodeTakesTheSameTime(t *testing.T) {
+	const delay = 300 * time.Millisecond
+	h := newHarnessWith(t, func(d *api.Deps) { d.Auth.CodeReplyDelay = delay })
+	email := unique("owner") + "@example.com"
+	h.bootstrap(email, unique("ws"))
+	for _, addr := range []string{email, unique("stranger") + "@example.com"} {
+		start := time.Now()
+		h.client().expect(http.StatusAccepted, "POST", "/v1/auth/code", map[string]any{"email": addr})
+		if took := time.Since(start); took < delay || took > delay+250*time.Millisecond {
+			t.Fatalf("%s took %v", addr, took)
+		}
+	}
+	h.mail.code(t, email)
 }
 
 func TestCrossWorkspaceRefused(t *testing.T) {

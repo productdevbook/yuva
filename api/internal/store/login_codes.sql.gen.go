@@ -37,6 +37,23 @@ func (q *Queries) ConsumeLoginCode(ctx context.Context, arg ConsumeLoginCodePara
 	return err
 }
 
+const countFailedLoginAttempts = `-- name: CountFailedLoginAttempts :one
+SELECT coalesce(sum(attempts - CASE WHEN consumed_at IS NULL THEN 0 ELSE 1 END), 0)::int AS failed
+FROM login_codes WHERE email = $1 AND created_at > $2
+`
+
+type CountFailedLoginAttemptsParams struct {
+	Email     string
+	CreatedAt time.Time
+}
+
+func (q *Queries) CountFailedLoginAttempts(ctx context.Context, arg CountFailedLoginAttemptsParams) (int32, error) {
+	row := q.db.QueryRow(ctx, countFailedLoginAttempts, arg.Email, arg.CreatedAt)
+	var failed int32
+	err := row.Scan(&failed)
+	return failed, err
+}
+
 const countLoginCodesByEmail = `-- name: CountLoginCodesByEmail :one
 SELECT count(*) FROM login_codes WHERE email = $1 AND created_at > $2
 `

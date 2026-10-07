@@ -362,7 +362,11 @@ React, Vite, shadcn, TanStack Query, Lingui; built to static files and embedded 
   app. E-mail notifications as a fallback (see Member notifications).
 - Sign-in with an e-mailed one-time code and passkeys. There is no open sign-up: the first owner
   is created with `yuva bootstrap`, everyone else is invited. Sign-in and invitation e-mails are
-  sent directly, not through the job queue, so a code never lands in job arguments.
+  sent directly, not through the job queue, so a code never lands in job arguments; a code request
+  answers after the same fixed delay for every address and its mail goes out after the answer, so
+  timing does not reveal members. Each code takes five attempts; after 20 wrong codes for an
+  address within 24 hours its codes are refused (`429 sign_in_paused`) and the member gets one
+  e-mail about it. Passkeys are not affected.
 
 ### Member notifications
 

@@ -18,3 +18,7 @@ UPDATE login_codes SET attempts = attempts + 1 WHERE id = $1 RETURNING attempts;
 
 -- name: ConsumeLoginCode :exec
 UPDATE login_codes SET consumed_at = $2 WHERE id = $1;
+
+-- name: CountFailedLoginAttempts :one
+SELECT coalesce(sum(attempts - CASE WHEN consumed_at IS NULL THEN 0 ELSE 1 END), 0)::int AS failed
+FROM login_codes WHERE email = $1 AND created_at > $2;

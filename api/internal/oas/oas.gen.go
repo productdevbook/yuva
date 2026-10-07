@@ -11883,6 +11883,20 @@ func (response VerifySignInCode400ApplicationProblemPlusJSONResponse) VisitVerif
 	return err
 }
 
+type VerifySignInCode429ApplicationProblemPlusJSONResponse Problem
+
+func (response VerifySignInCode429ApplicationProblemPlusJSONResponse) VisitVerifySignInCodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type FinishPasskeySignInRequestObject struct {
 	Body *FinishPasskeySignInJSONRequestBody
 }

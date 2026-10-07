@@ -116,6 +116,8 @@ type AuthSettings struct {
 	PublicURL      string
 	CookieSecure   bool
 	ClientIPHeader string
+	// CodeReplyDelay is how long every sign-in code request takes; 0 means 800 ms.
+	CodeReplyDelay time.Duration
 }
 
 func New(d Deps) *Server {

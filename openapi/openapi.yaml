@@ -184,8 +184,9 @@ paths:
       summary: Request a sign-in code
       description: |
         Sends a one-time code to the address when it belongs to a member or has a pending invite.
-        The answer is the same either way, so it does not reveal whether an address is known.
-        Codes expire after 10 minutes; only the most recent code of an address is accepted.
+        The answer is the same either way and takes the same time (the mail is sent after it), so
+        it does not reveal whether an address is known. Codes expire after 10 minutes; only the
+        most recent code of an address is accepted.
       tags: [auth]
       security: []
       requestBody:
@@ -206,8 +207,10 @@ paths:
       operationId: verifySignInCode
       summary: Sign in with a code
       description: |
-        Exchanges a valid code for a member session. Each code accepts five attempts. Pending
-        invites for the address are accepted on success.
+        Exchanges a valid code for a member session. Each code accepts five attempts. After 20
+        wrong codes for an address within 24 hours, codes for it are refused
+        (`429 sign_in_paused`) until older failures leave that window, and the member is told by
+        e-mail; passkeys still work. Pending invites for the address are accepted on success.
       tags: [auth]
       security: []
       requestBody:
@@ -220,6 +223,8 @@ paths:
         "200":
           $ref: "#/components/responses/SignedIn"
         "400":
+          $ref: "#/components/responses/Problem"
+        "429":
           $ref: "#/components/responses/Problem"
   /v1/auth/passkey/options:
     post:
