@@ -63,8 +63,8 @@ func Parse(raw []byte) (*Message, error) {
 	}
 	m := &Message{
 		MessageID:  NormalizeID(env.GetHeader("Message-ID")),
-		InReplyTo:  ParseIDList(env.GetHeader("In-Reply-To")),
-		References: ParseIDList(env.GetHeader("References")),
+		InReplyTo:  boundedIDs(env.GetHeader("In-Reply-To"), maxInReplyTo, 0),
+		References: boundedIDs(env.GetHeader("References"), 1, maxInboundRefs-1),
 		Subject:    strings.TrimSpace(env.GetHeader("Subject")),
 		Text:       env.Text,
 		HTML:       env.HTML,
@@ -215,6 +215,32 @@ func ParseIDList(v string) []string {
 		out = append(out, m[1])
 	}
 	return out
+}
+
+const (
+	maxInboundRefs = 50
+	maxInReplyTo  = 5
+	maxIDBytes    = 998
+	idHeaderScan  = 64 << 10
+)
+
+// boundedIDs reads at most the first and last idHeaderScan bytes of an id list header and keeps
+// its first `first` and last `last` ids of at most 998 bytes: a thread needs its root and its
+// recent parents, and a header of millions of ids would cost seconds and gigabytes.
+func boundedIDs(v string, first, last int) []string {
+	if len(v) > 2*idHeaderScan {
+		v = v[:idHeaderScan] + " " + v[len(v)-idHeaderScan:]
+	}
+	var ids []string
+	for _, id := range ParseIDList(v) {
+		if len(id) <= maxIDBytes {
+			ids = append(ids, id)
+		}
+	}
+	if len(ids) <= first+last {
+		return ids
+	}
+	return append(ids[:first:first], ids[len(ids)-last:]...)
 }
 
 func FormatID(id string) string { return "<" + id + ">" }

@@ -185,7 +185,9 @@ Inbound:
    from that address (`From` and `Reply-To`), so its SMTP account must be allowed to send from the
    whole domain; its `from_address` is used only for a conversation without such an address
    (a chat that continues by e-mail), and without either the reply is refused (`email_no_sender`).
-   An inbox's chat continuity prefers an exact-address channel over a catch-all. Threading uses `In-Reply-To` and `References` against stored Message-IDs of the inbox;
+   An inbox's chat continuity prefers an exact-address channel over a catch-all. Threading uses `In-Reply-To` and `References` against stored Message-IDs of the inbox
+   (at most the first five `In-Reply-To` ids, and the first and the last 49 `References` ids; ids longer
+   than 998 bytes dropped, read from at most 64 KiB at each end of the header);
    our outbound Message-IDs are `<token.random@sending domain>` where the token is an opaque random
    value stored on the conversation, so a reply finds its conversation even when the client drops
    `References` or a relay rewrites the domain. Otherwise a new conversation starts, with the
@@ -199,7 +201,8 @@ Inbound:
    the panel shows that link, and nothing is added to the other conversation. The `Cc` of inbound
    mail is recorded and shown; nobody is copied automatically on replies.
 3. MIME parsing with enmime; visible text with quotes and signatures stripped (our own Go
-   implementation in `api/internal/email/reply`, tested against a fixture corpus); the quoted
+   implementation in `api/internal/email/reply`, tested against a fixture corpus, which scans only
+   the first 64 KiB of the text: when nothing is hidden there the whole text is shown); the quoted
    containers that clients mark in HTML are removed too; HTML sanitized with bluemonday for
    display. The full text and full sanitized HTML stay available, and the original message is kept
    in object storage for members to download. Attachments and inline images follow the server's

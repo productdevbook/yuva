@@ -21,16 +21,27 @@ var (
 	signatureDelimiter = regexp.MustCompile(`^(-- ?|--|—|__)\s*$`)
 )
 
+// MaxScan is how much of a message Strip looks at; the new text of a reply comes first, and
+// scanning megabytes of crafted header lines would take seconds.
+const MaxScan = 64 << 10
+
 // Strip returns the visible part of a plain-text reply and whether anything was hidden. When the
 // whole message looks quoted, the full text is returned so nothing the sender wrote is lost.
+// Only the first MaxScan bytes are scanned: when nothing is hidden there, the full text is kept.
 func Strip(text string) (string, bool) {
 	text = strings.ReplaceAll(strings.ReplaceAll(text, "\r\n", "\n"), "\r", "\n")
-	lines := strings.Split(text, "\n")
 	full := strings.TrimSpace(text)
-	kept := removeQuotes(lines)
+	head := text
+	if len(head) > MaxScan {
+		head = head[:MaxScan]
+		if i := strings.LastIndexByte(head, '\n'); i > 0 {
+			head = head[:i]
+		}
+	}
+	kept := removeQuotes(strings.Split(head, "\n"))
 	kept = collapseBlank(removeSignature(kept))
 	visible := strings.TrimSpace(strings.Join(kept, "\n"))
-	if visible == "" {
+	if visible == "" || (len(head) < len(text) && visible == strings.TrimSpace(head)) {
 		return full, false
 	}
 	return visible, visible != full

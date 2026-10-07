@@ -2,6 +2,7 @@ package email_test
 
 import (
 	"bytes"
+	"fmt"
 	"mime"
 	"net/mail"
 	"os"
@@ -173,5 +174,30 @@ func TestHasRemoteImages(t *testing.T) {
 		if got := email.HasRemoteImages(in); got != want {
 			t.Errorf("HasRemoteImages(%q) = %v, want %v", in, got, want)
 		}
+	}
+}
+
+func TestParseBoundsThreadIDs(t *testing.T) {
+	var refs strings.Builder
+	for i := range 200000 {
+		fmt.Fprintf(&refs, " <r%d@example.com>", i)
+	}
+	long := "<" + strings.Repeat("x", 1000) + "@example.com>"
+	raw := "From: a@example.com\r\nTo: b@example.com\r\nSubject: s\r\nMessage-ID: <m@example.com>\r\n" +
+		"In-Reply-To: <p1@example.com> <p2@example.com> <p3@example.com> <p4@example.com> <p5@example.com> <p6@example.com>\r\n" +
+		"References:" + refs.String() + " " + long + "\r\n\r\nbody\r\n"
+	start := time.Now()
+	m, err := email.Parse([]byte(raw))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if took := time.Since(start); took > 2*time.Second {
+		t.Fatalf("parsing took %v", took)
+	}
+	if len(m.References) != 50 || m.References[0] != "r0@example.com" || m.References[49] != "r199999@example.com" {
+		t.Fatalf("References: %d, first %q, last %q", len(m.References), m.References[0], m.References[len(m.References)-1])
+	}
+	if len(m.InReplyTo) != 5 || m.InReplyTo[0] != "p1@example.com" {
+		t.Fatalf("In-Reply-To: %v", m.InReplyTo)
 	}
 }

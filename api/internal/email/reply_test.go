@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/productdevbook/yuva/api/internal/email"
 	"github.com/productdevbook/yuva/api/internal/email/reply"
@@ -46,6 +47,25 @@ func TestStripKeepsWhollyQuotedText(t *testing.T) {
 	got, quoted := reply.Strip(in)
 	if got != in || quoted {
 		t.Fatalf("got %q, %v", got, quoted)
+	}
+}
+
+func TestStripScansABoundedPrefix(t *testing.T) {
+	flood := strings.Repeat("From: x\nDate: y\n", 1<<20)
+	start := time.Now()
+	if got, quoted := reply.Strip(flood); len(got) != len(strings.TrimSpace(flood)) || quoted {
+		t.Fatalf("got %d bytes, %v", len(got), quoted)
+	}
+	if took := time.Since(start); took > 2*time.Second {
+		t.Fatalf("stripping took %v", took)
+	}
+	quote := "Hello\n\nFrom: Ada\nSent: Monday\nTo: Bob\nSubject: Hi\n\n"
+	if got, quoted := reply.Strip(quote + flood); got != "Hello" || !quoted {
+		t.Fatalf("got %d bytes, %v", len(got), quoted)
+	}
+	long := strings.Repeat("plain line of text\n", 10000) + "\nOn Mon, Ada wrote:\n> old"
+	if got, quoted := reply.Strip(long); got != strings.TrimSpace(long) || quoted {
+		t.Fatalf("a quote past the scanned prefix hid text: %d bytes, %v", len(got), quoted)
 	}
 }
 
