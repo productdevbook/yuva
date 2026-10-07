@@ -30,6 +30,7 @@ const (
 	ConversationRead    = "conversation.read"
 	Typing              = "typing"
 	PresenceHint        = "presence.hint"
+	ChannelUpdated      = "channel.updated"
 )
 
 type Event struct {

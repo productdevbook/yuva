@@ -2378,6 +2378,12 @@ paths:
         For a `chat` channel, browsers must call from one of the channel's allowed origins
         (`403 origin_not_allowed`, also without an `Origin` header); an `app` channel's key needs no
         origin. Requests are rate limited per IP address (`429 rate_limited`).
+
+        A widget that gets `403 origin_not_allowed` is embedded on a page the channel does not
+        allow: it should show nothing (no launcher, no offline notice), not retry, and leave a
+        console message naming the origin. Every other `/client/v1` call from that page is refused
+        the same way, so there is nothing it could offer. `404` (unknown key) is treated alike;
+        network errors and `429` are worth retrying.
       tags: [client]
       security: []
       parameters:
@@ -2772,11 +2778,15 @@ paths:
         (`conversation.created`, `conversation.updated`, `message.created`, `message.updated`,
         `read`) carry an increasing `id`; resume exactly as on `/v1/realtime`: remember the larger
         of `ready.last_event_id` and the last `id` received, reconnect with `?last_event_id=`, and
-        reload over HTTP on `resync_required`. `typing` and `presence` have no `id` and are not
-        replayed. `message.*` carries only messages (no notes or internal events), and
-        `conversation.updated` only the status. `typing` (a member typing), `read` (how far members
-        have read) and `presence` (whether someone is available; sent after `ready` and whenever it
-        changes) come only for `live` inboxes.
+        reload over HTTP on `resync_required`. `typing`, `presence` and `inbox.updated` have no
+        `id` and are not replayed. `message.*` carries only messages (no notes or internal events),
+        and `conversation.updated` only the status. `typing` (a member typing), `read` (how far
+        members have read) and `presence` (whether someone is available; sent after `ready` and
+        whenever it changes) come only for `live` inboxes. `inbox.updated` carries the inbox's
+        public settings, the same `ClientInbox` as `GET /client/v1/channels/{channel_key}`, whenever
+        a member changes the inbox (mode, business hours, branding, greeting) or the session's
+        channel; replace the settings shown with it. After a reconnect, fetch the channel settings
+        again, since a change made while disconnected is not replayed.
 
         The server pings every 30 seconds; the client sends nothing. Close codes as on
         `/v1/realtime`: 1008 when the session ends or the contact is deleted (start a new session),
@@ -6149,6 +6159,20 @@ components:
           format: date-time
         data:
           $ref: "#/components/schemas/ClientPresence"
+    ClientInboxUpdatedEvent:
+      type: object
+      description: |
+        The inbox's or the session channel's public settings changed. No `id`; not replayed.
+      required: [type, created_at, data]
+      properties:
+        type:
+          type: string
+          enum: [inbox.updated]
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/ClientInbox"
     ClientRealtimeMessage:
       description: One server message on `/client/v1/realtime`, told apart by `type`.
       oneOf:
@@ -6158,6 +6182,7 @@ components:
         - $ref: "#/components/schemas/ClientReadEvent"
         - $ref: "#/components/schemas/ClientTypingEvent"
         - $ref: "#/components/schemas/ClientPresenceEvent"
+        - $ref: "#/components/schemas/ClientInboxUpdatedEvent"
         - $ref: "#/components/schemas/RealtimeReady"
         - $ref: "#/components/schemas/RealtimeResyncRequired"
       discriminator:
@@ -6170,6 +6195,7 @@ components:
           read: "#/components/schemas/ClientReadEvent"
           typing: "#/components/schemas/ClientTypingEvent"
           presence: "#/components/schemas/ClientPresenceEvent"
+          inbox.updated: "#/components/schemas/ClientInboxUpdatedEvent"
           ready: "#/components/schemas/RealtimeReady"
           resync_required: "#/components/schemas/RealtimeResyncRequired"
     IngressResult:

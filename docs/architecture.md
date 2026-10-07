@@ -212,6 +212,11 @@ inline thread inside a product's own panel.
   `/v1/realtime` connection, not set to `away`, while the inbox is within business hours. They also
   show members typing and how far members have read.
 - `async` inboxes show the expected reply time instead and no presence.
+- When a member changes the inbox or the session's chat or app channel, open client connections of
+  that inbox get an `inbox.updated` frame with the same public settings as
+  `GET /client/v1/channels/{key}` (sent only when they differ from what the connection last saw).
+  The frame has no id and is not replayed (a channel change travels as a signal like typing), so
+  clients fetch the settings again after a reconnect.
 - If the contact has left when a reply arrives and an e-mail address is known, the reply is e-mailed
   after a delay; their e-mail answer continues the same conversation. A River job checks the
   conversation `YUVA_CHAT_EMAIL_DELAY` (5 minutes by default) after a member's reply and after the

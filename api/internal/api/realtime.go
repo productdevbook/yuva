@@ -278,7 +278,7 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 		return f.p.seesAllInboxes(), nil
 	}
 	switch e.Type {
-	case realtime.PresenceHint:
+	case realtime.PresenceHint, realtime.ChannelUpdated:
 		return false, nil
 	case realtime.Typing:
 		var ty oas.Typing

@@ -103,6 +103,14 @@ func originAllowedFor(origin, kind string, allowed []string) bool {
 	return origin != "" && slices.Contains(allowed, origin)
 }
 
+func sessionChat(ch store.GetSessionChannelRow) store.ChatChannel {
+	return store.ChatChannel{
+		WorkspaceID: ch.WorkspaceID, ChannelID: ch.ChannelID, PublicKey: ch.PublicKey, AllowedOrigins: ch.AllowedOrigins,
+		AllowAnonymous: ch.AllowAnonymous, AskEmailOffline: ch.AskEmailOffline, Greeting: ch.Greeting,
+		LauncherPosition: ch.LauncherPosition, LauncherColor: ch.LauncherColor, Platforms: ch.Platforms,
+	}
+}
+
 func (s *Server) resolveContact(ctx context.Context, token string) (contactPrincipal, error) {
 	if token == "" {
 		return contactPrincipal{}, errContactUnauthenticated
@@ -122,11 +130,7 @@ func (s *Server) resolveContact(ctx context.Context, token string) (contactPrinc
 	if err != nil {
 		return contactPrincipal{}, err
 	}
-	chat := store.ChatChannel{
-		WorkspaceID: ch.WorkspaceID, ChannelID: ch.ChannelID, PublicKey: ch.PublicKey, AllowedOrigins: ch.AllowedOrigins,
-		AllowAnonymous: ch.AllowAnonymous, AskEmailOffline: ch.AskEmailOffline, Greeting: ch.Greeting,
-		LauncherPosition: ch.LauncherPosition, LauncherColor: ch.LauncherColor, Platforms: ch.Platforms,
-	}
+	chat := sessionChat(ch)
 	if !originAllowedFor(originFrom(ctx), ch.Kind, chat.AllowedOrigins) {
 		return contactPrincipal{}, errOriginRefused
 	}

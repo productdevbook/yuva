@@ -6,6 +6,7 @@ import (
 	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
+	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
@@ -313,6 +314,10 @@ func (s *Server) UpdateChannel(ctx context.Context, req oas.UpdateChannelRequest
 	})
 	if err != nil {
 		return nil, err
+	}
+	if cur.Kind == string(oas.ChannelKindChat) || cur.Kind == string(oas.ChannelKindApp) {
+		inbox := cur.InboxID
+		s.signal(ctx, realtime.Event{Type: realtime.ChannelUpdated, WorkspaceID: p.workspaceID, InboxID: &inbox, Data: mustJSON(channelRef{ID: cur.ID})})
 	}
 	return oas.UpdateChannel200JSONResponse(out), nil
 }

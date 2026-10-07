@@ -27,10 +27,15 @@ type clientFrame struct {
 
 const (
 	clientPresenceFrame = "presence"
+	clientInboxFrame    = "inbox.updated"
 	// statusUnsent marks a conversation whose status a resuming connection may have missed, so the
 	// next change, replayed or live, is sent even when it equals the current status.
 	statusUnsent = ""
 )
+
+type channelRef struct {
+	ID uuid.UUID `json:"id"`
+}
 
 type closeStream struct {
 	code   websocket.StatusCode
@@ -230,6 +235,8 @@ type clientFilter struct {
 	s        *Server
 	cp       contactPrincipal
 	inbox    store.Inbox
+	chat     store.ChatChannel
+	settings []byte
 	convs    map[uuid.UUID]string
 	names    map[uuid.UUID]string
 	readAt   map[uuid.UUID]time.Time
@@ -241,7 +248,10 @@ func (f *clientFilter) load(ctx context.Context, resuming bool) error {
 	if err != nil {
 		return err
 	}
-	f.inbox = in
+	f.inbox, f.chat = in, f.cp.chat
+	if _, err := f.inboxFrames(ctx); err != nil {
+		return err
+	}
 	rows, err := f.s.st.ListContactConversationIDs(ctx, store.ListContactConversationIDsParams{
 		WorkspaceID: f.cp.workspaceID, InboxID: f.cp.inboxID, ContactID: f.cp.contactID,
 	})
@@ -320,6 +330,25 @@ func (f *clientFilter) presenceFrames(ctx context.Context) ([]any, error) {
 	}
 	f.presence = b
 	return []any{clientFrame{Type: clientPresenceFrame, CreatedAt: f.s.now(), Data: p}}, nil
+}
+
+// inboxFrames sends the inbox's public settings when they differ from what this connection last
+// saw; the first call only records them.
+func (f *clientFilter) inboxFrames(ctx context.Context) ([]any, error) {
+	in, err := f.s.clientInbox(ctx, f.s.st.Queries, f.inbox, f.chat)
+	if err != nil {
+		return nil, err
+	}
+	b := mustJSON(in)
+	first := f.settings == nil
+	if string(b) == string(f.settings) {
+		return nil, nil
+	}
+	f.settings = b
+	if first {
+		return nil, nil
+	}
+	return []any{oas.ClientInboxUpdatedEvent{Type: oas.ClientInboxUpdatedEventType(clientInboxFrame), CreatedAt: f.s.now(), Data: in}}, nil
 }
 
 func (f *clientFilter) transform(ctx context.Context, e realtime.Event) ([]any, error) {
@@ -437,7 +466,29 @@ func (f *clientFilter) transform(ctx context.Context, e realtime.Event) ([]any, 
 			return nil, err
 		}
 		f.inbox = in
-		return f.presenceFrames(ctx)
+		frames, err := f.presenceFrames(ctx)
+		if err != nil {
+			return nil, err
+		}
+		more, err := f.inboxFrames(ctx)
+		return append(frames, more...), err
+	case realtime.ChannelUpdated:
+		var ref channelRef
+		if err := json.Unmarshal(e.Data, &ref); err != nil {
+			return nil, err
+		}
+		if ref.ID != f.cp.channelID {
+			return nil, nil
+		}
+		ch, err := f.s.st.GetSessionChannel(ctx, store.GetSessionChannelParams{WorkspaceID: f.cp.workspaceID, ChannelID: f.cp.channelID})
+		if store.IsNotFound(err) {
+			return nil, nil
+		}
+		if err != nil {
+			return nil, err
+		}
+		f.chat = sessionChat(ch)
+		return f.inboxFrames(ctx)
 	case realtime.PresenceHint:
 		return f.presenceFrames(ctx)
 	}

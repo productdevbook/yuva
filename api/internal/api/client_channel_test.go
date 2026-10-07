@@ -1,7 +1,9 @@
 package api_test
 
 import (
+	"encoding/json"
 	"net/http"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -133,5 +135,76 @@ func TestWidgetScripts(t *testing.T) {
 		if res.StatusCode != http.StatusNotModified {
 			t.Fatalf("%s with a matching ETag: %d", name, res.StatusCode)
 		}
+	}
+}
+
+func TestClientInboxUpdatedFrame(t *testing.T) {
+	h := newHarness(t)
+	ct := newChatTeam(t, h, "live", true)
+	other := newChatTeam(t, h, "live", true)
+	cs := ct.session(h, map[string]any{})
+	ws, _, err := dialContact(h, cs.token, ct.origin, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	ws.ready()
+	members := ct.owner.dial("")
+	members.ready()
+	c := h.client()
+	c.origin = ct.origin
+	settings := func() map[string]any {
+		t.Helper()
+		return c.expect(http.StatusOK, "GET", "/client/v1/channels/"+ct.key, nil).body
+	}
+	frame := func() map[string]any {
+		t.Helper()
+		m := ws.nextNot("presence")
+		if m.Type != "inbox.updated" || m.ID != 0 {
+			t.Fatalf("frame %s (id %d): %s", m.Type, m.ID, m.Data)
+		}
+		var data map[string]any
+		if err := json.Unmarshal(m.Data, &data); err != nil {
+			t.Fatal(err)
+		}
+		return data
+	}
+
+	ct.owner.expect(http.StatusOK, "PATCH", "/v1/inboxes/"+ct.chatInbox, map[string]any{"mode": "async", "expected_reply_minutes": 45})
+	got := frame()
+	if want := settings(); !reflect.DeepEqual(got, want) || got["mode"] != "async" || got["expected_reply_minutes"] != float64(45) {
+		t.Fatalf("inbox.updated after the inbox changed:\n%v\nGET:\n%v", got, want)
+	}
+
+	ct.owner.expect(http.StatusOK, "PATCH", "/v1/channels/"+ct.channel, map[string]any{
+		"chat": map[string]any{"allowed_origins": []string{ct.origin}, "allow_anonymous": true, "greeting": "Back soon", "launcher": map[string]any{"position": "left"}},
+	})
+	got = frame()
+	chat := got["chat"].(map[string]any)
+	if want := settings(); !reflect.DeepEqual(got, want) || chat["greeting"] != "Back soon" || chat["launcher_position"] != "left" {
+		t.Fatalf("inbox.updated after the channel changed:\n%v\nGET:\n%v", got, want)
+	}
+
+	ct.owner.expect(http.StatusOK, "PATCH", "/v1/channels/"+ct.channel, map[string]any{"name": "Website renamed"})
+	ct.owner.expect(http.StatusOK, "PATCH", "/v1/inboxes/"+ct.chatInbox, map[string]any{"name": "Chat"})
+	other.owner.expect(http.StatusOK, "PATCH", "/v1/inboxes/"+other.chatInbox, map[string]any{"mode": "async"})
+	other.owner.expect(http.StatusOK, "PATCH", "/v1/channels/"+other.channel, map[string]any{
+		"chat": map[string]any{"allowed_origins": []string{other.origin}, "allow_anonymous": true, "greeting": "Elsewhere"},
+	})
+	ws.quiet(500*time.Millisecond, "presence")
+
+	ct.owner.expect(http.StatusOK, "PATCH", "/v1/inboxes/"+ct.chatInbox, map[string]any{"name": "Help"})
+	if got := frame(); got["name"] != "Help" {
+		t.Fatalf("renamed inbox: %v", got)
+	}
+	for {
+		select {
+		case m := <-members.msgs:
+			if m.Type == "channel.updated" {
+				t.Fatalf("a member socket got %s: %s", m.Type, m.Data)
+			}
+			continue
+		case <-time.After(300 * time.Millisecond):
+		}
+		break
 	}
 }

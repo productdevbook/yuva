@@ -152,6 +152,21 @@ func (e ClientConversationUpdatedEventType) Valid() bool {
 	}
 }
 
+// Defines values for ClientInboxUpdatedEventType.
+const (
+	ClientInboxUpdatedEventTypeInboxUpdated ClientInboxUpdatedEventType = "inbox.updated"
+)
+
+// Valid indicates whether the value is a known member of the ClientInboxUpdatedEventType enum.
+func (e ClientInboxUpdatedEventType) Valid() bool {
+	switch e {
+	case ClientInboxUpdatedEventTypeInboxUpdated:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ClientMessageEventType.
 const (
 	ClientMessageEventTypeMessageCreated ClientMessageEventType = "message.created"
@@ -466,13 +481,13 @@ func (e InboxMode) Valid() bool {
 
 // Defines values for InboxUpdatedEventType.
 const (
-	InboxUpdated InboxUpdatedEventType = "inbox.updated"
+	InboxUpdatedEventTypeInboxUpdated InboxUpdatedEventType = "inbox.updated"
 )
 
 // Valid indicates whether the value is a known member of the InboxUpdatedEventType enum.
 func (e InboxUpdatedEventType) Valid() bool {
 	switch e {
-	case InboxUpdated:
+	case InboxUpdatedEventTypeInboxUpdated:
 		return true
 	default:
 		return false
@@ -1441,6 +1456,19 @@ type ClientInbox struct {
 	Presence *ClientPresence `json:"presence,omitempty"`
 	Timezone string          `json:"timezone"`
 }
+
+// ClientInboxUpdatedEvent The inbox's or the session channel's public settings changed. No `id`; not replayed.
+type ClientInboxUpdatedEvent struct {
+	CreatedAt time.Time `json:"created_at"`
+
+	// Data The inbox's public settings. `live` inboxes carry `presence`; `async` inboxes never do and
+	// show `expected_reply_minutes` instead.
+	Data ClientInbox                 `json:"data"`
+	Type ClientInboxUpdatedEventType `json:"type"`
+}
+
+// ClientInboxUpdatedEventType defines model for ClientInboxUpdatedEvent.Type.
+type ClientInboxUpdatedEventType string
 
 // ClientMember What a contact may see of a member.
 type ClientMember struct {
@@ -4080,6 +4108,32 @@ func (t *ClientRealtimeMessage) MergeClientPresenceEvent(v ClientPresenceEvent) 
 	return err
 }
 
+// AsClientInboxUpdatedEvent returns the union data inside the ClientRealtimeMessage as a ClientInboxUpdatedEvent
+func (t ClientRealtimeMessage) AsClientInboxUpdatedEvent() (ClientInboxUpdatedEvent, error) {
+	var body ClientInboxUpdatedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromClientInboxUpdatedEvent overwrites any union data inside the ClientRealtimeMessage as the provided ClientInboxUpdatedEvent
+func (t *ClientRealtimeMessage) FromClientInboxUpdatedEvent(v ClientInboxUpdatedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeClientInboxUpdatedEvent performs a merge with any union data inside the ClientRealtimeMessage, using the provided ClientInboxUpdatedEvent
+func (t *ClientRealtimeMessage) MergeClientInboxUpdatedEvent(v ClientInboxUpdatedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsRealtimeReady returns the union data inside the ClientRealtimeMessage as a RealtimeReady
 func (t ClientRealtimeMessage) AsRealtimeReady() (RealtimeReady, error) {
 	var body RealtimeReady
@@ -4150,6 +4204,8 @@ func (t ClientRealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsClientConversationCreatedEvent()
 	case "conversation.updated":
 		return t.AsClientConversationUpdatedEvent()
+	case "inbox.updated":
+		return t.AsClientInboxUpdatedEvent()
 	case "message.created":
 		return t.AsClientMessageEvent()
 	case "message.updated":
