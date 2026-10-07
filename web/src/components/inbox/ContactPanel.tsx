@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { BanIcon, MailIcon } from "lucide-react"
+import { BanIcon, MailIcon, MailWarningIcon } from "lucide-react"
 import { Link } from "react-router"
 
 import { ErrorLine, PersonAvatar } from "@/components/common"
@@ -7,7 +7,8 @@ import { formatDateTime, formatShort, useEnumText } from "@/components/common/te
 import { statusIcons } from "@/components/inbox/ConversationControls"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useContact, useConversations, useInboxes } from "@/lib/queries"
+import type { UndeliverableEmail } from "@/lib/api"
+import { useClearUndeliverable, useContact, useConversations, useInboxes } from "@/lib/queries"
 import { cn } from "@/lib/utils"
 
 function Section({ title, children }: { title: React.ReactNode; children: React.ReactNode }) {
@@ -23,6 +24,44 @@ function attrValue(v: unknown) {
   if (v === null || v === undefined) return "—"
   if (typeof v === "object") return JSON.stringify(v)
   return String(v)
+}
+
+function Undeliverable({ contactId, u }: { contactId: string; u: UndeliverableEmail }) {
+  const { i18n } = useLingui()
+  const clear = useClearUndeliverable(contactId)
+  const since = formatDateTime(u.created_at, i18n.locale)
+  return (
+    <li
+      className="flex flex-col gap-1 rounded-md border border-destructive/30 bg-destructive/5 px-2 py-1.5 text-sm"
+      data-testid="undeliverable"
+    >
+      <span className="flex items-center gap-2">
+        <MailWarningIcon className="size-3.5 shrink-0 text-destructive" />
+        <span className="min-w-0 flex-1 truncate">{u.email}</span>
+        <Button
+          variant="outline"
+          size="xs"
+          onClick={() => clear.mutate(u.email)}
+          disabled={clear.isPending}
+          data-testid="clear-undeliverable"
+        >
+          <Trans>Clear</Trans>
+        </Button>
+      </span>
+      <span className="text-xs text-destructive">
+        {u.reason === "complaint" ? (
+          <Trans>Undeliverable: marked as spam by the recipient, {since}</Trans>
+        ) : (
+          <Trans>Undeliverable: bounced, {since}</Trans>
+        )}
+      </span>
+      {u.detail && <span className="text-xs break-words text-muted-foreground">{u.detail}</span>}
+      <span className="text-xs text-muted-foreground">
+        <Trans>Replies to this address are refused until you clear it.</Trans>
+      </span>
+      <ErrorLine error={clear.error} className="text-xs" />
+    </li>
+  )
 }
 
 export function ContactPanel({
@@ -79,12 +118,17 @@ export function ContactPanel({
           </p>
         ) : (
           <ul className="flex flex-col gap-1">
-            {c.emails.map((e) => (
-              <li key={e} className="flex items-center gap-2 text-sm">
-                <MailIcon className="size-3.5 shrink-0 text-muted-foreground" />
-                <span className="truncate">{e}</span>
-              </li>
-            ))}
+            {c.emails.map((e) => {
+              const u = c.undeliverable.find((x) => x.email === e)
+              return u ? (
+                <Undeliverable key={e} contactId={c.id} u={u} />
+              ) : (
+                <li key={e} className="flex items-center gap-2 text-sm">
+                  <MailIcon className="size-3.5 shrink-0 text-muted-foreground" />
+                  <span className="truncate">{e}</span>
+                </li>
+              )
+            })}
           </ul>
         )}
       </Section>

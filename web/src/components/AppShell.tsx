@@ -9,6 +9,7 @@ import {
   RefreshCwIcon,
   WifiOffIcon,
   SettingsIcon,
+  ShieldAlertIcon,
   TagIcon,
   UserIcon,
   UserXIcon,
@@ -53,18 +54,19 @@ import { reconnectNow, useRealtime, useRealtimeStatus } from "@/lib/realtime"
 import { cn } from "@/lib/utils"
 import { pickMembership, SessionProvider, useMe, useSession, useSignOut, useWorkspaceChoice } from "@/lib/session"
 
-export const VIEWS = ["all", "mine", "unassigned"] as const
+export const VIEWS = ["all", "mine", "unassigned", "spam"] as const
 export type View = (typeof VIEWS)[number]
 
 export function useViewLabels(): Record<View, string> {
   const { t } = useLingui()
-  return { all: t`All`, mine: t`Mine`, unassigned: t`Unassigned` }
+  return { all: t`All`, mine: t`Mine`, unassigned: t`Unassigned`, spam: t`Spam` }
 }
 
 const viewIcons: Record<View, React.ComponentType> = {
   all: InboxIcon,
   mine: UserIcon,
   unassigned: UserXIcon,
+  spam: ShieldAlertIcon,
 }
 
 function NavLink({

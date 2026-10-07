@@ -3,6 +3,7 @@ import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tansta
 import {
   api,
   unwrap,
+  type Contact,
   type ConversationUpdate,
   type MessageCreate,
 } from "@/lib/api"
@@ -79,6 +80,42 @@ export function useContact(id: string | undefined) {
     queryFn: () => unwrap(api.GET("/v1/contacts/{contactId}", { params: { path: { contactId: id! } } })),
     enabled: !!id,
     staleTime: 60_000,
+  })
+}
+
+export function useClearUndeliverable(contactId: string) {
+  const qc = useQueryClient()
+  const { workspaceId: ws } = useSession()
+  return useMutation({
+    mutationFn: (email: string) =>
+      unwrap(
+        api.PATCH("/v1/contacts/{contactId}", {
+          params: { path: { contactId } },
+          body: { clear_undeliverable: [email] },
+        }),
+      ),
+    onSuccess: (data) => qc.setQueryData<Contact>(keys.contact(ws, contactId), data),
+  })
+}
+
+export function useChannel(id: string | undefined) {
+  const { workspaceId: ws } = useSession()
+  return useQuery({
+    queryKey: keys.channel(ws, id ?? ""),
+    queryFn: () => unwrap(api.GET("/v1/channels/{channelId}", { params: { path: { channelId: id! } } })),
+    enabled: !!id,
+    staleTime: 5 * 60_000,
+    retry: false,
+  })
+}
+
+export function useMessageEmail(id: string, enabled: boolean) {
+  const { workspaceId: ws } = useSession()
+  return useQuery({
+    queryKey: keys.messageEmail(ws, id),
+    queryFn: () => unwrap(api.GET("/v1/messages/{messageId}/email", { params: { path: { messageId: id } } })),
+    enabled,
+    staleTime: Infinity,
   })
 }
 

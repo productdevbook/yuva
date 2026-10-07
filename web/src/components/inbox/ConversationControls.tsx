@@ -6,6 +6,8 @@ import {
   CircleDotIcon,
   ClockIcon,
   FlagIcon,
+  ShieldAlertIcon,
+  ShieldCheckIcon,
   TagIcon,
   UserXIcon,
 } from "lucide-react"
@@ -14,6 +16,7 @@ import { Kbd, LabelChip, PersonAvatar } from "@/components/common"
 import { SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { PRIORITIES, STATUSES, useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -270,5 +273,31 @@ export function LabelsMenu(p: Props) {
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
+  )
+}
+
+export function SpamButton({ conversation, update }: Pick<Props, "conversation" | "update">) {
+  const spam = conversation.spam
+  return (
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => update({ spam: !spam })}
+            data-testid="spam-toggle"
+            aria-pressed={spam}
+          />
+        }
+      >
+        {spam ? <ShieldCheckIcon /> : <ShieldAlertIcon />}
+        {spam ? <Trans>Not spam</Trans> : <Trans>Spam</Trans>}
+      </TooltipTrigger>
+      <TooltipContent className="flex items-center gap-2">
+        {spam ? <Trans>Move back to the inbox</Trans> : <Trans>Mark as spam</Trans>}
+        <Kbd>{SHORTCUTS.spam}</Kbd>
+      </TooltipContent>
+    </Tooltip>
   )
 }

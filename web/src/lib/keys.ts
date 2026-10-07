@@ -10,6 +10,7 @@ export const keys = {
   inboxes: (ws: string) => ["ws", ws, "inboxes"] as const,
   inboxMembers: (ws: string, inbox: string) => ["ws", ws, "inbox-members", inbox] as const,
   channels: (ws: string, inbox: string) => ["ws", ws, "channels", inbox] as const,
+  channel: (ws: string, id: string) => ["ws", ws, "channel", id] as const,
   labels: (ws: string) => ["ws", ws, "labels"] as const,
   cannedReplies: (ws: string) => ["ws", ws, "canned-replies"] as const,
   usage: (ws: string) => ["ws", ws, "usage"] as const,
@@ -19,5 +20,6 @@ export const keys = {
   counts: (ws: string) => ["ws", ws, "counts"] as const,
   conversation: (ws: string, id: string) => ["ws", ws, "conversation", id] as const,
   messages: (ws: string, id: string) => ["ws", ws, "messages", id] as const,
+  messageEmail: (ws: string, id: string) => ["ws", ws, "message-email", id] as const,
   passkeys: ["me", "passkeys"] as const,
 }

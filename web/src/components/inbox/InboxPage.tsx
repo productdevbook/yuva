@@ -48,6 +48,7 @@ function toQuery(base: ListBase, f: ListFilters): ConversationFilters {
   if (base.kind === "view") {
     if (base.id === "mine") q.assignee = "me"
     if (base.id === "unassigned") q.assignee = "unassigned"
+    if (base.id === "spam") q.spam = true
   } else if (f.assignee) q.assignee = f.assignee
   return q
 }
@@ -183,7 +184,7 @@ function Inbox({ base, conversationId }: { base: ListBase; conversationId?: stri
               />
             </section>
             {mobileContact && (
-              <section className="flex min-h-0 flex-1 flex-col md:hidden">
+              <section className="flex min-h-0 min-w-0 flex-1 flex-col md:hidden">
                 <div className="flex h-12 shrink-0 items-center gap-2 border-b px-3">
                   <Button variant="ghost" size="icon-sm" onClick={() => navigate(-1)} aria-label={t`Back`}>
                     <ArrowLeftIcon />

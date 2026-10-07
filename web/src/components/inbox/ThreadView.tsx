@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ArrowLeftIcon, PanelRightIcon, SearchXIcon } from "lucide-react"
+import { ArrowLeftIcon, PanelRightIcon, SearchXIcon, ShieldAlertIcon } from "lucide-react"
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
@@ -11,6 +11,7 @@ import {
   AssigneeMenu,
   LabelsMenu,
   PriorityMenu,
+  SpamButton,
   StatusMenu,
   type MenuName,
 } from "@/components/inbox/ConversationControls"
@@ -20,6 +21,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { ApiError, isGone, type ConversationUpdate } from "@/lib/api"
 import {
+  useChannel,
   useContact,
   useConversation,
   useInboxes,
@@ -58,11 +60,13 @@ export function ThreadView({
   const members = useMemberMap()
   const updater = useUpdateConversation(conversationId)
   const [openMenu, setOpenMenu] = useState<MenuName | null>(null)
+  const [expandQuoted, setExpandQuoted] = useState(false)
   const composer = useRef<ComposerHandle>(null)
   const scroller = useRef<HTMLDivElement>(null)
 
   const update = (body: ConversationUpdate) => updater.mutate(body)
   const c = conversation.data
+  const channel = useChannel(c?.channel_id)
 
   useHotkeys(
     {
@@ -76,6 +80,8 @@ export function ThreadView({
       [SHORTCUTS.reopen]: () => update({ status: "open" }),
       [SHORTCUTS.priority]: () => setOpenMenu("priority"),
       [SHORTCUTS.labels]: () => setOpenMenu("labels"),
+      [SHORTCUTS.spam]: () => c && update({ spam: !c.spam }),
+      [SHORTCUTS.quoted]: () => setExpandQuoted((x) => !x),
       [SHORTCUTS.contact]: onToggleContact,
       [SHORTCUTS.back]: () => navigate(backHref),
     },
@@ -164,7 +170,11 @@ export function ThreadView({
   const inbox = inboxes.find((i) => i.id === c.inbox_id)
   const contactName = contact.data ? contact.data.name || contact.data.emails[0] || t`Unnamed contact` : "…"
   const controls = { conversation: c, update, openMenu, setOpenMenu }
-  const ctx = { members, contact: contact.data, labels }
+  const ctx = { members, contact: contact.data, labels, subject: c.subject, expandQuoted }
+  const isEmail = channel.data?.kind === "email"
+  const lastInbound = items.findLast((m) => m.kind === "message" && m.direction === "in" && m.email)
+  const emailTo = isEmail ? (lastInbound?.email?.from ?? contact.data?.emails[0]) : undefined
+  const undeliverable = emailTo ? contact.data?.undeliverable.some((u) => u.email === emailTo) : false
   let lastDay = ""
 
   return (
@@ -204,9 +214,22 @@ export function ThreadView({
           <StatusMenu {...controls} />
           <PriorityMenu {...controls} />
           <LabelsMenu {...controls} />
+          <SpamButton conversation={c} update={update} />
           <ErrorLine error={updater.error} className="text-xs" />
         </div>
       </div>
+      {c.spam && (
+        <div
+          className="flex shrink-0 items-center gap-2 border-b bg-destructive/5 px-4 py-2 text-xs"
+          role="status"
+          data-testid="spam-banner"
+        >
+          <ShieldAlertIcon className="size-4 shrink-0 text-destructive" />
+          <span className="min-w-0 flex-1">
+            <Trans>Marked as spam: left out of lists and counts, and never answered automatically.</Trans>
+          </span>
+        </div>
+      )}
       <div
         ref={scroller}
         onScroll={onScroll}
@@ -251,7 +274,7 @@ export function ThreadView({
           })
         )}
       </div>
-      <Composer ref={composer} conversationId={conversationId} />
+      <Composer ref={composer} conversationId={conversationId} emailTo={emailTo} undeliverable={undeliverable} />
     </div>
   )
 }

@@ -525,8 +525,10 @@ export interface paths {
         put?: never;
         /**
          * Add a channel
-         * @description Owners and admins only, with a member session. Settings are stored as given; the channels
-         *     do not send or receive anything yet.
+         * @description Owners and admins only, with a member session. An `email` channel needs `email` (its
+         *     address and outbound SMTP account); `settings` of the other kinds are stored as given.
+         *     An address belongs to one channel of the whole server, because inbound mail picks its
+         *     channel by the recipient alone; a taken address answers `409 email_address_taken`.
          */
         post: operations["createChannel"];
         delete?: never;
@@ -556,7 +558,8 @@ export interface paths {
         head?: never;
         /**
          * Update a channel
-         * @description Owners and admins only, with a member session.
+         * @description Owners and admins only, with a member session. `email` replaces the e-mail settings as a
+         *     whole, except that an absent `smtp.password` keeps the stored one.
          */
         patch: operations["updateChannel"];
         trace?: never;
@@ -666,7 +669,8 @@ export interface paths {
          * Count open conversations
          * @description Open conversations in the inboxes the caller can see: all of them, those assigned to the
          *     calling member (`0` for API keys), unassigned ones, and per inbox and per label. Inboxes and
-         *     labels without open conversations are left out of their lists.
+         *     labels without open conversations are left out of their lists. Conversations flagged as
+         *     spam are counted only in `spam`.
          */
         get: operations["getConversationCounts"];
         put?: never;
@@ -729,6 +733,13 @@ export interface paths {
          *
          *     A repeated `client_id` in the same conversation returns the stored message with `200`
          *     instead of writing it again.
+         *
+         *     A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
+         *     e-mailed to the contact through the channel's SMTP account by a background job: the message
+         *     is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
+         *     `failed`. Notes are never e-mailed. When the recipient address is undeliverable (bounced or
+         *     complained) the reply is refused with `409 email_undeliverable`; when the channel has no
+         *     SMTP account, with `409 email_not_configured`.
          */
         post: operations["createMessage"];
         delete?: never;
@@ -774,6 +785,50 @@ export interface paths {
          *     instead of `Yuva-Workspace`.
          */
         get: operations["downloadAttachment"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messages/{messageId}/email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a message's e-mail details
+         * @description The full text with the quoted history and signature that the thread hides, the full
+         *     sanitized HTML, and the headers that matter. Only messages that came or went by e-mail
+         *     have them; others answer `404`.
+         */
+        get: operations["getMessageEmail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messages/{messageId}/raw": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Download the original e-mail
+         * @description The message exactly as it was received, as `message/rfc822` (an `.eml` download). Only
+         *     inbound e-mail keeps its original; others answer `404`. Links cannot carry headers, so the
+         *     workspace can also be named with the `workspace_id` query parameter.
+         */
+        get: operations["downloadMessageRaw"];
         put?: never;
         post?: never;
         delete?: never;
@@ -935,6 +990,58 @@ export interface paths {
         get: operations["realtime"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ingress/email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Receive an e-mail
+         * @description Called by the edge Email Worker or any MTA with the raw message and its envelope. The
+         *     signature is `v1=` and the lowercase hex HMAC-SHA256, keyed with the server's
+         *     `YUVA_INGRESS_SECRET`, over `<X-Yuva-Timestamp>.<X-Yuva-Envelope-To>.<raw body>`. The
+         *     timestamp must be within 5 minutes of the server's clock. A message with a Message-ID seen
+         *     before on the same channel is accepted again without being stored twice.
+         *
+         *     Refusals are permanent (4xx) and carry a `reason` that the sending server shows to the
+         *     sender. 5xx means try again later.
+         */
+        post: operations["ingestEmail"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ingress/ses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Receive an SES notification
+         * @description Amazon SNS delivers Amazon SES bounce and complaint notifications here. The SNS signature
+         *     is verified against the AWS signing certificate, and the topic must be one of
+         *     `YUVA_SES_TOPIC_ARNS`. A subscription confirmation is confirmed by fetching its
+         *     `SubscribeURL` (only on an `sns.<region>.amazonaws.com` host). A permanent bounce or a
+         *     complaint marks the recipient undeliverable in the workspace that sent the message and the
+         *     message `failed`.
+         */
+        post: operations["ingestSes"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1214,9 +1321,73 @@ export interface components {
          * @enum {string}
          */
         ChannelKind: "email" | "chat" | "app" | "api";
-        /** @description Kind-specific settings, stored as given. Not acted on yet. */
+        /** @description Settings of `chat`, `app` and `api` channels, stored as given. Not acted on yet. */
         ChannelSettings: {
             [key: string]: unknown;
+        };
+        /**
+         * @description `starttls` upgrades a plain connection (port 587), `tls` connects with TLS (port 465),
+         *     `none` sends in the clear (local relays and test servers only).
+         * @enum {string}
+         */
+        SmtpTls: "starttls" | "tls" | "none";
+        /** @description The outbound SMTP account. The password is never returned. */
+        SmtpSettings: {
+            host: string;
+            /** Format: int32 */
+            port: number;
+            username: string;
+            tls: components["schemas"]["SmtpTls"];
+            password_set: boolean;
+        };
+        SmtpSettingsInput: {
+            host: string;
+            /**
+             * Format: int32
+             * @description Defaults to 465 with `tls`, else 587.
+             */
+            port?: number;
+            username?: string;
+            /** @description Stored encrypted. Absent keeps the stored password; empty removes it. */
+            password?: string;
+            tls?: components["schemas"]["SmtpTls"];
+        };
+        /**
+         * @description A greeting e-mailed when a new conversation starts by e-mail, at most once per contact
+         *     within `interval_hours`. It carries `Auto-Submitted: auto-replied` and is never sent in
+         *     answer to automatic mail.
+         */
+        EmailAutoReply: {
+            enabled: boolean;
+            text: string;
+            /** Format: int32 */
+            interval_hours: number;
+        };
+        EmailAutoReplyInput: {
+            enabled: boolean;
+            /** @description Required when `enabled`. */
+            text?: string;
+            /**
+             * Format: int32
+             * @description Defaults to 24.
+             */
+            interval_hours?: number;
+        };
+        /** @description Settings of an `email` channel. */
+        EmailChannel: {
+            address: components["schemas"]["Email"];
+            /** @description The name in `From`; the channel name when empty. */
+            display_name: string;
+            from_address?: components["schemas"]["Email"];
+            smtp?: components["schemas"]["SmtpSettings"];
+            auto_reply: components["schemas"]["EmailAutoReply"];
+        };
+        EmailChannelInput: {
+            address: components["schemas"]["Email"];
+            display_name?: string;
+            from_address?: components["schemas"]["Email"];
+            smtp?: components["schemas"]["SmtpSettingsInput"];
+            auto_reply?: components["schemas"]["EmailAutoReplyInput"];
         };
         Channel: {
             /** Format: uuid */
@@ -1226,6 +1397,7 @@ export interface components {
             kind: components["schemas"]["ChannelKind"];
             name: string;
             settings: components["schemas"]["ChannelSettings"];
+            email?: components["schemas"]["EmailChannel"];
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
@@ -1235,10 +1407,12 @@ export interface components {
             kind: components["schemas"]["ChannelKind"];
             name: string;
             settings?: components["schemas"]["ChannelSettings"];
+            email?: components["schemas"]["EmailChannelInput"];
         };
         ChannelUpdate: {
             name?: string;
             settings?: components["schemas"]["ChannelSettings"];
+            email?: components["schemas"]["EmailChannelInput"];
         };
         ChannelList: {
             items: components["schemas"]["Channel"][];
@@ -1253,6 +1427,16 @@ export interface components {
         Attributes: {
             [key: string]: unknown;
         };
+        /** @description An address that bounced permanently or complained; replies to it are refused. */
+        UndeliverableEmail: {
+            email: components["schemas"]["Email"];
+            /** @enum {string} */
+            reason: "bounce" | "complaint";
+            /** @description The diagnostic from the receiving server, when there was one. */
+            detail?: string;
+            /** Format: date-time */
+            created_at: string;
+        };
         Contact: {
             /** Format: uuid */
             id: string;
@@ -1260,7 +1444,10 @@ export interface components {
             emails: components["schemas"]["Email"][];
             external_ids: components["schemas"]["ExternalId"][];
             attributes: components["schemas"]["Attributes"];
+            /** @description Mail from a blocked contact is refused. */
             blocked: boolean;
+            /** @description The contact's addresses that must not be mailed. */
+            undeliverable: components["schemas"]["UndeliverableEmail"][];
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
@@ -1279,6 +1466,8 @@ export interface components {
             external_ids?: components["schemas"]["ExternalId"][];
             attributes?: components["schemas"]["Attributes"];
             blocked?: boolean;
+            /** @description Addresses to mail again, e.g. after the recipient fixed their mailbox. */
+            clear_undeliverable?: components["schemas"]["Email"][];
         };
         ContactPage: {
             items: components["schemas"]["Contact"][];
@@ -1306,6 +1495,11 @@ export interface components {
             /** Format: date-time */
             snooze_until?: string;
             priority: components["schemas"]["Priority"];
+            /**
+             * @description Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
+             *     and counts unless asked for, and gets no automatic reply.
+             */
+            spam: boolean;
             /**
              * Format: uuid
              * @description The assigned member; absent when unassigned.
@@ -1353,6 +1547,8 @@ export interface components {
             /** Format: date-time */
             snooze_until?: string;
             priority?: components["schemas"]["Priority"];
+            /** @description Flag or unflag as spam. */
+            spam?: boolean;
             /**
              * Format: uuid
              * @description A member with access to the inbox; `null` unassigns.
@@ -1405,6 +1601,11 @@ export interface components {
         ConversationCounts: {
             /** Format: int64 */
             all: number;
+            /**
+             * Format: int64
+             * @description Open conversations flagged as spam (not included in the other counts).
+             */
+            spam: number;
             /** Format: int64 */
             mine: number;
             /** Format: int64 */
@@ -1504,8 +1705,59 @@ export interface components {
             client_id?: string;
             event?: components["schemas"]["MessageEvent"];
             attachments: components["schemas"]["Attachment"][];
+            delivery?: components["schemas"]["MessageDelivery"];
+            email?: components["schemas"]["MessageEmail"];
             /** Format: date-time */
             created_at: string;
+        };
+        /** @description Delivery of an outgoing message by e-mail. */
+        MessageDelivery: {
+            /** @enum {string} */
+            channel: "email";
+            /** @enum {string} */
+            state: "queued" | "sent" | "failed";
+            /** @description Why it failed (`failed` only). */
+            error?: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        /**
+         * @description Set on messages that came or went by e-mail. `body` and `html` of the message show the new
+         *     text only; `quoted` tells whether quoted history or a signature was hidden, which
+         *     `GET /v1/messages/{id}/email` returns in full.
+         */
+        MessageEmail: {
+            /** @description The `Message-ID` header without angle brackets. */
+            message_id: string;
+            from: components["schemas"]["Email"];
+            to: components["schemas"]["Email"][];
+            cc?: components["schemas"]["Email"][];
+            subject?: string;
+            quoted: boolean;
+            /** @description The original is kept; download it from `/v1/messages/{id}/raw`. */
+            raw: boolean;
+            /** @description Automatic mail (auto-reply, list, bulk) or our own automatic message. */
+            auto: boolean;
+            /**
+             * @description The DMARC result from the receiving server's `Authentication-Results`.
+             * @enum {string}
+             */
+            dmarc: "pass" | "fail" | "none" | "unknown";
+        };
+        MessageEmailDetail: {
+            message_id: string;
+            /** @description The whole text part, quoted history and signature included. */
+            full_text: string;
+            /** @description The whole HTML part, sanitized. */
+            full_html?: string;
+            in_reply_to?: string;
+            references?: string[];
+            /** @description The receiving server's `Authentication-Results` header, as received. */
+            authentication_results?: string;
+            /** @description Selected headers as received (Date, Reply-To, Auto-Submitted, Precedence, …). */
+            headers: {
+                [key: string]: string;
+            };
         };
         MessageCreate: {
             /** @enum {string} */
@@ -1617,6 +1869,25 @@ export interface components {
              * @enum {string}
              */
             type: "message.created";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["Message"];
+        };
+        /** @description A message changed, e.g. its e-mail delivery state. */
+        MessageUpdatedEvent: {
+            /** Format: int64 */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "message.updated";
             /** Format: uuid */
             workspace_id: string;
             /** Format: uuid */
@@ -1778,7 +2049,26 @@ export interface components {
             type: "resync_required";
         };
         /** @description One server message on `/v1/realtime`, told apart by `type`. */
-        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        IngressResult: {
+            /**
+             * @description `stored` (a message was added), `duplicate` (seen before), `bounce` (a delivery report
+             *     was applied) or `dropped` (deliberately ignored, e.g. mail from the channel's own
+             *     address).
+             * @enum {string}
+             */
+            status: "stored" | "duplicate" | "bounce" | "dropped";
+            /** Format: uuid */
+            conversation_id?: string;
+            /** Format: uuid */
+            message_id?: string;
+        };
+        IngressRejection: {
+            /** @description Shown to the sender of the mail. */
+            reason: string;
+            /** @enum {string} */
+            code: "bad_signature" | "stale_timestamp" | "unknown_recipient" | "blocked_sender" | "too_large" | "malformed" | "rate_limited" | "not_configured" | "unavailable";
+        };
         Health: {
             /** @enum {string} */
             status: "ok";
@@ -1815,6 +2105,15 @@ export interface components {
                 "application/problem+json": components["schemas"]["Problem"];
             };
         };
+        /** @description The message is refused; `reason` is shown to the sender. */
+        IngressRejection: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["IngressRejection"];
+            };
+        };
         /** @description Signed in; the session cookie is set. */
         SignedIn: {
             headers: {
@@ -1839,6 +2138,7 @@ export interface components {
         ContactId: string;
         ConversationId: string;
         AttachmentId: string;
+        MessageId: string;
         LabelId: string;
         CannedReplyId: string;
         /** @description Full-text search (Postgres `simple` configuration, `websearch` syntax). */
@@ -2775,6 +3075,7 @@ export interface operations {
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
         };
     };
     getChannel: {
@@ -2862,6 +3163,7 @@ export interface operations {
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
         };
     };
     listContacts: {
@@ -3056,6 +3358,11 @@ export interface operations {
                 /** @description A member id, `me` (member sessions only) or `unassigned`. */
                 assignee?: string;
                 label_id?: string;
+                /**
+                 * @description `true` lists only conversations flagged as spam (the spam view); without it, or with
+                 *     `false`, spam is left out.
+                 */
+                spam?: boolean;
                 /** @description Full-text search (Postgres `simple` configuration, `websearch` syntax). */
                 q?: components["parameters"]["Search"];
                 /** @description The `next_cursor` of the previous page. */
@@ -3280,6 +3587,7 @@ export interface operations {
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
             413: components["responses"]["Problem"];
             415: components["responses"]["Problem"];
         };
@@ -3343,6 +3651,68 @@ export interface operations {
                 };
                 content: {
                     "*/*": string;
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    getMessageEmail: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                messageId: components["parameters"]["MessageId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The e-mail details. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageEmailDetail"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    downloadMessageRaw: {
+        parameters: {
+            query?: {
+                /** @description The workspace to act on, for links that cannot send `Yuva-Workspace`. */
+                workspace_id?: string;
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                messageId: components["parameters"]["MessageId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The original message. */
+            200: {
+                headers: {
+                    "Content-Disposition"?: string;
+                    "X-Content-Type-Options"?: "nosniff";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "message/rfc822": string;
                 };
             };
             400: components["responses"]["Problem"];
@@ -3639,6 +4009,80 @@ export interface operations {
             };
             400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            503: components["responses"]["Problem"];
+        };
+    };
+    ingestEmail: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Yuva-Envelope-To": string;
+                "X-Yuva-Envelope-From"?: string;
+                /** @description Unix time in seconds. */
+                "X-Yuva-Timestamp": string;
+                "X-Yuva-Signature": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The raw RFC 5322 message, at most 25 MiB. */
+        requestBody: {
+            content: {
+                "message/rfc822": string;
+            };
+        };
+        responses: {
+            /** @description Accepted earlier (same Message-ID on the same channel). */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IngressResult"];
+                };
+            };
+            /** @description Accepted, stored or deliberately dropped. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IngressResult"];
+                };
+            };
+            400: components["responses"]["IngressRejection"];
+            401: components["responses"]["IngressRejection"];
+            403: components["responses"]["IngressRejection"];
+            404: components["responses"]["IngressRejection"];
+            413: components["responses"]["IngressRejection"];
+            429: components["responses"]["IngressRejection"];
+            503: components["responses"]["IngressRejection"];
+        };
+    };
+    ingestSes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The SNS message (SNS sends it as `text/plain`). */
+        requestBody: {
+            content: {
+                "text/plain": string;
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Handled or ignored. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             503: components["responses"]["Problem"];
         };

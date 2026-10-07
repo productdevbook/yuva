@@ -60,6 +60,10 @@ msgstr "Bir dosyanın içeriği türüyle uyuşmuyor. Dosyayı kontrol edip yeni
 msgid "A language tag such as en or tr."
 msgstr "en veya tr gibi bir dil kodu."
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "A username needs TLS or STARTTLS: the password is never sent unencrypted."
+msgstr "Kullanıcı adı TLS ya da STARTTLS ister: parola hiçbir zaman şifresiz gönderilmez."
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Access"
 msgstr "Erişim"
@@ -71,6 +75,10 @@ msgstr "{name} için erişim"
 #: src/components/settings/InboxesSettings.tsx
 msgid "Acme App"
 msgstr "Acme Uygulaması"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Acme Support"
+msgstr "Acme Destek"
 
 #: src/components/settings/ProfileSettings.tsx
 msgid "Add a passkey"
@@ -125,6 +133,11 @@ msgstr "Tüm konuşmaları da onunla birlikte silinir."
 msgid "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
 msgstr "Davet, kişi o adrese gönderilen kodla giriş yaptığında kabul edilir. 7 gün sonra geçersiz olur."
 
+#: src/components/common/text.ts
+#: src/components/settings/ChannelsSection.tsx
+msgid "Another channel already receives mail at this address."
+msgstr "Bu adrese gelen postayı zaten başka bir kanal alıyor."
+
 #: src/components/inbox/ConversationList.tsx
 msgid "Any label"
 msgstr "Herhangi bir etiket"
@@ -171,6 +184,10 @@ msgstr "Atanan kişi"
 msgid "Async"
 msgstr "Eşzamansız"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "At most once per contact every (hours)"
+msgstr "Her kişiye en fazla şu kadar saatte bir"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/inbox/Composer.tsx
 msgid "Attach files"
@@ -183,6 +200,15 @@ msgstr "Ek"
 #: src/components/inbox/ContactPanel.tsx
 msgid "Attributes"
 msgstr "Özellikler"
+
+#: src/components/inbox/MessageItem.tsx
+#: src/components/settings/ChannelsSection.tsx
+msgid "Auto-reply"
+msgstr "Otomatik yanıt"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Automatic mail never triggers an automatic reply."
+msgstr "Otomatik postalar hiçbir zaman otomatik yanıt tetiklemez."
 
 #: src/components/inbox/InboxPage.tsx
 #: src/components/settings/InboxSettings.tsx
@@ -245,6 +271,10 @@ msgstr "E-postanızı kontrol edin"
 #: src/components/AppShell.tsx
 msgid "Choose a workspace"
 msgstr "Bir çalışma alanı seçin"
+
+#: src/components/inbox/ContactPanel.tsx
+msgid "Clear"
+msgstr "Temizle"
 
 #: src/components/inbox/ConversationList.tsx
 msgid "Clear filters"
@@ -377,10 +407,22 @@ msgstr "Bu hazır yanıt silinsin mi?"
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
 msgstr "Kanalları, konuşmaları, mesajları ve ekleriyle birlikte silinir. Bu işlem geri alınamaz."
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Display name"
+msgstr "Görünen ad"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "DMARC failed"
+msgstr "DMARC başarısız"
+
 #. placeholder {0}: a.filename
 #: src/components/inbox/MessageItem.tsx
 msgid "Download {0}"
 msgstr "{0} dosyasını indir"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Download the original e-mail (.eml)"
+msgstr "Özgün e-postayı indir (.eml)"
 
 #: src/components/common/text.ts
 msgid "E-mail"
@@ -394,6 +436,10 @@ msgstr "E-posta adresi"
 #: src/components/inbox/ContactPanel.tsx
 msgid "E-mail addresses"
 msgstr "E-posta adresleri"
+
+#: src/components/common/EmailHtml.tsx
+msgid "E-mail content"
+msgstr "E-posta içeriği"
 
 #: src/components/settings/ProfileSettings.tsx
 msgid "E-mail language"
@@ -422,6 +468,22 @@ msgstr "Etiketi düzenle"
 msgid "Edit labels"
 msgstr "Etiketleri düzenle"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Encryption"
+msgstr "Şifreleme"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Enter a host name or IP address."
+msgstr "Bir sunucu adı ya da IP adresi girin."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Enter a valid e-mail address, or leave it empty."
+msgstr "Geçerli bir e-posta adresi girin ya da boş bırakın."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Enter a valid e-mail address."
+msgstr "Geçerli bir e-posta adresi girin."
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Expected reply time (minutes)"
 msgstr "Beklenen yanıt süresi (dakika)"
@@ -438,13 +500,25 @@ msgstr "Harici kimlikler"
 msgid "Filters"
 msgstr "Filtreler"
 
+#: src/components/inbox/MessageItem.tsx
+msgid "Fix the address or the channel's SMTP settings, then send the reply again."
+msgstr "Adresi ya da kanalın SMTP ayarlarını düzeltin, sonra yanıtı yeniden gönderin."
+
 #: src/components/settings/ApiKeysSettings.tsx
 msgid "For your backends and scripts. A key acts on this workspace only and cannot manage members or keys."
 msgstr "Sunucularınız ve betikleriniz için. Bir anahtar yalnızca bu çalışma alanında işlem yapar; üyeleri ve anahtarları yönetemez."
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
+msgstr "Bu adrese gelen postayı Yuva deposundaki edge/ içindeki Cloudflare Email Worker'a ya da her iletiyi YUVA_INGRESS_SECRET ile imzalayıp bu sunucunun giriş adresine gönderen herhangi bir posta sunucusuna yönlendirin:"
+
 #: src/components/common/text.ts
 msgid "Friday"
 msgstr "Cuma"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "From address (optional)"
+msgstr "Gönderen adresi (isteğe bağlı)"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/settings/InboxSettings.tsx
@@ -455,17 +529,25 @@ msgstr "Genel"
 msgid "Greeting"
 msgstr "Karşılama mesajı"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Greets new conversations by e-mail, once per contact within the interval. Never sent to automatic mail or spam."
+msgstr "Yeni konuşmaları e-postayla karşılar; bu süre içinde her kişiye bir kez. Otomatik postalara ve spama hiç gönderilmez."
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Hi! Ask us anything."
 msgstr "Merhaba! Bize her şeyi sorabilirsiniz."
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Hide quoted text"
+msgstr "Alıntıyı gizle"
 
 #: src/components/common/text.ts
 msgid "High"
 msgstr "Yüksek"
 
 #: src/components/settings/ChannelsSection.tsx
-msgid "How messages reach this inbox. Settings are stored as given for now."
-msgstr "Mesajların bu gelen kutusuna nasıl ulaştığı. Ayarlar şimdilik girildiği gibi saklanır."
+msgid "How messages reach this inbox. E-mail channels receive and send mail; the other kinds store their settings for now."
+msgstr "İletilerin bu gelen kutusuna nasıl ulaştığı. E-posta kanalları posta alır ve gönderir; diğer türler şimdilik yalnızca ayarlarını saklar."
 
 #: src/components/common/index.tsx
 msgid "I saved it"
@@ -519,6 +601,10 @@ msgstr "Tüm konuşmalardan kaldırılır."
 msgid "It no longer exists or you cannot see it."
 msgstr "Artık yok ya da görme izniniz yok."
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Keep"
+msgstr "Koru"
+
 #: src/components/settings/ApiKeysSettings.tsx
 msgid "Key name"
 msgstr "Anahtar adı"
@@ -557,6 +643,10 @@ msgstr "son kullanım: {used}"
 msgid "Live"
 msgstr "Canlı"
 
+#: src/components/inbox/MessageItem.tsx
+msgid "Load images"
+msgstr "Görselleri yükle"
+
 #: src/components/inbox/ContactPanel.tsx
 #: src/components/inbox/ConversationList.tsx
 msgid "Load more"
@@ -581,6 +671,18 @@ msgstr "Küçük harf, rakam ve tire."
 #: src/components/settings/InboxesSettings.tsx
 msgid "Lowercase letters, digits and dashes. Used in addresses and the widget."
 msgstr "Küçük harf, rakam ve tire. Adreslerde ve sohbet bileşeninde kullanılır."
+
+#: src/components/inbox/ConversationControls.tsx
+msgid "Mark as spam"
+msgstr "Spam olarak işaretle"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark or unmark as spam"
+msgstr "Spam olarak işaretle ya da işareti kaldır"
+
+#: src/components/inbox/ThreadView.tsx
+msgid "Marked as spam: left out of lists and counts, and never answered automatically."
+msgstr "Spam olarak işaretli: listelerde ve sayılarda görünmez, otomatik yanıt almaz."
 
 #: src/components/inbox/ConversationList.tsx
 msgid "Me"
@@ -611,6 +713,10 @@ msgstr "Mod"
 #: src/components/common/text.ts
 msgid "Monday"
 msgstr "Pazartesi"
+
+#: src/components/inbox/ConversationControls.tsx
+msgid "Move back to the inbox"
+msgstr "Gelen kutusuna geri taşı"
 
 #: src/components/AppShell.tsx
 #: src/components/settings/ProfileSettings.tsx
@@ -657,6 +763,10 @@ msgstr "Yeni gelen kutusu"
 #: src/components/settings/LabelsSettings.tsx
 msgid "New label"
 msgstr "Yeni etiket"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "New password"
+msgstr "Yeni parola"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Next conversation"
@@ -708,9 +818,21 @@ msgstr "Konu yok"
 msgid "None"
 msgstr "Yok"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "None (local relays and test servers only)"
+msgstr "Yok (yalnızca yerel aktarıcılar ve test sunucuları)"
+
 #: src/components/common/text.ts
 msgid "Normal"
 msgstr "Normal"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Not delivered"
+msgstr "Teslim edilemedi"
+
+#: src/components/inbox/ConversationControls.tsx
+msgid "Not spam"
+msgstr "Spam değil"
 
 #: src/components/inbox/Composer.tsx
 msgid "Note"
@@ -720,6 +842,7 @@ msgstr "Not"
 msgid "Nothing matches your search."
 msgstr "Aramanızla eşleşen bir şey yok."
 
+#: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/InboxSettings.tsx
 msgid "Off"
 msgstr "Kapalı"
@@ -728,6 +851,7 @@ msgstr "Kapalı"
 msgid "Offline"
 msgstr "Çevrimdışı"
 
+#: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/InboxSettings.tsx
 msgid "On"
 msgstr "Açık"
@@ -743,6 +867,11 @@ msgstr "Notları yalnızca üyeler görür"
 #: src/components/common/text.ts
 msgid "Open"
 msgstr "Açık"
+
+#. placeholder {0}: a.filename
+#: src/components/inbox/MessageItem.tsx
+msgid "Open {0}"
+msgstr "{0} dosyasını aç"
 
 #: src/components/settings/InboxSettings.tsx
 msgid "Opens"
@@ -772,6 +901,14 @@ msgstr "Geçiş anahtarı adı"
 msgid "Passkeys"
 msgstr "Geçiş anahtarları"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Password"
+msgstr "Parola"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Password set"
+msgstr "Kayıtlı"
+
 #: src/components/common/text.ts
 msgid "Pending"
 msgstr "Beklemede"
@@ -784,6 +921,14 @@ msgstr "Renk seç"
 #: src/components/inbox/InboxPage.tsx
 msgid "Pick a conversation"
 msgstr "Bir konuşma seçin"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Pick a TLS mode."
+msgstr "Bir TLS kipi seçin."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Port"
+msgstr "Port"
 
 #: src/components/settings/LabelsSettings.tsx
 msgid "Preview"
@@ -800,6 +945,18 @@ msgstr "Öncelik"
 #: src/components/settings/ProfileSettings.tsx
 msgid "Profile"
 msgstr "Profil"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "receives only, no SMTP account"
+msgstr "yalnızca alır, SMTP hesabı yok"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Receiving"
+msgstr "Alma"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Remote images can tell the sender that you opened the mail."
+msgstr "Uzak görseller, postayı açtığınızı gönderene bildirebilir."
 
 #: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/MembersSettings.tsx
@@ -842,10 +999,26 @@ msgstr "Ayrılmış üye"
 msgid "Reopen"
 msgstr "Yeniden aç"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Replace"
+msgstr "Değiştir"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Replies go out through your own SMTP account. Leave the host empty to only receive mail."
+msgstr "Yanıtlar kendi SMTP hesabınızdan gider. Yalnızca posta almak için sunucuyu boş bırakın."
+
+#: src/components/inbox/ContactPanel.tsx
+msgid "Replies to this address are refused until you clear it."
+msgstr "Siz temizleyene kadar bu adrese yanıt gönderilmez."
+
 #: src/components/inbox/Composer.tsx
 #: src/components/inbox/ConversationList.tsx
 msgid "Reply"
 msgstr "Yanıt"
+
+#: src/components/inbox/Composer.tsx
+msgid "Reply by e-mail to {emailTo}"
+msgstr "{emailTo} adresine e-postayla yanıtla"
 
 #: src/components/AppShell.tsx
 msgid "Retry now"
@@ -908,6 +1081,10 @@ msgstr "Kaydedildi"
 msgid "Saved answers"
 msgstr "Kayıtlı yanıtlar"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Saving removes the stored password."
+msgstr "Kaydedince kayıtlı parola silinir."
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search"
 msgstr "Ara"
@@ -925,9 +1102,30 @@ msgstr "Gönder"
 msgid "Send a new code"
 msgstr "Yeni kod gönder"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Send an auto-reply"
+msgstr "Otomatik yanıt gönder"
+
 #: src/components/auth/SignInPage.tsx
 msgid "Send me a code"
 msgstr "Bana kod gönder"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Sending"
+msgstr "Gönderme"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Sending by e-mail…"
+msgstr "E-postayla gönderiliyor…"
+
+#. placeholder {0}: e.smtp.host
+#: src/components/settings/ChannelsSection.tsx
+msgid "sends through {0}"
+msgstr "{0} üzerinden gönderir"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Sent by e-mail"
+msgstr "E-postayla gönderildi"
 
 #: src/components/AppShell.tsx
 #: src/components/settings/SettingsLayout.tsx
@@ -943,9 +1141,17 @@ msgid "Shortcut"
 msgstr "Kısayol"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Show or hide quoted text"
+msgstr "Alıntıyı göster ya da gizle"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/components/inbox/ThreadView.tsx
 msgid "Show or hide the contact"
 msgstr "Kişi bilgilerini göster veya gizle"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Show quoted text"
+msgstr "Alıntıyı göster"
 
 #: src/components/settings/InboxSettings.tsx
 msgid "Shown to contacts in async mode. Leave empty to hide it."
@@ -984,6 +1190,10 @@ msgstr "Kayıt: {since}"
 msgid "Slug"
 msgstr "Kısa ad"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "SMTP host"
+msgstr "SMTP sunucusu"
+
 #: src/components/inbox/ConversationControls.tsx
 msgid "Snooze until"
 msgstr "Şu zamana kadar ertele"
@@ -1004,6 +1214,15 @@ msgstr "Sunucuda bir sorun oluştu. Yeniden deneyin."
 msgid "Sort conversations by topic. Each label also gets its own view in the sidebar."
 msgstr "Konuşmaları konuya göre ayırın. Her etiketin kenar çubuğunda kendi görünümü de olur."
 
+#: src/components/AppShell.tsx
+#: src/components/inbox/ConversationControls.tsx
+msgid "Spam"
+msgstr "Spam"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "STARTTLS (port 587)"
+msgstr "STARTTLS (port 587)"
+
 #: src/components/inbox/ConversationControls.tsx
 msgid "Status"
 msgstr "Durum"
@@ -1011,6 +1230,10 @@ msgstr "Durum"
 #: src/components/common/text.ts
 msgid "Sunday"
 msgstr "Pazar"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Support address"
+msgstr "Destek adresi"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "Support e-mail"
@@ -1025,12 +1248,21 @@ msgid "teammate@company.com"
 msgstr "ekiparkadasi@sirket.com"
 
 #: src/components/settings/CannedRepliesSettings.tsx
+#: src/components/settings/ChannelsSection.tsx
 msgid "Text"
 msgstr "Metin"
 
 #: src/components/settings/CannedRepliesSettings.tsx
 msgid "Thanks for writing"
 msgstr "Yazdığınız için teşekkürler"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Thanks for writing. We usually answer within a day."
+msgstr "Yazdığınız için teşekkürler. Genellikle bir gün içinde yanıt veririz."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "The channel name when empty."
+msgstr "Boşsa kanal adı kullanılır."
 
 #: src/components/auth/SignInPage.tsx
 msgid "The code is wrong or has expired."
@@ -1056,6 +1288,18 @@ msgstr "Geçiş anahtarıyla giriş tamamlanmadı. Yeniden deneyin ya da e-posta
 msgid "The passkey was not added. Try again."
 msgstr "Geçiş anahtarı eklenmedi. Yeniden deneyin."
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "The password is stored encrypted and never shown again."
+msgstr "Parola şifreli saklanır ve bir daha gösterilmez."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "The password is too long."
+msgstr "Parola çok uzun."
+
+#: src/components/inbox/MessageItem.tsx
+msgid "The sender's domain did not authorize this mail. It may be forged."
+msgstr "Gönderenin alan adı bu postayı onaylamadı. Sahte olabilir."
+
 #: src/components/settings/MembersSettings.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Konuşmaları yerinde kalır; erişimleri hemen kalkar."
@@ -1063,6 +1307,10 @@ msgstr "Konuşmaları yerinde kalır; erişimleri hemen kalkar."
 #: src/components/settings/InboxSettings.tsx
 msgid "There are no agents in this workspace."
 msgstr "Bu çalışma alanında temsilci yok."
+
+#: src/components/inbox/Composer.tsx
+msgid "This address is undeliverable. Clear it on the contact before you reply."
+msgstr "Bu adrese posta ulaşmıyor. Yanıtlamadan önce kişi panelinden temizleyin."
 
 #: src/components/settings/ProfileSettings.tsx
 msgid "This browser does not support passkeys."
@@ -1075,6 +1323,14 @@ msgstr "Bu, var olan bir kayıtla çakışıyor."
 #: src/components/inbox/ThreadView.tsx
 msgid "This conversation is not available"
 msgstr "Bu konuşmaya ulaşılamıyor"
+
+#: src/components/common/text.ts
+msgid "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
+msgstr "Bu konuşmanın e-posta kanalında SMTP hesabı yok, yanıt gönderilmedi. Gelen kutusu ayarlarından bir hesap ekleyin."
+
+#: src/components/common/text.ts
+msgid "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
+msgstr "Bu e-posta adresi geri döndü ya da şikâyet etti, yanıt gönderilmedi. Yeniden göndermek için kişi panelinden temizleyin."
 
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
@@ -1103,6 +1359,10 @@ msgstr "Saatler gelen kutusunun saat dilimine göredir. Kapalıyken gelen kutusu
 #: src/components/settings/CannedRepliesSettings.tsx
 msgid "Title"
 msgstr "Başlık"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "TLS (port 465)"
+msgstr "TLS (port 465)"
 
 #: src/components/ui/sidebar.tsx
 msgid "Toggle sidebar"
@@ -1147,6 +1407,14 @@ msgid "Unassigned"
 msgstr "Atanmamış"
 
 #: src/components/inbox/ContactPanel.tsx
+msgid "Undeliverable: bounced, {since}"
+msgstr "Ulaşmıyor: geri döndü, {since}"
+
+#: src/components/inbox/ContactPanel.tsx
+msgid "Undeliverable: marked as spam by the recipient, {since}"
+msgstr "Ulaşmıyor: alıcı spam olarak işaretledi, {since}"
+
+#: src/components/inbox/ContactPanel.tsx
 #: src/components/inbox/ConversationList.tsx
 #: src/components/inbox/ThreadView.tsx
 msgid "Unnamed contact"
@@ -1160,6 +1428,18 @@ msgstr "Okunmadı"
 msgid "Urgent"
 msgstr "Acil"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Use 1 to 8760 hours."
+msgstr "1 ile 8760 saat arası girin."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Use a port from 1 to 65535."
+msgstr "1 ile 65535 arası bir port girin."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Use at most 200 characters."
+msgstr "En fazla 200 karakter girin."
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Use business hours"
 msgstr "Çalışma saatlerini kullan"
@@ -1167,6 +1447,10 @@ msgstr "Çalışma saatlerini kullan"
 #: src/components/inbox/InboxPage.tsx
 msgid "Use j and k to move through the list, ? for all shortcuts."
 msgstr "Listede gezinmek için j ve k, tüm kısayollar için ? tuşunu kullanın."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Username"
+msgstr "Kullanıcı adı"
 
 #: src/components/auth/SignInPage.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -1179,6 +1463,10 @@ msgstr "Web sohbeti"
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Çarşamba"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "When your provider sends from another address. Replies still come to the support address."
+msgstr "Sağlayıcınız başka bir adresten gönderiyorsa. Yanıtlar yine destek adresine gelir."
 
 #: src/components/settings/MembersSettings.tsx
 msgid "Withdraw"
@@ -1220,6 +1508,10 @@ msgstr "Yanıt yaz"
 #: src/components/inbox/Composer.tsx
 msgid "Write a reply…"
 msgstr "Bir yanıt yazın…"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Write the auto-reply, or turn it off."
+msgstr "Otomatik yanıtı yazın ya da kapatın."
 
 #: src/components/AppShell.tsx
 msgid "You are not a member of any workspace"

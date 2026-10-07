@@ -20,6 +20,8 @@ export const SHORTCUTS = {
   reopen: "o",
   priority: "p",
   labels: "l",
+  spam: "!",
+  quoted: "q",
   contact: "c",
   help: "?",
 } as const
@@ -60,6 +62,8 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
         [[SHORTCUTS.reopen], t`Reopen`],
         [[SHORTCUTS.priority], t`Change priority`],
         [[SHORTCUTS.labels], t`Edit labels`],
+        [[SHORTCUTS.spam], t`Mark or unmark as spam`],
+        [[SHORTCUTS.quoted], t`Show or hide quoted text`],
       ],
     },
     { title: t`General`, items: [[[SHORTCUTS.help], t`Keyboard shortcuts`]] },

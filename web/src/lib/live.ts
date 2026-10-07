@@ -31,6 +31,7 @@ export function previewText(body: string) {
 }
 
 function matches(c: Conversation, f: ConversationFilters, memberId: string) {
+  if (!!f.spam !== c.spam) return false
   if (f.status && c.status !== f.status) return false
   if (f.inbox_id && c.inbox_id !== f.inbox_id) return false
   if (f.contact_id && c.contact_id !== f.contact_id) return false
@@ -165,6 +166,23 @@ function addMessage(qc: QueryClient, ctx: LiveContext, m: Message) {
   updateLists(qc, ctx, next, patch)
 }
 
+function replaceMessage(qc: QueryClient, ctx: LiveContext, m: Message) {
+  qc.setQueryData<Messages>(keys.messages(ctx.ws, m.conversation_id), (old) => {
+    if (!old) return old
+    let changed = false
+    const pages = old.pages.map((p) => ({
+      ...p,
+      items: p.items.map((x) => {
+        if (x.id !== m.id) return x
+        if (x.delivery && m.delivery && x.delivery.updated_at > m.delivery.updated_at) return x
+        changed = true
+        return m
+      }),
+    }))
+    return changed ? { ...old, pages } : old
+  })
+}
+
 export function applyRead(qc: QueryClient, ws: string, read: ConversationRead) {
   patchItem(qc, ws, read.conversation_id, { unread: read.unread })
 }
@@ -198,6 +216,9 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
     case "message.created":
       knowMember(qc, ctx.ws, event.data.author.member_id)
       addMessage(qc, ctx, event.data)
+      return
+    case "message.updated":
+      replaceMessage(qc, ctx, event.data)
       return
     case "conversation.read":
       if (event.data.member_id === ctx.memberId) applyRead(qc, ctx.ws, event.data)

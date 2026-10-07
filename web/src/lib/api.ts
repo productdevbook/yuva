@@ -20,6 +20,10 @@ export type BusinessHours = S["BusinessHours"]
 export type Weekday = S["Weekday"]
 export type Channel = S["Channel"]
 export type ChannelKind = S["ChannelKind"]
+export type EmailChannel = S["EmailChannel"]
+export type EmailChannelInput = S["EmailChannelInput"]
+export type SmtpTls = S["SmtpTls"]
+export type UndeliverableEmail = S["UndeliverableEmail"]
 export type Contact = S["Contact"]
 export type Conversation = S["Conversation"]
 export type ConversationListItem = S["ConversationListItem"]
@@ -29,6 +33,9 @@ export type ConversationStatus = S["ConversationStatus"]
 export type ConversationUpdate = S["ConversationUpdate"]
 export type Priority = S["Priority"]
 export type Message = S["Message"]
+export type MessageDelivery = S["MessageDelivery"]
+export type MessageEmail = S["MessageEmail"]
+export type MessageEmailDetail = S["MessageEmailDetail"]
 export type MessagePreview = S["MessagePreview"]
 export type MessageCreate = S["MessageCreate"]
 export type Attachment = S["Attachment"]
@@ -42,11 +49,13 @@ export type ConversationQuery = NonNullable<paths["/v1/conversations"]["get"]["p
 export class ApiError extends Error {
   status: number
   code?: string
+  detail?: string
 
   constructor(status: number, problem?: Partial<Problem>) {
     super(problem?.detail ?? problem?.title ?? `HTTP ${status}`)
     this.status = status
     this.code = problem?.code
+    this.detail = problem?.detail
   }
 }
 
@@ -81,6 +90,10 @@ export async function unwrap<T>(call: Promise<{ data?: T; error?: unknown; respo
 
 export function attachmentUrl(a: Attachment, ws: string) {
   return `/v1/attachments/${encodeURIComponent(a.id)}?workspace_id=${encodeURIComponent(ws)}`
+}
+
+export function rawMessageUrl(messageId: string, ws: string) {
+  return `/v1/messages/${encodeURIComponent(messageId)}/raw?workspace_id=${encodeURIComponent(ws)}`
 }
 
 export function useVersion() {

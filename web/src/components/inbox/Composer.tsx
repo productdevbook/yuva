@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { LockIcon, MessageSquareIcon, PaperclipIcon, SendIcon, XIcon } from "lucide-react"
+import { AlertCircleIcon, LockIcon, MailIcon, MessageSquareIcon, PaperclipIcon, SendIcon, XIcon } from "lucide-react"
 import { forwardRef, useImperativeHandle, useMemo, useRef, useState } from "react"
 
 import { ErrorLine, Kbd } from "@/components/common"
@@ -23,10 +23,10 @@ function slashToken(text: string, caret: number) {
   return { start: caret - m[2].length - 1, query: m[2] }
 }
 
-export const Composer = forwardRef<ComposerHandle, { conversationId: string }>(function Composer(
-  { conversationId },
-  ref,
-) {
+export const Composer = forwardRef<
+  ComposerHandle,
+  { conversationId: string; emailTo?: string; undeliverable?: boolean }
+>(function Composer({ conversationId, emailTo, undeliverable }, ref) {
   const { t, i18n } = useLingui()
   const send = useSendMessage(conversationId)
   const canned = useCannedReplies().data ?? []
@@ -128,10 +128,33 @@ export const Composer = forwardRef<ComposerHandle, { conversationId: string }>(f
             <LockIcon />
             <Trans>Note</Trans>
           </Button>
-          <span className="ml-auto hidden text-xs text-muted-foreground sm:inline">
-            {note ? <Trans>Only members see notes</Trans> : <Trans>Type / for canned replies</Trans>}
-          </span>
+          {!note && emailTo ? (
+            <span
+              className="ml-auto flex min-w-0 items-center gap-1 text-xs text-muted-foreground"
+              data-testid="composer-email-to"
+            >
+              <MailIcon className="size-3.5 shrink-0" />
+              <span className="truncate" title={t`Reply by e-mail to ${emailTo}`}>
+                <Trans>Reply by e-mail to {emailTo}</Trans>
+              </span>
+            </span>
+          ) : (
+            <span className="ml-auto hidden text-xs text-muted-foreground sm:inline">
+              {note ? <Trans>Only members see notes</Trans> : <Trans>Type / for canned replies</Trans>}
+            </span>
+          )}
         </div>
+        {!note && undeliverable && (
+          <p
+            className="flex items-start gap-1.5 border-b bg-destructive/5 px-3 py-1.5 text-xs text-destructive"
+            data-testid="composer-undeliverable"
+          >
+            <AlertCircleIcon className="mt-px size-3.5 shrink-0" />
+            <span>
+              <Trans>This address is undeliverable. Clear it on the contact before you reply.</Trans>
+            </span>
+          </p>
+        )}
         {menuOpen && (
           <ul
             role="listbox"
@@ -251,7 +274,7 @@ export const Composer = forwardRef<ComposerHandle, { conversationId: string }>(f
           >
             <PaperclipIcon />
           </Button>
-          <ErrorLine error={send.error} className="min-w-0 flex-1 truncate text-xs" />
+          <ErrorLine error={send.error} className="line-clamp-3 min-w-0 flex-1 text-xs" />
           <span className="ml-auto hidden items-center gap-1 text-xs text-muted-foreground sm:flex">
             <Kbd>{mod}</Kbd>
             <Kbd>Enter</Kbd>

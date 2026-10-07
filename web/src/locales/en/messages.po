@@ -60,6 +60,10 @@ msgstr "A file's content does not match its type. Check the file and try again."
 msgid "A language tag such as en or tr."
 msgstr "A language tag such as en or tr."
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "A username needs TLS or STARTTLS: the password is never sent unencrypted."
+msgstr "A username needs TLS or STARTTLS: the password is never sent unencrypted."
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Access"
 msgstr "Access"
@@ -71,6 +75,10 @@ msgstr "Access for {name}"
 #: src/components/settings/InboxesSettings.tsx
 msgid "Acme App"
 msgstr "Acme App"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Acme Support"
+msgstr "Acme Support"
 
 #: src/components/settings/ProfileSettings.tsx
 msgid "Add a passkey"
@@ -125,6 +133,11 @@ msgstr "All of its conversations are deleted with it."
 msgid "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
 msgstr "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
 
+#: src/components/common/text.ts
+#: src/components/settings/ChannelsSection.tsx
+msgid "Another channel already receives mail at this address."
+msgstr "Another channel already receives mail at this address."
+
 #: src/components/inbox/ConversationList.tsx
 msgid "Any label"
 msgstr "Any label"
@@ -171,6 +184,10 @@ msgstr "Assignee"
 msgid "Async"
 msgstr "Async"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "At most once per contact every (hours)"
+msgstr "At most once per contact every (hours)"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/inbox/Composer.tsx
 msgid "Attach files"
@@ -183,6 +200,15 @@ msgstr "Attachment"
 #: src/components/inbox/ContactPanel.tsx
 msgid "Attributes"
 msgstr "Attributes"
+
+#: src/components/inbox/MessageItem.tsx
+#: src/components/settings/ChannelsSection.tsx
+msgid "Auto-reply"
+msgstr "Auto-reply"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Automatic mail never triggers an automatic reply."
+msgstr "Automatic mail never triggers an automatic reply."
 
 #: src/components/inbox/InboxPage.tsx
 #: src/components/settings/InboxSettings.tsx
@@ -245,6 +271,10 @@ msgstr "Check your e-mail"
 #: src/components/AppShell.tsx
 msgid "Choose a workspace"
 msgstr "Choose a workspace"
+
+#: src/components/inbox/ContactPanel.tsx
+msgid "Clear"
+msgstr "Clear"
 
 #: src/components/inbox/ConversationList.tsx
 msgid "Clear filters"
@@ -377,10 +407,22 @@ msgstr "Delete this canned reply?"
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
 msgstr "Deletes its channels, conversations, messages and attachments. This cannot be undone."
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Display name"
+msgstr "Display name"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "DMARC failed"
+msgstr "DMARC failed"
+
 #. placeholder {0}: a.filename
 #: src/components/inbox/MessageItem.tsx
 msgid "Download {0}"
 msgstr "Download {0}"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Download the original e-mail (.eml)"
+msgstr "Download the original e-mail (.eml)"
 
 #: src/components/common/text.ts
 msgid "E-mail"
@@ -394,6 +436,10 @@ msgstr "E-mail address"
 #: src/components/inbox/ContactPanel.tsx
 msgid "E-mail addresses"
 msgstr "E-mail addresses"
+
+#: src/components/common/EmailHtml.tsx
+msgid "E-mail content"
+msgstr "E-mail content"
 
 #: src/components/settings/ProfileSettings.tsx
 msgid "E-mail language"
@@ -422,6 +468,22 @@ msgstr "Edit label"
 msgid "Edit labels"
 msgstr "Edit labels"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Encryption"
+msgstr "Encryption"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Enter a host name or IP address."
+msgstr "Enter a host name or IP address."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Enter a valid e-mail address, or leave it empty."
+msgstr "Enter a valid e-mail address, or leave it empty."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Enter a valid e-mail address."
+msgstr "Enter a valid e-mail address."
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Expected reply time (minutes)"
 msgstr "Expected reply time (minutes)"
@@ -438,13 +500,25 @@ msgstr "External ids"
 msgid "Filters"
 msgstr "Filters"
 
+#: src/components/inbox/MessageItem.tsx
+msgid "Fix the address or the channel's SMTP settings, then send the reply again."
+msgstr "Fix the address or the channel's SMTP settings, then send the reply again."
+
 #: src/components/settings/ApiKeysSettings.tsx
 msgid "For your backends and scripts. A key acts on this workspace only and cannot manage members or keys."
 msgstr "For your backends and scripts. A key acts on this workspace only and cannot manage members or keys."
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
+msgstr "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
+
 #: src/components/common/text.ts
 msgid "Friday"
 msgstr "Friday"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "From address (optional)"
+msgstr "From address (optional)"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/settings/InboxSettings.tsx
@@ -455,17 +529,25 @@ msgstr "General"
 msgid "Greeting"
 msgstr "Greeting"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Greets new conversations by e-mail, once per contact within the interval. Never sent to automatic mail or spam."
+msgstr "Greets new conversations by e-mail, once per contact within the interval. Never sent to automatic mail or spam."
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Hi! Ask us anything."
 msgstr "Hi! Ask us anything."
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Hide quoted text"
+msgstr "Hide quoted text"
 
 #: src/components/common/text.ts
 msgid "High"
 msgstr "High"
 
 #: src/components/settings/ChannelsSection.tsx
-msgid "How messages reach this inbox. Settings are stored as given for now."
-msgstr "How messages reach this inbox. Settings are stored as given for now."
+msgid "How messages reach this inbox. E-mail channels receive and send mail; the other kinds store their settings for now."
+msgstr "How messages reach this inbox. E-mail channels receive and send mail; the other kinds store their settings for now."
 
 #: src/components/common/index.tsx
 msgid "I saved it"
@@ -519,6 +601,10 @@ msgstr "It is removed from every conversation."
 msgid "It no longer exists or you cannot see it."
 msgstr "It no longer exists or you cannot see it."
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Keep"
+msgstr "Keep"
+
 #: src/components/settings/ApiKeysSettings.tsx
 msgid "Key name"
 msgstr "Key name"
@@ -557,6 +643,10 @@ msgstr "last used {used}"
 msgid "Live"
 msgstr "Live"
 
+#: src/components/inbox/MessageItem.tsx
+msgid "Load images"
+msgstr "Load images"
+
 #: src/components/inbox/ContactPanel.tsx
 #: src/components/inbox/ConversationList.tsx
 msgid "Load more"
@@ -581,6 +671,18 @@ msgstr "Lowercase letters, digits and dashes."
 #: src/components/settings/InboxesSettings.tsx
 msgid "Lowercase letters, digits and dashes. Used in addresses and the widget."
 msgstr "Lowercase letters, digits and dashes. Used in addresses and the widget."
+
+#: src/components/inbox/ConversationControls.tsx
+msgid "Mark as spam"
+msgstr "Mark as spam"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark or unmark as spam"
+msgstr "Mark or unmark as spam"
+
+#: src/components/inbox/ThreadView.tsx
+msgid "Marked as spam: left out of lists and counts, and never answered automatically."
+msgstr "Marked as spam: left out of lists and counts, and never answered automatically."
 
 #: src/components/inbox/ConversationList.tsx
 msgid "Me"
@@ -611,6 +713,10 @@ msgstr "Mode"
 #: src/components/common/text.ts
 msgid "Monday"
 msgstr "Monday"
+
+#: src/components/inbox/ConversationControls.tsx
+msgid "Move back to the inbox"
+msgstr "Move back to the inbox"
 
 #: src/components/AppShell.tsx
 #: src/components/settings/ProfileSettings.tsx
@@ -657,6 +763,10 @@ msgstr "New inbox"
 #: src/components/settings/LabelsSettings.tsx
 msgid "New label"
 msgstr "New label"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "New password"
+msgstr "New password"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Next conversation"
@@ -708,9 +818,21 @@ msgstr "No subject"
 msgid "None"
 msgstr "None"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "None (local relays and test servers only)"
+msgstr "None (local relays and test servers only)"
+
 #: src/components/common/text.ts
 msgid "Normal"
 msgstr "Normal"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Not delivered"
+msgstr "Not delivered"
+
+#: src/components/inbox/ConversationControls.tsx
+msgid "Not spam"
+msgstr "Not spam"
 
 #: src/components/inbox/Composer.tsx
 msgid "Note"
@@ -720,6 +842,7 @@ msgstr "Note"
 msgid "Nothing matches your search."
 msgstr "Nothing matches your search."
 
+#: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/InboxSettings.tsx
 msgid "Off"
 msgstr "Off"
@@ -728,6 +851,7 @@ msgstr "Off"
 msgid "Offline"
 msgstr "Offline"
 
+#: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/InboxSettings.tsx
 msgid "On"
 msgstr "On"
@@ -743,6 +867,11 @@ msgstr "Only members see notes"
 #: src/components/common/text.ts
 msgid "Open"
 msgstr "Open"
+
+#. placeholder {0}: a.filename
+#: src/components/inbox/MessageItem.tsx
+msgid "Open {0}"
+msgstr "Open {0}"
 
 #: src/components/settings/InboxSettings.tsx
 msgid "Opens"
@@ -772,6 +901,14 @@ msgstr "Passkey name"
 msgid "Passkeys"
 msgstr "Passkeys"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Password"
+msgstr "Password"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Password set"
+msgstr "Password set"
+
 #: src/components/common/text.ts
 msgid "Pending"
 msgstr "Pending"
@@ -784,6 +921,14 @@ msgstr "Pick a color"
 #: src/components/inbox/InboxPage.tsx
 msgid "Pick a conversation"
 msgstr "Pick a conversation"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Pick a TLS mode."
+msgstr "Pick a TLS mode."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Port"
+msgstr "Port"
 
 #: src/components/settings/LabelsSettings.tsx
 msgid "Preview"
@@ -800,6 +945,18 @@ msgstr "Priority"
 #: src/components/settings/ProfileSettings.tsx
 msgid "Profile"
 msgstr "Profile"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "receives only, no SMTP account"
+msgstr "receives only, no SMTP account"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Receiving"
+msgstr "Receiving"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Remote images can tell the sender that you opened the mail."
+msgstr "Remote images can tell the sender that you opened the mail."
 
 #: src/components/settings/ChannelsSection.tsx
 #: src/components/settings/MembersSettings.tsx
@@ -842,10 +999,26 @@ msgstr "Removed member"
 msgid "Reopen"
 msgstr "Reopen"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Replace"
+msgstr "Replace"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Replies go out through your own SMTP account. Leave the host empty to only receive mail."
+msgstr "Replies go out through your own SMTP account. Leave the host empty to only receive mail."
+
+#: src/components/inbox/ContactPanel.tsx
+msgid "Replies to this address are refused until you clear it."
+msgstr "Replies to this address are refused until you clear it."
+
 #: src/components/inbox/Composer.tsx
 #: src/components/inbox/ConversationList.tsx
 msgid "Reply"
 msgstr "Reply"
+
+#: src/components/inbox/Composer.tsx
+msgid "Reply by e-mail to {emailTo}"
+msgstr "Reply by e-mail to {emailTo}"
 
 #: src/components/AppShell.tsx
 msgid "Retry now"
@@ -908,6 +1081,10 @@ msgstr "Saved"
 msgid "Saved answers"
 msgstr "Saved answers"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Saving removes the stored password."
+msgstr "Saving removes the stored password."
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search"
 msgstr "Search"
@@ -925,9 +1102,30 @@ msgstr "Send"
 msgid "Send a new code"
 msgstr "Send a new code"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Send an auto-reply"
+msgstr "Send an auto-reply"
+
 #: src/components/auth/SignInPage.tsx
 msgid "Send me a code"
 msgstr "Send me a code"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Sending"
+msgstr "Sending"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Sending by e-mail…"
+msgstr "Sending by e-mail…"
+
+#. placeholder {0}: e.smtp.host
+#: src/components/settings/ChannelsSection.tsx
+msgid "sends through {0}"
+msgstr "sends through {0}"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Sent by e-mail"
+msgstr "Sent by e-mail"
 
 #: src/components/AppShell.tsx
 #: src/components/settings/SettingsLayout.tsx
@@ -943,9 +1141,17 @@ msgid "Shortcut"
 msgstr "Shortcut"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Show or hide quoted text"
+msgstr "Show or hide quoted text"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/components/inbox/ThreadView.tsx
 msgid "Show or hide the contact"
 msgstr "Show or hide the contact"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Show quoted text"
+msgstr "Show quoted text"
 
 #: src/components/settings/InboxSettings.tsx
 msgid "Shown to contacts in async mode. Leave empty to hide it."
@@ -984,6 +1190,10 @@ msgstr "Since {since}"
 msgid "Slug"
 msgstr "Slug"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "SMTP host"
+msgstr "SMTP host"
+
 #: src/components/inbox/ConversationControls.tsx
 msgid "Snooze until"
 msgstr "Snooze until"
@@ -1004,6 +1214,15 @@ msgstr "Something went wrong on the server. Try again."
 msgid "Sort conversations by topic. Each label also gets its own view in the sidebar."
 msgstr "Sort conversations by topic. Each label also gets its own view in the sidebar."
 
+#: src/components/AppShell.tsx
+#: src/components/inbox/ConversationControls.tsx
+msgid "Spam"
+msgstr "Spam"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "STARTTLS (port 587)"
+msgstr "STARTTLS (port 587)"
+
 #: src/components/inbox/ConversationControls.tsx
 msgid "Status"
 msgstr "Status"
@@ -1011,6 +1230,10 @@ msgstr "Status"
 #: src/components/common/text.ts
 msgid "Sunday"
 msgstr "Sunday"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Support address"
+msgstr "Support address"
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "Support e-mail"
@@ -1025,12 +1248,21 @@ msgid "teammate@company.com"
 msgstr "teammate@company.com"
 
 #: src/components/settings/CannedRepliesSettings.tsx
+#: src/components/settings/ChannelsSection.tsx
 msgid "Text"
 msgstr "Text"
 
 #: src/components/settings/CannedRepliesSettings.tsx
 msgid "Thanks for writing"
 msgstr "Thanks for writing"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Thanks for writing. We usually answer within a day."
+msgstr "Thanks for writing. We usually answer within a day."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "The channel name when empty."
+msgstr "The channel name when empty."
 
 #: src/components/auth/SignInPage.tsx
 msgid "The code is wrong or has expired."
@@ -1056,6 +1288,18 @@ msgstr "The passkey sign-in did not complete. Try again or use an e-mailed code.
 msgid "The passkey was not added. Try again."
 msgstr "The passkey was not added. Try again."
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "The password is stored encrypted and never shown again."
+msgstr "The password is stored encrypted and never shown again."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "The password is too long."
+msgstr "The password is too long."
+
+#: src/components/inbox/MessageItem.tsx
+msgid "The sender's domain did not authorize this mail. It may be forged."
+msgstr "The sender's domain did not authorize this mail. It may be forged."
+
 #: src/components/settings/MembersSettings.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Their conversations stay; they lose access at once."
@@ -1063,6 +1307,10 @@ msgstr "Their conversations stay; they lose access at once."
 #: src/components/settings/InboxSettings.tsx
 msgid "There are no agents in this workspace."
 msgstr "There are no agents in this workspace."
+
+#: src/components/inbox/Composer.tsx
+msgid "This address is undeliverable. Clear it on the contact before you reply."
+msgstr "This address is undeliverable. Clear it on the contact before you reply."
 
 #: src/components/settings/ProfileSettings.tsx
 msgid "This browser does not support passkeys."
@@ -1075,6 +1323,14 @@ msgstr "This conflicts with something that already exists."
 #: src/components/inbox/ThreadView.tsx
 msgid "This conversation is not available"
 msgstr "This conversation is not available"
+
+#: src/components/common/text.ts
+msgid "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
+msgstr "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
+
+#: src/components/common/text.ts
+msgid "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
+msgstr "This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again."
 
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
@@ -1103,6 +1359,10 @@ msgstr "Times are in the inbox's time zone. When off, the inbox counts as always
 #: src/components/settings/CannedRepliesSettings.tsx
 msgid "Title"
 msgstr "Title"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "TLS (port 465)"
+msgstr "TLS (port 465)"
 
 #: src/components/ui/sidebar.tsx
 msgid "Toggle sidebar"
@@ -1147,6 +1407,14 @@ msgid "Unassigned"
 msgstr "Unassigned"
 
 #: src/components/inbox/ContactPanel.tsx
+msgid "Undeliverable: bounced, {since}"
+msgstr "Undeliverable: bounced, {since}"
+
+#: src/components/inbox/ContactPanel.tsx
+msgid "Undeliverable: marked as spam by the recipient, {since}"
+msgstr "Undeliverable: marked as spam by the recipient, {since}"
+
+#: src/components/inbox/ContactPanel.tsx
 #: src/components/inbox/ConversationList.tsx
 #: src/components/inbox/ThreadView.tsx
 msgid "Unnamed contact"
@@ -1160,6 +1428,18 @@ msgstr "Unread"
 msgid "Urgent"
 msgstr "Urgent"
 
+#: src/components/settings/ChannelsSection.tsx
+msgid "Use 1 to 8760 hours."
+msgstr "Use 1 to 8760 hours."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Use a port from 1 to 65535."
+msgstr "Use a port from 1 to 65535."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Use at most 200 characters."
+msgstr "Use at most 200 characters."
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Use business hours"
 msgstr "Use business hours"
@@ -1167,6 +1447,10 @@ msgstr "Use business hours"
 #: src/components/inbox/InboxPage.tsx
 msgid "Use j and k to move through the list, ? for all shortcuts."
 msgstr "Use j and k to move through the list, ? for all shortcuts."
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Username"
+msgstr "Username"
 
 #: src/components/auth/SignInPage.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -1179,6 +1463,10 @@ msgstr "Web chat"
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Wednesday"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "When your provider sends from another address. Replies still come to the support address."
+msgstr "When your provider sends from another address. Replies still come to the support address."
 
 #: src/components/settings/MembersSettings.tsx
 msgid "Withdraw"
@@ -1220,6 +1508,10 @@ msgstr "Write a reply"
 #: src/components/inbox/Composer.tsx
 msgid "Write a reply…"
 msgstr "Write a reply…"
+
+#: src/components/settings/ChannelsSection.tsx
+msgid "Write the auto-reply, or turn it off."
+msgstr "Write the auto-reply, or turn it off."
 
 #: src/components/AppShell.tsx
 msgid "You are not a member of any workspace"

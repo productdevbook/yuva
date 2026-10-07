@@ -39,6 +39,11 @@ export function useErrorText() {
   const { t } = useLingui()
   return (err: unknown): string => {
     if (!(err instanceof ApiError)) return t`Could not reach the server. Check your connection and try again.`
+    if (err.code === "email_undeliverable")
+      return t`This e-mail address bounced or complained, so the reply was not sent. Clear it on the contact to send again.`
+    if (err.code === "email_not_configured")
+      return t`This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings.`
+    if (err.code === "email_address_taken") return t`Another channel already receives mail at this address.`
     if (err.code === "attachment_type_mismatch") return t`A file's content does not match its type. Check the file and try again.`
     switch (err.status) {
       case 400:
