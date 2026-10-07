@@ -282,7 +282,7 @@ func TestContactMergeRules(t *testing.T) {
 	anon := ct.session(h, map[string]any{})
 	conv := anon.start("hello from a visitor")
 	promoted := ct.session(h, map[string]any{
-		"identity_token": ct.token(h, map[string]any{"sub": "u-1", "name": "Ada Lovelace", "email": "ada@example.com", "locale": "tr", "attrs": map[string]any{"plan": "pro"}}),
+		"identity_token": ct.token(h, map[string]any{"sub": "u-1", "name": "Ada Lovelace", "email": "ada@example.com", "email_verified": true, "locale": "tr", "attrs": map[string]any{"plan": "pro"}}),
 		"visitor_id":     anon.visitor,
 	})
 	if promoted.contactID != anon.contactID {
@@ -321,7 +321,7 @@ func TestContactMergeRules(t *testing.T) {
 		}
 	}
 
-	byEmail := ct.session(h, map[string]any{"identity_token": ct.token(h, map[string]any{"sub": "u-3", "email": "AYSE@example.com"})})
+	byEmail := ct.session(h, map[string]any{"identity_token": ct.token(h, map[string]any{"sub": "u-3", "email": "AYSE@example.com", "email_verified": true})})
 	if byEmail.contactID != ct.contact {
 		t.Fatalf("token e-mail did not find the existing contact: %s vs %s", byEmail.contactID, ct.contact)
 	}
@@ -337,6 +337,63 @@ func TestContactMergeRules(t *testing.T) {
 	c = ct.owner.expect(http.StatusOK, "GET", "/v1/contacts/"+typed.contactID, nil)
 	if len(c.body["emails"].([]any)) != 0 {
 		t.Fatalf("a typed e-mail became a contact address: %s", c.raw)
+	}
+}
+
+func TestIdentityTokenEmailLinking(t *testing.T) {
+	h := newHarness(t)
+	ct := newChatTeam(t, h, "live", true)
+	addr := unique("first") + "@example.com"
+	first := ct.session(h, map[string]any{"identity_token": ct.token(h, map[string]any{"sub": "u-1", "name": "First", "email": addr, "email_verified": true, "attrs": map[string]any{"plan": "pro"}})})
+	contact := func(id string) response {
+		return ct.owner.expect(http.StatusOK, "GET", "/v1/contacts/"+id, nil)
+	}
+	if got := contact(first.contactID); len(got.body["emails"].([]any)) != 1 {
+		t.Fatalf("verified e-mail not stored: %s", got.raw)
+	}
+
+	second := ct.session(h, map[string]any{"identity_token": ct.token(h, map[string]any{"sub": "u-2", "name": "Second", "email": addr, "email_verified": true, "attrs": map[string]any{"plan": "free"}})})
+	if second.contactID == first.contactID {
+		t.Fatal("a second external id was linked to a contact that already has one in this inbox")
+	}
+	got := contact(first.contactID)
+	if got.str("name") != "First" || got.body["attributes"].(map[string]any)["plan"] != "pro" || len(got.body["external_ids"].([]any)) != 1 {
+		t.Fatalf("the first contact changed: %s", got.raw)
+	}
+	if again := ct.session(h, map[string]any{"identity_token": ct.token(h, map[string]any{"sub": "u-1"})}); again.contactID != first.contactID {
+		t.Fatal("u-1 no longer finds its contact")
+	}
+
+	if unverified := ct.session(h, map[string]any{"identity_token": ct.token(h, map[string]any{"sub": "u-3", "email": "AYSE@example.com"})}); unverified.contactID == ct.contact {
+		t.Fatal("an unverified e-mail linked an existing contact")
+	}
+	plain := unique("plain") + "@example.com"
+	stored := ct.session(h, map[string]any{"identity_token": ct.token(h, map[string]any{"sub": "u-4", "email": plain, "email_verified": false})})
+	got = contact(stored.contactID)
+	if len(got.body["emails"].([]any)) != 0 || stored.body["contact"].(map[string]any)["typed_email"] != plain {
+		t.Fatalf("an unverified e-mail: %s %v", got.raw, stored.body["contact"])
+	}
+	if again := ct.session(h, map[string]any{"identity_token": ct.token(h, map[string]any{"sub": "u-5", "email": plain, "email_verified": true})}); again.contactID == stored.contactID {
+		t.Fatal("an address stored from an unverified claim linked another identity")
+	}
+	if r := ct.sessionStatus(h, ct.origin, map[string]any{"identity_token": ct.token(h, map[string]any{"sub": "u-6", "email": plain, "email_verified": "yes"})}); r.status != http.StatusUnauthorized {
+		t.Fatalf("email_verified as a string: %d %s", r.status, r.raw)
+	}
+
+	other := ct.owner.expect(http.StatusCreated, "POST", "/v1/inboxes", map[string]any{"name": "Other app", "slug": unique("other")}).body["inbox"].(map[string]any)["id"].(string)
+	shared := unique("shared") + "@example.com"
+	elsewhere := ct.owner.expect(http.StatusCreated, "POST", "/v1/contacts", map[string]any{
+		"name": "Kept", "emails": []string{shared}, "attributes": map[string]any{"plan": "team"},
+		"external_ids": []map[string]any{{"inbox_id": other, "external_id": "x-1"}},
+	}).str("id")
+	linked := ct.session(h, map[string]any{"identity_token": ct.token(h, map[string]any{"sub": "u-7", "name": "Changed", "email": shared, "email_verified": true, "attrs": map[string]any{"plan": "free", "seats": 3}})})
+	if linked.contactID != elsewhere {
+		t.Fatal("a verified e-mail did not link a contact known only in another inbox")
+	}
+	got = contact(elsewhere)
+	attrs := got.body["attributes"].(map[string]any)
+	if got.str("name") != "Kept" || attrs["plan"] != "team" || attrs["seats"] != float64(3) || len(got.body["external_ids"].([]any)) != 2 {
+		t.Fatalf("contact of another inbox after linking: %s", got.raw)
 	}
 }
 

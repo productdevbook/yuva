@@ -186,8 +186,9 @@ func (s *Server) anonymousContact(ctx context.Context, q *store.Queries, inbox s
 }
 
 // identifyContact finds the contact of a verified identity token: by external id, then by the
-// token's e-mail, then the anonymous visitor of this browser, or a new contact. An anonymous
-// visitor of this browser that is not that contact is merged into it.
+// token's verified e-mail on a contact without an external id in this inbox, then the anonymous
+// visitor of this browser, or a new contact. An anonymous visitor of this browser that is not that
+// contact is merged into it.
 func (s *Server) identifyContact(ctx context.Context, q *store.Queries, events *eventBatch, inbox store.Inbox, c identityClaims, visitor string) (contactRow, error) {
 	ws := inbox.WorkspaceID
 	now := s.now()
@@ -195,16 +196,33 @@ func (s *Server) identifyContact(ctx context.Context, q *store.Queries, events *
 	if visitor != "" {
 		id, err := q.GetChatVisitor(ctx, store.GetChatVisitorParams{WorkspaceID: ws, InboxID: inbox.ID, VisitorHash: hashSecret(visitor)})
 		if err == nil {
-			visitorContact = &id
+			inInbox, _, err := externalIDPlaces(ctx, q, ws, inbox.ID, id)
+			if err != nil {
+				return contactRow{}, err
+			}
+			if !inInbox {
+				visitorContact = &id
+			}
 		} else if !store.IsNotFound(err) {
 			return contactRow{}, err
 		}
 	}
-	addExternal := false
+	addExternal, fillOnly := false, false
 	id, err := q.GetContactIDByExternalID(ctx, store.GetContactIDByExternalIDParams{WorkspaceID: ws, InboxID: inbox.ID, ExternalID: c.sub})
-	if store.IsNotFound(err) && c.email != "" {
-		addExternal = true
-		id, err = q.GetContactIDByEmail(ctx, store.GetContactIDByEmailParams{WorkspaceID: ws, Email: c.email})
+	if store.IsNotFound(err) && c.emailVerified {
+		owner, oerr := q.GetContactIDByEmail(ctx, store.GetContactIDByEmailParams{WorkspaceID: ws, Email: c.email})
+		if oerr != nil && !store.IsNotFound(oerr) {
+			return contactRow{}, oerr
+		}
+		if oerr == nil {
+			inInbox, elsewhere, xerr := externalIDPlaces(ctx, q, ws, inbox.ID, owner)
+			if xerr != nil {
+				return contactRow{}, xerr
+			}
+			if !inInbox {
+				addExternal, fillOnly, id, err = true, elsewhere, owner, nil
+			}
+		}
 	}
 	if store.IsNotFound(err) && visitorContact != nil {
 		addExternal, id, err = true, *visitorContact, nil
@@ -239,7 +257,13 @@ func (s *Server) identifyContact(ctx context.Context, q *store.Queries, events *
 	}
 	if c.email != "" {
 		owner, err := q.GetContactIDByEmail(ctx, store.GetContactIDByEmailParams{WorkspaceID: ws, Email: c.email})
-		if store.IsNotFound(err) {
+		switch {
+		case err != nil && !store.IsNotFound(err):
+			return contactRow{}, err
+		case err == nil && owner != id:
+			s.log.InfoContext(ctx, "identity token e-mail belongs to another contact", "contact_id", id, "owner_id", owner)
+		case err == nil:
+		case c.emailVerified:
 			n, err := q.CountContactEmails(ctx, store.CountContactEmailsParams{WorkspaceID: ws, ContactID: id})
 			if err != nil {
 				return contactRow{}, err
@@ -247,17 +271,19 @@ func (s *Server) identifyContact(ctx context.Context, q *store.Queries, events *
 			if err := q.AddContactEmail(ctx, store.AddContactEmailParams{WorkspaceID: ws, ContactID: id, Email: c.email, Position: int32(n)}); err != nil {
 				return contactRow{}, err
 			}
-		} else if err != nil {
-			return contactRow{}, err
-		} else if owner != id {
-			s.log.InfoContext(ctx, "identity token e-mail belongs to another contact", "contact_id", id, "owner_id", owner)
+		case cur.TypedEmail == nil || *cur.TypedEmail != c.email:
+			r, err := q.SetContactTypedEmail(ctx, store.SetContactTypedEmailParams{WorkspaceID: ws, ID: id, TypedEmail: &c.email, Now: now})
+			if err != nil {
+				return contactRow{}, err
+			}
+			cur = store.LockContactRow(r)
 		}
 	}
 	name, locale, attrs := cur.Name, cur.Locale, cur.Attributes
-	if c.name != nil && *c.name != "" {
+	if c.name != nil && *c.name != "" && (!fillOnly || name == "") {
 		name = *c.name
 	}
-	if c.locale != nil {
+	if c.locale != nil && (!fillOnly || locale == nil) {
 		locale = c.locale
 	}
 	if c.attrs != nil {
@@ -266,10 +292,15 @@ func (s *Server) identifyContact(ctx context.Context, q *store.Queries, events *
 		var add map[string]any
 		_ = json.Unmarshal(c.attrs, &add)
 		for k, v := range add {
-			merged[k] = v
+			if _, taken := merged[k]; !fillOnly || !taken {
+				merged[k] = v
+			}
 		}
 		if attrs = mustJSON(merged); len(attrs) > maxAttributesBytes {
 			attrs = c.attrs
+			if fillOnly {
+				attrs = cur.Attributes
+			}
 		}
 	}
 	r, err := q.SetContactIdentity(ctx, store.SetContactIdentityParams{WorkspaceID: ws, ID: id, Name: name, Locale: locale, Attributes: attrs, Now: now})
@@ -285,6 +316,20 @@ func (s *Server) identifyContact(ctx context.Context, q *store.Queries, events *
 	}
 	events.add(realtime.ContactUpdated, nil, nil, body)
 	return contactRow(r), nil
+}
+
+// externalIDPlaces reports whether a contact has an external id in the inbox and whether it has
+// any in another inbox.
+func externalIDPlaces(ctx context.Context, q *store.Queries, ws, inboxID, contactID uuid.UUID) (inInbox, elsewhere bool, err error) {
+	rows, err := q.ListContactExternalIDs(ctx, store.ListContactExternalIDsParams{WorkspaceID: ws, ContactIds: []uuid.UUID{contactID}})
+	for _, r := range rows {
+		if r.InboxID == inboxID {
+			inInbox = true
+		} else {
+			elsewhere = true
+		}
+	}
+	return inInbox, elsewhere, err
 }
 
 // mergeContact moves an anonymous visitor's conversations, messages and verified addresses to the

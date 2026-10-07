@@ -130,14 +130,19 @@ not printed; rotate it when an app needs one.
 
 The host app's backend knows who its user is; Yuva trusts it through a short-lived identity token:
 a JWT (HS256) signed with the inbox's identity secret, with `sub` (the host's user id), optional
-`email`, `name`, `locale` and `attrs` (plan, app version, anything the panel should show), and
-`exp` at most 10 minutes ahead. The client exchanges it at `/client/v1/session` for a contact
+`email`, `email_verified`, `name`, `locale` and `attrs` (plan, app version, anything the panel
+should show), and `exp` at most 10 minutes ahead. The client exchanges it at `/client/v1/session` for a contact
 session. `sdk/go` signs these tokens and verifies webhooks.
 
 The token is checked strictly: `alg` must be `HS256` (anything else, `none` included, is
 refused), the signature must match the inbox secret, `exp` is required and at most 10 minutes
 ahead, `sub` is required. The contact is found by `sub` among the inbox's external ids, then by the
-token's `email`, or created; `name`, `email`, `locale` and `attrs` are saved on it. Contact
+token's `email` when the token says `email_verified: true` and the contact with that address has no
+external id in this inbox, or created; a contact already bound to another `sub` of the inbox is
+never taken over. `name`, `locale` and `attrs` are saved on the contact; when it was found by
+e-mail and has external ids in other inboxes, they only fill what is missing. A verified `email` becomes
+one of the contact's addresses. Unverified e-mails (`email_verified` absent or false) are stored
+like a typed address but never used to link a contact. Contact
 sessions are opaque tokens, stored as hashes, valid for 7 days after their last use.
 
 Channels can allow anonymous visitors (web chat on a public site). An anonymous visitor is a

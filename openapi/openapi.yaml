@@ -2542,8 +2542,10 @@ paths:
 
         - With `identity_token` (a JWT, HS256, signed by the host backend with the inbox's identity
           secret; see `sdk/go`): the contact is found by `sub` (the host's user id, per inbox),
-          then by the token's `email`, or created. `name`, `email`, `locale` and `attrs` from the
-          token are saved on the contact. `exp` is required and at most 10 minutes ahead; tokens
+          then by the token's `email` when it carries `email_verified: true` and that contact has
+          no external id in this inbox, or created. `name`, `locale` and `attrs` from the token
+          are saved on the contact; a verified `email` becomes one of its addresses, an unverified
+          one is kept like a typed address and never used to find a contact. `exp` is required and at most 10 minutes ahead; tokens
           with another `alg`, a wrong signature or a missing or past `exp` answer
           `401 invalid_identity_token`. When `visitor_id` names an anonymous visitor of this inbox,
           that visitor's conversations move to the identified contact and the visitor id ends.

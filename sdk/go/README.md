@@ -17,11 +17,12 @@ rotated; keep it on the server.
 import "github.com/productdevbook/yuva/sdk/go/identity"
 
 token, err := identity.Sign(os.Getenv("YUVA_IDENTITY_SECRET"), identity.Claims{
-	Subject: user.ID,         // required: your user id
-	Email:   user.Email,      // trusted by Yuva
-	Name:    user.Name,
-	Locale:  "en",
-	Attrs:   map[string]any{"plan": user.Plan},
+	Subject:       user.ID, // required: your user id
+	Email:         user.Email,
+	EmailVerified: user.EmailConfirmed, // only then does Yuva match the address to a contact
+	Name:          user.Name,
+	Locale:        "en",
+	Attrs:         map[string]any{"plan": user.Plan},
 })
 // Hand the token to the widget or the mobile SDK.
 ```

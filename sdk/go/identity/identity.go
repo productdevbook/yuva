@@ -28,9 +28,14 @@ type Claims struct {
 	// Subject is the host app's user id. Required; the same id always finds the same contact in
 	// the inbox.
 	Subject string
-	// Email is trusted by Yuva: a contact with this address becomes this user.
+	// Email is stored on the contact. Yuva links it to an existing contact with this address
+	// only when EmailVerified is set.
 	Email string
-	Name  string
+	// EmailVerified says the host app has verified that the user owns Email. Leave it false
+	// unless the address was confirmed; an unverified address is kept apart and never used to
+	// find a contact.
+	EmailVerified bool
+	Name          string
 	// Locale is a language tag such as "en" or "tr".
 	Locale string
 	// Attrs are shown to members next to the conversation (plan, app version, …); at most 16 KiB
@@ -43,13 +48,14 @@ type Claims struct {
 }
 
 type payload struct {
-	Sub    string         `json:"sub"`
-	Email  string         `json:"email,omitempty"`
-	Name   string         `json:"name,omitempty"`
-	Locale string         `json:"locale,omitempty"`
-	Attrs  map[string]any `json:"attrs,omitempty"`
-	Iat    int64          `json:"iat"`
-	Exp    int64          `json:"exp"`
+	Sub           string         `json:"sub"`
+	Email         string         `json:"email,omitempty"`
+	EmailVerified bool           `json:"email_verified,omitempty"`
+	Name          string         `json:"name,omitempty"`
+	Locale        string         `json:"locale,omitempty"`
+	Attrs         map[string]any `json:"attrs,omitempty"`
+	Iat           int64          `json:"iat"`
+	Exp           int64          `json:"exp"`
 }
 
 var header = base64.RawURLEncoding.EncodeToString([]byte(`{"alg":"HS256","typ":"JWT"}`))
@@ -75,7 +81,7 @@ func Sign(secret string, c Claims) (string, error) {
 		iat = time.Now()
 	}
 	body, err := json.Marshal(payload{
-		Sub: sub, Email: c.Email, Name: c.Name, Locale: c.Locale, Attrs: c.Attrs,
+		Sub: sub, Email: c.Email, EmailVerified: c.EmailVerified, Name: c.Name, Locale: c.Locale, Attrs: c.Attrs,
 		Iat: iat.Unix(), Exp: iat.Add(ttl).Unix(),
 	})
 	if err != nil {

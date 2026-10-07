@@ -25,8 +25,9 @@ func errIdentity(detail string) *apiError {
 }
 
 type identityClaims struct {
-	sub    string
-	email  string
+	sub           string
+	email         string
+	emailVerified bool
 	name   *string
 	locale *string
 	attrs  []byte
@@ -142,6 +143,13 @@ func verifyIdentityToken(token string, secret []byte, now time.Time) (identityCl
 			}
 			c.email = e
 		}
+	}
+	if v, present := claims["email_verified"]; present && v != nil {
+		b, ok := v.(bool)
+		if !ok {
+			return c, errIdentity("email_verified must be a boolean")
+		}
+		c.emailVerified = b && c.email != ""
 	}
 	if v, present := claims["name"]; present && v != nil {
 		s, ok := v.(string)
