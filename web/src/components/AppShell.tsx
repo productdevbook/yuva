@@ -7,12 +7,13 @@ import {
   KeyboardIcon,
   LogOutIcon,
   RefreshCwIcon,
+  WifiOffIcon,
   SettingsIcon,
   TagIcon,
   UserIcon,
   UserXIcon,
 } from "lucide-react"
-import { useCallback } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Link, Navigate, Outlet, useLocation, useNavigate } from "react-router"
 
 import { EmptyState, PersonAvatar } from "@/components/common"
@@ -38,6 +39,7 @@ import {
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
@@ -46,8 +48,8 @@ import {
 } from "@/components/ui/sidebar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useVersion, type Me } from "@/lib/api"
-import { useInboxes, useLabels } from "@/lib/queries"
-import { useRealtime, useRealtimeStatus } from "@/lib/realtime"
+import { useCounts, useInboxes, useLabels } from "@/lib/queries"
+import { reconnectNow, useRealtime, useRealtimeStatus } from "@/lib/realtime"
 import { cn } from "@/lib/utils"
 import { pickMembership, SessionProvider, useMe, useSession, useSignOut, useWorkspaceChoice } from "@/lib/session"
 
@@ -68,18 +70,26 @@ const viewIcons: Record<View, React.ComponentType> = {
 function NavLink({
   to,
   active,
+  count,
   children,
 }: {
   to: string
   active: boolean
+  count?: number
   children: React.ReactNode
 }) {
   const { isMobile, setOpenMobile } = useSidebar()
+  const { i18n } = useLingui()
   return (
     <SidebarMenuItem>
       <SidebarMenuButton isActive={active} render={<Link to={to} onClick={() => isMobile && setOpenMobile(false)} />}>
         {children}
       </SidebarMenuButton>
+      {!!count && (
+        <SidebarMenuBadge className="text-muted-foreground" data-testid="nav-count">
+          {new Intl.NumberFormat(i18n.locale, { notation: "compact" }).format(count)}
+        </SidebarMenuBadge>
+      )}
     </SidebarMenuItem>
   )
 }
@@ -89,6 +99,9 @@ function Nav() {
   const labels = useViewLabels()
   const inboxes = useInboxes().data ?? []
   const tags = useLabels().data ?? []
+  const counts = useCounts().data
+  const inboxCounts = new Map(counts?.inboxes.map((x) => [x.id, x.count]))
+  const labelCounts = new Map(counts?.labels.map((x) => [x.id, x.count]))
   const first = pathname.split("/")[1]
   const second = pathname.split("/")[2]
   return (
@@ -99,7 +112,7 @@ function Nav() {
             {VIEWS.map((v) => {
               const Icon = viewIcons[v]
               return (
-                <NavLink key={v} to={`/${v}`} active={first === v}>
+                <NavLink key={v} to={`/${v}`} active={first === v} count={counts?.[v]}>
                   <Icon />
                   <span>{labels[v]}</span>
                 </NavLink>
@@ -116,7 +129,12 @@ function Nav() {
           <SidebarGroupContent>
             <SidebarMenu>
               {inboxes.map((inbox) => (
-                <NavLink key={inbox.id} to={`/inbox/${inbox.id}`} active={first === "inbox" && second === inbox.id}>
+                <NavLink
+                  key={inbox.id}
+                  to={`/inbox/${inbox.id}`}
+                  active={first === "inbox" && second === inbox.id}
+                  count={inboxCounts.get(inbox.id)}
+                >
                   <span
                     className="size-2.5 shrink-0 rounded-sm"
                     style={{ backgroundColor: inbox.branding.color ?? "var(--muted-foreground)" }}
@@ -136,7 +154,12 @@ function Nav() {
           <SidebarGroupContent>
             <SidebarMenu>
               {tags.map((label) => (
-                <NavLink key={label.id} to={`/label/${label.id}`} active={first === "label" && second === label.id}>
+                <NavLink
+                  key={label.id}
+                  to={`/label/${label.id}`}
+                  active={first === "label" && second === label.id}
+                  count={labelCounts.get(label.id)}
+                >
                   <TagIcon style={{ color: label.color }} />
                   <span>{label.name}</span>
                 </NavLink>
@@ -264,6 +287,37 @@ function Footer() {
   )
 }
 
+function OfflineBanner() {
+  const live = useRealtimeStatus()
+  const [shown, setShown] = useState(false)
+  useEffect(() => {
+    if (live !== "offline") {
+      setShown(false)
+      return
+    }
+    const id = setTimeout(() => setShown(true), 1500)
+    return () => clearTimeout(id)
+  }, [live])
+  if (!shown) return null
+  return (
+    <div
+      role="status"
+      data-testid="offline-banner"
+      className="pointer-events-none fixed inset-x-0 top-14 z-50 flex justify-center px-4"
+    >
+      <div className="pointer-events-auto flex items-center gap-2 rounded-full border bg-background py-1 pr-1 pl-3 text-sm shadow-md">
+        <WifiOffIcon className="size-4 shrink-0 text-destructive" />
+        <span>
+          <Trans>Connection lost. Reconnecting…</Trans>
+        </span>
+        <Button variant="ghost" size="sm" className="rounded-full" onClick={reconnectNow}>
+          <Trans>Retry now</Trans>
+        </Button>
+      </div>
+    </div>
+  )
+}
+
 export function AppShell() {
   const sheet = useShortcutSheet()
   const { workspaceId, membership } = useSession()
@@ -290,6 +344,7 @@ export function AppShell() {
         <Outlet />
       </SidebarInset>
       <ShortcutSheet open={sheet.open} onOpenChange={sheet.setOpen} />
+      <OfflineBanner />
     </SidebarProvider>
   )
 }
@@ -364,7 +419,7 @@ export function Gate() {
       </FullPage>
     )
   }
-  if (me.error) {
+  if (me.error && !me.data) {
     return (
       <FullPage>
         <EmptyState icon={RefreshCwIcon} title={<Trans>Could not reach the server</Trans>}>

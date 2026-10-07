@@ -591,7 +591,8 @@ export interface paths {
         };
         /**
          * Find a contact by external id
-         * @description The contact a host app knows by `external_id` in the given inbox.
+         * @description The contact a host app knows by `external_id` in the given inbox. An inbox the caller
+         *     cannot see answers `404`.
          */
         get: operations["lookupContact"];
         put?: never;
@@ -638,12 +639,38 @@ export interface paths {
         /**
          * List conversations
          * @description Most recent activity (message or note) first, in the inboxes the caller can see. `q` is a
-         *     full-text search over the subject, the messages and notes, and the contact.
+         *     full-text search over the subject, the messages and notes, and the contact; a negated term
+         *     (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
+         *
+         *     Each item carries the contact (id, name, first e-mail address), a preview of the last
+         *     `message` (notes and events are not previewed) and `unread` for the calling member.
          */
         get: operations["listConversations"];
         put?: never;
         /** Start a conversation */
         post: operations["createConversation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/conversations/counts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count open conversations
+         * @description Open conversations in the inboxes the caller can see: all of them, those assigned to the
+         *     calling member (`0` for API keys), unassigned ones, and per inbox and per label. Inboxes and
+         *     labels without open conversations are left out of their lists.
+         */
+        get: operations["getConversationCounts"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -681,7 +708,9 @@ export interface paths {
         };
         /**
          * List a conversation's messages
-         * @description Oldest first, including notes and events.
+         * @description Messages, notes and events, oldest first by default. With `order=desc` the newest come
+         *     first and `next_cursor` pages backward, so a thread can load its latest page and then
+         *     older ones.
          */
         get: operations["listMessages"];
         put?: never;
@@ -693,12 +722,38 @@ export interface paths {
          *
          *     Send `multipart/form-data` to attach files: the fields of `MessageCreate` as form fields
          *     and up to 10 `files` parts. Each file must be within the server's size limit and have an
-         *     allowed content type.
+         *     allowed content type. The type is checked against the content: a file whose content does
+         *     not match its declared type (a text file sent as `image/png`) is refused with 415
+         *     `attachment_type_mismatch`; a file declared without a type or as
+         *     `application/octet-stream` gets the type detected from its content.
          *
          *     A repeated `client_id` in the same conversation returns the stored message with `200`
          *     instead of writing it again.
          */
         post: operations["createMessage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/conversations/{conversationId}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark a conversation read
+         * @description Moves the calling member's read cursor to `message_id`, or to the latest message, note or
+         *     event when it is absent. The cursor only moves forward; an older `message_id` leaves it
+         *     where it is. When it moves, a `conversation.read` event reaches the member's other
+         *     connections. Member sessions only.
+         */
+        post: operations["markConversationRead"];
         delete?: never;
         options?: never;
         head?: never;
@@ -714,7 +769,9 @@ export interface paths {
         };
         /**
          * Download an attachment
-         * @description Always served as a download (`Content-Disposition: attachment`).
+         * @description Always served as a download (`Content-Disposition: attachment`). Links cannot carry
+         *     headers, so the workspace can also be named with the `workspace_id` query parameter
+         *     instead of `Yuva-Workspace`.
          */
         get: operations["downloadAttachment"];
         put?: never;
@@ -855,7 +912,10 @@ export interface paths {
          *     increasing `id`; within a workspace ids are in commit order. Owners, admins and API keys
          *     receive every event of the workspace. Agents receive the events of the inboxes they can
          *     access, contact events, and `inbox_access.changed` events about themselves; their access is
-         *     re-read when such an event arrives and every 30 seconds.
+         *     re-read when such an event arrives and every 30 seconds. `inbox.created` reaches owners,
+         *     admins and API keys (an agent learns of a new inbox from `inbox_access.changed`);
+         *     `inbox.deleted` reaches everyone who could see the inbox. `conversation.read` reaches only
+         *     the connections of the member who read.
          *
          *     Resuming: after the replay (if any) the server sends `ready` with `last_event_id`, the
          *     stream position at that moment. Remember the larger of that value and the `id` of every
@@ -1301,10 +1361,78 @@ export interface components {
             /** @description Replaces the labels. */
             labels?: string[];
         };
+        /** @description The conversation's contact, enough for a list row. */
+        ConversationContact: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            /** @description The contact's first e-mail address; absent when none is known. */
+            email?: components["schemas"]["Email"];
+        };
+        /** @description The last `message` of a conversation, for a list row. */
+        MessagePreview: {
+            /** Format: uuid */
+            id: string;
+            kind: components["schemas"]["MessageKind"];
+            author_type: components["schemas"]["AuthorType"];
+            /** @description The plain-text body on one line, cut to 140 characters with `…` when longer. */
+            text: string;
+            /** Format: date-time */
+            created_at: string;
+        };
+        /** @description A conversation with what a list row shows. */
+        ConversationListItem: components["schemas"]["Conversation"] & {
+            contact: components["schemas"]["ConversationContact"];
+            last_message?: components["schemas"]["MessagePreview"];
+            /**
+             * @description A message or note from someone other than the calling member is newer than the
+             *     member's read cursor. Always `false` for API keys.
+             */
+            unread: boolean;
+        };
         ConversationPage: {
-            items: components["schemas"]["Conversation"][];
+            items: components["schemas"]["ConversationListItem"][];
             /** @description Absent on the last page. */
             next_cursor?: string;
+        };
+        CountByID: {
+            /** Format: uuid */
+            id: string;
+            /** Format: int64 */
+            count: number;
+        };
+        /** @description Open conversations in the inboxes the caller can see. */
+        ConversationCounts: {
+            /** Format: int64 */
+            all: number;
+            /** Format: int64 */
+            mine: number;
+            /** Format: int64 */
+            unassigned: number;
+            /** @description Per inbox id. */
+            inboxes: components["schemas"]["CountByID"][];
+            /** @description Per label id. */
+            labels: components["schemas"]["CountByID"][];
+        };
+        ConversationReadCreate: {
+            /**
+             * Format: uuid
+             * @description A message, note or event of the conversation; the latest when absent.
+             */
+            message_id?: string;
+        };
+        /** @description A member's read cursor in a conversation. */
+        ConversationRead: {
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: uuid */
+            member_id: string;
+            /**
+             * Format: uuid
+             * @description Absent when the conversation has nothing to read yet.
+             */
+            last_read_message_id?: string;
+            unread: boolean;
         };
         /**
          * @description `message` goes to or comes from the contact, `note` is for members only, `event` records a
@@ -1546,6 +1674,59 @@ export interface components {
             created_at: string;
             data: components["schemas"]["Inbox"];
         };
+        /** @description An inbox was created. */
+        InboxCreatedEvent: {
+            /** Format: int64 */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "inbox.created";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["Inbox"];
+        };
+        /** @description An inbox was deleted with its channels and conversations. */
+        InboxDeletedEvent: {
+            /** Format: int64 */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "inbox.deleted";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["InboxRef"];
+        };
+        /** @description The receiving member's read cursor moved, in this or another tab or device. */
+        ConversationReadEvent: {
+            /** Format: int64 */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "conversation.read";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["ConversationRead"];
+        };
         /** @description A member was given or lost access to an inbox. Reload the inboxes and conversations when it is about you. */
         InboxAccessChangedEvent: {
             /** Format: int64 */
@@ -1564,6 +1745,10 @@ export interface components {
             data: components["schemas"]["InboxAccessChange"];
         };
         ContactRef: {
+            /** Format: uuid */
+            id: string;
+        };
+        InboxRef: {
             /** Format: uuid */
             id: string;
         };
@@ -1593,7 +1778,7 @@ export interface components {
             type: "resync_required";
         };
         /** @description One server message on `/v1/realtime`, told apart by `type`. */
-        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
         Health: {
             /** @enum {string} */
             status: "ok";
@@ -2865,6 +3050,8 @@ export interface operations {
         parameters: {
             query?: {
                 inbox_id?: string;
+                /** @description Only this contact's conversations. A contact of another workspace answers `404`. */
+                contact_id?: string;
                 status?: components["schemas"]["ConversationStatus"];
                 /** @description A member id, `me` (member sessions only) or `unassigned`. */
                 assignee?: string;
@@ -2931,6 +3118,31 @@ export interface operations {
             404: components["responses"]["Problem"];
         };
     };
+    getConversationCounts: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The counts. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationCounts"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
     getConversation: {
         parameters: {
             query?: never;
@@ -2995,6 +3207,7 @@ export interface operations {
     listMessages: {
         parameters: {
             query?: {
+                order?: "asc" | "desc";
                 /** @description The `next_cursor` of the previous page. */
                 cursor?: components["parameters"]["Cursor"];
                 /** @description Page size, 1 to 100; 25 by default. */
@@ -3071,9 +3284,45 @@ export interface operations {
             415: components["responses"]["Problem"];
         };
     };
-    downloadAttachment: {
+    markConversationRead: {
         parameters: {
             query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ConversationReadCreate"];
+            };
+        };
+        responses: {
+            /** @description The member's read state. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationRead"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    downloadAttachment: {
+        parameters: {
+            query?: {
+                /** @description The workspace to act on, for links that cannot send `Yuva-Workspace`. */
+                workspace_id?: string;
+            };
             header?: {
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
@@ -3096,6 +3345,7 @@ export interface operations {
                     "*/*": string;
                 };
             };
+            400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];

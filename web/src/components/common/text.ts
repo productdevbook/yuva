@@ -39,6 +39,7 @@ export function useErrorText() {
   const { t } = useLingui()
   return (err: unknown): string => {
     if (!(err instanceof ApiError)) return t`Could not reach the server. Check your connection and try again.`
+    if (err.code === "attachment_type_mismatch") return t`A file's content does not match its type. Check the file and try again.`
     switch (err.status) {
       case 400:
         return t`Some of the values are not valid.`

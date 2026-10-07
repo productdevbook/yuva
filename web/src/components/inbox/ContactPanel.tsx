@@ -5,8 +5,9 @@ import { Link } from "react-router"
 import { ErrorLine, PersonAvatar } from "@/components/common"
 import { formatDateTime, formatShort, useEnumText } from "@/components/common/text"
 import { statusIcons } from "@/components/inbox/ConversationControls"
+import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useContact, useContactConversations, useInboxes } from "@/lib/queries"
+import { useContact, useConversations, useInboxes } from "@/lib/queries"
 import { cn } from "@/lib/utils"
 
 function Section({ title, children }: { title: React.ReactNode; children: React.ReactNode }) {
@@ -37,7 +38,7 @@ export function ContactPanel({
   const text = useEnumText()
   const contact = useContact(contactId)
   const inboxes = useInboxes().data ?? []
-  const others = useContactConversations(contact.data)
+  const others = useConversations({ contact_id: contactId })
   const c = contact.data
 
   if (contact.isPending) {
@@ -53,7 +54,7 @@ export function ContactPanel({
   const name = c.name || c.emails[0] || t`Unnamed contact`
   const since = formatDateTime(c.created_at, i18n.locale)
   const attrs = Object.entries(c.attributes ?? {})
-  const otherList = (others.data ?? []).filter((x) => x.id !== conversationId)
+  const otherList = (others.data?.pages.flatMap((p) => p.items) ?? []).filter((x) => x.id !== conversationId)
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-y-auto" data-testid="contact-panel">
       <div className="flex items-center gap-3 border-b px-4 py-4">
@@ -122,7 +123,7 @@ export function ContactPanel({
         )}
       </Section>
       <Section title={<Trans>Other conversations</Trans>}>
-        {others.isPending && others.fetchStatus !== "idle" ? (
+        {others.isPending ? (
           <Skeleton className="h-10 w-full" />
         ) : otherList.length === 0 ? (
           <p className="text-sm text-muted-foreground">
@@ -150,6 +151,17 @@ export function ContactPanel({
               )
             })}
           </ul>
+        )}
+        {others.hasNextPage && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="self-start"
+            onClick={() => void others.fetchNextPage()}
+            disabled={others.isFetchingNextPage}
+          >
+            <Trans>Load more</Trans>
+          </Button>
         )}
       </Section>
     </div>

@@ -52,6 +52,10 @@ msgstr "{keyCount} ayar"
 msgid "1 setting"
 msgstr "1 ayar"
 
+#: src/components/common/text.ts
+msgid "A file's content does not match its type. Check the file and try again."
+msgstr "Bir dosyanın içeriği türüyle uyuşmuyor. Dosyayı kontrol edip yeniden deneyin."
+
 #: src/components/settings/InboxSettings.tsx
 msgid "A language tag such as en or tr."
 msgstr "en veya tr gibi bir dil kodu."
@@ -172,6 +176,10 @@ msgstr "Eşzamansız"
 msgid "Attach files"
 msgstr "Dosya ekle"
 
+#: src/components/inbox/ConversationList.tsx
+msgid "Attachment"
+msgstr "Ek"
+
 #: src/components/inbox/ContactPanel.tsx
 msgid "Attributes"
 msgstr "Özellikler"
@@ -268,6 +276,10 @@ msgstr "Renk"
 #: src/components/AppShell.tsx
 msgid "Connecting…"
 msgstr "Bağlanıyor…"
+
+#: src/components/AppShell.tsx
+msgid "Connection lost. Reconnecting…"
+msgstr "Bağlantı koptu. Yeniden bağlanılıyor…"
 
 #: src/components/inbox/InboxPage.tsx
 #: src/components/inbox/MessageItem.tsx
@@ -369,10 +381,6 @@ msgstr "Kanalları, konuşmaları, mesajları ve ekleriyle birlikte silinir. Bu 
 #: src/components/inbox/MessageItem.tsx
 msgid "Download {0}"
 msgstr "{0} dosyasını indir"
-
-#: src/components/inbox/MessageItem.tsx
-msgid "Download failed"
-msgstr "İndirme başarısız oldu"
 
 #: src/components/common/text.ts
 msgid "E-mail"
@@ -549,9 +557,14 @@ msgstr "son kullanım: {used}"
 msgid "Live"
 msgstr "Canlı"
 
+#: src/components/inbox/ContactPanel.tsx
 #: src/components/inbox/ConversationList.tsx
 msgid "Load more"
 msgstr "Daha fazla yükle"
+
+#: src/components/inbox/ThreadView.tsx
+msgid "Load older messages"
+msgstr "Eski mesajları yükle"
 
 #: src/components/settings/InboxSettings.tsx
 msgid "Logo URL"
@@ -830,8 +843,13 @@ msgid "Reopen"
 msgstr "Yeniden aç"
 
 #: src/components/inbox/Composer.tsx
+#: src/components/inbox/ConversationList.tsx
 msgid "Reply"
 msgstr "Yanıt"
+
+#: src/components/AppShell.tsx
+msgid "Retry now"
+msgstr "Şimdi dene"
 
 #: src/components/settings/ApiKeysSettings.tsx
 msgid "Revoke"
@@ -1054,6 +1072,10 @@ msgstr "Bu tarayıcı geçiş anahtarlarını desteklemiyor."
 msgid "This conflicts with something that already exists."
 msgstr "Bu, var olan bir kayıtla çakışıyor."
 
+#: src/components/inbox/ThreadView.tsx
+msgid "This conversation is not available"
+msgstr "Bu konuşmaya ulaşılamıyor"
+
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
 msgstr "Bu dosya türüne izin verilmiyor."
@@ -1129,6 +1151,10 @@ msgstr "Atanmamış"
 #: src/components/inbox/ThreadView.tsx
 msgid "Unnamed contact"
 msgstr "Adsız kişi"
+
+#: src/components/inbox/ConversationList.tsx
+msgid "Unread"
+msgstr "Okunmadı"
 
 #: src/components/common/text.ts
 msgid "Urgent"

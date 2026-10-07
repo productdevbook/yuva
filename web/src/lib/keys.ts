@@ -16,6 +16,7 @@ export const keys = {
   contact: (ws: string, id: string) => ["ws", ws, "contact", id] as const,
   conversationLists: (ws: string) => ["ws", ws, "conversations"] as const,
   conversations: (ws: string, f: ConversationFilters) => ["ws", ws, "conversations", f] as const,
+  counts: (ws: string) => ["ws", ws, "counts"] as const,
   conversation: (ws: string, id: string) => ["ws", ws, "conversation", id] as const,
   messages: (ws: string, id: string) => ["ws", ws, "messages", id] as const,
   passkeys: ["me", "passkeys"] as const,

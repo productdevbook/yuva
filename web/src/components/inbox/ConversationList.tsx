@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { FilterIcon, FlagIcon, InboxIcon, SearchIcon, XIcon } from "lucide-react"
+import { FilterIcon, FlagIcon, InboxIcon, ReplyIcon, SearchIcon, XIcon } from "lucide-react"
 import { forwardRef, useEffect, useRef, useState } from "react"
 import { Link } from "react-router"
 
@@ -20,7 +20,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import type { Contact, Conversation, ConversationStatus } from "@/lib/api"
+import type { ConversationListItem, ConversationStatus } from "@/lib/api"
 import { useInboxes, useLabels, useMemberMap, useMembers } from "@/lib/queries"
 import { cn } from "@/lib/utils"
 
@@ -38,8 +38,7 @@ type Props = {
   base: ListBase
   filters: ListFilters
   setFilters: (patch: Partial<ListFilters>) => void
-  conversations: Conversation[]
-  contacts: Map<string, Contact>
+  conversations: ConversationListItem[]
   selectedId?: string
   hrefFor: (id: string) => string
   isPending: boolean
@@ -129,7 +128,6 @@ export const ConversationList = forwardRef<HTMLInputElement, Props>(function Con
               <Row
                 key={c.id}
                 c={c}
-                contact={p.contacts.get(c.contact_id)}
                 href={p.hrefFor(c.id)}
                 selected={c.id === p.selectedId}
                 showStatus={p.filters.status === "all"}
@@ -152,14 +150,12 @@ export const ConversationList = forwardRef<HTMLInputElement, Props>(function Con
 
 function Row({
   c,
-  contact,
   href,
   selected,
   showStatus,
   showInbox,
 }: {
-  c: Conversation
-  contact?: Contact
+  c: ConversationListItem
   href: string
   selected: boolean
   showStatus: boolean
@@ -172,13 +168,15 @@ function Row({
   const labels = useLabels().data ?? []
   const inbox = inboxes.find((i) => i.id === c.inbox_id)
   const assignee = c.assignee_id ? members.get(c.assignee_id) : undefined
-  const name = contact ? contact.name || contact.emails[0] || t`Unnamed contact` : "…"
+  const name = c.contact.name || c.contact.email || t`Unnamed contact`
+  const preview = c.last_message
   const StatusIcon = statusIcons[c.status]
   return (
     <li>
       <Link
         to={href}
         data-testid="conversation-row"
+        data-unread={c.unread || undefined}
         aria-current={selected ? "true" : undefined}
         className={cn(
           "flex gap-3 border-b px-3 py-3 transition-colors hover:bg-muted/60",
@@ -187,15 +185,42 @@ function Row({
       >
         <PersonAvatar name={name} className="mt-0.5 size-8 text-xs" />
         <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <div className="flex items-baseline gap-2">
-            <span className="min-w-0 flex-1 truncate text-sm font-medium">{name}</span>
-            <time className="shrink-0 text-xs text-muted-foreground" dateTime={c.last_activity_at}>
+          <div className="flex items-center gap-2">
+            <span className={cn("min-w-0 flex-1 truncate text-sm", c.unread ? "font-semibold" : "font-medium")}>
+              {name}
+            </span>
+            <time
+              className={cn("shrink-0 text-xs", c.unread ? "font-medium text-foreground" : "text-muted-foreground")}
+              dateTime={c.last_activity_at}
+            >
               {formatShort(c.last_activity_at, i18n.locale)}
             </time>
+            {c.unread && (
+              <span className="size-2 shrink-0 rounded-full bg-primary" data-testid="unread-dot">
+                <span className="sr-only">
+                  <Trans>Unread</Trans>
+                </span>
+              </span>
+            )}
           </div>
-          <p className={cn("truncate text-sm", !c.subject && "text-muted-foreground italic")}>
+          <p
+            className={cn(
+              "truncate text-sm",
+              !c.subject && "text-muted-foreground italic",
+              c.unread && "font-semibold",
+            )}
+          >
             {c.subject || <Trans>No subject</Trans>}
           </p>
+          {preview && (
+            <p
+              className={cn("flex min-w-0 items-center gap-1 text-xs", c.unread ? "text-foreground" : "text-muted-foreground")}
+              data-testid="conversation-preview"
+            >
+              {preview.author_type === "member" && <ReplyIcon className="size-3 shrink-0" aria-label={t`Reply`} />}
+              <span className="truncate">{preview.text || <Trans>Attachment</Trans>}</span>
+            </p>
+          )}
           <div className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
             {showStatus && (
               <span className="inline-flex items-center gap-1">

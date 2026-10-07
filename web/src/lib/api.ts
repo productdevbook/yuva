@@ -22,10 +22,14 @@ export type Channel = S["Channel"]
 export type ChannelKind = S["ChannelKind"]
 export type Contact = S["Contact"]
 export type Conversation = S["Conversation"]
+export type ConversationListItem = S["ConversationListItem"]
+export type ConversationCounts = S["ConversationCounts"]
+export type ConversationRead = S["ConversationRead"]
 export type ConversationStatus = S["ConversationStatus"]
 export type ConversationUpdate = S["ConversationUpdate"]
 export type Priority = S["Priority"]
 export type Message = S["Message"]
+export type MessagePreview = S["MessagePreview"]
 export type MessageCreate = S["MessageCreate"]
 export type Attachment = S["Attachment"]
 export type Label = S["Label"]
@@ -46,14 +50,14 @@ export class ApiError extends Error {
   }
 }
 
+export function isGone(err: unknown) {
+  return err instanceof ApiError && (err.status === 404 || err.status === 403)
+}
+
 let workspaceId: string | null = null
 
 export function setWorkspace(id: string | null) {
   workspaceId = id
-}
-
-export function workspaceHeaders(): Record<string, string> {
-  return workspaceId ? { "Yuva-Workspace": workspaceId } : {}
 }
 
 export const api = createClient<paths>({ baseUrl: window.location.origin, credentials: "same-origin" })
@@ -75,17 +79,8 @@ export async function unwrap<T>(call: Promise<{ data?: T; error?: unknown; respo
   return data as T
 }
 
-export async function downloadAttachment(a: Attachment) {
-  const res = await fetch(`/v1/attachments/${a.id}`, { headers: workspaceHeaders(), credentials: "same-origin" })
-  if (!res.ok) throw new ApiError(res.status)
-  const url = URL.createObjectURL(await res.blob())
-  const link = document.createElement("a")
-  link.href = url
-  link.download = a.filename
-  document.body.append(link)
-  link.click()
-  link.remove()
-  setTimeout(() => URL.revokeObjectURL(url), 10_000)
+export function attachmentUrl(a: Attachment, ws: string) {
+  return `/v1/attachments/${encodeURIComponent(a.id)}?workspace_id=${encodeURIComponent(ws)}`
 }
 
 export function useVersion() {

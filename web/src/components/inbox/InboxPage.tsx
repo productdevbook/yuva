@@ -19,9 +19,9 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { useIsMobile } from "@/hooks/use-mobile"
-import type { ConversationStatus } from "@/lib/api"
+import { isGone, type ConversationStatus } from "@/lib/api"
 import type { ConversationFilters } from "@/lib/keys"
-import { useContacts, useConversation, useConversations, useInboxes, useLabels } from "@/lib/queries"
+import { useConversation, useConversations, useInboxes, useLabels } from "@/lib/queries"
 import { cn } from "@/lib/utils"
 
 const FILTER_KEYS = ["status", "q", "inbox", "label", "assignee"] as const
@@ -80,7 +80,6 @@ function Inbox({ base, conversationId }: { base: ListBase; conversationId?: stri
   const list = useConversations(toQuery(base, filters))
   const conversations = useMemo(() => list.data?.pages.flatMap((p) => p.items) ?? [], [list.data])
   const selected = useConversation(conversationId)
-  const contacts = useContacts(conversations.map((c) => c.contact_id))
 
   const basePath = base.kind === "view" ? `/${base.id}` : `/${base.kind}/${base.id}`
   const listSearch = useMemo(() => {
@@ -139,7 +138,8 @@ function Inbox({ base, conversationId }: { base: ListBase; conversationId?: stri
         ? (inboxes.find((i) => i.id === base.id)?.name ?? "")
         : (labels.find((l) => l.id === base.id)?.name ?? "")
 
-  const contactId = selected.data?.id === conversationId ? selected.data?.contact_id : undefined
+  const contactId =
+    selected.data?.id === conversationId && !isGone(selected.error) ? selected.data?.contact_id : undefined
   const contactPanel =
     conversationId && contactId ? (
       <ContactPanel contactId={contactId} conversationId={conversationId} hrefFor={hrefFor} />
@@ -162,7 +162,6 @@ function Inbox({ base, conversationId }: { base: ListBase; conversationId?: stri
             filters={filters}
             setFilters={setFilters}
             conversations={conversations}
-            contacts={contacts}
             selectedId={conversationId}
             hrefFor={hrefFor}
             isPending={list.isPending}

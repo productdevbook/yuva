@@ -9,6 +9,11 @@ export type RealtimeStatus = "connecting" | "live" | "offline"
 
 let status: { ws: string | null; value: RealtimeStatus } = { ws: null, value: "offline" }
 const listeners = new Set<() => void>()
+let retryNow: (() => void) | null = null
+
+export function reconnectNow() {
+  retryNow?.()
+}
 
 function setStatus(ws: string, value: RealtimeStatus) {
   status = { ws, value }
@@ -41,7 +46,7 @@ export function useRealtime(ws: string, memberId: string) {
 
     const connect = () => {
       if (stopped) return
-      setStatus(ws, "connecting")
+      if (attempt === 0) setStatus(ws, "connecting")
       const url = new URL("/v1/realtime", window.location.href)
       url.protocol = url.protocol === "https:" ? "wss:" : "ws:"
       url.searchParams.set("workspace_id", ws)
@@ -56,6 +61,7 @@ export function useRealtime(ws: string, memberId: string) {
         const msg = JSON.parse(e.data as string) as RealtimeMessage
         if (msg.type === "ready") {
           cursor = Math.max(cursor ?? 0, msg.last_event_id)
+          if (attempt > 0) void qc.refetchQueries({ predicate: (q) => q.state.status === "error", type: "active" })
           attempt = 0
           setStatus(ws, "live")
           return
@@ -76,25 +82,30 @@ export function useRealtime(ws: string, memberId: string) {
           return
         }
         if (!opened) void qc.invalidateQueries({ queryKey: meKey })
-        const delay = e.code === 1012 || e.code === 1013 ? 500 : Math.min(30_000, 1000 * 2 ** attempt)
+        const delay = e.code === 1012 || e.code === 1013 ? 500 : Math.min(10_000, 1000 * 2 ** attempt)
         attempt++
         timer = setTimeout(connect, delay * (0.75 + Math.random() / 2))
       }
     }
 
-    const onOnline = () => {
-      if (!socket) {
-        clearTimeout(timer)
-        attempt = 0
-        connect()
-      }
+    const retry = () => {
+      if (socket || stopped) return
+      clearTimeout(timer)
+      connect()
     }
-    window.addEventListener("online", onOnline)
+    const onVisible = () => {
+      if (document.visibilityState === "visible") retry()
+    }
+    retryNow = retry
+    window.addEventListener("online", retry)
+    document.addEventListener("visibilitychange", onVisible)
     connect()
     return () => {
       stopped = true
       clearTimeout(timer)
-      window.removeEventListener("online", onOnline)
+      if (retryNow === retry) retryNow = null
+      window.removeEventListener("online", retry)
+      document.removeEventListener("visibilitychange", onVisible)
       socket?.close(1000)
       setStatus(ws, "offline")
     }

@@ -52,6 +52,10 @@ msgstr "{keyCount} settings"
 msgid "1 setting"
 msgstr "1 setting"
 
+#: src/components/common/text.ts
+msgid "A file's content does not match its type. Check the file and try again."
+msgstr "A file's content does not match its type. Check the file and try again."
+
 #: src/components/settings/InboxSettings.tsx
 msgid "A language tag such as en or tr."
 msgstr "A language tag such as en or tr."
@@ -172,6 +176,10 @@ msgstr "Async"
 msgid "Attach files"
 msgstr "Attach files"
 
+#: src/components/inbox/ConversationList.tsx
+msgid "Attachment"
+msgstr "Attachment"
+
 #: src/components/inbox/ContactPanel.tsx
 msgid "Attributes"
 msgstr "Attributes"
@@ -268,6 +276,10 @@ msgstr "Color"
 #: src/components/AppShell.tsx
 msgid "Connecting…"
 msgstr "Connecting…"
+
+#: src/components/AppShell.tsx
+msgid "Connection lost. Reconnecting…"
+msgstr "Connection lost. Reconnecting…"
 
 #: src/components/inbox/InboxPage.tsx
 #: src/components/inbox/MessageItem.tsx
@@ -369,10 +381,6 @@ msgstr "Deletes its channels, conversations, messages and attachments. This cann
 #: src/components/inbox/MessageItem.tsx
 msgid "Download {0}"
 msgstr "Download {0}"
-
-#: src/components/inbox/MessageItem.tsx
-msgid "Download failed"
-msgstr "Download failed"
 
 #: src/components/common/text.ts
 msgid "E-mail"
@@ -549,9 +557,14 @@ msgstr "last used {used}"
 msgid "Live"
 msgstr "Live"
 
+#: src/components/inbox/ContactPanel.tsx
 #: src/components/inbox/ConversationList.tsx
 msgid "Load more"
 msgstr "Load more"
+
+#: src/components/inbox/ThreadView.tsx
+msgid "Load older messages"
+msgstr "Load older messages"
 
 #: src/components/settings/InboxSettings.tsx
 msgid "Logo URL"
@@ -830,8 +843,13 @@ msgid "Reopen"
 msgstr "Reopen"
 
 #: src/components/inbox/Composer.tsx
+#: src/components/inbox/ConversationList.tsx
 msgid "Reply"
 msgstr "Reply"
+
+#: src/components/AppShell.tsx
+msgid "Retry now"
+msgstr "Retry now"
 
 #: src/components/settings/ApiKeysSettings.tsx
 msgid "Revoke"
@@ -1054,6 +1072,10 @@ msgstr "This browser does not support passkeys."
 msgid "This conflicts with something that already exists."
 msgstr "This conflicts with something that already exists."
 
+#: src/components/inbox/ThreadView.tsx
+msgid "This conversation is not available"
+msgstr "This conversation is not available"
+
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
 msgstr "This file type is not allowed."
@@ -1129,6 +1151,10 @@ msgstr "Unassigned"
 #: src/components/inbox/ThreadView.tsx
 msgid "Unnamed contact"
 msgstr "Unnamed contact"
+
+#: src/components/inbox/ConversationList.tsx
+msgid "Unread"
+msgstr "Unread"
 
 #: src/components/common/text.ts
 msgid "Urgent"

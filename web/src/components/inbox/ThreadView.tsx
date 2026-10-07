@@ -1,10 +1,11 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ArrowLeftIcon, PanelRightIcon } from "lucide-react"
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import { ArrowLeftIcon, PanelRightIcon, SearchXIcon } from "lucide-react"
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
-import { ErrorLine } from "@/components/common"
+import { EmptyState, ErrorLine } from "@/components/common"
 import { SHORTCUTS } from "@/components/common/ShortcutSheet"
+import { useErrorText } from "@/components/common/text"
 import { Composer, type ComposerHandle } from "@/components/inbox/Composer"
 import {
   AssigneeMenu,
@@ -17,12 +18,13 @@ import { MessageItem } from "@/components/inbox/MessageItem"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useHotkeys } from "@/hooks/use-hotkeys"
-import type { ConversationUpdate } from "@/lib/api"
+import { ApiError, isGone, type ConversationUpdate } from "@/lib/api"
 import {
   useContact,
   useConversation,
   useInboxes,
   useLabels,
+  useMarkRead,
   useMemberMap,
   useMessages,
   useUpdateConversation,
@@ -47,6 +49,7 @@ export function ThreadView({
   const { t, i18n } = useLingui()
   const navigate = useNavigate()
   const { membership } = useSession()
+  const errorText = useErrorText()
   const conversation = useConversation(conversationId)
   const messages = useMessages(conversationId)
   const contact = useContact(conversation.data?.contact_id)
@@ -76,14 +79,66 @@ export function ThreadView({
       [SHORTCUTS.contact]: onToggleContact,
       [SHORTCUTS.back]: () => navigate(backHref),
     },
-    !!c,
+    !!c && !isGone(conversation.error),
   )
 
-  const count = messages.data?.length ?? 0
+  const items = useMemo(
+    () => (messages.data?.pages ?? []).toReversed().flatMap((p) => p.items.toReversed()),
+    [messages.data],
+  )
+  const firstId = items[0]?.id
+  const lastId = items[items.length - 1]?.id
+  const lastMine = items[items.length - 1]?.author.member_id === membership.member_id
+  const atBottom = useRef(true)
+  const shown = useRef<{ first?: string; last?: string; height: number }>({ height: 0 })
+
   useLayoutEffect(() => {
     const el = scroller.current
-    if (el) el.scrollTop = el.scrollHeight
-  }, [count, conversationId])
+    if (!el || !lastId) return
+    const prev = shown.current
+    if (!prev.last) el.scrollTop = el.scrollHeight
+    else if (firstId !== prev.first && lastId === prev.last) el.scrollTop += el.scrollHeight - prev.height
+    else if (lastId !== prev.last && (atBottom.current || lastMine)) el.scrollTop = el.scrollHeight
+    shown.current = { first: firstId, last: lastId, height: el.scrollHeight }
+    atBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < 48
+  }, [firstId, lastId, lastMine, c?.id])
+
+  const markRead = useMarkRead(conversationId)
+  const markedId = useRef<string | undefined>(undefined)
+  const { mutate: mark } = markRead
+  const maybeMarkRead = useCallback(() => {
+    if (!lastId || !scroller.current || markedId.current === lastId) return
+    if (!atBottom.current || document.visibilityState !== "visible") return
+    markedId.current = lastId
+    mark(lastId)
+  }, [lastId, mark, c?.id])
+  useEffect(() => {
+    maybeMarkRead()
+    document.addEventListener("visibilitychange", maybeMarkRead)
+    return () => document.removeEventListener("visibilitychange", maybeMarkRead)
+  }, [maybeMarkRead])
+
+  const top = useRef<HTMLDivElement>(null)
+  const { hasNextPage, isFetchingNextPage, fetchNextPage } = messages
+  useEffect(() => {
+    const el = top.current
+    if (!el || !hasNextPage || isFetchingNextPage) return
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) void fetchNextPage()
+      },
+      { root: scroller.current, rootMargin: "300px 0px 0px 0px" },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage, firstId, c?.id])
+
+  const onScroll = () => {
+    const el = scroller.current
+    if (!el) return
+    atBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < 48
+    if (atBottom.current) maybeMarkRead()
+  }
 
   useEffect(() => setOpenMenu(null), [conversationId])
 
@@ -95,7 +150,16 @@ export function ThreadView({
       </div>
     )
   }
-  if (!c) return <ErrorLine error={conversation.error} className="p-4" />
+  if (!c || isGone(conversation.error)) {
+    return (
+      <EmptyState icon={SearchXIcon} title={<Trans>This conversation is not available</Trans>}>
+        <p>{errorText(conversation.error ?? new ApiError(404))}</p>
+        <Button variant="outline" size="sm" className="mt-3" render={<Link to={backHref} />}>
+          <Trans>Back to the list</Trans>
+        </Button>
+      </EmptyState>
+    )
+  }
 
   const inbox = inboxes.find((i) => i.id === c.inbox_id)
   const contactName = contact.data ? contact.data.name || contact.data.emails[0] || t`Unnamed contact` : "…"
@@ -143,7 +207,23 @@ export function ThreadView({
           <ErrorLine error={updater.error} className="text-xs" />
         </div>
       </div>
-      <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto py-3" data-testid="messages">
+      <div
+        ref={scroller}
+        onScroll={onScroll}
+        className="min-h-0 flex-1 overflow-y-auto py-3 [overflow-anchor:none]"
+        data-testid="messages"
+      >
+        {hasNextPage && (
+          <div ref={top} className="flex justify-center py-2">
+            {isFetchingNextPage ? (
+              <Skeleton className="h-4 w-32" />
+            ) : (
+              <Button variant="ghost" size="sm" onClick={() => void fetchNextPage()}>
+                <Trans>Load older messages</Trans>
+              </Button>
+            )}
+          </div>
+        )}
         {messages.isPending ? (
           <div className="flex flex-col gap-3 px-4">
             <Skeleton className="h-14 w-2/3" />
@@ -152,7 +232,7 @@ export function ThreadView({
         ) : messages.error ? (
           <ErrorLine error={messages.error} className="px-4" />
         ) : (
-          messages.data?.map((m) => {
+          items.map((m) => {
             const day = dayLabel(m.created_at, i18n.locale)
             const sep = day !== lastDay
             lastDay = day

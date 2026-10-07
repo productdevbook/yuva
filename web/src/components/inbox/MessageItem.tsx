@@ -1,11 +1,11 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { DownloadIcon, LockIcon, PaperclipIcon, TagIcon, UserIcon, UserXIcon } from "lucide-react"
-import { useState } from "react"
 
 import { PersonAvatar } from "@/components/common"
 import { formatBytes, formatDateTime, useEnumText } from "@/components/common/text"
 import { statusIcons } from "@/components/inbox/ConversationControls"
-import { downloadAttachment, type Attachment, type Contact, type Label, type Member, type Message } from "@/lib/api"
+import { attachmentUrl, type Attachment, type Contact, type Label, type Member, type Message } from "@/lib/api"
+import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 
 type Ctx = {
@@ -28,34 +28,20 @@ function time(iso: string, locale: string) {
 
 function AttachmentChip({ a }: { a: Attachment }) {
   const { t, i18n } = useLingui()
-  const [busy, setBusy] = useState(false)
-  const [failed, setFailed] = useState(false)
+  const { workspaceId } = useSession()
   return (
-    <button
-      type="button"
-      disabled={busy}
-      onClick={async () => {
-        setBusy(true)
-        setFailed(false)
-        try {
-          await downloadAttachment(a)
-        } catch {
-          setFailed(true)
-        } finally {
-          setBusy(false)
-        }
-      }}
-      className={cn(
-        "flex max-w-full items-center gap-2 rounded-md border bg-background px-2 py-1.5 text-left text-xs transition-colors hover:bg-muted",
-        failed && "border-destructive",
-      )}
-      title={failed ? t`Download failed` : t`Download ${a.filename}`}
+    <a
+      href={attachmentUrl(a, workspaceId)}
+      download={a.filename}
+      className="flex max-w-full items-center gap-2 rounded-md border bg-background px-2 py-1.5 text-left text-xs transition-colors hover:bg-muted"
+      title={t`Download ${a.filename}`}
+      data-testid="attachment"
     >
       <PaperclipIcon className="size-3.5 shrink-0 text-muted-foreground" />
       <span className="min-w-0 truncate font-medium">{a.filename}</span>
       <span className="shrink-0 text-muted-foreground">{formatBytes(a.size, i18n.locale)}</span>
       <DownloadIcon className="size-3.5 shrink-0 text-muted-foreground" />
-    </button>
+    </a>
   )
 }
 

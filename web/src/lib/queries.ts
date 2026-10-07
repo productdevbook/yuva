@@ -1,21 +1,13 @@
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQueries,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import {
   api,
   unwrap,
-  type Contact,
   type ConversationUpdate,
-  type Message,
   type MessageCreate,
 } from "@/lib/api"
 import { keys, type ConversationFilters } from "@/lib/keys"
-import { applyEvent } from "@/lib/live"
+import { applyEvent, applyRead } from "@/lib/live"
 import { isLive } from "@/lib/realtime"
 import { useSession } from "@/lib/session"
 
@@ -25,6 +17,7 @@ export function useMembers() {
     queryKey: keys.members(ws),
     queryFn: () => unwrap(api.GET("/v1/members")).then((r) => r.items),
     staleTime: 60_000,
+    refetchOnWindowFocus: "always",
   })
 }
 
@@ -39,7 +32,6 @@ export function useInboxes() {
     queryKey: keys.inboxes(ws),
     queryFn: () => unwrap(api.GET("/v1/inboxes")).then((r) => r.items),
     staleTime: 60_000,
-    refetchOnWindowFocus: "always",
   })
 }
 
@@ -80,26 +72,14 @@ export function useCannedReplies() {
   })
 }
 
-function contactQuery(ws: string, id: string) {
-  return {
-    queryKey: keys.contact(ws, id),
-    queryFn: () => unwrap(api.GET("/v1/contacts/{contactId}", { params: { path: { contactId: id } } })),
-    staleTime: 60_000,
-  }
-}
-
 export function useContact(id: string | undefined) {
   const { workspaceId: ws } = useSession()
-  return useQuery({ ...contactQuery(ws, id ?? ""), enabled: !!id })
-}
-
-export function useContacts(ids: string[]) {
-  const { workspaceId: ws } = useSession()
-  const unique = [...new Set(ids)]
-  const results = useQueries({ queries: unique.map((id) => contactQuery(ws, id)) })
-  const map = new Map<string, Contact>()
-  results.forEach((r) => r.data && map.set(r.data.id, r.data))
-  return map
+  return useQuery({
+    queryKey: keys.contact(ws, id ?? ""),
+    queryFn: () => unwrap(api.GET("/v1/contacts/{contactId}", { params: { path: { contactId: id! } } })),
+    enabled: !!id,
+    staleTime: 60_000,
+  })
 }
 
 export function useConversations(filters: ConversationFilters) {
@@ -113,16 +93,11 @@ export function useConversations(filters: ConversationFilters) {
   })
 }
 
-export function useContactConversations(contact: Contact | undefined) {
+export function useCounts() {
   const { workspaceId: ws } = useSession()
-  const q = contact ? contact.emails[0] ?? contact.name : ""
   return useQuery({
-    queryKey: [...keys.conversationLists(ws), "contact", contact?.id ?? "", q],
-    queryFn: async () => {
-      const page = await unwrap(api.GET("/v1/conversations", { params: { query: { q: `"${q}"`, limit: 50 } } }))
-      return page.items.filter((c) => c.contact_id === contact!.id)
-    },
-    enabled: !!contact && q.trim() !== "",
+    queryKey: keys.counts(ws),
+    queryFn: () => unwrap(api.GET("/v1/conversations/counts")),
   })
 }
 
@@ -136,25 +111,39 @@ export function useConversation(id: string | undefined) {
   })
 }
 
+export const MESSAGE_PAGE = 50
+
 export function useMessages(conversationId: string | undefined) {
   const { workspaceId: ws } = useSession()
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: keys.messages(ws, conversationId ?? ""),
-    queryFn: async () => {
-      const all: Message[] = []
-      let cursor: string | undefined
-      do {
-        const page = await unwrap(
-          api.GET("/v1/conversations/{conversationId}/messages", {
-            params: { path: { conversationId: conversationId! }, query: { cursor, limit: 100 } },
-          }),
-        )
-        all.push(...page.items)
-        cursor = page.next_cursor
-      } while (cursor)
-      return all
-    },
+    queryFn: ({ pageParam }) =>
+      unwrap(
+        api.GET("/v1/conversations/{conversationId}/messages", {
+          params: {
+            path: { conversationId: conversationId! },
+            query: { order: "desc", cursor: pageParam, limit: MESSAGE_PAGE },
+          },
+        }),
+      ),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (last) => last.next_cursor,
     enabled: !!conversationId,
+  })
+}
+
+export function useMarkRead(conversationId: string) {
+  const qc = useQueryClient()
+  const { workspaceId: ws } = useSession()
+  return useMutation({
+    mutationFn: (messageId: string) =>
+      unwrap(
+        api.POST("/v1/conversations/{conversationId}/read", {
+          params: { path: { conversationId } },
+          body: { message_id: messageId },
+        }),
+      ),
+    onSuccess: (data) => applyRead(qc, ws, data),
   })
 }
 
