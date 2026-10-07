@@ -16,6 +16,7 @@ type pendingEvent struct {
 	inboxID        *uuid.UUID
 	conversationID *uuid.UUID
 	data           []byte
+	deleted        *deletedContact
 }
 
 type eventBatch struct {
@@ -49,27 +50,33 @@ func (s *Server) inTx(ctx context.Context, workspaceID uuid.UUID, fn func(q *sto
 				return err
 			}
 		}
-		return writeEvents(ctx, q, workspaceID, ev.items)
+		ids, err := writeEvents(ctx, q, workspaceID, ev.items)
+		if err != nil {
+			return err
+		}
+		return s.queueWebhooks(ctx, tx, q, workspaceID, ev.items, ids)
 	})
 }
 
-func writeEvents(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, items []pendingEvent) error {
+func writeEvents(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, items []pendingEvent) ([]int64, error) {
 	if len(items) == 0 {
-		return nil
+		return nil, nil
 	}
 	if err := q.LockEventStream(ctx, workspaceID); err != nil {
-		return err
+		return nil, err
 	}
-	for _, e := range items {
+	ids := make([]int64, len(items))
+	for i, e := range items {
 		id, err := q.InsertEvent(ctx, store.InsertEventParams{
 			WorkspaceID: workspaceID, Type: e.typ, InboxID: e.inboxID, ConversationID: e.conversationID, Payload: e.data,
 		})
 		if err != nil {
-			return err
+			return nil, err
 		}
 		if err := q.NotifyEvent(ctx, store.NotifyEventParams{Channel: realtime.Channel, WorkspaceID: workspaceID, ID: id}); err != nil {
-			return err
+			return nil, err
 		}
+		ids[i] = id
 	}
-	return nil
+	return ids, nil
 }

@@ -473,11 +473,11 @@ func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventB
 		if err != nil {
 			return c, false, err
 		}
-		if c.Status == string(oas.Open) {
+		if c.Status == string(oas.ConversationStatusOpen) {
 			return c, false, nil
 		}
 		updated, err := q.UpdateConversation(ctx, store.UpdateConversationParams{
-			WorkspaceID: ws, ID: c.ID, Subject: c.Subject, Status: string(oas.Open), Priority: c.Priority,
+			WorkspaceID: ws, ID: c.ID, Subject: c.Subject, Status: string(oas.ConversationStatusOpen), Priority: c.Priority,
 			AssigneeID: c.AssigneeID, Spam: c.Spam, Now: now,
 		})
 		if err != nil {
@@ -488,7 +488,7 @@ func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventB
 			return c, false, err
 		}
 		events.conversation(realtime.ConversationUpdated, updated, body)
-		st, prev := oas.Open, oas.ConversationStatus(c.Status)
+		st, prev := oas.ConversationStatusOpen, oas.ConversationStatus(c.Status)
 		if err := s.systemEvent(ctx, q, events, updated, oas.MessageEvent{Type: oas.StatusChanged, Status: &st, PreviousStatus: &prev}, now); err != nil {
 			return c, false, err
 		}

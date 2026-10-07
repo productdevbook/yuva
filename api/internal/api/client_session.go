@@ -15,7 +15,7 @@ import (
 const visitorPrefix = "yuva_v_"
 
 var (
-	errUnknownChannelKey  = problem(http.StatusNotFound, "not_found", "no chat channel has this key")
+	errUnknownChannelKey  = problem(http.StatusNotFound, "not_found", "no chat or app channel has this key")
 	errAnonymousForbidden = problem(http.StatusForbidden, "anonymous_not_allowed", "this channel needs an identity token")
 )
 
@@ -43,7 +43,7 @@ func (s *Server) CreateClientSession(ctx context.Context, req oas.CreateClientSe
 	if err := s.rateLimit(rateCheck{"session:channel:" + ch.ChannelID.String(), limitSessionPerChannel}); err != nil {
 		return nil, err
 	}
-	if !originAllowedFor(originFrom(ctx), ch.AllowedOrigins) {
+	if !originAllowedFor(originFrom(ctx), ch.Kind, ch.AllowedOrigins) {
 		return nil, errOriginRefused
 	}
 	ws := ch.WorkspaceID
@@ -87,7 +87,7 @@ func chatChannelOf(ch store.FindChatChannelByKeyRow) store.ChatChannel {
 	return store.ChatChannel{
 		WorkspaceID: ch.WorkspaceID, ChannelID: ch.ChannelID, PublicKey: ch.PublicKey, AllowedOrigins: ch.AllowedOrigins,
 		AllowAnonymous: ch.AllowAnonymous, AskEmailOffline: ch.AskEmailOffline, Greeting: ch.Greeting,
-		LauncherPosition: ch.LauncherPosition, LauncherColor: ch.LauncherColor,
+		LauncherPosition: ch.LauncherPosition, LauncherColor: ch.LauncherColor, Platforms: ch.Platforms,
 	}
 }
 
@@ -106,7 +106,7 @@ func (s *Server) GetClientChannel(ctx context.Context, req oas.GetClientChannelR
 	if err != nil {
 		return nil, err
 	}
-	if !originAllowedFor(originFrom(ctx), ch.AllowedOrigins) {
+	if !originAllowedFor(originFrom(ctx), ch.Kind, ch.AllowedOrigins) {
 		return nil, errOriginRefused
 	}
 	inbox, err := s.st.GetInbox(ctx, store.GetInboxParams{WorkspaceID: ch.WorkspaceID, ID: ch.InboxID})
@@ -341,6 +341,7 @@ func (s *Server) clientInbox(ctx context.Context, q *store.Queries, in store.Inb
 			Greeting: chat.Greeting, LauncherPosition: oas.Right, LauncherColor: chat.LauncherColor,
 			AskEmailOffline: chat.AskEmailOffline, AllowAnonymous: chat.AllowAnonymous,
 		},
+		FeedbackCategories: feedbackCategories,
 	}
 	if out.Chat.Greeting == "" && b.Branding.Greeting != nil {
 		out.Chat.Greeting = *b.Branding.Greeting

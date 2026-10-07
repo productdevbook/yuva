@@ -245,7 +245,7 @@ func (q *Queries) DeleteStaleConnections(ctx context.Context, arg DeleteStaleCon
 }
 
 const findChatChannelByKey = `-- name: FindChatChannelByKey :one
-SELECT cc.workspace_id, cc.channel_id, cc.public_key, cc.allowed_origins, cc.allow_anonymous, cc.ask_email_offline, cc.greeting, cc.launcher_position, cc.launcher_color, c.inbox_id FROM chat_channels cc
+SELECT cc.workspace_id, cc.channel_id, cc.public_key, cc.allowed_origins, cc.allow_anonymous, cc.ask_email_offline, cc.greeting, cc.launcher_position, cc.launcher_color, cc.platforms, c.inbox_id, c.kind FROM chat_channels cc
 JOIN channels c ON c.workspace_id = cc.workspace_id AND c.id = cc.channel_id
 WHERE cc.public_key = $1
 `
@@ -260,7 +260,9 @@ type FindChatChannelByKeyRow struct {
 	Greeting         string
 	LauncherPosition *string
 	LauncherColor    *string
+	Platforms        []string
 	InboxID          uuid.UUID
+	Kind             string
 }
 
 // The widget names only the channel's public key, so the channel is found before the workspace is
@@ -278,7 +280,9 @@ func (q *Queries) FindChatChannelByKey(ctx context.Context, publicKey string) (F
 		&i.Greeting,
 		&i.LauncherPosition,
 		&i.LauncherColor,
+		&i.Platforms,
 		&i.InboxID,
+		&i.Kind,
 	)
 	return i, err
 }
@@ -345,7 +349,7 @@ func (q *Queries) FindThreadSentTo(ctx context.Context, arg FindThreadSentToPara
 }
 
 const getChatChannel = `-- name: GetChatChannel :one
-SELECT workspace_id, channel_id, public_key, allowed_origins, allow_anonymous, ask_email_offline, greeting, launcher_position, launcher_color FROM chat_channels WHERE workspace_id = $1 AND channel_id = $2
+SELECT workspace_id, channel_id, public_key, allowed_origins, allow_anonymous, ask_email_offline, greeting, launcher_position, launcher_color, platforms FROM chat_channels WHERE workspace_id = $1 AND channel_id = $2
 `
 
 type GetChatChannelParams struct {
@@ -366,6 +370,7 @@ func (q *Queries) GetChatChannel(ctx context.Context, arg GetChatChannelParams) 
 		&i.Greeting,
 		&i.LauncherPosition,
 		&i.LauncherColor,
+		&i.Platforms,
 	)
 	return i, err
 }
@@ -516,6 +521,50 @@ func (q *Queries) GetLatestPublicMessagePosition(ctx context.Context, arg GetLat
 	return i, err
 }
 
+const getSessionChannel = `-- name: GetSessionChannel :one
+SELECT cc.workspace_id, cc.channel_id, cc.public_key, cc.allowed_origins, cc.allow_anonymous, cc.ask_email_offline, cc.greeting, cc.launcher_position, cc.launcher_color, cc.platforms, c.kind FROM chat_channels cc
+JOIN channels c ON c.workspace_id = cc.workspace_id AND c.id = cc.channel_id
+WHERE cc.workspace_id = $1 AND cc.channel_id = $2
+`
+
+type GetSessionChannelParams struct {
+	WorkspaceID uuid.UUID
+	ChannelID   uuid.UUID
+}
+
+type GetSessionChannelRow struct {
+	WorkspaceID      uuid.UUID
+	ChannelID        uuid.UUID
+	PublicKey        string
+	AllowedOrigins   []string
+	AllowAnonymous   bool
+	AskEmailOffline  bool
+	Greeting         string
+	LauncherPosition *string
+	LauncherColor    *string
+	Platforms        []string
+	Kind             string
+}
+
+func (q *Queries) GetSessionChannel(ctx context.Context, arg GetSessionChannelParams) (GetSessionChannelRow, error) {
+	row := q.db.QueryRow(ctx, getSessionChannel, arg.WorkspaceID, arg.ChannelID)
+	var i GetSessionChannelRow
+	err := row.Scan(
+		&i.WorkspaceID,
+		&i.ChannelID,
+		&i.PublicKey,
+		&i.AllowedOrigins,
+		&i.AllowAnonymous,
+		&i.AskEmailOffline,
+		&i.Greeting,
+		&i.LauncherPosition,
+		&i.LauncherColor,
+		&i.Platforms,
+		&i.Kind,
+	)
+	return i, err
+}
+
 const inboxEmailChannel = `-- name: InboxEmailChannel :one
 SELECT e.workspace_id, e.channel_id, e.address, e.display_name, e.from_address, e.smtp_host, e.smtp_port, e.smtp_username, e.smtp_password, e.smtp_tls, e.auto_reply_enabled, e.auto_reply_text, e.auto_reply_interval_hours FROM email_channels e
 JOIN channels c ON c.workspace_id = e.workspace_id AND c.id = e.channel_id
@@ -610,7 +659,7 @@ func (q *Queries) ListAvailableMembers(ctx context.Context, arg ListAvailableMem
 }
 
 const listChatChannels = `-- name: ListChatChannels :many
-SELECT workspace_id, channel_id, public_key, allowed_origins, allow_anonymous, ask_email_offline, greeting, launcher_position, launcher_color FROM chat_channels WHERE workspace_id = $1 AND channel_id = ANY($2::uuid[])
+SELECT workspace_id, channel_id, public_key, allowed_origins, allow_anonymous, ask_email_offline, greeting, launcher_position, launcher_color, platforms FROM chat_channels WHERE workspace_id = $1 AND channel_id = ANY($2::uuid[])
 `
 
 type ListChatChannelsParams struct {
@@ -637,6 +686,7 @@ func (q *Queries) ListChatChannels(ctx context.Context, arg ListChatChannelsPara
 			&i.Greeting,
 			&i.LauncherPosition,
 			&i.LauncherColor,
+			&i.Platforms,
 		); err != nil {
 			return nil, err
 		}
@@ -684,7 +734,7 @@ func (q *Queries) ListContactConversationIDs(ctx context.Context, arg ListContac
 }
 
 const listContactConversations = `-- name: ListContactConversations :many
-SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at FROM conversations c
+SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback FROM conversations c
 WHERE c.workspace_id = $1 AND c.inbox_id = $2 AND c.contact_id = $3
   AND ($4::timestamptz IS NULL
        OR (coalesce(c.last_message_at, c.created_at), c.id) < ($4::timestamptz, $5::uuid))
@@ -737,6 +787,8 @@ func (q *Queries) ListContactConversations(ctx context.Context, arg ListContactC
 			&i.RelatedConversationID,
 			&i.ContinuityThrough,
 			&i.ContinuitySentAt,
+			&i.Kind,
+			&i.Feedback,
 		); err != nil {
 			return nil, err
 		}
@@ -1160,7 +1212,7 @@ func (q *Queries) MarkContactRead(ctx context.Context, arg MarkContactReadParams
 const moveContactConversations = `-- name: MoveContactConversations :many
 UPDATE conversations SET contact_id = $1, updated_at = $2
 WHERE workspace_id = $3 AND contact_id = $4
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback
 `
 
 type MoveContactConversationsParams struct {
@@ -1204,6 +1256,8 @@ func (q *Queries) MoveContactConversations(ctx context.Context, arg MoveContactC
 			&i.RelatedConversationID,
 			&i.ContinuityThrough,
 			&i.ContinuitySentAt,
+			&i.Kind,
+			&i.Feedback,
 		); err != nil {
 			return nil, err
 		}
@@ -1274,14 +1328,15 @@ func (q *Queries) OpenConnection(ctx context.Context, arg OpenConnectionParams) 
 
 const saveChatChannel = `-- name: SaveChatChannel :one
 INSERT INTO chat_channels (workspace_id, channel_id, public_key, allowed_origins, allow_anonymous, ask_email_offline,
-                           greeting, launcher_position, launcher_color)
+                           greeting, launcher_position, launcher_color, platforms)
 VALUES ($1, $2, $3, $4, $5, $6,
-        $7, $8, $9)
+        $7, $8, $9, $10)
 ON CONFLICT (workspace_id, channel_id) DO UPDATE SET
     allowed_origins = excluded.allowed_origins, allow_anonymous = excluded.allow_anonymous,
     ask_email_offline = excluded.ask_email_offline, greeting = excluded.greeting,
-    launcher_position = excluded.launcher_position, launcher_color = excluded.launcher_color
-RETURNING workspace_id, channel_id, public_key, allowed_origins, allow_anonymous, ask_email_offline, greeting, launcher_position, launcher_color
+    launcher_position = excluded.launcher_position, launcher_color = excluded.launcher_color,
+    platforms = excluded.platforms
+RETURNING workspace_id, channel_id, public_key, allowed_origins, allow_anonymous, ask_email_offline, greeting, launcher_position, launcher_color, platforms
 `
 
 type SaveChatChannelParams struct {
@@ -1294,6 +1349,7 @@ type SaveChatChannelParams struct {
 	Greeting         string
 	LauncherPosition *string
 	LauncherColor    *string
+	Platforms        []string
 }
 
 func (q *Queries) SaveChatChannel(ctx context.Context, arg SaveChatChannelParams) (ChatChannel, error) {
@@ -1307,6 +1363,7 @@ func (q *Queries) SaveChatChannel(ctx context.Context, arg SaveChatChannelParams
 		arg.Greeting,
 		arg.LauncherPosition,
 		arg.LauncherColor,
+		arg.Platforms,
 	)
 	var i ChatChannel
 	err := row.Scan(
@@ -1319,6 +1376,7 @@ func (q *Queries) SaveChatChannel(ctx context.Context, arg SaveChatChannelParams
 		&i.Greeting,
 		&i.LauncherPosition,
 		&i.LauncherColor,
+		&i.Platforms,
 	)
 	return i, err
 }
@@ -1357,7 +1415,7 @@ func (q *Queries) SeeContactSession(ctx context.Context, arg SeeContactSessionPa
 const setChatChannelKey = `-- name: SetChatChannelKey :one
 UPDATE chat_channels SET public_key = $1
 WHERE workspace_id = $2 AND channel_id = $3
-RETURNING workspace_id, channel_id, public_key, allowed_origins, allow_anonymous, ask_email_offline, greeting, launcher_position, launcher_color
+RETURNING workspace_id, channel_id, public_key, allowed_origins, allow_anonymous, ask_email_offline, greeting, launcher_position, launcher_color, platforms
 `
 
 type SetChatChannelKeyParams struct {
@@ -1379,6 +1437,7 @@ func (q *Queries) SetChatChannelKey(ctx context.Context, arg SetChatChannelKeyPa
 		&i.Greeting,
 		&i.LauncherPosition,
 		&i.LauncherColor,
+		&i.Platforms,
 	)
 	return i, err
 }

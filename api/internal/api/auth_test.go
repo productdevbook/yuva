@@ -113,6 +113,11 @@ var migrateOnce sync.Once
 
 func newHarness(t *testing.T) *harness {
 	t.Helper()
+	return newHarnessWith(t, nil)
+}
+
+func newHarnessWith(t *testing.T, configure func(*api.Deps)) *harness {
+	t.Helper()
 	dsn := os.Getenv("YUVA_TEST_DATABASE_URL")
 	if dsn == "" {
 		t.Skip("YUVA_TEST_DATABASE_URL is not set")
@@ -150,7 +155,7 @@ func newHarness(t *testing.T) *harness {
 	go realtime.Listen(listenCtx, dsn, st.Queries, hub, slog.New(slog.DiscardHandler))
 	h := &harness{t: t, st: st, clock: &clock{now: time.Now()}, mail: &outbox{}, secrets: key, storage: objects, hub: hub,
 		smtp: &smtpCapture{}, web: newFakeWeb()}
-	srv := api.New(api.Deps{
+	deps := api.Deps{
 		Log:      slog.New(slog.DiscardHandler),
 		Store:    st,
 		Version:  "test",
@@ -168,7 +173,11 @@ func newHarness(t *testing.T) *harness {
 		Ingress:     api.IngressSettings{Secret: testIngressSecret, SESTopicARNs: []string{testSESTopic}},
 		EmailSender: h.smtp,
 		HTTPClient:  &http.Client{Transport: h.web},
-	})
+	}
+	if configure != nil {
+		configure(&deps)
+	}
+	srv := api.New(deps)
 	h.srv = srv
 	ts := httptest.NewServer(srv.Handler())
 	t.Cleanup(ts.Close)

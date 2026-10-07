@@ -168,10 +168,14 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 			MaxBytes: cfg.Attachments.MaxBytes,
 			Types:    cfg.Attachments.Types,
 		},
-		Hub:     hub,
-		Ingress: api.IngressSettings{Secret: cfg.IngressSecret, SESTopicARNs: cfg.SESTopicARNs},
-		Chat:    api.ChatSettings{EmailDelay: cfg.ChatEmailDelay},
+		Hub:      hub,
+		Ingress:  api.IngressSettings{Secret: cfg.IngressSecret, SESTopicARNs: cfg.SESTopicARNs},
+		Chat:     api.ChatSettings{EmailDelay: cfg.ChatEmailDelay},
+		Webhooks: api.WebhookSettings{AllowPrivate: cfg.WebhookAllowPrivate},
 	})
+	if cfg.WebhookAllowPrivate {
+		log.Warn("YUVA_WEBHOOK_ALLOW_PRIVATE is set; webhooks may reach private and loopback addresses")
+	}
 	if cfg.IngressSecret == "" {
 		log.Warn("YUVA_INGRESS_SECRET is not set; /ingress/email refuses all mail")
 	}

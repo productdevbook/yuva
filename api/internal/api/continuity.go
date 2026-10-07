@@ -10,7 +10,6 @@ import (
 	"github.com/riverqueue/river"
 
 	"github.com/productdevbook/yuva/api/internal/email"
-	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
@@ -84,7 +83,7 @@ func (s *Server) CheckContinuity(ctx context.Context, workspaceID, conversationI
 			return err
 		}
 		ch, err := q.GetChannel(ctx, store.GetChannelParams{WorkspaceID: workspaceID, ID: *c.ChannelID})
-		if store.IsNotFound(err) || (err == nil && ch.Kind != string(oas.ChannelKindChat)) {
+		if store.IsNotFound(err) || (err == nil && !emailsReplies(c, ch.Kind)) {
 			return nil
 		}
 		if err != nil {

@@ -226,6 +226,8 @@ func (w *emailSendWorker) Timeout(*river.Job[EmailSendArgs]) time.Duration { ret
 func (s *Server) AddWorkers(workers *river.Workers) {
 	river.AddWorker(workers, &emailSendWorker{s: s})
 	river.AddWorker(workers, &continuityWorker{s: s})
+	river.AddWorker(workers, &webhookFanoutWorker{s: s})
+	river.AddWorker(workers, &webhookDeliveryWorker{s: s})
 }
 
 func truncateRunes(v string, n int) string {

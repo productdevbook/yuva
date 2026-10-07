@@ -32,8 +32,15 @@ Not goals: a CRM, a marketing e-mail tool, a public knowledge base, social-media
 | Message | One entry in a conversation: `message` (to or from the contact), `note` (members only) or `event` (assigned, closed, …). Has attachments and a per-channel delivery state. |
 
 Feedback is a conversation that starts on the `app` or `api` channel with a `feedback` kind and
-metadata (category, app version, build, OS, device, locale, screen). It is answered like any other
-conversation; the answer reaches the contact in the app, or by e-mail when they allowed it.
+metadata (category, app version, build, OS, OS version, device model, locale, screen, installation
+id). The categories are fixed for now (`bug`, `idea`, `praise`, `other`; a per-inbox list can come
+later) and `/client/v1` returns them with the inbox so the SDKs never hard-code them. Apps send it
+with `POST /client/v1/feedback` (JSON, or multipart with screenshots); host backends whose forms
+are server-rendered send it with an API key to `POST /v1/feedback`, naming the user by their
+external id, through the inbox's `api` channel. It is answered like any other conversation; the
+answer reaches the contact in the app, or by e-mail when they allowed it (`allow_email`): members'
+replies the contact has not read go out through the same delayed e-mail as chat replies. The panel
+filters conversations by `kind` and feedback `category` and counts open feedback per category.
 
 ## Components
 
@@ -196,8 +203,9 @@ inline thread inside a product's own panel.
   exact origins whose pages may use it, whether anonymous visitors may chat, whether to ask for an
   e-mail address when nobody is available, a greeting and launcher overrides. `/client/v1` answers
   browsers only from origins some chat channel allows (CORS) and then checks the session's own
-  channel. Session starts and contact writes are rate limited per IP address and per channel,
-  counted in each process.
+  channel: a request for a chat channel must carry one of its origins, and one without an `Origin`
+  header is refused. Session starts and contact writes are rate limited per IP address and per
+  channel, counted in each process.
 - Contacts see their own conversations of the inbox, messages only (no notes, no internal events),
   conversation status, and of members only the display name and initials.
 - `live` inboxes show who is available: members with access to the inbox, with an open
@@ -217,18 +225,55 @@ inline thread inside a product's own panel.
 - `sdk/swift` (Swift package `YuvaKit`): a headless client plus SwiftUI screens (conversation list,
   thread, composer, attachments, feedback form).
 - `sdk/kotlin`: the same for Android, Compose UI.
+- The apps talk to `/client/v1` with the public key of an `app` channel: like a chat key it starts
+  contact sessions and can be rotated, anonymous use is off unless the channel allows it, and the
+  channel lists the platforms it ships on. Native apps send no `Origin`, so app keys are not tied to
+  origins and skip the origin check (a browser on an origin no chat channel allows is still
+  refused by CORS). App channels share the chat channels' settings table, with no origins.
 - The host app gets an identity token from its own backend and opens Yuva's screens or drives its
   own UI from the client.
-- Push: when a contact has no live connection, Yuva sends a `message.created` webhook to the host
-  backend, which already holds the device tokens and APNs/FCM keys. Yuva sending push itself is
-  a later, optional channel setting.
+- Push: Yuva sends `message.created` webhooks to the host backend, which already holds the device
+  tokens and APNs/FCM keys. The payload's `contact.online` says whether the contact had a live
+  `/client/v1/realtime` connection (seen in the last 75 seconds) when the webhook was prepared;
+  when it is false the app is closed or in the background and the host sends its push.
+  `GET /v1/contacts/{id}/presence` answers the same question on demand. Yuva sending push itself
+  is a later, optional channel setting.
 
 ### Webhooks
 
-Signed per the Standard Webhooks specification, retried with backoff by the job queue, visible
-with their last deliveries in the panel. Events: `conversation.created`, `conversation.updated`,
-`message.created`, `contact.updated`. The host backend also calls `DELETE /v1/contacts/{id}` (by
-external id) when a user deletes their account.
+Endpoints belong to the workspace (all events) or to one inbox (that inbox's conversations, and
+contact events for contacts with an external id or a conversation there). Each has a URL, the event
+types it subscribed to, whether `message.created` includes members' notes (never by default;
+internal events are never sent), an enabled flag and a signing secret: 32 random bytes shown once
+as `whsec_<base64>`, stored encrypted under the master key, rotatable. After a rotation the old
+secret keeps signing next to the new one for 24 hours.
+
+Events: `conversation.created`, `conversation.updated`, `message.created`, `feedback.created`,
+`contact.updated`, `contact.deleted`. Payloads follow Standard Webhooks: `{type, timestamp,
+workspace_id, inbox_id, data}`, with the conversation, message and contact in `data`; the contact
+carries `external_ids` (so the host maps it to its own user) and `online`. `contact.deleted`
+carries the external ids the contact had.
+
+Delivery: the transaction that writes an event also queues a River fan-out job when the workspace
+has an enabled endpoint; the job builds the payload once and creates a delivery per matching
+endpoint, each sent by its own job. Requests are signed per Standard Webhooks (`webhook-id`, the
+same on every retry; `webhook-timestamp`; `webhook-signature: v1,<base64 HMAC-SHA256 over
+id.timestamp.body>`, space-separated during a rotation). A 2xx answer succeeds; anything else is
+retried after 5 s, 1 min, 5 min, 30 min, 1 h, 2 h, 4 h, 8 h and 9 h (up to 10% jitter), about 24
+hours in all. An endpoint whose every attempt has failed for 24 hours, or that answers `410 Gone`,
+is disabled with the reason shown to members; enabling it again clears the reason, and any
+delivery can be sent again by hand with the same `webhook-id`. The delivery log keeps the newest
+100 attempts per endpoint (status code, latency, the first 1 KiB of the answer, the error);
+finished deliveries are kept 7 days.
+
+Outbound requests never reach internal networks: the URL must be http(s) without credentials, and
+on every attempt the host is resolved once, refused when any address is loopback, private,
+link-local (cloud metadata included), CGNAT, multicast or otherwise reserved, and the connection
+goes to that resolved address only. No proxy, no redirects (a 3xx is a failure), a 10 second
+timeout and at most 64 KiB of the answer read. `YUVA_WEBHOOK_ALLOW_PRIVATE=true` lifts the address
+check for development (the dev compose file sets it); never set it on a shared server.
+
+`sdk/go/webhook` verifies the signatures for Go backends.
 
 ### Panel (`web/`)
 
@@ -260,7 +305,11 @@ now; per-channel limits can narrow them later.
 ## Privacy and data
 
 - Retention per workspace: closed conversations and raw e-mails deleted after a set period.
-- Contact deletion and export through the API, for GDPR and KVKK requests.
+- Contact deletion and export through the API, for GDPR and KVKK requests. A host backend deletes
+  a user who deleted their account with `DELETE /v1/contacts/by-external-id?inbox_id=&external_id=`
+  (an API key or an owner or admin): the contact goes with all their conversations, messages,
+  attachments, sessions and addresses in every inbox, the stored files are removed, and
+  `contact.deleted` tells the other endpoints which external ids are gone.
 - Nothing is sent to third parties except what a channel is configured to send (SMTP, webhooks).
 
 ## Hosting for others later
@@ -275,8 +324,9 @@ now; per-channel limits can narrow them later.
     `/ingress/ses` finds the message a bounce refers to by our Message-ID
     (`message_emails.header_message_id` of outbound mail). Everything after that lookup is scoped
     by the workspace it returned.
-  - The widget names only a chat channel's public key, which is unique across the server: a new
-    contact session finds its channel by `chat_channels.public_key`, and a CORS preflight, which
+  - The widget and the apps name only a chat or app channel's public key, which is unique across
+    the server: a new contact session finds its channel by `chat_channels.public_key` (app
+    channels live in the same table), and a CORS preflight, which
     carries neither the key nor the session, asks whether any chat channel allows its origin. A
     contact session token is looked up by its hash in `contact_sessions` before its workspace is
     known. Everything after those lookups is scoped by the workspace they returned.

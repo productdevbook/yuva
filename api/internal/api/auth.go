@@ -70,6 +70,7 @@ var operationAccess = map[string]access{
 	"MarkClientConversationRead": accessContact,
 	"SetClientTyping":            accessContact,
 	"SetClientContactEmail":      accessContact,
+	"CreateClientFeedback":       accessContact,
 	"DownloadClientAttachment":   accessContact,
 
 	"UpdateMember": accessMember,

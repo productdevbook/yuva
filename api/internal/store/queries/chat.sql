@@ -1,12 +1,13 @@
 -- name: SaveChatChannel :one
 INSERT INTO chat_channels (workspace_id, channel_id, public_key, allowed_origins, allow_anonymous, ask_email_offline,
-                           greeting, launcher_position, launcher_color)
+                           greeting, launcher_position, launcher_color, platforms)
 VALUES (@workspace_id, @channel_id, @public_key, @allowed_origins, @allow_anonymous, @ask_email_offline,
-        @greeting, sqlc.narg(launcher_position), sqlc.narg(launcher_color))
+        @greeting, sqlc.narg(launcher_position), sqlc.narg(launcher_color), @platforms)
 ON CONFLICT (workspace_id, channel_id) DO UPDATE SET
     allowed_origins = excluded.allowed_origins, allow_anonymous = excluded.allow_anonymous,
     ask_email_offline = excluded.ask_email_offline, greeting = excluded.greeting,
-    launcher_position = excluded.launcher_position, launcher_color = excluded.launcher_color
+    launcher_position = excluded.launcher_position, launcher_color = excluded.launcher_color,
+    platforms = excluded.platforms
 RETURNING *;
 
 -- name: GetChatChannel :one
@@ -14,6 +15,11 @@ SELECT * FROM chat_channels WHERE workspace_id = $1 AND channel_id = $2;
 
 -- name: ListChatChannels :many
 SELECT * FROM chat_channels WHERE workspace_id = @workspace_id AND channel_id = ANY(@channel_ids::uuid[]);
+
+-- name: GetSessionChannel :one
+SELECT cc.*, c.kind FROM chat_channels cc
+JOIN channels c ON c.workspace_id = cc.workspace_id AND c.id = cc.channel_id
+WHERE cc.workspace_id = $1 AND cc.channel_id = $2;
 
 -- name: SetChatChannelKey :one
 UPDATE chat_channels SET public_key = @public_key
@@ -23,7 +29,7 @@ RETURNING *;
 -- The widget names only the channel's public key, so the channel is found before the workspace is
 -- known (see "Hosting for others later" in docs/architecture.md).
 -- name: FindChatChannelByKey :one
-SELECT cc.*, c.inbox_id FROM chat_channels cc
+SELECT cc.*, c.inbox_id, c.kind FROM chat_channels cc
 JOIN channels c ON c.workspace_id = cc.workspace_id AND c.id = cc.channel_id
 WHERE cc.public_key = $1;
 

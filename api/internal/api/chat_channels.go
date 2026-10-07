@@ -19,8 +19,15 @@ const (
 var (
 	errChatRequired   = errValidation("a chat channel needs chat settings with at least one allowed origin")
 	errChatNotAllowed = errValidation("chat settings are only for chat channels")
-	errNotChat        = errValidation("only chat channels have a public key")
+	errAppNotAllowed  = errValidation("app settings are only for app channels")
+	errNotChat        = errValidation("only chat and app channels have a public key")
 )
+
+var allPlatforms = []string{string(oas.Ios), string(oas.Android)}
+
+func hasPublicKey(kind string) bool {
+	return kind == string(oas.ChannelKindChat) || kind == string(oas.ChannelKindApp)
+}
 
 func newChatKey() string { return chatKeyPrefix + randomToken(18) }
 
@@ -62,8 +69,51 @@ func chatChannelBody(c store.ChatChannel) *oas.ChatChannel {
 	return out
 }
 
+func appChannelBody(c store.ChatChannel) *oas.AppChannel {
+	out := &oas.AppChannel{PublicKey: c.PublicKey, AllowAnonymous: c.AllowAnonymous, Platforms: make([]oas.AppPlatform, len(c.Platforms))}
+	for i, p := range c.Platforms {
+		out.Platforms[i] = oas.AppPlatform(p)
+	}
+	return out
+}
+
+func appChannelParams(workspaceID, channelID uuid.UUID, in *oas.AppChannelInput, cur *store.ChatChannel) (store.SaveChatChannelParams, error) {
+	out := store.SaveChatChannelParams{
+		WorkspaceID: workspaceID, ChannelID: channelID, AskEmailOffline: true, AllowedOrigins: []string{}, Platforms: allPlatforms,
+	}
+	if cur != nil {
+		out.PublicKey = cur.PublicKey
+	} else {
+		out.PublicKey = newChatKey()
+	}
+	if in == nil {
+		return out, nil
+	}
+	if in.AllowAnonymous != nil {
+		out.AllowAnonymous = *in.AllowAnonymous
+	}
+	if in.Platforms != nil {
+		if len(*in.Platforms) == 0 {
+			return out, errValidation("app.platforms must name ios, android or both")
+		}
+		out.Platforms = nil
+		for _, p := range allPlatforms {
+			for _, q := range *in.Platforms {
+				if !q.Valid() {
+					return out, errValidation("app.platforms must name ios, android or both")
+				}
+				if string(q) == p {
+					out.Platforms = append(out.Platforms, p)
+					break
+				}
+			}
+		}
+	}
+	return out, nil
+}
+
 func chatChannelParams(workspaceID, channelID uuid.UUID, in *oas.ChatChannelInput, cur *store.ChatChannel) (store.SaveChatChannelParams, error) {
-	out := store.SaveChatChannelParams{WorkspaceID: workspaceID, ChannelID: channelID, AskEmailOffline: true}
+	out := store.SaveChatChannelParams{WorkspaceID: workspaceID, ChannelID: channelID, AskEmailOffline: true, Platforms: []string{}}
 	if cur != nil {
 		out.PublicKey = cur.PublicKey
 	} else {
@@ -136,7 +186,7 @@ func (s *Server) RotateChannelPublicKey(ctx context.Context, req oas.RotateChann
 	if err != nil {
 		return nil, err
 	}
-	if c.Kind != string(oas.ChannelKindChat) {
+	if !hasPublicKey(c.Kind) {
 		return nil, errNotChat
 	}
 	chat, err := s.st.SetChatChannelKey(ctx, store.SetChatChannelKeyParams{WorkspaceID: p.workspaceID, ChannelID: c.ID, PublicKey: newChatKey()})

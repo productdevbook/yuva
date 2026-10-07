@@ -72,7 +72,7 @@ func memberNames(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, i
 
 func clientConversationBody(c store.Conversation) oas.ClientConversation {
 	return oas.ClientConversation{
-		Id: c.ID, Subject: c.Subject, Status: oas.ConversationStatus(c.Status), LastMessageAt: c.LastMessageAt, CreatedAt: c.CreatedAt,
+		Id: c.ID, Kind: oas.ConversationKind(c.Kind), Feedback: conversationFeedback(c), Subject: c.Subject, Status: oas.ConversationStatus(c.Status), LastMessageAt: c.LastMessageAt, CreatedAt: c.CreatedAt,
 	}
 }
 
@@ -313,9 +313,9 @@ func (s *Server) addContactMessage(ctx context.Context, q *store.Queries, events
 		atts = append(atts, a)
 		total += f.size
 	}
-	if c.Status != string(oas.Open) {
+	if c.Status != string(oas.ConversationStatusOpen) {
 		updated, err := q.UpdateConversation(ctx, store.UpdateConversationParams{
-			WorkspaceID: cp.workspaceID, ID: c.ID, Subject: c.Subject, Status: string(oas.Open), Priority: c.Priority,
+			WorkspaceID: cp.workspaceID, ID: c.ID, Subject: c.Subject, Status: string(oas.ConversationStatusOpen), Priority: c.Priority,
 			AssigneeID: c.AssigneeID, Spam: c.Spam, Now: now,
 		})
 		if err != nil {
@@ -326,7 +326,7 @@ func (s *Server) addContactMessage(ctx context.Context, q *store.Queries, events
 			return msg, nil, err
 		}
 		events.conversation(realtime.ConversationUpdated, updated, body)
-		st, prev := oas.Open, oas.ConversationStatus(c.Status)
+		st, prev := oas.ConversationStatusOpen, oas.ConversationStatus(c.Status)
 		if err := s.systemEvent(ctx, q, events, updated, oas.MessageEvent{Type: oas.StatusChanged, Status: &st, PreviousStatus: &prev}, now.Add(time.Microsecond)); err != nil {
 			return msg, nil, err
 		}

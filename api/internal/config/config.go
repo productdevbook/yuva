@@ -35,6 +35,8 @@ type Config struct {
 	SESTopicARNs  []string
 
 	ChatEmailDelay time.Duration
+
+	WebhookAllowPrivate bool
 }
 
 type Storage struct {
@@ -124,6 +126,9 @@ func Load(version string) (Config, error) {
 		return c, fmt.Errorf("YUVA_STORAGE must be local or s3, got %q", c.Storage.Driver)
 	}
 	if c.Storage.S3PathStyle, err = boolEnv("YUVA_S3_PATH_STYLE", false); err != nil {
+		return c, err
+	}
+	if c.WebhookAllowPrivate, err = boolEnv("YUVA_WEBHOOK_ALLOW_PRIVATE", false); err != nil {
 		return c, err
 	}
 	if c.Attachments.MaxBytes, err = strconv.ParseInt(env("YUVA_ATTACHMENT_MAX_BYTES", "26214400"), 10, 64); err != nil || c.Attachments.MaxBytes < 1 {

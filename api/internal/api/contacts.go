@@ -382,31 +382,53 @@ func (s *Server) DeleteContact(ctx context.Context, req oas.DeleteContactRequest
 	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
+	if err := s.deleteContact(ctx, p, req.ContactId); err != nil {
+		return nil, err
+	}
+	return oas.DeleteContact204Response{}, nil
+}
+
+// deleteContact deletes the contact with everything that cascades from it, and keeps their
+// external ids for the contact.deleted webhook.
+func (s *Server) deleteContact(ctx context.Context, p principal, id uuid.UUID) error {
 	var keys []string
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
-		if _, err := q.LockContact(ctx, store.LockContactParams{WorkspaceID: p.workspaceID, ID: req.ContactId}); store.IsNotFound(err) {
+		if _, err := q.LockContact(ctx, store.LockContactParams{WorkspaceID: p.workspaceID, ID: id}); store.IsNotFound(err) {
 			return errContactGone
 		} else if err != nil {
 			return err
 		}
 		var err error
-		if keys, err = q.ListContactStorageKeys(ctx, store.ListContactStorageKeysParams{WorkspaceID: p.workspaceID, ContactID: req.ContactId}); err != nil {
+		if keys, err = q.ListContactStorageKeys(ctx, store.ListContactStorageKeysParams{WorkspaceID: p.workspaceID, ContactID: id}); err != nil {
 			return err
 		}
-		raw, err := q.ListContactRawKeys(ctx, store.ListContactRawKeysParams{WorkspaceID: p.workspaceID, ContactID: req.ContactId})
+		raw, err := q.ListContactRawKeys(ctx, store.ListContactRawKeysParams{WorkspaceID: p.workspaceID, ContactID: id})
 		if err != nil {
 			return err
 		}
 		keys = append(keys, raw...)
-		if _, err = q.DeleteContact(ctx, store.DeleteContactParams{WorkspaceID: p.workspaceID, ID: req.ContactId}); err != nil {
+		externals, err := q.ListContactExternalIDs(ctx, store.ListContactExternalIDsParams{WorkspaceID: p.workspaceID, ContactIds: []uuid.UUID{id}})
+		if err != nil {
 			return err
 		}
-		events.add(realtime.ContactDeleted, nil, nil, oas.ContactRef{Id: req.ContactId})
+		inboxes, err := q.ContactInboxIDs(ctx, store.ContactInboxIDsParams{WorkspaceID: p.workspaceID, ContactID: id})
+		if err != nil {
+			return err
+		}
+		snap := &deletedContact{Contact: oas.WebhookDeletedContact{Id: id, ExternalIds: []oas.ExternalId{}}, Inboxes: inboxes}
+		for _, x := range externals {
+			snap.Contact.ExternalIds = append(snap.Contact.ExternalIds, oas.ExternalId{InboxId: x.InboxID, ExternalId: x.ExternalID})
+		}
+		if _, err = q.DeleteContact(ctx, store.DeleteContactParams{WorkspaceID: p.workspaceID, ID: id}); err != nil {
+			return err
+		}
+		events.add(realtime.ContactDeleted, nil, nil, oas.ContactRef{Id: id})
+		events.items[len(events.items)-1].deleted = snap
 		return nil
 	})
 	if err != nil {
-		return nil, err
+		return err
 	}
 	s.deleteObjects(ctx, keys)
-	return oas.DeleteContact204Response{}, nil
+	return nil
 }

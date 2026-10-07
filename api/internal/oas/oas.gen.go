@@ -23,6 +23,24 @@ import (
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
+// Defines values for AppPlatform.
+const (
+	Android AppPlatform = "android"
+	Ios     AppPlatform = "ios"
+)
+
+// Valid indicates whether the value is a known member of the AppPlatform enum.
+func (e AppPlatform) Valid() bool {
+	switch e {
+	case Android:
+		return true
+	case Ios:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AuthorType.
 const (
 	AuthorTypeContact AuthorType = "contact"
@@ -199,13 +217,13 @@ func (e ClientTypingEventType) Valid() bool {
 
 // Defines values for ContactDeletedEventType.
 const (
-	ContactDeleted ContactDeletedEventType = "contact.deleted"
+	ContactDeletedEventTypeContactDeleted ContactDeletedEventType = "contact.deleted"
 )
 
 // Valid indicates whether the value is a known member of the ContactDeletedEventType enum.
 func (e ContactDeletedEventType) Valid() bool {
 	switch e {
-	case ContactDeleted:
+	case ContactDeletedEventTypeContactDeleted:
 		return true
 	default:
 		return false
@@ -214,13 +232,13 @@ func (e ContactDeletedEventType) Valid() bool {
 
 // Defines values for ContactUpdatedEventType.
 const (
-	ContactUpdated ContactUpdatedEventType = "contact.updated"
+	ContactUpdatedEventTypeContactUpdated ContactUpdatedEventType = "contact.updated"
 )
 
 // Valid indicates whether the value is a known member of the ContactUpdatedEventType enum.
 func (e ContactUpdatedEventType) Valid() bool {
 	switch e {
-	case ContactUpdated:
+	case ContactUpdatedEventTypeContactUpdated:
 		return true
 	default:
 		return false
@@ -245,6 +263,24 @@ func (e ConversationEventType) Valid() bool {
 	}
 }
 
+// Defines values for ConversationKind.
+const (
+	ConversationKindConversation ConversationKind = "conversation"
+	ConversationKindFeedback     ConversationKind = "feedback"
+)
+
+// Valid indicates whether the value is a known member of the ConversationKind enum.
+func (e ConversationKind) Valid() bool {
+	switch e {
+	case ConversationKindConversation:
+		return true
+	case ConversationKindFeedback:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ConversationReadEventType.
 const (
 	ConversationReadEventTypeConversationRead ConversationReadEventType = "conversation.read"
@@ -262,22 +298,22 @@ func (e ConversationReadEventType) Valid() bool {
 
 // Defines values for ConversationStatus.
 const (
-	Closed  ConversationStatus = "closed"
-	Open    ConversationStatus = "open"
-	Pending ConversationStatus = "pending"
-	Snoozed ConversationStatus = "snoozed"
+	ConversationStatusClosed  ConversationStatus = "closed"
+	ConversationStatusOpen    ConversationStatus = "open"
+	ConversationStatusPending ConversationStatus = "pending"
+	ConversationStatusSnoozed ConversationStatus = "snoozed"
 )
 
 // Valid indicates whether the value is a known member of the ConversationStatus enum.
 func (e ConversationStatus) Valid() bool {
 	switch e {
-	case Closed:
+	case ConversationStatusClosed:
 		return true
-	case Open:
+	case ConversationStatusOpen:
 		return true
-	case Pending:
+	case ConversationStatusPending:
 		return true
-	case Snoozed:
+	case ConversationStatusSnoozed:
 		return true
 	default:
 		return false
@@ -320,6 +356,30 @@ func (e EventType) Valid() bool {
 	case StatusChanged:
 		return true
 	case Unassigned:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for FeedbackCategory.
+const (
+	Bug    FeedbackCategory = "bug"
+	Idea   FeedbackCategory = "idea"
+	Other  FeedbackCategory = "other"
+	Praise FeedbackCategory = "praise"
+)
+
+// Valid indicates whether the value is a known member of the FeedbackCategory enum.
+func (e FeedbackCategory) Valid() bool {
+	switch e {
+	case Bug:
+		return true
+	case Idea:
+		return true
+	case Other:
+		return true
+	case Praise:
 		return true
 	default:
 		return false
@@ -568,19 +628,19 @@ func (e MessageDeliveryChannel) Valid() bool {
 
 // Defines values for MessageDeliveryState.
 const (
-	Failed MessageDeliveryState = "failed"
-	Queued MessageDeliveryState = "queued"
-	Sent   MessageDeliveryState = "sent"
+	MessageDeliveryStateFailed MessageDeliveryState = "failed"
+	MessageDeliveryStateQueued MessageDeliveryState = "queued"
+	MessageDeliveryStateSent   MessageDeliveryState = "sent"
 )
 
 // Valid indicates whether the value is a known member of the MessageDeliveryState enum.
 func (e MessageDeliveryState) Valid() bool {
 	switch e {
-	case Failed:
+	case MessageDeliveryStateFailed:
 		return true
-	case Queued:
+	case MessageDeliveryStateQueued:
 		return true
-	case Sent:
+	case MessageDeliveryStateSent:
 		return true
 	default:
 		return false
@@ -794,6 +854,57 @@ func (e UndeliverableEmailReason) Valid() bool {
 	}
 }
 
+// Defines values for WebhookDeliveryState.
+const (
+	WebhookDeliveryStateFailed    WebhookDeliveryState = "failed"
+	WebhookDeliveryStatePending   WebhookDeliveryState = "pending"
+	WebhookDeliveryStateSucceeded WebhookDeliveryState = "succeeded"
+)
+
+// Valid indicates whether the value is a known member of the WebhookDeliveryState enum.
+func (e WebhookDeliveryState) Valid() bool {
+	switch e {
+	case WebhookDeliveryStateFailed:
+		return true
+	case WebhookDeliveryStatePending:
+		return true
+	case WebhookDeliveryStateSucceeded:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for WebhookEventType.
+const (
+	WebhookEventTypeContactDeleted      WebhookEventType = "contact.deleted"
+	WebhookEventTypeContactUpdated      WebhookEventType = "contact.updated"
+	WebhookEventTypeConversationCreated WebhookEventType = "conversation.created"
+	WebhookEventTypeConversationUpdated WebhookEventType = "conversation.updated"
+	WebhookEventTypeFeedbackCreated     WebhookEventType = "feedback.created"
+	WebhookEventTypeMessageCreated      WebhookEventType = "message.created"
+)
+
+// Valid indicates whether the value is a known member of the WebhookEventType enum.
+func (e WebhookEventType) Valid() bool {
+	switch e {
+	case WebhookEventTypeContactDeleted:
+		return true
+	case WebhookEventTypeContactUpdated:
+		return true
+	case WebhookEventTypeConversationCreated:
+		return true
+	case WebhookEventTypeConversationUpdated:
+		return true
+	case WebhookEventTypeFeedbackCreated:
+		return true
+	case WebhookEventTypeMessageCreated:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for Weekday.
 const (
 	Fri Weekday = "fri"
@@ -898,6 +1009,32 @@ type ApiKeyList struct {
 	Items []ApiKey `json:"items"`
 }
 
+// AppChannel Settings of an `app` (mobile SDKs) channel. Native apps send no `Origin`, so the key is not
+// tied to origins; anonymous use is off unless allowed.
+type AppChannel struct {
+	// AllowAnonymous Users without an identity token may write.
+	AllowAnonymous bool `json:"allow_anonymous"`
+
+	// Platforms The platforms the app ships on, for the panel.
+	Platforms []AppPlatform `json:"platforms"`
+
+	// PublicKey Identifies the channel to the SDKs (`channel_key`). Not a secret: it ships inside the
+	// app. Rotate it with `POST /v1/channels/{id}/public-key`.
+	PublicKey string `json:"public_key"`
+}
+
+// AppChannelInput defines model for AppChannelInput.
+type AppChannelInput struct {
+	// AllowAnonymous Defaults to false.
+	AllowAnonymous *bool `json:"allow_anonymous,omitempty"`
+
+	// Platforms Defaults to both.
+	Platforms *[]AppPlatform `json:"platforms,omitempty"`
+}
+
+// AppPlatform defines model for AppPlatform.
+type AppPlatform string
+
 // Attachment defines model for Attachment.
 type Attachment struct {
 	// ContentId The `Content-ID` of an inbound e-mail part, without angle brackets. The message HTML
@@ -983,6 +1120,10 @@ type CannedReplyUpdate struct {
 
 // Channel defines model for Channel.
 type Channel struct {
+	// App Settings of an `app` (mobile SDKs) channel. Native apps send no `Origin`, so the key is not
+	// tied to origins; anonymous use is off unless allowed.
+	App *AppChannel `json:"app,omitempty"`
+
 	// Chat Settings of a `chat` (web widget) channel.
 	Chat      *ChatChannel `json:"chat,omitempty"`
 	CreatedAt time.Time    `json:"created_at"`
@@ -1003,6 +1144,7 @@ type Channel struct {
 
 // ChannelCreate defines model for ChannelCreate.
 type ChannelCreate struct {
+	App   *AppChannelInput   `json:"app,omitempty"`
 	Chat  *ChatChannelInput  `json:"chat,omitempty"`
 	Email *EmailChannelInput `json:"email,omitempty"`
 
@@ -1027,6 +1169,7 @@ type ChannelSettings map[string]interface{}
 
 // ChannelUpdate defines model for ChannelUpdate.
 type ChannelUpdate struct {
+	App   *AppChannelInput   `json:"app,omitempty"`
 	Chat  *ChatChannelInput  `json:"chat,omitempty"`
 	Email *EmailChannelInput `json:"email,omitempty"`
 	Name  *string            `json:"name,omitempty"`
@@ -1125,8 +1268,14 @@ type ClientContact struct {
 
 // ClientConversation defines model for ClientConversation.
 type ClientConversation struct {
-	CreatedAt     time.Time             `json:"created_at"`
-	Id            uuid.UUID             `json:"id"`
+	CreatedAt time.Time `json:"created_at"`
+
+	// Feedback `feedback` conversations only.
+	Feedback *Feedback `json:"feedback,omitempty"`
+	Id       uuid.UUID `json:"id"`
+
+	// Kind `feedback` conversations carry `feedback` metadata; everything else is `conversation`.
+	Kind          ConversationKind      `json:"kind"`
 	LastMessage   *ClientMessagePreview `json:"last_message,omitempty"`
 	LastMessageAt *time.Time            `json:"last_message_at,omitempty"`
 
@@ -1210,6 +1359,55 @@ type ClientEmailUpdate struct {
 	Email Email `json:"email"`
 }
 
+// ClientFeedbackCreate defines model for ClientFeedbackCreate.
+type ClientFeedbackCreate struct {
+	AllowEmail *bool   `json:"allow_email,omitempty"`
+	AppVersion *string `json:"app_version,omitempty"`
+
+	// Body The feedback text. Required unless files are attached.
+	Body     *string          `json:"body,omitempty"`
+	Build    *string          `json:"build,omitempty"`
+	Category FeedbackCategory `json:"category"`
+
+	// ClientId The first message's `client_id`.
+	ClientId    *string `json:"client_id,omitempty"`
+	DeviceModel *string `json:"device_model,omitempty"`
+
+	// Email Examples: owner@example.com
+	Email          *Email  `json:"email,omitempty"`
+	InstallationId *string `json:"installation_id,omitempty"`
+	Locale         *string `json:"locale,omitempty"`
+	Os             *string `json:"os,omitempty"`
+	OsVersion      *string `json:"os_version,omitempty"`
+	Screen         *string `json:"screen,omitempty"`
+	Subject        *string `json:"subject,omitempty"`
+}
+
+// ClientFeedbackCreateMultipart defines model for ClientFeedbackCreateMultipart.
+type ClientFeedbackCreateMultipart struct {
+	AllowEmail *bool   `json:"allow_email,omitempty"`
+	AppVersion *string `json:"app_version,omitempty"`
+
+	// Body The feedback text. Required unless files are attached.
+	Body     *string          `json:"body,omitempty"`
+	Build    *string          `json:"build,omitempty"`
+	Category FeedbackCategory `json:"category"`
+
+	// ClientId The first message's `client_id`.
+	ClientId    *string `json:"client_id,omitempty"`
+	DeviceModel *string `json:"device_model,omitempty"`
+
+	// Email Examples: owner@example.com
+	Email          *Email                `json:"email,omitempty"`
+	Files          *[]openapi_types.File `json:"files,omitempty"`
+	InstallationId *string               `json:"installation_id,omitempty"`
+	Locale         *string               `json:"locale,omitempty"`
+	Os             *string               `json:"os,omitempty"`
+	OsVersion      *string               `json:"os_version,omitempty"`
+	Screen         *string               `json:"screen,omitempty"`
+	Subject        *string               `json:"subject,omitempty"`
+}
+
 // ClientInbox The inbox's public settings. `live` inboxes carry `presence`; `async` inboxes never do and
 // show `expected_reply_minutes` instead.
 type ClientInbox struct {
@@ -1225,8 +1423,11 @@ type ClientInbox struct {
 	DefaultLocale LanguageTag `json:"default_locale"`
 
 	// ExpectedReplyMinutes `async` inboxes only; absent when not set.
-	ExpectedReplyMinutes *int32    `json:"expected_reply_minutes,omitempty"`
-	Id                   uuid.UUID `json:"id"`
+	ExpectedReplyMinutes *int32 `json:"expected_reply_minutes,omitempty"`
+
+	// FeedbackCategories The categories `POST /client/v1/feedback` accepts, in display order.
+	FeedbackCategories []FeedbackCategory `json:"feedback_categories"`
+	Id                 uuid.UUID          `json:"id"`
 
 	// Mode `live` shows who is available, typing and read receipts; `async` shows the expected reply
 	// time instead.
@@ -1401,7 +1602,7 @@ type ClientSession struct {
 
 // ClientSessionCreate defines model for ClientSessionCreate.
 type ClientSessionCreate struct {
-	// ChannelKey The chat channel's `public_key`.
+	// ChannelKey The chat or app channel's `public_key`.
 	ChannelKey string `json:"channel_key"`
 
 	// IdentityToken A JWT (HS256) from the host backend; see `sdk/go`.
@@ -1497,6 +1698,17 @@ type ContactPage struct {
 	NextCursor *string `json:"next_cursor,omitempty"`
 }
 
+// ContactPresence defines model for ContactPresence.
+type ContactPresence struct {
+	ContactId uuid.UUID `json:"contact_id"`
+
+	// LastSeenAt The contact's last client activity (a connection or a session use); absent when never seen.
+	LastSeenAt *time.Time `json:"last_seen_at,omitempty"`
+
+	// Online A `/client/v1/realtime` connection of the contact was seen in the last 75 seconds.
+	Online bool `json:"online"`
+}
+
 // ContactRef defines model for ContactRef.
 type ContactRef struct {
 	Id uuid.UUID `json:"id"`
@@ -1536,8 +1748,14 @@ type Conversation struct {
 	ChannelId *uuid.UUID `json:"channel_id,omitempty"`
 	ContactId uuid.UUID  `json:"contact_id"`
 	CreatedAt time.Time  `json:"created_at"`
-	Id        uuid.UUID  `json:"id"`
-	InboxId   uuid.UUID  `json:"inbox_id"`
+
+	// Feedback `feedback` conversations only: category and what the app sent with it.
+	Feedback *Feedback `json:"feedback,omitempty"`
+	Id       uuid.UUID `json:"id"`
+	InboxId  uuid.UUID `json:"inbox_id"`
+
+	// Kind `feedback` conversations carry `feedback` metadata; everything else is `conversation`.
+	Kind ConversationKind `json:"kind"`
 
 	// Labels Label ids.
 	Labels []uuid.UUID `json:"labels"`
@@ -1577,6 +1795,12 @@ type ConversationContact struct {
 // ConversationCounts Open conversations in the inboxes the caller can see.
 type ConversationCounts struct {
 	All int64 `json:"all"`
+
+	// Feedback Open feedback conversations (included in the other counts too).
+	Feedback int64 `json:"feedback"`
+
+	// FeedbackCategories Open feedback per category; categories without any are left out.
+	FeedbackCategories []FeedbackCount `json:"feedback_categories"`
 
 	// Inboxes Per inbox id.
 	Inboxes []CountByID `json:"inboxes"`
@@ -1618,6 +1842,9 @@ type ConversationEvent struct {
 // ConversationEventType defines model for ConversationEvent.Type.
 type ConversationEventType string
 
+// ConversationKind `feedback` conversations carry `feedback` metadata; everything else is `conversation`.
+type ConversationKind string
+
 // ConversationListItem A conversation with what a list row shows.
 type ConversationListItem struct {
 	// AssigneeId The assigned member; absent when unassigned.
@@ -1630,8 +1857,14 @@ type ConversationListItem struct {
 	Contact   ConversationContact `json:"contact"`
 	ContactId uuid.UUID           `json:"contact_id"`
 	CreatedAt time.Time           `json:"created_at"`
-	Id        uuid.UUID           `json:"id"`
-	InboxId   uuid.UUID           `json:"inbox_id"`
+
+	// Feedback `feedback` conversations only: category and what the app sent with it.
+	Feedback *Feedback `json:"feedback,omitempty"`
+	Id       uuid.UUID `json:"id"`
+	InboxId  uuid.UUID `json:"inbox_id"`
+
+	// Kind `feedback` conversations carry `feedback` metadata; everything else is `conversation`.
+	Kind ConversationKind `json:"kind"`
 
 	// Labels Label ids.
 	Labels []uuid.UUID `json:"labels"`
@@ -1796,6 +2029,86 @@ type ExternalId struct {
 	// ExternalId The host app's user id.
 	ExternalId string    `json:"external_id"`
 	InboxId    uuid.UUID `json:"inbox_id"`
+}
+
+// Feedback What a `feedback` conversation was sent with. Absent fields were not sent.
+type Feedback struct {
+	// AllowEmail The contact allowed replies by e-mail.
+	AllowEmail bool             `json:"allow_email"`
+	AppVersion *string          `json:"app_version,omitempty"`
+	Build      *string          `json:"build,omitempty"`
+	Category   FeedbackCategory `json:"category"`
+
+	// DeviceModel Examples: iPhone17,1
+	DeviceModel *string `json:"device_model,omitempty"`
+
+	// InstallationId The app's own id for this installation.
+	InstallationId *string `json:"installation_id,omitempty"`
+	Locale         *string `json:"locale,omitempty"`
+
+	// Os Examples: iOS, Android
+	Os        *string `json:"os,omitempty"`
+	OsVersion *string `json:"os_version,omitempty"`
+
+	// Screen The app screen or route the feedback was sent from.
+	Screen *string `json:"screen,omitempty"`
+}
+
+// FeedbackCategory defines model for FeedbackCategory.
+type FeedbackCategory string
+
+// FeedbackContact defines model for FeedbackContact.
+type FeedbackContact struct {
+	// Email Examples: owner@example.com
+	Email *Email `json:"email,omitempty"`
+
+	// ExternalId The host app's id for this user, per inbox.
+	ExternalId string  `json:"external_id"`
+	Name       *string `json:"name,omitempty"`
+}
+
+// FeedbackCount defines model for FeedbackCount.
+type FeedbackCount struct {
+	Category FeedbackCategory `json:"category"`
+	Count    int64            `json:"count"`
+}
+
+// FeedbackCreate defines model for FeedbackCreate.
+type FeedbackCreate struct {
+	AllowEmail     *bool            `json:"allow_email,omitempty"`
+	AppVersion     *string          `json:"app_version,omitempty"`
+	Body           string           `json:"body"`
+	Build          *string          `json:"build,omitempty"`
+	Category       FeedbackCategory `json:"category"`
+	ClientId       *string          `json:"client_id,omitempty"`
+	Contact        FeedbackContact  `json:"contact"`
+	DeviceModel    *string          `json:"device_model,omitempty"`
+	InboxId        uuid.UUID        `json:"inbox_id"`
+	InstallationId *string          `json:"installation_id,omitempty"`
+	Locale         *string          `json:"locale,omitempty"`
+	Os             *string          `json:"os,omitempty"`
+	OsVersion      *string          `json:"os_version,omitempty"`
+	Screen         *string          `json:"screen,omitempty"`
+	Subject        *string          `json:"subject,omitempty"`
+}
+
+// FeedbackCreated defines model for FeedbackCreated.
+type FeedbackCreated struct {
+	Contact      Contact      `json:"contact"`
+	Conversation Conversation `json:"conversation"`
+	Message      Message      `json:"message"`
+}
+
+// FeedbackFields defines model for FeedbackFields.
+type FeedbackFields struct {
+	AppVersion     *string `json:"app_version,omitempty"`
+	Build          *string `json:"build,omitempty"`
+	DeviceModel    *string `json:"device_model,omitempty"`
+	InstallationId *string `json:"installation_id,omitempty"`
+	Locale         *string `json:"locale,omitempty"`
+	Os             *string `json:"os,omitempty"`
+	OsVersion      *string `json:"os_version,omitempty"`
+	Screen         *string `json:"screen,omitempty"`
 }
 
 // Health defines model for Health.
@@ -2564,6 +2877,277 @@ type Version struct {
 	Version string `json:"version"`
 }
 
+// WebhookAttempt defines model for WebhookAttempt.
+type WebhookAttempt struct {
+	AttemptedAt time.Time `json:"attempted_at"`
+	DeliveryId  uuid.UUID `json:"delivery_id"`
+
+	// Error Why the attempt failed (timeout, refused address, non-2xx status, …).
+	Error     *string   `json:"error,omitempty"`
+	Id        uuid.UUID `json:"id"`
+	LatencyMs int32     `json:"latency_ms"`
+
+	// Manual Sent by a redeliver.
+	Manual bool `json:"manual"`
+
+	// ResponseBody The first 1 KiB of the answer.
+	ResponseBody string `json:"response_body"`
+
+	// StatusCode Absent when no HTTP answer arrived.
+	StatusCode *int32 `json:"status_code,omitempty"`
+	Success    bool   `json:"success"`
+}
+
+// WebhookAttemptList defines model for WebhookAttemptList.
+type WebhookAttemptList struct {
+	Items []WebhookAttempt `json:"items"`
+}
+
+// WebhookContact The contact as a host backend needs it.
+type WebhookContact struct {
+	// Attributes Free-form data about the contact (plan, app version, …), at most 16 KiB.
+	Attributes Attributes `json:"attributes"`
+	Emails     []Email    `json:"emails"`
+
+	// ExternalIds The host app's ids for this person, per inbox.
+	ExternalIds []ExternalId `json:"external_ids"`
+	Id          uuid.UUID    `json:"id"`
+	LastSeenAt  *time.Time   `json:"last_seen_at,omitempty"`
+	Locale      *string      `json:"locale,omitempty"`
+	Name        string       `json:"name"`
+
+	// Online The contact had a live `/client/v1/realtime` connection when the webhook was prepared.
+	// When false, the app is closed or in the background: a push notification is the way to
+	// reach them.
+	Online bool `json:"online"`
+}
+
+// WebhookContactData defines model for WebhookContactData.
+type WebhookContactData struct {
+	// Contact The contact as a host backend needs it.
+	Contact WebhookContact `json:"contact"`
+}
+
+// WebhookContactDeletedData defines model for WebhookContactDeletedData.
+type WebhookContactDeletedData struct {
+	Contact WebhookDeletedContact `json:"contact"`
+}
+
+// WebhookContactDeletedPayload defines model for WebhookContactDeletedPayload.
+type WebhookContactDeletedPayload struct {
+	Data WebhookContactDeletedData `json:"data"`
+
+	// InboxId The conversation's inbox; absent for contact events.
+	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// Timestamp When the event happened (not when it was sent).
+	Timestamp   time.Time        `json:"timestamp"`
+	Type        WebhookEventType `json:"type"`
+	WorkspaceId uuid.UUID        `json:"workspace_id"`
+}
+
+// WebhookContactPayload defines model for WebhookContactPayload.
+type WebhookContactPayload struct {
+	Data WebhookContactData `json:"data"`
+
+	// InboxId The conversation's inbox; absent for contact events.
+	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// Timestamp When the event happened (not when it was sent).
+	Timestamp   time.Time        `json:"timestamp"`
+	Type        WebhookEventType `json:"type"`
+	WorkspaceId uuid.UUID        `json:"workspace_id"`
+}
+
+// WebhookConversationData defines model for WebhookConversationData.
+type WebhookConversationData struct {
+	// Contact The contact as a host backend needs it.
+	Contact      WebhookContact `json:"contact"`
+	Conversation Conversation   `json:"conversation"`
+}
+
+// WebhookConversationPayload defines model for WebhookConversationPayload.
+type WebhookConversationPayload struct {
+	Data WebhookConversationData `json:"data"`
+
+	// InboxId The conversation's inbox; absent for contact events.
+	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// Timestamp When the event happened (not when it was sent).
+	Timestamp   time.Time        `json:"timestamp"`
+	Type        WebhookEventType `json:"type"`
+	WorkspaceId uuid.UUID        `json:"workspace_id"`
+}
+
+// WebhookDeletedContact defines model for WebhookDeletedContact.
+type WebhookDeletedContact struct {
+	ExternalIds []ExternalId `json:"external_ids"`
+	Id          uuid.UUID    `json:"id"`
+}
+
+// WebhookDelivery defines model for WebhookDelivery.
+type WebhookDelivery struct {
+	Attempts    int32            `json:"attempts"`
+	CreatedAt   time.Time        `json:"created_at"`
+	EventType   WebhookEventType `json:"event_type"`
+	Id          uuid.UUID        `json:"id"`
+	LastAttempt *WebhookAttempt  `json:"last_attempt,omitempty"`
+
+	// MessageId The `webhook-id` header.
+	MessageId string `json:"message_id"`
+
+	// NextAttemptAt Pending deliveries only.
+	NextAttemptAt *time.Time `json:"next_attempt_at,omitempty"`
+
+	// State `pending` while attempts remain, `succeeded` after a 2xx answer, `failed` when the retries
+	// (about 24 hours) ran out or the endpoint was disabled.
+	State WebhookDeliveryState `json:"state"`
+}
+
+// WebhookDeliveryDetail defines model for WebhookDeliveryDetail.
+type WebhookDeliveryDetail struct {
+	// AttemptLog The delivery's attempts that are still kept, newest first.
+	AttemptLog  []WebhookAttempt `json:"attempt_log"`
+	Attempts    int32            `json:"attempts"`
+	CreatedAt   time.Time        `json:"created_at"`
+	EventType   WebhookEventType `json:"event_type"`
+	Id          uuid.UUID        `json:"id"`
+	LastAttempt *WebhookAttempt  `json:"last_attempt,omitempty"`
+
+	// MessageId The `webhook-id` header.
+	MessageId string `json:"message_id"`
+
+	// NextAttemptAt Pending deliveries only.
+	NextAttemptAt *time.Time `json:"next_attempt_at,omitempty"`
+
+	// Payload The body sent, one of the webhook payloads.
+	Payload map[string]interface{} `json:"payload"`
+
+	// State `pending` while attempts remain, `succeeded` after a 2xx answer, `failed` when the retries
+	// (about 24 hours) ran out or the endpoint was disabled.
+	State WebhookDeliveryState `json:"state"`
+}
+
+// WebhookDeliveryPage defines model for WebhookDeliveryPage.
+type WebhookDeliveryPage struct {
+	Items []WebhookDelivery `json:"items"`
+
+	// NextCursor Absent on the last page.
+	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// WebhookDeliveryState `pending` while attempts remain, `succeeded` after a 2xx answer, `failed` when the retries
+// (about 24 hours) ran out or the endpoint was disabled.
+type WebhookDeliveryState string
+
+// WebhookEndpoint defines model for WebhookEndpoint.
+type WebhookEndpoint struct {
+	CreatedAt   time.Time  `json:"created_at"`
+	Description string     `json:"description"`
+	DisabledAt  *time.Time `json:"disabled_at,omitempty"`
+
+	// DisabledReason Why Yuva turned the endpoint off: every attempt failed for 24 hours, or it answered
+	// `410 Gone`. Absent while enabled or when a member turned it off.
+	DisabledReason *string            `json:"disabled_reason,omitempty"`
+	Enabled        bool               `json:"enabled"`
+	Events         []WebhookEventType `json:"events"`
+
+	// FailingSince Every attempt since then failed; absent while deliveries succeed.
+	FailingSince *time.Time `json:"failing_since,omitempty"`
+	Id           uuid.UUID  `json:"id"`
+
+	// InboxId Absent for workspace endpoints.
+	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// IncludeNotes `message.created` also for members' notes.
+	IncludeNotes bool `json:"include_notes"`
+
+	// SecretRotatedAt While the previous secret still signs (24 hours after a rotation), when it was replaced.
+	SecretRotatedAt *time.Time `json:"secret_rotated_at,omitempty"`
+	UpdatedAt       time.Time  `json:"updated_at"`
+	Url             string     `json:"url"`
+}
+
+// WebhookEndpointCreate defines model for WebhookEndpointCreate.
+type WebhookEndpointCreate struct {
+	Description  *string            `json:"description,omitempty"`
+	Enabled      *bool              `json:"enabled,omitempty"`
+	Events       []WebhookEventType `json:"events"`
+	InboxId      *uuid.UUID         `json:"inbox_id,omitempty"`
+	IncludeNotes *bool              `json:"include_notes,omitempty"`
+	Url          string             `json:"url"`
+}
+
+// WebhookEndpointList defines model for WebhookEndpointList.
+type WebhookEndpointList struct {
+	Items []WebhookEndpoint `json:"items"`
+}
+
+// WebhookEndpointSecret defines model for WebhookEndpointSecret.
+type WebhookEndpointSecret struct {
+	Endpoint WebhookEndpoint `json:"endpoint"`
+
+	// Secret `whsec_` and 32 random bytes in base64. Shown only now.
+	Secret string `json:"secret"`
+}
+
+// WebhookEndpointUpdate defines model for WebhookEndpointUpdate.
+type WebhookEndpointUpdate struct {
+	Description  *string             `json:"description,omitempty"`
+	Enabled      *bool               `json:"enabled,omitempty"`
+	Events       *[]WebhookEventType `json:"events,omitempty"`
+	IncludeNotes *bool               `json:"include_notes,omitempty"`
+	Url          *string             `json:"url,omitempty"`
+}
+
+// WebhookEventType defines model for WebhookEventType.
+type WebhookEventType string
+
+// WebhookFeedbackPayload defines model for WebhookFeedbackPayload.
+type WebhookFeedbackPayload struct {
+	Data WebhookMessageData `json:"data"`
+
+	// InboxId The conversation's inbox; absent for contact events.
+	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// Timestamp When the event happened (not when it was sent).
+	Timestamp   time.Time        `json:"timestamp"`
+	Type        WebhookEventType `json:"type"`
+	WorkspaceId uuid.UUID        `json:"workspace_id"`
+}
+
+// WebhookMessageData defines model for WebhookMessageData.
+type WebhookMessageData struct {
+	// Contact The contact as a host backend needs it.
+	Contact      WebhookContact `json:"contact"`
+	Conversation Conversation   `json:"conversation"`
+	Message      Message        `json:"message"`
+}
+
+// WebhookMessagePayload defines model for WebhookMessagePayload.
+type WebhookMessagePayload struct {
+	Data WebhookMessageData `json:"data"`
+
+	// InboxId The conversation's inbox; absent for contact events.
+	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// Timestamp When the event happened (not when it was sent).
+	Timestamp   time.Time        `json:"timestamp"`
+	Type        WebhookEventType `json:"type"`
+	WorkspaceId uuid.UUID        `json:"workspace_id"`
+}
+
+// WebhookPayloadBase Standard Webhooks payload envelope.
+type WebhookPayloadBase struct {
+	// InboxId The conversation's inbox; absent for contact events.
+	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
+	// Timestamp When the event happened (not when it was sent).
+	Timestamp   time.Time        `json:"timestamp"`
+	Type        WebhookEventType `json:"type"`
+	WorkspaceId uuid.UUID        `json:"workspace_id"`
+}
+
 // Weekday defines model for Weekday.
 type Weekday string
 
@@ -2595,6 +3179,9 @@ type ConversationId = uuid.UUID
 // Cursor defines model for Cursor.
 type Cursor = string
 
+// DeliveryId defines model for DeliveryId.
+type DeliveryId = uuid.UUID
+
 // InboxId defines model for InboxId.
 type InboxId = uuid.UUID
 
@@ -2618,6 +3205,18 @@ type PasskeyId = uuid.UUID
 
 // Search defines model for Search.
 type Search = string
+
+// WebhookId defines model for WebhookId.
+type WebhookId = uuid.UUID
+
+// WebhookIdHeader Examples: msg_2KWPBgLlAfxdpx2AI54pPJ85f4W
+type WebhookIdHeader = string
+
+// WebhookSignatureHeader defines model for WebhookSignatureHeader.
+type WebhookSignatureHeader = string
+
+// WebhookTimestampHeader defines model for WebhookTimestampHeader.
+type WebhookTimestampHeader = string
 
 // WorkspaceHeader defines model for WorkspaceHeader.
 type WorkspaceHeader = uuid.UUID
@@ -2744,6 +3343,15 @@ type CreateContactParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// DeleteContactByExternalIdParams defines parameters for DeleteContactByExternalId.
+type DeleteContactByExternalIdParams struct {
+	InboxId    uuid.UUID `form:"inbox_id" json:"inbox_id"`
+	ExternalId string    `form:"external_id" json:"external_id"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // LookupContactParams defines parameters for LookupContact.
 type LookupContactParams struct {
 	InboxId    uuid.UUID `form:"inbox_id" json:"inbox_id"`
@@ -2771,6 +3379,12 @@ type UpdateContactParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// GetContactPresenceParams defines parameters for GetContactPresence.
+type GetContactPresenceParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // ListConversationsParams defines parameters for ListConversations.
 type ListConversationsParams struct {
 	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
@@ -2786,6 +3400,12 @@ type ListConversationsParams struct {
 	// Spam `true` lists only conversations flagged as spam (the spam view); without it, or with
 	// `false`, spam is left out.
 	Spam *bool `form:"spam,omitempty" json:"spam,omitempty"`
+
+	// Kind Only conversations of this kind, e.g. `feedback` for the feedback view.
+	Kind *ConversationKind `form:"kind,omitempty" json:"kind,omitempty"`
+
+	// Category Only feedback of this category (implies `kind=feedback`).
+	Category *FeedbackCategory `form:"category,omitempty" json:"category,omitempty"`
 
 	// Q Full-text search (Postgres `simple` configuration, `websearch` syntax).
 	Q *Search `form:"q,omitempty" json:"q,omitempty"`
@@ -3012,10 +3632,167 @@ type GetUsageParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListWebhooksParams defines parameters for ListWebhooks.
+type ListWebhooksParams struct {
+	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CreateWebhookParams defines parameters for CreateWebhook.
+type CreateWebhookParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteWebhookParams defines parameters for DeleteWebhook.
+type DeleteWebhookParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetWebhookParams defines parameters for GetWebhook.
+type GetWebhookParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateWebhookParams defines parameters for UpdateWebhook.
+type UpdateWebhookParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListWebhookAttemptsParams defines parameters for ListWebhookAttempts.
+type ListWebhookAttemptsParams struct {
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListWebhookDeliveriesParams defines parameters for ListWebhookDeliveries.
+type ListWebhookDeliveriesParams struct {
+	State *WebhookDeliveryState `form:"state,omitempty" json:"state,omitempty"`
+
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetWebhookDeliveryParams defines parameters for GetWebhookDelivery.
+type GetWebhookDeliveryParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// RedeliverWebhookParams defines parameters for RedeliverWebhook.
+type RedeliverWebhookParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// RotateWebhookSecretParams defines parameters for RotateWebhookSecret.
+type RotateWebhookSecretParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetWorkspaceParams defines parameters for GetWorkspace.
 type GetWorkspaceParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// WebhookContactDeletedParams defines parameters for WebhookContactDeleted.
+type WebhookContactDeletedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookContactUpdatedParams defines parameters for WebhookContactUpdated.
+type WebhookContactUpdatedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookConversationCreatedParams defines parameters for WebhookConversationCreated.
+type WebhookConversationCreatedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookConversationUpdatedParams defines parameters for WebhookConversationUpdated.
+type WebhookConversationUpdatedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookFeedbackCreatedParams defines parameters for WebhookFeedbackCreated.
+type WebhookFeedbackCreatedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookMessageCreatedParams defines parameters for WebhookMessageCreated.
+type WebhookMessageCreatedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
 }
 
 // SetClientContactEmailJSONRequestBody defines body for SetClientContactEmail for application/json ContentType.
@@ -3038,6 +3815,12 @@ type MarkClientConversationReadJSONRequestBody = ClientReadCreate
 
 // SetClientTypingJSONRequestBody defines body for SetClientTyping for application/json ContentType.
 type SetClientTypingJSONRequestBody = TypingCreate
+
+// CreateClientFeedbackJSONRequestBody defines body for CreateClientFeedback for application/json ContentType.
+type CreateClientFeedbackJSONRequestBody = ClientFeedbackCreate
+
+// CreateClientFeedbackMultipartRequestBody defines body for CreateClientFeedback for multipart/form-data ContentType.
+type CreateClientFeedbackMultipartRequestBody = ClientFeedbackCreateMultipart
 
 // CreateClientSessionJSONRequestBody defines body for CreateClientSession for application/json ContentType.
 type CreateClientSessionJSONRequestBody = ClientSessionCreate
@@ -3087,6 +3870,9 @@ type MarkConversationReadJSONRequestBody = ConversationReadCreate
 // SetMemberTypingJSONRequestBody defines body for SetMemberTyping for application/json ContentType.
 type SetMemberTypingJSONRequestBody = TypingCreate
 
+// CreateFeedbackJSONRequestBody defines body for CreateFeedback for application/json ContentType.
+type CreateFeedbackJSONRequestBody = FeedbackCreate
+
 // CreateInboxJSONRequestBody defines body for CreateInbox for application/json ContentType.
 type CreateInboxJSONRequestBody = InboxCreate
 
@@ -3113,6 +3899,30 @@ type FinishPasskeyRegistrationJSONRequestBody = PasskeyRegistration
 
 // UpdateMemberJSONRequestBody defines body for UpdateMember for application/json ContentType.
 type UpdateMemberJSONRequestBody = MemberUpdate
+
+// CreateWebhookJSONRequestBody defines body for CreateWebhook for application/json ContentType.
+type CreateWebhookJSONRequestBody = WebhookEndpointCreate
+
+// UpdateWebhookJSONRequestBody defines body for UpdateWebhook for application/json ContentType.
+type UpdateWebhookJSONRequestBody = WebhookEndpointUpdate
+
+// WebhookContactDeletedJSONRequestBody defines body for WebhookContactDeleted for application/json ContentType.
+type WebhookContactDeletedJSONRequestBody = WebhookContactDeletedPayload
+
+// WebhookContactUpdatedJSONRequestBody defines body for WebhookContactUpdated for application/json ContentType.
+type WebhookContactUpdatedJSONRequestBody = WebhookContactPayload
+
+// WebhookConversationCreatedJSONRequestBody defines body for WebhookConversationCreated for application/json ContentType.
+type WebhookConversationCreatedJSONRequestBody = WebhookConversationPayload
+
+// WebhookConversationUpdatedJSONRequestBody defines body for WebhookConversationUpdated for application/json ContentType.
+type WebhookConversationUpdatedJSONRequestBody = WebhookConversationPayload
+
+// WebhookFeedbackCreatedJSONRequestBody defines body for WebhookFeedbackCreated for application/json ContentType.
+type WebhookFeedbackCreatedJSONRequestBody = WebhookFeedbackPayload
+
+// WebhookMessageCreatedJSONRequestBody defines body for WebhookMessageCreated for application/json ContentType.
+type WebhookMessageCreatedJSONRequestBody = WebhookMessagePayload
 
 // AsClientConversationCreatedEvent returns the union data inside the ClientRealtimeMessage as a ClientConversationCreatedEvent
 func (t ClientRealtimeMessage) AsClientConversationCreatedEvent() (ClientConversationCreatedEvent, error) {
@@ -3769,7 +4579,7 @@ type ServerInterface interface {
 	// DownloadClientAttachment Download an attachment
 	// (GET /client/v1/attachments/{attachmentId})
 	DownloadClientAttachment(w http.ResponseWriter, r *http.Request, attachmentId AttachmentId)
-	// GetClientChannel A chat channel's public settings
+	// GetClientChannel A chat or app channel's public settings
 	// (GET /client/v1/channels/{channel_key})
 	GetClientChannel(w http.ResponseWriter, r *http.Request, channelKey string)
 	// SetClientContactEmail Leave an e-mail address for replies
@@ -3796,6 +4606,9 @@ type ServerInterface interface {
 	// SetClientTyping Tell members the contact is typing
 	// (POST /client/v1/conversations/{conversationId}/typing)
 	SetClientTyping(w http.ResponseWriter, r *http.Request, conversationId ConversationId)
+	// CreateClientFeedback Send feedback
+	// (POST /client/v1/feedback)
+	CreateClientFeedback(w http.ResponseWriter, r *http.Request)
 	// DeleteClientSession End the contact session
 	// (DELETE /client/v1/session)
 	DeleteClientSession(w http.ResponseWriter, r *http.Request)
@@ -3859,7 +4672,7 @@ type ServerInterface interface {
 	// UpdateChannel Update a channel
 	// (PATCH /v1/channels/{channelId})
 	UpdateChannel(w http.ResponseWriter, r *http.Request, channelId ChannelId, params UpdateChannelParams)
-	// RotateChannelPublicKey Rotate a chat channel's public key
+	// RotateChannelPublicKey Rotate a chat or app channel's public key
 	// (POST /v1/channels/{channelId}/public-key)
 	RotateChannelPublicKey(w http.ResponseWriter, r *http.Request, channelId ChannelId, params RotateChannelPublicKeyParams)
 	// ListContacts List contacts
@@ -3868,6 +4681,9 @@ type ServerInterface interface {
 	// CreateContact Create a contact
 	// (POST /v1/contacts)
 	CreateContact(w http.ResponseWriter, r *http.Request, params CreateContactParams)
+	// DeleteContactByExternalId Delete a contact by external id
+	// (DELETE /v1/contacts/by-external-id)
+	DeleteContactByExternalId(w http.ResponseWriter, r *http.Request, params DeleteContactByExternalIdParams)
 	// LookupContact Find a contact by external id
 	// (GET /v1/contacts/lookup)
 	LookupContact(w http.ResponseWriter, r *http.Request, params LookupContactParams)
@@ -3880,6 +4696,9 @@ type ServerInterface interface {
 	// UpdateContact Update a contact
 	// (PATCH /v1/contacts/{contactId})
 	UpdateContact(w http.ResponseWriter, r *http.Request, contactId ContactId, params UpdateContactParams)
+	// GetContactPresence Whether a contact is connected
+	// (GET /v1/contacts/{contactId}/presence)
+	GetContactPresence(w http.ResponseWriter, r *http.Request, contactId ContactId, params GetContactPresenceParams)
 	// ListConversations List conversations
 	// (GET /v1/conversations)
 	ListConversations(w http.ResponseWriter, r *http.Request, params ListConversationsParams)
@@ -3907,6 +4726,9 @@ type ServerInterface interface {
 	// SetMemberTyping Tell others you are typing
 	// (POST /v1/conversations/{conversationId}/typing)
 	SetMemberTyping(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params SetMemberTypingParams)
+	// CreateFeedback Post feedback for a host app's user
+	// (POST /v1/feedback)
+	CreateFeedback(w http.ResponseWriter, r *http.Request)
 	// ListInboxes List inboxes
 	// (GET /v1/inboxes)
 	ListInboxes(w http.ResponseWriter, r *http.Request, params ListInboxesParams)
@@ -4003,6 +4825,36 @@ type ServerInterface interface {
 	// GetVersion Server version
 	// (GET /v1/version)
 	GetVersion(w http.ResponseWriter, r *http.Request)
+	// ListWebhooks List webhook endpoints
+	// (GET /v1/webhooks)
+	ListWebhooks(w http.ResponseWriter, r *http.Request, params ListWebhooksParams)
+	// CreateWebhook Add a webhook endpoint
+	// (POST /v1/webhooks)
+	CreateWebhook(w http.ResponseWriter, r *http.Request, params CreateWebhookParams)
+	// DeleteWebhook Remove a webhook endpoint
+	// (DELETE /v1/webhooks/{webhookId})
+	DeleteWebhook(w http.ResponseWriter, r *http.Request, webhookId WebhookId, params DeleteWebhookParams)
+	// GetWebhook Get a webhook endpoint
+	// (GET /v1/webhooks/{webhookId})
+	GetWebhook(w http.ResponseWriter, r *http.Request, webhookId WebhookId, params GetWebhookParams)
+	// UpdateWebhook Update a webhook endpoint
+	// (PATCH /v1/webhooks/{webhookId})
+	UpdateWebhook(w http.ResponseWriter, r *http.Request, webhookId WebhookId, params UpdateWebhookParams)
+	// ListWebhookAttempts The endpoint's delivery log
+	// (GET /v1/webhooks/{webhookId}/attempts)
+	ListWebhookAttempts(w http.ResponseWriter, r *http.Request, webhookId WebhookId, params ListWebhookAttemptsParams)
+	// ListWebhookDeliveries List an endpoint's deliveries
+	// (GET /v1/webhooks/{webhookId}/deliveries)
+	ListWebhookDeliveries(w http.ResponseWriter, r *http.Request, webhookId WebhookId, params ListWebhookDeliveriesParams)
+	// GetWebhookDelivery Get a delivery with its payload and attempts
+	// (GET /v1/webhooks/{webhookId}/deliveries/{deliveryId})
+	GetWebhookDelivery(w http.ResponseWriter, r *http.Request, webhookId WebhookId, deliveryId DeliveryId, params GetWebhookDeliveryParams)
+	// RedeliverWebhook Send a delivery again
+	// (POST /v1/webhooks/{webhookId}/deliveries/{deliveryId}/redeliver)
+	RedeliverWebhook(w http.ResponseWriter, r *http.Request, webhookId WebhookId, deliveryId DeliveryId, params RedeliverWebhookParams)
+	// RotateWebhookSecret Rotate the signing secret
+	// (POST /v1/webhooks/{webhookId}/secret)
+	RotateWebhookSecret(w http.ResponseWriter, r *http.Request, webhookId WebhookId, params RotateWebhookSecretParams)
 	// GetWorkspace The current workspace
 	// (GET /v1/workspace)
 	GetWorkspace(w http.ResponseWriter, r *http.Request, params GetWorkspaceParams)
@@ -4306,6 +5158,20 @@ func (siw *ServerInterfaceWrapper) SetClientTyping(w http.ResponseWriter, r *htt
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.SetClientTyping(w, r, conversationId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateClientFeedback operation middleware
+func (siw *ServerInterfaceWrapper) CreateClientFeedback(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateClientFeedback(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -5153,6 +6019,73 @@ func (siw *ServerInterfaceWrapper) CreateContact(w http.ResponseWriter, r *http.
 	handler.ServeHTTP(w, r)
 }
 
+// DeleteContactByExternalId operation middleware
+func (siw *ServerInterfaceWrapper) DeleteContactByExternalId(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteContactByExternalIdParams
+
+	// ------------- Required query parameter "inbox_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "inbox_id", r.URL.Query(), &params.InboxId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "inbox_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inbox_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Required query parameter "external_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "external_id", r.URL.Query(), &params.ExternalId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "external_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "external_id", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteContactByExternalId(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // LookupContact operation middleware
 func (siw *ServerInterfaceWrapper) LookupContact(w http.ResponseWriter, r *http.Request) {
 
@@ -5370,6 +6303,56 @@ func (siw *ServerInterfaceWrapper) UpdateContact(w http.ResponseWriter, r *http.
 	handler.ServeHTTP(w, r)
 }
 
+// GetContactPresence operation middleware
+func (siw *ServerInterfaceWrapper) GetContactPresence(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "contactId" -------------
+	var contactId ContactId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contactId", r.PathValue("contactId"), &contactId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contactId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetContactPresenceParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetContactPresence(w, r, contactId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListConversations operation middleware
 func (siw *ServerInterfaceWrapper) ListConversations(w http.ResponseWriter, r *http.Request) {
 
@@ -5453,6 +6436,32 @@ func (siw *ServerInterfaceWrapper) ListConversations(w http.ResponseWriter, r *h
 			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "spam"})
 		} else {
 			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "spam", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "kind", r.URL.Query(), &params.Kind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "category" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "category", r.URL.Query(), &params.Category, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "category"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "category", Err: err})
 		}
 		return
 	}
@@ -5940,6 +6949,20 @@ func (siw *ServerInterfaceWrapper) SetMemberTyping(w http.ResponseWriter, r *htt
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.SetMemberTyping(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateFeedback operation middleware
+func (siw *ServerInterfaceWrapper) CreateFeedback(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateFeedback(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -7268,6 +8291,571 @@ func (siw *ServerInterfaceWrapper) GetVersion(w http.ResponseWriter, r *http.Req
 	handler.ServeHTTP(w, r)
 }
 
+// ListWebhooks operation middleware
+func (siw *ServerInterfaceWrapper) ListWebhooks(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListWebhooksParams
+
+	// ------------- Optional query parameter "inbox_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "inbox_id", r.URL.Query(), &params.InboxId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "inbox_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inbox_id", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListWebhooks(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateWebhook operation middleware
+func (siw *ServerInterfaceWrapper) CreateWebhook(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateWebhookParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateWebhook(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteWebhook operation middleware
+func (siw *ServerInterfaceWrapper) DeleteWebhook(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "webhookId" -------------
+	var webhookId WebhookId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "webhookId", r.PathValue("webhookId"), &webhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "webhookId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteWebhookParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteWebhook(w, r, webhookId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetWebhook operation middleware
+func (siw *ServerInterfaceWrapper) GetWebhook(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "webhookId" -------------
+	var webhookId WebhookId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "webhookId", r.PathValue("webhookId"), &webhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "webhookId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetWebhookParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetWebhook(w, r, webhookId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateWebhook operation middleware
+func (siw *ServerInterfaceWrapper) UpdateWebhook(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "webhookId" -------------
+	var webhookId WebhookId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "webhookId", r.PathValue("webhookId"), &webhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "webhookId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateWebhookParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateWebhook(w, r, webhookId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListWebhookAttempts operation middleware
+func (siw *ServerInterfaceWrapper) ListWebhookAttempts(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "webhookId" -------------
+	var webhookId WebhookId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "webhookId", r.PathValue("webhookId"), &webhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "webhookId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListWebhookAttemptsParams
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int32"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListWebhookAttempts(w, r, webhookId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListWebhookDeliveries operation middleware
+func (siw *ServerInterfaceWrapper) ListWebhookDeliveries(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "webhookId" -------------
+	var webhookId WebhookId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "webhookId", r.PathValue("webhookId"), &webhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "webhookId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListWebhookDeliveriesParams
+
+	// ------------- Optional query parameter "state" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "state", r.URL.Query(), &params.State, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "state"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "state", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int32"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListWebhookDeliveries(w, r, webhookId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetWebhookDelivery operation middleware
+func (siw *ServerInterfaceWrapper) GetWebhookDelivery(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "webhookId" -------------
+	var webhookId WebhookId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "webhookId", r.PathValue("webhookId"), &webhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "webhookId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "deliveryId" -------------
+	var deliveryId DeliveryId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "deliveryId", r.PathValue("deliveryId"), &deliveryId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "deliveryId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetWebhookDeliveryParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetWebhookDelivery(w, r, webhookId, deliveryId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RedeliverWebhook operation middleware
+func (siw *ServerInterfaceWrapper) RedeliverWebhook(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "webhookId" -------------
+	var webhookId WebhookId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "webhookId", r.PathValue("webhookId"), &webhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "webhookId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "deliveryId" -------------
+	var deliveryId DeliveryId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "deliveryId", r.PathValue("deliveryId"), &deliveryId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "deliveryId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RedeliverWebhookParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RedeliverWebhook(w, r, webhookId, deliveryId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RotateWebhookSecret operation middleware
+func (siw *ServerInterfaceWrapper) RotateWebhookSecret(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "webhookId" -------------
+	var webhookId WebhookId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "webhookId", r.PathValue("webhookId"), &webhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "webhookId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RotateWebhookSecretParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RotateWebhookSecret(w, r, webhookId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetWorkspace operation middleware
 func (siw *ServerInterfaceWrapper) GetWorkspace(w http.ResponseWriter, r *http.Request) {
 
@@ -7472,9 +9060,11 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts", wrapper.ListContacts)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/contacts", wrapper.CreateContact)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/lookup", wrapper.LookupContact)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/contacts/by-external-id", wrapper.DeleteContactByExternalId)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/contacts/{contactId}", wrapper.DeleteContact)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}", wrapper.GetContact)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/contacts/{contactId}", wrapper.UpdateContact)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}/presence", wrapper.GetContactPresence)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations", wrapper.ListConversations)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations", wrapper.CreateConversation)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/counts", wrapper.GetConversationCounts)
@@ -7496,6 +9086,17 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/canned-replies/{cannedReplyId}", wrapper.DeleteCannedReply)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/canned-replies/{cannedReplyId}", wrapper.UpdateCannedReply)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/usage", wrapper.GetUsage)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/feedback", wrapper.CreateFeedback)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/webhooks", wrapper.ListWebhooks)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/webhooks", wrapper.CreateWebhook)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/webhooks/{webhookId}", wrapper.DeleteWebhook)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/webhooks/{webhookId}", wrapper.GetWebhook)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/webhooks/{webhookId}", wrapper.UpdateWebhook)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/webhooks/{webhookId}/secret", wrapper.RotateWebhookSecret)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/webhooks/{webhookId}/deliveries", wrapper.ListWebhookDeliveries)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/webhooks/{webhookId}/deliveries/{deliveryId}", wrapper.GetWebhookDelivery)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/webhooks/{webhookId}/deliveries/{deliveryId}/redeliver", wrapper.RedeliverWebhook)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/webhooks/{webhookId}/attempts", wrapper.ListWebhookAttempts)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/client/v1/session", wrapper.DeleteClientSession)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/session", wrapper.GetClientSession)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/session", wrapper.CreateClientSession)
@@ -7507,10 +9108,593 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/conversations/{conversationId}/messages", wrapper.CreateClientMessage)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/conversations/{conversationId}/read", wrapper.MarkClientConversationRead)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/conversations/{conversationId}/typing", wrapper.SetClientTyping)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/feedback", wrapper.CreateClientFeedback)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/client/v1/contact/email", wrapper.SetClientContactEmail)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/attachments/{attachmentId}", wrapper.DownloadClientAttachment)
 
 	return m
+}
+
+// WebhookReceiverInterface represents handlers for receiving inbound
+// webhook requests. Each webhook becomes a Handle*Webhook
+// method that the implementation fills in. The caller mounts the per-
+// webhook http.Handler returned by {Op}WebhookHandler at
+// whatever URL path they advertise to senders.
+type WebhookReceiverInterface interface {
+	// A contact was deleted
+	// HandleWebhookContactDeletedWebhook handles the POST webhook for contact.deleted.
+	HandleWebhookContactDeletedWebhook(w http.ResponseWriter, r *http.Request, params WebhookContactDeletedParams)
+	// A contact changed
+	// HandleWebhookContactUpdatedWebhook handles the POST webhook for contact.updated.
+	HandleWebhookContactUpdatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookContactUpdatedParams)
+	// A conversation started
+	// HandleWebhookConversationCreatedWebhook handles the POST webhook for conversation.created.
+	HandleWebhookConversationCreatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookConversationCreatedParams)
+	// A conversation changed
+	// HandleWebhookConversationUpdatedWebhook handles the POST webhook for conversation.updated.
+	HandleWebhookConversationUpdatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookConversationUpdatedParams)
+	// Feedback arrived
+	// HandleWebhookFeedbackCreatedWebhook handles the POST webhook for feedback.created.
+	HandleWebhookFeedbackCreatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookFeedbackCreatedParams)
+	// A message was added
+	// HandleWebhookMessageCreatedWebhook handles the POST webhook for message.created.
+	HandleWebhookMessageCreatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookMessageCreatedParams)
+}
+
+// WebhookReceiverMiddlewareFunc wraps an http.Handler with cross-
+// cutting behavior (signature verification, logging, rate limiting, ...).
+type WebhookReceiverMiddlewareFunc func(http.Handler) http.Handler
+
+// WebhookContactDeletedWebhookHandler returns the http.Handler for the contact.deleted webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookContactDeletedWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookContactDeletedParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookContactDeletedWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
+}
+
+// WebhookContactUpdatedWebhookHandler returns the http.Handler for the contact.updated webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookContactUpdatedWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookContactUpdatedParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookContactUpdatedWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
+}
+
+// WebhookConversationCreatedWebhookHandler returns the http.Handler for the conversation.created webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookConversationCreatedWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookConversationCreatedParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookConversationCreatedWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
+}
+
+// WebhookConversationUpdatedWebhookHandler returns the http.Handler for the conversation.updated webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookConversationUpdatedWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookConversationUpdatedParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookConversationUpdatedWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
+}
+
+// WebhookFeedbackCreatedWebhookHandler returns the http.Handler for the feedback.created webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookFeedbackCreatedWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookFeedbackCreatedParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookFeedbackCreatedWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
+}
+
+// WebhookMessageCreatedWebhookHandler returns the http.Handler for the message.created webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookMessageCreatedWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookMessageCreatedParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookMessageCreatedWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
 }
 
 type IngressRejectionJSONResponse IngressRejection
@@ -8376,6 +10560,115 @@ func (response SetClientTyping404ApplicationProblemPlusJSONResponse) VisitSetCli
 type SetClientTyping429ApplicationProblemPlusJSONResponse Problem
 
 func (response SetClientTyping429ApplicationProblemPlusJSONResponse) VisitSetClientTypingResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientFeedbackRequestObject struct {
+	JSONBody      *CreateClientFeedbackJSONRequestBody
+	MultipartBody *multipart.Reader
+}
+
+type CreateClientFeedbackResponseObject interface {
+	VisitCreateClientFeedbackResponse(w http.ResponseWriter) error
+}
+
+type CreateClientFeedback201JSONResponse ClientConversationCreated
+
+func (response CreateClientFeedback201JSONResponse) VisitCreateClientFeedbackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientFeedback400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response CreateClientFeedback400ApplicationProblemPlusJSONResponse) VisitCreateClientFeedbackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientFeedback401ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientFeedback401ApplicationProblemPlusJSONResponse) VisitCreateClientFeedbackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientFeedback403ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientFeedback403ApplicationProblemPlusJSONResponse) VisitCreateClientFeedbackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientFeedback413ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientFeedback413ApplicationProblemPlusJSONResponse) VisitCreateClientFeedbackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(413)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientFeedback415ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientFeedback415ApplicationProblemPlusJSONResponse) VisitCreateClientFeedbackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(415)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientFeedback429ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientFeedback429ApplicationProblemPlusJSONResponse) VisitCreateClientFeedbackResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -9843,6 +12136,80 @@ func (response CreateContact409ApplicationProblemPlusJSONResponse) VisitCreateCo
 	return err
 }
 
+type DeleteContactByExternalIdRequestObject struct {
+	Params DeleteContactByExternalIdParams
+}
+
+type DeleteContactByExternalIdResponseObject interface {
+	VisitDeleteContactByExternalIdResponse(w http.ResponseWriter) error
+}
+
+type DeleteContactByExternalId204Response struct {
+}
+
+func (response DeleteContactByExternalId204Response) VisitDeleteContactByExternalIdResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteContactByExternalId400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteContactByExternalId400ApplicationProblemPlusJSONResponse) VisitDeleteContactByExternalIdResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteContactByExternalId401ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteContactByExternalId401ApplicationProblemPlusJSONResponse) VisitDeleteContactByExternalIdResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteContactByExternalId403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteContactByExternalId403ApplicationProblemPlusJSONResponse) VisitDeleteContactByExternalIdResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteContactByExternalId404ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteContactByExternalId404ApplicationProblemPlusJSONResponse) VisitDeleteContactByExternalIdResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type LookupContactRequestObject struct {
 	Params LookupContactParams
 }
@@ -10143,6 +12510,73 @@ func (response UpdateContact409ApplicationProblemPlusJSONResponse) VisitUpdateCo
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetContactPresenceRequestObject struct {
+	ContactId ContactId `json:"contactId"`
+	Params    GetContactPresenceParams
+}
+
+type GetContactPresenceResponseObject interface {
+	VisitGetContactPresenceResponse(w http.ResponseWriter) error
+}
+
+type GetContactPresence200JSONResponse ContactPresence
+
+func (response GetContactPresence200JSONResponse) VisitGetContactPresenceResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetContactPresence401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetContactPresence401ApplicationProblemPlusJSONResponse) VisitGetContactPresenceResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetContactPresence403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetContactPresence403ApplicationProblemPlusJSONResponse) VisitGetContactPresenceResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetContactPresence404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetContactPresence404ApplicationProblemPlusJSONResponse) VisitGetContactPresenceResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -10876,6 +13310,100 @@ func (response SetMemberTyping403ApplicationProblemPlusJSONResponse) VisitSetMem
 type SetMemberTyping404ApplicationProblemPlusJSONResponse Problem
 
 func (response SetMemberTyping404ApplicationProblemPlusJSONResponse) VisitSetMemberTypingResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateFeedbackRequestObject struct {
+	Body *CreateFeedbackJSONRequestBody
+}
+
+type CreateFeedbackResponseObject interface {
+	VisitCreateFeedbackResponse(w http.ResponseWriter) error
+}
+
+type CreateFeedback200JSONResponse FeedbackCreated
+
+func (response CreateFeedback200JSONResponse) VisitCreateFeedbackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateFeedback201JSONResponse FeedbackCreated
+
+func (response CreateFeedback201JSONResponse) VisitCreateFeedbackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateFeedback400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response CreateFeedback400ApplicationProblemPlusJSONResponse) VisitCreateFeedbackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateFeedback401ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateFeedback401ApplicationProblemPlusJSONResponse) VisitCreateFeedbackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateFeedback403ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateFeedback403ApplicationProblemPlusJSONResponse) VisitCreateFeedbackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateFeedback404ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateFeedback404ApplicationProblemPlusJSONResponse) VisitCreateFeedbackResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -12953,6 +15481,742 @@ func (response GetVersion200JSONResponse) VisitGetVersionResponse(w http.Respons
 	return err
 }
 
+type ListWebhooksRequestObject struct {
+	Params ListWebhooksParams
+}
+
+type ListWebhooksResponseObject interface {
+	VisitListWebhooksResponse(w http.ResponseWriter) error
+}
+
+type ListWebhooks200JSONResponse WebhookEndpointList
+
+func (response ListWebhooks200JSONResponse) VisitListWebhooksResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListWebhooks401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListWebhooks401ApplicationProblemPlusJSONResponse) VisitListWebhooksResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListWebhooks403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListWebhooks403ApplicationProblemPlusJSONResponse) VisitListWebhooksResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListWebhooks404ApplicationProblemPlusJSONResponse Problem
+
+func (response ListWebhooks404ApplicationProblemPlusJSONResponse) VisitListWebhooksResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateWebhookRequestObject struct {
+	Params CreateWebhookParams
+	Body   *CreateWebhookJSONRequestBody
+}
+
+type CreateWebhookResponseObject interface {
+	VisitCreateWebhookResponse(w http.ResponseWriter) error
+}
+
+type CreateWebhook201JSONResponse WebhookEndpointSecret
+
+func (response CreateWebhook201JSONResponse) VisitCreateWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateWebhook400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response CreateWebhook400ApplicationProblemPlusJSONResponse) VisitCreateWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateWebhook401ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateWebhook401ApplicationProblemPlusJSONResponse) VisitCreateWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateWebhook403ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateWebhook403ApplicationProblemPlusJSONResponse) VisitCreateWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateWebhook404ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateWebhook404ApplicationProblemPlusJSONResponse) VisitCreateWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteWebhookRequestObject struct {
+	WebhookId WebhookId `json:"webhookId"`
+	Params    DeleteWebhookParams
+}
+
+type DeleteWebhookResponseObject interface {
+	VisitDeleteWebhookResponse(w http.ResponseWriter) error
+}
+
+type DeleteWebhook204Response struct {
+}
+
+func (response DeleteWebhook204Response) VisitDeleteWebhookResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteWebhook401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteWebhook401ApplicationProblemPlusJSONResponse) VisitDeleteWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteWebhook403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteWebhook403ApplicationProblemPlusJSONResponse) VisitDeleteWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteWebhook404ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteWebhook404ApplicationProblemPlusJSONResponse) VisitDeleteWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetWebhookRequestObject struct {
+	WebhookId WebhookId `json:"webhookId"`
+	Params    GetWebhookParams
+}
+
+type GetWebhookResponseObject interface {
+	VisitGetWebhookResponse(w http.ResponseWriter) error
+}
+
+type GetWebhook200JSONResponse WebhookEndpoint
+
+func (response GetWebhook200JSONResponse) VisitGetWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetWebhook401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetWebhook401ApplicationProblemPlusJSONResponse) VisitGetWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetWebhook403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetWebhook403ApplicationProblemPlusJSONResponse) VisitGetWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetWebhook404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetWebhook404ApplicationProblemPlusJSONResponse) VisitGetWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateWebhookRequestObject struct {
+	WebhookId WebhookId `json:"webhookId"`
+	Params    UpdateWebhookParams
+	Body      *UpdateWebhookJSONRequestBody
+}
+
+type UpdateWebhookResponseObject interface {
+	VisitUpdateWebhookResponse(w http.ResponseWriter) error
+}
+
+type UpdateWebhook200JSONResponse WebhookEndpoint
+
+func (response UpdateWebhook200JSONResponse) VisitUpdateWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateWebhook400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UpdateWebhook400ApplicationProblemPlusJSONResponse) VisitUpdateWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateWebhook401ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateWebhook401ApplicationProblemPlusJSONResponse) VisitUpdateWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateWebhook403ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateWebhook403ApplicationProblemPlusJSONResponse) VisitUpdateWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateWebhook404ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateWebhook404ApplicationProblemPlusJSONResponse) VisitUpdateWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListWebhookAttemptsRequestObject struct {
+	WebhookId WebhookId `json:"webhookId"`
+	Params    ListWebhookAttemptsParams
+}
+
+type ListWebhookAttemptsResponseObject interface {
+	VisitListWebhookAttemptsResponse(w http.ResponseWriter) error
+}
+
+type ListWebhookAttempts200JSONResponse WebhookAttemptList
+
+func (response ListWebhookAttempts200JSONResponse) VisitListWebhookAttemptsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListWebhookAttempts400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListWebhookAttempts400ApplicationProblemPlusJSONResponse) VisitListWebhookAttemptsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListWebhookAttempts401ApplicationProblemPlusJSONResponse Problem
+
+func (response ListWebhookAttempts401ApplicationProblemPlusJSONResponse) VisitListWebhookAttemptsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListWebhookAttempts403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListWebhookAttempts403ApplicationProblemPlusJSONResponse) VisitListWebhookAttemptsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListWebhookAttempts404ApplicationProblemPlusJSONResponse Problem
+
+func (response ListWebhookAttempts404ApplicationProblemPlusJSONResponse) VisitListWebhookAttemptsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListWebhookDeliveriesRequestObject struct {
+	WebhookId WebhookId `json:"webhookId"`
+	Params    ListWebhookDeliveriesParams
+}
+
+type ListWebhookDeliveriesResponseObject interface {
+	VisitListWebhookDeliveriesResponse(w http.ResponseWriter) error
+}
+
+type ListWebhookDeliveries200JSONResponse WebhookDeliveryPage
+
+func (response ListWebhookDeliveries200JSONResponse) VisitListWebhookDeliveriesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListWebhookDeliveries400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListWebhookDeliveries400ApplicationProblemPlusJSONResponse) VisitListWebhookDeliveriesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListWebhookDeliveries401ApplicationProblemPlusJSONResponse Problem
+
+func (response ListWebhookDeliveries401ApplicationProblemPlusJSONResponse) VisitListWebhookDeliveriesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListWebhookDeliveries403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListWebhookDeliveries403ApplicationProblemPlusJSONResponse) VisitListWebhookDeliveriesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListWebhookDeliveries404ApplicationProblemPlusJSONResponse Problem
+
+func (response ListWebhookDeliveries404ApplicationProblemPlusJSONResponse) VisitListWebhookDeliveriesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetWebhookDeliveryRequestObject struct {
+	WebhookId  WebhookId  `json:"webhookId"`
+	DeliveryId DeliveryId `json:"deliveryId"`
+	Params     GetWebhookDeliveryParams
+}
+
+type GetWebhookDeliveryResponseObject interface {
+	VisitGetWebhookDeliveryResponse(w http.ResponseWriter) error
+}
+
+type GetWebhookDelivery200JSONResponse WebhookDeliveryDetail
+
+func (response GetWebhookDelivery200JSONResponse) VisitGetWebhookDeliveryResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetWebhookDelivery401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetWebhookDelivery401ApplicationProblemPlusJSONResponse) VisitGetWebhookDeliveryResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetWebhookDelivery403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetWebhookDelivery403ApplicationProblemPlusJSONResponse) VisitGetWebhookDeliveryResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetWebhookDelivery404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetWebhookDelivery404ApplicationProblemPlusJSONResponse) VisitGetWebhookDeliveryResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RedeliverWebhookRequestObject struct {
+	WebhookId  WebhookId  `json:"webhookId"`
+	DeliveryId DeliveryId `json:"deliveryId"`
+	Params     RedeliverWebhookParams
+}
+
+type RedeliverWebhookResponseObject interface {
+	VisitRedeliverWebhookResponse(w http.ResponseWriter) error
+}
+
+type RedeliverWebhook202JSONResponse WebhookDelivery
+
+func (response RedeliverWebhook202JSONResponse) VisitRedeliverWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(202)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RedeliverWebhook401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response RedeliverWebhook401ApplicationProblemPlusJSONResponse) VisitRedeliverWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RedeliverWebhook403ApplicationProblemPlusJSONResponse Problem
+
+func (response RedeliverWebhook403ApplicationProblemPlusJSONResponse) VisitRedeliverWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RedeliverWebhook404ApplicationProblemPlusJSONResponse Problem
+
+func (response RedeliverWebhook404ApplicationProblemPlusJSONResponse) VisitRedeliverWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RedeliverWebhook409ApplicationProblemPlusJSONResponse Problem
+
+func (response RedeliverWebhook409ApplicationProblemPlusJSONResponse) VisitRedeliverWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RotateWebhookSecretRequestObject struct {
+	WebhookId WebhookId `json:"webhookId"`
+	Params    RotateWebhookSecretParams
+}
+
+type RotateWebhookSecretResponseObject interface {
+	VisitRotateWebhookSecretResponse(w http.ResponseWriter) error
+}
+
+type RotateWebhookSecret200JSONResponse WebhookEndpointSecret
+
+func (response RotateWebhookSecret200JSONResponse) VisitRotateWebhookSecretResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RotateWebhookSecret401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response RotateWebhookSecret401ApplicationProblemPlusJSONResponse) VisitRotateWebhookSecretResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RotateWebhookSecret403ApplicationProblemPlusJSONResponse Problem
+
+func (response RotateWebhookSecret403ApplicationProblemPlusJSONResponse) VisitRotateWebhookSecretResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RotateWebhookSecret404ApplicationProblemPlusJSONResponse Problem
+
+func (response RotateWebhookSecret404ApplicationProblemPlusJSONResponse) VisitRotateWebhookSecretResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type GetWorkspaceRequestObject struct {
 	Params GetWorkspaceParams
 }
@@ -13010,7 +16274,7 @@ type StrictServerInterface interface {
 	// DownloadClientAttachment Download an attachment
 	// (GET /client/v1/attachments/{attachmentId})
 	DownloadClientAttachment(ctx context.Context, request DownloadClientAttachmentRequestObject) (DownloadClientAttachmentResponseObject, error)
-	// GetClientChannel A chat channel's public settings
+	// GetClientChannel A chat or app channel's public settings
 	// (GET /client/v1/channels/{channel_key})
 	GetClientChannel(ctx context.Context, request GetClientChannelRequestObject) (GetClientChannelResponseObject, error)
 	// SetClientContactEmail Leave an e-mail address for replies
@@ -13037,6 +16301,9 @@ type StrictServerInterface interface {
 	// SetClientTyping Tell members the contact is typing
 	// (POST /client/v1/conversations/{conversationId}/typing)
 	SetClientTyping(ctx context.Context, request SetClientTypingRequestObject) (SetClientTypingResponseObject, error)
+	// CreateClientFeedback Send feedback
+	// (POST /client/v1/feedback)
+	CreateClientFeedback(ctx context.Context, request CreateClientFeedbackRequestObject) (CreateClientFeedbackResponseObject, error)
 	// DeleteClientSession End the contact session
 	// (DELETE /client/v1/session)
 	DeleteClientSession(ctx context.Context, request DeleteClientSessionRequestObject) (DeleteClientSessionResponseObject, error)
@@ -13100,7 +16367,7 @@ type StrictServerInterface interface {
 	// UpdateChannel Update a channel
 	// (PATCH /v1/channels/{channelId})
 	UpdateChannel(ctx context.Context, request UpdateChannelRequestObject) (UpdateChannelResponseObject, error)
-	// RotateChannelPublicKey Rotate a chat channel's public key
+	// RotateChannelPublicKey Rotate a chat or app channel's public key
 	// (POST /v1/channels/{channelId}/public-key)
 	RotateChannelPublicKey(ctx context.Context, request RotateChannelPublicKeyRequestObject) (RotateChannelPublicKeyResponseObject, error)
 	// ListContacts List contacts
@@ -13109,6 +16376,9 @@ type StrictServerInterface interface {
 	// CreateContact Create a contact
 	// (POST /v1/contacts)
 	CreateContact(ctx context.Context, request CreateContactRequestObject) (CreateContactResponseObject, error)
+	// DeleteContactByExternalId Delete a contact by external id
+	// (DELETE /v1/contacts/by-external-id)
+	DeleteContactByExternalId(ctx context.Context, request DeleteContactByExternalIdRequestObject) (DeleteContactByExternalIdResponseObject, error)
 	// LookupContact Find a contact by external id
 	// (GET /v1/contacts/lookup)
 	LookupContact(ctx context.Context, request LookupContactRequestObject) (LookupContactResponseObject, error)
@@ -13121,6 +16391,9 @@ type StrictServerInterface interface {
 	// UpdateContact Update a contact
 	// (PATCH /v1/contacts/{contactId})
 	UpdateContact(ctx context.Context, request UpdateContactRequestObject) (UpdateContactResponseObject, error)
+	// GetContactPresence Whether a contact is connected
+	// (GET /v1/contacts/{contactId}/presence)
+	GetContactPresence(ctx context.Context, request GetContactPresenceRequestObject) (GetContactPresenceResponseObject, error)
 	// ListConversations List conversations
 	// (GET /v1/conversations)
 	ListConversations(ctx context.Context, request ListConversationsRequestObject) (ListConversationsResponseObject, error)
@@ -13148,6 +16421,9 @@ type StrictServerInterface interface {
 	// SetMemberTyping Tell others you are typing
 	// (POST /v1/conversations/{conversationId}/typing)
 	SetMemberTyping(ctx context.Context, request SetMemberTypingRequestObject) (SetMemberTypingResponseObject, error)
+	// CreateFeedback Post feedback for a host app's user
+	// (POST /v1/feedback)
+	CreateFeedback(ctx context.Context, request CreateFeedbackRequestObject) (CreateFeedbackResponseObject, error)
 	// ListInboxes List inboxes
 	// (GET /v1/inboxes)
 	ListInboxes(ctx context.Context, request ListInboxesRequestObject) (ListInboxesResponseObject, error)
@@ -13244,6 +16520,36 @@ type StrictServerInterface interface {
 	// GetVersion Server version
 	// (GET /v1/version)
 	GetVersion(ctx context.Context, request GetVersionRequestObject) (GetVersionResponseObject, error)
+	// ListWebhooks List webhook endpoints
+	// (GET /v1/webhooks)
+	ListWebhooks(ctx context.Context, request ListWebhooksRequestObject) (ListWebhooksResponseObject, error)
+	// CreateWebhook Add a webhook endpoint
+	// (POST /v1/webhooks)
+	CreateWebhook(ctx context.Context, request CreateWebhookRequestObject) (CreateWebhookResponseObject, error)
+	// DeleteWebhook Remove a webhook endpoint
+	// (DELETE /v1/webhooks/{webhookId})
+	DeleteWebhook(ctx context.Context, request DeleteWebhookRequestObject) (DeleteWebhookResponseObject, error)
+	// GetWebhook Get a webhook endpoint
+	// (GET /v1/webhooks/{webhookId})
+	GetWebhook(ctx context.Context, request GetWebhookRequestObject) (GetWebhookResponseObject, error)
+	// UpdateWebhook Update a webhook endpoint
+	// (PATCH /v1/webhooks/{webhookId})
+	UpdateWebhook(ctx context.Context, request UpdateWebhookRequestObject) (UpdateWebhookResponseObject, error)
+	// ListWebhookAttempts The endpoint's delivery log
+	// (GET /v1/webhooks/{webhookId}/attempts)
+	ListWebhookAttempts(ctx context.Context, request ListWebhookAttemptsRequestObject) (ListWebhookAttemptsResponseObject, error)
+	// ListWebhookDeliveries List an endpoint's deliveries
+	// (GET /v1/webhooks/{webhookId}/deliveries)
+	ListWebhookDeliveries(ctx context.Context, request ListWebhookDeliveriesRequestObject) (ListWebhookDeliveriesResponseObject, error)
+	// GetWebhookDelivery Get a delivery with its payload and attempts
+	// (GET /v1/webhooks/{webhookId}/deliveries/{deliveryId})
+	GetWebhookDelivery(ctx context.Context, request GetWebhookDeliveryRequestObject) (GetWebhookDeliveryResponseObject, error)
+	// RedeliverWebhook Send a delivery again
+	// (POST /v1/webhooks/{webhookId}/deliveries/{deliveryId}/redeliver)
+	RedeliverWebhook(ctx context.Context, request RedeliverWebhookRequestObject) (RedeliverWebhookResponseObject, error)
+	// RotateWebhookSecret Rotate the signing secret
+	// (POST /v1/webhooks/{webhookId}/secret)
+	RotateWebhookSecret(ctx context.Context, request RotateWebhookSecretRequestObject) (RotateWebhookSecretResponseObject, error)
 	// GetWorkspace The current workspace
 	// (GET /v1/workspace)
 	GetWorkspace(ctx context.Context, request GetWorkspaceRequestObject) (GetWorkspaceResponseObject, error)
@@ -13602,6 +16908,49 @@ func (sh *strictHandler) SetClientTyping(w http.ResponseWriter, r *http.Request,
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(SetClientTypingResponseObject); ok {
 		if err := validResponse.VisitSetClientTypingResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreateClientFeedback operation middleware
+func (sh *strictHandler) CreateClientFeedback(w http.ResponseWriter, r *http.Request) {
+	var request CreateClientFeedbackRequestObject
+
+	if strings.HasPrefix(r.Header.Get("Content-Type"), "application/json") {
+
+		var body CreateClientFeedbackJSONRequestBody
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+			return
+		}
+		request.JSONBody = &body
+
+	}
+	if strings.HasPrefix(r.Header.Get("Content-Type"), "multipart/form-data") {
+		if reader, err := r.MultipartReader(); err != nil {
+			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode multipart body: %w", err))
+			return
+		} else {
+			request.MultipartBody = reader
+		}
+	}
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateClientFeedback(ctx, request.(CreateClientFeedbackRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateClientFeedback")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(CreateClientFeedbackResponseObject); ok {
+		if err := validResponse.VisitCreateClientFeedbackResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -14284,6 +17633,32 @@ func (sh *strictHandler) CreateContact(w http.ResponseWriter, r *http.Request, p
 	}
 }
 
+// DeleteContactByExternalId operation middleware
+func (sh *strictHandler) DeleteContactByExternalId(w http.ResponseWriter, r *http.Request, params DeleteContactByExternalIdParams) {
+	var request DeleteContactByExternalIdRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteContactByExternalId(ctx, request.(DeleteContactByExternalIdRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteContactByExternalId")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteContactByExternalIdResponseObject); ok {
+		if err := validResponse.VisitDeleteContactByExternalIdResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // LookupContact operation middleware
 func (sh *strictHandler) LookupContact(w http.ResponseWriter, r *http.Request, params LookupContactParams) {
 	var request LookupContactRequestObject
@@ -14391,6 +17766,33 @@ func (sh *strictHandler) UpdateContact(w http.ResponseWriter, r *http.Request, c
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(UpdateContactResponseObject); ok {
 		if err := validResponse.VisitUpdateContactResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetContactPresence operation middleware
+func (sh *strictHandler) GetContactPresence(w http.ResponseWriter, r *http.Request, contactId ContactId, params GetContactPresenceParams) {
+	var request GetContactPresenceRequestObject
+
+	request.ContactId = contactId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetContactPresence(ctx, request.(GetContactPresenceRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetContactPresence")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetContactPresenceResponseObject); ok {
+		if err := validResponse.VisitGetContactPresenceResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -14683,6 +18085,37 @@ func (sh *strictHandler) SetMemberTyping(w http.ResponseWriter, r *http.Request,
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(SetMemberTypingResponseObject); ok {
 		if err := validResponse.VisitSetMemberTypingResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreateFeedback operation middleware
+func (sh *strictHandler) CreateFeedback(w http.ResponseWriter, r *http.Request) {
+	var request CreateFeedbackRequestObject
+
+	var body CreateFeedbackJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateFeedback(ctx, request.(CreateFeedbackRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateFeedback")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(CreateFeedbackResponseObject); ok {
+		if err := validResponse.VisitCreateFeedbackResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -15585,6 +19018,290 @@ func (sh *strictHandler) GetVersion(w http.ResponseWriter, r *http.Request) {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(GetVersionResponseObject); ok {
 		if err := validResponse.VisitGetVersionResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListWebhooks operation middleware
+func (sh *strictHandler) ListWebhooks(w http.ResponseWriter, r *http.Request, params ListWebhooksParams) {
+	var request ListWebhooksRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListWebhooks(ctx, request.(ListWebhooksRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListWebhooks")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListWebhooksResponseObject); ok {
+		if err := validResponse.VisitListWebhooksResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreateWebhook operation middleware
+func (sh *strictHandler) CreateWebhook(w http.ResponseWriter, r *http.Request, params CreateWebhookParams) {
+	var request CreateWebhookRequestObject
+
+	request.Params = params
+
+	var body CreateWebhookJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateWebhook(ctx, request.(CreateWebhookRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateWebhook")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(CreateWebhookResponseObject); ok {
+		if err := validResponse.VisitCreateWebhookResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteWebhook operation middleware
+func (sh *strictHandler) DeleteWebhook(w http.ResponseWriter, r *http.Request, webhookId WebhookId, params DeleteWebhookParams) {
+	var request DeleteWebhookRequestObject
+
+	request.WebhookId = webhookId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteWebhook(ctx, request.(DeleteWebhookRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteWebhook")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteWebhookResponseObject); ok {
+		if err := validResponse.VisitDeleteWebhookResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetWebhook operation middleware
+func (sh *strictHandler) GetWebhook(w http.ResponseWriter, r *http.Request, webhookId WebhookId, params GetWebhookParams) {
+	var request GetWebhookRequestObject
+
+	request.WebhookId = webhookId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetWebhook(ctx, request.(GetWebhookRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetWebhook")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetWebhookResponseObject); ok {
+		if err := validResponse.VisitGetWebhookResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UpdateWebhook operation middleware
+func (sh *strictHandler) UpdateWebhook(w http.ResponseWriter, r *http.Request, webhookId WebhookId, params UpdateWebhookParams) {
+	var request UpdateWebhookRequestObject
+
+	request.WebhookId = webhookId
+	request.Params = params
+
+	var body UpdateWebhookJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateWebhook(ctx, request.(UpdateWebhookRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateWebhook")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UpdateWebhookResponseObject); ok {
+		if err := validResponse.VisitUpdateWebhookResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListWebhookAttempts operation middleware
+func (sh *strictHandler) ListWebhookAttempts(w http.ResponseWriter, r *http.Request, webhookId WebhookId, params ListWebhookAttemptsParams) {
+	var request ListWebhookAttemptsRequestObject
+
+	request.WebhookId = webhookId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListWebhookAttempts(ctx, request.(ListWebhookAttemptsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListWebhookAttempts")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListWebhookAttemptsResponseObject); ok {
+		if err := validResponse.VisitListWebhookAttemptsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListWebhookDeliveries operation middleware
+func (sh *strictHandler) ListWebhookDeliveries(w http.ResponseWriter, r *http.Request, webhookId WebhookId, params ListWebhookDeliveriesParams) {
+	var request ListWebhookDeliveriesRequestObject
+
+	request.WebhookId = webhookId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListWebhookDeliveries(ctx, request.(ListWebhookDeliveriesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListWebhookDeliveries")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListWebhookDeliveriesResponseObject); ok {
+		if err := validResponse.VisitListWebhookDeliveriesResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetWebhookDelivery operation middleware
+func (sh *strictHandler) GetWebhookDelivery(w http.ResponseWriter, r *http.Request, webhookId WebhookId, deliveryId DeliveryId, params GetWebhookDeliveryParams) {
+	var request GetWebhookDeliveryRequestObject
+
+	request.WebhookId = webhookId
+	request.DeliveryId = deliveryId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetWebhookDelivery(ctx, request.(GetWebhookDeliveryRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetWebhookDelivery")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetWebhookDeliveryResponseObject); ok {
+		if err := validResponse.VisitGetWebhookDeliveryResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// RedeliverWebhook operation middleware
+func (sh *strictHandler) RedeliverWebhook(w http.ResponseWriter, r *http.Request, webhookId WebhookId, deliveryId DeliveryId, params RedeliverWebhookParams) {
+	var request RedeliverWebhookRequestObject
+
+	request.WebhookId = webhookId
+	request.DeliveryId = deliveryId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.RedeliverWebhook(ctx, request.(RedeliverWebhookRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "RedeliverWebhook")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(RedeliverWebhookResponseObject); ok {
+		if err := validResponse.VisitRedeliverWebhookResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// RotateWebhookSecret operation middleware
+func (sh *strictHandler) RotateWebhookSecret(w http.ResponseWriter, r *http.Request, webhookId WebhookId, params RotateWebhookSecretParams) {
+	var request RotateWebhookSecretRequestObject
+
+	request.WebhookId = webhookId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.RotateWebhookSecret(ctx, request.(RotateWebhookSecretRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "RotateWebhookSecret")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(RotateWebhookSecretResponseObject); ok {
+		if err := validResponse.VisitRotateWebhookSecretResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

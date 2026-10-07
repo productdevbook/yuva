@@ -54,6 +54,7 @@ type messageInput struct {
 	html      *string
 	clientID  *string
 	subject   *string
+	extra     map[string]string
 	files     []*upload
 }
 
@@ -237,8 +238,10 @@ func (s *Server) readMultipart(r *multipart.Reader, workspaceID uuid.UUID, field
 		case "subject":
 			in.subject = &v
 		default:
-			in.close()
-			return nil, errValidation("unknown form field " + part.FormName())
+			if in.extra == nil {
+				in.extra = map[string]string{}
+			}
+			in.extra[part.FormName()] = v
 		}
 	}
 }
@@ -463,7 +466,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 			if err != nil {
 				return err
 			}
-			if ch.Kind == string(oas.ChannelKindChat) {
+			if emailsReplies(c, ch.Kind) {
 				s.scheduleContinuity(events, c, now)
 			}
 		}

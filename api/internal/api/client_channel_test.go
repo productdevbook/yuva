@@ -55,7 +55,7 @@ func TestClientChannelSettings(t *testing.T) {
 	c.origin = ct.origin
 	c.expectProblem(http.StatusNotFound, "not_found", "GET", "/client/v1/channels/yuva_pk_unknown", nil)
 	c.origin = ""
-	c.expect(http.StatusOK, "GET", "/client/v1/channels/"+ct.key, nil)
+	c.expectProblem(http.StatusForbidden, "origin_not_allowed", "GET", "/client/v1/channels/"+ct.key, nil)
 
 	c.origin = ct.origin
 	limited := false

@@ -151,7 +151,7 @@ func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conver
 	for i, r := range rows {
 		c := conversationBody(r, labels[r.ID])
 		out[i] = oas.ConversationListItem{
-			Id: c.Id, InboxId: c.InboxId, ContactId: c.ContactId, ChannelId: c.ChannelId, Subject: c.Subject,
+			Id: c.Id, InboxId: c.InboxId, ContactId: c.ContactId, ChannelId: c.ChannelId, Kind: c.Kind, Feedback: c.Feedback, Subject: c.Subject,
 			Status: c.Status, SnoozeUntil: c.SnoozeUntil, Priority: c.Priority, Spam: c.Spam, AssigneeId: c.AssigneeId, Labels: c.Labels,
 			LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt, CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt,
 			Contact: contacts[r.ContactID], LastMessage: previews[r.ID], Unread: unread[r.ID],
@@ -166,7 +166,7 @@ func conversationBody(c store.Conversation, labels []uuid.UUID) oas.Conversation
 	}
 	return oas.Conversation{
 		Id: c.ID, InboxId: c.InboxID, ContactId: c.ContactID, ChannelId: c.ChannelID, Subject: c.Subject,
-		Status: oas.ConversationStatus(c.Status), SnoozeUntil: c.SnoozeUntil, Priority: oas.Priority(c.Priority), Spam: c.Spam,
+		Kind: oas.ConversationKind(c.Kind), Feedback: conversationFeedback(c), Status: oas.ConversationStatus(c.Status), SnoozeUntil: c.SnoozeUntil, Priority: oas.Priority(c.Priority), Spam: c.Spam,
 		AssigneeId: c.AssigneeID, Labels: labels, LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt,
 		CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt, RelatedConversationId: c.RelatedConversationID,
 	}
@@ -305,6 +305,23 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 		InboxID: prm.InboxId, ContactID: prm.ContactId, LabelID: prm.LabelId, Q: pos, QNot: neg,
 		CursorAt: at, CursorID: cid, Lim: lim + 1, Spam: prm.Spam != nil && *prm.Spam,
 	}
+	if prm.Kind != nil {
+		if !prm.Kind.Valid() {
+			return nil, errValidation("kind must be conversation or feedback")
+		}
+		k := string(*prm.Kind)
+		arg.Kind = &k
+	}
+	if prm.Category != nil {
+		if !prm.Category.Valid() {
+			return nil, errValidation("category must be bug, idea, praise or other")
+		}
+		k, c := string(oas.ConversationKindFeedback), string(*prm.Category)
+		if arg.Kind != nil && *arg.Kind != k {
+			return nil, errValidation("category is only for kind=feedback")
+		}
+		arg.Kind, arg.Category = &k, &c
+	}
 	if prm.InboxId != nil {
 		if _, err := visibleInbox(ctx, s.st.Queries, p, *prm.InboxId); err != nil {
 			return nil, err
@@ -374,7 +391,17 @@ func (s *Server) GetConversationCounts(ctx context.Context, _ oas.GetConversatio
 	if err != nil {
 		return nil, err
 	}
-	out := oas.GetConversationCounts200JSONResponse{Inboxes: []oas.CountByID{}, Labels: make([]oas.CountByID, 0, len(byLabel))}
+	feedback, err := s.st.CountOpenFeedback(ctx, store.CountOpenFeedbackParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), MemberID: member})
+	if err != nil {
+		return nil, err
+	}
+	out := oas.GetConversationCounts200JSONResponse{
+		Inboxes: []oas.CountByID{}, Labels: make([]oas.CountByID, 0, len(byLabel)), FeedbackCategories: make([]oas.FeedbackCount, 0, len(feedback)),
+	}
+	for _, r := range feedback {
+		out.Feedback += r.N
+		out.FeedbackCategories = append(out.FeedbackCategories, oas.FeedbackCount{Category: oas.FeedbackCategory(r.Category), Count: r.N})
+	}
 	perInbox := map[uuid.UUID]int64{}
 	for _, r := range rows {
 		if r.Spam {
@@ -523,7 +550,7 @@ func (s *Server) UpdateConversation(ctx context.Context, req oas.UpdateConversat
 			}
 			next.Status = string(*b.Status)
 		}
-		if next.Status == string(oas.Snoozed) {
+		if next.Status == string(oas.ConversationStatusSnoozed) {
 			if b.SnoozeUntil != nil {
 				until := *b.SnoozeUntil
 				next.SnoozeUntil = &until

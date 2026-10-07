@@ -68,7 +68,7 @@ func TestEventsCommitWithTheChange(t *testing.T) {
 		if _, err := q.CreateLabel(ctx, store.CreateLabelParams{ID: newID(), WorkspaceID: ws, Name: "rolled back", Color: "#ff0000", Now: time.Now()}); err != nil {
 			return err
 		}
-		if err := writeEvents(ctx, q, ws, []pendingEvent{{typ: realtime.ContactUpdated, data: []byte(`{}`)}}); err != nil {
+		if _, err := writeEvents(ctx, q, ws, []pendingEvent{{typ: realtime.ContactUpdated, data: []byte(`{}`)}}); err != nil {
 			return err
 		}
 		return boom

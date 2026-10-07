@@ -191,8 +191,8 @@ func TestClientOriginsAndAnonymous(t *testing.T) {
 		t.Fatalf("session from an unknown origin: %d %s", r.status, r.raw)
 	}
 	r = ct.sessionStatus(h, "", map[string]any{"identity_token": ct.token(h, map[string]any{"sub": "u"})})
-	if r.status != http.StatusCreated {
-		t.Fatalf("session without Origin (server-side client): %d %s", r.status, r.raw)
+	if r.status != http.StatusForbidden || r.str("code") != "origin_not_allowed" {
+		t.Fatalf("chat session without Origin: %d %s", r.status, r.raw)
 	}
 	nf := h.client()
 	nf.origin = ct.origin

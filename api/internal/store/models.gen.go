@@ -67,6 +67,7 @@ type ChatChannel struct {
 	Greeting         string
 	LauncherPosition *string
 	LauncherColor    *string
+	Platforms        []string
 }
 
 type ChatVisitor struct {
@@ -145,6 +146,8 @@ type Conversation struct {
 	RelatedConversationID *uuid.UUID
 	ContinuityThrough     *time.Time
 	ContinuitySentAt      *time.Time
+	Kind                  string
+	Feedback              []byte
 }
 
 type ConversationLabel struct {
@@ -362,6 +365,54 @@ type WebauthnCeremony struct {
 	PersonID    *uuid.UUID
 	SessionData []byte
 	ExpiresAt   time.Time
+}
+
+type WebhookAttempt struct {
+	ID           uuid.UUID
+	WorkspaceID  uuid.UUID
+	EndpointID   uuid.UUID
+	DeliveryID   uuid.UUID
+	AttemptedAt  time.Time
+	Manual       bool
+	Success      bool
+	StatusCode   *int32
+	LatencyMs    int32
+	ResponseBody string
+	Error        *string
+}
+
+type WebhookDelivery struct {
+	ID            uuid.UUID
+	WorkspaceID   uuid.UUID
+	EndpointID    uuid.UUID
+	MessageID     string
+	EventType     string
+	Payload       string
+	State         string
+	Attempts      int32
+	NextAttemptAt *time.Time
+	LastAttemptAt *time.Time
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+}
+
+type WebhookEndpoint struct {
+	ID                  uuid.UUID
+	WorkspaceID         uuid.UUID
+	InboxID             *uuid.UUID
+	Url                 string
+	Description         string
+	Events              []string
+	IncludeNotes        bool
+	Enabled             bool
+	Secret              []byte
+	PreviousSecret      []byte
+	PreviousSecretUntil *time.Time
+	FailingSince        *time.Time
+	DisabledAt          *time.Time
+	DisabledReason      *string
+	CreatedAt           time.Time
+	UpdatedAt           time.Time
 }
 
 type Workspace struct {

@@ -30,6 +30,7 @@ services:
       YUVA_STORAGE_DIR: /data/attachments
       YUVA_INGRESS_SECRET: ${YUVA_INGRESS_SECRET:-yuva-dev-only-ingress-secret}
       YUVA_CHAT_EMAIL_DELAY: ${YUVA_CHAT_EMAIL_DELAY:-5m}
+      YUVA_WEBHOOK_ALLOW_PRIVATE: ${YUVA_WEBHOOK_ALLOW_PRIVATE:-true}
     ports:
       - "0.0.0.0:8809:8080"
     volumes:

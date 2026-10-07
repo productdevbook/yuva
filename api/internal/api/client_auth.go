@@ -8,6 +8,7 @@ import (
 	"time"
 	"uuid"
 
+	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
@@ -32,6 +33,7 @@ type contactPrincipal struct {
 	sessionID   uuid.UUID
 	identified  bool
 	expiresAt   time.Time
+	kind        string
 	chat        store.ChatChannel
 }
 
@@ -52,7 +54,8 @@ func originFrom(ctx context.Context) string {
 
 // clientCORS answers preflights for /client/v1 and refuses browsers from origins that no chat
 // channel allows. Whether the origin is allowed for the channel in question is checked once the
-// channel is known (from the public key or the session).
+// channel is known (from the public key or the session); requests without an Origin, which native
+// apps send, pass here and are refused later unless the channel is an app channel.
 func (s *Server) clientCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !strings.HasPrefix(r.URL.Path, clientPrefix) {
@@ -91,8 +94,13 @@ func (s *Server) clientCORS(next http.Handler) http.Handler {
 	})
 }
 
-func originAllowedFor(origin string, allowed []string) bool {
-	return origin == "" || slices.Contains(allowed, origin)
+// originAllowedFor checks a chat channel's origins; app channels serve native apps, which send no
+// Origin, so their keys are not tied to origins.
+func originAllowedFor(origin, kind string, allowed []string) bool {
+	if kind == string(oas.ChannelKindApp) {
+		return true
+	}
+	return origin != "" && slices.Contains(allowed, origin)
 }
 
 func (s *Server) resolveContact(ctx context.Context, token string) (contactPrincipal, error) {
@@ -107,14 +115,19 @@ func (s *Server) resolveContact(ctx context.Context, token string) (contactPrinc
 	if err != nil {
 		return contactPrincipal{}, err
 	}
-	chat, err := s.st.GetChatChannel(ctx, store.GetChatChannelParams{WorkspaceID: sess.WorkspaceID, ChannelID: sess.ChannelID})
+	ch, err := s.st.GetSessionChannel(ctx, store.GetSessionChannelParams{WorkspaceID: sess.WorkspaceID, ChannelID: sess.ChannelID})
 	if store.IsNotFound(err) {
 		return contactPrincipal{}, errContactUnauthenticated
 	}
 	if err != nil {
 		return contactPrincipal{}, err
 	}
-	if !originAllowedFor(originFrom(ctx), chat.AllowedOrigins) {
+	chat := store.ChatChannel{
+		WorkspaceID: ch.WorkspaceID, ChannelID: ch.ChannelID, PublicKey: ch.PublicKey, AllowedOrigins: ch.AllowedOrigins,
+		AllowAnonymous: ch.AllowAnonymous, AskEmailOffline: ch.AskEmailOffline, Greeting: ch.Greeting,
+		LauncherPosition: ch.LauncherPosition, LauncherColor: ch.LauncherColor, Platforms: ch.Platforms,
+	}
+	if !originAllowedFor(originFrom(ctx), ch.Kind, chat.AllowedOrigins) {
 		return contactPrincipal{}, errOriginRefused
 	}
 	if sess.ContactBlocked {
@@ -131,7 +144,7 @@ func (s *Server) resolveContact(ctx context.Context, token string) (contactPrinc
 	}
 	return contactPrincipal{
 		workspaceID: sess.WorkspaceID, inboxID: sess.InboxID, channelID: sess.ChannelID, contactID: sess.ContactID,
-		sessionID: sess.ID, identified: sess.Identified, expiresAt: expires, chat: chat,
+		sessionID: sess.ID, identified: sess.Identified, expiresAt: expires, kind: ch.Kind, chat: chat,
 	}, nil
 }
 

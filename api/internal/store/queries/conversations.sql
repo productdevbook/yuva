@@ -1,8 +1,10 @@
 -- name: CreateConversation :one
 INSERT INTO conversations (id, workspace_id, inbox_id, contact_id, channel_id, subject, priority,
-                           assignee_id, spam, email_token, related_conversation_id, last_activity_at, created_at, updated_at)
+                           assignee_id, spam, email_token, related_conversation_id, kind, feedback,
+                           last_activity_at, created_at, updated_at)
 VALUES (@id, @workspace_id, @inbox_id, @contact_id, @channel_id, @subject, @priority,
-        @assignee_id, @spam, sqlc.narg(email_token), sqlc.narg(related_conversation_id), @now, @now, @now)
+        @assignee_id, @spam, sqlc.narg(email_token), sqlc.narg(related_conversation_id),
+        coalesce(sqlc.narg(kind)::text, 'conversation'), sqlc.narg(feedback), @now, @now, @now)
 RETURNING *;
 
 -- name: GetConversation :one
@@ -33,6 +35,8 @@ WHERE c.workspace_id = @workspace_id
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
   AND (sqlc.narg(contact_id)::uuid IS NULL OR c.contact_id = sqlc.narg(contact_id)::uuid)
   AND c.spam = @spam::bool
+  AND (sqlc.narg(kind)::text IS NULL OR c.kind = sqlc.narg(kind)::text)
+  AND (sqlc.narg(category)::text IS NULL OR c.feedback->>'category' = sqlc.narg(category)::text)
   AND (sqlc.narg(status)::text IS NULL OR c.status = sqlc.narg(status)::text)
   AND (NOT @unassigned::bool OR c.assignee_id IS NULL)
   AND (sqlc.narg(assignee_id)::uuid IS NULL OR c.assignee_id = sqlc.narg(assignee_id)::uuid)
@@ -106,3 +110,22 @@ WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND NOT c.spam
       WHERE im.workspace_id = c.workspace_id AND im.inbox_id = c.inbox_id AND im.member_id = sqlc.narg(member_id)::uuid))
 GROUP BY cl.label_id
 ORDER BY cl.label_id;
+
+-- name: CountOpenFeedback :many
+SELECT (c.feedback->>'category')::text AS category, count(*) AS n
+FROM conversations c
+WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND NOT c.spam AND c.kind = 'feedback'
+  AND (@all_inboxes::bool OR EXISTS (
+      SELECT 1 FROM inbox_members im
+      WHERE im.workspace_id = c.workspace_id AND im.inbox_id = c.inbox_id AND im.member_id = sqlc.narg(member_id)::uuid))
+GROUP BY 1
+ORDER BY 1;
+
+-- name: GetFirstPublicMessage :one
+SELECT id FROM messages
+WHERE workspace_id = $1 AND conversation_id = $2 AND kind = 'message'
+ORDER BY created_at, id
+LIMIT 1;
+
+-- name: InboxAPIChannel :one
+SELECT * FROM channels WHERE workspace_id = $1 AND inbox_id = $2 AND kind = 'api' ORDER BY created_at, id LIMIT 1;

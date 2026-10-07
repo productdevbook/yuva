@@ -122,12 +122,56 @@ func (q *Queries) CountOpenConversationsByLabel(ctx context.Context, arg CountOp
 	return items, nil
 }
 
+const countOpenFeedback = `-- name: CountOpenFeedback :many
+SELECT (c.feedback->>'category')::text AS category, count(*) AS n
+FROM conversations c
+WHERE c.workspace_id = $1 AND c.status = 'open' AND NOT c.spam AND c.kind = 'feedback'
+  AND ($2::bool OR EXISTS (
+      SELECT 1 FROM inbox_members im
+      WHERE im.workspace_id = c.workspace_id AND im.inbox_id = c.inbox_id AND im.member_id = $3::uuid))
+GROUP BY 1
+ORDER BY 1
+`
+
+type CountOpenFeedbackParams struct {
+	WorkspaceID uuid.UUID
+	AllInboxes  bool
+	MemberID    *uuid.UUID
+}
+
+type CountOpenFeedbackRow struct {
+	Category string
+	N        int64
+}
+
+func (q *Queries) CountOpenFeedback(ctx context.Context, arg CountOpenFeedbackParams) ([]CountOpenFeedbackRow, error) {
+	rows, err := q.db.Query(ctx, countOpenFeedback, arg.WorkspaceID, arg.AllInboxes, arg.MemberID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []CountOpenFeedbackRow
+	for rows.Next() {
+		var i CountOpenFeedbackRow
+		if err := rows.Scan(&i.Category, &i.N); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const createConversation = `-- name: CreateConversation :one
 INSERT INTO conversations (id, workspace_id, inbox_id, contact_id, channel_id, subject, priority,
-                           assignee_id, spam, email_token, related_conversation_id, last_activity_at, created_at, updated_at)
+                           assignee_id, spam, email_token, related_conversation_id, kind, feedback,
+                           last_activity_at, created_at, updated_at)
 VALUES ($1, $2, $3, $4, $5, $6, $7,
-        $8, $9, $10, $11, $12, $12, $12)
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at
+        $8, $9, $10, $11,
+        coalesce($12::text, 'conversation'), $13, $14, $14, $14)
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback
 `
 
 type CreateConversationParams struct {
@@ -142,6 +186,8 @@ type CreateConversationParams struct {
 	Spam                  bool
 	EmailToken            *string
 	RelatedConversationID *uuid.UUID
+	Kind                  *string
+	Feedback              []byte
 	Now                   time.Time
 }
 
@@ -158,6 +204,8 @@ func (q *Queries) CreateConversation(ctx context.Context, arg CreateConversation
 		arg.Spam,
 		arg.EmailToken,
 		arg.RelatedConversationID,
+		arg.Kind,
+		arg.Feedback,
 		arg.Now,
 	)
 	var i Conversation
@@ -181,12 +229,14 @@ func (q *Queries) CreateConversation(ctx context.Context, arg CreateConversation
 		&i.RelatedConversationID,
 		&i.ContinuityThrough,
 		&i.ContinuitySentAt,
+		&i.Kind,
+		&i.Feedback,
 	)
 	return i, err
 }
 
 const getConversation = `-- name: GetConversation :one
-SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at FROM conversations WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback FROM conversations WHERE workspace_id = $1 AND id = $2
 `
 
 type GetConversationParams struct {
@@ -217,6 +267,52 @@ func (q *Queries) GetConversation(ctx context.Context, arg GetConversationParams
 		&i.RelatedConversationID,
 		&i.ContinuityThrough,
 		&i.ContinuitySentAt,
+		&i.Kind,
+		&i.Feedback,
+	)
+	return i, err
+}
+
+const getFirstPublicMessage = `-- name: GetFirstPublicMessage :one
+SELECT id FROM messages
+WHERE workspace_id = $1 AND conversation_id = $2 AND kind = 'message'
+ORDER BY created_at, id
+LIMIT 1
+`
+
+type GetFirstPublicMessageParams struct {
+	WorkspaceID    uuid.UUID
+	ConversationID uuid.UUID
+}
+
+func (q *Queries) GetFirstPublicMessage(ctx context.Context, arg GetFirstPublicMessageParams) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, getFirstPublicMessage, arg.WorkspaceID, arg.ConversationID)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
+const inboxAPIChannel = `-- name: InboxAPIChannel :one
+SELECT id, workspace_id, inbox_id, kind, name, settings, created_at, updated_at FROM channels WHERE workspace_id = $1 AND inbox_id = $2 AND kind = 'api' ORDER BY created_at, id LIMIT 1
+`
+
+type InboxAPIChannelParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+}
+
+func (q *Queries) InboxAPIChannel(ctx context.Context, arg InboxAPIChannelParams) (Channel, error) {
+	row := q.db.QueryRow(ctx, inboxAPIChannel, arg.WorkspaceID, arg.InboxID)
+	var i Channel
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.InboxID,
+		&i.Kind,
+		&i.Name,
+		&i.Settings,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }
@@ -310,7 +406,7 @@ func (q *Queries) ListConversationPreviews(ctx context.Context, arg ListConversa
 }
 
 const listConversations = `-- name: ListConversations :many
-SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at FROM conversations c
+SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback FROM conversations c
 WHERE c.workspace_id = $1
   AND ($2::bool OR EXISTS (
       SELECT 1 FROM inbox_members im
@@ -318,36 +414,38 @@ WHERE c.workspace_id = $1
   AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid)
   AND ($5::uuid IS NULL OR c.contact_id = $5::uuid)
   AND c.spam = $6::bool
-  AND ($7::text IS NULL OR c.status = $7::text)
-  AND (NOT $8::bool OR c.assignee_id IS NULL)
-  AND ($9::uuid IS NULL OR c.assignee_id = $9::uuid)
-  AND ($10::uuid IS NULL OR EXISTS (
+  AND ($7::text IS NULL OR c.kind = $7::text)
+  AND ($8::text IS NULL OR c.feedback->>'category' = $8::text)
+  AND ($9::text IS NULL OR c.status = $9::text)
+  AND (NOT $10::bool OR c.assignee_id IS NULL)
+  AND ($11::uuid IS NULL OR c.assignee_id = $11::uuid)
+  AND ($12::uuid IS NULL OR EXISTS (
       SELECT 1 FROM conversation_labels cl
-      WHERE cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id AND cl.label_id = $10::uuid))
-  AND ($11::text IS NULL OR (
-      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($11::text, 'İı', 'ii'))
+      WHERE cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id AND cl.label_id = $12::uuid))
+  AND ($13::text IS NULL OR (
+      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($13::text, 'İı', 'ii'))
       OR EXISTS (
           SELECT 1 FROM messages m
           WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id
-            AND m.search @@ websearch_to_tsquery('simple', translate($11::text, 'İı', 'ii')))
+            AND m.search @@ websearch_to_tsquery('simple', translate($13::text, 'İı', 'ii')))
       OR EXISTS (
           SELECT 1 FROM contacts ct
           WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
-            AND ct.search @@ websearch_to_tsquery('simple', translate($11::text, 'İı', 'ii')))))
-  AND ($12::text IS NULL OR NOT (
-      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($12::text, 'İı', 'ii'))
+            AND ct.search @@ websearch_to_tsquery('simple', translate($13::text, 'İı', 'ii')))))
+  AND ($14::text IS NULL OR NOT (
+      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($14::text, 'İı', 'ii'))
       OR EXISTS (
           SELECT 1 FROM messages m
           WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id
-            AND m.search @@ websearch_to_tsquery('simple', translate($12::text, 'İı', 'ii')))
+            AND m.search @@ websearch_to_tsquery('simple', translate($14::text, 'İı', 'ii')))
       OR EXISTS (
           SELECT 1 FROM contacts ct
           WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
-            AND ct.search @@ websearch_to_tsquery('simple', translate($12::text, 'İı', 'ii')))))
-  AND ($13::timestamptz IS NULL
-       OR (c.last_activity_at, c.id) < ($13::timestamptz, $14::uuid))
+            AND ct.search @@ websearch_to_tsquery('simple', translate($14::text, 'İı', 'ii')))))
+  AND ($15::timestamptz IS NULL
+       OR (c.last_activity_at, c.id) < ($15::timestamptz, $16::uuid))
 ORDER BY c.last_activity_at DESC, c.id DESC
-LIMIT $15
+LIMIT $17
 `
 
 type ListConversationsParams struct {
@@ -357,6 +455,8 @@ type ListConversationsParams struct {
 	InboxID     *uuid.UUID
 	ContactID   *uuid.UUID
 	Spam        bool
+	Kind        *string
+	Category    *string
 	Status      *string
 	Unassigned  bool
 	AssigneeID  *uuid.UUID
@@ -376,6 +476,8 @@ func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsPa
 		arg.InboxID,
 		arg.ContactID,
 		arg.Spam,
+		arg.Kind,
+		arg.Category,
 		arg.Status,
 		arg.Unassigned,
 		arg.AssigneeID,
@@ -413,6 +515,8 @@ func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsPa
 			&i.RelatedConversationID,
 			&i.ContinuityThrough,
 			&i.ContinuitySentAt,
+			&i.Kind,
+			&i.Feedback,
 		); err != nil {
 			return nil, err
 		}
@@ -425,7 +529,7 @@ func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsPa
 }
 
 const lockConversation = `-- name: LockConversation :one
-SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at FROM conversations WHERE workspace_id = $1 AND id = $2 FOR UPDATE
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback FROM conversations WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
 
 type LockConversationParams struct {
@@ -456,6 +560,8 @@ func (q *Queries) LockConversation(ctx context.Context, arg LockConversationPara
 		&i.RelatedConversationID,
 		&i.ContinuityThrough,
 		&i.ContinuitySentAt,
+		&i.Kind,
+		&i.Feedback,
 	)
 	return i, err
 }
@@ -504,7 +610,7 @@ const updateConversation = `-- name: UpdateConversation :one
 UPDATE conversations SET subject = $1, status = $2, snooze_until = $3,
     priority = $4, assignee_id = $5, spam = $6, updated_at = $7
 WHERE workspace_id = $8 AND id = $9
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback
 `
 
 type UpdateConversationParams struct {
@@ -552,6 +658,8 @@ func (q *Queries) UpdateConversation(ctx context.Context, arg UpdateConversation
 		&i.RelatedConversationID,
 		&i.ContinuityThrough,
 		&i.ContinuitySentAt,
+		&i.Kind,
+		&i.Feedback,
 	)
 	return i, err
 }

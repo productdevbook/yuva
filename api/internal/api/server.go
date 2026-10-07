@@ -24,6 +24,7 @@ import (
 	"github.com/productdevbook/yuva/api/internal/storage"
 	"github.com/productdevbook/yuva/api/internal/store"
 	"github.com/productdevbook/yuva/api/internal/ui"
+	"github.com/productdevbook/yuva/api/internal/webhook"
 	"github.com/productdevbook/yuva/api/internal/widget"
 )
 
@@ -53,6 +54,8 @@ type Server struct {
 	fetch    *http.Client
 	chat     ChatSettings
 	limits   *rateLimiter
+	webhooks WebhookSettings
+	hooks    *webhook.Client
 }
 
 type Deps struct {
@@ -74,6 +77,8 @@ type Deps struct {
 	HTTPClient  *http.Client
 
 	Chat ChatSettings
+
+	Webhooks WebhookSettings
 }
 
 type ChatSettings struct {
@@ -122,7 +127,7 @@ func New(d Deps) *Server {
 		log: d.Log, st: d.Store, version: d.Version, mailer: d.Mailer, webauthn: d.WebAuthn, auth: d.Auth, now: now,
 		secrets: d.Secrets, objects: d.Storage, attach: d.Attachments, sanitize: htmlPolicy(),
 		hub: d.Hub, jobs: jobs, ingress: d.Ingress, sender: sender, snsCerts: newCertCache(fetch), fetch: fetch,
-		chat: chat, limits: newRateLimiter(),
+		chat: chat, limits: newRateLimiter(), webhooks: d.Webhooks, hooks: webhook.NewClient(d.Webhooks.AllowPrivate, d.Webhooks.Resolver),
 	}
 }
 

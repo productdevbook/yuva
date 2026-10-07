@@ -20,14 +20,16 @@ func channelBody(c store.Channel, e *store.EmailChannel, chat *store.ChatChannel
 	if e != nil {
 		out.Email = emailChannelBody(*e)
 	}
-	if chat != nil {
+	if chat != nil && c.Kind == string(oas.ChannelKindApp) {
+		out.App = appChannelBody(*chat)
+	} else if chat != nil {
 		out.Chat = chatChannelBody(*chat)
 	}
 	return out
 }
 
 func (s *Server) oneChannelBody(ctx context.Context, q *store.Queries, c store.Channel) (oas.Channel, error) {
-	if c.Kind == string(oas.ChannelKindChat) {
+	if hasPublicKey(c.Kind) {
 		chat, err := q.GetChatChannel(ctx, store.GetChatChannelParams{WorkspaceID: c.WorkspaceID, ChannelID: c.ID})
 		if store.IsNotFound(err) {
 			return channelBody(c, nil, nil), nil
@@ -127,6 +129,10 @@ func (s *Server) CreateChannel(ctx context.Context, req oas.CreateChannelRequest
 	if !isChat && req.Body.Chat != nil {
 		return nil, errChatNotAllowed
 	}
+	isApp := req.Body.Kind == oas.ChannelKindApp
+	if !isApp && req.Body.App != nil {
+		return nil, errAppNotAllowed
+	}
 	id := newID()
 	var emailArg store.CreateEmailChannelParams
 	if isEmail {
@@ -137,6 +143,11 @@ func (s *Server) CreateChannel(ctx context.Context, req oas.CreateChannelRequest
 	var chatArg store.SaveChatChannelParams
 	if isChat {
 		if chatArg, err = chatChannelParams(p.workspaceID, id, req.Body.Chat, nil); err != nil {
+			return nil, err
+		}
+	}
+	if isApp {
+		if chatArg, err = appChannelParams(p.workspaceID, id, req.Body.App, nil); err != nil {
 			return nil, err
 		}
 	}
@@ -155,7 +166,7 @@ func (s *Server) CreateChannel(ctx context.Context, req oas.CreateChannelRequest
 		if err != nil {
 			return err
 		}
-		if isChat {
+		if isChat || isApp {
 			chat, err := q.SaveChatChannel(ctx, chatArg)
 			if err != nil {
 				return err
@@ -236,6 +247,9 @@ func (s *Server) UpdateChannel(ctx context.Context, req oas.UpdateChannelRequest
 	if req.Body.Chat != nil && cur.Kind != string(oas.ChannelKindChat) {
 		return nil, errChatNotAllowed
 	}
+	if req.Body.App != nil && cur.Kind != string(oas.ChannelKindApp) {
+		return nil, errAppNotAllowed
+	}
 	var out oas.Channel
 	err = s.st.InTx(ctx, func(q *store.Queries) error {
 		c, err := q.UpdateChannel(ctx, store.UpdateChannelParams{WorkspaceID: p.workspaceID, ID: cur.ID, Name: name, Settings: settings, Now: s.now()})
@@ -270,6 +284,23 @@ func (s *Server) UpdateChannel(ctx context.Context, req oas.UpdateChannelRequest
 				return err
 			}
 			arg, err := chatChannelParams(p.workspaceID, c.ID, req.Body.Chat, prev)
+			if err != nil {
+				return err
+			}
+			if _, err := q.SaveChatChannel(ctx, arg); err != nil {
+				return err
+			}
+		}
+		if req.Body.App != nil {
+			cc, err := q.GetChatChannel(ctx, store.GetChatChannelParams{WorkspaceID: p.workspaceID, ChannelID: c.ID})
+			if err != nil && !store.IsNotFound(err) {
+				return err
+			}
+			var prev *store.ChatChannel
+			if err == nil {
+				prev = &cc
+			}
+			arg, err := appChannelParams(p.workspaceID, c.ID, req.Body.App, prev)
 			if err != nil {
 				return err
 			}
