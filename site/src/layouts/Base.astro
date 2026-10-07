@@ -65,6 +65,7 @@ const footer = [
     ],
   },
 ]
+const appUrl = import.meta.env.PUBLIC_APP_URL
 ---
 
 <!doctype html>
@@ -112,6 +113,7 @@ const footer = [
         </nav>
         <div class="header-actions">
           <a class="lang" href={home[alt]} hreflang={alt} lang={bcp47[alt]}>{switchLabel}</a>
+          {appUrl && <a class="lang" href={appUrl}>{i18n._(msg`Sign in`)}</a>}
           <a class="btn btn-small" href={links.repo}>
             <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"
               ><path

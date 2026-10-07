@@ -201,6 +201,7 @@ code {
 .site-nav a,
 .lang {
   padding: 8px 10px;
+  white-space: nowrap;
   border-radius: 10px;
   color: var(--ink-2);
   text-decoration: none;
@@ -225,6 +226,24 @@ code {
   align-items: center;
   gap: 6px;
   margin-inline-start: auto;
+}
+
+@media (max-width: 420px) {
+  .header-actions .lang {
+    padding-inline: 6px;
+  }
+  .header-actions .btn span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+.brand svg {
+  flex-shrink: 0;
 }
 
 .btn {
