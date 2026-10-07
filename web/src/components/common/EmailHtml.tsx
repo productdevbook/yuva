@@ -13,22 +13,47 @@ function remoteImages(doc: Document) {
   })
 }
 
-export function hasRemoteImages(html: string) {
-  return remoteImages(new DOMParser().parseFromString(html, "text/html")).length > 0
+function cidOf(src: string) {
+  const m = /^\s*cid:(.+)$/i.exec(src)
+  if (!m) return undefined
+  try {
+    return decodeURIComponent(m[1].trim()).replace(/^<|>$/g, "")
+  } catch {
+    return m[1].trim()
+  }
 }
 
-function withoutRemoteImages(html: string) {
+export function placedContentIds(html: string) {
   const doc = new DOMParser().parseFromString(html, "text/html")
-  for (const el of remoteImages(doc)) {
-    el.removeAttribute("src")
-    el.removeAttribute("srcset")
-    el.removeAttribute("background")
+  const ids = new Set<string>()
+  for (const img of doc.querySelectorAll("img[src]")) {
+    const id = cidOf(img.getAttribute("src") ?? "")
+    if (id) ids.add(id)
+  }
+  return ids
+}
+
+function prepare(html: string, images: boolean, inline: ReadonlyMap<string, string>) {
+  const doc = new DOMParser().parseFromString(html, "text/html")
+  for (const img of doc.querySelectorAll("img[src]")) {
+    const id = cidOf(img.getAttribute("src") ?? "")
+    const url = id ? inline.get(id) : undefined
+    if (url) img.setAttribute("src", new URL(url, window.location.origin).href)
+  }
+  if (!images) {
+    for (const el of remoteImages(doc)) {
+      if (el.getAttribute("src")?.startsWith(`${window.location.origin}/v1/attachments/`)) continue
+      el.removeAttribute("src")
+      el.removeAttribute("srcset")
+      el.removeAttribute("background")
+    }
   }
   return doc.body.innerHTML
 }
 
-function frameDocument(html: string, images: boolean) {
-  const img = images ? "data: https: http:" : "data:"
+function frameDocument(html: string, images: boolean, inline: ReadonlyMap<string, string>) {
+  const own = `${window.location.origin}/v1/attachments/`
+  const img = images ? "data: https: http:" : inline.size > 0 ? `data: ${own}` : "data:"
   return `<!doctype html><html><head><meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src ${img}; font-src data:">
 <base target="_blank">
@@ -42,14 +67,26 @@ pre{white-space:pre-wrap}
 a{color:#2563eb}
 blockquote{margin:.5em 0;padding-left:.75em;border-left:2px solid #d4d4d4;color:#525252}
 p:first-child{margin-top:0}p:last-child{margin-bottom:0}
-</style></head><body>${images ? html : withoutRemoteImages(html)}</body></html>`
+</style></head><body>${prepare(html, images, inline)}</body></html>`
 }
 
-export function EmailHtml({ html, images, className }: { html: string; images: boolean; className?: string }) {
+const NO_INLINE: ReadonlyMap<string, string> = new Map()
+
+export function EmailHtml({
+  html,
+  images,
+  inline = NO_INLINE,
+  className,
+}: {
+  html: string
+  images: boolean
+  inline?: ReadonlyMap<string, string>
+  className?: string
+}) {
   const { t } = useLingui()
   const frame = useRef<HTMLIFrameElement>(null)
   const [height, setHeight] = useState(40)
-  const srcDoc = useMemo(() => frameDocument(html, images), [html, images])
+  const srcDoc = useMemo(() => frameDocument(html, images, inline), [html, images, inline])
 
   useEffect(() => {
     const el = frame.current

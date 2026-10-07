@@ -18,7 +18,7 @@ import {
 import { useEffect, useMemo, useState } from "react"
 
 import { ErrorLine, PersonAvatar } from "@/components/common"
-import { EmailHtml, hasRemoteImages } from "@/components/common/EmailHtml"
+import { EmailHtml, placedContentIds } from "@/components/common/EmailHtml"
 import { formatBytes, formatDateTime, useEnumText } from "@/components/common/text"
 import { statusIcons } from "@/components/inbox/ConversationControls"
 import { Button } from "@/components/ui/button"
@@ -239,8 +239,20 @@ function MetaBadge({ children, tone = "muted", title }: { children: React.ReactN
   )
 }
 
+function Attachments({ items, outgoing }: { items: Attachment[]; outgoing: boolean }) {
+  if (items.length === 0) return null
+  return (
+    <div className={cn("flex max-w-full flex-col gap-1", outgoing && "items-end")}>
+      {items.map((a) => (
+        <AttachmentChip key={a.id} a={a} />
+      ))}
+    </div>
+  )
+}
+
 function EmailBody({ m, outgoing, expandQuoted }: { m: Message; outgoing: boolean; expandQuoted: boolean }) {
   const { t } = useLingui()
+  const { workspaceId } = useSession()
   const [quotedOwn, setQuotedOwn] = useState<boolean | null>(null)
   const [images, setImages] = useState(false)
   useEffect(() => setQuotedOwn(null), [expandQuoted])
@@ -249,7 +261,20 @@ function EmailBody({ m, outgoing, expandQuoted }: { m: Message; outgoing: boolea
   const full = quotedShown ? detail.data : undefined
   const html = full ? full.full_html : m.html
   const text = full ? full.full_text : m.body
-  const remote = useMemo(() => (html ? hasRemoteImages(html) : false), [html])
+  const remote = !!html && !!(full ? full.has_remote_images : m.email?.has_remote_images)
+  const inline = useMemo(
+    () =>
+      new Map(
+        m.attachments
+          .filter((a) => a.content_id && a.content_type.startsWith("image/") && a.content_type !== "image/svg+xml")
+          .map((a) => [a.content_id!, attachmentUrl(a, workspaceId)]),
+      ),
+    [m.attachments, workspaceId],
+  )
+  const listed = useMemo(() => {
+    const placed = html && inline.size > 0 ? placedContentIds(html) : new Set<string>()
+    return m.attachments.filter((a) => !(a.inline && a.content_id && inline.has(a.content_id) && placed.has(a.content_id)))
+  }, [html, inline, m.attachments])
   return (
     <>
       {html ? (
@@ -259,7 +284,7 @@ function EmailBody({ m, outgoing, expandQuoted }: { m: Message; outgoing: boolea
             outgoing ? "rounded-tr-sm" : "rounded-tl-sm",
           )}
         >
-          <EmailHtml html={html} images={images} />
+          <EmailHtml html={html} images={images} inline={inline} />
         </div>
       ) : (
         text && (
@@ -305,6 +330,7 @@ function EmailBody({ m, outgoing, expandQuoted }: { m: Message; outgoing: boolea
           )}
         </div>
       )}
+      <Attachments items={listed} outgoing={outgoing} />
     </>
   )
 }
@@ -318,6 +344,7 @@ export function MessageItem({ m, ctx }: { m: Message; ctx: Ctx }) {
   const outgoing = !note && m.direction === "out"
   const email = m.email
   const showFrom = !!email && !outgoing && email.from !== author
+  const cc = !outgoing && email?.cc?.length ? email.cc.join(", ") : ""
   const showSubject = !!email?.subject && baseSubject(email.subject) !== baseSubject(ctx.subject)
   return (
     <div
@@ -341,6 +368,11 @@ export function MessageItem({ m, ctx }: { m: Message; ctx: Ctx }) {
         >
           <span className="font-medium text-foreground">{author}</span>
           {showFrom && <span className="truncate">{email.from}</span>}
+          {cc && (
+            <span className="min-w-0 truncate" title={cc} data-testid="email-cc">
+              <Trans>Cc: {cc}</Trans>
+            </span>
+          )}
           {note && (
             <span className="inline-flex items-center gap-1 rounded bg-amber-100 px-1.5 py-px text-[11px] font-medium text-amber-800 dark:bg-amber-900/50 dark:text-amber-200">
               <LockIcon className="size-3" />
@@ -400,13 +432,7 @@ export function MessageItem({ m, ctx }: { m: Message; ctx: Ctx }) {
             </div>
           )
         )}
-        {m.attachments.length > 0 && (
-          <div className={cn("flex max-w-full flex-col gap-1", outgoing && "items-end")}>
-            {m.attachments.map((a) => (
-              <AttachmentChip key={a.id} a={a} />
-            ))}
-          </div>
-        )}
+        {!(email || m.html) && <Attachments items={m.attachments} outgoing={outgoing} />}
         {m.delivery && !note && <DeliveryState d={m.delivery} />}
       </div>
     </div>

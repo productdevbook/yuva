@@ -179,6 +179,7 @@ function Inbox({ base, conversationId }: { base: ListBase; conversationId?: stri
                 key={conversationId}
                 conversationId={conversationId}
                 backHref={backHref}
+                hrefFor={hrefFor}
                 onToggleContact={toggleContact}
                 contactShown={isMobile ? mobileContact : isWide ? paneOpen : sheetOpen}
               />

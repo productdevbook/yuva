@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ArrowLeftIcon, PanelRightIcon, SearchXIcon, ShieldAlertIcon } from "lucide-react"
+import { ArrowLeftIcon, CornerDownRightIcon, PanelRightIcon, SearchXIcon, ShieldAlertIcon } from "lucide-react"
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
@@ -33,6 +33,33 @@ import {
 } from "@/lib/queries"
 import { useSession } from "@/lib/session"
 
+function RelatedLine({ id, hrefFor }: { id: string; hrefFor: (id: string) => string }) {
+  const { t } = useLingui()
+  const related = useConversation(id)
+  if (related.isPending) return null
+  const title = related.data?.subject || t`No subject`
+  return (
+    <p
+      className="flex min-w-0 items-center gap-1 text-xs text-muted-foreground [&_svg]:size-3.5 [&_svg]:shrink-0"
+      data-testid="related-conversation"
+    >
+      <CornerDownRightIcon />
+      <span className="min-w-0 truncate">
+        {related.data ? (
+          <Trans>
+            Replied in the thread of{" "}
+            <Link to={hrefFor(id)} className="font-medium text-foreground underline-offset-2 hover:underline">
+              {title}
+            </Link>
+          </Trans>
+        ) : (
+          <Trans>Replied in the thread of another conversation</Trans>
+        )}
+      </span>
+    </p>
+  )
+}
+
 function dayLabel(iso: string, locale: string) {
   return new Intl.DateTimeFormat(locale, { dateStyle: "full" }).format(new Date(iso))
 }
@@ -40,11 +67,13 @@ function dayLabel(iso: string, locale: string) {
 export function ThreadView({
   conversationId,
   backHref,
+  hrefFor,
   onToggleContact,
   contactShown,
 }: {
   conversationId: string
   backHref: string
+  hrefFor: (id: string) => string
   onToggleContact: () => void
   contactShown: boolean
 }) {
@@ -198,6 +227,7 @@ export function ThreadView({
               {contactName}
               {inbox && <> · {inbox.name}</>}
             </p>
+            {c.related_conversation_id && <RelatedLine id={c.related_conversation_id} hrefFor={hrefFor} />}
           </div>
           <Button
             variant={contactShown ? "secondary" : "ghost"}

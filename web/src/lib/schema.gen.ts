@@ -1490,6 +1490,14 @@ export interface components {
              * @description The channel it started on; absent when unknown or removed.
              */
             channel_id?: string;
+            /**
+             * Format: uuid
+             * @description Set when this conversation was opened for a sender who answered in the e-mail thread of
+             *     another contact's conversation (a forward, a CC'd colleague): the conversation whose
+             *     thread the mail named. That mail never joins the other conversation and replies here go
+             *     only to this conversation's contact. Absent otherwise or when that conversation is gone.
+             */
+            related_conversation_id?: string;
             subject: string;
             status: components["schemas"]["ConversationStatus"];
             /** Format: date-time */
@@ -1687,6 +1695,13 @@ export interface components {
             content_type: string;
             /** Format: int64 */
             size: number;
+            /**
+             * @description The `Content-ID` of an inbound e-mail part, without angle brackets. The message HTML
+             *     refers to it as `cid:<content_id>` in `img` sources.
+             */
+            content_id?: string;
+            /** @description An inline part of an inbound e-mail (shown in the HTML) rather than an attachment. */
+            inline: boolean;
             /** Format: date-time */
             created_at: string;
         };
@@ -1731,6 +1746,7 @@ export interface components {
             message_id: string;
             from: components["schemas"]["Email"];
             to: components["schemas"]["Email"][];
+            /** @description The `Cc` of an inbound mail, as received. Replies go to the contact only and copy no one. */
             cc?: components["schemas"]["Email"][];
             subject?: string;
             quoted: boolean;
@@ -1743,6 +1759,11 @@ export interface components {
              * @enum {string}
              */
             dmarc: "pass" | "fail" | "none" | "unknown";
+            /**
+             * @description The message's `html` loads images from other servers. They are kept as received; show
+             *     them only when the member asks, since loading them tells the sender the mail was read.
+             */
+            has_remote_images: boolean;
         };
         MessageEmailDetail: {
             message_id: string;
@@ -1750,6 +1771,8 @@ export interface components {
             full_text: string;
             /** @description The whole HTML part, sanitized. */
             full_html?: string;
+            /** @description `full_html` loads images from other servers; block them until the member asks. */
+            has_remote_images: boolean;
             in_reply_to?: string;
             references?: string[];
             /** @description The receiving server's `Authentication-Results` header, as received. */
