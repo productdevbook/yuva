@@ -49,7 +49,9 @@ type Config struct {
 
 	VAPID VAPID
 
-	MCP bool
+	MCP    bool
+	Panel  bool
+	Widget bool
 }
 
 type VAPID struct {
@@ -182,6 +184,12 @@ func Load(version string) (Config, error) {
 		return c, errors.New("YUVA_CHAT_EMAIL_DELAY must be a duration of at least 1s, such as 5m")
 	}
 	if c.MCP, err = switchEnv("YUVA_MCP", true); err != nil {
+		return c, err
+	}
+	if c.Panel, err = switchEnv("YUVA_PANEL", true); err != nil {
+		return c, err
+	}
+	if c.Widget, err = switchEnv("YUVA_WIDGET", true); err != nil {
 		return c, err
 	}
 	if c.IngressAcceptV1, err = boolEnv("YUVA_INGRESS_ACCEPT_V1", false); err != nil {

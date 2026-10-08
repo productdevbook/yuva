@@ -66,6 +66,8 @@ type Server struct {
 
 	mcp        http.Handler
 	mcpSchemas *mcp.SchemaCache
+	noPanel    bool
+	noWidget   bool
 }
 
 type Deps struct {
@@ -97,6 +99,10 @@ type Deps struct {
 
 	// DisableMCP turns the /mcp endpoint off (YUVA_MCP=off).
 	DisableMCP bool
+	// DisablePanel stops serving the panel (YUVA_PANEL=off); /oauth/authorize then has no consent page.
+	DisablePanel bool
+	// DisableWidget stops serving the widget scripts (YUVA_WIDGET=off).
+	DisableWidget bool
 }
 
 // PushSettings holds the VAPID keys; push is off without them.
@@ -185,6 +191,7 @@ func New(d Deps) *Server {
 		secrets: d.Secrets, objects: d.Storage, attach: d.Attachments, sanitize: htmlPolicy(),
 		hub: d.Hub, jobs: jobs, ingress: d.Ingress, ingestQ: make(chan struct{}, ingestSlots), sender: sender, smtpPriv: d.SMTPAllowPrivate, snsCerts: newCertCache(fetch), fetch: fetch,
 		chat: chat, limits: newRateLimiter(), webhooks: d.Webhooks, hooks: hooks, push: pusher,
+		noPanel: d.DisablePanel, noWidget: d.DisableWidget,
 	}
 	if !d.DisableMCP {
 		srv.mcp, srv.mcpSchemas = newMCPHandler(), mcp.NewSchemaCache()
@@ -229,12 +236,17 @@ func (s *Server) Handler() http.Handler {
 	if s.mcp != nil {
 		mux.HandleFunc("/mcp", s.serveMCP)
 	}
-	for _, name := range widget.Files {
-		mux.Handle("GET /"+name, widget.Handler(name))
+	if !s.noWidget {
+		for _, name := range widget.Files {
+			mux.Handle("GET /"+name, widget.Handler(name))
+		}
 	}
-	panel := ui.Handler()
+	var panel http.Handler
+	if !s.noPanel {
+		panel = ui.Handler()
+	}
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if isAPIPath(r.URL.Path) {
+		if panel == nil || isAPIPath(r.URL.Path) {
 			writeProblem(w, errNotFound)
 			return
 		}

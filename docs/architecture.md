@@ -229,7 +229,9 @@ check runs after the page is read, so a cleanup in between cannot drop events si
 
 **API-only mode.** `YUVA_PANEL=off` stops serving the panel (and so the OAuth consent page:
 `/oauth/authorize` then answers `temporarily_unavailable`; API keys still work). `YUVA_WIDGET=off`
-stops serving the widget scripts. The API, realtime, ingress and `/mcp` stay.
+stops serving the widget scripts. The API, realtime, ingress and `/mcp` stay. With the panel off,
+its paths answer `404` and `/oauth/authorize` checks the client and `redirect_uri` as usual, then
+redirects back with `error=temporarily_unavailable`. `/client/v1` stays with the widget off.
 
 **JS packages.** The JS SDK is published to npm as `@useyuva/js` (the `@yuva` scope belongs to
 someone else), MIT, versioned with the repository:

@@ -463,6 +463,10 @@ func (s *Server) serveOAuthAuthorize(w http.ResponseWriter, r *http.Request) {
 			"error": code, "error_description": description, "state": state, "iss": s.auth.PublicURL,
 		}), http.StatusFound)
 	}
+	if s.noPanel {
+		fail("temporarily_unavailable", "this server does not serve the panel, so it cannot ask for consent; use an API key")
+		return
+	}
 	if q.Get("response_type") != "code" {
 		fail("unsupported_response_type", "only response_type=code is supported")
 		return
