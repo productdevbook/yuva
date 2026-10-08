@@ -176,6 +176,13 @@ class YuvaClient internal constructor(
     suspend fun markRead(conversationId: String, messageId: String? = null): YuvaReadState =
         request("POST", "client/v1/conversations/$conversationId/read", body = Body(mapOf("message_id" to messageId)))
 
+    suspend fun rate(conversationId: String, rating: YuvaRating, comment: String? = null): YuvaConversation =
+        request(
+            "POST",
+            "client/v1/conversations/$conversationId/rating",
+            body = Body(mapOf("rating" to rating.value, "comment" to comment?.trim()?.takeIf { it.isNotEmpty() })),
+        )
+
     suspend fun setTyping(conversationId: String, typing: Boolean) {
         requestRaw(
             "POST",
@@ -486,7 +493,7 @@ class YuvaClient internal constructor(
             "conversation.created" -> payload { YuvaEvent.ConversationCreated(json.decodeFromJsonElement(it)) }
             "conversation.updated" -> payload {
                 val status = json.decodeFromJsonElement<StatusData>(it)
-                YuvaEvent.ConversationUpdated(status.id, status.status)
+                YuvaEvent.ConversationUpdated(status.id, status.status, status.canRate, status.rating)
             }
             "message.created" -> payload { YuvaEvent.MessageCreated(json.decodeFromJsonElement(it)) }
             "message.updated" -> payload { YuvaEvent.MessageUpdated(json.decodeFromJsonElement(it)) }
@@ -511,7 +518,12 @@ class YuvaClient internal constructor(
     }
 
     @kotlinx.serialization.Serializable
-    private data class StatusData(val id: String, val status: YuvaConversationStatus)
+    private data class StatusData(
+        val id: String,
+        val status: YuvaConversationStatus,
+        val canRate: Boolean = false,
+        val rating: YuvaRating? = null,
+    )
 
     @kotlinx.serialization.Serializable
     private data class ReadData(

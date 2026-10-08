@@ -57,6 +57,12 @@ enum class YuvaFeedbackCategory(val value: String) {
     @SerialName("other") OTHER("other"),
 }
 
+@Serializable
+enum class YuvaRating(val value: String) {
+    @SerialName("good") GOOD("good"),
+    @SerialName("bad") BAD("bad"),
+}
+
 enum class YuvaOrder(val value: String) { ASC("asc"), DESC("desc") }
 
 @Serializable
@@ -80,6 +86,7 @@ data class YuvaInbox(
     val expectedReplyMinutes: Int? = null,
     val presence: YuvaPresence? = null,
     @SerialName("feedback_categories") internal val feedbackCategoryNames: List<String> = emptyList(),
+    val askForRating: Boolean = false,
 ) {
     val feedbackCategories: List<YuvaFeedbackCategory>
         get() = feedbackCategoryNames.mapNotNull { name -> YuvaFeedbackCategory.entries.firstOrNull { it.value == name } }
@@ -146,6 +153,8 @@ data class YuvaConversation(
     @Serializable(InstantSerializer::class) val lastMessageAt: Instant? = null,
     val unread: Boolean = false,
     @Serializable(InstantSerializer::class) val lastReadByMemberAt: Instant? = null,
+    val canRate: Boolean = false,
+    val rating: YuvaRating? = null,
     @Serializable(InstantSerializer::class) val createdAt: Instant,
 )
 
@@ -190,7 +199,12 @@ class YuvaUpload(val filename: String, val contentType: String, val data: ByteAr
 
 sealed interface YuvaEvent {
     data class ConversationCreated(val conversation: YuvaConversation) : YuvaEvent
-    data class ConversationUpdated(val conversationId: String, val status: YuvaConversationStatus) : YuvaEvent
+    data class ConversationUpdated(
+        val conversationId: String,
+        val status: YuvaConversationStatus,
+        val canRate: Boolean = false,
+        val rating: YuvaRating? = null,
+    ) : YuvaEvent
     data class MessageCreated(val message: YuvaMessage) : YuvaEvent
     data class MessageUpdated(val message: YuvaMessage) : YuvaEvent
     data class Read(val conversationId: String, val readAt: Instant) : YuvaEvent
