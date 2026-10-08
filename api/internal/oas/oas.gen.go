@@ -977,6 +977,7 @@ func (e Priority) Valid() bool {
 // Defines values for PushNotificationEvent.
 const (
 	AssignedToMe                    PushNotificationEvent = "assigned_to_me"
+	Mentioned                       PushNotificationEvent = "mentioned"
 	MessageInMyConversation         PushNotificationEvent = "message_in_my_conversation"
 	MessageInUnassignedConversation PushNotificationEvent = "message_in_unassigned_conversation"
 	NewAsyncConversation            PushNotificationEvent = "new_async_conversation"
@@ -988,6 +989,8 @@ const (
 func (e PushNotificationEvent) Valid() bool {
 	switch e {
 	case AssignedToMe:
+		return true
+	case Mentioned:
 		return true
 	case MessageInMyConversation:
 		return true
@@ -3015,6 +3018,9 @@ type Message struct {
 	// change (assignment, status, labels).
 	Kind MessageKind `json:"kind"`
 
+	// Mentions Members a note mentions (notes only; absent when it mentions nobody).
+	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
+
 	// SentBy Who sent a draft (`member` or `bot`); absent for messages that were never drafts.
 	SentBy *MessageAuthor `json:"sent_by,omitempty"`
 }
@@ -3059,6 +3065,13 @@ type MessageCreate struct {
 	// Html Sanitized before it is stored.
 	Html *string           `json:"html,omitempty"`
 	Kind MessageCreateKind `json:"kind"`
+
+	// Mentions Notes only: members to notify about the note. Each must be a member of the workspace
+	// who can see the conversation's inbox (`400 validation_failed` otherwise). They get the
+	// `mentioned` notification (realtime as `message.created`, Web Push and e-mail per their
+	// notification settings); the author is never notified. The panel shows mentions in the
+	// body as it likes; the server does not parse `@` in the text.
+	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
 }
 
 // MessageCreateKind defines model for MessageCreate.Kind.
@@ -3073,6 +3086,9 @@ type MessageCreateMultipart struct {
 	Files     *[]openapi_types.File      `json:"files,omitempty"`
 	Html      *string                    `json:"html,omitempty"`
 	Kind      MessageCreateMultipartKind `json:"kind"`
+
+	// Mentions Notes only; repeat the field once per member id.
+	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
 }
 
 // MessageCreateMultipartKind defines model for MessageCreateMultipart.Kind.
@@ -3251,6 +3267,7 @@ type NotificationChannels struct {
 // NotificationEvents defines model for NotificationEvents.
 type NotificationEvents struct {
 	AssignedToMe                    NotificationChannels `json:"assigned_to_me"`
+	Mentioned                       NotificationChannels `json:"mentioned"`
 	MessageInMyConversation         NotificationChannels `json:"message_in_my_conversation"`
 	MessageInUnassignedConversation NotificationChannels `json:"message_in_unassigned_conversation"`
 	NewAsyncConversation            NotificationChannels `json:"new_async_conversation"`
@@ -3260,6 +3277,7 @@ type NotificationEvents struct {
 // NotificationEventsUpdate Some events and their channels.
 type NotificationEventsUpdate struct {
 	AssignedToMe                    *NotificationChannels `json:"assigned_to_me,omitempty"`
+	Mentioned                       *NotificationChannels `json:"mentioned,omitempty"`
 	MessageInMyConversation         *NotificationChannels `json:"message_in_my_conversation,omitempty"`
 	MessageInUnassignedConversation *NotificationChannels `json:"message_in_unassigned_conversation,omitempty"`
 	NewAsyncConversation            *NotificationChannels `json:"new_async_conversation,omitempty"`

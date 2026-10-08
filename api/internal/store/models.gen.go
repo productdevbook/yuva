@@ -351,6 +351,7 @@ type Message struct {
 	SentByApiKeyID    *uuid.UUID
 	Via               *string
 	SentVia           *string
+	Mentions          []uuid.UUID
 }
 
 type MessageEmail struct {

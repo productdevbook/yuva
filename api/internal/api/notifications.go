@@ -6,6 +6,7 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
+	"slices"
 	"strings"
 	"time"
 	"uuid"
@@ -42,6 +43,7 @@ func roleNotificationDefaults(role string) oas.NotificationEvents {
 		MessageInMyConversation:         oas.NotificationChannels{Push: true, Email: true},
 		MessageInUnassignedConversation: oas.NotificationChannels{Push: manager},
 		AssignedToMe:                    oas.NotificationChannels{Push: true, Email: true},
+		Mentioned:                       oas.NotificationChannels{Push: true, Email: true},
 	}
 }
 
@@ -56,6 +58,7 @@ func applyNotificationEvents(base oas.NotificationEvents, u oas.NotificationEven
 	set(&base.MessageInMyConversation, u.MessageInMyConversation)
 	set(&base.MessageInUnassignedConversation, u.MessageInUnassignedConversation)
 	set(&base.AssignedToMe, u.AssignedToMe)
+	set(&base.Mentioned, u.Mentioned)
 	return base
 }
 
@@ -72,12 +75,13 @@ func mergeNotificationUpdates(base, u oas.NotificationEventsUpdate) oas.Notifica
 		MessageInMyConversation:         pick(base.MessageInMyConversation, u.MessageInMyConversation),
 		MessageInUnassignedConversation: pick(base.MessageInUnassignedConversation, u.MessageInUnassignedConversation),
 		AssignedToMe:                    pick(base.AssignedToMe, u.AssignedToMe),
+		Mentioned:                       pick(base.Mentioned, u.Mentioned),
 	}
 }
 
 func emptyNotificationUpdate(u oas.NotificationEventsUpdate) bool {
 	return u.NewLiveConversation == nil && u.NewAsyncConversation == nil && u.MessageInMyConversation == nil &&
-		u.MessageInUnassignedConversation == nil && u.AssignedToMe == nil
+		u.MessageInUnassignedConversation == nil && u.AssignedToMe == nil && u.Mentioned == nil
 }
 
 func notificationChannelsFor(e oas.NotificationEvents, ev notificationEvent) oas.NotificationChannels {
@@ -92,6 +96,8 @@ func notificationChannelsFor(e oas.NotificationEvents, ev notificationEvent) oas
 		return e.MessageInUnassignedConversation
 	case oas.AssignedToMe:
 		return e.AssignedToMe
+	case oas.Mentioned:
+		return e.Mentioned
 	}
 	return oas.NotificationChannels{}
 }
@@ -229,8 +235,8 @@ func (w *notifyWorker) Work(ctx context.Context, job *river.Job[NotifyArgs]) err
 	return w.s.Notify(ctx, job.Args)
 }
 
-// notifiable tells whether a new message may notify members: a contact's message, or an
-// assignment.
+// notifiable tells whether a new message may notify members: a contact's message, an
+// assignment, or a note that mentions members.
 func notifiable(e pendingEvent) bool {
 	if e.typ != realtime.MessageCreated {
 		return false
@@ -243,6 +249,7 @@ func notifiable(e pendingEvent) bool {
 		Event *struct {
 			Type oas.EventType `json:"type"`
 		} `json:"event"`
+		Mentions []uuid.UUID `json:"mentions"`
 	}
 	if json.Unmarshal(e.data, &m) != nil {
 		return false
@@ -252,6 +259,8 @@ func notifiable(e pendingEvent) bool {
 		return m.Author.Type == oas.AuthorTypeContact
 	case oas.MessageKindEvent:
 		return m.Event != nil && m.Event.Type == oas.Assigned
+	case oas.MessageKindNote:
+		return len(m.Mentions) > 0
 	}
 	return false
 }
@@ -277,9 +286,9 @@ func (s *Server) queueNotifications(ctx context.Context, tx pgx.Tx, workspaceID 
 	return err
 }
 
-// classify decides which notification a message causes and, for events about one member's
-// conversation, who gets it.
-func (s *Server) classify(ctx context.Context, ws uuid.UUID, m store.GetMessageRow, c store.Conversation, in store.Inbox) (notificationEvent, *uuid.UUID, error) {
+// classify decides which notification a message causes and, for events about particular members,
+// who gets it.
+func (s *Server) classify(ctx context.Context, ws uuid.UUID, m store.GetMessageRow, c store.Conversation, in store.Inbox) (notificationEvent, []uuid.UUID, error) {
 	switch {
 	case m.Kind == string(oas.MessageKindMessage) && m.AuthorType == string(oas.AuthorTypeContact):
 		first, err := s.st.GetFirstPublicMessage(ctx, store.GetFirstPublicMessageParams{WorkspaceID: ws, ConversationID: c.ID})
@@ -294,8 +303,10 @@ func (s *Server) classify(ctx context.Context, ws uuid.UUID, m store.GetMessageR
 		case c.AssigneeID == nil:
 			return oas.MessageInUnassignedConversation, nil, nil
 		default:
-			return oas.MessageInMyConversation, c.AssigneeID, nil
+			return oas.MessageInMyConversation, []uuid.UUID{*c.AssigneeID}, nil
 		}
+	case m.Kind == string(oas.MessageKindNote) && len(m.Mentions) > 0:
+		return oas.Mentioned, m.Mentions, nil
 	case m.Kind == string(oas.MessageKindEvent):
 		var ev oas.MessageEvent
 		if json.Unmarshal(m.Event, &ev) != nil || ev.Type != oas.Assigned || ev.AssigneeId == nil {
@@ -307,7 +318,7 @@ func (s *Server) classify(ctx context.Context, ws uuid.UUID, m store.GetMessageR
 		if c.AssigneeID == nil || *c.AssigneeID != *ev.AssigneeId {
 			return "", nil, nil
 		}
-		return oas.AssignedToMe, ev.AssigneeId, nil
+		return oas.AssignedToMe, []uuid.UUID{*ev.AssigneeId}, nil
 	}
 	return "", nil, nil
 }
@@ -400,16 +411,16 @@ func (s *Server) Notify(ctx context.Context, a NotifyArgs) error {
 		return err
 	}
 	actorName := ""
-	if ev == oas.AssignedToMe {
+	if ev == oas.AssignedToMe || ev == oas.Mentioned {
 		if actorName, err = s.memberDisplayName(ctx, ws, m.AuthorMemberID); err != nil {
 			return err
 		}
 	}
-	mine := ev == oas.MessageInMyConversation || ev == oas.AssignedToMe
+	mine := ev == oas.MessageInMyConversation || ev == oas.AssignedToMe || ev == oas.Mentioned
 	now := s.now()
 	var jobs []river.InsertManyParams
 	for _, r := range candidates {
-		if only != nil && r.ID != *only {
+		if only != nil && !containsID(only, r.ID) {
 			continue
 		}
 		if m.AuthorMemberID != nil && *m.AuthorMemberID == r.ID {
@@ -465,8 +476,11 @@ func containsID(ids []uuid.UUID, id uuid.UUID) bool {
 
 func (s *Server) pushPayload(ev notificationEvent, locale string, ws uuid.UUID, c store.Conversation, in store.Inbox, contact, actor, body string) (oas.PushNotification, error) {
 	tmpl := "push_message"
-	if ev == oas.AssignedToMe {
+	switch ev {
+	case oas.AssignedToMe:
 		tmpl = "push_assigned"
+	case oas.Mentioned:
+		tmpl = "push_mention"
 	}
 	msg, err := mail.Render(tmpl, locale, map[string]string{
 		"Inbox": in.Name, "Contact": contact, "Actor": actor, "Preview": excerpt(body, pushPreviewRunes),
@@ -523,12 +537,18 @@ func notificationEmailOpts(at time.Time) *river.InsertOpts {
 	}}}
 }
 
+type notificationMention struct {
+	By   string
+	Text string
+}
+
 type notificationEmailData struct {
 	Inbox       string
 	Contact     string
 	Subject     string
 	Messages    []string
 	More        int
+	Mentions    []notificationMention
 	Assigned    bool
 	AssignedBy  string
 	URL         string
@@ -565,9 +585,7 @@ func (s *Server) SendNotificationEmail(ctx context.Context, a NotificationEmailA
 		return nil, nil
 	}
 	assigned := c.AssigneeID != nil && *c.AssigneeID == r.ID
-	if r.Availability == "away" && !assigned {
-		return nil, nil
-	}
+	mentionsOnly := r.Availability == "away" && !assigned
 	viewing, err := s.st.ListViewingMembers(ctx, store.ListViewingMembersParams{WorkspaceID: ws, ConversationID: &c.ID, FreshAfter: now.Add(-presenceFresh)})
 	if err != nil || containsID(viewing, r.ID) {
 		return nil, err
@@ -586,8 +604,14 @@ func (s *Server) SendNotificationEmail(ctx context.Context, a NotificationEmailA
 		return nil, err
 	}
 	items, err := s.st.ListNotifiableMessages(ctx, store.ListNotifiableMessagesParams{WorkspaceID: ws, ConversationID: c.ID, After: after, MemberID: r.ID})
-	if err != nil || len(items) == 0 {
+	if err != nil {
 		return nil, err
+	}
+	if mentionsOnly {
+		items = slices.DeleteFunc(items, func(it store.ListNotifiableMessagesRow) bool { return it.Kind != string(oas.MessageKindNote) })
+	}
+	if len(items) == 0 {
+		return nil, nil
 	}
 	delay := time.Duration(emailDelayMinutes(r.NotificationEmailDelay)) * time.Minute
 	due := items[0].CreatedAt.Add(delay)
@@ -617,13 +641,19 @@ func (s *Server) SendNotificationEmail(ctx context.Context, a NotificationEmailA
 			if data.AssignedBy, err = s.memberDisplayName(ctx, ws, it.AuthorMemberID); err != nil {
 				return nil, err
 			}
+		case it.Kind == string(oas.MessageKindNote) && len(data.Mentions) < notificationEmailMessages:
+			by, err := s.memberDisplayName(ctx, ws, it.AuthorMemberID)
+			if err != nil {
+				return nil, err
+			}
+			data.Mentions = append(data.Mentions, notificationMention{By: by, Text: excerpt(it.Body, emailPreviewRunes)})
 		case it.Kind == string(oas.MessageKindMessage) && len(data.Messages) < notificationEmailMessages:
 			data.Messages = append(data.Messages, excerpt(it.Body, emailPreviewRunes))
 		case it.Kind == string(oas.MessageKindMessage):
 			data.More++
 		}
 	}
-	if len(data.Messages) == 0 && !data.Assigned {
+	if len(data.Messages) == 0 && !data.Assigned && len(data.Mentions) == 0 {
 		return nil, nil
 	}
 	msg, err := mail.Render("notification", r.Locale, data)

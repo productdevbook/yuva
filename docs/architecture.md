@@ -657,21 +657,23 @@ inherits the policy. Every response carries `X-Content-Type-Options: nosniff`.
 
 ### Member notifications
 
-Five events notify members: the first message of a conversation, from the contact, in a `live`
+Six events notify members: the first message of a conversation, from the contact, in a `live`
 or an `async` inbox (every member with access is a candidate); a later contact message in a
-conversation assigned to the member, or in an unassigned one (every member with access); and
-someone else assigning a conversation to the member. A River job queued in the transaction that
+conversation assigned to the member, or in an unassigned one (every member with access);
+someone else assigning a conversation to the member; and someone else mentioning the member in a
+note. A note names its mentions as member ids (`mentions` on `POST .../messages`, each a member
+who can see the inbox), stored on the message; the server does not parse `@` in the text. A River job queued in the transaction that
 stored the message picks the recipients. Nobody is notified about their own action, about a
 conversation marked spam, or about a conversation their open panel shows: the panel reports it
 with a `viewing` frame on `/v1/realtime`, stored on the connection's row and trusted while the
 connection is fresh (75 seconds). A member set to `away` gets only the events about
-conversations assigned to them.
+conversations assigned to them and mentions.
 
 Each member chooses push and e-mail per event, and can override events per inbox. Defaults by
 role: push for everything, except that agents get no push for new `async` conversations and for
 messages in unassigned conversations (owners and admins triage those); e-mail only for messages
-in conversations assigned to the member and for assignments, for every role, since being
-assigned makes anyone responsible.
+in conversations assigned to the member, for assignments and for mentions, for every role, since
+being assigned or asked makes anyone responsible.
 
 Web Push follows RFC 8030, 8291 and 8292 through `webpush-go`, with the server's VAPID keys
 (`YUVA_VAPID_PUBLIC_KEY`, `YUVA_VAPID_PRIVATE_KEY`, `YUVA_VAPID_SUBJECT`; `yuva vapid-keys` makes
@@ -688,7 +690,7 @@ and checked on every attempt.
 
 E-mail fallback: an event with e-mail on schedules one check per member and conversation after the
 member's delay (15 minutes by default). If the conversation still has contact messages (or an
-assignment) newer than the member's read position and the previous notification e-mail, one
+assignment, or notes mentioning the member) newer than the member's read position and the previous notification e-mail, one
 e-mail through the server's own mailer, in the member's locale, lists them and links to the
 conversation and to the notification settings; at most one per member and conversation per hour. A
 member's own message or note moves their read position to it, so the e-mail never lists what

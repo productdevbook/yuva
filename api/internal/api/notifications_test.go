@@ -915,3 +915,59 @@ func TestNotificationEmailSkipsAnsweredMessages(t *testing.T) {
 		}
 	}
 }
+
+func TestNoteMentions(t *testing.T) {
+	h, fake := pushHarness(t)
+	nt := newNotifyTeam(t, h)
+	other := newNotifyTeam(t, h)
+	owner, agent := fake.subscribe(nt.owner), fake.subscribe(nt.agent)
+	agentEmail := nt.agent.expect(http.StatusOK, "GET", "/v1/me", nil).body["person"].(map[string]any)["email"].(string)
+	conv := nt.open(h, nt.live, "need help")
+	h.runNotifications(nt.ws)
+	fake.take()
+	hidden := nt.owner.expect(http.StatusCreated, "POST", "/v1/inboxes", map[string]any{"name": "Hidden", "slug": "hidden"}).body["inbox"].(map[string]any)["id"].(string)
+	secret := nt.key.expect(http.StatusCreated, "POST", "/v1/conversations", map[string]any{"inbox_id": hidden, "contact_id": nt.contact}).str("id")
+
+	path := "/v1/conversations/" + conv + "/messages"
+	nt.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", path, map[string]any{"kind": "message", "body": "hi", "mentions": []string{nt.agentID}})
+	nt.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", path, map[string]any{"kind": "note", "body": "x", "mentions": []string{other.agentID}})
+	nt.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", "/v1/conversations/"+secret+"/messages", map[string]any{"kind": "note", "body": "x", "mentions": []string{nt.agentID}})
+	other.owner.expectProblem(http.StatusNotFound, "not_found", "POST", path, map[string]any{"kind": "note", "body": "x", "mentions": []string{other.agentID}})
+
+	nt.agent.expect(http.StatusOK, "PATCH", "/v1/me", map[string]any{"availability": "away"})
+	r := nt.owner.expect(http.StatusCreated, "POST", path, map[string]any{
+		"kind": "note", "body": "can you take this refund?", "mentions": []string{nt.agentID, nt.agentID, nt.ownerID},
+	})
+	if got := fmt.Sprint(r.body["mentions"]); got != fmt.Sprint([]any{nt.agentID, nt.ownerID}) && got != fmt.Sprint([]any{nt.ownerID, nt.agentID}) {
+		t.Fatalf("mentions %v", r.body["mentions"])
+	}
+	listed := messages(nt.agent, conv)
+	if last := listed[len(listed)-1]; len(last["mentions"].([]any)) != 2 {
+		t.Fatalf("listed note %v", last)
+	}
+	if first := listed[0]; first["mentions"] != nil {
+		t.Fatalf("a message without mentions: %v", first)
+	}
+	h.runNotifications(nt.ws)
+	got := fake.take()
+	expectPushes(t, got, owner)
+	d := expectPushes(t, got, agent, "mentioned")[0]
+	if b := d.payload["body"].(string); !strings.Contains(b, "mentioned you: can you take this refund?") {
+		t.Fatalf("mention push %v", d.payload)
+	}
+
+	checks := h.emailChecks(nt.ws)
+	if len(checks) != 1 {
+		t.Fatalf("e-mail checks %d", len(checks))
+	}
+	h.clock.Advance(time.Hour)
+	before := len(h.mail.to(agentEmail))
+	if _, err := h.srv.SendNotificationEmail(context.Background(), checks[0]); err != nil {
+		t.Fatal(err)
+	}
+	mails := h.mail.to(agentEmail)[before:]
+	if len(mails) != 1 || mails[0].Subject != "Live: you were mentioned in a note" ||
+		!strings.Contains(mails[0].Text, "mentioned you in a note:\n> can you take this refund?") || strings.Contains(mails[0].Text, "need help") {
+		t.Fatalf("mention e-mail %+v", mails)
+	}
+}

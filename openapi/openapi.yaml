@@ -130,19 +130,20 @@ tags:
       - `message_in_unassigned_conversation`: a later contact message in an unassigned
         conversation; every member with access is a candidate.
       - `assigned_to_me`: someone else assigned a conversation to the member.
+      - `mentioned`: someone else mentioned the member in a note (`mentions` on the note).
 
       Never notified: the member who caused it (their own assignment), conversations marked spam,
       a member whose open panel reports that it is showing that conversation (the `viewing` frame
       on `/v1/realtime`), and, while the member's `availability` is `away`, everything except
-      `message_in_my_conversation` and `assigned_to_me`.
+      `message_in_my_conversation`, `assigned_to_me` and `mentioned`.
 
       Defaults by role (`defaults` in `NotificationSettings`): push for everything except, for
       agents, `new_async_conversation` and `message_in_unassigned_conversation`; e-mail only for
-      `message_in_my_conversation` and `assigned_to_me`, for every role.
+      `message_in_my_conversation`, `assigned_to_me` and `mentioned`, for every role.
 
       E-mail fallback: when an event with `email: true` is still unread after
       `email_delay_minutes` (15 by default), one e-mail lists the conversation's unread contact
-      messages and links to it; at most one e-mail per conversation and member per hour. It goes
+      messages and the notes mentioning the member, and links to it; at most one e-mail per conversation and member per hour. It goes
       to the person's sign-in address in their locale.
   - name: webhooks
     description: |
@@ -5097,7 +5098,7 @@ components:
           description: An e-mail when it is still unread after `email_delay_minutes`.
     NotificationEvents:
       type: object
-      required: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me]
+      required: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me, mentioned]
       properties:
         new_live_conversation:
           $ref: "#/components/schemas/NotificationChannels"
@@ -5108,6 +5109,8 @@ components:
         message_in_unassigned_conversation:
           $ref: "#/components/schemas/NotificationChannels"
         assigned_to_me:
+          $ref: "#/components/schemas/NotificationChannels"
+        mentioned:
           $ref: "#/components/schemas/NotificationChannels"
     NotificationEventsUpdate:
       type: object
@@ -5122,6 +5125,8 @@ components:
         message_in_unassigned_conversation:
           $ref: "#/components/schemas/NotificationChannels"
         assigned_to_me:
+          $ref: "#/components/schemas/NotificationChannels"
+        mentioned:
           $ref: "#/components/schemas/NotificationChannels"
     NotificationSettings:
       type: object
@@ -5181,7 +5186,7 @@ components:
         event:
           type: string
           description: What caused it (see the `notifications` tag), or `test`.
-          enum: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me, test]
+          enum: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me, mentioned, test]
         title:
           type: string
           description: The inbox name and the contact's name.
@@ -6661,6 +6666,12 @@ components:
         sent_by:
           $ref: "#/components/schemas/MessageAuthor"
           description: Who sent a draft (`member` or `bot`); absent for messages that were never drafts.
+        mentions:
+          type: array
+          description: "Members a note mentions (notes only; absent when it mentions nobody)."
+          items:
+            type: string
+            format: uuid
         created_at:
           type: string
           format: date-time
@@ -6785,6 +6796,19 @@ components:
         draft:
           type: boolean
           description: Stores an outgoing message as a draft instead of delivering it.
+        mentions:
+          type: array
+          maxItems: 50
+          uniqueItems: true
+          description: |
+            Notes only: members to notify about the note. Each must be a member of the workspace
+            who can see the conversation's inbox (`400 validation_failed` otherwise). They get the
+            `mentioned` notification (realtime as `message.created`, Web Push and e-mail per their
+            notification settings); the author is never notified. The panel shows mentions in the
+            body as it likes; the server does not parse `@` in the text.
+          items:
+            type: string
+            format: uuid
     MessageCreateMultipart:
       type: object
       required: [kind]
@@ -6806,6 +6830,13 @@ components:
           maxLength: 200
         draft:
           type: boolean
+        mentions:
+          type: array
+          maxItems: 50
+          description: Notes only; repeat the field once per member id.
+          items:
+            type: string
+            format: uuid
         files:
           type: array
           maxItems: 10

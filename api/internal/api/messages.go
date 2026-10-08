@@ -26,6 +26,7 @@ const (
 	maxMessageBodyRunes      = 65536
 	maxMessageHTMLBytes      = 262144
 	maxFormFieldBytes        = maxMessageHTMLBytes + 1
+	maxMentions              = 50
 )
 
 var (
@@ -57,11 +58,12 @@ type messageInput struct {
 	clientID  *string
 	subject   *string
 	draft     bool
+	mentions  []uuid.UUID
 	extra     map[string]string
 	files     []*upload
 }
 
-var memberFormFields = []string{"kind", "direction", "body", "html", "client_id", "draft"}
+var memberFormFields = []string{"kind", "direction", "body", "html", "client_id", "draft", "mentions"}
 
 func (in *messageInput) close() {
 	for _, f := range in.files {
@@ -104,6 +106,14 @@ func (s *Server) validateMessage(p principal, in *messageInput) error {
 	default:
 		return errValidation("kind must be message or note")
 	}
+	if len(in.mentions) > 0 && in.kind != string(oas.MessageKindNote) {
+		return errValidation("only a note can mention members")
+	}
+	if len(in.mentions) > maxMentions {
+		return errValidation("a note can mention at most 50 members")
+	}
+	slices.SortFunc(in.mentions, func(a, b uuid.UUID) int { return a.Compare(b) })
+	in.mentions = slices.Compact(in.mentions)
 	if len([]rune(in.body)) > maxMessageBodyRunes {
 		return errValidation("body must be at most 65536 characters")
 	}
@@ -262,6 +272,13 @@ func (s *Server) readMultipart(r *multipart.Reader, workspaceID uuid.UUID, field
 				in.close()
 				return nil, errValidation("draft must be true or false")
 			}
+		case "mentions":
+			id, err := uuid.Parse(strings.TrimSpace(v))
+			if err != nil {
+				in.close()
+				return nil, errValidation("mentions must be member ids")
+			}
+			in.mentions = append(in.mentions, id)
 		case "subject":
 			in.subject = &v
 		default:
@@ -326,6 +343,9 @@ func messageBody(m messageRow, atts []store.Attachment) oas.Message {
 	if m.Direction != nil {
 		d := oas.Direction(*m.Direction)
 		out.Direction = &d
+	}
+	if len(m.Mentions) > 0 {
+		out.Mentions = &m.Mentions
 	}
 	if m.Event != nil {
 		var ev oas.MessageEvent
@@ -432,6 +452,9 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		if b.Body != nil {
 			in.body = *b.Body
 		}
+		if b.Mentions != nil {
+			in.mentions = *b.Mentions
+		}
 	case req.MultipartBody != nil:
 		var err error
 		if in, err = s.readMultipart(req.MultipartBody, p.workspaceID, memberFormFields); err != nil {
@@ -488,9 +511,18 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 				return err
 			}
 		}
+		for _, id := range in.mentions {
+			ok, err := memberHasInbox(ctx, q, p.workspaceID, c.InboxID, id)
+			if err != nil {
+				return err
+			}
+			if !ok {
+				return errValidation("mentions: " + id.String() + " is not a member who can see this conversation")
+			}
+		}
 		arg := store.CreateMessageParams{
 			ID: newID(), WorkspaceID: p.workspaceID, ConversationID: c.ID, Kind: in.kind, Body: in.body,
-			Html: in.html, ClientID: in.clientID, CreatedAt: now, Draft: in.draft, Via: p.viaClient(),
+			Html: in.html, ClientID: in.clientID, CreatedAt: now, Draft: in.draft, Via: p.viaClient(), Mentions: in.mentions,
 		}
 		if in.kind == string(oas.MessageKindMessage) {
 			arg.Direction = &in.direction
