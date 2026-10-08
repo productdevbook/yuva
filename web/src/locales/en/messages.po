@@ -576,6 +576,10 @@ msgid "Created {created} by {by}"
 msgstr "Created {created} by {by}"
 
 #: src/components/settings/WorkspaceSettings.tsx
+msgid "Danger zone"
+msgstr "Danger zone"
+
+#: src/components/settings/WorkspaceSettings.tsx
 msgid "Data retention"
 msgstr "Data retention"
 
@@ -594,6 +598,7 @@ msgid "Delete"
 msgstr "Delete"
 
 #: src/components/settings/InboxSettings.tsx
+#: src/components/settings/WorkspaceSettings.tsx
 msgid "Delete {name}?"
 msgstr "Delete {name}?"
 
@@ -605,6 +610,11 @@ msgstr "Delete after (days)"
 msgid "Delete inbox"
 msgstr "Delete inbox"
 
+#: src/components/common/DeleteAccount.tsx
+#: src/components/settings/ProfileSettings.tsx
+msgid "Delete my account"
+msgstr "Delete my account"
+
 #: src/components/settings/LabelsSettings.tsx
 msgid "Delete the label {name}?"
 msgstr "Delete the label {name}?"
@@ -613,9 +623,25 @@ msgstr "Delete the label {name}?"
 msgid "Delete this canned reply?"
 msgstr "Delete this canned reply?"
 
+#: src/components/settings/WorkspaceSettings.tsx
+msgid "Delete this workspace"
+msgstr "Delete this workspace"
+
+#: src/components/common/DeleteAccount.tsx
+msgid "Delete your account?"
+msgstr "Delete your account?"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Deleted member"
+msgstr "Deleted member"
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
 msgstr "Deletes its channels, conversations, messages and attachments. This cannot be undone."
+
+#: src/components/settings/WorkspaceSettings.tsx
+msgid "Deleting {name} removes its inboxes, channels, conversations, contacts, files, labels, webhooks and API keys for everyone, at once. Members keep their accounts. This cannot be undone."
+msgstr "Deleting {name} removes its inboxes, channels, conversations, contacts, files, labels, webhooks and API keys for everyone, at once. Members keep their accounts. This cannot be undone."
 
 #: src/components/settings/WebhooksSettings.tsx
 msgid "Deliveries"
@@ -755,6 +781,10 @@ msgstr "Every inbox follows the settings above."
 #: src/components/settings/WebhooksSettings.tsx
 msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Every request to this endpoint, newest first. The newest 100 are kept."
+
+#: src/components/settings/WorkspaceSettings.tsx
+msgid "Everything in this workspace is deleted for every member, and its widgets, apps, e-mail addresses and API keys stop working immediately."
+msgstr "Everything in this workspace is deleted for every member, and its widgets, apps, e-mail addresses and API keys stop working immediately."
 
 #: src/components/settings/InboxSettings.tsx
 msgid "Expected reply time (minutes)"
@@ -1374,6 +1404,10 @@ msgstr "Only members see notes"
 msgid "Only owners can change this."
 msgstr "Only owners can change this."
 
+#: src/components/settings/WorkspaceSettings.tsx
+msgid "Only owners can delete the workspace."
+msgstr "Only owners can delete the workspace."
+
 #: src/components/common/text.ts
 msgid "Open"
 msgstr "Open"
@@ -1601,9 +1635,9 @@ msgstr "Remove this endpoint?"
 msgid "Remove this passkey?"
 msgstr "Remove this passkey?"
 
-#: src/components/inbox/MessageItem.tsx
-msgid "Removed member"
-msgstr "Removed member"
+#: src/components/settings/ProfileSettings.tsx
+msgid "Removes you from every workspace and deletes your account. Messages you wrote stay, shown as from a deleted member."
+msgstr "Removes you from every workspace and deletes your account. Messages you wrote stay, shown as from a deleted member."
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reopen"
@@ -2023,6 +2057,10 @@ msgstr "The sender's domain did not authorize this mail. It may be forged."
 msgid "The status was not changed. Try again."
 msgstr "The status was not changed. Try again."
 
+#: src/components/inbox/MessageItem.tsx
+msgid "The visitor typed {from} in the chat and has not confirmed it yet. This reply came from that address, so it may not be from the visitor."
+msgstr "The visitor typed {from} in the chat and has not confirmed it yet. This reply came from that address, so it may not be from the visitor."
+
 #: src/components/settings/MembersSettings.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Their conversations stay; they lose access at once."
@@ -2155,6 +2193,14 @@ msgstr "Type / and the shortcut in the composer to insert one."
 msgid "Type / for canned replies"
 msgstr "Type / for canned replies"
 
+#: src/components/settings/WorkspaceSettings.tsx
+msgid "Type the workspace name to confirm"
+msgstr "Type the workspace name to confirm"
+
+#: src/components/common/DeleteAccount.tsx
+msgid "Type your e-mail address to confirm"
+msgstr "Type your e-mail address to confirm"
+
 #: src/components/inbox/ConversationList.tsx
 msgid "typing…"
 msgstr "typing…"
@@ -2190,6 +2236,10 @@ msgstr "Unnamed contact"
 #: src/components/inbox/ConversationList.tsx
 msgid "Unread"
 msgstr "Unread"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Unverified sender"
+msgstr "Unverified sender"
 
 #: src/components/common/text.ts
 msgid "Urgent"
@@ -2359,6 +2409,10 @@ msgstr "You are not a member of any workspace"
 msgid "You are not allowed to do this."
 msgstr "You are not allowed to do this."
 
+#: src/components/common/DeleteAccount.tsx
+msgid "You are the only owner of a workspace. Make someone else an owner there, or delete that workspace, before you delete your account."
+msgstr "You are the only owner of a workspace. Make someone else an owner there, or delete that workspace, before you delete your account."
+
 #: src/components/settings/InboxesSettings.tsx
 msgid "You can change hours, branding and channels after creating it."
 msgstr "You can change hours, branding and channels after creating it."
@@ -2370,6 +2424,10 @@ msgstr "You get a new secret once. For 24 hours every delivery carries two signa
 #: src/components/settings/ProfileSettings.tsx
 msgid "You have no passkeys yet."
 msgstr "You have no passkeys yet."
+
+#: src/components/common/DeleteAccount.tsx
+msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. This cannot be undone."
+msgstr "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. This cannot be undone."
 
 #: src/components/settings/ProfileSettings.tsx
 msgid "You will no longer be able to sign in with it."

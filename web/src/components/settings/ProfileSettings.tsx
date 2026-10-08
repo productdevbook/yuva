@@ -4,6 +4,7 @@ import { KeyRoundIcon, PlusIcon, Trash2Icon } from "lucide-react"
 import { useState } from "react"
 
 import { ErrorLine, useConfirm } from "@/components/common"
+import { DeleteAccountButton } from "@/components/common/DeleteAccount"
 import { formatDateTime } from "@/components/common/text"
 import { Field, PageTitle, Section } from "@/components/settings/SettingsLayout"
 import { Button } from "@/components/ui/button"
@@ -24,6 +25,18 @@ export function ProfileSettings() {
       </PageTitle>
       <ProfileForm key={me.person.locale} />
       <Passkeys />
+      <Section
+        title={<Trans>Delete my account</Trans>}
+        description={
+          <Trans>
+            Removes you from every workspace and deletes your account. Messages you wrote stay, shown as from a
+            deleted member.
+          </Trans>
+        }
+        className="border-destructive/40"
+      >
+        <DeleteAccountButton email={me.person.email} className="self-start" />
+      </Section>
     </>
   )
 }

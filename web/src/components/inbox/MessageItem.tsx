@@ -9,6 +9,7 @@ import {
   FileDownIcon,
   ImageIcon,
   LockIcon,
+  MailQuestionMarkIcon,
   PaperclipIcon,
   ShieldAlertIcon,
   TagIcon,
@@ -23,6 +24,7 @@ import { formatBytes, formatDateTime, useEnumText } from "@/components/common/te
 import { statusIcons } from "@/components/inbox/ConversationControls"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import {
   attachmentUrl,
   rawMessageUrl,
@@ -54,7 +56,7 @@ function useAuthorName(m: Message, ctx: Ctx) {
   if (m.author.type === "contact") return ctx.contact?.name || ctx.contact?.emails[0] || t`Contact`
   if (m.author.type === "system") return t`System`
   const member = m.author.member_id ? ctx.members.get(m.author.member_id) : undefined
-  return member ? member.name || member.email : t`Removed member`
+  return member ? member.name || member.email : t`Deleted member`
 }
 
 function time(iso: string, locale: string) {
@@ -239,6 +241,31 @@ function MetaBadge({ children, tone = "muted", title }: { children: React.ReactN
   )
 }
 
+function UnverifiedSender({ from }: { from: string }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <span
+            tabIndex={0}
+            className="inline-flex items-center gap-1 rounded bg-amber-100 px-1.5 py-px text-[11px] font-medium text-amber-800 outline-none focus-visible:ring-2 focus-visible:ring-ring dark:bg-amber-900/50 dark:text-amber-200 [&_svg]:size-3"
+            data-testid="unverified-sender"
+          />
+        }
+      >
+        <MailQuestionMarkIcon />
+        <Trans>Unverified sender</Trans>
+      </TooltipTrigger>
+      <TooltipContent className="block max-w-72">
+        <Trans>
+          The visitor typed {from} in the chat and has not confirmed it yet. This reply came from that address, so it
+          may not be from the visitor.
+        </Trans>
+      </TooltipContent>
+    </Tooltip>
+  )
+}
+
 function Attachments({ items, outgoing }: { items: Attachment[]; outgoing: boolean }) {
   if (items.length === 0) return null
   return (
@@ -391,6 +418,7 @@ export function MessageItem({ m, ctx }: { m: Message; ctx: Ctx }) {
               <Trans>DMARC failed</Trans>
             </MetaBadge>
           )}
+          {email && !outgoing && email.unverified_sender && <UnverifiedSender from={email.from} />}
           <time dateTime={m.created_at} title={formatDateTime(m.created_at, i18n.locale)}>
             {time(m.created_at, i18n.locale)}
           </time>

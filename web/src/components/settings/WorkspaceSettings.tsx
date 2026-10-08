@@ -1,12 +1,14 @@
 import { Trans } from "@lingui/react/macro"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { Trash2Icon } from "lucide-react"
 import { useState } from "react"
+import { useNavigate } from "react-router"
 
-import { ErrorLine } from "@/components/common"
+import { ErrorLine, TypeToConfirmDialog } from "@/components/common"
 import { Field, PageTitle, Section } from "@/components/settings/SettingsLayout"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { api, unwrap } from "@/lib/api"
+import { api, setWorkspace, unwrap } from "@/lib/api"
 import { meKey, useSession } from "@/lib/session"
 
 export function WorkspaceSettings() {
@@ -17,6 +19,7 @@ export function WorkspaceSettings() {
         <Trans>Workspace</Trans>
       </PageTitle>
       <RetentionForm key={membership.workspace.retention_days ?? 0} />
+      <DangerZone />
     </>
   )
 }
@@ -83,6 +86,73 @@ function RetentionForm() {
           )}
         </fieldset>
       </form>
+    </Section>
+  )
+}
+
+function DangerZone() {
+  const qc = useQueryClient()
+  const navigate = useNavigate()
+  const { membership } = useSession()
+  const [open, setOpen] = useState(false)
+  const name = membership.workspace.name
+  const remove = useMutation({
+    mutationFn: () => unwrap(api.DELETE("/v1/workspace", { body: { name } })),
+    onSuccess: async () => {
+      setOpen(false)
+      setWorkspace(null)
+      qc.removeQueries({ predicate: (q) => q.queryKey[0] !== meKey[0] })
+      await qc.invalidateQueries({ queryKey: meKey })
+      navigate("/", { replace: true })
+    },
+  })
+  return (
+    <Section
+      title={<Trans>Danger zone</Trans>}
+      description={
+        <Trans>
+          Deleting {name} removes its inboxes, channels, conversations, contacts, files, labels, webhooks and API keys
+          for everyone, at once. Members keep their accounts. This cannot be undone.
+        </Trans>
+      }
+      className="border-destructive/40"
+    >
+      {membership.role === "owner" ? (
+        <Button
+          type="button"
+          variant="destructive"
+          className="self-start"
+          onClick={() => {
+            remove.reset()
+            setOpen(true)
+          }}
+          data-testid="delete-workspace"
+        >
+          <Trash2Icon />
+          <Trans>Delete this workspace</Trans>
+        </Button>
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          <Trans>Only owners can delete the workspace.</Trans>
+        </p>
+      )}
+      <TypeToConfirmDialog
+        open={open}
+        onOpenChange={setOpen}
+        title={<Trans>Delete {name}?</Trans>}
+        description={
+          <Trans>
+            Everything in this workspace is deleted for every member, and its widgets, apps, e-mail addresses and API
+            keys stop working immediately.
+          </Trans>
+        }
+        label={<Trans>Type the workspace name to confirm</Trans>}
+        expected={name}
+        confirm={<Trans>Delete this workspace</Trans>}
+        pending={remove.isPending}
+        error={<ErrorLine error={remove.error} />}
+        onConfirm={() => remove.mutate()}
+      />
     </Section>
   )
 }

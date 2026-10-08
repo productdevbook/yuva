@@ -182,7 +182,15 @@ export interface paths {
         get: operations["getMe"];
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Delete the signed-in person's account
+         * @description Removes the person with their memberships, sessions, passkeys, push subscriptions and
+         *     sign-in codes, and clears the cookie. Messages they wrote stay in their conversations
+         *     without an author (`author.member_id` absent). Refused with `409 last_owner` while the
+         *     person is the only owner of a workspace: make someone else an owner or delete that
+         *     workspace first. Needs a member session; the body repeats the person's e-mail address.
+         */
+        delete: operations["deleteMe"];
         options?: never;
         head?: never;
         /** Update the signed-in person */
@@ -400,7 +408,17 @@ export interface paths {
         get: operations["getWorkspace"];
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Delete the workspace
+         * @description Owners only, with a member session; the body repeats the workspace's name exactly. The
+         *     workspace stops answering at once: its members, API keys, widget and app sessions and
+         *     e-mail addresses are refused from this request on, its webhook endpoints are removed and
+         *     nothing more is sent to them. A background job then deletes everything else in batches:
+         *     conversations, messages, attachments and raw e-mails with their stored files, contacts,
+         *     inboxes, channels, members, invites and settings. People keep their account; members left
+         *     with no other workspace lose their push subscriptions.
+         */
+        delete: operations["deleteWorkspace"];
         options?: never;
         head?: never;
         /**
@@ -1485,7 +1503,9 @@ export interface paths {
          *
          *     For a `chat` channel, browsers must call from one of the channel's allowed origins
          *     (`403 origin_not_allowed`, also without an `Origin` header); an `app` channel's key needs no
-         *     origin. Requests are rate limited per IP address and per channel (`429 rate_limited`). A
+         *     origin. Requests are rate limited per IP address and per channel (`429 rate_limited`), and an
+         *     IP address starts at most `YUVA_ANONYMOUS_CONTACTS_PER_HOUR` new anonymous visitors per
+         *     channel and hour (default 20; `429 anonymous_limit`; resuming a visitor does not count). A
          *     blocked contact answers `403 contact_blocked`.
          */
         post: operations["createClientSession"];
@@ -1787,10 +1807,17 @@ export interface paths {
         /**
          * Receive an e-mail
          * @description Called by the edge Email Worker or any MTA with the raw message and its envelope. The
-         *     signature is `v1=` and the lowercase hex HMAC-SHA256, keyed with the server's
-         *     `YUVA_INGRESS_SECRET`, over `<X-Yuva-Timestamp>.<X-Yuva-Envelope-To>.<raw body>`. The
-         *     timestamp must be within 5 minutes of the server's clock. A message with a Message-ID seen
-         *     before on the same channel is accepted again without being stored twice.
+         *     signature is `v2=` and the lowercase hex HMAC-SHA256, keyed with the server's
+         *     `YUVA_INGRESS_SECRET`, over
+         *     `<X-Yuva-Timestamp>.<X-Yuva-Envelope-To>.<X-Yuva-Envelope-From>.<raw body>` (an empty
+         *     envelope sender leaves its place empty). The deprecated `v1=`, over
+         *     `<X-Yuva-Timestamp>.<X-Yuva-Envelope-To>.<raw body>`, is accepted only when
+         *     `YUVA_INGRESS_ACCEPT_V1` is set, and then the envelope sender is not trusted (it never marks
+         *     a delivery report or automatic mail). The headers and the timestamp, which must be within 5
+         *     minutes of the server's clock, are checked before the body is read. A message with a
+         *     Message-ID seen before on the same channel is accepted again without being stored twice.
+         *     At most `YUVA_INGRESS_MAX_CONCURRENT` messages are processed at once; more are answered
+         *     `503 unavailable`.
          *
          *     The recipient selects the channel: its exact address, then `local@` for `local+tag@`, then
          *     the domain's catch-all channel (`*@domain`). Volume never bounces mail: a sender over the
@@ -2015,6 +2042,14 @@ export interface components {
              * @description `null` keeps everything.
              */
             retention_days: number | null;
+        };
+        WorkspaceDeletion: {
+            /** @description The workspace's name, exactly; anything else is refused with `400 confirmation_mismatch`. */
+            name: string;
+        };
+        AccountDeletion: {
+            /** @description The person's e-mail address (case is ignored); anything else is refused with `400 confirmation_mismatch`. */
+            email: string;
         };
         Membership: {
             workspace: components["schemas"]["Workspace"];
@@ -2972,7 +3007,7 @@ export interface components {
             type: components["schemas"]["AuthorType"];
             /**
              * Format: uuid
-             * @description Set for `member`; absent when that member was removed.
+             * @description Set for `member`; absent when that member was removed or deleted their account.
              */
             member_id?: string;
             /**
@@ -3070,10 +3105,17 @@ export interface components {
             /** @description Automatic mail (auto-reply, list, bulk) or our own automatic message. */
             auto: boolean;
             /**
-             * @description The DMARC result from the receiving server's `Authentication-Results`.
+             * @description The DMARC result from the topmost `Authentication-Results`, only when its authserv-id is
+             *     the server's `YUVA_INGRESS_AUTHSERV_ID`; `unknown` otherwise.
              * @enum {string}
              */
             dmarc: "pass" | "fail" | "none" | "unknown";
+            /**
+             * @description An inbound mail whose `from` is not one of the contact's addresses: a reply from the
+             *     address a widget visitor typed and has not confirmed. It joined the visitor's
+             *     conversation without linking the address; once the address is confirmed this is false.
+             */
+            unverified_sender: boolean;
             /**
              * @description The message's `html` loads images from other servers. They are kept as received; show
              *     them only when the member asks, since loading them tells the sender the mail was read.
@@ -4183,6 +4225,33 @@ export interface operations {
             401: components["responses"]["Problem"];
         };
     };
+    deleteMe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AccountDeletion"];
+            };
+        };
+        responses: {
+            /** @description Deleted. */
+            204: {
+                headers: {
+                    /** @description Clears `yuva_session`. */
+                    "Set-Cookie"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
     updateMe: {
         parameters: {
             query?: never;
@@ -4551,6 +4620,34 @@ export interface operations {
                     "application/json": components["schemas"]["Workspace"];
                 };
             };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    deleteWorkspace: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkspaceDeletion"];
+            };
+        };
+        responses: {
+            /** @description The workspace is closed and its data is being deleted. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
         };

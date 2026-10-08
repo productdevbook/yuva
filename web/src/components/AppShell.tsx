@@ -21,6 +21,7 @@ import { Fragment, useCallback, useEffect, useState } from "react"
 import { Link, Navigate, Outlet, useLocation, useNavigate } from "react-router"
 
 import { EmptyState, PersonAvatar } from "@/components/common"
+import { DeleteAccountButton } from "@/components/common/DeleteAccount"
 import { FEEDBACK_CATEGORIES, useEnumText } from "@/components/common/text"
 import { categoryIcons } from "@/components/inbox/Feedback"
 import { ShortcutSheet, useShortcutSheet } from "@/components/common/ShortcutSheet"
@@ -514,6 +515,38 @@ export function TopBar({ title, children }: { title: React.ReactNode; children?:
   )
 }
 
+function NoWorkspace({ email }: { email: string }) {
+  const signOut = useSignOut()
+  const navigate = useNavigate()
+  return (
+    <>
+      <header className="flex h-12 items-center justify-end px-3">
+        <LanguageMenu />
+      </header>
+      <EmptyState icon={BuildingIcon} title={<Trans>You are not a member of any workspace</Trans>}>
+        <p>
+          <Trans>Ask an owner or admin of your workspace to invite you.</Trans>
+        </p>
+        <p className="mt-1 text-xs">{email}</p>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={async () => {
+              await signOut()
+              navigate("/sign-in", { replace: true })
+            }}
+          >
+            <LogOutIcon />
+            <Trans>Sign out</Trans>
+          </Button>
+          <DeleteAccountButton email={email} />
+        </div>
+      </EmptyState>
+    </>
+  )
+}
+
 function FullPage({ children }: { children: React.ReactNode }) {
   return <div className="flex min-h-svh flex-col bg-background">{children}</div>
 }
@@ -595,9 +628,7 @@ export function Gate() {
   if (me.data.memberships.length === 0) {
     return (
       <FullPage>
-        <EmptyState icon={BuildingIcon} title={<Trans>You are not a member of any workspace</Trans>}>
-          <Trans>Ask an owner or admin of your workspace to invite you.</Trans>
-        </EmptyState>
+        <NoWorkspace email={me.data.person.email} />
       </FullPage>
     )
   }

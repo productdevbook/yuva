@@ -576,6 +576,10 @@ msgid "Created {created} by {by}"
 msgstr "Oluşturulma: {created}, oluşturan: {by}"
 
 #: src/components/settings/WorkspaceSettings.tsx
+msgid "Danger zone"
+msgstr "Tehlikeli bölge"
+
+#: src/components/settings/WorkspaceSettings.tsx
 msgid "Data retention"
 msgstr "Veri saklama"
 
@@ -594,6 +598,7 @@ msgid "Delete"
 msgstr "Sil"
 
 #: src/components/settings/InboxSettings.tsx
+#: src/components/settings/WorkspaceSettings.tsx
 msgid "Delete {name}?"
 msgstr "{name} silinsin mi?"
 
@@ -605,6 +610,11 @@ msgstr "Silme süresi (gün)"
 msgid "Delete inbox"
 msgstr "Gelen kutusunu sil"
 
+#: src/components/common/DeleteAccount.tsx
+#: src/components/settings/ProfileSettings.tsx
+msgid "Delete my account"
+msgstr "Hesabımı sil"
+
 #: src/components/settings/LabelsSettings.tsx
 msgid "Delete the label {name}?"
 msgstr "{name} etiketi silinsin mi?"
@@ -613,9 +623,25 @@ msgstr "{name} etiketi silinsin mi?"
 msgid "Delete this canned reply?"
 msgstr "Bu hazır yanıt silinsin mi?"
 
+#: src/components/settings/WorkspaceSettings.tsx
+msgid "Delete this workspace"
+msgstr "Bu çalışma alanını sil"
+
+#: src/components/common/DeleteAccount.tsx
+msgid "Delete your account?"
+msgstr "Hesabınız silinsin mi?"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Deleted member"
+msgstr "Silinmiş üye"
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
 msgstr "Kanalları, konuşmaları, mesajları ve ekleriyle birlikte silinir. Bu işlem geri alınamaz."
+
+#: src/components/settings/WorkspaceSettings.tsx
+msgid "Deleting {name} removes its inboxes, channels, conversations, contacts, files, labels, webhooks and API keys for everyone, at once. Members keep their accounts. This cannot be undone."
+msgstr "{name} silindiğinde gelen kutuları, kanalları, konuşmaları, kişileri, dosyaları, etiketleri, webhook'ları ve API anahtarları herkes için hemen silinir. Üyelerin hesapları kalır. Bu geri alınamaz."
 
 #: src/components/settings/WebhooksSettings.tsx
 msgid "Deliveries"
@@ -755,6 +781,10 @@ msgstr "Tüm gelen kutuları yukarıdaki ayarlara uyar."
 #: src/components/settings/WebhooksSettings.tsx
 msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Bu uç noktaya yapılan her istek, en yenisi başta. En yeni 100 tanesi saklanır."
+
+#: src/components/settings/WorkspaceSettings.tsx
+msgid "Everything in this workspace is deleted for every member, and its widgets, apps, e-mail addresses and API keys stop working immediately."
+msgstr "Bu çalışma alanındaki her şey tüm üyeler için silinir; widget'ları, uygulamaları, e-posta adresleri ve API anahtarları hemen çalışmaz olur."
 
 #: src/components/settings/InboxSettings.tsx
 msgid "Expected reply time (minutes)"
@@ -1374,6 +1404,10 @@ msgstr "Notları yalnızca üyeler görür"
 msgid "Only owners can change this."
 msgstr "Bunu yalnızca sahipler değiştirebilir."
 
+#: src/components/settings/WorkspaceSettings.tsx
+msgid "Only owners can delete the workspace."
+msgstr "Çalışma alanını yalnızca sahipler silebilir."
+
 #: src/components/common/text.ts
 msgid "Open"
 msgstr "Açık"
@@ -1601,9 +1635,9 @@ msgstr "Bu uç nokta kaldırılsın mı?"
 msgid "Remove this passkey?"
 msgstr "Bu geçiş anahtarı kaldırılsın mı?"
 
-#: src/components/inbox/MessageItem.tsx
-msgid "Removed member"
-msgstr "Ayrılmış üye"
+#: src/components/settings/ProfileSettings.tsx
+msgid "Removes you from every workspace and deletes your account. Messages you wrote stay, shown as from a deleted member."
+msgstr "Sizi tüm çalışma alanlarından çıkarır ve hesabınızı siler. Yazdığınız mesajlar kalır ve silinmiş bir üyeden gelmiş gibi görünür."
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reopen"
@@ -2023,6 +2057,10 @@ msgstr "Gönderenin alan adı bu postayı onaylamadı. Sahte olabilir."
 msgid "The status was not changed. Try again."
 msgstr "Durum değiştirilemedi. Tekrar deneyin."
 
+#: src/components/inbox/MessageItem.tsx
+msgid "The visitor typed {from} in the chat and has not confirmed it yet. This reply came from that address, so it may not be from the visitor."
+msgstr "Ziyaretçi {from} adresini sohbette yazdı ama henüz doğrulamadı. Bu yanıt o adresten geldi; ziyaretçiden gelmemiş olabilir."
+
 #: src/components/settings/MembersSettings.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Konuşmaları yerinde kalır; erişimleri hemen kalkar."
@@ -2155,6 +2193,14 @@ msgstr "Eklemek için yazma alanında / ve ardından kısayolu yazın."
 msgid "Type / for canned replies"
 msgstr "Hazır yanıtlar için / yazın"
 
+#: src/components/settings/WorkspaceSettings.tsx
+msgid "Type the workspace name to confirm"
+msgstr "Onaylamak için çalışma alanının adını yazın"
+
+#: src/components/common/DeleteAccount.tsx
+msgid "Type your e-mail address to confirm"
+msgstr "Onaylamak için e-posta adresinizi yazın"
+
 #: src/components/inbox/ConversationList.tsx
 msgid "typing…"
 msgstr "yazıyor…"
@@ -2190,6 +2236,10 @@ msgstr "Adsız kişi"
 #: src/components/inbox/ConversationList.tsx
 msgid "Unread"
 msgstr "Okunmadı"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Unverified sender"
+msgstr "Doğrulanmamış gönderen"
 
 #: src/components/common/text.ts
 msgid "Urgent"
@@ -2359,6 +2409,10 @@ msgstr "Hiçbir çalışma alanına üye değilsiniz"
 msgid "You are not allowed to do this."
 msgstr "Bunu yapma izniniz yok."
 
+#: src/components/common/DeleteAccount.tsx
+msgid "You are the only owner of a workspace. Make someone else an owner there, or delete that workspace, before you delete your account."
+msgstr "Bir çalışma alanının tek sahibisiniz. Hesabınızı silmeden önce orada başka birini sahip yapın ya da o çalışma alanını silin."
+
 #: src/components/settings/InboxesSettings.tsx
 msgid "You can change hours, branding and channels after creating it."
 msgstr "Saatleri, markayı ve kanalları oluşturduktan sonra değiştirebilirsiniz."
@@ -2370,6 +2424,10 @@ msgstr "Yeni anahtar yalnızca bir kez gösterilir. 24 saat boyunca her gönderi
 #: src/components/settings/ProfileSettings.tsx
 msgid "You have no passkeys yet."
 msgstr "Henüz geçiş anahtarınız yok."
+
+#: src/components/common/DeleteAccount.tsx
+msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. This cannot be undone."
+msgstr "Tüm çalışma alanlarından ayrılırsınız; oturumlarınız, geçiş anahtarlarınız ve bildirimleriniz silinir. Yazdığınız mesajlar konuşmalarında kalır ve silinmiş bir üyeden gelmiş gibi görünür. Bu geri alınamaz."
 
 #: src/components/settings/ProfileSettings.tsx
 msgid "You will no longer be able to sign in with it."
