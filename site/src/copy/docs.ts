@@ -36,6 +36,7 @@ export function docsCopy(i18n: I18n) {
       startHere: i18n._(msg`Start here`),
       starts: [
         { slug: "install", label: i18n._(msg`Run Yuva`), body: i18n._(msg`One Docker image and Postgres, from compose file to the first owner.`) },
+        { slug: "email", label: i18n._(msg`Connect your support e-mail`), body: i18n._(msg`Bring your existing support address into Yuva and answer from the same address.`) },
         { slug: "widget", label: i18n._(msg`Add live chat`), body: i18n._(msg`One script tag puts the chat widget on a website or inside your product.`) },
         { slug: "mobile", label: i18n._(msg`Ship in-app messages`), body: i18n._(msg`Conversations and feedback in your iOS and Android apps.`) },
         { slug: "api", label: i18n._(msg`Use the API`), body: i18n._(msg`Create inboxes and channels, post feedback and manage contacts.`) },
