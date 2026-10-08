@@ -2959,7 +2959,8 @@ type MemberPresence struct {
 // themselves away). Carries the member's current state, so it may repeat the previous one.
 // Not stored: it has no `id` and is not replayed; reload `/v1/members` after a reconnect.
 // A server process that stops without closing its connections sends none: such members
-// turn offline in `/v1/members` 75 seconds later. Sent to member sessions only.
+// turn offline in `/v1/members` 75 seconds later. Sent to member sessions only, the member's
+// own included.
 type MemberPresenceEvent struct {
 	CreatedAt   time.Time               `json:"created_at"`
 	Data        MemberPresence          `json:"data"`
