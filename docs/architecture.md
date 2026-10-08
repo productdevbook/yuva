@@ -631,7 +631,8 @@ inherits the policy. Every response carries `X-Content-Type-Options: nosniff`.
   them or to nobody, oldest first) are a queue; after a reply, close, snooze or hand-off the next
   one opens, with an undo. A reply is held for a few seconds before it is posted so it can be
   undone; "send" also sets `pending`, "send and close" sets `closed`. A bot's draft is offered as
-  the suggested reply. All conversations are in a drawer (waiting, snoozed, replied, with the team,
+  the suggested reply. The hand-off menu shows each teammate's presence and open load
+  (`assignees` in `/v1/conversations/counts`, over the inboxes the member can see). All conversations are in a drawer (waiting, snoozed, replied, with the team,
   done) with full-text search (Postgres FTS); everything else is in a command palette.
 - Conversation: reply and note in one box, canned replies on `/`, attachments, keyboard shortcuts,
   contact details with identity attributes, the contact's other conversations, channel delivery

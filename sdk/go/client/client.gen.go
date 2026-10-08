@@ -2215,6 +2215,10 @@ type ConversationContact struct {
 type ConversationCounts struct {
 	All int64 `json:"all"`
 
+	// Assignees Per assignee's member id: each member's open load, for choosing whom to hand a
+	// conversation to. Counts only the inboxes the caller can see.
+	Assignees []CountByID `json:"assignees"`
+
 	// Feedback Open feedback conversations (included in the other counts too).
 	Feedback int64 `json:"feedback"`
 
@@ -7207,8 +7211,8 @@ type ClientInterface interface {
 	// GetConversationCounts Count open conversations
 	//
 	// Open conversations in the inboxes the caller can see: all of them, those assigned to the
-	// calling member (`0` for API keys), unassigned ones, and per inbox and per label. Inboxes and
-	// labels without open conversations are left out of their lists. Conversations flagged as
+	// calling member (`0` for API keys), unassigned ones, and per inbox, per assignee and per
+	// label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
 	// spam are counted only in `spam`.
 	//
 	// Scope: `conversations:read`.
@@ -9774,8 +9778,8 @@ func (c *Client) BulkUpdateConversations(ctx context.Context, params *BulkUpdate
 // GetConversationCounts Count open conversations
 //
 // Open conversations in the inboxes the caller can see: all of them, those assigned to the
-// calling member (`0` for API keys), unassigned ones, and per inbox and per label. Inboxes and
-// labels without open conversations are left out of their lists. Conversations flagged as
+// calling member (`0` for API keys), unassigned ones, and per inbox, per assignee and per
+// label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
 // spam are counted only in `spam`.
 //
 // Scope: `conversations:read`.
@@ -19209,8 +19213,8 @@ type ClientWithResponsesInterface interface {
 	// GetConversationCountsWithResponse Count open conversations
 	//
 	// Open conversations in the inboxes the caller can see: all of them, those assigned to the
-	// calling member (`0` for API keys), unassigned ones, and per inbox and per label. Inboxes and
-	// labels without open conversations are left out of their lists. Conversations flagged as
+	// calling member (`0` for API keys), unassigned ones, and per inbox, per assignee and per
+	// label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
 	// spam are counted only in `spam`.
 	//
 	// Scope: `conversations:read`.
@@ -29161,8 +29165,8 @@ func (c *ClientWithResponses) BulkUpdateConversationsWithResponse(ctx context.Co
 // GetConversationCountsWithResponse Count open conversations
 //
 // Open conversations in the inboxes the caller can see: all of them, those assigned to the
-// calling member (`0` for API keys), unassigned ones, and per inbox and per label. Inboxes and
-// labels without open conversations are left out of their lists. Conversations flagged as
+// calling member (`0` for API keys), unassigned ones, and per inbox, per assignee and per
+// label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
 // spam are counted only in `spam`.
 //
 // Scope: `conversations:read`.

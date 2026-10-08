@@ -388,7 +388,7 @@ func (s *Server) GetConversationCounts(ctx context.Context, _ oas.GetConversatio
 	if !p.isKey() {
 		member = &p.memberID
 	}
-	rows, err := s.st.CountOpenConversations(ctx, store.CountOpenConversationsParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), MemberID: member, ViewerID: p.viewerID()})
+	rows, err := s.st.CountOpenConversations(ctx, store.CountOpenConversationsParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID()})
 	if err != nil {
 		return nil, err
 	}
@@ -401,35 +401,44 @@ func (s *Server) GetConversationCounts(ctx context.Context, _ oas.GetConversatio
 		return nil, err
 	}
 	out := oas.GetConversationCounts200JSONResponse{
-		Inboxes: []oas.CountByID{}, Labels: make([]oas.CountByID, 0, len(byLabel)), FeedbackCategories: make([]oas.FeedbackCount, 0, len(feedback)),
+		Inboxes: []oas.CountByID{}, Assignees: []oas.CountByID{}, Labels: make([]oas.CountByID, 0, len(byLabel)), FeedbackCategories: make([]oas.FeedbackCount, 0, len(feedback)),
 	}
 	for _, r := range feedback {
 		out.Feedback += r.N
 		out.FeedbackCategories = append(out.FeedbackCategories, oas.FeedbackCount{Category: oas.FeedbackCategory(r.Category), Count: r.N})
 	}
-	perInbox := map[uuid.UUID]int64{}
+	perInbox, perAssignee := map[uuid.UUID]int64{}, map[uuid.UUID]int64{}
 	for _, r := range rows {
 		if r.Spam {
 			out.Spam += r.N
 			continue
 		}
 		out.All += r.N
-		if r.Mine {
-			out.Mine += r.N
-		}
-		if r.Unassigned {
+		switch {
+		case r.AssigneeID == nil:
 			out.Unassigned += r.N
+		default:
+			perAssignee[*r.AssigneeID] += r.N
+			if member != nil && *r.AssigneeID == *member {
+				out.Mine += r.N
+			}
 		}
 		perInbox[r.InboxID] += r.N
 	}
-	for id, n := range perInbox {
-		out.Inboxes = append(out.Inboxes, oas.CountByID{Id: id, Count: n})
-	}
-	slices.SortFunc(out.Inboxes, func(a, b oas.CountByID) int { return a.Id.Compare(b.Id) })
+	out.Inboxes, out.Assignees = sortedCounts(perInbox), sortedCounts(perAssignee)
 	for _, r := range byLabel {
 		out.Labels = append(out.Labels, oas.CountByID{Id: r.LabelID, Count: r.N})
 	}
 	return out, nil
+}
+
+func sortedCounts(m map[uuid.UUID]int64) []oas.CountByID {
+	out := make([]oas.CountByID, 0, len(m))
+	for id, n := range m {
+		out = append(out, oas.CountByID{Id: id, Count: n})
+	}
+	slices.SortFunc(out, func(a, b oas.CountByID) int { return a.Id.Compare(b.Id) })
+	return out
 }
 
 func (s *Server) CreateConversation(ctx context.Context, req oas.CreateConversationRequestObject) (oas.CreateConversationResponseObject, error) {

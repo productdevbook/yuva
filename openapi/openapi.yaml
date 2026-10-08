@@ -1830,8 +1830,8 @@ paths:
       summary: Count open conversations
       description: |
         Open conversations in the inboxes the caller can see: all of them, those assigned to the
-        calling member (`0` for API keys), unassigned ones, and per inbox and per label. Inboxes and
-        labels without open conversations are left out of their lists. Conversations flagged as
+        calling member (`0` for API keys), unassigned ones, and per inbox, per assignee and per
+        label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
         spam are counted only in `spam`.
 
         Scope: `conversations:read`.
@@ -6445,7 +6445,7 @@ components:
     ConversationCounts:
       type: object
       description: Open conversations in the inboxes the caller can see.
-      required: [all, mine, unassigned, spam, inboxes, labels, feedback, feedback_categories]
+      required: [all, mine, unassigned, spam, inboxes, labels, assignees, feedback, feedback_categories]
       properties:
         feedback:
           type: integer
@@ -6472,6 +6472,13 @@ components:
         inboxes:
           type: array
           description: Per inbox id.
+          items:
+            $ref: "#/components/schemas/CountByID"
+        assignees:
+          type: array
+          description: |
+            Per assignee's member id: each member's open load, for choosing whom to hand a
+            conversation to. Counts only the inboxes the caller can see.
           items:
             $ref: "#/components/schemas/CountByID"
         labels:

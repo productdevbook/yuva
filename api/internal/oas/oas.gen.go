@@ -2217,6 +2217,10 @@ type ConversationContact struct {
 type ConversationCounts struct {
 	All int64 `json:"all"`
 
+	// Assignees Per assignee's member id: each member's open load, for choosing whom to hand a
+	// conversation to. Counts only the inboxes the caller can see.
+	Assignees []CountByID `json:"assignees"`
+
 	// Feedback Open feedback conversations (included in the other counts too).
 	Feedback int64 `json:"feedback"`
 

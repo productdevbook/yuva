@@ -29,18 +29,16 @@ func (q *Queries) AddConversationLabel(ctx context.Context, arg AddConversationL
 }
 
 const countOpenConversations = `-- name: CountOpenConversations :many
-SELECT c.inbox_id, coalesce(c.assignee_id = $1::uuid, false)::bool AS mine,
-       (c.assignee_id IS NULL)::bool AS unassigned, c.spam, count(*) AS n
+SELECT c.inbox_id, c.assignee_id, c.spam, count(*) AS n
 FROM conversations c
-WHERE c.workspace_id = $2 AND c.status = 'open'
-  AND ($3::bool OR EXISTS (
+WHERE c.workspace_id = $1 AND c.status = 'open'
+  AND ($2::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
-      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $4::uuid))
-GROUP BY 1, 2, 3, 4
+      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3::uuid))
+GROUP BY 1, 2, 3
 `
 
 type CountOpenConversationsParams struct {
-	MemberID    *uuid.UUID
 	WorkspaceID uuid.UUID
 	AllInboxes  bool
 	ViewerID    uuid.UUID
@@ -48,19 +46,13 @@ type CountOpenConversationsParams struct {
 
 type CountOpenConversationsRow struct {
 	InboxID    uuid.UUID
-	Mine       bool
-	Unassigned bool
+	AssigneeID *uuid.UUID
 	Spam       bool
 	N          int64
 }
 
 func (q *Queries) CountOpenConversations(ctx context.Context, arg CountOpenConversationsParams) ([]CountOpenConversationsRow, error) {
-	rows, err := q.db.Query(ctx, countOpenConversations,
-		arg.MemberID,
-		arg.WorkspaceID,
-		arg.AllInboxes,
-		arg.ViewerID,
-	)
+	rows, err := q.db.Query(ctx, countOpenConversations, arg.WorkspaceID, arg.AllInboxes, arg.ViewerID)
 	if err != nil {
 		return nil, err
 	}
@@ -70,8 +62,7 @@ func (q *Queries) CountOpenConversations(ctx context.Context, arg CountOpenConve
 		var i CountOpenConversationsRow
 		if err := rows.Scan(
 			&i.InboxID,
-			&i.Mine,
-			&i.Unassigned,
+			&i.AssigneeID,
 			&i.Spam,
 			&i.N,
 		); err != nil {
