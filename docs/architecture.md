@@ -270,9 +270,30 @@ member.
 
 **MCP endpoint.** `/mcp` in the same binary, Streamable HTTP, MCP specification 2026-07-28, built
 on `github.com/modelcontextprotocol/go-sdk` (MIT/Apache-2.0). Bearer is an OAuth token or a scoped
-API key. `YUVA_MCP=off` turns it off (the OAuth endpoints stay for the apps). Sessions live in the
-server process; resource subscriptions are fed from the realtime hub, so they work on any instance
-the client's stream is on.
+API key. `YUVA_MCP=off` turns it off (the OAuth endpoints stay for the apps). The transport is
+stateless, as 2026-07-28 requires: there are no MCP sessions, every request is authenticated and
+metered on its own and gets a server built for its principal. Older protocol versions work request
+by request; their `resources/subscribe` is refused, so subscriptions use `subscriptions/listen`.
+A listen is fed from the realtime hub (any instance the stream is on), filtered like `/v1/realtime`,
+re-checks its token every 30 seconds and ends when the token stops working. The endpoint sends
+`Access-Control-Allow-Origin: *` and skips the SDK's localhost Host check: it takes no cookies.
+- Tool results are Yuva's own shapes, not the `/v1` schemas: ids, enums, counts and times at the
+  top level, customer text under `customer_content`; names written by members (inboxes, labels,
+  canned replies, bots) stay outside. Schemas have one type per field, without `null` unions, so
+  clients with a single-type dialect (Gemini) accept them; absent fields are left out.
+- Mappings that are not one operation: `get_conversation` is the conversation plus its latest 50
+  messages oldest first (`next_cursor` pages back) and, with `contacts:read`, the contact's name and
+  address; `list_feedback` is `ListConversations` with `kind=feedback`; `add_labels` and
+  `remove_labels` are `BulkUpdateConversations` with one id. `merge_contacts` is listed only to
+  owners, admins and keys without an inbox limit.
+- Writes carry `destructiveHint: false` except `merge_contacts`; `assign`, `set_status`, `snooze`,
+  the label tools, `move_conversation` and `bulk_update` carry `idempotentHint`; `send_reply` is
+  the one with `openWorldHint`.
+- `resources/list` lists the inboxes the caller sees. `yuva://inbox/{id}` holds the inbox and, with
+  `conversations:read`, its latest open conversations; it is updated by `inbox.*` and
+  `conversation.created`, `.updated` and `.moved` there. `yuva://conversation/{id}` is updated by
+  every event of that conversation, `yuva://contact/{id}` by `contact.updated` and `.deleted`.
+- The `draft_reply` prompt looks up the inbox's `default_locale` and names it in the text.
 - Tools call the same code as the `/v1` operations with the caller's principal, so access, scope
   and inbox checks are the API's. Read tools carry `readOnlyHint`; idempotent writes
   `idempotentHint`; `merge_contacts` `destructiveHint`. Every tool has an output schema. Tools the

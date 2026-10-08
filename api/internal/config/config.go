@@ -48,6 +48,8 @@ type Config struct {
 	SMTPAllowPrivate    bool
 
 	VAPID VAPID
+
+	MCP bool
 }
 
 type VAPID struct {
@@ -179,6 +181,9 @@ func Load(version string) (Config, error) {
 	if c.ChatEmailDelay, err = time.ParseDuration(env("YUVA_CHAT_EMAIL_DELAY", "5m")); err != nil || c.ChatEmailDelay < time.Second {
 		return c, errors.New("YUVA_CHAT_EMAIL_DELAY must be a duration of at least 1s, such as 5m")
 	}
+	if c.MCP, err = switchEnv("YUVA_MCP", true); err != nil {
+		return c, err
+	}
 	if c.IngressAcceptV1, err = boolEnv("YUVA_INGRESS_ACCEPT_V1", false); err != nil {
 		return c, err
 	}
@@ -276,6 +281,18 @@ func boolEnv(name string, fallback bool) (bool, error) {
 		return false, fmt.Errorf("%s: %w", name, err)
 	}
 	return b, nil
+}
+
+func switchEnv(name string, fallback bool) (bool, error) {
+	switch strings.ToLower(env(name, "")) {
+	case "":
+		return fallback, nil
+	case "on":
+		return true, nil
+	case "off":
+		return false, nil
+	}
+	return false, fmt.Errorf("%s must be on or off", name)
 }
 
 func list(v string) []string {

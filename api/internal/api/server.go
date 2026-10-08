@@ -14,6 +14,7 @@ import (
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/jackc/pgx/v5"
 	"github.com/microcosm-cc/bluemonday"
+	"github.com/modelcontextprotocol/go-sdk/mcp"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/riverdriver/riverpgxv5"
 
@@ -35,7 +36,7 @@ const maxBodyBytes = 8 << 20
 
 var apiPrefixes = []string{"/v1/", "/client/v1/", "/ingress/", "/.well-known/"}
 
-var apiPaths = []string{"/v1", "/client/v1", "/healthz", "/readyz", "/oauth/register", "/oauth/authorize", "/oauth/token", "/oauth/revoke"}
+var apiPaths = []string{"/v1", "/client/v1", "/healthz", "/readyz", "/oauth/register", "/oauth/authorize", "/oauth/token", "/oauth/revoke", "/mcp"}
 
 type Server struct {
 	log      *slog.Logger
@@ -62,6 +63,9 @@ type Server struct {
 	webhooks WebhookSettings
 	hooks    *webhook.Client
 	push     *push.Sender
+
+	mcp        http.Handler
+	mcpSchemas *mcp.SchemaCache
 }
 
 type Deps struct {
@@ -90,6 +94,9 @@ type Deps struct {
 	Webhooks WebhookSettings
 
 	Push PushSettings
+
+	// DisableMCP turns the /mcp endpoint off (YUVA_MCP=off).
+	DisableMCP bool
 }
 
 // PushSettings holds the VAPID keys; push is off without them.
@@ -173,12 +180,16 @@ func New(d Deps) *Server {
 			pusher.Client = d.Push.HTTPClient
 		}
 	}
-	return &Server{
+	srv := &Server{
 		log: d.Log, st: d.Store, version: d.Version, mailer: d.Mailer, webauthn: d.WebAuthn, auth: d.Auth, now: now,
 		secrets: d.Secrets, objects: d.Storage, attach: d.Attachments, sanitize: htmlPolicy(),
 		hub: d.Hub, jobs: jobs, ingress: d.Ingress, ingestQ: make(chan struct{}, ingestSlots), sender: sender, smtpPriv: d.SMTPAllowPrivate, snsCerts: newCertCache(fetch), fetch: fetch,
 		chat: chat, limits: newRateLimiter(), webhooks: d.Webhooks, hooks: hooks, push: pusher,
 	}
+	if !d.DisableMCP {
+		srv.mcp, srv.mcpSchemas = newMCPHandler(), mcp.NewSchemaCache()
+	}
+	return srv
 }
 
 var _ oas.StrictServerInterface = (*Server)(nil)
@@ -215,6 +226,9 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /oauth/authorize", s.serveOAuthAuthorize)
 	mux.HandleFunc("POST /oauth/token", s.serveOAuthToken)
 	mux.HandleFunc("POST /oauth/revoke", s.serveOAuthRevoke)
+	if s.mcp != nil {
+		mux.HandleFunc("/mcp", s.serveMCP)
+	}
 	for _, name := range widget.Files {
 		mux.Handle("GET /"+name, widget.Handler(name))
 	}
