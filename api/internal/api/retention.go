@@ -45,6 +45,9 @@ type retentionWorker struct {
 }
 
 func (w *retentionWorker) Work(ctx context.Context, _ *river.Job[jobs.RetentionArgs]) error {
+	if err := w.s.queueWorkspaceDeletions(ctx); err != nil {
+		return err
+	}
 	return w.s.ApplyRetention(ctx)
 }
 
@@ -69,31 +72,14 @@ func (s *Server) ApplyRetention(ctx context.Context) error {
 
 func (s *Server) expireConversations(ctx context.Context, workspaceID uuid.UUID, before time.Time) error {
 	for {
-		var keys []string
-		var n int
-		err := s.st.InTx(ctx, func(q *store.Queries) error {
-			ids, err := q.ListExpiredConversationIDs(ctx, store.ListExpiredConversationIDsParams{
+		n, _, err := s.deleteConversationBatch(ctx, workspaceID, func(q *store.Queries) ([]uuid.UUID, error) {
+			return q.ListExpiredConversationIDs(ctx, store.ListExpiredConversationIDsParams{
 				WorkspaceID: workspaceID, Before: before, MaxRows: retentionBatch,
 			})
-			if err != nil || len(ids) == 0 {
-				return err
-			}
-			n = len(ids)
-			if keys, err = q.ListConversationsStorageKeys(ctx, store.ListConversationsStorageKeysParams{WorkspaceID: workspaceID, Ids: ids}); err != nil {
-				return err
-			}
-			raw, err := q.ListConversationsRawKeys(ctx, store.ListConversationsRawKeysParams{WorkspaceID: workspaceID, Ids: ids})
-			if err != nil {
-				return err
-			}
-			keys = append(keys, raw...)
-			_, err = q.DeleteConversations(ctx, store.DeleteConversationsParams{WorkspaceID: workspaceID, Ids: ids})
-			return err
 		})
 		if err != nil {
 			return err
 		}
-		s.deleteObjects(ctx, keys)
 		if n < retentionBatch {
 			return nil
 		}

@@ -46,6 +46,8 @@ const usageText = `usage:
   yuva channel create-email --workspace <id|name> --inbox <id|slug> --name <name> --address <address> [--display-name <name>] [--from-address <address>]
       [--smtp-host <host> [--smtp-port <n>] [--tls starttls|tls|none] [--smtp-username <name>] [--smtp-password-file <path|->]]
   yuva channel list --workspace <id|name> --inbox <id|slug>
+  yuva workspace delete --workspace <id|name> --yes
+  yuva person delete --email <address> --yes
   yuva vapid-keys                (prints a new Web Push key pair)`
 
 func main() {
@@ -75,7 +77,7 @@ func main() {
 			err = bootstrap(ctx, cfg, log, os.Args[2:])
 		case "api-key":
 			err = apiKeyCLI(ctx, cfg, os.Args[2:])
-		case "inbox", "channel":
+		case "inbox", "channel", "workspace", "person":
 			err = operatorCLI(ctx, cfg, os.Args[1], os.Args[2:])
 		case "ingest-email":
 			os.Exit(ingestEmail(ctx, cfg, log, os.Args[2:]))

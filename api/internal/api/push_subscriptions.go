@@ -182,6 +182,11 @@ func (s *Server) SendPush(ctx context.Context, a PushArgs) (bool, error) {
 	if s.push == nil {
 		return false, nil
 	}
+	if a.WorkspaceID != nil {
+		if live, err := s.workspaceLive(ctx, *a.WorkspaceID); err != nil || !live {
+			return false, err
+		}
+	}
 	sub, err := s.st.GetLivePushSubscription(ctx, store.GetLivePushSubscriptionParams{ID: a.SubscriptionID, Now: s.now()})
 	if store.IsNotFound(err) {
 		return false, nil

@@ -9,7 +9,8 @@ FROM members m JOIN people p ON p.id = m.person_id
 WHERE m.workspace_id = $1 AND m.id = $2;
 
 -- name: GetMemberByPerson :one
-SELECT * FROM members WHERE workspace_id = $1 AND person_id = $2;
+SELECT m.* FROM members m JOIN workspaces w ON w.id = m.workspace_id
+WHERE m.workspace_id = $1 AND m.person_id = $2 AND w.deleted_at IS NULL;
 
 -- name: MemberExistsByEmail :one
 SELECT EXISTS (
@@ -27,7 +28,7 @@ ORDER BY m.created_at, m.id;
 SELECT m.id AS member_id, m.role, w.id AS workspace_id, w.name AS workspace_name, w.created_at AS workspace_created_at,
        w.retention_days AS workspace_retention_days
 FROM members m JOIN workspaces w ON w.id = m.workspace_id
-WHERE m.person_id = $1
+WHERE m.person_id = $1 AND w.deleted_at IS NULL
 ORDER BY m.created_at, m.id;
 
 -- name: CountOwners :one

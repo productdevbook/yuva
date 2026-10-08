@@ -94,6 +94,9 @@ func FindWorkspace(ctx context.Context, st *store.Store, ref string) (store.Work
 		if store.IsNotFound(err) {
 			return store.Workspace{}, fmt.Errorf("no workspace with id %s", id)
 		}
+		if err == nil && ws.DeletedAt != nil {
+			return store.Workspace{}, fmt.Errorf("workspace %s is being deleted", id)
+		}
 		return ws, err
 	}
 	matches, err := st.ListWorkspacesByName(ctx, ref)

@@ -317,6 +317,38 @@ paths:
           $ref: "#/components/responses/Problem"
         "401":
           $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteMe
+      summary: Delete the signed-in person's account
+      description: |
+        Removes the person with their memberships, sessions, passkeys, push subscriptions and
+        sign-in codes, and clears the cookie. Messages they wrote stay in their conversations
+        without an author (`author.member_id` absent). Refused with `409 last_owner` while the
+        person is the only owner of a workspace: make someone else an owner or delete that
+        workspace first. Needs a member session; the body repeats the person's e-mail address.
+      tags: [me]
+      security:
+        - session: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountDeletion"
+      responses:
+        "204":
+          description: Deleted.
+          headers:
+            Set-Cookie:
+              description: Clears `yuva_session`.
+              schema:
+                type: string
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
   /v1/me/passkeys:
     get:
       operationId: listPasskeys
@@ -640,6 +672,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Workspace"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteWorkspace
+      summary: Delete the workspace
+      description: |
+        Owners only, with a member session; the body repeats the workspace's name exactly. The
+        workspace stops answering at once: its members, API keys, widget and app sessions and
+        e-mail addresses are refused from this request on, its webhook endpoints are removed and
+        nothing more is sent to them. A background job then deletes everything else in batches:
+        conversations, messages, attachments and raw e-mails with their stored files, contacts,
+        inboxes, channels, members, invites and settings. People keep their account; members left
+        with no other workspace lose their push subscriptions.
+      tags: [workspace]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WorkspaceDeletion"
+      responses:
+        "202":
+          description: The workspace is closed and its data is being deleted.
         "400":
           $ref: "#/components/responses/Problem"
         "401":
@@ -3650,6 +3713,20 @@ components:
           minimum: 1
           maximum: 36500
           description: "`null` keeps everything."
+    WorkspaceDeletion:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          description: The workspace's name, exactly; anything else is refused with `400 confirmation_mismatch`.
+    AccountDeletion:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          description: The person's e-mail address (case is ignored); anything else is refused with `400 confirmation_mismatch`.
     Membership:
       type: object
       required: [workspace, member_id, role]
@@ -5258,7 +5335,7 @@ components:
         member_id:
           type: string
           format: uuid
-          description: Set for `member`; absent when that member was removed.
+          description: Set for `member`; absent when that member was removed or deleted their account.
         contact_id:
           type: string
           format: uuid

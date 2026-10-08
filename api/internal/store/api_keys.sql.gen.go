@@ -73,7 +73,8 @@ func (q *Queries) GetAPIKeyByID(ctx context.Context, id uuid.UUID) (ApiKey, erro
 }
 
 const getActiveAPIKeyByHash = `-- name: GetActiveAPIKeyByHash :one
-SELECT id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at FROM api_keys WHERE secret_hash = $1 AND revoked_at IS NULL
+SELECT k.id, k.workspace_id, k.name, k.prefix, k.secret_hash, k.created_by, k.created_at, k.last_used_at, k.revoked_at FROM api_keys k JOIN workspaces w ON w.id = k.workspace_id
+WHERE k.secret_hash = $1 AND k.revoked_at IS NULL AND w.deleted_at IS NULL
 `
 
 func (q *Queries) GetActiveAPIKeyByHash(ctx context.Context, secretHash []byte) (ApiKey, error) {

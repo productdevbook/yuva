@@ -473,4 +473,5 @@ type Workspace struct {
 	Name          string
 	CreatedAt     time.Time
 	RetentionDays *int32
+	DeletedAt     *time.Time
 }

@@ -354,6 +354,9 @@ func conversationPath(ws, conv uuid.UUID) string {
 // Notify sends the pushes and schedules the e-mail fallbacks a new message causes.
 func (s *Server) Notify(ctx context.Context, a NotifyArgs) error {
 	ws := a.WorkspaceID
+	if live, err := s.workspaceLive(ctx, ws); err != nil || !live {
+		return err
+	}
 	m, err := s.st.GetMessage(ctx, store.GetMessageParams{WorkspaceID: ws, ID: a.MessageID})
 	if store.IsNotFound(err) {
 		return nil
@@ -538,6 +541,9 @@ type notificationEmailData struct {
 // conversation per hour. It returns when to check again, or nil.
 func (s *Server) SendNotificationEmail(ctx context.Context, a NotificationEmailArgs) (*time.Time, error) {
 	ws, now := a.WorkspaceID, s.now()
+	if live, err := s.workspaceLive(ctx, ws); err != nil || !live {
+		return nil, err
+	}
 	c, err := s.st.GetConversation(ctx, store.GetConversationParams{WorkspaceID: ws, ID: a.ConversationID})
 	if store.IsNotFound(err) || (err == nil && c.Spam) {
 		return nil, nil

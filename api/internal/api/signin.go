@@ -223,10 +223,6 @@ func (s *Server) VerifySignInCode(ctx context.Context, req oas.VerifySignInCodeR
 		if me, err = buildMe(ctx, q, personID); err != nil {
 			return err
 		}
-		if len(me.Memberships) == 0 {
-			fail = errInvalidCode
-			return nil
-		}
 		cookie, err = s.startSession(ctx, q, personID, methodCode)
 		return err
 	})

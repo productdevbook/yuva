@@ -1019,6 +1019,12 @@ func (e ListMessagesParamsOrder) Valid() bool {
 	}
 }
 
+// AccountDeletion defines model for AccountDeletion.
+type AccountDeletion struct {
+	// Email The person's e-mail address (case is ignored); anything else is refused with `400 confirmation_mismatch`.
+	Email string `json:"email"`
+}
+
 // ApiKey defines model for ApiKey.
 type ApiKey struct {
 	CreatedAt time.Time `json:"created_at"`
@@ -2555,7 +2561,7 @@ type MessageAuthor struct {
 	// ContactId Set for `contact`.
 	ContactId *uuid.UUID `json:"contact_id,omitempty"`
 
-	// MemberId Set for `member`; absent when that member was removed.
+	// MemberId Set for `member`; absent when that member was removed or deleted their account.
 	MemberId *uuid.UUID `json:"member_id,omitempty"`
 	Type     AuthorType `json:"type"`
 }
@@ -3382,6 +3388,12 @@ type Workspace struct {
 	RetentionDays *int32 `json:"retention_days,omitempty"`
 }
 
+// WorkspaceDeletion defines model for WorkspaceDeletion.
+type WorkspaceDeletion struct {
+	// Name The workspace's name, exactly; anything else is refused with `400 confirmation_mismatch`.
+	Name string `json:"name"`
+}
+
 // WorkspaceUpdate defines model for WorkspaceUpdate.
 type WorkspaceUpdate struct {
 	// RetentionDays `null` keeps everything.
@@ -3962,6 +3974,12 @@ type RotateWebhookSecretParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// DeleteWorkspaceParams defines parameters for DeleteWorkspace.
+type DeleteWorkspaceParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetWorkspaceParams defines parameters for GetWorkspace.
 type GetWorkspaceParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -4154,6 +4172,9 @@ type CreateLabelJSONRequestBody = LabelCreate
 // UpdateLabelJSONRequestBody defines body for UpdateLabel for application/json ContentType.
 type UpdateLabelJSONRequestBody = LabelUpdate
 
+// DeleteMeJSONRequestBody defines body for DeleteMe for application/json ContentType.
+type DeleteMeJSONRequestBody = AccountDeletion
+
 // UpdateMeJSONRequestBody defines body for UpdateMe for application/json ContentType.
 type UpdateMeJSONRequestBody = MeUpdate
 
@@ -4177,6 +4198,9 @@ type CreateWebhookJSONRequestBody = WebhookEndpointCreate
 
 // UpdateWebhookJSONRequestBody defines body for UpdateWebhook for application/json ContentType.
 type UpdateWebhookJSONRequestBody = WebhookEndpointUpdate
+
+// DeleteWorkspaceJSONRequestBody defines body for DeleteWorkspace for application/json ContentType.
+type DeleteWorkspaceJSONRequestBody = WorkspaceDeletion
 
 // UpdateWorkspaceJSONRequestBody defines body for UpdateWorkspace for application/json ContentType.
 type UpdateWorkspaceJSONRequestBody = WorkspaceUpdate
@@ -5086,6 +5110,9 @@ type ServerInterface interface {
 	// UpdateLabel Update a label
 	// (PATCH /v1/labels/{labelId})
 	UpdateLabel(w http.ResponseWriter, r *http.Request, labelId LabelId, params UpdateLabelParams)
+	// DeleteMe Delete the signed-in person's account
+	// (DELETE /v1/me)
+	DeleteMe(w http.ResponseWriter, r *http.Request)
 	// GetMe The signed-in person
 	// (GET /v1/me)
 	GetMe(w http.ResponseWriter, r *http.Request)
@@ -5185,6 +5212,9 @@ type ServerInterface interface {
 	// RotateWebhookSecret Rotate the signing secret
 	// (POST /v1/webhooks/{webhookId}/secret)
 	RotateWebhookSecret(w http.ResponseWriter, r *http.Request, webhookId WebhookId, params RotateWebhookSecretParams)
+	// DeleteWorkspace Delete the workspace
+	// (DELETE /v1/workspace)
+	DeleteWorkspace(w http.ResponseWriter, r *http.Request, params DeleteWorkspaceParams)
 	// GetWorkspace The current workspace
 	// (GET /v1/workspace)
 	GetWorkspace(w http.ResponseWriter, r *http.Request, params GetWorkspaceParams)
@@ -8169,6 +8199,20 @@ func (siw *ServerInterfaceWrapper) UpdateLabel(w http.ResponseWriter, r *http.Re
 	handler.ServeHTTP(w, r)
 }
 
+// DeleteMe operation middleware
+func (siw *ServerInterfaceWrapper) DeleteMe(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteMe(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetMe operation middleware
 func (siw *ServerInterfaceWrapper) GetMe(w http.ResponseWriter, r *http.Request) {
 
@@ -9465,6 +9509,47 @@ func (siw *ServerInterfaceWrapper) RotateWebhookSecret(w http.ResponseWriter, r 
 	handler.ServeHTTP(w, r)
 }
 
+// DeleteWorkspace operation middleware
+func (siw *ServerInterfaceWrapper) DeleteWorkspace(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteWorkspaceParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteWorkspace(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetWorkspace operation middleware
 func (siw *ServerInterfaceWrapper) GetWorkspace(w http.ResponseWriter, r *http.Request) {
 
@@ -9675,6 +9760,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/auth/passkey/options", wrapper.BeginPasskeySignIn)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/auth/passkey", wrapper.FinishPasskeySignIn)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/auth/sign-out", wrapper.SignOut)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/me", wrapper.DeleteMe)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/me", wrapper.GetMe)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/me", wrapper.UpdateMe)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/me/passkeys", wrapper.ListPasskeys)
@@ -9690,6 +9776,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/me/notifications", wrapper.UpdateNotificationSettings)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/me/notifications/inboxes/{inboxId}", wrapper.DeleteInboxNotifications)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/me/notifications/inboxes/{inboxId}", wrapper.SetInboxNotifications)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/workspace", wrapper.DeleteWorkspace)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/workspace", wrapper.GetWorkspace)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/workspace", wrapper.UpdateWorkspace)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/members", wrapper.ListMembers)
@@ -15351,6 +15438,74 @@ func (response UpdateLabel409ApplicationProblemPlusJSONResponse) VisitUpdateLabe
 	return err
 }
 
+type DeleteMeRequestObject struct {
+	Body *DeleteMeJSONRequestBody
+}
+
+type DeleteMeResponseObject interface {
+	VisitDeleteMeResponse(w http.ResponseWriter) error
+}
+
+type DeleteMe204ResponseHeaders struct {
+	SetCookie *string
+}
+
+type DeleteMe204Response struct {
+	Headers DeleteMe204ResponseHeaders
+}
+
+func (response DeleteMe204Response) VisitDeleteMeResponse(w http.ResponseWriter) error {
+	if response.Headers.SetCookie != nil {
+		w.Header().Set("Set-Cookie", fmt.Sprint(*response.Headers.SetCookie))
+	}
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteMe400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteMe400ApplicationProblemPlusJSONResponse) VisitDeleteMeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteMe401ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteMe401ApplicationProblemPlusJSONResponse) VisitDeleteMeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteMe409ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteMe409ApplicationProblemPlusJSONResponse) VisitDeleteMeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type GetMeRequestObject struct {
 }
 
@@ -17405,6 +17560,67 @@ func (response RotateWebhookSecret404ApplicationProblemPlusJSONResponse) VisitRo
 	return err
 }
 
+type DeleteWorkspaceRequestObject struct {
+	Params DeleteWorkspaceParams
+	Body   *DeleteWorkspaceJSONRequestBody
+}
+
+type DeleteWorkspaceResponseObject interface {
+	VisitDeleteWorkspaceResponse(w http.ResponseWriter) error
+}
+
+type DeleteWorkspace202Response struct {
+}
+
+func (response DeleteWorkspace202Response) VisitDeleteWorkspaceResponse(w http.ResponseWriter) error {
+	w.WriteHeader(202)
+	return nil
+}
+
+type DeleteWorkspace400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteWorkspace400ApplicationProblemPlusJSONResponse) VisitDeleteWorkspaceResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteWorkspace401ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteWorkspace401ApplicationProblemPlusJSONResponse) VisitDeleteWorkspaceResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteWorkspace403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteWorkspace403ApplicationProblemPlusJSONResponse) VisitDeleteWorkspaceResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type GetWorkspaceRequestObject struct {
 	Params GetWorkspaceParams
 }
@@ -17733,6 +17949,9 @@ type StrictServerInterface interface {
 	// UpdateLabel Update a label
 	// (PATCH /v1/labels/{labelId})
 	UpdateLabel(ctx context.Context, request UpdateLabelRequestObject) (UpdateLabelResponseObject, error)
+	// DeleteMe Delete the signed-in person's account
+	// (DELETE /v1/me)
+	DeleteMe(ctx context.Context, request DeleteMeRequestObject) (DeleteMeResponseObject, error)
 	// GetMe The signed-in person
 	// (GET /v1/me)
 	GetMe(ctx context.Context, request GetMeRequestObject) (GetMeResponseObject, error)
@@ -17832,6 +18051,9 @@ type StrictServerInterface interface {
 	// RotateWebhookSecret Rotate the signing secret
 	// (POST /v1/webhooks/{webhookId}/secret)
 	RotateWebhookSecret(ctx context.Context, request RotateWebhookSecretRequestObject) (RotateWebhookSecretResponseObject, error)
+	// DeleteWorkspace Delete the workspace
+	// (DELETE /v1/workspace)
+	DeleteWorkspace(ctx context.Context, request DeleteWorkspaceRequestObject) (DeleteWorkspaceResponseObject, error)
 	// GetWorkspace The current workspace
 	// (GET /v1/workspace)
 	GetWorkspace(ctx context.Context, request GetWorkspaceRequestObject) (GetWorkspaceResponseObject, error)
@@ -19932,6 +20154,37 @@ func (sh *strictHandler) UpdateLabel(w http.ResponseWriter, r *http.Request, lab
 	}
 }
 
+// DeleteMe operation middleware
+func (sh *strictHandler) DeleteMe(w http.ResponseWriter, r *http.Request) {
+	var request DeleteMeRequestObject
+
+	var body DeleteMeJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteMe(ctx, request.(DeleteMeRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteMe")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteMeResponseObject); ok {
+		if err := validResponse.VisitDeleteMeResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // GetMe operation middleware
 func (sh *strictHandler) GetMe(w http.ResponseWriter, r *http.Request) {
 	var request GetMeRequestObject
@@ -20838,6 +21091,39 @@ func (sh *strictHandler) RotateWebhookSecret(w http.ResponseWriter, r *http.Requ
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(RotateWebhookSecretResponseObject); ok {
 		if err := validResponse.VisitRotateWebhookSecretResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteWorkspace operation middleware
+func (sh *strictHandler) DeleteWorkspace(w http.ResponseWriter, r *http.Request, params DeleteWorkspaceParams) {
+	var request DeleteWorkspaceRequestObject
+
+	request.Params = params
+
+	var body DeleteWorkspaceJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteWorkspace(ctx, request.(DeleteWorkspaceRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteWorkspace")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteWorkspaceResponseObject); ok {
+		if err := validResponse.VisitDeleteWorkspaceResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

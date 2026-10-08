@@ -31,11 +31,15 @@ RETURNING *;
 -- name: FindChatChannelByKey :one
 SELECT cc.*, c.inbox_id, c.kind FROM chat_channels cc
 JOIN channels c ON c.workspace_id = cc.workspace_id AND c.id = cc.channel_id
-WHERE cc.public_key = $1;
+JOIN workspaces w ON w.id = cc.workspace_id
+WHERE cc.public_key = $1 AND w.deleted_at IS NULL;
 
 -- A CORS preflight carries neither the key nor the session (see "Hosting for others later").
 -- name: AnyChatChannelAllowsOrigin :one
-SELECT EXISTS (SELECT 1 FROM chat_channels WHERE allowed_origins @> ARRAY[@origin::text]) AS allowed;
+SELECT EXISTS (
+    SELECT 1 FROM chat_channels cc JOIN workspaces w ON w.id = cc.workspace_id
+    WHERE cc.allowed_origins @> ARRAY[@origin::text] AND w.deleted_at IS NULL
+) AS allowed;
 
 -- name: CreateContactSession :one
 INSERT INTO contact_sessions (id, workspace_id, channel_id, inbox_id, contact_id, token_hash, identified,
@@ -47,7 +51,8 @@ RETURNING *;
 -- name: GetContactSessionByTokenHash :one
 SELECT s.*, ct.blocked AS contact_blocked FROM contact_sessions s
 JOIN contacts ct ON ct.workspace_id = s.workspace_id AND ct.id = s.contact_id
-WHERE s.token_hash = $1 AND s.expires_at > $2;
+JOIN workspaces w ON w.id = s.workspace_id
+WHERE s.token_hash = $1 AND s.expires_at > $2 AND w.deleted_at IS NULL;
 
 -- name: TouchContactSession :exec
 UPDATE contact_sessions SET last_seen_at = @now::timestamptz, expires_at = @expires_at::timestamptz
@@ -238,7 +243,8 @@ ORDER BY (e.address LIKE '*@%'), c.created_at, c.id
 LIMIT 1;
 
 -- name: ListPersonWorkspaceIDs :many
-SELECT workspace_id FROM members WHERE person_id = $1;
+SELECT m.workspace_id FROM members m JOIN workspaces w ON w.id = m.workspace_id
+WHERE m.person_id = $1 AND w.deleted_at IS NULL;
 
 -- name: SetPersonAvailability :exec
 UPDATE people SET availability = $2 WHERE id = $1;

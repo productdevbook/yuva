@@ -1,3 +1,6 @@
+-- name: DeleteLoginCodesByEmail :exec
+DELETE FROM login_codes WHERE email = $1;
+
 -- name: CreateLoginCode :exec
 INSERT INTO login_codes (id, email, code_hash, ip, created_at, expires_at)
 VALUES ($1, $2, $3, $4, $5, $6);

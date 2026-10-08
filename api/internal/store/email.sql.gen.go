@@ -369,7 +369,8 @@ func (q *Queries) FindConversationByHeaders(ctx context.Context, arg FindConvers
 const findEmailChannelByAddress = `-- name: FindEmailChannelByAddress :one
 SELECT e.workspace_id, e.channel_id, e.address, e.display_name, e.from_address, e.smtp_host, e.smtp_port, e.smtp_username, e.smtp_password, e.smtp_tls, e.auto_reply_enabled, e.auto_reply_text, e.auto_reply_interval_hours, c.inbox_id, c.name AS channel_name FROM email_channels e
 JOIN channels c ON c.workspace_id = e.workspace_id AND c.id = e.channel_id
-WHERE e.address = $1
+JOIN workspaces w ON w.id = e.workspace_id
+WHERE e.address = $1 AND w.deleted_at IS NULL
 `
 
 type FindEmailChannelByAddressRow struct {
@@ -440,7 +441,8 @@ func (q *Queries) FindInboundEmailByHeader(ctx context.Context, arg FindInboundE
 
 const findOutboundEmailAnyWorkspace = `-- name: FindOutboundEmailAnyWorkspace :one
 SELECT e.workspace_id, e.message_id, e.conversation_id, e.to_addresses FROM message_emails e
-WHERE e.direction = 'out' AND e.header_message_id = $1
+JOIN workspaces w ON w.id = e.workspace_id
+WHERE e.direction = 'out' AND e.header_message_id = $1 AND w.deleted_at IS NULL
 LIMIT 1
 `
 

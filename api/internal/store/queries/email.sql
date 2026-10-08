@@ -23,7 +23,8 @@ SELECT * FROM email_channels WHERE workspace_id = @workspace_id AND channel_id =
 -- name: FindEmailChannelByAddress :one
 SELECT e.*, c.inbox_id, c.name AS channel_name FROM email_channels e
 JOIN channels c ON c.workspace_id = e.workspace_id AND c.id = e.channel_id
-WHERE e.address = $1;
+JOIN workspaces w ON w.id = e.workspace_id
+WHERE e.address = $1 AND w.deleted_at IS NULL;
 
 -- name: CreateMessageEmail :exec
 INSERT INTO message_emails (workspace_id, message_id, conversation_id, channel_id, direction, header_message_id,
@@ -93,7 +94,8 @@ WHERE e.workspace_id = $1 AND e.direction = 'out' AND e.header_message_id = $2;
 -- (see "Hosting for others later" in docs/architecture.md).
 -- name: FindOutboundEmailAnyWorkspace :one
 SELECT e.workspace_id, e.message_id, e.conversation_id, e.to_addresses FROM message_emails e
-WHERE e.direction = 'out' AND e.header_message_id = $1
+JOIN workspaces w ON w.id = e.workspace_id
+WHERE e.direction = 'out' AND e.header_message_id = $1 AND w.deleted_at IS NULL
 LIMIT 1;
 
 -- name: CountRecentConversations :one

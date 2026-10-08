@@ -56,6 +56,7 @@ var operationAccess = map[string]access{
 	"BeginPasskeyRegistration":  accessPerson,
 	"FinishPasskeyRegistration": accessPerson,
 	"DeletePasskey":             accessPerson,
+	"DeleteMe":                  accessPerson,
 
 	"MarkConversationRead": accessMember,
 	"SetMemberTyping":      accessMember,
@@ -92,6 +93,8 @@ var operationAccess = map[string]access{
 	"ListApiKeys":  accessMember,
 	"CreateApiKey": accessMember,
 	"RevokeApiKey": accessMember,
+
+	"DeleteWorkspace": accessMember,
 }
 
 type principal struct {

@@ -46,6 +46,18 @@ func (q *Queries) CreatePerson(ctx context.Context, arg CreatePersonParams) (Per
 	return i, err
 }
 
+const deletePerson = `-- name: DeletePerson :execrows
+DELETE FROM people WHERE id = $1
+`
+
+func (q *Queries) DeletePerson(ctx context.Context, id uuid.UUID) (int64, error) {
+	result, err := q.db.Exec(ctx, deletePerson, id)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
 const getPerson = `-- name: GetPerson :one
 SELECT id, email, name, locale, webauthn_handle, created_at, availability FROM people WHERE id = $1
 `
@@ -105,8 +117,11 @@ func (q *Queries) GetPersonByWebauthnHandle(ctx context.Context, webauthnHandle 
 
 const signInTarget = `-- name: SignInTarget :one
 SELECT
-    EXISTS (SELECT 1 FROM members m JOIN people p ON p.id = m.person_id WHERE p.email = $1)
-    OR EXISTS (SELECT 1 FROM invites i WHERE i.email = $1 AND i.expires_at > $2) AS known
+    EXISTS (SELECT 1 FROM people p WHERE p.email = $1)
+    OR EXISTS (
+        SELECT 1 FROM invites i JOIN workspaces w ON w.id = i.workspace_id
+        WHERE i.email = $1 AND i.expires_at > $2 AND w.deleted_at IS NULL
+    ) AS known
 `
 
 type SignInTargetParams struct {

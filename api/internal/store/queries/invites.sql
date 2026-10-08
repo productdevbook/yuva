@@ -17,8 +17,10 @@ DELETE FROM invites WHERE workspace_id = $1 AND id = $2;
 
 -- name: TakePendingInvites :many
 DELETE FROM invites WHERE email = @email AND expires_at > @now
+  AND workspace_id IN (SELECT id FROM workspaces WHERE deleted_at IS NULL)
 RETURNING *;
 
 -- name: LatestPendingInvite :one
-SELECT * FROM invites WHERE email = @email AND expires_at > @now
-ORDER BY created_at DESC LIMIT 1;
+SELECT i.* FROM invites i JOIN workspaces w ON w.id = i.workspace_id
+WHERE i.email = @email AND i.expires_at > @now AND w.deleted_at IS NULL
+ORDER BY i.created_at DESC LIMIT 1;

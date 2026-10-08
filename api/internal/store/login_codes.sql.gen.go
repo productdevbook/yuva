@@ -112,6 +112,15 @@ func (q *Queries) CreateLoginCode(ctx context.Context, arg CreateLoginCodeParams
 	return err
 }
 
+const deleteLoginCodesByEmail = `-- name: DeleteLoginCodesByEmail :exec
+DELETE FROM login_codes WHERE email = $1
+`
+
+func (q *Queries) DeleteLoginCodesByEmail(ctx context.Context, email string) error {
+	_, err := q.db.Exec(ctx, deleteLoginCodesByEmail, email)
+	return err
+}
+
 const latestLoginCode = `-- name: LatestLoginCode :one
 SELECT id, email, code_hash, ip, attempts, created_at, expires_at, consumed_at FROM login_codes WHERE email = $1 AND consumed_at IS NULL
 ORDER BY created_at DESC LIMIT 1

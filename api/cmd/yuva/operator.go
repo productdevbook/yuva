@@ -26,6 +26,8 @@ const (
 	channelUsage = "usage: yuva channel create-email --workspace <id|name> --inbox <id|slug> --name <name> --address <address> [--display-name <name>] [--from-address <address>]\n" +
 		"         [--smtp-host <host> [--smtp-port <n>] [--tls starttls|tls|none] [--smtp-username <name>] [--smtp-password-file <path|->]]\n" +
 		"       yuva channel list --workspace <id|name> --inbox <id|slug>"
+	workspaceUsage = "usage: yuva workspace delete --workspace <id|name> --yes"
+	personUsage    = "usage: yuva person delete --email <address> --yes"
 )
 
 func operatorCLI(ctx context.Context, cfg config.Config, cmd string, args []string) error {
@@ -43,10 +45,68 @@ func operatorCLI(ctx context.Context, cfg config.Config, cmd string, args []stri
 	defer st.Close()
 	log := slog.Default()
 	srv := api.New(api.Deps{Log: log, Store: st, Version: cfg.Version, Mailer: mail.Log{Log: log}, Secrets: masterKey})
-	if cmd == "inbox" {
+	switch cmd {
+	case "inbox":
 		return inboxCommand(ctx, st, srv, args, os.Stdout, os.Stderr)
+	case "workspace":
+		return workspaceCommand(ctx, st, srv, args, os.Stderr)
+	case "person":
+		return personCommand(ctx, srv, args, os.Stderr)
 	}
 	return channelCommand(ctx, st, srv, args, os.Stdin, os.Stdout, os.Stderr)
+}
+
+func workspaceCommand(ctx context.Context, st *store.Store, srv *api.Server, args []string, stderr io.Writer) error {
+	if len(args) == 0 || args[0] != "delete" {
+		return errors.New(workspaceUsage)
+	}
+	fs := flag.NewFlagSet("workspace delete", flag.ContinueOnError)
+	fs.SetOutput(stderr)
+	workspace := fs.String("workspace", "", "workspace id or exact name")
+	yes := fs.Bool("yes", false, "confirm that the workspace and everything in it is deleted")
+	if err := fs.Parse(args[1:]); err != nil {
+		return err
+	}
+	if fs.NArg() != 0 {
+		return errors.New(workspaceUsage)
+	}
+	ws, err := api.FindWorkspace(ctx, st, *workspace)
+	if err != nil {
+		return err
+	}
+	if !*yes {
+		return fmt.Errorf("this deletes workspace %q (%s) and everything in it; run again with --yes", ws.Name, ws.ID)
+	}
+	if err := srv.OperatorDeleteWorkspace(ctx, ws.ID); err != nil {
+		return err
+	}
+	fmt.Fprintf(stderr, "workspace %q (%s) is closed; the server deletes its data in the background\n", ws.Name, ws.ID)
+	return nil
+}
+
+func personCommand(ctx context.Context, srv *api.Server, args []string, stderr io.Writer) error {
+	if len(args) == 0 || args[0] != "delete" {
+		return errors.New(personUsage)
+	}
+	fs := flag.NewFlagSet("person delete", flag.ContinueOnError)
+	fs.SetOutput(stderr)
+	email := fs.String("email", "", "the person's e-mail address")
+	yes := fs.Bool("yes", false, "confirm that the account is deleted")
+	if err := fs.Parse(args[1:]); err != nil {
+		return err
+	}
+	if fs.NArg() != 0 || *email == "" {
+		return errors.New(personUsage)
+	}
+	if !*yes {
+		return fmt.Errorf("this deletes the account of %s with all their memberships; run again with --yes", *email)
+	}
+	p, err := srv.OperatorDeletePerson(ctx, *email)
+	if err != nil {
+		return err
+	}
+	fmt.Fprintf(stderr, "person %s (%s) deleted\n", p.Email, p.ID)
+	return nil
 }
 
 func inboxCommand(ctx context.Context, st *store.Store, srv *api.Server, args []string, stdout, stderr io.Writer) error {

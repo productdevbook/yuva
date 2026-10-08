@@ -389,11 +389,13 @@ inherits the policy. Every response carries `X-Content-Type-Options: nosniff`.
 - Thread: reply and note in one composer, canned replies on `/`, attachments, keyboard shortcuts,
   contact sidebar with identity attributes, earlier conversations and channel delivery state.
 - Settings: inboxes, channels, members and access, labels, canned replies, business hours,
-  auto-replies, webhooks, API keys.
+  auto-replies, webhooks, API keys, retention and deleting the workspace; deleting one's own
+  account in the profile.
 - Installable PWA with Web Push (VAPID), so members get notifications on phones without a native
   app. E-mail notifications as a fallback (see Member notifications).
 - Sign-in with an e-mailed one-time code and passkeys. There is no open sign-up: the first owner
-  is created with `yuva bootstrap`, everyone else is invited. Sign-in and invitation e-mails are
+  is created with `yuva bootstrap`, everyone else is invited. A person whose memberships are all
+  gone can still sign in, to see that and to delete their account. Sign-in and invitation e-mails are
   sent directly, not through the job queue, so a code never lands in job arguments; a code request
   answers after the same fixed delay for every address and its mail goes out after the answer, so
   timing does not reveal members. Each code takes five attempts; after 20 wrong codes for an
@@ -456,6 +458,25 @@ now; per-channel limits can narrow them later.
   `null` keeps everything. An hourly River job deletes closed conversations whose last change and
   last activity are older than that, with their messages, attachments and stored files, and
   removes raw e-mails older than that from storage (the parsed message stays).
+- Workspace deletion: an owner deletes the workspace in the panel or with `DELETE /v1/workspace`
+  (the body repeats its name), an operator with `yuva workspace delete --workspace <id|name> --yes`.
+  One transaction sets `workspaces.deleted_at`, removes the workspace's webhook endpoints and the
+  push subscriptions of members who have no other workspace, and queues a River job; the request
+  answers `202`. From then on every lookup a request starts from ignores the workspace (member
+  sessions, API keys, contact sessions, chat and app keys, CORS origins, e-mail recipients, SES
+  reports, invites), so it is unusable at once; open realtime connections close at their next
+  heartbeat check, and jobs queued for it earlier (e-mail, chat continuity, notifications, push)
+  do nothing. The job deletes the conversations 200 at a time with their messages, attachments
+  and stored files, then the contacts, then the workspace row, which takes everything else with
+  it. Each run works for about 30 seconds, records its progress in the job's output and the log,
+  and snoozes the job until the next run, so a large workspace never hits a timeout; the hourly
+  retention job queues it again for a deleted workspace whose job was lost. People keep their
+  account: someone left without a workspace can still sign in and sees that they belong to none.
+- Account deletion: a person deletes their account in the panel or with `DELETE /v1/me` (the body
+  repeats their e-mail address), an operator with `yuva person delete --email <address> --yes`.
+  It is refused (`409 last_owner`) while the person is the only owner of a workspace. Otherwise
+  the person goes with their memberships, sessions, passkeys, push subscriptions and sign-in
+  codes; messages they wrote stay without an author, shown as a deleted member.
 - Contact deletion and export through the API, for GDPR and KVKK requests. A host backend deletes
   a user who deleted their account with `DELETE /v1/contacts/by-external-id?inbox_id=&external_id=`
   (an API key or an owner or admin): the contact goes with all their conversations, messages,

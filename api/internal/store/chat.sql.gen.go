@@ -13,7 +13,10 @@ import (
 )
 
 const anyChatChannelAllowsOrigin = `-- name: AnyChatChannelAllowsOrigin :one
-SELECT EXISTS (SELECT 1 FROM chat_channels WHERE allowed_origins @> ARRAY[$1::text]) AS allowed
+SELECT EXISTS (
+    SELECT 1 FROM chat_channels cc JOIN workspaces w ON w.id = cc.workspace_id
+    WHERE cc.allowed_origins @> ARRAY[$1::text] AND w.deleted_at IS NULL
+) AS allowed
 `
 
 // A CORS preflight carries neither the key nor the session (see "Hosting for others later").
@@ -324,7 +327,8 @@ func (q *Queries) DeleteStaleConnections(ctx context.Context, arg DeleteStaleCon
 const findChatChannelByKey = `-- name: FindChatChannelByKey :one
 SELECT cc.workspace_id, cc.channel_id, cc.public_key, cc.allowed_origins, cc.allow_anonymous, cc.ask_email_offline, cc.greeting, cc.launcher_position, cc.launcher_color, cc.platforms, c.inbox_id, c.kind FROM chat_channels cc
 JOIN channels c ON c.workspace_id = cc.workspace_id AND c.id = cc.channel_id
-WHERE cc.public_key = $1
+JOIN workspaces w ON w.id = cc.workspace_id
+WHERE cc.public_key = $1 AND w.deleted_at IS NULL
 `
 
 type FindChatChannelByKeyRow struct {
@@ -533,7 +537,8 @@ func (q *Queries) GetContactRead(ctx context.Context, arg GetContactReadParams) 
 const getContactSessionByTokenHash = `-- name: GetContactSessionByTokenHash :one
 SELECT s.id, s.workspace_id, s.channel_id, s.inbox_id, s.contact_id, s.token_hash, s.identified, s.created_at, s.expires_at, s.last_seen_at, ct.blocked AS contact_blocked FROM contact_sessions s
 JOIN contacts ct ON ct.workspace_id = s.workspace_id AND ct.id = s.contact_id
-WHERE s.token_hash = $1 AND s.expires_at > $2
+JOIN workspaces w ON w.id = s.workspace_id
+WHERE s.token_hash = $1 AND s.expires_at > $2 AND w.deleted_at IS NULL
 `
 
 type GetContactSessionByTokenHashParams struct {
@@ -1054,7 +1059,8 @@ func (q *Queries) ListPendingReplies(ctx context.Context, arg ListPendingReplies
 }
 
 const listPersonWorkspaceIDs = `-- name: ListPersonWorkspaceIDs :many
-SELECT workspace_id FROM members WHERE person_id = $1
+SELECT m.workspace_id FROM members m JOIN workspaces w ON w.id = m.workspace_id
+WHERE m.person_id = $1 AND w.deleted_at IS NULL
 `
 
 func (q *Queries) ListPersonWorkspaceIDs(ctx context.Context, personID uuid.UUID) ([]uuid.UUID, error) {

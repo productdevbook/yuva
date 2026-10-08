@@ -107,7 +107,8 @@ func (q *Queries) GetMember(ctx context.Context, arg GetMemberParams) (GetMember
 }
 
 const getMemberByPerson = `-- name: GetMemberByPerson :one
-SELECT id, workspace_id, person_id, role, created_at, notification_events, notification_email_delay FROM members WHERE workspace_id = $1 AND person_id = $2
+SELECT m.id, m.workspace_id, m.person_id, m.role, m.created_at, m.notification_events, m.notification_email_delay FROM members m JOIN workspaces w ON w.id = m.workspace_id
+WHERE m.workspace_id = $1 AND m.person_id = $2 AND w.deleted_at IS NULL
 `
 
 type GetMemberByPersonParams struct {
@@ -179,7 +180,7 @@ const listMemberships = `-- name: ListMemberships :many
 SELECT m.id AS member_id, m.role, w.id AS workspace_id, w.name AS workspace_name, w.created_at AS workspace_created_at,
        w.retention_days AS workspace_retention_days
 FROM members m JOIN workspaces w ON w.id = m.workspace_id
-WHERE m.person_id = $1
+WHERE m.person_id = $1 AND w.deleted_at IS NULL
 ORDER BY m.created_at, m.id
 `
 

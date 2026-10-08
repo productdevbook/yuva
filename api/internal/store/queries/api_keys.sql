@@ -11,7 +11,8 @@ UPDATE api_keys SET revoked_at = coalesce(revoked_at, @now::timestamptz)
 WHERE workspace_id = @workspace_id AND id = @id;
 
 -- name: GetActiveAPIKeyByHash :one
-SELECT * FROM api_keys WHERE secret_hash = $1 AND revoked_at IS NULL;
+SELECT k.* FROM api_keys k JOIN workspaces w ON w.id = k.workspace_id
+WHERE k.secret_hash = $1 AND k.revoked_at IS NULL AND w.deleted_at IS NULL;
 
 -- name: TouchAPIKey :exec
 UPDATE api_keys SET last_used_at = @now::timestamptz

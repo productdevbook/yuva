@@ -72,6 +72,9 @@ func later(a time.Time, b *time.Time) time.Time {
 // been gone for the chat e-mail delay and the oldest unread reply is that old, at most once per
 // delay. It returns when to check again, or nil.
 func (s *Server) CheckContinuity(ctx context.Context, workspaceID, conversationID uuid.UUID) (*time.Time, error) {
+	if live, err := s.workspaceLive(ctx, workspaceID); err != nil || !live {
+		return nil, err
+	}
 	now, delay := s.now(), s.chat.EmailDelay
 	var next *time.Time
 	err := s.inTx(ctx, workspaceID, func(q *store.Queries, events *eventBatch) error {

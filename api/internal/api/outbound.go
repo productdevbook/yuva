@@ -252,6 +252,7 @@ func (s *Server) AddWorkers(workers *river.Workers) {
 	river.AddWorker(workers, &pushWorker{s: s})
 	river.AddWorker(workers, &notificationEmailWorker{s: s})
 	river.AddWorker(workers, &retentionWorker{s: s})
+	river.AddWorker(workers, &workspaceDeleteWorker{s: s})
 }
 
 func truncateRunes(v string, n int) string {
@@ -271,6 +272,9 @@ func (s *Server) SendEmail(ctx context.Context, workspaceID, messageID uuid.UUID
 // SendEmails delivers queued outgoing messages as one e-mail, with the headers stored for the
 // last of them.
 func (s *Server) SendEmails(ctx context.Context, workspaceID uuid.UUID, ids []uuid.UUID, lastAttempt bool) error {
+	if live, err := s.workspaceLive(ctx, workspaceID); err != nil || !live {
+		return err
+	}
 	var msgs []messageRow
 	for _, id := range ids {
 		msg, err := s.st.GetMessage(ctx, store.GetMessageParams{WorkspaceID: workspaceID, ID: id})

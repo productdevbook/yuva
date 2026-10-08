@@ -30,8 +30,9 @@ func (q *Queries) DeleteInvite(ctx context.Context, arg DeleteInviteParams) (int
 }
 
 const latestPendingInvite = `-- name: LatestPendingInvite :one
-SELECT id, workspace_id, email, role, locale, invited_by, created_at, expires_at FROM invites WHERE email = $1 AND expires_at > $2
-ORDER BY created_at DESC LIMIT 1
+SELECT i.id, i.workspace_id, i.email, i.role, i.locale, i.invited_by, i.created_at, i.expires_at FROM invites i JOIN workspaces w ON w.id = i.workspace_id
+WHERE i.email = $1 AND i.expires_at > $2 AND w.deleted_at IS NULL
+ORDER BY i.created_at DESC LIMIT 1
 `
 
 type LatestPendingInviteParams struct {
@@ -95,6 +96,7 @@ func (q *Queries) ListInvites(ctx context.Context, arg ListInvitesParams) ([]Inv
 
 const takePendingInvites = `-- name: TakePendingInvites :many
 DELETE FROM invites WHERE email = $1 AND expires_at > $2
+  AND workspace_id IN (SELECT id FROM workspaces WHERE deleted_at IS NULL)
 RETURNING id, workspace_id, email, role, locale, invited_by, created_at, expires_at
 `
 

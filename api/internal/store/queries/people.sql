@@ -18,7 +18,13 @@ UPDATE people SET
 WHERE id = $1
 RETURNING *;
 
+-- name: DeletePerson :execrows
+DELETE FROM people WHERE id = $1;
+
 -- name: SignInTarget :one
 SELECT
-    EXISTS (SELECT 1 FROM members m JOIN people p ON p.id = m.person_id WHERE p.email = @email)
-    OR EXISTS (SELECT 1 FROM invites i WHERE i.email = @email AND i.expires_at > @now) AS known;
+    EXISTS (SELECT 1 FROM people p WHERE p.email = @email)
+    OR EXISTS (
+        SELECT 1 FROM invites i JOIN workspaces w ON w.id = i.workspace_id
+        WHERE i.email = @email AND i.expires_at > @now AND w.deleted_at IS NULL
+    ) AS known;
