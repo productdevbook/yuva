@@ -1,0 +1,59 @@
+{
+  "manifest_version": "0.3",
+  "name": "yuva",
+  "display_name": "Yuva",
+  "version": "0.0.3",
+  "description": "Your Yuva support inbox in Claude: search, read, triage and draft replies.",
+  "long_description": "Connects to a Yuva server's MCP endpoint with an API key. The assistant can search and read conversations, contacts and feedback, and draft replies, notes, labels and assignments within the key's scopes and inboxes. Replies stay drafts for a member to send unless the workspace lets bots send.",
+  "author": {
+    "name": "Yuva contributors",
+    "url": "https://github.com/productdevbook/yuva"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/productdevbook/yuva"
+  },
+  "homepage": "https://useyuva.com",
+  "documentation": "https://github.com/productdevbook/yuva/blob/main/docs/architecture.md#mcp-for-local-clients",
+  "support": "https://github.com/productdevbook/yuva/issues",
+  "icon": "icon.png",
+  "server": {
+    "type": "binary",
+    "entry_point": "server/yuva",
+    "mcp_config": {
+      "command": "${__dirname}/server/yuva",
+      "args": ["mcp", "stdio"],
+      "env": {
+        "YUVA_URL": "${user_config.url}",
+        "YUVA_API_KEY": "${user_config.api_key}"
+      },
+      "platform_overrides": {
+        "win32": {
+          "command": "${__dirname}/server/yuva.exe"
+        }
+      }
+    }
+  },
+  "tools_generated": true,
+  "prompts_generated": true,
+  "keywords": ["support", "inbox", "customer messaging", "help desk", "email", "live chat"],
+  "license": "AGPL-3.0-only",
+  "compatibility": {
+    "platforms": ["darwin", "linux", "win32"]
+  },
+  "user_config": {
+    "url": {
+      "type": "string",
+      "title": "Server URL",
+      "description": "Your Yuva server, for example https://support.example.com",
+      "required": true
+    },
+    "api_key": {
+      "type": "string",
+      "title": "API key",
+      "description": "A Yuva API key (Settings > API keys); its scopes and inboxes limit what the assistant can do.",
+      "sensitive": true,
+      "required": true
+    }
+  }
+}

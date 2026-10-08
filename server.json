@@ -1,0 +1,48 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.productdevbook/yuva",
+  "title": "Yuva",
+  "description": "Customer support inbox: search, read, triage and draft replies to e-mail and chat.",
+  "version": "0.0.3",
+  "websiteUrl": "https://useyuva.com",
+  "repository": {
+    "url": "https://github.com/productdevbook/yuva",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://{host}/mcp",
+      "variables": {
+        "host": {
+          "description": "Your Yuva server's host name, as in its public URL",
+          "isRequired": true,
+          "placeholder": "support.example.com"
+        }
+      }
+    }
+  ],
+  "packages": [
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/productdevbook/yuva/releases/download/v0.0.3/yuva.mcpb",
+      "version": "0.0.3",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "YUVA_URL",
+          "description": "Your Yuva server, for example https://support.example.com",
+          "isRequired": true
+        },
+        {
+          "name": "YUVA_API_KEY",
+          "description": "A Yuva API key; its scopes and inboxes limit what the assistant can do",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

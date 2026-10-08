@@ -1,0 +1,13 @@
+#!/bin/sh
+dir=$(dirname "$0")
+case "$(uname -s)-$(uname -m)" in
+Darwin-arm64) target=darwin-arm64 ;;
+Darwin-x86_64) target=darwin-amd64 ;;
+Linux-x86_64) target=linux-amd64 ;;
+Linux-aarch64 | Linux-arm64) target=linux-arm64 ;;
+*)
+	echo "yuva: no binary for $(uname -sm) in this bundle" >&2
+	exit 1
+	;;
+esac
+exec "$dir/$target/yuva" "$@"

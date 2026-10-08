@@ -38,6 +38,8 @@ jobs:
             [sdk/js/package.json]="$(jq -r .version sdk/js/package.json)"
             [sdk/kotlin/gradle.properties]="$(sed -n 's/^yuva.version=//p' sdk/kotlin/gradle.properties)"
             [sdk/swift/Sources/YuvaKit/Yuva.swift]="$(sed -n 's/.*static let version = "\(.*\)".*/\1/p' sdk/swift/Sources/YuvaKit/Yuva.swift)"
+            [deploy/mcpb/manifest.json]="$(jq -r .version deploy/mcpb/manifest.json)"
+            [server.json]="$(jq -r .version server.json)"
           )
           for file in "${!found[@]}"; do
             if [[ "${found[$file]}" != "$version" ]]; then
@@ -99,8 +101,48 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  mcpb:
+    needs: version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-go@v7.0.0
+        with:
+          go-version-file: api/go.mod
+          cache-dependency-path: api/go.sum
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 24
+      - name: build the MCP Bundle
+        env:
+          VERSION: ${{ needs.version.outputs.version }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          bundle="$RUNNER_TEMP/bundle"
+          mkdir -p "$bundle" dist
+          cp -R deploy/mcpb/. "$bundle/"
+          cp web/public/apple-touch-icon.png "$bundle/icon.png"
+          for target in darwin/arm64 darwin/amd64 linux/amd64 linux/arm64 windows/amd64; do
+            os="${target%/*}" arch="${target#*/}"
+            out="$bundle/server/$os-$arch/yuva"
+            [[ "$os" == windows ]] && out="$bundle/server/yuva.exe"
+            (cd api && CGO_ENABLED=0 GOOS="$os" GOARCH="$arch" go build -trimpath -ldflags="-s -w -X main.version=$VERSION" -o "$out" ./cmd/yuva)
+          done
+          npx --yes @anthropic-ai/mcpb@2.1.2 validate "$bundle/manifest.json"
+          npx --yes @anthropic-ai/mcpb@2.1.2 pack "$bundle" dist/yuva.mcpb
+          sha="$(sha256sum dist/yuva.mcpb | cut -d' ' -f1)"
+          url="https://github.com/${{ github.repository }}/releases/download/$TAG/yuva.mcpb"
+          jq --arg v "$VERSION" --arg url "$url" --arg sha "$sha" \
+            '.version = $v | .packages |= map(if .registryType == "mcpb" then .identifier = $url | .version = $v | .fileSha256 = $sha else . end)' \
+            server.json > dist/server.json
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: mcpb
+          path: dist/
+          if-no-files-found: error
+
   release:
-    needs: [version, image]
+    needs: [version, image, mcpb]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -119,3 +161,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: bunx changelogithub@15.0.5
+      - uses: actions/download-artifact@v8.0.1
+        with:
+          name: mcpb
+          path: dist
+      - name: attach the MCP Bundle and server.json
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: gh release upload "$TAG" dist/yuva.mcpb dist/server.json
