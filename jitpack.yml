@@ -1,4 +1,7 @@
 jdk:
   - openjdk21
+before_install:
+  # JitPack's first JVM start after installing the JDK cannot open jar files; this one absorbs it.
+  - java -version
 install:
-  - export JAVA_HOME="$HOME/.sdkman/candidates/java/current" && cd sdk/kotlin && ./gradlew --console=plain :yuva:publishToMavenLocal
+  - cd sdk/kotlin && ./gradlew --console=plain :yuva:publishToMavenLocal
