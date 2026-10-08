@@ -33,17 +33,13 @@ export function docsCopy(i18n: I18n) {
       lead: i18n._(
         msg`Install the server, connect your channels and integrate the widget, the mobile SDKs and the API. Written for the version on the main branch.`
       ),
-      quickStart: i18n._(msg`Quick start`),
       startHere: i18n._(msg`Start here`),
-      allGuides: i18n._(msg`All guides`),
       starts: [
         { slug: "install", label: i18n._(msg`Run Yuva`), body: i18n._(msg`One Docker image and Postgres, from compose file to the first owner.`) },
         { slug: "widget", label: i18n._(msg`Add live chat`), body: i18n._(msg`One script tag puts the chat widget on a website or inside your product.`) },
         { slug: "mobile", label: i18n._(msg`Ship in-app messages`), body: i18n._(msg`Conversations and feedback in your iOS and Android apps.`) },
         { slug: "api", label: i18n._(msg`Use the API`), body: i18n._(msg`Create inboxes and channels, post feedback and manage contacts.`) },
       ],
-      apiSummary: (count: number) => i18n._(msg`Every endpoint, generated from the OpenAPI contract: ${count} operations and the webhook events.`),
-      payloads: i18n._(msg`Looking for payloads?`),
     },
     api: {
       description: i18n._(msg`Every Yuva endpoint and webhook event, generated from the OpenAPI 3.1 contract.`),
