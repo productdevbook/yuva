@@ -2470,6 +2470,23 @@ type EmailChannelInput struct {
 	Smtp        *SmtpSettingsInput `json:"smtp,omitempty"`
 }
 
+// EventPage defines model for EventPage.
+type EventPage struct {
+	Events []StoredEvent `json:"events"`
+
+	// HasMore More events follow `next`; call again without waiting.
+	HasMore bool `json:"has_more"`
+
+	// Next Send as `after` on the next call.
+	Next int64 `json:"next"`
+}
+
+// EventPosition defines model for EventPosition.
+type EventPosition struct {
+	// Id The newest event id of the workspace; `0` when there is none.
+	Id int64 `json:"id"`
+}
+
 // EventType defines model for EventType.
 type EventType string
 
@@ -3626,6 +3643,11 @@ type SmtpSettingsInput struct {
 // `none` sends in the clear (local relays and test servers only).
 type SmtpTls string
 
+// StoredEvent An event as `GET /v1/events` returns it, told apart by `type`; the same objects realtime and webhooks carry.
+type StoredEvent struct {
+	union json.RawMessage
+}
+
 // Typing defines model for Typing.
 type Typing struct {
 	Author         TypingAuthor `json:"author"`
@@ -4433,6 +4455,24 @@ type SetMemberTypingParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListEventsParams defines parameters for ListEvents.
+type ListEventsParams struct {
+	// After The last event id the caller handled; `0` for the oldest kept event.
+	After int64 `form:"after" json:"after"`
+
+	// Limit Events per page, 1 to 500; 100 by default.
+	Limit *int32 `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetLatestEventParams defines parameters for GetLatestEvent.
+type GetLatestEventParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -5806,6 +5846,377 @@ func (t *RealtimeMessage) UnmarshalJSON(b []byte) error {
 	return err
 }
 
+// AsConversationEvent returns the union data inside the StoredEvent as a ConversationEvent
+func (t StoredEvent) AsConversationEvent() (ConversationEvent, error) {
+	var body ConversationEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationEvent overwrites any union data inside the StoredEvent as the provided ConversationEvent
+func (t *StoredEvent) FromConversationEvent(v ConversationEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationEvent performs a merge with any union data inside the StoredEvent, using the provided ConversationEvent
+func (t *StoredEvent) MergeConversationEvent(v ConversationEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsConversationMovedEvent returns the union data inside the StoredEvent as a ConversationMovedEvent
+func (t StoredEvent) AsConversationMovedEvent() (ConversationMovedEvent, error) {
+	var body ConversationMovedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationMovedEvent overwrites any union data inside the StoredEvent as the provided ConversationMovedEvent
+func (t *StoredEvent) FromConversationMovedEvent(v ConversationMovedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationMovedEvent performs a merge with any union data inside the StoredEvent, using the provided ConversationMovedEvent
+func (t *StoredEvent) MergeConversationMovedEvent(v ConversationMovedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsMessageCreatedEvent returns the union data inside the StoredEvent as a MessageCreatedEvent
+func (t StoredEvent) AsMessageCreatedEvent() (MessageCreatedEvent, error) {
+	var body MessageCreatedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromMessageCreatedEvent overwrites any union data inside the StoredEvent as the provided MessageCreatedEvent
+func (t *StoredEvent) FromMessageCreatedEvent(v MessageCreatedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeMessageCreatedEvent performs a merge with any union data inside the StoredEvent, using the provided MessageCreatedEvent
+func (t *StoredEvent) MergeMessageCreatedEvent(v MessageCreatedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsMessageUpdatedEvent returns the union data inside the StoredEvent as a MessageUpdatedEvent
+func (t StoredEvent) AsMessageUpdatedEvent() (MessageUpdatedEvent, error) {
+	var body MessageUpdatedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromMessageUpdatedEvent overwrites any union data inside the StoredEvent as the provided MessageUpdatedEvent
+func (t *StoredEvent) FromMessageUpdatedEvent(v MessageUpdatedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeMessageUpdatedEvent performs a merge with any union data inside the StoredEvent, using the provided MessageUpdatedEvent
+func (t *StoredEvent) MergeMessageUpdatedEvent(v MessageUpdatedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsDraftEvent returns the union data inside the StoredEvent as a DraftEvent
+func (t StoredEvent) AsDraftEvent() (DraftEvent, error) {
+	var body DraftEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromDraftEvent overwrites any union data inside the StoredEvent as the provided DraftEvent
+func (t *StoredEvent) FromDraftEvent(v DraftEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeDraftEvent performs a merge with any union data inside the StoredEvent, using the provided DraftEvent
+func (t *StoredEvent) MergeDraftEvent(v DraftEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsContactUpdatedEvent returns the union data inside the StoredEvent as a ContactUpdatedEvent
+func (t StoredEvent) AsContactUpdatedEvent() (ContactUpdatedEvent, error) {
+	var body ContactUpdatedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromContactUpdatedEvent overwrites any union data inside the StoredEvent as the provided ContactUpdatedEvent
+func (t *StoredEvent) FromContactUpdatedEvent(v ContactUpdatedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeContactUpdatedEvent performs a merge with any union data inside the StoredEvent, using the provided ContactUpdatedEvent
+func (t *StoredEvent) MergeContactUpdatedEvent(v ContactUpdatedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsContactDeletedEvent returns the union data inside the StoredEvent as a ContactDeletedEvent
+func (t StoredEvent) AsContactDeletedEvent() (ContactDeletedEvent, error) {
+	var body ContactDeletedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromContactDeletedEvent overwrites any union data inside the StoredEvent as the provided ContactDeletedEvent
+func (t *StoredEvent) FromContactDeletedEvent(v ContactDeletedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeContactDeletedEvent performs a merge with any union data inside the StoredEvent, using the provided ContactDeletedEvent
+func (t *StoredEvent) MergeContactDeletedEvent(v ContactDeletedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsInboxCreatedEvent returns the union data inside the StoredEvent as a InboxCreatedEvent
+func (t StoredEvent) AsInboxCreatedEvent() (InboxCreatedEvent, error) {
+	var body InboxCreatedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromInboxCreatedEvent overwrites any union data inside the StoredEvent as the provided InboxCreatedEvent
+func (t *StoredEvent) FromInboxCreatedEvent(v InboxCreatedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeInboxCreatedEvent performs a merge with any union data inside the StoredEvent, using the provided InboxCreatedEvent
+func (t *StoredEvent) MergeInboxCreatedEvent(v InboxCreatedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsInboxUpdatedEvent returns the union data inside the StoredEvent as a InboxUpdatedEvent
+func (t StoredEvent) AsInboxUpdatedEvent() (InboxUpdatedEvent, error) {
+	var body InboxUpdatedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromInboxUpdatedEvent overwrites any union data inside the StoredEvent as the provided InboxUpdatedEvent
+func (t *StoredEvent) FromInboxUpdatedEvent(v InboxUpdatedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeInboxUpdatedEvent performs a merge with any union data inside the StoredEvent, using the provided InboxUpdatedEvent
+func (t *StoredEvent) MergeInboxUpdatedEvent(v InboxUpdatedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsInboxDeletedEvent returns the union data inside the StoredEvent as a InboxDeletedEvent
+func (t StoredEvent) AsInboxDeletedEvent() (InboxDeletedEvent, error) {
+	var body InboxDeletedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromInboxDeletedEvent overwrites any union data inside the StoredEvent as the provided InboxDeletedEvent
+func (t *StoredEvent) FromInboxDeletedEvent(v InboxDeletedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeInboxDeletedEvent performs a merge with any union data inside the StoredEvent, using the provided InboxDeletedEvent
+func (t *StoredEvent) MergeInboxDeletedEvent(v InboxDeletedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsInboxAccessChangedEvent returns the union data inside the StoredEvent as a InboxAccessChangedEvent
+func (t StoredEvent) AsInboxAccessChangedEvent() (InboxAccessChangedEvent, error) {
+	var body InboxAccessChangedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromInboxAccessChangedEvent overwrites any union data inside the StoredEvent as the provided InboxAccessChangedEvent
+func (t *StoredEvent) FromInboxAccessChangedEvent(v InboxAccessChangedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeInboxAccessChangedEvent performs a merge with any union data inside the StoredEvent, using the provided InboxAccessChangedEvent
+func (t *StoredEvent) MergeInboxAccessChangedEvent(v InboxAccessChangedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsConversationReadEvent returns the union data inside the StoredEvent as a ConversationReadEvent
+func (t StoredEvent) AsConversationReadEvent() (ConversationReadEvent, error) {
+	var body ConversationReadEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationReadEvent overwrites any union data inside the StoredEvent as the provided ConversationReadEvent
+func (t *StoredEvent) FromConversationReadEvent(v ConversationReadEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationReadEvent performs a merge with any union data inside the StoredEvent, using the provided ConversationReadEvent
+func (t *StoredEvent) MergeConversationReadEvent(v ConversationReadEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t StoredEvent) Discriminator() (string, error) {
+	var discriminator struct {
+		Discriminator string `json:"type"`
+	}
+	err := json.Unmarshal(t.union, &discriminator)
+	return discriminator.Discriminator, err
+}
+
+func (t StoredEvent) ValueByDiscriminator() (interface{}, error) {
+	discriminator, err := t.Discriminator()
+	if err != nil {
+		return nil, err
+	}
+	switch discriminator {
+	case "contact.deleted":
+		return t.AsContactDeletedEvent()
+	case "contact.updated":
+		return t.AsContactUpdatedEvent()
+	case "conversation.created":
+		return t.AsConversationEvent()
+	case "conversation.moved":
+		return t.AsConversationMovedEvent()
+	case "conversation.read":
+		return t.AsConversationReadEvent()
+	case "conversation.updated":
+		return t.AsConversationEvent()
+	case "draft.created":
+		return t.AsDraftEvent()
+	case "draft.deleted":
+		return t.AsDraftEvent()
+	case "draft.updated":
+		return t.AsDraftEvent()
+	case "inbox.created":
+		return t.AsInboxCreatedEvent()
+	case "inbox.deleted":
+		return t.AsInboxDeletedEvent()
+	case "inbox.updated":
+		return t.AsInboxUpdatedEvent()
+	case "inbox_access.changed":
+		return t.AsInboxAccessChangedEvent()
+	case "message.created":
+		return t.AsMessageCreatedEvent()
+	case "message.updated":
+		return t.AsMessageUpdatedEvent()
+	default:
+		return nil, errors.New("unknown discriminator value: " + discriminator)
+	}
+}
+
+func (t StoredEvent) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *StoredEvent) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 	// DownloadClientAttachment Download an attachment
@@ -5970,6 +6381,12 @@ type ServerInterface interface {
 	// SetMemberTyping Tell others you are typing
 	// (POST /v1/conversations/{conversationId}/typing)
 	SetMemberTyping(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params SetMemberTypingParams)
+	// ListEvents Events after a cursor
+	// (GET /v1/events)
+	ListEvents(w http.ResponseWriter, r *http.Request, params ListEventsParams)
+	// GetLatestEvent Current position of the event feed
+	// (GET /v1/events/latest)
+	GetLatestEvent(w http.ResponseWriter, r *http.Request, params GetLatestEventParams)
 	// CreateFeedback Post feedback for a host app's user
 	// (POST /v1/feedback)
 	CreateFeedback(w http.ResponseWriter, r *http.Request, params CreateFeedbackParams)
@@ -8779,6 +9196,114 @@ func (siw *ServerInterfaceWrapper) SetMemberTyping(w http.ResponseWriter, r *htt
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.SetMemberTyping(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListEvents operation middleware
+func (siw *ServerInterfaceWrapper) ListEvents(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListEventsParams
+
+	// ------------- Required query parameter "after" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "after", r.URL.Query(), &params.After, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "after"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "after", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int32"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListEvents(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetLatestEvent operation middleware
+func (siw *ServerInterfaceWrapper) GetLatestEvent(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetLatestEventParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetLatestEvent(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -11840,6 +12365,8 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/oauth/requests/{oauthRequestId}/deny", wrapper.DenyOAuthRequest)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/oauth/grants", wrapper.ListOAuthGrants)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/oauth/grants/{oauthGrantId}", wrapper.RevokeOAuthGrant)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/events", wrapper.ListEvents)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/events/latest", wrapper.GetLatestEvent)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/client/v1/session", wrapper.DeleteClientSession)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/session", wrapper.GetClientSession)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/session", wrapper.CreateClientSession)
@@ -16695,6 +17222,138 @@ func (response SetMemberTyping404ApplicationProblemPlusJSONResponse) VisitSetMem
 	return err
 }
 
+type ListEventsRequestObject struct {
+	Params ListEventsParams
+}
+
+type ListEventsResponseObject interface {
+	VisitListEventsResponse(w http.ResponseWriter) error
+}
+
+type ListEvents200JSONResponse EventPage
+
+func (response ListEvents200JSONResponse) VisitListEventsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListEvents400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListEvents400ApplicationProblemPlusJSONResponse) VisitListEventsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListEvents401ApplicationProblemPlusJSONResponse Problem
+
+func (response ListEvents401ApplicationProblemPlusJSONResponse) VisitListEventsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListEvents403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListEvents403ApplicationProblemPlusJSONResponse) VisitListEventsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListEvents410ApplicationProblemPlusJSONResponse Problem
+
+func (response ListEvents410ApplicationProblemPlusJSONResponse) VisitListEventsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(410)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLatestEventRequestObject struct {
+	Params GetLatestEventParams
+}
+
+type GetLatestEventResponseObject interface {
+	VisitGetLatestEventResponse(w http.ResponseWriter) error
+}
+
+type GetLatestEvent200JSONResponse EventPosition
+
+func (response GetLatestEvent200JSONResponse) VisitGetLatestEventResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLatestEvent401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetLatestEvent401ApplicationProblemPlusJSONResponse) VisitGetLatestEventResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLatestEvent403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetLatestEvent403ApplicationProblemPlusJSONResponse) VisitGetLatestEventResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type CreateFeedbackRequestObject struct {
 	Params CreateFeedbackParams
 	Body   *CreateFeedbackJSONRequestBody
@@ -21096,6 +21755,12 @@ type StrictServerInterface interface {
 	// SetMemberTyping Tell others you are typing
 	// (POST /v1/conversations/{conversationId}/typing)
 	SetMemberTyping(ctx context.Context, request SetMemberTypingRequestObject) (SetMemberTypingResponseObject, error)
+	// ListEvents Events after a cursor
+	// (GET /v1/events)
+	ListEvents(ctx context.Context, request ListEventsRequestObject) (ListEventsResponseObject, error)
+	// GetLatestEvent Current position of the event feed
+	// (GET /v1/events/latest)
+	GetLatestEvent(ctx context.Context, request GetLatestEventRequestObject) (GetLatestEventResponseObject, error)
 	// CreateFeedback Post feedback for a host app's user
 	// (POST /v1/feedback)
 	CreateFeedback(ctx context.Context, request CreateFeedbackRequestObject) (CreateFeedbackResponseObject, error)
@@ -22960,6 +23625,58 @@ func (sh *strictHandler) SetMemberTyping(w http.ResponseWriter, r *http.Request,
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(SetMemberTypingResponseObject); ok {
 		if err := validResponse.VisitSetMemberTypingResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListEvents operation middleware
+func (sh *strictHandler) ListEvents(w http.ResponseWriter, r *http.Request, params ListEventsParams) {
+	var request ListEventsRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListEvents(ctx, request.(ListEventsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListEvents")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListEventsResponseObject); ok {
+		if err := validResponse.VisitListEventsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetLatestEvent operation middleware
+func (sh *strictHandler) GetLatestEvent(w http.ResponseWriter, r *http.Request, params GetLatestEventParams) {
+	var request GetLatestEventRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetLatestEvent(ctx, request.(GetLatestEventRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetLatestEvent")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetLatestEventResponseObject); ok {
+		if err := validResponse.VisitGetLatestEventResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

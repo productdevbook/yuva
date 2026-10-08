@@ -31,7 +31,7 @@ func Migrate(ctx context.Context, pool *pgxpool.Pool, log *slog.Logger) error {
 }
 
 const (
-	EventRetention       = 24 * time.Hour
+	EventRetention       = 7 * 24 * time.Hour
 	WebhookRetention     = 7 * 24 * time.Hour
 	IdempotencyRetention = 24 * time.Hour
 	UnusedOAuthClientAge = 30 * 24 * time.Hour

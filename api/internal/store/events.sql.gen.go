@@ -45,6 +45,17 @@ func (q *Queries) EventExists(ctx context.Context, arg EventExistsParams) (bool,
 	return found, err
 }
 
+const firstEventID = `-- name: FirstEventID :one
+SELECT coalesce(min(id), 0)::bigint AS id FROM events WHERE workspace_id = $1
+`
+
+func (q *Queries) FirstEventID(ctx context.Context, workspaceID uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, firstEventID, workspaceID)
+	var id int64
+	err := row.Scan(&id)
+	return id, err
+}
+
 const getEvent = `-- name: GetEvent :one
 SELECT id, workspace_id, type, inbox_id, conversation_id, payload, created_at FROM events WHERE workspace_id = $1 AND id = $2
 `

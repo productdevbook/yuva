@@ -142,7 +142,7 @@ What Yuva deletes by itself, once an hour:
 
 | Data | Kept |
 |---|---|
-| Realtime events (replayed to clients that reconnect) | 24 hours |
+| Events (realtime replay and `GET /v1/events`) | 7 days |
 | Expired contact sessions | until they expire, 7 days after their last use |
 | Finished webhook deliveries | 7 days; the newest 100 attempts per endpoint stay in the log |
 | Stale realtime connection records | 1 hour |

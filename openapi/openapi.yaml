@@ -100,7 +100,7 @@ tags:
   - name: canned-replies
     description: Saved answers members insert into replies.
   - name: realtime
-    description: Live workspace events over WebSocket.
+    description: Live workspace events over WebSocket, and the same events as a feed to poll.
   - name: client
     description: |
       The contact side, for the web widget and the mobile SDKs. A contact session starts at
@@ -3084,6 +3084,85 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+  /v1/events:
+    get:
+      operationId: listEvents
+      summary: Events after a cursor
+      description: |
+        The events `/v1/realtime` and webhooks carry, in id order, for callers that poll instead of
+        holding a WebSocket open. Each event is filtered exactly as the caller's realtime stream is:
+        agents and API keys limited to inboxes see the events of the inboxes they can access, and
+        `contact.updated` and `contact.deleted` also need `contacts:read`.
+
+        Pass the last event id you handled as `after` (`0` starts at the oldest kept event). Keep
+        `next` and send it as `after` on the next call; `next` is the last event returned, or a
+        later id when the events after it are ones the caller does not see. `has_more` is true
+        when more events follow, so call again at once; otherwise poll later. A page can hold
+        fewer than `limit` events while `has_more` is true.
+
+        Events are kept 7 days. An `after` older than the oldest kept event answers
+        `410 cursor_expired`: some events after it are gone. Reload what you need over the lists,
+        then continue from `GET /v1/events/latest`'s `id`.
+
+        Scope: `conversations:read`.
+      tags: [realtime]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - name: after
+          in: query
+          required: true
+          description: The last event id the caller handled; `0` for the oldest kept event.
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+        - name: limit
+          in: query
+          description: Events per page, 1 to 500; 100 by default.
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 500
+      responses:
+        "200":
+          description: The events after `after`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventPage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "410":
+          $ref: "#/components/responses/Problem"
+  /v1/events/latest:
+    get:
+      operationId: getLatestEvent
+      summary: Current position of the event feed
+      description: |
+        The id of the workspace's newest event (`0` when there is none), whether or not the caller
+        may see it. Pass it as `after` to `GET /v1/events` to receive only events from now on,
+        after loading the current state over the lists.
+
+        Scope: `conversations:read`.
+      tags: [realtime]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The feed position.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventPosition"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
   /v1/realtime:
     get:
       operationId: realtime
@@ -3091,7 +3170,7 @@ paths:
       description: |
         Upgrades to a WebSocket that streams the workspace's events as they are committed. Members
         authenticate with the session cookie; the `Origin` header must then be the server's public
-        origin (or one of the configured WebAuthn origins). API keys send
+        origin (or one of the configured WebAuthn origins). API keys and OAuth access tokens send
         `Authorization: Bearer <key>`. Browsers cannot set headers on a WebSocket, so the workspace
         can also be named with the `workspace_id` query parameter instead of `Yuva-Workspace`.
 
@@ -3100,7 +3179,8 @@ paths:
         receive every event of the workspace. Agents, and API keys limited to inboxes, receive the
         events of the inboxes they can access and contact events; agents also get
         `inbox_access.changed` events about themselves. Access is re-read when such an event
-        arrives and every 30 seconds. An API key needs `conversations:read`. `inbox.created` reaches owners,
+        arrives and every 30 seconds. An API key or token needs `conversations:read`, and contact
+        events reach it only with `contacts:read`. `inbox.created` reaches owners,
         admins and API keys (an agent learns of a new inbox from `inbox_access.changed`);
         `inbox.deleted` reaches everyone who could see the inbox. `conversation.read` reaches only
         the connections of the member who read. `typing` (a contact or another member typing) has no
@@ -3112,8 +3192,8 @@ paths:
         Resuming: after the replay (if any) the server sends `ready` with `last_event_id`, the
         stream position at that moment. Remember the larger of that value and the `id` of every
         event received, and reconnect with `?last_event_id=<it>`. The server then replays the
-        events after it, without gaps or duplicates, before the live ones. Events are kept for 24
-        hours; when `last_event_id` is no longer known the server sends `resync_required` (reload
+        events after it, without gaps or duplicates, before the live ones. Events are kept for 7
+        days; when `last_event_id` is no longer known the server sends `resync_required` (reload
         everything over HTTP) followed by `ready` and continues live. Without `last_event_id` there
         is no replay.
 
@@ -7129,6 +7209,62 @@ components:
         type:
           type: string
           enum: [resync_required]
+    StoredEvent:
+      description: An event as `GET /v1/events` returns it, told apart by `type`; the same objects realtime and webhooks carry.
+      oneOf:
+        - $ref: "#/components/schemas/ConversationEvent"
+        - $ref: "#/components/schemas/ConversationMovedEvent"
+        - $ref: "#/components/schemas/MessageCreatedEvent"
+        - $ref: "#/components/schemas/MessageUpdatedEvent"
+        - $ref: "#/components/schemas/DraftEvent"
+        - $ref: "#/components/schemas/ContactUpdatedEvent"
+        - $ref: "#/components/schemas/ContactDeletedEvent"
+        - $ref: "#/components/schemas/InboxCreatedEvent"
+        - $ref: "#/components/schemas/InboxUpdatedEvent"
+        - $ref: "#/components/schemas/InboxDeletedEvent"
+        - $ref: "#/components/schemas/InboxAccessChangedEvent"
+        - $ref: "#/components/schemas/ConversationReadEvent"
+      discriminator:
+        propertyName: type
+        mapping:
+          conversation.created: "#/components/schemas/ConversationEvent"
+          conversation.updated: "#/components/schemas/ConversationEvent"
+          conversation.moved: "#/components/schemas/ConversationMovedEvent"
+          message.created: "#/components/schemas/MessageCreatedEvent"
+          message.updated: "#/components/schemas/MessageUpdatedEvent"
+          draft.created: "#/components/schemas/DraftEvent"
+          draft.updated: "#/components/schemas/DraftEvent"
+          draft.deleted: "#/components/schemas/DraftEvent"
+          contact.updated: "#/components/schemas/ContactUpdatedEvent"
+          contact.deleted: "#/components/schemas/ContactDeletedEvent"
+          inbox.created: "#/components/schemas/InboxCreatedEvent"
+          inbox.updated: "#/components/schemas/InboxUpdatedEvent"
+          inbox.deleted: "#/components/schemas/InboxDeletedEvent"
+          inbox_access.changed: "#/components/schemas/InboxAccessChangedEvent"
+          conversation.read: "#/components/schemas/ConversationReadEvent"
+    EventPage:
+      type: object
+      required: [events, next, has_more]
+      properties:
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/StoredEvent"
+        next:
+          type: integer
+          format: int64
+          description: Send as `after` on the next call.
+        has_more:
+          type: boolean
+          description: More events follow `next`; call again without waiting.
+    EventPosition:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The newest event id of the workspace; `0` when there is none.
     RealtimeMessage:
       description: One server message on `/v1/realtime`, told apart by `type`.
       oneOf:

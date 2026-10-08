@@ -26,3 +26,6 @@ DELETE FROM events WHERE workspace_id = @workspace_id AND created_at < @before;
 
 -- name: NotifySignal :exec
 SELECT pg_notify(sqlc.arg(channel)::text, sqlc.arg(payload)::text);
+
+-- name: FirstEventID :one
+SELECT coalesce(min(id), 0)::bigint AS id FROM events WHERE workspace_id = $1;

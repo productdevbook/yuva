@@ -286,6 +286,10 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 	switch e.Type {
 	case realtime.PresenceHint, realtime.ChannelUpdated:
 		return false, nil
+	case realtime.ContactUpdated, realtime.ContactDeleted:
+		if requireScope(f.p, oas.ContactsRead) != nil {
+			return false, nil
+		}
 	case realtime.Typing:
 		var ty oas.Typing
 		if err := json.Unmarshal(e.Data, &ty); err != nil {

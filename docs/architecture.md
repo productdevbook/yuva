@@ -80,7 +80,7 @@ panel (embedded SPA) ─────────► /v1 + WS ──────�
   a workspace follow commit order; the transaction's `NOTIFY` carries the id. One listener per
   process loads each notified event and an in-process hub fans it out to that workspace's
   connections, filtered by inbox access. Clients resume with the last event id: the server
-  replays newer events (kept 24 hours, cleaned by a River job) before live ones, or answers
+  replays newer events (kept 7 days, cleaned by a River job) before live ones, or answers
   `resync_required` and the client reloads over HTTP. A slow connection is closed instead of
   holding up the hub; when the listener reconnects, every connection is closed so it resumes.
   Typing and presence notices are not stored: they travel as the payload of a second `NOTIFY`
@@ -219,7 +219,13 @@ also need `contacts:read`). `after` is the last event id the caller handled; the
 `next` (the last id returned) and `has_more`. Events are kept 7 days (realtime replay uses the same
 rows). An `after` older than the oldest kept event answers `410 cursor_expired`: the caller
 resyncs from the lists and continues from `GET /v1/events/latest`'s id. Keys and tokens open
-`/v1/realtime` with `Authorization: Bearer`.
+`/v1/realtime` with `Authorization: Bearer`. Details: `after=0` starts at the oldest kept event and
+never expires; a workspace with no kept events answers `410` to any other `after`, so a caller
+idle through a silent week resyncs once. `limit` is 1 to 500 (100 by default). Events the caller
+may not see are skipped, so `next` can be past the last returned event (the last one examined) and
+a page can be short while `has_more` is true; one call examines at most 5000 events. The expiry
+check runs after the page is read, so a cleanup in between cannot drop events silently.
+`/latest` returns the workspace's newest id whatever the caller may see (`0` when none).
 
 **API-only mode.** `YUVA_PANEL=off` stops serving the panel (and so the OAuth consent page:
 `/oauth/authorize` then answers `temporarily_unavailable`; API keys still work). `YUVA_WIDGET=off`
