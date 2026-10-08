@@ -144,6 +144,13 @@ The slug is made from the name when omitted. The SMTP password is read from a fi
 from stdin, never from the command line; the auto-reply stays off. The inbox's identity secret is
 not printed; rotate it when an app needs one.
 
+Unlike the commands above, the MCP bridge needs no database or server configuration; it runs on the
+machine of whoever uses an assistant (see "MCP for local clients"):
+
+```sh
+yuva mcp stdio --url <server> --key <key>   # or YUVA_URL, YUVA_API_KEY; stdout carries only MCP
+```
+
 ### Headless access
 
 Everything the panel does is reachable without it: scripts, bots and other UIs use `/v1` with
@@ -248,6 +255,24 @@ someone else), MIT, versioned with the repository:
 an MCP Bundle (`yuva.mcpb`, the bridge for macOS, Linux and Windows, asking for the server URL and
 key) and the repository keeps `server.json` for the MCP Registry, describing the remote endpoint
 with the server URL as a variable and the stdio bridge as a package.
+- The bridge relays JSON-RPC messages unchanged, so every protocol version and method the server
+  speaks (including `subscriptions/listen`) passes through. `--url` is the server's public URL;
+  `/mcp` is appended unless it is there. The key is sent as `Authorization: Bearer` and may be an
+  API key or an OAuth access token. A call that fails gets a JSON-RPC error on stdout and a log
+  line on stderr (JSON); an unreachable server fails each call but keeps the bridge running. A
+  `401` (wrong, expired or revoked key) ends it with exit status 1; end of stdin with 0.
+- The bundle follows MCPB manifest 0.3 (`deploy/mcpb/manifest.json`) and is packed by the release
+  workflow with `@anthropic-ai/mcpb` 2.1.2. Server type `binary`: `server/yuva` is a POSIX shell
+  launcher that picks `server/<os>-<arch>/yuva` (darwin arm64 and amd64, linux amd64 and arm64);
+  Windows runs `server/yuva.exe` (amd64). `user_config` asks for `url` and `api_key` (sensitive)
+  and passes them as `YUVA_URL` and `YUVA_API_KEY`. The binaries are the full `yuva` without the
+  built panel, so the bundle stays near 60 MB.
+- `server.json` uses the registry schema `2025-12-11`. The remote is `https://{host}/mcp` with
+  `host` as a required variable (the schema allows a variable in the host, not yet a whole base
+  URL). The package is `registryType: mcpb` pointing at the release's `yuva.mcpb`. The file in the
+  repository has no `fileSha256`; the release workflow fills the version, the asset URL and the
+  hash and attaches that `server.json` to the release, which is what gets published. Its version
+  and the manifest's move with the repository version.
 
 ### OAuth and MCP
 

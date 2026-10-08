@@ -48,7 +48,8 @@ const usageText = `usage:
   yuva channel list --workspace <id|name> --inbox <id|slug>
   yuva workspace delete --workspace <id|name> --yes
   yuva person delete --email <address> --yes
-  yuva vapid-keys                (prints a new Web Push key pair)`
+  yuva vapid-keys                (prints a new Web Push key pair)
+  yuva mcp stdio --url <server> --key <key>   (bridges stdio to the server's /mcp; or YUVA_URL, YUVA_API_KEY)`
 
 func main() {
 	log := slog.New(slog.NewJSONHandler(os.Stderr, nil))
@@ -61,6 +62,13 @@ func main() {
 	defer stop()
 	if os.Args[1] == "vapid-keys" {
 		if err := vapidKeys(); err != nil {
+			log.Error("fatal", slog.Any("error", err))
+			os.Exit(1)
+		}
+		return
+	}
+	if os.Args[1] == "mcp" {
+		if err := mcpCLI(ctx, os.Args[2:], os.Stdin, os.Stdout, os.Stderr, log); err != nil {
 			log.Error("fatal", slog.Any("error", err))
 			os.Exit(1)
 		}
