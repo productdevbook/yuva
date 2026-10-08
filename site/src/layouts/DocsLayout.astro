@@ -3,8 +3,8 @@ import { docsCopy } from "@/copy/docs"
 import { i18nFor } from "@/i18n"
 import Base from "@/layouts/Base.astro"
 import { href, neighbours, nav, type NavItem } from "@/lib/docs"
-import { bcp47, docsPath, type Locale } from "@/lib/routes"
-import DocsSearch from "@/ui/DocsSearch.astro"
+import { docsPath, type Locale } from "@/lib/routes"
+import DocsHeader from "@/layouts/DocsHeader.astro"
 
 type Heading = { depth: number; slug: string; text: string }
 
@@ -15,51 +15,39 @@ interface Props {
   slug: string
   rel: string
   headings?: Heading[]
+  meta?: string[]
   edit?: string
-  updated?: string
   image?: string
+  wideContent?: boolean
 }
 
-const { locale, title, description, slug, rel, headings = [], edit, updated, image } = Astro.props
+const { locale, title, description, slug, rel, headings = [], meta = [], edit, image, wideContent = false } = Astro.props
 const t = docsCopy(i18nFor(locale))
 const groups = await nav(locale)
 const { prev, next } = await neighbours(slug, locale)
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
-const group = groups.find((g) => g.items.some((i) => i.slug === slug || i.children?.some((c) => c.slug === slug)))
 const active = (item: NavItem) => item.slug === slug
-const open = (item: NavItem) => active(item) || !!item.children?.some((c) => c.slug === slug)
-const day = updated ? new Intl.DateTimeFormat(bcp47[locale], { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${updated}T00:00:00Z`)) : undefined
+const inside = (item: NavItem) => active(item) || !!item.children?.some((c) => c.slug === slug)
 const link =
-  "block rounded-lg px-3 py-1.5 text-sm text-ink-soft transition-colors hover:bg-paper-deep hover:text-ink aria-[current=page]:bg-brand-wash aria-[current=page]:font-medium aria-[current=page]:text-brand"
+  "flex items-center gap-2 rounded-md px-2.5 py-1.5 text-sm text-ink-soft hover:bg-paper-deep hover:text-ink aria-[current=page]:bg-brand-wash aria-[current=page]:font-medium aria-[current=page]:text-brand"
 ---
 
-<Base locale={locale} title={`${title} · Yuva docs`} description={description} paths={docsPath(rel)} image={image}>
-  <div class="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-5 sm:px-8 lg:grid-cols-[14rem_minmax(0,1fr)] xl:grid-cols-[14rem_minmax(0,1fr)_12rem]">
-    <aside class="hidden lg:block">
-      <div class="sticky top-16 max-h-[calc(100svh-4rem)] overflow-y-auto py-8 pe-2">
-        <DocsSearch locale={locale} />
-        <nav class="mt-6 grid gap-6" aria-label={t.documentation}>
+<Base locale={locale} title={`${title} · Yuva docs`} description={description} paths={docsPath(rel)} image={image} bare>
+  <DocsHeader locale={locale} paths={docsPath(rel)} section="guides" />
+  <div class="grid grid-cols-1 lg:grid-cols-[17rem_minmax(0,1fr)]">
+    <aside class="hidden border-e border-rule lg:block">
+      <div class="sticky top-14 flex h-[calc(100svh-3.5rem)] flex-col">
+        <nav class="flex-1 overflow-y-auto p-3" aria-label={t.documentation} data-sidebar>
           {
             groups.map((g) => (
-              <div>
-                <p class="px-3 text-xs font-semibold tracking-wide text-ink-faint uppercase">{g.title}</p>
-                <ul class="mt-2 grid gap-0.5">
-                  {g.items.map((item) => (
+              <div class="mb-5">
+                <p class="px-2.5 pb-1.5 text-xs font-semibold text-ink-faint">{g.title}</p>
+                <ul class="grid gap-px">
+                  {g.items.map((c) => (
                     <li>
-                      <a class={link} href={href(locale, item.rel)} aria-current={active(item) ? "page" : undefined}>
-                        {item.title}
+                      <a class={link} href={href(locale, c.rel)} aria-current={active(c) ? "page" : undefined}>
+                        {c.title}
                       </a>
-                      {item.children && open(item) && (
-                        <ul class="ms-3 mt-1 grid gap-0.5 border-s border-rule ps-2">
-                          {item.children.map((c) => (
-                            <li>
-                              <a class={link} href={href(locale, c.rel)} aria-current={active(c) ? "page" : undefined}>
-                                {c.title}
-                              </a>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
                     </li>
                   ))}
                 </ul>
@@ -70,119 +58,65 @@ const link =
       </div>
     </aside>
 
-    <main class="min-w-0 py-8 lg:py-12">
-      <div class="flex items-center gap-3 lg:hidden">
+    <div class="min-w-0">
+      <div class="flex items-center gap-3 border-b border-rule px-5 py-3 lg:hidden">
         <details class="group relative flex-1">
-          <summary
-            class="flex cursor-pointer list-none items-center justify-between rounded-xl border border-rule px-4 py-2.5 text-sm font-medium [&::-webkit-details-marker]:hidden"
-          >
+          <summary class="flex cursor-pointer list-none items-center justify-between rounded-xl border border-rule px-4 py-2.5 text-sm font-medium [&::-webkit-details-marker]:hidden">
             {title}
-            <svg class="size-4 text-ink-faint group-open:rotate-180" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"
-              ><path d="m4 6 4 4 4-4"></path></svg
-            >
+            <svg class="size-4 text-ink-faint group-open:rotate-180" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg>
           </summary>
-          <nav class="absolute inset-x-0 top-full z-40 mt-2 grid max-h-[70svh] gap-5 overflow-y-auto rounded-xl border border-rule bg-sheet p-3 shadow-paper" aria-label={t.documentation}>
+          <nav class="absolute inset-x-0 top-full z-40 mt-2 grid max-h-[70svh] gap-4 overflow-y-auto rounded-xl border border-rule bg-sheet p-3 shadow-paper" aria-label={t.documentation}>
             {
               groups.map((g) => (
                 <div>
-                  <p class="px-3 text-xs font-semibold tracking-wide text-ink-faint uppercase">{g.title}</p>
-                  <ul class="mt-1 grid gap-0.5">
-                    {g.items.map((item) => (
-                      <li>
-                        <a class={link} href={href(locale, item.rel)} aria-current={active(item) ? "page" : undefined}>
-                          {item.title}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
+                  <p class="px-2.5 pb-1 text-xs font-semibold text-ink-faint">{g.title}</p>
+                  {[...g.items, ...g.items.flatMap((i) => (inside(i) ? (i.children ?? []) : []))].map((i) => (
+                    <a class={link} href={href(locale, i.rel)} aria-current={active(i) ? "page" : undefined}>
+                      {i.title}
+                    </a>
+                  ))}
                 </div>
               ))
             }
           </nav>
         </details>
-        <DocsSearch locale={locale} compact />
       </div>
 
-      <p class="mt-6 flex items-center gap-2 text-sm text-ink-faint lg:mt-0">
-        <a class="hover:text-ink" href={href(locale)}>{t.docs}</a>
+      <div class:list={["mx-auto grid gap-12 px-5 py-10 sm:px-8 lg:px-12 lg:py-14", wideContent ? "max-w-[90rem]" : "max-w-6xl xl:grid-cols-[minmax(0,1fr)_14rem]"]}>
+        <main class="min-w-0">
+          <h1 class="text-[clamp(2.25rem,1.6rem+2vw,3rem)] leading-[1.06] font-semibold tracking-[-0.035em]">{title}</h1>
+          <p class="mt-3 text-sm text-ink-faint">{[...meta.slice(0, 1), ...(locale !== "en" ? [t.english] : [])].join(" · ")}</p>
+          <article class="docs-content mt-10" data-copy={t.copy} data-copied={t.copied}>
+            <slot />
+          </article>
+
+          <div class="mt-16 flex flex-wrap items-center justify-between gap-4 border-t border-rule pt-6 text-sm">
+            {prev ? <a class="text-ink-soft hover:text-ink" href={href(locale, prev.rel)}>← {prev.title}</a> : <span />}
+            {next && <a class="font-medium text-brand hover:underline" href={href(locale, next.rel)}>{next.title} →</a>}
+          </div>
+          {edit && <p class="mt-4 text-sm"><a class="text-ink-faint hover:text-ink" href={edit}>{t.edit} →</a></p>}
+        </main>
+
         {
-          group && (
-            <>
-              <span aria-hidden="true">/</span>
-              <span>{group.title}</span>
-            </>
+          !wideContent && toc.length > 1 && (
+            <aside class="hidden xl:block">
+              <nav class="sticky top-24" aria-label={t.onThisPage}>
+                <p class="text-xs font-semibold text-ink-faint">{t.onThisPage}</p>
+                <ol class="mt-3 border-s border-rule">
+                  {toc.map((h) => (
+                    <li>
+                      <a class:list={["-ms-px block border-s border-transparent py-1 text-sm transition-colors hover:border-ink hover:text-ink", h.depth === 3 ? "ps-6 text-ink-faint" : "ps-3 text-ink-soft"]} href={`#${h.slug}`}>
+                        {h.text}
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+            </aside>
           )
         }
-      </p>
-
-      {
-        locale !== "en" && (
-          <p class="mt-4 flex items-center gap-2 rounded-xl bg-paper-deep px-4 py-2.5 text-sm text-ink-soft">
-            <svg class="size-4 shrink-0 text-brand" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"
-              ><circle cx="8" cy="8" r="6" /><path d="M2 8h12M8 2c1.7 1.6 2.5 3.6 2.5 6S9.7 12.4 8 14C6.3 12.4 5.5 10.4 5.5 8S6.3 3.6 8 2Z" /></svg
-            >
-            {t.english}
-          </p>
-        )
-      }
-
-      <article class="docs-content mt-4">
-        <slot />
-      </article>
-
-      <div class="mt-14 flex flex-wrap items-center justify-between gap-3 border-t border-rule pt-6 text-sm text-ink-faint">
-        {day ? <p>{t.lastUpdated(day)}</p> : <span />}
-        {edit && <a class="font-medium text-brand hover:underline" href={edit}>{t.edit} →</a>}
       </div>
-
-      {
-        (prev || next) && (
-          <nav class="mt-8 grid gap-3 sm:grid-cols-2" aria-label={t.documentation}>
-            {prev ? (
-              <a class="group rounded-2xl border border-rule p-5 transition-colors hover:border-rule-strong hover:bg-paper-deep" href={href(locale, prev.rel)}>
-                <span class="text-xs text-ink-faint">← {t.previous}</span>
-                <span class="mt-1 block font-semibold group-hover:text-brand">{prev.title}</span>
-              </a>
-            ) : (
-              <span />
-            )}
-            {next && (
-              <a class="group rounded-2xl border border-rule p-5 text-end transition-colors hover:border-rule-strong hover:bg-paper-deep" href={href(locale, next.rel)}>
-                <span class="text-xs text-ink-faint">{t.next} →</span>
-                <span class="mt-1 block font-semibold group-hover:text-brand">{next.title}</span>
-              </a>
-            )}
-          </nav>
-        )
-      }
-    </main>
-
-    <aside class="hidden xl:block">
-      {
-        toc.length > 0 && (
-          <nav class="sticky top-16 max-h-[calc(100svh-4rem)] overflow-y-auto py-12" aria-labelledby="toc-title">
-            <p id="toc-title" class="text-sm font-semibold">
-              {t.onThisPage}
-            </p>
-            <ol class="mt-3 grid gap-1.5 border-s border-rule text-sm" data-toc>
-              {toc.map((h) => (
-                <li>
-                  <a
-                    class:list={[
-                      "-ms-px block border-s border-transparent py-0.5 text-ink-soft transition-colors hover:text-ink data-active:border-brand data-active:text-brand",
-                      h.depth === 3 ? "ps-6" : "ps-3",
-                    ]}
-                    href={`#${h.slug}`}
-                  >
-                    {h.text}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </nav>
-        )
-      }
-    </aside>
+    </div>
   </div>
 </Base>
 
@@ -196,16 +130,30 @@ const link =
     a.textContent = "#"
     h.append(a)
   })
+  const article = document.querySelector<HTMLElement>(".docs-content")
+  const labels: Record<string, string> = { sh: "Shell", bash: "Shell", yaml: "YAML", yml: "YAML", json: "JSON", nginx: "nginx", go: "Go", swift: "Swift", kotlin: "Kotlin", html: "HTML", js: "JavaScript", ts: "TypeScript", sql: "SQL" }
+  article?.querySelectorAll<HTMLPreElement>("pre.astro-code").forEach((pre) => {
+    const frame = document.createElement("div")
+    frame.className = "code-frame"
+    const bar = document.createElement("div")
+    bar.className = "code-bar"
+    const lang = pre.dataset.language ?? ""
+    const name = document.createElement("span")
+    name.textContent = labels[lang] ?? (lang === "plaintext" ? "" : lang)
+    const button = document.createElement("button")
+    button.type = "button"
+    button.textContent = article.dataset.copy ?? "Copy"
+    button.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(pre.innerText)
+      button.textContent = article.dataset.copied ?? "Copied"
+      setTimeout(() => (button.textContent = article.dataset.copy ?? "Copy"), 1400)
+    })
+    bar.append(name, button)
+    pre.replaceWith(frame)
+    frame.append(bar, pre)
+  })
 
-  const links = [...document.querySelectorAll<HTMLAnchorElement>("[data-toc] a")]
-  const targets = links.map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1)))).filter((el): el is HTMLElement => !!el)
-  if (targets.length) {
-    const mark = () => {
-      const passed = targets.filter((t) => t.getBoundingClientRect().top < 120)
-      const current = (passed.at(-1) ?? targets[0])!
-      for (const a of links) a.toggleAttribute("data-active", a.hash === `#${current.id}`)
-    }
-    mark()
-    window.addEventListener("scroll", mark, { passive: true })
-  }
+  const sidebar = document.querySelector<HTMLElement>("[data-sidebar]")
+  const current = sidebar?.querySelector<HTMLElement>('[aria-current="page"]')
+  if (sidebar && current) sidebar.scrollTop = current.offsetTop - sidebar.clientHeight / 3
 </script>

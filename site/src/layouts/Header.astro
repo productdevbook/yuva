@@ -9,9 +9,10 @@ import Logo from "@/ui/Logo.astro"
 interface Props {
   locale: Locale
   paths: Record<Locale, string>
+  wide?: boolean
 }
 
-const { locale, paths } = Astro.props
+const { locale, paths, wide = false } = Astro.props
 const t = headerCopy(i18nFor(locale), locale)
 const appUrl = import.meta.env.PUBLIC_APP_URL
 const link = "text-sm text-ink-soft transition-colors hover:text-ink aria-[current=page]:font-medium aria-[current=page]:text-ink"
@@ -21,7 +22,7 @@ const item = "flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-start t
 ---
 
 <header class="sticky top-0 z-50 border-b border-transparent bg-paper/80 backdrop-blur-lg transition-colors duration-300 data-scrolled:border-rule" data-header>
-  <div class="mx-auto flex h-16 max-w-6xl items-center gap-10 px-5 sm:px-8">
+  <div class:list={["mx-auto flex h-16 items-center gap-10 px-5 sm:px-8", wide ? "max-w-none lg:px-6" : "max-w-6xl"]}>
     <a class="flex shrink-0 items-center gap-2.5" href={home[locale]} aria-label={t.home} data-logo>
       <Logo size={26} />
       <span class="text-[1.02rem] font-semibold tracking-tight">Yuva</span>

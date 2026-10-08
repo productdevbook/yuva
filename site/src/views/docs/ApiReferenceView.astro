@@ -1,0 +1,112 @@
+---
+import { docsCopy } from "@/copy/docs"
+import { i18nFor } from "@/i18n"
+import Base from "@/layouts/Base.astro"
+import DocsHeader from "@/layouts/DocsHeader.astro"
+import { docsPath, type Locale } from "@/lib/routes"
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const t = docsCopy(i18nFor(locale))
+const config = {
+  sources: [{ url: "/openapi.yaml", agent: { disabled: true } }],
+  theme: "none",
+  layout: "modern",
+  withDefaultFonts: false,
+  telemetry: false,
+  hideClientButton: false,
+  hideDarkModeToggle: true,
+  hideDownloadButton: false,
+  documentDownloadType: "yaml",
+  showDeveloperTools: "never",
+  showToolbar: "never",
+  showOperationId: true,
+  defaultHttpClient: { targetKey: "shell", clientKey: "curl" },
+  orderRequiredPropertiesFirst: true,
+  mcp: { disabled: true },
+  agent: { disabled: true },
+  servers: [{ url: "https://support.example.com", description: "Your Yuva server" }],
+  localization: { locale: locale === "tr" ? "en" : locale },
+}
+---
+
+<Base locale={locale} title={`${t.apiReference} · Yuva docs`} description={t.api.description} paths={docsPath("api/")} bare>
+  <DocsHeader locale={locale} paths={docsPath("api/")} section="api" />
+  <div id="yuva-api-reference" class="yuva-scalar" data-config={JSON.stringify(config)}></div>
+</Base>
+
+<script is:inline src="/docs/api/scalar.js"></script>
+<script is:inline>
+  ;(function () {
+    var el = document.getElementById("yuva-api-reference")
+    var config = JSON.parse(el.dataset.config)
+    var dark = window.matchMedia("(prefers-color-scheme: dark)")
+    config.forceDarkModeState = dark.matches ? "dark" : "light"
+    window.Scalar.createApiReference(el, config)
+  })()
+</script>
+
+<style is:global>
+  :root {
+    --scalar-custom-header-height: 3.5rem;
+  }
+  .scalar-mcp-layer,
+  .scalar-app button.bg-sidebar-b-search.whitespace-nowrap,
+  .scalar-api-reference button.bg-sidebar-b-search.whitespace-nowrap,
+  .scalar-app button[class*="group/toggle"] {
+    display: none !important;
+  }
+  .light-mode,
+  .dark-mode {
+    --scalar-font: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+    --scalar-font-code: "Geist Mono Variable", ui-monospace, "SF Mono", Menlo, monospace;
+    --scalar-radius: 8px;
+    --scalar-radius-lg: 12px;
+    --scalar-radius-xl: 16px;
+  }
+  .light-mode {
+    --scalar-background-1: #ffffff;
+    --scalar-background-2: #f7f7f8;
+    --scalar-background-3: #ececef;
+    --scalar-background-accent: #fff1eb;
+    --scalar-color-1: #0b0b0f;
+    --scalar-color-2: #52525b;
+    --scalar-color-3: #71717a;
+    --scalar-color-accent: #c2410c;
+    --scalar-border-color: #ececef;
+    --scalar-button-1: #d4431c;
+    --scalar-button-1-hover: #c2410c;
+    --scalar-button-1-color: #ffffff;
+    --scalar-sidebar-background-1: #ffffff;
+    --scalar-sidebar-item-hover-background: #f7f7f8;
+    --scalar-sidebar-item-active-background: #fff1eb;
+    --scalar-sidebar-color-active: #c2410c;
+    --scalar-sidebar-border-color: #ececef;
+    --scalar-sidebar-search-background: #ffffff;
+    --scalar-sidebar-search-border-color: #ececef;
+  }
+  .dark-mode {
+    --scalar-background-1: #09090b;
+    --scalar-background-2: #121216;
+    --scalar-background-3: #1f1f23;
+    --scalar-background-accent: #2a140c;
+    --scalar-color-1: #fafafa;
+    --scalar-color-2: #a1a1aa;
+    --scalar-color-3: #8a8a93;
+    --scalar-color-accent: #ff8a5c;
+    --scalar-border-color: #1f1f23;
+    --scalar-button-1: #d4431c;
+    --scalar-button-1-hover: #e4572e;
+    --scalar-button-1-color: #ffffff;
+    --scalar-sidebar-background-1: #09090b;
+    --scalar-sidebar-item-hover-background: #121216;
+    --scalar-sidebar-item-active-background: #2a140c;
+    --scalar-sidebar-color-active: #ff8a5c;
+    --scalar-sidebar-border-color: #1f1f23;
+    --scalar-sidebar-search-background: #121216;
+    --scalar-sidebar-search-border-color: #1f1f23;
+  }
+</style>

@@ -2,7 +2,6 @@ import { execFileSync } from "node:child_process"
 import { getCollection, type CollectionEntry } from "astro:content"
 import { docsCopy } from "@/copy/docs"
 import { i18nFor } from "@/i18n"
-import { tags, tagTitle } from "./openapi"
 import { docsRoot, REPO, type Locale } from "./routes"
 
 export type Doc = CollectionEntry<"docs">
@@ -17,8 +16,6 @@ const groups = [
 ] as const
 
 export const docRel = (slug: string) => (slug === "api" ? "api/" : `${slug}/`)
-export const tagRel = (name: string) => `api/${name}/`
-export const eventsRel = "api/events/"
 export const href = (locale: Locale, rel = "") => `${docsRoot(locale)}${rel}`
 export const editHref = (slug: string) => `${REPO}/edit/main/docs/${slug}.md`
 
@@ -45,6 +42,11 @@ export function description(doc: Doc) {
   return plain(paragraph)
 }
 
+export function minutes(doc: Doc) {
+  const words = (doc.body ?? "").replace(/```[\s\S]*?```/g, " ").match(/[\p{L}\p{N}]+/gu)?.length ?? 0
+  return Math.max(1, Math.round(words / 220))
+}
+
 export function updated(slug: string) {
   try {
     const out = execFileSync("git", ["log", "-1", "--format=%cs", "--", `../docs/${slug}.md`], { encoding: "utf8" }).trim()
@@ -66,15 +68,7 @@ export async function nav(locale: Locale): Promise<NavGroup[]> {
   const rest = [...all.keys()].filter((slug) => !listed.includes(slug)).sort()
   const item = (slug: string): NavItem =>
     slug === "api"
-      ? {
-          slug,
-          title: t.apiReference,
-          rel: docRel(slug),
-          children: [
-            ...tags().map((tag) => ({ slug: `api/${tag.name}`, title: tagTitle(tag.name), rel: tagRel(tag.name) })),
-            { slug: "api/events", title: t.webhookEvents, rel: eventsRel },
-          ],
-        }
+      ? { slug, title: t.apiReference, rel: docRel(slug) }
       : { slug, title: title(all.get(slug)!), rel: docRel(slug) }
   return [
     ...groups.map((g) => ({ key: g.key, title: t.groups[g.key], items: g.slugs.filter((slug) => slug === "api" || all.has(slug)).map(item) })),
@@ -96,4 +90,4 @@ export async function ordered() {
 }
 
 export const proseClass =
-  "prose prose-yuva max-w-none prose-headings:scroll-mt-24 prose-headings:tracking-tight prose-h1:text-4xl prose-h1:font-semibold prose-h1:tracking-[-0.03em] prose-h2:mt-14 prose-a:font-medium prose-a:underline-offset-4 prose-code:before:content-none prose-code:after:content-none prose-li:my-1 prose-table:text-sm"
+  "prose prose-yuva max-w-none text-base prose-p:leading-[1.75] prose-li:leading-[1.7] prose-li:my-1 prose-headings:scroll-mt-24 prose-headings:tracking-tight prose-a:font-medium prose-a:no-underline hover:prose-a:underline prose-code:before:content-none prose-code:after:content-none prose-strong:font-semibold prose-table:my-6 [&_:not(pre)>code]:rounded-md [&_:not(pre)>code]:border [&_:not(pre)>code]:border-rule [&_:not(pre)>code]:bg-paper-deep [&_:not(pre)>code]:px-1.5 [&_:not(pre)>code]:py-0.5 [&_:not(pre)>code]:text-[0.84em] [&_:not(pre)>code]:font-normal [&_:not(pre)>code]:text-ink-soft"

@@ -1,12 +1,11 @@
 import type { APIRoute } from "astro"
 import { getCollection } from "astro:content"
-import { docRel, eventsRel, ordered, tagRel } from "@/lib/docs"
-import { tags } from "@/lib/openapi"
+import { docRel, ordered } from "@/lib/docs"
 import { absolute, blog, brand, contact, docsPath, home, locales, post, releases } from "@/lib/routes"
 
 export const GET: APIRoute = async () => {
   const posts = (await getCollection("blog")).map((p) => `<url><loc>${absolute(post(p.id))}</loc></url>`)
-  const docs = ["", ...(await ordered()).map((d) => docRel(d.id)), "api/", ...tags().map((t) => tagRel(t.name)), eventsRel].map(docsPath)
+  const docs = ["", ...(await ordered()).map((d) => docRel(d.id)), "api/"].map(docsPath)
   const urls = [home, blog, releases, brand, contact, ...docs]
     .flatMap((page) => {
       const alternates = locales.map((l) => `<xhtml:link rel="alternate" hreflang="${l}" href="${absolute(page[l])}"/>`).join("")

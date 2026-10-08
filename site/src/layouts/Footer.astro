@@ -8,9 +8,10 @@ import Logo from "@/ui/Logo.astro"
 interface Props {
   locale: Locale
   paths: Record<Locale, string>
+  wide?: boolean
 }
 
-const { locale, paths } = Astro.props
+const { locale, paths, wide = false } = Astro.props
 const i18n = i18nFor(locale)
 const year = new Date().getFullYear()
 const columns = [
@@ -45,7 +46,7 @@ const link = "text-ink-soft transition-colors hover:text-ink"
 ---
 
 <footer class="border-t border-rule">
-  <div class="mx-auto max-w-6xl px-5 py-14 text-sm sm:px-8">
+  <div class:list={["mx-auto px-5 py-14 text-sm sm:px-8", wide ? "max-w-none lg:px-6" : "max-w-6xl"]}>
     <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
       <div>
         <a class="inline-flex items-center gap-2.5" href={home[locale]}>

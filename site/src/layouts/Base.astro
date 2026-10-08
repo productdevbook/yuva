@@ -20,9 +20,11 @@ interface Props {
   translated?: boolean
   type?: "website" | "article"
   image?: string
+  wide?: boolean
+  bare?: boolean
 }
 
-const { locale, title, description, jsonLd = [], noindex = false, paths = home, translated = true, type = "website", image } = Astro.props
+const { locale, title, description, jsonLd = [], noindex = false, paths = home, translated = true, type = "website", image, wide = false, bare = false } = Astro.props
 const i18n = i18nFor(locale)
 const canonical = absolute(paths[locale])
 const ogImage = absolute(image ?? `/og/${locale}.png`)
@@ -76,10 +78,10 @@ const preload = locale === "tr" ? [geistLatin, geistLatinExt] : [geistLatin]
       class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-paper"
       href="#main">{i18n._(msg`Skip to content`)}</a
     >
-    <Header locale={locale} paths={paths} />
+    {!bare && <Header locale={locale} paths={paths} wide={wide} />}
     <main id="main">
       <slot />
     </main>
-    <Footer locale={locale} paths={paths} />
+    {!bare && <Footer locale={locale} paths={paths} wide={wide} />}
   </body>
 </html>

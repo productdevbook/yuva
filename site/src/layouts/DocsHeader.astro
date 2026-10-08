@@ -1,0 +1,44 @@
+---
+import { docsCopy } from "@/copy/docs"
+import { i18nFor } from "@/i18n"
+import { href } from "@/lib/docs"
+import { home, links, type Locale } from "@/lib/routes"
+import DocsSearch from "@/ui/DocsSearch.astro"
+import GitHubIcon from "@/ui/GitHubIcon.astro"
+import LangMenu from "@/ui/LangMenu.astro"
+import Logo from "@/ui/Logo.astro"
+
+interface Props {
+  locale: Locale
+  paths: Record<Locale, string>
+  section: "guides" | "api"
+}
+
+const { locale, paths, section } = Astro.props
+const t = docsCopy(i18nFor(locale))
+const tab =
+  "relative flex h-14 items-center text-sm text-ink-soft transition-colors hover:text-ink aria-[current=page]:font-medium aria-[current=page]:text-ink aria-[current=page]:after:absolute aria-[current=page]:after:inset-x-0 aria-[current=page]:after:-bottom-px aria-[current=page]:after:h-0.5 aria-[current=page]:after:bg-signal"
+---
+
+<header class="sticky top-0 z-50 border-b border-rule bg-paper/90 backdrop-blur-lg">
+  <div class="flex h-14 items-center gap-6 px-4 lg:px-5">
+    <a class="flex shrink-0 items-center gap-2" href={href(locale)}>
+      <Logo size={24} />
+      <span class="font-semibold tracking-tight">Yuva</span>
+      <span class="rounded-md bg-paper-deep px-1.5 py-0.5 text-xs font-medium text-ink-soft">{t.docs}</span>
+    </a>
+    <nav class="hidden items-center gap-6 md:flex" aria-label={t.documentation}>
+      <a class={tab} href={href(locale)} aria-current={section === "guides" ? "page" : undefined}>{t.guides}</a>
+      <a class={tab} href={href(locale, "api/")} aria-current={section === "api" ? "page" : undefined}>{t.apiReference}</a>
+    </nav>
+    <div class="ms-auto hidden w-full max-w-sm md:block">
+      <DocsSearch locale={locale} />
+    </div>
+    <div class="ms-auto flex shrink-0 items-center gap-4 md:ms-0">
+      <span class="md:hidden"><DocsSearch locale={locale} compact /></span>
+      <LangMenu locale={locale} paths={paths} class="hidden sm:block" />
+      <a class="hidden text-sm text-ink-soft hover:text-ink lg:block" href={home[locale]}>{t.backToSite} ↗</a>
+      <a class="grid size-9 place-items-center rounded-md text-ink-soft hover:bg-paper-deep hover:text-ink" href={links.repo} aria-label="GitHub"><GitHubIcon size={18} /></a>
+    </div>
+  </div>
+</header>

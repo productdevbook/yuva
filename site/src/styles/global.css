@@ -120,7 +120,66 @@
   background-color: var(--paper-deep) !important;
 }
 
-.docs-content table {
+.docs-content .code-frame {
+  @apply my-6 overflow-hidden rounded-xl border border-rule bg-paper-deep;
+}
+
+.docs-content .code-frame .astro-code {
+  @apply my-0 rounded-none border-0;
+}
+
+.docs-content .code-bar {
+  @apply flex items-center justify-between border-b border-rule px-4 py-2 font-sans text-xs text-ink-faint;
+}
+
+.docs-content .code-bar button {
+  @apply rounded-md px-2 py-1 font-medium text-ink-soft hover:bg-rule hover:text-ink;
+}
+
+.docs-body h2 {
+  @apply mt-16 mb-4 border-t border-rule pt-10 text-[1.6rem] font-semibold tracking-[-0.02em];
+}
+
+.docs-body > h2:first-of-type {
+  @apply mt-10;
+}
+
+.docs-body h3 {
+  @apply mt-10 mb-3 text-[1.15rem] font-semibold;
+}
+
+.docs-body h3.step {
+  @apply flex items-center gap-3;
+}
+
+.docs-body h3.step::before {
+  content: attr(data-step);
+  @apply grid size-7 shrink-0 place-items-center rounded-full bg-signal font-sans text-sm font-semibold text-white;
+}
+
+.docs-body table {
+  @apply w-full overflow-hidden rounded-xl border border-rule text-sm;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.docs-body thead {
+  @apply bg-paper-deep;
+}
+
+.docs-body th {
+  @apply px-4 py-2.5 text-start text-xs font-semibold text-ink-soft;
+}
+
+.docs-body td {
+  @apply border-t border-rule px-4 py-3 align-top;
+}
+
+.docs-body td:first-child code {
+  @apply whitespace-nowrap text-ink;
+}
+
+.docs-content .prose table {
   @apply block overflow-x-auto;
 }
 
@@ -134,11 +193,11 @@
 }
 
 .prose .callout {
-  @apply rounded-xl border border-rule bg-paper-deep px-5 py-4 not-italic font-normal text-ink;
+  @apply relative rounded-xl border border-rule border-s-4 border-s-sky-500 bg-paper-deep px-5 py-4 font-normal not-italic text-ink;
 }
 
 .prose .callout::before {
-  @apply mb-1 block text-sm font-semibold;
+  @apply mb-1 flex items-center gap-2 text-sm font-semibold text-sky-600 dark:text-sky-400;
   content: attr(data-label);
 }
 
@@ -151,10 +210,26 @@
   @apply my-0;
 }
 
-.prose :is(.callout-warning, .callout-caution) {
-  @apply border-brand/40 bg-brand-wash;
+.prose .callout-tip {
+  @apply border-s-emerald-500;
 }
-
+.prose .callout-tip::before {
+  @apply text-emerald-600 dark:text-emerald-400;
+}
+.prose .callout-important {
+  @apply border-s-violet-500;
+}
+.prose .callout-important::before {
+  @apply text-violet-600 dark:text-violet-400;
+}
+.prose :is(.callout-warning, .callout-caution) {
+  @apply border-s-brand-bright bg-brand-wash;
+}
 .prose :is(.callout-warning, .callout-caution)::before {
   @apply text-brand;
 }
+
+.docs-body > p:first-child {
+  @apply text-lg leading-relaxed text-ink;
+}
+

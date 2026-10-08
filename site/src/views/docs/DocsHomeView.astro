@@ -2,7 +2,8 @@
 import { docsCopy } from "@/copy/docs"
 import { i18nFor } from "@/i18n"
 import Base from "@/layouts/Base.astro"
-import { docRel, eventsRel, href, nav, type NavItem } from "@/lib/docs"
+import DocsHeader from "@/layouts/DocsHeader.astro"
+import { docRel, href, nav, type NavItem } from "@/lib/docs"
 import { docsPath, type Locale } from "@/lib/routes"
 import ChannelIcon from "@/ui/ChannelIcon.astro"
 import DocsSearch from "@/ui/DocsSearch.astro"
@@ -22,10 +23,11 @@ const popular = [
   ...["configuration", "webhooks", "api"].map((slug) => find(slug)).filter((i): i is NavItem => !!i).map((i) => ({ label: i.title, rel: i.rel })),
 ]
 const icons: Record<string, "mail" | "chat" | "app" | "api"> = { email: "mail", widget: "chat", mobile: "app", api: "api" }
-const links = (item: NavItem) => (item.slug === "api" ? [item, { slug: "api/events", title: t.webhookEvents, rel: eventsRel }] : [item])
+const links = (item: NavItem) => [item]
 ---
 
-<Base locale={locale} title={t.home.title} description={t.home.description} paths={docsPath("")}>
+<Base locale={locale} title={t.home.title} description={t.home.description} paths={docsPath("")} bare>
+  <DocsHeader locale={locale} paths={docsPath("")} section="guides" />
   <div class="mx-auto max-w-6xl px-5 sm:px-8">
     <section class="mx-auto max-w-3xl py-16 text-center lg:py-24" aria-labelledby="docs-title">
       <p class="text-sm font-medium text-brand">{t.documentation}</p>

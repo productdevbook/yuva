@@ -1,7 +1,9 @@
 ---
+import { docsCopy } from "@/copy/docs"
+import { i18nFor } from "@/i18n"
 import DocsLayout from "@/layouts/DocsLayout.astro"
-import { description, docRel, editHref, proseClass, title, updated, type Doc } from "@/lib/docs"
-import { docsRoot, type Locale } from "@/lib/routes"
+import { description, docRel, editHref, minutes, proseClass, title, updated, type Doc } from "@/lib/docs"
+import { bcp47, docsRoot, type Locale } from "@/lib/routes"
 
 interface Props {
   entry: Doc
@@ -9,8 +11,16 @@ interface Props {
 }
 
 const { entry, locale } = Astro.props
-const html = (entry.rendered?.html ?? "").replaceAll('href="/docs/', `href="${docsRoot(locale)}`)
+const t = docsCopy(i18nFor(locale))
+const html = (entry.rendered?.html ?? "")
+  .replace(/<h1[^>]*>[\s\S]*?<\/h1>/, "")
+  .replaceAll('href="/docs/', `href="${docsRoot(locale)}`)
+  .replace(/<h3 id="([^"]+)">(\d+)\.\s*/g, '<h3 id="$1" class="step" data-step="$2">')
 const headings = (entry.rendered?.metadata?.headings ?? []) as { depth: number; slug: string; text: string }[]
+const sections = headings.filter((h) => h.depth === 2).length
+const day = updated(entry.id)
+const date = day ? new Intl.DateTimeFormat(bcp47[locale], { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${day}T00:00:00Z`)) : undefined
+const meta = [t.readTime(minutes(entry)), sections > 1 ? t.sectionCount(sections) : undefined, date ? t.lastUpdated(date) : undefined].filter(Boolean)
 ---
 
 <DocsLayout
@@ -20,8 +30,8 @@ const headings = (entry.rendered?.metadata?.headings ?? []) as { depth: number; 
   slug={entry.id}
   rel={docRel(entry.id)}
   headings={headings}
+  meta={meta as string[]}
   edit={editHref(entry.id)}
-  updated={updated(entry.id)}
 >
-  <div class={proseClass} lang="en" set:html={html} />
+  <div class:list={[proseClass, "docs-body"]} lang="en" set:html={html} />
 </DocsLayout>
