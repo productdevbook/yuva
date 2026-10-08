@@ -18,7 +18,7 @@ export function homeCopy(i18n: I18n) {
     },
 
     hero: {
-      release: i18n._(msg`New in ${version}: deleting a workspace or an account`),
+      release: i18n._(msg`New in ${version}: bulk actions, contact merge and moving conversations`),
       title: i18n._(msg`One inbox for every product you run.`),
       lead: i18n._(
         msg`Yuva brings support e-mail, live chat and in-app conversations from all of your products into one shared inbox for your team. It is open source and runs as one Go binary with Postgres, so you can also host it yourself.`
