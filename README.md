@@ -37,6 +37,10 @@ products in one shared inbox. Self-hosted, one Go binary with Postgres.
   and an API for everything else.
 - **Your users stay yours.** Your backend signs a short-lived identity token; Yuva never sees your
   user database. Signed webhooks let your backend send its own push notifications.
+- **Headless when you want it.** Scoped API keys, bots that write drafts for a member to send, an
+  event feed and a headless JS client let you build your own inbox, chat and automations.
+- **Works with AI assistants.** A built-in MCP server lets Claude, ChatGPT, Cursor and other
+  assistants triage and draft replies, signed in as you with OAuth. Yuva runs no model itself.
 - **Small to run.** One Docker image and Postgres. No Redis, no separate workers.
 
 ## Quick start
@@ -53,11 +57,11 @@ docker pull ghcr.io/productdevbook/yuva:0.0.3
 
 ## Documentation
 
-| Get started | Channels | Integrate |
-|---|---|---|
-| [Install](docs/install.md) | [E-mail](docs/email.md) | [Identity tokens](docs/identity.md) |
-| [Configuration](docs/configuration.md) | [Web widget](docs/widget.md) | [Webhooks](docs/webhooks.md) |
-| [Operations](docs/operations.md) | [Mobile SDKs](docs/mobile.md) | [API contract](openapi/openapi.yaml) |
+| Get started | Channels | Integrate | Build on it |
+|---|---|---|---|
+| [Install](docs/install.md) | [E-mail](docs/email.md) | [Identity tokens](docs/identity.md) | [Headless](docs/headless.md) |
+| [Configuration](docs/configuration.md) | [Web widget](docs/widget.md) | [Webhooks](docs/webhooks.md) | [AI assistants (MCP)](docs/mcp.md) |
+| [Operations](docs/operations.md) | [Mobile SDKs](docs/mobile.md) | [API contract](openapi/openapi.yaml) | [Examples](examples) |
 
 How it is built: [architecture](docs/architecture.md). What is next: [roadmap](docs/roadmap.md).
 What changed: [changelog](CHANGELOG.md).
@@ -72,9 +76,10 @@ What changed: [changelog](CHANGELOG.md).
 | `site/` | Website and documentation | AGPL-3.0 |
 | `deploy/` | Docker and Compose | AGPL-3.0 |
 | `openapi/` | API contract | MIT |
-| `sdk/js` | `<yuva-chat>` web component and client | MIT |
+| `sdk/js` | `@useyuva/js`: headless client, `<yuva-chat>`, React hooks, typed `/v1` client | MIT |
 | `sdk/swift`, `sdk/kotlin` | iOS and Android SDKs | MIT |
-| `sdk/go` | Identity tokens and webhook verification | MIT |
+| `sdk/go` | Typed `/v1` client, identity tokens and webhook verification | MIT |
+| `examples/` | Headless chat, event feed and draft bot | MIT |
 
 ## Contributing
 
