@@ -4,6 +4,7 @@ import {
   api,
   unwrap,
   type Contact,
+  type ConversationBulkUpdate,
   type ConversationUpdate,
   type MessageCreate,
 } from "@/lib/api"
@@ -91,6 +92,36 @@ export function useContactPresence(id: string | undefined) {
       unwrap(api.GET("/v1/contacts/{contactId}/presence", { params: { path: { contactId: id! } } })),
     enabled: !!id,
     refetchOnWindowFocus: "always",
+  })
+}
+
+export function useContactSearch(q: string, enabled: boolean) {
+  const { workspaceId: ws } = useSession()
+  return useQuery({
+    queryKey: [...keys.contactSearch(ws), q],
+    queryFn: () => unwrap(api.GET("/v1/contacts", { params: { query: { q: q || undefined, limit: 20 } } })).then((r) => r.items),
+    enabled,
+    placeholderData: (prev) => prev,
+  })
+}
+
+export function useMergeContact(targetId: string) {
+  const qc = useQueryClient()
+  const { workspaceId: ws, membership } = useSession()
+  const live = { ws, memberId: membership.member_id }
+  return useMutation({
+    mutationFn: (sourceId: string) =>
+      unwrap(
+        api.POST("/v1/contacts/{contactId}/merge", {
+          params: { path: { contactId: targetId } },
+          body: { source_id: sourceId },
+        }),
+      ),
+    onSuccess: (data, sourceId) => {
+      applyEvent(qc, live, { type: "contact.updated", data })
+      applyEvent(qc, live, { type: "contact.deleted", data: { id: sourceId, merged_into_id: data.id } })
+      void qc.invalidateQueries({ queryKey: keys.contactSearch(ws) })
+    },
   })
 }
 
@@ -202,6 +233,38 @@ export function useUpdateConversation(id: string) {
   return useMutation({
     mutationFn: (body: ConversationUpdate) =>
       unwrap(api.PATCH("/v1/conversations/{conversationId}", { params: { path: { conversationId: id } }, body })),
+    onSuccess: (data) => {
+      applyEvent(qc, live, { type: "conversation.updated", data })
+      if (!isLive(ws)) void qc.invalidateQueries({ queryKey: keys.messages(ws, id) })
+    },
+  })
+}
+
+export function useBulkUpdateConversations() {
+  const qc = useQueryClient()
+  const { workspaceId: ws, membership } = useSession()
+  const live = { ws, memberId: membership.member_id }
+  return useMutation({
+    mutationFn: (body: ConversationBulkUpdate) => unwrap(api.POST("/v1/conversations/bulk", { body })),
+    onSuccess: (data) => {
+      for (const c of data.updated) applyEvent(qc, live, { type: "conversation.updated", data: c })
+      if (!isLive(ws)) for (const c of data.updated) void qc.invalidateQueries({ queryKey: keys.messages(ws, c.id) })
+    },
+  })
+}
+
+export function useMoveConversation(id: string) {
+  const qc = useQueryClient()
+  const { workspaceId: ws, membership } = useSession()
+  const live = { ws, memberId: membership.member_id }
+  return useMutation({
+    mutationFn: (inboxId: string) =>
+      unwrap(
+        api.POST("/v1/conversations/{conversationId}/move", {
+          params: { path: { conversationId: id } },
+          body: { inbox_id: inboxId },
+        }),
+      ),
     onSuccess: (data) => {
       applyEvent(qc, live, { type: "conversation.updated", data })
       if (!isLive(ws)) void qc.invalidateQueries({ queryKey: keys.messages(ws, id) })

@@ -85,6 +85,10 @@ export function useErrorText() {
       return t`This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings.`
     if (err.code === "email_address_taken") return t`Another channel already receives mail at this address.`
     if (err.code === "webhook_disabled") return t`The endpoint is disabled. Enable it to send deliveries again.`
+    if (err.code === "no_email_channel")
+      return t`The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first.`
+    if (err.code === "email_no_sender")
+      return t`The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings.`
     if (err.code === "attachment_type_mismatch") return t`A file's content does not match its type. Check the file and try again.`
     switch (err.status) {
       case 400:

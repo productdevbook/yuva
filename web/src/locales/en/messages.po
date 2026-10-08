@@ -7,6 +7,7 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: en\n"
 
+#: src/components/inbox/BulkBar.tsx
 #: src/components/inbox/ConversationControls.tsx
 #: src/components/settings/MembersSettings.tsx
 msgid "(you)"
@@ -44,9 +45,21 @@ msgstr "{actor} reopened the conversation"
 msgid "{actor} set the status to {status}"
 msgstr "{actor} set the status to {status}"
 
+#: src/components/inbox/MergeContact.tsx
+msgid "{count, plural, =0 {No conversations} one {# conversation} other {# conversations}}"
+msgstr "{count, plural, =0 {No conversations} one {# conversation} other {# conversations}}"
+
 #: src/components/settings/WebhooksSettings.tsx
 msgid "{count} events"
 msgstr "{count} events"
+
+#: src/components/inbox/BulkBar.tsx
+msgid "{count} selected"
+msgstr "{count} selected"
+
+#: src/components/inbox/BulkBar.tsx
+msgid "{failed} could not be changed; they stay selected."
+msgstr "{failed} could not be changed; they stay selected."
 
 #: src/components/settings/ChannelsSection.tsx
 msgid "{keyCount} settings"
@@ -180,6 +193,10 @@ msgstr "Add endpoint"
 msgid "Add hours"
 msgstr "Add hours"
 
+#: src/components/inbox/BulkBar.tsx
+msgid "Add label"
+msgstr "Add label"
+
 #: src/components/inbox/Composer.tsx
 msgid "Add note"
 msgstr "Add note"
@@ -261,6 +278,10 @@ msgstr "anonymous visitors allowed"
 msgid "Another channel already receives mail at this address."
 msgstr "Another channel already receives mail at this address."
 
+#: src/components/inbox/MessageItem.tsx
+msgid "another inbox"
+msgstr "another inbox"
+
 #: src/components/inbox/ConversationList.tsx
 msgid "Any label"
 msgstr "Any label"
@@ -303,10 +324,12 @@ msgid "Ask for an e-mail address when offline"
 msgstr "Ask for an e-mail address when offline"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/components/inbox/BulkBar.tsx
 #: src/components/inbox/ConversationControls.tsx
 msgid "Assign"
 msgstr "Assign"
 
+#: src/components/inbox/BulkBar.tsx
 #: src/components/inbox/ConversationControls.tsx
 msgid "Assign to"
 msgstr "Assign to"
@@ -345,6 +368,7 @@ msgid "Attempts"
 msgstr "Attempts"
 
 #: src/components/inbox/ContactPanel.tsx
+#: src/components/inbox/MergeContact.tsx
 msgid "Attributes"
 msgstr "Attributes"
 
@@ -366,6 +390,7 @@ msgid "Away"
 msgstr "Away"
 
 #: src/components/inbox/InboxPage.tsx
+#: src/components/inbox/MergeContact.tsx
 #: src/components/settings/InboxSettings.tsx
 #: src/components/settings/WebhooksSettings.tsx
 msgid "Back"
@@ -456,7 +481,12 @@ msgstr "Clear"
 msgid "Clear filters"
 msgstr "Clear filters"
 
+#: src/components/inbox/BulkBar.tsx
+msgid "Clear the selection"
+msgstr "Clear the selection"
+
 #: src/components/common/ShortcutSheet.tsx
+#: src/components/inbox/BulkBar.tsx
 #: src/components/ui/dialog.tsx
 #: src/components/ui/sheet.tsx
 msgid "Close"
@@ -506,6 +536,7 @@ msgstr "Contacts see who is available, typing and read receipts."
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/inbox/InboxPage.tsx
+#: src/components/inbox/MergeContact.tsx
 msgid "Conversations"
 msgstr "Conversations"
 
@@ -691,6 +722,7 @@ msgid "E-mail address"
 msgstr "E-mail address"
 
 #: src/components/inbox/ContactPanel.tsx
+#: src/components/inbox/MergeContact.tsx
 msgid "E-mail addresses"
 msgstr "E-mail addresses"
 
@@ -782,6 +814,10 @@ msgstr "Every inbox follows the settings above."
 msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Every request to this endpoint, newest first. The newest 100 are kept."
 
+#: src/components/inbox/MergeContact.tsx
+msgid "Everything below moves from {sourceName} to {targetName}, and {sourceName} is deleted. This cannot be undone."
+msgstr "Everything below moves from {sourceName} to {targetName}, and {sourceName} is deleted. This cannot be undone."
+
 #: src/components/settings/WorkspaceSettings.tsx
 msgid "Everything in this workspace is deleted for every member, and its widgets, apps, e-mail addresses and API keys stop working immediately."
 msgstr "Everything in this workspace is deleted for every member, and its widgets, apps, e-mail addresses and API keys stop working immediately."
@@ -795,6 +831,7 @@ msgid "expires {expires}"
 msgstr "expires {expires}"
 
 #: src/components/inbox/ContactPanel.tsx
+#: src/components/inbox/MergeContact.tsx
 msgid "External ids"
 msgstr "External ids"
 
@@ -902,6 +939,7 @@ msgstr "Idea"
 msgid "Identity secret"
 msgstr "Identity secret"
 
+#: src/components/inbox/BulkBar.tsx
 #: src/components/inbox/ConversationControls.tsx
 msgid "In an hour"
 msgstr "In an hour"
@@ -1000,6 +1038,7 @@ msgid "Label"
 msgstr "Label"
 
 #: src/components/AppShell.tsx
+#: src/components/inbox/BulkBar.tsx
 #: src/components/inbox/ConversationControls.tsx
 #: src/components/settings/LabelsSettings.tsx
 #: src/components/settings/SettingsLayout.tsx
@@ -1117,6 +1156,18 @@ msgstr "Me"
 msgid "Members"
 msgstr "Members"
 
+#: src/components/inbox/MergeContact.tsx
+msgid "Merge"
+msgstr "Merge"
+
+#: src/components/inbox/MergeContact.tsx
+msgid "Merge a contact into {targetName}"
+msgstr "Merge a contact into {targetName}"
+
+#: src/components/inbox/ContactPanel.tsx
+msgid "Merge another contact into this one"
+msgstr "Merge another contact into this one"
+
 #: src/components/inbox/Composer.tsx
 msgid "Message type"
 msgstr "Message type"
@@ -1139,9 +1190,30 @@ msgstr "Mode"
 msgid "Monday"
 msgstr "Monday"
 
+#: src/components/inbox/MergeContact.tsx
+msgid "More than {count} conversations"
+msgstr "More than {count} conversations"
+
+#: src/components/inbox/ConversationControls.tsx
+msgid "Move"
+msgstr "Move"
+
 #: src/components/inbox/ConversationControls.tsx
 msgid "Move back to the inbox"
 msgstr "Move back to the inbox"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/components/inbox/ConversationControls.tsx
+msgid "Move to another inbox"
+msgstr "Move to another inbox"
+
+#: src/components/inbox/ConversationControls.tsx
+msgid "Move to inbox"
+msgstr "Move to inbox"
+
+#: src/components/inbox/MessageItem.tsx
+msgid "Moved from {from}"
+msgstr "Moved from {from}"
 
 #: src/components/AppShell.tsx
 #: src/components/settings/ProfileSettings.tsx
@@ -1229,6 +1301,7 @@ msgstr "next attempt {when}"
 msgid "Next conversation"
 msgstr "Next conversation"
 
+#: src/components/inbox/BulkBar.tsx
 #: src/components/inbox/ConversationControls.tsx
 msgid "Next week"
 msgstr "Next week"
@@ -1277,6 +1350,10 @@ msgstr "No labels yet"
 msgid "No labels yet. Add them in settings."
 msgstr "No labels yet. Add them in settings."
 
+#: src/components/inbox/MergeContact.tsx
+msgid "No other contact matches."
+msgstr "No other contact matches."
+
 #: src/components/settings/MembersSettings.tsx
 msgid "No pending invites."
 msgstr "No pending invites."
@@ -1292,6 +1369,7 @@ msgid "No subject"
 msgstr "No subject"
 
 #: src/components/inbox/ContactPanel.tsx
+#: src/components/inbox/MergeContact.tsx
 msgid "None"
 msgstr "None"
 
@@ -1314,6 +1392,18 @@ msgstr "Not a secret: it ships inside your app. Native apps send no origin, so t
 #: src/components/settings/ChannelsSection.tsx
 msgid "Not an origin: {notOrigins}. Use scheme and host only, such as https://www.example.com."
 msgstr "Not an origin: {notOrigins}. Use scheme and host only, such as https://www.example.com."
+
+#: src/components/inbox/ConversationList.tsx
+msgid "Not changed: {reason}"
+msgstr "Not changed: {reason}"
+
+#: src/components/inbox/ConversationList.tsx
+msgid "Not changed: it no longer exists or you cannot see it."
+msgstr "Not changed: it no longer exists or you cannot see it."
+
+#: src/components/inbox/ConversationList.tsx
+msgid "Not changed: the assignee cannot see this conversation's inbox."
+msgstr "Not changed: the assignee cannot see this conversation's inbox."
 
 #: src/components/inbox/MessageItem.tsx
 msgid "Not delivered"
@@ -1510,6 +1600,10 @@ msgstr "Pick at least one event."
 msgid "Pick at least one platform."
 msgstr "Pick at least one platform."
 
+#: src/components/inbox/MergeContact.tsx
+msgid "Pick the other contact. It is merged into this one and then deleted."
+msgstr "Pick the other contact. It is merged into this one and then deleted."
+
 #: src/components/settings/ChannelsSection.tsx
 msgid "Platforms"
 msgstr "Platforms"
@@ -1615,6 +1709,10 @@ msgstr "Remove {name}"
 msgid "Remove {name} from the workspace?"
 msgstr "Remove {name} from the workspace?"
 
+#: src/components/inbox/BulkBar.tsx
+msgid "Remove label"
+msgstr "Remove label"
+
 #: src/components/settings/InboxSettings.tsx
 msgid "Remove these hours"
 msgstr "Remove these hours"
@@ -1640,6 +1738,7 @@ msgid "Removes you from every workspace and deletes your account. Messages you w
 msgstr "Removes you from every workspace and deletes your account. Messages you wrote stay, shown as from a deleted member."
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/components/inbox/BulkBar.tsx
 msgid "Reopen"
 msgstr "Reopen"
 
@@ -1767,9 +1866,29 @@ msgstr "Screen"
 msgid "Search"
 msgstr "Search"
 
+#: src/components/inbox/MergeContact.tsx
+msgid "Search by name, e-mail or external id"
+msgstr "Search by name, e-mail or external id"
+
+#: src/components/inbox/MergeContact.tsx
+msgid "Search contacts"
+msgstr "Search contacts"
+
 #: src/components/inbox/ConversationList.tsx
 msgid "Search conversations"
 msgstr "Search conversations"
+
+#: src/components/inbox/ConversationList.tsx
+msgid "Select {name}"
+msgstr "Select {name}"
+
+#: src/components/inbox/BulkBar.tsx
+msgid "Select all on this page"
+msgstr "Select all on this page"
+
+#: src/components/inbox/BulkBar.tsx
+msgid "Select at most {MAX_BULK} conversations at a time."
+msgstr "Select at most {MAX_BULK} conversations at a time."
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/inbox/Composer.tsx
@@ -1912,6 +2031,11 @@ msgstr "Slug"
 msgid "SMTP host"
 msgstr "SMTP host"
 
+#: src/components/inbox/BulkBar.tsx
+msgid "Snooze"
+msgstr "Snooze"
+
+#: src/components/inbox/BulkBar.tsx
 #: src/components/inbox/ConversationControls.tsx
 msgid "Snooze until"
 msgstr "Snooze until"
@@ -1950,6 +2074,10 @@ msgstr "Status"
 #: src/components/settings/NotificationsSettings.tsx
 msgid "Stop overriding {name}"
 msgstr "Stop overriding {name}"
+
+#: src/components/inbox/MergeContact.tsx
+msgid "Struck-out values are not taken: this contact keeps its own value for those keys."
+msgstr "Struck-out values are not taken: this contact keeps its own value for those keys."
 
 #: src/components/common/text.ts
 msgid "Succeeded"
@@ -2002,6 +2130,10 @@ msgid "The code is wrong or has expired."
 msgstr "The code is wrong or has expired."
 
 #: src/components/common/text.ts
+msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
+msgstr "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
+
+#: src/components/common/text.ts
 msgid "The endpoint is disabled. Enable it to send deliveries again."
 msgstr "The endpoint is disabled. Enable it to send deliveries again."
 
@@ -2028,6 +2160,10 @@ msgstr "The kind cannot be changed later."
 #: src/components/settings/ProfileSettings.tsx
 msgid "The language of the panel and of sign-in and notification e-mails."
 msgstr "The language of the panel and of sign-in and notification e-mails."
+
+#: src/components/common/text.ts
+msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
+msgstr "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 
 #: src/components/auth/SignInPage.tsx
 msgid "The passkey sign-in did not complete. Try again or use an e-mailed code."
@@ -2088,6 +2224,10 @@ msgstr "This browser does not support passkeys."
 #: src/components/common/text.ts
 msgid "This conflicts with something that already exists."
 msgstr "This conflicts with something that already exists."
+
+#: src/components/inbox/MergeContact.tsx
+msgid "This contact keeps its own value"
+msgstr "This contact keeps its own value"
 
 #: src/components/inbox/ThreadView.tsx
 msgid "This conversation is not available"
@@ -2153,6 +2293,7 @@ msgstr "Toggle sidebar"
 msgid "Tokens signed with the current secret stop working at once."
 msgstr "Tokens signed with the current secret stop working at once."
 
+#: src/components/inbox/BulkBar.tsx
 #: src/components/inbox/ConversationControls.tsx
 msgid "Tomorrow morning"
 msgstr "Tomorrow morning"
@@ -2205,6 +2346,7 @@ msgstr "Type your e-mail address to confirm"
 msgid "typing…"
 msgstr "typing…"
 
+#: src/components/inbox/BulkBar.tsx
 #: src/components/inbox/ConversationControls.tsx
 msgid "Unassign"
 msgstr "Unassign"
@@ -2229,6 +2371,7 @@ msgstr "Unknown device"
 
 #: src/components/inbox/ContactPanel.tsx
 #: src/components/inbox/ConversationList.tsx
+#: src/components/inbox/MergeContact.tsx
 #: src/components/inbox/ThreadView.tsx
 msgid "Unnamed contact"
 msgstr "Unnamed contact"
@@ -2416,6 +2559,10 @@ msgstr "You are the only owner of a workspace. Make someone else an owner there,
 #: src/components/settings/InboxesSettings.tsx
 msgid "You can change hours, branding and channels after creating it."
 msgstr "You can change hours, branding and channels after creating it."
+
+#: src/components/inbox/ConversationControls.tsx
+msgid "You cannot see any other inbox."
+msgstr "You cannot see any other inbox."
 
 #: src/components/settings/WebhooksSettings.tsx
 msgid "You get a new secret once. For 24 hours every delivery carries two signatures, one with the new and one with the old secret, so you can update your receiver without losing events."

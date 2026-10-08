@@ -204,6 +204,13 @@ function forgetInbox(qc: QueryClient, ws: string, inboxId: string) {
   }
 }
 
+function followMerge(qc: QueryClient, ws: string, from: string, to: string) {
+  for (const q of qc.getQueryCache().findAll({ queryKey: ["ws", ws, "conversation"] })) {
+    const c = q.state.data as Conversation | undefined
+    if (c?.contact_id === from) qc.setQueryData<Conversation>(q.queryKey, { ...c, contact_id: to })
+  }
+}
+
 function byName(a: Inbox, b: Inbox) {
   return a.name.localeCompare(b.name) || (a.id < b.id ? -1 : 1)
 }
@@ -218,6 +225,22 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
         void qc.invalidateQueries({ queryKey: keys.contactPresence(ctx.ws, event.data.contact_id) })
       }
       return
+    case "conversation.moved": {
+      const { id, inbox_id, previous_inbox_id } = event.data
+      for (const [key, data] of listCaches(qc, ctx.ws)) {
+        if (!data?.pages.some((p) => p.items.some((x) => x.id === id && x.inbox_id === previous_inbox_id))) continue
+        qc.setQueryData<Lists>(key, (old) =>
+          old ? { ...old, pages: old.pages.map((p) => ({ ...p, items: p.items.filter((x) => x.id !== id) })) } : old,
+        )
+      }
+      const inboxes = qc.getQueryData<Inbox[]>(keys.inboxes(ctx.ws))
+      if (inboxes && !inboxes.some((x) => x.id === inbox_id)) {
+        void qc.resetQueries({ queryKey: keys.conversation(ctx.ws, id), exact: true })
+        void qc.resetQueries({ queryKey: keys.messages(ctx.ws, id), exact: true })
+      }
+      refreshCounts(qc, ctx.ws)
+      return
+    }
     case "message.created":
       knowMember(qc, ctx.ws, event.data.author.member_id)
       addMessage(qc, ctx, event.data)
@@ -253,6 +276,7 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
       return
     }
     case "contact.deleted":
+      if (event.data.merged_into_id) followMerge(qc, ctx.ws, event.data.id, event.data.merged_into_id)
       qc.removeQueries({ queryKey: keys.contact(ctx.ws, event.data.id) })
       qc.removeQueries({ queryKey: keys.contactPresence(ctx.ws, event.data.id) })
       void qc.invalidateQueries({ queryKey: keys.conversationLists(ctx.ws) })

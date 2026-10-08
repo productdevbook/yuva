@@ -848,6 +848,32 @@ export interface paths {
         patch: operations["updateContact"];
         trace?: never;
     };
+    "/v1/contacts/{contactId}/merge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Merge another contact into this one
+         * @description Owners, admins and API keys. The contact in the path keeps its id and gains the source's
+         *     e-mail addresses, external ids, attributes (its own value wins on a key both have), its
+         *     name and locale when it has none, and every conversation of the source. The source is
+         *     deleted with its sessions and visitor ids; identity tokens and inbound mail for its
+         *     addresses and external ids now find this contact. Emits `conversation.updated` for each
+         *     moved conversation, `contact.updated` for this contact and `contact.deleted` (with
+         *     `merged_into_id`) for the source.
+         */
+        post: operations["mergeContact"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/contacts/{contactId}/presence": {
         parameters: {
             query?: never;
@@ -920,6 +946,33 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/conversations/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Change several conversations at once
+         * @description Applies one change to up to 100 conversations: a status (with `snooze_until` for
+         *     `snoozed`), an assignee (`null` unassigns), labels to add and labels to remove. Each
+         *     conversation is changed in its own transaction, records the same `event` messages and
+         *     emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
+         *     A conversation the caller cannot see (or of another workspace) is listed in `failed`
+         *     with `not_found`; one whose inbox the new assignee cannot access with
+         *     `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
+         *     member, a past `snooze_until`) is refused with `400` and changes nothing.
+         */
+        post: operations["bulkUpdateConversations"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/conversations/{conversationId}": {
         parameters: {
             query?: never;
@@ -940,6 +993,32 @@ export interface paths {
          *     `snooze_until` is required with status `snoozed` and cleared by any other status.
          */
         patch: operations["updateConversation"];
+        trace?: never;
+    };
+    "/v1/conversations/{conversationId}/move": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Move a conversation to another inbox
+         * @description The caller must see both inboxes. Messages, notes, labels and attachments move with the
+         *     conversation; the assignee stays only when they can access the new inbox. The
+         *     conversation continues on the new inbox's channel of the same kind (for e-mail the one
+         *     its chat continuity would use); an e-mail conversation is refused with
+         *     `409 no_email_channel` when the new inbox has none. The timeline gets a `moved` event.
+         *     `conversation.updated` reports the new inbox; members watching the old one get
+         *     `conversation.moved`.
+         */
+        post: operations["moveConversation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/v1/conversations/{conversationId}/messages": {
@@ -2746,6 +2825,11 @@ export interface components {
             /** Format: uuid */
             id: string;
             external_ids: components["schemas"]["ExternalId"][];
+            /**
+             * Format: uuid
+             * @description Set when the contact was merged into this contact, which now has its external ids.
+             */
+            merged_into_id?: string;
         };
         WebhookConversationData: {
             conversation: components["schemas"]["Conversation"];
@@ -2808,6 +2892,13 @@ export interface components {
             blocked?: boolean;
             /** @description Addresses to mail again, e.g. after the recipient fixed their mailbox. */
             clear_undeliverable?: components["schemas"]["Email"][];
+        };
+        ContactMerge: {
+            /**
+             * Format: uuid
+             * @description The contact to merge into this one and delete.
+             */
+            source_id: string;
         };
         ContactPage: {
             items: components["schemas"]["Contact"][];
@@ -2907,6 +2998,42 @@ export interface components {
             assignee_id?: string | null;
             /** @description Replaces the labels. */
             labels?: string[];
+        };
+        ConversationBulkUpdate: {
+            conversation_ids: string[];
+            status?: components["schemas"]["ConversationStatus"];
+            /**
+             * Format: date-time
+             * @description Required with status `snoozed`.
+             */
+            snooze_until?: string;
+            /**
+             * Format: uuid
+             * @description A member; `null` unassigns.
+             */
+            assignee_id?: string | null;
+            add_labels?: string[];
+            remove_labels?: string[];
+        };
+        ConversationBulkFailure: {
+            /** Format: uuid */
+            id: string;
+            /**
+             * Format: int32
+             * @description The HTTP status the single change would have answered.
+             */
+            status: number;
+            code: string;
+            detail?: string;
+        };
+        ConversationBulkResult: {
+            /** @description The conversations after the change, in request order. */
+            updated: components["schemas"]["Conversation"][];
+            failed: components["schemas"]["ConversationBulkFailure"][];
+        };
+        ConversationMove: {
+            /** Format: uuid */
+            inbox_id: string;
         };
         /** @description The conversation's contact, enough for a list row. */
         ConversationContact: {
@@ -3017,7 +3144,7 @@ export interface components {
             contact_id?: string;
         };
         /** @enum {string} */
-        EventType: "assigned" | "unassigned" | "status_changed" | "labels_changed";
+        EventType: "assigned" | "unassigned" | "status_changed" | "labels_changed" | "moved";
         MessageEvent: {
             type: components["schemas"]["EventType"];
             /**
@@ -3034,6 +3161,16 @@ export interface components {
             previous_status?: components["schemas"]["ConversationStatus"];
             added_labels?: string[];
             removed_labels?: string[];
+            /**
+             * Format: uuid
+             * @description The inbox it moved to (`moved`).
+             */
+            inbox_id?: string;
+            /**
+             * Format: uuid
+             * @description The inbox it moved from (`moved`).
+             */
+            previous_inbox_id?: string;
         };
         Attachment: {
             /**
@@ -3240,6 +3377,39 @@ export interface components {
             created_at: string;
             data: components["schemas"]["Conversation"];
         };
+        /**
+         * @description A conversation left this event's inbox for another one. Sent to whoever can see the old
+         *     inbox, so it can drop the conversation; `conversation.updated` follows for the new inbox.
+         */
+        ConversationMovedEvent: {
+            /** Format: int64 */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "conversation.moved";
+            /** Format: uuid */
+            workspace_id: string;
+            /**
+             * Format: uuid
+             * @description The inbox it left.
+             */
+            inbox_id: string;
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["ConversationMoved"];
+        };
+        ConversationMoved: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: uuid */
+            previous_inbox_id: string;
+        };
         /** @description A message, note or event message was added to a conversation. */
         MessageCreatedEvent: {
             /** Format: int64 */
@@ -3398,6 +3568,11 @@ export interface components {
         ContactRef: {
             /** Format: uuid */
             id: string;
+            /**
+             * Format: uuid
+             * @description Set on `contact.deleted` when the contact was merged into this one.
+             */
+            merged_into_id?: string;
         };
         InboxRef: {
             /** Format: uuid */
@@ -3429,7 +3604,7 @@ export interface components {
             type: "resync_required";
         };
         /** @description One server message on `/v1/realtime`, told apart by `type`. */
-        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
         /**
          * @description `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
          *     hours. `away`: never shown as available.
@@ -5602,6 +5777,39 @@ export interface operations {
             409: components["responses"]["Problem"];
         };
     };
+    mergeContact: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                contactId: components["parameters"]["ContactId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContactMerge"];
+            };
+        };
+        responses: {
+            /** @description The merged contact. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Contact"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     getContactPresence: {
         parameters: {
             query?: never;
@@ -5736,6 +5944,36 @@ export interface operations {
             403: components["responses"]["Problem"];
         };
     };
+    bulkUpdateConversations: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConversationBulkUpdate"];
+            };
+        };
+        responses: {
+            /** @description Which conversations changed and which were refused. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationBulkResult"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
     getConversation: {
         parameters: {
             query?: never;
@@ -5795,6 +6033,40 @@ export interface operations {
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
+        };
+    };
+    moveConversation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConversationMove"];
+            };
+        };
+        responses: {
+            /** @description The moved conversation. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Conversation"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
         };
     };
     listMessages: {

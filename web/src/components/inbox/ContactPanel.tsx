@@ -1,14 +1,17 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { BanIcon, LanguagesIcon, MailIcon, MailWarningIcon } from "lucide-react"
+import { BanIcon, LanguagesIcon, MailIcon, MailWarningIcon, MergeIcon } from "lucide-react"
+import { useState } from "react"
 import { Link } from "react-router"
 
 import { ErrorLine, PersonAvatar } from "@/components/common"
 import { formatDateTime, formatRelative, formatShort, useEnumText } from "@/components/common/text"
 import { statusIcons } from "@/components/inbox/ConversationControls"
+import { MergeContactDialog } from "@/components/inbox/MergeContact"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { UndeliverableEmail } from "@/lib/api"
 import { useClearUndeliverable, useContact, useContactPresence, useConversations, useInboxes } from "@/lib/queries"
+import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 
 function Section({ title, children }: { title: React.ReactNode; children: React.ReactNode }) {
@@ -105,6 +108,8 @@ export function ContactPanel({
   const contact = useContact(contactId)
   const inboxes = useInboxes().data ?? []
   const others = useConversations({ contact_id: contactId })
+  const { canManage } = useSession()
+  const [merging, setMerging] = useState(false)
   const c = contact.data
 
   if (contact.isPending) {
@@ -145,6 +150,15 @@ export function ContactPanel({
           </span>
         )}
       </div>
+      {canManage && (
+        <div className="border-b px-4 py-2">
+          <Button variant="outline" size="sm" onClick={() => setMerging(true)} data-testid="merge-contact">
+            <MergeIcon />
+            <Trans>Merge another contact into this one</Trans>
+          </Button>
+          <MergeContactDialog target={c} open={merging} onOpenChange={setMerging} />
+        </div>
+      )}
       <Section title={<Trans>E-mail addresses</Trans>}>
         {c.emails.length === 0 ? (
           <p className="text-sm text-muted-foreground">

@@ -7,6 +7,7 @@ import {
   ClockIcon,
   DownloadIcon,
   FileDownIcon,
+  FolderInputIcon,
   ImageIcon,
   LockIcon,
   MailQuestionMarkIcon,
@@ -30,6 +31,7 @@ import {
   rawMessageUrl,
   type Attachment,
   type Contact,
+  type Inbox,
   type Label,
   type Member,
   type Message,
@@ -43,6 +45,7 @@ type Ctx = {
   members: Map<string, Member>
   contact?: Contact
   labels: Label[]
+  inboxes: Inbox[]
   subject: string
   expandQuoted: boolean
 }
@@ -107,7 +110,7 @@ function AttachmentChip({ a }: { a: Attachment }) {
 }
 
 function EventLine({ m, ctx }: { m: Message; ctx: Ctx }) {
-  const { i18n } = useLingui()
+  const { t, i18n } = useLingui()
   const text = useEnumText()
   const actor = useAuthorName(m, ctx)
   const e = m.event
@@ -166,6 +169,12 @@ function EventLine({ m, ctx }: { m: Message; ctx: Ctx }) {
             {actor} removed the label {removed}
           </Trans>
         )
+      break
+    }
+    case "moved": {
+      icon = <FolderInputIcon />
+      const from = ctx.inboxes.find((i) => i.id === e.previous_inbox_id)?.name ?? t`another inbox`
+      body = <Trans>Moved from {from}</Trans>
       break
     }
   }

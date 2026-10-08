@@ -10,6 +10,7 @@ import { Composer, type ComposerHandle } from "@/components/inbox/Composer"
 import {
   AssigneeMenu,
   LabelsMenu,
+  MoveMenu,
   PriorityMenu,
   SpamButton,
   StatusMenu,
@@ -31,6 +32,7 @@ import {
   useMarkRead,
   useMemberMap,
   useMessages,
+  useMoveConversation,
   useUpdateConversation,
 } from "@/lib/queries"
 import { useSession } from "@/lib/session"
@@ -115,12 +117,20 @@ export function ThreadView({
   const labels = useLabels().data ?? []
   const members = useMemberMap()
   const updater = useUpdateConversation(conversationId)
+  const mover = useMoveConversation(conversationId)
   const [openMenu, setOpenMenu] = useState<MenuName | null>(null)
   const [expandQuoted, setExpandQuoted] = useState(false)
   const composer = useRef<ComposerHandle>(null)
   const scroller = useRef<HTMLDivElement>(null)
 
-  const update = (body: ConversationUpdate) => updater.mutate(body)
+  const update = (body: ConversationUpdate) => {
+    mover.reset()
+    updater.mutate(body)
+  }
+  const move = (inboxId: string) => {
+    updater.reset()
+    mover.mutate(inboxId)
+  }
   const c = conversation.data
   const channel = useChannel(c?.channel_id)
 
@@ -137,6 +147,7 @@ export function ThreadView({
       [SHORTCUTS.priority]: () => setOpenMenu("priority"),
       [SHORTCUTS.labels]: () => setOpenMenu("labels"),
       [SHORTCUTS.spam]: () => c && update({ spam: !c.spam }),
+      [SHORTCUTS.move]: () => setOpenMenu("move"),
       [SHORTCUTS.quoted]: () => setExpandQuoted((x) => !x),
       [SHORTCUTS.contact]: onToggleContact,
       [SHORTCUTS.back]: () => navigate(backHref),
@@ -226,7 +237,7 @@ export function ThreadView({
   const inbox = inboxes.find((i) => i.id === c.inbox_id)
   const contactName = contact.data ? contact.data.name || contact.data.emails[0] || t`Unnamed contact` : "…"
   const controls = { conversation: c, update, openMenu, setOpenMenu }
-  const ctx = { members, contact: contact.data, labels, subject: c.subject, expandQuoted }
+  const ctx = { members, contact: contact.data, labels, inboxes, subject: c.subject, expandQuoted }
   const isEmail = channel.data?.kind === "email"
   const lastInbound = items.findLast((m) => m.kind === "message" && m.direction === "in" && m.email)
   const emailTo = isEmail ? (lastInbound?.email?.from ?? contact.data?.emails[0]) : undefined
@@ -282,7 +293,8 @@ export function ThreadView({
           <PriorityMenu {...controls} />
           <LabelsMenu {...controls} />
           <SpamButton conversation={c} update={update} />
-          <ErrorLine error={updater.error} className="text-xs" />
+          <MoveMenu conversation={c} move={move} pending={mover.isPending} openMenu={openMenu} setOpenMenu={setOpenMenu} />
+          <ErrorLine error={updater.error ?? mover.error} className="text-xs" />
         </div>
       </div>
       {c.spam && (

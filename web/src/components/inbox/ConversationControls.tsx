@@ -6,6 +6,8 @@ import {
   CircleDotIcon,
   ClockIcon,
   FlagIcon,
+  FolderInputIcon,
+  InboxIcon,
   ShieldAlertIcon,
   ShieldCheckIcon,
   TagIcon,
@@ -28,11 +30,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import type { Conversation, ConversationStatus, ConversationUpdate, Priority } from "@/lib/api"
-import { useAssignableMembers, useLabels, useMemberMap } from "@/lib/queries"
+import { useAssignableMembers, useInboxes, useLabels, useMemberMap } from "@/lib/queries"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 
-export type MenuName = "assign" | "status" | "priority" | "labels"
+export type MenuName = "assign" | "status" | "priority" | "labels" | "move"
 
 type Props = {
   conversation: Conversation
@@ -55,14 +57,14 @@ export const priorityClass: Record<Priority, string> = {
   low: "text-muted-foreground/60",
 }
 
-function menuProps(name: MenuName, p: Props) {
+function menuProps(name: MenuName, p: Pick<Props, "openMenu" | "setOpenMenu">) {
   return {
     open: p.openMenu === name,
     onOpenChange: (open: boolean) => p.setOpenMenu(open ? name : null),
   }
 }
 
-function snoozeTimes() {
+export function snoozeTimes() {
   const now = new Date()
   const inHour = new Date(now.getTime() + 60 * 60 * 1000)
   const tomorrow = new Date(now)
@@ -299,5 +301,47 @@ export function SpamButton({ conversation, update }: Pick<Props, "conversation" 
         <Kbd>{SHORTCUTS.spam}</Kbd>
       </TooltipContent>
     </Tooltip>
+  )
+}
+
+export function MoveMenu({
+  conversation,
+  move,
+  pending,
+  openMenu,
+  setOpenMenu,
+}: Pick<Props, "conversation" | "openMenu" | "setOpenMenu"> & { move: (inboxId: string) => void; pending: boolean }) {
+  const { t } = useLingui()
+  const others = (useInboxes().data ?? []).filter((i) => i.id !== conversation.inbox_id)
+  return (
+    <DropdownMenu {...menuProps("move", { openMenu, setOpenMenu })}>
+      <DropdownMenuTrigger
+        render={<Button variant="outline" size="sm" disabled={pending} />}
+        aria-label={t`Move to another inbox`}
+        data-testid="move-menu"
+      >
+        <FolderInputIcon />
+        <Trans>Move</Trans>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="max-h-[60svh] min-w-56 overflow-y-auto">
+        <DropdownMenuGroup>
+          <DropdownMenuLabel className="flex items-center justify-between">
+            <Trans>Move to inbox</Trans>
+            <Kbd>{SHORTCUTS.move}</Kbd>
+          </DropdownMenuLabel>
+          {others.length === 0 && (
+            <p className="px-2 py-1.5 text-sm text-muted-foreground">
+              <Trans>You cannot see any other inbox.</Trans>
+            </p>
+          )}
+          {others.map((i) => (
+            <DropdownMenuItem key={i.id} onClick={() => move(i.id)}>
+              <InboxIcon />
+              <span className="flex-1 truncate">{i.name}</span>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
