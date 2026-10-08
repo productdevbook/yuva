@@ -1,0 +1,41 @@
+name: Site
+
+on:
+  push:
+    branches: [main]
+    paths: ["site/**", "openapi/openapi.yaml", "CHANGELOG.md", ".github/workflows/site.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: github.repository == 'productdevbook/yuva'
+    runs-on: ubuntu-latest
+    environment: site
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+      - working-directory: site
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+          PUBLIC_APP_URL: ${{ vars.PUBLIC_APP_URL }}
+          PUBLIC_CONTACT_EMAIL: ${{ vars.PUBLIC_CONTACT_EMAIL }}
+        run: bun install --frozen-lockfile && bun run i18n && bun run build && bun run links
+      # versions upload/deploy leave the Worker's custom domains alone, so the token needs no zone access.
+      - working-directory: site
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          WORKER: ${{ vars.SITE_WORKER }}
+        run: |
+          out=$(bunx wrangler@4.148.0 versions upload --name "$WORKER" --assets ./dist --compatibility-date 2026-10-01)
+          echo "$out"
+          id=$(echo "$out" | sed -n 's/.*Worker Version ID: \([0-9a-f-]*\).*/\1/p')
+          [ -n "$id" ] || { echo "no version id in the upload output" >&2; exit 1; }
+          bunx wrangler@4.148.0 versions deploy "$id@100%" --name "$WORKER" -y
