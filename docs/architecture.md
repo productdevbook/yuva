@@ -44,6 +44,18 @@ they allowed it (`allow_email`): members' replies the contact has not read go ou
 delayed e-mail as chat replies. The panel
 filters conversations by `kind` and feedback `category` and counts open feedback per category.
 
+Members change up to 100 conversations in one request (`POST /v1/conversations/bulk`: status,
+assignee, labels to add and remove); each is checked against the caller's inbox access and
+changed in its own transaction with the same events and webhooks as a single change, and the
+answer lists which changed and which were refused. A member who sees both inboxes moves a
+conversation to another inbox of the workspace (`POST /v1/conversations/{id}/move`) with its
+messages, notes, labels and attachments; the assignee stays only with access to the new inbox,
+replies continue on the new inbox's channel of the same kind, and an e-mail conversation is
+refused when the new inbox has no e-mail channel. Owners, admins and API keys merge one contact
+into another (`POST /v1/contacts/{id}/merge`): the target keeps its id and gains the source's
+addresses, external ids, attributes (its own value wins) and conversations; the source is deleted,
+so identity tokens and mail for its keys find the target.
+
 ## Components
 
 ```

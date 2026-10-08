@@ -520,3 +520,110 @@ func (s *Server) deleteContact(ctx context.Context, p principal, id uuid.UUID) e
 	s.deleteObjects(ctx, keys)
 	return nil
 }
+
+func (s *Server) MergeContact(ctx context.Context, req oas.MergeContactRequestObject) (oas.MergeContactResponseObject, error) {
+	p := principalFrom(ctx)
+	if err := requireManagerOrKey(p); err != nil {
+		return nil, err
+	}
+	to, from := req.ContactId, req.Body.SourceId
+	if to == from {
+		return nil, errValidation("source_id must be another contact")
+	}
+	var out oas.Contact
+	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
+		locked := map[uuid.UUID]store.LockContactRow{}
+		ids := []uuid.UUID{to, from}
+		slices.SortFunc(ids, func(a, b uuid.UUID) int { return a.Compare(b) })
+		for _, id := range ids {
+			r, err := q.LockContact(ctx, store.LockContactParams{WorkspaceID: p.workspaceID, ID: id})
+			if store.IsNotFound(err) {
+				return errContactGone
+			}
+			if err != nil {
+				return err
+			}
+			locked[id] = r
+		}
+		target, source := locked[to], locked[from]
+		attrs := map[string]any{}
+		_ = json.Unmarshal(source.Attributes, &attrs)
+		var own map[string]any
+		_ = json.Unmarshal(target.Attributes, &own)
+		for k, v := range own {
+			attrs[k] = v
+		}
+		merged := mustJSON(attrs)
+		if len(merged) > maxAttributesBytes {
+			return errValidation("the merged attributes would be larger than 16 KiB")
+		}
+		externals, err := q.ListContactExternalIDs(ctx, store.ListContactExternalIDsParams{WorkspaceID: p.workspaceID, ContactIds: []uuid.UUID{from}})
+		if err != nil {
+			return err
+		}
+		inboxes, err := q.ContactInboxIDs(ctx, store.ContactInboxIDsParams{WorkspaceID: p.workspaceID, ContactID: from})
+		if err != nil {
+			return err
+		}
+		now := s.now()
+		moved, err := q.MoveContactConversations(ctx, store.MoveContactConversationsParams{WorkspaceID: p.workspaceID, FromContact: from, ToContact: to, Now: now})
+		if err != nil {
+			return err
+		}
+		if err := q.MoveContactMessages(ctx, store.MoveContactMessagesParams{WorkspaceID: p.workspaceID, FromContact: &from, ToContact: &to}); err != nil {
+			return err
+		}
+		if err := q.MoveContactEmails(ctx, store.MoveContactEmailsParams{WorkspaceID: p.workspaceID, FromContact: from, ToContact: to}); err != nil {
+			return err
+		}
+		if err := q.MoveContactExternalIDs(ctx, store.MoveContactExternalIDsParams{WorkspaceID: p.workspaceID, FromContact: from, ToContact: to}); err != nil {
+			return err
+		}
+		name, locale := target.Name, target.Locale
+		if name == "" {
+			name = source.Name
+		}
+		if locale == nil {
+			locale = source.Locale
+		}
+		r, err := q.SetContactIdentity(ctx, store.SetContactIdentityParams{WorkspaceID: p.workspaceID, ID: to, Name: name, Locale: locale, Attributes: merged, Now: now})
+		if err != nil {
+			return err
+		}
+		if r.TypedEmail == nil && source.TypedEmail != nil {
+			typed, err := q.SetContactTypedEmail(ctx, store.SetContactTypedEmailParams{WorkspaceID: p.workspaceID, ID: to, TypedEmail: source.TypedEmail, Now: now})
+			if err != nil {
+				return err
+			}
+			r = store.SetContactIdentityRow(typed)
+		}
+		if err := q.RefreshContactSearch(ctx, store.RefreshContactSearchParams{WorkspaceID: p.workspaceID, ID: to}); err != nil {
+			return err
+		}
+		for _, c := range moved {
+			body, err := oneConversation(ctx, q, c)
+			if err != nil {
+				return err
+			}
+			events.conversation(realtime.ConversationUpdated, c, body)
+		}
+		if _, err := q.DeleteContact(ctx, store.DeleteContactParams{WorkspaceID: p.workspaceID, ID: from}); err != nil {
+			return err
+		}
+		if out, err = s.contactBody(ctx, q, p.workspaceID, contactRow(r)); err != nil {
+			return err
+		}
+		events.add(realtime.ContactUpdated, nil, nil, out)
+		snap := &deletedContact{Contact: oas.WebhookDeletedContact{Id: from, ExternalIds: []oas.ExternalId{}, MergedIntoId: &to}, Inboxes: inboxes}
+		for _, x := range externals {
+			snap.Contact.ExternalIds = append(snap.Contact.ExternalIds, oas.ExternalId{InboxId: x.InboxID, ExternalId: x.ExternalID})
+		}
+		events.add(realtime.ContactDeleted, nil, nil, oas.ContactRef{Id: from, MergedIntoId: &to})
+		events.items[len(events.items)-1].deleted = snap
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return oas.MergeContact200JSONResponse(out), nil
+}

@@ -296,6 +296,21 @@ func (e ConversationKind) Valid() bool {
 	}
 }
 
+// Defines values for ConversationMovedEventType.
+const (
+	ConversationMovedEventTypeConversationMoved ConversationMovedEventType = "conversation.moved"
+)
+
+// Valid indicates whether the value is a known member of the ConversationMovedEventType enum.
+func (e ConversationMovedEventType) Valid() bool {
+	switch e {
+	case ConversationMovedEventTypeConversationMoved:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ConversationReadEventType.
 const (
 	ConversationReadEventTypeConversationRead ConversationReadEventType = "conversation.read"
@@ -357,6 +372,7 @@ func (e Direction) Valid() bool {
 const (
 	Assigned      EventType = "assigned"
 	LabelsChanged EventType = "labels_changed"
+	Moved         EventType = "moved"
 	StatusChanged EventType = "status_changed"
 	Unassigned    EventType = "unassigned"
 )
@@ -367,6 +383,8 @@ func (e EventType) Valid() bool {
 	case Assigned:
 		return true
 	case LabelsChanged:
+		return true
+	case Moved:
 		return true
 	case StatusChanged:
 		return true
@@ -1754,6 +1772,12 @@ type ContactDeletedEvent struct {
 // ContactDeletedEventType defines model for ContactDeletedEvent.Type.
 type ContactDeletedEventType string
 
+// ContactMerge defines model for ContactMerge.
+type ContactMerge struct {
+	// SourceId The contact to merge into this one and delete.
+	SourceId uuid.UUID `json:"source_id"`
+}
+
 // ContactPage defines model for ContactPage.
 type ContactPage struct {
 	Items []Contact `json:"items"`
@@ -1776,6 +1800,9 @@ type ContactPresence struct {
 // ContactRef defines model for ContactRef.
 type ContactRef struct {
 	Id uuid.UUID `json:"id"`
+
+	// MergedIntoId Set on `contact.deleted` when the contact was merged into this one.
+	MergedIntoId *uuid.UUID `json:"merged_into_id,omitempty"`
 }
 
 // ContactUpdate defines model for ContactUpdate.
@@ -1844,6 +1871,38 @@ type Conversation struct {
 	Status    ConversationStatus `json:"status"`
 	Subject   string             `json:"subject"`
 	UpdatedAt time.Time          `json:"updated_at"`
+}
+
+// ConversationBulkFailure defines model for ConversationBulkFailure.
+type ConversationBulkFailure struct {
+	Code   string    `json:"code"`
+	Detail *string   `json:"detail,omitempty"`
+	Id     uuid.UUID `json:"id"`
+
+	// Status The HTTP status the single change would have answered.
+	Status int32 `json:"status"`
+}
+
+// ConversationBulkResult defines model for ConversationBulkResult.
+type ConversationBulkResult struct {
+	Failed []ConversationBulkFailure `json:"failed"`
+
+	// Updated The conversations after the change, in request order.
+	Updated []Conversation `json:"updated"`
+}
+
+// ConversationBulkUpdate defines model for ConversationBulkUpdate.
+type ConversationBulkUpdate struct {
+	AddLabels *[]uuid.UUID `json:"add_labels,omitempty"`
+
+	// AssigneeId A member; `null` unassigns.
+	AssigneeId      nullable.Nullable[uuid.UUID] `json:"assignee_id,omitempty"`
+	ConversationIds []uuid.UUID                  `json:"conversation_ids"`
+	RemoveLabels    *[]uuid.UUID                 `json:"remove_labels,omitempty"`
+
+	// SnoozeUntil Required with status `snoozed`.
+	SnoozeUntil *time.Time          `json:"snooze_until,omitempty"`
+	Status      *ConversationStatus `json:"status,omitempty"`
 }
 
 // ConversationContact The conversation's contact, enough for a list row.
@@ -1961,6 +2020,35 @@ type ConversationListItem struct {
 	Unread    bool      `json:"unread"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
+
+// ConversationMove defines model for ConversationMove.
+type ConversationMove struct {
+	InboxId uuid.UUID `json:"inbox_id"`
+}
+
+// ConversationMoved defines model for ConversationMoved.
+type ConversationMoved struct {
+	Id              uuid.UUID `json:"id"`
+	InboxId         uuid.UUID `json:"inbox_id"`
+	PreviousInboxId uuid.UUID `json:"previous_inbox_id"`
+}
+
+// ConversationMovedEvent A conversation left this event's inbox for another one. Sent to whoever can see the old
+// inbox, so it can drop the conversation; `conversation.updated` follows for the new inbox.
+type ConversationMovedEvent struct {
+	ConversationId uuid.UUID         `json:"conversation_id"`
+	CreatedAt      time.Time         `json:"created_at"`
+	Data           ConversationMoved `json:"data"`
+	Id             int64             `json:"id"`
+
+	// InboxId The inbox it left.
+	InboxId     uuid.UUID                  `json:"inbox_id"`
+	Type        ConversationMovedEventType `json:"type"`
+	WorkspaceId uuid.UUID                  `json:"workspace_id"`
+}
+
+// ConversationMovedEventType defines model for ConversationMovedEvent.Type.
+type ConversationMovedEventType string
 
 // ConversationPage defines model for ConversationPage.
 type ConversationPage struct {
@@ -2694,12 +2782,18 @@ type MessageEvent struct {
 	// AssigneeId The new assignee (`assigned`).
 	AssigneeId *uuid.UUID `json:"assignee_id,omitempty"`
 
+	// InboxId The inbox it moved to (`moved`).
+	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
+
 	// PreviousAssigneeId The previous assignee (`assigned`, `unassigned`).
-	PreviousAssigneeId *uuid.UUID          `json:"previous_assignee_id,omitempty"`
-	PreviousStatus     *ConversationStatus `json:"previous_status,omitempty"`
-	RemovedLabels      *[]uuid.UUID        `json:"removed_labels,omitempty"`
-	Status             *ConversationStatus `json:"status,omitempty"`
-	Type               EventType           `json:"type"`
+	PreviousAssigneeId *uuid.UUID `json:"previous_assignee_id,omitempty"`
+
+	// PreviousInboxId The inbox it moved from (`moved`).
+	PreviousInboxId *uuid.UUID          `json:"previous_inbox_id,omitempty"`
+	PreviousStatus  *ConversationStatus `json:"previous_status,omitempty"`
+	RemovedLabels   *[]uuid.UUID        `json:"removed_labels,omitempty"`
+	Status          *ConversationStatus `json:"status,omitempty"`
+	Type            EventType           `json:"type"`
 }
 
 // MessageKind `message` goes to or comes from the contact, `note` is for members only, `event` records a
@@ -3210,6 +3304,9 @@ type WebhookConversationPayload struct {
 type WebhookDeletedContact struct {
 	ExternalIds []ExternalId `json:"external_ids"`
 	Id          uuid.UUID    `json:"id"`
+
+	// MergedIntoId Set when the contact was merged into this contact, which now has its external ids.
+	MergedIntoId *uuid.UUID `json:"merged_into_id,omitempty"`
 }
 
 // WebhookDelivery defines model for WebhookDelivery.
@@ -3624,6 +3721,12 @@ type UpdateContactParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// MergeContactParams defines parameters for MergeContact.
+type MergeContactParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetContactPresenceParams defines parameters for GetContactPresence.
 type GetContactPresenceParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -3671,6 +3774,12 @@ type CreateConversationParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// BulkUpdateConversationsParams defines parameters for BulkUpdateConversations.
+type BulkUpdateConversationsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetConversationCountsParams defines parameters for GetConversationCounts.
 type GetConversationCountsParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -3708,6 +3817,12 @@ type ListMessagesParamsOrder string
 
 // CreateMessageParams defines parameters for CreateMessage.
 type CreateMessageParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// MoveConversationParams defines parameters for MoveConversation.
+type MoveConversationParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -4133,8 +4248,14 @@ type CreateContactJSONRequestBody = ContactCreate
 // UpdateContactJSONRequestBody defines body for UpdateContact for application/json ContentType.
 type UpdateContactJSONRequestBody = ContactUpdate
 
+// MergeContactJSONRequestBody defines body for MergeContact for application/json ContentType.
+type MergeContactJSONRequestBody = ContactMerge
+
 // CreateConversationJSONRequestBody defines body for CreateConversation for application/json ContentType.
 type CreateConversationJSONRequestBody = ConversationCreate
+
+// BulkUpdateConversationsJSONRequestBody defines body for BulkUpdateConversations for application/json ContentType.
+type BulkUpdateConversationsJSONRequestBody = ConversationBulkUpdate
 
 // UpdateConversationJSONRequestBody defines body for UpdateConversation for application/json ContentType.
 type UpdateConversationJSONRequestBody = ConversationUpdate
@@ -4144,6 +4265,9 @@ type CreateMessageJSONRequestBody = MessageCreate
 
 // CreateMessageMultipartRequestBody defines body for CreateMessage for multipart/form-data ContentType.
 type CreateMessageMultipartRequestBody = MessageCreateMultipart
+
+// MoveConversationJSONRequestBody defines body for MoveConversation for application/json ContentType.
+type MoveConversationJSONRequestBody = ConversationMove
 
 // MarkConversationReadJSONRequestBody defines body for MarkConversationRead for application/json ContentType.
 type MarkConversationReadJSONRequestBody = ConversationReadCreate
@@ -4532,6 +4656,32 @@ func (t *RealtimeMessage) MergeConversationEvent(v ConversationEvent) error {
 	return err
 }
 
+// AsConversationMovedEvent returns the union data inside the RealtimeMessage as a ConversationMovedEvent
+func (t RealtimeMessage) AsConversationMovedEvent() (ConversationMovedEvent, error) {
+	var body ConversationMovedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationMovedEvent overwrites any union data inside the RealtimeMessage as the provided ConversationMovedEvent
+func (t *RealtimeMessage) FromConversationMovedEvent(v ConversationMovedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationMovedEvent performs a merge with any union data inside the RealtimeMessage, using the provided ConversationMovedEvent
+func (t *RealtimeMessage) MergeConversationMovedEvent(v ConversationMovedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsMessageCreatedEvent returns the union data inside the RealtimeMessage as a MessageCreatedEvent
 func (t RealtimeMessage) AsMessageCreatedEvent() (MessageCreatedEvent, error) {
 	var body MessageCreatedEvent
@@ -4864,6 +5014,8 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsContactUpdatedEvent()
 	case "conversation.created":
 		return t.AsConversationEvent()
+	case "conversation.moved":
+		return t.AsConversationMovedEvent()
 	case "conversation.read":
 		return t.AsConversationReadEvent()
 	case "conversation.updated":
@@ -5023,6 +5175,9 @@ type ServerInterface interface {
 	// UpdateContact Update a contact
 	// (PATCH /v1/contacts/{contactId})
 	UpdateContact(w http.ResponseWriter, r *http.Request, contactId ContactId, params UpdateContactParams)
+	// MergeContact Merge another contact into this one
+	// (POST /v1/contacts/{contactId}/merge)
+	MergeContact(w http.ResponseWriter, r *http.Request, contactId ContactId, params MergeContactParams)
 	// GetContactPresence Whether a contact is connected
 	// (GET /v1/contacts/{contactId}/presence)
 	GetContactPresence(w http.ResponseWriter, r *http.Request, contactId ContactId, params GetContactPresenceParams)
@@ -5032,6 +5187,9 @@ type ServerInterface interface {
 	// CreateConversation Start a conversation
 	// (POST /v1/conversations)
 	CreateConversation(w http.ResponseWriter, r *http.Request, params CreateConversationParams)
+	// BulkUpdateConversations Change several conversations at once
+	// (POST /v1/conversations/bulk)
+	BulkUpdateConversations(w http.ResponseWriter, r *http.Request, params BulkUpdateConversationsParams)
 	// GetConversationCounts Count open conversations
 	// (GET /v1/conversations/counts)
 	GetConversationCounts(w http.ResponseWriter, r *http.Request, params GetConversationCountsParams)
@@ -5047,6 +5205,9 @@ type ServerInterface interface {
 	// CreateMessage Post a message or a note
 	// (POST /v1/conversations/{conversationId}/messages)
 	CreateMessage(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params CreateMessageParams)
+	// MoveConversation Move a conversation to another inbox
+	// (POST /v1/conversations/{conversationId}/move)
+	MoveConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params MoveConversationParams)
 	// MarkConversationRead Mark a conversation read
 	// (POST /v1/conversations/{conversationId}/read)
 	MarkConversationRead(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params MarkConversationReadParams)
@@ -6666,6 +6827,56 @@ func (siw *ServerInterfaceWrapper) UpdateContact(w http.ResponseWriter, r *http.
 	handler.ServeHTTP(w, r)
 }
 
+// MergeContact operation middleware
+func (siw *ServerInterfaceWrapper) MergeContact(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "contactId" -------------
+	var contactId ContactId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contactId", r.PathValue("contactId"), &contactId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contactId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params MergeContactParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.MergeContact(w, r, contactId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetContactPresence operation middleware
 func (siw *ServerInterfaceWrapper) GetContactPresence(w http.ResponseWriter, r *http.Request) {
 
@@ -6932,6 +7143,47 @@ func (siw *ServerInterfaceWrapper) CreateConversation(w http.ResponseWriter, r *
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.CreateConversation(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// BulkUpdateConversations operation middleware
+func (siw *ServerInterfaceWrapper) BulkUpdateConversations(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BulkUpdateConversationsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.BulkUpdateConversations(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -7212,6 +7464,56 @@ func (siw *ServerInterfaceWrapper) CreateMessage(w http.ResponseWriter, r *http.
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.CreateMessage(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// MoveConversation operation middleware
+func (siw *ServerInterfaceWrapper) MoveConversation(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params MoveConversationParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.MoveConversation(w, r, conversationId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -9811,12 +10113,15 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/contacts/{contactId}", wrapper.DeleteContact)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}", wrapper.GetContact)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/contacts/{contactId}", wrapper.UpdateContact)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/contacts/{contactId}/merge", wrapper.MergeContact)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}/presence", wrapper.GetContactPresence)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations", wrapper.ListConversations)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations", wrapper.CreateConversation)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/counts", wrapper.GetConversationCounts)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/bulk", wrapper.BulkUpdateConversations)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}", wrapper.GetConversation)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/conversations/{conversationId}", wrapper.UpdateConversation)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/move", wrapper.MoveConversation)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}/messages", wrapper.ListMessages)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/messages", wrapper.CreateMessage)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/read", wrapper.MarkConversationRead)
@@ -13275,6 +13580,88 @@ func (response UpdateContact409ApplicationProblemPlusJSONResponse) VisitUpdateCo
 	return err
 }
 
+type MergeContactRequestObject struct {
+	ContactId ContactId `json:"contactId"`
+	Params    MergeContactParams
+	Body      *MergeContactJSONRequestBody
+}
+
+type MergeContactResponseObject interface {
+	VisitMergeContactResponse(w http.ResponseWriter) error
+}
+
+type MergeContact200JSONResponse Contact
+
+func (response MergeContact200JSONResponse) VisitMergeContactResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MergeContact400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response MergeContact400ApplicationProblemPlusJSONResponse) VisitMergeContactResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MergeContact401ApplicationProblemPlusJSONResponse Problem
+
+func (response MergeContact401ApplicationProblemPlusJSONResponse) VisitMergeContactResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MergeContact403ApplicationProblemPlusJSONResponse Problem
+
+func (response MergeContact403ApplicationProblemPlusJSONResponse) VisitMergeContactResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MergeContact404ApplicationProblemPlusJSONResponse Problem
+
+func (response MergeContact404ApplicationProblemPlusJSONResponse) VisitMergeContactResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type GetContactPresenceRequestObject struct {
 	ContactId ContactId `json:"contactId"`
 	Params    GetContactPresenceParams
@@ -13499,6 +13886,73 @@ func (response CreateConversation404ApplicationProblemPlusJSONResponse) VisitCre
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkUpdateConversationsRequestObject struct {
+	Params BulkUpdateConversationsParams
+	Body   *BulkUpdateConversationsJSONRequestBody
+}
+
+type BulkUpdateConversationsResponseObject interface {
+	VisitBulkUpdateConversationsResponse(w http.ResponseWriter) error
+}
+
+type BulkUpdateConversations200JSONResponse ConversationBulkResult
+
+func (response BulkUpdateConversations200JSONResponse) VisitBulkUpdateConversationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkUpdateConversations400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response BulkUpdateConversations400ApplicationProblemPlusJSONResponse) VisitBulkUpdateConversationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkUpdateConversations401ApplicationProblemPlusJSONResponse Problem
+
+func (response BulkUpdateConversations401ApplicationProblemPlusJSONResponse) VisitBulkUpdateConversationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkUpdateConversations403ApplicationProblemPlusJSONResponse Problem
+
+func (response BulkUpdateConversations403ApplicationProblemPlusJSONResponse) VisitBulkUpdateConversationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -13920,6 +14374,102 @@ func (response CreateMessage415ApplicationProblemPlusJSONResponse) VisitCreateMe
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(415)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MoveConversationRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Params         MoveConversationParams
+	Body           *MoveConversationJSONRequestBody
+}
+
+type MoveConversationResponseObject interface {
+	VisitMoveConversationResponse(w http.ResponseWriter) error
+}
+
+type MoveConversation200JSONResponse Conversation
+
+func (response MoveConversation200JSONResponse) VisitMoveConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MoveConversation400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response MoveConversation400ApplicationProblemPlusJSONResponse) VisitMoveConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MoveConversation401ApplicationProblemPlusJSONResponse Problem
+
+func (response MoveConversation401ApplicationProblemPlusJSONResponse) VisitMoveConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MoveConversation403ApplicationProblemPlusJSONResponse Problem
+
+func (response MoveConversation403ApplicationProblemPlusJSONResponse) VisitMoveConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MoveConversation404ApplicationProblemPlusJSONResponse Problem
+
+func (response MoveConversation404ApplicationProblemPlusJSONResponse) VisitMoveConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MoveConversation409ApplicationProblemPlusJSONResponse Problem
+
+func (response MoveConversation409ApplicationProblemPlusJSONResponse) VisitMoveConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -17862,6 +18412,9 @@ type StrictServerInterface interface {
 	// UpdateContact Update a contact
 	// (PATCH /v1/contacts/{contactId})
 	UpdateContact(ctx context.Context, request UpdateContactRequestObject) (UpdateContactResponseObject, error)
+	// MergeContact Merge another contact into this one
+	// (POST /v1/contacts/{contactId}/merge)
+	MergeContact(ctx context.Context, request MergeContactRequestObject) (MergeContactResponseObject, error)
 	// GetContactPresence Whether a contact is connected
 	// (GET /v1/contacts/{contactId}/presence)
 	GetContactPresence(ctx context.Context, request GetContactPresenceRequestObject) (GetContactPresenceResponseObject, error)
@@ -17871,6 +18424,9 @@ type StrictServerInterface interface {
 	// CreateConversation Start a conversation
 	// (POST /v1/conversations)
 	CreateConversation(ctx context.Context, request CreateConversationRequestObject) (CreateConversationResponseObject, error)
+	// BulkUpdateConversations Change several conversations at once
+	// (POST /v1/conversations/bulk)
+	BulkUpdateConversations(ctx context.Context, request BulkUpdateConversationsRequestObject) (BulkUpdateConversationsResponseObject, error)
 	// GetConversationCounts Count open conversations
 	// (GET /v1/conversations/counts)
 	GetConversationCounts(ctx context.Context, request GetConversationCountsRequestObject) (GetConversationCountsResponseObject, error)
@@ -17886,6 +18442,9 @@ type StrictServerInterface interface {
 	// CreateMessage Post a message or a note
 	// (POST /v1/conversations/{conversationId}/messages)
 	CreateMessage(ctx context.Context, request CreateMessageRequestObject) (CreateMessageResponseObject, error)
+	// MoveConversation Move a conversation to another inbox
+	// (POST /v1/conversations/{conversationId}/move)
+	MoveConversation(ctx context.Context, request MoveConversationRequestObject) (MoveConversationResponseObject, error)
 	// MarkConversationRead Mark a conversation read
 	// (POST /v1/conversations/{conversationId}/read)
 	MarkConversationRead(ctx context.Context, request MarkConversationReadRequestObject) (MarkConversationReadResponseObject, error)
@@ -19280,6 +19839,40 @@ func (sh *strictHandler) UpdateContact(w http.ResponseWriter, r *http.Request, c
 	}
 }
 
+// MergeContact operation middleware
+func (sh *strictHandler) MergeContact(w http.ResponseWriter, r *http.Request, contactId ContactId, params MergeContactParams) {
+	var request MergeContactRequestObject
+
+	request.ContactId = contactId
+	request.Params = params
+
+	var body MergeContactJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.MergeContact(ctx, request.(MergeContactRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "MergeContact")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(MergeContactResponseObject); ok {
+		if err := validResponse.VisitMergeContactResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // GetContactPresence operation middleware
 func (sh *strictHandler) GetContactPresence(w http.ResponseWriter, r *http.Request, contactId ContactId, params GetContactPresenceParams) {
 	var request GetContactPresenceRequestObject
@@ -19359,6 +19952,39 @@ func (sh *strictHandler) CreateConversation(w http.ResponseWriter, r *http.Reque
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(CreateConversationResponseObject); ok {
 		if err := validResponse.VisitCreateConversationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// BulkUpdateConversations operation middleware
+func (sh *strictHandler) BulkUpdateConversations(w http.ResponseWriter, r *http.Request, params BulkUpdateConversationsParams) {
+	var request BulkUpdateConversationsRequestObject
+
+	request.Params = params
+
+	var body BulkUpdateConversationsJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.BulkUpdateConversations(ctx, request.(BulkUpdateConversationsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "BulkUpdateConversations")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(BulkUpdateConversationsResponseObject); ok {
+		if err := validResponse.VisitBulkUpdateConversationsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -19518,6 +20144,40 @@ func (sh *strictHandler) CreateMessage(w http.ResponseWriter, r *http.Request, c
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(CreateMessageResponseObject); ok {
 		if err := validResponse.VisitCreateMessageResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// MoveConversation operation middleware
+func (sh *strictHandler) MoveConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params MoveConversationParams) {
+	var request MoveConversationRequestObject
+
+	request.ConversationId = conversationId
+	request.Params = params
+
+	var body MoveConversationJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.MoveConversation(ctx, request.(MoveConversationRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "MoveConversation")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(MoveConversationResponseObject); ok {
+		if err := validResponse.VisitMoveConversationResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

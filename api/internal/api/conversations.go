@@ -528,111 +528,127 @@ func (s *Server) GetConversation(ctx context.Context, req oas.GetConversationReq
 
 func (s *Server) UpdateConversation(ctx context.Context, req oas.UpdateConversationRequestObject) (oas.UpdateConversationResponseObject, error) {
 	p := principalFrom(ctx)
-	b := req.Body
 	var out oas.Conversation
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
-		cur, err := visibleConversation(ctx, q, p, req.ConversationId, true)
-		if err != nil {
-			return err
-		}
-		now := s.now()
-		next := cur
-		if b.Subject != nil {
-			if next.Subject, err = trimmed(*b.Subject, 0, 500, "subject"); err != nil {
-				return err
-			}
-		}
-		if b.Priority != nil {
-			if !validPriority(*b.Priority) {
-				return errValidation("priority must be low, normal, high or urgent")
-			}
-			next.Priority = string(*b.Priority)
-		}
-		if b.Spam != nil {
-			next.Spam = *b.Spam
-		}
-		if b.Status != nil {
-			if !b.Status.Valid() {
-				return errValidation("status must be open, pending, snoozed or closed")
-			}
-			next.Status = string(*b.Status)
-		}
-		if next.Status == string(oas.ConversationStatusSnoozed) {
-			if b.SnoozeUntil != nil {
-				until := *b.SnoozeUntil
-				next.SnoozeUntil = &until
-			}
-			if next.SnoozeUntil == nil || !next.SnoozeUntil.After(now) {
-				return errValidation("snoozed needs a snooze_until in the future")
-			}
-		} else {
-			if b.SnoozeUntil != nil {
-				return errValidation("snooze_until is only allowed with status snoozed")
-			}
-			next.SnoozeUntil = nil
-		}
-		if b.AssigneeId.IsSpecified() {
-			next.AssigneeID = nil
-			if !b.AssigneeId.IsNull() {
-				id := b.AssigneeId.MustGet()
-				ok, err := memberHasInbox(ctx, q, p.workspaceID, cur.InboxID, id)
-				if err != nil {
-					return err
-				}
-				if !ok {
-					return errAssigneeAccess
-				}
-				next.AssigneeID = &id
-			}
-		}
-		labelMap, err := conversationLabels(ctx, q, p.workspaceID, []uuid.UUID{cur.ID})
-		if err != nil {
-			return err
-		}
-		labels := labelMap[cur.ID]
-		var added, removed []uuid.UUID
-		if b.Labels != nil {
-			want, err := labelSet(ctx, q, p.workspaceID, *b.Labels)
-			if err != nil {
-				return err
-			}
-			for _, l := range want {
-				if !slices.Contains(labels, l) {
-					added = append(added, l)
-				}
-			}
-			for _, l := range labels {
-				if !slices.Contains(want, l) {
-					removed = append(removed, l)
-				}
-			}
-			for _, l := range added {
-				if err := q.AddConversationLabel(ctx, store.AddConversationLabelParams{WorkspaceID: p.workspaceID, ConversationID: cur.ID, LabelID: l}); err != nil {
-					return err
-				}
-			}
-			for _, l := range removed {
-				if err := q.RemoveConversationLabel(ctx, store.RemoveConversationLabelParams{WorkspaceID: p.workspaceID, ConversationID: cur.ID, LabelID: l}); err != nil {
-					return err
-				}
-			}
-			labels = want
-		}
-		updated, err := q.UpdateConversation(ctx, store.UpdateConversationParams{
-			WorkspaceID: p.workspaceID, ID: cur.ID, Subject: next.Subject, Status: next.Status, SnoozeUntil: next.SnoozeUntil,
-			Priority: next.Priority, AssigneeID: next.AssigneeID, Spam: next.Spam, Now: now,
-		})
-		if err != nil {
-			return err
-		}
-		out = conversationBody(updated, labels)
-		if conversationChanged(cur, updated) || len(added) > 0 || len(removed) > 0 {
-			events.conversation(realtime.ConversationUpdated, updated, out)
-		}
-		return s.recordChanges(ctx, q, events, p, cur, updated, added, removed, now)
+		var err error
+		out, err = s.changeConversation(ctx, q, events, p, req.ConversationId, *req.Body, nil, nil)
+		return err
 	})
 	if err != nil {
 		return nil, err
 	}
 	return oas.UpdateConversation200JSONResponse(out), nil
+}
+
+// changeConversation applies b to the conversation and records it; addLabels and removeLabels
+// change the labels when b.Labels does not replace them.
+func (s *Server) changeConversation(ctx context.Context, q *store.Queries, events *eventBatch, p principal, id uuid.UUID, b oas.ConversationUpdate, addLabels, removeLabels []uuid.UUID) (oas.Conversation, error) {
+	var out oas.Conversation
+	cur, err := visibleConversation(ctx, q, p, id, true)
+	if err != nil {
+		return out, err
+	}
+	now := s.now()
+	next := cur
+	if b.Subject != nil {
+		if next.Subject, err = trimmed(*b.Subject, 0, 500, "subject"); err != nil {
+			return out, err
+		}
+	}
+	if b.Priority != nil {
+		if !validPriority(*b.Priority) {
+			return out, errValidation("priority must be low, normal, high or urgent")
+		}
+		next.Priority = string(*b.Priority)
+	}
+	if b.Spam != nil {
+		next.Spam = *b.Spam
+	}
+	if b.Status != nil {
+		if !b.Status.Valid() {
+			return out, errValidation("status must be open, pending, snoozed or closed")
+		}
+		next.Status = string(*b.Status)
+	}
+	if next.Status == string(oas.ConversationStatusSnoozed) {
+		if b.SnoozeUntil != nil {
+			until := *b.SnoozeUntil
+			next.SnoozeUntil = &until
+		}
+		if next.SnoozeUntil == nil || !next.SnoozeUntil.After(now) {
+			return out, errValidation("snoozed needs a snooze_until in the future")
+		}
+	} else {
+		if b.SnoozeUntil != nil {
+			return out, errValidation("snooze_until is only allowed with status snoozed")
+		}
+		next.SnoozeUntil = nil
+	}
+	if b.AssigneeId.IsSpecified() {
+		next.AssigneeID = nil
+		if !b.AssigneeId.IsNull() {
+			id := b.AssigneeId.MustGet()
+			ok, err := memberHasInbox(ctx, q, p.workspaceID, cur.InboxID, id)
+			if err != nil {
+				return out, err
+			}
+			if !ok {
+				return out, errAssigneeAccess
+			}
+			next.AssigneeID = &id
+		}
+	}
+	labelMap, err := conversationLabels(ctx, q, p.workspaceID, []uuid.UUID{cur.ID})
+	if err != nil {
+		return out, err
+	}
+	labels := labelMap[cur.ID]
+	var want []uuid.UUID
+	switch {
+	case b.Labels != nil:
+		if want, err = labelSet(ctx, q, p.workspaceID, *b.Labels); err != nil {
+			return out, err
+		}
+	case len(addLabels) > 0 || len(removeLabels) > 0:
+		for _, l := range append(slices.Clone(labels), addLabels...) {
+			if !slices.Contains(removeLabels, l) && !slices.Contains(want, l) {
+				want = append(want, l)
+			}
+		}
+	default:
+		want = labels
+	}
+	var added, removed []uuid.UUID
+	for _, l := range want {
+		if !slices.Contains(labels, l) {
+			added = append(added, l)
+		}
+	}
+	for _, l := range labels {
+		if !slices.Contains(want, l) {
+			removed = append(removed, l)
+		}
+	}
+	for _, l := range added {
+		if err := q.AddConversationLabel(ctx, store.AddConversationLabelParams{WorkspaceID: p.workspaceID, ConversationID: cur.ID, LabelID: l}); err != nil {
+			return out, err
+		}
+	}
+	for _, l := range removed {
+		if err := q.RemoveConversationLabel(ctx, store.RemoveConversationLabelParams{WorkspaceID: p.workspaceID, ConversationID: cur.ID, LabelID: l}); err != nil {
+			return out, err
+		}
+	}
+	updated, err := q.UpdateConversation(ctx, store.UpdateConversationParams{
+		WorkspaceID: p.workspaceID, ID: cur.ID, Subject: next.Subject, Status: next.Status, SnoozeUntil: next.SnoozeUntil,
+		Priority: next.Priority, AssigneeID: next.AssigneeID, Spam: next.Spam, Now: now,
+	})
+	if err != nil {
+		return out, err
+	}
+	out = conversationBody(updated, want)
+	if conversationChanged(cur, updated) || len(added) > 0 || len(removed) > 0 {
+		events.conversation(realtime.ConversationUpdated, updated, out)
+	}
+	return out, s.recordChanges(ctx, q, events, p, cur, updated, added, removed, now)
 }

@@ -369,6 +369,7 @@ func (f *clientFilter) transform(ctx context.Context, e realtime.Event) ([]any, 
 			return nil, err
 		}
 		if c.InboxId != f.cp.inboxID {
+			delete(f.convs, c.Id)
 			return nil, nil
 		}
 		prev, known := f.convs[c.Id]

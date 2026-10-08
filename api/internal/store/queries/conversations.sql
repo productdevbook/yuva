@@ -142,3 +142,11 @@ SELECT storage_key FROM attachments WHERE workspace_id = @workspace_id AND conve
 
 -- name: DeleteConversations :execrows
 DELETE FROM conversations WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[]);
+
+-- name: MoveConversation :one
+UPDATE conversations SET inbox_id = @inbox_id, channel_id = sqlc.narg(channel_id), assignee_id = sqlc.narg(assignee_id), updated_at = @now
+WHERE workspace_id = @workspace_id AND id = @id
+RETURNING *;
+
+-- name: InboxChannelOfKind :one
+SELECT * FROM channels WHERE workspace_id = $1 AND inbox_id = $2 AND kind = $3 ORDER BY created_at, id LIMIT 1;

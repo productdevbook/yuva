@@ -508,6 +508,22 @@ func (q *Queries) LockContact(ctx context.Context, arg LockContactParams) (LockC
 	return i, err
 }
 
+const moveContactExternalIDs = `-- name: MoveContactExternalIDs :exec
+UPDATE contact_external_ids SET contact_id = $1
+WHERE workspace_id = $2 AND contact_id = $3
+`
+
+type MoveContactExternalIDsParams struct {
+	ToContact   uuid.UUID
+	WorkspaceID uuid.UUID
+	FromContact uuid.UUID
+}
+
+func (q *Queries) MoveContactExternalIDs(ctx context.Context, arg MoveContactExternalIDsParams) error {
+	_, err := q.db.Exec(ctx, moveContactExternalIDs, arg.ToContact, arg.WorkspaceID, arg.FromContact)
+	return err
+}
+
 const refreshContactSearch = `-- name: RefreshContactSearch :exec
 UPDATE contacts c SET search = to_tsvector('simple', translate(concat_ws(' ',
     c.name,

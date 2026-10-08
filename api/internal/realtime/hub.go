@@ -19,6 +19,7 @@ const SignalChannel = "yuva_signals"
 const (
 	ConversationCreated = "conversation.created"
 	ConversationUpdated = "conversation.updated"
+	ConversationMoved   = "conversation.moved"
 	MessageCreated      = "message.created"
 	MessageUpdated      = "message.updated"
 	ContactUpdated      = "contact.updated"

@@ -33,11 +33,11 @@ delivery after resolving the name (`YUVA_WEBHOOK_ALLOW_PRIVATE` lifts this for d
 | Type | When | `data` |
 |---|---|---|
 | `conversation.created` | A conversation started on any channel (feedback included) | `conversation`, `contact` |
-| `conversation.updated` | Status, assignee, priority, labels, subject or spam flag changed, or it moved to another contact | `conversation`, `contact` |
+| `conversation.updated` | Status, assignee, priority, labels, subject or spam flag changed, or it moved to another contact or inbox (one per conversation for bulk changes) | `conversation`, `contact` |
 | `message.created` | A message from or to the contact (and notes, when enabled) | `message`, `conversation`, `contact` |
 | `feedback.created` | Feedback arrived from an app or `POST /v1/feedback` | `message`, `conversation`, `contact` |
 | `contact.updated` | A contact changed | `contact` |
-| `contact.deleted` | A contact was deleted | `contact` with the external ids it had |
+| `contact.deleted` | A contact was deleted, or merged into another (`merged_into_id`, which now has its external ids) | `contact` with the external ids it had |
 
 The full schemas are in the `webhooks` section of [openapi/openapi.yaml](../openapi/openapi.yaml).
 

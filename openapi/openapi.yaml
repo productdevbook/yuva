@@ -1533,6 +1533,43 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+  /v1/contacts/{contactId}/merge:
+    post:
+      operationId: mergeContact
+      summary: Merge another contact into this one
+      description: |
+        Owners, admins and API keys. The contact in the path keeps its id and gains the source's
+        e-mail addresses, external ids, attributes (its own value wins on a key both have), its
+        name and locale when it has none, and every conversation of the source. The source is
+        deleted with its sessions and visitor ids; identity tokens and inbound mail for its
+        addresses and external ids now find this contact. Emits `conversation.updated` for each
+        moved conversation, `contact.updated` for this contact and `contact.deleted` (with
+        `merged_into_id`) for the source.
+      tags: [contacts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ContactId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactMerge"
+      responses:
+        "200":
+          description: The merged contact.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Contact"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
   /v1/contacts/{contactId}/presence:
     get:
       operationId: getContactPresence
@@ -1685,6 +1722,41 @@ paths:
           $ref: "#/components/responses/Problem"
         "403":
           $ref: "#/components/responses/Problem"
+  /v1/conversations/bulk:
+    post:
+      operationId: bulkUpdateConversations
+      summary: Change several conversations at once
+      description: |
+        Applies one change to up to 100 conversations: a status (with `snooze_until` for
+        `snoozed`), an assignee (`null` unassigns), labels to add and labels to remove. Each
+        conversation is changed in its own transaction, records the same `event` messages and
+        emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
+        A conversation the caller cannot see (or of another workspace) is listed in `failed`
+        with `not_found`; one whose inbox the new assignee cannot access with
+        `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
+        member, a past `snooze_until`) is refused with `400` and changes nothing.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConversationBulkUpdate"
+      responses:
+        "200":
+          description: Which conversations changed and which were refused.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConversationBulkResult"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
   /v1/conversations/{conversationId}:
     get:
       operationId: getConversation
@@ -1736,6 +1808,45 @@ paths:
         "403":
           $ref: "#/components/responses/Problem"
         "404":
+          $ref: "#/components/responses/Problem"
+  /v1/conversations/{conversationId}/move:
+    post:
+      operationId: moveConversation
+      summary: Move a conversation to another inbox
+      description: |
+        The caller must see both inboxes. Messages, notes, labels and attachments move with the
+        conversation; the assignee stays only when they can access the new inbox. The
+        conversation continues on the new inbox's channel of the same kind (for e-mail the one
+        its chat continuity would use); an e-mail conversation is refused with
+        `409 no_email_channel` when the new inbox has none. The timeline gets a `moved` event.
+        `conversation.updated` reports the new inbox; members watching the old one get
+        `conversation.moved`.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConversationMove"
+      responses:
+        "200":
+          description: The moved conversation.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
           $ref: "#/components/responses/Problem"
   /v1/conversations/{conversationId}/messages:
     get:
@@ -4908,6 +5019,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ExternalId"
+        merged_into_id:
+          type: string
+          format: uuid
+          description: Set when the contact was merged into this contact, which now has its external ids.
     WebhookConversationData:
       type: object
       required: [conversation, contact]
@@ -5043,6 +5158,14 @@ components:
           description: Addresses to mail again, e.g. after the recipient fixed their mailbox.
           items:
             $ref: "#/components/schemas/Email"
+    ContactMerge:
+      type: object
+      required: [source_id]
+      properties:
+        source_id:
+          type: string
+          format: uuid
+          description: The contact to merge into this one and delete.
     ContactPage:
       type: object
       required: [items]
@@ -5185,6 +5308,76 @@ components:
           items:
             type: string
             format: uuid
+    ConversationBulkUpdate:
+      type: object
+      required: [conversation_ids]
+      minProperties: 2
+      properties:
+        conversation_ids:
+          type: array
+          minItems: 1
+          maxItems: 100
+          uniqueItems: true
+          items:
+            type: string
+            format: uuid
+        status:
+          $ref: "#/components/schemas/ConversationStatus"
+        snooze_until:
+          type: string
+          format: date-time
+          description: Required with status `snoozed`.
+        assignee_id:
+          type: [string, "null"]
+          format: uuid
+          description: A member; `null` unassigns.
+        add_labels:
+          type: array
+          maxItems: 50
+          items:
+            type: string
+            format: uuid
+        remove_labels:
+          type: array
+          maxItems: 50
+          items:
+            type: string
+            format: uuid
+    ConversationBulkFailure:
+      type: object
+      required: [id, status, code]
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: integer
+          format: int32
+          description: The HTTP status the single change would have answered.
+        code:
+          type: string
+        detail:
+          type: string
+    ConversationBulkResult:
+      type: object
+      required: [updated, failed]
+      properties:
+        updated:
+          type: array
+          description: The conversations after the change, in request order.
+          items:
+            $ref: "#/components/schemas/Conversation"
+        failed:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConversationBulkFailure"
+    ConversationMove:
+      type: object
+      required: [inbox_id]
+      properties:
+        inbox_id:
+          type: string
+          format: uuid
     ConversationContact:
       type: object
       description: The conversation's contact, enough for a list row.
@@ -5342,7 +5535,7 @@ components:
           description: Set for `contact`.
     EventType:
       type: string
-      enum: [assigned, unassigned, status_changed, labels_changed]
+      enum: [assigned, unassigned, status_changed, labels_changed, moved]
     MessageEvent:
       type: object
       required: [type]
@@ -5371,6 +5564,14 @@ components:
           items:
             type: string
             format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+          description: The inbox it moved to (`moved`).
+        previous_inbox_id:
+          type: string
+          format: uuid
+          description: The inbox it moved from (`moved`).
     Attachment:
       type: object
       required: [id, filename, content_type, size, inline, created_at]
@@ -5738,6 +5939,47 @@ components:
           format: date-time
         data:
           $ref: "#/components/schemas/Conversation"
+    ConversationMovedEvent:
+      type: object
+      description: |
+        A conversation left this event's inbox for another one. Sent to whoever can see the old
+        inbox, so it can drop the conversation; `conversation.updated` follows for the new inbox.
+      required: [id, type, workspace_id, inbox_id, conversation_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [conversation.moved]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+          description: The inbox it left.
+        conversation_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/ConversationMoved"
+    ConversationMoved:
+      type: object
+      required: [id, inbox_id, previous_inbox_id]
+      properties:
+        id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        previous_inbox_id:
+          type: string
+          format: uuid
     MessageCreatedEvent:
       type: object
       description: A message, note or event message was added to a conversation.
@@ -5946,6 +6188,10 @@ components:
         id:
           type: string
           format: uuid
+        merged_into_id:
+          type: string
+          format: uuid
+          description: Set on `contact.deleted` when the contact was merged into this one.
     InboxRef:
       type: object
       required: [id]
@@ -5988,6 +6234,7 @@ components:
       description: One server message on `/v1/realtime`, told apart by `type`.
       oneOf:
         - $ref: "#/components/schemas/ConversationEvent"
+        - $ref: "#/components/schemas/ConversationMovedEvent"
         - $ref: "#/components/schemas/MessageCreatedEvent"
         - $ref: "#/components/schemas/MessageUpdatedEvent"
         - $ref: "#/components/schemas/ContactUpdatedEvent"
@@ -6005,6 +6252,7 @@ components:
         mapping:
           conversation.created: "#/components/schemas/ConversationEvent"
           conversation.updated: "#/components/schemas/ConversationEvent"
+          conversation.moved: "#/components/schemas/ConversationMovedEvent"
           message.created: "#/components/schemas/MessageCreatedEvent"
           message.updated: "#/components/schemas/MessageUpdatedEvent"
           contact.updated: "#/components/schemas/ContactUpdatedEvent"

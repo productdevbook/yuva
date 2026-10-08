@@ -338,6 +338,32 @@ func (q *Queries) InboxAPIChannel(ctx context.Context, arg InboxAPIChannelParams
 	return i, err
 }
 
+const inboxChannelOfKind = `-- name: InboxChannelOfKind :one
+SELECT id, workspace_id, inbox_id, kind, name, settings, created_at, updated_at FROM channels WHERE workspace_id = $1 AND inbox_id = $2 AND kind = $3 ORDER BY created_at, id LIMIT 1
+`
+
+type InboxChannelOfKindParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	Kind        string
+}
+
+func (q *Queries) InboxChannelOfKind(ctx context.Context, arg InboxChannelOfKindParams) (Channel, error) {
+	row := q.db.QueryRow(ctx, inboxChannelOfKind, arg.WorkspaceID, arg.InboxID, arg.Kind)
+	var i Channel
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.InboxID,
+		&i.Kind,
+		&i.Name,
+		&i.Settings,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const listConversationLabels = `-- name: ListConversationLabels :many
 SELECT conversation_id, label_id FROM conversation_labels
 WHERE workspace_id = $1 AND conversation_id = ANY($2::uuid[])
@@ -624,6 +650,58 @@ type LockConversationParams struct {
 
 func (q *Queries) LockConversation(ctx context.Context, arg LockConversationParams) (Conversation, error) {
 	row := q.db.QueryRow(ctx, lockConversation, arg.WorkspaceID, arg.ID)
+	var i Conversation
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.InboxID,
+		&i.ContactID,
+		&i.ChannelID,
+		&i.Subject,
+		&i.Status,
+		&i.SnoozeUntil,
+		&i.Priority,
+		&i.AssigneeID,
+		&i.LastMessageAt,
+		&i.LastActivityAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Spam,
+		&i.EmailToken,
+		&i.RelatedConversationID,
+		&i.ContinuityThrough,
+		&i.ContinuitySentAt,
+		&i.Kind,
+		&i.Feedback,
+		&i.EmailAddress,
+	)
+	return i, err
+}
+
+const moveConversation = `-- name: MoveConversation :one
+UPDATE conversations SET inbox_id = $1, channel_id = $2, assignee_id = $3, updated_at = $4
+WHERE workspace_id = $5 AND id = $6
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address
+`
+
+type MoveConversationParams struct {
+	InboxID     uuid.UUID
+	ChannelID   *uuid.UUID
+	AssigneeID  *uuid.UUID
+	Now         time.Time
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) MoveConversation(ctx context.Context, arg MoveConversationParams) (Conversation, error) {
+	row := q.db.QueryRow(ctx, moveConversation,
+		arg.InboxID,
+		arg.ChannelID,
+		arg.AssigneeID,
+		arg.Now,
+		arg.WorkspaceID,
+		arg.ID,
+	)
 	var i Conversation
 	err := row.Scan(
 		&i.ID,

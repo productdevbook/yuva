@@ -99,3 +99,7 @@ SELECT coalesce(EXISTS (SELECT 1 FROM conversations cv JOIN inbox_members im
     OR (NOT EXISTS (SELECT 1 FROM conversations cv WHERE cv.workspace_id = @workspace_id AND cv.contact_id = @contact_id)
         AND NOT EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = @workspace_id AND x.contact_id = @contact_id)), false)::bool
     AS visible;
+
+-- name: MoveContactExternalIDs :exec
+UPDATE contact_external_ids SET contact_id = @to_contact
+WHERE workspace_id = @workspace_id AND contact_id = @from_contact;
