@@ -26,6 +26,7 @@ export const PLATFORMS: AppPlatform[] = ["ios", "android"]
 export const WEBHOOK_EVENTS: WebhookEventType[] = [
   "conversation.created",
   "conversation.updated",
+  "conversation.rated",
   "message.created",
   "feedback.created",
   "contact.updated",
@@ -75,6 +76,7 @@ export function useEnumText() {
     event: {
       "conversation.created": t`A conversation started`,
       "conversation.updated": t`A conversation changed`,
+      "conversation.rated": t`A contact rated a conversation`,
       "message.created": t`A message was added`,
       "feedback.created": t`Feedback arrived`,
       "contact.updated": t`A contact changed`,

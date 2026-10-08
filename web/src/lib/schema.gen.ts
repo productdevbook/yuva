@@ -1035,9 +1035,9 @@ export interface paths {
          * Team activity since a moment
          * @description What the team did in the inboxes the caller can see (or in one of them) from `since` until
          *     now: replies sent by members (messages members wrote or drafts they sent; not notes, not
-         *     bots' own messages), conversations closed, and the median time from a contact's first
+         *     bots' own messages), conversations closed, the median time from a contact's first
          *     message to the first member reply, over the conversations whose first reply falls in the
-         *     window. `members` breaks replies and closes down per member, leaving out members with
+         *     window, and the ratings contacts gave in it. `members` breaks replies and closes down per member, leaving out members with
          *     neither. Nothing is stored for it; it is counted from the messages each time.
          *
          *     `since` defaults to the start of today in `timezone` (an IANA name, `UTC` by default); the
@@ -2142,6 +2142,31 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/client/v1/conversations/{conversationId}/rating": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Rate a closed conversation
+         * @description Records the contact's rating (`good` or `bad`) and optional comment for a conversation
+         *     whose `can_rate` is true. It is stored once per close: members see it in the thread as a
+         *     `rated` event and on the conversation, and it sends the `conversation.rated` webhook.
+         *     Answers `409 rating_unavailable` when `can_rate` is false (the inbox does not ask for
+         *     ratings, the conversation is open, the close is older than 30 days) and
+         *     `409 already_rated` when the contact already rated this close.
+         */
+        post: operations["rateClientConversation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/client/v1/conversations/{conversationId}/typing": {
         parameters: {
             query?: never;
@@ -2526,6 +2551,27 @@ export interface webhooks {
          * @description Any channel, feedback included (which also sends `feedback.created`).
          */
         post: operations["webhookConversationCreated"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "conversation.rated": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A contact rated a conversation
+         * @description The contact rated a closed conversation; `conversation.rating` holds the rating and
+         *     comment. Sent once per rating, with `conversation.updated` for the same change.
+         */
+        post: operations["webhookConversationRated"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3199,6 +3245,12 @@ export interface components {
              */
             expected_reply_minutes?: number;
             business_hours: components["schemas"]["BusinessHours"];
+            /**
+             * @description Contacts may rate a closed conversation (`good` or `bad`, with an optional comment):
+             *     the widget and the mobile SDKs offer it, and e-mail contacts get a request with two
+             *     links after a member's conversation is closed. Off by default.
+             */
+            ask_for_rating: boolean;
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
@@ -3215,6 +3267,8 @@ export interface components {
             /** Format: int32 */
             expected_reply_minutes?: number;
             business_hours?: components["schemas"]["BusinessHours"];
+            /** @default false */
+            ask_for_rating: boolean;
         };
         InboxUpdate: {
             name?: string;
@@ -3229,6 +3283,7 @@ export interface components {
              */
             expected_reply_minutes?: number | null;
             business_hours?: components["schemas"]["BusinessHours"];
+            ask_for_rating?: boolean;
         };
         InboxCreated: {
             inbox: components["schemas"]["Inbox"];
@@ -3440,7 +3495,7 @@ export interface components {
             count: number;
         };
         /** @enum {string} */
-        WebhookEventType: "conversation.created" | "conversation.updated" | "message.created" | "feedback.created" | "contact.updated" | "contact.deleted" | "draft.created" | "draft.updated" | "draft.deleted";
+        WebhookEventType: "conversation.created" | "conversation.updated" | "conversation.rated" | "message.created" | "feedback.created" | "contact.updated" | "contact.deleted" | "draft.created" | "draft.updated" | "draft.deleted";
         WebhookEndpoint: {
             /** Format: uuid */
             id: string;
@@ -3725,11 +3780,30 @@ export interface components {
              * @description The last message or note, or the creation time.
              */
             last_activity_at: string;
+            /**
+             * Format: date-time
+             * @description When it was last closed; absent when it never was.
+             */
+            closed_at?: string;
+            rating?: components["schemas"]["ConversationRating"];
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
             updated_at: string;
         };
+        /**
+         * @description The contact's latest rating. A conversation can be rated once each time it is closed, so
+         *     this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
+         *     has it as a `rated` event message whose body is the comment.
+         */
+        ConversationRating: {
+            rating: components["schemas"]["Rating"];
+            comment?: string;
+            /** Format: date-time */
+            rated_at: string;
+        };
+        /** @enum {string} */
+        Rating: "good" | "bad";
         ConversationCreate: {
             /** Format: uuid */
             inbox_id: string;
@@ -3869,8 +3943,25 @@ export interface components {
              * @description Median seconds from the contact's first message to that reply; absent when `first_replies` is 0.
              */
             median_first_reply_seconds?: number;
+            ratings: components["schemas"]["RatingStats"];
             /** @description Per member, by member id. */
             members: components["schemas"]["MemberStats"][];
+        };
+        /** @description Ratings contacts gave in the window, in total and per inbox (inboxes without any are left out). */
+        RatingStats: {
+            /** Format: int64 */
+            good: number;
+            /** Format: int64 */
+            bad: number;
+            inboxes: components["schemas"]["InboxRatingStats"][];
+        };
+        InboxRatingStats: {
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: int64 */
+            good: number;
+            /** Format: int64 */
+            bad: number;
         };
         MemberStats: {
             /** Format: uuid */
@@ -3971,7 +4062,7 @@ export interface components {
             via?: string;
         };
         /** @enum {string} */
-        EventType: "assigned" | "unassigned" | "status_changed" | "labels_changed" | "moved";
+        EventType: "assigned" | "unassigned" | "status_changed" | "labels_changed" | "moved" | "rated";
         MessageEvent: {
             type: components["schemas"]["EventType"];
             /**
@@ -3998,6 +4089,8 @@ export interface components {
              * @description The inbox it moved from (`moved`).
              */
             previous_inbox_id?: string;
+            /** @description `rated` only: the contact's rating; the message body is their comment. */
+            rating?: components["schemas"]["Rating"];
         };
         Attachment: {
             /**
@@ -4724,6 +4817,11 @@ export interface components {
             chat: components["schemas"]["ClientChatSettings"];
             /** @description The categories `POST /client/v1/feedback` accepts, in display order. */
             feedback_categories: components["schemas"]["FeedbackCategory"][];
+            /**
+             * @description The inbox asks contacts to rate closed conversations; offer it where `can_rate` is true
+             *     on a conversation.
+             */
+            ask_for_rating: boolean;
         };
         ClientContact: {
             /** Format: uuid */
@@ -4755,6 +4853,9 @@ export interface components {
             /** Format: uuid */
             id: string;
             status: components["schemas"]["ConversationStatus"];
+            /** @description As on `ClientConversation`. */
+            can_rate: boolean;
+            rating?: components["schemas"]["Rating"];
             /** Format: date-time */
             updated_at: string;
         };
@@ -4787,8 +4888,22 @@ export interface components {
              *     when no member has read the conversation, and in `async` inboxes.
              */
             last_read_by_member_at?: string;
+            /**
+             * @description The contact may rate it now with `POST /client/v1/conversations/{id}/rating`: the inbox
+             *     asks for ratings (`ask_for_rating`), the conversation is closed, was closed at most 30
+             *     days ago and has no rating since it was closed. A message from the contact reopens it,
+             *     and the next close allows a new rating.
+             */
+            can_rate: boolean;
+            /** @description The contact's rating since the last close; absent when they have not rated it. */
+            rating?: components["schemas"]["Rating"];
             /** Format: date-time */
             created_at: string;
+        };
+        ClientRatingCreate: {
+            rating: components["schemas"]["Rating"];
+            /** @description Optional; blank is the same as absent. */
+            comment?: string;
         };
         ClientConversationPage: {
             items: components["schemas"]["ClientConversation"][];
@@ -8666,6 +8781,37 @@ export interface operations {
             404: components["responses"]["Problem"];
         };
     };
+    rateClientConversation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClientRatingCreate"];
+            };
+        };
+        responses: {
+            /** @description The conversation with its rating. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientConversation"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
     setClientTyping: {
         parameters: {
             query?: never;
@@ -9101,6 +9247,39 @@ export interface operations {
         };
     };
     webhookConversationCreated: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookConversationPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookConversationRated: {
         parameters: {
             query?: never;
             header: {

@@ -30,7 +30,7 @@ function NameStep() {
   const create = useMutation({
     mutationFn: async () => {
       const base = slugify(name) || "inbox"
-      const body = (slug: string) => ({ name: name.trim(), slug, mode: "async" as const, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
+      const body = (slug: string) => ({ name: name.trim(), slug, mode: "async" as const, ask_for_rating: false, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
       try {
         return await unwrap(api.POST("/v1/inboxes", { body: body(base) }))
       } catch (err) {
