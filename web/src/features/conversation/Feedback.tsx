@@ -1,7 +1,7 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { BugIcon, CheckIcon, CopyIcon, HeartIcon, LightbulbIcon, MessageSquareMoreIcon } from "lucide-react"
-import { useState } from "react"
 
+import { useCopy } from "@/components/common"
 import { SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
@@ -9,7 +9,7 @@ import { useHotkeys } from "@/hooks/use-hotkeys"
 import type { Feedback, FeedbackCategory } from "@/lib/api"
 import { cn } from "@/lib/utils"
 
-export const categoryIcons: Record<FeedbackCategory, React.ComponentType<{ className?: string }>> = {
+const categoryIcons: Record<FeedbackCategory, React.ComponentType<{ className?: string }>> = {
   bug: BugIcon,
   idea: LightbulbIcon,
   praise: HeartIcon,
@@ -17,10 +17,10 @@ export const categoryIcons: Record<FeedbackCategory, React.ComponentType<{ class
 }
 
 const categoryClass: Record<FeedbackCategory, string> = {
-  bug: "border-destructive/30 text-destructive",
-  idea: "border-amber-500/40 text-amber-700 dark:text-amber-400",
-  praise: "border-pink-500/30 text-pink-700 dark:text-pink-400",
-  other: "text-muted-foreground",
+  bug: "text-destructive",
+  idea: "text-warning",
+  praise: "text-brand",
+  other: "text-faint",
 }
 
 export function CategoryChip({ category, className }: { category: FeedbackCategory; className?: string }) {
@@ -28,15 +28,11 @@ export function CategoryChip({ category, className }: { category: FeedbackCatego
   const Icon = categoryIcons[category]
   return (
     <span
-      className={cn(
-        "inline-flex shrink-0 items-center gap-1 rounded-full border px-1.5 text-xs leading-4",
-        categoryClass[category],
-        className,
-      )}
+      className={cn("inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground", className)}
       data-testid="category-chip"
       data-category={category}
     >
-      <Icon className="size-3" />
+      <Icon className={cn("size-3.5", categoryClass[category])} />
       {text.category[category]}
     </span>
   )
@@ -61,20 +57,16 @@ export function FeedbackDetails({ feedback }: { feedback: Feedback }) {
   const { t } = useLingui()
   const text = useEnumText()
   const rows = useRows(feedback)
-  const [copied, setCopied] = useState(false)
-  const copy = async () => {
-    const lines = [`${t`Category`}: ${text.category[feedback.category]}`, ...rows.map(([k, v]) => `${k}: ${v}`)]
-    await navigator.clipboard.writeText(lines.join("\n"))
-    setCopied(true)
-    setTimeout(() => setCopied(false), 1500)
-  }
-  useHotkeys({ [SHORTCUTS.copyDetails]: () => void copy() })
+  const [copied, copy] = useCopy()
+  const copyAll = () =>
+    copy([`${t`Category`}: ${text.category[feedback.category]}`, ...rows.map(([k, v]) => `${k}: ${v}`)].join("\n"))
+  useHotkeys({ [SHORTCUTS.copyDetails]: () => void copyAll() })
   return (
-    <div className="flex items-start gap-2 rounded-lg border bg-muted/40 px-2.5 py-2" data-testid="feedback-details">
-      <dl className="grid min-w-0 flex-1 grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-0.5 text-xs sm:grid-cols-[auto_minmax(0,1fr)_auto_minmax(0,1fr)]">
+    <div className="flex items-start gap-2 rounded-xl bg-surface px-3.5 py-2.5" data-testid="feedback-details">
+      <dl className="grid min-w-0 flex-1 grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1 text-xs sm:grid-cols-[auto_minmax(0,1fr)_auto_minmax(0,1fr)]">
         {rows.map(([k, v, mono]) => (
           <div key={k} className="contents">
-            <dt className="text-muted-foreground">{k}</dt>
+            <dt className="text-faint">{k}</dt>
             <dd className={cn("truncate", mono && "font-mono")} title={v}>
               {v}
             </dd>
@@ -85,7 +77,7 @@ export function FeedbackDetails({ feedback }: { feedback: Feedback }) {
         type="button"
         variant="ghost"
         size="icon-xs"
-        onClick={() => void copy()}
+        onClick={() => void copyAll()}
         aria-label={t`Copy the feedback details`}
         title={t`Copy the feedback details`}
         data-testid="copy-feedback"

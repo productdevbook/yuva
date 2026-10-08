@@ -7,41 +7,40 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: tr\n"
 
-#: src/features/conversation/ConversationControls.tsx
-#: src/features/inbox/BulkBar.tsx
+#: src/features/conversation/controls/AssigneeMenu.tsx
 #: src/features/settings/MembersSettings.tsx
 msgid "(you)"
 msgstr "(siz)"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} added {added} and removed {removed}"
 msgstr "{actor} etiket ekledi: {added}; kaldırdı: {removed}"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} added the label {added}"
 msgstr "{actor} etiket ekledi: {added}"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} assigned this to {assignee}"
 msgstr "{actor}, konuşmayı {assignee} adlı üyeye atadı"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} closed the conversation"
 msgstr "{actor} konuşmayı kapattı"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} removed the assignee"
 msgstr "{actor} atamayı kaldırdı"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} removed the label {removed}"
 msgstr "{actor} etiketi kaldırdı: {removed}"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} reopened the conversation"
 msgstr "{actor} konuşmayı yeniden açtı"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} set the status to {status}"
 msgstr "{actor} durumu {status} olarak değiştirdi"
 
@@ -65,11 +64,11 @@ msgstr "{failed} konuşma değiştirilemedi; seçili kalıyorlar."
 msgid "{keyCount} settings"
 msgstr "{keyCount} ayar"
 
-#: src/features/conversation/ThreadView.tsx
+#: src/features/conversation/TypingLine.tsx
 msgid "{list} are typing…"
 msgstr "{list} yazıyor…"
 
-#: src/features/conversation/ThreadView.tsx
+#: src/features/conversation/TypingLine.tsx
 msgid "{list} is typing…"
 msgstr "{list} yazıyor…"
 
@@ -145,7 +144,7 @@ msgstr "Bir mesaj eklendi"
 msgid "A new version of Yuva is ready."
 msgstr "Yuva'nın yeni sürümü hazır."
 
-#: src/features/conversation/ThreadView.tsx
+#: src/features/conversation/TypingLine.tsx
 msgid "A teammate"
 msgstr "Bir ekip arkadaşı"
 
@@ -197,7 +196,7 @@ msgstr "Saat ekle"
 msgid "Add label"
 msgstr "Etiket ekle"
 
-#: src/features/conversation/Composer.tsx
+#: src/features/conversation/composer/Composer.tsx
 msgid "Add note"
 msgstr "Not ekle"
 
@@ -232,7 +231,7 @@ msgstr "Temsilciler bu gelen kutusunu yalnızca erişim verildiğinde görür. S
 msgid "All"
 msgstr "Tümü"
 
-#: src/features/inbox/ConversationList.tsx
+#: src/features/inbox/FilterMenu.tsx
 #: src/features/settings/WebhooksSettings.tsx
 msgid "All inboxes"
 msgstr "Tüm gelen kutuları"
@@ -278,15 +277,15 @@ msgstr "anonim ziyaretçilere açık"
 msgid "Another channel already receives mail at this address."
 msgstr "Bu adrese gelen postayı zaten başka bir kanal alıyor."
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/EventLine.tsx
 msgid "another inbox"
 msgstr "başka bir gelen kutusu"
 
-#: src/features/inbox/ConversationList.tsx
+#: src/features/inbox/FilterMenu.tsx
 msgid "Any label"
 msgstr "Herhangi bir etiket"
 
-#: src/features/inbox/ConversationList.tsx
+#: src/features/inbox/FilterMenu.tsx
 msgid "Anyone"
 msgstr "Herkes"
 
@@ -324,12 +323,12 @@ msgid "Ask for an e-mail address when offline"
 msgstr "Çevrimdışıyken e-posta adresi iste"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/conversation/ConversationControls.tsx
+#: src/features/conversation/controls/AssigneeMenu.tsx
 #: src/features/inbox/BulkBar.tsx
 msgid "Assign"
 msgstr "Ata"
 
-#: src/features/conversation/ConversationControls.tsx
+#: src/features/conversation/controls/AssigneeMenu.tsx
 #: src/features/inbox/BulkBar.tsx
 msgid "Assign to"
 msgstr "Şuna ata"
@@ -338,7 +337,7 @@ msgstr "Şuna ata"
 msgid "Assign to me"
 msgstr "Bana ata"
 
-#: src/features/inbox/ConversationList.tsx
+#: src/features/inbox/FilterMenu.tsx
 msgid "Assignee"
 msgstr "Atanan kişi"
 
@@ -351,11 +350,11 @@ msgid "At most once per contact every (hours)"
 msgstr "Her kişiye en fazla şu kadar saatte bir"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/conversation/Composer.tsx
+#: src/features/conversation/composer/Composer.tsx
 msgid "Attach files"
 msgstr "Dosya ekle"
 
-#: src/features/inbox/ConversationList.tsx
+#: src/features/inbox/ConversationRow.tsx
 msgid "Attachment"
 msgstr "Ek"
 
@@ -372,12 +371,12 @@ msgstr "Denemeler"
 msgid "Attributes"
 msgstr "Özellikler"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/MessageItem.tsx
 #: src/features/settings/ChannelsSection.tsx
 msgid "Auto-reply"
 msgstr "Otomatik yanıt"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/MessageItem.tsx
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "Otomatik postalar hiçbir zaman otomatik yanıt tetiklemez."
 
@@ -397,6 +396,7 @@ msgid "Back"
 msgstr "Geri"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/ThreadHeader.tsx
 #: src/features/conversation/ThreadView.tsx
 msgid "Back to the list"
 msgstr "Listeye dön"
@@ -438,7 +438,7 @@ msgstr "Her abone için ayrı bülten planlayabilir miyim?"
 msgid "Cancel"
 msgstr "Vazgeç"
 
-#: src/features/conversation/Composer.tsx
+#: src/features/conversation/composer/CannedMenu.tsx
 #: src/features/settings/CannedRepliesSettings.tsx
 #: src/features/settings/SettingsLayout.tsx
 msgid "Canned replies"
@@ -448,7 +448,7 @@ msgstr "Hazır yanıtlar"
 msgid "Category"
 msgstr "Kategori"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/MessageItem.tsx
 msgid "Cc: {cc}"
 msgstr "Bilgi: {cc}"
 
@@ -457,12 +457,12 @@ msgid "Change address"
 msgstr "Adresi değiştir"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/conversation/ConversationControls.tsx
+#: src/features/conversation/controls/PriorityMenu.tsx
 msgid "Change priority"
 msgstr "Önceliği değiştir"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/conversation/ConversationControls.tsx
+#: src/features/conversation/controls/StatusMenu.tsx
 msgid "Change status"
 msgstr "Durumu değiştir"
 
@@ -482,7 +482,7 @@ msgstr "Bir çalışma alanı seçin"
 msgid "Clear"
 msgstr "Temizle"
 
-#: src/features/inbox/ConversationList.tsx
+#: src/features/inbox/FilterMenu.tsx
 msgid "Clear filters"
 msgstr "Filtreleri temizle"
 
@@ -526,7 +526,7 @@ msgstr "Bağlanıyor…"
 msgid "Connection lost. Reconnecting…"
 msgstr "Bağlantı koptu. Yeniden bağlanılıyor…"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/context.ts
 #: src/features/inbox/InboxPage.tsx
 msgid "Contact"
 msgstr "Kişi"
@@ -671,7 +671,7 @@ msgstr "Bu çalışma alanını sil"
 msgid "Delete your account?"
 msgstr "Hesabınız silinsin mi?"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/context.ts
 msgid "Deleted member"
 msgstr "Silinmiş üye"
 
@@ -707,16 +707,16 @@ msgstr "Cihaz"
 msgid "Display name"
 msgstr "Görünen ad"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/MessageItem.tsx
 msgid "DMARC failed"
 msgstr "DMARC başarısız"
 
 #. placeholder {0}: a.filename
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/Attachments.tsx
 msgid "Download {0}"
 msgstr "{0} dosyasını indir"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/MessageItem.tsx
 msgid "Download the original e-mail (.eml)"
 msgstr "Özgün e-postayı indir (.eml)"
 
@@ -776,7 +776,7 @@ msgid "Edit label"
 msgstr "Etiketi düzenle"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/conversation/ConversationControls.tsx
+#: src/features/conversation/controls/LabelsMenu.tsx
 msgid "Edit labels"
 msgstr "Etiketleri düzenle"
 
@@ -874,11 +874,11 @@ msgstr "Geri bildirim geldi"
 msgid "Feedback: {category}"
 msgstr "Geri bildirim: {category}"
 
-#: src/features/inbox/ConversationList.tsx
+#: src/features/inbox/FilterMenu.tsx
 msgid "Filters"
 msgstr "Filtreler"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/DeliveryState.tsx
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "Adresi ya da kanalın SMTP ayarlarını düzeltin, sonra yanıtı yeniden gönderin."
 
@@ -932,7 +932,7 @@ msgstr "Merhaba! Bize her şeyi sorabilirsiniz."
 msgid "Hi! How can we help?"
 msgstr "Merhaba! Size nasıl yardımcı olabiliriz?"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/EmailBody.tsx
 msgid "Hide quoted text"
 msgstr "Alıntıyı gizle"
 
@@ -957,8 +957,7 @@ msgstr "Fikir"
 msgid "Identity secret"
 msgstr "Kimlik anahtarı"
 
-#: src/features/conversation/ConversationControls.tsx
-#: src/features/inbox/BulkBar.tsx
+#: src/features/conversation/controls/shared.ts
 msgid "In an hour"
 msgstr "Bir saat sonra"
 
@@ -970,7 +969,7 @@ msgstr "Uygulamada ve e-postayla"
 msgid "In-app"
 msgstr "Uygulama içi"
 
-#: src/features/inbox/ConversationList.tsx
+#: src/features/inbox/FilterMenu.tsx
 #: src/features/settings/InboxSettings.tsx
 #: src/features/settings/WebhooksSettings.tsx
 msgid "Inbox"
@@ -1006,7 +1005,7 @@ msgstr "Uygulamayı yükle"
 msgid "Installation"
 msgstr "Kurulum kimliği"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/MessageItem.tsx
 msgid "Internal note"
 msgstr "İç not"
 
@@ -1055,12 +1054,12 @@ msgstr "Klavye kısayolları"
 msgid "Kind"
 msgstr "Tür"
 
-#: src/features/inbox/ConversationList.tsx
+#: src/features/inbox/FilterMenu.tsx
 msgid "Label"
 msgstr "Etiket"
 
 #: src/app/Sidebar.tsx
-#: src/features/conversation/ConversationControls.tsx
+#: src/features/conversation/controls/LabelsMenu.tsx
 #: src/features/inbox/BulkBar.tsx
 #: src/features/settings/LabelsSettings.tsx
 #: src/features/settings/SettingsLayout.tsx
@@ -1124,7 +1123,7 @@ msgstr "Canlı sohbet"
 msgid "Live chat shows nobody available. Notifications pause, except for conversations assigned to you."
 msgstr "Canlı sohbet kimseyi müsait göstermez. Sana atanmış konuşmalar dışında bildirimler durur."
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/EmailBody.tsx
 msgid "Load images"
 msgstr "Görselleri yükle"
 
@@ -1134,7 +1133,7 @@ msgstr "Görselleri yükle"
 msgid "Load more"
 msgstr "Daha fazla yükle"
 
-#: src/features/conversation/ThreadView.tsx
+#: src/features/conversation/MessageList.tsx
 msgid "Load older messages"
 msgstr "Eski mesajları yükle"
 
@@ -1162,7 +1161,7 @@ msgstr "Küçük harf, rakam ve tire. Adreslerde ve sohbet bileşeninde kullanı
 msgid "manual"
 msgstr "elle"
 
-#: src/features/conversation/ConversationControls.tsx
+#: src/features/conversation/controls/MoreMenu.tsx
 msgid "Mark as spam"
 msgstr "Spam olarak işaretle"
 
@@ -1174,7 +1173,7 @@ msgstr "Spam olarak işaretle ya da işareti kaldır"
 msgid "Marked as spam: left out of lists and counts, and never answered automatically."
 msgstr "Spam olarak işaretli: listelerde ve sayılarda görünmez, otomatik yanıt almaz."
 
-#: src/features/inbox/ConversationList.tsx
+#: src/features/inbox/FilterMenu.tsx
 msgid "Me"
 msgstr "Ben"
 
@@ -1195,7 +1194,7 @@ msgstr "Bir kişiyi {targetName} ile birleştir"
 msgid "Merge another contact into this one"
 msgstr "Başka bir kişiyi bununla birleştir"
 
-#: src/features/conversation/Composer.tsx
+#: src/features/conversation/composer/Composer.tsx
 msgid "Message type"
 msgstr "Mesaj türü"
 
@@ -1217,28 +1216,23 @@ msgstr "Mod"
 msgid "Monday"
 msgstr "Pazartesi"
 
+#: src/features/conversation/controls/MoreMenu.tsx
+msgid "More actions"
+msgstr "Diğer işlemler"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "More than {count} conversations"
 msgstr "{count} konuşmadan fazla"
 
-#: src/features/conversation/ConversationControls.tsx
-msgid "Move"
-msgstr "Taşı"
-
-#: src/features/conversation/ConversationControls.tsx
-msgid "Move back to the inbox"
-msgstr "Gelen kutusuna geri taşı"
-
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/conversation/ConversationControls.tsx
 msgid "Move to another inbox"
 msgstr "Başka bir gelen kutusuna taşı"
 
-#: src/features/conversation/ConversationControls.tsx
+#: src/features/conversation/controls/MoreMenu.tsx
 msgid "Move to inbox"
 msgstr "Gelen kutusuna taşı"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/EventLine.tsx
 msgid "Moved from {from}"
 msgstr "{from} gelen kutusundan taşındı"
 
@@ -1333,8 +1327,7 @@ msgstr "sonraki deneme {when}"
 msgid "Next conversation"
 msgstr "Sonraki konuşma"
 
-#: src/features/conversation/ConversationControls.tsx
-#: src/features/inbox/BulkBar.tsx
+#: src/features/conversation/controls/shared.ts
 msgid "Next week"
 msgstr "Gelecek hafta"
 
@@ -1378,7 +1371,7 @@ msgstr "Henüz gelen kutusu yok"
 msgid "No labels yet"
 msgstr "Henüz etiket yok"
 
-#: src/features/conversation/ConversationControls.tsx
+#: src/features/conversation/controls/LabelsMenu.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Henüz etiket yok. Ayarlardan ekleyebilirsiniz."
 
@@ -1395,8 +1388,9 @@ msgid "No settings"
 msgstr "Ayar yok"
 
 #: src/features/contact/ContactPanel.tsx
-#: src/features/conversation/ThreadView.tsx
-#: src/features/inbox/ConversationList.tsx
+#: src/features/conversation/RelatedLine.tsx
+#: src/features/conversation/ThreadHeader.tsx
+#: src/features/inbox/ConversationRow.tsx
 msgid "No subject"
 msgstr "Konu yok"
 
@@ -1437,15 +1431,15 @@ msgstr "Değiştirilmedi: artık yok ya da görme izniniz yok."
 msgid "Not changed: the assignee cannot see this conversation's inbox."
 msgstr "Değiştirilmedi: atanan kişi bu konuşmanın gelen kutusunu göremiyor."
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/DeliveryState.tsx
 msgid "Not delivered"
 msgstr "Teslim edilemedi"
 
-#: src/features/conversation/ConversationControls.tsx
+#: src/features/conversation/controls/MoreMenu.tsx
 msgid "Not spam"
 msgstr "Spam değil"
 
-#: src/features/conversation/Composer.tsx
+#: src/features/conversation/composer/Composer.tsx
 msgid "Note"
 msgstr "Not"
 
@@ -1527,7 +1521,7 @@ msgstr "Şu an çevrimiçi"
 msgid "Only in the app"
 msgstr "Yalnızca uygulamada"
 
-#: src/features/conversation/Composer.tsx
+#: src/features/conversation/composer/Composer.tsx
 msgid "Only members see notes"
 msgstr "Notları yalnızca üyeler görür"
 
@@ -1544,7 +1538,7 @@ msgid "Open"
 msgstr "Açık"
 
 #. placeholder {0}: a.filename
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/Attachments.tsx
 msgid "Open {0}"
 msgstr "{0} dosyasını aç"
 
@@ -1669,7 +1663,7 @@ msgstr "Önizleme"
 msgid "Previous conversation"
 msgstr "Önceki konuşma"
 
-#: src/features/conversation/ConversationControls.tsx
+#: src/features/conversation/controls/PriorityMenu.tsx
 msgid "Priority"
 msgstr "Öncelik"
 
@@ -1726,7 +1720,7 @@ msgstr "Yenile"
 msgid "Reload"
 msgstr "Yenile"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/EmailBody.tsx
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Uzak görseller, postayı açtığınızı gönderene bildirebilir."
 
@@ -1740,7 +1734,7 @@ msgstr "Kaldır"
 
 #. placeholder {0}: f.name
 #. placeholder {0}: p.name
-#: src/features/conversation/Composer.tsx
+#: src/features/conversation/composer/Composer.tsx
 #: src/features/settings/ProfileSettings.tsx
 msgid "Remove {0}"
 msgstr "{0} öğesini kaldır"
@@ -1791,11 +1785,11 @@ msgstr "Yeniden aç"
 msgid "Replace"
 msgstr "Değiştir"
 
-#: src/features/conversation/ThreadView.tsx
+#: src/features/conversation/RelatedLine.tsx
 msgid "Replied in the thread of <0>{title}</0>"
 msgstr "<0>{title}</0> konuşmasının dizisinde yanıtlandı"
 
-#: src/features/conversation/ThreadView.tsx
+#: src/features/conversation/RelatedLine.tsx
 msgid "Replied in the thread of another conversation"
 msgstr "Başka bir konuşmanın dizisinde yanıtlandı"
 
@@ -1811,12 +1805,12 @@ msgstr "Yanıtlar kendi SMTP hesabınızdan gider. Yalnızca posta almak için s
 msgid "Replies to this address are refused until you clear it."
 msgstr "Siz temizleyene kadar bu adrese yanıt gönderilmez."
 
-#: src/features/conversation/Composer.tsx
-#: src/features/inbox/ConversationList.tsx
+#: src/features/conversation/composer/Composer.tsx
+#: src/features/inbox/ConversationRow.tsx
 msgid "Reply"
 msgstr "Yanıt"
 
-#: src/features/conversation/Composer.tsx
+#: src/features/conversation/composer/Composer.tsx
 msgid "Reply by e-mail to {emailTo}"
 msgstr "{emailTo} adresine e-postayla yanıtla"
 
@@ -1927,7 +1921,7 @@ msgstr "Kişilerde ara"
 msgid "Search conversations"
 msgstr "Konuşmalarda ara"
 
-#: src/features/inbox/ConversationList.tsx
+#: src/features/inbox/ConversationRow.tsx
 msgid "Select {name}"
 msgstr "{name} konuşmasını seç"
 
@@ -1940,7 +1934,7 @@ msgid "Select at most {MAX_BULK} conversations at a time."
 msgstr "Bir seferde en çok {MAX_BULK} konuşma seçin."
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/conversation/Composer.tsx
+#: src/features/conversation/composer/Composer.tsx
 msgid "Send"
 msgstr "Gönder"
 
@@ -1976,7 +1970,7 @@ msgstr "E-postayı gönderme zamanı"
 msgid "Sending"
 msgstr "Gönderme"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sending by e-mail…"
 msgstr "E-postayla gönderiliyor…"
 
@@ -1985,7 +1979,7 @@ msgstr "E-postayla gönderiliyor…"
 msgid "sends through {0}"
 msgstr "{0} üzerinden gönderir"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "E-postayla gönderildi"
 
@@ -2011,11 +2005,11 @@ msgid "Show or hide quoted text"
 msgstr "Alıntıyı göster ya da gizle"
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/conversation/ThreadView.tsx
+#: src/features/conversation/ThreadHeader.tsx
 msgid "Show or hide the contact"
 msgstr "Kişi bilgilerini göster veya gizle"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/EmailBody.tsx
 msgid "Show quoted text"
 msgstr "Alıntıyı göster"
 
@@ -2085,8 +2079,7 @@ msgstr "SMTP sunucusu"
 msgid "Snooze"
 msgstr "Ertele"
 
-#: src/features/conversation/ConversationControls.tsx
-#: src/features/inbox/BulkBar.tsx
+#: src/features/conversation/controls/SnoozeItems.tsx
 msgid "Snooze until"
 msgstr "Şu zamana kadar ertele"
 
@@ -2106,7 +2099,6 @@ msgstr "Sunucuda bir sorun oluştu. Yeniden deneyin."
 msgid "Sort conversations by topic. Each label also gets its own view in the sidebar."
 msgstr "Konuşmaları konuya göre ayırın. Her etiketin kenar çubuğunda kendi görünümü de olur."
 
-#: src/features/conversation/ConversationControls.tsx
 #: src/features/inbox/views.ts
 msgid "Spam"
 msgstr "Spam"
@@ -2115,7 +2107,8 @@ msgstr "Spam"
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (port 587)"
 
-#: src/features/conversation/ConversationControls.tsx
+#: src/features/conversation/controls/StatusMenu.tsx
+#: src/features/inbox/ConversationList.tsx
 #: src/features/settings/WebhooksSettings.tsx
 msgid "Status"
 msgstr "Durum"
@@ -2145,7 +2138,7 @@ msgid "Support e-mail"
 msgstr "Destek e-postası"
 
 #: src/features/conversation/Feedback.tsx
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/context.ts
 msgid "System"
 msgstr "Sistem"
 
@@ -2234,7 +2227,7 @@ msgstr "Parola çok uzun."
 msgid "The previous secret also signs until {rotatedUntil}."
 msgstr "Önceki anahtar {rotatedUntil} tarihine kadar imzalamaya devam eder."
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/MessageItem.tsx
 msgid "The sender's domain did not authorize this mail. It may be forged."
 msgstr "Gönderenin alan adı bu postayı onaylamadı. Sahte olabilir."
 
@@ -2242,7 +2235,7 @@ msgstr "Gönderenin alan adı bu postayı onaylamadı. Sahte olabilir."
 msgid "The status was not changed. Try again."
 msgstr "Durum değiştirilemedi. Tekrar deneyin."
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/MessageItem.tsx
 msgid "The visitor typed {from} in the chat and has not confirmed it yet. This reply came from that address, so it may not be from the visitor."
 msgstr "Ziyaretçi {from} adresini sohbette yazdı ama henüz doğrulamadı. Bu yanıt o adresten geldi; ziyaretçiden gelmemiş olabilir."
 
@@ -2258,7 +2251,7 @@ msgstr "Bu çalışma alanında temsilci yok."
 msgid "This address is private, loopback or link-local. Webhooks only reach public servers."
 msgstr "Bu adres özel, yerel (loopback) veya bağlantı-yerel bir adres. Webhook'lar yalnızca herkese açık sunuculara ulaşır."
 
-#: src/features/conversation/Composer.tsx
+#: src/features/conversation/composer/Composer.tsx
 msgid "This address is undeliverable. Clear it on the contact before you reply."
 msgstr "Bu adrese posta ulaşmıyor. Yanıtlamadan önce kişi panelinden temizleyin."
 
@@ -2338,8 +2331,7 @@ msgstr "TLS (port 465)"
 msgid "Tokens signed with the current secret stop working at once."
 msgstr "Mevcut anahtarla imzalanmış belirteçler hemen geçersiz olur."
 
-#: src/features/conversation/ConversationControls.tsx
-#: src/features/inbox/BulkBar.tsx
+#: src/features/conversation/controls/shared.ts
 msgid "Tomorrow morning"
 msgstr "Yarın sabah"
 
@@ -2375,7 +2367,7 @@ msgstr "Yuva kapattı"
 msgid "Type / and the shortcut in the composer to insert one."
 msgstr "Eklemek için yazma alanında / ve ardından kısayolu yazın."
 
-#: src/features/conversation/Composer.tsx
+#: src/features/conversation/composer/Composer.tsx
 msgid "Type / for canned replies"
 msgstr "Hazır yanıtlar için / yazın"
 
@@ -2387,17 +2379,17 @@ msgstr "Onaylamak için çalışma alanının adını yazın"
 msgid "Type your e-mail address to confirm"
 msgstr "Onaylamak için e-posta adresinizi yazın"
 
-#: src/features/inbox/ConversationList.tsx
+#: src/features/inbox/ConversationRow.tsx
 msgid "typing…"
 msgstr "yazıyor…"
 
-#: src/features/conversation/ConversationControls.tsx
+#: src/features/conversation/controls/AssigneeMenu.tsx
 #: src/features/inbox/BulkBar.tsx
 msgid "Unassign"
 msgstr "Atamayı kaldır"
 
-#: src/features/conversation/ConversationControls.tsx
-#: src/features/inbox/ConversationList.tsx
+#: src/features/conversation/controls/AssigneeMenu.tsx
+#: src/features/inbox/FilterMenu.tsx
 #: src/features/inbox/views.ts
 msgid "Unassigned"
 msgstr "Atanmamış"
@@ -2417,15 +2409,15 @@ msgstr "Bilinmeyen cihaz"
 #: src/features/contact/ContactPanel.tsx
 #: src/features/contact/MergeContactDialog.tsx
 #: src/features/conversation/ThreadView.tsx
-#: src/features/inbox/ConversationList.tsx
+#: src/features/inbox/ConversationRow.tsx
 msgid "Unnamed contact"
 msgstr "Adsız kişi"
 
-#: src/features/inbox/ConversationList.tsx
+#: src/features/inbox/ConversationRow.tsx
 msgid "Unread"
 msgstr "Okunmadı"
 
-#: src/features/conversation/MessageItem.tsx
+#: src/features/conversation/messages/MessageItem.tsx
 msgid "Unverified sender"
 msgstr "Doğrulanmamış gönderen"
 
@@ -2577,7 +2569,7 @@ msgstr "Çalışma alanları"
 msgid "Write a note"
 msgstr "Not yaz"
 
-#: src/features/conversation/Composer.tsx
+#: src/features/conversation/composer/Composer.tsx
 msgid "Write a note for your team…"
 msgstr "Ekibiniz için bir not yazın…"
 
@@ -2585,7 +2577,7 @@ msgstr "Ekibiniz için bir not yazın…"
 msgid "Write a reply"
 msgstr "Yanıt yaz"
 
-#: src/features/conversation/Composer.tsx
+#: src/features/conversation/composer/Composer.tsx
 msgid "Write a reply…"
 msgstr "Bir yanıt yazın…"
 
@@ -2609,7 +2601,7 @@ msgstr "Bir çalışma alanının tek sahibisiniz. Hesabınızı silmeden önce 
 msgid "You can change hours, branding and channels after creating it."
 msgstr "Saatleri, markayı ve kanalları oluşturduktan sonra değiştirebilirsiniz."
 
-#: src/features/conversation/ConversationControls.tsx
+#: src/features/conversation/controls/MoreMenu.tsx
 msgid "You cannot see any other inbox."
 msgstr "Görebildiğiniz başka gelen kutusu yok."
 

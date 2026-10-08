@@ -5,7 +5,7 @@ import { Link } from "react-router"
 
 import { ErrorLine, PersonAvatar } from "@/components/common"
 import { formatDateTime, formatRelative, formatShort, useEnumText } from "@/components/common/text"
-import { statusIcons } from "@/features/conversation/ConversationControls"
+import { statusIcons } from "@/features/conversation/controls/shared"
 import { MergeContactDialog } from "@/features/contact/MergeContactDialog"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"

@@ -6,60 +6,22 @@ import { Navigate, useNavigate, useParams, useSearchParams } from "react-router"
 import { PaneHeader } from "@/app/shell"
 import { EmptyState } from "@/components/common"
 import { SHORTCUTS } from "@/components/common/ShortcutSheet"
-import { FEEDBACK_CATEGORIES, STATUSES, useEnumText } from "@/components/common/text"
-import { ContactPanel } from "@/features/contact/ContactPanel"
-import {
-  ConversationList,
-  type ListBase,
-  type ListFilters,
-} from "@/features/inbox/ConversationList"
-import { ThreadView } from "@/features/conversation/ThreadView"
+import { FEEDBACK_CATEGORIES, useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
-import { useHotkeys } from "@/hooks/use-hotkeys"
-import { useViewLabels, VIEWS, type View } from "@/features/inbox/views"
-import { useMediaQuery } from "@/hooks/use-media-query"
-import { useIsMobile } from "@/hooks/use-media-query"
-import { isGone, type ConversationStatus, type FeedbackCategory } from "@/lib/api"
-import type { ConversationFilters } from "@/lib/keys"
+import { ContactPanel } from "@/features/contact/ContactPanel"
 import { useConversation } from "@/features/conversation/queries"
+import { ThreadView } from "@/features/conversation/ThreadView"
+import { ConversationList } from "@/features/inbox/ConversationList"
+import { usePanePreference } from "@/features/inbox/usePanePreference"
 import { useConversations } from "@/features/inbox/queries"
-import { useInboxes, useLabels } from "@/lib/workspace"
+import { basePath, FILTER_KEYS, readFilters, toQuery, useViewLabels, VIEWS, type ListBase, type ListFilters, type View } from "@/features/inbox/views"
+import { useHotkeys } from "@/hooks/use-hotkeys"
+import { useIsMobile, useMediaQuery } from "@/hooks/use-media-query"
+import { isGone, type FeedbackCategory } from "@/lib/api"
 import { useViewing } from "@/lib/realtime"
 import { cn } from "@/lib/utils"
-
-const FILTER_KEYS = ["status", "q", "inbox", "label", "assignee"] as const
-
-function readFilters(sp: URLSearchParams): ListFilters {
-  const status = sp.get("status")
-  return {
-    status: status === "all" || STATUSES.includes(status as ConversationStatus) ? (status as ListFilters["status"]) : "open",
-    q: sp.get("q") ?? "",
-    inbox: sp.get("inbox") ?? "",
-    label: sp.get("label") ?? "",
-    assignee: sp.get("assignee") ?? "",
-  }
-}
-
-function toQuery(base: ListBase, f: ListFilters): ConversationFilters {
-  const q: ConversationFilters = {}
-  if (f.status !== "all") q.status = f.status
-  if (f.q) q.q = f.q
-  if (base.kind === "inbox") q.inbox_id = base.id
-  else if (f.inbox) q.inbox_id = f.inbox
-  if (base.kind === "label") q.label_id = base.id
-  else if (f.label) q.label_id = f.label
-  if (base.kind === "feedback") {
-    q.kind = "feedback"
-    if (base.id !== "all") q.category = base.id as FeedbackCategory
-  }
-  if (base.kind === "view") {
-    if (base.id === "mine") q.assignee = "me"
-    if (base.id === "unassigned") q.assignee = "unassigned"
-    if (base.id === "spam") q.spam = true
-  } else if (f.assignee) q.assignee = f.assignee
-  return q
-}
+import { useInboxes, useLabels } from "@/lib/workspace"
 
 export function OpenConversation() {
   const { conversationId } = useParams()
@@ -69,11 +31,7 @@ export function OpenConversation() {
 export function InboxPage() {
   const params = useParams()
   if (params.view !== undefined && !VIEWS.includes(params.view as View)) return <Navigate to="/all" replace />
-  if (
-    params.category !== undefined &&
-    params.category !== "all" &&
-    !FEEDBACK_CATEGORIES.includes(params.category as FeedbackCategory)
-  ) {
+  if (params.category !== undefined && params.category !== "all" && !FEEDBACK_CATEGORIES.includes(params.category as FeedbackCategory)) {
     return <Navigate to="/feedback/all" replace />
   }
   const base: ListBase = params.inboxId
@@ -86,19 +44,32 @@ export function InboxPage() {
   return <Inbox key={`${base.kind}:${base.id}`} base={base} conversationId={params.conversationId} />
 }
 
+function useTitle(base: ListBase) {
+  const { t } = useLingui()
+  const viewLabels = useViewLabels()
+  const text = useEnumText()
+  const inboxes = useInboxes().data ?? []
+  const labels = useLabels().data ?? []
+  if (base.kind === "feedback") {
+    if (base.id === "all") return t`Feedback`
+    const category = text.category[base.id as FeedbackCategory]
+    return t`Feedback: ${category}`
+  }
+  if (base.kind === "view") return viewLabels[base.id as View]
+  if (base.kind === "inbox") return inboxes.find((i) => i.id === base.id)?.name ?? ""
+  return labels.find((l) => l.id === base.id)?.name ?? ""
+}
+
 function Inbox({ base, conversationId }: { base: ListBase; conversationId?: string }) {
   const { t } = useLingui()
   const navigate = useNavigate()
   const [sp, setSp] = useSearchParams()
   const isMobile = useIsMobile()
   const isWide = useMediaQuery("(min-width: 1280px)")
-  const [paneOpen, setPaneOpen] = useState(true)
+  const [paneOpen, togglePane] = usePanePreference()
   const [sheetOpen, setSheetOpen] = useState(false)
   const searchRef = useRef<HTMLInputElement>(null)
-  const viewLabels = useViewLabels()
-  const text = useEnumText()
-  const inboxes = useInboxes().data ?? []
-  const labels = useLabels().data ?? []
+  const title = useTitle(base)
 
   const filters = readFilters(sp)
   const list = useConversations(toQuery(base, filters))
@@ -106,7 +77,6 @@ function Inbox({ base, conversationId }: { base: ListBase; conversationId?: stri
   const selected = useConversation(conversationId)
   useViewing(conversationId)
 
-  const basePath = base.kind === "view" ? `/${base.id}` : `/${base.kind}/${base.id}`
   const listSearch = useMemo(() => {
     const s = new URLSearchParams()
     for (const k of FILTER_KEYS) {
@@ -116,8 +86,9 @@ function Inbox({ base, conversationId }: { base: ListBase; conversationId?: stri
     const str = s.toString()
     return str ? `?${str}` : ""
   }, [sp])
-  const hrefFor = useCallback((id: string) => `${basePath}/${id}${listSearch}`, [basePath, listSearch])
-  const backHref = `${basePath}${listSearch}`
+  const root = basePath(base)
+  const hrefFor = useCallback((id: string) => `${root}/${id}${listSearch}`, [root, listSearch])
+  const backHref = `${root}${listSearch}`
 
   const setFilters = useCallback(
     (patch: Partial<ListFilters>) => {
@@ -140,7 +111,7 @@ function Inbox({ base, conversationId }: { base: ListBase; conversationId?: stri
         next.set("contact", "1")
         setSp(next)
       }
-    } else if (isWide) setPaneOpen((o) => !o)
+    } else if (isWide) togglePane()
     else setSheetOpen((o) => !o)
   }
 
@@ -156,104 +127,81 @@ function Inbox({ base, conversationId }: { base: ListBase; conversationId?: stri
     [SHORTCUTS.search]: () => searchRef.current?.focus(),
   })
 
-  const category = base.kind === "feedback" && base.id !== "all" ? text.category[base.id as FeedbackCategory] : ""
-  const title =
-    base.kind === "feedback"
-      ? base.id === "all"
-        ? t`Feedback`
-        : t`Feedback: ${category}`
-      : base.kind === "view"
-      ? viewLabels[base.id as View]
-      : base.kind === "inbox"
-        ? (inboxes.find((i) => i.id === base.id)?.name ?? "")
-        : (labels.find((l) => l.id === base.id)?.name ?? "")
-
-  const contactId =
-    selected.data?.id === conversationId && !isGone(selected.error) ? selected.data?.contact_id : undefined
+  const contactId = selected.data?.id === conversationId && !isGone(selected.error) ? selected.data?.contact_id : undefined
   const contactPanel =
-    conversationId && contactId ? (
-      <ContactPanel contactId={contactId} conversationId={conversationId} hrefFor={hrefFor} />
-    ) : null
+    conversationId && contactId ? <ContactPanel contactId={contactId} conversationId={conversationId} hrefFor={hrefFor} /> : null
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <PaneHeader title={title} />
-      <div className="flex min-h-0 flex-1">
-        <aside
-          className={cn(
-            "flex min-h-0 w-full flex-col border-r md:w-80 md:shrink-0 lg:w-96",
-            conversationId && "hidden md:flex",
-          )}
-          aria-label={t`Conversations`}
-        >
-          <ConversationList
-            ref={searchRef}
-            base={base}
-            filters={filters}
-            setFilters={setFilters}
-            conversations={conversations}
-            selectedId={conversationId}
-            hrefFor={hrefFor}
-            isPending={list.isPending}
-            error={list.error}
-            hasNextPage={list.hasNextPage}
-            isFetchingNextPage={list.isFetchingNextPage}
-            fetchNextPage={() => void list.fetchNextPage()}
-          />
-        </aside>
-        {conversationId ? (
-          <>
-            <section className={cn("flex min-h-0 min-w-0 flex-1", mobileContact && "hidden")}>
-              <ThreadView
-                key={conversationId}
-                conversationId={conversationId}
-                backHref={backHref}
-                hrefFor={hrefFor}
-                onToggleContact={toggleContact}
-                contactShown={isMobile ? mobileContact : isWide ? paneOpen : sheetOpen}
-              />
-            </section>
-            {mobileContact && (
-              <section className="flex min-h-0 min-w-0 flex-1 flex-col md:hidden">
-                <div className="flex h-12 shrink-0 items-center gap-2 border-b px-3">
-                  <Button variant="ghost" size="icon-sm" onClick={() => navigate(-1)} aria-label={t`Back`}>
+    <div className="flex min-h-0 flex-1">
+      <section
+        className={cn("flex min-h-0 w-full flex-col border-e md:w-[22rem] md:shrink-0 xl:w-96", conversationId && "hidden md:flex")}
+        aria-label={t`Conversations`}
+      >
+        <ConversationList
+          ref={searchRef}
+          base={base}
+          title={title}
+          filters={filters}
+          setFilters={setFilters}
+          conversations={conversations}
+          selectedId={conversationId}
+          hrefFor={hrefFor}
+          isPending={list.isPending}
+          error={list.error}
+          hasNextPage={list.hasNextPage}
+          isFetchingNextPage={list.isFetchingNextPage}
+          fetchNextPage={() => void list.fetchNextPage()}
+        />
+      </section>
+      {conversationId ? (
+        <>
+          <section className={cn("flex min-h-0 min-w-0 flex-1", mobileContact && "hidden")}>
+            <ThreadView
+              key={conversationId}
+              conversationId={conversationId}
+              backHref={backHref}
+              hrefFor={hrefFor}
+              onToggleContact={toggleContact}
+              contactShown={isMobile ? mobileContact : isWide ? paneOpen : sheetOpen}
+            />
+          </section>
+          {mobileContact && (
+            <section className="flex min-h-0 min-w-0 flex-1 flex-col md:hidden">
+              <PaneHeader
+                title={<Trans>Contact</Trans>}
+                leading={
+                  <Button variant="ghost" size="icon-sm" className="-ms-1.5" onClick={() => navigate(-1)} aria-label={t`Back`}>
                     <ArrowLeftIcon />
                   </Button>
-                  <h2 className="text-sm font-medium">
+                }
+                className="border-b"
+              />
+              {contactPanel}
+            </section>
+          )}
+          {isWide && paneOpen && (
+            <aside className="flex min-h-0 w-80 shrink-0 flex-col border-s" aria-label={t`Contact`}>
+              {contactPanel}
+            </aside>
+          )}
+          {!isMobile && !isWide && (
+            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+              <SheetContent side="right">
+                <SheetHeader>
+                  <SheetTitle>
                     <Trans>Contact</Trans>
-                  </h2>
-                </div>
+                  </SheetTitle>
+                </SheetHeader>
                 {contactPanel}
-              </section>
-            )}
-            {isWide && paneOpen && (
-              <aside className="flex min-h-0 w-80 shrink-0 flex-col border-l" aria-label={t`Contact`}>
-                {contactPanel}
-              </aside>
-            )}
-            {!isMobile && !isWide && (
-              <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-                <SheetContent side="right" className="w-80 gap-0 p-0 sm:max-w-80">
-                  <SheetHeader className="border-b">
-                    <SheetTitle>
-                      <Trans>Contact</Trans>
-                    </SheetTitle>
-                  </SheetHeader>
-                  {contactPanel}
-                </SheetContent>
-              </Sheet>
-            )}
-          </>
-        ) : (
-          <EmptyState
-            icon={MessagesSquareIcon}
-            title={<Trans>Pick a conversation</Trans>}
-            className="hidden md:flex"
-          >
-            <Trans>Use j and k to move through the list, ? for all shortcuts.</Trans>
-          </EmptyState>
-        )}
-      </div>
+              </SheetContent>
+            </Sheet>
+          )}
+        </>
+      ) : (
+        <EmptyState icon={MessagesSquareIcon} title={<Trans>Pick a conversation</Trans>} className="hidden md:flex">
+          <Trans>Use j and k to move through the list, ? for all shortcuts.</Trans>
+        </EmptyState>
+      )}
     </div>
   )
 }
