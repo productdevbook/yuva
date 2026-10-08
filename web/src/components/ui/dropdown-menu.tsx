@@ -58,9 +58,9 @@ function DropdownMenuCheckboxItem({ className, children, ...props }: MenuPrimiti
   )
 }
 
-function DropdownMenuRadioItem({ className, children, ...props }: MenuPrimitive.RadioItem.Props) {
+function DropdownMenuRadioItem({ className, children, closeOnClick = true, ...props }: MenuPrimitive.RadioItem.Props) {
   return (
-    <MenuPrimitive.RadioItem className={cn(itemClass, "pe-8", className)} {...props}>
+    <MenuPrimitive.RadioItem className={cn(itemClass, "pe-8", className)} closeOnClick={closeOnClick} {...props}>
       {children}
       <MenuPrimitive.RadioItemIndicator className="absolute end-2.5 flex">
         <CheckIcon className="text-foreground" />

@@ -6,7 +6,7 @@ import { applyEvent, type LiveEvent } from "@/lib/live"
 import { meKey } from "@/lib/session"
 import { applyTyping, clearTyping, stopTyping } from "@/lib/typing"
 
-export type RealtimeStatus = "connecting" | "live" | "offline"
+type RealtimeStatus = "connecting" | "live" | "offline"
 
 let status: { ws: string | null; value: RealtimeStatus } = { ws: null, value: "offline" }
 const listeners = new Set<() => void>()

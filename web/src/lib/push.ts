@@ -10,7 +10,7 @@ export const pushKeys = {
   browser: ["push", "browser"] as const,
 }
 
-export type PushSupport = "supported" | "unsupported" | "needs-install"
+type PushSupport = "supported" | "unsupported" | "needs-install"
 
 export function pushSupport(): PushSupport {
   if (serviceWorkerSupported() && "PushManager" in window && "Notification" in window) return "supported"
@@ -20,7 +20,7 @@ export function pushSupport(): PushSupport {
   return "unsupported"
 }
 
-export function deviceLabel(): string {
+function deviceLabel(): string {
   const ua = navigator.userAgent
   const browser = /Edg\//.test(ua)
     ? "Edge"
@@ -79,7 +79,7 @@ export function useVapidKey() {
   })
 }
 
-export async function browserSubscription() {
+async function browserSubscription() {
   const reg = await serviceWorkerRegistration()
   return (await reg?.pushManager.getSubscription()) ?? null
 }

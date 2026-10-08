@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 
 export const ShellContext = createContext<{ openNav: () => void }>({ openNav: () => {} })
 
-export function NavButton({ className }: { className?: string }) {
+function NavButton({ className }: { className?: string }) {
   const { t } = useLingui()
   const { openNav } = useContext(ShellContext)
   return (

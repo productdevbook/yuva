@@ -93,7 +93,7 @@ export function useMoveConversation(id: string) {
   })
 }
 
-export type Outgoing = MessageCreate & { client_id: string; files: File[] }
+type Outgoing = MessageCreate & { client_id: string; files: File[] }
 
 export function useSendMessage(conversationId: string) {
   const qc = useQueryClient()

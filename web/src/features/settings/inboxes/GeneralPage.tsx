@@ -11,7 +11,7 @@ import { Field, FormActions, FormCard, Section } from "@/features/settings/ui"
 import type { InboxMode } from "@/lib/api"
 import { useSession } from "@/lib/session"
 
-export function GeneralForm() {
+function GeneralForm() {
   const { t } = useLingui()
   const { inbox } = useInboxOutlet()
   const { canManage } = useSession()
@@ -90,7 +90,7 @@ export function GeneralForm() {
   )
 }
 
-export function BrandingForm() {
+function BrandingForm() {
   const { t } = useLingui()
   const { inbox } = useInboxOutlet()
   const { canManage } = useSession()

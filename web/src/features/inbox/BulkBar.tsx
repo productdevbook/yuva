@@ -22,7 +22,7 @@ import { SnoozeItems } from "@/features/conversation/controls/SnoozeItems"
 import type { ConversationBulkUpdate } from "@/lib/api"
 import { useLabels, useMembers } from "@/lib/workspace"
 
-export const MAX_BULK = 100
+const MAX_BULK = 100
 
 export type BulkChange = Omit<ConversationBulkUpdate, "conversation_ids">
 

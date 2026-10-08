@@ -14,7 +14,7 @@ import { keys, type ConversationFilters } from "@/lib/keys"
 
 type ConversationPage = { items: ConversationListItem[]; next_cursor?: string }
 type Lists = InfiniteData<ConversationPage, string | undefined>
-export type MessagePage = { items: Message[]; next_cursor?: string }
+type MessagePage = { items: Message[]; next_cursor?: string }
 export type Messages = InfiniteData<MessagePage, string | undefined>
 
 type Event = Exclude<RealtimeMessage, { type: "ready" } | { type: "resync_required" }>
@@ -24,7 +24,7 @@ export type LiveContext = { ws: string; memberId: string }
 
 const PREVIEW_RUNES = 140
 
-export function previewText(body: string) {
+function previewText(body: string) {
   const text = body.split(/\s+/).filter(Boolean).join(" ")
   const runes = [...text]
   return runes.length > PREVIEW_RUNES ? runes.slice(0, PREVIEW_RUNES).join("").trim() + "…" : text
