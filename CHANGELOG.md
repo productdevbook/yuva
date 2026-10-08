@@ -7,6 +7,20 @@ database schema.
 
 ## [Unreleased]
 
+### Added
+
+- **Workspace deletion**: owners delete a workspace in the panel (Settings → Workspace → Danger
+  zone) or with `DELETE /v1/workspace`; it stops working at once and a background job deletes its
+  data and stored files in batches. Operators use `yuva workspace delete`.
+- **Account deletion**: members delete their account in the panel (Settings → My profile) or with
+  `DELETE /v1/me`, refused while they are a workspace's only owner; their messages stay, shown as
+  from a deleted member. Operators use `yuva person delete`.
+- **Panel**: replies from a visitor's typed, unconfirmed address are marked "Unverified sender".
+
+### Changed
+
+- A person who belongs to no workspace can sign in, sees that, and can delete their account.
+
 ## [0.0.1] - 2026-10-07
 
 The first public release. Pre-alpha: do not put real customer data in it yet.

@@ -22,6 +22,8 @@ environment as the server.
 | `inbox list --workspace <id\|name>` | Lists inboxes. |
 | `channel create-email --workspace <id\|name> --inbox <id\|slug> --name <name> --address <address> [--display-name <name>] [--from-address <address>] [--smtp-host <host> [--smtp-port <n>] [--tls starttls\|tls\|none] [--smtp-username <name>] [--smtp-password-file <path\|->]]` | Creates an e-mail channel and prints its id. The password is read from a file, or from stdin with `-`, never from the command line. |
 | `channel list --workspace <id\|name> --inbox <id\|slug>` | Lists an inbox's channels with their SMTP settings; says only whether a password is set. |
+| `workspace delete --workspace <id\|name> --yes` | Closes a workspace at once and queues the deletion of everything in it (see [Deleting a workspace or an account](#deleting-a-workspace-or-an-account)). Without `--yes` it only says what it would delete. |
+| `person delete --email <address> --yes` | Deletes a person's account with their memberships, sessions, passkeys and push subscriptions. Refused while they are the only owner of a workspace. |
 | `ingest-email --to <address> [--from <address>]` | Delivers a raw message from stdin, for MTAs (see [E-mail](email.md#any-mta-yuva-ingest-email)). |
 | `vapid-keys` | Prints a new Web Push key pair. Needs no database. |
 
@@ -152,6 +154,27 @@ an hour Yuva then deletes, in that workspace:
   attachments stay; only the original `.eml` download goes.
 
 Deleted data cannot be restored except from a backup.
+
+## Deleting a workspace or an account
+
+An owner deletes a workspace under **Settings → Workspace → Danger zone** (typing its name), with
+`DELETE /v1/workspace` and `{"name": "<exact name>"}`, or an operator with
+`yuva workspace delete --workspace <id|name> --yes`. The workspace stops working at once: its
+members, API keys, widgets, apps and e-mail addresses are refused (mail to its addresses is
+answered as an unknown recipient), its webhook endpoints are removed and nothing more is sent to
+them, and members left with no other workspace lose their push subscriptions. A background job
+then deletes its conversations, messages, attachments and raw e-mails (with the stored files),
+contacts, inboxes, channels, members, invites and settings in batches. Each run logs a
+`workspace deletion` line with `conversations_deleted`, `conversations_left`, `files_deleted` and
+`done`; a large workspace takes several runs. If the server stops in between, the job continues
+after the restart, and the hourly retention job queues it again should it have been lost. People
+keep their accounts; someone without a workspace can still sign in and delete their account.
+
+A person deletes their account under **Settings → My profile** (or on the page shown when they
+belong to no workspace), with `DELETE /v1/me` and `{"email": "<their address>"}`, or an operator
+with `yuva person delete --email <address> --yes`. It is refused while they are the only owner of
+a workspace: make someone else an owner, or delete that workspace, first. Their messages stay in
+their conversations without an author.
 
 ## Monitoring
 
