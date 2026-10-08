@@ -1125,6 +1125,21 @@ func (e UndeliverableEmailReason) Valid() bool {
 	}
 }
 
+// Defines values for ViewingEventType.
+const (
+	ViewingEventTypeViewing ViewingEventType = "viewing"
+)
+
+// Valid indicates whether the value is a known member of the ViewingEventType enum.
+func (e ViewingEventType) Valid() bool {
+	switch e {
+	case ViewingEventTypeViewing:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for WebhookDeliveryState.
 const (
 	WebhookDeliveryStateFailed    WebhookDeliveryState = "failed"
@@ -3776,6 +3791,32 @@ type Version struct {
 	Version string `json:"version"`
 }
 
+// Viewing defines model for Viewing.
+type Viewing struct {
+	ConversationId uuid.UUID `json:"conversation_id"`
+	MemberId       uuid.UUID `json:"member_id"`
+
+	// Viewing `false` when the member no longer has the conversation open anywhere.
+	Viewing bool `json:"viewing"`
+}
+
+// ViewingEvent Another member opened (`viewing: true`) or left a conversation, as their panel reported
+// with a `viewing` frame; leaving includes hiding the page and disconnecting. Right after a
+// connection reports a conversation, it also gets one `viewing: true` event for every other
+// member who already has it open. Not stored: it has no `id` and is not replayed. Sent to
+// member sessions that can see the conversation's inbox; members do not get their own.
+type ViewingEvent struct {
+	ConversationId uuid.UUID        `json:"conversation_id"`
+	CreatedAt      time.Time        `json:"created_at"`
+	Data           Viewing          `json:"data"`
+	InboxId        uuid.UUID        `json:"inbox_id"`
+	Type           ViewingEventType `json:"type"`
+	WorkspaceId    uuid.UUID        `json:"workspace_id"`
+}
+
+// ViewingEventType defines model for ViewingEvent.Type.
+type ViewingEventType string
+
 // WebhookAttempt defines model for WebhookAttempt.
 type WebhookAttempt struct {
 	AttemptedAt time.Time `json:"attempted_at"`
@@ -5799,6 +5840,32 @@ func (t *RealtimeMessage) MergeMemberPresenceEvent(v MemberPresenceEvent) error 
 	return err
 }
 
+// AsViewingEvent returns the union data inside the RealtimeMessage as a ViewingEvent
+func (t RealtimeMessage) AsViewingEvent() (ViewingEvent, error) {
+	var body ViewingEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewingEvent overwrites any union data inside the RealtimeMessage as the provided ViewingEvent
+func (t *RealtimeMessage) FromViewingEvent(v ViewingEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewingEvent performs a merge with any union data inside the RealtimeMessage, using the provided ViewingEvent
+func (t *RealtimeMessage) MergeViewingEvent(v ViewingEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsRealtimeReady returns the union data inside the RealtimeMessage as a RealtimeReady
 func (t RealtimeMessage) AsRealtimeReady() (RealtimeReady, error) {
 	var body RealtimeReady
@@ -5903,6 +5970,8 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsRealtimeResyncRequired()
 	case "typing":
 		return t.AsTypingEvent()
+	case "viewing":
+		return t.AsViewingEvent()
 	default:
 		return nil, errors.New("unknown discriminator value: " + discriminator)
 	}

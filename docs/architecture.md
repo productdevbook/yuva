@@ -635,7 +635,11 @@ inherits the policy. Every response carries `X-Content-Type-Options: nosniff`.
   done) with full-text search (Postgres FTS); everything else is in a command palette.
 - Conversation: reply and note in one box, canned replies on `/`, attachments, keyboard shortcuts,
   contact details with identity attributes, the contact's other conversations, channel delivery
-  state, and a notice when another member types a reply in the same conversation.
+  state, and a notice when another member types a reply in the same conversation or has it open.
+  The panel reports the conversation it shows with a `viewing` frame on `/v1/realtime`; the server
+  keeps it on the connection's row (see Member notifications), sends a `viewing` notice to the
+  other members who can see the conversation when a member opens or leaves it (hiding the page and
+  disconnecting count as leaving), and answers the frame with the members already there.
 - Settings: inboxes, channels, members and access, labels, canned replies, business hours,
   auto-replies, webhooks, API keys, retention and deleting the workspace; deleting one's own
   account in the profile.

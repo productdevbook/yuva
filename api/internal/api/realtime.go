@@ -138,7 +138,8 @@ func (s *Server) stream(conn *websocket.Conn, r *http.Request, p principal, resu
 			s.memberPresence(bg, p.workspaceID, memberID)
 		}()
 	}
-	go s.readMemberFrames(ctx, cancel, conn, p.workspaceID, connID)
+	direct := make(chan realtime.Event, viewersBuffer)
+	go s.readMemberFrames(ctx, cancel, conn, p, connID, direct)
 	f := &eventFilter{p: p}
 	if err := f.reload(ctx, s.st.Queries); err != nil {
 		return websocket.StatusInternalError, "internal", err
@@ -210,6 +211,10 @@ func (s *Server) stream(conn *websocket.Conn, r *http.Request, p principal, resu
 				return websocket.StatusTryAgainLater, realtime.ReasonSlowConsumer, nil
 			default:
 				return websocket.StatusServiceRestart, realtime.ReasonRestart, nil
+			}
+		case e := <-direct:
+			if err := deliver(e); err != nil {
+				return 0, "", err
 			}
 		case e := <-sub.Events():
 			if !e.Ephemeral() {
@@ -290,6 +295,14 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 		return false, nil
 	case realtime.MemberPresence:
 		return !f.p.isKey(), nil
+	case realtime.Viewing:
+		var v oas.Viewing
+		if err := json.Unmarshal(e.Data, &v); err != nil {
+			return false, err
+		}
+		if f.p.isKey() || v.MemberId == f.p.memberID {
+			return false, nil
+		}
 	case realtime.ContactUpdated, realtime.ContactDeleted:
 		if requireScope(f.p, oas.ContactsRead) != nil {
 			return false, nil
@@ -338,10 +351,22 @@ type realtimeClientFrame struct {
 }
 
 // readMemberFrames reads what the panel sends: `viewing` records the conversation a member's
-// connection shows, so notifications about it stay quiet; anything else is ignored. The
-// connection ends when reading fails.
-func (s *Server) readMemberFrames(ctx context.Context, cancel context.CancelFunc, conn *websocket.Conn, workspaceID, connID uuid.UUID) {
+// connection shows, so notifications about it stay quiet, tells the other members who can see it
+// and sends this connection the members already there; anything else is ignored. The connection
+// ends when reading fails, and its conversation is then left.
+func (s *Server) readMemberFrames(ctx context.Context, cancel context.CancelFunc, conn *websocket.Conn, p principal, connID uuid.UUID, direct chan<- realtime.Event) {
 	defer cancel()
+	var shown *store.Conversation
+	defer func() {
+		if shown == nil {
+			return
+		}
+		bg := context.WithoutCancel(ctx)
+		if err := s.st.SetConnectionViewing(bg, store.SetConnectionViewingParams{WorkspaceID: p.workspaceID, ID: connID, Now: s.now()}); err != nil {
+			s.log.WarnContext(bg, "realtime viewing", slog.Any("error", err))
+		}
+		s.viewingChanged(bg, *shown, p.memberID)
+	}()
 	conn.SetReadLimit(realtimeFrameLimit)
 	for {
 		typ, b, err := conn.Read(ctx)
@@ -353,9 +378,70 @@ func (s *Server) readMemberFrames(ctx context.Context, cancel context.CancelFunc
 			continue
 		}
 		if err := s.st.SetConnectionViewing(ctx, store.SetConnectionViewingParams{
-			WorkspaceID: workspaceID, ID: connID, ConversationID: f.ConversationID, Now: s.now(),
-		}); err != nil && ctx.Err() == nil {
-			s.log.WarnContext(ctx, "realtime viewing", slog.Any("error", err))
+			WorkspaceID: p.workspaceID, ID: connID, ConversationID: f.ConversationID, Now: s.now(),
+		}); err != nil {
+			if ctx.Err() == nil {
+				s.log.WarnContext(ctx, "realtime viewing", slog.Any("error", err))
+			}
+			continue
 		}
+		prev := shown
+		shown = nil
+		if f.ConversationID != nil {
+			if c, err := visibleConversation(ctx, s.st.Queries, p, *f.ConversationID, false); err == nil {
+				shown = &c
+			}
+		}
+		if prev != nil && (shown == nil || prev.ID != shown.ID) {
+			s.viewingChanged(ctx, *prev, p.memberID)
+		}
+		if shown == nil {
+			continue
+		}
+		if prev == nil || prev.ID != shown.ID {
+			s.viewingChanged(ctx, *shown, p.memberID)
+		}
+		s.sendViewers(ctx, *shown, p.memberID, direct)
+	}
+}
+
+const viewersBuffer = 32
+
+// viewingChanged tells the members who can see a conversation whether a member still has it open
+// on any connection.
+func (s *Server) viewingChanged(ctx context.Context, c store.Conversation, memberID uuid.UUID) {
+	viewers, err := s.st.ListViewingMembers(ctx, store.ListViewingMembersParams{WorkspaceID: c.WorkspaceID, ConversationID: &c.ID, FreshAfter: s.now().Add(-presenceFresh)})
+	if err != nil {
+		s.log.WarnContext(ctx, "realtime viewing", slog.Any("error", err))
+		return
+	}
+	s.signal(ctx, viewingEvent(c, memberID, containsID(viewers, memberID)))
+}
+
+// sendViewers gives a connection that opened a conversation the other members already there.
+func (s *Server) sendViewers(ctx context.Context, c store.Conversation, memberID uuid.UUID, direct chan<- realtime.Event) {
+	viewers, err := s.st.ListViewingMembers(ctx, store.ListViewingMembersParams{WorkspaceID: c.WorkspaceID, ConversationID: &c.ID, FreshAfter: s.now().Add(-presenceFresh)})
+	if err != nil {
+		s.log.WarnContext(ctx, "realtime viewing", slog.Any("error", err))
+		return
+	}
+	for _, id := range viewers {
+		if id == memberID {
+			continue
+		}
+		e := viewingEvent(c, id, true)
+		e.CreatedAt = s.now()
+		select {
+		case direct <- e:
+		default:
+			return
+		}
+	}
+}
+
+func viewingEvent(c store.Conversation, memberID uuid.UUID, viewing bool) realtime.Event {
+	return realtime.Event{
+		Type: realtime.Viewing, WorkspaceID: c.WorkspaceID, InboxID: &c.InboxID, ConversationID: &c.ID,
+		Data: mustJSON(oas.Viewing{MemberId: memberID, ConversationId: c.ID, Viewing: viewing}),
 	}
 }

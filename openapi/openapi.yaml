@@ -3189,7 +3189,8 @@ paths:
         the connections of the member who read. `typing` (a contact or another member typing) has no
         `id`, is not stored and is not replayed. `member.presence` (a member of the workspace opened
         or closed the panel or changed `availability`) reaches member sessions only, also has no
-        `id` and is not replayed.
+        `id` and is not replayed; so does `viewing` (another member opened or left a conversation),
+        which follows inbox access like conversation events.
 
         A member session's open connection also makes the member available to contacts of `live`
         inboxes they can access (see `availability` on `/v1/me`).
@@ -3206,8 +3207,10 @@ paths:
         a text frame `{"type": "viewing", "conversation_id": "<id>"}`, and
         `{"type": "viewing", "conversation_id": null}` when it shows none or the page is hidden;
         send it again after every reconnect. While a connection of the member views a
-        conversation, the member gets no push or e-mail notification about it. Other client
-        frames are ignored. Close codes: 1008 (`unauthenticated`, `forbidden`) when the session
+        conversation, the member gets no push or e-mail notification about it. Other members who
+        can see the conversation get a `viewing` event when the member opens or leaves it, and
+        the reporting connection gets a `viewing` event for each other member already there.
+        Other client frames are ignored. Close codes: 1008 (`unauthenticated`, `forbidden`) when the session
         or membership ends, 1013 (`slow_consumer`) when the client does not read fast enough, 1012
         (`restart`) when the server restarts or loses its event feed. Reconnect with
         `last_event_id` after any of them except 1008. While the server is reconnecting its own event
@@ -4719,6 +4722,46 @@ components:
           $ref: "#/components/schemas/Availability"
         online:
           type: boolean
+    Viewing:
+      type: object
+      required: [member_id, conversation_id, viewing]
+      properties:
+        member_id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        viewing:
+          type: boolean
+          description: "`false` when the member no longer has the conversation open anywhere."
+    ViewingEvent:
+      type: object
+      description: |
+        Another member opened (`viewing: true`) or left a conversation, as their panel reported
+        with a `viewing` frame; leaving includes hiding the page and disconnecting. Right after a
+        connection reports a conversation, it also gets one `viewing: true` event for every other
+        member who already has it open. Not stored: it has no `id` and is not replayed. Sent to
+        member sessions that can see the conversation's inbox; members do not get their own.
+      required: [type, workspace_id, inbox_id, conversation_id, created_at, data]
+      properties:
+        type:
+          type: string
+          enum: [viewing]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/Viewing"
     MemberPresenceEvent:
       type: object
       description: |
@@ -7326,6 +7369,7 @@ components:
         - $ref: "#/components/schemas/ConversationReadEvent"
         - $ref: "#/components/schemas/TypingEvent"
         - $ref: "#/components/schemas/MemberPresenceEvent"
+        - $ref: "#/components/schemas/ViewingEvent"
         - $ref: "#/components/schemas/RealtimeReady"
         - $ref: "#/components/schemas/RealtimeResyncRequired"
       discriminator:
@@ -7348,6 +7392,7 @@ components:
           conversation.read: "#/components/schemas/ConversationReadEvent"
           typing: "#/components/schemas/TypingEvent"
           member.presence: "#/components/schemas/MemberPresenceEvent"
+          viewing: "#/components/schemas/ViewingEvent"
           ready: "#/components/schemas/RealtimeReady"
           resync_required: "#/components/schemas/RealtimeResyncRequired"
     Availability:
