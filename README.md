@@ -1,77 +1,93 @@
+<div align="center">
+
+<img src=".github/assets/yuva-logo.svg" width="88" height="88" alt="Yuva logo">
+
 # Yuva
 
-Open-source customer messaging for teams that run many products: one inbox for e-mail, live chat
-and private in-app conversations.
+**One inbox for every product you run.**
 
-Website: https://useyuva.com
+Open-source customer messaging: support e-mail, live chat and in-app conversations from all of your
+products in one shared inbox. Self-hosted, one Go binary with Postgres.
+
+[Website](https://useyuva.com) · [Docs](docs/install.md) · [API](openapi/openapi.yaml) ·
+[Releases](https://github.com/productdevbook/yuva/releases) · [Roadmap](docs/roadmap.md)
+
+[![Release](https://img.shields.io/github/v/release/productdevbook/yuva?include_prereleases&label=release&color=d4431c)](https://github.com/productdevbook/yuva/releases)
+[![CI](https://github.com/productdevbook/yuva/actions/workflows/ci.yml/badge.svg)](https://github.com/productdevbook/yuva/actions/workflows/ci.yml)
+[![License: AGPL-3.0](https://img.shields.io/badge/server-AGPL--3.0-0b0b0f)](LICENSE)
+[![SDKs: MIT](https://img.shields.io/badge/SDKs-MIT-0b0b0f)](sdk/LICENSE)
+
+</div>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/panel-dark.webp">
+  <img src=".github/assets/panel-light.webp" alt="The Yuva panel: conversations from three products in one list, an in-app conversation with a note and a reply, and the contact's details.">
+</picture>
 
 > [!WARNING]
-> **Pre-alpha.** Yuva is being designed and built in the open; 0.0.1 is its first public release.
-> The API and database schema will change without migration paths, and nothing has had a security
-> review. Do not put real customer data in it.
+> **Pre-alpha.** The API and database schema can change without migration paths, and the code has
+> not had an independent security audit. Try it with test data, not real customer conversations.
 
-## What it does
+## Why Yuva
 
-- **One inbox for every product.** Each product is an inbox with its own branding, language,
-  business hours, mode and team; members see the inboxes they were given.
-- **E-mail** with threading, quote stripping, attachments, loop protection and bounce handling.
-  Sends through any SMTP provider per channel; receives through a Cloudflare Email Worker or any
-  MTA.
-- **Live chat** on websites, and **embedded threads** inside your own panels, from one web
-  component, `<yuva-chat>`.
-- **In-app messaging and feedback** in iOS and Android apps through native Swift and Kotlin SDKs.
-- **Live or async per inbox**: presence, typing and read receipts where you promise live support,
-  an expected reply time where you don't; unread replies follow the user by e-mail.
-- **Your users, your identity**: your backend signs a short-lived token; Yuva never sees your user
-  database.
-- **Signed webhooks** (Standard Webhooks) so your backend sends push notifications with the keys it
-  already has.
-- **A panel for the team**: conversation list and search, assignment, labels, notes, canned
-  replies, sign-in with e-mailed codes and passkeys, installable with Web Push notifications.
-- **Simple to run**: one Go binary and Postgres. No Redis, no separate workers.
+- **Every product, one inbox.** Each product is an inbox with its own branding, language, hours
+  and team. Members see only the inboxes they were given.
+- **Every channel, one conversation.** E-mail with proper threading, live chat with the
+  `<yuva-chat>` web component, in-app messages and feedback through native iOS and Android SDKs,
+  and an API for everything else.
+- **Your users stay yours.** Your backend signs a short-lived identity token; Yuva never sees your
+  user database. Signed webhooks let your backend send its own push notifications.
+- **Small to run.** One Docker image and Postgres. No Redis, no separate workers.
 
 ## Quick start
 
 ```sh
-docker pull ghcr.io/productdevbook/yuva:0.0.1
+docker pull ghcr.io/productdevbook/yuva:0.0.3
 ```
 
-Then follow [docs/install.md](docs/install.md): a Compose file with Postgres, a `.env` with your
-public URL and a master key, `docker compose up -d`, and the first owner with
-`yuva bootstrap --email you@example.com --workspace "Example"`.
+1. Write `compose.yaml` and `.env` from the [install guide](docs/install.md#quick-start-with-compose).
+2. Start it: `docker compose up -d`.
+3. Create the first owner:
+   `docker compose exec yuva /yuva bootstrap --email you@example.com --workspace "Example"`.
+4. Put it behind HTTPS and sign in with the code that arrives by e-mail.
 
 ## Documentation
 
-- [Install](docs/install.md): requirements, Docker, reverse proxy, first owner, keys
-- [Configuration](docs/configuration.md): every environment variable
-- [E-mail](docs/email.md): inbound, outbound SMTP, bounces, DNS
-- [Web widget](docs/widget.md): live chat and embedded threads
-- [Mobile SDKs](docs/mobile.md): iOS and Android, push notifications
-- [Identity tokens](docs/identity.md): signed-in users
-- [Webhooks](docs/webhooks.md): events and signature verification
-- [Operations](docs/operations.md): upgrades, backups, monitoring, operator commands
-- API contract: [openapi/openapi.yaml](openapi/openapi.yaml)
+| Get started | Channels | Integrate |
+|---|---|---|
+| [Install](docs/install.md) | [E-mail](docs/email.md) | [Identity tokens](docs/identity.md) |
+| [Configuration](docs/configuration.md) | [Web widget](docs/widget.md) | [Webhooks](docs/webhooks.md) |
+| [Operations](docs/operations.md) | [Mobile SDKs](docs/mobile.md) | [API contract](openapi/openapi.yaml) |
 
-Design: [docs/architecture.md](docs/architecture.md). Plan: [docs/roadmap.md](docs/roadmap.md).
+How it is built: [architecture](docs/architecture.md). What is next: [roadmap](docs/roadmap.md).
+What changed: [changelog](CHANGELOG.md).
 
 ## Repository
 
 | Path | What | License |
 |---|---|---|
 | `api/` | Go server: API, realtime, e-mail, jobs | AGPL-3.0 |
-| `web/` | Agent panel (React) | AGPL-3.0 |
+| `web/` | Team panel (React) | AGPL-3.0 |
 | `edge/` | Cloudflare Email Worker for inbound mail | AGPL-3.0 |
+| `site/` | Website and documentation | AGPL-3.0 |
 | `deploy/` | Docker and Compose | AGPL-3.0 |
 | `openapi/` | API contract | MIT |
 | `sdk/js` | `<yuva-chat>` web component and client | MIT |
 | `sdk/swift`, `sdk/kotlin` | iOS and Android SDKs | MIT |
-| `sdk/go` | Identity tokens and webhook verification for host backends | MIT |
+| `sdk/go` | Identity tokens and webhook verification | MIT |
+
+## Contributing
+
+Issues and pull requests are welcome; read [CONTRIBUTING.md](CONTRIBUTING.md) first. Contributions
+are made under the [CLA](CLA.md). Report security issues privately as described in
+[SECURITY.md](SECURITY.md).
 
 ## License
 
 The server and panel are [AGPL-3.0](LICENSE); the SDKs and the API contract are [MIT](sdk/LICENSE),
-so embedding them in your apps carries no copyleft obligations. Details in
-[LICENSING.md](LICENSING.md). Contributions require the [CLA](CLA.md). The name and logo are covered
-by [TRADEMARK.md](TRADEMARK.md).
+so they ship inside closed-source apps without copyleft obligations. Details in
+[LICENSING.md](LICENSING.md). The name and logo are covered by [TRADEMARK.md](TRADEMARK.md).
 
-Security issues: [SECURITY.md](SECURITY.md).
+<div align="center">
+<sub>“Yuva” is Turkish for nest, or home.</sub>
+</div>
