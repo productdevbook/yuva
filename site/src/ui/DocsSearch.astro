@@ -1,0 +1,142 @@
+---
+interface Props {
+  compact?: boolean
+}
+
+const { compact = false } = Astro.props
+---
+
+<button
+  type="button"
+  class:list={[
+    "flex items-center gap-2 rounded-xl border border-rule text-sm text-ink-faint transition-colors hover:border-rule-strong hover:text-ink-soft",
+    compact ? "size-11 justify-center" : "w-full px-3 py-2",
+  ]}
+  data-search-open
+  aria-label="Search the docs"
+>
+  <svg class="size-4 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"
+    ><circle cx="7" cy="7" r="4.5"></circle><path d="m10.5 10.5 3 3"></path></svg
+  >
+  {
+    !compact && (
+      <>
+        <span class="flex-1 text-start">Search docs</span>
+        <kbd class="rounded-md border border-rule px-1.5 font-sans text-xs">⌘K</kbd>
+      </>
+    )
+  }
+</button>
+
+<script>
+  type Entry = { page: string; heading: string; href: string; text: string }
+
+  let dialog: HTMLDialogElement | undefined
+  let index: Entry[] | undefined
+
+  const escape = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!)
+
+  function snippet(text: string, words: string[]) {
+    const lower = text.toLowerCase()
+    const at = Math.max(0, Math.min(...words.map((w) => lower.indexOf(w)).filter((i) => i >= 0), text.length) - 40)
+    let s = escape((at > 0 ? "…" : "") + text.slice(at, at + 160) + (at + 160 < text.length ? "…" : ""))
+    for (const w of words) s = s.replace(new RegExp(`(${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi"), "<mark>$1</mark>")
+    return s
+  }
+
+  function search(query: string): Entry[] {
+    const words = query.toLowerCase().split(/\s+/).filter(Boolean)
+    if (!index || !words.length) return []
+    return index
+      .map((e) => {
+        const page = e.page.toLowerCase()
+        const heading = e.heading.toLowerCase()
+        const text = e.text.toLowerCase()
+        if (!words.every((w) => page.includes(w) || heading.includes(w) || text.includes(w))) return [e, -1] as const
+        const score = words.reduce((n, w) => n + (heading.includes(w) ? 4 : 0) + (page.includes(w) ? 2 : 0) + (text.includes(w) ? 1 : 0), 0)
+        return [e, score] as const
+      })
+      .filter(([, score]) => score >= 0)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 12)
+      .map(([e]) => e)
+  }
+
+  function build() {
+    dialog = document.createElement("dialog")
+    dialog.className =
+      "m-0 mx-auto mt-[12vh] w-[min(40rem,calc(100vw-2rem))] rounded-2xl border border-rule bg-sheet p-0 text-ink shadow-[0_30px_80px_-20px_rgb(15_23_42/0.45)] backdrop:bg-black/40"
+    dialog.setAttribute("aria-label", "Search the docs")
+    dialog.innerHTML = `
+      <form method="dialog" class="flex items-center gap-3 border-b border-rule px-4">
+        <svg class="size-4 shrink-0 text-ink-faint" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.5"></circle><path d="m10.5 10.5 3 3"></path></svg>
+        <input class="h-14 flex-1 bg-transparent text-base outline-none placeholder:text-ink-faint" placeholder="Search the docs" aria-label="Search the docs" autocomplete="off" spellcheck="false" />
+        <kbd class="rounded-md border border-rule px-1.5 text-xs text-ink-faint">Esc</kbd>
+      </form>
+      <ul class="max-h-[60vh] overflow-y-auto p-2" role="listbox"></ul>`
+    document.body.append(dialog)
+    const input = dialog.querySelector("input")!
+    const list = dialog.querySelector("ul")!
+    let selected = 0
+    const render = () => {
+      const results = search(input.value)
+      const words = input.value.toLowerCase().split(/\s+/).filter(Boolean)
+      selected = Math.min(selected, Math.max(0, results.length - 1))
+      list.innerHTML = results.length
+        ? results
+            .map(
+              (r, i) => `<li role="option" aria-selected="${i === selected}">
+                <a href="${r.href}" class="block rounded-xl px-3 py-2.5 aria-selected:bg-paper-deep hover:bg-paper-deep ${i === selected ? "bg-paper-deep" : ""}">
+                  <span class="block text-xs text-ink-faint">${escape(r.page)}</span>
+                  <span class="block text-sm font-medium">${escape(r.heading)}</span>
+                  <span class="mt-0.5 block text-sm text-ink-soft [&_mark]:bg-brand-wash [&_mark]:text-brand">${snippet(r.text, words)}</span>
+                </a>
+              </li>`
+            )
+            .join("")
+        : `<li class="px-3 py-8 text-center text-sm text-ink-faint">${input.value.trim() ? "No results" : "Type to search the documentation and the API reference"}</li>`
+    }
+    input.addEventListener("input", () => {
+      selected = 0
+      render()
+    })
+    input.addEventListener("keydown", (e) => {
+      const count = list.querySelectorAll("a").length
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault()
+        if (!count) return
+        selected = (selected + (e.key === "ArrowDown" ? 1 : -1) + count) % count
+        render()
+        list.querySelectorAll("li")[selected]?.scrollIntoView({ block: "nearest" })
+      } else if (e.key === "Enter") {
+        e.preventDefault()
+        list.querySelectorAll("a")[selected]?.click()
+      }
+    })
+    dialog.addEventListener("click", (e) => {
+      if (e.target === dialog) dialog!.close()
+      if ((e.target as HTMLElement).closest("a")) dialog!.close()
+    })
+    render()
+  }
+
+  async function open() {
+    if (!dialog) build()
+    dialog!.showModal()
+    const input = dialog!.querySelector("input")!
+    input.select()
+    if (!index) {
+      index = await (await fetch("/docs/search.json")).json()
+      input.dispatchEvent(new Event("input"))
+    }
+  }
+
+  document.querySelectorAll("[data-search-open]").forEach((b) => b.addEventListener("click", open))
+  document.addEventListener("keydown", (e) => {
+    const typing = (e.target as HTMLElement).closest("input, textarea, [contenteditable]")
+    if (((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") || (e.key === "/" && !typing)) {
+      e.preventDefault()
+      open()
+    }
+  })
+</script>

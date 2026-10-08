@@ -162,7 +162,7 @@ export function homeCopy(i18n: I18n) {
         body: i18n._(
           msg`A feedback form rendered by your own backend posts to /v1/feedback with a workspace API key. Scripts create inboxes, channels and keys, and host backends look up or delete contacts by their own user id.`
         ),
-        link: { href: links.openapi, label: i18n._(msg`API contract`) },
+        link: { href: links.api, label: i18n._(msg`API contract`) },
         tag: i18n._(msg`API`),
         code: `curl https://support.example.com/v1/feedback \\
   -H "Authorization: Bearer $YUVA_API_KEY" \\

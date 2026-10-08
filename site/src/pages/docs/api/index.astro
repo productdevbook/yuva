@@ -1,0 +1,79 @@
+---
+import DocsLayout from "@/layouts/DocsLayout.astro"
+import { apiHome, eventsHref, proseClass, tagHref } from "@/lib/docs"
+import { events, info, tags, tagTitle } from "@/lib/openapi"
+import { links } from "@/lib/routes"
+
+const meta = info()
+const all = tags()
+const strip = (html: string) => html.replace(/<[^>]+>/g, "").trim()
+const schemes = Object.entries(meta.schemes ?? {}).map(([name, s]) => ({
+  name,
+  kind: s.type === "http" ? `HTTP ${s.scheme}` : `${s.type} in ${s.in}${s.name ? ` (${s.name})` : ""}`,
+  description: s.description as string,
+}))
+const headings = [
+  { depth: 2, slug: "overview", text: "Overview" },
+  { depth: 2, slug: "authentication", text: "Authentication" },
+  { depth: 2, slug: "resources", text: "Resources" },
+]
+---
+
+<DocsLayout
+  title="API reference"
+  description="Every Yuva endpoint and webhook event, generated from the OpenAPI 3.1 contract."
+  slug="api"
+  href={apiHome}
+  headings={headings}
+>
+  <h1 class="text-4xl font-semibold tracking-[-0.03em]">API reference</h1>
+  <p class="mt-4 text-lg leading-relaxed text-ink-soft">
+    {meta.title}
+    {meta.version}, generated from <a class="font-medium text-brand hover:underline" href={links.openapi}>openapi/openapi.yaml</a>. Use the contract to generate a
+    client in any language.
+  </p>
+
+  <h2 id="overview" class="mt-14 text-2xl font-semibold tracking-tight">Overview</h2>
+  <div class:list={[proseClass, "mt-4"]} set:html={meta.description} />
+
+  <h2 id="authentication" class="mt-14 text-2xl font-semibold tracking-tight">Authentication</h2>
+  <ul class="mt-4 grid gap-3">
+    {
+      schemes.map((s) => (
+        <li class="rounded-2xl border border-rule p-5">
+          <p class="flex flex-wrap items-center gap-2">
+            <code class="font-mono text-sm font-semibold">{s.name}</code>
+            <span class="rounded-full bg-paper-deep px-2 py-0.5 text-xs text-ink-soft">{s.kind}</span>
+          </p>
+          <p class="mt-2 text-sm leading-relaxed text-ink-soft">{s.description}</p>
+        </li>
+      ))
+    }
+  </ul>
+
+  <h2 id="resources" class="mt-14 text-2xl font-semibold tracking-tight">Resources</h2>
+  <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+    {
+      all.map((t) => (
+        <li>
+          <a class="group flex h-full flex-col rounded-2xl border border-rule p-5 transition-colors hover:border-rule-strong hover:bg-paper-deep" href={tagHref(t.name)}>
+            <span class="flex items-center justify-between gap-2 font-semibold group-hover:text-brand">
+              {tagTitle(t.name)}
+              <span class="text-xs font-normal text-ink-faint">{t.operations.length}</span>
+            </span>
+            <span class="mt-1.5 line-clamp-2 text-sm leading-relaxed text-ink-soft">{strip(t.description)}</span>
+          </a>
+        </li>
+      ))
+    }
+    <li>
+      <a class="group flex h-full flex-col rounded-2xl border border-rule p-5 transition-colors hover:border-rule-strong hover:bg-paper-deep" href={eventsHref}>
+        <span class="flex items-center justify-between gap-2 font-semibold group-hover:text-brand">
+          Webhook events
+          <span class="text-xs font-normal text-ink-faint">{events().length}</span>
+        </span>
+        <span class="mt-1.5 text-sm leading-relaxed text-ink-soft">The payloads Yuva sends to your webhook endpoints.</span>
+      </a>
+    </li>
+  </ul>
+</DocsLayout>

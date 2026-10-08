@@ -119,3 +119,42 @@
   @apply rounded-xl border border-rule;
   background-color: var(--paper-deep) !important;
 }
+
+.docs-content table {
+  @apply block overflow-x-auto;
+}
+
+.docs-content .heading-anchor {
+  @apply ms-2 font-normal text-ink-faint no-underline opacity-0;
+}
+
+.docs-content :is(h2, h3):hover .heading-anchor,
+.docs-content .heading-anchor:focus {
+  @apply opacity-100;
+}
+
+.prose .callout {
+  @apply rounded-xl border border-rule bg-paper-deep px-5 py-4 not-italic font-normal text-ink;
+}
+
+.prose .callout::before {
+  @apply mb-1 block text-sm font-semibold;
+  content: attr(data-label);
+}
+
+.prose .callout p::before,
+.prose .callout p::after {
+  content: none;
+}
+
+.prose .callout > p {
+  @apply my-0;
+}
+
+.prose :is(.callout-warning, .callout-caution) {
+  @apply border-brand/40 bg-brand-wash;
+}
+
+.prose :is(.callout-warning, .callout-caution)::before {
+  @apply text-brand;
+}

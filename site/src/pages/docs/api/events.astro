@@ -1,0 +1,40 @@
+---
+import DocsLayout from "@/layouts/DocsLayout.astro"
+import { docHref, eventsHref, proseClass } from "@/lib/docs"
+import { events } from "@/lib/openapi"
+import FieldTable from "@/ui/FieldTable.astro"
+
+const all = events()
+const id = (name: string) => name.replace(/\./g, "-")
+const headings = all.map((e) => ({ depth: 2, slug: id(e.name), text: e.name }))
+---
+
+<DocsLayout title="Webhook events" description="The events Yuva sends to your webhook endpoints and the payload of each." slug="api/events" href={eventsHref} headings={headings}>
+  <p class="text-sm font-medium text-brand">API reference</p>
+  <h1 class="mt-2 text-4xl font-semibold tracking-[-0.03em]">Webhook events</h1>
+  <p class="mt-4 text-lg leading-relaxed text-ink-soft">
+    Yuva signs every request with Standard Webhooks and retries failed deliveries. How to register an endpoint and verify a signature is in the
+    <a class="font-medium text-brand hover:underline" href={docHref("webhooks")}>webhooks guide</a>.
+  </p>
+
+  {
+    all.map((e) => (
+      <section class="mt-14 scroll-mt-24 border-t border-rule pt-10" id={id(e.name)} aria-labelledby={`${id(e.name)}-title`}>
+        <h2 id={`${id(e.name)}-title`} class="font-mono text-xl font-semibold">
+          {e.name}
+        </h2>
+        {e.summary && <p class="mt-2 text-ink-soft">{e.summary}</p>}
+        {e.description && <div class:list={[proseClass, "mt-4"]} set:html={e.description} />}
+        {e.fields.length > 0 && (
+          <>
+            <h3 class="mt-6 flex items-baseline gap-2 text-sm font-semibold">
+              Payload
+              {e.schema && <code class="font-mono text-xs font-normal text-ink-faint">{e.schema}</code>}
+            </h3>
+            <FieldTable rows={e.fields} />
+          </>
+        )}
+      </section>
+    ))
+  }
+</DocsLayout>

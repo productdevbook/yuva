@@ -1,0 +1,196 @@
+---
+import Base from "@/layouts/Base.astro"
+import { neighbours, nav, type NavItem } from "@/lib/docs"
+import { home } from "@/lib/routes"
+import DocsSearch from "@/ui/DocsSearch.astro"
+
+type Heading = { depth: number; slug: string; text: string }
+
+interface Props {
+  title: string
+  description: string
+  slug: string
+  href: string
+  headings?: Heading[]
+  edit?: string
+  updated?: string
+  image?: string
+}
+
+const { title, description, slug, href, headings = [], edit, updated, image } = Astro.props
+const groups = await nav()
+const { prev, next } = await neighbours(slug)
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
+const group = groups.find((g) => g.items.some((i) => i.slug === slug || i.children?.some((c) => c.slug === slug)))
+const active = (item: NavItem) => item.slug === slug
+const open = (item: NavItem) => active(item) || !!item.children?.some((c) => c.slug === slug)
+const day = updated ? new Intl.DateTimeFormat("en-US", { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${updated}T00:00:00Z`)) : undefined
+const link =
+  "block rounded-lg px-3 py-1.5 text-sm text-ink-soft transition-colors hover:bg-paper-deep hover:text-ink aria-[current=page]:bg-brand-wash aria-[current=page]:font-medium aria-[current=page]:text-brand"
+---
+
+<Base locale="en" title={`${title} · Yuva docs`} description={description} paths={{ en: href, tr: home.tr, de: home.de }} translated={false} image={image}>
+  <div class="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-5 sm:px-8 lg:grid-cols-[14rem_minmax(0,1fr)] xl:grid-cols-[14rem_minmax(0,1fr)_12rem]">
+    <aside class="hidden lg:block">
+      <div class="sticky top-16 max-h-[calc(100svh-4rem)] overflow-y-auto py-8 pe-2">
+        <DocsSearch />
+        <nav class="mt-6 grid gap-6" aria-label="Documentation">
+          {
+            groups.map((g) => (
+              <div>
+                <p class="px-3 text-xs font-semibold tracking-wide text-ink-faint uppercase">{g.title}</p>
+                <ul class="mt-2 grid gap-0.5">
+                  {g.items.map((item) => (
+                    <li>
+                      <a class={link} href={item.href} aria-current={active(item) ? "page" : undefined}>
+                        {item.title}
+                      </a>
+                      {item.children && open(item) && (
+                        <ul class="ms-3 mt-1 grid gap-0.5 border-s border-rule ps-2">
+                          {item.children.map((c) => (
+                            <li>
+                              <a class={link} href={c.href} aria-current={active(c) ? "page" : undefined}>
+                                {c.title}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </nav>
+      </div>
+    </aside>
+
+    <main class="min-w-0 py-8 lg:py-12">
+      <div class="flex items-center gap-3 lg:hidden">
+        <details class="group relative flex-1">
+          <summary
+            class="flex cursor-pointer list-none items-center justify-between rounded-xl border border-rule px-4 py-2.5 text-sm font-medium [&::-webkit-details-marker]:hidden"
+          >
+            {title}
+            <svg class="size-4 text-ink-faint group-open:rotate-180" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"
+              ><path d="m4 6 4 4 4-4"></path></svg
+            >
+          </summary>
+          <nav class="absolute inset-x-0 top-full z-40 mt-2 grid max-h-[70svh] gap-5 overflow-y-auto rounded-xl border border-rule bg-sheet p-3 shadow-paper" aria-label="Documentation">
+            {
+              groups.map((g) => (
+                <div>
+                  <p class="px-3 text-xs font-semibold tracking-wide text-ink-faint uppercase">{g.title}</p>
+                  <ul class="mt-1 grid gap-0.5">
+                    {g.items.map((item) => (
+                      <li>
+                        <a class={link} href={item.href} aria-current={active(item) ? "page" : undefined}>
+                          {item.title}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))
+            }
+          </nav>
+        </details>
+        <DocsSearch compact />
+      </div>
+
+      <p class="mt-6 flex items-center gap-2 text-sm text-ink-faint lg:mt-0">
+        <a class="hover:text-ink" href="/docs/">Docs</a>
+        {
+          group && (
+            <>
+              <span aria-hidden="true">/</span>
+              <span>{group.title}</span>
+            </>
+          )
+        }
+      </p>
+
+      <article class="docs-content mt-4">
+        <slot />
+      </article>
+
+      <div class="mt-14 flex flex-wrap items-center justify-between gap-3 border-t border-rule pt-6 text-sm text-ink-faint">
+        {day ? <p>Last updated {day}</p> : <span />}
+        {edit && <a class="font-medium text-brand hover:underline" href={edit}>Edit this page on GitHub →</a>}
+      </div>
+
+      {
+        (prev || next) && (
+          <nav class="mt-8 grid gap-3 sm:grid-cols-2" aria-label="Pages">
+            {prev ? (
+              <a class="group rounded-2xl border border-rule p-5 transition-colors hover:border-rule-strong hover:bg-paper-deep" href={prev.href}>
+                <span class="text-xs text-ink-faint">← Previous</span>
+                <span class="mt-1 block font-semibold group-hover:text-brand">{prev.title}</span>
+              </a>
+            ) : (
+              <span />
+            )}
+            {next && (
+              <a class="group rounded-2xl border border-rule p-5 text-end transition-colors hover:border-rule-strong hover:bg-paper-deep" href={next.href}>
+                <span class="text-xs text-ink-faint">Next →</span>
+                <span class="mt-1 block font-semibold group-hover:text-brand">{next.title}</span>
+              </a>
+            )}
+          </nav>
+        )
+      }
+    </main>
+
+    <aside class="hidden xl:block">
+      {
+        toc.length > 0 && (
+          <nav class="sticky top-16 max-h-[calc(100svh-4rem)] overflow-y-auto py-12" aria-labelledby="toc-title">
+            <p id="toc-title" class="text-sm font-semibold">
+              On this page
+            </p>
+            <ol class="mt-3 grid gap-1.5 border-s border-rule text-sm" data-toc>
+              {toc.map((h) => (
+                <li>
+                  <a
+                    class:list={[
+                      "-ms-px block border-s border-transparent py-0.5 text-ink-soft transition-colors hover:text-ink data-active:border-brand data-active:text-brand",
+                      h.depth === 3 ? "ps-6" : "ps-3",
+                    ]}
+                    href={`#${h.slug}`}
+                  >
+                    {h.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )
+      }
+    </aside>
+  </div>
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLElement>(".docs-content :is(h2, h3)[id]").forEach((h) => {
+    const a = document.createElement("a")
+    a.href = `#${h.id}`
+    a.className = "heading-anchor"
+    a.setAttribute("aria-hidden", "true")
+    a.tabIndex = -1
+    a.textContent = "#"
+    h.append(a)
+  })
+
+  const links = [...document.querySelectorAll<HTMLAnchorElement>("[data-toc] a")]
+  const targets = links.map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1)))).filter((el): el is HTMLElement => !!el)
+  if (targets.length) {
+    const mark = () => {
+      const passed = targets.filter((t) => t.getBoundingClientRect().top < 120)
+      const current = (passed.at(-1) ?? targets[0])!
+      for (const a of links) a.toggleAttribute("data-active", a.hash === `#${current.id}`)
+    }
+    mark()
+    window.addEventListener("scroll", mark, { passive: true })
+  }
+</script>

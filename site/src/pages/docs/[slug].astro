@@ -1,0 +1,26 @@
+---
+import { render } from "astro:content"
+import DocsLayout from "@/layouts/DocsLayout.astro"
+import { description, docHref, editHref, ordered, proseClass, title, updated, type Doc } from "@/lib/docs"
+
+export async function getStaticPaths() {
+  return (await ordered()).map((entry) => ({ params: { slug: entry.id }, props: { entry } }))
+}
+
+const { entry } = Astro.props as { entry: Doc }
+const { Content, headings } = await render(entry)
+---
+
+<DocsLayout
+  title={title(entry)}
+  description={description(entry)}
+  slug={entry.id}
+  href={docHref(entry.id)}
+  headings={headings}
+  edit={editHref(entry.id)}
+  updated={updated(entry.id)}
+>
+  <div class={proseClass}>
+    <Content />
+  </div>
+</DocsLayout>

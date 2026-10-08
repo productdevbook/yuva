@@ -1,0 +1,103 @@
+---
+import { Code } from "astro:components"
+import { homeCopy } from "@/copy/home"
+import { i18nFor } from "@/i18n"
+import Base from "@/layouts/Base.astro"
+import { apiHome, description, docs, docHref, eventsHref, nav } from "@/lib/docs"
+import { tags } from "@/lib/openapi"
+import { home } from "@/lib/routes"
+import DocsSearch from "@/ui/DocsSearch.astro"
+
+const all = await docs()
+const groups = await nav()
+const terminal = homeCopy(i18nFor("en")).host.terminal
+const endpoints = tags().reduce((n, t) => n + t.operations.length, 0)
+const summary = (slug: string) => (slug === "api" ? `Every endpoint, generated from the OpenAPI contract: ${endpoints} operations and the webhook events.` : description(all.get(slug)!))
+const starts = [
+  { slug: "install", label: "Run Yuva", body: "One Docker image and Postgres, from compose file to the first owner." },
+  { slug: "widget", label: "Add live chat", body: "One script tag puts the chat widget on a website or inside your product." },
+  { slug: "mobile", label: "Ship in-app messages", body: "Conversations and feedback in your iOS and Android apps." },
+  { slug: "api", label: "Use the API", body: "Create inboxes and channels, post feedback and manage contacts." },
+]
+---
+
+<Base
+  locale="en"
+  title="Yuva documentation"
+  description="Install, configure and integrate Yuva: e-mail, the web widget, the mobile SDKs, identity tokens, webhooks and the API reference."
+  paths={{ en: "/docs/", tr: home.tr, de: home.de }}
+  translated={false}
+>
+  <div class="mx-auto max-w-6xl px-5 sm:px-8">
+    <section class="grid items-center gap-12 py-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16 lg:py-24" aria-labelledby="docs-title">
+      <div>
+        <p class="text-sm font-medium text-brand">Documentation</p>
+        <h1 id="docs-title" class="mt-3 text-[clamp(2.5rem,1.4rem+3.6vw,4.3rem)] leading-[1.04] font-semibold tracking-[-0.035em]">Everything to run and build on Yuva.</h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft">
+          Install the server, connect your channels and integrate the widget, the mobile SDKs and the API. Written for the version on the main branch.
+        </p>
+        <div class="mt-8 max-w-sm">
+          <DocsSearch />
+        </div>
+      </div>
+      <div class="min-w-0 overflow-hidden rounded-2xl border border-night-rule bg-night shadow-paper">
+        <div class="flex items-center gap-1.5 border-b border-night-rule px-4 py-3">
+          <span class="size-2.5 rounded-full bg-white/15"></span>
+          <span class="size-2.5 rounded-full bg-white/15"></span>
+          <span class="size-2.5 rounded-full bg-white/15"></span>
+          <a class="ms-auto text-xs text-glow hover:underline" href={`${docHref("install")}#quick-start-with-compose`}>Quick start →</a>
+        </div>
+        <Code code={terminal} lang="sh" themes={{ light: "github-dark", dark: "github-dark" }} />
+      </div>
+    </section>
+
+    <section class="border-t border-rule py-16" aria-labelledby="start-title">
+      <h2 id="start-title" class="text-2xl font-semibold tracking-tight">Start here</h2>
+      <ul class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          starts.map((s, i) => (
+            <li>
+              <a class="group flex h-full flex-col rounded-3xl border border-rule p-6 transition-colors hover:border-rule-strong hover:bg-paper-deep" href={docHref(s.slug)}>
+                <span class="grid size-9 place-items-center rounded-full bg-brand-wash text-sm font-semibold text-brand">{i + 1}</span>
+                <span class="mt-5 font-semibold tracking-tight group-hover:text-brand">{s.label}</span>
+                <span class="mt-2 text-sm leading-relaxed text-ink-soft">{s.body}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="border-t border-rule py-16" aria-labelledby="all-title">
+      <h2 id="all-title" class="text-2xl font-semibold tracking-tight">All guides</h2>
+      <div class="mt-8 grid gap-10 md:grid-cols-2">
+        {
+          groups.map((g) => (
+            <div>
+              <h3 class="text-xs font-semibold tracking-wide text-ink-faint uppercase">{g.title}</h3>
+              <ul class="mt-3 divide-y divide-rule overflow-hidden rounded-2xl border border-rule">
+                {g.items.map((item) => (
+                  <li>
+                    <a class="group block px-5 py-4 transition-colors hover:bg-paper-deep" href={item.href}>
+                      <span class="flex items-center justify-between gap-3 font-medium">
+                        <span class="group-hover:text-brand">{item.title}</span>
+                        <span class="text-ink-faint" aria-hidden="true">
+                          →
+                        </span>
+                      </span>
+                      <span class="mt-1 line-clamp-2 block text-sm leading-relaxed text-ink-soft">{summary(item.slug)}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+      <p class="mt-10 text-sm text-ink-soft">
+        Looking for payloads? See the <a class="font-medium text-brand hover:underline" href={eventsHref}>webhook events</a> or the full
+        <a class="font-medium text-brand hover:underline" href={apiHome}>API reference</a>.
+      </p>
+    </section>
+  </div>
+</Base>

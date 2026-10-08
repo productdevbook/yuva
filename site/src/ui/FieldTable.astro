@@ -1,0 +1,38 @@
+---
+type Row = { name: string; type: string; required: boolean; description: string; in?: string }
+
+interface Props {
+  rows: Row[]
+  location?: boolean
+}
+
+const { rows, location = false } = Astro.props
+---
+
+<div class="mt-3 overflow-x-auto rounded-xl border border-rule">
+  <table class="w-full text-start text-sm">
+    <thead class="bg-paper-deep text-xs text-ink-faint">
+      <tr>
+        <th class="px-4 py-2 text-start font-medium">Name</th>
+        {location && <th class="px-4 py-2 text-start font-medium">In</th>}
+        <th class="px-4 py-2 text-start font-medium">Type</th>
+        <th class="px-4 py-2 text-start font-medium">Description</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-rule">
+      {
+        rows.map((r) => (
+          <tr class="align-top">
+            <td class="px-4 py-2.5 whitespace-nowrap">
+              <code class="font-mono text-[0.82rem] font-medium">{r.name}</code>
+              {r.required && <span class="ms-1.5 text-xs text-brand">required</span>}
+            </td>
+            {location && <td class="px-4 py-2.5 text-ink-soft">{r.in}</td>}
+            <td class="px-4 py-2.5 font-mono text-[0.78rem] text-ink-soft">{r.type}</td>
+            <td class="px-4 py-2.5 text-ink-soft [&_a]:text-brand [&_code]:font-mono [&_code]:text-[0.82rem] [&_code]:text-ink" set:html={r.description} />
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
