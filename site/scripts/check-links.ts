@@ -1,5 +1,6 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs"
 import { join } from "node:path"
+import { SITE } from "../src/lib/routes"
 
 const dist = join(import.meta.dirname, "../dist")
 const repo = join(import.meta.dirname, "../..")
@@ -64,6 +65,32 @@ for (const file of walk(dist)) {
     }
   }
 }
+const site = new URL(SITE).origin
+for (const name of ["llms.txt", "llms-full.txt"]) {
+  const file = join(dist, name)
+  if (!existsSync(file)) {
+    broken.push(`/${name} (missing)`)
+    continue
+  }
+  for (const m of readFileSync(file, "utf8").matchAll(/\]\(([^)\s]+)\)|(?:Source: )(\S+)/g)) {
+    const raw = (m[1] ?? m[2])!
+    const [target, hash] = raw.split("#") as [string, string | undefined]
+    if (raw.startsWith(REPO)) {
+      checked++
+      if (!existsSync(join(repo, target.slice(REPO.length)))) broken.push(`/${name} -> ${raw} (not in the repository)`)
+      continue
+    }
+    if (!raw.startsWith(site)) continue
+    const path = target.slice(site.length) || "/"
+    checked++
+    if (!resolves(path)) broken.push(`/${name} -> ${raw}`)
+    else if (hash) {
+      const t = path.endsWith("/") ? join(dist, path, "index.html") : join(dist, path)
+      if (!idsOf(t).has(hash)) broken.push(`/${name} -> ${raw} (no #${hash})`)
+    }
+  }
+}
+
 console.log(`links checked: ${checked}, broken: ${broken.length}`)
 for (const b of broken) console.log(`  ${b}`)
 process.exit(broken.length ? 1 : 0)
