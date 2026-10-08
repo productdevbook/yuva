@@ -1,149 +1,99 @@
 @import "tailwindcss";
 @import "@fontsource-variable/geist";
 @import "@fontsource-variable/geist-mono";
-@import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (@media (prefers-color-scheme: dark));
 
 @theme inline {
-  --font-heading: var(--font-sans);
-  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, "SF Mono", Menlo, monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-card-foreground: var(--foreground);
+  --color-popover: var(--card);
+  --color-popover-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-faint: var(--faint);
+  --color-accent: var(--muted);
+  --color-accent-foreground: var(--foreground);
+  --color-secondary: var(--muted);
+  --color-secondary-foreground: var(--foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-foreground: #ffffff;
   --color-brand: var(--brand);
   --color-brand-wash: var(--brand-wash);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
   --color-destructive: var(--destructive);
   --color-success: var(--success);
-  --color-success-muted: var(--success-muted);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --color-foreground: var(--foreground);
-  --color-background: var(--background);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --color-warning: var(--warning);
 }
 
 :root {
+  color-scheme: light dark;
   --background: #ffffff;
   --foreground: #0b0b0f;
+  --surface: #f7f7f8;
   --card: #ffffff;
-  --card-foreground: #0b0b0f;
-  --popover: #ffffff;
-  --popover-foreground: #0b0b0f;
-  --primary: #d4431c;
-  --primary-foreground: #ffffff;
-  --secondary: #f4f4f5;
-  --secondary-foreground: #0b0b0f;
-  --muted: #f4f4f5;
+  --muted: #f1f1f3;
   --muted-foreground: #52525b;
-  --accent: #f4f4f5;
-  --accent-foreground: #0b0b0f;
+  --faint: #71717a;
+  --border: #ececef;
+  --input: #d4d4d8;
+  --ring: #e4572e;
+  --primary: #d4431c;
   --brand: #c2410c;
   --brand-wash: #fff1eb;
   --destructive: #dc2626;
   --success: #15803d;
-  --success-muted: #f0fdf4;
-  --border: #ececef;
-  --input: #d4d4d8;
-  --ring: #e4572e;
-  --chart-1: #d4431c;
-  --chart-2: #e4572e;
-  --chart-3: #ff8a5c;
-  --chart-4: #ffb08f;
-  --chart-5: #fde7dc;
-  --radius: 0.75rem;
-  --sidebar: #f7f7f8;
-  --sidebar-foreground: #3f3f46;
-  --sidebar-primary: #d4431c;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #ececef;
-  --sidebar-accent-foreground: #0b0b0f;
-  --sidebar-border: #ececef;
-  --sidebar-ring: #e4572e;
+  --warning: #b45309;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #09090b;
     --foreground: #fafafa;
+    --surface: #0f0f12;
     --card: #121216;
-    --card-foreground: #fafafa;
-    --popover: #121216;
-    --popover-foreground: #fafafa;
-    --primary: #d4431c;
-    --primary-foreground: #ffffff;
-    --secondary: #1c1c21;
-    --secondary-foreground: #fafafa;
-    --muted: #1c1c21;
+    --muted: #1a1a1f;
     --muted-foreground: #a1a1aa;
-    --accent: #1c1c21;
-    --accent-foreground: #fafafa;
+    --faint: #8a8a93;
+    --border: #1f1f23;
+    --input: #2e2e34;
+    --ring: #ff8a5c;
+    --primary: #d4431c;
     --brand: #ff8a5c;
     --brand-wash: #2a140c;
     --destructive: #f87171;
     --success: #4ade80;
-    --success-muted: #0f2417;
-    --border: #232328;
-    --input: #2e2e34;
-    --ring: #ff8a5c;
-    --chart-1: #ff8a5c;
-    --chart-2: #e4572e;
-    --chart-3: #d4431c;
-    --chart-4: #9a3412;
-    --chart-5: #2a140c;
-    --sidebar: #0f0f12;
-    --sidebar-foreground: #d4d4d8;
-    --sidebar-primary: #d4431c;
-    --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent: #1f1f24;
-    --sidebar-accent-foreground: #fafafa;
-    --sidebar-border: #1f1f23;
-    --sidebar-ring: #ff8a5c;
+    --warning: #fbbf24;
   }
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
+    @apply border-border;
   }
   html {
-    @apply font-sans antialiased;
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+  body {
+    @apply bg-background;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply text-balance;
   }
   ::selection {
     @apply bg-brand/20 text-foreground;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
   }
 }

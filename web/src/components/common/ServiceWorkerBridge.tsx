@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/react/macro"
-import { SparklesIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router"
 
@@ -21,15 +20,15 @@ export function ServiceWorkerBridge() {
       data-testid="update-toast"
       className="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex justify-center px-4"
     >
-      <div className="pointer-events-auto flex max-w-full items-center gap-2 rounded-full border bg-background py-1 pr-1 pl-3 text-sm shadow-md">
-        <SparklesIcon className="size-4 shrink-0 text-primary" />
+      <div className="pointer-events-auto flex max-w-full items-center gap-2 rounded-full border bg-card py-1 ps-4 pe-1 text-sm shadow-[0_12px_32px_-16px_rgb(15_23_42/0.3)]">
+        <span className="size-1.5 shrink-0 rounded-full bg-brand" />
         <span className="min-w-0">
           <Trans>A new version of Yuva is ready.</Trans>
         </span>
-        <Button size="sm" className="rounded-full" onClick={update} data-testid="update-reload">
+        <Button size="sm" onClick={update} data-testid="update-reload">
           <Trans>Reload</Trans>
         </Button>
-        <Button variant="ghost" size="sm" className="rounded-full" onClick={() => setDismissed(true)}>
+        <Button variant="ghost" size="sm" onClick={() => setDismissed(true)}>
           <Trans>Later</Trans>
         </Button>
       </div>

@@ -10,3 +10,5 @@ export function useMediaQuery(query: string) {
     () => window.matchMedia(query).matches,
   )
 }
+
+export const useIsMobile = () => !useMediaQuery("(min-width: 768px)")

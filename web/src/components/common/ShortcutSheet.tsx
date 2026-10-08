@@ -1,7 +1,7 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { useState } from "react"
 
-import { Kbd } from "@/components/common"
+import { Kbd } from "@/components/common/Kbd"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 
@@ -83,10 +83,10 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
         <div className="grid gap-6 sm:grid-cols-2">
           {groups.map((g) => (
             <section key={g.title} className="flex flex-col gap-2">
-              <h3 className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{g.title}</h3>
+              <h3 className="text-xs font-medium text-faint">{g.title}</h3>
               <ul className="flex flex-col gap-1.5">
                 {g.items.map(([ks, label]) => (
-                  <li key={label} className="flex items-center justify-between gap-3 text-sm">
+                  <li key={label} className="flex items-center justify-between gap-3 text-sm text-muted-foreground">
                     <span>{label}</span>
                     <span className="flex shrink-0 gap-1">
                       {ks.map((k) => (
