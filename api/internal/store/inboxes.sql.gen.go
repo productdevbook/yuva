@@ -248,19 +248,19 @@ const listInboxes = `-- name: ListInboxes :many
 SELECT i.id, i.workspace_id, i.name, i.slug, i.branding, i.default_locale, i.timezone, i.mode, i.expected_reply_minutes, i.business_hours, i.identity_secret, i.created_at, i.updated_at FROM inboxes i
 WHERE i.workspace_id = $1
   AND ($2::bool OR EXISTS (
-      SELECT 1 FROM inbox_members im
-      WHERE im.workspace_id = i.workspace_id AND im.inbox_id = i.id AND im.member_id = $3))
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = $3))
 ORDER BY i.name, i.id
 `
 
 type ListInboxesParams struct {
 	WorkspaceID uuid.UUID
 	AllInboxes  bool
-	MemberID    uuid.UUID
+	ViewerID    uuid.UUID
 }
 
 func (q *Queries) ListInboxes(ctx context.Context, arg ListInboxesParams) ([]Inbox, error) {
-	rows, err := q.db.Query(ctx, listInboxes, arg.WorkspaceID, arg.AllInboxes, arg.MemberID)
+	rows, err := q.db.Query(ctx, listInboxes, arg.WorkspaceID, arg.AllInboxes, arg.ViewerID)
 	if err != nil {
 		return nil, err
 	}
@@ -293,17 +293,17 @@ func (q *Queries) ListInboxes(ctx context.Context, arg ListInboxesParams) ([]Inb
 	return items, nil
 }
 
-const listMemberInboxIDs = `-- name: ListMemberInboxIDs :many
-SELECT inbox_id FROM inbox_members WHERE workspace_id = $1 AND member_id = $2
+const listViewerInboxIDs = `-- name: ListViewerInboxIDs :many
+SELECT inbox_id FROM inbox_viewers WHERE workspace_id = $1 AND viewer_id = $2
 `
 
-type ListMemberInboxIDsParams struct {
+type ListViewerInboxIDsParams struct {
 	WorkspaceID uuid.UUID
-	MemberID    uuid.UUID
+	ViewerID    uuid.UUID
 }
 
-func (q *Queries) ListMemberInboxIDs(ctx context.Context, arg ListMemberInboxIDsParams) ([]uuid.UUID, error) {
-	rows, err := q.db.Query(ctx, listMemberInboxIDs, arg.WorkspaceID, arg.MemberID)
+func (q *Queries) ListViewerInboxIDs(ctx context.Context, arg ListViewerInboxIDsParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listViewerInboxIDs, arg.WorkspaceID, arg.ViewerID)
 	if err != nil {
 		return nil, err
 	}
@@ -448,4 +448,23 @@ func (q *Queries) UpdateInbox(ctx context.Context, arg UpdateInboxParams) (Inbox
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const viewerHasInbox = `-- name: ViewerHasInbox :one
+SELECT EXISTS (
+    SELECT 1 FROM inbox_viewers WHERE workspace_id = $1 AND inbox_id = $2 AND viewer_id = $3
+) AS access
+`
+
+type ViewerHasInboxParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	ViewerID    uuid.UUID
+}
+
+func (q *Queries) ViewerHasInbox(ctx context.Context, arg ViewerHasInboxParams) (bool, error) {
+	row := q.db.QueryRow(ctx, viewerHasInbox, arg.WorkspaceID, arg.InboxID, arg.ViewerID)
+	var access bool
+	err := row.Scan(&access)
+	return access, err
 }

@@ -38,7 +38,7 @@ const usageText = `usage:
   yuva migrate up|down|status
   yuva bootstrap --email <address> --workspace <name> [--name <name>] [--locale en|tr] [--allow-existing]
   yuva ingest-email --to <address> [--from <address>] < message.eml
-  yuva api-key create --workspace <id|name> --name <name>   (prints only the secret, once)
+  yuva api-key create --workspace <id|name> --name <name> [--scope <scope>]... [--inbox <id>]...   (prints only the secret, once)
   yuva api-key list --workspace <id|name>
   yuva api-key revoke <id>
   yuva inbox create --workspace <id|name> --name <name> [--slug <slug>] [--locale <tag>] [--timezone <zone>] [--mode live|async] [--expected-reply-minutes <n>]

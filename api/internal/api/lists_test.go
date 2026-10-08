@@ -101,6 +101,7 @@ func TestMemberPostMovesReadCursor(t *testing.T) {
 	h := newHarness(t)
 	tm := newTeam(t, h)
 	key := tm.apiKey(h)
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/workspace", map[string]any{"bots_may_send": true})
 	tm.owner.expect(http.StatusNoContent, "PUT", "/v1/inboxes/"+tm.inbox+"/members/"+tm.agentID, nil)
 	conv := tm.conversation(tm.owner)
 	unread := func(c *client) bool {
@@ -172,6 +173,7 @@ func TestUnreadAndReadCursor(t *testing.T) {
 	h := newHarness(t)
 	tm := newTeam(t, h)
 	key := tm.apiKey(h)
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/workspace", map[string]any{"bots_may_send": true})
 	tm.owner.expect(http.StatusNoContent, "PUT", "/v1/inboxes/"+tm.inbox+"/members/"+tm.agentID, nil)
 	conv := tm.conversation(tm.owner)
 	quiet := tm.conversation(tm.owner)

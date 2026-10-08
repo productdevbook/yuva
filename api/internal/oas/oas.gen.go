@@ -23,6 +23,60 @@ import (
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
+// Defines values for ApiKeyScope.
+const (
+	CannedRepliesWrite ApiKeyScope = "canned_replies:write"
+	ContactsRead       ApiKeyScope = "contacts:read"
+	ContactsWrite      ApiKeyScope = "contacts:write"
+	ConversationsRead  ApiKeyScope = "conversations:read"
+	ConversationsWrite ApiKeyScope = "conversations:write"
+	DraftsSend         ApiKeyScope = "drafts:send"
+	FeedbackWrite      ApiKeyScope = "feedback:write"
+	InboxesManage      ApiKeyScope = "inboxes:manage"
+	InboxesRead        ApiKeyScope = "inboxes:read"
+	LabelsWrite        ApiKeyScope = "labels:write"
+	MessagesWrite      ApiKeyScope = "messages:write"
+	NotesWrite         ApiKeyScope = "notes:write"
+	WebhooksManage     ApiKeyScope = "webhooks:manage"
+	WorkspaceManage    ApiKeyScope = "workspace:manage"
+)
+
+// Valid indicates whether the value is a known member of the ApiKeyScope enum.
+func (e ApiKeyScope) Valid() bool {
+	switch e {
+	case CannedRepliesWrite:
+		return true
+	case ContactsRead:
+		return true
+	case ContactsWrite:
+		return true
+	case ConversationsRead:
+		return true
+	case ConversationsWrite:
+		return true
+	case DraftsSend:
+		return true
+	case FeedbackWrite:
+		return true
+	case InboxesManage:
+		return true
+	case InboxesRead:
+		return true
+	case LabelsWrite:
+		return true
+	case MessagesWrite:
+		return true
+	case NotesWrite:
+		return true
+	case WebhooksManage:
+		return true
+	case WorkspaceManage:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AppPlatform.
 const (
 	Android AppPlatform = "android"
@@ -43,6 +97,7 @@ func (e AppPlatform) Valid() bool {
 
 // Defines values for AuthorType.
 const (
+	AuthorTypeBot     AuthorType = "bot"
 	AuthorTypeContact AuthorType = "contact"
 	AuthorTypeMember  AuthorType = "member"
 	AuthorTypeSystem  AuthorType = "system"
@@ -51,6 +106,8 @@ const (
 // Valid indicates whether the value is a known member of the AuthorType enum.
 func (e AuthorType) Valid() bool {
 	switch e {
+	case AuthorTypeBot:
+		return true
 	case AuthorTypeContact:
 		return true
 	case AuthorTypeMember:
@@ -362,6 +419,27 @@ func (e Direction) Valid() bool {
 	case In:
 		return true
 	case Out:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DraftEventType.
+const (
+	DraftEventTypeDraftCreated DraftEventType = "draft.created"
+	DraftEventTypeDraftDeleted DraftEventType = "draft.deleted"
+	DraftEventTypeDraftUpdated DraftEventType = "draft.updated"
+)
+
+// Valid indicates whether the value is a known member of the DraftEventType enum.
+func (e DraftEventType) Valid() bool {
+	switch e {
+	case DraftEventTypeDraftCreated:
+		return true
+	case DraftEventTypeDraftDeleted:
+		return true
+	case DraftEventTypeDraftUpdated:
 		return true
 	default:
 		return false
@@ -944,6 +1022,9 @@ const (
 	WebhookEventTypeContactUpdated      WebhookEventType = "contact.updated"
 	WebhookEventTypeConversationCreated WebhookEventType = "conversation.created"
 	WebhookEventTypeConversationUpdated WebhookEventType = "conversation.updated"
+	WebhookEventTypeDraftCreated        WebhookEventType = "draft.created"
+	WebhookEventTypeDraftDeleted        WebhookEventType = "draft.deleted"
+	WebhookEventTypeDraftUpdated        WebhookEventType = "draft.updated"
 	WebhookEventTypeFeedbackCreated     WebhookEventType = "feedback.created"
 	WebhookEventTypeMessageCreated      WebhookEventType = "message.created"
 )
@@ -958,6 +1039,12 @@ func (e WebhookEventType) Valid() bool {
 	case WebhookEventTypeConversationCreated:
 		return true
 	case WebhookEventTypeConversationUpdated:
+		return true
+	case WebhookEventTypeDraftCreated:
+		return true
+	case WebhookEventTypeDraftDeleted:
+		return true
+	case WebhookEventTypeDraftUpdated:
 		return true
 	case WebhookEventTypeFeedbackCreated:
 		return true
@@ -1045,24 +1132,48 @@ type AccountDeletion struct {
 
 // ApiKey defines model for ApiKey.
 type ApiKey struct {
+	// BotAvatarUrl An `https` image URL.
+	BotAvatarUrl *BotAvatarUrl `json:"bot_avatar_url,omitempty"`
+
+	// BotName The bot's display name when it differs from `name`.
+	BotName   *string   `json:"bot_name,omitempty"`
 	CreatedAt time.Time `json:"created_at"`
 
 	// CreatedBy The member who created the key, absent when that member was removed.
-	CreatedBy  *uuid.UUID `json:"created_by,omitempty"`
-	Id         uuid.UUID  `json:"id"`
-	LastUsedAt *time.Time `json:"last_used_at,omitempty"`
-	Name       string     `json:"name"`
+	CreatedBy *uuid.UUID `json:"created_by,omitempty"`
+
+	// ExpiresAt After this the key is refused with `401 api_key_expired`; absent when it does not expire.
+	ExpiresAt *time.Time `json:"expires_at,omitempty"`
+	Id        uuid.UUID  `json:"id"`
+
+	// InboxIds The inboxes the key is limited to; absent when it sees every inbox.
+	InboxIds   *[]uuid.UUID `json:"inbox_ids,omitempty"`
+	LastUsedAt *time.Time   `json:"last_used_at,omitempty"`
+	Name       string       `json:"name"`
 
 	// Prefix The visible start of the key, `yuva_<prefix>`.
 	//
 	// Examples: yuva_k3x9q2mf
-	Prefix    string     `json:"prefix"`
-	RevokedAt *time.Time `json:"revoked_at,omitempty"`
+	Prefix    string        `json:"prefix"`
+	RevokedAt *time.Time    `json:"revoked_at,omitempty"`
+	Scopes    []ApiKeyScope `json:"scopes"`
 }
 
 // ApiKeyCreate defines model for ApiKeyCreate.
 type ApiKeyCreate struct {
-	Name string `json:"name"`
+	// BotAvatarUrl An `https` image URL.
+	BotAvatarUrl *BotAvatarUrl `json:"bot_avatar_url,omitempty"`
+	BotName      *string       `json:"bot_name,omitempty"`
+
+	// ExpiresAt Must be in the future.
+	ExpiresAt *time.Time `json:"expires_at,omitempty"`
+
+	// InboxIds Limits the key to these inboxes.
+	InboxIds *[]uuid.UUID `json:"inbox_ids,omitempty"`
+	Name     string       `json:"name"`
+
+	// Scopes Every scope when absent.
+	Scopes *[]ApiKeyScope `json:"scopes,omitempty"`
 }
 
 // ApiKeyCreated defines model for ApiKeyCreated.
@@ -1076,6 +1187,37 @@ type ApiKeyCreated struct {
 // ApiKeyList defines model for ApiKeyList.
 type ApiKeyList struct {
 	Items []ApiKey `json:"items"`
+}
+
+// ApiKeyScope - `conversations:read`: list, get and count conversations; list messages; attachments,
+//
+//		message e-mail and raw source; list labels and canned replies.
+//	  - `conversations:write`: create, update (status, assignee, snooze, priority, labels), move
+//	    and bulk-update conversations.
+//	  - `messages:write`: outgoing and incoming messages, drafts: create, edit, discard.
+//	  - `drafts:send`: send a draft (`POST /v1/messages/{id}/send`), together with
+//	    `messages:write`.
+//	  - `notes:write`: notes.
+//	  - `contacts:read`: list, look up and get contacts, presence.
+//	  - `contacts:write`: create, update, delete and merge contacts.
+//	  - `inboxes:read`: workspace, members, inboxes, inbox members, channels.
+//	  - `inboxes:manage`: create, update and delete inboxes and channels, inbox access, secret
+//	    and key rotation.
+//	  - `labels:write`: create, update and delete labels.
+//	  - `canned_replies:write`: create, update and delete canned replies.
+//	  - `webhooks:manage`: webhooks, their deliveries and attempts.
+//	  - `workspace:manage`: update the workspace, usage.
+//	  - `feedback:write`: feedback.
+type ApiKeyScope string
+
+// ApiKeyUpdate Only the fields sent change. Scopes, inbox limit and expiry cannot change.
+type ApiKeyUpdate struct {
+	// BotAvatarUrl An `https` image URL; `null` removes it.
+	BotAvatarUrl nullable.Nullable[string] `json:"bot_avatar_url,omitempty"`
+
+	// BotName `null` shows the key's name.
+	BotName nullable.Nullable[string] `json:"bot_name,omitempty"`
+	Name    *string                   `json:"name,omitempty"`
 }
 
 // AppChannel Settings of an `app` (mobile SDKs) channel. Native apps send no `Origin`, so the key is not
@@ -1124,12 +1266,15 @@ type Attachment struct {
 // Attributes Free-form data about the contact (plan, app version, …), at most 16 KiB.
 type Attributes map[string]interface{}
 
-// AuthorType defines model for AuthorType.
+// AuthorType `bot` is an API key. Rows written with a key before bot authors existed have `system`.
 type AuthorType string
 
 // Availability `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
 // hours. `away`: never shown as available.
 type Availability string
+
+// BotAvatarUrl An `https` image URL.
+type BotAvatarUrl = string
 
 // BusinessHours When `enabled` is false the inbox counts as always open.
 type BusinessHours struct {
@@ -1552,11 +1697,16 @@ type ClientMessage struct {
 
 // ClientMessageAuthor defines model for ClientMessageAuthor.
 type ClientMessageAuthor struct {
-	// Initials `member` only.
+	// AvatarUrl `bot` only, when the bot has an avatar.
+	AvatarUrl *string `json:"avatar_url,omitempty"`
+
+	// Initials `member` and `bot` only.
 	Initials *string `json:"initials,omitempty"`
 
-	// Name `member` only: the member's display name, possibly empty.
-	Name *string    `json:"name,omitempty"`
+	// Name `member` and `bot` only: the display name, possibly empty for a member.
+	Name *string `json:"name,omitempty"`
+
+	// Type `bot` is an API key. Rows written with a key before bot authors existed have `system`.
 	Type AuthorType `json:"type"`
 }
 
@@ -1598,6 +1748,7 @@ type ClientMessagePage struct {
 
 // ClientMessagePreview defines model for ClientMessagePreview.
 type ClientMessagePreview struct {
+	// AuthorType `bot` is an API key. Rows written with a key before bot authors existed have `system`.
 	AuthorType AuthorType `json:"author_type"`
 	CreatedAt  time.Time  `json:"created_at"`
 	Id         uuid.UUID  `json:"id"`
@@ -2118,6 +2269,21 @@ type CountByID struct {
 // Direction defines model for Direction.
 type Direction string
 
+// DraftEvent A draft was written, edited or discarded (`data` is the draft as it was). Sending a draft
+// emits `message.created`.
+type DraftEvent struct {
+	ConversationId uuid.UUID      `json:"conversation_id"`
+	CreatedAt      time.Time      `json:"created_at"`
+	Data           Message        `json:"data"`
+	Id             int64          `json:"id"`
+	InboxId        uuid.UUID      `json:"inbox_id"`
+	Type           DraftEventType `json:"type"`
+	WorkspaceId    uuid.UUID      `json:"workspace_id"`
+}
+
+// DraftEventType defines model for DraftEvent.Type.
+type DraftEventType string
+
 // Email Examples: owner@example.com
 type Email = openapi_types.Email
 
@@ -2623,11 +2789,18 @@ type Message struct {
 	Body           string    `json:"body"`
 	ClientId       *string   `json:"client_id,omitempty"`
 	ConversationId uuid.UUID `json:"conversation_id"`
-	CreatedAt      time.Time `json:"created_at"`
+
+	// CreatedAt For a sent draft, when it was sent.
+	CreatedAt time.Time `json:"created_at"`
 
 	// Delivery Delivery of an outgoing message by e-mail.
 	Delivery  *MessageDelivery `json:"delivery,omitempty"`
 	Direction *Direction       `json:"direction,omitempty"`
+
+	// Draft An outgoing message that is not delivered until it is sent
+	// (`POST /v1/messages/{id}/send`). Drafts are shown only on `/v1`: never to contacts,
+	// never e-mailed, notified, counted as unread, previewed or found by search.
+	Draft bool `json:"draft"`
 
 	// Email Set on messages that came or went by e-mail. `body` and `html` of the message show the new
 	// text only; `quoted` tells whether quoted history or a signature was hidden, which
@@ -2642,16 +2815,30 @@ type Message struct {
 	// Kind `message` goes to or comes from the contact, `note` is for members only, `event` records a
 	// change (assignment, status, labels).
 	Kind MessageKind `json:"kind"`
+
+	// SentBy Who sent a draft (`member` or `bot`); absent for messages that were never drafts.
+	SentBy *MessageAuthor `json:"sent_by,omitempty"`
 }
 
 // MessageAuthor defines model for MessageAuthor.
 type MessageAuthor struct {
+	// ApiKeyId Set for `bot`.
+	ApiKeyId *uuid.UUID `json:"api_key_id,omitempty"`
+
+	// AvatarUrl `bot` only, when the bot has an avatar.
+	AvatarUrl *string `json:"avatar_url,omitempty"`
+
 	// ContactId Set for `contact`.
 	ContactId *uuid.UUID `json:"contact_id,omitempty"`
 
 	// MemberId Set for `member`; absent when that member was removed or deleted their account.
 	MemberId *uuid.UUID `json:"member_id,omitempty"`
-	Type     AuthorType `json:"type"`
+
+	// Name `bot` only: the bot's current display name.
+	Name *string `json:"name,omitempty"`
+
+	// Type `bot` is an API key. Rows written with a key before bot authors existed have `system`.
+	Type AuthorType `json:"type"`
 }
 
 // MessageCreate defines model for MessageCreate.
@@ -2662,6 +2849,9 @@ type MessageCreate struct {
 	// ClientId Makes the request idempotent within the conversation.
 	ClientId  *string    `json:"client_id,omitempty"`
 	Direction *Direction `json:"direction,omitempty"`
+
+	// Draft Stores an outgoing message as a draft instead of delivering it.
+	Draft *bool `json:"draft,omitempty"`
 
 	// Html Sanitized before it is stored.
 	Html *string           `json:"html,omitempty"`
@@ -2676,6 +2866,7 @@ type MessageCreateMultipart struct {
 	Body      *string                    `json:"body,omitempty"`
 	ClientId  *string                    `json:"client_id,omitempty"`
 	Direction *Direction                 `json:"direction,omitempty"`
+	Draft     *bool                      `json:"draft,omitempty"`
 	Files     *[]openapi_types.File      `json:"files,omitempty"`
 	Html      *string                    `json:"html,omitempty"`
 	Kind      MessageCreateMultipartKind `json:"kind"`
@@ -2810,6 +3001,7 @@ type MessagePage struct {
 
 // MessagePreview The last `message` of a conversation, for a list row.
 type MessagePreview struct {
+	// AuthorType `bot` is an API key. Rows written with a key before bot authors existed have `system`.
 	AuthorType AuthorType `json:"author_type"`
 	CreatedAt  time.Time  `json:"created_at"`
 	Id         uuid.UUID  `json:"id"`
@@ -2820,6 +3012,14 @@ type MessagePreview struct {
 
 	// Text The plain-text body on one line, cut to 140 characters with `…` when longer.
 	Text string `json:"text"`
+}
+
+// MessageUpdate Only the fields sent change.
+type MessageUpdate struct {
+	Body *string `json:"body,omitempty"`
+
+	// Html Sanitized before it is stored; `null` removes it.
+	Html nullable.Nullable[string] `json:"html,omitempty"`
 }
 
 // MessageUpdatedEvent A message changed, e.g. its e-mail delivery state.
@@ -2957,6 +3157,11 @@ type Problem struct {
 	// Examples: not_found
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
+
+	// Scope `insufficient_scope` only: the scope the API key lacks.
+	//
+	// Examples: messages:write
+	Scope  *string `json:"scope,omitempty"`
 	Status int32   `json:"status"`
 	Title  string  `json:"title"`
 
@@ -3477,9 +3682,14 @@ type Weekday string
 
 // Workspace defines model for Workspace.
 type Workspace struct {
-	CreatedAt time.Time `json:"created_at"`
-	Id        uuid.UUID `json:"id"`
-	Name      string    `json:"name"`
+	// BotsMaySend Whether API keys deliver messages. Off: a key's outgoing message must be a draft
+	// (`403 bot_sending_disabled`) and a key cannot send drafts; members review and send
+	// them. On: a key with `messages:write` sends directly, and one that also has
+	// `drafts:send` sends drafts. Members always may.
+	BotsMaySend bool      `json:"bots_may_send"`
+	CreatedAt   time.Time `json:"created_at"`
+	Id          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
 
 	// RetentionDays Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Absent when everything is kept.
 	RetentionDays *int32 `json:"retention_days,omitempty"`
@@ -3491,10 +3701,13 @@ type WorkspaceDeletion struct {
 	Name string `json:"name"`
 }
 
-// WorkspaceUpdate defines model for WorkspaceUpdate.
+// WorkspaceUpdate Only the fields sent change; at least one is required.
 type WorkspaceUpdate struct {
-	// RetentionDays `null` keeps everything.
-	RetentionDays nullable.Nullable[int32] `json:"retention_days"`
+	// BotsMaySend Owners and admins, with a member session.
+	BotsMaySend *bool `json:"bots_may_send,omitempty"`
+
+	// RetentionDays `null` keeps everything. Owners, or an API key with `workspace:manage`.
+	RetentionDays nullable.Nullable[int32] `json:"retention_days,omitempty"`
 }
 
 // ApiKeyId defines model for ApiKeyId.
@@ -3520,6 +3733,9 @@ type Cursor = string
 
 // DeliveryId defines model for DeliveryId.
 type DeliveryId = uuid.UUID
+
+// IdempotencyKey defines model for IdempotencyKey.
+type IdempotencyKey = string
 
 // InboxId defines model for InboxId.
 type InboxId = uuid.UUID
@@ -3575,6 +3791,12 @@ type ListClientConversationsParams struct {
 	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
+// CreateClientConversationParams defines parameters for CreateClientConversation.
+type CreateClientConversationParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
 // ListClientMessagesParams defines parameters for ListClientMessages.
 type ListClientMessagesParams struct {
 	Order *ListClientMessagesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
@@ -3589,6 +3811,30 @@ type ListClientMessagesParams struct {
 // ListClientMessagesParamsOrder defines parameters for ListClientMessages.
 type ListClientMessagesParamsOrder string
 
+// CreateClientMessageParams defines parameters for CreateClientMessage.
+type CreateClientMessageParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// MarkClientConversationReadParams defines parameters for MarkClientConversationRead.
+type MarkClientConversationReadParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// SetClientTypingParams defines parameters for SetClientTyping.
+type SetClientTypingParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// CreateClientFeedbackParams defines parameters for CreateClientFeedback.
+type CreateClientFeedbackParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
 // ListApiKeysParams defines parameters for ListApiKeys.
 type ListApiKeysParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -3597,12 +3843,21 @@ type ListApiKeysParams struct {
 
 // CreateApiKeyParams defines parameters for CreateApiKey.
 type CreateApiKeyParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
 // RevokeApiKeyParams defines parameters for RevokeApiKey.
 type RevokeApiKeyParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateApiKeyParams defines parameters for UpdateApiKey.
+type UpdateApiKeyParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -3624,6 +3879,9 @@ type ListCannedRepliesParams struct {
 
 // CreateCannedReplyParams defines parameters for CreateCannedReply.
 type CreateCannedReplyParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -3660,6 +3918,9 @@ type UpdateChannelParams struct {
 
 // RotateChannelPublicKeyParams defines parameters for RotateChannelPublicKey.
 type RotateChannelPublicKeyParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -3681,6 +3942,9 @@ type ListContactsParams struct {
 
 // CreateContactParams defines parameters for CreateContact.
 type CreateContactParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -3723,6 +3987,9 @@ type UpdateContactParams struct {
 
 // MergeContactParams defines parameters for MergeContact.
 type MergeContactParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -3770,12 +4037,18 @@ type ListConversationsParams struct {
 
 // CreateConversationParams defines parameters for CreateConversation.
 type CreateConversationParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
 // BulkUpdateConversationsParams defines parameters for BulkUpdateConversations.
 type BulkUpdateConversationsParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -3817,26 +4090,44 @@ type ListMessagesParamsOrder string
 
 // CreateMessageParams defines parameters for CreateMessage.
 type CreateMessageParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
 // MoveConversationParams defines parameters for MoveConversation.
 type MoveConversationParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
 // MarkConversationReadParams defines parameters for MarkConversationRead.
 type MarkConversationReadParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
 // SetMemberTypingParams defines parameters for SetMemberTyping.
 type SetMemberTypingParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CreateFeedbackParams defines parameters for CreateFeedback.
+type CreateFeedbackParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // ListInboxesParams defines parameters for ListInboxes.
@@ -3847,6 +4138,9 @@ type ListInboxesParams struct {
 
 // CreateInboxParams defines parameters for CreateInbox.
 type CreateInboxParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -3877,12 +4171,18 @@ type ListChannelsParams struct {
 
 // CreateChannelParams defines parameters for CreateChannel.
 type CreateChannelParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
 // RotateInboxIdentitySecretParams defines parameters for RotateInboxIdentitySecret.
 type RotateInboxIdentitySecretParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -3913,6 +4213,9 @@ type ListInvitesParams struct {
 
 // CreateInviteParams defines parameters for CreateInvite.
 type CreateInviteParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -3931,6 +4234,9 @@ type ListLabelsParams struct {
 
 // CreateLabelParams defines parameters for CreateLabel.
 type CreateLabelParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -3995,6 +4301,18 @@ type UpdateMemberParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// DeleteMessageParams defines parameters for DeleteMessage.
+type DeleteMessageParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateMessageParams defines parameters for UpdateMessage.
+type UpdateMessageParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetMessageEmailParams defines parameters for GetMessageEmail.
 type GetMessageEmailParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -4005,6 +4323,15 @@ type GetMessageEmailParams struct {
 type DownloadMessageRawParams struct {
 	// WorkspaceId The workspace to act on, for links that cannot send `Yuva-Workspace`.
 	WorkspaceId *uuid.UUID `form:"workspace_id,omitempty" json:"workspace_id,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// SendMessageParams defines parameters for SendMessage.
+type SendMessageParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
@@ -4026,6 +4353,9 @@ type ListWebhooksParams struct {
 
 // CreateWebhookParams defines parameters for CreateWebhook.
 type CreateWebhookParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -4079,12 +4409,18 @@ type GetWebhookDeliveryParams struct {
 
 // RedeliverWebhookParams defines parameters for RedeliverWebhook.
 type RedeliverWebhookParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
 // RotateWebhookSecretParams defines parameters for RotateWebhookSecret.
 type RotateWebhookSecretParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -4163,6 +4499,48 @@ type WebhookConversationUpdatedParams struct {
 	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
 }
 
+// WebhookDraftCreatedParams defines parameters for WebhookDraftCreated.
+type WebhookDraftCreatedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookDraftDeletedParams defines parameters for WebhookDraftDeleted.
+type WebhookDraftDeletedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
+// WebhookDraftUpdatedParams defines parameters for WebhookDraftUpdated.
+type WebhookDraftUpdatedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
 // WebhookFeedbackCreatedParams defines parameters for WebhookFeedbackCreated.
 type WebhookFeedbackCreatedParams struct {
 	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
@@ -4223,6 +4601,9 @@ type CreateClientSessionJSONRequestBody = ClientSessionCreate
 
 // CreateApiKeyJSONRequestBody defines body for CreateApiKey for application/json ContentType.
 type CreateApiKeyJSONRequestBody = ApiKeyCreate
+
+// UpdateApiKeyJSONRequestBody defines body for UpdateApiKey for application/json ContentType.
+type UpdateApiKeyJSONRequestBody = ApiKeyUpdate
 
 // RequestSignInCodeJSONRequestBody defines body for RequestSignInCode for application/json ContentType.
 type RequestSignInCodeJSONRequestBody = SignInCodeRequest
@@ -4317,6 +4698,9 @@ type CreatePushSubscriptionJSONRequestBody = PushSubscriptionCreate
 // UpdateMemberJSONRequestBody defines body for UpdateMember for application/json ContentType.
 type UpdateMemberJSONRequestBody = MemberUpdate
 
+// UpdateMessageJSONRequestBody defines body for UpdateMessage for application/json ContentType.
+type UpdateMessageJSONRequestBody = MessageUpdate
+
 // CreateWebhookJSONRequestBody defines body for CreateWebhook for application/json ContentType.
 type CreateWebhookJSONRequestBody = WebhookEndpointCreate
 
@@ -4340,6 +4724,15 @@ type WebhookConversationCreatedJSONRequestBody = WebhookConversationPayload
 
 // WebhookConversationUpdatedJSONRequestBody defines body for WebhookConversationUpdated for application/json ContentType.
 type WebhookConversationUpdatedJSONRequestBody = WebhookConversationPayload
+
+// WebhookDraftCreatedJSONRequestBody defines body for WebhookDraftCreated for application/json ContentType.
+type WebhookDraftCreatedJSONRequestBody = WebhookMessagePayload
+
+// WebhookDraftDeletedJSONRequestBody defines body for WebhookDraftDeleted for application/json ContentType.
+type WebhookDraftDeletedJSONRequestBody = WebhookMessagePayload
+
+// WebhookDraftUpdatedJSONRequestBody defines body for WebhookDraftUpdated for application/json ContentType.
+type WebhookDraftUpdatedJSONRequestBody = WebhookMessagePayload
 
 // WebhookFeedbackCreatedJSONRequestBody defines body for WebhookFeedbackCreated for application/json ContentType.
 type WebhookFeedbackCreatedJSONRequestBody = WebhookFeedbackPayload
@@ -4734,6 +5127,32 @@ func (t *RealtimeMessage) MergeMessageUpdatedEvent(v MessageUpdatedEvent) error 
 	return err
 }
 
+// AsDraftEvent returns the union data inside the RealtimeMessage as a DraftEvent
+func (t RealtimeMessage) AsDraftEvent() (DraftEvent, error) {
+	var body DraftEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromDraftEvent overwrites any union data inside the RealtimeMessage as the provided DraftEvent
+func (t *RealtimeMessage) FromDraftEvent(v DraftEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeDraftEvent performs a merge with any union data inside the RealtimeMessage, using the provided DraftEvent
+func (t *RealtimeMessage) MergeDraftEvent(v DraftEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsContactUpdatedEvent returns the union data inside the RealtimeMessage as a ContactUpdatedEvent
 func (t RealtimeMessage) AsContactUpdatedEvent() (ContactUpdatedEvent, error) {
 	var body ContactUpdatedEvent
@@ -5020,6 +5439,12 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsConversationReadEvent()
 	case "conversation.updated":
 		return t.AsConversationEvent()
+	case "draft.created":
+		return t.AsDraftEvent()
+	case "draft.deleted":
+		return t.AsDraftEvent()
+	case "draft.updated":
+		return t.AsDraftEvent()
 	case "inbox.created":
 		return t.AsInboxCreatedEvent()
 	case "inbox.deleted":
@@ -5069,7 +5494,7 @@ type ServerInterface interface {
 	ListClientConversations(w http.ResponseWriter, r *http.Request, params ListClientConversationsParams)
 	// CreateClientConversation Start a conversation
 	// (POST /client/v1/conversations)
-	CreateClientConversation(w http.ResponseWriter, r *http.Request)
+	CreateClientConversation(w http.ResponseWriter, r *http.Request, params CreateClientConversationParams)
 	// GetClientConversation Get one of the contact's conversations
 	// (GET /client/v1/conversations/{conversationId})
 	GetClientConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId)
@@ -5078,16 +5503,16 @@ type ServerInterface interface {
 	ListClientMessages(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params ListClientMessagesParams)
 	// CreateClientMessage Send a message
 	// (POST /client/v1/conversations/{conversationId}/messages)
-	CreateClientMessage(w http.ResponseWriter, r *http.Request, conversationId ConversationId)
+	CreateClientMessage(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params CreateClientMessageParams)
 	// MarkClientConversationRead Mark a conversation read
 	// (POST /client/v1/conversations/{conversationId}/read)
-	MarkClientConversationRead(w http.ResponseWriter, r *http.Request, conversationId ConversationId)
+	MarkClientConversationRead(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params MarkClientConversationReadParams)
 	// SetClientTyping Tell members the contact is typing
 	// (POST /client/v1/conversations/{conversationId}/typing)
-	SetClientTyping(w http.ResponseWriter, r *http.Request, conversationId ConversationId)
+	SetClientTyping(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params SetClientTypingParams)
 	// CreateClientFeedback Send feedback
 	// (POST /client/v1/feedback)
-	CreateClientFeedback(w http.ResponseWriter, r *http.Request)
+	CreateClientFeedback(w http.ResponseWriter, r *http.Request, params CreateClientFeedbackParams)
 	// DeleteClientSession End the contact session
 	// (DELETE /client/v1/session)
 	DeleteClientSession(w http.ResponseWriter, r *http.Request)
@@ -5112,6 +5537,9 @@ type ServerInterface interface {
 	// RevokeApiKey Revoke an API key
 	// (DELETE /v1/api-keys/{apiKeyId})
 	RevokeApiKey(w http.ResponseWriter, r *http.Request, apiKeyId ApiKeyId, params RevokeApiKeyParams)
+	// UpdateApiKey Rename an API key or change its bot
+	// (PATCH /v1/api-keys/{apiKeyId})
+	UpdateApiKey(w http.ResponseWriter, r *http.Request, apiKeyId ApiKeyId, params UpdateApiKeyParams)
 	// DownloadAttachment Download an attachment
 	// (GET /v1/attachments/{attachmentId})
 	DownloadAttachment(w http.ResponseWriter, r *http.Request, attachmentId AttachmentId, params DownloadAttachmentParams)
@@ -5216,7 +5644,7 @@ type ServerInterface interface {
 	SetMemberTyping(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params SetMemberTypingParams)
 	// CreateFeedback Post feedback for a host app's user
 	// (POST /v1/feedback)
-	CreateFeedback(w http.ResponseWriter, r *http.Request)
+	CreateFeedback(w http.ResponseWriter, r *http.Request, params CreateFeedbackParams)
 	// ListInboxes List inboxes
 	// (GET /v1/inboxes)
 	ListInboxes(w http.ResponseWriter, r *http.Request, params ListInboxesParams)
@@ -5328,12 +5756,21 @@ type ServerInterface interface {
 	// UpdateMember Change a member's role
 	// (PATCH /v1/members/{memberId})
 	UpdateMember(w http.ResponseWriter, r *http.Request, memberId MemberId, params UpdateMemberParams)
+	// DeleteMessage Discard a draft
+	// (DELETE /v1/messages/{messageId})
+	DeleteMessage(w http.ResponseWriter, r *http.Request, messageId MessageId, params DeleteMessageParams)
+	// UpdateMessage Edit a draft
+	// (PATCH /v1/messages/{messageId})
+	UpdateMessage(w http.ResponseWriter, r *http.Request, messageId MessageId, params UpdateMessageParams)
 	// GetMessageEmail Get a message's e-mail details
 	// (GET /v1/messages/{messageId}/email)
 	GetMessageEmail(w http.ResponseWriter, r *http.Request, messageId MessageId, params GetMessageEmailParams)
 	// DownloadMessageRaw Download the original e-mail
 	// (GET /v1/messages/{messageId}/raw)
 	DownloadMessageRaw(w http.ResponseWriter, r *http.Request, messageId MessageId, params DownloadMessageRawParams)
+	// SendMessage Send a draft
+	// (POST /v1/messages/{messageId}/send)
+	SendMessage(w http.ResponseWriter, r *http.Request, messageId MessageId, params SendMessageParams)
 	// GetVapidPublicKey The server's Web Push key
 	// (GET /v1/push/vapid-public-key)
 	GetVapidPublicKey(w http.ResponseWriter, r *http.Request)
@@ -5508,8 +5945,35 @@ func (siw *ServerInterfaceWrapper) ListClientConversations(w http.ResponseWriter
 // CreateClientConversation operation middleware
 func (siw *ServerInterfaceWrapper) CreateClientConversation(w http.ResponseWriter, r *http.Request) {
 
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateClientConversationParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.CreateClientConversation(w, r)
+		siw.Handler.CreateClientConversation(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -5628,8 +6092,32 @@ func (siw *ServerInterfaceWrapper) CreateClientMessage(w http.ResponseWriter, r 
 		return
 	}
 
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateClientMessageParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.CreateClientMessage(w, r, conversationId)
+		siw.Handler.CreateClientMessage(w, r, conversationId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -5654,8 +6142,32 @@ func (siw *ServerInterfaceWrapper) MarkClientConversationRead(w http.ResponseWri
 		return
 	}
 
+	// Parameter object where we will unmarshal all parameters from the context
+	var params MarkClientConversationReadParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.MarkClientConversationRead(w, r, conversationId)
+		siw.Handler.MarkClientConversationRead(w, r, conversationId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -5680,8 +6192,32 @@ func (siw *ServerInterfaceWrapper) SetClientTyping(w http.ResponseWriter, r *htt
 		return
 	}
 
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SetClientTypingParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.SetClientTyping(w, r, conversationId)
+		siw.Handler.SetClientTyping(w, r, conversationId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -5694,8 +6230,35 @@ func (siw *ServerInterfaceWrapper) SetClientTyping(w http.ResponseWriter, r *htt
 // CreateClientFeedback operation middleware
 func (siw *ServerInterfaceWrapper) CreateClientFeedback(w http.ResponseWriter, r *http.Request) {
 
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateClientFeedbackParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.CreateClientFeedback(w, r)
+		siw.Handler.CreateClientFeedback(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -5827,6 +6390,25 @@ func (siw *ServerInterfaceWrapper) CreateApiKey(w http.ResponseWriter, r *http.R
 
 	headers := r.Header
 
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
 		var YuvaWorkspace WorkspaceHeader
@@ -5898,6 +6480,56 @@ func (siw *ServerInterfaceWrapper) RevokeApiKey(w http.ResponseWriter, r *http.R
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.RevokeApiKey(w, r, apiKeyId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateApiKey operation middleware
+func (siw *ServerInterfaceWrapper) UpdateApiKey(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "apiKeyId" -------------
+	var apiKeyId ApiKeyId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "apiKeyId", r.PathValue("apiKeyId"), &apiKeyId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "apiKeyId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateApiKeyParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateApiKey(w, r, apiKeyId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -6091,6 +6723,25 @@ func (siw *ServerInterfaceWrapper) CreateCannedReply(w http.ResponseWriter, r *h
 	var params CreateCannedReplyParams
 
 	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
 
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
@@ -6392,6 +7043,25 @@ func (siw *ServerInterfaceWrapper) RotateChannelPublicKey(w http.ResponseWriter,
 
 	headers := r.Header
 
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
 		var YuvaWorkspace WorkspaceHeader
@@ -6512,6 +7182,25 @@ func (siw *ServerInterfaceWrapper) CreateContact(w http.ResponseWriter, r *http.
 	var params CreateContactParams
 
 	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
 
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
@@ -6847,6 +7536,25 @@ func (siw *ServerInterfaceWrapper) MergeContact(w http.ResponseWriter, r *http.R
 
 	headers := r.Header
 
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
 		var YuvaWorkspace WorkspaceHeader
@@ -7122,6 +7830,25 @@ func (siw *ServerInterfaceWrapper) CreateConversation(w http.ResponseWriter, r *
 
 	headers := r.Header
 
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
 		var YuvaWorkspace WorkspaceHeader
@@ -7162,6 +7889,25 @@ func (siw *ServerInterfaceWrapper) BulkUpdateConversations(w http.ResponseWriter
 	var params BulkUpdateConversationsParams
 
 	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
 
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
@@ -7443,6 +8189,25 @@ func (siw *ServerInterfaceWrapper) CreateMessage(w http.ResponseWriter, r *http.
 
 	headers := r.Header
 
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
 		var YuvaWorkspace WorkspaceHeader
@@ -7492,6 +8257,25 @@ func (siw *ServerInterfaceWrapper) MoveConversation(w http.ResponseWriter, r *ht
 	var params MoveConversationParams
 
 	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
 
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
@@ -7543,6 +8327,25 @@ func (siw *ServerInterfaceWrapper) MarkConversationRead(w http.ResponseWriter, r
 
 	headers := r.Header
 
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
 		var YuvaWorkspace WorkspaceHeader
@@ -7593,6 +8396,25 @@ func (siw *ServerInterfaceWrapper) SetMemberTyping(w http.ResponseWriter, r *htt
 
 	headers := r.Header
 
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
 		var YuvaWorkspace WorkspaceHeader
@@ -7626,8 +8448,35 @@ func (siw *ServerInterfaceWrapper) SetMemberTyping(w http.ResponseWriter, r *htt
 // CreateFeedback operation middleware
 func (siw *ServerInterfaceWrapper) CreateFeedback(w http.ResponseWriter, r *http.Request) {
 
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateFeedbackParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.CreateFeedback(w, r)
+		siw.Handler.CreateFeedback(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -7688,6 +8537,25 @@ func (siw *ServerInterfaceWrapper) CreateInbox(w http.ResponseWriter, r *http.Re
 	var params CreateInboxParams
 
 	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
 
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
@@ -7939,6 +8807,25 @@ func (siw *ServerInterfaceWrapper) CreateChannel(w http.ResponseWriter, r *http.
 
 	headers := r.Header
 
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
 		var YuvaWorkspace WorkspaceHeader
@@ -7988,6 +8875,25 @@ func (siw *ServerInterfaceWrapper) RotateInboxIdentitySecret(w http.ResponseWrit
 	var params RotateInboxIdentitySecretParams
 
 	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
 
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
@@ -8239,6 +9145,25 @@ func (siw *ServerInterfaceWrapper) CreateInvite(w http.ResponseWriter, r *http.R
 
 	headers := r.Header
 
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
 		var YuvaWorkspace WorkspaceHeader
@@ -8370,6 +9295,25 @@ func (siw *ServerInterfaceWrapper) CreateLabel(w http.ResponseWriter, r *http.Re
 	var params CreateLabelParams
 
 	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
 
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
@@ -9064,6 +10008,106 @@ func (siw *ServerInterfaceWrapper) UpdateMember(w http.ResponseWriter, r *http.R
 	handler.ServeHTTP(w, r)
 }
 
+// DeleteMessage operation middleware
+func (siw *ServerInterfaceWrapper) DeleteMessage(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "messageId" -------------
+	var messageId MessageId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "messageId", r.PathValue("messageId"), &messageId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "messageId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteMessageParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteMessage(w, r, messageId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateMessage operation middleware
+func (siw *ServerInterfaceWrapper) UpdateMessage(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "messageId" -------------
+	var messageId MessageId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "messageId", r.PathValue("messageId"), &messageId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "messageId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateMessageParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateMessage(w, r, messageId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetMessageEmail operation middleware
 func (siw *ServerInterfaceWrapper) GetMessageEmail(w http.ResponseWriter, r *http.Request) {
 
@@ -9168,6 +10212,75 @@ func (siw *ServerInterfaceWrapper) DownloadMessageRaw(w http.ResponseWriter, r *
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DownloadMessageRaw(w, r, messageId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SendMessage operation middleware
+func (siw *ServerInterfaceWrapper) SendMessage(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "messageId" -------------
+	var messageId MessageId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "messageId", r.PathValue("messageId"), &messageId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "messageId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SendMessageParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SendMessage(w, r, messageId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -9310,6 +10423,25 @@ func (siw *ServerInterfaceWrapper) CreateWebhook(w http.ResponseWriter, r *http.
 	var params CreateWebhookParams
 
 	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
 
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
@@ -9731,6 +10863,25 @@ func (siw *ServerInterfaceWrapper) RedeliverWebhook(w http.ResponseWriter, r *ht
 
 	headers := r.Header
 
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
 		var YuvaWorkspace WorkspaceHeader
@@ -9780,6 +10931,25 @@ func (siw *ServerInterfaceWrapper) RotateWebhookSecret(w http.ResponseWriter, r 
 	var params RotateWebhookSecretParams
 
 	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
 
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
@@ -10091,6 +11261,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/api-keys", wrapper.ListApiKeys)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/api-keys", wrapper.CreateApiKey)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/api-keys/{apiKeyId}", wrapper.RevokeApiKey)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/api-keys/{apiKeyId}", wrapper.UpdateApiKey)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/inboxes", wrapper.ListInboxes)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/inboxes", wrapper.CreateInbox)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/inboxes/{inboxId}", wrapper.DeleteInbox)
@@ -10127,6 +11298,9 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/read", wrapper.MarkConversationRead)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/typing", wrapper.SetMemberTyping)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/attachments/{attachmentId}", wrapper.DownloadAttachment)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/messages/{messageId}", wrapper.DeleteMessage)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/messages/{messageId}", wrapper.UpdateMessage)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/messages/{messageId}/send", wrapper.SendMessage)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/messages/{messageId}/email", wrapper.GetMessageEmail)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/messages/{messageId}/raw", wrapper.DownloadMessageRaw)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/labels", wrapper.ListLabels)
@@ -10185,6 +11359,15 @@ type WebhookReceiverInterface interface {
 	// A conversation changed
 	// HandleWebhookConversationUpdatedWebhook handles the POST webhook for conversation.updated.
 	HandleWebhookConversationUpdatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookConversationUpdatedParams)
+	// A draft was written
+	// HandleWebhookDraftCreatedWebhook handles the POST webhook for draft.created.
+	HandleWebhookDraftCreatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookDraftCreatedParams)
+	// A draft was discarded
+	// HandleWebhookDraftDeletedWebhook handles the POST webhook for draft.deleted.
+	HandleWebhookDraftDeletedWebhook(w http.ResponseWriter, r *http.Request, params WebhookDraftDeletedParams)
+	// A draft was edited
+	// HandleWebhookDraftUpdatedWebhook handles the POST webhook for draft.updated.
+	HandleWebhookDraftUpdatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookDraftUpdatedParams)
 	// Feedback arrived
 	// HandleWebhookFeedbackCreatedWebhook handles the POST webhook for feedback.created.
 	HandleWebhookFeedbackCreatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookFeedbackCreatedParams)
@@ -10558,6 +11741,282 @@ func WebhookConversationUpdatedWebhookHandler(si WebhookReceiverInterface, errHa
 		}
 
 		si.HandleWebhookConversationUpdatedWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
+}
+
+// WebhookDraftCreatedWebhookHandler returns the http.Handler for the draft.created webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookDraftCreatedWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookDraftCreatedParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookDraftCreatedWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
+}
+
+// WebhookDraftDeletedWebhookHandler returns the http.Handler for the draft.deleted webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookDraftDeletedWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookDraftDeletedParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookDraftDeletedWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
+}
+
+// WebhookDraftUpdatedWebhookHandler returns the http.Handler for the draft.updated webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookDraftUpdatedWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookDraftUpdatedParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookDraftUpdatedWebhook(w, r, params)
 	})
 	for _, mw := range middlewares {
 		h = mw(h)
@@ -11060,6 +12519,7 @@ func (response ListClientConversations403ApplicationProblemPlusJSONResponse) Vis
 }
 
 type CreateClientConversationRequestObject struct {
+	Params        CreateClientConversationParams
 	JSONBody      *CreateClientConversationJSONRequestBody
 	MultipartBody *multipart.Reader
 }
@@ -11317,6 +12777,7 @@ func (response ListClientMessages404ApplicationProblemPlusJSONResponse) VisitLis
 
 type CreateClientMessageRequestObject struct {
 	ConversationId ConversationId `json:"conversationId"`
+	Params         CreateClientMessageParams
 	JSONBody       *CreateClientMessageJSONRequestBody
 	MultipartBody  *multipart.Reader
 }
@@ -11455,6 +12916,7 @@ func (response CreateClientMessage429ApplicationProblemPlusJSONResponse) VisitCr
 
 type MarkClientConversationReadRequestObject struct {
 	ConversationId ConversationId `json:"conversationId"`
+	Params         MarkClientConversationReadParams
 	Body           *MarkClientConversationReadJSONRequestBody
 }
 
@@ -11536,6 +12998,7 @@ func (response MarkClientConversationRead404ApplicationProblemPlusJSONResponse) 
 
 type SetClientTypingRequestObject struct {
 	ConversationId ConversationId `json:"conversationId"`
+	Params         SetClientTypingParams
 	Body           *SetClientTypingJSONRequestBody
 }
 
@@ -11624,6 +13087,7 @@ func (response SetClientTyping429ApplicationProblemPlusJSONResponse) VisitSetCli
 }
 
 type CreateClientFeedbackRequestObject struct {
+	Params        CreateClientFeedbackParams
 	JSONBody      *CreateClientFeedbackJSONRequestBody
 	MultipartBody *multipart.Reader
 }
@@ -12147,6 +13611,88 @@ func (response RevokeApiKey403ApplicationProblemPlusJSONResponse) VisitRevokeApi
 type RevokeApiKey404ApplicationProblemPlusJSONResponse Problem
 
 func (response RevokeApiKey404ApplicationProblemPlusJSONResponse) VisitRevokeApiKeyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateApiKeyRequestObject struct {
+	ApiKeyId ApiKeyId `json:"apiKeyId"`
+	Params   UpdateApiKeyParams
+	Body     *UpdateApiKeyJSONRequestBody
+}
+
+type UpdateApiKeyResponseObject interface {
+	VisitUpdateApiKeyResponse(w http.ResponseWriter) error
+}
+
+type UpdateApiKey200JSONResponse ApiKey
+
+func (response UpdateApiKey200JSONResponse) VisitUpdateApiKeyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateApiKey400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UpdateApiKey400ApplicationProblemPlusJSONResponse) VisitUpdateApiKeyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateApiKey401ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateApiKey401ApplicationProblemPlusJSONResponse) VisitUpdateApiKeyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateApiKey403ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateApiKey403ApplicationProblemPlusJSONResponse) VisitUpdateApiKeyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateApiKey404ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateApiKey404ApplicationProblemPlusJSONResponse) VisitUpdateApiKeyResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -14633,7 +16179,8 @@ func (response SetMemberTyping404ApplicationProblemPlusJSONResponse) VisitSetMem
 }
 
 type CreateFeedbackRequestObject struct {
-	Body *CreateFeedbackJSONRequestBody
+	Params CreateFeedbackParams
+	Body   *CreateFeedbackJSONRequestBody
 }
 
 type CreateFeedbackResponseObject interface {
@@ -17084,6 +18631,177 @@ func (response UpdateMember409ApplicationProblemPlusJSONResponse) VisitUpdateMem
 	return err
 }
 
+type DeleteMessageRequestObject struct {
+	MessageId MessageId `json:"messageId"`
+	Params    DeleteMessageParams
+}
+
+type DeleteMessageResponseObject interface {
+	VisitDeleteMessageResponse(w http.ResponseWriter) error
+}
+
+type DeleteMessage204Response struct {
+}
+
+func (response DeleteMessage204Response) VisitDeleteMessageResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteMessage401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteMessage401ApplicationProblemPlusJSONResponse) VisitDeleteMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteMessage403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteMessage403ApplicationProblemPlusJSONResponse) VisitDeleteMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteMessage404ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteMessage404ApplicationProblemPlusJSONResponse) VisitDeleteMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteMessage409ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteMessage409ApplicationProblemPlusJSONResponse) VisitDeleteMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateMessageRequestObject struct {
+	MessageId MessageId `json:"messageId"`
+	Params    UpdateMessageParams
+	Body      *UpdateMessageJSONRequestBody
+}
+
+type UpdateMessageResponseObject interface {
+	VisitUpdateMessageResponse(w http.ResponseWriter) error
+}
+
+type UpdateMessage200JSONResponse Message
+
+func (response UpdateMessage200JSONResponse) VisitUpdateMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateMessage400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UpdateMessage400ApplicationProblemPlusJSONResponse) VisitUpdateMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateMessage401ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateMessage401ApplicationProblemPlusJSONResponse) VisitUpdateMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateMessage403ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateMessage403ApplicationProblemPlusJSONResponse) VisitUpdateMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateMessage404ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateMessage404ApplicationProblemPlusJSONResponse) VisitUpdateMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateMessage409ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateMessage409ApplicationProblemPlusJSONResponse) VisitUpdateMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type GetMessageEmailRequestObject struct {
 	MessageId MessageId `json:"messageId"`
 	Params    GetMessageEmailParams
@@ -17246,6 +18964,87 @@ func (response DownloadMessageRaw404ApplicationProblemPlusJSONResponse) VisitDow
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SendMessageRequestObject struct {
+	MessageId MessageId `json:"messageId"`
+	Params    SendMessageParams
+}
+
+type SendMessageResponseObject interface {
+	VisitSendMessageResponse(w http.ResponseWriter) error
+}
+
+type SendMessage200JSONResponse Message
+
+func (response SendMessage200JSONResponse) VisitSendMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SendMessage401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response SendMessage401ApplicationProblemPlusJSONResponse) VisitSendMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SendMessage403ApplicationProblemPlusJSONResponse Problem
+
+func (response SendMessage403ApplicationProblemPlusJSONResponse) VisitSendMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SendMessage404ApplicationProblemPlusJSONResponse Problem
+
+func (response SendMessage404ApplicationProblemPlusJSONResponse) VisitSendMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SendMessage409ApplicationProblemPlusJSONResponse Problem
+
+func (response SendMessage409ApplicationProblemPlusJSONResponse) VisitSendMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -18349,6 +20148,9 @@ type StrictServerInterface interface {
 	// RevokeApiKey Revoke an API key
 	// (DELETE /v1/api-keys/{apiKeyId})
 	RevokeApiKey(ctx context.Context, request RevokeApiKeyRequestObject) (RevokeApiKeyResponseObject, error)
+	// UpdateApiKey Rename an API key or change its bot
+	// (PATCH /v1/api-keys/{apiKeyId})
+	UpdateApiKey(ctx context.Context, request UpdateApiKeyRequestObject) (UpdateApiKeyResponseObject, error)
 	// DownloadAttachment Download an attachment
 	// (GET /v1/attachments/{attachmentId})
 	DownloadAttachment(ctx context.Context, request DownloadAttachmentRequestObject) (DownloadAttachmentResponseObject, error)
@@ -18565,12 +20367,21 @@ type StrictServerInterface interface {
 	// UpdateMember Change a member's role
 	// (PATCH /v1/members/{memberId})
 	UpdateMember(ctx context.Context, request UpdateMemberRequestObject) (UpdateMemberResponseObject, error)
+	// DeleteMessage Discard a draft
+	// (DELETE /v1/messages/{messageId})
+	DeleteMessage(ctx context.Context, request DeleteMessageRequestObject) (DeleteMessageResponseObject, error)
+	// UpdateMessage Edit a draft
+	// (PATCH /v1/messages/{messageId})
+	UpdateMessage(ctx context.Context, request UpdateMessageRequestObject) (UpdateMessageResponseObject, error)
 	// GetMessageEmail Get a message's e-mail details
 	// (GET /v1/messages/{messageId}/email)
 	GetMessageEmail(ctx context.Context, request GetMessageEmailRequestObject) (GetMessageEmailResponseObject, error)
 	// DownloadMessageRaw Download the original e-mail
 	// (GET /v1/messages/{messageId}/raw)
 	DownloadMessageRaw(ctx context.Context, request DownloadMessageRawRequestObject) (DownloadMessageRawResponseObject, error)
+	// SendMessage Send a draft
+	// (POST /v1/messages/{messageId}/send)
+	SendMessage(ctx context.Context, request SendMessageRequestObject) (SendMessageResponseObject, error)
 	// GetVapidPublicKey The server's Web Push key
 	// (GET /v1/push/vapid-public-key)
 	GetVapidPublicKey(ctx context.Context, request GetVapidPublicKeyRequestObject) (GetVapidPublicKeyResponseObject, error)
@@ -18770,9 +20581,10 @@ func (sh *strictHandler) ListClientConversations(w http.ResponseWriter, r *http.
 }
 
 // CreateClientConversation operation middleware
-func (sh *strictHandler) CreateClientConversation(w http.ResponseWriter, r *http.Request) {
+func (sh *strictHandler) CreateClientConversation(w http.ResponseWriter, r *http.Request, params CreateClientConversationParams) {
 	var request CreateClientConversationRequestObject
 
+	request.Params = params
 	if strings.HasPrefix(r.Header.Get("Content-Type"), "application/json") {
 
 		var body CreateClientConversationJSONRequestBody
@@ -18866,10 +20678,11 @@ func (sh *strictHandler) ListClientMessages(w http.ResponseWriter, r *http.Reque
 }
 
 // CreateClientMessage operation middleware
-func (sh *strictHandler) CreateClientMessage(w http.ResponseWriter, r *http.Request, conversationId ConversationId) {
+func (sh *strictHandler) CreateClientMessage(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params CreateClientMessageParams) {
 	var request CreateClientMessageRequestObject
 
 	request.ConversationId = conversationId
+	request.Params = params
 	if strings.HasPrefix(r.Header.Get("Content-Type"), "application/json") {
 
 		var body CreateClientMessageJSONRequestBody
@@ -18910,10 +20723,11 @@ func (sh *strictHandler) CreateClientMessage(w http.ResponseWriter, r *http.Requ
 }
 
 // MarkClientConversationRead operation middleware
-func (sh *strictHandler) MarkClientConversationRead(w http.ResponseWriter, r *http.Request, conversationId ConversationId) {
+func (sh *strictHandler) MarkClientConversationRead(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params MarkClientConversationReadParams) {
 	var request MarkClientConversationReadRequestObject
 
 	request.ConversationId = conversationId
+	request.Params = params
 
 	var body MarkClientConversationReadJSONRequestBody
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
@@ -18946,10 +20760,11 @@ func (sh *strictHandler) MarkClientConversationRead(w http.ResponseWriter, r *ht
 }
 
 // SetClientTyping operation middleware
-func (sh *strictHandler) SetClientTyping(w http.ResponseWriter, r *http.Request, conversationId ConversationId) {
+func (sh *strictHandler) SetClientTyping(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params SetClientTypingParams) {
 	var request SetClientTypingRequestObject
 
 	request.ConversationId = conversationId
+	request.Params = params
 
 	var body SetClientTypingJSONRequestBody
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
@@ -18982,9 +20797,10 @@ func (sh *strictHandler) SetClientTyping(w http.ResponseWriter, r *http.Request,
 }
 
 // CreateClientFeedback operation middleware
-func (sh *strictHandler) CreateClientFeedback(w http.ResponseWriter, r *http.Request) {
+func (sh *strictHandler) CreateClientFeedback(w http.ResponseWriter, r *http.Request, params CreateClientFeedbackParams) {
 	var request CreateClientFeedbackRequestObject
 
+	request.Params = params
 	if strings.HasPrefix(r.Header.Get("Content-Type"), "application/json") {
 
 		var body CreateClientFeedbackJSONRequestBody
@@ -19230,6 +21046,40 @@ func (sh *strictHandler) RevokeApiKey(w http.ResponseWriter, r *http.Request, ap
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(RevokeApiKeyResponseObject); ok {
 		if err := validResponse.VisitRevokeApiKeyResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UpdateApiKey operation middleware
+func (sh *strictHandler) UpdateApiKey(w http.ResponseWriter, r *http.Request, apiKeyId ApiKeyId, params UpdateApiKeyParams) {
+	var request UpdateApiKeyRequestObject
+
+	request.ApiKeyId = apiKeyId
+	request.Params = params
+
+	var body UpdateApiKeyJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateApiKey(ctx, request.(UpdateApiKeyRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateApiKey")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UpdateApiKeyResponseObject); ok {
+		if err := validResponse.VisitUpdateApiKeyResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -20260,8 +22110,10 @@ func (sh *strictHandler) SetMemberTyping(w http.ResponseWriter, r *http.Request,
 }
 
 // CreateFeedback operation middleware
-func (sh *strictHandler) CreateFeedback(w http.ResponseWriter, r *http.Request) {
+func (sh *strictHandler) CreateFeedback(w http.ResponseWriter, r *http.Request, params CreateFeedbackParams) {
 	var request CreateFeedbackRequestObject
+
+	request.Params = params
 
 	var body CreateFeedbackJSONRequestBody
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
@@ -21346,6 +23198,67 @@ func (sh *strictHandler) UpdateMember(w http.ResponseWriter, r *http.Request, me
 	}
 }
 
+// DeleteMessage operation middleware
+func (sh *strictHandler) DeleteMessage(w http.ResponseWriter, r *http.Request, messageId MessageId, params DeleteMessageParams) {
+	var request DeleteMessageRequestObject
+
+	request.MessageId = messageId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteMessage(ctx, request.(DeleteMessageRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteMessage")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteMessageResponseObject); ok {
+		if err := validResponse.VisitDeleteMessageResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UpdateMessage operation middleware
+func (sh *strictHandler) UpdateMessage(w http.ResponseWriter, r *http.Request, messageId MessageId, params UpdateMessageParams) {
+	var request UpdateMessageRequestObject
+
+	request.MessageId = messageId
+	request.Params = params
+
+	var body UpdateMessageJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateMessage(ctx, request.(UpdateMessageRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateMessage")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UpdateMessageResponseObject); ok {
+		if err := validResponse.VisitUpdateMessageResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // GetMessageEmail operation middleware
 func (sh *strictHandler) GetMessageEmail(w http.ResponseWriter, r *http.Request, messageId MessageId, params GetMessageEmailParams) {
 	var request GetMessageEmailRequestObject
@@ -21393,6 +23306,33 @@ func (sh *strictHandler) DownloadMessageRaw(w http.ResponseWriter, r *http.Reque
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(DownloadMessageRawResponseObject); ok {
 		if err := validResponse.VisitDownloadMessageRawResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// SendMessage operation middleware
+func (sh *strictHandler) SendMessage(w http.ResponseWriter, r *http.Request, messageId MessageId, params SendMessageParams) {
+	var request SendMessageRequestObject
+
+	request.MessageId = messageId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.SendMessage(ctx, request.(SendMessageRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "SendMessage")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(SendMessageResponseObject); ok {
+		if err := validResponse.VisitSendMessageResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

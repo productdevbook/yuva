@@ -130,7 +130,7 @@ func (s *Server) sealIdentitySecret(workspaceID, inboxID uuid.UUID) (string, []b
 
 func (s *Server) ListInboxes(ctx context.Context, _ oas.ListInboxesRequestObject) (oas.ListInboxesResponseObject, error) {
 	p := principalFrom(ctx)
-	rows, err := s.st.ListInboxes(ctx, store.ListInboxesParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), MemberID: p.memberID})
+	rows, err := s.st.ListInboxes(ctx, store.ListInboxesParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID()})
 	if err != nil {
 		return nil, err
 	}
@@ -143,7 +143,7 @@ func (s *Server) ListInboxes(ctx context.Context, _ oas.ListInboxesRequestObject
 
 func (s *Server) CreateInbox(ctx context.Context, req oas.CreateInboxRequestObject) (oas.CreateInboxResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManager(p); err != nil {
+	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
 	b := req.Body
@@ -204,7 +204,7 @@ func (s *Server) GetInbox(ctx context.Context, req oas.GetInboxRequestObject) (o
 
 func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObject) (oas.UpdateInboxResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManager(p); err != nil {
+	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
 	b := req.Body
@@ -276,7 +276,7 @@ func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObje
 
 func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObject) (oas.DeleteInboxResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManager(p); err != nil {
+	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
 	var keys []string
@@ -311,7 +311,7 @@ func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObje
 
 func (s *Server) RotateInboxIdentitySecret(ctx context.Context, req oas.RotateInboxIdentitySecretRequestObject) (oas.RotateInboxIdentitySecretResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManager(p); err != nil {
+	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
 	plain, sealed := s.sealIdentitySecret(p.workspaceID, req.InboxId)
@@ -359,7 +359,7 @@ func (s *Server) inboxAndMember(ctx context.Context, p principal, inboxID, membe
 
 func (s *Server) GrantInboxAccess(ctx context.Context, req oas.GrantInboxAccessRequestObject) (oas.GrantInboxAccessResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManager(p); err != nil {
+	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
 	if err := s.inboxAndMember(ctx, p, req.InboxId, req.MemberId); err != nil {
@@ -384,7 +384,7 @@ func (s *Server) GrantInboxAccess(ctx context.Context, req oas.GrantInboxAccessR
 
 func (s *Server) RevokeInboxAccess(ctx context.Context, req oas.RevokeInboxAccessRequestObject) (oas.RevokeInboxAccessResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManager(p); err != nil {
+	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
 	if err := s.inboxAndMember(ctx, p, req.InboxId, req.MemberId); err != nil {

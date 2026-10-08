@@ -34,6 +34,8 @@ var (
 	errAttachmentType     = problem(http.StatusUnsupportedMediaType, "attachment_type_not_allowed", "an attachment has a content type the server does not allow")
 	errAttachmentMismatch = problem(http.StatusUnsupportedMediaType, "attachment_type_mismatch", "an attachment's content does not match its declared content type")
 	errTooManyAttachments = errValidation("at most 10 files per message")
+	errBotSendingDisabled = problem(http.StatusForbidden, "bot_sending_disabled", "this workspace does not let API keys deliver messages; post a draft for a member to send")
+	errDraftKind          = errValidation("only an outgoing message can be a draft")
 )
 
 type messageRow = store.CreateMessageRow
@@ -54,11 +56,12 @@ type messageInput struct {
 	html      *string
 	clientID  *string
 	subject   *string
+	draft     bool
 	extra     map[string]string
 	files     []*upload
 }
 
-var memberFormFields = []string{"kind", "direction", "body", "html", "client_id"}
+var memberFormFields = []string{"kind", "direction", "body", "html", "client_id", "draft"}
 
 func (in *messageInput) close() {
 	for _, f := range in.files {
@@ -79,9 +82,24 @@ func (s *Server) validateMessage(p principal, in *messageInput) error {
 		if in.direction == string(oas.In) && !p.isKey() {
 			return errIncomingNeedsKey
 		}
+		if err := requireScope(p, oas.MessagesWrite); err != nil {
+			return err
+		}
+		if in.direction == string(oas.In) && in.draft {
+			return errDraftKind
+		}
+		if in.direction == string(oas.Out) && !in.draft && p.isKey() && !p.botsMaySend {
+			return errBotSendingDisabled
+		}
 	case string(oas.MessageKindNote):
 		if in.direction != "" {
 			return errValidation("a note has no direction")
+		}
+		if err := requireScope(p, oas.NotesWrite); err != nil {
+			return err
+		}
+		if in.draft {
+			return errDraftKind
 		}
 	default:
 		return errValidation("kind must be message or note")
@@ -235,6 +253,15 @@ func (s *Server) readMultipart(r *multipart.Reader, workspaceID uuid.UUID, field
 			in.html = &v
 		case "client_id":
 			in.clientID = &v
+		case "draft":
+			switch v {
+			case "true":
+				in.draft = true
+			case "false":
+			default:
+				in.close()
+				return nil, errValidation("draft must be true or false")
+			}
 		case "subject":
 			in.subject = &v
 		default:
@@ -268,11 +295,33 @@ func attachmentBody(a store.Attachment) oas.Attachment {
 	}
 }
 
+func botAuthor(id *uuid.UUID, name, avatar string) oas.MessageAuthor {
+	out := oas.MessageAuthor{Type: oas.AuthorTypeBot, ApiKeyId: id, Name: &name}
+	if avatar != "" {
+		out.AvatarUrl = &avatar
+	}
+	return out
+}
+
+func messageAuthor(m messageRow) oas.MessageAuthor {
+	if m.AuthorType == string(oas.AuthorTypeBot) {
+		return botAuthor(m.AuthorApiKeyID, m.BotName, m.BotAvatarUrl)
+	}
+	return oas.MessageAuthor{Type: oas.AuthorType(m.AuthorType), MemberId: m.AuthorMemberID, ContactId: m.AuthorContactID}
+}
+
 func messageBody(m messageRow, atts []store.Attachment) oas.Message {
 	out := oas.Message{
 		Id: m.ID, ConversationId: m.ConversationID, Kind: oas.MessageKind(m.Kind), Body: m.Body, Html: m.Html,
-		ClientId: m.ClientID, CreatedAt: m.CreatedAt, Attachments: make([]oas.Attachment, 0, len(atts)),
-		Author: oas.MessageAuthor{Type: oas.AuthorType(m.AuthorType), MemberId: m.AuthorMemberID, ContactId: m.AuthorContactID},
+		ClientId: m.ClientID, CreatedAt: m.CreatedAt, Attachments: make([]oas.Attachment, 0, len(atts)), Draft: m.Draft,
+		Author: messageAuthor(m),
+	}
+	switch {
+	case m.SentByApiKeyID != nil:
+		by := botAuthor(m.SentByApiKeyID, m.SentByBotName, "")
+		out.SentBy = &by
+	case m.SentByMemberID != nil:
+		out.SentBy = &oas.MessageAuthor{Type: oas.AuthorTypeMember, MemberId: m.SentByMemberID}
 	}
 	if m.Direction != nil {
 		d := oas.Direction(*m.Direction)
@@ -376,7 +425,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 	switch {
 	case req.JSONBody != nil:
 		b := req.JSONBody
-		in = &messageInput{kind: string(b.Kind), html: b.Html, clientID: b.ClientId}
+		in = &messageInput{kind: string(b.Kind), html: b.Html, clientID: b.ClientId, draft: b.Draft != nil && *b.Draft}
 		if b.Direction != nil {
 			in.direction = string(*b.Direction)
 		}
@@ -432,15 +481,16 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 			}
 		}
 		now := s.now()
+		deliver := in.kind == string(oas.MessageKindMessage) && in.direction == string(oas.Out) && !in.draft
 		var plan *emailPlan
-		if in.kind == string(oas.MessageKindMessage) && in.direction == string(oas.Out) {
+		if deliver {
 			if plan, err = s.planEmail(ctx, q, c); err != nil {
 				return err
 			}
 		}
 		arg := store.CreateMessageParams{
 			ID: newID(), WorkspaceID: p.workspaceID, ConversationID: c.ID, Kind: in.kind, Body: in.body,
-			Html: in.html, ClientID: in.clientID, CreatedAt: now,
+			Html: in.html, ClientID: in.clientID, CreatedAt: now, Draft: in.draft,
 		}
 		if in.kind == string(oas.MessageKindMessage) {
 			arg.Direction = &in.direction
@@ -448,7 +498,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		if in.direction == string(oas.In) {
 			arg.AuthorType, arg.AuthorContactID = string(oas.AuthorTypeContact), &c.ContactID
 		} else {
-			arg.AuthorType, arg.AuthorMemberID = authorFor(p)
+			arg.AuthorType, arg.AuthorMemberID, arg.AuthorApiKeyID = authorFor(p)
 		}
 		if plan != nil {
 			queued := deliveryQueued
@@ -457,17 +507,9 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		if msg, err = q.CreateMessage(ctx, arg); err != nil {
 			return err
 		}
-		if plan != nil {
-			if summary, err = s.queueEmail(ctx, q, events, plan, msg); err != nil {
+		if deliver {
+			if summary, err = s.dispatchOutgoing(ctx, q, events, p, c, plan, msg, now); err != nil {
 				return err
-			}
-		} else if in.kind == string(oas.MessageKindMessage) && in.direction == string(oas.Out) && !p.isKey() && c.ChannelID != nil {
-			ch, err := q.GetChannel(ctx, store.GetChannelParams{WorkspaceID: p.workspaceID, ID: *c.ChannelID})
-			if err != nil {
-				return err
-			}
-			if emailsReplies(c, ch.Kind) {
-				s.scheduleContinuity(events, c, now)
 			}
 		}
 		var total int64
@@ -481,6 +523,10 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 			}
 			atts = append(atts, a)
 			total += f.size
+		}
+		if in.draft {
+			events.conversation(realtime.DraftCreated, c, messageBody(msg, atts))
+			return nil
 		}
 		if err := q.TouchConversation(ctx, store.TouchConversationParams{
 			WorkspaceID: p.workspaceID, ID: c.ID, Now: now, IsMessage: in.kind == string(oas.MessageKindMessage),

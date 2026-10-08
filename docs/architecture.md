@@ -199,7 +199,8 @@ The workspace setting `bots_may_send` (off for new workspaces; on after the upgr
 that had an active key, so their integrations keep working) decides whether keys deliver at all.
 Off: a key's outgoing message must be a draft, else `403 bot_sending_disabled`, and a key cannot
 send drafts. On: a key with `messages:write` sends directly and one that also has `drafts:send`
-sends drafts. Members always may.
+sends drafts. Members always may. Owners and admins change it with a member session; a key, even
+one with `workspace:manage`, cannot, so a bot never lets itself send.
 
 **Idempotency.** Every authenticated `POST` on `/v1` and `/client/v1` accepts an `Idempotency-Key`
 header (1 to 255 printable ASCII characters). The key is remembered for 24 hours per caller (API
@@ -207,8 +208,9 @@ key, member or contact) together with the method, path, a SHA-256 of the body an
 same key with the same request returns the stored response with `Idempotent-Replayed: true`; with a
 different request `409 idempotency_key_reused`; while the first is still running
 `409 idempotency_key_in_use`. `5xx` answers are not stored, so the request can be retried.
-Unauthenticated endpoints (sign-in, client session) ignore the header. The existing `client_id` on
-messages stays as it is.
+Unauthenticated endpoints (sign-in, client session) and those that act on the signed-in person rather
+than a workspace (`/v1/me/...`, sign-out) ignore the header, since every stored key belongs to a
+workspace. The existing `client_id` on messages stays as it is.
 
 ### Identity
 

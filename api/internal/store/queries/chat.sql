@@ -125,7 +125,7 @@ WHERE c.workspace_id = @workspace_id AND c.id = ANY(@conversation_ids::uuid[])
   AND EXISTS (
       SELECT 1 FROM messages m
       WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id
-        AND m.kind = 'message' AND m.direction = 'out'
+        AND m.kind = 'message' AND m.direction = 'out' AND NOT m.draft
         AND (r.last_read_at IS NULL OR (m.created_at, m.id) > (r.last_read_at, r.last_read_message_id)));
 
 -- name: ListMemberReadPositions :many
@@ -137,27 +137,37 @@ WHERE r.workspace_id = @workspace_id AND r.conversation_id = ANY(@conversation_i
 GROUP BY r.conversation_id;
 
 -- name: ListPublicMessages :many
-SELECT id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-       author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
-WHERE m.workspace_id = @workspace_id AND m.conversation_id = @conversation_id AND m.kind = 'message'
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
+WHERE m.workspace_id = @workspace_id AND m.conversation_id = @conversation_id AND m.kind = 'message' AND NOT m.draft
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL
        OR (m.created_at, m.id) > (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
 ORDER BY m.created_at, m.id
 LIMIT @lim;
 
 -- name: ListPublicMessagesDesc :many
-SELECT id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-       author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
-WHERE m.workspace_id = @workspace_id AND m.conversation_id = @conversation_id AND m.kind = 'message'
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
+WHERE m.workspace_id = @workspace_id AND m.conversation_id = @conversation_id AND m.kind = 'message' AND NOT m.draft
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL
        OR (m.created_at, m.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
 ORDER BY m.created_at DESC, m.id DESC
 LIMIT @lim;
 
 -- name: GetLatestPublicMessagePosition :one
-SELECT id, created_at FROM messages WHERE workspace_id = $1 AND conversation_id = $2 AND kind = 'message'
+SELECT id, created_at FROM messages WHERE workspace_id = $1 AND conversation_id = $2 AND kind = 'message' AND NOT draft
 ORDER BY created_at DESC, id DESC
 LIMIT 1;
 
@@ -176,7 +186,7 @@ SELECT * FROM contact_reads WHERE workspace_id = $1 AND conversation_id = $2;
 SELECT a.* FROM attachments a
 JOIN messages m ON m.workspace_id = a.workspace_id AND m.id = a.message_id
 JOIN conversations c ON c.workspace_id = a.workspace_id AND c.id = a.conversation_id
-WHERE a.workspace_id = @workspace_id AND a.id = @id AND m.kind = 'message'
+WHERE a.workspace_id = @workspace_id AND a.id = @id AND m.kind = 'message' AND NOT m.draft
   AND c.inbox_id = @inbox_id AND c.contact_id = @contact_id;
 
 -- name: ListMemberNames :many
@@ -216,7 +226,7 @@ SELECT m.id, m.created_at FROM messages m
 JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
 LEFT JOIN contact_reads r ON r.workspace_id = m.workspace_id AND r.conversation_id = m.conversation_id
 WHERE m.workspace_id = @workspace_id AND m.conversation_id = @conversation_id
-  AND m.kind = 'message' AND m.direction = 'out' AND m.author_type = 'member' AND m.delivery_state IS NULL
+  AND m.kind = 'message' AND m.direction = 'out' AND m.author_type = 'member' AND m.delivery_state IS NULL AND NOT m.draft
   AND (r.last_read_at IS NULL OR (m.created_at, m.id) > (r.last_read_at, r.last_read_message_id))
   AND (c.continuity_through IS NULL OR m.created_at > c.continuity_through)
 ORDER BY m.created_at, m.id
@@ -227,7 +237,7 @@ SELECT DISTINCT c.id FROM conversations c
 JOIN messages m ON m.workspace_id = c.workspace_id AND m.conversation_id = c.id
 LEFT JOIN contact_reads r ON r.workspace_id = c.workspace_id AND r.conversation_id = c.id
 WHERE c.workspace_id = @workspace_id AND c.contact_id = @contact_id
-  AND m.kind = 'message' AND m.direction = 'out' AND m.author_type = 'member' AND m.delivery_state IS NULL
+  AND m.kind = 'message' AND m.direction = 'out' AND m.author_type = 'member' AND m.delivery_state IS NULL AND NOT m.draft
   AND (r.last_read_at IS NULL OR (m.created_at, m.id) > (r.last_read_at, r.last_read_message_id))
   AND (c.continuity_through IS NULL OR m.created_at > c.continuity_through);
 

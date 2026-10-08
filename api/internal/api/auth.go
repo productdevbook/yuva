@@ -92,6 +92,7 @@ var operationAccess = map[string]access{
 	"DeleteInvite": accessMember,
 	"ListApiKeys":  accessMember,
 	"CreateApiKey": accessMember,
+	"UpdateApiKey": accessMember,
 	"RevokeApiKey": accessMember,
 
 	"DeleteWorkspace": accessMember,
@@ -104,9 +105,20 @@ type principal struct {
 	workspaceID uuid.UUID
 	memberID    uuid.UUID
 	role        string
+	scopes      []string
+	limited     bool
+	botsMaySend bool
 }
 
 func (p principal) isKey() bool { return p.keyID != uuid.Nil() }
+
+// viewerID names the caller in inbox_viewers: the member, or a key limited to inboxes.
+func (p principal) viewerID() uuid.UUID {
+	if p.isKey() {
+		return p.keyID
+	}
+	return p.memberID
+}
 
 type ctxKey int
 
@@ -121,6 +133,7 @@ var (
 	errNotAMember            = problem(http.StatusForbidden, "not_a_member", "you are not a member of this workspace")
 	errWorkspaceRequired     = problem(http.StatusBadRequest, "workspace_required", "you belong to several workspaces; name one in the Yuva-Workspace header")
 	errWorkspaceMismatch     = problem(http.StatusForbidden, "workspace_mismatch", "the API key belongs to another workspace")
+	errAPIKeyExpired         = problem(http.StatusUnauthorized, "api_key_expired", "the API key has expired")
 	errForbidden             = problem(http.StatusForbidden, "forbidden", "your role does not allow this")
 )
 
@@ -164,6 +177,11 @@ func (s *Server) authenticate(next oas.StrictHandlerFunc, operationID string) oa
 		if err != nil {
 			return nil, err
 		}
+		if p.isKey() {
+			if err := keyMayCall(p, operationID); err != nil {
+				return nil, err
+			}
+		}
 		return next(context.WithValue(ctx, principalKey, p), w, r, request)
 	}
 }
@@ -186,6 +204,9 @@ func (s *Server) resolvePrincipal(ctx context.Context, r *http.Request, kind acc
 		if err != nil {
 			return principal{}, err
 		}
+		if key.ExpiresAt != nil && !now.Before(*key.ExpiresAt) {
+			return principal{}, errAPIKeyExpired
+		}
 		if kind != accessMemberOrKey {
 			return principal{}, errMemberSessionRequired
 		}
@@ -197,7 +218,9 @@ func (s *Server) resolvePrincipal(ctx context.Context, r *http.Request, kind acc
 		}); err != nil {
 			return principal{}, err
 		}
-		return principal{keyID: key.ID, workspaceID: key.WorkspaceID}, nil
+		return principal{
+			keyID: key.ID, workspaceID: key.WorkspaceID, scopes: key.Scopes, limited: key.InboxLimited, botsMaySend: key.BotsMaySend,
+		}, nil
 	}
 	c, err := r.Cookie(sessionCookie)
 	if err != nil || c.Value == "" {
@@ -250,6 +273,13 @@ func principalFrom(ctx context.Context) principal {
 func requestFrom(ctx context.Context) *http.Request {
 	r, _ := ctx.Value(requestKey).(*http.Request)
 	return r
+}
+
+func requireManagerOrFullKey(p principal) error {
+	if p.isKey() && p.limited {
+		return errForbidden
+	}
+	return requireManagerOrKey(p)
 }
 
 func requireManager(p principal) error {

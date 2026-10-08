@@ -1,22 +1,43 @@
 -- name: CreateMessage :one
-INSERT INTO messages (id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-                      author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_updated_at)
-VALUES (@id, @workspace_id, @conversation_id, @kind, @direction, @author_type, @author_member_id,
-        @author_contact_id, @body, @html, @client_id, @event, @created_at, sqlc.narg(delivery_state),
-        CASE WHEN sqlc.narg(delivery_state)::text IS NULL THEN NULL ELSE @created_at::timestamptz END)
-ON CONFLICT (workspace_id, conversation_id, client_id) DO NOTHING
-RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-          author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at;
+WITH m AS (
+    INSERT INTO messages (id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
+                          author_contact_id, author_api_key_id, body, html, client_id, event, created_at, draft,
+                          delivery_state, delivery_updated_at)
+    VALUES (@id, @workspace_id, @conversation_id, @kind, @direction, @author_type, @author_member_id,
+            @author_contact_id, sqlc.narg(author_api_key_id), @body, @html, @client_id, @event, @created_at, @draft,
+            sqlc.narg(delivery_state),
+            CASE WHEN sqlc.narg(delivery_state)::text IS NULL THEN NULL ELSE @created_at::timestamptz END)
+    ON CONFLICT (workspace_id, conversation_id, client_id) DO NOTHING
+    RETURNING *)
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id;
 
 -- name: GetMessageByClientID :one
-SELECT id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-       author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at
-FROM messages WHERE workspace_id = $1 AND conversation_id = $2 AND client_id = $3;
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM messages m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
+WHERE m.workspace_id = $1 AND m.conversation_id = $2 AND m.client_id = $3;
 
 -- name: ListMessages :many
-SELECT id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-       author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
 WHERE m.workspace_id = @workspace_id AND m.conversation_id = @conversation_id
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL
        OR (m.created_at, m.id) > (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
@@ -24,9 +45,14 @@ ORDER BY m.created_at, m.id
 LIMIT @lim;
 
 -- name: ListMessagesDesc :many
-SELECT id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-       author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
 WHERE m.workspace_id = @workspace_id AND m.conversation_id = @conversation_id
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL
        OR (m.created_at, m.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
@@ -61,14 +87,64 @@ WHERE a.workspace_id = $1 AND a.id = $2;
 -- name: GetMessage :one
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
-       m.delivery_updated_at
-FROM messages m WHERE m.workspace_id = $1 AND m.id = $2;
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM messages m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
+WHERE m.workspace_id = $1 AND m.id = $2;
+
+-- name: LockMessage :one
+SELECT id, conversation_id, draft FROM messages WHERE workspace_id = $1 AND id = $2 FOR UPDATE;
 
 -- name: SetMessageDelivery :one
-UPDATE messages SET delivery_state = @state::text, delivery_error = sqlc.narg(error), delivery_updated_at = @now::timestamptz
-WHERE workspace_id = @workspace_id AND id = @id
-RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-          author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at;
+WITH m AS (
+    UPDATE messages SET delivery_state = @state::text, delivery_error = sqlc.narg(error), delivery_updated_at = @now::timestamptz
+    WHERE messages.workspace_id = @workspace_id AND messages.id = @id
+    RETURNING *)
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id;
+
+-- name: UpdateDraft :one
+WITH m AS (
+    UPDATE messages SET body = @body, html = sqlc.narg(html)
+    WHERE messages.workspace_id = @workspace_id AND messages.id = @id AND draft
+    RETURNING *)
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id;
+
+-- name: SendDraft :one
+WITH m AS (
+    UPDATE messages SET draft = false, created_at = @now::timestamptz,
+        sent_by_member_id = sqlc.narg(sent_by_member_id), sent_by_api_key_id = sqlc.narg(sent_by_api_key_id),
+        delivery_state = sqlc.narg(delivery_state),
+        delivery_updated_at = CASE WHEN sqlc.narg(delivery_state)::text IS NULL THEN NULL ELSE @now::timestamptz END
+    WHERE messages.workspace_id = @workspace_id AND messages.id = @id AND draft
+    RETURNING *)
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id;
+
+-- name: DeleteDraft :execrows
+DELETE FROM messages WHERE workspace_id = $1 AND id = $2 AND draft;
 
 -- name: ListAttachmentsOfMessage :many
 SELECT * FROM attachments WHERE workspace_id = $1 AND message_id = $2 ORDER BY created_at, id;

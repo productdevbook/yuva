@@ -299,7 +299,7 @@ func (f *clientFilter) clientMessage(ctx context.Context, m oas.Message) (oas.Cl
 	if m.Direction != nil {
 		out.Direction = *m.Direction
 	}
-	out.Author = clientAuthor(string(m.Author.Type), m.Author.MemberId, map[uuid.UUID]string{derefID(m.Author.MemberId): name})
+	out.Author = clientAuthor(m.Author, map[uuid.UUID]string{derefID(m.Author.MemberId): name})
 	if m.Author.Type == oas.AuthorTypeContact {
 		out.ClientId = m.ClientId
 	}

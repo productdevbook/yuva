@@ -88,6 +88,9 @@ func (s *Server) serveRealtime(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	p, err := s.resolvePrincipal(r.Context(), r, accessMemberOrKey)
+	if err == nil {
+		err = requireScope(p, oas.ConversationsRead)
+	}
 	if err != nil {
 		var e *apiError
 		if errors.As(err, &e) {
@@ -258,7 +261,7 @@ func (f *eventFilter) reload(ctx context.Context, q *store.Queries) error {
 		f.inboxes = nil
 		return nil
 	}
-	ids, err := q.ListMemberInboxIDs(ctx, store.ListMemberInboxIDsParams{WorkspaceID: f.p.workspaceID, MemberID: f.p.memberID})
+	ids, err := q.ListViewerInboxIDs(ctx, store.ListViewerInboxIDsParams{WorkspaceID: f.p.workspaceID, ViewerID: f.p.viewerID()})
 	if err != nil {
 		return err
 	}
@@ -309,7 +312,7 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 		if err := json.Unmarshal(e.Data, &c); err != nil {
 			return false, err
 		}
-		return q.ContactVisibleToMember(ctx, store.ContactVisibleToMemberParams{WorkspaceID: f.p.workspaceID, MemberID: f.p.memberID, ContactID: c.ID})
+		return q.ContactVisibleToViewer(ctx, store.ContactVisibleToViewerParams{WorkspaceID: f.p.workspaceID, ViewerID: f.p.viewerID(), ContactID: c.ID})
 	}
 	if e.InboxID == nil {
 		return true, nil

@@ -11,15 +11,26 @@ import (
 )
 
 type ApiKey struct {
-	ID          uuid.UUID
+	ID           uuid.UUID
+	WorkspaceID  uuid.UUID
+	Name         string
+	Prefix       string
+	SecretHash   []byte
+	CreatedBy    *uuid.UUID
+	CreatedAt    time.Time
+	LastUsedAt   *time.Time
+	RevokedAt    *time.Time
+	Scopes       []string
+	InboxLimited bool
+	ExpiresAt    *time.Time
+	BotName      *string
+	BotAvatarUrl *string
+}
+
+type ApiKeyInbox struct {
 	WorkspaceID uuid.UUID
-	Name        string
-	Prefix      string
-	SecretHash  []byte
-	CreatedBy   *uuid.UUID
-	CreatedAt   time.Time
-	LastUsedAt  *time.Time
-	RevokedAt   *time.Time
+	ApiKeyID    uuid.UUID
+	InboxID     uuid.UUID
 }
 
 type Attachment struct {
@@ -256,6 +267,12 @@ type InboxNotification struct {
 	UpdatedAt   time.Time
 }
 
+type InboxViewer struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	ViewerID    uuid.UUID
+}
+
 type Invite struct {
 	ID          uuid.UUID
 	WorkspaceID uuid.UUID
@@ -314,6 +331,10 @@ type Message struct {
 	DeliveryState     *string
 	DeliveryError     *string
 	DeliveryUpdatedAt *time.Time
+	AuthorApiKeyID    *uuid.UUID
+	Draft             bool
+	SentByMemberID    *uuid.UUID
+	SentByApiKeyID    *uuid.UUID
 }
 
 type MessageEmail struct {
@@ -474,4 +495,5 @@ type Workspace struct {
 	CreatedAt     time.Time
 	RetentionDays *int32
 	DeletedAt     *time.Time
+	BotsMaySend   bool
 }

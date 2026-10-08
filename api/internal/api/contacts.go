@@ -153,7 +153,7 @@ func visibleContact(ctx context.Context, q *store.Queries, p principal, id uuid.
 	if p.seesAllInboxes() {
 		return nil
 	}
-	ok, err := q.ContactVisibleToMember(ctx, store.ContactVisibleToMemberParams{WorkspaceID: p.workspaceID, MemberID: p.memberID, ContactID: id})
+	ok, err := q.ContactVisibleToViewer(ctx, store.ContactVisibleToViewerParams{WorkspaceID: p.workspaceID, ViewerID: p.viewerID(), ContactID: id})
 	if err != nil {
 		return err
 	}
@@ -168,7 +168,7 @@ func agentInboxes(ctx context.Context, q *store.Queries, p principal) (map[uuid.
 	if p.seesAllInboxes() {
 		return nil, nil
 	}
-	ids, err := q.ListMemberInboxIDs(ctx, store.ListMemberInboxIDsParams{WorkspaceID: p.workspaceID, MemberID: p.memberID})
+	ids, err := q.ListViewerInboxIDs(ctx, store.ListViewerInboxIDsParams{WorkspaceID: p.workspaceID, ViewerID: p.viewerID()})
 	out := make(map[uuid.UUID]bool, len(ids))
 	for _, id := range ids {
 		out[id] = true
@@ -268,11 +268,12 @@ func (s *Server) ListContacts(ctx context.Context, req oas.ListContactsRequestOb
 	if err != nil {
 		return nil, err
 	}
-	var member *uuid.UUID
+	var viewer *uuid.UUID
 	if !p.seesAllInboxes() {
-		member = &p.memberID
+		id := p.viewerID()
+		viewer = &id
 	}
-	rows, err := s.st.ListContacts(ctx, store.ListContactsParams{WorkspaceID: p.workspaceID, MemberID: member, Q: q, CursorAt: at, CursorID: id, Lim: lim + 1})
+	rows, err := s.st.ListContacts(ctx, store.ListContactsParams{WorkspaceID: p.workspaceID, ViewerID: viewer, Q: q, CursorAt: at, CursorID: id, Lim: lim + 1})
 	if err != nil {
 		return nil, err
 	}
@@ -467,7 +468,7 @@ func (s *Server) UpdateContact(ctx context.Context, req oas.UpdateContactRequest
 
 func (s *Server) DeleteContact(ctx context.Context, req oas.DeleteContactRequestObject) (oas.DeleteContactResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	if err := requireManagerOrFullKey(p); err != nil {
 		return nil, err
 	}
 	if err := s.deleteContact(ctx, p, req.ContactId); err != nil {
@@ -523,7 +524,7 @@ func (s *Server) deleteContact(ctx context.Context, p principal, id uuid.UUID) e
 
 func (s *Server) MergeContact(ctx context.Context, req oas.MergeContactRequestObject) (oas.MergeContactResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	if err := requireManagerOrFullKey(p); err != nil {
 		return nil, err
 	}
 	to, from := req.ContactId, req.Body.SourceId

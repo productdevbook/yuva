@@ -41,7 +41,7 @@ func (s *Server) ListLabels(ctx context.Context, _ oas.ListLabelsRequestObject) 
 
 func (s *Server) CreateLabel(ctx context.Context, req oas.CreateLabelRequestObject) (oas.CreateLabelResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManager(p); err != nil {
+	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
 	name, err := trimmed(req.Body.Name, 1, 64, "name")
@@ -66,7 +66,7 @@ func (s *Server) CreateLabel(ctx context.Context, req oas.CreateLabelRequestObje
 
 func (s *Server) UpdateLabel(ctx context.Context, req oas.UpdateLabelRequestObject) (oas.UpdateLabelResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManager(p); err != nil {
+	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
 	cur, err := s.st.GetLabel(ctx, store.GetLabelParams{WorkspaceID: p.workspaceID, ID: req.LabelId})
@@ -101,7 +101,7 @@ func (s *Server) UpdateLabel(ctx context.Context, req oas.UpdateLabelRequestObje
 
 func (s *Server) DeleteLabel(ctx context.Context, req oas.DeleteLabelRequestObject) (oas.DeleteLabelResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManager(p); err != nil {
+	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
 	n, err := s.st.DeleteLabel(ctx, store.DeleteLabelParams{WorkspaceID: p.workspaceID, ID: req.LabelId})
@@ -146,7 +146,7 @@ func (s *Server) ListCannedReplies(ctx context.Context, _ oas.ListCannedRepliesR
 
 func (s *Server) CreateCannedReply(ctx context.Context, req oas.CreateCannedReplyRequestObject) (oas.CreateCannedReplyResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManager(p); err != nil {
+	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
 	c := store.CannedReply{Shortcut: req.Body.Shortcut, Title: req.Body.Title, Body: req.Body.Body}
@@ -167,7 +167,7 @@ func (s *Server) CreateCannedReply(ctx context.Context, req oas.CreateCannedRepl
 
 func (s *Server) UpdateCannedReply(ctx context.Context, req oas.UpdateCannedReplyRequestObject) (oas.UpdateCannedReplyResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManager(p); err != nil {
+	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
 	c, err := s.st.GetCannedReply(ctx, store.GetCannedReplyParams{WorkspaceID: p.workspaceID, ID: req.CannedReplyId})
@@ -206,7 +206,7 @@ func (s *Server) UpdateCannedReply(ctx context.Context, req oas.UpdateCannedRepl
 
 func (s *Server) DeleteCannedReply(ctx context.Context, req oas.DeleteCannedReplyRequestObject) (oas.DeleteCannedReplyResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManager(p); err != nil {
+	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
 	n, err := s.st.DeleteCannedReply(ctx, store.DeleteCannedReplyParams{WorkspaceID: p.workspaceID, ID: req.CannedReplyId})

@@ -102,7 +102,7 @@ func (s *Server) ListChannels(ctx context.Context, req oas.ListChannelsRequestOb
 
 func (s *Server) CreateChannel(ctx context.Context, req oas.CreateChannelRequestObject) (oas.CreateChannelResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManager(p); err != nil {
+	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
 	if !req.Body.Kind.Valid() {
@@ -224,7 +224,7 @@ func (s *Server) GetChannel(ctx context.Context, req oas.GetChannelRequestObject
 
 func (s *Server) UpdateChannel(ctx context.Context, req oas.UpdateChannelRequestObject) (oas.UpdateChannelResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManager(p); err != nil {
+	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
 	cur, err := s.visibleChannel(ctx, p, req.ChannelId)
@@ -324,7 +324,7 @@ func (s *Server) UpdateChannel(ctx context.Context, req oas.UpdateChannelRequest
 
 func (s *Server) DeleteChannel(ctx context.Context, req oas.DeleteChannelRequestObject) (oas.DeleteChannelResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManager(p); err != nil {
+	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
 	if _, err := s.visibleChannel(ctx, p, req.ChannelId); err != nil {

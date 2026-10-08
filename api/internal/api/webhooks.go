@@ -44,6 +44,7 @@ var (
 var webhookEventTypes = []oas.WebhookEventType{
 	oas.WebhookEventTypeConversationCreated, oas.WebhookEventTypeConversationUpdated, oas.WebhookEventTypeMessageCreated,
 	oas.WebhookEventTypeFeedbackCreated, oas.WebhookEventTypeContactUpdated, oas.WebhookEventTypeContactDeleted,
+	oas.WebhookEventTypeDraftCreated, oas.WebhookEventTypeDraftUpdated, oas.WebhookEventTypeDraftDeleted,
 }
 
 func webhookSecretContext(workspaceID, endpointID uuid.UUID) []byte {
@@ -443,7 +444,8 @@ func (s *Server) ListWebhookAttempts(ctx context.Context, req oas.ListWebhookAtt
 // recorded the contact's external ids (a merged anonymous visitor does not).
 func webhookSource(e pendingEvent) bool {
 	switch e.typ {
-	case realtime.ConversationCreated, realtime.ConversationUpdated, realtime.MessageCreated, realtime.ContactUpdated:
+	case realtime.ConversationCreated, realtime.ConversationUpdated, realtime.MessageCreated, realtime.ContactUpdated,
+		realtime.DraftCreated, realtime.DraftUpdated, realtime.DraftDeleted:
 		return true
 	case realtime.ContactDeleted:
 		return e.deleted != nil
@@ -629,7 +631,7 @@ func (s *Server) webhookPayloads(ctx context.Context, q *store.Queries, ev store
 			})})
 		}
 		return out, []uuid.UUID{inbox}, nil
-	case realtime.MessageCreated:
+	case realtime.MessageCreated, realtime.DraftCreated, realtime.DraftUpdated, realtime.DraftDeleted:
 		var m oas.Message
 		if err := json.Unmarshal(ev.Payload, &m); err != nil {
 			return nil, nil, err
@@ -844,7 +846,7 @@ func (s *Server) DeliverWebhook(ctx context.Context, workspaceID, deliveryID uui
 
 func (s *Server) DeleteContactByExternalId(ctx context.Context, req oas.DeleteContactByExternalIdRequestObject) (oas.DeleteContactByExternalIdResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	if err := requireManagerOrFullKey(p); err != nil {
 		return nil, err
 	}
 	if _, err := visibleInbox(ctx, s.st.Queries, p, req.Params.InboxId); err != nil {

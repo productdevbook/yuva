@@ -15,8 +15,8 @@ SELECT * FROM inboxes WHERE workspace_id = $1 AND id = $2 FOR UPDATE;
 SELECT i.* FROM inboxes i
 WHERE i.workspace_id = @workspace_id
   AND (@all_inboxes::bool OR EXISTS (
-      SELECT 1 FROM inbox_members im
-      WHERE im.workspace_id = i.workspace_id AND im.inbox_id = i.id AND im.member_id = @member_id))
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = @viewer_id))
 ORDER BY i.name, i.id;
 
 -- name: UpdateInbox :one
@@ -59,5 +59,10 @@ SELECT a.storage_key FROM attachments a
 JOIN conversations c ON c.workspace_id = a.workspace_id AND c.id = a.conversation_id
 WHERE a.workspace_id = $1 AND c.inbox_id = $2;
 
--- name: ListMemberInboxIDs :many
-SELECT inbox_id FROM inbox_members WHERE workspace_id = $1 AND member_id = $2;
+-- name: ListViewerInboxIDs :many
+SELECT inbox_id FROM inbox_viewers WHERE workspace_id = @workspace_id AND viewer_id = @viewer_id;
+
+-- name: ViewerHasInbox :one
+SELECT EXISTS (
+    SELECT 1 FROM inbox_viewers WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id AND viewer_id = @viewer_id
+) AS access;

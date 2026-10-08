@@ -66,14 +66,24 @@ func (q *Queries) CreateAttachment(ctx context.Context, arg CreateAttachmentPara
 }
 
 const createMessage = `-- name: CreateMessage :one
-INSERT INTO messages (id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-                      author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_updated_at)
-VALUES ($1, $2, $3, $4, $5, $6, $7,
-        $8, $9, $10, $11, $12, $13, $14,
-        CASE WHEN $14::text IS NULL THEN NULL ELSE $13::timestamptz END)
-ON CONFLICT (workspace_id, conversation_id, client_id) DO NOTHING
-RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-          author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at
+WITH m AS (
+    INSERT INTO messages (id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
+                          author_contact_id, author_api_key_id, body, html, client_id, event, created_at, draft,
+                          delivery_state, delivery_updated_at)
+    VALUES ($1, $2, $3, $4, $5, $6, $7,
+            $8, $9, $10, $11, $12, $13, $14, $15,
+            $16,
+            CASE WHEN $16::text IS NULL THEN NULL ELSE $14::timestamptz END)
+    ON CONFLICT (workspace_id, conversation_id, client_id) DO NOTHING
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id)
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
 `
 
 type CreateMessageParams struct {
@@ -85,11 +95,13 @@ type CreateMessageParams struct {
 	AuthorType      string
 	AuthorMemberID  *uuid.UUID
 	AuthorContactID *uuid.UUID
+	AuthorApiKeyID  *uuid.UUID
 	Body            string
 	Html            *string
 	ClientID        *string
 	Event           []byte
 	CreatedAt       time.Time
+	Draft           bool
 	DeliveryState   *string
 }
 
@@ -110,6 +122,13 @@ type CreateMessageRow struct {
 	DeliveryState     *string
 	DeliveryError     *string
 	DeliveryUpdatedAt *time.Time
+	AuthorApiKeyID    *uuid.UUID
+	Draft             bool
+	SentByMemberID    *uuid.UUID
+	SentByApiKeyID    *uuid.UUID
+	BotName           string
+	BotAvatarUrl      string
+	SentByBotName     string
 }
 
 func (q *Queries) CreateMessage(ctx context.Context, arg CreateMessageParams) (CreateMessageRow, error) {
@@ -122,11 +141,13 @@ func (q *Queries) CreateMessage(ctx context.Context, arg CreateMessageParams) (C
 		arg.AuthorType,
 		arg.AuthorMemberID,
 		arg.AuthorContactID,
+		arg.AuthorApiKeyID,
 		arg.Body,
 		arg.Html,
 		arg.ClientID,
 		arg.Event,
 		arg.CreatedAt,
+		arg.Draft,
 		arg.DeliveryState,
 	)
 	var i CreateMessageRow
@@ -147,8 +168,32 @@ func (q *Queries) CreateMessage(ctx context.Context, arg CreateMessageParams) (C
 		&i.DeliveryState,
 		&i.DeliveryError,
 		&i.DeliveryUpdatedAt,
+		&i.AuthorApiKeyID,
+		&i.Draft,
+		&i.SentByMemberID,
+		&i.SentByApiKeyID,
+		&i.BotName,
+		&i.BotAvatarUrl,
+		&i.SentByBotName,
 	)
 	return i, err
+}
+
+const deleteDraft = `-- name: DeleteDraft :execrows
+DELETE FROM messages WHERE workspace_id = $1 AND id = $2 AND draft
+`
+
+type DeleteDraftParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) DeleteDraft(ctx context.Context, arg DeleteDraftParams) (int64, error) {
+	result, err := q.db.Exec(ctx, deleteDraft, arg.WorkspaceID, arg.ID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
 }
 
 const getAttachment = `-- name: GetAttachment :one
@@ -223,8 +268,13 @@ func (q *Queries) GetLatestMessagePosition(ctx context.Context, arg GetLatestMes
 const getMessage = `-- name: GetMessage :one
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
-       m.delivery_updated_at
-FROM messages m WHERE m.workspace_id = $1 AND m.id = $2
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM messages m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
+WHERE m.workspace_id = $1 AND m.id = $2
 `
 
 type GetMessageParams struct {
@@ -249,6 +299,13 @@ type GetMessageRow struct {
 	DeliveryState     *string
 	DeliveryError     *string
 	DeliveryUpdatedAt *time.Time
+	AuthorApiKeyID    *uuid.UUID
+	Draft             bool
+	SentByMemberID    *uuid.UUID
+	SentByApiKeyID    *uuid.UUID
+	BotName           string
+	BotAvatarUrl      string
+	SentByBotName     string
 }
 
 func (q *Queries) GetMessage(ctx context.Context, arg GetMessageParams) (GetMessageRow, error) {
@@ -271,14 +328,27 @@ func (q *Queries) GetMessage(ctx context.Context, arg GetMessageParams) (GetMess
 		&i.DeliveryState,
 		&i.DeliveryError,
 		&i.DeliveryUpdatedAt,
+		&i.AuthorApiKeyID,
+		&i.Draft,
+		&i.SentByMemberID,
+		&i.SentByApiKeyID,
+		&i.BotName,
+		&i.BotAvatarUrl,
+		&i.SentByBotName,
 	)
 	return i, err
 }
 
 const getMessageByClientID = `-- name: GetMessageByClientID :one
-SELECT id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-       author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at
-FROM messages WHERE workspace_id = $1 AND conversation_id = $2 AND client_id = $3
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM messages m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
+WHERE m.workspace_id = $1 AND m.conversation_id = $2 AND m.client_id = $3
 `
 
 type GetMessageByClientIDParams struct {
@@ -304,6 +374,13 @@ type GetMessageByClientIDRow struct {
 	DeliveryState     *string
 	DeliveryError     *string
 	DeliveryUpdatedAt *time.Time
+	AuthorApiKeyID    *uuid.UUID
+	Draft             bool
+	SentByMemberID    *uuid.UUID
+	SentByApiKeyID    *uuid.UUID
+	BotName           string
+	BotAvatarUrl      string
+	SentByBotName     string
 }
 
 func (q *Queries) GetMessageByClientID(ctx context.Context, arg GetMessageByClientIDParams) (GetMessageByClientIDRow, error) {
@@ -326,6 +403,13 @@ func (q *Queries) GetMessageByClientID(ctx context.Context, arg GetMessageByClie
 		&i.DeliveryState,
 		&i.DeliveryError,
 		&i.DeliveryUpdatedAt,
+		&i.AuthorApiKeyID,
+		&i.Draft,
+		&i.SentByMemberID,
+		&i.SentByApiKeyID,
+		&i.BotName,
+		&i.BotAvatarUrl,
+		&i.SentByBotName,
 	)
 	return i, err
 }
@@ -437,9 +521,14 @@ func (q *Queries) ListAttachmentsOfMessage(ctx context.Context, arg ListAttachme
 }
 
 const listMessages = `-- name: ListMessages :many
-SELECT id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-       author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
 WHERE m.workspace_id = $1 AND m.conversation_id = $2
   AND ($3::timestamptz IS NULL
        OR (m.created_at, m.id) > ($3::timestamptz, $4::uuid))
@@ -472,6 +561,13 @@ type ListMessagesRow struct {
 	DeliveryState     *string
 	DeliveryError     *string
 	DeliveryUpdatedAt *time.Time
+	AuthorApiKeyID    *uuid.UUID
+	Draft             bool
+	SentByMemberID    *uuid.UUID
+	SentByApiKeyID    *uuid.UUID
+	BotName           string
+	BotAvatarUrl      string
+	SentByBotName     string
 }
 
 func (q *Queries) ListMessages(ctx context.Context, arg ListMessagesParams) ([]ListMessagesRow, error) {
@@ -506,6 +602,13 @@ func (q *Queries) ListMessages(ctx context.Context, arg ListMessagesParams) ([]L
 			&i.DeliveryState,
 			&i.DeliveryError,
 			&i.DeliveryUpdatedAt,
+			&i.AuthorApiKeyID,
+			&i.Draft,
+			&i.SentByMemberID,
+			&i.SentByApiKeyID,
+			&i.BotName,
+			&i.BotAvatarUrl,
+			&i.SentByBotName,
 		); err != nil {
 			return nil, err
 		}
@@ -518,9 +621,14 @@ func (q *Queries) ListMessages(ctx context.Context, arg ListMessagesParams) ([]L
 }
 
 const listMessagesDesc = `-- name: ListMessagesDesc :many
-SELECT id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-       author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
 WHERE m.workspace_id = $1 AND m.conversation_id = $2
   AND ($3::timestamptz IS NULL
        OR (m.created_at, m.id) < ($3::timestamptz, $4::uuid))
@@ -553,6 +661,13 @@ type ListMessagesDescRow struct {
 	DeliveryState     *string
 	DeliveryError     *string
 	DeliveryUpdatedAt *time.Time
+	AuthorApiKeyID    *uuid.UUID
+	Draft             bool
+	SentByMemberID    *uuid.UUID
+	SentByApiKeyID    *uuid.UUID
+	BotName           string
+	BotAvatarUrl      string
+	SentByBotName     string
 }
 
 func (q *Queries) ListMessagesDesc(ctx context.Context, arg ListMessagesDescParams) ([]ListMessagesDescRow, error) {
@@ -587,6 +702,13 @@ func (q *Queries) ListMessagesDesc(ctx context.Context, arg ListMessagesDescPara
 			&i.DeliveryState,
 			&i.DeliveryError,
 			&i.DeliveryUpdatedAt,
+			&i.AuthorApiKeyID,
+			&i.Draft,
+			&i.SentByMemberID,
+			&i.SentByApiKeyID,
+			&i.BotName,
+			&i.BotAvatarUrl,
+			&i.SentByBotName,
 		); err != nil {
 			return nil, err
 		}
@@ -598,11 +720,132 @@ func (q *Queries) ListMessagesDesc(ctx context.Context, arg ListMessagesDescPara
 	return items, nil
 }
 
+const lockMessage = `-- name: LockMessage :one
+SELECT id, conversation_id, draft FROM messages WHERE workspace_id = $1 AND id = $2 FOR UPDATE
+`
+
+type LockMessageParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+type LockMessageRow struct {
+	ID             uuid.UUID
+	ConversationID uuid.UUID
+	Draft          bool
+}
+
+func (q *Queries) LockMessage(ctx context.Context, arg LockMessageParams) (LockMessageRow, error) {
+	row := q.db.QueryRow(ctx, lockMessage, arg.WorkspaceID, arg.ID)
+	var i LockMessageRow
+	err := row.Scan(&i.ID, &i.ConversationID, &i.Draft)
+	return i, err
+}
+
+const sendDraft = `-- name: SendDraft :one
+WITH m AS (
+    UPDATE messages SET draft = false, created_at = $1::timestamptz,
+        sent_by_member_id = $2, sent_by_api_key_id = $3,
+        delivery_state = $4,
+        delivery_updated_at = CASE WHEN $4::text IS NULL THEN NULL ELSE $1::timestamptz END
+    WHERE messages.workspace_id = $5 AND messages.id = $6 AND draft
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id)
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
+`
+
+type SendDraftParams struct {
+	Now            time.Time
+	SentByMemberID *uuid.UUID
+	SentByApiKeyID *uuid.UUID
+	DeliveryState  *string
+	WorkspaceID    uuid.UUID
+	ID             uuid.UUID
+}
+
+type SendDraftRow struct {
+	ID                uuid.UUID
+	WorkspaceID       uuid.UUID
+	ConversationID    uuid.UUID
+	Kind              string
+	Direction         *string
+	AuthorType        string
+	AuthorMemberID    *uuid.UUID
+	AuthorContactID   *uuid.UUID
+	Body              string
+	Html              *string
+	ClientID          *string
+	Event             []byte
+	CreatedAt         time.Time
+	DeliveryState     *string
+	DeliveryError     *string
+	DeliveryUpdatedAt *time.Time
+	AuthorApiKeyID    *uuid.UUID
+	Draft             bool
+	SentByMemberID    *uuid.UUID
+	SentByApiKeyID    *uuid.UUID
+	BotName           string
+	BotAvatarUrl      string
+	SentByBotName     string
+}
+
+func (q *Queries) SendDraft(ctx context.Context, arg SendDraftParams) (SendDraftRow, error) {
+	row := q.db.QueryRow(ctx, sendDraft,
+		arg.Now,
+		arg.SentByMemberID,
+		arg.SentByApiKeyID,
+		arg.DeliveryState,
+		arg.WorkspaceID,
+		arg.ID,
+	)
+	var i SendDraftRow
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.ConversationID,
+		&i.Kind,
+		&i.Direction,
+		&i.AuthorType,
+		&i.AuthorMemberID,
+		&i.AuthorContactID,
+		&i.Body,
+		&i.Html,
+		&i.ClientID,
+		&i.Event,
+		&i.CreatedAt,
+		&i.DeliveryState,
+		&i.DeliveryError,
+		&i.DeliveryUpdatedAt,
+		&i.AuthorApiKeyID,
+		&i.Draft,
+		&i.SentByMemberID,
+		&i.SentByApiKeyID,
+		&i.BotName,
+		&i.BotAvatarUrl,
+		&i.SentByBotName,
+	)
+	return i, err
+}
+
 const setMessageDelivery = `-- name: SetMessageDelivery :one
-UPDATE messages SET delivery_state = $1::text, delivery_error = $2, delivery_updated_at = $3::timestamptz
-WHERE workspace_id = $4 AND id = $5
-RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-          author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at
+WITH m AS (
+    UPDATE messages SET delivery_state = $1::text, delivery_error = $2, delivery_updated_at = $3::timestamptz
+    WHERE messages.workspace_id = $4 AND messages.id = $5
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id)
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
 `
 
 type SetMessageDeliveryParams struct {
@@ -630,6 +873,13 @@ type SetMessageDeliveryRow struct {
 	DeliveryState     *string
 	DeliveryError     *string
 	DeliveryUpdatedAt *time.Time
+	AuthorApiKeyID    *uuid.UUID
+	Draft             bool
+	SentByMemberID    *uuid.UUID
+	SentByApiKeyID    *uuid.UUID
+	BotName           string
+	BotAvatarUrl      string
+	SentByBotName     string
 }
 
 func (q *Queries) SetMessageDelivery(ctx context.Context, arg SetMessageDeliveryParams) (SetMessageDeliveryRow, error) {
@@ -658,6 +908,97 @@ func (q *Queries) SetMessageDelivery(ctx context.Context, arg SetMessageDelivery
 		&i.DeliveryState,
 		&i.DeliveryError,
 		&i.DeliveryUpdatedAt,
+		&i.AuthorApiKeyID,
+		&i.Draft,
+		&i.SentByMemberID,
+		&i.SentByApiKeyID,
+		&i.BotName,
+		&i.BotAvatarUrl,
+		&i.SentByBotName,
+	)
+	return i, err
+}
+
+const updateDraft = `-- name: UpdateDraft :one
+WITH m AS (
+    UPDATE messages SET body = $1, html = $2
+    WHERE messages.workspace_id = $3 AND messages.id = $4 AND draft
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id)
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM m
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
+`
+
+type UpdateDraftParams struct {
+	Body        string
+	Html        *string
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+type UpdateDraftRow struct {
+	ID                uuid.UUID
+	WorkspaceID       uuid.UUID
+	ConversationID    uuid.UUID
+	Kind              string
+	Direction         *string
+	AuthorType        string
+	AuthorMemberID    *uuid.UUID
+	AuthorContactID   *uuid.UUID
+	Body              string
+	Html              *string
+	ClientID          *string
+	Event             []byte
+	CreatedAt         time.Time
+	DeliveryState     *string
+	DeliveryError     *string
+	DeliveryUpdatedAt *time.Time
+	AuthorApiKeyID    *uuid.UUID
+	Draft             bool
+	SentByMemberID    *uuid.UUID
+	SentByApiKeyID    *uuid.UUID
+	BotName           string
+	BotAvatarUrl      string
+	SentByBotName     string
+}
+
+func (q *Queries) UpdateDraft(ctx context.Context, arg UpdateDraftParams) (UpdateDraftRow, error) {
+	row := q.db.QueryRow(ctx, updateDraft,
+		arg.Body,
+		arg.Html,
+		arg.WorkspaceID,
+		arg.ID,
+	)
+	var i UpdateDraftRow
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.ConversationID,
+		&i.Kind,
+		&i.Direction,
+		&i.AuthorType,
+		&i.AuthorMemberID,
+		&i.AuthorContactID,
+		&i.Body,
+		&i.Html,
+		&i.ClientID,
+		&i.Event,
+		&i.CreatedAt,
+		&i.DeliveryState,
+		&i.DeliveryError,
+		&i.DeliveryUpdatedAt,
+		&i.AuthorApiKeyID,
+		&i.Draft,
+		&i.SentByMemberID,
+		&i.SentByApiKeyID,
+		&i.BotName,
+		&i.BotAvatarUrl,
+		&i.SentByBotName,
 	)
 	return i, err
 }

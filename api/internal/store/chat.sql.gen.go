@@ -477,7 +477,7 @@ const getClientAttachment = `-- name: GetClientAttachment :one
 SELECT a.id, a.workspace_id, a.conversation_id, a.message_id, a.storage_key, a.filename, a.content_type, a.size_bytes, a.created_at, a.content_id, a.inline FROM attachments a
 JOIN messages m ON m.workspace_id = a.workspace_id AND m.id = a.message_id
 JOIN conversations c ON c.workspace_id = a.workspace_id AND c.id = a.conversation_id
-WHERE a.workspace_id = $1 AND a.id = $2 AND m.kind = 'message'
+WHERE a.workspace_id = $1 AND a.id = $2 AND m.kind = 'message' AND NOT m.draft
   AND c.inbox_id = $3 AND c.contact_id = $4
 `
 
@@ -605,7 +605,7 @@ func (q *Queries) GetEmailConfirmation(ctx context.Context, arg GetEmailConfirma
 }
 
 const getLatestPublicMessagePosition = `-- name: GetLatestPublicMessagePosition :one
-SELECT id, created_at FROM messages WHERE workspace_id = $1 AND conversation_id = $2 AND kind = 'message'
+SELECT id, created_at FROM messages WHERE workspace_id = $1 AND conversation_id = $2 AND kind = 'message' AND NOT draft
 ORDER BY created_at DESC, id DESC
 LIMIT 1
 `
@@ -912,7 +912,7 @@ SELECT DISTINCT c.id FROM conversations c
 JOIN messages m ON m.workspace_id = c.workspace_id AND m.conversation_id = c.id
 LEFT JOIN contact_reads r ON r.workspace_id = c.workspace_id AND r.conversation_id = c.id
 WHERE c.workspace_id = $1 AND c.contact_id = $2
-  AND m.kind = 'message' AND m.direction = 'out' AND m.author_type = 'member' AND m.delivery_state IS NULL
+  AND m.kind = 'message' AND m.direction = 'out' AND m.author_type = 'member' AND m.delivery_state IS NULL AND NOT m.draft
   AND (r.last_read_at IS NULL OR (m.created_at, m.id) > (r.last_read_at, r.last_read_message_id))
   AND (c.continuity_through IS NULL OR m.created_at > c.continuity_through)
 `
@@ -1021,7 +1021,7 @@ SELECT m.id, m.created_at FROM messages m
 JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
 LEFT JOIN contact_reads r ON r.workspace_id = m.workspace_id AND r.conversation_id = m.conversation_id
 WHERE m.workspace_id = $1 AND m.conversation_id = $2
-  AND m.kind = 'message' AND m.direction = 'out' AND m.author_type = 'member' AND m.delivery_state IS NULL
+  AND m.kind = 'message' AND m.direction = 'out' AND m.author_type = 'member' AND m.delivery_state IS NULL AND NOT m.draft
   AND (r.last_read_at IS NULL OR (m.created_at, m.id) > (r.last_read_at, r.last_read_message_id))
   AND (c.continuity_through IS NULL OR m.created_at > c.continuity_through)
 ORDER BY m.created_at, m.id
@@ -1084,10 +1084,15 @@ func (q *Queries) ListPersonWorkspaceIDs(ctx context.Context, personID uuid.UUID
 }
 
 const listPublicMessages = `-- name: ListPublicMessages :many
-SELECT id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-       author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
-WHERE m.workspace_id = $1 AND m.conversation_id = $2 AND m.kind = 'message'
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
+WHERE m.workspace_id = $1 AND m.conversation_id = $2 AND m.kind = 'message' AND NOT m.draft
   AND ($3::timestamptz IS NULL
        OR (m.created_at, m.id) > ($3::timestamptz, $4::uuid))
 ORDER BY m.created_at, m.id
@@ -1119,6 +1124,13 @@ type ListPublicMessagesRow struct {
 	DeliveryState     *string
 	DeliveryError     *string
 	DeliveryUpdatedAt *time.Time
+	AuthorApiKeyID    *uuid.UUID
+	Draft             bool
+	SentByMemberID    *uuid.UUID
+	SentByApiKeyID    *uuid.UUID
+	BotName           string
+	BotAvatarUrl      string
+	SentByBotName     string
 }
 
 func (q *Queries) ListPublicMessages(ctx context.Context, arg ListPublicMessagesParams) ([]ListPublicMessagesRow, error) {
@@ -1153,6 +1165,13 @@ func (q *Queries) ListPublicMessages(ctx context.Context, arg ListPublicMessages
 			&i.DeliveryState,
 			&i.DeliveryError,
 			&i.DeliveryUpdatedAt,
+			&i.AuthorApiKeyID,
+			&i.Draft,
+			&i.SentByMemberID,
+			&i.SentByApiKeyID,
+			&i.BotName,
+			&i.BotAvatarUrl,
+			&i.SentByBotName,
 		); err != nil {
 			return nil, err
 		}
@@ -1165,10 +1184,15 @@ func (q *Queries) ListPublicMessages(ctx context.Context, arg ListPublicMessages
 }
 
 const listPublicMessagesDesc = `-- name: ListPublicMessagesDesc :many
-SELECT id, workspace_id, conversation_id, kind, direction, author_type, author_member_id,
-       author_contact_id, body, html, client_id, event, created_at, delivery_state, delivery_error, delivery_updated_at
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
-WHERE m.workspace_id = $1 AND m.conversation_id = $2 AND m.kind = 'message'
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
+WHERE m.workspace_id = $1 AND m.conversation_id = $2 AND m.kind = 'message' AND NOT m.draft
   AND ($3::timestamptz IS NULL
        OR (m.created_at, m.id) < ($3::timestamptz, $4::uuid))
 ORDER BY m.created_at DESC, m.id DESC
@@ -1200,6 +1224,13 @@ type ListPublicMessagesDescRow struct {
 	DeliveryState     *string
 	DeliveryError     *string
 	DeliveryUpdatedAt *time.Time
+	AuthorApiKeyID    *uuid.UUID
+	Draft             bool
+	SentByMemberID    *uuid.UUID
+	SentByApiKeyID    *uuid.UUID
+	BotName           string
+	BotAvatarUrl      string
+	SentByBotName     string
 }
 
 func (q *Queries) ListPublicMessagesDesc(ctx context.Context, arg ListPublicMessagesDescParams) ([]ListPublicMessagesDescRow, error) {
@@ -1234,6 +1265,13 @@ func (q *Queries) ListPublicMessagesDesc(ctx context.Context, arg ListPublicMess
 			&i.DeliveryState,
 			&i.DeliveryError,
 			&i.DeliveryUpdatedAt,
+			&i.AuthorApiKeyID,
+			&i.Draft,
+			&i.SentByMemberID,
+			&i.SentByApiKeyID,
+			&i.BotName,
+			&i.BotAvatarUrl,
+			&i.SentByBotName,
 		); err != nil {
 			return nil, err
 		}
@@ -1252,7 +1290,7 @@ WHERE c.workspace_id = $1 AND c.id = ANY($2::uuid[])
   AND EXISTS (
       SELECT 1 FROM messages m
       WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id
-        AND m.kind = 'message' AND m.direction = 'out'
+        AND m.kind = 'message' AND m.direction = 'out' AND NOT m.draft
         AND (r.last_read_at IS NULL OR (m.created_at, m.id) > (r.last_read_at, r.last_read_message_id)))
 `
 

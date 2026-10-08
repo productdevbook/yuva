@@ -34,8 +34,8 @@ SELECT c.inbox_id, coalesce(c.assignee_id = $1::uuid, false)::bool AS mine,
 FROM conversations c
 WHERE c.workspace_id = $2 AND c.status = 'open'
   AND ($3::bool OR EXISTS (
-      SELECT 1 FROM inbox_members im
-      WHERE im.workspace_id = c.workspace_id AND im.inbox_id = c.inbox_id AND im.member_id = $1::uuid))
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $4::uuid))
 GROUP BY 1, 2, 3, 4
 `
 
@@ -43,6 +43,7 @@ type CountOpenConversationsParams struct {
 	MemberID    *uuid.UUID
 	WorkspaceID uuid.UUID
 	AllInboxes  bool
+	ViewerID    uuid.UUID
 }
 
 type CountOpenConversationsRow struct {
@@ -54,7 +55,12 @@ type CountOpenConversationsRow struct {
 }
 
 func (q *Queries) CountOpenConversations(ctx context.Context, arg CountOpenConversationsParams) ([]CountOpenConversationsRow, error) {
-	rows, err := q.db.Query(ctx, countOpenConversations, arg.MemberID, arg.WorkspaceID, arg.AllInboxes)
+	rows, err := q.db.Query(ctx, countOpenConversations,
+		arg.MemberID,
+		arg.WorkspaceID,
+		arg.AllInboxes,
+		arg.ViewerID,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -85,8 +91,8 @@ FROM conversations c
 JOIN conversation_labels cl ON cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id
 WHERE c.workspace_id = $1 AND c.status = 'open' AND NOT c.spam
   AND ($2::bool OR EXISTS (
-      SELECT 1 FROM inbox_members im
-      WHERE im.workspace_id = c.workspace_id AND im.inbox_id = c.inbox_id AND im.member_id = $3::uuid))
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3::uuid))
 GROUP BY cl.label_id
 ORDER BY cl.label_id
 `
@@ -94,7 +100,7 @@ ORDER BY cl.label_id
 type CountOpenConversationsByLabelParams struct {
 	WorkspaceID uuid.UUID
 	AllInboxes  bool
-	MemberID    *uuid.UUID
+	ViewerID    uuid.UUID
 }
 
 type CountOpenConversationsByLabelRow struct {
@@ -103,7 +109,7 @@ type CountOpenConversationsByLabelRow struct {
 }
 
 func (q *Queries) CountOpenConversationsByLabel(ctx context.Context, arg CountOpenConversationsByLabelParams) ([]CountOpenConversationsByLabelRow, error) {
-	rows, err := q.db.Query(ctx, countOpenConversationsByLabel, arg.WorkspaceID, arg.AllInboxes, arg.MemberID)
+	rows, err := q.db.Query(ctx, countOpenConversationsByLabel, arg.WorkspaceID, arg.AllInboxes, arg.ViewerID)
 	if err != nil {
 		return nil, err
 	}
@@ -127,8 +133,8 @@ SELECT (c.feedback->>'category')::text AS category, count(*) AS n
 FROM conversations c
 WHERE c.workspace_id = $1 AND c.status = 'open' AND NOT c.spam AND c.kind = 'feedback'
   AND ($2::bool OR EXISTS (
-      SELECT 1 FROM inbox_members im
-      WHERE im.workspace_id = c.workspace_id AND im.inbox_id = c.inbox_id AND im.member_id = $3::uuid))
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3::uuid))
 GROUP BY 1
 ORDER BY 1
 `
@@ -136,7 +142,7 @@ ORDER BY 1
 type CountOpenFeedbackParams struct {
 	WorkspaceID uuid.UUID
 	AllInboxes  bool
-	MemberID    *uuid.UUID
+	ViewerID    uuid.UUID
 }
 
 type CountOpenFeedbackRow struct {
@@ -145,7 +151,7 @@ type CountOpenFeedbackRow struct {
 }
 
 func (q *Queries) CountOpenFeedback(ctx context.Context, arg CountOpenFeedbackParams) ([]CountOpenFeedbackRow, error) {
-	rows, err := q.db.Query(ctx, countOpenFeedback, arg.WorkspaceID, arg.AllInboxes, arg.MemberID)
+	rows, err := q.db.Query(ctx, countOpenFeedback, arg.WorkspaceID, arg.AllInboxes, arg.ViewerID)
 	if err != nil {
 		return nil, err
 	}
@@ -296,7 +302,7 @@ func (q *Queries) GetConversation(ctx context.Context, arg GetConversationParams
 
 const getFirstPublicMessage = `-- name: GetFirstPublicMessage :one
 SELECT id FROM messages
-WHERE workspace_id = $1 AND conversation_id = $2 AND kind = 'message'
+WHERE workspace_id = $1 AND conversation_id = $2 AND kind = 'message' AND NOT draft
 ORDER BY created_at, id
 LIMIT 1
 `
@@ -405,7 +411,7 @@ SELECT c.id AS conversation_id, m.id, m.kind, m.author_type, left(m.body, 1000):
 FROM conversations c
 CROSS JOIN LATERAL (
     SELECT lm.id, lm.kind, lm.author_type, lm.body, lm.created_at FROM messages lm
-    WHERE lm.workspace_id = c.workspace_id AND lm.conversation_id = c.id AND lm.kind = 'message'
+    WHERE lm.workspace_id = c.workspace_id AND lm.conversation_id = c.id AND lm.kind = 'message' AND NOT lm.draft
     ORDER BY lm.created_at DESC, lm.id DESC
     LIMIT 1) m
 WHERE c.workspace_id = $1 AND c.id = ANY($2::uuid[])
@@ -456,8 +462,8 @@ const listConversations = `-- name: ListConversations :many
 SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address FROM conversations c
 WHERE c.workspace_id = $1
   AND ($2::bool OR EXISTS (
-      SELECT 1 FROM inbox_members im
-      WHERE im.workspace_id = c.workspace_id AND im.inbox_id = c.inbox_id AND im.member_id = $3))
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3))
   AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid)
   AND ($5::uuid IS NULL OR c.contact_id = $5::uuid)
   AND c.spam = $6::bool
@@ -473,7 +479,7 @@ WHERE c.workspace_id = $1
       to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($13::text, 'İı', 'ii'))
       OR EXISTS (
           SELECT 1 FROM messages m
-          WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id
+          WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft
             AND m.search @@ websearch_to_tsquery('simple', translate($13::text, 'İı', 'ii')))
       OR EXISTS (
           SELECT 1 FROM contacts ct
@@ -483,7 +489,7 @@ WHERE c.workspace_id = $1
       to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($14::text, 'İı', 'ii'))
       OR EXISTS (
           SELECT 1 FROM messages m
-          WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id
+          WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft
             AND m.search @@ websearch_to_tsquery('simple', translate($14::text, 'İı', 'ii')))
       OR EXISTS (
           SELECT 1 FROM contacts ct
@@ -498,7 +504,7 @@ LIMIT $17
 type ListConversationsParams struct {
 	WorkspaceID uuid.UUID
 	AllInboxes  bool
-	MemberID    uuid.UUID
+	ViewerID    uuid.UUID
 	InboxID     *uuid.UUID
 	ContactID   *uuid.UUID
 	Spam        bool
@@ -519,7 +525,7 @@ func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsPa
 	rows, err := q.db.Query(ctx, listConversations,
 		arg.WorkspaceID,
 		arg.AllInboxes,
-		arg.MemberID,
+		arg.ViewerID,
 		arg.InboxID,
 		arg.ContactID,
 		arg.Spam,

@@ -70,26 +70,26 @@ func (q *Queries) ContactExists(ctx context.Context, arg ContactExistsParams) (b
 	return found, err
 }
 
-const contactVisibleToMember = `-- name: ContactVisibleToMember :one
-SELECT coalesce(EXISTS (SELECT 1 FROM conversations cv JOIN inbox_members im
-               ON im.workspace_id = cv.workspace_id AND im.inbox_id = cv.inbox_id AND im.member_id = $1
+const contactVisibleToViewer = `-- name: ContactVisibleToViewer :one
+SELECT coalesce(EXISTS (SELECT 1 FROM conversations cv JOIN inbox_viewers iv
+               ON iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $1
                WHERE cv.workspace_id = $2 AND cv.contact_id = $3)
-    OR EXISTS (SELECT 1 FROM contact_external_ids x JOIN inbox_members im
-               ON im.workspace_id = x.workspace_id AND im.inbox_id = x.inbox_id AND im.member_id = $1
+    OR EXISTS (SELECT 1 FROM contact_external_ids x JOIN inbox_viewers iv
+               ON iv.workspace_id = x.workspace_id AND iv.inbox_id = x.inbox_id AND iv.viewer_id = $1
                WHERE x.workspace_id = $2 AND x.contact_id = $3)
     OR (NOT EXISTS (SELECT 1 FROM conversations cv WHERE cv.workspace_id = $2 AND cv.contact_id = $3)
         AND NOT EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = $2 AND x.contact_id = $3)), false)::bool
     AS visible
 `
 
-type ContactVisibleToMemberParams struct {
-	MemberID    uuid.UUID
+type ContactVisibleToViewerParams struct {
+	ViewerID    uuid.UUID
 	WorkspaceID uuid.UUID
 	ContactID   uuid.UUID
 }
 
-func (q *Queries) ContactVisibleToMember(ctx context.Context, arg ContactVisibleToMemberParams) (bool, error) {
-	row := q.db.QueryRow(ctx, contactVisibleToMember, arg.MemberID, arg.WorkspaceID, arg.ContactID)
+func (q *Queries) ContactVisibleToViewer(ctx context.Context, arg ContactVisibleToViewerParams) (bool, error) {
+	row := q.db.QueryRow(ctx, contactVisibleToViewer, arg.ViewerID, arg.WorkspaceID, arg.ContactID)
 	var visible bool
 	err := row.Scan(&visible)
 	return visible, err
@@ -396,11 +396,11 @@ SELECT id, workspace_id, name, attributes, blocked, created_at, updated_at, loca
 FROM contacts c
 WHERE c.workspace_id = $1
   AND ($2::uuid IS NULL OR (
-      EXISTS (SELECT 1 FROM conversations cv JOIN inbox_members im
-              ON im.workspace_id = cv.workspace_id AND im.inbox_id = cv.inbox_id AND im.member_id = $2::uuid
+      EXISTS (SELECT 1 FROM conversations cv JOIN inbox_viewers iv
+              ON iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $2::uuid
               WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id)
-   OR EXISTS (SELECT 1 FROM contact_external_ids x JOIN inbox_members im
-              ON im.workspace_id = x.workspace_id AND im.inbox_id = x.inbox_id AND im.member_id = $2::uuid
+   OR EXISTS (SELECT 1 FROM contact_external_ids x JOIN inbox_viewers iv
+              ON iv.workspace_id = x.workspace_id AND iv.inbox_id = x.inbox_id AND iv.viewer_id = $2::uuid
               WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
    OR (NOT EXISTS (SELECT 1 FROM conversations cv WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id)
        AND NOT EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id))))
@@ -413,7 +413,7 @@ LIMIT $6
 
 type ListContactsParams struct {
 	WorkspaceID uuid.UUID
-	MemberID    *uuid.UUID
+	ViewerID    *uuid.UUID
 	Q           *string
 	CursorAt    *time.Time
 	CursorID    *uuid.UUID
@@ -435,7 +435,7 @@ type ListContactsRow struct {
 func (q *Queries) ListContacts(ctx context.Context, arg ListContactsParams) ([]ListContactsRow, error) {
 	rows, err := q.db.Query(ctx, listContacts,
 		arg.WorkspaceID,
-		arg.MemberID,
+		arg.ViewerID,
 		arg.Q,
 		arg.CursorAt,
 		arg.CursorID,

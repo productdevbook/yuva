@@ -369,8 +369,12 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 	if isCatchAll(replyTo) {
 		replyTo = me.FromAddress
 	}
+	fromName := channelName
+	if msg.AuthorType == string(oas.AuthorTypeBot) && msg.BotName != "" {
+		fromName = msg.BotName
+	}
 	out := email.Outgoing{
-		From:          email.Address{Name: channelName, Email: me.FromAddress},
+		From:          email.Address{Name: fromName, Email: me.FromAddress},
 		ReplyTo:       email.Address{Name: channelName, Email: replyTo},
 		To:            email.Address{Name: toName, Email: to},
 		Subject:       me.Subject,

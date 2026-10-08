@@ -22,8 +22,8 @@ environment as the server.
 | `serve [--migrate=false]` | Runs the server (the image's default command). Applies migrations first unless `--migrate=false`. |
 | `migrate up\|down\|status` | Applies all pending migrations, rolls back the most recent one, or lists them with the time each was applied. |
 | `bootstrap --email <address> --workspace <name> [--name <name>] [--locale en\|tr] [--allow-existing]` | Creates a workspace and its first owner. Refuses when a workspace exists, unless `--allow-existing`. |
-| `api-key create --workspace <id\|name> --name <name>` | Creates a workspace API key and prints the secret once on stdout. |
-| `api-key list --workspace <id\|name>` | Lists keys: id, prefix, name, created, last used, revoked. Never a secret. |
+| `api-key create --workspace <id\|name> --name <name> [--scope <scope>]... [--inbox <id>]...` | Creates a workspace API key and prints the secret once on stdout. Without `--scope` it holds every scope; `--inbox` limits it to those inboxes. |
+| `api-key list --workspace <id\|name>` | Lists keys: id, prefix, name, created, last used, revoked, expiry, inbox limit, scopes. Never a secret. |
 | `api-key revoke <id>` | Revokes a key. |
 | `inbox create --workspace <id\|name> --name <name> [--slug <slug>] [--locale <tag>] [--timezone <zone>] [--mode live\|async] [--expected-reply-minutes <n>]` | Creates an inbox and prints its id. The slug is made from the name when omitted; defaults are `en`, `UTC`, `async`. |
 | `inbox list --workspace <id\|name>` | Lists inboxes. |

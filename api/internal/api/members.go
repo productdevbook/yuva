@@ -30,7 +30,7 @@ func (s *Server) GetWorkspace(ctx context.Context, _ oas.GetWorkspaceRequestObje
 }
 
 func workspaceBody(w store.Workspace) oas.Workspace {
-	return oas.Workspace{Id: w.ID, Name: w.Name, RetentionDays: w.RetentionDays, CreatedAt: w.CreatedAt}
+	return oas.Workspace{Id: w.ID, Name: w.Name, RetentionDays: w.RetentionDays, BotsMaySend: w.BotsMaySend, CreatedAt: w.CreatedAt}
 }
 
 func (s *Server) ListMembers(ctx context.Context, _ oas.ListMembersRequestObject) (oas.ListMembersResponseObject, error) {

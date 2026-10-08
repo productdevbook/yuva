@@ -17,22 +17,44 @@ const retentionBatch = 200
 
 func (s *Server) UpdateWorkspace(ctx context.Context, req oas.UpdateWorkspaceRequestObject) (oas.UpdateWorkspaceResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireOwner(p); err != nil {
-		return nil, err
-	}
 	b := req.Body
-	if !b.RetentionDays.IsSpecified() {
-		return nil, errValidation("retention_days is required; null keeps everything")
+	if !b.RetentionDays.IsSpecified() && b.BotsMaySend == nil {
+		return nil, errValidation("send retention_days or bots_may_send")
+	}
+	if b.RetentionDays.IsSpecified() && !p.isKey() {
+		if err := requireOwner(p); err != nil {
+			return nil, err
+		}
+	}
+	if b.BotsMaySend != nil {
+		if err := requireManager(p); err != nil {
+			return nil, err
+		}
 	}
 	var days *int32
-	if !b.RetentionDays.IsNull() {
+	if b.RetentionDays.IsSpecified() && !b.RetentionDays.IsNull() {
 		v := b.RetentionDays.MustGet()
 		if v < 1 || v > 36500 {
 			return nil, errValidation("retention_days must be 1 to 36500")
 		}
 		days = &v
 	}
-	w, err := s.st.SetWorkspaceRetention(ctx, store.SetWorkspaceRetentionParams{ID: p.workspaceID, RetentionDays: days})
+	var w store.Workspace
+	err := s.st.InTx(ctx, func(q *store.Queries) error {
+		var err error
+		if w, err = q.GetWorkspace(ctx, p.workspaceID); err != nil {
+			return err
+		}
+		if b.RetentionDays.IsSpecified() {
+			if w, err = q.SetWorkspaceRetention(ctx, store.SetWorkspaceRetentionParams{ID: p.workspaceID, RetentionDays: days}); err != nil {
+				return err
+			}
+		}
+		if b.BotsMaySend != nil {
+			w, err = q.SetWorkspaceBotsMaySend(ctx, store.SetWorkspaceBotsMaySendParams{ID: p.workspaceID, BotsMaySend: *b.BotsMaySend})
+		}
+		return err
+	})
 	if err != nil {
 		return nil, err
 	}

@@ -30,7 +30,10 @@ var (
 )
 
 func (p principal) seesAllInboxes() bool {
-	return p.isKey() || p.role == roleOwner || p.role == roleAdmin
+	if p.isKey() {
+		return !p.limited
+	}
+	return p.role == roleOwner || p.role == roleAdmin
 }
 
 func requireManagerOrKey(p principal) error {
@@ -47,7 +50,7 @@ func canSeeInbox(ctx context.Context, q *store.Queries, p principal, inboxID uui
 	if p.seesAllInboxes() {
 		return true, nil
 	}
-	return q.HasInboxAccess(ctx, store.HasInboxAccessParams{WorkspaceID: p.workspaceID, InboxID: inboxID, MemberID: p.memberID})
+	return q.ViewerHasInbox(ctx, store.ViewerHasInboxParams{WorkspaceID: p.workspaceID, InboxID: inboxID, ViewerID: p.viewerID()})
 }
 
 func visibleInbox(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) (store.Inbox, error) {

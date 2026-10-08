@@ -25,15 +25,23 @@ func clientAttachmentBody(a store.Attachment) oas.ClientAttachment {
 	}
 }
 
-func clientAuthor(authorType string, memberID *uuid.UUID, names map[uuid.UUID]string) oas.ClientMessageAuthor {
-	out := oas.ClientMessageAuthor{Type: oas.AuthorType(authorType)}
-	if authorType == string(oas.AuthorTypeMember) {
+func clientAuthor(a oas.MessageAuthor, names map[uuid.UUID]string) oas.ClientMessageAuthor {
+	out := oas.ClientMessageAuthor{Type: a.Type}
+	switch a.Type {
+	case oas.AuthorTypeMember:
 		var name string
-		if memberID != nil {
-			name = names[*memberID]
+		if a.MemberId != nil {
+			name = names[*a.MemberId]
 		}
 		ini := initials(name)
 		out.Name, out.Initials = &name, &ini
+	case oas.AuthorTypeBot:
+		var name string
+		if a.Name != nil {
+			name = *a.Name
+		}
+		ini := initials(name)
+		out.Name, out.Initials, out.AvatarUrl = &name, &ini, a.AvatarUrl
 	}
 	return out
 }
@@ -41,7 +49,7 @@ func clientAuthor(authorType string, memberID *uuid.UUID, names map[uuid.UUID]st
 func clientMessageBody(m messageRow, atts []store.Attachment, names map[uuid.UUID]string) oas.ClientMessage {
 	out := oas.ClientMessage{
 		Id: m.ID, ConversationId: m.ConversationID, Direction: oas.In, Body: m.Body, Html: m.Html, CreatedAt: m.CreatedAt,
-		Author: clientAuthor(m.AuthorType, m.AuthorMemberID, names), Attachments: make([]oas.ClientAttachment, 0, len(atts)),
+		Author: clientAuthor(messageAuthor(m), names), Attachments: make([]oas.ClientAttachment, 0, len(atts)),
 	}
 	if m.Direction != nil {
 		out.Direction = oas.Direction(*m.Direction)

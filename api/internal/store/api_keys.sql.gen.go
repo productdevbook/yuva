@@ -12,19 +12,41 @@ import (
 	"uuid"
 )
 
+const addAPIKeyInbox = `-- name: AddAPIKeyInbox :exec
+INSERT INTO api_key_inboxes (workspace_id, api_key_id, inbox_id) VALUES ($1, $2, $3)
+`
+
+type AddAPIKeyInboxParams struct {
+	WorkspaceID uuid.UUID
+	ApiKeyID    uuid.UUID
+	InboxID     uuid.UUID
+}
+
+func (q *Queries) AddAPIKeyInbox(ctx context.Context, arg AddAPIKeyInboxParams) error {
+	_, err := q.db.Exec(ctx, addAPIKeyInbox, arg.WorkspaceID, arg.ApiKeyID, arg.InboxID)
+	return err
+}
+
 const createAPIKey = `-- name: CreateAPIKey :one
-INSERT INTO api_keys (id, workspace_id, name, prefix, secret_hash, created_by)
-VALUES ($1, $2, $3, $4, $5, $6)
-RETURNING id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at
+INSERT INTO api_keys (id, workspace_id, name, prefix, secret_hash, created_by, scopes, inbox_limited, expires_at,
+                      bot_name, bot_avatar_url)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8,
+        $9, $10, $11)
+RETURNING id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at, scopes, inbox_limited, expires_at, bot_name, bot_avatar_url
 `
 
 type CreateAPIKeyParams struct {
-	ID          uuid.UUID
-	WorkspaceID uuid.UUID
-	Name        string
-	Prefix      string
-	SecretHash  []byte
-	CreatedBy   *uuid.UUID
+	ID           uuid.UUID
+	WorkspaceID  uuid.UUID
+	Name         string
+	Prefix       string
+	SecretHash   []byte
+	CreatedBy    *uuid.UUID
+	Scopes       []string
+	InboxLimited bool
+	ExpiresAt    *time.Time
+	BotName      *string
+	BotAvatarUrl *string
 }
 
 func (q *Queries) CreateAPIKey(ctx context.Context, arg CreateAPIKeyParams) (ApiKey, error) {
@@ -35,6 +57,11 @@ func (q *Queries) CreateAPIKey(ctx context.Context, arg CreateAPIKeyParams) (Api
 		arg.Prefix,
 		arg.SecretHash,
 		arg.CreatedBy,
+		arg.Scopes,
+		arg.InboxLimited,
+		arg.ExpiresAt,
+		arg.BotName,
+		arg.BotAvatarUrl,
 	)
 	var i ApiKey
 	err := row.Scan(
@@ -47,12 +74,48 @@ func (q *Queries) CreateAPIKey(ctx context.Context, arg CreateAPIKeyParams) (Api
 		&i.CreatedAt,
 		&i.LastUsedAt,
 		&i.RevokedAt,
+		&i.Scopes,
+		&i.InboxLimited,
+		&i.ExpiresAt,
+		&i.BotName,
+		&i.BotAvatarUrl,
+	)
+	return i, err
+}
+
+const getAPIKey = `-- name: GetAPIKey :one
+SELECT id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at, scopes, inbox_limited, expires_at, bot_name, bot_avatar_url FROM api_keys WHERE workspace_id = $1 AND id = $2
+`
+
+type GetAPIKeyParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) GetAPIKey(ctx context.Context, arg GetAPIKeyParams) (ApiKey, error) {
+	row := q.db.QueryRow(ctx, getAPIKey, arg.WorkspaceID, arg.ID)
+	var i ApiKey
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Name,
+		&i.Prefix,
+		&i.SecretHash,
+		&i.CreatedBy,
+		&i.CreatedAt,
+		&i.LastUsedAt,
+		&i.RevokedAt,
+		&i.Scopes,
+		&i.InboxLimited,
+		&i.ExpiresAt,
+		&i.BotName,
+		&i.BotAvatarUrl,
 	)
 	return i, err
 }
 
 const getAPIKeyByID = `-- name: GetAPIKeyByID :one
-SELECT id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at FROM api_keys WHERE id = $1
+SELECT id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at, scopes, inbox_limited, expires_at, bot_name, bot_avatar_url FROM api_keys WHERE id = $1
 `
 
 func (q *Queries) GetAPIKeyByID(ctx context.Context, id uuid.UUID) (ApiKey, error) {
@@ -68,18 +131,41 @@ func (q *Queries) GetAPIKeyByID(ctx context.Context, id uuid.UUID) (ApiKey, erro
 		&i.CreatedAt,
 		&i.LastUsedAt,
 		&i.RevokedAt,
+		&i.Scopes,
+		&i.InboxLimited,
+		&i.ExpiresAt,
+		&i.BotName,
+		&i.BotAvatarUrl,
 	)
 	return i, err
 }
 
 const getActiveAPIKeyByHash = `-- name: GetActiveAPIKeyByHash :one
-SELECT k.id, k.workspace_id, k.name, k.prefix, k.secret_hash, k.created_by, k.created_at, k.last_used_at, k.revoked_at FROM api_keys k JOIN workspaces w ON w.id = k.workspace_id
+SELECT k.id, k.workspace_id, k.name, k.prefix, k.secret_hash, k.created_by, k.created_at, k.last_used_at, k.revoked_at, k.scopes, k.inbox_limited, k.expires_at, k.bot_name, k.bot_avatar_url, w.bots_may_send FROM api_keys k JOIN workspaces w ON w.id = k.workspace_id
 WHERE k.secret_hash = $1 AND k.revoked_at IS NULL AND w.deleted_at IS NULL
 `
 
-func (q *Queries) GetActiveAPIKeyByHash(ctx context.Context, secretHash []byte) (ApiKey, error) {
+type GetActiveAPIKeyByHashRow struct {
+	ID           uuid.UUID
+	WorkspaceID  uuid.UUID
+	Name         string
+	Prefix       string
+	SecretHash   []byte
+	CreatedBy    *uuid.UUID
+	CreatedAt    time.Time
+	LastUsedAt   *time.Time
+	RevokedAt    *time.Time
+	Scopes       []string
+	InboxLimited bool
+	ExpiresAt    *time.Time
+	BotName      *string
+	BotAvatarUrl *string
+	BotsMaySend  bool
+}
+
+func (q *Queries) GetActiveAPIKeyByHash(ctx context.Context, secretHash []byte) (GetActiveAPIKeyByHashRow, error) {
 	row := q.db.QueryRow(ctx, getActiveAPIKeyByHash, secretHash)
-	var i ApiKey
+	var i GetActiveAPIKeyByHashRow
 	err := row.Scan(
 		&i.ID,
 		&i.WorkspaceID,
@@ -90,12 +176,54 @@ func (q *Queries) GetActiveAPIKeyByHash(ctx context.Context, secretHash []byte) 
 		&i.CreatedAt,
 		&i.LastUsedAt,
 		&i.RevokedAt,
+		&i.Scopes,
+		&i.InboxLimited,
+		&i.ExpiresAt,
+		&i.BotName,
+		&i.BotAvatarUrl,
+		&i.BotsMaySend,
 	)
 	return i, err
 }
 
+const listAPIKeyInboxes = `-- name: ListAPIKeyInboxes :many
+SELECT api_key_id, inbox_id FROM api_key_inboxes
+WHERE workspace_id = $1 AND api_key_id = ANY($2::uuid[])
+ORDER BY api_key_id, inbox_id
+`
+
+type ListAPIKeyInboxesParams struct {
+	WorkspaceID uuid.UUID
+	ApiKeyIds   []uuid.UUID
+}
+
+type ListAPIKeyInboxesRow struct {
+	ApiKeyID uuid.UUID
+	InboxID  uuid.UUID
+}
+
+func (q *Queries) ListAPIKeyInboxes(ctx context.Context, arg ListAPIKeyInboxesParams) ([]ListAPIKeyInboxesRow, error) {
+	rows, err := q.db.Query(ctx, listAPIKeyInboxes, arg.WorkspaceID, arg.ApiKeyIds)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListAPIKeyInboxesRow
+	for rows.Next() {
+		var i ListAPIKeyInboxesRow
+		if err := rows.Scan(&i.ApiKeyID, &i.InboxID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listAPIKeys = `-- name: ListAPIKeys :many
-SELECT id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at FROM api_keys WHERE workspace_id = $1 ORDER BY created_at, id
+SELECT id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at, scopes, inbox_limited, expires_at, bot_name, bot_avatar_url FROM api_keys WHERE workspace_id = $1 ORDER BY created_at, id
 `
 
 func (q *Queries) ListAPIKeys(ctx context.Context, workspaceID uuid.UUID) ([]ApiKey, error) {
@@ -117,6 +245,11 @@ func (q *Queries) ListAPIKeys(ctx context.Context, workspaceID uuid.UUID) ([]Api
 			&i.CreatedAt,
 			&i.LastUsedAt,
 			&i.RevokedAt,
+			&i.Scopes,
+			&i.InboxLimited,
+			&i.ExpiresAt,
+			&i.BotName,
+			&i.BotAvatarUrl,
 		); err != nil {
 			return nil, err
 		}
@@ -168,4 +301,46 @@ func (q *Queries) TouchAPIKey(ctx context.Context, arg TouchAPIKeyParams) error 
 		arg.StaleBefore,
 	)
 	return err
+}
+
+const updateAPIKey = `-- name: UpdateAPIKey :one
+UPDATE api_keys SET name = $1, bot_name = $2, bot_avatar_url = $3
+WHERE workspace_id = $4 AND id = $5
+RETURNING id, workspace_id, name, prefix, secret_hash, created_by, created_at, last_used_at, revoked_at, scopes, inbox_limited, expires_at, bot_name, bot_avatar_url
+`
+
+type UpdateAPIKeyParams struct {
+	Name         string
+	BotName      *string
+	BotAvatarUrl *string
+	WorkspaceID  uuid.UUID
+	ID           uuid.UUID
+}
+
+func (q *Queries) UpdateAPIKey(ctx context.Context, arg UpdateAPIKeyParams) (ApiKey, error) {
+	row := q.db.QueryRow(ctx, updateAPIKey,
+		arg.Name,
+		arg.BotName,
+		arg.BotAvatarUrl,
+		arg.WorkspaceID,
+		arg.ID,
+	)
+	var i ApiKey
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Name,
+		&i.Prefix,
+		&i.SecretHash,
+		&i.CreatedBy,
+		&i.CreatedAt,
+		&i.LastUsedAt,
+		&i.RevokedAt,
+		&i.Scopes,
+		&i.InboxLimited,
+		&i.ExpiresAt,
+		&i.BotName,
+		&i.BotAvatarUrl,
+	)
+	return i, err
 }

@@ -36,7 +36,7 @@ func (q *Queries) CountWorkspaces(ctx context.Context) (int64, error) {
 
 const createWorkspace = `-- name: CreateWorkspace :one
 INSERT INTO workspaces (id, name) VALUES ($1, $2)
-RETURNING id, name, created_at, retention_days, deleted_at
+RETURNING id, name, created_at, retention_days, deleted_at, bots_may_send
 `
 
 type CreateWorkspaceParams struct {
@@ -53,6 +53,7 @@ func (q *Queries) CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams
 		&i.CreatedAt,
 		&i.RetentionDays,
 		&i.DeletedAt,
+		&i.BotsMaySend,
 	)
 	return i, err
 }
@@ -107,7 +108,7 @@ func (q *Queries) DeleteWorkspaceWebhookEndpoints(ctx context.Context, workspace
 }
 
 const getDeletedWorkspace = `-- name: GetDeletedWorkspace :one
-SELECT id, name, created_at, retention_days, deleted_at FROM workspaces WHERE id = $1 AND deleted_at IS NOT NULL
+SELECT id, name, created_at, retention_days, deleted_at, bots_may_send FROM workspaces WHERE id = $1 AND deleted_at IS NOT NULL
 `
 
 func (q *Queries) GetDeletedWorkspace(ctx context.Context, id uuid.UUID) (Workspace, error) {
@@ -119,12 +120,13 @@ func (q *Queries) GetDeletedWorkspace(ctx context.Context, id uuid.UUID) (Worksp
 		&i.CreatedAt,
 		&i.RetentionDays,
 		&i.DeletedAt,
+		&i.BotsMaySend,
 	)
 	return i, err
 }
 
 const getWorkspace = `-- name: GetWorkspace :one
-SELECT id, name, created_at, retention_days, deleted_at FROM workspaces WHERE id = $1
+SELECT id, name, created_at, retention_days, deleted_at, bots_may_send FROM workspaces WHERE id = $1
 `
 
 func (q *Queries) GetWorkspace(ctx context.Context, id uuid.UUID) (Workspace, error) {
@@ -136,6 +138,7 @@ func (q *Queries) GetWorkspace(ctx context.Context, id uuid.UUID) (Workspace, er
 		&i.CreatedAt,
 		&i.RetentionDays,
 		&i.DeletedAt,
+		&i.BotsMaySend,
 	)
 	return i, err
 }
@@ -289,7 +292,7 @@ func (q *Queries) ListWorkspaceRetention(ctx context.Context) ([]ListWorkspaceRe
 }
 
 const listWorkspacesByName = `-- name: ListWorkspacesByName :many
-SELECT id, name, created_at, retention_days, deleted_at FROM workspaces WHERE name = $1 AND deleted_at IS NULL ORDER BY created_at, id
+SELECT id, name, created_at, retention_days, deleted_at, bots_may_send FROM workspaces WHERE name = $1 AND deleted_at IS NULL ORDER BY created_at, id
 `
 
 func (q *Queries) ListWorkspacesByName(ctx context.Context, name string) ([]Workspace, error) {
@@ -307,6 +310,7 @@ func (q *Queries) ListWorkspacesByName(ctx context.Context, name string) ([]Work
 			&i.CreatedAt,
 			&i.RetentionDays,
 			&i.DeletedAt,
+			&i.BotsMaySend,
 		); err != nil {
 			return nil, err
 		}
@@ -367,10 +371,35 @@ func (q *Queries) PurgeWorkspace(ctx context.Context, id uuid.UUID) (int64, erro
 	return result.RowsAffected(), nil
 }
 
+const setWorkspaceBotsMaySend = `-- name: SetWorkspaceBotsMaySend :one
+UPDATE workspaces SET bots_may_send = $1
+WHERE id = $2
+RETURNING id, name, created_at, retention_days, deleted_at, bots_may_send
+`
+
+type SetWorkspaceBotsMaySendParams struct {
+	BotsMaySend bool
+	ID          uuid.UUID
+}
+
+func (q *Queries) SetWorkspaceBotsMaySend(ctx context.Context, arg SetWorkspaceBotsMaySendParams) (Workspace, error) {
+	row := q.db.QueryRow(ctx, setWorkspaceBotsMaySend, arg.BotsMaySend, arg.ID)
+	var i Workspace
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.RetentionDays,
+		&i.DeletedAt,
+		&i.BotsMaySend,
+	)
+	return i, err
+}
+
 const setWorkspaceRetention = `-- name: SetWorkspaceRetention :one
 UPDATE workspaces SET retention_days = $1
 WHERE id = $2
-RETURNING id, name, created_at, retention_days, deleted_at
+RETURNING id, name, created_at, retention_days, deleted_at, bots_may_send
 `
 
 type SetWorkspaceRetentionParams struct {
@@ -387,6 +416,7 @@ func (q *Queries) SetWorkspaceRetention(ctx context.Context, arg SetWorkspaceRet
 		&i.CreatedAt,
 		&i.RetentionDays,
 		&i.DeletedAt,
+		&i.BotsMaySend,
 	)
 	return i, err
 }

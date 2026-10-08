@@ -219,10 +219,10 @@ func labelSet(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, in [
 func validPriority(p oas.Priority) bool { return p.Valid() }
 
 func (s *Server) writeEvent(ctx context.Context, q *store.Queries, events *eventBatch, p principal, c store.Conversation, ev oas.MessageEvent, at time.Time) error {
-	author, member := authorFor(p)
+	author, member, key := authorFor(p)
 	msg, err := q.CreateMessage(ctx, store.CreateMessageParams{
 		ID: newID(), WorkspaceID: p.workspaceID, ConversationID: c.ID, Kind: string(oas.MessageKindEvent),
-		AuthorType: author, AuthorMemberID: member, Event: mustJSON(ev), CreatedAt: at,
+		AuthorType: author, AuthorMemberID: member, AuthorApiKeyID: key, Event: mustJSON(ev), CreatedAt: at,
 	})
 	if err != nil {
 		return err
@@ -231,12 +231,13 @@ func (s *Server) writeEvent(ctx context.Context, q *store.Queries, events *event
 	return nil
 }
 
-func authorFor(p principal) (string, *uuid.UUID) {
+func authorFor(p principal) (string, *uuid.UUID, *uuid.UUID) {
 	if p.isKey() {
-		return string(oas.AuthorTypeSystem), nil
+		id := p.keyID
+		return string(oas.AuthorTypeBot), nil, &id
 	}
 	id := p.memberID
-	return string(oas.AuthorTypeMember), &id
+	return string(oas.AuthorTypeMember), &id, nil
 }
 
 func (s *Server) recordChanges(ctx context.Context, q *store.Queries, events *eventBatch, p principal, before, after store.Conversation, added, removed []uuid.UUID, at time.Time) error {
@@ -305,7 +306,7 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 	}
 	pos, neg := splitSearch(q)
 	arg := store.ListConversationsParams{
-		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), MemberID: p.memberID,
+		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(),
 		InboxID: prm.InboxId, ContactID: prm.ContactId, LabelID: prm.LabelId, Q: pos, QNot: neg,
 		CursorAt: at, CursorID: cid, Lim: lim + 1, Spam: prm.Spam != nil && *prm.Spam,
 	}
@@ -387,15 +388,15 @@ func (s *Server) GetConversationCounts(ctx context.Context, _ oas.GetConversatio
 	if !p.isKey() {
 		member = &p.memberID
 	}
-	rows, err := s.st.CountOpenConversations(ctx, store.CountOpenConversationsParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), MemberID: member})
+	rows, err := s.st.CountOpenConversations(ctx, store.CountOpenConversationsParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), MemberID: member, ViewerID: p.viewerID()})
 	if err != nil {
 		return nil, err
 	}
-	byLabel, err := s.st.CountOpenConversationsByLabel(ctx, store.CountOpenConversationsByLabelParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), MemberID: member})
+	byLabel, err := s.st.CountOpenConversationsByLabel(ctx, store.CountOpenConversationsByLabelParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID()})
 	if err != nil {
 		return nil, err
 	}
-	feedback, err := s.st.CountOpenFeedback(ctx, store.CountOpenFeedbackParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), MemberID: member})
+	feedback, err := s.st.CountOpenFeedback(ctx, store.CountOpenFeedbackParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID()})
 	if err != nil {
 		return nil, err
 	}

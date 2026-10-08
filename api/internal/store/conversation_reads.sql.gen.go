@@ -44,7 +44,7 @@ WHERE c.workspace_id = $2 AND c.id = ANY($3::uuid[])
   AND EXISTS (
       SELECT 1 FROM messages m
       WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id
-        AND m.kind IN ('message', 'note')
+        AND m.kind IN ('message', 'note') AND NOT m.draft
         AND m.author_member_id IS DISTINCT FROM $1::uuid
         AND (r.last_read_at IS NULL OR (m.created_at, m.id) > (r.last_read_at, r.last_read_message_id)))
 `

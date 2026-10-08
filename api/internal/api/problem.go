@@ -12,6 +12,7 @@ type apiError struct {
 	Status int
 	Code   string
 	Detail string
+	Scope  string
 }
 
 func (e *apiError) Error() string { return fmt.Sprintf("%d %s: %s", e.Status, e.Code, e.Detail) }
@@ -36,6 +37,9 @@ func (e *apiError) body() oas.Problem {
 	}
 	if e.Detail != "" {
 		p.Detail = &e.Detail
+	}
+	if e.Scope != "" {
+		p.Scope = &e.Scope
 	}
 	return p
 }
