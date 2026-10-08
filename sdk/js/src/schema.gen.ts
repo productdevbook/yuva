@@ -76,8 +76,9 @@ export interface paths {
         /**
          * Request a sign-in code
          * @description Sends a one-time code to the address when it belongs to a member or has a pending invite.
-         *     The answer is the same either way, so it does not reveal whether an address is known.
-         *     Codes expire after 10 minutes; only the most recent code of an address is accepted.
+         *     The answer is the same either way and takes the same time (the mail is sent after it), so
+         *     it does not reveal whether an address is known. Codes expire after 10 minutes; only the
+         *     most recent code of an address is accepted.
          */
         post: operations["requestSignInCode"];
         delete?: never;
@@ -97,8 +98,10 @@ export interface paths {
         put?: never;
         /**
          * Sign in with a code
-         * @description Exchanges a valid code for a member session. Each code accepts five attempts. Pending
-         *     invites for the address are accepted on success.
+         * @description Exchanges a valid code for a member session. Each code accepts five attempts. After 20
+         *     wrong codes for an address within 24 hours, codes for it are refused
+         *     (`429 sign_in_paused`) until older failures leave that window, and the member is told by
+         *     e-mail; passkeys still work. Pending invites for the address are accepted on success.
          */
         post: operations["verifySignInCode"];
         delete?: never;
@@ -179,7 +182,15 @@ export interface paths {
         get: operations["getMe"];
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Delete the signed-in person's account
+         * @description Removes the person with their memberships, sessions, passkeys, push subscriptions and
+         *     sign-in codes, and clears the cookie. Messages they wrote stay in their conversations
+         *     without an author (`author.member_id` absent). Refused with `409 last_owner` while the
+         *     person is the only owner of a workspace: make someone else an owner or delete that
+         *     workspace first. Needs a member session; the body repeats the person's e-mail address.
+         */
+        delete: operations["deleteMe"];
         options?: never;
         head?: never;
         /** Update the signed-in person */
@@ -245,6 +256,147 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/push/vapid-public-key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The server's Web Push key
+         * @description The VAPID public key to pass as `applicationServerKey` to `PushManager.subscribe()`: an
+         *     uncompressed P-256 point, base64url without padding. 404 `push_disabled` when the server
+         *     has no VAPID keys configured; hide push settings then.
+         */
+        get: operations["getVapidPublicKey"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/push-subscriptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List push subscriptions
+         * @description The signed-in person's push subscriptions, newest first.
+         */
+        get: operations["listPushSubscriptions"];
+        put?: never;
+        /**
+         * Register a push subscription
+         * @description Saves the browser's `PushSubscription` (`subscription.toJSON()`) for the current session.
+         *     Registering an endpoint that is already saved updates it and moves it to this session and
+         *     person, so call it on every panel start while notification permission is granted. The
+         *     endpoint must be an `https` URL on a public address. At most 20 subscriptions per person.
+         *     404 `push_disabled` when the server has no VAPID keys.
+         */
+        post: operations["createPushSubscription"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/push-subscriptions/{pushSubscriptionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove a push subscription
+         * @description Call it before `PushSubscription.unsubscribe()` when the member turns push off.
+         */
+        delete: operations["deletePushSubscription"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/push-subscriptions/{pushSubscriptionId}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send a test notification
+         * @description Queues a test notification to the subscription and returns its payload. The outcome shows
+         *     up as `last_success_at` or `last_error` on the subscription.
+         */
+        post: operations["testPushSubscription"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Your notification settings
+         * @description The calling member's notification settings in the workspace. Member sessions only.
+         */
+        get: operations["getNotificationSettings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Change your notification settings
+         * @description Each event sent replaces that event's channels; events not sent keep theirs. Member
+         *     sessions only.
+         */
+        patch: operations["updateNotificationSettings"];
+        trace?: never;
+    };
+    "/v1/me/notifications/inboxes/{inboxId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Override your notifications for one inbox
+         * @description Replaces the member's override for the inbox: the events sent here win over the
+         *     workspace-wide settings in that inbox; the others follow them. Member sessions only.
+         */
+        put: operations["setInboxNotifications"];
+        post?: never;
+        /**
+         * Remove your override for one inbox
+         * @description The inbox follows the workspace-wide settings again. Member sessions only.
+         */
+        delete: operations["deleteInboxNotifications"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/workspace": {
         parameters: {
             query?: never;
@@ -256,10 +408,24 @@ export interface paths {
         get: operations["getWorkspace"];
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Delete the workspace
+         * @description Owners only, with a member session; the body repeats the workspace's name exactly. The
+         *     workspace stops answering at once: its members, API keys, widget and app sessions and
+         *     e-mail addresses are refused from this request on, its webhook endpoints are removed and
+         *     nothing more is sent to them. A background job then deletes everything else in batches:
+         *     conversations, messages, attachments and raw e-mails with their stored files, contacts,
+         *     inboxes, channels, members, invites and settings. People keep their account; members left
+         *     with no other workspace lose their push subscriptions.
+         */
+        delete: operations["deleteWorkspace"];
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update the workspace
+         * @description Owners only, with a member session.
+         */
+        patch: operations["updateWorkspace"];
         trace?: never;
     };
     "/v1/members": {
@@ -807,12 +973,17 @@ export interface paths {
          *     A repeated `client_id` in the same conversation returns the stored message with `200`
          *     instead of writing it again.
          *
+         *     A message or note posted by a member moves that member's read cursor to it in the same
+         *     transaction, with the same `conversation.read` event as `POST .../read`.
+         *
          *     A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
          *     e-mailed to the contact through the channel's SMTP account by a background job: the message
          *     is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
          *     `failed`. Notes are never e-mailed. When the recipient address is undeliverable (bounced or
          *     complained) the reply is refused with `409 email_undeliverable`; when the channel has no
-         *     SMTP account, with `409 email_not_configured`.
+         *     SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
+         *     address the contact wrote to; when the conversation has none and the channel has no
+         *     `from_address`, the reply is refused with `409 email_no_sender`.
          */
         post: operations["createMessage"];
         delete?: never;
@@ -835,7 +1006,8 @@ export interface paths {
          * @description Moves the calling member's read cursor to `message_id`, or to the latest message, note or
          *     event when it is absent. The cursor only moves forward; an older `message_id` leaves it
          *     where it is. When it moves, a `conversation.read` event reaches the member's other
-         *     connections. Member sessions only.
+         *     connections. Posting a message or note moves the author's cursor the same way. Member
+         *     sessions only.
          */
         post: operations["markConversationRead"];
         delete?: never;
@@ -1275,8 +1447,12 @@ export interface paths {
          *     everything over HTTP) followed by `ready` and continues live. Without `last_event_id` there
          *     is no replay.
          *
-         *     The server pings every 30 seconds. The client sends nothing; data messages from the client
-         *     close the connection. Close codes: 1008 (`unauthenticated`, `forbidden`) when the session
+         *     The server pings every 30 seconds. A member's panel reports the conversation it shows with
+         *     a text frame `{"type": "viewing", "conversation_id": "<id>"}`, and
+         *     `{"type": "viewing", "conversation_id": null}` when it shows none or the page is hidden;
+         *     send it again after every reconnect. While a connection of the member views a
+         *     conversation, the member gets no push or e-mail notification about it. Other client
+         *     frames are ignored. Close codes: 1008 (`unauthenticated`, `forbidden`) when the session
          *     or membership ends, 1013 (`slow_consumer`) when the client does not read fast enough, 1012
          *     (`restart`) when the server restarts or loses its event feed. Reconnect with
          *     `last_event_id` after any of them except 1008. While the server is reconnecting its own event
@@ -1313,10 +1489,12 @@ export interface paths {
          *
          *     - With `identity_token` (a JWT, HS256, signed by the host backend with the inbox's identity
          *       secret; see `sdk/go`): the contact is found by `sub` (the host's user id, per inbox),
-         *       then by the token's `email`, or created. `name`, `email`, `locale` and `attrs` from the
-         *       token are saved on the contact. `exp` is required and at most 10 minutes ahead; tokens
-         *       with another `alg`, a wrong signature or a missing or past `exp` answer
-         *       `401 invalid_identity_token`. When `visitor_id` names an anonymous visitor of this inbox,
+         *       then by the token's `email` when it carries `email_verified: true` and that contact has
+         *       no external id in this inbox, or created. `name`, `locale` and `attrs` from the token
+         *       are saved on the contact; a verified `email` becomes one of its addresses, an unverified
+         *       one is kept like a typed address and never used to find a contact. `exp` is required and at most 10 minutes ahead; tokens
+         *       with another `alg`, a wrong signature or a missing or past `exp`, and a token whose
+         *       `jti` was already used, answer `401 invalid_identity_token`. When `visitor_id` names an anonymous visitor of this inbox,
          *       that visitor's conversations move to the identified contact and the visitor id ends.
          *     - Without it, the visitor is anonymous, which the channel must allow
          *       (`403 anonymous_not_allowed` otherwise). `visitor_id` from an earlier session of this
@@ -1325,7 +1503,9 @@ export interface paths {
          *
          *     For a `chat` channel, browsers must call from one of the channel's allowed origins
          *     (`403 origin_not_allowed`, also without an `Origin` header); an `app` channel's key needs no
-         *     origin. Requests are rate limited per IP address and per channel (`429 rate_limited`). A
+         *     origin. Requests are rate limited per IP address and per channel (`429 rate_limited`), and an
+         *     IP address starts at most `YUVA_ANONYMOUS_CONTACTS_PER_HOUR` new anonymous visitors per
+         *     channel and hour (default 20; `429 anonymous_limit`; resuming a visitor does not count). A
          *     blocked contact answers `403 contact_blocked`.
          */
         post: operations["createClientSession"];
@@ -1539,7 +1719,9 @@ export interface paths {
          * @description Stores the address the contact typed (e.g. when nobody is available), so replies they have
          *     not read can be e-mailed to them. A typed address is never used to find or merge an
          *     existing contact; it is used only while the contact has no address from an identity token
-         *     or from their own mail, and becomes one of their addresses once they answer such an e-mail.
+         *     or from their own mail. Yuva mails the address a confirmation link (unless a contact already
+         *     has it; at most 3 per hour); it becomes one of the contact's addresses only once that link
+         *     is confirmed.
          *     Allowed when the channel asks for an address (`ask_email_offline`), else `403 forbidden`.
          */
         put: operations["setClientContactEmail"];
@@ -1625,10 +1807,23 @@ export interface paths {
         /**
          * Receive an e-mail
          * @description Called by the edge Email Worker or any MTA with the raw message and its envelope. The
-         *     signature is `v1=` and the lowercase hex HMAC-SHA256, keyed with the server's
-         *     `YUVA_INGRESS_SECRET`, over `<X-Yuva-Timestamp>.<X-Yuva-Envelope-To>.<raw body>`. The
-         *     timestamp must be within 5 minutes of the server's clock. A message with a Message-ID seen
-         *     before on the same channel is accepted again without being stored twice.
+         *     signature is `v2=` and the lowercase hex HMAC-SHA256, keyed with the server's
+         *     `YUVA_INGRESS_SECRET`, over
+         *     `<X-Yuva-Timestamp>.<X-Yuva-Envelope-To>.<X-Yuva-Envelope-From>.<raw body>` (an empty
+         *     envelope sender leaves its place empty). The deprecated `v1=`, over
+         *     `<X-Yuva-Timestamp>.<X-Yuva-Envelope-To>.<raw body>`, is accepted only when
+         *     `YUVA_INGRESS_ACCEPT_V1` is set, and then the envelope sender is not trusted (it never marks
+         *     a delivery report or automatic mail). The headers and the timestamp, which must be within 5
+         *     minutes of the server's clock, are checked before the body is read. A message with a
+         *     Message-ID seen before on the same channel is accepted again without being stored twice.
+         *     At most `YUVA_INGRESS_MAX_CONCURRENT` messages are processed at once; more are answered
+         *     `503 unavailable`.
+         *
+         *     The recipient selects the channel: its exact address, then `local@` for `local+tag@`, then
+         *     the domain's catch-all channel (`*@domain`). Volume never bounces mail: a sender over the
+         *     hourly limit of new conversations on a channel has the message added to its latest
+         *     conversation there instead. Only a sender over the server's hard cap of inbound mails per
+         *     hour (`YUVA_EMAIL_SENDER_HOURLY_CAP`, default 500) is refused with `429 rate_limited`.
          *
          *     Refusals are permanent (4xx) and carry a `reason` that the sending server shows to the
          *     sender. 5xx means try again later.
@@ -1833,8 +2028,28 @@ export interface components {
             /** Format: uuid */
             id: string;
             name: string;
+            /**
+             * Format: int32
+             * @description Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Absent when everything is kept.
+             */
+            retention_days?: number;
             /** Format: date-time */
             created_at: string;
+        };
+        WorkspaceUpdate: {
+            /**
+             * Format: int32
+             * @description `null` keeps everything.
+             */
+            retention_days: number | null;
+        };
+        WorkspaceDeletion: {
+            /** @description The workspace's name, exactly; anything else is refused with `400 confirmation_mismatch`. */
+            name: string;
+        };
+        AccountDeletion: {
+            /** @description The person's e-mail address (case is ignored); anything else is refused with `400 confirmation_mismatch`. */
+            email: string;
         };
         Membership: {
             workspace: components["schemas"]["Workspace"];
@@ -1935,6 +2150,122 @@ export interface components {
         };
         PasskeyList: {
             items: components["schemas"]["Passkey"][];
+        };
+        VapidPublicKey: {
+            /** @description Uncompressed P-256 public key, base64url without padding. */
+            public_key: string;
+        };
+        PushSubscriptionKeys: {
+            /** @description The browser's P-256 key, base64url (65 bytes decoded). */
+            p256dh: string;
+            /** @description The authentication secret, base64url (16 bytes decoded). */
+            auth: string;
+        };
+        PushSubscriptionCreate: {
+            /** Format: uri */
+            endpoint: string;
+            keys: components["schemas"]["PushSubscriptionKeys"];
+            /** @description A label to tell devices apart in the list, such as "Chrome on Android". */
+            user_agent?: string;
+        };
+        PushSubscription: {
+            /** Format: uuid */
+            id: string;
+            /** @description Compare with `PushSubscription.endpoint` to find this browser's entry. */
+            endpoint: string;
+            user_agent: string;
+            /** @description Registered by the calling session. */
+            current: boolean;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+            /** Format: date-time */
+            last_success_at?: string;
+            /** Format: date-time */
+            last_failure_at?: string;
+            /** @description Why the last failed push failed. */
+            last_error?: string;
+        };
+        PushSubscriptionList: {
+            items: components["schemas"]["PushSubscription"][];
+        };
+        NotificationChannels: {
+            /** @description Web Push to every subscribed browser of the person. */
+            push: boolean;
+            /** @description An e-mail when it is still unread after `email_delay_minutes`. */
+            email: boolean;
+        };
+        NotificationEvents: {
+            new_live_conversation: components["schemas"]["NotificationChannels"];
+            new_async_conversation: components["schemas"]["NotificationChannels"];
+            message_in_my_conversation: components["schemas"]["NotificationChannels"];
+            message_in_unassigned_conversation: components["schemas"]["NotificationChannels"];
+            assigned_to_me: components["schemas"]["NotificationChannels"];
+        };
+        /** @description Some events and their channels. */
+        NotificationEventsUpdate: {
+            new_live_conversation?: components["schemas"]["NotificationChannels"];
+            new_async_conversation?: components["schemas"]["NotificationChannels"];
+            message_in_my_conversation?: components["schemas"]["NotificationChannels"];
+            message_in_unassigned_conversation?: components["schemas"]["NotificationChannels"];
+            assigned_to_me?: components["schemas"]["NotificationChannels"];
+        };
+        NotificationSettings: {
+            events: components["schemas"]["NotificationEvents"];
+            defaults: components["schemas"]["NotificationEvents"];
+            /** @description How long an event stays unread before the e-mail fallback is sent. */
+            email_delay_minutes: number;
+            /** @description Per-inbox overrides, for inboxes the member can still see. */
+            inboxes: components["schemas"]["InboxNotifications"][];
+        };
+        NotificationSettingsUpdate: {
+            events?: components["schemas"]["NotificationEventsUpdate"];
+            email_delay_minutes?: number;
+        };
+        InboxNotifications: {
+            /** Format: uuid */
+            inbox_id: string;
+            events: components["schemas"]["NotificationEventsUpdate"];
+            /** Format: date-time */
+            updated_at: string;
+        };
+        InboxNotificationsUpdate: {
+            events: components["schemas"]["NotificationEventsUpdate"];
+        };
+        /**
+         * @description The JSON a push delivers to the service worker (`event.data.json()`), encrypted per
+         *     RFC 8291 (`aes128gcm`). Show it with `registration.showNotification(title, {body, tag,
+         *     data})` and open `url` on click. Pushes of one conversation share `tag` (and the push
+         *     `Topic`), so a newer one replaces the older.
+         */
+        PushNotification: {
+            /**
+             * @description What caused it (see the `notifications` tag), or `test`.
+             * @enum {string}
+             */
+            event: "new_live_conversation" | "new_async_conversation" | "message_in_my_conversation" | "message_in_unassigned_conversation" | "assigned_to_me" | "test";
+            /**
+             * @description The inbox name and the contact's name.
+             * @example Support · Ayşe Yılmaz
+             */
+            title: string;
+            /** @description The start of the message (at most 140 characters), or what happened. */
+            body: string;
+            /**
+             * @description Path to open, relative to the server's public URL:
+             *     `/conversations/{id}?workspace_id={workspace}` (`/` for a test).
+             * @example /conversations/0199a3f0-7c1e-7b4a-9d2e-3f1c2b4a5d6e?workspace_id=0199a3f0-0000-7000-8000-000000000001
+             */
+            url: string;
+            /** @description `conversation-{id}`, or `test`. */
+            tag: string;
+            /** Format: uuid */
+            conversation_id?: string;
+            /** Format: uuid */
+            workspace_id?: string;
+            /** Format: uuid */
+            inbox_id?: string;
         };
         PasskeyCeremony: {
             ceremony_id: string;
@@ -2125,6 +2456,13 @@ export interface components {
         };
         /** @description Settings of an `email` channel. */
         EmailChannel: {
+            /**
+             * @description The address the channel receives mail at, unique on the server. `*@example.com` makes a
+             *     catch-all channel (one per domain): it receives mail to every address of the domain that
+             *     no other channel has, and replies go out from the address the contact wrote to, so the
+             *     SMTP account must be allowed to send from the whole domain. `from_address` is then used
+             *     only for conversations that have no such address and cannot itself be a catch-all.
+             */
             address: components["schemas"]["Email"];
             /** @description The name in `From`; the channel name when empty. */
             display_name: string;
@@ -2133,6 +2471,13 @@ export interface components {
             auto_reply: components["schemas"]["EmailAutoReply"];
         };
         EmailChannelInput: {
+            /**
+             * @description The address the channel receives mail at, unique on the server. `*@example.com` makes a
+             *     catch-all channel (one per domain): it receives mail to every address of the domain that
+             *     no other channel has, and replies go out from the address the contact wrote to, so the
+             *     SMTP account must be allowed to send from the whole domain. `from_address` is then used
+             *     only for conversations that have no such address and cannot itself be a catch-all.
+             */
             address: components["schemas"]["Email"];
             display_name?: string;
             from_address?: components["schemas"]["Email"];
@@ -2662,7 +3007,7 @@ export interface components {
             type: components["schemas"]["AuthorType"];
             /**
              * Format: uuid
-             * @description Set for `member`; absent when that member was removed.
+             * @description Set for `member`; absent when that member was removed or deleted their account.
              */
             member_id?: string;
             /**
@@ -2760,10 +3105,17 @@ export interface components {
             /** @description Automatic mail (auto-reply, list, bulk) or our own automatic message. */
             auto: boolean;
             /**
-             * @description The DMARC result from the receiving server's `Authentication-Results`.
+             * @description The DMARC result from the topmost `Authentication-Results`, only when its authserv-id is
+             *     the server's `YUVA_INGRESS_AUTHSERV_ID`; `unknown` otherwise.
              * @enum {string}
              */
             dmarc: "pass" | "fail" | "none" | "unknown";
+            /**
+             * @description An inbound mail whose `from` is not one of the contact's addresses: a reply from the
+             *     address a widget visitor typed and has not confirmed. It joined the visitor's
+             *     conversation without linking the address; once the address is confirmed this is false.
+             */
+            unverified_sender: boolean;
             /**
              * @description The message's `html` loads images from other servers. They are kept as received; show
              *     them only when the member asks, since loading them tells the sender the mail was read.
@@ -3649,6 +4001,7 @@ export interface components {
         InviteId: string;
         ApiKeyId: string;
         PasskeyId: string;
+        PushSubscriptionId: string;
         InboxId: string;
         ChannelId: string;
         WebhookId: string;
@@ -3790,6 +4143,7 @@ export interface operations {
         responses: {
             200: components["responses"]["SignedIn"];
             400: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
         };
     };
     beginPasskeySignIn: {
@@ -3869,6 +4223,33 @@ export interface operations {
                 };
             };
             401: components["responses"]["Problem"];
+        };
+    };
+    deleteMe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AccountDeletion"];
+            };
+        };
+        responses: {
+            /** @description Deleted. */
+            204: {
+                headers: {
+                    /** @description Clears `yuva_session`. */
+                    "Set-Cookie"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
         };
     };
     updateMe: {
@@ -3988,6 +4369,236 @@ export interface operations {
             404: components["responses"]["Problem"];
         };
     };
+    getVapidPublicKey: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The key. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VapidPublicKey"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    listPushSubscriptions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The subscriptions. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PushSubscriptionList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+        };
+    };
+    createPushSubscription: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PushSubscriptionCreate"];
+            };
+        };
+        responses: {
+            /** @description The saved subscription. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PushSubscription"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    deletePushSubscription: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pushSubscriptionId: components["parameters"]["PushSubscriptionId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    testPushSubscription: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pushSubscriptionId: components["parameters"]["PushSubscriptionId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Queued; the push carries this payload. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PushNotification"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    getNotificationSettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The settings. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationSettings"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    updateNotificationSettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NotificationSettingsUpdate"];
+            };
+        };
+        responses: {
+            /** @description The settings. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationSettings"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    setInboxNotifications: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                inboxId: components["parameters"]["InboxId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InboxNotificationsUpdate"];
+            };
+        };
+        responses: {
+            /** @description The override. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InboxNotifications"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    deleteInboxNotifications: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                inboxId: components["parameters"]["InboxId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     getWorkspace: {
         parameters: {
             query?: never;
@@ -4009,6 +4620,64 @@ export interface operations {
                     "application/json": components["schemas"]["Workspace"];
                 };
             };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    deleteWorkspace: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkspaceDeletion"];
+            };
+        };
+        responses: {
+            /** @description The workspace is closed and its data is being deleted. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    updateWorkspace: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkspaceUpdate"];
+            };
+        };
+        responses: {
+            /** @description The updated workspace. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Workspace"];
+                };
+            };
+            400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
         };
