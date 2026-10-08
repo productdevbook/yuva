@@ -82,8 +82,8 @@ Requirements:
   so it needs a public `https` URL. Desktop and command-line clients only need to reach it from
   your machine.
 - Redirect URIs must be `https`, `http` on a loopback host, or a private-use scheme, and they are
-  matched exactly, port included. A client that registers itself sends the URI it will use, so this
-  only matters when a client comes with a fixed list (see [Claude Code](#claude-code)).
+  matched exactly, except that the port of an `http` URI on `localhost`, `127.0.0.1` or `[::1]` may
+  differ, so desktop clients can call back on whatever port is free (RFC 8252).
 
 ### API key
 
@@ -141,20 +141,13 @@ claude mcp add --transport http yuva https://support.example.com/mcp \
 `--scope local` (the default) keeps it to the current project for you, `--scope project` writes it
 to `.mcp.json` for the team, `--scope user` to every project.
 
-With OAuth, Claude Code's own published client lists its callback without a port
-(`http://localhost/callback`), which Yuva's exact redirect matching does not accept yet. Register a
-client for a fixed port instead and pass its id:
+With OAuth, add the server without a header and sign in:
 
 ```sh
-curl -X POST https://support.example.com/oauth/register -H "Content-Type: application/json" \
-  -d '{"client_name": "Claude Code", "redirect_uris": ["http://localhost:8765/callback"]}'
-
-claude mcp add --transport http --callback-port 8765 --client-id yuva_client_… \
-  yuva https://support.example.com/mcp
-claude mcp login yuva
+claude mcp add --transport http yuva https://support.example.com/mcp
 ```
 
-`claude mcp login` (or `/mcp` inside a session) opens the consent page; `--no-browser` prints the
+`claude mcp login yuva` (or `/mcp` inside a session) opens the consent page; `--no-browser` prints the
 URL instead, for a machine without a browser. Then ask, for example: "List my Yuva inboxes and
 draft a reply in Turkish to the open conversation in the Turkish inbox."
 
