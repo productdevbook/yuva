@@ -212,6 +212,35 @@ Unauthenticated endpoints (sign-in, client session) and those that act on the si
 than a workspace (`/v1/me/...`, sign-out) ignore the header, since every stored key belongs to a
 workspace. The existing `client_id` on messages stays as it is.
 
+**Event feed.** `GET /v1/events?after=<id>&limit=<n>` returns the events realtime and webhooks
+carry, in id order, filtered exactly as the caller's realtime stream is (inbox access, key inbox
+limit, scopes: a caller sees an event only if it holds `conversations:read`, and contact events
+also need `contacts:read`). `after` is the last event id the caller handled; the answer carries
+`next` (the last id returned) and `has_more`. Events are kept 7 days (realtime replay uses the same
+rows). An `after` older than the oldest kept event answers `410 cursor_expired`: the caller
+resyncs from the lists and continues from `GET /v1/events/latest`'s id. Keys and tokens open
+`/v1/realtime` with `Authorization: Bearer`.
+
+**API-only mode.** `YUVA_PANEL=off` stops serving the panel (and so the OAuth consent page:
+`/oauth/authorize` then answers `temporarily_unavailable`; API keys still work). `YUVA_WIDGET=off`
+stops serving the widget scripts. The API, realtime, ingress and `/mcp` stay.
+
+**JS packages.** The JS SDK is published to npm as `@useyuva/js` (the `@yuva` scope belongs to
+someone else), MIT, versioned with the repository:
+- `@useyuva/js`: `createYuvaClient()`, the contact side (`/client/v1`) without DOM: sessions,
+  identity tokens, conversations, messages, attachments, typing, read state, realtime with resume.
+- `@useyuva/js/chat`: the `<yuva-chat>` element, built on that client; the script-tag build stays.
+- `@useyuva/js/react`: `YuvaProvider`, `useConversations`, `useMessages` (React is an optional peer).
+- `@useyuva/js/api`: a typed `/v1` client for TypeScript backends, generated from the contract.
+`sdk/go` gets a `/v1` client generated from the contract (`sdk/go/client`), next to `identity` and
+`webhook`.
+
+**MCP for local clients.** `yuva mcp stdio --url <server> --key <key>` (or `YUVA_URL`,
+`YUVA_API_KEY`) bridges stdio to a server's `/mcp` over HTTP; it needs no database. Releases attach
+an MCP Bundle (`yuva.mcpb`, the bridge for macOS, Linux and Windows, asking for the server URL and
+key) and the repository keeps `server.json` for the MCP Registry, describing the remote endpoint
+with the server URL as a variable and the stdio bridge as a package.
+
 ### OAuth and MCP
 
 **Authorization server.** Yuva is its own OAuth 2.1 authorization server, for MCP clients and for
