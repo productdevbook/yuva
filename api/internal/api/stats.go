@@ -40,7 +40,25 @@ func (s *Server) GetStats(ctx context.Context, req oas.GetStatsRequestObject) (o
 	if err != nil {
 		return nil, err
 	}
-	out := oas.GetStats200JSONResponse{Since: since, Until: now, FirstReplies: int64(len(firsts)), Members: []oas.MemberStats{}}
+	ratings, err := s.st.StatsRatings(ctx, store.StatsRatingsParams(arg))
+	if err != nil {
+		return nil, err
+	}
+	out := oas.GetStats200JSONResponse{
+		Since: since, Until: now, FirstReplies: int64(len(firsts)), Members: []oas.MemberStats{},
+		Ratings: oas.RatingStats{Inboxes: []oas.InboxRatingStats{}},
+	}
+	for _, r := range ratings {
+		if n := len(out.Ratings.Inboxes); n == 0 || out.Ratings.Inboxes[n-1].InboxId != r.InboxID {
+			out.Ratings.Inboxes = append(out.Ratings.Inboxes, oas.InboxRatingStats{InboxId: r.InboxID})
+		}
+		per := &out.Ratings.Inboxes[len(out.Ratings.Inboxes)-1]
+		if r.Rating == string(oas.Good) {
+			out.Ratings.Good, per.Good = out.Ratings.Good+r.N, per.Good+r.N
+		} else {
+			out.Ratings.Bad, per.Bad = out.Ratings.Bad+r.N, per.Bad+r.N
+		}
+	}
 	perMember := map[uuid.UUID]*oas.MemberStats{}
 	member := func(id uuid.UUID) *oas.MemberStats {
 		if m := perMember[id]; m != nil {

@@ -451,6 +451,7 @@ const (
 	Assigned      EventType = "assigned"
 	LabelsChanged EventType = "labels_changed"
 	Moved         EventType = "moved"
+	Rated         EventType = "rated"
 	StatusChanged EventType = "status_changed"
 	Unassigned    EventType = "unassigned"
 )
@@ -463,6 +464,8 @@ func (e EventType) Valid() bool {
 	case LabelsChanged:
 		return true
 	case Moved:
+		return true
+	case Rated:
 		return true
 	case StatusChanged:
 		return true
@@ -1007,6 +1010,24 @@ func (e PushNotificationEvent) Valid() bool {
 	}
 }
 
+// Defines values for Rating.
+const (
+	Bad  Rating = "bad"
+	Good Rating = "good"
+)
+
+// Valid indicates whether the value is a known member of the Rating enum.
+func (e Rating) Valid() bool {
+	switch e {
+	case Bad:
+		return true
+	case Good:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for RealtimeReadyType.
 const (
 	Ready RealtimeReadyType = "ready"
@@ -1171,6 +1192,7 @@ const (
 	WebhookEventTypeContactDeleted      WebhookEventType = "contact.deleted"
 	WebhookEventTypeContactUpdated      WebhookEventType = "contact.updated"
 	WebhookEventTypeConversationCreated WebhookEventType = "conversation.created"
+	WebhookEventTypeConversationRated   WebhookEventType = "conversation.rated"
 	WebhookEventTypeConversationUpdated WebhookEventType = "conversation.updated"
 	WebhookEventTypeDraftCreated        WebhookEventType = "draft.created"
 	WebhookEventTypeDraftDeleted        WebhookEventType = "draft.deleted"
@@ -1187,6 +1209,8 @@ func (e WebhookEventType) Valid() bool {
 	case WebhookEventTypeContactUpdated:
 		return true
 	case WebhookEventTypeConversationCreated:
+		return true
+	case WebhookEventTypeConversationRated:
 		return true
 	case WebhookEventTypeConversationUpdated:
 		return true
@@ -1632,6 +1656,11 @@ type ClientContact struct {
 
 // ClientConversation defines model for ClientConversation.
 type ClientConversation struct {
+	// CanRate The contact may rate it now with `POST /client/v1/conversations/{id}/rating`: the inbox
+	// asks for ratings (`ask_for_rating`), the conversation is closed, was closed at most 30
+	// days ago and has no rating since it was closed. A message from the contact reopens it,
+	// and the next close allows a new rating.
+	CanRate   bool      `json:"can_rate"`
 	CreatedAt time.Time `json:"created_at"`
 
 	// Feedback `feedback` conversations only.
@@ -1646,9 +1675,12 @@ type ClientConversation struct {
 	// LastReadByMemberAt `live` inboxes only: members have read every message created at or before this time
 	// (the latest read position of any member, as in the `read` realtime frame). Absent
 	// when no member has read the conversation, and in `async` inboxes.
-	LastReadByMemberAt *time.Time         `json:"last_read_by_member_at,omitempty"`
-	Status             ConversationStatus `json:"status"`
-	Subject            string             `json:"subject"`
+	LastReadByMemberAt *time.Time `json:"last_read_by_member_at,omitempty"`
+
+	// Rating The contact's rating since the last close; absent when they have not rated it.
+	Rating  *Rating            `json:"rating,omitempty"`
+	Status  ConversationStatus `json:"status"`
+	Subject string             `json:"subject"`
 
 	// Unread A message from a member is newer than the contact's read cursor.
 	Unread bool `json:"unread"`
@@ -1700,7 +1732,10 @@ type ClientConversationPage struct {
 
 // ClientConversationStatus defines model for ClientConversationStatus.
 type ClientConversationStatus struct {
+	// CanRate As on `ClientConversation`.
+	CanRate   bool               `json:"can_rate"`
 	Id        uuid.UUID          `json:"id"`
+	Rating    *Rating            `json:"rating,omitempty"`
 	Status    ConversationStatus `json:"status"`
 	UpdatedAt time.Time          `json:"updated_at"`
 }
@@ -1775,7 +1810,10 @@ type ClientFeedbackCreateMultipart struct {
 // ClientInbox The inbox's public settings. `live` inboxes carry `presence`; `async` inboxes never do and
 // show `expected_reply_minutes` instead.
 type ClientInbox struct {
-	Branding InboxBranding `json:"branding"`
+	// AskForRating The inbox asks contacts to rate closed conversations; offer it where `can_rate` is true
+	// on a conversation.
+	AskForRating bool          `json:"ask_for_rating"`
+	Branding     InboxBranding `json:"branding"`
 
 	// BusinessHours When `enabled` is false the inbox counts as always open.
 	BusinessHours BusinessHours      `json:"business_hours"`
@@ -1926,6 +1964,13 @@ type ClientPresenceEvent struct {
 
 // ClientPresenceEventType defines model for ClientPresenceEvent.Type.
 type ClientPresenceEventType string
+
+// ClientRatingCreate defines model for ClientRatingCreate.
+type ClientRatingCreate struct {
+	// Comment Optional; blank is the same as absent.
+	Comment *string `json:"comment,omitempty"`
+	Rating  Rating  `json:"rating"`
+}
 
 // ClientRead defines model for ClientRead.
 type ClientRead struct {
@@ -2138,6 +2183,9 @@ type Conversation struct {
 
 	// ChannelId The channel it started on; absent when unknown or removed.
 	ChannelId *uuid.UUID `json:"channel_id,omitempty"`
+
+	// ClosedAt When it was last closed; absent when it never was.
+	ClosedAt  *time.Time `json:"closed_at,omitempty"`
 	ContactId uuid.UUID  `json:"contact_id"`
 	CreatedAt time.Time  `json:"created_at"`
 
@@ -2158,6 +2206,11 @@ type Conversation struct {
 	// LastMessageAt The last `message` to or from the contact.
 	LastMessageAt *time.Time `json:"last_message_at,omitempty"`
 	Priority      Priority   `json:"priority"`
+
+	// Rating The contact's latest rating. A conversation can be rated once each time it is closed, so
+	// this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
+	// has it as a `rated` event message whose body is the comment.
+	Rating *ConversationRating `json:"rating,omitempty"`
 
 	// RelatedConversationId Set when this conversation was opened for a sender who answered in the e-mail thread of
 	// another contact's conversation (a forward, a CC'd colleague): the conversation whose
@@ -2281,6 +2334,9 @@ type ConversationListItem struct {
 	// ChannelId The channel it started on; absent when unknown or removed.
 	ChannelId *uuid.UUID `json:"channel_id,omitempty"`
 
+	// ClosedAt When it was last closed; absent when it never was.
+	ClosedAt *time.Time `json:"closed_at,omitempty"`
+
 	// Contact The conversation's contact, enough for a list row.
 	Contact   ConversationContact `json:"contact"`
 	ContactId uuid.UUID           `json:"contact_id"`
@@ -2306,6 +2362,11 @@ type ConversationListItem struct {
 	// LastMessageAt The last `message` to or from the contact.
 	LastMessageAt *time.Time `json:"last_message_at,omitempty"`
 	Priority      Priority   `json:"priority"`
+
+	// Rating The contact's latest rating. A conversation can be rated once each time it is closed, so
+	// this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
+	// has it as a `rated` event message whose body is the comment.
+	Rating *ConversationRating `json:"rating,omitempty"`
 
 	// RelatedConversationId Set when this conversation was opened for a sender who answered in the e-mail thread of
 	// another contact's conversation (a forward, a CC'd colleague): the conversation whose
@@ -2361,6 +2422,15 @@ type ConversationPage struct {
 
 	// NextCursor Absent on the last page.
 	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// ConversationRating The contact's latest rating. A conversation can be rated once each time it is closed, so
+// this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
+// has it as a `rated` event message whose body is the comment.
+type ConversationRating struct {
+	Comment *string   `json:"comment,omitempty"`
+	RatedAt time.Time `json:"rated_at"`
+	Rating  Rating    `json:"rating"`
 }
 
 // ConversationRead A member's read cursor in a conversation.
@@ -2630,7 +2700,11 @@ type IdentitySecret struct {
 
 // Inbox defines model for Inbox.
 type Inbox struct {
-	Branding InboxBranding `json:"branding"`
+	// AskForRating Contacts may rate a closed conversation (`good` or `bad`, with an optional comment):
+	// the widget and the mobile SDKs offer it, and e-mail contacts get a request with two
+	// links after a member's conversation is closed. Off by default.
+	AskForRating bool          `json:"ask_for_rating"`
+	Branding     InboxBranding `json:"branding"`
 
 	// BusinessHours When `enabled` is false the inbox counts as always open.
 	BusinessHours BusinessHours `json:"business_hours"`
@@ -2690,7 +2764,8 @@ type InboxBranding struct {
 
 // InboxCreate defines model for InboxCreate.
 type InboxCreate struct {
-	Branding *InboxBranding `json:"branding,omitempty"`
+	AskForRating *bool          `json:"ask_for_rating,omitempty"`
+	Branding     *InboxBranding `json:"branding,omitempty"`
 
 	// BusinessHours When `enabled` is false the inbox counts as always open.
 	BusinessHours *BusinessHours `json:"business_hours,omitempty"`
@@ -2769,6 +2844,13 @@ type InboxNotificationsUpdate struct {
 	Events NotificationEventsUpdate `json:"events"`
 }
 
+// InboxRatingStats defines model for InboxRatingStats.
+type InboxRatingStats struct {
+	Bad     int64     `json:"bad"`
+	Good    int64     `json:"good"`
+	InboxId uuid.UUID `json:"inbox_id"`
+}
+
 // InboxRef defines model for InboxRef.
 type InboxRef struct {
 	Id uuid.UUID `json:"id"`
@@ -2776,7 +2858,8 @@ type InboxRef struct {
 
 // InboxUpdate defines model for InboxUpdate.
 type InboxUpdate struct {
-	Branding *InboxBranding `json:"branding,omitempty"`
+	AskForRating *bool          `json:"ask_for_rating,omitempty"`
+	Branding     *InboxBranding `json:"branding,omitempty"`
 
 	// BusinessHours When `enabled` is false the inbox counts as always open.
 	BusinessHours *BusinessHours `json:"business_hours,omitempty"`
@@ -3209,9 +3292,12 @@ type MessageEvent struct {
 	// PreviousInboxId The inbox it moved from (`moved`).
 	PreviousInboxId *uuid.UUID          `json:"previous_inbox_id,omitempty"`
 	PreviousStatus  *ConversationStatus `json:"previous_status,omitempty"`
-	RemovedLabels   *[]uuid.UUID        `json:"removed_labels,omitempty"`
-	Status          *ConversationStatus `json:"status,omitempty"`
-	Type            EventType           `json:"type"`
+
+	// Rating `rated` only: the contact's rating; the message body is their comment.
+	Rating        *Rating             `json:"rating,omitempty"`
+	RemovedLabels *[]uuid.UUID        `json:"removed_labels,omitempty"`
+	Status        *ConversationStatus `json:"status,omitempty"`
+	Type          EventType           `json:"type"`
 }
 
 // MessageKind `message` goes to or comes from the contact, `note` is for members only, `event` records a
@@ -3659,6 +3745,16 @@ type PushSubscriptionList struct {
 	Items []PushSubscription `json:"items"`
 }
 
+// Rating defines model for Rating.
+type Rating string
+
+// RatingStats Ratings contacts gave in the window, in total and per inbox (inboxes without any are left out).
+type RatingStats struct {
+	Bad     int64              `json:"bad"`
+	Good    int64              `json:"good"`
+	Inboxes []InboxRatingStats `json:"inboxes"`
+}
+
 // RealtimeMessage One server message on `/v1/realtime`, told apart by `type`.
 type RealtimeMessage struct {
 	union json.RawMessage
@@ -3747,6 +3843,9 @@ type Stats struct {
 
 	// Members Per member, by member id.
 	Members []MemberStats `json:"members"`
+
+	// Ratings Ratings contacts gave in the window, in total and per inbox (inboxes without any are left out).
+	Ratings RatingStats `json:"ratings"`
 
 	// Replies Replies sent by members.
 	Replies int64     `json:"replies"`
@@ -5004,6 +5103,20 @@ type WebhookConversationCreatedParams struct {
 	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
 }
 
+// WebhookConversationRatedParams defines parameters for WebhookConversationRated.
+type WebhookConversationRatedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
 // WebhookConversationUpdatedParams defines parameters for WebhookConversationUpdated.
 type WebhookConversationUpdatedParams struct {
 	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
@@ -5102,6 +5215,9 @@ type CreateClientMessageJSONRequestBody = ClientMessageCreate
 
 // CreateClientMessageMultipartRequestBody defines body for CreateClientMessage for multipart/form-data ContentType.
 type CreateClientMessageMultipartRequestBody = ClientMessageCreateMultipart
+
+// RateClientConversationJSONRequestBody defines body for RateClientConversation for application/json ContentType.
+type RateClientConversationJSONRequestBody = ClientRatingCreate
 
 // MarkClientConversationReadJSONRequestBody defines body for MarkClientConversationRead for application/json ContentType.
 type MarkClientConversationReadJSONRequestBody = ClientReadCreate
@@ -5243,6 +5359,9 @@ type WebhookContactUpdatedJSONRequestBody = WebhookContactPayload
 
 // WebhookConversationCreatedJSONRequestBody defines body for WebhookConversationCreated for application/json ContentType.
 type WebhookConversationCreatedJSONRequestBody = WebhookConversationPayload
+
+// WebhookConversationRatedJSONRequestBody defines body for WebhookConversationRated for application/json ContentType.
+type WebhookConversationRatedJSONRequestBody = WebhookConversationPayload
 
 // WebhookConversationUpdatedJSONRequestBody defines body for WebhookConversationUpdated for application/json ContentType.
 type WebhookConversationUpdatedJSONRequestBody = WebhookConversationPayload
@@ -6453,6 +6572,9 @@ type ServerInterface interface {
 	// CreateClientMessage Send a message
 	// (POST /client/v1/conversations/{conversationId}/messages)
 	CreateClientMessage(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params CreateClientMessageParams)
+	// RateClientConversation Rate a closed conversation
+	// (POST /client/v1/conversations/{conversationId}/rating)
+	RateClientConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId)
 	// MarkClientConversationRead Mark a conversation read
 	// (POST /client/v1/conversations/{conversationId}/read)
 	MarkClientConversationRead(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params MarkClientConversationReadParams)
@@ -7091,6 +7213,32 @@ func (siw *ServerInterfaceWrapper) CreateClientMessage(w http.ResponseWriter, r 
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.CreateClientMessage(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RateClientConversation operation middleware
+func (siw *ServerInterfaceWrapper) RateClientConversation(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RateClientConversation(w, r, conversationId)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -12671,6 +12819,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/conversations/{conversationId}/messages", wrapper.ListClientMessages)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/conversations/{conversationId}/messages", wrapper.CreateClientMessage)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/conversations/{conversationId}/read", wrapper.MarkClientConversationRead)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/conversations/{conversationId}/rating", wrapper.RateClientConversation)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/conversations/{conversationId}/typing", wrapper.SetClientTyping)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/feedback", wrapper.CreateClientFeedback)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/client/v1/contact/email", wrapper.SetClientContactEmail)
@@ -12694,6 +12843,9 @@ type WebhookReceiverInterface interface {
 	// A conversation started
 	// HandleWebhookConversationCreatedWebhook handles the POST webhook for conversation.created.
 	HandleWebhookConversationCreatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookConversationCreatedParams)
+	// A contact rated a conversation
+	// HandleWebhookConversationRatedWebhook handles the POST webhook for conversation.rated.
+	HandleWebhookConversationRatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookConversationRatedParams)
 	// A conversation changed
 	// HandleWebhookConversationUpdatedWebhook handles the POST webhook for conversation.updated.
 	HandleWebhookConversationUpdatedWebhook(w http.ResponseWriter, r *http.Request, params WebhookConversationUpdatedParams)
@@ -12987,6 +13139,98 @@ func WebhookConversationCreatedWebhookHandler(si WebhookReceiverInterface, errHa
 		}
 
 		si.HandleWebhookConversationCreatedWebhook(w, r, params)
+	})
+	for _, mw := range middlewares {
+		h = mw(h)
+	}
+	return h
+}
+
+// WebhookConversationRatedWebhookHandler returns the http.Handler for the conversation.rated webhook.
+// Mount this at the URL path advertised to webhook senders. errHandler
+// may be nil; if so, parameter-binding errors return 400 with the error
+// message. Middlewares are applied in the order provided -- the last
+// argument becomes the outermost wrapper.
+func WebhookConversationRatedWebhookHandler(si WebhookReceiverInterface, errHandler func(w http.ResponseWriter, r *http.Request, err error), middlewares ...WebhookReceiverMiddlewareFunc) http.Handler {
+	if errHandler == nil {
+		errHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	}
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		_ = err
+
+		// Parameter object where we will unmarshal all parameters from the request.
+		var params WebhookConversationRatedParams
+
+		// ------------- Required header parameter "webhook-id" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-id")]; found {
+			var WebhookId WebhookIdHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-id", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-id", valueList[0], &WebhookId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-id", Err: err})
+				return
+			}
+			params.WebhookId = WebhookId
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-id is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-id", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-timestamp" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-timestamp")]; found {
+			var WebhookTimestamp WebhookTimestampHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-timestamp", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-timestamp", valueList[0], &WebhookTimestamp, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-timestamp", Err: err})
+				return
+			}
+			params.WebhookTimestamp = WebhookTimestamp
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-timestamp is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-timestamp", Err: err})
+			return
+		}
+
+		// ------------- Required header parameter "webhook-signature" -------------
+		if valueList, found := r.Header[http.CanonicalHeaderKey("webhook-signature")]; found {
+			var WebhookSignature WebhookSignatureHeader
+			n := len(valueList)
+			if n != 1 {
+				errHandler(w, r, &TooManyValuesForParamError{ParamName: "webhook-signature", Count: n})
+				return
+			}
+
+			err = runtime.BindStyledParameterWithOptions("simple", "webhook-signature", valueList[0], &WebhookSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+			if err != nil {
+				errHandler(w, r, &InvalidParamFormatError{ParamName: "webhook-signature", Err: err})
+				return
+			}
+			params.WebhookSignature = WebhookSignature
+
+		} else {
+			err := fmt.Errorf("Header parameter webhook-signature is required, but not found")
+			errHandler(w, r, &RequiredHeaderError{ParamName: "webhook-signature", Err: err})
+			return
+		}
+
+		si.HandleWebhookConversationRatedWebhook(w, r, params)
 	})
 	for _, mw := range middlewares {
 		h = mw(h)
@@ -14248,6 +14492,101 @@ func (response CreateClientMessage429ApplicationProblemPlusJSONResponse) VisitCr
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RateClientConversationRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Body           *RateClientConversationJSONRequestBody
+}
+
+type RateClientConversationResponseObject interface {
+	VisitRateClientConversationResponse(w http.ResponseWriter) error
+}
+
+type RateClientConversation201JSONResponse ClientConversation
+
+func (response RateClientConversation201JSONResponse) VisitRateClientConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RateClientConversation400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response RateClientConversation400ApplicationProblemPlusJSONResponse) VisitRateClientConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RateClientConversation401ApplicationProblemPlusJSONResponse Problem
+
+func (response RateClientConversation401ApplicationProblemPlusJSONResponse) VisitRateClientConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RateClientConversation403ApplicationProblemPlusJSONResponse Problem
+
+func (response RateClientConversation403ApplicationProblemPlusJSONResponse) VisitRateClientConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RateClientConversation404ApplicationProblemPlusJSONResponse Problem
+
+func (response RateClientConversation404ApplicationProblemPlusJSONResponse) VisitRateClientConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RateClientConversation409ApplicationProblemPlusJSONResponse Problem
+
+func (response RateClientConversation409ApplicationProblemPlusJSONResponse) VisitRateClientConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -21991,6 +22330,9 @@ type StrictServerInterface interface {
 	// CreateClientMessage Send a message
 	// (POST /client/v1/conversations/{conversationId}/messages)
 	CreateClientMessage(ctx context.Context, request CreateClientMessageRequestObject) (CreateClientMessageResponseObject, error)
+	// RateClientConversation Rate a closed conversation
+	// (POST /client/v1/conversations/{conversationId}/rating)
+	RateClientConversation(ctx context.Context, request RateClientConversationRequestObject) (RateClientConversationResponseObject, error)
 	// MarkClientConversationRead Mark a conversation read
 	// (POST /client/v1/conversations/{conversationId}/read)
 	MarkClientConversationRead(ctx context.Context, request MarkClientConversationReadRequestObject) (MarkClientConversationReadResponseObject, error)
@@ -22615,6 +22957,39 @@ func (sh *strictHandler) CreateClientMessage(w http.ResponseWriter, r *http.Requ
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(CreateClientMessageResponseObject); ok {
 		if err := validResponse.VisitCreateClientMessageResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// RateClientConversation operation middleware
+func (sh *strictHandler) RateClientConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId) {
+	var request RateClientConversationRequestObject
+
+	request.ConversationId = conversationId
+
+	var body RateClientConversationJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.RateClientConversation(ctx, request.(RateClientConversationRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "RateClientConversation")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(RateClientConversationResponseObject); ok {
+		if err := validResponse.VisitRateClientConversationResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

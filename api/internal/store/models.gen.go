@@ -160,6 +160,11 @@ type Conversation struct {
 	Kind                  string
 	Feedback              []byte
 	EmailAddress          *string
+	ClosedAt              *time.Time
+	Rating                *string
+	RatingComment         *string
+	RatedAt               *time.Time
+	RatingRequestedAt     *time.Time
 }
 
 type ConversationLabel struct {
@@ -264,6 +269,7 @@ type Inbox struct {
 	IdentitySecret       []byte
 	CreatedAt            time.Time
 	UpdatedAt            time.Time
+	AskForRating         bool
 }
 
 type InboxMember struct {

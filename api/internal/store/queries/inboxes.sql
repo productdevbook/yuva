@@ -1,8 +1,8 @@
 -- name: CreateInbox :one
 INSERT INTO inboxes (id, workspace_id, name, slug, branding, default_locale, timezone, mode,
-                     expected_reply_minutes, business_hours, identity_secret, created_at, updated_at)
+                     expected_reply_minutes, business_hours, identity_secret, ask_for_rating, created_at, updated_at)
 VALUES (@id, @workspace_id, @name, @slug, @branding, @default_locale, @timezone, @mode,
-        @expected_reply_minutes, @business_hours, @identity_secret, @now, @now)
+        @expected_reply_minutes, @business_hours, @identity_secret, coalesce(sqlc.narg(ask_for_rating)::bool, false), @now, @now)
 RETURNING *;
 
 -- name: GetInbox :one
@@ -22,7 +22,7 @@ ORDER BY i.name, i.id;
 -- name: UpdateInbox :one
 UPDATE inboxes SET name = @name, slug = @slug, branding = @branding, default_locale = @default_locale,
     timezone = @timezone, mode = @mode, expected_reply_minutes = @expected_reply_minutes,
-    business_hours = @business_hours, updated_at = @now
+    business_hours = @business_hours, ask_for_rating = @ask_for_rating, updated_at = @now
 WHERE workspace_id = @workspace_id AND id = @id
 RETURNING *;
 

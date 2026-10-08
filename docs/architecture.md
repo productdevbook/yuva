@@ -590,8 +590,8 @@ internal events are never sent), an enabled flag and a signing secret: 32 random
 as `whsec_<base64>`, stored encrypted under the master key, rotatable. After a rotation the old
 secret keeps signing next to the new one for 24 hours.
 
-Events: `conversation.created`, `conversation.updated`, `message.created`, `feedback.created`,
-`contact.updated`, `contact.deleted`. Payloads follow Standard Webhooks: `{type, timestamp,
+Events: `conversation.created`, `conversation.updated`, `conversation.rated`, `message.created`,
+`feedback.created`, `contact.updated`, `contact.deleted`. Payloads follow Standard Webhooks: `{type, timestamp,
 workspace_id, inbox_id, data}`, with the conversation, message and contact in `data`; the contact
 carries `external_ids` (so the host maps it to its own user) and `online`. `contact.deleted`
 carries the external ids the contact had.
@@ -701,6 +701,23 @@ e-mail through the server's own mailer, in the member's locale, lists them and l
 conversation and to the notification settings; at most one per member and conversation per hour. A
 member's own message or note moves their read position to it, so the e-mail never lists what
 they already answered.
+
+### Satisfaction ratings
+
+An inbox can ask contacts to rate their conversations (`ask_for_rating`, off by default). A
+contact rates a closed conversation `good` or `bad`, with an optional comment of at most 2,000
+characters, once per close: a message from the contact reopens it and the next close allows a new
+rating. A close can be rated for 30 days. Ratings are not stored for spam.
+
+- Conversations keep `closed_at` (set when the status becomes `closed`) and the latest rating
+  (`rating`, `rating_comment`, `rated_at`); a rating counts for the current close when `rated_at`
+  is not before `closed_at`. The rating is also a `rated` event message in the thread, authored by
+  the contact, with the comment as its body; contacts never see event messages.
+- Widget and SDKs: `ask_for_rating` on the inbox's public settings, `can_rate` and `rating` on each
+  `ClientConversation` (and on the realtime status frame when a conversation closes), and
+  `POST /client/v1/conversations/{id}/rating`.
+- Members see it on the conversation (`rating`, `closed_at`) and in the thread; `conversation.rated`
+  goes to webhooks; `/v1/stats` counts ratings given in its window, in total and per inbox.
 
 ### Storage
 

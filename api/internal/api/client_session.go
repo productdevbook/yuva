@@ -417,6 +417,7 @@ func (s *Server) clientInbox(ctx context.Context, q *store.Queries, in store.Inb
 			AskEmailOffline: chat.AskEmailOffline, AllowAnonymous: chat.AllowAnonymous,
 		},
 		FeedbackCategories: feedbackCategories,
+		AskForRating:       in.AskForRating,
 	}
 	if out.Chat.Greeting == "" && b.Branding.Greeting != nil {
 		out.Chat.Greeting = *b.Branding.Greeting

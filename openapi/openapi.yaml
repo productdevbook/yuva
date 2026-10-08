@@ -1857,9 +1857,9 @@ paths:
       description: |
         What the team did in the inboxes the caller can see (or in one of them) from `since` until
         now: replies sent by members (messages members wrote or drafts they sent; not notes, not
-        bots' own messages), conversations closed, and the median time from a contact's first
+        bots' own messages), conversations closed, the median time from a contact's first
         message to the first member reply, over the conversations whose first reply falls in the
-        window. `members` breaks replies and closes down per member, leaving out members with
+        window, and the ratings contacts gave in it. `members` breaks replies and closes down per member, leaving out members with
         neither. Nothing is stored for it; it is counted from the messages each time.
 
         `since` defaults to the start of today in `timezone` (an IANA name, `UTC` by default); the
@@ -3642,6 +3642,45 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+  /client/v1/conversations/{conversationId}/rating:
+    post:
+      operationId: rateClientConversation
+      summary: Rate a closed conversation
+      description: |
+        Records the contact's rating (`good` or `bad`) and optional comment for a conversation
+        whose `can_rate` is true. It is stored once per close: members see it in the thread as a
+        `rated` event and on the conversation, and it sends the `conversation.rated` webhook.
+        Answers `409 rating_unavailable` when `can_rate` is false (the inbox does not ask for
+        ratings, the conversation is open, the close is older than 30 days) and
+        `409 already_rated` when the contact already rated this close.
+      tags: [client]
+      security:
+        - contactSession: []
+      parameters:
+        - $ref: "#/components/parameters/ConversationId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientRatingCreate"
+      responses:
+        "201":
+          description: The conversation with its rating.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientConversation"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
   /client/v1/conversations/{conversationId}/typing:
     post:
       operationId: setClientTyping
@@ -4174,6 +4213,28 @@ webhooks:
       summary: A conversation started
       description: |
         Any channel, feedback included (which also sends `feedback.created`).
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookConversationPayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
+  conversation.rated:
+    post:
+      operationId: webhookConversationRated
+      summary: A contact rated a conversation
+      description: |
+        The contact rated a closed conversation; `conversation.rating` holds the rating and
+        comment. Sent once per rating, with `conversation.updated` for the same change.
       tags: [webhooks]
       security: []
       parameters:
@@ -5369,7 +5430,7 @@ components:
           maxLength: 500
     Inbox:
       type: object
-      required: [id, name, slug, branding, default_locale, timezone, mode, business_hours, created_at, updated_at]
+      required: [id, name, slug, branding, default_locale, timezone, mode, business_hours, ask_for_rating, created_at, updated_at]
       properties:
         id:
           type: string
@@ -5394,6 +5455,12 @@ components:
           description: Shown to contacts in `async` mode; absent when not set.
         business_hours:
           $ref: "#/components/schemas/BusinessHours"
+        ask_for_rating:
+          type: boolean
+          description: |
+            Contacts may rate a closed conversation (`good` or `bad`, with an optional comment):
+            the widget and the mobile SDKs offer it, and e-mail contacts get a request with two
+            links after a member's conversation is closed. Off by default.
         created_at:
           type: string
           format: date-time
@@ -5427,6 +5494,9 @@ components:
           maximum: 43200
         business_hours:
           $ref: "#/components/schemas/BusinessHours"
+        ask_for_rating:
+          type: boolean
+          default: false
     InboxUpdate:
       type: object
       minProperties: 1
@@ -5454,6 +5524,8 @@ components:
           description: "`null` clears it."
         business_hours:
           $ref: "#/components/schemas/BusinessHours"
+        ask_for_rating:
+          type: boolean
     InboxCreated:
       type: object
       required: [inbox, identity_secret]
@@ -5823,7 +5895,7 @@ components:
           format: int64
     WebhookEventType:
       type: string
-      enum: [conversation.created, conversation.updated, message.created, feedback.created, contact.updated, contact.deleted, draft.created, draft.updated, draft.deleted]
+      enum: [conversation.created, conversation.updated, conversation.rated, message.created, feedback.created, contact.updated, contact.deleted, draft.created, draft.updated, draft.deleted]
     WebhookEndpoint:
       type: object
       required: [id, url, description, events, include_notes, enabled, created_at, updated_at]
@@ -6301,12 +6373,36 @@ components:
           type: string
           format: date-time
           description: The last message or note, or the creation time.
+        closed_at:
+          type: string
+          format: date-time
+          description: When it was last closed; absent when it never was.
+        rating:
+          $ref: "#/components/schemas/ConversationRating"
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
+    ConversationRating:
+      type: object
+      description: |
+        The contact's latest rating. A conversation can be rated once each time it is closed, so
+        this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
+        has it as a `rated` event message whose body is the comment.
+      required: [rating, rated_at]
+      properties:
+        rating:
+          $ref: "#/components/schemas/Rating"
+        comment:
+          type: string
+        rated_at:
+          type: string
+          format: date-time
+    Rating:
+      type: string
+      enum: [good, bad]
     ConversationCreate:
       type: object
       required: [inbox_id, contact_id]
@@ -6504,7 +6600,7 @@ components:
           format: int64
     Stats:
       type: object
-      required: [since, until, replies, closed, first_replies, members]
+      required: [since, until, replies, closed, first_replies, members, ratings]
       properties:
         since:
           type: string
@@ -6529,11 +6625,41 @@ components:
           type: integer
           format: int64
           description: Median seconds from the contact's first message to that reply; absent when `first_replies` is 0.
+        ratings:
+          $ref: "#/components/schemas/RatingStats"
         members:
           type: array
           description: Per member, by member id.
           items:
             $ref: "#/components/schemas/MemberStats"
+    RatingStats:
+      type: object
+      description: Ratings contacts gave in the window, in total and per inbox (inboxes without any are left out).
+      required: [good, bad, inboxes]
+      properties:
+        good:
+          type: integer
+          format: int64
+        bad:
+          type: integer
+          format: int64
+        inboxes:
+          type: array
+          items:
+            $ref: "#/components/schemas/InboxRatingStats"
+    InboxRatingStats:
+      type: object
+      required: [inbox_id, good, bad]
+      properties:
+        inbox_id:
+          type: string
+          format: uuid
+        good:
+          type: integer
+          format: int64
+        bad:
+          type: integer
+          format: int64
     MemberStats:
       type: object
       required: [member_id, replies, closed]
@@ -6660,7 +6786,7 @@ components:
             "Ayşe via Claude Code"; absent for the panel, API keys and contacts.
     EventType:
       type: string
-      enum: [assigned, unassigned, status_changed, labels_changed, moved]
+      enum: [assigned, unassigned, status_changed, labels_changed, moved, rated]
     MessageEvent:
       type: object
       required: [type]
@@ -6697,6 +6823,9 @@ components:
           type: string
           format: uuid
           description: The inbox it moved from (`moved`).
+        rating:
+          $ref: "#/components/schemas/Rating"
+          description: "`rated` only: the contact's rating; the message body is their comment."
     Attachment:
       type: object
       required: [id, filename, content_type, size, inline, created_at]
@@ -7863,7 +7992,7 @@ components:
       description: |
         The inbox's public settings. `live` inboxes carry `presence`; `async` inboxes never do and
         show `expected_reply_minutes` instead.
-      required: [id, name, branding, default_locale, timezone, mode, business_hours, open_now, chat, feedback_categories]
+      required: [id, name, branding, default_locale, timezone, mode, business_hours, open_now, chat, feedback_categories, ask_for_rating]
       properties:
         id:
           type: string
@@ -7896,6 +8025,11 @@ components:
           description: The categories `POST /client/v1/feedback` accepts, in display order.
           items:
             $ref: "#/components/schemas/FeedbackCategory"
+        ask_for_rating:
+          type: boolean
+          description: |
+            The inbox asks contacts to rate closed conversations; offer it where `can_rate` is true
+            on a conversation.
     ClientContact:
       type: object
       required: [id, name, identified]
@@ -7940,13 +8074,18 @@ components:
               description: The contact session token. It is not shown again.
     ClientConversationStatus:
       type: object
-      required: [id, status, updated_at]
+      required: [id, status, can_rate, updated_at]
       properties:
         id:
           type: string
           format: uuid
         status:
           $ref: "#/components/schemas/ConversationStatus"
+        can_rate:
+          type: boolean
+          description: As on `ClientConversation`.
+        rating:
+          $ref: "#/components/schemas/Rating"
         updated_at:
           type: string
           format: date-time
@@ -7967,7 +8106,7 @@ components:
           format: date-time
     ClientConversation:
       type: object
-      required: [id, kind, subject, status, unread, created_at]
+      required: [id, kind, subject, status, unread, can_rate, created_at]
       properties:
         id:
           type: string
@@ -7996,9 +8135,29 @@ components:
             `live` inboxes only: members have read every message created at or before this time
             (the latest read position of any member, as in the `read` realtime frame). Absent
             when no member has read the conversation, and in `async` inboxes.
+        can_rate:
+          type: boolean
+          description: |
+            The contact may rate it now with `POST /client/v1/conversations/{id}/rating`: the inbox
+            asks for ratings (`ask_for_rating`), the conversation is closed, was closed at most 30
+            days ago and has no rating since it was closed. A message from the contact reopens it,
+            and the next close allows a new rating.
+        rating:
+          $ref: "#/components/schemas/Rating"
+          description: The contact's rating since the last close; absent when they have not rated it.
         created_at:
           type: string
           format: date-time
+    ClientRatingCreate:
+      type: object
+      required: [rating]
+      properties:
+        rating:
+          $ref: "#/components/schemas/Rating"
+        comment:
+          type: string
+          maxLength: 2000
+          description: Optional; blank is the same as absent.
     ClientConversationPage:
       type: object
       required: [items]

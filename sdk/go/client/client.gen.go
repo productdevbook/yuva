@@ -449,6 +449,7 @@ const (
 	Assigned      EventType = "assigned"
 	LabelsChanged EventType = "labels_changed"
 	Moved         EventType = "moved"
+	Rated         EventType = "rated"
 	StatusChanged EventType = "status_changed"
 	Unassigned    EventType = "unassigned"
 )
@@ -461,6 +462,8 @@ func (e EventType) Valid() bool {
 	case LabelsChanged:
 		return true
 	case Moved:
+		return true
+	case Rated:
 		return true
 	case StatusChanged:
 		return true
@@ -1005,6 +1008,24 @@ func (e PushNotificationEvent) Valid() bool {
 	}
 }
 
+// Defines values for Rating.
+const (
+	Bad  Rating = "bad"
+	Good Rating = "good"
+)
+
+// Valid indicates whether the value is a known member of the Rating enum.
+func (e Rating) Valid() bool {
+	switch e {
+	case Bad:
+		return true
+	case Good:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for RealtimeReadyType.
 const (
 	Ready RealtimeReadyType = "ready"
@@ -1169,6 +1190,7 @@ const (
 	WebhookEventTypeContactDeleted      WebhookEventType = "contact.deleted"
 	WebhookEventTypeContactUpdated      WebhookEventType = "contact.updated"
 	WebhookEventTypeConversationCreated WebhookEventType = "conversation.created"
+	WebhookEventTypeConversationRated   WebhookEventType = "conversation.rated"
 	WebhookEventTypeConversationUpdated WebhookEventType = "conversation.updated"
 	WebhookEventTypeDraftCreated        WebhookEventType = "draft.created"
 	WebhookEventTypeDraftDeleted        WebhookEventType = "draft.deleted"
@@ -1185,6 +1207,8 @@ func (e WebhookEventType) Valid() bool {
 	case WebhookEventTypeContactUpdated:
 		return true
 	case WebhookEventTypeConversationCreated:
+		return true
+	case WebhookEventTypeConversationRated:
 		return true
 	case WebhookEventTypeConversationUpdated:
 		return true
@@ -1630,6 +1654,11 @@ type ClientContact struct {
 
 // ClientConversation defines model for ClientConversation.
 type ClientConversation struct {
+	// CanRate The contact may rate it now with `POST /client/v1/conversations/{id}/rating`: the inbox
+	// asks for ratings (`ask_for_rating`), the conversation is closed, was closed at most 30
+	// days ago and has no rating since it was closed. A message from the contact reopens it,
+	// and the next close allows a new rating.
+	CanRate   bool      `json:"can_rate"`
 	CreatedAt time.Time `json:"created_at"`
 
 	// Feedback `feedback` conversations only.
@@ -1644,9 +1673,12 @@ type ClientConversation struct {
 	// LastReadByMemberAt `live` inboxes only: members have read every message created at or before this time
 	// (the latest read position of any member, as in the `read` realtime frame). Absent
 	// when no member has read the conversation, and in `async` inboxes.
-	LastReadByMemberAt *time.Time         `json:"last_read_by_member_at,omitempty"`
-	Status             ConversationStatus `json:"status"`
-	Subject            string             `json:"subject"`
+	LastReadByMemberAt *time.Time `json:"last_read_by_member_at,omitempty"`
+
+	// Rating The contact's rating since the last close; absent when they have not rated it.
+	Rating  *Rating            `json:"rating,omitempty"`
+	Status  ConversationStatus `json:"status"`
+	Subject string             `json:"subject"`
 
 	// Unread A message from a member is newer than the contact's read cursor.
 	Unread bool `json:"unread"`
@@ -1698,7 +1730,10 @@ type ClientConversationPage struct {
 
 // ClientConversationStatus defines model for ClientConversationStatus.
 type ClientConversationStatus struct {
+	// CanRate As on `ClientConversation`.
+	CanRate   bool               `json:"can_rate"`
 	Id        uuid.UUID          `json:"id"`
+	Rating    *Rating            `json:"rating,omitempty"`
 	Status    ConversationStatus `json:"status"`
 	UpdatedAt time.Time          `json:"updated_at"`
 }
@@ -1773,7 +1808,10 @@ type ClientFeedbackCreateMultipart struct {
 // ClientInbox The inbox's public settings. `live` inboxes carry `presence`; `async` inboxes never do and
 // show `expected_reply_minutes` instead.
 type ClientInbox struct {
-	Branding InboxBranding `json:"branding"`
+	// AskForRating The inbox asks contacts to rate closed conversations; offer it where `can_rate` is true
+	// on a conversation.
+	AskForRating bool          `json:"ask_for_rating"`
+	Branding     InboxBranding `json:"branding"`
 
 	// BusinessHours When `enabled` is false the inbox counts as always open.
 	BusinessHours BusinessHours      `json:"business_hours"`
@@ -1924,6 +1962,13 @@ type ClientPresenceEvent struct {
 
 // ClientPresenceEventType defines model for ClientPresenceEvent.Type.
 type ClientPresenceEventType string
+
+// ClientRatingCreate defines model for ClientRatingCreate.
+type ClientRatingCreate struct {
+	// Comment Optional; blank is the same as absent.
+	Comment *string `json:"comment,omitempty"`
+	Rating  Rating  `json:"rating"`
+}
 
 // ClientRead defines model for ClientRead.
 type ClientRead struct {
@@ -2136,6 +2181,9 @@ type Conversation struct {
 
 	// ChannelId The channel it started on; absent when unknown or removed.
 	ChannelId *uuid.UUID `json:"channel_id,omitempty"`
+
+	// ClosedAt When it was last closed; absent when it never was.
+	ClosedAt  *time.Time `json:"closed_at,omitempty"`
 	ContactId uuid.UUID  `json:"contact_id"`
 	CreatedAt time.Time  `json:"created_at"`
 
@@ -2156,6 +2204,11 @@ type Conversation struct {
 	// LastMessageAt The last `message` to or from the contact.
 	LastMessageAt *time.Time `json:"last_message_at,omitempty"`
 	Priority      Priority   `json:"priority"`
+
+	// Rating The contact's latest rating. A conversation can be rated once each time it is closed, so
+	// this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
+	// has it as a `rated` event message whose body is the comment.
+	Rating *ConversationRating `json:"rating,omitempty"`
 
 	// RelatedConversationId Set when this conversation was opened for a sender who answered in the e-mail thread of
 	// another contact's conversation (a forward, a CC'd colleague): the conversation whose
@@ -2279,6 +2332,9 @@ type ConversationListItem struct {
 	// ChannelId The channel it started on; absent when unknown or removed.
 	ChannelId *uuid.UUID `json:"channel_id,omitempty"`
 
+	// ClosedAt When it was last closed; absent when it never was.
+	ClosedAt *time.Time `json:"closed_at,omitempty"`
+
 	// Contact The conversation's contact, enough for a list row.
 	Contact   ConversationContact `json:"contact"`
 	ContactId uuid.UUID           `json:"contact_id"`
@@ -2304,6 +2360,11 @@ type ConversationListItem struct {
 	// LastMessageAt The last `message` to or from the contact.
 	LastMessageAt *time.Time `json:"last_message_at,omitempty"`
 	Priority      Priority   `json:"priority"`
+
+	// Rating The contact's latest rating. A conversation can be rated once each time it is closed, so
+	// this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
+	// has it as a `rated` event message whose body is the comment.
+	Rating *ConversationRating `json:"rating,omitempty"`
 
 	// RelatedConversationId Set when this conversation was opened for a sender who answered in the e-mail thread of
 	// another contact's conversation (a forward, a CC'd colleague): the conversation whose
@@ -2359,6 +2420,15 @@ type ConversationPage struct {
 
 	// NextCursor Absent on the last page.
 	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// ConversationRating The contact's latest rating. A conversation can be rated once each time it is closed, so
+// this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
+// has it as a `rated` event message whose body is the comment.
+type ConversationRating struct {
+	Comment *string   `json:"comment,omitempty"`
+	RatedAt time.Time `json:"rated_at"`
+	Rating  Rating    `json:"rating"`
 }
 
 // ConversationRead A member's read cursor in a conversation.
@@ -2628,7 +2698,11 @@ type IdentitySecret struct {
 
 // Inbox defines model for Inbox.
 type Inbox struct {
-	Branding InboxBranding `json:"branding"`
+	// AskForRating Contacts may rate a closed conversation (`good` or `bad`, with an optional comment):
+	// the widget and the mobile SDKs offer it, and e-mail contacts get a request with two
+	// links after a member's conversation is closed. Off by default.
+	AskForRating bool          `json:"ask_for_rating"`
+	Branding     InboxBranding `json:"branding"`
 
 	// BusinessHours When `enabled` is false the inbox counts as always open.
 	BusinessHours BusinessHours `json:"business_hours"`
@@ -2688,7 +2762,8 @@ type InboxBranding struct {
 
 // InboxCreate defines model for InboxCreate.
 type InboxCreate struct {
-	Branding *InboxBranding `json:"branding,omitempty"`
+	AskForRating *bool          `json:"ask_for_rating,omitempty"`
+	Branding     *InboxBranding `json:"branding,omitempty"`
 
 	// BusinessHours When `enabled` is false the inbox counts as always open.
 	BusinessHours *BusinessHours `json:"business_hours,omitempty"`
@@ -2767,6 +2842,13 @@ type InboxNotificationsUpdate struct {
 	Events NotificationEventsUpdate `json:"events"`
 }
 
+// InboxRatingStats defines model for InboxRatingStats.
+type InboxRatingStats struct {
+	Bad     int64     `json:"bad"`
+	Good    int64     `json:"good"`
+	InboxId uuid.UUID `json:"inbox_id"`
+}
+
 // InboxRef defines model for InboxRef.
 type InboxRef struct {
 	Id uuid.UUID `json:"id"`
@@ -2774,7 +2856,8 @@ type InboxRef struct {
 
 // InboxUpdate defines model for InboxUpdate.
 type InboxUpdate struct {
-	Branding *InboxBranding `json:"branding,omitempty"`
+	AskForRating *bool          `json:"ask_for_rating,omitempty"`
+	Branding     *InboxBranding `json:"branding,omitempty"`
 
 	// BusinessHours When `enabled` is false the inbox counts as always open.
 	BusinessHours *BusinessHours `json:"business_hours,omitempty"`
@@ -3207,9 +3290,12 @@ type MessageEvent struct {
 	// PreviousInboxId The inbox it moved from (`moved`).
 	PreviousInboxId *uuid.UUID          `json:"previous_inbox_id,omitempty"`
 	PreviousStatus  *ConversationStatus `json:"previous_status,omitempty"`
-	RemovedLabels   *[]uuid.UUID        `json:"removed_labels,omitempty"`
-	Status          *ConversationStatus `json:"status,omitempty"`
-	Type            EventType           `json:"type"`
+
+	// Rating `rated` only: the contact's rating; the message body is their comment.
+	Rating        *Rating             `json:"rating,omitempty"`
+	RemovedLabels *[]uuid.UUID        `json:"removed_labels,omitempty"`
+	Status        *ConversationStatus `json:"status,omitempty"`
+	Type          EventType           `json:"type"`
 }
 
 // MessageKind `message` goes to or comes from the contact, `note` is for members only, `event` records a
@@ -3657,6 +3743,16 @@ type PushSubscriptionList struct {
 	Items []PushSubscription `json:"items"`
 }
 
+// Rating defines model for Rating.
+type Rating string
+
+// RatingStats Ratings contacts gave in the window, in total and per inbox (inboxes without any are left out).
+type RatingStats struct {
+	Bad     int64              `json:"bad"`
+	Good    int64              `json:"good"`
+	Inboxes []InboxRatingStats `json:"inboxes"`
+}
+
 // RealtimeMessage One server message on `/v1/realtime`, told apart by `type`.
 type RealtimeMessage struct {
 	union json.RawMessage
@@ -3745,6 +3841,9 @@ type Stats struct {
 
 	// Members Per member, by member id.
 	Members []MemberStats `json:"members"`
+
+	// Ratings Ratings contacts gave in the window, in total and per inbox (inboxes without any are left out).
+	Ratings RatingStats `json:"ratings"`
 
 	// Replies Replies sent by members.
 	Replies int64     `json:"replies"`
@@ -5002,6 +5101,20 @@ type WebhookConversationCreatedParams struct {
 	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
 }
 
+// WebhookConversationRatedParams defines parameters for WebhookConversationRated.
+type WebhookConversationRatedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
 // WebhookConversationUpdatedParams defines parameters for WebhookConversationUpdated.
 type WebhookConversationUpdatedParams struct {
 	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
@@ -5100,6 +5213,9 @@ type CreateClientMessageJSONRequestBody = ClientMessageCreate
 
 // CreateClientMessageMultipartRequestBody defines body for CreateClientMessage for multipart/form-data ContentType.
 type CreateClientMessageMultipartRequestBody = ClientMessageCreateMultipart
+
+// RateClientConversationJSONRequestBody defines body for RateClientConversation for application/json ContentType.
+type RateClientConversationJSONRequestBody = ClientRatingCreate
 
 // MarkClientConversationReadJSONRequestBody defines body for MarkClientConversationRead for application/json ContentType.
 type MarkClientConversationReadJSONRequestBody = ClientReadCreate
@@ -5241,6 +5357,9 @@ type WebhookContactUpdatedJSONRequestBody = WebhookContactPayload
 
 // WebhookConversationCreatedJSONRequestBody defines body for WebhookConversationCreated for application/json ContentType.
 type WebhookConversationCreatedJSONRequestBody = WebhookConversationPayload
+
+// WebhookConversationRatedJSONRequestBody defines body for WebhookConversationRated for application/json ContentType.
+type WebhookConversationRatedJSONRequestBody = WebhookConversationPayload
 
 // WebhookConversationUpdatedJSONRequestBody defines body for WebhookConversationUpdated for application/json ContentType.
 type WebhookConversationUpdatedJSONRequestBody = WebhookConversationPayload
@@ -6628,6 +6747,34 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /client/v1/conversations/{conversationId}/messages (the `CreateClientMessage` operationId).
 	CreateClientMessage(ctx context.Context, conversationId ConversationId, params *CreateClientMessageParams, body CreateClientMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RateClientConversationWithBody Rate a closed conversation
+	//
+	// Records the contact's rating (`good` or `bad`) and optional comment for a conversation
+	// whose `can_rate` is true. It is stored once per close: members see it in the thread as a
+	// `rated` event and on the conversation, and it sends the `conversation.rated` webhook.
+	// Answers `409 rating_unavailable` when `can_rate` is false (the inbox does not ask for
+	// ratings, the conversation is open, the close is older than 30 days) and
+	// `409 already_rated` when the contact already rated this close.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /client/v1/conversations/{conversationId}/rating (the `RateClientConversation` operationId).
+	RateClientConversationWithBody(ctx context.Context, conversationId ConversationId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RateClientConversation Rate a closed conversation
+	//
+	// Records the contact's rating (`good` or `bad`) and optional comment for a conversation
+	// whose `can_rate` is true. It is stored once per close: members see it in the thread as a
+	// `rated` event and on the conversation, and it sends the `conversation.rated` webhook.
+	// Answers `409 rating_unavailable` when `can_rate` is false (the inbox does not ask for
+	// ratings, the conversation is open, the close is older than 30 days) and
+	// `409 already_rated` when the contact already rated this close.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /client/v1/conversations/{conversationId}/rating (the `RateClientConversation` operationId).
+	RateClientConversation(ctx context.Context, conversationId ConversationId, body RateClientConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// MarkClientConversationReadWithBody Mark a conversation read
 	//
@@ -8192,9 +8339,9 @@ type ClientInterface interface {
 	//
 	// What the team did in the inboxes the caller can see (or in one of them) from `since` until
 	// now: replies sent by members (messages members wrote or drafts they sent; not notes, not
-	// bots' own messages), conversations closed, and the median time from a contact's first
+	// bots' own messages), conversations closed, the median time from a contact's first
 	// message to the first member reply, over the conversations whose first reply falls in the
-	// window. `members` breaks replies and closes down per member, leaving out members with
+	// window, and the ratings contacts gave in it. `members` breaks replies and closes down per member, leaving out members with
 	// neither. Nothing is stored for it; it is counted from the messages each time.
 	//
 	// `since` defaults to the start of today in `timezone` (an IANA name, `UTC` by default); the
@@ -8653,6 +8800,54 @@ func (c *Client) CreateClientMessageWithBody(ctx context.Context, conversationId
 // Corresponds with POST /client/v1/conversations/{conversationId}/messages (the `CreateClientMessage` operationId).
 func (c *Client) CreateClientMessage(ctx context.Context, conversationId ConversationId, params *CreateClientMessageParams, body CreateClientMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateClientMessageRequest(c.Server, conversationId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RateClientConversationWithBody Rate a closed conversation
+//
+// Records the contact's rating (`good` or `bad`) and optional comment for a conversation
+// whose `can_rate` is true. It is stored once per close: members see it in the thread as a
+// `rated` event and on the conversation, and it sends the `conversation.rated` webhook.
+// Answers `409 rating_unavailable` when `can_rate` is false (the inbox does not ask for
+// ratings, the conversation is open, the close is older than 30 days) and
+// `409 already_rated` when the contact already rated this close.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /client/v1/conversations/{conversationId}/rating (the `RateClientConversation` operationId).
+func (c *Client) RateClientConversationWithBody(ctx context.Context, conversationId ConversationId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRateClientConversationRequestWithBody(c.Server, conversationId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RateClientConversation Rate a closed conversation
+//
+// Records the contact's rating (`good` or `bad`) and optional comment for a conversation
+// whose `can_rate` is true. It is stored once per close: members see it in the thread as a
+// `rated` event and on the conversation, and it sends the `conversation.rated` webhook.
+// Answers `409 rating_unavailable` when `can_rate` is false (the inbox does not ask for
+// ratings, the conversation is open, the close is older than 30 days) and
+// `409 already_rated` when the contact already rated this close.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /client/v1/conversations/{conversationId}/rating (the `RateClientConversation` operationId).
+func (c *Client) RateClientConversation(ctx context.Context, conversationId ConversationId, body RateClientConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRateClientConversationRequest(c.Server, conversationId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -11576,9 +11771,9 @@ func (c *Client) GetVapidPublicKey(ctx context.Context, reqEditors ...RequestEdi
 //
 // What the team did in the inboxes the caller can see (or in one of them) from `since` until
 // now: replies sent by members (messages members wrote or drafts they sent; not notes, not
-// bots' own messages), conversations closed, and the median time from a contact's first
+// bots' own messages), conversations closed, the median time from a contact's first
 // message to the first member reply, over the conversations whose first reply falls in the
-// window. `members` breaks replies and closes down per member, leaving out members with
+// window, and the ratings contacts gave in it. `members` breaks replies and closes down per member, leaving out members with
 // neither. Nothing is stored for it; it is counted from the messages each time.
 //
 // `since` defaults to the start of today in `timezone` (an IANA name, `UTC` by default); the
@@ -12412,6 +12607,53 @@ func NewCreateClientMessageRequestWithBody(server string, conversationId Convers
 		}
 
 	}
+
+	return req, nil
+}
+
+// NewRateClientConversationRequest calls the generic RateClientConversation builder with application/json body
+func NewRateClientConversationRequest(server string, conversationId ConversationId, body RateClientConversationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRateClientConversationRequestWithBody(server, conversationId, "application/json", bodyReader)
+}
+
+// NewRateClientConversationRequestWithBody constructs an http.Request for the RateClientConversation method, with any body, and a specified content type
+func NewRateClientConversationRequestWithBody(server string, conversationId ConversationId, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/client/v1/conversations/%s/rating", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -18726,6 +18968,34 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /client/v1/conversations/{conversationId}/messages (the `CreateClientMessage` operationId).
 	CreateClientMessageWithResponse(ctx context.Context, conversationId ConversationId, params *CreateClientMessageParams, body CreateClientMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateClientMessageResponse, error)
 
+	// RateClientConversationWithBodyWithResponse Rate a closed conversation
+	//
+	// Records the contact's rating (`good` or `bad`) and optional comment for a conversation
+	// whose `can_rate` is true. It is stored once per close: members see it in the thread as a
+	// `rated` event and on the conversation, and it sends the `conversation.rated` webhook.
+	// Answers `409 rating_unavailable` when `can_rate` is false (the inbox does not ask for
+	// ratings, the conversation is open, the close is older than 30 days) and
+	// `409 already_rated` when the contact already rated this close.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /client/v1/conversations/{conversationId}/rating (the `RateClientConversation` operationId).
+	RateClientConversationWithBodyWithResponse(ctx context.Context, conversationId ConversationId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RateClientConversationResponse, error)
+
+	// RateClientConversationWithResponse Rate a closed conversation
+	//
+	// Records the contact's rating (`good` or `bad`) and optional comment for a conversation
+	// whose `can_rate` is true. It is stored once per close: members see it in the thread as a
+	// `rated` event and on the conversation, and it sends the `conversation.rated` webhook.
+	// Answers `409 rating_unavailable` when `can_rate` is false (the inbox does not ask for
+	// ratings, the conversation is open, the close is older than 30 days) and
+	// `409 already_rated` when the contact already rated this close.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /client/v1/conversations/{conversationId}/rating (the `RateClientConversation` operationId).
+	RateClientConversationWithResponse(ctx context.Context, conversationId ConversationId, body RateClientConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*RateClientConversationResponse, error)
+
 	// MarkClientConversationReadWithBodyWithResponse Mark a conversation read
 	//
 	// Moves the contact's read cursor to `message_id`, or to the latest message when it is
@@ -20407,9 +20677,9 @@ type ClientWithResponsesInterface interface {
 	//
 	// What the team did in the inboxes the caller can see (or in one of them) from `since` until
 	// now: replies sent by members (messages members wrote or drafts they sent; not notes, not
-	// bots' own messages), conversations closed, and the median time from a contact's first
+	// bots' own messages), conversations closed, the median time from a contact's first
 	// message to the first member reply, over the conversations whose first reply falls in the
-	// window. `members` breaks replies and closes down per member, leaving out members with
+	// window, and the ratings contacts gave in it. `members` breaks replies and closes down per member, leaving out members with
 	// neither. Nothing is stored for it; it is counted from the messages each time.
 	//
 	// `since` defaults to the start of today in `timezone` (an IANA name, `UTC` by default); the
@@ -21223,6 +21493,82 @@ func (r CreateClientMessageResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r CreateClientMessageResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RateClientConversationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON201 the response for an HTTP 201 `application/json` response
+	JSON201 *ClientConversation
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON201 returns the response for an HTTP 201 `application/json` response
+func (r RateClientConversationResponse) GetJSON201() *ClientConversation {
+	return r.JSON201
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r RateClientConversationResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r RateClientConversationResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r RateClientConversationResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r RateClientConversationResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r RateClientConversationResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r RateClientConversationResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RateClientConversationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RateClientConversationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RateClientConversationResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -28436,6 +28782,46 @@ func (c *ClientWithResponses) CreateClientMessageWithResponse(ctx context.Contex
 	return ParseCreateClientMessageResponse(rsp)
 }
 
+// RateClientConversationWithBodyWithResponse Rate a closed conversation
+//
+// Records the contact's rating (`good` or `bad`) and optional comment for a conversation
+// whose `can_rate` is true. It is stored once per close: members see it in the thread as a
+// `rated` event and on the conversation, and it sends the `conversation.rated` webhook.
+// Answers `409 rating_unavailable` when `can_rate` is false (the inbox does not ask for
+// ratings, the conversation is open, the close is older than 30 days) and
+// `409 already_rated` when the contact already rated this close.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /client/v1/conversations/{conversationId}/rating (the `RateClientConversation` operationId).
+func (c *ClientWithResponses) RateClientConversationWithBodyWithResponse(ctx context.Context, conversationId ConversationId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RateClientConversationResponse, error) {
+	rsp, err := c.RateClientConversationWithBody(ctx, conversationId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRateClientConversationResponse(rsp)
+}
+
+// RateClientConversationWithResponse Rate a closed conversation
+//
+// Records the contact's rating (`good` or `bad`) and optional comment for a conversation
+// whose `can_rate` is true. It is stored once per close: members see it in the thread as a
+// `rated` event and on the conversation, and it sends the `conversation.rated` webhook.
+// Answers `409 rating_unavailable` when `can_rate` is false (the inbox does not ask for
+// ratings, the conversation is open, the close is older than 30 days) and
+// `409 already_rated` when the contact already rated this close.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /client/v1/conversations/{conversationId}/rating (the `RateClientConversation` operationId).
+func (c *ClientWithResponses) RateClientConversationWithResponse(ctx context.Context, conversationId ConversationId, body RateClientConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*RateClientConversationResponse, error) {
+	rsp, err := c.RateClientConversation(ctx, conversationId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRateClientConversationResponse(rsp)
+}
+
 // MarkClientConversationReadWithBodyWithResponse Mark a conversation read
 //
 // Moves the contact's read cursor to `message_id`, or to the latest message when it is
@@ -30927,9 +31313,9 @@ func (c *ClientWithResponses) GetVapidPublicKeyWithResponse(ctx context.Context,
 //
 // What the team did in the inboxes the caller can see (or in one of them) from `since` until
 // now: replies sent by members (messages members wrote or drafts they sent; not notes, not
-// bots' own messages), conversations closed, and the median time from a contact's first
+// bots' own messages), conversations closed, the median time from a contact's first
 // message to the first member reply, over the conversations whose first reply falls in the
-// window. `members` breaks replies and closes down per member, leaving out members with
+// window, and the ratings contacts gave in it. `members` breaks replies and closes down per member, leaving out members with
 // neither. Nothing is stored for it; it is counted from the messages each time.
 //
 // `since` defaults to the start of today in `timezone` (an IANA name, `UTC` by default); the
@@ -31754,6 +32140,67 @@ func ParseCreateClientMessageResponse(rsp *http.Response) (*CreateClientMessageR
 			return nil, err
 		}
 		response.ApplicationproblemJSON429 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRateClientConversationResponse parses an HTTP response from a RateClientConversationWithResponse call
+func ParseRateClientConversationResponse(rsp *http.Response) (*RateClientConversationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RateClientConversationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest ClientConversation
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
 
 	}
 
@@ -37267,6 +37714,11 @@ type WebhookInitiatorInterface interface {
 
 	WebhookConversationCreated(ctx context.Context, targetURL string, params *WebhookConversationCreatedParams, body WebhookConversationCreatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// WebhookConversationRatedWithBody fires the conversation.rated webhook with any body
+	WebhookConversationRatedWithBody(ctx context.Context, targetURL string, params *WebhookConversationRatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	WebhookConversationRated(ctx context.Context, targetURL string, params *WebhookConversationRatedParams, body WebhookConversationRatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// WebhookConversationUpdatedWithBody fires the conversation.updated webhook with any body
 	WebhookConversationUpdatedWithBody(ctx context.Context, targetURL string, params *WebhookConversationUpdatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -37360,6 +37812,30 @@ func (p *WebhookInitiator) WebhookConversationCreatedWithBody(ctx context.Contex
 
 func (p *WebhookInitiator) WebhookConversationCreated(ctx context.Context, targetURL string, params *WebhookConversationCreatedParams, body WebhookConversationCreatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewWebhookConversationCreatedWebhookRequest(targetURL, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookConversationRatedWithBody(ctx context.Context, targetURL string, params *WebhookConversationRatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookConversationRatedWebhookRequestWithBody(targetURL, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookConversationRated(ctx context.Context, targetURL string, params *WebhookConversationRatedParams, body WebhookConversationRatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookConversationRatedWebhookRequest(targetURL, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -37649,6 +38125,67 @@ func NewWebhookConversationCreatedWebhookRequest(targetURL string, params *Webho
 
 // NewWebhookConversationCreatedWebhookRequestWithBody builds a POST request for the conversation.created webhook with any body
 func NewWebhookConversationCreatedWebhookRequestWithBody(targetURL string, params *WebhookConversationCreatedParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+	_ = err
+
+	reqURL, err := url.Parse(targetURL)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, reqURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithOptions("simple", false, "webhook-id", params.WebhookId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-id", headerParam0)
+
+		var headerParam1 string
+
+		headerParam1, err = runtime.StyleParamWithOptions("simple", false, "webhook-timestamp", params.WebhookTimestamp, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-timestamp", headerParam1)
+
+		var headerParam2 string
+
+		headerParam2, err = runtime.StyleParamWithOptions("simple", false, "webhook-signature", params.WebhookSignature, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-signature", headerParam2)
+
+	}
+	return req, nil
+}
+
+// NewWebhookConversationRatedWebhookRequest builds a application/json POST request for the conversation.rated webhook
+func NewWebhookConversationRatedWebhookRequest(targetURL string, params *WebhookConversationRatedParams, body WebhookConversationRatedJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewWebhookConversationRatedWebhookRequestWithBody(targetURL, params, "application/json", bodyReader)
+}
+
+// NewWebhookConversationRatedWebhookRequestWithBody builds a POST request for the conversation.rated webhook with any body
+func NewWebhookConversationRatedWebhookRequestWithBody(targetURL string, params *WebhookConversationRatedParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 	_ = err
 

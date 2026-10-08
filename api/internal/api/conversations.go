@@ -173,6 +173,7 @@ func conversationBody(c store.Conversation, labels []uuid.UUID) oas.Conversation
 		Kind: oas.ConversationKind(c.Kind), Feedback: conversationFeedback(c), Status: oas.ConversationStatus(c.Status), SnoozeUntil: c.SnoozeUntil, Priority: oas.Priority(c.Priority), Spam: c.Spam,
 		AssigneeId: c.AssigneeID, Labels: labels, LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt,
 		CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt, RelatedConversationId: c.RelatedConversationID,
+		ClosedAt: c.ClosedAt, Rating: conversationRating(c),
 	}
 }
 

@@ -81,6 +81,20 @@ Status: done.
 
 Accept: a new conversation in a `live` inbox notifies a member's phone within seconds.
 
+## M6.1 — Satisfaction ratings
+
+Status: in progress; API done, widget, mobile SDKs and panel next. Decisions in `architecture.md` ›
+Satisfaction ratings.
+
+- An inbox setting; contacts rate a closed conversation `good` or `bad` with an optional comment,
+  once per close, in the widget, the mobile SDKs and through two links in an e-mail.
+- The rating in the panel thread and on the conversation, a `conversation.rated` webhook, ratings
+  per inbox in the team stats.
+
+Accept: a widget visitor and an e-mail contact each rate a closed conversation; the panel shows
+both, the host backend receives `conversation.rated`, and a second rating of the same close is
+refused.
+
 ## M7 — First internal rollout
 
 Status: in progress.

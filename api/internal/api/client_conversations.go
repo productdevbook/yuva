@@ -100,7 +100,12 @@ func clientConversation(ctx context.Context, q *store.Queries, cp contactPrincip
 	return c, err
 }
 
-func clientConversationItems(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, rows []store.Conversation) ([]oas.ClientConversation, error) {
+func clientConversationItems(ctx context.Context, q *store.Queries, cp contactPrincipal, rows []store.Conversation, now time.Time) ([]oas.ClientConversation, error) {
+	workspaceID := cp.workspaceID
+	in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: workspaceID, ID: cp.inboxID})
+	if err != nil {
+		return nil, err
+	}
 	ids := make([]uuid.UUID, len(rows))
 	for i, r := range rows {
 		ids[i] = r.ID
@@ -133,6 +138,7 @@ func clientConversationItems(ctx context.Context, q *store.Queries, workspaceID 
 	for i, r := range rows {
 		out[i] = clientConversationBody(r)
 		out[i].LastMessage, out[i].Unread, out[i].LastReadByMemberAt = byConv[r.ID], unread[r.ID], readAt[r.ID]
+		out[i].CanRate, out[i].Rating = ratingState(in.AskForRating, r.Status, r.ClosedAt, r.RatedAt, r.Rating, now)
 	}
 	return out, nil
 }
@@ -164,7 +170,7 @@ func (s *Server) ListClientConversations(ctx context.Context, req oas.ListClient
 		c := encodeCursor(pos, last.ID)
 		next = &c
 	}
-	items, err := clientConversationItems(ctx, s.st.Queries, cp.workspaceID, rows)
+	items, err := clientConversationItems(ctx, s.st.Queries, cp, rows, s.now())
 	if err != nil {
 		return nil, err
 	}
@@ -177,7 +183,7 @@ func (s *Server) GetClientConversation(ctx context.Context, req oas.GetClientCon
 	if err != nil {
 		return nil, err
 	}
-	items, err := clientConversationItems(ctx, s.st.Queries, cp.workspaceID, []store.Conversation{c})
+	items, err := clientConversationItems(ctx, s.st.Queries, cp, []store.Conversation{c}, s.now())
 	if err != nil {
 		return nil, err
 	}
@@ -433,7 +439,7 @@ func (s *Server) clientConversationCreated(ctx context.Context, cp contactPrinci
 	if err != nil {
 		return out, err
 	}
-	items, err := clientConversationItems(ctx, s.st.Queries, cp.workspaceID, []store.Conversation{c})
+	items, err := clientConversationItems(ctx, s.st.Queries, cp, []store.Conversation{c}, s.now())
 	if err != nil {
 		return out, err
 	}

@@ -14,10 +14,10 @@ import (
 
 const createInbox = `-- name: CreateInbox :one
 INSERT INTO inboxes (id, workspace_id, name, slug, branding, default_locale, timezone, mode,
-                     expected_reply_minutes, business_hours, identity_secret, created_at, updated_at)
+                     expected_reply_minutes, business_hours, identity_secret, ask_for_rating, created_at, updated_at)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8,
-        $9, $10, $11, $12, $12)
-RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at
+        $9, $10, $11, coalesce($12::bool, false), $13, $13)
+RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating
 `
 
 type CreateInboxParams struct {
@@ -32,6 +32,7 @@ type CreateInboxParams struct {
 	ExpectedReplyMinutes *int32
 	BusinessHours        []byte
 	IdentitySecret       []byte
+	AskForRating         *bool
 	Now                  time.Time
 }
 
@@ -48,6 +49,7 @@ func (q *Queries) CreateInbox(ctx context.Context, arg CreateInboxParams) (Inbox
 		arg.ExpectedReplyMinutes,
 		arg.BusinessHours,
 		arg.IdentitySecret,
+		arg.AskForRating,
 		arg.Now,
 	)
 	var i Inbox
@@ -65,6 +67,7 @@ func (q *Queries) CreateInbox(ctx context.Context, arg CreateInboxParams) (Inbox
 		&i.IdentitySecret,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.AskForRating,
 	)
 	return i, err
 }
@@ -87,7 +90,7 @@ func (q *Queries) DeleteInbox(ctx context.Context, arg DeleteInboxParams) (int64
 }
 
 const getInbox = `-- name: GetInbox :one
-SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at FROM inboxes WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating FROM inboxes WHERE workspace_id = $1 AND id = $2
 `
 
 type GetInboxParams struct {
@@ -112,6 +115,7 @@ func (q *Queries) GetInbox(ctx context.Context, arg GetInboxParams) (Inbox, erro
 		&i.IdentitySecret,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.AskForRating,
 	)
 	return i, err
 }
@@ -245,7 +249,7 @@ func (q *Queries) ListInboxStorageKeys(ctx context.Context, arg ListInboxStorage
 }
 
 const listInboxes = `-- name: ListInboxes :many
-SELECT i.id, i.workspace_id, i.name, i.slug, i.branding, i.default_locale, i.timezone, i.mode, i.expected_reply_minutes, i.business_hours, i.identity_secret, i.created_at, i.updated_at FROM inboxes i
+SELECT i.id, i.workspace_id, i.name, i.slug, i.branding, i.default_locale, i.timezone, i.mode, i.expected_reply_minutes, i.business_hours, i.identity_secret, i.created_at, i.updated_at, i.ask_for_rating FROM inboxes i
 WHERE i.workspace_id = $1
   AND ($2::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
@@ -282,6 +286,7 @@ func (q *Queries) ListInboxes(ctx context.Context, arg ListInboxesParams) ([]Inb
 			&i.IdentitySecret,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.AskForRating,
 		); err != nil {
 			return nil, err
 		}
@@ -323,7 +328,7 @@ func (q *Queries) ListViewerInboxIDs(ctx context.Context, arg ListViewerInboxIDs
 }
 
 const lockInbox = `-- name: LockInbox :one
-SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at FROM inboxes WHERE workspace_id = $1 AND id = $2 FOR UPDATE
+SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating FROM inboxes WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
 
 type LockInboxParams struct {
@@ -348,6 +353,7 @@ func (q *Queries) LockInbox(ctx context.Context, arg LockInboxParams) (Inbox, er
 		&i.IdentitySecret,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.AskForRating,
 	)
 	return i, err
 }
@@ -398,9 +404,9 @@ func (q *Queries) SetInboxIdentitySecret(ctx context.Context, arg SetInboxIdenti
 const updateInbox = `-- name: UpdateInbox :one
 UPDATE inboxes SET name = $1, slug = $2, branding = $3, default_locale = $4,
     timezone = $5, mode = $6, expected_reply_minutes = $7,
-    business_hours = $8, updated_at = $9
-WHERE workspace_id = $10 AND id = $11
-RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at
+    business_hours = $8, ask_for_rating = $9, updated_at = $10
+WHERE workspace_id = $11 AND id = $12
+RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating
 `
 
 type UpdateInboxParams struct {
@@ -412,6 +418,7 @@ type UpdateInboxParams struct {
 	Mode                 string
 	ExpectedReplyMinutes *int32
 	BusinessHours        []byte
+	AskForRating         bool
 	Now                  time.Time
 	WorkspaceID          uuid.UUID
 	ID                   uuid.UUID
@@ -427,6 +434,7 @@ func (q *Queries) UpdateInbox(ctx context.Context, arg UpdateInboxParams) (Inbox
 		arg.Mode,
 		arg.ExpectedReplyMinutes,
 		arg.BusinessHours,
+		arg.AskForRating,
 		arg.Now,
 		arg.WorkspaceID,
 		arg.ID,
@@ -446,6 +454,7 @@ func (q *Queries) UpdateInbox(ctx context.Context, arg UpdateInboxParams) (Inbox
 		&i.IdentitySecret,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.AskForRating,
 	)
 	return i, err
 }
