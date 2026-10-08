@@ -429,6 +429,10 @@ msgstr "Hata"
 msgid "Business hours"
 msgstr "Çalışma saatleri"
 
+#: src/components/auth/AuthLayout.tsx
+msgid "Can I schedule a newsletter for each subscriber?"
+msgstr "Her abone için ayrı bülten planlayabilir miyim?"
+
 #: src/components/common/index.tsx
 msgid "Cancel"
 msgstr "Vazgeç"
@@ -606,6 +610,10 @@ msgstr "Oluşturulma: {created}"
 msgid "Created {created} by {by}"
 msgstr "Oluşturulma: {created}, oluşturan: {by}"
 
+#: src/components/auth/AuthLayout.tsx
+msgid "Custom domain still shows as unverified"
+msgstr "Özel alan adı hâlâ doğrulanmamış görünüyor"
+
 #: src/components/settings/WorkspaceSettings.tsx
 msgid "Danger zone"
 msgstr "Tehlikeli bölge"
@@ -711,6 +719,7 @@ msgstr "{0} dosyasını indir"
 msgid "Download the original e-mail (.eml)"
 msgstr "Özgün e-postayı indir (.eml)"
 
+#: src/components/auth/AuthLayout.tsx
 #: src/components/common/text.ts
 #: src/components/settings/NotificationsSettings.tsx
 msgid "E-mail"
@@ -733,6 +742,10 @@ msgstr "E-posta içeriği"
 #: src/components/settings/NotificationsSettings.tsx
 msgid "E-mail only"
 msgstr "Yalnızca e-posta"
+
+#: src/components/auth/AuthLayout.tsx
+msgid "E-mail, live chat and in-app messages"
+msgstr "E-posta, canlı sohbet ve uygulama içi mesajlar"
 
 #: src/components/settings/NotificationsSettings.tsx
 msgid "E-mail: {label}"
@@ -805,6 +818,10 @@ msgstr "Olaylar"
 #: src/components/settings/WebhooksSettings.tsx
 msgid "Every attempt has failed since {failingSince}. After 24 hours of failures Yuva turns the endpoint off."
 msgstr "{failingSince} tarihinden beri her deneme başarısız. 24 saat boyunca başarısız olursa Yuva uç noktayı kapatır."
+
+#: src/components/auth/AuthLayout.tsx
+msgid "Every customer conversation, in one place."
+msgstr "Tüm müşteri konuşmaları tek bir yerde."
 
 #: src/components/settings/NotificationsSettings.tsx
 msgid "Every inbox follows the settings above."
@@ -947,6 +964,10 @@ msgstr "Bir saat sonra"
 #: src/components/inbox/Feedback.tsx
 msgid "In the app and by e-mail"
 msgstr "Uygulamada ve e-postayla"
+
+#: src/components/auth/AuthLayout.tsx
+msgid "In-app"
+msgstr "Uygulama içi"
 
 #: src/components/inbox/ConversationList.tsx
 #: src/components/settings/InboxSettings.tsx
@@ -1092,6 +1113,10 @@ msgstr "En fazla 20 kaynak yazın."
 #: src/components/common/text.ts
 msgid "Live"
 msgstr "Canlı"
+
+#: src/components/auth/AuthLayout.tsx
+msgid "Live chat"
+msgstr "Canlı sohbet"
 
 #: src/components/AppShell.tsx
 msgid "Live chat shows nobody available. Notifications pause, except for conversations assigned to you."
@@ -1417,6 +1442,10 @@ msgstr "Spam değil"
 msgid "Note"
 msgstr "Not"
 
+#: src/components/auth/AuthLayout.tsx
+msgid "Notes stopped syncing after the update"
+msgstr "Güncellemeden sonra notlar eşitlenmiyor"
+
 #: src/components/settings/NotificationsSettings.tsx
 msgid "Nothing"
 msgstr "Hiçbiri"
@@ -1469,6 +1498,10 @@ msgstr "Bu cihazda açık."
 #: src/components/settings/NotificationsSettings.tsx
 msgid "On iPhone and iPad, add Yuva to your Home Screen with Share › Add to Home Screen, then open it from there to turn on notifications."
 msgstr "iPhone ve iPad'de Paylaş › Ana Ekrana Ekle ile Yuva'yı ana ekrana ekle, bildirimleri açmak için oradan aç."
+
+#: src/components/auth/AuthLayout.tsx
+msgid "One inbox"
+msgstr "Tek gelen kutusu"
 
 #: src/components/settings/InboxesSettings.tsx
 msgid "One inbox per product or brand. Each has its own channels, hours and team."
@@ -1774,6 +1807,10 @@ msgstr "Yanıt"
 #: src/components/inbox/Composer.tsx
 msgid "Reply by e-mail to {emailTo}"
 msgstr "{emailTo} adresine e-postayla yanıtla"
+
+#: src/components/auth/AuthLayout.tsx
+msgid "Reply, assign and follow up together, across all of your products."
+msgstr "Tüm ürünleriniz için birlikte yanıtlayın, atayın ve takip edin."
 
 #: src/components/settings/NotificationsSettings.tsx
 msgid "Reset to defaults"
@@ -2437,6 +2474,10 @@ msgid "Visitors can chat without an identity token from your backend."
 msgstr "Ziyaretçiler, sunucunuzdan bir kimlik belirteci olmadan da sohbet edebilir."
 
 #: src/components/auth/SignInPage.tsx
+msgid "We e-mail you a one-time code. No password to remember."
+msgstr "Size e-postayla tek kullanımlık bir kod göndeririz. Hatırlamanız gereken bir parola yok."
+
+#: src/components/auth/SignInPage.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
 msgstr "<0>{email}</0> adresine 6 haneli bir kod gönderdik. Kod 10 dakika geçerlidir."
 
@@ -2605,6 +2646,7 @@ msgid "Your session has ended. Sign in again."
 msgstr "Oturumunuz sona erdi. Yeniden giriş yapın."
 
 #: src/components/AppShell.tsx
+#: src/components/auth/AuthLayout.tsx
 msgid "Yuva {version}"
 msgstr "Yuva {version}"
 

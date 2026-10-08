@@ -20,6 +20,7 @@ import {
 import { Fragment, useCallback, useEffect, useState } from "react"
 import { Link, Navigate, Outlet, useLocation, useNavigate } from "react-router"
 
+import { AuthLayout } from "@/components/auth/AuthLayout"
 import { EmptyState, PersonAvatar } from "@/components/common"
 import { DeleteAccountButton } from "@/components/common/DeleteAccount"
 import { FEEDBACK_CATEGORIES, useEnumText } from "@/components/common/text"
@@ -272,7 +273,7 @@ function WorkspaceSwitcher() {
   const name = membership.workspace.name
   const header = (
     <>
-      <img src="/favicon.svg" alt="" className="size-7 rounded-md" />
+      <img src="/favicon.svg" alt="" className="size-7" />
       <span className="min-w-0 flex-1 truncate text-left font-semibold">{name}</span>
     </>
   )
@@ -519,31 +520,33 @@ function NoWorkspace({ email }: { email: string }) {
   const signOut = useSignOut()
   const navigate = useNavigate()
   return (
-    <>
-      <header className="flex h-12 items-center justify-end px-3">
-        <LanguageMenu />
-      </header>
-      <EmptyState icon={BuildingIcon} title={<Trans>You are not a member of any workspace</Trans>}>
-        <p>
-          <Trans>Ask an owner or admin of your workspace to invite you.</Trans>
-        </p>
-        <p className="mt-1 text-xs">{email}</p>
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={async () => {
-              await signOut()
-              navigate("/sign-in", { replace: true })
-            }}
-          >
-            <LogOutIcon />
-            <Trans>Sign out</Trans>
-          </Button>
-          <DeleteAccountButton email={email} />
-        </div>
-      </EmptyState>
-    </>
+    <AuthLayout>
+      <span className="mb-5 grid size-11 place-items-center rounded-full bg-muted text-muted-foreground">
+        <BuildingIcon className="size-5" />
+      </span>
+      <h1 className="text-[1.75rem] leading-tight font-semibold tracking-[-0.03em] sm:text-[2rem]">
+        <Trans>You are not a member of any workspace</Trans>
+      </h1>
+      <p className="mt-3 leading-relaxed text-muted-foreground">
+        <Trans>Ask an owner or admin of your workspace to invite you.</Trans>
+      </p>
+      <p className="mt-4 rounded-xl border bg-muted/50 px-3.5 py-2.5 text-sm break-words">{email}</p>
+      <div className="mt-8 flex flex-wrap items-center gap-2">
+        <Button
+          type="button"
+          variant="outline"
+          className="h-10 rounded-full px-4"
+          onClick={async () => {
+            await signOut()
+            navigate("/sign-in", { replace: true })
+          }}
+        >
+          <LogOutIcon />
+          <Trans>Sign out</Trans>
+        </Button>
+        <DeleteAccountButton email={email} className="h-10 rounded-full px-4" />
+      </div>
+    </AuthLayout>
   )
 }
 
@@ -553,32 +556,25 @@ function FullPage({ children }: { children: React.ReactNode }) {
 
 function WorkspacePicker({ me, onChoose }: { me: Me; onChoose: (id: string) => void }) {
   return (
-    <FullPage>
-      <header className="flex h-12 items-center justify-end px-3">
-        <LanguageMenu />
-      </header>
-      <main className="flex flex-1 items-start justify-center px-4 pt-[12vh]">
-        <div className="w-full max-w-sm">
-          <h1 className="mb-6 text-center text-xl font-semibold">
-            <Trans>Choose a workspace</Trans>
-          </h1>
-          <ul className="flex flex-col gap-2">
-            {me.memberships.map((m) => (
-              <li key={m.workspace.id}>
-                <button
-                  type="button"
-                  onClick={() => onChoose(m.workspace.id)}
-                  className="flex w-full items-center gap-3 rounded-lg border bg-card px-4 py-3 text-left transition-colors hover:bg-muted"
-                >
-                  <BuildingIcon className="size-5 text-muted-foreground" />
-                  <span className="flex-1 truncate font-medium">{m.workspace.name}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </main>
-    </FullPage>
+    <AuthLayout>
+      <h1 className="mb-6 text-[1.75rem] leading-tight font-semibold tracking-[-0.03em] sm:text-[2rem]">
+        <Trans>Choose a workspace</Trans>
+      </h1>
+      <ul className="flex flex-col gap-2">
+        {me.memberships.map((m) => (
+          <li key={m.workspace.id}>
+            <button
+              type="button"
+              onClick={() => onChoose(m.workspace.id)}
+              className="flex w-full items-center gap-3 rounded-2xl border bg-card px-4 py-3.5 text-left transition-colors hover:border-input hover:bg-muted/60"
+            >
+              <BuildingIcon className="size-5 text-muted-foreground" />
+              <span className="flex-1 truncate font-medium">{m.workspace.name}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </AuthLayout>
   )
 }
 
@@ -625,13 +621,7 @@ export function Gate() {
     )
   }
   if (!me.data) return <Navigate to={signInPath(location.pathname, location.search)} replace />
-  if (me.data.memberships.length === 0) {
-    return (
-      <FullPage>
-        <NoWorkspace email={me.data.person.email} />
-      </FullPage>
-    )
-  }
+  if (me.data.memberships.length === 0) return <NoWorkspace email={me.data.person.email} />
   const membership = pickMembership(me.data, linkedMember ? linked : chosen)
   if (!membership) return <WorkspacePicker me={me.data} onChoose={choose} />
   return (
