@@ -111,3 +111,18 @@ Status: planned; plan in issue #17.
 
 Accept: Claude Code and claude.ai triage an inbox and draft replies a member sends from the panel;
 a prompt-injection e-mail sends nothing; a headless chat works with the panel turned off.
+
+## M10 — Native apps for members (0.0.4)
+
+Status: planned; iOS in issue #18, Android in issue #19.
+
+- iOS 27 (Swift 6.4, SwiftUI) and Android 16+ (Compose, Material 3 Expressive) apps for members,
+  on the App Store and Google Play. One build signs in to any Yuva server: the member picks
+  useyuva.com or enters their own server's URL, and signs in through OAuth (M9) with a code or a
+  passkey on the server's own page.
+- Push through a relay we run, with end-to-end encrypted payloads so the relay never sees content;
+  self-hosted servers use it without setup. Quick reply from the notification.
+- Offline cache and outbox, tablet and foldable layouts, English, Turkish and German.
+
+Accept: the same store build works against useyuva.com and a self-hosted server; a push reaches a
+real phone through the relay within seconds and the relay holds no message text.
