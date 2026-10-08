@@ -5,21 +5,14 @@ import { messages as tr } from "../locales/tr/panel";
 import { launcherOf, readStored, writeStored, type PanelController, type PanelHost } from "../types";
 import {
   ApiError,
-  call,
   type ClientAttachment,
   type ClientContact,
   type ClientConversation,
-  type ClientConversationCreated,
-  type ClientConversationPage,
   type ClientInbox,
   type ClientMessage,
-  type ClientMessagePage,
   type ClientRealtimeMessage,
-  type ClientSession,
-  type ClientSessionInfo,
-  type Request,
-} from "./api";
-import { Realtime } from "./realtime";
+} from "../client/api";
+import { createYuvaClient, randomId, type YuvaClient } from "../client/client";
 import { styles } from "./styles";
 import { richText } from "./text";
 
@@ -70,21 +63,6 @@ function iconButton(icon: string, label: string, onClick: () => void, className 
   return button;
 }
 
-function randomId(): string {
-  if (typeof crypto.randomUUID === "function") return crypto.randomUUID();
-  return Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, "0")).join("");
-}
-
-function jwtSubject(token: string): string | null {
-  try {
-    const part = (token.split(".")[1] ?? "").replace(/-/g, "+").replace(/_/g, "/");
-    const payload = JSON.parse(atob(part)) as { sub?: unknown };
-    return typeof payload.sub === "string" ? payload.sub : null;
-  } catch {
-    return null;
-  }
-}
-
 const time = (value: string) => Date.parse(value);
 const byCreated = (a: ClientMessage, b: ClientMessage) => time(a.created_at) - time(b.created_at);
 const byActivity = (a: ClientConversation, b: ClientConversation) =>
@@ -95,8 +73,7 @@ const isImage = (a: ClientAttachment) => /^image\/(png|jpeg|gif|webp)$/.test(a.c
 export class Chat implements PanelController {
   #host: PanelHost;
   #i18n!: I18n;
-  #realtime: Realtime | null = null;
-  #token: string | null = null;
+  #client: YuvaClient;
   #inbox: ClientInbox | null = null;
   #contact: ClientContact | null = null;
   #phase: "loading" | "ready" | "error" = "loading";
@@ -138,6 +115,19 @@ export class Chat implements PanelController {
 
   constructor(host: PanelHost) {
     this.#host = host;
+    const { server, channel } = host.config();
+    this.#client = createYuvaClient({ server, channel: channel ?? "", identityToken: () => host.identityToken() });
+    this.#client.on("event", (message) => this.#event(message));
+    this.#client.on("connection", ({ state, attempt }) => {
+      if (state !== "reconnecting") return;
+      this.#reconnecting = attempt > 0;
+      this.#renderBanner();
+    });
+    this.#client.on("session", ({ session, renewed }) => {
+      this.#setInbox(session.inbox);
+      this.#contact = session.contact;
+      if (renewed) void this.#reload();
+    });
     this.#setLocale();
     this.#live.setAttribute("aria-live", "polite");
     this.#scroll.addEventListener("scroll", () => {
@@ -200,7 +190,7 @@ export class Chat implements PanelController {
       void this.#start();
       return;
     }
-    if (this.#phase === "ready") void (this.#token ? this.#refreshSession() : this.#preview().then(() => this.#render()).catch(() => undefined));
+    if (this.#phase === "ready") void (this.#client.token ? this.#refreshSession() : this.#preview().then(() => this.#render()).catch(() => undefined));
     this.#render();
     this.#scrollToEnd();
     this.#markRead();
@@ -217,21 +207,15 @@ export class Chat implements PanelController {
   }
 
   async signOut(): Promise<void> {
-    const { channel, server } = this.#host.config();
-    const token = this.#token;
+    const signingOut = this.#client.signOut();
     this.#reset();
-    if (channel) {
-      const stored = readStored(channel);
-      delete stored.session;
-      writeStored(channel, stored);
-    }
-    if (token) await call(server, "/client/v1/session", { method: "DELETE", token }).catch(() => undefined);
+    await signingOut;
     if (this.#host.isOpen()) void this.#start();
     else this.#render();
   }
 
   destroy(): void {
-    this.#realtime?.stop();
+    this.#client.reset();
     this.#stopTyping();
     document.removeEventListener("visibilitychange", this.#onVisible);
     window.removeEventListener("online", this.#onVisible);
@@ -239,11 +223,9 @@ export class Chat implements PanelController {
   }
 
   #reset(): void {
-    this.#realtime?.stop();
-    this.#realtime = null;
+    this.#client.reset();
     this.#starting = null;
     this.#beginning = null;
-    this.#token = null;
     this.#inbox = null;
     this.#contact = null;
     this.#phase = "loading";
@@ -257,7 +239,7 @@ export class Chat implements PanelController {
 
   #onVisible = () => {
     if (document.visibilityState !== "visible") return;
-    this.#realtime?.nudge();
+    this.#client.reconnect();
     this.#markRead();
     void this.#refreshInbox();
   };
@@ -304,13 +286,12 @@ export class Chat implements PanelController {
 
   async #preview(): Promise<void> {
     const inbox = await this.#fetchInbox();
-    if (!this.#token) this.#setInbox(inbox);
+    if (!this.#client.token) this.#setInbox(inbox);
   }
 
   #fetchInbox(): Promise<ClientInbox> {
-    const { channel, server } = this.#host.config();
-    if (!channel) throw new ApiError(0, "not_configured");
-    return call<ClientInbox>(server, `/client/v1/channels/${encodeURIComponent(channel)}`);
+    if (!this.#host.config().channel) throw new ApiError(0, "not_configured");
+    return this.#client.channelSettings();
   }
 
   #setInbox(inbox: ClientInbox): void {
@@ -331,7 +312,7 @@ export class Chat implements PanelController {
     }
   }
 
-  #refusal(error: unknown, channelRequest = !this.#token): boolean {
+  #refusal(error: unknown, channelRequest = !this.#client.token): boolean {
     const refused = error instanceof ApiError && (error.code === "origin_not_allowed" || (error.status === 404 && channelRequest));
     if (refused) this.#host.refused();
     return refused;
@@ -339,86 +320,24 @@ export class Chat implements PanelController {
 
   #begin(): Promise<void> {
     this.#beginning ??= (async () => {
-      await this.#session(false);
+      await this.#client.start();
       await this.#loadConversations();
-      this.#connect();
+      await this.#client.connect();
     })().finally(() => {
       this.#beginning = null;
     });
     return this.#beginning;
   }
 
-  async #session(fresh: boolean): Promise<void> {
-    const { channel, server } = this.#host.config();
-    if (!channel) throw new ApiError(0, "not_configured");
-    const stored = readStored(channel);
-    const identity = await this.#host.identityToken();
-    const subject = identity ? jwtSubject(identity) : null;
-    const saved = stored.session;
-    if (!fresh && saved && saved.sub === subject && time(saved.expires_at) > Date.now() + 60_000) {
-      try {
-        const info = await call<ClientSessionInfo>(server, "/client/v1/session", { token: saved.token });
-        this.#apply(info, saved.token, subject);
-        return;
-      } catch (error) {
-        if (!(error instanceof ApiError) || (error.status !== 401 && error.status !== 403)) throw error;
-      }
-    }
-    const session = await call<ClientSession>(server, "/client/v1/session", {
-      method: "POST",
-      json: { channel_key: channel, identity_token: identity ?? undefined, visitor_id: stored.visitor_id },
-    });
-    this.#apply(session, session.token, subject);
-  }
-
-  #apply(info: ClientSessionInfo, token: string, subject: string | null): void {
-    const { channel } = this.#host.config();
-    this.#token = token;
-    this.#inbox = info.inbox;
-    this.#contact = info.contact;
-    const launcher = launcherOf(info.inbox);
-    this.#host.setLauncher(launcher);
-    if (!channel) return;
-    const stored = readStored(channel);
-    stored.session = { token, expires_at: info.expires_at, sub: subject };
-    if (info.visitor_id) stored.visitor_id = info.visitor_id;
-    else if (info.contact.identified) delete stored.visitor_id;
-    stored.launcher = launcher;
-    writeStored(channel, stored);
-  }
-
   async #refreshSession(): Promise<void> {
     try {
-      const info = await this.#authed<ClientSessionInfo>("/client/v1/session");
-      this.#inbox = info.inbox;
-      this.#contact = info.contact;
+      await this.#client.refresh();
       this.#render();
     } catch {}
   }
 
-  async #renew(): Promise<void> {
-    await this.#session(true);
-    this.#realtime?.stop();
-    this.#realtime?.reset();
-    this.#connect();
-    await this.#reload();
-  }
-
-  async #authed<T>(path: string, request: Request = {}, retry = true): Promise<T> {
-    const { server } = this.#host.config();
-    if (!this.#token) await this.#begin();
-    try {
-      return await call<T>(server, path, { ...request, token: this.#token });
-    } catch (error) {
-      if (!retry || !(error instanceof ApiError) || error.status !== 401) throw error;
-      await this.#renew();
-      return this.#authed<T>(path, request, false);
-    }
-  }
-
   async #loadConversations(more = false): Promise<void> {
-    const cursor = more && this.#conversationCursor ? `&cursor=${encodeURIComponent(this.#conversationCursor)}` : "";
-    const page = await this.#authed<ClientConversationPage>(`/client/v1/conversations?limit=50${cursor}`);
+    const page = await this.#client.listConversations({ limit: 50, cursor: more ? this.#conversationCursor : undefined });
     if (!more) this.#conversations.clear();
     for (const conversation of page.items) this.#conversations.set(conversation.id, conversation);
     this.#conversationCursor = page.next_cursor;
@@ -446,8 +365,7 @@ export class Chat implements PanelController {
     thread.loading = true;
     const before = this.#scroll.scrollHeight - this.#scroll.scrollTop;
     try {
-      const cursor = older && thread.cursor ? `&cursor=${encodeURIComponent(thread.cursor)}` : "";
-      const page = await this.#authed<ClientMessagePage>(`/client/v1/conversations/${id}/messages?order=desc&limit=30${cursor}`);
+      const page = await this.#client.listMessages(id, { order: "desc", limit: 30, cursor: older ? thread.cursor : undefined });
       const known = new Set(thread.messages.map((m) => m.id));
       thread.messages = [...thread.messages, ...page.items.filter((m) => !known.has(m.id))].sort(byCreated);
       thread.cursor = page.next_cursor;
@@ -459,21 +377,6 @@ export class Chat implements PanelController {
       this.#render();
       this.#scroll.scrollTop = this.#scroll.scrollHeight - before;
     }
-  }
-
-  #connect(): void {
-    const { server } = this.#host.config();
-    this.#realtime ??= new Realtime(server, {
-      token: () => this.#token,
-      event: (message) => this.#event(message),
-      sessionEnded: () => void this.#renew().catch(() => this.#realtime?.nudge()),
-      reconnecting: (attempt) => {
-        this.#reconnecting = attempt > 0;
-        this.#renderBanner();
-        if (attempt === 2) void this.#authed("/client/v1/session").catch(() => undefined);
-      },
-    });
-    this.#realtime.start();
   }
 
   #event(message: ClientRealtimeMessage): void {
@@ -542,7 +445,8 @@ export class Chat implements PanelController {
     if (message.client_id) this.#pending = this.#pending.filter((p) => p.client_id !== message.client_id);
     const conversation = this.#conversations.get(id);
     if (!conversation) {
-      void this.#authed<ClientConversation>(`/client/v1/conversations/${id}`)
+      void this.#client
+        .getConversation(id)
         .then((c) => {
           this.#conversations.set(c.id, c);
           this.#syncUnread();
@@ -591,7 +495,7 @@ export class Chat implements PanelController {
     if (!id || !conversation?.unread) return;
     this.#conversations.set(id, { ...conversation, unread: false });
     this.#syncUnread();
-    void this.#authed(`/client/v1/conversations/${id}/read`, { method: "POST", json: {} }).catch(() => {
+    void this.#client.markRead(id).catch(() => {
       const current = this.#conversations.get(id);
       if (current) this.#conversations.set(id, { ...current, unread: true });
       this.#syncUnread();
@@ -625,7 +529,7 @@ export class Chat implements PanelController {
     }
     if (Date.now() - this.#typingSentAt > 3000) {
       this.#typingSentAt = Date.now();
-      void this.#authed(`/client/v1/conversations/${id}/typing`, { method: "POST", json: { typing: true } }).catch(() => undefined);
+      void this.#client.setTyping(id, true).catch(() => undefined);
     }
     if (this.#typingIdle) clearTimeout(this.#typingIdle);
     this.#typingIdle = setTimeout(() => this.#stopTyping(), 4000);
@@ -637,7 +541,7 @@ export class Chat implements PanelController {
     if (this.#typingSentAt === 0) return;
     this.#typingSentAt = 0;
     const id = this.#view?.kind === "thread" ? this.#view.id : null;
-    if (id) void this.#authed(`/client/v1/conversations/${id}/typing`, { method: "POST", json: { typing: false } }).catch(() => undefined);
+    if (id) void this.#client.setTyping(id, false).catch(() => undefined);
   }
 
   async #send(): Promise<void> {
@@ -662,24 +566,17 @@ export class Chat implements PanelController {
   async #deliver(pending: Pending): Promise<void> {
     pending.state = "sending";
     this.#render();
-    let request: Request;
-    if (pending.files.length > 0) {
-      const form = new FormData();
-      if (pending.body) form.append("body", pending.body);
-      form.append("client_id", pending.client_id);
-      for (const file of pending.files) form.append("files", file, file.name || "pasted-image.png");
-      request = { method: "POST", form };
-    } else request = { method: "POST", json: { body: pending.body, client_id: pending.client_id } };
+    const input = { body: pending.body, files: pending.files, client_id: pending.client_id };
     try {
       if (pending.conversation === null) {
-        const created = await this.#authed<ClientConversationCreated>("/client/v1/conversations", request);
+        const created = await this.#client.startConversation(input);
         const id = created.conversation.id;
         if (!this.#conversations.has(id)) this.#conversations.set(id, created.conversation);
         if (!this.#threads.has(id)) this.#threads.set(id, { messages: [], complete: true, loading: false });
         if (this.#view?.kind === "thread" && this.#view.id === null) this.#view = { kind: "thread", id };
         this.#upsertMessage(created.message, false);
       } else {
-        const message = await this.#authed<ClientMessage>(`/client/v1/conversations/${pending.conversation}/messages`, request);
+        const message = await this.#client.sendMessage(pending.conversation, input);
         this.#upsertMessage(message, true);
       }
       this.#pending = this.#pending.filter((p) => p !== pending);
@@ -700,7 +597,7 @@ export class Chat implements PanelController {
       return;
     }
     try {
-      this.#contact = await this.#authed<ClientContact>("/client/v1/contact/email", { method: "PUT", json: { email } });
+      this.#contact = await this.#client.setEmail(email);
       this.#emailSaved = true;
       this.#emailError = "";
     } catch {
@@ -714,7 +611,7 @@ export class Chat implements PanelController {
     if (cached) return Promise.resolve(cached);
     let load = this.#blobLoads.get(attachment.id);
     if (!load) {
-      load = this.#authed<Blob>(`/client/v1/attachments/${attachment.id}`, { blob: true }).then((blob) => {
+      load = this.#client.attachment(attachment.id).then((blob) => {
         const url = URL.createObjectURL(blob);
         this.#blobs.set(attachment.id, url);
         return url;

@@ -1,8 +1,9 @@
+import type { IdentityTokenSource } from "./client/client";
 import type { components } from "./schema.gen";
 
-export type Layout = "launcher" | "embedded";
+export type { IdentityTokenSource };
 
-export type IdentityTokenSource = () => string | null | undefined | Promise<string | null | undefined>;
+export type Layout = "launcher" | "embedded";
 
 export interface LauncherStyle {
   position: "right" | "left";

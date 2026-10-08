@@ -16,11 +16,12 @@ export class Realtime {
 
   constructor(
     readonly server: string,
+    readonly socketClass: typeof WebSocket,
     readonly handlers: RealtimeHandlers,
   ) {}
 
   get connected(): boolean {
-    return this.#socket?.readyState === WebSocket.OPEN;
+    return this.#socket?.readyState === 1;
   }
 
   start(): void {
@@ -51,12 +52,12 @@ export class Realtime {
   #connect(): void {
     const token = this.handlers.token();
     if (!token || this.#stopped) return;
-    const url = new URL(`${this.server}/client/v1/realtime`, location.href);
+    const url = new URL(`${this.server}/client/v1/realtime`, globalThis.location?.href);
     url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
     if (this.#lastEventId > 0) url.searchParams.set("last_event_id", String(this.#lastEventId));
     let socket: WebSocket;
     try {
-      socket = new WebSocket(url, ["yuva", `yuva.token.${token}`]);
+      socket = new this.socketClass(url, ["yuva", `yuva.token.${token}`]);
     } catch {
       this.#schedule();
       return;

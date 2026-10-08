@@ -16,6 +16,8 @@ export type ClientReadState = Schemas["ClientReadState"];
 export type ClientRealtimeMessage = Schemas["ClientRealtimeMessage"];
 export type Problem = Schemas["Problem"];
 
+export type Fetch = (url: string, init: RequestInit) => Promise<Response>;
+
 export class ApiError extends Error {
   constructor(
     readonly status: number,
@@ -28,23 +30,28 @@ export class ApiError extends Error {
 export interface Request {
   method?: string;
   json?: unknown;
-  form?: FormData;
+  body?: Blob;
+  headers?: Record<string, string>;
   token?: string | null;
   blob?: boolean;
 }
 
-export async function call<T>(server: string, path: string, { method = "GET", json, form, token, blob }: Request = {}): Promise<T> {
-  const headers: Record<string, string> = {};
+export async function call<T>(
+  fetcher: Fetch,
+  server: string,
+  path: string,
+  { method = "GET", json, body, headers = {}, token, blob }: Request = {},
+): Promise<T> {
+  headers = { ...headers };
   if (token) headers.Authorization = `Bearer ${token}`;
-  let body: BodyInit | undefined;
-  if (form) body = form;
-  else if (json !== undefined) {
+  let payload: BodyInit | undefined = body;
+  if (json !== undefined) {
     headers["Content-Type"] = "application/json";
-    body = JSON.stringify(json);
+    payload = JSON.stringify(json);
   }
   let response: Response;
   try {
-    response = await fetch(server + path, { method, headers, body, credentials: "omit" });
+    response = await fetcher(server + path, { method, headers, body: payload, credentials: "omit" });
   } catch {
     throw new ApiError(0, "network");
   }
