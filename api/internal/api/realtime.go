@@ -128,12 +128,14 @@ func (s *Server) stream(conn *websocket.Conn, r *http.Request, p principal, resu
 			return websocket.StatusInternalError, "internal", err
 		}
 		s.presenceHint(ctx, p.workspaceID)
+		s.memberPresence(ctx, p.workspaceID, memberID)
 		defer func() {
 			bg := context.WithoutCancel(ctx)
 			if err := s.st.CloseConnection(bg, store.CloseConnectionParams{WorkspaceID: p.workspaceID, ID: connID}); err != nil {
 				s.log.WarnContext(bg, "realtime close", slog.Any("error", err))
 			}
 			s.presenceHint(bg, p.workspaceID)
+			s.memberPresence(bg, p.workspaceID, memberID)
 		}()
 	}
 	go s.readMemberFrames(ctx, cancel, conn, p.workspaceID, connID)
@@ -286,6 +288,8 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 	switch e.Type {
 	case realtime.PresenceHint, realtime.ChannelUpdated:
 		return false, nil
+	case realtime.MemberPresence:
+		return !f.p.isKey(), nil
 	case realtime.ContactUpdated, realtime.ContactDeleted:
 		if requireScope(f.p, oas.ContactsRead) != nil {
 			return false, nil

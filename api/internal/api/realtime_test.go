@@ -91,7 +91,31 @@ func (c *client) dial(query string) *wsClient {
 	return w
 }
 
+// teamSignals are the notices about teammates that every member connection gets; tests that do
+// not look for them skip them.
+var teamSignals = map[string]bool{"member.presence": true, "viewing": true}
+
 func (w *wsClient) next() wsMessage {
+	w.t.Helper()
+	for {
+		m := w.nextAny()
+		if !teamSignals[m.Type] {
+			return m
+		}
+	}
+}
+
+// nextOf returns the next message of the given type, skipping others.
+func (w *wsClient) nextOf(typ string) wsMessage {
+	w.t.Helper()
+	for {
+		if m := w.nextAny(); m.Type == typ {
+			return m
+		}
+	}
+}
+
+func (w *wsClient) nextAny() wsMessage {
 	w.t.Helper()
 	select {
 	case m := <-w.msgs:

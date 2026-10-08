@@ -759,7 +759,10 @@ paths:
     get:
       operationId: listMembers
       summary: List members
-      description: "Scope: `inboxes:read`."
+      description: |
+        Every member of the workspace with their `availability` and whether they are `online`.
+
+        Scope: `inboxes:read`.
       tags: [workspace]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
@@ -3184,7 +3187,9 @@ paths:
         admins and API keys (an agent learns of a new inbox from `inbox_access.changed`);
         `inbox.deleted` reaches everyone who could see the inbox. `conversation.read` reaches only
         the connections of the member who read. `typing` (a contact or another member typing) has no
-        `id`, is not stored and is not replayed.
+        `id`, is not stored and is not replayed. `member.presence` (a member of the workspace opened
+        or closed the panel or changed `availability`) reaches member sessions only, also has no
+        `id` and is not replayed.
 
         A member session's open connection also makes the member available to contacts of `live`
         inboxes they can access (see `availability` on `/v1/me`).
@@ -4679,7 +4684,7 @@ components:
           $ref: "#/components/schemas/Availability"
     Member:
       type: object
-      required: [id, person_id, email, name, role, created_at]
+      required: [id, person_id, email, name, role, availability, online, created_at]
       properties:
         id:
           type: string
@@ -4693,9 +4698,48 @@ components:
           type: string
         role:
           $ref: "#/components/schemas/Role"
+        availability:
+          $ref: "#/components/schemas/Availability"
+        online:
+          type: boolean
+          description: |
+            The member has a `/v1/realtime` connection seen in the last 75 seconds (any panel tab
+            or device). `member.presence` events on `/v1/realtime` report changes.
         created_at:
           type: string
           format: date-time
+    MemberPresence:
+      type: object
+      required: [member_id, availability, online]
+      properties:
+        member_id:
+          type: string
+          format: uuid
+        availability:
+          $ref: "#/components/schemas/Availability"
+        online:
+          type: boolean
+    MemberPresenceEvent:
+      type: object
+      description: |
+        A member's `availability` or `online` changed (they opened or closed the panel, or set
+        themselves away). Carries the member's current state, so it may repeat the previous one.
+        Not stored: it has no `id` and is not replayed; reload `/v1/members` after a reconnect.
+        A server process that stops without closing its connections sends none: such members
+        turn offline in `/v1/members` 75 seconds later. Sent to member sessions only.
+      required: [type, workspace_id, created_at, data]
+      properties:
+        type:
+          type: string
+          enum: [member.presence]
+        workspace_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/MemberPresence"
     MemberList:
       type: object
       required: [items]
@@ -7281,6 +7325,7 @@ components:
         - $ref: "#/components/schemas/InboxAccessChangedEvent"
         - $ref: "#/components/schemas/ConversationReadEvent"
         - $ref: "#/components/schemas/TypingEvent"
+        - $ref: "#/components/schemas/MemberPresenceEvent"
         - $ref: "#/components/schemas/RealtimeReady"
         - $ref: "#/components/schemas/RealtimeResyncRequired"
       discriminator:
@@ -7302,6 +7347,7 @@ components:
           inbox_access.changed: "#/components/schemas/InboxAccessChangedEvent"
           conversation.read: "#/components/schemas/ConversationReadEvent"
           typing: "#/components/schemas/TypingEvent"
+          member.presence: "#/components/schemas/MemberPresenceEvent"
           ready: "#/components/schemas/RealtimeReady"
           resync_required: "#/components/schemas/RealtimeResyncRequired"
     Availability:

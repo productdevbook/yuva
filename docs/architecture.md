@@ -86,7 +86,9 @@ panel (embedded SPA) ─────────► /v1 + WS ──────�
   Typing and presence notices are not stored: they travel as the payload of a second `NOTIFY`
   channel, have no id and are never replayed. Each open realtime connection is a row in
   `realtime_connections`, seen on every heartbeat; presence is read from the rows seen in the last
-  75 seconds.
+  75 seconds. Members see their teammates the same way: `/v1/members` reports each member's
+  `availability` and whether they are `online`, and a `member.presence` notice reaches the
+  workspace's member connections when a member connects, disconnects or changes availability.
 - The panel and the widget bundles are embedded with `go:embed`; one binary serves everything.
 - Configuration through environment variables. Secrets stored in the database (SMTP passwords,
   identity secrets, webhook secrets) are encrypted with AES-256-GCM under a master key,

@@ -340,6 +340,9 @@ func (s *Server) ListInboxMembers(ctx context.Context, req oas.ListInboxMembersR
 	for _, r := range rows {
 		out.Items = append(out.Items, memberBody(store.GetMemberRow(r)))
 	}
+	if err := s.withPresence(ctx, s.st.Queries, p.workspaceID, out.Items); err != nil {
+		return nil, err
+	}
 	return out, nil
 }
 

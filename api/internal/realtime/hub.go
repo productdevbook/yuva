@@ -34,6 +34,7 @@ const (
 	ConversationRead    = "conversation.read"
 	Typing              = "typing"
 	PresenceHint        = "presence.hint"
+	MemberPresence      = "member.presence"
 	ChannelUpdated      = "channel.updated"
 )
 

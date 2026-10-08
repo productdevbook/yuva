@@ -102,3 +102,21 @@ func (s *Server) signal(ctx context.Context, e realtime.Event) {
 func (s *Server) presenceHint(ctx context.Context, workspaceID uuid.UUID) {
 	s.signal(ctx, realtime.Event{Type: realtime.PresenceHint, WorkspaceID: workspaceID, Data: json.RawMessage("{}")})
 }
+
+// memberPresence tells the workspace's members a member's current availability and whether they
+// are online.
+func (s *Server) memberPresence(ctx context.Context, workspaceID, memberID uuid.UUID) {
+	rows, err := s.st.ListMemberPresence(context.WithoutCancel(ctx), store.ListMemberPresenceParams{
+		WorkspaceID: workspaceID, Ids: []uuid.UUID{memberID}, FreshAfter: s.now().Add(-presenceFresh),
+	})
+	if err != nil {
+		s.log.WarnContext(ctx, "member presence", "error", err)
+		return
+	}
+	if len(rows) == 0 {
+		return
+	}
+	s.signal(ctx, realtime.Event{Type: realtime.MemberPresence, WorkspaceID: workspaceID, Data: mustJSON(oas.MemberPresence{
+		MemberId: memberID, Availability: oas.Availability(rows[0].Availability), Online: rows[0].Online,
+	})})
+}

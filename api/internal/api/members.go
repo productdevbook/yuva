@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"net/http"
+	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -19,6 +20,30 @@ func memberBody(m store.GetMemberRow) oas.Member {
 		Id: m.ID, PersonId: m.PersonID, Email: oas.Email(m.Email), Name: m.Name,
 		Role: oas.Role(m.Role), CreatedAt: m.CreatedAt,
 	}
+}
+
+// withPresence fills in each member's availability and whether they are online.
+func (s *Server) withPresence(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, items []oas.Member) error {
+	ids := make([]uuid.UUID, len(items))
+	for i, m := range items {
+		ids[i] = m.Id
+	}
+	rows, err := q.ListMemberPresence(ctx, store.ListMemberPresenceParams{WorkspaceID: workspaceID, Ids: ids, FreshAfter: s.now().Add(-presenceFresh)})
+	if err != nil {
+		return err
+	}
+	byID := make(map[uuid.UUID]store.ListMemberPresenceRow, len(rows))
+	for _, r := range rows {
+		byID[r.ID] = r
+	}
+	for i := range items {
+		r := byID[items[i].Id]
+		items[i].Availability, items[i].Online = oas.Availability(r.Availability), r.Online
+		if items[i].Availability == "" {
+			items[i].Availability = oas.Auto
+		}
+	}
+	return nil
 }
 
 func (s *Server) GetWorkspace(ctx context.Context, _ oas.GetWorkspaceRequestObject) (oas.GetWorkspaceResponseObject, error) {
@@ -42,6 +67,9 @@ func (s *Server) ListMembers(ctx context.Context, _ oas.ListMembersRequestObject
 	for _, r := range rows {
 		out.Items = append(out.Items, memberBody(store.GetMemberRow(r)))
 	}
+	if err := s.withPresence(ctx, s.st.Queries, principalFrom(ctx).workspaceID, out.Items); err != nil {
+		return nil, err
+	}
 	return out, nil
 }
 
@@ -53,7 +81,11 @@ func (s *Server) GetMember(ctx context.Context, req oas.GetMemberRequestObject) 
 	if err != nil {
 		return nil, err
 	}
-	return oas.GetMember200JSONResponse(memberBody(m)), nil
+	out := []oas.Member{memberBody(m)}
+	if err := s.withPresence(ctx, s.st.Queries, m.WorkspaceID, out); err != nil {
+		return nil, err
+	}
+	return oas.GetMember200JSONResponse(out[0]), nil
 }
 
 func (s *Server) UpdateMember(ctx context.Context, req oas.UpdateMemberRequestObject) (oas.UpdateMemberResponseObject, error) {
@@ -89,7 +121,11 @@ func (s *Server) UpdateMember(ctx context.Context, req oas.UpdateMemberRequestOb
 	if err != nil {
 		return nil, err
 	}
-	return oas.UpdateMember200JSONResponse(memberBody(out)), nil
+	body := []oas.Member{memberBody(out)}
+	if err := s.withPresence(ctx, s.st.Queries, p.workspaceID, body); err != nil {
+		return nil, err
+	}
+	return oas.UpdateMember200JSONResponse(body[0]), nil
 }
 
 func (s *Server) RemoveMember(ctx context.Context, req oas.RemoveMemberRequestObject) (oas.RemoveMemberResponseObject, error) {

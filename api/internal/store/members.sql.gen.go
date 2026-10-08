@@ -131,6 +131,47 @@ func (q *Queries) GetMemberByPerson(ctx context.Context, arg GetMemberByPersonPa
 	return i, err
 }
 
+const listMemberPresence = `-- name: ListMemberPresence :many
+SELECT m.id, p.availability, EXISTS (
+    SELECT 1 FROM realtime_connections rc
+    WHERE rc.workspace_id = m.workspace_id AND rc.member_id = m.id AND rc.seen_at > $1
+)::bool AS online
+FROM members m JOIN people p ON p.id = m.person_id
+WHERE m.workspace_id = $2 AND m.id = ANY($3::uuid[])
+`
+
+type ListMemberPresenceParams struct {
+	FreshAfter  time.Time
+	WorkspaceID uuid.UUID
+	Ids         []uuid.UUID
+}
+
+type ListMemberPresenceRow struct {
+	ID           uuid.UUID
+	Availability string
+	Online       bool
+}
+
+func (q *Queries) ListMemberPresence(ctx context.Context, arg ListMemberPresenceParams) ([]ListMemberPresenceRow, error) {
+	rows, err := q.db.Query(ctx, listMemberPresence, arg.FreshAfter, arg.WorkspaceID, arg.Ids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListMemberPresenceRow
+	for rows.Next() {
+		var i ListMemberPresenceRow
+		if err := rows.Scan(&i.ID, &i.Availability, &i.Online); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listMembers = `-- name: ListMembers :many
 SELECT m.id, m.workspace_id, m.person_id, m.role, m.created_at, p.email, p.name
 FROM members m JOIN people p ON p.id = m.person_id
@@ -212,6 +253,36 @@ func (q *Queries) ListMemberships(ctx context.Context, personID uuid.UUID) ([]Li
 			&i.WorkspaceRetentionDays,
 			&i.WorkspaceBotsMaySend,
 		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listPersonMembers = `-- name: ListPersonMembers :many
+SELECT m.workspace_id, m.id FROM members m JOIN workspaces w ON w.id = m.workspace_id
+WHERE m.person_id = $1 AND w.deleted_at IS NULL
+`
+
+type ListPersonMembersRow struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) ListPersonMembers(ctx context.Context, personID uuid.UUID) ([]ListPersonMembersRow, error) {
+	rows, err := q.db.Query(ctx, listPersonMembers, personID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListPersonMembersRow
+	for rows.Next() {
+		var i ListPersonMembersRow
+		if err := rows.Scan(&i.WorkspaceID, &i.ID); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

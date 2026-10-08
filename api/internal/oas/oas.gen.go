@@ -671,6 +671,21 @@ func (e Locale) Valid() bool {
 	}
 }
 
+// Defines values for MemberPresenceEventType.
+const (
+	MemberPresenceEventTypeMemberPresence MemberPresenceEventType = "member.presence"
+)
+
+// Valid indicates whether the value is a known member of the MemberPresenceEventType enum.
+func (e MemberPresenceEventType) Valid() bool {
+	switch e {
+	case MemberPresenceEventTypeMemberPresence:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for MessageCreateKind.
 const (
 	MessageCreateKindMessage MessageCreateKind = "message"
@@ -2887,12 +2902,19 @@ type MeUpdate struct {
 
 // Member defines model for Member.
 type Member struct {
-	CreatedAt time.Time `json:"created_at"`
+	// Availability `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
+	// hours. `away`: never shown as available.
+	Availability Availability `json:"availability"`
+	CreatedAt    time.Time    `json:"created_at"`
 
 	// Email Examples: owner@example.com
-	Email    Email     `json:"email"`
-	Id       uuid.UUID `json:"id"`
-	Name     string    `json:"name"`
+	Email Email     `json:"email"`
+	Id    uuid.UUID `json:"id"`
+	Name  string    `json:"name"`
+
+	// Online The member has a `/v1/realtime` connection seen in the last 75 seconds (any panel tab
+	// or device). `member.presence` events on `/v1/realtime` report changes.
+	Online   bool      `json:"online"`
 	PersonId uuid.UUID `json:"person_id"`
 	Role     Role      `json:"role"`
 }
@@ -2901,6 +2923,30 @@ type Member struct {
 type MemberList struct {
 	Items []Member `json:"items"`
 }
+
+// MemberPresence defines model for MemberPresence.
+type MemberPresence struct {
+	// Availability `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
+	// hours. `away`: never shown as available.
+	Availability Availability `json:"availability"`
+	MemberId     uuid.UUID    `json:"member_id"`
+	Online       bool         `json:"online"`
+}
+
+// MemberPresenceEvent A member's `availability` or `online` changed (they opened or closed the panel, or set
+// themselves away). Carries the member's current state, so it may repeat the previous one.
+// Not stored: it has no `id` and is not replayed; reload `/v1/members` after a reconnect.
+// A server process that stops without closing its connections sends none: such members
+// turn offline in `/v1/members` 75 seconds later. Sent to member sessions only.
+type MemberPresenceEvent struct {
+	CreatedAt   time.Time               `json:"created_at"`
+	Data        MemberPresence          `json:"data"`
+	Type        MemberPresenceEventType `json:"type"`
+	WorkspaceId uuid.UUID               `json:"workspace_id"`
+}
+
+// MemberPresenceEventType defines model for MemberPresenceEvent.Type.
+type MemberPresenceEventType string
 
 // MemberUpdate defines model for MemberUpdate.
 type MemberUpdate struct {
@@ -5729,6 +5775,32 @@ func (t *RealtimeMessage) MergeTypingEvent(v TypingEvent) error {
 	return err
 }
 
+// AsMemberPresenceEvent returns the union data inside the RealtimeMessage as a MemberPresenceEvent
+func (t RealtimeMessage) AsMemberPresenceEvent() (MemberPresenceEvent, error) {
+	var body MemberPresenceEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromMemberPresenceEvent overwrites any union data inside the RealtimeMessage as the provided MemberPresenceEvent
+func (t *RealtimeMessage) FromMemberPresenceEvent(v MemberPresenceEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeMemberPresenceEvent performs a merge with any union data inside the RealtimeMessage, using the provided MemberPresenceEvent
+func (t *RealtimeMessage) MergeMemberPresenceEvent(v MemberPresenceEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsRealtimeReady returns the union data inside the RealtimeMessage as a RealtimeReady
 func (t RealtimeMessage) AsRealtimeReady() (RealtimeReady, error) {
 	var body RealtimeReady
@@ -5821,6 +5893,8 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsInboxUpdatedEvent()
 	case "inbox_access.changed":
 		return t.AsInboxAccessChangedEvent()
+	case "member.presence":
+		return t.AsMemberPresenceEvent()
 	case "message.created":
 		return t.AsMessageCreatedEvent()
 	case "message.updated":
