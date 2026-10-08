@@ -658,6 +658,7 @@ func (s *Server) changeConversation(ctx context.Context, q *store.Queries, event
 		return out, err
 	}
 	out = conversationBody(updated, want)
+	s.scheduleRatingRequest(events, cur, updated, now)
 	if conversationChanged(cur, updated) || len(added) > 0 || len(removed) > 0 {
 		events.conversation(realtime.ConversationUpdated, updated, out)
 	}

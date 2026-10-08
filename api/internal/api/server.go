@@ -226,6 +226,8 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /ingress/ses", s.serveIngressSES)
 	mux.HandleFunc("GET "+emailConfirmPath, s.serveEmailConfirm)
 	mux.HandleFunc("POST "+emailConfirmPath, s.serveEmailConfirmPost)
+	mux.HandleFunc("GET "+ratingPathPrefix+"{token}", s.serveRatingPage)
+	mux.HandleFunc("POST "+ratingPathPrefix+"{token}", s.serveRatingPost)
 	mux.HandleFunc("GET /.well-known/oauth-authorization-server", s.serveOAuthServerMetadata)
 	mux.HandleFunc("GET /.well-known/oauth-protected-resource", s.serveResourceMetadata(s.apiResource(), "Yuva"))
 	mux.HandleFunc("GET /.well-known/oauth-protected-resource/mcp", s.serveResourceMetadata(s.mcpResource(), "Yuva MCP"))

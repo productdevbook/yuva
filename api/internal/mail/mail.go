@@ -38,6 +38,7 @@ var templatesFS embed.FS
 var templates = map[string]*template.Template{
 	"en": template.Must(template.ParseFS(templatesFS, "templates/en/*.txt")),
 	"tr": template.Must(template.ParseFS(templatesFS, "templates/tr/*.txt")),
+	"de": template.Must(template.ParseFS(templatesFS, "templates/de/*.txt")),
 }
 
 func Render(name, locale string, data any) (Message, error) {
@@ -47,6 +48,9 @@ func Render(name, locale string, data any) (Message, error) {
 		if t, ok = templates[strings.ToLower(base)]; !ok {
 			t = templates["en"]
 		}
+	}
+	if t.Lookup(name+".txt") == nil {
+		t = templates["en"]
 	}
 	var buf bytes.Buffer
 	if err := t.ExecuteTemplate(&buf, name+".txt", data); err != nil {

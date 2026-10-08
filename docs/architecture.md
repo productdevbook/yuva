@@ -718,6 +718,17 @@ rating. A close can be rated for 30 days. Ratings are not stored for spam.
   `POST /client/v1/conversations/{id}/rating`.
 - Members see it on the conversation (`rating`, `closed_at`) and in the thread; `conversation.rated`
   goes to webhooks; `/v1/stats` counts ratings given in its window, in total and per inbox.
+- E-mail contacts: two minutes after a member or API key closes an e-mail conversation (time to
+  undo), a River job checks that it is still closed and unrated, a member or bot replied in it and
+  the address is deliverable, then sends one automatic reply in the thread (`Auto-Submitted`, in
+  the contact's language, else the inbox's) with two links, `/r/{token}?rating=good|bad`, once per
+  close. The token seals the workspace, the conversation and the close time under the master key,
+  so nothing is stored for it and a later close makes it invalid; the request is a message in the
+  thread, so members can see the links.
+- `/r/{token}` is a page the server renders itself: no scripts or external assets, the inbox's
+  name and branding colour, English, Turkish or German by the inbox's language. Opening it stores
+  nothing, since mail scanners open links: it shows the chosen rating preselected and a comment
+  field, and only its POST rates.
 
 ### Storage
 
