@@ -11,7 +11,7 @@ export type NavGroup = { key: string; title: string; items: NavItem[] }
 const groups = [
   { key: "start", slugs: ["install", "configuration", "operations"] },
   { key: "channels", slugs: ["email", "widget", "mobile"] },
-  { key: "integrate", slugs: ["identity", "webhooks", "api"] },
+  { key: "integrate", slugs: ["identity", "webhooks", "headless", "mcp", "api"] },
   { key: "project", slugs: ["architecture", "roadmap"] },
 ] as const
 

@@ -45,6 +45,7 @@ delivery after resolving the name (`YUVA_WEBHOOK_ALLOW_PRIVATE` lifts this for d
 | `feedback.created` | Feedback arrived from an app or `POST /v1/feedback` | `message`, `conversation`, `contact` |
 | `contact.updated` | A contact changed | `contact` |
 | `contact.deleted` | A contact was deleted, or merged into another (`merged_into_id`, which now has its external ids) | `contact` with the external ids it had |
+| `draft.created`, `draft.updated`, `draft.deleted` | A bot or member wrote, edited or discarded a [draft](headless.md#a-bot-that-answers-with-drafts); nothing was delivered. Sending it emits `message.created` | `message` (the draft), `conversation`, `contact` |
 
 The full schemas are in the `webhooks` section of [openapi/openapi.yaml](../openapi/openapi.yaml).
 
