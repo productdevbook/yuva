@@ -115,6 +115,7 @@ export class Chat implements PanelController {
   #typingIdle: ReturnType<typeof setTimeout> | null = null;
   #blobs = new Map<string, string>();
   #blobLoads = new Map<string, Promise<string>>();
+  #avatars = new Map<string, boolean>();
   #emailSaved = false;
   #emailError = "";
   #connectedBefore = false;
@@ -924,6 +925,28 @@ export class Chat implements PanelController {
     this.#markRead();
   }
 
+  #avatar(author: ClientMessage["author"]): HTMLSpanElement {
+    const avatar = el("span", "avatar", author.initials || "");
+    const url = author.avatar_url;
+    const state = url ? this.#avatars.get(url) : false;
+    if (!url || state === false) return avatar;
+    const img = el("img");
+    img.alt = "";
+    img.referrerPolicy = "no-referrer";
+    if (state) {
+      img.src = url;
+      avatar.replaceChildren(img);
+      return avatar;
+    }
+    img.addEventListener("load", () => {
+      this.#avatars.set(url, true);
+      if (avatar.isConnected) avatar.replaceChildren(img);
+    });
+    img.addEventListener("error", () => this.#avatars.set(url, false));
+    img.src = url;
+    return avatar;
+  }
+
   #renderThread(): void {
     const view = this.#view;
     if (view?.kind !== "thread") return;
@@ -958,7 +981,7 @@ export class Chat implements PanelController {
       if (!mine && starts && message.author.name) nodes.push(el("div", "author", message.author.name));
       const row = el("div", `row ${mine ? "mine" : "theirs"}${starts && i > 0 ? " group-gap" : ""}`);
       if (!mine) {
-        const avatar = el("span", "avatar", message.author.initials || "");
+        const avatar = this.#avatar(message.author);
         if (!ends) avatar.style.visibility = "hidden";
         row.append(avatar);
       }

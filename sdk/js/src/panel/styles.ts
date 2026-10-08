@@ -96,6 +96,7 @@ export const styles = `
 .row { display: flex; gap: 8px; align-items: flex-end; max-inline-size: 85%; }
 .row.mine { align-self: flex-end; }
 .row.theirs .avatar { margin-block-end: 2px; }
+.avatar img { inline-size: 100%; block-size: 100%; border-radius: 50%; object-fit: cover; }
 .group-gap { margin-block-start: 8px; }
 .author { margin: 6px 0 2px; margin-inline-start: 36px; color: var(--yuva-muted); font-size: 12px; }
 .bubble {
