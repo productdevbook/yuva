@@ -443,7 +443,9 @@ export interface paths {
         };
         /**
          * List members
-         * @description Scope: `inboxes:read`.
+         * @description Every member of the workspace with their `availability` and whether they are `online`.
+         *
+         *     Scope: `inboxes:read`.
          */
         get: operations["listMembers"];
         put?: never;
@@ -1007,13 +1009,43 @@ export interface paths {
         /**
          * Count open conversations
          * @description Open conversations in the inboxes the caller can see: all of them, those assigned to the
-         *     calling member (`0` for API keys), unassigned ones, and per inbox and per label. Inboxes and
-         *     labels without open conversations are left out of their lists. Conversations flagged as
+         *     calling member (`0` for API keys), unassigned ones, and per inbox, per assignee and per
+         *     label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
          *     spam are counted only in `spam`.
          *
          *     Scope: `conversations:read`.
          */
         get: operations["getConversationCounts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Team activity since a moment
+         * @description What the team did in the inboxes the caller can see (or in one of them) from `since` until
+         *     now: replies sent by members (messages members wrote or drafts they sent; not notes, not
+         *     bots' own messages), conversations closed, and the median time from a contact's first
+         *     message to the first member reply, over the conversations whose first reply falls in the
+         *     window. `members` breaks replies and closes down per member, leaving out members with
+         *     neither. Nothing is stored for it; it is counted from the messages each time.
+         *
+         *     `since` defaults to the start of today in `timezone` (an IANA name, `UTC` by default); the
+         *     panel sends the browser's zone. It must be in the past and at most 366 days ago.
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["getStats"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1805,6 +1837,65 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Events after a cursor
+         * @description The events `/v1/realtime` and webhooks carry, in id order, for callers that poll instead of
+         *     holding a WebSocket open. Each event is filtered exactly as the caller's realtime stream is:
+         *     agents and API keys limited to inboxes see the events of the inboxes they can access, and
+         *     `contact.updated` and `contact.deleted` also need `contacts:read`.
+         *
+         *     Pass the last event id you handled as `after` (`0` starts at the oldest kept event). Keep
+         *     `next` and send it as `after` on the next call; `next` is the last event returned, or a
+         *     later id when the events after it are ones the caller does not see. `has_more` is true
+         *     when more events follow, so call again at once; otherwise poll later. A page can hold
+         *     fewer than `limit` events while `has_more` is true.
+         *
+         *     Events are kept 7 days. An `after` older than the oldest kept event answers
+         *     `410 cursor_expired`: some events after it are gone. Reload what you need over the lists,
+         *     then continue from `GET /v1/events/latest`'s `id`.
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["listEvents"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/events/latest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Current position of the event feed
+         * @description The id of the workspace's newest event (`0` when there is none), whether or not the caller
+         *     may see it. Pass it as `after` to `GET /v1/events` to receive only events from now on,
+         *     after loading the current state over the lists.
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["getLatestEvent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/realtime": {
         parameters: {
             query?: never;
@@ -1816,7 +1907,7 @@ export interface paths {
          * Live events (WebSocket)
          * @description Upgrades to a WebSocket that streams the workspace's events as they are committed. Members
          *     authenticate with the session cookie; the `Origin` header must then be the server's public
-         *     origin (or one of the configured WebAuthn origins). API keys send
+         *     origin (or one of the configured WebAuthn origins). API keys and OAuth access tokens send
          *     `Authorization: Bearer <key>`. Browsers cannot set headers on a WebSocket, so the workspace
          *     can also be named with the `workspace_id` query parameter instead of `Yuva-Workspace`.
          *
@@ -1825,11 +1916,15 @@ export interface paths {
          *     receive every event of the workspace. Agents, and API keys limited to inboxes, receive the
          *     events of the inboxes they can access and contact events; agents also get
          *     `inbox_access.changed` events about themselves. Access is re-read when such an event
-         *     arrives and every 30 seconds. An API key needs `conversations:read`. `inbox.created` reaches owners,
+         *     arrives and every 30 seconds. An API key or token needs `conversations:read`, and contact
+         *     events reach it only with `contacts:read`. `inbox.created` reaches owners,
          *     admins and API keys (an agent learns of a new inbox from `inbox_access.changed`);
          *     `inbox.deleted` reaches everyone who could see the inbox. `conversation.read` reaches only
          *     the connections of the member who read. `typing` (a contact or another member typing) has no
-         *     `id`, is not stored and is not replayed.
+         *     `id`, is not stored and is not replayed. `member.presence` (a member of the workspace opened
+         *     or closed the panel or changed `availability`) reaches member sessions only, also has no
+         *     `id` and is not replayed; so does `viewing` (another member opened or left a conversation),
+         *     which follows inbox access like conversation events.
          *
          *     A member session's open connection also makes the member available to contacts of `live`
          *     inboxes they can access (see `availability` on `/v1/me`).
@@ -1837,8 +1932,8 @@ export interface paths {
          *     Resuming: after the replay (if any) the server sends `ready` with `last_event_id`, the
          *     stream position at that moment. Remember the larger of that value and the `id` of every
          *     event received, and reconnect with `?last_event_id=<it>`. The server then replays the
-         *     events after it, without gaps or duplicates, before the live ones. Events are kept for 24
-         *     hours; when `last_event_id` is no longer known the server sends `resync_required` (reload
+         *     events after it, without gaps or duplicates, before the live ones. Events are kept for 7
+         *     days; when `last_event_id` is no longer known the server sends `resync_required` (reload
          *     everything over HTTP) followed by `ready` and continues live. Without `last_event_id` there
          *     is no replay.
          *
@@ -1846,8 +1941,10 @@ export interface paths {
          *     a text frame `{"type": "viewing", "conversation_id": "<id>"}`, and
          *     `{"type": "viewing", "conversation_id": null}` when it shows none or the page is hidden;
          *     send it again after every reconnect. While a connection of the member views a
-         *     conversation, the member gets no push or e-mail notification about it. Other client
-         *     frames are ignored. Close codes: 1008 (`unauthenticated`, `forbidden`) when the session
+         *     conversation, the member gets no push or e-mail notification about it. Other members who
+         *     can see the conversation get a `viewing` event when the member opens or leaves it, and
+         *     the reporting connection gets a `viewing` event for each other member already there.
+         *     Other client frames are ignored. Close codes: 1008 (`unauthenticated`, `forbidden`) when the session
          *     or membership ends, 1013 (`slow_consumer`) when the client does not read fast enough, 1012
          *     (`restart`) when the server restarts or loses its event feed. Reconnect with
          *     `last_event_id` after any of them except 1008. While the server is reconnecting its own event
@@ -2697,8 +2794,71 @@ export interface components {
             email: components["schemas"]["Email"];
             name: string;
             role: components["schemas"]["Role"];
+            availability: components["schemas"]["Availability"];
+            /**
+             * @description The member has a `/v1/realtime` connection seen in the last 75 seconds (any panel tab
+             *     or device). `member.presence` events on `/v1/realtime` report changes.
+             */
+            online: boolean;
             /** Format: date-time */
             created_at: string;
+        };
+        MemberPresence: {
+            /** Format: uuid */
+            member_id: string;
+            availability: components["schemas"]["Availability"];
+            online: boolean;
+        };
+        Viewing: {
+            /** Format: uuid */
+            member_id: string;
+            /** Format: uuid */
+            conversation_id: string;
+            /** @description `false` when the member no longer has the conversation open anywhere. */
+            viewing: boolean;
+        };
+        /**
+         * @description Another member opened (`viewing: true`) or left a conversation, as their panel reported
+         *     with a `viewing` frame; leaving includes hiding the page and disconnecting. Right after a
+         *     connection reports a conversation, it also gets one `viewing: true` event for every other
+         *     member who already has it open. Not stored: it has no `id` and is not replayed. Sent to
+         *     member sessions that can see the conversation's inbox; members do not get their own.
+         */
+        ViewingEvent: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "viewing";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["Viewing"];
+        };
+        /**
+         * @description A member's `availability` or `online` changed (they opened or closed the panel, or set
+         *     themselves away). Carries the member's current state, so it may repeat the previous one.
+         *     Not stored: it has no `id` and is not replayed; reload `/v1/members` after a reconnect.
+         *     A server process that stops without closing its connections sends none: such members
+         *     turn offline in `/v1/members` 75 seconds later. Sent to member sessions only, the member's
+         *     own included.
+         */
+        MemberPresenceEvent: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "member.presence";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["MemberPresence"];
         };
         MemberList: {
             items: components["schemas"]["Member"][];
@@ -2885,6 +3045,7 @@ export interface components {
             message_in_my_conversation: components["schemas"]["NotificationChannels"];
             message_in_unassigned_conversation: components["schemas"]["NotificationChannels"];
             assigned_to_me: components["schemas"]["NotificationChannels"];
+            mentioned: components["schemas"]["NotificationChannels"];
         };
         /** @description Some events and their channels. */
         NotificationEventsUpdate: {
@@ -2893,6 +3054,7 @@ export interface components {
             message_in_my_conversation?: components["schemas"]["NotificationChannels"];
             message_in_unassigned_conversation?: components["schemas"]["NotificationChannels"];
             assigned_to_me?: components["schemas"]["NotificationChannels"];
+            mentioned?: components["schemas"]["NotificationChannels"];
         };
         NotificationSettings: {
             events: components["schemas"]["NotificationEvents"];
@@ -2927,7 +3089,7 @@ export interface components {
              * @description What caused it (see the `notifications` tag), or `test`.
              * @enum {string}
              */
-            event: "new_live_conversation" | "new_async_conversation" | "message_in_my_conversation" | "message_in_unassigned_conversation" | "assigned_to_me" | "test";
+            event: "new_live_conversation" | "new_async_conversation" | "message_in_my_conversation" | "message_in_unassigned_conversation" | "assigned_to_me" | "mentioned" | "test";
             /**
              * @description The inbox name and the contact's name.
              * @example Support · Ayşe Yılmaz
@@ -3679,6 +3841,45 @@ export interface components {
             /** Format: int64 */
             count: number;
         };
+        Stats: {
+            /** Format: date-time */
+            since: string;
+            /**
+             * Format: date-time
+             * @description When it was counted.
+             */
+            until: string;
+            /**
+             * Format: int64
+             * @description Replies sent by members.
+             */
+            replies: number;
+            /**
+             * Format: int64
+             * @description Times a conversation was closed, by anyone (members, API keys, the server).
+             */
+            closed: number;
+            /**
+             * Format: int64
+             * @description Conversations whose first member reply to the contact was sent in the window.
+             */
+            first_replies: number;
+            /**
+             * Format: int64
+             * @description Median seconds from the contact's first message to that reply; absent when `first_replies` is 0.
+             */
+            median_first_reply_seconds?: number;
+            /** @description Per member, by member id. */
+            members: components["schemas"]["MemberStats"][];
+        };
+        MemberStats: {
+            /** Format: uuid */
+            member_id: string;
+            /** Format: int64 */
+            replies: number;
+            /** Format: int64 */
+            closed: number;
+        };
         /** @description Open conversations in the inboxes the caller can see. */
         ConversationCounts: {
             /**
@@ -3701,6 +3902,11 @@ export interface components {
             unassigned: number;
             /** @description Per inbox id. */
             inboxes: components["schemas"]["CountByID"][];
+            /**
+             * @description Per assignee's member id: each member's open load, for choosing whom to hand a
+             *     conversation to. Counts only the inboxes the caller can see.
+             */
+            assignees: components["schemas"]["CountByID"][];
             /** @description Per label id. */
             labels: components["schemas"]["CountByID"][];
         };
@@ -3838,6 +4044,8 @@ export interface components {
             draft: boolean;
             /** @description Who sent a draft (`member` or `bot`); absent for messages that were never drafts. */
             sent_by?: components["schemas"]["MessageAuthor"];
+            /** @description Members a note mentions (notes only; absent when it mentions nobody). */
+            mentions?: string[];
             /**
              * Format: date-time
              * @description For a sent draft, when it was sent.
@@ -3920,6 +4128,14 @@ export interface components {
             client_id?: string;
             /** @description Stores an outgoing message as a draft instead of delivering it. */
             draft?: boolean;
+            /**
+             * @description Notes only: members to notify about the note. Each must be a member of the workspace
+             *     who can see the conversation's inbox (`400 validation_failed` otherwise). They get the
+             *     `mentioned` notification (realtime as `message.created`, Web Push and e-mail per their
+             *     notification settings); the author is never notified. The panel shows mentions in the
+             *     body as it likes; the server does not parse `@` in the text.
+             */
+            mentions?: string[];
         };
         MessageCreateMultipart: {
             /** @enum {string} */
@@ -3929,6 +4145,8 @@ export interface components {
             html?: string;
             client_id?: string;
             draft?: boolean;
+            /** @description Notes only; repeat the field once per member id. */
+            mentions?: string[];
             files?: string[];
         };
         /** @description Only the fields sent change. */
@@ -4266,8 +4484,27 @@ export interface components {
              */
             type: "resync_required";
         };
+        /** @description An event as `GET /v1/events` returns it, told apart by `type`; the same objects realtime and webhooks carry. */
+        StoredEvent: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"];
+        EventPage: {
+            events: components["schemas"]["StoredEvent"][];
+            /**
+             * Format: int64
+             * @description Send as `after` on the next call.
+             */
+            next: number;
+            /** @description More events follow `next`; call again without waiting. */
+            has_more: boolean;
+        };
+        EventPosition: {
+            /**
+             * Format: int64
+             * @description The newest event id of the workspace; `0` when there is none.
+             */
+            id: number;
+        };
         /** @description One server message on `/v1/realtime`, told apart by `type`. */
-        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
         /**
          * @description `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
          *     hours. `away`: never shown as available.
@@ -6802,6 +7039,40 @@ export interface operations {
             403: components["responses"]["Problem"];
         };
     };
+    getStats: {
+        parameters: {
+            query?: {
+                /** @description Only this inbox (`404` when the caller cannot see it). */
+                inbox_id?: string;
+                /** @description Start of the window; the start of today in `timezone` when absent. */
+                since?: string;
+                /** @description IANA time zone for the default `since`. */
+                timezone?: string;
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The activity. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Stats"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     bulkUpdateConversations: {
         parameters: {
             query?: never;
@@ -8006,6 +8277,63 @@ export interface operations {
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
+        };
+    };
+    listEvents: {
+        parameters: {
+            query: {
+                /** @description The last event id the caller handled; `0` for the oldest kept event. */
+                after: number;
+                /** @description Events per page, 1 to 500; 100 by default. */
+                limit?: number;
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The events after `after`. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventPage"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            410: components["responses"]["Problem"];
+        };
+    };
+    getLatestEvent: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The feed position. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventPosition"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
         };
     };
     realtime: {
