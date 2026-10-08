@@ -1692,6 +1692,178 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/oauth/requests/{oauthRequestId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read a pending authorization request
+         * @description For the consent page, with a member session. Names the client, where it redirects, the
+         *     resource, and for each of the person's workspaces the scopes that can be granted there:
+         *     the scopes the client asked for (every scope when it asked for none) that the person's role
+         *     can use; `inboxes:manage`, `labels:write`, `canned_replies:write`, `webhooks:manage` and
+         *     `workspace:manage` are not offered to agents. A request is valid for 10 minutes and once;
+         *     afterwards, or for an unknown id, `404 not_found`.
+         */
+        get: operations["getOAuthRequest"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/oauth/requests/{oauthRequestId}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Approve an authorization request
+         * @description With a member session. Grants the client the chosen scopes in the chosen workspace and
+         *     answers the URL to send the browser to: the client's redirect URI with a `code` (single
+         *     use, valid 60 seconds), `state` and `iss`. Scopes not offered in that workspace, or a
+         *     workspace the person is not a member of, are refused (`400 validation_failed`,
+         *     `403 not_a_member`).
+         */
+        post: operations["approveOAuthRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/oauth/requests/{oauthRequestId}/deny": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Deny an authorization request
+         * @description With a member session. Ends the request and answers the client's redirect URI with
+         *     `error=access_denied`, `state` and `iss`.
+         */
+        post: operations["denyOAuthRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/oauth/grants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List connected apps
+         * @description With a member session. A member sees their own grants in the workspace; owners and admins
+         *     see every grant in it. Revoked grants are not listed.
+         */
+        get: operations["listOAuthGrants"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/oauth/grants/{oauthGrantId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Revoke a connected app
+         * @description With a member session: a member revokes their own grants, owners and admins any grant in
+         *     the workspace (another member's grant is `404 not_found` to an agent). Its tokens stop
+         *     working at once.
+         */
+        delete: operations["revokeOAuthGrant"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Events after a cursor
+         * @description The events `/v1/realtime` and webhooks carry, in id order, for callers that poll instead of
+         *     holding a WebSocket open. Each event is filtered exactly as the caller's realtime stream is:
+         *     agents and API keys limited to inboxes see the events of the inboxes they can access, and
+         *     `contact.updated` and `contact.deleted` also need `contacts:read`.
+         *
+         *     Pass the last event id you handled as `after` (`0` starts at the oldest kept event). Keep
+         *     `next` and send it as `after` on the next call; `next` is the last event returned, or a
+         *     later id when the events after it are ones the caller does not see. `has_more` is true
+         *     when more events follow, so call again at once; otherwise poll later. A page can hold
+         *     fewer than `limit` events while `has_more` is true.
+         *
+         *     Events are kept 7 days. An `after` older than the oldest kept event answers
+         *     `410 cursor_expired`: some events after it are gone. Reload what you need over the lists,
+         *     then continue from `GET /v1/events/latest`'s `id`.
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["listEvents"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/events/latest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Current position of the event feed
+         * @description The id of the workspace's newest event (`0` when there is none), whether or not the caller
+         *     may see it. Pass it as `after` to `GET /v1/events` to receive only events from now on,
+         *     after loading the current state over the lists.
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["getLatestEvent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/realtime": {
         parameters: {
             query?: never;
@@ -1703,7 +1875,7 @@ export interface paths {
          * Live events (WebSocket)
          * @description Upgrades to a WebSocket that streams the workspace's events as they are committed. Members
          *     authenticate with the session cookie; the `Origin` header must then be the server's public
-         *     origin (or one of the configured WebAuthn origins). API keys send
+         *     origin (or one of the configured WebAuthn origins). API keys and OAuth access tokens send
          *     `Authorization: Bearer <key>`. Browsers cannot set headers on a WebSocket, so the workspace
          *     can also be named with the `workspace_id` query parameter instead of `Yuva-Workspace`.
          *
@@ -1712,7 +1884,8 @@ export interface paths {
          *     receive every event of the workspace. Agents, and API keys limited to inboxes, receive the
          *     events of the inboxes they can access and contact events; agents also get
          *     `inbox_access.changed` events about themselves. Access is re-read when such an event
-         *     arrives and every 30 seconds. An API key needs `conversations:read`. `inbox.created` reaches owners,
+         *     arrives and every 30 seconds. An API key or token needs `conversations:read`, and contact
+         *     events reach it only with `contacts:read`. `inbox.created` reaches owners,
          *     admins and API keys (an agent learns of a new inbox from `inbox_access.changed`);
          *     `inbox.deleted` reaches everyone who could see the inbox. `conversation.read` reaches only
          *     the connections of the member who read. `typing` (a contact or another member typing) has no
@@ -1724,8 +1897,8 @@ export interface paths {
          *     Resuming: after the replay (if any) the server sends `ready` with `last_event_id`, the
          *     stream position at that moment. Remember the larger of that value and the `id` of every
          *     event received, and reconnect with `?last_event_id=<it>`. The server then replays the
-         *     events after it, without gaps or duplicates, before the live ones. Events are kept for 24
-         *     hours; when `last_event_id` is no longer known the server sends `resync_required` (reload
+         *     events after it, without gaps or duplicates, before the live ones. Events are kept for 7
+         *     days; when `last_event_id` is no longer known the server sends `resync_required` (reload
          *     everything over HTTP) followed by `ready` and continues live. Without `last_event_id` there
          *     is no replay.
          *
@@ -2136,6 +2309,164 @@ export interface paths {
          *     message `failed`.
          */
         post: operations["ingestSes"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/.well-known/oauth-authorization-server": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Authorization server metadata
+         * @description RFC 8414. The issuer is the server's public URL.
+         */
+        get: operations["oauthAuthorizationServerMetadata"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/.well-known/oauth-protected-resource": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Protected resource metadata for the whole API
+         * @description RFC 9728, for the resource `<public URL>` (`/v1`, `/v1/realtime` and `/mcp`).
+         */
+        get: operations["oauthProtectedResourceMetadata"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/.well-known/oauth-protected-resource/mcp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Protected resource metadata for /mcp
+         * @description RFC 9728, for the resource `<public URL>/mcp`.
+         */
+        get: operations["oauthProtectedResourceMetadataMcp"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/oauth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Register a client
+         * @description Dynamic client registration (RFC 7591) for public clients: `token_endpoint_auth_method` is
+         *     always `none` and no secret is issued. Redirect URIs must be `https`, `http` on a loopback
+         *     host (`localhost`, `127.0.0.1`, `[::1]`), or a private-use scheme of a native app, without
+         *     a fragment; they are matched exactly. `grant_types` may hold `authorization_code` and
+         *     `refresh_token`, `response_types` only `code`. At most 20 registrations per address and
+         *     hour (`429`). Clients that never got a grant are deleted after 30 days.
+         */
+        post: operations["oauthRegister"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/oauth/authorize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Start an authorization
+         * @description Checks the request and redirects the browser to the panel's consent page,
+         *     `/oauth/consent?request=<id>`. `client_id` is a registered client id or an `https` URL of a
+         *     Client ID Metadata Document, fetched with the same address rules as webhooks and cached for
+         *     24 hours; its `client_id` must equal the URL. An unknown client or a redirect URI that does
+         *     not exactly match one of the client's is answered here with `400` and a plain text
+         *     explanation; every other error goes back to the redirect URI as `error`,
+         *     `error_description`, `state` and `iss` (`unsupported_response_type`, `invalid_request` for a
+         *     missing or non-`S256` PKCE challenge, `invalid_scope`, `invalid_target` for a missing or
+         *     unknown `resource`).
+         */
+        get: operations["oauthAuthorize"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/oauth/token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Get tokens
+         * @description `authorization_code` (with `code`, `redirect_uri`, `client_id`, `code_verifier` and
+         *     optionally `resource`, which must match the authorization) and `refresh_token` (with
+         *     `refresh_token` and `client_id`). Every refresh returns a new refresh token; the old one is
+         *     spent, and presenting a spent one revokes the grant (`invalid_grant`). A code used twice
+         *     also revokes the grant. Answers carry `Cache-Control: no-store`.
+         */
+        post: operations["oauthToken"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/oauth/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Revoke a token
+         * @description RFC 7009. Revoking a refresh token revokes the whole grant; revoking an access token ends
+         *     only that token. Unknown tokens, and tokens of another `client_id`, are answered `200` too.
+         */
+        post: operations["oauthRevoke"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3487,6 +3818,11 @@ export interface components {
             name?: string;
             /** @description `bot` only, when the bot has an avatar. */
             avatar_url?: string;
+            /**
+             * @description The OAuth client the member wrote this with (its name at the time), as in
+             *     "Ayşe via Claude Code"; absent for the panel, API keys and contacts.
+             */
+            via?: string;
         };
         /** @enum {string} */
         EventType: "assigned" | "unassigned" | "status_changed" | "labels_changed" | "moved";
@@ -3989,6 +4325,25 @@ export interface components {
              * @enum {string}
              */
             type: "resync_required";
+        };
+        /** @description An event as `GET /v1/events` returns it, told apart by `type`; the same objects realtime and webhooks carry. */
+        StoredEvent: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"];
+        EventPage: {
+            events: components["schemas"]["StoredEvent"][];
+            /**
+             * Format: int64
+             * @description Send as `after` on the next call.
+             */
+            next: number;
+            /** @description More events follow `next`; call again without waiting. */
+            has_more: boolean;
+        };
+        EventPosition: {
+            /**
+             * Format: int64
+             * @description The newest event id of the workspace; `0` when there is none.
+             */
+            id: number;
         };
         /** @description One server message on `/v1/realtime`, told apart by `type`. */
         RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
@@ -4505,6 +4860,139 @@ export interface components {
             /** @enum {string} */
             status: "ok";
         };
+        /**
+         * @description `mcp` for a `<public URL>/mcp` token, `api` for a `<public URL>` token (`/v1`, `/v1/realtime` and `/mcp`).
+         * @enum {string}
+         */
+        OAuthResource: "mcp" | "api";
+        OAuthClient: {
+            /** @description A registered client id or a Client ID Metadata Document URL. */
+            client_id: string;
+            /** @description The name the client gave itself; the panel shows it as the client's claim, not as verified. */
+            name: string;
+            /** @description The client's home page, when it gave one. */
+            client_uri?: string;
+        };
+        OAuthWorkspaceChoice: {
+            /** Format: uuid */
+            workspace_id: string;
+            name: string;
+            role: components["schemas"]["Role"];
+            /** @description The scopes that can be granted in this workspace; empty when none of the requested ones can. */
+            scopes: components["schemas"]["ApiKeyScope"][];
+        };
+        OAuthRequest: {
+            /** Format: uuid */
+            id: string;
+            client: components["schemas"]["OAuthClient"];
+            redirect_uri: string;
+            /** @description Where the browser goes after approval; the host, or the scheme of a native app's private-use URI. */
+            redirect_host: string;
+            resource: components["schemas"]["OAuthResource"];
+            /** @description The scopes the client asked for; absent when it asked for none. */
+            requested_scopes?: string[];
+            workspaces: components["schemas"]["OAuthWorkspaceChoice"][];
+            /** Format: date-time */
+            expires_at: string;
+        };
+        OAuthApproval: {
+            /** Format: uuid */
+            workspace_id: string;
+            scopes: components["schemas"]["ApiKeyScope"][];
+        };
+        OAuthRedirect: {
+            /** @description Send the browser here. */
+            redirect_url: string;
+        };
+        OAuthGrant: {
+            /** Format: uuid */
+            id: string;
+            client: components["schemas"]["OAuthClient"];
+            /** Format: uuid */
+            member_id: string;
+            scopes: components["schemas"]["ApiKeyScope"][];
+            resource: components["schemas"]["OAuthResource"];
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            last_used_at?: string;
+            /**
+             * Format: int64
+             * @description Requests made with the grant's tokens in the current calendar month (UTC).
+             */
+            requests_this_month: number;
+        };
+        OAuthGrantList: {
+            items: components["schemas"]["OAuthGrant"][];
+        };
+        /** @description RFC 8414 authorization server metadata. */
+        OAuthServerMetadata: {
+            issuer: string;
+            authorization_endpoint: string;
+            token_endpoint: string;
+            registration_endpoint?: string;
+            revocation_endpoint?: string;
+            scopes_supported?: string[];
+            response_types_supported: string[];
+            grant_types_supported?: string[];
+            token_endpoint_auth_methods_supported?: string[];
+            revocation_endpoint_auth_methods_supported?: string[];
+            code_challenge_methods_supported?: string[];
+            client_id_metadata_document_supported?: boolean;
+            authorization_response_iss_parameter_supported?: boolean;
+        };
+        /** @description RFC 9728 protected resource metadata. */
+        OAuthResourceMetadata: {
+            resource: string;
+            authorization_servers?: string[];
+            scopes_supported?: string[];
+            bearer_methods_supported?: string[];
+            resource_name?: string;
+        };
+        /** @description RFC 7591 client metadata; fields not listed here are ignored. */
+        OAuthClientMetadata: {
+            redirect_uris: string[];
+            /** @description Defaults to the host of the first redirect URI. */
+            client_name?: string;
+            /** @description An `https` URL. */
+            client_uri?: string;
+            /** @description Always answered as `none`. */
+            token_endpoint_auth_method?: string;
+            grant_types?: ("authorization_code" | "refresh_token")[];
+            response_types?: "code"[];
+            scope?: string;
+        };
+        OAuthClientRegistration: components["schemas"]["OAuthClientMetadata"] & {
+            client_id: string;
+            /** Format: int64 */
+            client_id_issued_at: number;
+        };
+        OAuthTokenRequest: {
+            /** @enum {string} */
+            grant_type: "authorization_code" | "refresh_token";
+            code?: string;
+            redirect_uri?: string;
+            client_id?: string;
+            code_verifier?: string;
+            refresh_token?: string;
+            resource?: string;
+        };
+        OAuthTokenResponse: {
+            /** @description `yuva_at_<secret>`, valid for `expires_in` seconds (3600). */
+            access_token: string;
+            /** @enum {string} */
+            token_type: "Bearer";
+            expires_in: number;
+            /** @description `yuva_rt_<secret>`, valid 30 days and once. */
+            refresh_token: string;
+            /** @description The granted scopes, space-separated. */
+            scope: string;
+        };
+        /** @description An OAuth error answer (RFC 6749 section 5.2, RFC 7591 section 3.2.2). */
+        OAuthError: {
+            error: string;
+            error_description?: string;
+        };
         Version: {
             /**
              * @description A release tag, a commit hash, or `dev`.
@@ -4571,6 +5059,8 @@ export interface components {
         /** @description Makes a retried request return the first response; see "Idempotency". */
         IdempotencyKey: string;
         ApiKeyId: string;
+        OAuthRequestId: string;
+        OAuthGrantId: string;
         PasskeyId: string;
         PushSubscriptionId: string;
         InboxId: string;
@@ -7466,6 +7956,194 @@ export interface operations {
             404: components["responses"]["Problem"];
         };
     };
+    getOAuthRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                oauthRequestId: components["parameters"]["OAuthRequestId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthRequest"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    approveOAuthRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                oauthRequestId: components["parameters"]["OAuthRequestId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OAuthApproval"];
+            };
+        };
+        responses: {
+            /** @description Where to send the browser. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthRedirect"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    denyOAuthRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                oauthRequestId: components["parameters"]["OAuthRequestId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Where to send the browser. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthRedirect"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    listOAuthGrants: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The grants. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthGrantList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    revokeOAuthGrant: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                oauthGrantId: components["parameters"]["OAuthGrantId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Revoked. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    listEvents: {
+        parameters: {
+            query: {
+                /** @description The last event id the caller handled; `0` for the oldest kept event. */
+                after: number;
+                /** @description Events per page, 1 to 500; 100 by default. */
+                limit?: number;
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The events after `after`. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventPage"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            410: components["responses"]["Problem"];
+        };
+    };
+    getLatestEvent: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The feed position. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventPosition"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
     realtime: {
         parameters: {
             query?: {
@@ -8018,6 +8696,216 @@ export interface operations {
             400: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             503: components["responses"]["Problem"];
+        };
+    };
+    oauthAuthorizationServerMetadata: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The metadata. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthServerMetadata"];
+                };
+            };
+        };
+    };
+    oauthProtectedResourceMetadata: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The metadata. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthResourceMetadata"];
+                };
+            };
+        };
+    };
+    oauthProtectedResourceMetadataMcp: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The metadata. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthResourceMetadata"];
+                };
+            };
+        };
+    };
+    oauthRegister: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OAuthClientMetadata"];
+            };
+        };
+        responses: {
+            /** @description The registered client. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthClientRegistration"];
+                };
+            };
+            /** @description `invalid_redirect_uri` or `invalid_client_metadata`. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthError"];
+                };
+            };
+            /** @description Too many registrations from this address. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthError"];
+                };
+            };
+        };
+    };
+    oauthAuthorize: {
+        parameters: {
+            query: {
+                response_type: "code";
+                client_id: string;
+                /** @description May be left out when the client has exactly one. */
+                redirect_uri?: string;
+                code_challenge: string;
+                code_challenge_method: "S256";
+                state?: string;
+                /** @description Space-separated `ApiKeyScope` values; every scope when absent. */
+                scope?: string;
+                /** @description `<public URL>/mcp` or `<public URL>` (RFC 8707). */
+                resource: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description To the consent page, or back to the client with an error. */
+            302: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The client or redirect URI is not valid. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/plain": string;
+                };
+            };
+        };
+    };
+    oauthToken: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["OAuthTokenRequest"];
+            };
+        };
+        responses: {
+            /** @description The tokens. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthTokenResponse"];
+                };
+            };
+            /** @description `invalid_request`, `invalid_grant`, `invalid_client`, `unsupported_grant_type` or `invalid_target`. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthError"];
+                };
+            };
+        };
+    };
+    oauthRevoke: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": {
+                    token: string;
+                    /** @enum {string} */
+                    token_type_hint?: "access_token" | "refresh_token";
+                    client_id?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Revoked, or nothing to revoke. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description `invalid_request` when `token` is missing. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthError"];
+                };
+            };
         };
     };
     webhookConversationCreated: {
