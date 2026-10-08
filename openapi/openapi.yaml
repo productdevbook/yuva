@@ -26,6 +26,9 @@ info:
       `yuva_session` cookie (HttpOnly, SameSite=Lax).
     - Host backends, scripts and bots send a workspace API key as `Authorization: Bearer <key>`.
       A key acts on its own workspace only, and only with its scopes (see `api-keys`).
+    - OAuth clients (MCP clients, member apps) send an access token as
+      `Authorization: Bearer <token>`; it acts as the member who approved it, only with the granted
+      scopes (see `oauth`).
     - Contacts (widget, SDKs) send a contact session token as `Authorization: Bearer <token>` on
       `/client/v1`; see the `client` tag.
 
@@ -51,6 +54,7 @@ servers:
 security:
   - session: []
   - apiKey: []
+  - oauthToken: []
 tags:
   - name: system
     description: Health, readiness and build information.
@@ -151,6 +155,23 @@ tags:
     description: |
       Inbound mail and delivery reports from mail infrastructure. These endpoints are not called
       by members or API keys; they authenticate with a signature over the request.
+  - name: oauth
+    description: |
+      Yuva is its own OAuth 2.1 authorization server, for MCP clients and member apps:
+      authorization code with PKCE (`S256` only), public clients without a secret, registered
+      dynamically (RFC 7591) or named by a Client ID Metadata Document URL. `GET /oauth/authorize`
+      sends the browser to the panel's consent page, `/oauth/consent?request=<id>`, which reads the
+      request and approves or denies it with the `/v1/oauth/requests` endpoints and a member
+      session. Resource indicators (RFC 8707) are required: `<public URL>/mcp` gives a token for
+      `/mcp` only, `<public URL>` one for `/v1`, `/v1/realtime` and `/mcp`.
+
+      A grant is one member, one workspace and one client; approving the same client again in the
+      same workspace replaces its scopes and resource. Its access tokens act as the member, narrowed
+      by the granted scopes (`ApiKeyScope`): operations that list no scope need a member session.
+      Access tokens live 1 hour, refresh tokens 30 days and are rotated on every use; reusing a
+      rotated refresh token revokes the grant. A member who leaves or is removed loses every grant.
+      Messages, notes, drafts and conversation events written with a token name the client in
+      `via` on their author.
 paths:
   /healthz:
     get:
@@ -2927,6 +2948,142 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+  /v1/oauth/requests/{oauthRequestId}:
+    get:
+      operationId: getOAuthRequest
+      summary: Read a pending authorization request
+      description: |
+        For the consent page, with a member session. Names the client, where it redirects, the
+        resource, and for each of the person's workspaces the scopes that can be granted there:
+        the scopes the client asked for (every scope when it asked for none) that the person's role
+        can use; `inboxes:manage`, `labels:write`, `canned_replies:write`, `webhooks:manage` and
+        `workspace:manage` are not offered to agents. A request is valid for 10 minutes and once;
+        afterwards, or for an unknown id, `404 not_found`.
+      tags: [oauth]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/OAuthRequestId"
+      responses:
+        "200":
+          description: The request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthRequest"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/oauth/requests/{oauthRequestId}/approve:
+    post:
+      operationId: approveOAuthRequest
+      summary: Approve an authorization request
+      description: |
+        With a member session. Grants the client the chosen scopes in the chosen workspace and
+        answers the URL to send the browser to: the client's redirect URI with a `code` (single
+        use, valid 60 seconds), `state` and `iss`. Scopes not offered in that workspace, or a
+        workspace the person is not a member of, are refused (`400 validation_failed`,
+        `403 not_a_member`).
+      tags: [oauth]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/OAuthRequestId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OAuthApproval"
+      responses:
+        "200":
+          description: Where to send the browser.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthRedirect"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/oauth/requests/{oauthRequestId}/deny:
+    post:
+      operationId: denyOAuthRequest
+      summary: Deny an authorization request
+      description: |
+        With a member session. Ends the request and answers the client's redirect URI with
+        `error=access_denied`, `state` and `iss`.
+      tags: [oauth]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/OAuthRequestId"
+      responses:
+        "200":
+          description: Where to send the browser.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthRedirect"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/oauth/grants:
+    get:
+      operationId: listOAuthGrants
+      summary: List connected apps
+      description: |
+        With a member session. A member sees their own grants in the workspace; owners and admins
+        see every grant in it. Revoked grants are not listed.
+      tags: [oauth]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The grants.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthGrantList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+  /v1/oauth/grants/{oauthGrantId}:
+    delete:
+      operationId: revokeOAuthGrant
+      summary: Revoke a connected app
+      description: |
+        With a member session: a member revokes their own grants, owners and admins any grant in
+        the workspace (another member's grant is `404 not_found` to an agent). Its tokens stop
+        working at once.
+      tags: [oauth]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/OAuthGrantId"
+      responses:
+        "204":
+          description: Revoked.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
   /v1/realtime:
     get:
       operationId: realtime
@@ -3677,6 +3834,196 @@ paths:
           $ref: "#/components/responses/Problem"
         "503":
           $ref: "#/components/responses/Problem"
+  /.well-known/oauth-authorization-server:
+    get:
+      operationId: oauthAuthorizationServerMetadata
+      summary: Authorization server metadata
+      description: RFC 8414. The issuer is the server's public URL.
+      tags: [oauth]
+      security: []
+      responses:
+        "200":
+          description: The metadata.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthServerMetadata"
+  /.well-known/oauth-protected-resource:
+    get:
+      operationId: oauthProtectedResourceMetadata
+      summary: Protected resource metadata for the whole API
+      description: RFC 9728, for the resource `<public URL>` (`/v1`, `/v1/realtime` and `/mcp`).
+      tags: [oauth]
+      security: []
+      responses:
+        "200":
+          description: The metadata.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthResourceMetadata"
+  /.well-known/oauth-protected-resource/mcp:
+    get:
+      operationId: oauthProtectedResourceMetadataMcp
+      summary: Protected resource metadata for /mcp
+      description: RFC 9728, for the resource `<public URL>/mcp`.
+      tags: [oauth]
+      security: []
+      responses:
+        "200":
+          description: The metadata.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthResourceMetadata"
+  /oauth/register:
+    post:
+      operationId: oauthRegister
+      summary: Register a client
+      description: |
+        Dynamic client registration (RFC 7591) for public clients: `token_endpoint_auth_method` is
+        always `none` and no secret is issued. Redirect URIs must be `https`, `http` on a loopback
+        host (`localhost`, `127.0.0.1`, `[::1]`), or a private-use scheme of a native app, without
+        a fragment; they are matched exactly. `grant_types` may hold `authorization_code` and
+        `refresh_token`, `response_types` only `code`. At most 20 registrations per address and
+        hour (`429`). Clients that never got a grant are deleted after 30 days.
+      tags: [oauth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OAuthClientMetadata"
+      responses:
+        "201":
+          description: The registered client.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthClientRegistration"
+        "400":
+          description: "`invalid_redirect_uri` or `invalid_client_metadata`."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthError"
+        "429":
+          description: Too many registrations from this address.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthError"
+  /oauth/authorize:
+    get:
+      operationId: oauthAuthorize
+      summary: Start an authorization
+      description: |
+        Checks the request and redirects the browser to the panel's consent page,
+        `/oauth/consent?request=<id>`. `client_id` is a registered client id or an `https` URL of a
+        Client ID Metadata Document, fetched with the same address rules as webhooks and cached for
+        24 hours; its `client_id` must equal the URL. An unknown client or a redirect URI that does
+        not exactly match one of the client's is answered here with `400` and a plain text
+        explanation; every other error goes back to the redirect URI as `error`,
+        `error_description`, `state` and `iss` (`unsupported_response_type`, `invalid_request` for a
+        missing or non-`S256` PKCE challenge, `invalid_scope`, `invalid_target` for a missing or
+        unknown `resource`).
+      tags: [oauth]
+      security: []
+      parameters:
+        - {name: response_type, in: query, required: true, schema: {type: string, enum: [code]}}
+        - {name: client_id, in: query, required: true, schema: {type: string}}
+        - name: redirect_uri
+          in: query
+          required: false
+          description: May be left out when the client has exactly one.
+          schema: {type: string}
+        - {name: code_challenge, in: query, required: true, schema: {type: string}}
+        - {name: code_challenge_method, in: query, required: true, schema: {type: string, enum: [S256]}}
+        - {name: state, in: query, required: false, schema: {type: string}}
+        - name: scope
+          in: query
+          required: false
+          description: Space-separated `ApiKeyScope` values; every scope when absent.
+          schema: {type: string}
+        - name: resource
+          in: query
+          required: true
+          description: "`<public URL>/mcp` or `<public URL>` (RFC 8707)."
+          schema: {type: string}
+      responses:
+        "302":
+          description: To the consent page, or back to the client with an error.
+        "400":
+          description: The client or redirect URI is not valid.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /oauth/token:
+    post:
+      operationId: oauthToken
+      summary: Get tokens
+      description: |
+        `authorization_code` (with `code`, `redirect_uri`, `client_id`, `code_verifier` and
+        optionally `resource`, which must match the authorization) and `refresh_token` (with
+        `refresh_token` and `client_id`). Every refresh returns a new refresh token; the old one is
+        spent, and presenting a spent one revokes the grant (`invalid_grant`). A code used twice
+        also revokes the grant. Answers carry `Cache-Control: no-store`.
+      tags: [oauth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/OAuthTokenRequest"
+      responses:
+        "200":
+          description: The tokens.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthTokenResponse"
+        "400":
+          description: "`invalid_request`, `invalid_grant`, `invalid_client`, `unsupported_grant_type` or `invalid_target`."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthError"
+  /oauth/revoke:
+    post:
+      operationId: oauthRevoke
+      summary: Revoke a token
+      description: |
+        RFC 7009. Revoking a refresh token revokes the whole grant; revoking an access token ends
+        only that token. Unknown tokens, and tokens of another `client_id`, are answered `200` too.
+      tags: [oauth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [token]
+              properties:
+                token:
+                  type: string
+                token_type_hint:
+                  type: string
+                  enum: [access_token, refresh_token]
+                client_id:
+                  type: string
+      responses:
+        "200":
+          description: Revoked, or nothing to revoke.
+        "400":
+          description: "`invalid_request` when `token` is missing."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthError"
 webhooks:
   conversation.created:
     post:
@@ -3896,6 +4243,16 @@ components:
         scope (`ApiKeyScope`); a call without it is refused with `403 insufficient_scope` naming the
         missing scope in `scope`. Operations that list no scope need a member session
         (`403 member_session_required`). An expired key is refused with `401 api_key_expired`.
+    oauthToken:
+      type: http
+      scheme: bearer
+      description: |
+        An OAuth access token, `yuva_at_<secret>` (see the `oauth` tag). It acts as its member in
+        the grant's workspace with the member's role and inbox access, narrowed by the granted
+        scopes exactly like an API key (`403 insufficient_scope`, `403 member_session_required`).
+        An expired token is refused with `401 token_expired`, a token for `<public URL>/mcp` with
+        `401 token_wrong_resource`, and a revoked or unknown one with `401 unauthenticated`. Each
+        token is limited to 600 requests a minute (`429 rate_limited` with `Retry-After`).
     contactSession:
       type: http
       scheme: bearer
@@ -3935,6 +4292,20 @@ components:
         pattern: "^[\\x20-\\x7e]+$"
     ApiKeyId:
       name: apiKeyId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    OAuthRequestId:
+      name: oauthRequestId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    OAuthGrantId:
+      name: oauthGrantId
       in: path
       required: true
       schema:
@@ -6003,6 +6374,11 @@ components:
         avatar_url:
           type: string
           description: "`bot` only, when the bot has an avatar."
+        via:
+          type: string
+          description: |
+            The OAuth client the member wrote this with (its name at the time), as in
+            "Ayşe via Claude Code"; absent for the panel, API keys and contacts.
     EventType:
       type: string
       enum: [assigned, unassigned, status_changed, labels_changed, moved]
@@ -7638,6 +8014,276 @@ components:
         status:
           type: string
           enum: [ok]
+    OAuthResource:
+      type: string
+      description: "`mcp` for a `<public URL>/mcp` token, `api` for a `<public URL>` token (`/v1`, `/v1/realtime` and `/mcp`)."
+      enum: [mcp, api]
+    OAuthClient:
+      type: object
+      required: [client_id, name]
+      properties:
+        client_id:
+          type: string
+          description: A registered client id or a Client ID Metadata Document URL.
+        name:
+          type: string
+          description: The name the client gave itself; the panel shows it as the client's claim, not as verified.
+        client_uri:
+          type: string
+          description: The client's home page, when it gave one.
+    OAuthWorkspaceChoice:
+      type: object
+      required: [workspace_id, name, role, scopes]
+      properties:
+        workspace_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        role:
+          $ref: "#/components/schemas/Role"
+        scopes:
+          type: array
+          description: The scopes that can be granted in this workspace; empty when none of the requested ones can.
+          items:
+            $ref: "#/components/schemas/ApiKeyScope"
+    OAuthRequest:
+      type: object
+      required: [id, client, redirect_uri, redirect_host, resource, workspaces, expires_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        client:
+          $ref: "#/components/schemas/OAuthClient"
+        redirect_uri:
+          type: string
+        redirect_host:
+          type: string
+          description: Where the browser goes after approval; the host, or the scheme of a native app's private-use URI.
+        resource:
+          $ref: "#/components/schemas/OAuthResource"
+        requested_scopes:
+          type: array
+          description: The scopes the client asked for; absent when it asked for none.
+          items:
+            type: string
+        workspaces:
+          type: array
+          items:
+            $ref: "#/components/schemas/OAuthWorkspaceChoice"
+        expires_at:
+          type: string
+          format: date-time
+    OAuthApproval:
+      type: object
+      required: [workspace_id, scopes]
+      properties:
+        workspace_id:
+          type: string
+          format: uuid
+        scopes:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/ApiKeyScope"
+    OAuthRedirect:
+      type: object
+      required: [redirect_url]
+      properties:
+        redirect_url:
+          type: string
+          description: Send the browser here.
+    OAuthGrant:
+      type: object
+      required: [id, client, member_id, scopes, resource, created_at, requests_this_month]
+      properties:
+        id:
+          type: string
+          format: uuid
+        client:
+          $ref: "#/components/schemas/OAuthClient"
+        member_id:
+          type: string
+          format: uuid
+        scopes:
+          type: array
+          items:
+            $ref: "#/components/schemas/ApiKeyScope"
+        resource:
+          $ref: "#/components/schemas/OAuthResource"
+        created_at:
+          type: string
+          format: date-time
+        last_used_at:
+          type: string
+          format: date-time
+        requests_this_month:
+          type: integer
+          format: int64
+          description: Requests made with the grant's tokens in the current calendar month (UTC).
+    OAuthGrantList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OAuthGrant"
+    OAuthServerMetadata:
+      type: object
+      description: RFC 8414 authorization server metadata.
+      required: [issuer, authorization_endpoint, token_endpoint, response_types_supported]
+      properties:
+        issuer:
+          type: string
+        authorization_endpoint:
+          type: string
+        token_endpoint:
+          type: string
+        registration_endpoint:
+          type: string
+        revocation_endpoint:
+          type: string
+        scopes_supported:
+          type: array
+          items:
+            type: string
+        response_types_supported:
+          type: array
+          items:
+            type: string
+        grant_types_supported:
+          type: array
+          items:
+            type: string
+        token_endpoint_auth_methods_supported:
+          type: array
+          items:
+            type: string
+        revocation_endpoint_auth_methods_supported:
+          type: array
+          items:
+            type: string
+        code_challenge_methods_supported:
+          type: array
+          items:
+            type: string
+        client_id_metadata_document_supported:
+          type: boolean
+        authorization_response_iss_parameter_supported:
+          type: boolean
+    OAuthResourceMetadata:
+      type: object
+      description: RFC 9728 protected resource metadata.
+      required: [resource]
+      properties:
+        resource:
+          type: string
+        authorization_servers:
+          type: array
+          items:
+            type: string
+        scopes_supported:
+          type: array
+          items:
+            type: string
+        bearer_methods_supported:
+          type: array
+          items:
+            type: string
+        resource_name:
+          type: string
+    OAuthClientMetadata:
+      type: object
+      description: RFC 7591 client metadata; fields not listed here are ignored.
+      required: [redirect_uris]
+      properties:
+        redirect_uris:
+          type: array
+          minItems: 1
+          maxItems: 20
+          items:
+            type: string
+        client_name:
+          type: string
+          maxLength: 200
+          description: Defaults to the host of the first redirect URI.
+        client_uri:
+          type: string
+          description: An `https` URL.
+        token_endpoint_auth_method:
+          type: string
+          description: Always answered as `none`.
+        grant_types:
+          type: array
+          items:
+            type: string
+            enum: [authorization_code, refresh_token]
+        response_types:
+          type: array
+          items:
+            type: string
+            enum: [code]
+        scope:
+          type: string
+    OAuthClientRegistration:
+      allOf:
+        - $ref: "#/components/schemas/OAuthClientMetadata"
+        - type: object
+          required: [client_id, client_id_issued_at]
+          properties:
+            client_id:
+              type: string
+            client_id_issued_at:
+              type: integer
+              format: int64
+    OAuthTokenRequest:
+      type: object
+      required: [grant_type]
+      properties:
+        grant_type:
+          type: string
+          enum: [authorization_code, refresh_token]
+        code:
+          type: string
+        redirect_uri:
+          type: string
+        client_id:
+          type: string
+        code_verifier:
+          type: string
+        refresh_token:
+          type: string
+        resource:
+          type: string
+    OAuthTokenResponse:
+      type: object
+      required: [access_token, token_type, expires_in, refresh_token, scope]
+      properties:
+        access_token:
+          type: string
+          description: "`yuva_at_<secret>`, valid for `expires_in` seconds (3600)."
+        token_type:
+          type: string
+          enum: [Bearer]
+        expires_in:
+          type: integer
+        refresh_token:
+          type: string
+          description: "`yuva_rt_<secret>`, valid 30 days and once."
+        scope:
+          type: string
+          description: The granted scopes, space-separated.
+    OAuthError:
+      type: object
+      description: An OAuth error answer (RFC 6749 section 5.2, RFC 7591 section 3.2.2).
+      required: [error]
+      properties:
+        error:
+          type: string
+        error_description:
+          type: string
     Version:
       type: object
       required: [version]

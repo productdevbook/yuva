@@ -349,6 +349,8 @@ type Message struct {
 	Draft             bool
 	SentByMemberID    *uuid.UUID
 	SentByApiKeyID    *uuid.UUID
+	Via               *string
+	SentVia           *string
 }
 
 type MessageEmail struct {
@@ -382,6 +384,66 @@ type NotificationEmail struct {
 	ConversationID uuid.UUID
 	SentAt         time.Time
 	Through        time.Time
+}
+
+type OauthClient struct {
+	ID           uuid.UUID
+	ClientID     string
+	Kind         string
+	Name         string
+	ClientUri    *string
+	RedirectUris []string
+	CreatedAt    time.Time
+	FetchedAt    *time.Time
+}
+
+type OauthCode struct {
+	WorkspaceID   uuid.UUID
+	ID            uuid.UUID
+	GrantID       uuid.UUID
+	CodeHash      []byte
+	RedirectUri   string
+	CodeChallenge string
+	CreatedAt     time.Time
+	ExpiresAt     time.Time
+	UsedAt        *time.Time
+}
+
+type OauthGrant struct {
+	WorkspaceID  uuid.UUID
+	ID           uuid.UUID
+	MemberID     uuid.UUID
+	ClientID     uuid.UUID
+	Scopes       []string
+	Resource     string
+	CreatedAt    time.Time
+	LastUsedAt   *time.Time
+	RequestMonth *time.Time
+	RequestCount int64
+	RevokedAt    *time.Time
+}
+
+type OauthRequest struct {
+	ID            uuid.UUID
+	ClientID      uuid.UUID
+	RedirectUri   string
+	State         *string
+	CodeChallenge string
+	Scopes        []string
+	Resource      string
+	CreatedAt     time.Time
+	ExpiresAt     time.Time
+}
+
+type OauthToken struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+	GrantID     uuid.UUID
+	Kind        string
+	TokenHash   []byte
+	CreatedAt   time.Time
+	ExpiresAt   time.Time
+	UsedAt      *time.Time
 }
 
 type Passkey struct {

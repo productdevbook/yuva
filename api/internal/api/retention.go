@@ -27,6 +27,9 @@ func (s *Server) UpdateWorkspace(ctx context.Context, req oas.UpdateWorkspaceReq
 		}
 	}
 	if b.BotsMaySend != nil {
+		if p.isGrant() {
+			return nil, errMemberSessionRequired
+		}
 		if err := requireManager(p); err != nil {
 			return nil, err
 		}

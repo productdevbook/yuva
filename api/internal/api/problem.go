@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
 )
@@ -13,6 +14,8 @@ type apiError struct {
 	Code   string
 	Detail string
 	Scope  string
+	// RetryAfter, in seconds, is sent as the Retry-After header when set.
+	RetryAfter int
 }
 
 func (e *apiError) Error() string { return fmt.Sprintf("%d %s: %s", e.Status, e.Code, e.Detail) }
@@ -46,6 +49,9 @@ func (e *apiError) body() oas.Problem {
 
 func writeProblem(w http.ResponseWriter, e *apiError) {
 	w.Header().Set("Content-Type", "application/problem+json")
+	if e.RetryAfter > 0 {
+		w.Header().Set("Retry-After", strconv.Itoa(e.RetryAfter))
+	}
 	w.WriteHeader(e.Status)
 	_ = json.NewEncoder(w).Encode(e.body())
 }

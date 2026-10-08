@@ -34,6 +34,7 @@ const (
 	EventRetention       = 24 * time.Hour
 	WebhookRetention     = 7 * 24 * time.Hour
 	IdempotencyRetention = 24 * time.Hour
+	UnusedOAuthClientAge = 30 * 24 * time.Hour
 )
 
 func New(pool *pgxpool.Pool, q *store.Queries, log *slog.Logger, register ...func(*river.Workers)) (*river.Client[pgx.Tx], error) {
@@ -94,6 +95,16 @@ func (w *EventCleanupWorker) Work(ctx context.Context, _ *river.Job[EventCleanup
 		if _, err := w.Queries.DeleteIdempotencyKeysBefore(ctx, store.DeleteIdempotencyKeysBeforeParams{WorkspaceID: id, Before: w.Now().Add(-IdempotencyRetention)}); err != nil {
 			return fmt.Errorf("workspace %s: %w", id, err)
 		}
+		if _, err := w.Queries.DeleteExpiredOAuthTokens(ctx, store.DeleteExpiredOAuthTokensParams{WorkspaceID: id, Before: w.Now()}); err != nil {
+			return fmt.Errorf("workspace %s: %w", id, err)
+		}
+		if _, err := w.Queries.DeleteExpiredOAuthCodes(ctx, store.DeleteExpiredOAuthCodesParams{WorkspaceID: id, Before: w.Now()}); err != nil {
+			return fmt.Errorf("workspace %s: %w", id, err)
+		}
 	}
-	return nil
+	if _, err := w.Queries.DeleteExpiredOAuthRequests(ctx, w.Now()); err != nil {
+		return err
+	}
+	_, err = w.Queries.DeleteUnusedOAuthClients(ctx, w.Now().Add(-UnusedOAuthClientAge))
+	return err
 }

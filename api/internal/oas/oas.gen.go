@@ -818,6 +818,123 @@ func (e MessageUpdatedEventType) Valid() bool {
 	}
 }
 
+// Defines values for OAuthClientMetadataGrantTypes.
+const (
+	OAuthClientMetadataGrantTypesAuthorizationCode OAuthClientMetadataGrantTypes = "authorization_code"
+	OAuthClientMetadataGrantTypesRefreshToken      OAuthClientMetadataGrantTypes = "refresh_token"
+)
+
+// Valid indicates whether the value is a known member of the OAuthClientMetadataGrantTypes enum.
+func (e OAuthClientMetadataGrantTypes) Valid() bool {
+	switch e {
+	case OAuthClientMetadataGrantTypesAuthorizationCode:
+		return true
+	case OAuthClientMetadataGrantTypesRefreshToken:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for OAuthClientMetadataResponseTypes.
+const (
+	OAuthClientMetadataResponseTypesCode OAuthClientMetadataResponseTypes = "code"
+)
+
+// Valid indicates whether the value is a known member of the OAuthClientMetadataResponseTypes enum.
+func (e OAuthClientMetadataResponseTypes) Valid() bool {
+	switch e {
+	case OAuthClientMetadataResponseTypesCode:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for OAuthClientRegistrationGrantTypes.
+const (
+	OAuthClientRegistrationGrantTypesAuthorizationCode OAuthClientRegistrationGrantTypes = "authorization_code"
+	OAuthClientRegistrationGrantTypesRefreshToken      OAuthClientRegistrationGrantTypes = "refresh_token"
+)
+
+// Valid indicates whether the value is a known member of the OAuthClientRegistrationGrantTypes enum.
+func (e OAuthClientRegistrationGrantTypes) Valid() bool {
+	switch e {
+	case OAuthClientRegistrationGrantTypesAuthorizationCode:
+		return true
+	case OAuthClientRegistrationGrantTypesRefreshToken:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for OAuthClientRegistrationResponseTypes.
+const (
+	OAuthClientRegistrationResponseTypesCode OAuthClientRegistrationResponseTypes = "code"
+)
+
+// Valid indicates whether the value is a known member of the OAuthClientRegistrationResponseTypes enum.
+func (e OAuthClientRegistrationResponseTypes) Valid() bool {
+	switch e {
+	case OAuthClientRegistrationResponseTypesCode:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for OAuthResource.
+const (
+	OAuthResourceApi OAuthResource = "api"
+	OAuthResourceMcp OAuthResource = "mcp"
+)
+
+// Valid indicates whether the value is a known member of the OAuthResource enum.
+func (e OAuthResource) Valid() bool {
+	switch e {
+	case OAuthResourceApi:
+		return true
+	case OAuthResourceMcp:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for OAuthTokenRequestGrantType.
+const (
+	OAuthTokenRequestGrantTypeAuthorizationCode OAuthTokenRequestGrantType = "authorization_code"
+	OAuthTokenRequestGrantTypeRefreshToken      OAuthTokenRequestGrantType = "refresh_token"
+)
+
+// Valid indicates whether the value is a known member of the OAuthTokenRequestGrantType enum.
+func (e OAuthTokenRequestGrantType) Valid() bool {
+	switch e {
+	case OAuthTokenRequestGrantTypeAuthorizationCode:
+		return true
+	case OAuthTokenRequestGrantTypeRefreshToken:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for OAuthTokenResponseTokenType.
+const (
+	Bearer OAuthTokenResponseTokenType = "Bearer"
+)
+
+// Valid indicates whether the value is a known member of the OAuthTokenResponseTokenType enum.
+func (e OAuthTokenResponseTokenType) Valid() bool {
+	switch e {
+	case Bearer:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for Priority.
 const (
 	High   Priority = "high"
@@ -2839,6 +2956,10 @@ type MessageAuthor struct {
 
 	// Type `bot` is an API key. Rows written with a key before bot authors existed have `system`.
 	Type AuthorType `json:"type"`
+
+	// Via The OAuth client the member wrote this with (its name at the time), as in
+	// "Ayşe via Claude Code"; absent for the panel, API keys and contacts.
+	Via *string `json:"via,omitempty"`
 }
 
 // MessageCreate defines model for MessageCreate.
@@ -3081,6 +3202,192 @@ type NotificationSettingsUpdate struct {
 
 	// Events Some events and their channels.
 	Events *NotificationEventsUpdate `json:"events,omitempty"`
+}
+
+// OAuthApproval defines model for OAuthApproval.
+type OAuthApproval struct {
+	Scopes      []ApiKeyScope `json:"scopes"`
+	WorkspaceId uuid.UUID     `json:"workspace_id"`
+}
+
+// OAuthClient defines model for OAuthClient.
+type OAuthClient struct {
+	// ClientId A registered client id or a Client ID Metadata Document URL.
+	ClientId string `json:"client_id"`
+
+	// ClientUri The client's home page, when it gave one.
+	ClientUri *string `json:"client_uri,omitempty"`
+
+	// Name The name the client gave itself; the panel shows it as the client's claim, not as verified.
+	Name string `json:"name"`
+}
+
+// OAuthClientMetadata RFC 7591 client metadata; fields not listed here are ignored.
+type OAuthClientMetadata struct {
+	// ClientName Defaults to the host of the first redirect URI.
+	ClientName *string `json:"client_name,omitempty"`
+
+	// ClientUri An `https` URL.
+	ClientUri     *string                             `json:"client_uri,omitempty"`
+	GrantTypes    *[]OAuthClientMetadataGrantTypes    `json:"grant_types,omitempty"`
+	RedirectUris  []string                            `json:"redirect_uris"`
+	ResponseTypes *[]OAuthClientMetadataResponseTypes `json:"response_types,omitempty"`
+	Scope         *string                             `json:"scope,omitempty"`
+
+	// TokenEndpointAuthMethod Always answered as `none`.
+	TokenEndpointAuthMethod *string `json:"token_endpoint_auth_method,omitempty"`
+}
+
+// OAuthClientMetadataGrantTypes defines model for OAuthClientMetadata.GrantTypes.
+type OAuthClientMetadataGrantTypes string
+
+// OAuthClientMetadataResponseTypes defines model for OAuthClientMetadata.ResponseTypes.
+type OAuthClientMetadataResponseTypes string
+
+// OAuthClientRegistration defines model for OAuthClientRegistration.
+type OAuthClientRegistration struct {
+	ClientId         string `json:"client_id"`
+	ClientIdIssuedAt int64  `json:"client_id_issued_at"`
+
+	// ClientName Defaults to the host of the first redirect URI.
+	ClientName *string `json:"client_name,omitempty"`
+
+	// ClientUri An `https` URL.
+	ClientUri     *string                                 `json:"client_uri,omitempty"`
+	GrantTypes    *[]OAuthClientRegistrationGrantTypes    `json:"grant_types,omitempty"`
+	RedirectUris  []string                                `json:"redirect_uris"`
+	ResponseTypes *[]OAuthClientRegistrationResponseTypes `json:"response_types,omitempty"`
+	Scope         *string                                 `json:"scope,omitempty"`
+
+	// TokenEndpointAuthMethod Always answered as `none`.
+	TokenEndpointAuthMethod *string `json:"token_endpoint_auth_method,omitempty"`
+}
+
+// OAuthClientRegistrationGrantTypes defines model for OAuthClientRegistration.GrantTypes.
+type OAuthClientRegistrationGrantTypes string
+
+// OAuthClientRegistrationResponseTypes defines model for OAuthClientRegistration.ResponseTypes.
+type OAuthClientRegistrationResponseTypes string
+
+// OAuthError An OAuth error answer (RFC 6749 section 5.2, RFC 7591 section 3.2.2).
+type OAuthError struct {
+	Error            string  `json:"error"`
+	ErrorDescription *string `json:"error_description,omitempty"`
+}
+
+// OAuthGrant defines model for OAuthGrant.
+type OAuthGrant struct {
+	Client     OAuthClient `json:"client"`
+	CreatedAt  time.Time   `json:"created_at"`
+	Id         uuid.UUID   `json:"id"`
+	LastUsedAt *time.Time  `json:"last_used_at,omitempty"`
+	MemberId   uuid.UUID   `json:"member_id"`
+
+	// RequestsThisMonth Requests made with the grant's tokens in the current calendar month (UTC).
+	RequestsThisMonth int64 `json:"requests_this_month"`
+
+	// Resource `mcp` for a `<public URL>/mcp` token, `api` for a `<public URL>` token (`/v1`, `/v1/realtime` and `/mcp`).
+	Resource OAuthResource `json:"resource"`
+	Scopes   []ApiKeyScope `json:"scopes"`
+}
+
+// OAuthGrantList defines model for OAuthGrantList.
+type OAuthGrantList struct {
+	Items []OAuthGrant `json:"items"`
+}
+
+// OAuthRedirect defines model for OAuthRedirect.
+type OAuthRedirect struct {
+	// RedirectUrl Send the browser here.
+	RedirectUrl string `json:"redirect_url"`
+}
+
+// OAuthRequest defines model for OAuthRequest.
+type OAuthRequest struct {
+	Client    OAuthClient `json:"client"`
+	ExpiresAt time.Time   `json:"expires_at"`
+	Id        uuid.UUID   `json:"id"`
+
+	// RedirectHost Where the browser goes after approval; the host, or the scheme of a native app's private-use URI.
+	RedirectHost string `json:"redirect_host"`
+	RedirectUri  string `json:"redirect_uri"`
+
+	// RequestedScopes The scopes the client asked for; absent when it asked for none.
+	RequestedScopes *[]string `json:"requested_scopes,omitempty"`
+
+	// Resource `mcp` for a `<public URL>/mcp` token, `api` for a `<public URL>` token (`/v1`, `/v1/realtime` and `/mcp`).
+	Resource   OAuthResource          `json:"resource"`
+	Workspaces []OAuthWorkspaceChoice `json:"workspaces"`
+}
+
+// OAuthResource `mcp` for a `<public URL>/mcp` token, `api` for a `<public URL>` token (`/v1`, `/v1/realtime` and `/mcp`).
+type OAuthResource string
+
+// OAuthResourceMetadata RFC 9728 protected resource metadata.
+type OAuthResourceMetadata struct {
+	AuthorizationServers   *[]string `json:"authorization_servers,omitempty"`
+	BearerMethodsSupported *[]string `json:"bearer_methods_supported,omitempty"`
+	Resource               string    `json:"resource"`
+	ResourceName           *string   `json:"resource_name,omitempty"`
+	ScopesSupported        *[]string `json:"scopes_supported,omitempty"`
+}
+
+// OAuthServerMetadata RFC 8414 authorization server metadata.
+type OAuthServerMetadata struct {
+	AuthorizationEndpoint                      string    `json:"authorization_endpoint"`
+	AuthorizationResponseIssParameterSupported *bool     `json:"authorization_response_iss_parameter_supported,omitempty"`
+	ClientIdMetadataDocumentSupported          *bool     `json:"client_id_metadata_document_supported,omitempty"`
+	CodeChallengeMethodsSupported              *[]string `json:"code_challenge_methods_supported,omitempty"`
+	GrantTypesSupported                        *[]string `json:"grant_types_supported,omitempty"`
+	Issuer                                     string    `json:"issuer"`
+	RegistrationEndpoint                       *string   `json:"registration_endpoint,omitempty"`
+	ResponseTypesSupported                     []string  `json:"response_types_supported"`
+	RevocationEndpoint                         *string   `json:"revocation_endpoint,omitempty"`
+	RevocationEndpointAuthMethodsSupported     *[]string `json:"revocation_endpoint_auth_methods_supported,omitempty"`
+	ScopesSupported                            *[]string `json:"scopes_supported,omitempty"`
+	TokenEndpoint                              string    `json:"token_endpoint"`
+	TokenEndpointAuthMethodsSupported          *[]string `json:"token_endpoint_auth_methods_supported,omitempty"`
+}
+
+// OAuthTokenRequest defines model for OAuthTokenRequest.
+type OAuthTokenRequest struct {
+	ClientId     *string                    `json:"client_id,omitempty"`
+	Code         *string                    `json:"code,omitempty"`
+	CodeVerifier *string                    `json:"code_verifier,omitempty"`
+	GrantType    OAuthTokenRequestGrantType `json:"grant_type"`
+	RedirectUri  *string                    `json:"redirect_uri,omitempty"`
+	RefreshToken *string                    `json:"refresh_token,omitempty"`
+	Resource     *string                    `json:"resource,omitempty"`
+}
+
+// OAuthTokenRequestGrantType defines model for OAuthTokenRequest.GrantType.
+type OAuthTokenRequestGrantType string
+
+// OAuthTokenResponse defines model for OAuthTokenResponse.
+type OAuthTokenResponse struct {
+	// AccessToken `yuva_at_<secret>`, valid for `expires_in` seconds (3600).
+	AccessToken string `json:"access_token"`
+	ExpiresIn   int    `json:"expires_in"`
+
+	// RefreshToken `yuva_rt_<secret>`, valid 30 days and once.
+	RefreshToken string `json:"refresh_token"`
+
+	// Scope The granted scopes, space-separated.
+	Scope     string                      `json:"scope"`
+	TokenType OAuthTokenResponseTokenType `json:"token_type"`
+}
+
+// OAuthTokenResponseTokenType defines model for OAuthTokenResponse.TokenType.
+type OAuthTokenResponseTokenType string
+
+// OAuthWorkspaceChoice defines model for OAuthWorkspaceChoice.
+type OAuthWorkspaceChoice struct {
+	Name string `json:"name"`
+	Role Role   `json:"role"`
+
+	// Scopes The scopes that can be granted in this workspace; empty when none of the requested ones can.
+	Scopes      []ApiKeyScope `json:"scopes"`
+	WorkspaceId uuid.UUID     `json:"workspace_id"`
 }
 
 // Origin A web origin, `scheme://host[:port]`, without a path.
@@ -3755,6 +4062,12 @@ type MemberId = uuid.UUID
 // MessageId defines model for MessageId.
 type MessageId = uuid.UUID
 
+// OAuthGrantId defines model for OAuthGrantId.
+type OAuthGrantId = uuid.UUID
+
+// OAuthRequestId defines model for OAuthRequestId.
+type OAuthRequestId = uuid.UUID
+
 // PasskeyId defines model for PasskeyId.
 type PasskeyId = uuid.UUID
 
@@ -4337,6 +4650,18 @@ type SendMessageParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListOAuthGrantsParams defines parameters for ListOAuthGrants.
+type ListOAuthGrantsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// RevokeOAuthGrantParams defines parameters for RevokeOAuthGrant.
+type RevokeOAuthGrantParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetUsageParams defines parameters for GetUsage.
 type GetUsageParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -4700,6 +5025,9 @@ type UpdateMemberJSONRequestBody = MemberUpdate
 
 // UpdateMessageJSONRequestBody defines body for UpdateMessage for application/json ContentType.
 type UpdateMessageJSONRequestBody = MessageUpdate
+
+// ApproveOAuthRequestJSONRequestBody defines body for ApproveOAuthRequest for application/json ContentType.
+type ApproveOAuthRequestJSONRequestBody = OAuthApproval
 
 // CreateWebhookJSONRequestBody defines body for CreateWebhook for application/json ContentType.
 type CreateWebhookJSONRequestBody = WebhookEndpointCreate
@@ -5771,6 +6099,21 @@ type ServerInterface interface {
 	// SendMessage Send a draft
 	// (POST /v1/messages/{messageId}/send)
 	SendMessage(w http.ResponseWriter, r *http.Request, messageId MessageId, params SendMessageParams)
+	// ListOAuthGrants List connected apps
+	// (GET /v1/oauth/grants)
+	ListOAuthGrants(w http.ResponseWriter, r *http.Request, params ListOAuthGrantsParams)
+	// RevokeOAuthGrant Revoke a connected app
+	// (DELETE /v1/oauth/grants/{oauthGrantId})
+	RevokeOAuthGrant(w http.ResponseWriter, r *http.Request, oauthGrantId OAuthGrantId, params RevokeOAuthGrantParams)
+	// GetOAuthRequest Read a pending authorization request
+	// (GET /v1/oauth/requests/{oauthRequestId})
+	GetOAuthRequest(w http.ResponseWriter, r *http.Request, oauthRequestId OAuthRequestId)
+	// ApproveOAuthRequest Approve an authorization request
+	// (POST /v1/oauth/requests/{oauthRequestId}/approve)
+	ApproveOAuthRequest(w http.ResponseWriter, r *http.Request, oauthRequestId OAuthRequestId)
+	// DenyOAuthRequest Deny an authorization request
+	// (POST /v1/oauth/requests/{oauthRequestId}/deny)
+	DenyOAuthRequest(w http.ResponseWriter, r *http.Request, oauthRequestId OAuthRequestId)
 	// GetVapidPublicKey The server's Web Push key
 	// (GET /v1/push/vapid-public-key)
 	GetVapidPublicKey(w http.ResponseWriter, r *http.Request)
@@ -10290,6 +10633,175 @@ func (siw *ServerInterfaceWrapper) SendMessage(w http.ResponseWriter, r *http.Re
 	handler.ServeHTTP(w, r)
 }
 
+// ListOAuthGrants operation middleware
+func (siw *ServerInterfaceWrapper) ListOAuthGrants(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListOAuthGrantsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListOAuthGrants(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RevokeOAuthGrant operation middleware
+func (siw *ServerInterfaceWrapper) RevokeOAuthGrant(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "oauthGrantId" -------------
+	var oauthGrantId OAuthGrantId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "oauthGrantId", r.PathValue("oauthGrantId"), &oauthGrantId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "oauthGrantId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RevokeOAuthGrantParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RevokeOAuthGrant(w, r, oauthGrantId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetOAuthRequest operation middleware
+func (siw *ServerInterfaceWrapper) GetOAuthRequest(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "oauthRequestId" -------------
+	var oauthRequestId OAuthRequestId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "oauthRequestId", r.PathValue("oauthRequestId"), &oauthRequestId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "oauthRequestId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetOAuthRequest(w, r, oauthRequestId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ApproveOAuthRequest operation middleware
+func (siw *ServerInterfaceWrapper) ApproveOAuthRequest(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "oauthRequestId" -------------
+	var oauthRequestId OAuthRequestId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "oauthRequestId", r.PathValue("oauthRequestId"), &oauthRequestId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "oauthRequestId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ApproveOAuthRequest(w, r, oauthRequestId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DenyOAuthRequest operation middleware
+func (siw *ServerInterfaceWrapper) DenyOAuthRequest(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "oauthRequestId" -------------
+	var oauthRequestId OAuthRequestId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "oauthRequestId", r.PathValue("oauthRequestId"), &oauthRequestId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "oauthRequestId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DenyOAuthRequest(w, r, oauthRequestId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetVapidPublicKey operation middleware
 func (siw *ServerInterfaceWrapper) GetVapidPublicKey(w http.ResponseWriter, r *http.Request) {
 
@@ -11323,6 +11835,11 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/webhooks/{webhookId}/deliveries/{deliveryId}", wrapper.GetWebhookDelivery)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/webhooks/{webhookId}/deliveries/{deliveryId}/redeliver", wrapper.RedeliverWebhook)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/webhooks/{webhookId}/attempts", wrapper.ListWebhookAttempts)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/oauth/requests/{oauthRequestId}", wrapper.GetOAuthRequest)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/oauth/requests/{oauthRequestId}/approve", wrapper.ApproveOAuthRequest)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/oauth/requests/{oauthRequestId}/deny", wrapper.DenyOAuthRequest)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/oauth/grants", wrapper.ListOAuthGrants)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/oauth/grants/{oauthGrantId}", wrapper.RevokeOAuthGrant)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/client/v1/session", wrapper.DeleteClientSession)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/session", wrapper.GetClientSession)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/session", wrapper.CreateClientSession)
@@ -19049,6 +19566,332 @@ func (response SendMessage409ApplicationProblemPlusJSONResponse) VisitSendMessag
 	return err
 }
 
+type ListOAuthGrantsRequestObject struct {
+	Params ListOAuthGrantsParams
+}
+
+type ListOAuthGrantsResponseObject interface {
+	VisitListOAuthGrantsResponse(w http.ResponseWriter) error
+}
+
+type ListOAuthGrants200JSONResponse OAuthGrantList
+
+func (response ListOAuthGrants200JSONResponse) VisitListOAuthGrantsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListOAuthGrants401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListOAuthGrants401ApplicationProblemPlusJSONResponse) VisitListOAuthGrantsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListOAuthGrants403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListOAuthGrants403ApplicationProblemPlusJSONResponse) VisitListOAuthGrantsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RevokeOAuthGrantRequestObject struct {
+	OauthGrantId OAuthGrantId `json:"oauthGrantId"`
+	Params       RevokeOAuthGrantParams
+}
+
+type RevokeOAuthGrantResponseObject interface {
+	VisitRevokeOAuthGrantResponse(w http.ResponseWriter) error
+}
+
+type RevokeOAuthGrant204Response struct {
+}
+
+func (response RevokeOAuthGrant204Response) VisitRevokeOAuthGrantResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type RevokeOAuthGrant401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response RevokeOAuthGrant401ApplicationProblemPlusJSONResponse) VisitRevokeOAuthGrantResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RevokeOAuthGrant403ApplicationProblemPlusJSONResponse Problem
+
+func (response RevokeOAuthGrant403ApplicationProblemPlusJSONResponse) VisitRevokeOAuthGrantResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RevokeOAuthGrant404ApplicationProblemPlusJSONResponse Problem
+
+func (response RevokeOAuthGrant404ApplicationProblemPlusJSONResponse) VisitRevokeOAuthGrantResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetOAuthRequestRequestObject struct {
+	OauthRequestId OAuthRequestId `json:"oauthRequestId"`
+}
+
+type GetOAuthRequestResponseObject interface {
+	VisitGetOAuthRequestResponse(w http.ResponseWriter) error
+}
+
+type GetOAuthRequest200JSONResponse OAuthRequest
+
+func (response GetOAuthRequest200JSONResponse) VisitGetOAuthRequestResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetOAuthRequest401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetOAuthRequest401ApplicationProblemPlusJSONResponse) VisitGetOAuthRequestResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetOAuthRequest403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetOAuthRequest403ApplicationProblemPlusJSONResponse) VisitGetOAuthRequestResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetOAuthRequest404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetOAuthRequest404ApplicationProblemPlusJSONResponse) VisitGetOAuthRequestResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ApproveOAuthRequestRequestObject struct {
+	OauthRequestId OAuthRequestId `json:"oauthRequestId"`
+	Body           *ApproveOAuthRequestJSONRequestBody
+}
+
+type ApproveOAuthRequestResponseObject interface {
+	VisitApproveOAuthRequestResponse(w http.ResponseWriter) error
+}
+
+type ApproveOAuthRequest200JSONResponse OAuthRedirect
+
+func (response ApproveOAuthRequest200JSONResponse) VisitApproveOAuthRequestResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ApproveOAuthRequest400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ApproveOAuthRequest400ApplicationProblemPlusJSONResponse) VisitApproveOAuthRequestResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ApproveOAuthRequest401ApplicationProblemPlusJSONResponse Problem
+
+func (response ApproveOAuthRequest401ApplicationProblemPlusJSONResponse) VisitApproveOAuthRequestResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ApproveOAuthRequest403ApplicationProblemPlusJSONResponse Problem
+
+func (response ApproveOAuthRequest403ApplicationProblemPlusJSONResponse) VisitApproveOAuthRequestResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ApproveOAuthRequest404ApplicationProblemPlusJSONResponse Problem
+
+func (response ApproveOAuthRequest404ApplicationProblemPlusJSONResponse) VisitApproveOAuthRequestResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DenyOAuthRequestRequestObject struct {
+	OauthRequestId OAuthRequestId `json:"oauthRequestId"`
+}
+
+type DenyOAuthRequestResponseObject interface {
+	VisitDenyOAuthRequestResponse(w http.ResponseWriter) error
+}
+
+type DenyOAuthRequest200JSONResponse OAuthRedirect
+
+func (response DenyOAuthRequest200JSONResponse) VisitDenyOAuthRequestResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DenyOAuthRequest401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DenyOAuthRequest401ApplicationProblemPlusJSONResponse) VisitDenyOAuthRequestResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DenyOAuthRequest403ApplicationProblemPlusJSONResponse Problem
+
+func (response DenyOAuthRequest403ApplicationProblemPlusJSONResponse) VisitDenyOAuthRequestResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DenyOAuthRequest404ApplicationProblemPlusJSONResponse Problem
+
+func (response DenyOAuthRequest404ApplicationProblemPlusJSONResponse) VisitDenyOAuthRequestResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type GetVapidPublicKeyRequestObject struct {
 }
 
@@ -20382,6 +21225,21 @@ type StrictServerInterface interface {
 	// SendMessage Send a draft
 	// (POST /v1/messages/{messageId}/send)
 	SendMessage(ctx context.Context, request SendMessageRequestObject) (SendMessageResponseObject, error)
+	// ListOAuthGrants List connected apps
+	// (GET /v1/oauth/grants)
+	ListOAuthGrants(ctx context.Context, request ListOAuthGrantsRequestObject) (ListOAuthGrantsResponseObject, error)
+	// RevokeOAuthGrant Revoke a connected app
+	// (DELETE /v1/oauth/grants/{oauthGrantId})
+	RevokeOAuthGrant(ctx context.Context, request RevokeOAuthGrantRequestObject) (RevokeOAuthGrantResponseObject, error)
+	// GetOAuthRequest Read a pending authorization request
+	// (GET /v1/oauth/requests/{oauthRequestId})
+	GetOAuthRequest(ctx context.Context, request GetOAuthRequestRequestObject) (GetOAuthRequestResponseObject, error)
+	// ApproveOAuthRequest Approve an authorization request
+	// (POST /v1/oauth/requests/{oauthRequestId}/approve)
+	ApproveOAuthRequest(ctx context.Context, request ApproveOAuthRequestRequestObject) (ApproveOAuthRequestResponseObject, error)
+	// DenyOAuthRequest Deny an authorization request
+	// (POST /v1/oauth/requests/{oauthRequestId}/deny)
+	DenyOAuthRequest(ctx context.Context, request DenyOAuthRequestRequestObject) (DenyOAuthRequestResponseObject, error)
 	// GetVapidPublicKey The server's Web Push key
 	// (GET /v1/push/vapid-public-key)
 	GetVapidPublicKey(ctx context.Context, request GetVapidPublicKeyRequestObject) (GetVapidPublicKeyResponseObject, error)
@@ -23333,6 +24191,144 @@ func (sh *strictHandler) SendMessage(w http.ResponseWriter, r *http.Request, mes
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(SendMessageResponseObject); ok {
 		if err := validResponse.VisitSendMessageResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListOAuthGrants operation middleware
+func (sh *strictHandler) ListOAuthGrants(w http.ResponseWriter, r *http.Request, params ListOAuthGrantsParams) {
+	var request ListOAuthGrantsRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListOAuthGrants(ctx, request.(ListOAuthGrantsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListOAuthGrants")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListOAuthGrantsResponseObject); ok {
+		if err := validResponse.VisitListOAuthGrantsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// RevokeOAuthGrant operation middleware
+func (sh *strictHandler) RevokeOAuthGrant(w http.ResponseWriter, r *http.Request, oauthGrantId OAuthGrantId, params RevokeOAuthGrantParams) {
+	var request RevokeOAuthGrantRequestObject
+
+	request.OauthGrantId = oauthGrantId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.RevokeOAuthGrant(ctx, request.(RevokeOAuthGrantRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "RevokeOAuthGrant")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(RevokeOAuthGrantResponseObject); ok {
+		if err := validResponse.VisitRevokeOAuthGrantResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetOAuthRequest operation middleware
+func (sh *strictHandler) GetOAuthRequest(w http.ResponseWriter, r *http.Request, oauthRequestId OAuthRequestId) {
+	var request GetOAuthRequestRequestObject
+
+	request.OauthRequestId = oauthRequestId
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetOAuthRequest(ctx, request.(GetOAuthRequestRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetOAuthRequest")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetOAuthRequestResponseObject); ok {
+		if err := validResponse.VisitGetOAuthRequestResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ApproveOAuthRequest operation middleware
+func (sh *strictHandler) ApproveOAuthRequest(w http.ResponseWriter, r *http.Request, oauthRequestId OAuthRequestId) {
+	var request ApproveOAuthRequestRequestObject
+
+	request.OauthRequestId = oauthRequestId
+
+	var body ApproveOAuthRequestJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ApproveOAuthRequest(ctx, request.(ApproveOAuthRequestRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ApproveOAuthRequest")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ApproveOAuthRequestResponseObject); ok {
+		if err := validResponse.VisitApproveOAuthRequestResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DenyOAuthRequest operation middleware
+func (sh *strictHandler) DenyOAuthRequest(w http.ResponseWriter, r *http.Request, oauthRequestId OAuthRequestId) {
+	var request DenyOAuthRequestRequestObject
+
+	request.OauthRequestId = oauthRequestId
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DenyOAuthRequest(ctx, request.(DenyOAuthRequestRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DenyOAuthRequest")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DenyOAuthRequestResponseObject); ok {
+		if err := validResponse.VisitDenyOAuthRequestResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

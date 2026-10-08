@@ -27,6 +27,8 @@ const (
 	callerAPIKey  = "api_key"
 	callerMember  = "member"
 	callerContact = "contact"
+
+	callerOAuthGrant = "oauth_grant"
 )
 
 var (

@@ -150,7 +150,7 @@ func (s *Server) DeleteMessage(ctx context.Context, req oas.DeleteMessageRequest
 
 func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObject) (oas.SendMessageResponseObject, error) {
 	p := principalFrom(ctx)
-	if p.isKey() && !p.botsMaySend {
+	if p.deliversAsBot() && !p.botsMaySend {
 		return nil, errBotSendingDisabled
 	}
 	var out oas.Message
@@ -164,7 +164,7 @@ func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObje
 			return err
 		}
 		now := s.now()
-		arg := store.SendDraftParams{WorkspaceID: p.workspaceID, ID: req.MessageId, Now: now}
+		arg := store.SendDraftParams{WorkspaceID: p.workspaceID, ID: req.MessageId, Now: now, SentVia: p.viaClient()}
 		if p.isKey() {
 			arg.SentByApiKeyID = &p.keyID
 		} else {

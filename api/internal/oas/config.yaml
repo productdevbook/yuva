@@ -6,7 +6,7 @@ generate:
   strict-server: true
 output-options:
   skip-prune: true
-  exclude-operation-ids: [realtime, clientRealtime, ingestEmail, ingestSes]
+  exclude-operation-ids: [realtime, clientRealtime, ingestEmail, ingestSes, oauthAuthorizationServerMetadata, oauthProtectedResourceMetadata, oauthProtectedResourceMetadataMcp, oauthRegister, oauthAuthorize, oauthToken, oauthRevoke]
   nullable-type: true
   type-mapping:
     string:

@@ -33,9 +33,9 @@ import (
 
 const maxBodyBytes = 8 << 20
 
-var apiPrefixes = []string{"/v1/", "/client/v1/", "/ingress/"}
+var apiPrefixes = []string{"/v1/", "/client/v1/", "/ingress/", "/.well-known/"}
 
-var apiPaths = []string{"/v1", "/client/v1", "/healthz", "/readyz"}
+var apiPaths = []string{"/v1", "/client/v1", "/healthz", "/readyz", "/oauth/register", "/oauth/authorize", "/oauth/token", "/oauth/revoke"}
 
 type Server struct {
 	log      *slog.Logger
@@ -208,6 +208,13 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /ingress/ses", s.serveIngressSES)
 	mux.HandleFunc("GET "+emailConfirmPath, s.serveEmailConfirm)
 	mux.HandleFunc("POST "+emailConfirmPath, s.serveEmailConfirmPost)
+	mux.HandleFunc("GET /.well-known/oauth-authorization-server", s.serveOAuthServerMetadata)
+	mux.HandleFunc("GET /.well-known/oauth-protected-resource", s.serveResourceMetadata(s.apiResource(), "Yuva"))
+	mux.HandleFunc("GET /.well-known/oauth-protected-resource/mcp", s.serveResourceMetadata(s.mcpResource(), "Yuva MCP"))
+	mux.HandleFunc("POST /oauth/register", s.serveOAuthRegister)
+	mux.HandleFunc("GET /oauth/authorize", s.serveOAuthAuthorize)
+	mux.HandleFunc("POST /oauth/token", s.serveOAuthToken)
+	mux.HandleFunc("POST /oauth/revoke", s.serveOAuthRevoke)
 	for _, name := range widget.Files {
 		mux.Handle("GET /"+name, widget.Handler(name))
 	}
@@ -219,7 +226,7 @@ func (s *Server) Handler() http.Handler {
 		}
 		panel.ServeHTTP(w, r)
 	})
-	return s.recoverer(s.logRequests(noSniff(s.clientCORS(s.guardCookieWrites(s.limitBody(s.idempotency(mux)))))))
+	return s.recoverer(s.logRequests(noSniff(oauthCORS(s.clientCORS(s.guardCookieWrites(s.limitBody(s.idempotency(mux))))))))
 }
 
 func noSniff(next http.Handler) http.Handler {

@@ -95,7 +95,7 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 }
 
 func errInsufficientScope(scope oas.ApiKeyScope) *apiError {
-	e := problem(http.StatusForbidden, "insufficient_scope", "the API key lacks the scope "+string(scope))
+	e := problem(http.StatusForbidden, "insufficient_scope", "the API key or token lacks the scope "+string(scope))
 	e.Scope = string(scope)
 	return e
 }
@@ -116,7 +116,7 @@ func keyMayCall(p principal, operationID string) error {
 }
 
 func requireScope(p principal, scope oas.ApiKeyScope) error {
-	if p.isKey() && !slices.Contains(p.scopes, string(scope)) {
+	if p.scoped() && !slices.Contains(p.scopes, string(scope)) {
 		return errInsufficientScope(scope)
 	}
 	return nil

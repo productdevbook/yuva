@@ -34,7 +34,7 @@ var (
 	errAttachmentType     = problem(http.StatusUnsupportedMediaType, "attachment_type_not_allowed", "an attachment has a content type the server does not allow")
 	errAttachmentMismatch = problem(http.StatusUnsupportedMediaType, "attachment_type_mismatch", "an attachment's content does not match its declared content type")
 	errTooManyAttachments = errValidation("at most 10 files per message")
-	errBotSendingDisabled = problem(http.StatusForbidden, "bot_sending_disabled", "this workspace does not let API keys deliver messages; post a draft for a member to send")
+	errBotSendingDisabled = problem(http.StatusForbidden, "bot_sending_disabled", "this workspace does not let API keys and MCP clients deliver messages; post a draft for a member to send")
 	errDraftKind          = errValidation("only an outgoing message can be a draft")
 )
 
@@ -88,7 +88,7 @@ func (s *Server) validateMessage(p principal, in *messageInput) error {
 		if in.direction == string(oas.In) && in.draft {
 			return errDraftKind
 		}
-		if in.direction == string(oas.Out) && !in.draft && p.isKey() && !p.botsMaySend {
+		if in.direction == string(oas.Out) && !in.draft && p.deliversAsBot() && !p.botsMaySend {
 			return errBotSendingDisabled
 		}
 	case string(oas.MessageKindNote):
@@ -307,7 +307,7 @@ func messageAuthor(m messageRow) oas.MessageAuthor {
 	if m.AuthorType == string(oas.AuthorTypeBot) {
 		return botAuthor(m.AuthorApiKeyID, m.BotName, m.BotAvatarUrl)
 	}
-	return oas.MessageAuthor{Type: oas.AuthorType(m.AuthorType), MemberId: m.AuthorMemberID, ContactId: m.AuthorContactID}
+	return oas.MessageAuthor{Type: oas.AuthorType(m.AuthorType), MemberId: m.AuthorMemberID, ContactId: m.AuthorContactID, Via: m.Via}
 }
 
 func messageBody(m messageRow, atts []store.Attachment) oas.Message {
@@ -321,7 +321,7 @@ func messageBody(m messageRow, atts []store.Attachment) oas.Message {
 		by := botAuthor(m.SentByApiKeyID, m.SentByBotName, "")
 		out.SentBy = &by
 	case m.SentByMemberID != nil:
-		out.SentBy = &oas.MessageAuthor{Type: oas.AuthorTypeMember, MemberId: m.SentByMemberID}
+		out.SentBy = &oas.MessageAuthor{Type: oas.AuthorTypeMember, MemberId: m.SentByMemberID, Via: m.SentVia}
 	}
 	if m.Direction != nil {
 		d := oas.Direction(*m.Direction)
@@ -490,7 +490,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		}
 		arg := store.CreateMessageParams{
 			ID: newID(), WorkspaceID: p.workspaceID, ConversationID: c.ID, Kind: in.kind, Body: in.body,
-			Html: in.html, ClientID: in.clientID, CreatedAt: now, Draft: in.draft,
+			Html: in.html, ClientID: in.clientID, CreatedAt: now, Draft: in.draft, Via: p.viaClient(),
 		}
 		if in.kind == string(oas.MessageKindMessage) {
 			arg.Direction = &in.direction

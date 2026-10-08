@@ -222,7 +222,7 @@ func (s *Server) writeEvent(ctx context.Context, q *store.Queries, events *event
 	author, member, key := authorFor(p)
 	msg, err := q.CreateMessage(ctx, store.CreateMessageParams{
 		ID: newID(), WorkspaceID: p.workspaceID, ConversationID: c.ID, Kind: string(oas.MessageKindEvent),
-		AuthorType: author, AuthorMemberID: member, AuthorApiKeyID: key, Event: mustJSON(ev), CreatedAt: at,
+		AuthorType: author, AuthorMemberID: member, AuthorApiKeyID: key, Event: mustJSON(ev), CreatedAt: at, Via: p.viaClient(),
 	})
 	if err != nil {
 		return err

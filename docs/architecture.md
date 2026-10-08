@@ -221,30 +221,50 @@ the member apps (M10). Authorization code with PKCE (`S256` only), no implicit o
   (RFC 9728). A `401` on `/mcp` carries `WWW-Authenticate: Bearer resource_metadata="…"`.
 - Clients: dynamic registration at `POST /oauth/register` (RFC 7591, public clients, no secret),
   and Client ID Metadata Documents (a `client_id` that is an `https` URL, fetched with the same
-  private-address rules as webhooks and cached for 24 hours). Redirect URIs must be `https`, or
-  `http` on loopback, or a private-use scheme for native apps; matched exactly.
+  private-address rules as webhooks and cached for 24 hours; its `client_id` must equal the URL and
+  it must be a public client). Redirect URIs must be `https`, or `http` on loopback, or a
+  private-use scheme for native apps; matched exactly, and `redirect_uri` may be left out only when
+  the client has one. Registration answers `token_endpoint_auth_method: none` whatever was asked,
+  allows 20 registrations per address and hour, and clients that never got a grant are deleted
+  after 30 days. Client ids are `yuva_client_<random>`.
 - `GET /oauth/authorize` checks the request and sends the browser to the panel's consent page
   (`/oauth/consent?request=<id>`). The panel signs the person in if needed (code or passkey), shows
   the client's name and redirect host, lets them pick one workspace, and shows the scopes. Approving
-  returns the redirect with a code (single use, 60 seconds).
+  returns the redirect with a code (single use, 60 seconds). The panel reads and answers the request
+  with `GET /v1/oauth/requests/{id}`, `POST …/approve` (workspace and scopes) and `POST …/deny`, all
+  with a member session; a pending request lives 10 minutes and is used once. Every redirect back
+  carries `state` and `iss` (RFC 9207).
 - `POST /oauth/token`: `authorization_code` and `refresh_token`. Access tokens are opaque, 1 hour;
-  refresh tokens 30 days, rotated on every use, and reusing a rotated one revokes the grant. Both
-  are stored as hashes. `POST /oauth/revoke` (RFC 7009).
+  refresh tokens 30 days, rotated on every use, and reusing a rotated one revokes the grant, as does
+  using a code twice. Both are stored as hashes (`yuva_at_…`, `yuva_rt_…`) and looked up by hash
+  alone, like API keys. `POST /oauth/revoke` (RFC 7009): a refresh token revokes the grant, an
+  access token only itself.
 - Resource indicators (RFC 8707) are required. `<YUVA_PUBLIC_URL>/mcp` gives a token for `/mcp`
-  only; `<YUVA_PUBLIC_URL>` gives one for `/v1`, `/v1/realtime` and `/mcp` (the member apps).
+  only; `<YUVA_PUBLIC_URL>` gives one for `/v1`, `/v1/realtime` and `/mcp` (the member apps). A
+  trailing `/` is ignored. A `/mcp`-only token on `/v1` gets `401 token_wrong_resource`; an expired
+  one `401 token_expired`.
 - Scopes are the API key scopes. A token acts as its member: what the member's role and inbox access
   allow, narrowed by the granted scopes, never more. A member who leaves or is removed loses every
-  grant. Management scopes a member's role cannot use are not offered on the consent page.
-- A grant is one member, one workspace and one client. Settings → Connected apps lists a member's
+  grant. Management scopes a member's role cannot use are not offered on the consent page: agents
+  are not offered `inboxes:manage`, `labels:write`, `canned_replies:write`, `webhooks:manage` and
+  `workspace:manage`, and nobody `feedback:write` (API keys only). A token may call exactly the
+  operations an API key may; the rest (read state, typing, notification settings, `/v1/me`,
+  members, keys, Connected apps, the consent endpoints) need a member session, and a token never
+  changes `bots_may_send`.
+- A grant is one member, one workspace and one client; approving the same client again in that
+  workspace replaces the grant's scopes and resource, and its live tokens follow. The 600 requests a
+  minute are counted per grant (its tokens rotate hourly), in the process like the other rate
+  limits, before scope checks. Settings → Connected apps lists a member's
   own grants (client, scopes, created, last used, request count this month) and revokes them;
   owners and admins see and revoke every grant in the workspace.
 - Registered clients and Client ID Metadata Documents belong to no workspace (a client is used by
-  many); they are the exception to the `workspace_id` rule. Grants, codes and tokens carry the
-  workspace.
+  many); they are the exception to the `workspace_id` rule, as are pending authorization requests,
+  which exist before the person picks a workspace. Grants, codes and tokens carry the workspace.
 
 **Writes through a client.** Everything a token writes records the client: messages, notes,
 drafts and conversation events get `via` (the client name at the time), and the timeline shows
-"Ayşe via Claude Code". Delivery from a `/mcp`-only token follows `bots_may_send` like an API key:
+"Ayşe via Claude Code". `via` is on the message's `author`, and a draft sent with a token also gets
+it on `sent_by`. Delivery from a `/mcp`-only token follows `bots_may_send` like an API key:
 off, an outgoing message must be a draft. A `<YUVA_PUBLIC_URL>` token (member apps) sends as the
 member.
 

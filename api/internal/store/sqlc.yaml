@@ -37,3 +37,9 @@ sql:
             go_type:
               import: time
               type: Time
+          - db_type: date
+            nullable: true
+            go_type:
+              import: time
+              type: Time
+              pointer: true

@@ -21,6 +21,9 @@ var (
 	limitWritePerIP        = limit{60, time.Minute}
 	limitWritePerChannel   = limit{1200, time.Minute}
 	limitTypingPerSession  = limit{60, time.Minute}
+	limitBearer            = limit{600, time.Minute}
+	limitRegisterPerIP     = limit{20, time.Hour}
+	limitAuthorizePerIP    = limit{60, time.Minute}
 )
 
 const (
@@ -55,6 +58,12 @@ func (l *rateLimiter) sweep(now time.Time) {
 }
 
 func (l *rateLimiter) allow(key string, lim limit, now time.Time) bool {
+	ok, _ := l.allowWait(key, lim, now)
+	return ok
+}
+
+// allowWait is allow that also says, when refused, how long until the window ends.
+func (l *rateLimiter) allowWait(key string, lim limit, now time.Time) (bool, time.Duration) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	if now.Sub(l.swept) >= time.Minute || now.Before(l.swept) {
@@ -63,16 +72,16 @@ func (l *rateLimiter) allow(key string, lim limit, now time.Time) bool {
 	b := l.buckets[key]
 	if b == nil || now.Sub(b.start) >= lim.window || now.Before(b.start) {
 		if b == nil && len(l.buckets) >= maxBuckets {
-			return false
+			return false, time.Minute
 		}
 		b = &bucket{start: now, window: lim.window}
 		l.buckets[key] = b
 	}
 	if b.n >= lim.n {
-		return false
+		return false, b.start.Add(b.window).Sub(now)
 	}
 	b.n++
-	return true
+	return true, 0
 }
 
 // rateIP is the client address as a rate limit key: IPv6 clients usually hold a whole /64.

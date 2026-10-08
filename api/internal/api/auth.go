@@ -96,6 +96,12 @@ var operationAccess = map[string]access{
 	"RevokeApiKey": accessMember,
 
 	"DeleteWorkspace": accessMember,
+
+	"GetOAuthRequest":     accessPerson,
+	"ApproveOAuthRequest": accessPerson,
+	"DenyOAuthRequest":    accessPerson,
+	"ListOAuthGrants":     accessMember,
+	"RevokeOAuthGrant":    accessMember,
 }
 
 type principal struct {
@@ -108,9 +114,28 @@ type principal struct {
 	scopes      []string
 	limited     bool
 	botsMaySend bool
+	grantID     uuid.UUID
+	via         string
+	mcpOnly     bool
 }
 
 func (p principal) isKey() bool { return p.keyID != uuid.Nil() }
+
+// isGrant reports an OAuth access token: the member, narrowed by the grant's scopes.
+func (p principal) isGrant() bool { return p.grantID != uuid.Nil() }
+
+func (p principal) scoped() bool { return p.isKey() || p.isGrant() }
+
+// deliversAsBot reports callers whose outgoing messages follow the workspace's bots_may_send.
+func (p principal) deliversAsBot() bool { return p.isKey() || p.mcpOnly }
+
+func (p principal) viaClient() *string {
+	if p.via == "" {
+		return nil
+	}
+	v := p.via
+	return &v
+}
 
 // viewerID names the caller in inbox_viewers: the member, or a key limited to inboxes.
 func (p principal) viewerID() uuid.UUID {
@@ -129,7 +154,7 @@ const (
 
 var (
 	errUnauthenticated       = problem(http.StatusUnauthorized, "unauthenticated", "sign in or send a valid API key")
-	errMemberSessionRequired = problem(http.StatusForbidden, "member_session_required", "this endpoint needs a member session, not an API key")
+	errMemberSessionRequired = problem(http.StatusForbidden, "member_session_required", "this endpoint needs a member session, not an API key or OAuth token")
 	errNotAMember            = problem(http.StatusForbidden, "not_a_member", "you are not a member of this workspace")
 	errWorkspaceRequired     = problem(http.StatusBadRequest, "workspace_required", "you belong to several workspaces; name one in the Yuva-Workspace header")
 	errWorkspaceMismatch     = problem(http.StatusForbidden, "workspace_mismatch", "the API key belongs to another workspace")
@@ -180,15 +205,23 @@ func (s *Server) authenticate(next oas.StrictHandlerFunc, operationID string) oa
 		if err != nil {
 			return nil, err
 		}
-		if p.isKey() {
+		if p.isGrant() {
+			if err := s.meterBearer(ctx, p); err != nil {
+				return nil, err
+			}
+		}
+		if p.scoped() {
 			if err := keyMayCall(p, operationID); err != nil {
 				return nil, err
 			}
 		}
 		if kind != accessPerson {
 			callerType, callerID := callerMember, p.memberID
-			if p.isKey() {
+			switch {
+			case p.isKey():
 				callerType, callerID = callerAPIKey, p.keyID
+			case p.isGrant():
+				callerType, callerID = callerOAuthGrant, p.grantID
 			}
 			if replayed, err := s.claimIdempotency(ctx, w, r, p.workspaceID, callerType, callerID); err != nil || replayed {
 				return nil, err
@@ -209,30 +242,7 @@ func (s *Server) resolvePrincipal(ctx context.Context, r *http.Request, kind acc
 		selected = &id
 	}
 	if token, ok := bearerToken(r); ok {
-		key, err := s.st.GetActiveAPIKeyByHash(ctx, hashSecret(token))
-		if store.IsNotFound(err) {
-			return principal{}, errUnauthenticated
-		}
-		if err != nil {
-			return principal{}, err
-		}
-		if key.ExpiresAt != nil && !now.Before(*key.ExpiresAt) {
-			return principal{}, errAPIKeyExpired
-		}
-		if kind != accessMemberOrKey {
-			return principal{}, errMemberSessionRequired
-		}
-		if selected != nil && *selected != key.WorkspaceID {
-			return principal{}, errWorkspaceMismatch
-		}
-		if err := s.st.TouchAPIKey(ctx, store.TouchAPIKeyParams{
-			Now: now, WorkspaceID: key.WorkspaceID, ID: key.ID, StaleBefore: now.Add(-touchEvery),
-		}); err != nil {
-			return principal{}, err
-		}
-		return principal{
-			keyID: key.ID, workspaceID: key.WorkspaceID, scopes: key.Scopes, limited: key.InboxLimited, botsMaySend: key.BotsMaySend,
-		}, nil
+		return s.resolveBearer(ctx, token, kind, selected, false)
 	}
 	c, err := r.Cookie(sessionCookie)
 	if err != nil || c.Value == "" {
@@ -275,6 +285,39 @@ func (s *Server) resolvePrincipal(ctx context.Context, r *http.Request, kind acc
 	}
 	p.workspaceID, p.memberID, p.role = m.WorkspaceID, m.ID, m.Role
 	return p, nil
+}
+
+// resolveBearer turns an API key or an OAuth access token into a principal. forMCP accepts
+// tokens issued for the /mcp resource only.
+func (s *Server) resolveBearer(ctx context.Context, token string, kind access, selected *uuid.UUID, forMCP bool) (principal, error) {
+	now := s.now()
+	if strings.HasPrefix(token, oauthAccessPrefix) {
+		return s.resolveOAuthAccess(ctx, token, kind, selected, forMCP)
+	}
+	key, err := s.st.GetActiveAPIKeyByHash(ctx, hashSecret(token))
+	if store.IsNotFound(err) {
+		return principal{}, errUnauthenticated
+	}
+	if err != nil {
+		return principal{}, err
+	}
+	if key.ExpiresAt != nil && !now.Before(*key.ExpiresAt) {
+		return principal{}, errAPIKeyExpired
+	}
+	if kind != accessMemberOrKey {
+		return principal{}, errMemberSessionRequired
+	}
+	if selected != nil && *selected != key.WorkspaceID {
+		return principal{}, errWorkspaceMismatch
+	}
+	if err := s.st.TouchAPIKey(ctx, store.TouchAPIKeyParams{
+		Now: now, WorkspaceID: key.WorkspaceID, ID: key.ID, StaleBefore: now.Add(-touchEvery),
+	}); err != nil {
+		return principal{}, err
+	}
+	return principal{
+		keyID: key.ID, workspaceID: key.WorkspaceID, scopes: key.Scopes, limited: key.InboxLimited, botsMaySend: key.BotsMaySend,
+	}, nil
 }
 
 func principalFrom(ctx context.Context) principal {
