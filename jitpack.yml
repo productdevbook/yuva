@@ -1,7 +1,6 @@
 jdk:
   - openjdk21
 before_install:
-  - sdk install gradle 9.8.0
-  - sdk use gradle 9.8.0
+  - ls -la sdk/kotlin/gradle/wrapper && sha256sum sdk/kotlin/gradle/wrapper/gradle-wrapper.jar && df -h . /tmp ~ && file sdk/kotlin/gradle/wrapper/gradle-wrapper.jar; head -c 200 sdk/kotlin/gradle/wrapper/gradle-wrapper.jar | od -c | head -5
 install:
-  - cd sdk/kotlin && gradle --console=plain :yuva:publishToMavenLocal
+  - cd sdk/kotlin && ./gradlew --console=plain :yuva:publishToMavenLocal
