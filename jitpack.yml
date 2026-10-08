@@ -1,6 +1,4 @@
 jdk:
   - openjdk21
-before_install:
-  - echo "JAVA_HOME=$JAVA_HOME"; java -version; "$JAVA_HOME/bin/java" -version
 install:
   - export JAVA_HOME="$HOME/.sdkman/candidates/java/current" && cd sdk/kotlin && ./gradlew --console=plain :yuva:publishToMavenLocal

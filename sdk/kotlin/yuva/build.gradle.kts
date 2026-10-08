@@ -51,8 +51,8 @@ afterEvaluate {
         publications {
             register<MavenPublication>("release") {
                 from(components["release"])
-                groupId = "com.github.productdevbook.yuva"
-                artifactId = "yuva-android"
+                groupId = "com.github.productdevbook"
+                artifactId = "yuva"
                 version = providers.environmentVariable("VERSION")
                     .orElse(providers.gradleProperty("yuva.version")).get()
                 pom {

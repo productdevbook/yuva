@@ -88,7 +88,7 @@ dependencyResolutionManagement {
 }
 // app/build.gradle.kts
 dependencies {
-    implementation("com.github.productdevbook.yuva:yuva-android:v0.0.x")
+    implementation("com.github.productdevbook:yuva:v0.0.x")
 }
 ```
 
