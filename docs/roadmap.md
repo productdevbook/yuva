@@ -98,3 +98,16 @@ Status: in progress; ships as `v0.0.1` (see `CHANGELOG.md`).
 - Security review of authentication, client sessions, ingress and attachment handling.
 
 Accept: a fresh install from the guide works on a clean host.
+
+## M9 — Headless and MCP (0.0.4)
+
+Status: planned; plan in issue #17.
+
+- Scoped API keys, bot authors, drafts, an event feed, idempotency keys, a published headless JS
+  client and an API-only mode.
+- An MCP server at `/mcp` with OAuth for members, tools, resources and prompts over the existing
+  `/v1` access rules; replies from assistants are drafts unless the workspace allows sending.
+  Yuva runs no model itself.
+
+Accept: Claude Code and claude.ai triage an inbox and draft replies a member sends from the panel;
+a prompt-injection e-mail sends nothing; a headless chat works with the panel turned off.
