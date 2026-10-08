@@ -13,10 +13,13 @@ import (
 	"os"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/modelcontextprotocol/go-sdk/jsonrpc"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
+
+const mcpDrainTimeout = 30 * time.Second
 
 const mcpUsage = "usage: yuva mcp stdio --url <server> --key <key>   (or YUVA_URL, YUVA_API_KEY)"
 
@@ -85,23 +88,63 @@ func bridgeMCP(ctx context.Context, endpoint, key string, stdin io.ReadCloser, s
 	var (
 		mu          sync.Mutex
 		initializes = map[jsonrpc.ID]bool{}
+		pending     = map[jsonrpc.ID]bool{}
+		stdinClosed bool
+		answered    = make(chan struct{})
 		writes      sync.WaitGroup
 	)
+	settle := func() {
+		if stdinClosed && len(pending) == 0 {
+			close(answered)
+		}
+	}
+	replied := func(id jsonrpc.ID) {
+		mu.Lock()
+		defer mu.Unlock()
+		if pending[id] {
+			delete(pending, id)
+			settle()
+		}
+	}
 	done := make(chan error, 2)
 	go func() {
 		for {
 			msg, err := local.Read(ctx)
 			if err != nil {
-				if errors.Is(err, io.EOF) || ctx.Err() != nil {
-					err = nil
+				if ctx.Err() != nil {
+					done <- nil
+					return
 				}
-				done <- err
+				if !errors.Is(err, io.EOF) {
+					done <- err
+					return
+				}
+				mu.Lock()
+				stdinClosed = true
+				settle()
+				mu.Unlock()
+				drained := make(chan struct{})
+				go func() {
+					writes.Wait()
+					<-answered
+					close(drained)
+				}()
+				select {
+				case <-drained:
+				case <-ctx.Done():
+				case <-time.After(mcpDrainTimeout):
+					log.Error("stdin closed; gave up waiting for replies", slog.Duration("waited", mcpDrainTimeout))
+				}
+				done <- nil
 				return
 			}
 			req, _ := msg.(*jsonrpc.Request)
-			if req != nil && req.IsCall() && req.Method == "initialize" {
+			if req != nil && req.IsCall() {
 				mu.Lock()
-				initializes[req.ID] = true
+				pending[req.ID] = true
+				if req.Method == "initialize" {
+					initializes[req.ID] = true
+				}
 				mu.Unlock()
 			}
 			writes.Add(1)
@@ -122,6 +165,7 @@ func bridgeMCP(ctx context.Context, endpoint, key string, stdin io.ReadCloser, s
 				if err := local.Write(ctx, &jsonrpc.Response{ID: req.ID, Error: reply}); err != nil {
 					log.Error("write to stdout", slog.Any("error", err))
 				}
+				replied(req.ID)
 			}()
 		}
 	}()
@@ -150,6 +194,9 @@ func bridgeMCP(ctx context.Context, endpoint, key string, stdin io.ReadCloser, s
 			if err := local.Write(ctx, msg); err != nil {
 				done <- err
 				return
+			}
+			if resp, ok := msg.(*jsonrpc.Response); ok {
+				replied(resp.ID)
 			}
 		}
 	}()
