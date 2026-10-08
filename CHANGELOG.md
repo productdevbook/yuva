@@ -7,6 +7,23 @@ database schema.
 
 ## [Unreleased]
 
+## [0.0.3] - 2026-10-08
+
+### Added
+
+- **Bulk actions**: select conversations in the list (checkboxes, shift-click for a range, select
+  all on the page) and close, reopen, snooze, assign, unassign or label them at once. One
+  `POST /v1/conversations/bulk` call for up to 100 conversations; the ones the caller cannot change
+  are listed with the reason and stay selected.
+- **Contact merge**: owners and admins merge two contacts of the same person, for example the
+  e-mail one and the in-app one (`POST /v1/contacts/{id}/merge`). The target gains the source's
+  addresses, external ids, attributes and conversations; the source is deleted and
+  `contact.deleted` carries `merged_into_id`.
+- **Move a conversation to another inbox** (`POST /v1/conversations/{id}/move`, shortcut `m`):
+  replies continue on the target inbox's channel, an e-mail conversation is refused when the target
+  has no e-mail channel, and the timeline shows "Moved from …". New realtime event
+  `conversation.moved`.
+
 ## [0.0.2] - 2026-10-08
 
 ### Added
@@ -72,6 +89,7 @@ The first public release. Pre-alpha: do not put real customer data in it yet.
   connections, attachment handling, rate limiting behind proxies, and the panel's security
   headers. Report vulnerabilities as described in `SECURITY.md`.
 
-[Unreleased]: https://github.com/productdevbook/yuva/compare/v0.0.2...HEAD
+[Unreleased]: https://github.com/productdevbook/yuva/compare/v0.0.3...HEAD
+[0.0.3]: https://github.com/productdevbook/yuva/compare/v0.0.2...v0.0.3
 [0.0.2]: https://github.com/productdevbook/yuva/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/productdevbook/yuva/releases/tag/v0.0.1
