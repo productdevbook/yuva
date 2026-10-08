@@ -10,6 +10,14 @@ sender ─► your MTA ─► yuva ingest-email, or POST /ingress/email ──�
                                          SES bounces ─► SNS ─► POST /ingress/ses ─┘
 ```
 
+## In short
+
+- [Create an e-mail channel](#create-the-channel) with its address and SMTP account.
+- Route mail to Yuva through the [Cloudflare Email Worker](#cloudflare-email-worker), any MTA or a
+  signed HTTP request.
+- Replies go out through the channel's [SMTP account](#outbound-smtp); check the
+  [DNS checklist](#dns-checklist).
+
 ## Create the channel
 
 In the panel: Settings → the inbox → Channels → E-mail. Or on the server:

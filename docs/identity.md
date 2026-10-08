@@ -11,6 +11,13 @@ your backend ─► app: JWT signed with the inbox identity secret
 app ─► Yuva POST /client/v1/session {channel_key, identity_token} ─► contact session
 ```
 
+## In short
+
+- Your backend signs a short-lived token for the signed-in user with the inbox's
+  [identity secret](#the-identity-secret).
+- [In Go](#signing-in-go) it is one call; [any JWT library](#signing-in-any-language) works.
+- The widget or the SDK exchanges it for a contact session; Yuva never sees your user database.
+
 ## The identity secret
 
 Each inbox has one identity secret (`yuva_is_…`). It is shown once when the inbox is created in the

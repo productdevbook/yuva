@@ -4,6 +4,13 @@ Yuva tells your backend what happens in conversations by sending signed HTTP req
 [Standard Webhooks](https://www.standardwebhooks.com). Use them to send push notifications to your
 apps, sync contacts with your users, or start your own automations.
 
+## In short
+
+- [Add an endpoint](#add-an-endpoint) in the panel or with an API key and keep its signing secret.
+- Pick the [events](#events) you need; each request carries the [payload](#payload) described here.
+- [Verify the signature](#verify-the-signature) on every request; failed deliveries are
+  [retried](#delivery-and-retries).
+
 ## Add an endpoint
 
 In the panel: Settings → Webhooks. Or with a workspace API key (or as an owner or admin):

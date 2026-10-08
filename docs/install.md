@@ -1,46 +1,22 @@
 # Install
 
-Yuva is one Go binary, shipped as a Docker image, and a Postgres database. This guide sets up a
-single host with Docker Compose behind a TLS reverse proxy.
+Run Yuva on one host with Docker Compose, behind a TLS reverse proxy.
 
 > [!WARNING]
 > Yuva is pre-alpha. Read the warning in the [README](../README.md) before you put real
 > conversations in it.
 
-## Requirements
+## In short
 
-- **Postgres 16 or newer.** Yuva keeps everything in it, its job queue included. No Redis.
-- **An SMTP account** for the server's own mail: sign-in codes, invitations and notification
-  e-mails. Without one, mails are written to the log, which is enough to try Yuva but not to run
-  it. E-mail channels use their own SMTP accounts (see [E-mail](email.md)).
-- **Storage for attachments**: a directory on the host (a Docker volume), or any S3-compatible
-  bucket (S3, R2, MinIO, …) when you prefer not to keep files on the host.
-- **A host name with TLS**, e.g. `support.example.com`, behind a reverse proxy that passes
-  WebSockets. Passkeys and Web Push need HTTPS.
-- Docker with Compose, or any other way to run a container image.
-
-## Docker image
-
-Each release publishes `ghcr.io/productdevbook/yuva:<version>` for `linux/amd64` and
-`linux/arm64`, built from [`deploy/Dockerfile`](../deploy/Dockerfile). It contains the server, the panel and the widget scripts, runs as a non-root user, and exposes
-`8080` (HTTP) and `9090` (metrics). Its entrypoint is the `yuva` binary, so every
-[command](operations.md#operator-commands) runs in the same image.
-
-```sh
-docker pull ghcr.io/productdevbook/yuva:0.0.1
-```
-
-To build it yourself instead: check out the release tag and run
-`docker build -f deploy/Dockerfile --build-arg VERSION=0.0.1 -t ghcr.io/productdevbook/yuva:0.0.1 .`
-
-`deploy/compose.yaml` in the repository is the development setup (a fixed master key, Mailpit,
-private webhooks allowed). Do not run it in production; use the file below.
+- You need a host with Docker, a host name with TLS and an SMTP account.
+- Write two files, start them, and create the first owner.
+- Everything else, from the proxy to the master key, is in [Details](#details).
 
 ## Quick start with Compose
 
-Make a directory on the host, for example `/opt/yuva`, with two files.
+### 1. Write `compose.yaml`
 
-`compose.yaml`:
+Make a directory on the host, for example `/opt/yuva`, and put this file in it:
 
 ```yaml
 name: yuva
@@ -62,7 +38,7 @@ services:
     restart: unless-stopped
 
   yuva:
-    image: ghcr.io/productdevbook/yuva:0.0.1
+    image: ghcr.io/productdevbook/yuva:0.0.3
     env_file: .env
     environment:
       YUVA_DATABASE_URL: postgres://yuva:${POSTGRES_PASSWORD}@db:5432/yuva?sslmode=disable
@@ -82,7 +58,10 @@ volumes:
   attachments:
 ```
 
-`.env` (readable only by root: `chmod 600 .env`):
+### 2. Write `.env`
+
+Next to it, readable only by root (`chmod 600 .env`). Replace each `<openssl rand …>` with what
+the command prints:
 
 ```sh
 POSTGRES_PASSWORD=<openssl rand -hex 24>
@@ -97,38 +76,86 @@ YUVA_SMTP_PASSWORD=<password>
 YUVA_SMTP_FROM=Yuva <yuva@example.com>
 ```
 
-Fill in the generated values (`openssl rand …` prints them), add a Web Push key pair (see
-[VAPID keys](#vapid-keys)), and start:
+Keep `YUVA_MASTER_KEY` somewhere safe outside the server; see [Master key](#master-key).
+
+### 3. Start
 
 ```sh
-docker run --rm ghcr.io/productdevbook/yuva:0.0.1 vapid-keys >> .env
+docker run --rm ghcr.io/productdevbook/yuva:0.0.3 vapid-keys >> .env
 docker compose up -d
 curl -s http://127.0.0.1:8080/readyz     # {"status":"ok"}
 ```
 
-The server applies database migrations before it starts serving. Every variable is described in
-[Configuration](configuration.md); for S3-compatible storage replace the two `YUVA_STORAGE*` lines
-with `YUVA_STORAGE=s3` and the `YUVA_S3_*` settings.
+The first line adds the Web Push keys ([VAPID keys](#vapid-keys)). The server applies database
+migrations before it starts serving.
 
-## First owner
+### 4. Create the first owner
 
-There is no open sign-up. Create the first workspace and its owner with `yuva bootstrap`:
+There is no open sign-up:
 
 ```sh
 docker compose exec yuva /yuva bootstrap --email you@example.com --workspace "Example" --name "Your Name"
 ```
 
-It prints the workspace and member ids. Open `YUVA_PUBLIC_URL`, enter the address, and sign in with
-the code that arrives by e-mail (without SMTP, find it in `docker compose logs yuva`). Add a passkey
-from your profile, then invite the rest of the team from the panel. `bootstrap` refuses to run when
-a workspace exists; `--allow-existing` creates another one. `--locale tr` sends the owner's
-e-mails in Turkish.
+Open `YUVA_PUBLIC_URL`, enter the address and sign in with the code that arrives by e-mail
+(without SMTP, find it in `docker compose logs yuva`). Then invite your team from the panel.
 
-Next steps: create an inbox and its channels in the panel (or with the
-[operator commands](operations.md#operator-commands)), then set up [e-mail](email.md), the
+### 5. Put it behind HTTPS
+
+Point your reverse proxy at `127.0.0.1:8080`. With Caddy:
+
+```
+support.example.com {
+	reverse_proxy 127.0.0.1:8080 {
+		header_up X-Real-IP {remote_host}
+	}
+}
+```
+
+For nginx and what any proxy must do, see [Reverse proxy and TLS](#reverse-proxy-and-tls).
+
+### Next
+
+Create an inbox and its channels in the panel, then set up [e-mail](email.md), the
 [web widget](widget.md) or the [mobile SDKs](mobile.md).
 
-## Reverse proxy and TLS
+## Details
+
+### Requirements
+
+- **Postgres 16 or newer.** Yuva keeps everything in it, its job queue included. No Redis.
+- **An SMTP account** for the server's own mail: sign-in codes, invitations and notification
+  e-mails. Without one, mails are written to the log, which is enough to try Yuva but not to run
+  it. E-mail channels use their own SMTP accounts (see [E-mail](email.md)).
+- **Storage for attachments**: a directory on the host (a Docker volume), or any S3-compatible
+  bucket (S3, R2, MinIO, …). For S3, replace the two `YUVA_STORAGE*` lines with `YUVA_STORAGE=s3`
+  and the `YUVA_S3_*` settings in [Configuration](configuration.md).
+- **A host name with TLS**, e.g. `support.example.com`, behind a reverse proxy that passes
+  WebSockets. Passkeys and Web Push need HTTPS.
+- Docker with Compose, or any other way to run a container image.
+
+### Docker image
+
+Each release publishes `ghcr.io/productdevbook/yuva:<version>` for `linux/amd64` and
+`linux/arm64`, built from [`deploy/Dockerfile`](../deploy/Dockerfile). It contains the server, the
+panel and the widget scripts, runs as a non-root user, and exposes `8080` (HTTP) and `9090`
+(metrics). Its entrypoint is the `yuva` binary, so every
+[command](operations.md#operator-commands) runs in the same image.
+
+To build it yourself: check out the release tag and run
+`docker build -f deploy/Dockerfile --build-arg VERSION=0.0.3 -t ghcr.io/productdevbook/yuva:0.0.3 .`
+
+`deploy/compose.yaml` in the repository is the development setup (a fixed master key, Mailpit,
+private webhooks allowed). Do not run it in production.
+
+### First owner options
+
+`bootstrap` prints the workspace and member ids. It refuses to run when a workspace exists;
+`--allow-existing` creates another one. `--locale tr` sends the owner's e-mails in Turkish. After
+signing in, add a passkey from your profile. Inboxes and channels can also be created with the
+[operator commands](operations.md#operator-commands).
+
+### Reverse proxy and TLS
 
 Yuva speaks plain HTTP on port 8080; terminate TLS in front of it. Everything is served from the
 root of one host name: the panel, `/v1`, `/client/v1`, the WebSockets, `/yuva.js` and
@@ -144,17 +171,7 @@ The proxy must:
   the client sent;
 - forward the `Host` header unchanged and keep the `Origin` header.
 
-Caddy does all of this by default:
-
-```
-support.example.com {
-	reverse_proxy 127.0.0.1:8080 {
-		header_up X-Real-IP {remote_host}
-	}
-}
-```
-
-nginx:
+Caddy does all of this with the configuration above. nginx:
 
 ```nginx
 server {
@@ -187,7 +204,7 @@ map $http_upgrade $connection_upgrade {
 Behind Cloudflare's proxy, `YUVA_CLIENT_IP_HEADER=CF-Connecting-IP` works without extra proxy
 settings.
 
-## Public URL
+### Public URL
 
 `YUVA_PUBLIC_URL` is the address everyone uses: members open the panel there, the widget is loaded
 from it, apps and the Email Worker call it, and e-mails link to it. From it Yuva derives the
@@ -196,13 +213,13 @@ cookie is `Secure`. Choose it before the team adds passkeys: passkeys are bound 
 and moving to another one means adding them again (or setting `YUVA_WEBAUTHN_RP_ID` and
 `YUVA_WEBAUTHN_ORIGINS`, see [Configuration](configuration.md#sign-in-and-passkeys)).
 
-## VAPID keys
+### VAPID keys
 
 Members get notifications on their phones and desktops by installing the panel as an app (PWA) and
 turning on Web Push. That needs a VAPID key pair:
 
 ```sh
-docker run --rm ghcr.io/productdevbook/yuva:0.0.1 vapid-keys
+docker run --rm ghcr.io/productdevbook/yuva:0.0.3 vapid-keys
 # YUVA_VAPID_PUBLIC_KEY=…
 # YUVA_VAPID_PRIVATE_KEY=…
 ```
@@ -212,7 +229,7 @@ Put both lines in `.env`. The push services are told how to reach you through
 off and members get e-mail notifications only. Generate the pair once and keep it: browser
 subscriptions are bound to the public key.
 
-## Master key
+### Master key
 
 `YUVA_MASTER_KEY` encrypts the secrets Yuva keeps in the database (AES-256-GCM): SMTP passwords of
 e-mail channels, inbox identity secrets and webhook signing secrets. Generate it once:
@@ -226,4 +243,4 @@ store, and back it up separately. **Without the key, a database backup cannot be
 stored SMTP passwords, identity secrets and webhook secrets cannot be read, so e-mail stops going
 out, apps cannot sign users in and webhooks cannot be signed until every one of them is entered
 again. Anyone who has both the key and a database dump can read those secrets. Changing the key
-has the same effect as losing it; there is no key rotation in 0.0.1.
+has the same effect as losing it; there is no key rotation yet.

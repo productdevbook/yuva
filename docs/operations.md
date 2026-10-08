@@ -4,6 +4,13 @@ Running Yuva after the [install](install.md): upgrades, backups, monitoring and 
 operator runs on the server. The examples use the Compose setup from the install guide, run from
 its directory; the Compose project is `yuva`, so the volumes are `yuva_db` and `yuva_attachments`.
 
+## In short
+
+- Every operator task is a [`yuva` command](#operator-commands) run from the same image.
+- [Upgrade](#upgrades) by changing the image tag; migrations run on start.
+- [Back up](#backups) the database, the attachments and the master key, and watch
+  [`/readyz` and the metrics](#monitoring).
+
 ## Operator commands
 
 The image's entrypoint is the `yuva` binary. Run commands next to the server with

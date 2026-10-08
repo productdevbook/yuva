@@ -9,6 +9,13 @@ Settings that belong to one workspace, inbox or channel (SMTP accounts of e-mail
 origins of chat channels, webhooks, business hours, …) are not environment variables; they are
 made in the panel, through `/v1`, or with the [operator commands](operations.md#operator-commands).
 
+## In short
+
+- Everything is an environment variable, read once at start; a wrong value stops the server with
+  its name.
+- Only three are required: [`YUVA_DATABASE_URL`, `YUVA_MASTER_KEY` and `YUVA_PUBLIC_URL`](#required).
+- Per-workspace, inbox and channel settings are not here; they live in the panel and the API.
+
 ## Required
 
 | Variable | Meaning |

@@ -5,6 +5,12 @@ your own product's panel. It works in any page or framework, renders in Shadow D
 not leak in, its styles do not leak out) and is translated (English and Turkish; other locales
 fall back to English).
 
+## In short
+
+- [Create a chat channel](#1-create-a-chat-channel) and allow your site's origin.
+- [Embed](#2-embed-it) one script tag and the `<yuva-chat>` element.
+- Pass an [identity token](#3-signed-in-users) to let signed-in users write as themselves.
+
 ## 1. Create a chat channel
 
 In the panel: Settings → the inbox → Channels → Chat. Set:

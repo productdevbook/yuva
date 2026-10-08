@@ -4,6 +4,12 @@ Native SDKs for iOS (`YuvaKit`, Swift and SwiftUI) and Android (Kotlin and Jetpa
 your app a conversation list, a thread with attachments, and a feedback form, or a headless client
 for your own UI. Both talk to `/client/v1` with the public key of an `app` channel.
 
+## In short
+
+- [Create an app channel](#1-create-an-app-channel) and use its public key in your app.
+- Add [YuvaKit](#2-ios-yuvakit) on iOS or the [Android SDK](#3-android).
+- Send [push notifications](#4-push-notifications) from your own backend on a webhook.
+
 ## 1. Create an app channel
 
 In the panel: Settings → the inbox → Channels → App. Choose the platforms and whether people who
