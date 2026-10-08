@@ -10,7 +10,7 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ContactPanel } from "@/features/contact/ContactPanel"
 import { useContact } from "@/features/contact/queries"
-import { firstName, readDraft, useQueueActions } from "@/features/conversation/actions"
+import { readDraft, useQueueActions } from "@/features/conversation/actions"
 import { Beaten, TypingCollision } from "@/features/conversation/Collision"
 import { useCommandHandlers } from "@/features/conversation/commands"
 import { ReplyBox, type ReplyHandle } from "@/features/conversation/composer/ReplyBox"
@@ -119,7 +119,7 @@ function Loaded({ c, contact, channel }: { c: Conversation; contact?: Contact; c
   const typists = useTyping(c.id)
   const contactTyping = typists.some((a) => a.type === "contact")
   const mate = typists.find((a) => a.type === "member" && a.member_id !== me)
-  const mateName = mate ? firstName(mate.name || memberName(mate.member_id)) : ""
+  const mateName = mate ? mate.name || memberName(mate.member_id) : ""
   const showCollision = !!mate && claimedFrom !== mate.member_id && c.status === "open"
 
   const seen = useRef<Set<string> | null>(null)

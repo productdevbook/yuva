@@ -422,7 +422,7 @@ function Developer({ inbox }: { inbox: Inbox }) {
           </SettingRow>
           <SettingRow title={<Trans>Webhooks for this inbox</Trans>}>
             <Button variant="outline" size="sm" render={<Link to="webhooks" />}>
-              <Trans>Open</Trans>
+              <Trans>Manage</Trans>
             </Button>
           </SettingRow>
         </Rows>
