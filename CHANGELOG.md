@@ -5,7 +5,8 @@ All notable changes to Yuva are listed here. The format follows
 [Semantic Versioning](https://semver.org/). Until 1.0, any release may change the API and the
 database schema.
 
-## [Unreleased]
+From 0.0.4 on, release notes are generated from the commits and published on
+[GitHub Releases](https://github.com/productdevbook/yuva/releases); this file is no longer updated.
 
 ## [0.0.3] - 2026-10-08
 
@@ -89,7 +90,6 @@ The first public release. Pre-alpha: do not put real customer data in it yet.
   connections, attachment handling, rate limiting behind proxies, and the panel's security
   headers. Report vulnerabilities as described in `SECURITY.md`.
 
-[Unreleased]: https://github.com/productdevbook/yuva/compare/v0.0.3...HEAD
 [0.0.3]: https://github.com/productdevbook/yuva/compare/v0.0.2...v0.0.3
 [0.0.2]: https://github.com/productdevbook/yuva/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/productdevbook/yuva/releases/tag/v0.0.1
