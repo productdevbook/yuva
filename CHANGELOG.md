@@ -7,6 +7,8 @@ database schema.
 
 ## [Unreleased]
 
+## [0.0.2] - 2026-10-08
+
 ### Added
 
 - **Workspace deletion**: owners delete a workspace in the panel (Settings → Workspace → Danger
@@ -16,6 +18,8 @@ database schema.
   `DELETE /v1/me`, refused while they are a workspace's only owner; their messages stay, shown as
   from a deleted member. Operators use `yuva person delete`.
 - **Panel**: replies from a visitor's typed, unconfirmed address are marked "Unverified sender".
+- **Android SDK on JitPack**: `implementation("com.github.productdevbook:yuva:v0.0.2")` from
+  `https://jitpack.io`; the local module still works.
 
 ### Changed
 
@@ -68,5 +72,6 @@ The first public release. Pre-alpha: do not put real customer data in it yet.
   connections, attachment handling, rate limiting behind proxies, and the panel's security
   headers. Report vulnerabilities as described in `SECURITY.md`.
 
-[Unreleased]: https://github.com/productdevbook/yuva/compare/v0.0.1...HEAD
+[Unreleased]: https://github.com/productdevbook/yuva/compare/v0.0.2...HEAD
+[0.0.2]: https://github.com/productdevbook/yuva/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/productdevbook/yuva/releases/tag/v0.0.1
