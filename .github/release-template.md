@@ -28,7 +28,7 @@ docker pull {{IMAGE}}:{{VERSION}}
 | Server and team panel | `{{IMAGE}}:{{VERSION}}` for `linux/amd64` and `linux/arm64` — one binary, Postgres is all it needs |
 | Web widget | served by your own Yuva at `/yuva.js`, embed `<yuva-chat>` ([guide](https://github.com/productdevbook/yuva/blob/{{TAG}}/docs/widget.md)) |
 | iOS | Swift Package `https://github.com/productdevbook/yuva`, version `{{VERSION}}` ([guide](https://github.com/productdevbook/yuva/blob/{{TAG}}/docs/mobile.md)) |
-| Android | the `sdk/kotlin` module at tag `{{TAG}}` ([guide](https://github.com/productdevbook/yuva/blob/{{TAG}}/docs/mobile.md)) |
+| Android | `implementation("com.github.productdevbook.yuva:yuva-android:{{TAG}}")` from `https://jitpack.io` ([guide](https://github.com/productdevbook/yuva/blob/{{TAG}}/docs/mobile.md)) |
 | Go helpers | `go get github.com/productdevbook/yuva/sdk/go@{{TAG}}` — identity tokens and webhook verification |
 | API contract | [`openapi/openapi.yaml`](https://github.com/productdevbook/yuva/blob/{{TAG}}/openapi/openapi.yaml) |
 

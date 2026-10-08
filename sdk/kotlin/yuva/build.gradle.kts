@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    `maven-publish`
 }
 
 android {
@@ -24,11 +25,16 @@ android {
         abortOnError = true
         disable += setOf("GradleDependency", "NewerVersionAvailable", "AndroidGradlePluginVersion")
     }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
 }
 
 dependencies {
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui)
+    api(platform(libs.androidx.compose.bom))
+    api(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material.icons.core)
@@ -38,4 +44,33 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     api(libs.kotlinx.coroutines.android)
     testImplementation(libs.junit)
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            register<MavenPublication>("release") {
+                from(components["release"])
+                groupId = "com.github.productdevbook.yuva"
+                artifactId = "yuva-android"
+                version = providers.environmentVariable("VERSION")
+                    .orElse(providers.gradleProperty("yuva.version")).get()
+                pom {
+                    name.set("Yuva for Android")
+                    description.set("In-app messaging and feedback for Yuva: a headless client and Jetpack Compose screens.")
+                    url.set("https://github.com/productdevbook/yuva")
+                    licenses {
+                        license {
+                            name.set("MIT")
+                            url.set("https://github.com/productdevbook/yuva/blob/main/sdk/LICENSE")
+                        }
+                    }
+                    scm {
+                        url.set("https://github.com/productdevbook/yuva")
+                        connection.set("scm:git:https://github.com/productdevbook/yuva.git")
+                    }
+                }
+            }
+        }
+    }
 }

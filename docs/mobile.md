@@ -73,9 +73,31 @@ for await event in yuva.events() { … }   // live updates while subscribed
 
 Requirements: minSdk 26, Jetpack Compose, the `INTERNET` permission (the library declares it).
 
-The library is not published to a Maven repository yet. Add `sdk/kotlin/yuva` from the release tag
-to your build as a module, together with the libraries it lists in
-`sdk/kotlin/gradle/libs.versions.toml`, and depend on it:
+The library is published through [JitPack](https://jitpack.io/#productdevbook/yuva), built from
+the release tags (`v0.0.1`, `v0.0.2`, …). Add the repository and the dependency, with the release
+tag as the version:
+
+```kotlin
+// settings.gradle.kts
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven("https://jitpack.io")
+    }
+}
+// app/build.gradle.kts
+dependencies {
+    implementation("com.github.productdevbook.yuva:yuva-android:v0.0.x")
+}
+```
+
+The library brings OkHttp, kotlinx.coroutines, kotlinx.serialization and Compose (aligned by the
+Compose BOM) with it. The first request for a new tag starts its JitPack build, which takes a few
+minutes.
+
+Or add `sdk/kotlin/yuva` from the release tag to your build as a module, together with the
+libraries it lists in `sdk/kotlin/gradle/libs.versions.toml`, and depend on it:
 
 ```kotlin
 // settings.gradle.kts
