@@ -12,6 +12,11 @@ msgstr ""
 msgid "(you)"
 msgstr "(siz)"
 
+#. placeholder {0}: g.requests_this_month
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "{0, plural, one {# request} other {# requests}}"
+msgstr "{0, plural, one {# istek} other {# istek}}"
+
 #: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} added {added} and removed {removed}"
 msgstr "{actor} etiket ekledi: {added}; kaldırdı: {removed}"
@@ -75,6 +80,10 @@ msgstr "{list} yazıyor…"
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "{n} deneme"
+
+#: src/features/conversation/messages/context.ts
+msgid "{name} via {via}"
+msgstr "{name} ({via} ile)"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
@@ -164,6 +173,8 @@ msgstr "Bir ekip arkadaşı"
 msgid "A username needs TLS or STARTTLS: the password is never sent unencrypted."
 msgstr "Kullanıcı adı TLS ya da STARTTLS ister: parola hiçbir zaman şifresiz gönderilmez."
 
+#: src/features/oauth/ConsentPage.tsx
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 #: src/features/settings/inboxes/AccessSection.tsx
 #: src/features/settings/inboxes/InboxLayout.tsx
 msgid "Access"
@@ -266,8 +277,13 @@ msgid "All of its conversations are deleted with it."
 msgstr "Tüm konuşmaları da onunla birlikte silinir."
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "All scopes"
 msgstr "Tüm yetkiler"
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "Allow"
+msgstr "İzin ver"
 
 #: src/features/settings/channels/app/AppFields.tsx
 msgid "Allow anonymous users"
@@ -276,6 +292,10 @@ msgstr "Anonim kullanıcılara izin ver"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allow anonymous visitors"
 msgstr "Anonim ziyaretçilere izin ver"
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "Allow it to"
+msgstr "İzin verilenler"
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
@@ -336,6 +356,7 @@ msgid "API keys"
 msgstr "API anahtarları"
 
 #: src/features/conversation/Feedback.tsx
+#: src/features/oauth/ConsentPage.tsx
 msgid "App"
 msgstr "Uygulama"
 
@@ -373,6 +394,14 @@ msgstr "Bana ata"
 #: src/features/inbox/FilterMenu.tsx
 msgid "Assignee"
 msgstr "Atanan kişi"
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Assistants and apps that members connected with their own sign-in. Each acts as that member, only within the access they allowed. As an owner or admin you see and can revoke every member's connections."
+msgstr "Üyelerin kendi oturumlarıyla bağladığı asistanlar ve uygulamalar. Her biri o üye adına, yalnızca onun izin verdiği kadarıyla çalışır. Sahip ya da yönetici olarak tüm üyelerin bağlantılarını görebilir ve kaldırabilirsiniz."
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Assistants and apps you connected with your sign-in. Each acts as you, only within the access you allowed."
+msgstr "Kendi oturumunuzla bağladığınız asistanlar ve uygulamalar. Her biri sizin adınıza, yalnızca izin verdiğiniz kadarıyla çalışır."
 
 #: src/components/common/text.ts
 msgid "Async"
@@ -591,6 +620,19 @@ msgstr "Kod"
 msgid "Color"
 msgstr "Renk"
 
+#: src/features/oauth/ConsentPage.tsx
+msgid "Connect {clientName} to Yuva?"
+msgstr "{clientName} Yuva'ya bağlansın mı?"
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Connected {created}"
+msgstr "Bağlandı: {created}"
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/SettingsLayout.tsx
+msgid "Connected apps"
+msgstr "Bağlı uygulamalar"
+
 #: src/app/Sidebar.tsx
 msgid "Connecting…"
 msgstr "Bağlanıyor…"
@@ -598,6 +640,10 @@ msgstr "Bağlanıyor…"
 #: src/app/ConnectionBanner.tsx
 msgid "Connection lost. Reconnecting…"
 msgstr "Bağlantı koptu. Yeniden bağlanılıyor…"
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Connections"
+msgstr "Bağlantılar"
 
 #: src/features/inbox/InboxPage.tsx
 msgid "Contact"
@@ -652,6 +698,7 @@ msgid "Copy the feedback details"
 msgstr "Geri bildirim ayrıntılarını kopyala"
 
 #: src/app/Gate.tsx
+#: src/features/oauth/ConsentPage.tsx
 msgid "Could not reach the server"
 msgstr "Sunucuya ulaşılamadı"
 
@@ -747,6 +794,10 @@ msgstr "Hesabınız silinsin mi?"
 msgid "Deleted inbox"
 msgstr "Silinmiş gelen kutusu"
 
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Deleted member"
+msgstr "Silinmiş üye"
+
 #: src/features/settings/inboxes/AdvancedPage.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
 msgstr "Kanalları, konuşmaları, mesajları ve ekleriyle birlikte silinir. Bu işlem geri alınamaz."
@@ -766,6 +817,10 @@ msgstr "Abone olunan bir olay gerçekleştiğinde gönderimler burada görünür
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "Delivery details"
 msgstr "Gönderim ayrıntıları"
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "Deny"
+msgstr "Reddet"
 
 #: src/features/settings/webhooks/WebhookDialog.tsx
 msgid "Description (optional)"
@@ -1030,6 +1085,10 @@ msgstr "Cuma"
 msgid "From address (optional)"
 msgstr "Gönderen adresi (isteğe bağlı)"
 
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Full API"
+msgstr "Tüm API"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/inboxes/GeneralPage.tsx
 #: src/features/settings/inboxes/InboxLayout.tsx
@@ -1163,6 +1222,10 @@ msgstr "Davetler"
 msgid "iOS and Android app"
 msgstr "iOS ve Android uygulaması"
 
+#: src/features/oauth/ConsentPage.tsx
+msgid "It also asked for access your role here cannot give:"
+msgstr "Rolünüzün burada veremeyeceği şu izinleri de istedi:"
+
 #: src/features/conversation/ThreadView.tsx
 msgid "It is deleted and never sent."
 msgstr "Silinir ve hiç gönderilmez."
@@ -1175,9 +1238,17 @@ msgstr "Tüm konuşmalardan kaldırılır."
 msgid "It no longer exists or you cannot see it."
 msgstr "Artık yok ya da görme izniniz yok."
 
+#: src/features/oauth/ConsentPage.tsx
+msgid "It will act as you, <0>{email}</0>, with only the access you allow below."
+msgstr "Sizin adınıza, <0>{email}</0> olarak, yalnızca aşağıda izin verdiğiniz kadarıyla çalışacak."
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "It will no longer receive notifications."
 msgstr "Bu cihaz artık bildirim almayacak."
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Its access ends at once. To use it again, connect it again."
+msgstr "Erişimi hemen sona erer. Yeniden kullanmak için tekrar bağlamanız gerekir."
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Keep"
@@ -1228,6 +1299,7 @@ msgid "Last seen {seen}"
 msgstr "Son görülme: {seen}"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "last used {used}"
 msgstr "son kullanım: {used}"
 
@@ -1330,9 +1402,21 @@ msgstr "Spam olarak işaretle ya da işareti kaldır"
 msgid "Marked as spam: left out of lists and counts, and never answered automatically."
 msgstr "Spam olarak işaretli: listelerde ve sayılarda görünmez, otomatik yanıt almaz."
 
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "MCP only"
+msgstr "Yalnızca MCP"
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "MCP only: the assistant tools of this workspace."
+msgstr "Yalnızca MCP: bu çalışma alanının asistan araçları."
+
 #: src/features/inbox/FilterMenu.tsx
 msgid "Me"
 msgstr "Ben"
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Member"
+msgstr "Üye"
 
 #: src/features/settings/members/MembersPage.tsx
 #: src/features/settings/SettingsLayout.tsx
@@ -1422,6 +1506,7 @@ msgid "Never"
 msgstr "Hiçbir zaman"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "never used"
 msgstr "hiç kullanılmadı"
 
@@ -1523,6 +1608,10 @@ msgstr "Henüz hazır yanıt yok"
 #: src/features/settings/channels/ChannelsPage.tsx
 msgid "No channels yet."
 msgstr "Henüz kanal yok."
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "No connected apps."
+msgstr "Bağlı uygulama yok."
 
 #: src/features/inbox/ConversationList.tsx
 msgid "No conversations here"
@@ -1815,6 +1904,10 @@ msgstr "En az bir platform seçin."
 msgid "Pick at least one scope."
 msgstr "En az bir yetki seçin."
 
+#: src/features/oauth/ConsentPage.tsx
+msgid "Pick at least one."
+msgstr "En az birini seçin."
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "Pick the other contact. It is merged into this one and then deleted."
 msgstr "Diğer kişiyi seçin. Bu kişiyle birleştirilir ve ardından silinir."
@@ -2023,9 +2116,22 @@ msgstr "Varsayılanlara dön"
 msgid "Retry now"
 msgstr "Şimdi dene"
 
+#: src/features/oauth/ConsentPage.tsx
+msgid "Returning you to {host}…"
+msgstr "{host} adresine yönlendiriliyorsunuz…"
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "Returns you to"
+msgstr "Dönüş adresi"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Revoke"
 msgstr "İptal et"
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Revoke {clientName}?"
+msgstr "{clientName} bağlantısı iptal edilsin mi?"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Revoke {keyName}?"
@@ -2097,6 +2203,7 @@ msgstr "Kaydedince kayıtlı parola silinir."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Scopes"
 msgstr "Yetkiler"
 
@@ -2414,6 +2521,10 @@ msgstr "Yanıt süresi gösteren bir gelen kutusunda bir konuşmanın ilk mesaj�
 msgid "The first message of a conversation in an inbox that shows who is available."
 msgstr "Kimin müsait olduğunu gösteren bir gelen kutusunda bir konuşmanın ilk mesajı."
 
+#: src/features/oauth/ConsentPage.tsx
+msgid "The full API: MCP, the REST API and live updates, like a member app."
+msgstr "Tüm API: bir üye uygulaması gibi MCP, REST API ve canlı güncellemeler."
+
 #: src/features/settings/webhooks/WebhookDialog.tsx
 msgid "The inbox cannot be changed later."
 msgstr "Gelen kutusu sonradan değiştirilemez."
@@ -2526,6 +2637,22 @@ msgstr "Bu dosya türüne izin verilmiyor."
 msgid "This is not a JSON object."
 msgstr "Bu bir JSON nesnesi değil."
 
+#: src/features/oauth/ConsentPage.tsx
+msgid "This is the name the app gives itself. Yuva has not verified it."
+msgstr "Bu adı uygulama kendisi veriyor. Yuva doğrulamadı."
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "This month"
+msgstr "Bu ay"
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "This request expired or was already used. Start connecting again from the app."
+msgstr "Bu isteğin süresi doldu ya da zaten kullanıldı. Bağlanmayı uygulamadan yeniden başlatın."
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "This request has ended"
+msgstr "Bu istek artık geçerli değil"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "This server is not set up to send push notifications."
 msgstr "Bu sunucu anlık bildirim gönderecek şekilde ayarlanmamış."
@@ -2571,6 +2698,7 @@ msgid "Too many attempts. Wait a little and try again."
 msgstr "Çok fazla deneme yapıldı. Biraz bekleyip yeniden deneyin."
 
 #: src/app/Gate.tsx
+#: src/features/oauth/ConsentPage.tsx
 msgid "Try again"
 msgstr "Yeniden dene"
 
@@ -2672,6 +2800,10 @@ msgstr "Özel düğme rengi kullan"
 #: src/features/settings/channels/email/form.ts
 msgid "Use a port from 1 to 65535."
 msgstr "1 ile 65535 arası bir port girin."
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "Use another account"
+msgstr "Başka bir hesap kullanın"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Use at most 200 characters."
@@ -2783,6 +2915,7 @@ msgstr "Geri çek"
 msgid "Withdraw the invite for {0}"
 msgstr "{0} davetini geri çek"
 
+#: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/SettingsLayout.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
@@ -2824,9 +2957,17 @@ msgstr "Not yazma"
 msgid "Write the auto-reply, or turn it off."
 msgstr "Otomatik yanıtı yazın ya da kapatın."
 
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "You"
+msgstr "Siz"
+
 #: src/app/Gate.tsx
 msgid "You are not a member of any workspace"
 msgstr "Hiçbir çalışma alanına üye değilsiniz"
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "You are not a member of any workspace, so there is nothing to connect."
+msgstr "Hiçbir çalışma alanının üyesi değilsiniz, bu yüzden bağlanacak bir şey yok."
 
 #: src/components/common/text.ts
 msgid "You are not allowed to do this."
@@ -2839,6 +2980,10 @@ msgstr "Bir çalışma alanının tek sahibisiniz. Hesabınızı silmeden önce 
 #: src/features/settings/inboxes/CreateInboxDialog.tsx
 msgid "You can change hours, branding and channels after creating it."
 msgstr "Saatleri, markayı ve kanalları oluşturduktan sonra değiştirebilirsiniz."
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "You can disconnect it at any time in Settings, under Connected apps."
+msgstr "Bağlantıyı istediğiniz zaman Ayarlar'da, Bağlı uygulamalar altında kaldırabilirsiniz."
 
 #: src/features/conversation/controls/MoreMenu.tsx
 msgid "You cannot see any other inbox."
@@ -2875,6 +3020,10 @@ msgstr "Sunucu tarafınız kimlik belirteçlerini bu anahtarla imzalar. Şimdi k
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Your new API key"
 msgstr "Yeni API anahtarınız"
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "Your role in this workspace cannot give any of the access this app asks for."
+msgstr "Bu çalışma alanındaki rolünüz, uygulamanın istediği izinlerin hiçbirini veremiyor."
 
 #: src/components/common/text.ts
 msgid "Your session has ended. Sign in again."

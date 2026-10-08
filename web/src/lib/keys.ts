@@ -7,6 +7,7 @@ export const keys = {
   members: (ws: string) => ["ws", ws, "members"] as const,
   invites: (ws: string) => ["ws", ws, "invites"] as const,
   apiKeys: (ws: string) => ["ws", ws, "api-keys"] as const,
+  oauthGrants: (ws: string) => ["ws", ws, "oauth-grants"] as const,
   inboxes: (ws: string) => ["ws", ws, "inboxes"] as const,
   inboxMembers: (ws: string, inbox: string) => ["ws", ws, "inbox-members", inbox] as const,
   channels: (ws: string, inbox: string) => ["ws", ws, "channels", inbox] as const,

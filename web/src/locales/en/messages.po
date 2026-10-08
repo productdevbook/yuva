@@ -12,6 +12,11 @@ msgstr ""
 msgid "(you)"
 msgstr "(you)"
 
+#. placeholder {0}: g.requests_this_month
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "{0, plural, one {# request} other {# requests}}"
+msgstr "{0, plural, one {# request} other {# requests}}"
+
 #: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} added {added} and removed {removed}"
 msgstr "{actor} added {added} and removed {removed}"
@@ -75,6 +80,10 @@ msgstr "{list} is typing…"
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "{n} attempts"
+
+#: src/features/conversation/messages/context.ts
+msgid "{name} via {via}"
+msgstr "{name} via {via}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
@@ -164,6 +173,8 @@ msgstr "A teammate"
 msgid "A username needs TLS or STARTTLS: the password is never sent unencrypted."
 msgstr "A username needs TLS or STARTTLS: the password is never sent unencrypted."
 
+#: src/features/oauth/ConsentPage.tsx
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 #: src/features/settings/inboxes/AccessSection.tsx
 #: src/features/settings/inboxes/InboxLayout.tsx
 msgid "Access"
@@ -266,8 +277,13 @@ msgid "All of its conversations are deleted with it."
 msgstr "All of its conversations are deleted with it."
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "All scopes"
 msgstr "All scopes"
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "Allow"
+msgstr "Allow"
 
 #: src/features/settings/channels/app/AppFields.tsx
 msgid "Allow anonymous users"
@@ -276,6 +292,10 @@ msgstr "Allow anonymous users"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allow anonymous visitors"
 msgstr "Allow anonymous visitors"
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "Allow it to"
+msgstr "Allow it to"
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
@@ -336,6 +356,7 @@ msgid "API keys"
 msgstr "API keys"
 
 #: src/features/conversation/Feedback.tsx
+#: src/features/oauth/ConsentPage.tsx
 msgid "App"
 msgstr "App"
 
@@ -373,6 +394,14 @@ msgstr "Assign to me"
 #: src/features/inbox/FilterMenu.tsx
 msgid "Assignee"
 msgstr "Assignee"
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Assistants and apps that members connected with their own sign-in. Each acts as that member, only within the access they allowed. As an owner or admin you see and can revoke every member's connections."
+msgstr "Assistants and apps that members connected with their own sign-in. Each acts as that member, only within the access they allowed. As an owner or admin you see and can revoke every member's connections."
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Assistants and apps you connected with your sign-in. Each acts as you, only within the access you allowed."
+msgstr "Assistants and apps you connected with your sign-in. Each acts as you, only within the access you allowed."
 
 #: src/components/common/text.ts
 msgid "Async"
@@ -591,6 +620,19 @@ msgstr "Code"
 msgid "Color"
 msgstr "Color"
 
+#: src/features/oauth/ConsentPage.tsx
+msgid "Connect {clientName} to Yuva?"
+msgstr "Connect {clientName} to Yuva?"
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Connected {created}"
+msgstr "Connected {created}"
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/SettingsLayout.tsx
+msgid "Connected apps"
+msgstr "Connected apps"
+
 #: src/app/Sidebar.tsx
 msgid "Connecting…"
 msgstr "Connecting…"
@@ -598,6 +640,10 @@ msgstr "Connecting…"
 #: src/app/ConnectionBanner.tsx
 msgid "Connection lost. Reconnecting…"
 msgstr "Connection lost. Reconnecting…"
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Connections"
+msgstr "Connections"
 
 #: src/features/inbox/InboxPage.tsx
 msgid "Contact"
@@ -652,6 +698,7 @@ msgid "Copy the feedback details"
 msgstr "Copy the feedback details"
 
 #: src/app/Gate.tsx
+#: src/features/oauth/ConsentPage.tsx
 msgid "Could not reach the server"
 msgstr "Could not reach the server"
 
@@ -747,6 +794,10 @@ msgstr "Delete your account?"
 msgid "Deleted inbox"
 msgstr "Deleted inbox"
 
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Deleted member"
+msgstr "Deleted member"
+
 #: src/features/settings/inboxes/AdvancedPage.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
 msgstr "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -766,6 +817,10 @@ msgstr "Deliveries show up here once a subscribed event happens."
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "Delivery details"
 msgstr "Delivery details"
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "Deny"
+msgstr "Deny"
 
 #: src/features/settings/webhooks/WebhookDialog.tsx
 msgid "Description (optional)"
@@ -1030,6 +1085,10 @@ msgstr "Friday"
 msgid "From address (optional)"
 msgstr "From address (optional)"
 
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Full API"
+msgstr "Full API"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/inboxes/GeneralPage.tsx
 #: src/features/settings/inboxes/InboxLayout.tsx
@@ -1163,6 +1222,10 @@ msgstr "Invites"
 msgid "iOS and Android app"
 msgstr "iOS and Android app"
 
+#: src/features/oauth/ConsentPage.tsx
+msgid "It also asked for access your role here cannot give:"
+msgstr "It also asked for access your role here cannot give:"
+
 #: src/features/conversation/ThreadView.tsx
 msgid "It is deleted and never sent."
 msgstr "It is deleted and never sent."
@@ -1175,9 +1238,17 @@ msgstr "It is removed from every conversation."
 msgid "It no longer exists or you cannot see it."
 msgstr "It no longer exists or you cannot see it."
 
+#: src/features/oauth/ConsentPage.tsx
+msgid "It will act as you, <0>{email}</0>, with only the access you allow below."
+msgstr "It will act as you, <0>{email}</0>, with only the access you allow below."
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "It will no longer receive notifications."
 msgstr "It will no longer receive notifications."
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Its access ends at once. To use it again, connect it again."
+msgstr "Its access ends at once. To use it again, connect it again."
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Keep"
@@ -1228,6 +1299,7 @@ msgid "Last seen {seen}"
 msgstr "Last seen {seen}"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "last used {used}"
 msgstr "last used {used}"
 
@@ -1330,9 +1402,21 @@ msgstr "Mark or unmark as spam"
 msgid "Marked as spam: left out of lists and counts, and never answered automatically."
 msgstr "Marked as spam: left out of lists and counts, and never answered automatically."
 
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "MCP only"
+msgstr "MCP only"
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "MCP only: the assistant tools of this workspace."
+msgstr "MCP only: the assistant tools of this workspace."
+
 #: src/features/inbox/FilterMenu.tsx
 msgid "Me"
 msgstr "Me"
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Member"
+msgstr "Member"
 
 #: src/features/settings/members/MembersPage.tsx
 #: src/features/settings/SettingsLayout.tsx
@@ -1422,6 +1506,7 @@ msgid "Never"
 msgstr "Never"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "never used"
 msgstr "never used"
 
@@ -1523,6 +1608,10 @@ msgstr "No canned replies yet"
 #: src/features/settings/channels/ChannelsPage.tsx
 msgid "No channels yet."
 msgstr "No channels yet."
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "No connected apps."
+msgstr "No connected apps."
 
 #: src/features/inbox/ConversationList.tsx
 msgid "No conversations here"
@@ -1815,6 +1904,10 @@ msgstr "Pick at least one platform."
 msgid "Pick at least one scope."
 msgstr "Pick at least one scope."
 
+#: src/features/oauth/ConsentPage.tsx
+msgid "Pick at least one."
+msgstr "Pick at least one."
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "Pick the other contact. It is merged into this one and then deleted."
 msgstr "Pick the other contact. It is merged into this one and then deleted."
@@ -2023,9 +2116,22 @@ msgstr "Reset to defaults"
 msgid "Retry now"
 msgstr "Retry now"
 
+#: src/features/oauth/ConsentPage.tsx
+msgid "Returning you to {host}…"
+msgstr "Returning you to {host}…"
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "Returns you to"
+msgstr "Returns you to"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Revoke"
 msgstr "Revoke"
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Revoke {clientName}?"
+msgstr "Revoke {clientName}?"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Revoke {keyName}?"
@@ -2097,6 +2203,7 @@ msgstr "Saving removes the stored password."
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Scopes"
 msgstr "Scopes"
 
@@ -2414,6 +2521,10 @@ msgstr "The first message of a conversation in an inbox that shows a reply time.
 msgid "The first message of a conversation in an inbox that shows who is available."
 msgstr "The first message of a conversation in an inbox that shows who is available."
 
+#: src/features/oauth/ConsentPage.tsx
+msgid "The full API: MCP, the REST API and live updates, like a member app."
+msgstr "The full API: MCP, the REST API and live updates, like a member app."
+
 #: src/features/settings/webhooks/WebhookDialog.tsx
 msgid "The inbox cannot be changed later."
 msgstr "The inbox cannot be changed later."
@@ -2526,6 +2637,22 @@ msgstr "This file type is not allowed."
 msgid "This is not a JSON object."
 msgstr "This is not a JSON object."
 
+#: src/features/oauth/ConsentPage.tsx
+msgid "This is the name the app gives itself. Yuva has not verified it."
+msgstr "This is the name the app gives itself. Yuva has not verified it."
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "This month"
+msgstr "This month"
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "This request expired or was already used. Start connecting again from the app."
+msgstr "This request expired or was already used. Start connecting again from the app."
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "This request has ended"
+msgstr "This request has ended"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "This server is not set up to send push notifications."
 msgstr "This server is not set up to send push notifications."
@@ -2571,6 +2698,7 @@ msgid "Too many attempts. Wait a little and try again."
 msgstr "Too many attempts. Wait a little and try again."
 
 #: src/app/Gate.tsx
+#: src/features/oauth/ConsentPage.tsx
 msgid "Try again"
 msgstr "Try again"
 
@@ -2672,6 +2800,10 @@ msgstr "Use a custom launcher color"
 #: src/features/settings/channels/email/form.ts
 msgid "Use a port from 1 to 65535."
 msgstr "Use a port from 1 to 65535."
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "Use another account"
+msgstr "Use another account"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Use at most 200 characters."
@@ -2783,6 +2915,7 @@ msgstr "Withdraw"
 msgid "Withdraw the invite for {0}"
 msgstr "Withdraw the invite for {0}"
 
+#: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/SettingsLayout.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
@@ -2824,9 +2957,17 @@ msgstr "Write notes"
 msgid "Write the auto-reply, or turn it off."
 msgstr "Write the auto-reply, or turn it off."
 
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "You"
+msgstr "You"
+
 #: src/app/Gate.tsx
 msgid "You are not a member of any workspace"
 msgstr "You are not a member of any workspace"
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "You are not a member of any workspace, so there is nothing to connect."
+msgstr "You are not a member of any workspace, so there is nothing to connect."
 
 #: src/components/common/text.ts
 msgid "You are not allowed to do this."
@@ -2839,6 +2980,10 @@ msgstr "You are the only owner of a workspace. Make someone else an owner there,
 #: src/features/settings/inboxes/CreateInboxDialog.tsx
 msgid "You can change hours, branding and channels after creating it."
 msgstr "You can change hours, branding and channels after creating it."
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "You can disconnect it at any time in Settings, under Connected apps."
+msgstr "You can disconnect it at any time in Settings, under Connected apps."
 
 #: src/features/conversation/controls/MoreMenu.tsx
 msgid "You cannot see any other inbox."
@@ -2875,6 +3020,10 @@ msgstr "Your backend signs identity tokens with this secret. Copy it now and sto
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Your new API key"
 msgstr "Your new API key"
+
+#: src/features/oauth/ConsentPage.tsx
+msgid "Your role in this workspace cannot give any of the access this app asks for."
+msgstr "Your role in this workspace cannot give any of the access this app asks for."
 
 #: src/components/common/text.ts
 msgid "Your session has ended. Sign in again."

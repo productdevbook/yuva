@@ -5,7 +5,7 @@ import { YuvaMark } from "@/components/common"
 import { LanguageMenu } from "@/components/common/LanguageMenu"
 import { useVersion } from "@/lib/api"
 
-export function AuthLayout({ children }: { children: React.ReactNode }) {
+export function AuthLayout({ children, wide }: { children: React.ReactNode; wide?: boolean }) {
   const version = useVersion().data?.version
   return (
     <div className="grid min-h-svh bg-background lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
@@ -18,7 +18,7 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
           <LanguageMenu />
         </header>
         <main className="flex flex-1 items-start justify-center pt-[8vh] pb-10 sm:items-center sm:py-16">
-          <div className="w-full max-w-[22rem]">{children}</div>
+          <div className={wide ? "w-full max-w-[26rem]" : "w-full max-w-[22rem]"}>{children}</div>
         </main>
         <footer className="flex h-14 shrink-0 items-center text-xs text-faint">
           {version && <Trans>Yuva {version}</Trans>}

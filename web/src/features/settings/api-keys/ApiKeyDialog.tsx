@@ -2,10 +2,9 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 
-import { BotAvatar, Dot, ErrorLine } from "@/components/common"
+import { BotAvatar, CheckItem, CheckList, Dot, ErrorLine } from "@/components/common"
 import { API_KEY_SCOPES, useEnumText, WORKSPACE_WIDE_SCOPES } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Field } from "@/features/settings/ui"
@@ -24,41 +23,6 @@ function toggled<T>(set: Set<T>, v: T, on: boolean) {
   if (on) next.add(v)
   else next.delete(v)
   return next
-}
-
-function CheckList({ labelId, label, hint, children }: { labelId: string; label: React.ReactNode; hint?: React.ReactNode; children: React.ReactNode }) {
-  return (
-    <div className="flex min-w-0 flex-col gap-2" role="group" aria-labelledby={labelId}>
-      <span id={labelId} className="text-sm font-medium">
-        {label}
-      </span>
-      <ul className="divide-y rounded-xl border">{children}</ul>
-      {hint}
-    </div>
-  )
-}
-
-function CheckItem({
-  checked,
-  disabled,
-  onChange,
-  children,
-  testId,
-}: {
-  checked: boolean
-  disabled?: boolean
-  onChange: (on: boolean) => void
-  children: React.ReactNode
-  testId?: string
-}) {
-  return (
-    <li>
-      <label className="flex items-center gap-3 px-3.5 py-2.5 has-disabled:opacity-50" data-testid={testId}>
-        <Checkbox checked={checked} disabled={disabled} onCheckedChange={onChange} />
-        <span className="flex min-w-0 flex-1 flex-col">{children}</span>
-      </label>
-    </li>
-  )
 }
 
 export function ApiKeyDialog({ apiKey, onClose, onCreated }: { apiKey: ApiKey | null; onClose: () => void; onCreated: (secret: string) => void }) {

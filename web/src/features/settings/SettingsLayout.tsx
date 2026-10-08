@@ -27,6 +27,7 @@ function useGroups() {
         { to: "inboxes", label: t`Inboxes` },
         { to: "labels", label: t`Labels` },
         { to: "canned-replies", label: t`Canned replies` },
+        { to: "connected-apps", label: t`Connected apps` },
         ...(canManage
           ? [
               { to: "api-keys", label: t`API keys` },

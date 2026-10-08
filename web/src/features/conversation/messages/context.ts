@@ -33,12 +33,17 @@ function nameOf(a: MessageAuthor, ctx: ThreadContext, t: ReturnType<typeof useLi
 
 export function useAuthorName(m: Message, ctx: ThreadContext) {
   const { t } = useLingui()
-  return nameOf(m.author, ctx, t)
+  const name = nameOf(m.author, ctx, t)
+  const via = m.author.via
+  return via ? t`${name} via ${via}` : name
 }
 
 export function useSenderName(m: Message, ctx: ThreadContext) {
   const { t } = useLingui()
-  return m.sent_by ? nameOf(m.sent_by, ctx, t) : null
+  if (!m.sent_by) return null
+  const name = nameOf(m.sent_by, ctx, t)
+  const via = m.sent_by.via
+  return via ? t`${name} via ${via}` : name
 }
 
 export function timeOf(iso: string, locale: string) {

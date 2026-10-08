@@ -3,9 +3,11 @@ import { Navigate, Route, Routes } from "react-router"
 import { Gate } from "@/app/Gate"
 import { SignInPage } from "@/features/auth/SignInPage"
 import { InboxPage, OpenConversation } from "@/features/inbox/InboxPage"
+import { ConsentPage } from "@/features/oauth/ConsentPage"
 import { ApiKeysPage } from "@/features/settings/api-keys/ApiKeysPage"
 import { CannedRepliesPage } from "@/features/settings/canned/CannedRepliesPage"
 import { ChannelsPage } from "@/features/settings/channels/ChannelsPage"
+import { ConnectedAppsPage } from "@/features/settings/connected-apps/ConnectedAppsPage"
 import { AccessSection } from "@/features/settings/inboxes/AccessSection"
 import { AdvancedPage } from "@/features/settings/inboxes/AdvancedPage"
 import { GeneralPage } from "@/features/settings/inboxes/GeneralPage"
@@ -26,6 +28,7 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route path="sign-in" element={<SignInPage />} />
+      <Route path="oauth/consent" element={<ConsentPage />} />
       <Route element={<Gate />}>
         <Route index element={<Navigate to="/all" replace />} />
         <Route path="settings" element={<SettingsLayout />}>
@@ -46,6 +49,7 @@ export function AppRoutes() {
           <Route path="labels" element={<LabelsPage />} />
           <Route path="canned-replies" element={<CannedRepliesPage />} />
           <Route path="api-keys" element={<ApiKeysPage />} />
+          <Route path="connected-apps" element={<ConnectedAppsPage />} />
           <Route path="webhooks" element={<WebhooksPage />} />
           <Route path="webhooks/:webhookId" element={<WebhookPage />} />
         </Route>
