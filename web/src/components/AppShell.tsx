@@ -20,7 +20,7 @@ import {
 import { Fragment, useCallback, useEffect, useState } from "react"
 import { Link, Navigate, Outlet, useLocation, useNavigate } from "react-router"
 
-import { AuthLayout } from "@/components/auth/AuthLayout"
+import { AuthLayout, YuvaMark } from "@/components/auth/AuthLayout"
 import { EmptyState, PersonAvatar } from "@/components/common"
 import { DeleteAccountButton } from "@/components/common/DeleteAccount"
 import { FEEDBACK_CATEGORIES, useEnumText } from "@/components/common/text"
@@ -273,7 +273,7 @@ function WorkspaceSwitcher() {
   const name = membership.workspace.name
   const header = (
     <>
-      <img src="/favicon.svg" alt="" className="size-7" />
+      <YuvaMark className="size-7" />
       <span className="min-w-0 flex-1 truncate text-left font-semibold">{name}</span>
     </>
   )

@@ -41,6 +41,8 @@ func Handler() http.Handler {
 			if info, err := fs.Stat(dist, name); err == nil && !info.IsDir() {
 				if strings.HasPrefix(name, "assets/") {
 					w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+				} else {
+					w.Header().Set("Cache-Control", "no-cache")
 				}
 				http.ServeFileFS(w, r, dist, name)
 				return

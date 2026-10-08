@@ -1,11 +1,12 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { MailIcon, MessageCircleIcon, SmartphoneIcon } from "lucide-react"
 
+import yuvaMark from "@/assets/yuva-mark.svg"
 import { LanguageMenu } from "@/components/LanguageMenu"
 import { useVersion } from "@/lib/api"
 
 export function YuvaMark({ className }: { className?: string }) {
-  return <img src="/favicon.svg" alt="" className={className} />
+  return <img src={yuvaMark} alt="" className={className} />
 }
 
 export function AuthLayout({ children }: { children: React.ReactNode }) {
