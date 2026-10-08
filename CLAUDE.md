@@ -15,7 +15,7 @@ Keep this table current when a command changes.
 | Part | Owner agent | Check |
 |---|---|---|
 | `openapi/` | yuva-api | `REDOCLY_TELEMETRY=off npx --yes @redocly/cli@2.54.3 lint --config openapi/redocly.yaml --format=stylish openapi/openapi.yaml` |
-| `api/`, `sdk/go` | yuva-api | in `api/`: `go generate ./... && go vet ./... && go test ./... && go build ./...` (tests that need Postgres run when `YUVA_TEST_DATABASE_URL` is set, as in CI, and skip otherwise); in `sdk/go/`: `go vet ./... && go test ./... && go build ./...` |
+| `api/`, `sdk/go` | yuva-api | in `api/`: `go generate ./... && go vet ./... && go test ./... && go build ./...` (tests that need Postgres run when `YUVA_TEST_DATABASE_URL` is set, as in CI, and skip otherwise); in `sdk/go/`: `go generate ./... && go vet ./... && go test ./... && go build ./...` |
 | `web/` | yuva-panel | in `web/`: `npm run -s extract && npx lingui compile --strict && npm run -s build` |
 | `edge/` | yuva-edge | in `edge/`: `bun run check` |
 | `sdk/js` | yuva-widget | in `sdk/js/`: `bun run check && bun run build` (reports the gzip size) |

@@ -6,6 +6,39 @@ Helpers for a host application's backend. MIT licensed.
 go get github.com/productdevbook/yuva/sdk/go
 ```
 
+## API client
+
+`client` is a typed client for `/v1`, generated from the OpenAPI contract with
+[oapi-codegen](https://github.com/oapi-codegen/oapi-codegen). Authenticate with an API key (or an
+OAuth access token) as a bearer token:
+
+```go
+import "github.com/productdevbook/yuva/sdk/go/client"
+
+c, err := client.NewClientWithResponses("https://yuva.example.com",
+	client.WithRequestEditorFn(func(ctx context.Context, req *http.Request) error {
+		req.Header.Set("Authorization", "Bearer "+os.Getenv("YUVA_API_KEY"))
+		return nil
+	}))
+if err != nil {
+	return err
+}
+res, err := c.ListInboxesWithResponse(ctx, nil)
+if err != nil {
+	return err
+}
+if res.JSON200 == nil {
+	return fmt.Errorf("yuva: %s: %s", res.Status(), res.Body)
+}
+for _, inbox := range res.JSON200.Items {
+	fmt.Println(inbox.Id, inbox.Name)
+}
+```
+
+Every operation has a `…WithResponse` method whose result holds the decoded body for each documented
+status (`JSON200`, `ApplicationproblemJSON403`, …) next to the raw `Body` and `HTTPResponse`.
+`go generate ./...` in `sdk/go` regenerates it after the contract changes.
+
 ## Identity tokens
 
 Signed-in users of your app chat as themselves: your backend signs a short-lived identity token

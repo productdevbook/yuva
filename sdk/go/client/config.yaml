@@ -1,0 +1,15 @@
+package: client
+output: client.gen.go
+generate:
+  models: true
+  client: true
+output-options:
+  skip-prune: true
+  exclude-operation-ids: [realtime, clientRealtime, ingestEmail, ingestSes, oauthAuthorizationServerMetadata, oauthProtectedResourceMetadata, oauthProtectedResourceMetadataMcp, oauthRegister, oauthAuthorize, oauthToken, oauthRevoke]
+  nullable-type: true
+  type-mapping:
+    string:
+      formats:
+        uuid:
+          type: uuid.UUID
+          import: uuid

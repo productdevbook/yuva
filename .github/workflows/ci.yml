@@ -47,11 +47,11 @@ jobs:
       - name: api
         working-directory: api
         run: go generate ./... && go vet ./... && go test ./... && go build ./...
-      - name: generated code is committed
-        run: git diff --exit-code -- api
       - name: sdk/go
         working-directory: sdk/go
-        run: go vet ./... && go test ./... && go build ./...
+        run: go generate ./... && go vet ./... && go test ./... && go build ./...
+      - name: generated code is committed
+        run: git diff --exit-code -- api sdk/go
 
   web:
     runs-on: ubuntu-latest
