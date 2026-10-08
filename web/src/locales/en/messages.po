@@ -44,7 +44,7 @@ msgstr "{actor} reopened the conversation"
 msgid "{actor} set the status to {status}"
 msgstr "{actor} set the status to {status}"
 
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/MergePreview.tsx
 msgid "{count, plural, =0 {No conversations} one {# conversation} other {# conversations}}"
 msgstr "{count, plural, =0 {No conversations} one {# conversation} other {# conversations}}"
 
@@ -367,7 +367,7 @@ msgid "Attempts"
 msgstr "Attempts"
 
 #: src/features/contact/ContactPanel.tsx
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/MergePreview.tsx
 msgid "Attributes"
 msgstr "Attributes"
 
@@ -478,7 +478,7 @@ msgstr "Check your e-mail"
 msgid "Choose a workspace"
 msgstr "Choose a workspace"
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/EmailAddresses.tsx
 msgid "Clear"
 msgstr "Clear"
 
@@ -540,7 +540,7 @@ msgid "Contacts see who is available, typing and read receipts."
 msgstr "Contacts see who is available, typing and read receipts."
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/MergePreview.tsx
 #: src/features/inbox/InboxPage.tsx
 msgid "Conversations"
 msgstr "Conversations"
@@ -732,7 +732,7 @@ msgid "E-mail address"
 msgstr "E-mail address"
 
 #: src/features/contact/ContactPanel.tsx
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/MergePreview.tsx
 msgid "E-mail addresses"
 msgstr "E-mail addresses"
 
@@ -849,7 +849,7 @@ msgid "expires {expires}"
 msgstr "expires {expires}"
 
 #: src/features/contact/ContactPanel.tsx
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/MergePreview.tsx
 msgid "External ids"
 msgstr "External ids"
 
@@ -1068,7 +1068,6 @@ msgstr "Labels"
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
-#: src/features/contact/ContactPanel.tsx
 #: src/features/settings/MembersSettings.tsx
 #: src/features/settings/ProfileSettings.tsx
 msgid "Language"
@@ -1082,7 +1081,7 @@ msgstr "Last attempt"
 msgid "Last push failed: {failed}"
 msgstr "Last push failed: {failed}"
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/Presence.tsx
 msgid "Last seen {seen}"
 msgstr "Last seen {seen}"
 
@@ -1127,7 +1126,7 @@ msgstr "Live chat shows nobody available. Notifications pause, except for conver
 msgid "Load images"
 msgstr "Load images"
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/OtherConversations.tsx
 #: src/features/inbox/ConversationList.tsx
 #: src/features/settings/WebhooksSettings.tsx
 msgid "Load more"
@@ -1220,7 +1219,7 @@ msgstr "Monday"
 msgid "More actions"
 msgstr "More actions"
 
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/MergePreview.tsx
 msgid "More than {count} conversations"
 msgstr "More than {count} conversations"
 
@@ -1375,7 +1374,7 @@ msgstr "No labels yet"
 msgid "No labels yet. Add them in settings."
 msgstr "No labels yet. Add them in settings."
 
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/ContactSearch.tsx
 msgid "No other contact matches."
 msgstr "No other contact matches."
 
@@ -1387,15 +1386,14 @@ msgstr "No pending invites."
 msgid "No settings"
 msgstr "No settings"
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/OtherConversations.tsx
 #: src/features/conversation/RelatedLine.tsx
 #: src/features/conversation/ThreadHeader.tsx
 #: src/features/inbox/ConversationRow.tsx
 msgid "No subject"
 msgstr "No subject"
 
-#: src/features/contact/ContactPanel.tsx
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/MergePreview.tsx
 msgid "None"
 msgstr "None"
 
@@ -1513,7 +1511,7 @@ msgstr "One inbox per product or brand. Each has its own channels, hours and tea
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "One per line, 1 to 20. Only pages on these origins can use the widget."
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/Presence.tsx
 msgid "Online now"
 msgstr "Online now"
 
@@ -1558,7 +1556,7 @@ msgstr "or"
 msgid "Other"
 msgstr "Other"
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/OtherConversations.tsx
 msgid "Other conversations"
 msgstr "Other conversations"
 
@@ -1801,7 +1799,7 @@ msgstr "Replies"
 msgid "Replies go out through your own SMTP account. Leave the host empty to only receive mail."
 msgstr "Replies go out through your own SMTP account. Leave the host empty to only receive mail."
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/EmailAddresses.tsx
 msgid "Replies to this address are refused until you clear it."
 msgstr "Replies to this address are refused until you clear it."
 
@@ -1909,11 +1907,11 @@ msgstr "Screen"
 msgid "Search"
 msgstr "Search"
 
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/ContactSearch.tsx
 msgid "Search by name, e-mail or external id"
 msgstr "Search by name, e-mail or external id"
 
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/ContactSearch.tsx
 msgid "Search contacts"
 msgstr "Search contacts"
 
@@ -2117,7 +2115,7 @@ msgstr "Status"
 msgid "Stop overriding {name}"
 msgstr "Stop overriding {name}"
 
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/MergePreview.tsx
 msgid "Struck-out values are not taken: this contact keeps its own value for those keys."
 msgstr "Struck-out values are not taken: this contact keeps its own value for those keys."
 
@@ -2267,7 +2265,7 @@ msgstr "This browser does not support passkeys."
 msgid "This conflicts with something that already exists."
 msgstr "This conflicts with something that already exists."
 
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/MergePreview.tsx
 msgid "This contact keeps its own value"
 msgstr "This contact keeps its own value"
 
@@ -2394,11 +2392,11 @@ msgstr "Unassign"
 msgid "Unassigned"
 msgstr "Unassigned"
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/EmailAddresses.tsx
 msgid "Undeliverable: bounced, {since}"
 msgstr "Undeliverable: bounced, {since}"
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/EmailAddresses.tsx
 msgid "Undeliverable: marked as spam by the recipient, {since}"
 msgstr "Undeliverable: marked as spam by the recipient, {since}"
 
@@ -2407,6 +2405,7 @@ msgid "Unknown device"
 msgstr "Unknown device"
 
 #: src/features/contact/ContactPanel.tsx
+#: src/features/contact/ContactSearch.tsx
 #: src/features/contact/MergeContactDialog.tsx
 #: src/features/conversation/ThreadView.tsx
 #: src/features/inbox/ConversationRow.tsx

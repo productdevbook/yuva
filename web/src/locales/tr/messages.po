@@ -44,7 +44,7 @@ msgstr "{actor} konuşmayı yeniden açtı"
 msgid "{actor} set the status to {status}"
 msgstr "{actor} durumu {status} olarak değiştirdi"
 
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/MergePreview.tsx
 msgid "{count, plural, =0 {No conversations} one {# conversation} other {# conversations}}"
 msgstr "{count, plural, =0 {Konuşma yok} one {# konuşma} other {# konuşma}}"
 
@@ -367,7 +367,7 @@ msgid "Attempts"
 msgstr "Denemeler"
 
 #: src/features/contact/ContactPanel.tsx
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/MergePreview.tsx
 msgid "Attributes"
 msgstr "Özellikler"
 
@@ -478,7 +478,7 @@ msgstr "E-postanızı kontrol edin"
 msgid "Choose a workspace"
 msgstr "Bir çalışma alanı seçin"
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/EmailAddresses.tsx
 msgid "Clear"
 msgstr "Temizle"
 
@@ -540,7 +540,7 @@ msgid "Contacts see who is available, typing and read receipts."
 msgstr "Kişiler kimin müsait olduğunu, yazma göstergesini ve okundu bilgisini görür."
 
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/MergePreview.tsx
 #: src/features/inbox/InboxPage.tsx
 msgid "Conversations"
 msgstr "Konuşmalar"
@@ -732,7 +732,7 @@ msgid "E-mail address"
 msgstr "E-posta adresi"
 
 #: src/features/contact/ContactPanel.tsx
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/MergePreview.tsx
 msgid "E-mail addresses"
 msgstr "E-posta adresleri"
 
@@ -849,7 +849,7 @@ msgid "expires {expires}"
 msgstr "son geçerlilik: {expires}"
 
 #: src/features/contact/ContactPanel.tsx
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/MergePreview.tsx
 msgid "External ids"
 msgstr "Harici kimlikler"
 
@@ -1068,7 +1068,6 @@ msgstr "Etiketler"
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
-#: src/features/contact/ContactPanel.tsx
 #: src/features/settings/MembersSettings.tsx
 #: src/features/settings/ProfileSettings.tsx
 msgid "Language"
@@ -1082,7 +1081,7 @@ msgstr "Son deneme"
 msgid "Last push failed: {failed}"
 msgstr "Son bildirim gönderilemedi: {failed}"
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/Presence.tsx
 msgid "Last seen {seen}"
 msgstr "Son görülme: {seen}"
 
@@ -1127,7 +1126,7 @@ msgstr "Canlı sohbet kimseyi müsait göstermez. Sana atanmış konuşmalar dı
 msgid "Load images"
 msgstr "Görselleri yükle"
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/OtherConversations.tsx
 #: src/features/inbox/ConversationList.tsx
 #: src/features/settings/WebhooksSettings.tsx
 msgid "Load more"
@@ -1220,7 +1219,7 @@ msgstr "Pazartesi"
 msgid "More actions"
 msgstr "Diğer işlemler"
 
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/MergePreview.tsx
 msgid "More than {count} conversations"
 msgstr "{count} konuşmadan fazla"
 
@@ -1375,7 +1374,7 @@ msgstr "Henüz etiket yok"
 msgid "No labels yet. Add them in settings."
 msgstr "Henüz etiket yok. Ayarlardan ekleyebilirsiniz."
 
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/ContactSearch.tsx
 msgid "No other contact matches."
 msgstr "Eşleşen başka kişi yok."
 
@@ -1387,15 +1386,14 @@ msgstr "Bekleyen davet yok."
 msgid "No settings"
 msgstr "Ayar yok"
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/OtherConversations.tsx
 #: src/features/conversation/RelatedLine.tsx
 #: src/features/conversation/ThreadHeader.tsx
 #: src/features/inbox/ConversationRow.tsx
 msgid "No subject"
 msgstr "Konu yok"
 
-#: src/features/contact/ContactPanel.tsx
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/MergePreview.tsx
 msgid "None"
 msgstr "Yok"
 
@@ -1513,7 +1511,7 @@ msgstr "Her ürün ya da marka için bir gelen kutusu. Her birinin kendi kanalla
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Her satıra bir tane, 1 ile 20 arası. Sohbet penceresini yalnızca bu kaynaklardaki sayfalar kullanabilir."
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/Presence.tsx
 msgid "Online now"
 msgstr "Şu an çevrimiçi"
 
@@ -1558,7 +1556,7 @@ msgstr "veya"
 msgid "Other"
 msgstr "Diğer"
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/OtherConversations.tsx
 msgid "Other conversations"
 msgstr "Diğer konuşmalar"
 
@@ -1801,7 +1799,7 @@ msgstr "Yanıtlar"
 msgid "Replies go out through your own SMTP account. Leave the host empty to only receive mail."
 msgstr "Yanıtlar kendi SMTP hesabınızdan gider. Yalnızca posta almak için sunucuyu boş bırakın."
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/EmailAddresses.tsx
 msgid "Replies to this address are refused until you clear it."
 msgstr "Siz temizleyene kadar bu adrese yanıt gönderilmez."
 
@@ -1909,11 +1907,11 @@ msgstr "Ekran"
 msgid "Search"
 msgstr "Ara"
 
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/ContactSearch.tsx
 msgid "Search by name, e-mail or external id"
 msgstr "Ad, e-posta ya da harici kimlikle ara"
 
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/ContactSearch.tsx
 msgid "Search contacts"
 msgstr "Kişilerde ara"
 
@@ -2117,7 +2115,7 @@ msgstr "Durum"
 msgid "Stop overriding {name}"
 msgstr "{name} için özel ayarı kaldır"
 
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/MergePreview.tsx
 msgid "Struck-out values are not taken: this contact keeps its own value for those keys."
 msgstr "Üstü çizili değerler alınmaz: bu anahtarlarda bu kişinin kendi değeri kalır."
 
@@ -2267,7 +2265,7 @@ msgstr "Bu tarayıcı geçiş anahtarlarını desteklemiyor."
 msgid "This conflicts with something that already exists."
 msgstr "Bu, var olan bir kayıtla çakışıyor."
 
-#: src/features/contact/MergeContactDialog.tsx
+#: src/features/contact/MergePreview.tsx
 msgid "This contact keeps its own value"
 msgstr "Bu kişi kendi değerini korur"
 
@@ -2394,11 +2392,11 @@ msgstr "Atamayı kaldır"
 msgid "Unassigned"
 msgstr "Atanmamış"
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/EmailAddresses.tsx
 msgid "Undeliverable: bounced, {since}"
 msgstr "Ulaşmıyor: geri döndü, {since}"
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/EmailAddresses.tsx
 msgid "Undeliverable: marked as spam by the recipient, {since}"
 msgstr "Ulaşmıyor: alıcı spam olarak işaretledi, {since}"
 
@@ -2407,6 +2405,7 @@ msgid "Unknown device"
 msgstr "Bilinmeyen cihaz"
 
 #: src/features/contact/ContactPanel.tsx
+#: src/features/contact/ContactSearch.tsx
 #: src/features/contact/MergeContactDialog.tsx
 #: src/features/conversation/ThreadView.tsx
 #: src/features/inbox/ConversationRow.tsx
