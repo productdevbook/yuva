@@ -2,10 +2,12 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { useLocation, useMatch } from "react-router"
 
 import { ContactAvatar } from "@/components/common"
+import { initials } from "@/components/common/text"
 import { useQueue } from "@/features/inbox/queue"
 import { useIsPhone } from "@/hooks/use-media-query"
 import { cn } from "@/lib/utils"
-import { useInboxes } from "@/lib/workspace"
+import { useAllViewers } from "@/lib/presence"
+import { useInboxes, useMemberMap } from "@/lib/workspace"
 
 export function useShownId() {
   const { waiting, currentId } = useQueue()
@@ -23,6 +25,8 @@ export function WaitingPill() {
   const shown = useShownId()
   const phone = useIsPhone()
   const max = phone ? 3 : 8
+  const viewers = useAllViewers()
+  const members = useMemberMap()
   const n = waiting.length
   if (n === 0) {
     return (
@@ -54,6 +58,19 @@ export function WaitingPill() {
               )}
             >
               <ContactAvatar id={c.contact.id} name={name} className="size-7 text-[10px]" />
+              {viewers.get(c.id)?.slice(0, 1).map((id) => {
+                const m = members.get(id)
+                return (
+                  <i
+                    key={id}
+                    className="absolute -end-1 -top-1 grid size-3.5 place-items-center rounded-full border-2 border-card bg-mate text-[7px] font-semibold text-white not-italic"
+                    title={m ? m.name || m.email : undefined}
+                    data-testid="pill-viewer"
+                  >
+                    {initials(m ? m.name || m.email : "?").charAt(0)}
+                  </i>
+                )
+              })}
             </button>
           )
         })}

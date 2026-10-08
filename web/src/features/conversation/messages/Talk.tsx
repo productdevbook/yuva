@@ -191,6 +191,50 @@ function FeedbackCard({ m, feedback }: { m: Message; feedback: Feedback }) {
   )
 }
 
+function escapeRe(s: string) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+}
+
+function NoteBody({ m, ctx }: { m: Message; ctx: ThreadContext }) {
+  const { membership } = useSession()
+  const people = (m.mentions ?? []).flatMap((id) => {
+    const x = ctx.members.get(id)
+    return x ? [{ id, name: x.name || x.email }] : []
+  })
+  if (people.length === 0) return <div className="break-words whitespace-pre-wrap">{m.body}</div>
+  const sorted = [...people].sort((a, b) => b.name.length - a.name.length)
+  const re = new RegExp(`@(${sorted.map((p) => escapeRe(p.name)).join("|")})`, "g")
+  const parts: React.ReactNode[] = []
+  let last = 0
+  for (const hit of m.body.matchAll(re)) {
+    const who = sorted.find((p) => p.name === hit[1])!
+    parts.push(m.body.slice(last, hit.index))
+    parts.push(
+      <span
+        key={hit.index}
+        className={cn("rounded px-0.5 font-medium", who.id === membership.member_id ? "bg-brand-wash text-brand" : "bg-note-ink/10 text-note-ink")}
+        data-testid="mention"
+      >
+        {hit[0]}
+      </span>,
+    )
+    last = hit.index + hit[0].length
+  }
+  parts.push(m.body.slice(last))
+  const missing = people.filter((p) => !m.body.includes(`@${p.name}`))
+  const names = missing.map((p) => p.name).join(", ")
+  return (
+    <>
+      <div className="break-words whitespace-pre-wrap">{parts}</div>
+      {missing.length > 0 && (
+        <div className="mt-1 text-xs text-note-ink">
+          <Trans>Mentions: {names}</Trans>
+        </div>
+      )}
+    </>
+  )
+}
+
 function Note({ m, ctx }: { m: Message; ctx: ThreadContext }) {
   const { i18n } = useLingui()
   const author = useAuthorName(m, ctx)
@@ -205,7 +249,7 @@ function Note({ m, ctx }: { m: Message; ctx: ThreadContext }) {
           {timeOf(m.created_at, i18n.locale)}
         </time>
       </div>
-      {m.body && <div className="break-words whitespace-pre-wrap">{m.body}</div>}
+      {m.body && <NoteBody m={m} ctx={ctx} />}
       {m.attachments.length > 0 && (
         <div className="mt-2">
           <Attachments items={m.attachments} outgoing={false} />

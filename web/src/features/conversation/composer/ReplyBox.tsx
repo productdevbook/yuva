@@ -8,12 +8,14 @@ import { formatBytes } from "@/components/common/text"
 import { popupClass } from "@/components/ui/dropdown-menu"
 import { firstName, readDraft, writeDraft, type QueueActions } from "@/features/conversation/actions"
 import { CannedMenu, slashToken, useCannedMatches } from "@/features/conversation/composer/CannedMenu"
+import { MentionMenu, mentionToken } from "@/features/conversation/composer/MentionMenu"
 import { useAuthorName, type ThreadContext } from "@/features/conversation/messages/context"
 import { useDraftActions } from "@/features/conversation/queries"
-import type { CannedReply, Conversation, Message } from "@/lib/api"
+import type { CannedReply, Conversation, Member, Message } from "@/lib/api"
+import { useSession } from "@/lib/session"
 import { useTypingSender } from "@/lib/typing"
 import { cn } from "@/lib/utils"
-import { useCannedReplies } from "@/lib/workspace"
+import { useAssignableMembers, useCannedReplies } from "@/lib/workspace"
 
 export type ReplyHandle = {
   focus: (mode?: "message" | "note") => void
@@ -85,11 +87,13 @@ export const ReplyBox = forwardRef<
   const [dismissed, setDismissed] = useState<number | null>(null)
   const [cannedOpen, setCannedOpen] = useState(false)
   const [noting, setNoting] = useState(false)
+  const [mentioned, setMentioned] = useState<{ id: string; label: string }[]>([])
   const [error, setError] = useState<unknown>(null)
   const textarea = useRef<HTMLTextAreaElement>(null)
   const fileInput = useRef<HTMLInputElement>(null)
   const typing = useTypingSender(c.id)
   const { discard } = useDraftActions()
+  const { membership } = useSession()
   const canned = useCannedReplies().data ?? []
   const note = mode === "note"
   const first = firstName(contactName)
@@ -121,9 +125,17 @@ export const ReplyBox = forwardRef<
   }
   useImperativeHandle(ref, () => ({ focus, attach: () => fileInput.current?.click(), discardSuggestion: dropSuggestion }))
 
-  const token = slashToken(body, caret)
+  const at = note ? mentionToken(body, caret) : null
+  const people = useAssignableMembers(c.inbox_id).filter((m) => m.id !== membership.member_id)
+  const query = at?.query.toLocaleLowerCase() ?? ""
+  const mentionMatches = at
+    ? people.filter((m) => (m.name || m.email).toLocaleLowerCase().split(/\s+/).some((w) => w.startsWith(query)) || m.email.startsWith(query)).slice(0, 6)
+    : []
+  const mentionOpen = at !== null && mentionMatches.length > 0 && dismissed !== at.start
+  const token = mentionOpen ? null : slashToken(body, caret)
   const matches = useCannedMatches(token?.query ?? null)
   const menuOpen = token !== null && matches.length > 0 && dismissed !== token.start
+  const listLength = mentionOpen ? mentionMatches.length : matches.length
 
   const insertAt = (text: string, start: number, end: number) => {
     const next = body.slice(0, start) + text + body.slice(end)
@@ -136,6 +148,12 @@ export const ReplyBox = forwardRef<
     })
   }
   const insertSlash = (r: CannedReply) => token && insertAt(r.body, token.start, caret)
+  const insertMention = (m: Member) => {
+    if (!at) return
+    const label = m.name || m.email
+    setMentioned((all) => (all.some((x) => x.id === m.id) ? all : [...all, { id: m.id, label }]))
+    insertAt(`@${label} `, at.start, caret)
+  }
   const insertCanned = (r: CannedReply) => {
     setCannedOpen(false)
     const at = textarea.current?.selectionStart ?? body.length
@@ -162,13 +180,25 @@ export const ReplyBox = forwardRef<
   const addNote = () => {
     if (!hasContent || noting) return
     const saved = { body, files }
+    const tagged = mentioned.filter((x) => body.includes(`@${x.label}`))
     setNoting(true)
     setError(null)
     setBody("")
     setFiles([])
     actions
-      .note(saved.body, saved.files)
-      .then(() => setMode("message"))
+      .note(
+        saved.body,
+        saved.files,
+        tagged.map((x) => x.id),
+      )
+      .then(() => {
+        setMode("message")
+        setMentioned([])
+        if (tagged.length) {
+          const names = new Intl.ListFormat(i18n.locale, { type: "conjunction" }).format(tagged.map((x) => firstName(x.label)))
+          toast(t`${names} will be notified`)
+        }
+      })
       .catch((e) => {
         setBody((b) => b || saved.body)
         setFiles((f) => (f.length ? f : saved.files))
@@ -178,21 +208,23 @@ export const ReplyBox = forwardRef<
   }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (menuOpen) {
+    if (menuOpen || mentionOpen) {
       if (e.key === "ArrowDown" || e.key === "ArrowUp") {
         e.preventDefault()
         const step = e.key === "ArrowDown" ? 1 : -1
-        setPick((i) => (i + step + matches.length) % matches.length)
+        setPick((i) => (i + step + listLength) % listLength)
         return
       }
       if ((e.key === "Enter" && !e.metaKey && !e.ctrlKey) || e.key === "Tab") {
         e.preventDefault()
-        insertSlash(matches[Math.min(pick, matches.length - 1)])
+        const i = Math.min(pick, listLength - 1)
+        if (mentionOpen) insertMention(mentionMatches[i])
+        else insertSlash(matches[i])
         return
       }
       if (e.key === "Escape") {
         e.preventDefault()
-        setDismissed(token!.start)
+        setDismissed((mentionOpen ? at : token)!.start)
         return
       }
     }
@@ -254,13 +286,14 @@ export const ReplyBox = forwardRef<
         </p>
       )}
       {menuOpen && <CannedMenu items={matches} active={pick} onPick={insertSlash} />}
+      {mentionOpen && <MentionMenu items={mentionMatches} active={pick} onPick={insertMention} />}
       <textarea
         ref={textarea}
         value={body}
         rows={3}
         data-testid="composer-input"
         aria-label={note ? t`Team note` : t`Reply`}
-        placeholder={note ? t`A note for the team…` : t`Write to ${first}…`}
+        placeholder={note ? t`A note for the team… type @ to mention a teammate` : t`Write to ${first}…`}
         className="field-sizing-content block max-h-[50vh] min-h-[84px] w-full resize-none bg-transparent px-4 py-2.5 text-[15px] leading-[1.55] outline-none placeholder:text-faint focus-visible:outline-none"
         onChange={(e) => {
           setBody(e.target.value)

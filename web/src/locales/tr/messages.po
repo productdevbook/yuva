@@ -11,6 +11,11 @@ msgstr ""
 msgid "(you)"
 msgstr "(siz)"
 
+#. placeholder {0}: load.get(m.id) ?? 0
+#: src/features/conversation/LaterActions.tsx
+msgid "{0, plural, one {# conversation} other {# conversations}}"
+msgstr "{0, plural, one {# konuşmada} other {# konuşmada}}"
+
 #. placeholder {0}: g.requests_this_month
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "{0, plural, one {# request} other {# requests}}"
@@ -70,6 +75,10 @@ msgstr "{author} · sadece ekip görür"
 #: src/features/conversation/messages/Talk.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, gönderen: {by}"
+
+#: src/app/TeamMenu.tsx
+msgid "{closed, plural, one {# closed} other {# closed}}"
+msgstr "{closed, plural, one {# bitti} other {# bitti}}"
 
 #: src/features/contact/MergePreview.tsx
 msgid "{count, plural, =0 {No conversations} one {# conversation} other {# conversations}}"
@@ -131,11 +140,20 @@ msgstr "{name} artık mesaj alabilir. Son bir adım kaldı:"
 msgid "{name} can reply"
 msgstr "{name} yanıtlayabilir"
 
+#: src/features/conversation/PersonHeader.tsx
+msgid "{name} is looking"
+msgstr "{name} bakıyor"
+
+#: src/features/conversation/Collision.tsx
+msgid "{name} is looking at this too."
+msgstr "{name} da bu konuşmaya bakıyor."
+
 #: src/features/conversation/Collision.tsx
 msgid "{name} is typing a reply too."
 msgstr "{name} da şu an yanıt yazıyor."
 
 #: src/features/conversation/messages/Talk.tsx
+#: src/features/conversation/PersonHeader.tsx
 msgid "{name} is typing…"
 msgstr "{name} yazıyor…"
 
@@ -147,9 +165,17 @@ msgstr "{name} senden önce yanıtladı."
 msgid "{name} via {via}"
 msgstr "{name} ({via} ile)"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "{names} will be notified"
+msgstr "Haber verilecek: {names}"
+
 #: src/features/conversation/Facts.tsx
 msgid "{others} other conversations"
 msgstr "{others} diğer konuşma"
+
+#: src/app/TeamMenu.tsx
+msgid "{replies, plural, one {# reply} other {# replies}}"
+msgstr "{replies, plural, one {# yanıt} other {# yanıt}}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
@@ -240,9 +266,10 @@ msgid "A new version of Yuva is ready."
 msgstr "Yuva'nın yeni sürümü hazır."
 
 #: src/features/conversation/composer/ReplyBox.tsx
-msgid "A note for the team…"
-msgstr "Ekip için bir not…"
+msgid "A note for the team… type @ to mention a teammate"
+msgstr "Ekip için bir not… birini çağırmak için @ yaz"
 
+#: src/features/conversation/PersonHeader.tsx
 #: src/features/conversation/QueueConversation.tsx
 msgid "A teammate"
 msgstr "Bir ekip arkadaşı"
@@ -311,6 +338,10 @@ msgstr "Yönetici"
 #: src/components/common/text.ts
 msgid "Agent"
 msgstr "Temsilci"
+
+#: src/features/conversation/Collision.tsx
+msgid "Agree who replies."
+msgstr "Kimin yanıtlayacağına karar verin."
 
 #: src/app/TopBar.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
@@ -391,6 +422,10 @@ msgstr "anonim ziyaretçilere açık"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Another channel already receives mail at this address."
 msgstr "Bu adrese gelen postayı zaten başka bir kanal alıyor."
+
+#: src/app/TeamMenu.tsx
+msgid "another conversation"
+msgstr "başka bir konuşma"
 
 #: src/features/conversation/messages/EventLine.tsx
 msgid "another inbox"
@@ -490,7 +525,9 @@ msgstr "Otomatik postalar hiçbir zaman otomatik yanıt tetiklemez."
 msgid "Available"
 msgstr "Müsait"
 
+#: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
+#: src/features/conversation/LaterActions.tsx
 msgid "Away"
 msgstr "Uzakta"
 
@@ -656,6 +693,10 @@ msgstr "Kapalı"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Leave empty to keep everything."
 msgstr "Bu kadar gündür dokunulmamış kapalı konuşmalar mesajları ve ekleriyle birlikte, bundan eski ham e-postalar da silinir. Her şeyi saklamak için boş bırakın."
+
+#: src/features/inbox/QueuePage.tsx
+msgid "closed today"
+msgstr "bugün biten"
 
 #: src/features/conversation/actions.ts
 msgid "Closed without a reply"
@@ -1110,6 +1151,10 @@ msgstr "Uygulamadan gönderilen geri bildirim"
 msgid "First conversation"
 msgstr "İlk konuşma"
 
+#: src/app/TeamMenu.tsx
+msgid "first reply in {first}"
+msgstr "ilk yanıt {first}"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "Adresi ya da kanalın SMTP ayarlarını düzeltin, sonra yanıtı yeniden gönderin."
@@ -1456,6 +1501,10 @@ msgstr "Eski mesajları yükle"
 msgid "Locale"
 msgstr "Dil ve bölge"
 
+#: src/app/TeamMenu.tsx
+msgid "Looking at {where}"
+msgstr "Bakıyor · {where}"
+
 #: src/components/common/text.ts
 msgid "Low"
 msgstr "Düşük"
@@ -1512,6 +1561,10 @@ msgstr "Yalnızca MCP"
 msgid "MCP only: the assistant tools of this workspace."
 msgstr "Yalnızca MCP: bu çalışma alanının asistan araçları."
 
+#: src/features/inbox/QueuePage.tsx
+msgid "median first reply"
+msgstr "ilk yanıt süresi (medyan)"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
 msgstr "Üye"
@@ -1521,6 +1574,14 @@ msgstr "Üye"
 #: src/features/settings/SettingsLayout.tsx
 msgid "Members"
 msgstr "Üyeler"
+
+#: src/features/conversation/composer/MentionMenu.tsx
+msgid "Mention a teammate"
+msgstr "Ekip arkadaşını an"
+
+#: src/features/conversation/messages/Talk.tsx
+msgid "Mentions: {names}"
+msgstr "Anılanlar: {names}"
 
 #: src/features/contact/MergeContactDialog.tsx
 msgid "Merge"
@@ -1824,7 +1885,9 @@ msgstr "Kapalı"
 msgid "Off for this device."
 msgstr "Bu cihazda kapalı."
 
+#: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
+#: src/features/conversation/LaterActions.tsx
 msgid "Offline"
 msgstr "Çevrimdışı"
 
@@ -1855,6 +1918,11 @@ msgstr "Her satıra bir tane, 1 ile 20 arası. Sohbet penceresini yalnızca bu k
 #: src/features/settings/SettingsLayout.tsx
 msgid "One per product or brand"
 msgstr "Her ürün ya da marka için bir tane"
+
+#: src/app/TeamMenu.tsx
+#: src/features/conversation/LaterActions.tsx
+msgid "Online"
+msgstr "Çevrimiçi"
 
 #: src/features/contact/Presence.tsx
 #: src/features/conversation/PersonHeader.tsx
@@ -2206,6 +2274,10 @@ msgstr "Yanıtlar kendi SMTP hesabınızdan gider. Yalnızca posta almak için s
 #: src/features/contact/EmailAddresses.tsx
 msgid "Replies to this address are refused until you clear it."
 msgstr "Siz temizleyene kadar bu adrese yanıt gönderilmez."
+
+#: src/features/inbox/QueuePage.tsx
+msgid "replies today"
+msgstr "bugün yanıt"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Reply"
@@ -2621,6 +2693,7 @@ msgstr "Destek e-postası"
 msgid "System"
 msgstr "Sistem"
 
+#: src/app/TeamMenu.tsx
 #: src/features/conversation/History.tsx
 #: src/features/settings/SettingsLayout.tsx
 msgid "Team"
@@ -2629,6 +2702,10 @@ msgstr "Ekip"
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Team note"
 msgstr "Ekibe not"
+
+#: src/app/TeamMenu.tsx
+msgid "Team right now"
+msgstr "Ekip şu an"
 
 #: src/features/settings/members/Invites.tsx
 msgid "teammate@company.com"
@@ -2754,6 +2831,10 @@ msgstr "Gönderenin alan adı bu postayı onaylamadı. Sahte olabilir."
 #: src/app/UserMenu.tsx
 msgid "The status was not changed. Try again."
 msgstr "Durum değiştirilemedi. Tekrar deneyin."
+
+#: src/app/TeamMenu.tsx
+msgid "The team today"
+msgstr "Bugün ekip"
 
 #. placeholder {0}: e.from
 #: src/features/conversation/messages/Talk.tsx
@@ -2938,6 +3019,10 @@ msgstr "Onaylamak için çalışma alanının adını yazın"
 msgid "Type your e-mail address to confirm"
 msgstr "Onaylamak için e-posta adresinizi yazın"
 
+#: src/app/TeamMenu.tsx
+msgid "Typing · {where}"
+msgstr "Yazıyor · {where}"
+
 #: src/features/contact/EmailAddresses.tsx
 msgid "Undeliverable: bounced, {since}"
 msgstr "Ulaşmıyor: geri döndü, {since}"
@@ -2955,6 +3040,7 @@ msgid "Unknown device"
 msgstr "Bilinmeyen cihaz"
 
 #: src/app/Palette.tsx
+#: src/app/TeamMenu.tsx
 #: src/features/contact/ContactPanel.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/MergeContactDialog.tsx

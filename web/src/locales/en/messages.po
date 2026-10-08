@@ -11,6 +11,11 @@ msgstr ""
 msgid "(you)"
 msgstr "(you)"
 
+#. placeholder {0}: load.get(m.id) ?? 0
+#: src/features/conversation/LaterActions.tsx
+msgid "{0, plural, one {# conversation} other {# conversations}}"
+msgstr "{0, plural, one {# conversation} other {# conversations}}"
+
 #. placeholder {0}: g.requests_this_month
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "{0, plural, one {# request} other {# requests}}"
@@ -70,6 +75,10 @@ msgstr "{author} · only the team sees this"
 #: src/features/conversation/messages/Talk.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, sent by {by}"
+
+#: src/app/TeamMenu.tsx
+msgid "{closed, plural, one {# closed} other {# closed}}"
+msgstr "{closed, plural, one {# closed} other {# closed}}"
 
 #: src/features/contact/MergePreview.tsx
 msgid "{count, plural, =0 {No conversations} one {# conversation} other {# conversations}}"
@@ -131,11 +140,20 @@ msgstr "{name} can now receive messages. One last step:"
 msgid "{name} can reply"
 msgstr "{name} can reply"
 
+#: src/features/conversation/PersonHeader.tsx
+msgid "{name} is looking"
+msgstr "{name} is looking"
+
+#: src/features/conversation/Collision.tsx
+msgid "{name} is looking at this too."
+msgstr "{name} is looking at this too."
+
 #: src/features/conversation/Collision.tsx
 msgid "{name} is typing a reply too."
 msgstr "{name} is typing a reply too."
 
 #: src/features/conversation/messages/Talk.tsx
+#: src/features/conversation/PersonHeader.tsx
 msgid "{name} is typing…"
 msgstr "{name} is typing…"
 
@@ -147,9 +165,17 @@ msgstr "{name} replied before you."
 msgid "{name} via {via}"
 msgstr "{name} via {via}"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "{names} will be notified"
+msgstr "{names} will be notified"
+
 #: src/features/conversation/Facts.tsx
 msgid "{others} other conversations"
 msgstr "{others} other conversations"
+
+#: src/app/TeamMenu.tsx
+msgid "{replies, plural, one {# reply} other {# replies}}"
+msgstr "{replies, plural, one {# reply} other {# replies}}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
@@ -240,9 +266,10 @@ msgid "A new version of Yuva is ready."
 msgstr "A new version of Yuva is ready."
 
 #: src/features/conversation/composer/ReplyBox.tsx
-msgid "A note for the team…"
-msgstr "A note for the team…"
+msgid "A note for the team… type @ to mention a teammate"
+msgstr "A note for the team… type @ to mention a teammate"
 
+#: src/features/conversation/PersonHeader.tsx
 #: src/features/conversation/QueueConversation.tsx
 msgid "A teammate"
 msgstr "A teammate"
@@ -311,6 +338,10 @@ msgstr "Admin"
 #: src/components/common/text.ts
 msgid "Agent"
 msgstr "Agent"
+
+#: src/features/conversation/Collision.tsx
+msgid "Agree who replies."
+msgstr "Agree who replies."
 
 #: src/app/TopBar.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
@@ -391,6 +422,10 @@ msgstr "anonymous visitors allowed"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Another channel already receives mail at this address."
 msgstr "Another channel already receives mail at this address."
+
+#: src/app/TeamMenu.tsx
+msgid "another conversation"
+msgstr "another conversation"
 
 #: src/features/conversation/messages/EventLine.tsx
 msgid "another inbox"
@@ -490,7 +525,9 @@ msgstr "Automatic mail never triggers an automatic reply."
 msgid "Available"
 msgstr "Available"
 
+#: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
+#: src/features/conversation/LaterActions.tsx
 msgid "Away"
 msgstr "Away"
 
@@ -656,6 +693,10 @@ msgstr "Closed"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Leave empty to keep everything."
 msgstr "Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Leave empty to keep everything."
+
+#: src/features/inbox/QueuePage.tsx
+msgid "closed today"
+msgstr "closed today"
 
 #: src/features/conversation/actions.ts
 msgid "Closed without a reply"
@@ -1110,6 +1151,10 @@ msgstr "Feedback sent from the app"
 msgid "First conversation"
 msgstr "First conversation"
 
+#: src/app/TeamMenu.tsx
+msgid "first reply in {first}"
+msgstr "first reply in {first}"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "Fix the address or the channel's SMTP settings, then send the reply again."
@@ -1456,6 +1501,10 @@ msgstr "Load older messages"
 msgid "Locale"
 msgstr "Locale"
 
+#: src/app/TeamMenu.tsx
+msgid "Looking at {where}"
+msgstr "Looking at {where}"
+
 #: src/components/common/text.ts
 msgid "Low"
 msgstr "Low"
@@ -1512,6 +1561,10 @@ msgstr "MCP only"
 msgid "MCP only: the assistant tools of this workspace."
 msgstr "MCP only: the assistant tools of this workspace."
 
+#: src/features/inbox/QueuePage.tsx
+msgid "median first reply"
+msgstr "median first reply"
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
 msgstr "Member"
@@ -1521,6 +1574,14 @@ msgstr "Member"
 #: src/features/settings/SettingsLayout.tsx
 msgid "Members"
 msgstr "Members"
+
+#: src/features/conversation/composer/MentionMenu.tsx
+msgid "Mention a teammate"
+msgstr "Mention a teammate"
+
+#: src/features/conversation/messages/Talk.tsx
+msgid "Mentions: {names}"
+msgstr "Mentions: {names}"
 
 #: src/features/contact/MergeContactDialog.tsx
 msgid "Merge"
@@ -1824,7 +1885,9 @@ msgstr "Off"
 msgid "Off for this device."
 msgstr "Off for this device."
 
+#: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
+#: src/features/conversation/LaterActions.tsx
 msgid "Offline"
 msgstr "Offline"
 
@@ -1855,6 +1918,11 @@ msgstr "One per line, 1 to 20. Only pages on these origins can use the widget."
 #: src/features/settings/SettingsLayout.tsx
 msgid "One per product or brand"
 msgstr "One per product or brand"
+
+#: src/app/TeamMenu.tsx
+#: src/features/conversation/LaterActions.tsx
+msgid "Online"
+msgstr "Online"
 
 #: src/features/contact/Presence.tsx
 #: src/features/conversation/PersonHeader.tsx
@@ -2206,6 +2274,10 @@ msgstr "Replies go out through your own SMTP account. Leave the host empty to on
 #: src/features/contact/EmailAddresses.tsx
 msgid "Replies to this address are refused until you clear it."
 msgstr "Replies to this address are refused until you clear it."
+
+#: src/features/inbox/QueuePage.tsx
+msgid "replies today"
+msgstr "replies today"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Reply"
@@ -2621,6 +2693,7 @@ msgstr "Support e-mail"
 msgid "System"
 msgstr "System"
 
+#: src/app/TeamMenu.tsx
 #: src/features/conversation/History.tsx
 #: src/features/settings/SettingsLayout.tsx
 msgid "Team"
@@ -2629,6 +2702,10 @@ msgstr "Team"
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Team note"
 msgstr "Team note"
+
+#: src/app/TeamMenu.tsx
+msgid "Team right now"
+msgstr "Team right now"
 
 #: src/features/settings/members/Invites.tsx
 msgid "teammate@company.com"
@@ -2754,6 +2831,10 @@ msgstr "The sender's domain did not authorize this mail. It may be forged."
 #: src/app/UserMenu.tsx
 msgid "The status was not changed. Try again."
 msgstr "The status was not changed. Try again."
+
+#: src/app/TeamMenu.tsx
+msgid "The team today"
+msgstr "The team today"
 
 #. placeholder {0}: e.from
 #: src/features/conversation/messages/Talk.tsx
@@ -2938,6 +3019,10 @@ msgstr "Type the workspace name to confirm"
 msgid "Type your e-mail address to confirm"
 msgstr "Type your e-mail address to confirm"
 
+#: src/app/TeamMenu.tsx
+msgid "Typing · {where}"
+msgstr "Typing · {where}"
+
 #: src/features/contact/EmailAddresses.tsx
 msgid "Undeliverable: bounced, {since}"
 msgstr "Undeliverable: bounced, {since}"
@@ -2955,6 +3040,7 @@ msgid "Unknown device"
 msgstr "Unknown device"
 
 #: src/app/Palette.tsx
+#: src/app/TeamMenu.tsx
 #: src/features/contact/ContactPanel.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/MergeContactDialog.tsx

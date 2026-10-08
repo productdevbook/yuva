@@ -1,13 +1,15 @@
 import { Plural, Trans, useLingui } from "@lingui/react/macro"
 import { useEffect, useState } from "react"
 
-import { ChannelIcon, ContactAvatar, Dot } from "@/components/common"
+import { ChannelIcon, ContactAvatar, Dot, MemberAvatar } from "@/components/common"
 import { formatDateTime, useEnumText } from "@/components/common/text"
 import { useContactPresence } from "@/features/contact/queries"
 import { CategoryChip } from "@/features/conversation/Feedback"
 import { RelatedLine } from "@/features/conversation/RelatedLine"
 import type { Channel, Conversation, Message } from "@/lib/api"
+import { useViewers } from "@/lib/presence"
 import { useSession } from "@/lib/session"
+import { useTyping } from "@/lib/typing"
 import { useInboxes, useLabels, useMemberMap } from "@/lib/workspace"
 
 function useNow(ms: number) {
@@ -66,6 +68,32 @@ function Status({ c, lastInbound }: { c: Conversation; lastInbound?: Message }) 
   return <Trans>Done</Trans>
 }
 
+function Watchers({ conversationId }: { conversationId: string }) {
+  const { t } = useLingui()
+  const { membership } = useSession()
+  const members = useMemberMap()
+  const viewers = useViewers(conversationId)
+  const typing = useTyping(conversationId)
+    .filter((a) => a.type === "member" && a.member_id && a.member_id !== membership.member_id)
+    .map((a) => a.member_id!)
+  const ids = [...new Set([...typing, ...viewers])]
+  return ids.map((id) => {
+    const m = members.get(id)
+    const full = m ? m.name || m.email : t`A teammate`
+    const name = full.trim().split(/\s+/)[0]
+    return (
+      <span
+        key={id}
+        className="ms-1 inline-flex items-center gap-[5px] rounded-full border border-mate/35 bg-mate/10 py-0.5 ps-0.5 pe-2 text-xs text-muted-foreground"
+        data-testid="viewer-chip"
+      >
+        <MemberAvatar name={full} className="size-[18px] text-[8px]" />
+        {typing.includes(id) ? <Trans>{name} is typing…</Trans> : <Trans>{name} is looking</Trans>}
+      </span>
+    )
+  })
+}
+
 export function PersonHeader({
   c,
   name,
@@ -117,6 +145,7 @@ export function PersonHeader({
           )}
           {(inbox || channel) && sep}
           <Status c={c} lastInbound={lastInbound} />
+          <Watchers conversationId={c.id} />
           {c.kind === "feedback" && c.feedback && (
             <>
               {sep}

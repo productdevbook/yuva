@@ -5,10 +5,10 @@ import { useNavigate, useParams } from "react-router"
 
 import { useShell } from "@/app/shell"
 import { ContactAvatar, toast } from "@/components/common"
-import { useErrorText } from "@/components/common/text"
+import { formatDuration, useErrorText } from "@/components/common/text"
 import { Skeleton } from "@/components/ui/skeleton"
 import { QueueConversation } from "@/features/conversation/QueueConversation"
-import { useBulkUpdateConversations, useConversations, useCounts } from "@/features/inbox/queries"
+import { useBulkUpdateConversations, useConversations, useCounts, useStats } from "@/features/inbox/queries"
 import { useQueue } from "@/features/inbox/queue"
 import { useSetAvailability } from "@/lib/availability"
 import { useViewing } from "@/lib/realtime"
@@ -88,6 +88,33 @@ function CleanupBanner() {
   )
 }
 
+function DayStats() {
+  const { i18n } = useLingui()
+  const { inboxId } = useQueue()
+  const stats = useStats(inboxId).data
+  if (!stats) return null
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  const median = stats.median_first_reply_seconds
+  const tiles: [string, React.ReactNode][] = [
+    [fmt.format(stats.replies), <Trans>replies today</Trans>],
+    [median !== undefined ? formatDuration(median, i18n.locale) : "–", <Trans>median first reply</Trans>],
+    [fmt.format(stats.closed), <Trans>closed today</Trans>],
+  ]
+  return (
+    <div
+      className="mx-auto mt-7 grid max-w-[520px] grid-cols-3 rounded-2xl border bg-card phone:grid-cols-1 [&>div+div]:border-s phone:[&>div+div]:border-s-0 phone:[&>div+div]:border-t"
+      data-testid="day-stats"
+    >
+      {tiles.map(([value, label], i) => (
+        <div key={i} className="grid gap-0.5 px-3 py-4">
+          <b className="text-2xl font-semibold tracking-[-0.02em] tabular-nums">{value}</b>
+          <span className="text-xs text-faint">{label}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function EmptyQueue() {
   const { openDrawer } = useShell()
   return (
@@ -101,6 +128,7 @@ function EmptyQueue() {
       <p className="mt-2 text-[15px] text-muted-foreground">
         <Trans>When a new message arrives, it will be here.</Trans>
       </p>
+      <DayStats />
       <button type="button" onClick={() => openDrawer()} className="mt-6 h-9 rounded-full border bg-card px-3.5 text-sm hover:border-faint">
         <Trans>All conversations</Trans>
       </button>

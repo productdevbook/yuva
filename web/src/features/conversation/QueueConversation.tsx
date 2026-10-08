@@ -29,6 +29,7 @@ import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { ApiError, isGone, type Channel, type Contact, type Conversation, type ConversationUpdate } from "@/lib/api"
 import { useSession } from "@/lib/session"
+import { useViewers } from "@/lib/presence"
 import { useTyping } from "@/lib/typing"
 import { useChannel, useChannelMap, useInboxes, useLabels, useMemberMap } from "@/lib/workspace"
 
@@ -118,7 +119,9 @@ function Loaded({ c, contact, channel }: { c: Conversation; contact?: Contact; c
   }
   const typists = useTyping(c.id)
   const contactTyping = typists.some((a) => a.type === "contact")
-  const mate = typists.find((a) => a.type === "member" && a.member_id !== me)
+  const typingMate = typists.find((a) => a.type === "member" && a.member_id !== me)
+  const viewers = useViewers(c.id)
+  const mate = typingMate ?? (viewers[0] ? { type: "member" as const, member_id: viewers[0], name: undefined } : undefined)
   const mateName = mate ? mate.name || memberName(mate.member_id) : ""
   const showCollision = !!mate && claimedFrom !== mate.member_id && c.status === "open"
 
@@ -269,7 +272,7 @@ function Loaded({ c, contact, channel }: { c: Conversation; contact?: Contact; c
         )}
         {contactTyping && <TypingNote name={name.split(" ")[0]} />}
       </div>
-      {beatenBy ? <Beaten name={beatenBy} /> : showCollision && <TypingCollision name={mateName} onLeave={leaveTo} onClaim={claim} />}
+      {beatenBy ? <Beaten name={beatenBy} /> : showCollision && <TypingCollision name={mateName} typing={!!typingMate} onLeave={leaveTo} onClaim={claim} />}
       <ReplyBox
         key={c.id}
         ref={reply}

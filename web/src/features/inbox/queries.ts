@@ -40,3 +40,13 @@ export function useBulkUpdateConversations() {
     },
   })
 }
+
+export function useStats(inboxId: string) {
+  const { workspaceId: ws } = useSession()
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  return useQuery({
+    queryKey: [...keys.stats(ws), inboxId, timezone],
+    queryFn: () => unwrap(api.GET("/v1/stats", { params: { query: { inbox_id: inboxId || undefined, timezone } } })),
+    staleTime: 60_000,
+  })
+}

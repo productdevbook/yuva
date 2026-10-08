@@ -115,6 +115,7 @@ function refreshCounts(qc: QueryClient, ws: string) {
     setTimeout(() => {
       countTimers.delete(ws)
       void qc.invalidateQueries({ queryKey: keys.counts(ws) })
+      void qc.invalidateQueries({ queryKey: keys.stats(ws) })
     }, 400),
   )
 }
@@ -187,6 +188,7 @@ function addMessage(qc: QueryClient, ctx: LiveContext, m: Message) {
     }
   }
   if ((m.sent_by ?? m.author).member_id !== ctx.memberId) patch.unread = true
+  if (m.kind === "message" && m.direction === "out") refreshCounts(qc, ctx.ws)
   if (c) qc.setQueryData(keys.conversation(ctx.ws, c.id), next)
   updateLists(qc, ctx, next, patch)
 }

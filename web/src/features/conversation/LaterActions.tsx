@@ -1,10 +1,9 @@
 import { Popover } from "@base-ui/react/popover"
-import { Trans, useLingui } from "@lingui/react/macro"
+import { Plural, Trans, useLingui } from "@lingui/react/macro"
 import { CheckIcon, ClockIcon, UserRoundPlusIcon } from "lucide-react"
 import { useState } from "react"
 
-import { PersonAvatar } from "@/components/common"
-import { useEnumText } from "@/components/common/text"
+import { MemberAvatar } from "@/components/common"
 import { popupClass } from "@/components/ui/dropdown-menu"
 import {
   DropdownMenu,
@@ -16,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { firstName, type QueueActions } from "@/features/conversation/actions"
+import { useCounts } from "@/features/inbox/queries"
 import type { Conversation } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
@@ -64,11 +64,14 @@ export function LaterActions({
   setMenu: (m: LaterMenu) => void
 }) {
   const { t } = useLingui()
-  const text = useEnumText()
   const { membership } = useSession()
   const times = useSnoozeTimes()
-  const people = useAssignableMembers(c.inbox_id).filter((m) => m.id !== membership.member_id)
+  const here = (m: { online: boolean; availability: string }) => (m.online && m.availability === "auto" ? 0 : m.availability === "away" ? 2 : 1)
+  const people = useAssignableMembers(c.inbox_id)
+    .filter((m) => m.id !== membership.member_id)
+    .sort((a, b) => here(a) - here(b))
   const [note, setNote] = useState("")
+  const load = new Map((useCounts().data?.assignees ?? []).map((a) => [a.id, a.count]))
   const first = firstName(name)
   return (
     <div className="mt-3 flex flex-wrap justify-center gap-0.5 phone:gap-0" data-testid="later-actions">
@@ -136,10 +139,14 @@ export function LaterActions({
                     }}
                     className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-start text-sm outline-none hover:bg-muted focus-visible:bg-muted"
                   >
-                    <PersonAvatar name={who} className="size-[26px] bg-mate text-[10px] font-semibold text-white" />
+                    <MemberAvatar name={who} online={m.online} away={m.availability === "away"} ring="ring-card" />
                     <span className="min-w-0 flex-1">
                       <span className="block truncate">{who}</span>
-                      <small className="block truncate text-xs text-faint">{text.role[m.role]}</small>
+                      <small className="block truncate text-xs text-faint">
+                        {m.availability === "away" ? <Trans>Away</Trans> : m.online ? <Trans>Online</Trans> : <Trans>Offline</Trans>}
+                        {" · "}
+                        <Plural value={load.get(m.id) ?? 0} one="# conversation" other="# conversations" />
+                      </small>
                     </span>
                   </button>
                 )

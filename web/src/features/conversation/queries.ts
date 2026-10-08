@@ -106,7 +106,10 @@ export function postMessage(conversationId: string, { files, ...body }: Outgoing
       body: { ...body, files: [] },
       bodySerializer: () => {
         const form = new FormData()
-        for (const [k, v] of Object.entries(body)) if (v !== undefined && v !== "") form.append(k, String(v))
+        for (const [k, v] of Object.entries(body)) {
+          if (Array.isArray(v)) for (const x of v) form.append(k, String(x))
+          else if (v !== undefined && v !== "") form.append(k, String(v))
+        }
         for (const f of files) form.append("files", f, f.name)
         return form
       },

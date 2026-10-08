@@ -133,8 +133,14 @@ export function useQueueActions(c: Conversation, contactName: string) {
         () => toast(t`It is yours now`),
         (err) => toast(errorText(err)),
       ),
-    note: (body: string, files: File[]) =>
-      postMessage(c.id, { kind: "note", body: body.trim() || undefined, client_id: crypto.randomUUID(), files }).then(addMessage),
+    note: (body: string, files: File[], mentions: string[] = []) =>
+      postMessage(c.id, {
+        kind: "note",
+        body: body.trim() || undefined,
+        client_id: crypto.randomUUID(),
+        files,
+        mentions: mentions.length ? mentions : undefined,
+      }).then(addMessage),
     send: ({ body, files, close, suggestion }: SendRequest) => {
       const key = `${c.id}:${crypto.randomUUID()}`
       const status = close ? "closed" : "pending"

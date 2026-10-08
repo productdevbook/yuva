@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Link, NavLink } from "react-router"
 
 import { useShell } from "@/app/shell"
+import { TeamMenu } from "@/app/TeamMenu"
 import { UserMenu } from "@/app/UserMenu"
 import { YuvaMark } from "@/components/common"
 import { InboxPicker } from "@/features/inbox/InboxPicker"
@@ -49,6 +50,7 @@ export function TopBar() {
       </div>
       <WaitingPill />
       <div className="flex items-center justify-end gap-1">
+        <TeamMenu />
         <button type="button" className={navLinkClass} onClick={() => openDrawer()} data-testid="open-all">
           <span className="phone:hidden">
             <Trans>All</Trans>

@@ -193,3 +193,9 @@ export function initials(name: string) {
   if (parts.length === 0) return "?"
   return (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toLocaleUpperCase()
 }
+
+export function formatDuration(seconds: number, locale: string) {
+  const unit = seconds < 60 ? "second" : seconds < 3600 ? "minute" : seconds < 86400 ? "hour" : "day"
+  const size = { second: 1, minute: 60, hour: 3600, day: 86400 }[unit]
+  return new Intl.NumberFormat(locale, { style: "unit", unit, unitDisplay: "short", maximumFractionDigits: 0 }).format(Math.round(seconds / size))
+}

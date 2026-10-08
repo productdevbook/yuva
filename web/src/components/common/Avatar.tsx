@@ -48,3 +48,36 @@ export function BotAvatar({ name, url, className }: { name: string; url?: string
     />
   )
 }
+
+export function MemberAvatar({
+  name,
+  online,
+  away,
+  className,
+  ring = "ring-background",
+}: {
+  name: string
+  online?: boolean
+  away?: boolean
+  className?: string
+  ring?: string
+}) {
+  const here = online && !away
+  return (
+    <span className="relative inline-flex shrink-0">
+      <span
+        aria-hidden
+        className={cn(
+          "inline-flex size-[26px] items-center justify-center rounded-full bg-mate text-[10px] font-semibold text-white",
+          !here && "opacity-55",
+          className,
+        )}
+      >
+        {initials(name)}
+      </span>
+      {online !== undefined && (
+        <span className={cn("absolute -end-px -bottom-px size-2 rounded-full ring-2", ring, here ? "bg-green-600" : "bg-zinc-400")} />
+      )}
+    </span>
+  )
+}
