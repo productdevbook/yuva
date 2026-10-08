@@ -1,12 +1,14 @@
 import type { I18n } from "@lingui/core"
 import { msg } from "@lingui/core/macro"
-import { links, VERSION } from "@/lib/routes"
+import { docsRoot, links, VERSION, type Locale } from "@/lib/routes"
 import type { IconName } from "@/lib/icons"
 
 export type Item = { title: string; body: string; icon?: IconName }
 
 export function homeCopy(i18n: I18n) {
   const version = VERSION
+  const docs = (rel: string) => `${docsRoot(i18n.locale as Locale)}${rel}`
+  const quickStart = docs("install/#quick-start-with-compose")
   const image = `ghcr.io/productdevbook/yuva:${VERSION}`
 
   return {
@@ -29,6 +31,7 @@ export function homeCopy(i18n: I18n) {
       selfHosted: i18n._(msg`Self-hosted`),
       selfHostedBody: i18n._(msg`One Docker image and Postgres on your own server.`),
       quickStart: i18n._(msg`Read the quick start`),
+      quickStartHref: quickStart,
       github: i18n._(msg`View on GitHub`),
       tags: i18n._(msg`Open source · Self-hosted · Pre-alpha`),
       tagsHosted: i18n._(msg`Open source · Hosted or self-hosted · Pre-alpha`),
@@ -120,7 +123,7 @@ export function homeCopy(i18n: I18n) {
           i18n._(msg`Quotes and signatures are stripped from what you read; the full text, sanitized HTML and the original message are kept.`),
           i18n._(msg`Catch-all addresses per domain, and local+tag addresses that reach their channel.`),
         ],
-        link: { href: links.email, label: i18n._(msg`E-mail guide`) },
+        link: { href: docs("email/"), label: i18n._(msg`E-mail guide`) },
         letter: {
           from: i18n._(msg`Amara Okafor`),
           subject: i18n._(msg`Custom domain still shows as unverified`),
@@ -140,7 +143,7 @@ export function homeCopy(i18n: I18n) {
           i18n._(msg`Presence, typing and read receipts in live inboxes; an expected reply time in async ones.`),
           i18n._(msg`When the visitor has left, unread replies follow them by e-mail, and their answer continues the same conversation.`),
         ],
-        link: { href: links.widget, label: i18n._(msg`Widget guide`) },
+        link: { href: docs("widget/"), label: i18n._(msg`Widget guide`) },
         shotAlt: i18n._(msg`The Yuva chat widget open on a newsletter tool's website: the visitor's question and a member's reply, with the member shown online.`),
       },
       app: {
@@ -154,7 +157,7 @@ export function homeCopy(i18n: I18n) {
           i18n._(msg`The panel filters feedback by category and counts what is still open.`),
           i18n._(msg`Users write as themselves through a short-lived token signed by your backend; Yuva never sees your user database.`),
         ],
-        link: { href: links.mobile, label: i18n._(msg`Mobile SDK guide`) },
+        link: { href: docs("mobile/"), label: i18n._(msg`Mobile SDK guide`) },
         iosAlt: i18n._(msg`The messages screen of the iOS SDK in a sample app, with a feedback thread and a conversation.`),
       },
       api: {
@@ -162,7 +165,7 @@ export function homeCopy(i18n: I18n) {
         body: i18n._(
           msg`A feedback form rendered by your own backend posts to /v1/feedback with a workspace API key. Scripts create inboxes, channels and keys, and host backends look up or delete contacts by their own user id.`
         ),
-        link: { href: links.api, label: i18n._(msg`API contract`) },
+        link: { href: docs("api/"), label: i18n._(msg`API contract`) },
         tag: i18n._(msg`API`),
         code: `curl https://support.example.com/v1/feedback \\
   -H "Authorization: Bearer $YUVA_API_KEY" \\
@@ -266,10 +269,10 @@ if err := webhook.Verify(os.Getenv("YUVA_WEBHOOK_SECRET"), r.Header, body, 5*tim
         },
       ],
       links: [
-        { href: links.widget, label: i18n._(msg`Web widget`) },
-        { href: links.identity, label: i18n._(msg`Identity tokens`) },
-        { href: links.mobile, label: i18n._(msg`Mobile SDKs`) },
-        { href: links.webhooks, label: i18n._(msg`Webhooks`) },
+        { href: docs("widget/"), label: i18n._(msg`Web widget`) },
+        { href: docs("identity/"), label: i18n._(msg`Identity tokens`) },
+        { href: docs("mobile/"), label: i18n._(msg`Mobile SDKs`) },
+        { href: docs("webhooks/"), label: i18n._(msg`Webhooks`) },
         { href: links.openapi, label: "OpenAPI" },
       ],
     },
@@ -292,6 +295,7 @@ docker run --rm ${image} vapid-keys >> .env
 docker compose up -d
 docker compose exec yuva /yuva bootstrap --email you@example.com --workspace "Example" --name "Your Name"`,
       guide: i18n._(msg`Open the install guide`),
+      guideHref: quickStart,
     },
 
     trust: {

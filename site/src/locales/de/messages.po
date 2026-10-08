@@ -23,6 +23,14 @@ msgstr "{count} Min. Lesezeit"
 msgid "{count} releases, latest {version}"
 msgstr "{count} Versionen, aktuell {version}"
 
+#: src/copy/docs.ts
+msgid "{name} API"
+msgstr "{name}-API"
+
+#: src/copy/docs.ts
+msgid "{name} endpoints of the Yuva API."
+msgstr "{name}-Endpunkte der Yuva-API."
+
 #: src/copy/home.ts
 msgid "A feedback form rendered by your own backend posts to /v1/feedback with a workspace API key. Scripts create inboxes, channels and keys, and host backends look up or delete contacts by their own user id."
 msgstr "Ein Feedback-Formular aus Ihrem eigenen Backend sendet mit einem Workspace-API-Schlüssel an /v1/feedback. Skripte legen Posteingänge, Kanäle und Schlüssel an, und Ihr Backend findet oder löscht Kontakte über die eigene Nutzer-ID."
@@ -39,6 +47,10 @@ msgstr "Ein gehosteter Dienst und kommerzielle Lizenzen"
 msgid "A support inbox holds other people's words. Yuva is built with that in mind, and says plainly that it has not had an independent security audit yet."
 msgstr "Ein Support-Posteingang enthält die Worte anderer Menschen. Yuva ist mit diesem Bewusstsein gebaut und sagt offen, dass es noch kein unabhängiges Sicherheitsaudit gab."
 
+#: src/copy/docs.ts
+msgid "Add live chat"
+msgstr "Live-Chat hinzufügen"
+
 #: src/copy/brand.ts
 msgid "Add shadows or outlines"
 msgstr "Keine Schatten oder Konturen hinzufügen"
@@ -46,6 +58,10 @@ msgstr "Keine Schatten oder Konturen hinzufügen"
 #: src/copy/pages.ts
 msgid "Added"
 msgstr "Hinzugefügt"
+
+#: src/copy/docs.ts
+msgid "All guides"
+msgstr "Alle Anleitungen"
 
 #: src/copy/pages.ts
 msgid "All posts"
@@ -85,6 +101,14 @@ msgstr "API"
 msgid "API contract"
 msgstr "API-Vertrag"
 
+#: src/copy/docs.ts
+msgid "API key"
+msgstr "API-Schlüssel"
+
+#: src/copy/docs.ts
+msgid "API reference"
+msgstr "API-Referenz"
+
 #: src/copy/brand.ts
 msgid "App icon"
 msgstr "App-Symbol"
@@ -104,6 +128,10 @@ msgstr "Zuweisung"
 #: src/copy/contact.ts
 msgid "At a glance"
 msgstr "Auf einen Blick"
+
+#: src/copy/docs.ts
+msgid "Authentication"
+msgstr "Authentifizierung"
 
 #: src/pages/404.astro
 msgid "Back to the home page"
@@ -179,6 +207,7 @@ msgid "CHANGELOG.md"
 msgstr "CHANGELOG.md"
 
 #: src/copy/contact.ts
+#: src/copy/docs.ts
 #: src/copy/home.ts
 msgid "Channels"
 msgstr "Kanäle"
@@ -209,6 +238,10 @@ msgstr "Produkte verbinden"
 msgid "Contact"
 msgstr "Kontakt"
 
+#: src/copy/docs.ts
+msgid "Contact session"
+msgstr "Kontaktsitzung"
+
 #: src/copy/contact.ts
 msgid "Contact Yuva"
 msgstr "Kontakt zu Yuva"
@@ -216,6 +249,10 @@ msgstr "Kontakt zu Yuva"
 #: src/layouts/Footer.astro
 msgid "Contributing"
 msgstr "Mitwirken"
+
+#: src/copy/docs.ts
+msgid "Conversations and feedback in your iOS and Android apps."
+msgstr "Unterhaltungen und Feedback in Ihren iOS- und Android-Apps."
 
 #: src/copy/home.ts
 msgid "Conversations from every channel share one list, one thread view and one set of tools. Members see only the inboxes they were given."
@@ -261,6 +298,10 @@ msgstr "Erstellen Sie ein Konto bei unserem Dienst und legen Sie los, ohne einen
 msgid "Create an account on our service, or run it on your own server."
 msgstr "Erstellen Sie ein Konto bei unserem Dienst oder betreiben Sie Yuva auf Ihrem eigenen Server."
 
+#: src/copy/docs.ts
+msgid "Create inboxes and channels, post feedback and manage contacts."
+msgstr "Posteingänge und Kanäle anlegen, Feedback senden und Kontakte verwalten."
+
 #: src/copy/home.ts
 msgid "Create one inbox per product and give it channels: a support address, a chat widget, an app key, an API."
 msgstr "Legen Sie pro Produkt einen Posteingang an und geben Sie ihm Kanäle: eine Support-Adresse, ein Chat-Widget, einen App-Schlüssel, eine API."
@@ -281,6 +322,10 @@ msgstr "Löschen Sie einen Kontakt im Panel oder über Ihre eigene Nutzer-ID, un
 msgid "Deprecated"
 msgstr "Veraltet"
 
+#: src/copy/docs.ts
+msgid "Description"
+msgstr "Beschreibung"
+
 #: src/layouts/Footer.astro
 msgid "Developers"
 msgstr "Entwickler"
@@ -289,6 +334,11 @@ msgstr "Entwickler"
 msgid "Do"
 msgstr "Richtig"
 
+#: src/copy/docs.ts
+msgid "Docs"
+msgstr "Doku"
+
+#: src/copy/docs.ts
 #: src/copy/header.ts
 #: src/layouts/Footer.astro
 msgid "Documentation"
@@ -339,6 +389,10 @@ msgstr "E-Mail-Anleitung"
 msgid "Early and built in the open"
 msgstr "Früh und öffentlich entwickelt"
 
+#: src/copy/docs.ts
+msgid "Edit this page on GitHub"
+msgstr "Diese Seite auf GitHub bearbeiten"
+
 #: src/copy/brand.ts
 msgid "Ember"
 msgstr "Glut"
@@ -347,13 +401,25 @@ msgstr "Glut"
 msgid "Every channel, one conversation model."
 msgstr "Jeder Kanal, ein Unterhaltungsmodell."
 
+#: src/copy/docs.ts
+msgid "Every endpoint, generated from the OpenAPI contract: {count} operations and the webhook events."
+msgstr "Jeder Endpunkt, erzeugt aus dem OpenAPI-Vertrag: {count} Operationen und die Webhook-Ereignisse."
+
 #: src/copy/pages.ts
 msgid "Every version of Yuva and what changed in it. Versions follow Semantic Versioning, and until 1.0 any release may change the API and the database schema."
 msgstr "Jede Yuva-Version und was sich darin geändert hat. Die Versionen folgen Semantic Versioning; bis 1.0 kann jede Version die API und das Datenbankschema ändern."
 
+#: src/copy/docs.ts
+msgid "Every Yuva endpoint and webhook event, generated from the OpenAPI 3.1 contract."
+msgstr "Jeder Yuva-Endpunkt und jedes Webhook-Ereignis, erzeugt aus dem OpenAPI-3.1-Vertrag."
+
 #: src/copy/pages.ts
 msgid "Every Yuva release and what changed in it, from the changelog."
 msgstr "Jede Yuva-Version und ihre Änderungen, aus dem Änderungsprotokoll."
+
+#: src/copy/docs.ts
+msgid "Everything to run and build on Yuva."
+msgstr "Alles, um Yuva zu betreiben und darauf aufzubauen."
 
 #: src/copy/home.ts
 msgid "FAQ"
@@ -398,6 +464,10 @@ msgstr "Vom Team"
 #: src/copy/brand.ts
 msgid "Full-bleed icon"
 msgstr "Randloses Symbol"
+
+#: src/copy/docs.ts
+msgid "Get started"
+msgstr "Erste Schritte"
 
 #: src/copy/home.ts
 msgid "Give every product's users a way to reach you."
@@ -455,6 +525,10 @@ msgstr "Ich schreibe über Yuva und habe ein paar Fragen."
 msgid "Identity tokens"
 msgstr "Identitäts-Tokens"
 
+#: src/copy/docs.ts
+msgid "In"
+msgstr "Ort"
+
 #: src/copy/contact.ts
 #: src/copy/home.ts
 msgid "In-app"
@@ -479,6 +553,18 @@ msgstr "Innerhalb Ihres eigenen Unternehmens, verändert oder nicht: ja. Einen g
 #: src/copy/home.ts
 msgid "Install the panel as an app and get Web Push on phones and desktops, with e-mail as a fallback."
 msgstr "Installieren Sie das Panel als App und erhalten Sie Web-Push auf Smartphone und Desktop, mit E-Mail als Rückfall."
+
+#: src/copy/docs.ts
+msgid "Install the server, connect your channels and integrate the widget, the mobile SDKs and the API. Written for the version on the main branch."
+msgstr "Installieren Sie den Server, verbinden Sie Ihre Kanäle und integrieren Sie Widget, Mobile-SDKs und API. Geschrieben für die Version auf dem Hauptzweig."
+
+#: src/copy/docs.ts
+msgid "Install, configure and integrate Yuva: e-mail, the web widget, the mobile SDKs, identity tokens, webhooks and the API reference."
+msgstr "Yuva installieren, konfigurieren und integrieren: E-Mail, Web-Widget, Mobile-SDKs, Identitäts-Tokens, Webhooks und die API-Referenz."
+
+#: src/copy/docs.ts
+msgid "Integrate"
+msgstr "Integrieren"
 
 #: src/copy/home.ts
 msgid "Integration examples"
@@ -523,6 +609,10 @@ msgstr "Labels und Textbausteine"
 #: src/ui/LangMenu.astro
 msgid "Language"
 msgstr "Sprache"
+
+#: src/copy/docs.ts
+msgid "Last updated {date}"
+msgstr "Zuletzt aktualisiert am {date}"
 
 #: src/copy/pages.ts
 msgid "Latest"
@@ -582,6 +672,10 @@ msgstr "Logo mit Namen, weiß"
 msgid "Logos, colours and the rules for the name."
 msgstr "Logos, Farben und die Regeln für den Namen."
 
+#: src/copy/docs.ts
+msgid "Looking for payloads?"
+msgstr "Suchen Sie die Payloads?"
+
 #: src/copy/home.ts
 msgid "Made to be embedded in your products."
 msgstr "Gemacht, um in Ihre Produkte eingebettet zu werden."
@@ -589,6 +683,10 @@ msgstr "Gemacht, um in Ihre Produkte eingebettet zu werden."
 #: src/copy/pages.ts
 msgid "Maintainer of Yuva"
 msgstr "Maintainer von Yuva"
+
+#: src/copy/docs.ts
+msgid "Member session"
+msgstr "Mitgliedersitzung"
 
 #: src/copy/header.ts
 msgid "Menu"
@@ -606,9 +704,17 @@ msgstr "Anleitung für die Mobile-SDKs"
 msgid "Mobile SDKs"
 msgstr "Mobile-SDKs"
 
+#: src/copy/docs.ts
+msgid "More"
+msgstr "Weitere"
+
 #: src/copy/pages.ts
 msgid "More posts"
 msgstr "Weitere Beiträge"
+
+#: src/copy/docs.ts
+msgid "Name"
+msgstr "Name"
 
 #: src/copy/home.ts
 msgid "Native SDKs for iOS (YuvaKit, SwiftUI) and Android (Kotlin, Jetpack Compose) give your app a conversation list, threads with attachments and a feedback form, or a headless client for your own interface."
@@ -634,13 +740,22 @@ msgstr "Neuigkeiten, Release-Geschichten und Notizen aus der Entwicklung von Yuv
 msgid "News, release stories and notes from building Yuva."
 msgstr "Neuigkeiten, Release-Geschichten und Notizen aus der Entwicklung von Yuva."
 
+#: src/copy/docs.ts
 #: src/copy/pages.ts
 msgid "Next"
 msgstr "Als Nächstes"
 
+#: src/copy/docs.ts
+msgid "No authentication"
+msgstr "Keine Authentifizierung"
+
 #: src/copy/home.ts
 msgid "No requests into your network"
 msgstr "Keine Anfragen in Ihr Netzwerk"
+
+#: src/copy/docs.ts
+msgid "No results"
+msgstr "Keine Ergebnisse"
 
 #: src/copy/contact.ts
 msgid "Not every message needs an e-mail. Some answers are better in public, and some reports must stay private."
@@ -682,6 +797,7 @@ msgstr "Auf hellen Hintergründen"
 msgid "On Monday, Paperboat Support wrote: …"
 msgstr "Am Montag schrieb der Paperboat-Support: …"
 
+#: src/copy/docs.ts
 #: src/copy/pages.ts
 msgid "On this page"
 msgstr "Auf dieser Seite"
@@ -689,6 +805,10 @@ msgstr "Auf dieser Seite"
 #: src/copy/home.ts
 msgid "One Docker image and Postgres on your own server."
 msgstr "Ein Docker-Image und Postgres auf Ihrem eigenen Server."
+
+#: src/copy/docs.ts
+msgid "One Docker image and Postgres, from compose file to the first owner."
+msgstr "Ein Docker-Image und Postgres, von der Compose-Datei bis zum ersten Owner."
 
 #: src/copy/home.ts
 msgid "One inbox"
@@ -699,6 +819,10 @@ msgstr "Ein Posteingang"
 #: src/pages/og/[lang].png.ts
 msgid "One inbox for every product you run."
 msgstr "Ein Posteingang für alle Ihre Produkte."
+
+#: src/copy/docs.ts
+msgid "One script tag puts the chat widget on a website or inside your product."
+msgstr "Ein Script-Tag bringt das Chat-Widget auf eine Website oder in Ihr Produkt."
 
 #: src/copy/home.ts
 msgid "One web component loaded by one script tag. Use it as a floating launcher on a website, or embed a conversation thread inside your own product's panel."
@@ -748,17 +872,33 @@ msgstr "Open-Source-Kundenkommunikation"
 msgid "Open-source customer messaging for teams that run many products."
 msgstr "Open-Source-Kundenkommunikation für Teams mit vielen Produkten."
 
+#: src/copy/docs.ts
+msgid "OpenAPI contract"
+msgstr "OpenAPI-Vertrag"
+
 #: src/copy/contact.ts
 msgid "Other ways to reach us"
 msgstr "Weitere Wege zu uns"
+
+#: src/copy/docs.ts
+msgid "Overview"
+msgstr "Überblick"
 
 #: src/pages/404.astro
 msgid "Page not found"
 msgstr "Seite nicht gefunden"
 
+#: src/copy/docs.ts
+msgid "Parameters"
+msgstr "Parameter"
+
 #: src/copy/contact.ts
 msgid "Partnership"
 msgstr "Partnerschaft"
+
+#: src/copy/docs.ts
+msgid "Payload"
+msgstr "Payload"
 
 #: src/copy/home.ts
 msgid "Point a support address at Yuva through a Cloudflare Email Worker, any MTA or a signed HTTP request. Replies go out through each channel's own SMTP account: SES, Postmark or your own relay."
@@ -784,10 +924,15 @@ msgstr "Presse"
 msgid "Press and brand"
 msgstr "Presse und Marke"
 
+#: src/copy/docs.ts
+msgid "Previous"
+msgstr "Zurück"
+
 #: src/layouts/Footer.astro
 msgid "Product"
 msgstr "Produkt"
 
+#: src/copy/docs.ts
 #: src/layouts/Footer.astro
 msgid "Project"
 msgstr "Projekt"
@@ -803,6 +948,10 @@ msgstr "Fragen und Fehler"
 #: src/copy/home.ts
 msgid "Questions people ask."
 msgstr "Häufige Fragen."
+
+#: src/copy/docs.ts
+msgid "Quick start"
+msgstr "Schnellstart"
 
 #: src/copy/home.ts
 msgid "quote hidden"
@@ -869,6 +1018,22 @@ msgstr "Sicherheitslücke melden"
 msgid "Report vulnerabilities privately through GitHub, never in a public issue."
 msgstr "Melden Sie Sicherheitslücken vertraulich über GitHub, nie in einem öffentlichen Issue."
 
+#: src/copy/docs.ts
+msgid "Request body"
+msgstr "Request-Body"
+
+#: src/copy/docs.ts
+msgid "required"
+msgstr "erforderlich"
+
+#: src/copy/docs.ts
+msgid "Resources"
+msgstr "Ressourcen"
+
+#: src/copy/docs.ts
+msgid "Responses"
+msgstr "Antworten"
+
 #: src/copy/header.ts
 #: src/layouts/Footer.astro
 msgid "Roadmap"
@@ -882,13 +1047,29 @@ msgstr "Nicht drehen"
 msgid "RSS feed"
 msgstr "RSS-Feed"
 
+#: src/copy/docs.ts
+msgid "Run Yuva"
+msgstr "Yuva betreiben"
+
 #: src/copy/brand.ts
 msgid "say that your product uses, integrates with or is built on Yuva;"
 msgstr "sagen, dass Ihr Produkt Yuva nutzt, sich damit integriert oder darauf aufbaut;"
 
+#: src/copy/docs.ts
+msgid "Schemas and every field are in the OpenAPI contract."
+msgstr "Schemas und alle Felder stehen im OpenAPI-Vertrag."
+
 #: src/copy/home.ts
 msgid "SDKs and API contract"
 msgstr "SDKs und API-Vertrag"
+
+#: src/copy/docs.ts
+msgid "Search docs"
+msgstr "Doku durchsuchen"
+
+#: src/copy/docs.ts
+msgid "Search the docs"
+msgstr "Die Doku durchsuchen"
 
 #: src/copy/header.ts
 msgid "Sections"
@@ -940,6 +1121,10 @@ msgstr "Teilen"
 msgid "Shared inbox"
 msgstr "Gemeinsamer Posteingang"
 
+#: src/copy/docs.ts
+msgid "Ship in-app messages"
+msgstr "In-App-Nachrichten ausliefern"
+
 #: src/copy/header.ts
 msgid "Sign in"
 msgstr "Anmelden"
@@ -972,6 +1157,10 @@ msgstr "Quellcode auf GitHub"
 msgid "Stage"
 msgstr "Phase"
 
+#: src/copy/docs.ts
+msgid "Start here"
+msgstr "Hier anfangen"
+
 #: src/copy/brand.ts
 msgid "Stretch or squash it"
 msgstr "Nicht strecken oder stauchen"
@@ -983,6 +1172,10 @@ msgstr "Tag auf GitHub"
 #: src/copy/contact.ts
 msgid "Teams can use our hosted service, and because every contribution is made under a CLA, Yuva can also be offered under a commercial license."
 msgstr "Teams können unseren gehosteten Dienst nutzen, und weil jeder Beitrag unter einer CLA erfolgt, kann Yuva auch unter einer kommerziellen Lizenz angeboten werden."
+
+#: src/copy/docs.ts
+msgid "The events Yuva sends to your webhook endpoints and the payload of each."
+msgstr "Die Ereignisse, die Yuva an Ihre Webhook-Endpunkte sendet, und ihre Payloads."
 
 #: src/copy/brand.ts
 msgid "The mark is drawn to stay readable from an app store listing down to a 16-pixel browser tab."
@@ -1012,6 +1205,10 @@ msgstr "Das Panel auf dem Smartphone: die Unterhaltungsliste mit Labels, Priorit
 msgid "The panel ships inside the binary. It is fast, made for the keyboard, and works on phones as an installable app."
 msgstr "Das Panel steckt im Binary. Es ist schnell, für die Tastatur gemacht und läuft auf dem Smartphone als installierbare App."
 
+#: src/copy/docs.ts
+msgid "The payloads Yuva sends to your webhook endpoints."
+msgstr "Die Payloads, die Yuva an Ihre Webhook-Endpunkte sendet."
+
 #: src/copy/contact.ts
 msgid "The server and panel are AGPL-3.0, the SDKs and API contract MIT. Improvements to the core stay public."
 msgstr "Server und Panel stehen unter AGPL-3.0, SDKs und API-Vertrag unter MIT. Verbesserungen am Kern bleiben öffentlich."
@@ -1036,6 +1233,10 @@ msgstr "Yuvas Logo, Farben und Schrift, bereit für Artikel, Integrationen und A
 msgid "The Yuva panel: conversations from three products in one list, an in-app conversation with an internal note and a reply, and the contact's details sent by the host app."
 msgstr "Das Yuva-Panel: Unterhaltungen aus drei Produkten in einer Liste, eine In-App-Unterhaltung mit interner Notiz und Antwort sowie die Kontaktdaten, die die App mitschickt."
 
+#: src/copy/docs.ts
+msgid "This documentation is written in English."
+msgstr "Diese Dokumentation ist auf Englisch verfasst."
+
 #: src/copy/home.ts
 msgid "threaded"
 msgstr "im Verlauf"
@@ -1047,6 +1248,14 @@ msgstr "Verläufe folgen In-Reply-To und References, und Antworten finden ihre U
 #: src/copy/pages.ts
 msgid "Try Yuva"
 msgstr "Yuva ausprobieren"
+
+#: src/copy/docs.ts
+msgid "Type"
+msgstr "Typ"
+
+#: src/copy/docs.ts
+msgid "Type to search the guides and the API reference"
+msgstr "Tippen Sie, um Anleitungen und API-Referenz zu durchsuchen"
 
 #: src/copy/brand.ts
 msgid "Typeface"
@@ -1064,6 +1273,10 @@ msgstr "Nicht vertrauenswürdige Mails bleiben wirkungslos"
 msgid "Use it, change it, run it. If you run a modified Yuva as a network service for other people, you offer them its source."
 msgstr "Nutzen, ändern, betreiben. Wer ein verändertes Yuva als Netzwerkdienst für andere betreibt, stellt ihnen den Quellcode bereit."
 
+#: src/copy/docs.ts
+msgid "Use the API"
+msgstr "Die API nutzen"
+
 #: src/copy/brand.ts
 msgid "use the logo in a way that suggests endorsement by the project."
 msgstr "das Logo so verwenden, dass es eine Empfehlung durch das Projekt nahelegt."
@@ -1079,6 +1292,10 @@ msgstr "Nutzer schreiben unter eigenem Namen, über ein kurzlebiges Token, das I
 #: src/copy/brand.ts
 msgid "Using the name and logo"
 msgstr "Name und Logo verwenden"
+
+#: src/copy/docs.ts
+msgid "Version {version} of the API, generated from the OpenAPI contract. Use the contract to generate a client in any language."
+msgstr "Version {version} der API, erzeugt aus dem OpenAPI-Vertrag. Mit dem Vertrag erzeugen Sie einen Client in jeder Sprache."
 
 #: src/copy/home.ts
 msgid "View on GitHub"
@@ -1096,6 +1313,10 @@ msgstr "Wir möchten Yuva unter einer kommerziellen Lizenz nutzen."
 msgid "Web widget"
 msgstr "Web-Widget"
 
+#: src/copy/docs.ts
+msgid "Webhook events"
+msgstr "Webhook-Ereignisse"
+
 #: src/copy/home.ts
 msgid "Webhook URLs, SMTP hosts and push endpoints are resolved and refused when they point at private, loopback or cloud metadata addresses."
 msgstr "Webhook-URLs, SMTP-Hosts und Push-Endpunkte werden aufgelöst und abgelehnt, wenn sie auf private, Loopback- oder Cloud-Metadaten-Adressen zeigen."
@@ -1103,6 +1324,10 @@ msgstr "Webhook-URLs, SMTP-Hosts und Push-Endpunkte werden aufgelöst und abgele
 #: src/copy/home.ts
 msgid "Webhooks"
 msgstr "Webhooks"
+
+#: src/copy/docs.ts
+msgid "Webhooks guide"
+msgstr "Webhook-Anleitung"
 
 #: src/copy/home.ts
 msgid "Webhooks: verify the signature"
@@ -1180,6 +1405,10 @@ msgstr "Yuva bringt Support-E-Mails, Live-Chat und In-App-Unterhaltungen aus all
 msgid "Yuva brings support e-mail, live chat and in-app conversations from all of your products into one shared inbox. Open source, self-hosted, one Go binary with Postgres."
 msgstr "Yuva bringt Support-E-Mails, Live-Chat und In-App-Unterhaltungen aus all Ihren Produkten in einen gemeinsamen Posteingang. Open Source, selbst gehostet, ein Go-Binary mit Postgres."
 
+#: src/copy/docs.ts
+msgid "Yuva documentation"
+msgstr "Yuva-Dokumentation"
+
 #: src/copy/header.ts
 msgid "Yuva home"
 msgstr "Yuva-Startseite"
@@ -1207,6 +1436,10 @@ msgstr "Yuva-Orange"
 #: src/copy/pages.ts
 msgid "Yuva releases"
 msgstr "Yuva-Versionen"
+
+#: src/copy/docs.ts
+msgid "Yuva signs every request with Standard Webhooks and retries failed deliveries. Registering an endpoint and verifying a signature are in the webhooks guide."
+msgstr "Yuva signiert jede Anfrage mit Standard Webhooks und wiederholt fehlgeschlagene Zustellungen. Wie Sie einen Endpunkt registrieren und eine Signatur prüfen, steht in der Webhook-Anleitung."
 
 #: src/copy/contact.ts
 msgid "Yuva team"

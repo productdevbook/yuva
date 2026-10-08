@@ -1,7 +1,7 @@
 ---
 import { msg } from "@lingui/core/macro"
 import { i18nFor } from "@/i18n"
-import { blog, brand, contact, home, links, releases, type Locale } from "@/lib/routes"
+import { blog, brand, contact, docsRoot, home, links, releases, type Locale } from "@/lib/routes"
 import LangMenu from "@/ui/LangMenu.astro"
 import Logo from "@/ui/Logo.astro"
 
@@ -19,15 +19,15 @@ const columns = [
     items: [
       { href: blog[locale], label: i18n._(msg`Blog`) },
       { href: releases[locale], label: i18n._(msg`Releases`) },
-      { href: links.roadmap, label: i18n._(msg`Roadmap`) },
+      { href: `${docsRoot(locale)}roadmap/`, label: i18n._(msg`Roadmap`) },
       { href: brand[locale], label: i18n._(msg`Brand assets`) },
     ],
   },
   {
     title: i18n._(msg`Developers`),
     items: [
-      { href: links.docs, label: i18n._(msg`Documentation`) },
-      { href: links.api, label: i18n._(msg`API contract`) },
+      { href: docsRoot(locale), label: i18n._(msg`Documentation`) },
+      { href: `${docsRoot(locale)}api/`, label: i18n._(msg`API contract`) },
       { href: links.repo, label: i18n._(msg`Source code on GitHub`) },
     ],
   },

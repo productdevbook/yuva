@@ -1,0 +1,105 @@
+---
+import { docsCopy } from "@/copy/docs"
+import { i18nFor } from "@/i18n"
+import DocsLayout from "@/layouts/DocsLayout.astro"
+import { proseClass, tagRel } from "@/lib/docs"
+import { tagTitle, type Tag } from "@/lib/openapi"
+import { links, type Locale } from "@/lib/routes"
+import FieldTable from "@/ui/FieldTable.astro"
+import MethodBadge from "@/ui/MethodBadge.astro"
+
+interface Props {
+  tag: Tag
+  locale: Locale
+}
+
+const { tag, locale } = Astro.props
+const t = docsCopy(i18nFor(locale))
+const name = tagTitle(tag.name)
+const strip = (html: string) => html.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim()
+const headings = tag.operations.map((op) => ({ depth: 2, slug: op.id, text: op.summary || `${op.method} ${op.path}` }))
+---
+
+<DocsLayout locale={locale} title={t.api.tagTitle(name)} description={strip(tag.description) || t.api.tagFallback(name)} slug={`api/${tag.name}`} rel={tagRel(tag.name)} headings={headings}>
+  <p class="text-sm font-medium text-brand">{t.apiReference}</p>
+  <h1 class="mt-2 text-4xl font-semibold tracking-[-0.03em]">{name}</h1>
+  {tag.description && <div class:list={[proseClass, "mt-4 text-lg"]} lang="en" set:html={tag.description} />}
+
+  <ul class="mt-8 divide-y divide-rule overflow-hidden rounded-2xl border border-rule">
+    {
+      tag.operations.map((op) => (
+        <li>
+          <a class="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors hover:bg-paper-deep" href={`#${op.id}`}>
+            <MethodBadge method={op.method} />
+            <code class="min-w-0 truncate font-mono text-[0.82rem]">{op.path}</code>
+            <span class="ms-auto hidden shrink-0 text-ink-faint sm:block" lang="en">
+              {op.summary}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  {
+    tag.operations.map((op) => (
+      <section class="mt-16 scroll-mt-24 border-t border-rule pt-10" id={op.id} aria-labelledby={`${op.id}-title`}>
+        <h2 id={`${op.id}-title`} class="text-2xl font-semibold tracking-tight" lang="en">
+          {op.summary || op.id}
+        </h2>
+        <p class="mt-4 flex min-w-0 items-center gap-3 rounded-xl bg-paper-deep px-4 py-3">
+          <MethodBadge method={op.method} />
+          <code class="min-w-0 font-mono text-sm break-all">{op.path}</code>
+        </p>
+        <p class="mt-3 flex flex-wrap gap-2 text-xs">
+          {op.auth.map((a) => (
+            <span class="rounded-full border border-rule px-2.5 py-1 text-ink-soft">{t.api.auth[a] ?? a}</span>
+          ))}
+          <span class="rounded-full border border-rule px-2.5 py-1 font-mono text-ink-faint">{op.id}</span>
+        </p>
+        {op.description && <div class:list={[proseClass, "mt-5"]} lang="en" set:html={op.description} />}
+
+        {op.params.length > 0 && (
+          <>
+            <h3 class="mt-8 text-sm font-semibold">{t.api.parameters}</h3>
+            <FieldTable rows={op.params} columns={t.api.columns} location />
+          </>
+        )}
+
+        {op.body && (
+          <>
+            <h3 class="mt-8 flex flex-wrap items-baseline gap-2 text-sm font-semibold">
+              {t.api.requestBody}
+              <code class="font-mono text-xs font-normal text-ink-faint">{op.body.contentType}</code>
+              {op.body.schema && <code class="font-mono text-xs font-normal text-ink-soft">{op.body.schema}</code>}
+            </h3>
+            {op.body.fields.length > 0 && <FieldTable rows={op.body.fields} columns={t.api.columns} />}
+          </>
+        )}
+
+        <h3 class="mt-8 text-sm font-semibold">{t.api.responses}</h3>
+        <ul class="mt-3 divide-y divide-rule overflow-hidden rounded-xl border border-rule text-sm">
+          {op.responses.map((r) => (
+            <li class="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-4 py-2.5">
+              <code
+                class:list={[
+                  "font-mono font-semibold",
+                  r.status.startsWith("2") ? "text-emerald-700 dark:text-emerald-300" : r.status.startsWith("4") || r.status.startsWith("5") ? "text-red-700 dark:text-red-300" : "text-ink-soft",
+                ]}
+              >
+                {r.status}
+              </code>
+              <span class="text-ink-soft [&_code]:font-mono [&_code]:text-[0.82rem] [&_code]:text-ink" lang="en" set:html={r.description} />
+              {r.schema && <code class="ms-auto font-mono text-xs text-ink-faint">{r.schema}</code>}
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+
+  <p class="mt-16 text-sm text-ink-soft">
+    {t.api.schemas}
+    <a class="ms-1 font-medium text-brand hover:underline" href={links.openapi}>{t.api.contract} →</a>
+  </p>
+</DocsLayout>

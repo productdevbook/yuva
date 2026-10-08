@@ -1,0 +1,85 @@
+---
+import { docsCopy } from "@/copy/docs"
+import { i18nFor } from "@/i18n"
+import DocsLayout from "@/layouts/DocsLayout.astro"
+import { eventsRel, href, proseClass, tagRel } from "@/lib/docs"
+import { events, info, tags, tagTitle } from "@/lib/openapi"
+import { links, type Locale } from "@/lib/routes"
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const t = docsCopy(i18nFor(locale))
+const meta = info()
+const all = tags()
+const strip = (html: string) => html.replace(/<[^>]+>/g, "").trim()
+const schemes = Object.entries(meta.schemes ?? {}).map(([name, s]) => ({
+  name,
+  kind: s.type === "http" ? `HTTP ${s.scheme}` : `${s.type} · ${s.in}${s.name ? ` · ${s.name}` : ""}`,
+  description: s.description as string,
+}))
+const headings = [
+  { depth: 2, slug: "overview", text: t.api.overview },
+  { depth: 2, slug: "authentication", text: t.api.authentication },
+  { depth: 2, slug: "resources", text: t.api.resources },
+]
+const card = "group flex h-full flex-col rounded-2xl border border-rule p-5 transition-colors hover:border-rule-strong hover:bg-paper-deep"
+---
+
+<DocsLayout locale={locale} title={t.apiReference} description={t.api.description} slug="api" rel="api/" headings={headings}>
+  <h1 class="text-4xl font-semibold tracking-[-0.03em]">{t.apiReference}</h1>
+  <p class="mt-4 text-lg leading-relaxed text-ink-soft">
+    {t.api.lead(meta.version)}
+    <a class="ms-1 font-medium text-brand hover:underline" href={links.openapi}>openapi.yaml →</a>
+  </p>
+
+  <h2 id="overview" class="mt-14 scroll-mt-24 text-2xl font-semibold tracking-tight">{t.api.overview}</h2>
+  <div class:list={[proseClass, "mt-4"]} lang="en" set:html={meta.description} />
+
+  <h2 id="authentication" class="mt-14 scroll-mt-24 text-2xl font-semibold tracking-tight">{t.api.authentication}</h2>
+  <ul class="mt-4 grid gap-3">
+    {
+      schemes.map((s) => (
+        <li class="rounded-2xl border border-rule p-5">
+          <p class="flex flex-wrap items-center gap-2">
+            <code class="font-mono text-sm font-semibold">{s.name}</code>
+            <span class="rounded-full bg-paper-deep px-2 py-0.5 text-xs text-ink-soft">{s.kind}</span>
+          </p>
+          <p class="mt-2 text-sm leading-relaxed text-ink-soft" lang="en">
+            {s.description}
+          </p>
+        </li>
+      ))
+    }
+  </ul>
+
+  <h2 id="resources" class="mt-14 scroll-mt-24 text-2xl font-semibold tracking-tight">{t.api.resources}</h2>
+  <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+    {
+      all.map((tag) => (
+        <li>
+          <a class={card} href={href(locale, tagRel(tag.name))}>
+            <span class="flex items-center justify-between gap-2 font-semibold group-hover:text-brand">
+              {tagTitle(tag.name)}
+              <span class="text-xs font-normal text-ink-faint">{tag.operations.length}</span>
+            </span>
+            <span class="mt-1.5 line-clamp-2 text-sm leading-relaxed text-ink-soft" lang="en">
+              {strip(tag.description)}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+    <li>
+      <a class={card} href={href(locale, eventsRel)}>
+        <span class="flex items-center justify-between gap-2 font-semibold group-hover:text-brand">
+          {t.webhookEvents}
+          <span class="text-xs font-normal text-ink-faint">{events().length}</span>
+        </span>
+        <span class="mt-1.5 text-sm leading-relaxed text-ink-soft">{t.api.eventsCard}</span>
+      </a>
+    </li>
+  </ul>
+</DocsLayout>

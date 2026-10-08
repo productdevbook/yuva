@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro"
 import { render } from "astro:content"
-import { docHref, eventsHref, ordered, plain, tagHref, title } from "@/lib/docs"
+import { docRel, eventsRel, ordered, plain, tagRel, title } from "@/lib/docs"
 import { events, tags, tagTitle } from "@/lib/openapi"
 
 type Entry = { page: string; heading: string; href: string; text: string }
@@ -12,7 +12,7 @@ export const GET: APIRoute = async () => {
 
   for (const doc of await ordered()) {
     const page = title(doc)
-    const href = docHref(doc.id)
+    const href = docRel(doc.id)
     const { headings } = await render(doc)
     const sections: { heading: string; slug?: string; lines: string[] }[] = [{ heading: page, lines: [] }]
     let fenced = false
@@ -38,14 +38,14 @@ export const GET: APIRoute = async () => {
       entries.push({
         page: `API · ${tagTitle(tag.name)}`,
         heading: `${op.method} ${op.path}`,
-        href: `${tagHref(tag.name)}#${op.id}`,
+        href: `${tagRel(tag.name)}#${op.id}`,
         text: `${op.summary} ${strip(op.description)}`.slice(0, 600),
       })
     }
   }
 
   for (const e of events()) {
-    entries.push({ page: "API · Webhook events", heading: e.name, href: `${eventsHref}#${e.name.replace(/\./g, "-")}`, text: `${e.summary} ${strip(e.description)}`.slice(0, 600) })
+    entries.push({ page: "API · Webhook events", heading: e.name, href: `${eventsRel}#${e.name.replace(/\./g, "-")}`, text: `${e.summary} ${strip(e.description)}`.slice(0, 600) })
   }
 
   return new Response(JSON.stringify(entries), { headers: { "Content-Type": "application/json" } })

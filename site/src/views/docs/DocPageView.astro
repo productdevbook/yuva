@@ -1,0 +1,27 @@
+---
+import DocsLayout from "@/layouts/DocsLayout.astro"
+import { description, docRel, editHref, proseClass, title, updated, type Doc } from "@/lib/docs"
+import { docsRoot, type Locale } from "@/lib/routes"
+
+interface Props {
+  entry: Doc
+  locale: Locale
+}
+
+const { entry, locale } = Astro.props
+const html = (entry.rendered?.html ?? "").replaceAll('href="/docs/', `href="${docsRoot(locale)}`)
+const headings = (entry.rendered?.metadata?.headings ?? []) as { depth: number; slug: string; text: string }[]
+---
+
+<DocsLayout
+  locale={locale}
+  title={title(entry)}
+  description={description(entry)}
+  slug={entry.id}
+  rel={docRel(entry.id)}
+  headings={headings}
+  edit={editHref(entry.id)}
+  updated={updated(entry.id)}
+>
+  <div class={proseClass} lang="en" set:html={html} />
+</DocsLayout>

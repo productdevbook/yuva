@@ -1,7 +1,6 @@
 ---
 import { Code } from "astro:components"
 import type { HomeCopy } from "@/copy/home"
-import { links } from "@/lib/routes"
 import SectionHead from "@/ui/SectionHead.astro"
 import Stop from "@/ui/Stop.astro"
 
@@ -25,7 +24,7 @@ const { t } = Astro.props
           ))
         }
       </p>
-      <a class="mt-8 inline-flex text-sm font-medium text-brand hover:underline" href={links.quickStart}>{t.guide} →</a>
+      <a class="mt-8 inline-flex text-sm font-medium text-brand hover:underline" href={t.guideHref}>{t.guide} →</a>
     </div>
     <div class="min-w-0 overflow-hidden rounded-2xl border border-night-rule bg-night shadow-paper">
       <div class="flex gap-1.5 border-b border-night-rule px-4 py-3" aria-hidden="true">

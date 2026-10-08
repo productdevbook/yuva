@@ -1,40 +1,44 @@
 ---
+import { docsCopy } from "@/copy/docs"
+import { i18nFor } from "@/i18n"
 import Base from "@/layouts/Base.astro"
-import { neighbours, nav, type NavItem } from "@/lib/docs"
-import { home } from "@/lib/routes"
+import { href, neighbours, nav, type NavItem } from "@/lib/docs"
+import { bcp47, docsPath, type Locale } from "@/lib/routes"
 import DocsSearch from "@/ui/DocsSearch.astro"
 
 type Heading = { depth: number; slug: string; text: string }
 
 interface Props {
+  locale: Locale
   title: string
   description: string
   slug: string
-  href: string
+  rel: string
   headings?: Heading[]
   edit?: string
   updated?: string
   image?: string
 }
 
-const { title, description, slug, href, headings = [], edit, updated, image } = Astro.props
-const groups = await nav()
-const { prev, next } = await neighbours(slug)
+const { locale, title, description, slug, rel, headings = [], edit, updated, image } = Astro.props
+const t = docsCopy(i18nFor(locale))
+const groups = await nav(locale)
+const { prev, next } = await neighbours(slug, locale)
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
 const group = groups.find((g) => g.items.some((i) => i.slug === slug || i.children?.some((c) => c.slug === slug)))
 const active = (item: NavItem) => item.slug === slug
 const open = (item: NavItem) => active(item) || !!item.children?.some((c) => c.slug === slug)
-const day = updated ? new Intl.DateTimeFormat("en-US", { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${updated}T00:00:00Z`)) : undefined
+const day = updated ? new Intl.DateTimeFormat(bcp47[locale], { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${updated}T00:00:00Z`)) : undefined
 const link =
   "block rounded-lg px-3 py-1.5 text-sm text-ink-soft transition-colors hover:bg-paper-deep hover:text-ink aria-[current=page]:bg-brand-wash aria-[current=page]:font-medium aria-[current=page]:text-brand"
 ---
 
-<Base locale="en" title={`${title} · Yuva docs`} description={description} paths={{ en: href, tr: home.tr, de: home.de }} translated={false} image={image}>
+<Base locale={locale} title={`${title} · Yuva docs`} description={description} paths={docsPath(rel)} image={image}>
   <div class="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-5 sm:px-8 lg:grid-cols-[14rem_minmax(0,1fr)] xl:grid-cols-[14rem_minmax(0,1fr)_12rem]">
     <aside class="hidden lg:block">
       <div class="sticky top-16 max-h-[calc(100svh-4rem)] overflow-y-auto py-8 pe-2">
-        <DocsSearch />
-        <nav class="mt-6 grid gap-6" aria-label="Documentation">
+        <DocsSearch locale={locale} />
+        <nav class="mt-6 grid gap-6" aria-label={t.documentation}>
           {
             groups.map((g) => (
               <div>
@@ -42,14 +46,14 @@ const link =
                 <ul class="mt-2 grid gap-0.5">
                   {g.items.map((item) => (
                     <li>
-                      <a class={link} href={item.href} aria-current={active(item) ? "page" : undefined}>
+                      <a class={link} href={href(locale, item.rel)} aria-current={active(item) ? "page" : undefined}>
                         {item.title}
                       </a>
                       {item.children && open(item) && (
                         <ul class="ms-3 mt-1 grid gap-0.5 border-s border-rule ps-2">
                           {item.children.map((c) => (
                             <li>
-                              <a class={link} href={c.href} aria-current={active(c) ? "page" : undefined}>
+                              <a class={link} href={href(locale, c.rel)} aria-current={active(c) ? "page" : undefined}>
                                 {c.title}
                               </a>
                             </li>
@@ -77,7 +81,7 @@ const link =
               ><path d="m4 6 4 4 4-4"></path></svg
             >
           </summary>
-          <nav class="absolute inset-x-0 top-full z-40 mt-2 grid max-h-[70svh] gap-5 overflow-y-auto rounded-xl border border-rule bg-sheet p-3 shadow-paper" aria-label="Documentation">
+          <nav class="absolute inset-x-0 top-full z-40 mt-2 grid max-h-[70svh] gap-5 overflow-y-auto rounded-xl border border-rule bg-sheet p-3 shadow-paper" aria-label={t.documentation}>
             {
               groups.map((g) => (
                 <div>
@@ -85,7 +89,7 @@ const link =
                   <ul class="mt-1 grid gap-0.5">
                     {g.items.map((item) => (
                       <li>
-                        <a class={link} href={item.href} aria-current={active(item) ? "page" : undefined}>
+                        <a class={link} href={href(locale, item.rel)} aria-current={active(item) ? "page" : undefined}>
                           {item.title}
                         </a>
                       </li>
@@ -96,11 +100,11 @@ const link =
             }
           </nav>
         </details>
-        <DocsSearch compact />
+        <DocsSearch locale={locale} compact />
       </div>
 
       <p class="mt-6 flex items-center gap-2 text-sm text-ink-faint lg:mt-0">
-        <a class="hover:text-ink" href="/docs/">Docs</a>
+        <a class="hover:text-ink" href={href(locale)}>{t.docs}</a>
         {
           group && (
             <>
@@ -111,29 +115,40 @@ const link =
         }
       </p>
 
+      {
+        locale !== "en" && (
+          <p class="mt-4 flex items-center gap-2 rounded-xl bg-paper-deep px-4 py-2.5 text-sm text-ink-soft">
+            <svg class="size-4 shrink-0 text-brand" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"
+              ><circle cx="8" cy="8" r="6" /><path d="M2 8h12M8 2c1.7 1.6 2.5 3.6 2.5 6S9.7 12.4 8 14C6.3 12.4 5.5 10.4 5.5 8S6.3 3.6 8 2Z" /></svg
+            >
+            {t.english}
+          </p>
+        )
+      }
+
       <article class="docs-content mt-4">
         <slot />
       </article>
 
       <div class="mt-14 flex flex-wrap items-center justify-between gap-3 border-t border-rule pt-6 text-sm text-ink-faint">
-        {day ? <p>Last updated {day}</p> : <span />}
-        {edit && <a class="font-medium text-brand hover:underline" href={edit}>Edit this page on GitHub →</a>}
+        {day ? <p>{t.lastUpdated(day)}</p> : <span />}
+        {edit && <a class="font-medium text-brand hover:underline" href={edit}>{t.edit} →</a>}
       </div>
 
       {
         (prev || next) && (
-          <nav class="mt-8 grid gap-3 sm:grid-cols-2" aria-label="Pages">
+          <nav class="mt-8 grid gap-3 sm:grid-cols-2" aria-label={t.documentation}>
             {prev ? (
-              <a class="group rounded-2xl border border-rule p-5 transition-colors hover:border-rule-strong hover:bg-paper-deep" href={prev.href}>
-                <span class="text-xs text-ink-faint">← Previous</span>
+              <a class="group rounded-2xl border border-rule p-5 transition-colors hover:border-rule-strong hover:bg-paper-deep" href={href(locale, prev.rel)}>
+                <span class="text-xs text-ink-faint">← {t.previous}</span>
                 <span class="mt-1 block font-semibold group-hover:text-brand">{prev.title}</span>
               </a>
             ) : (
               <span />
             )}
             {next && (
-              <a class="group rounded-2xl border border-rule p-5 text-end transition-colors hover:border-rule-strong hover:bg-paper-deep" href={next.href}>
-                <span class="text-xs text-ink-faint">Next →</span>
+              <a class="group rounded-2xl border border-rule p-5 text-end transition-colors hover:border-rule-strong hover:bg-paper-deep" href={href(locale, next.rel)}>
+                <span class="text-xs text-ink-faint">{t.next} →</span>
                 <span class="mt-1 block font-semibold group-hover:text-brand">{next.title}</span>
               </a>
             )}
@@ -147,7 +162,7 @@ const link =
         toc.length > 0 && (
           <nav class="sticky top-16 max-h-[calc(100svh-4rem)] overflow-y-auto py-12" aria-labelledby="toc-title">
             <p id="toc-title" class="text-sm font-semibold">
-              On this page
+              {t.onThisPage}
             </p>
             <ol class="mt-3 grid gap-1.5 border-s border-rule text-sm" data-toc>
               {toc.map((h) => (

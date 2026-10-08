@@ -3,7 +3,7 @@ import { releasesCopy } from "@/copy/pages"
 import { i18nFor } from "@/i18n"
 import Base from "@/layouts/Base.astro"
 import { releases as list } from "@/lib/changelog"
-import { bcp47, links, releases, type Locale } from "@/lib/routes"
+import { bcp47, docsRoot, links, releases, type Locale } from "@/lib/routes"
 
 interface Props {
   locale: Locale
@@ -80,7 +80,7 @@ const inline =
           ))
         }
         <li class="w-48 shrink-0">
-          <a class="group block" href={links.roadmap}>
+          <a class="group block" href={`${docsRoot(locale)}roadmap/`}>
             <span class="block size-6 rounded-full border-2 border-dashed border-rule-strong bg-paper-deep" aria-hidden="true"></span>
             <span class="mt-4 block text-xl font-semibold tracking-tight text-ink-faint group-hover:text-ink">{t.next}</span>
             <span class="mt-0.5 block text-sm text-ink-faint group-hover:text-brand">{t.nextBody} →</span>

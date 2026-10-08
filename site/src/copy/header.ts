@@ -1,6 +1,6 @@
 import type { I18n } from "@lingui/core"
 import { msg } from "@lingui/core/macro"
-import { blog, contact, links, releases, type Locale } from "@/lib/routes"
+import { blog, contact, docsRoot, releases, type Locale } from "@/lib/routes"
 
 export function headerCopy(i18n: I18n, locale: Locale) {
   return {
@@ -15,10 +15,10 @@ export function headerCopy(i18n: I18n, locale: Locale) {
     brand: i18n._(msg`Brand assets`),
     copied: i18n._(msg`Copied`),
     nav: [
-      { href: links.docs, label: i18n._(msg`Documentation`) },
+      { href: docsRoot(locale), label: i18n._(msg`Documentation`) },
       { href: blog[locale], label: i18n._(msg`Blog`) },
       { href: releases[locale], label: i18n._(msg`Releases`) },
-      { href: links.roadmap, label: i18n._(msg`Roadmap`) },
+      { href: `${docsRoot(locale)}roadmap/`, label: i18n._(msg`Roadmap`) },
       { href: contact[locale], label: i18n._(msg`Contact`) },
     ],
   }

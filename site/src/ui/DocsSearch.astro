@@ -1,9 +1,15 @@
 ---
+import { docsCopy } from "@/copy/docs"
+import { i18nFor } from "@/i18n"
+import { docsRoot, type Locale } from "@/lib/routes"
+
 interface Props {
+  locale: Locale
   compact?: boolean
 }
 
-const { compact = false } = Astro.props
+const { locale, compact = false } = Astro.props
+const t = docsCopy(i18nFor(locale))
 ---
 
 <button
@@ -13,7 +19,11 @@ const { compact = false } = Astro.props
     compact ? "size-11 justify-center" : "w-full px-3 py-2",
   ]}
   data-search-open
-  aria-label="Search the docs"
+  data-base={docsRoot(locale)}
+  data-label={t.searchTheDocs}
+  data-empty={t.noResults}
+  data-hint={t.searchHint}
+  aria-label={t.searchTheDocs}
 >
   <svg class="size-4 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"
     ><circle cx="7" cy="7" r="4.5"></circle><path d="m10.5 10.5 3 3"></path></svg
@@ -21,7 +31,7 @@ const { compact = false } = Astro.props
   {
     !compact && (
       <>
-        <span class="flex-1 text-start">Search docs</span>
+        <span class="flex-1 text-start">{t.searchDocs}</span>
         <kbd class="rounded-md border border-rule px-1.5 font-sans text-xs">⌘K</kbd>
       </>
     )
@@ -33,6 +43,7 @@ const { compact = false } = Astro.props
 
   let dialog: HTMLDialogElement | undefined
   let index: Entry[] | undefined
+  const labels = document.querySelector<HTMLElement>("[data-search-open]")?.dataset ?? {}
 
   const escape = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!)
 
@@ -66,11 +77,11 @@ const { compact = false } = Astro.props
     dialog = document.createElement("dialog")
     dialog.className =
       "m-0 mx-auto mt-[12vh] w-[min(40rem,calc(100vw-2rem))] rounded-2xl border border-rule bg-sheet p-0 text-ink shadow-[0_30px_80px_-20px_rgb(15_23_42/0.45)] backdrop:bg-black/40"
-    dialog.setAttribute("aria-label", "Search the docs")
+    dialog.setAttribute("aria-label", labels.label ?? "")
     dialog.innerHTML = `
       <form method="dialog" class="flex items-center gap-3 border-b border-rule px-4">
         <svg class="size-4 shrink-0 text-ink-faint" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.5"></circle><path d="m10.5 10.5 3 3"></path></svg>
-        <input class="h-14 flex-1 bg-transparent text-base outline-none placeholder:text-ink-faint" placeholder="Search the docs" aria-label="Search the docs" autocomplete="off" spellcheck="false" />
+        <input class="h-14 flex-1 bg-transparent text-base outline-none placeholder:text-ink-faint" placeholder="${escape(labels.label ?? "")}" aria-label="${escape(labels.label ?? "")}" autocomplete="off" spellcheck="false" />
         <kbd class="rounded-md border border-rule px-1.5 text-xs text-ink-faint">Esc</kbd>
       </form>
       <ul class="max-h-[60vh] overflow-y-auto p-2" role="listbox"></ul>`
@@ -86,7 +97,7 @@ const { compact = false } = Astro.props
         ? results
             .map(
               (r, i) => `<li role="option" aria-selected="${i === selected}">
-                <a href="${r.href}" class="block rounded-xl px-3 py-2.5 aria-selected:bg-paper-deep hover:bg-paper-deep ${i === selected ? "bg-paper-deep" : ""}">
+                <a href="${labels.base}${r.href}" class="block rounded-xl px-3 py-2.5 aria-selected:bg-paper-deep hover:bg-paper-deep ${i === selected ? "bg-paper-deep" : ""}">
                   <span class="block text-xs text-ink-faint">${escape(r.page)}</span>
                   <span class="block text-sm font-medium">${escape(r.heading)}</span>
                   <span class="mt-0.5 block text-sm text-ink-soft [&_mark]:bg-brand-wash [&_mark]:text-brand">${snippet(r.text, words)}</span>
@@ -94,7 +105,7 @@ const { compact = false } = Astro.props
               </li>`
             )
             .join("")
-        : `<li class="px-3 py-8 text-center text-sm text-ink-faint">${input.value.trim() ? "No results" : "Type to search the documentation and the API reference"}</li>`
+        : `<li class="px-3 py-8 text-center text-sm text-ink-faint">${escape((input.value.trim() ? labels.empty : labels.hint) ?? "")}</li>`
     }
     input.addEventListener("input", () => {
       selected = 0

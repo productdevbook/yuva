@@ -11,6 +11,8 @@ export const blog: Record<Locale, string> = { en: "/blog/", tr: "/tr/blog/", de:
 export const releases: Record<Locale, string> = { en: "/releases/", tr: "/tr/releases/", de: "/de/releases/" }
 export const contact: Record<Locale, string> = { en: "/contact/", tr: "/tr/contact/", de: "/de/contact/" }
 export const post = (slug: string) => `/blog/${slug}/`
+export const docsRoot = (locale: Locale) => (locale === "en" ? "/docs/" : `/${locale}/docs/`)
+export const docsPath = (rel: string): Record<Locale, string> => ({ en: `/docs/${rel}`, tr: `/tr/docs/${rel}`, de: `/de/docs/${rel}` })
 export const brandAssets = {
   icon: "/brand/yuva-icon.svg",
   iconSquare: "/brand/yuva-icon-square.svg",
