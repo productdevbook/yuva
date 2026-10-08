@@ -6,15 +6,10 @@ import { QueuePage } from "@/features/inbox/QueuePage"
 import { ConsentPage } from "@/features/oauth/ConsentPage"
 import { ApiKeysPage } from "@/features/settings/api-keys/ApiKeysPage"
 import { CannedRepliesPage } from "@/features/settings/canned/CannedRepliesPage"
-import { ChannelsPage } from "@/features/settings/channels/ChannelsPage"
 import { ConnectedAppsPage } from "@/features/settings/connected-apps/ConnectedAppsPage"
-import { AccessSection } from "@/features/settings/inboxes/AccessSection"
-import { AdvancedPage } from "@/features/settings/inboxes/AdvancedPage"
-import { GeneralPage } from "@/features/settings/inboxes/GeneralPage"
-import { HoursForm } from "@/features/settings/inboxes/HoursForm"
-import { InboxesPage } from "@/features/settings/inboxes/InboxesPage"
-import { InboxLayout } from "@/features/settings/inboxes/InboxLayout"
+import { InboxPage } from "@/features/settings/inboxes/InboxPage"
 import { InboxWebhooksPage } from "@/features/settings/inboxes/InboxWebhooksPage"
+import { NewInboxPage } from "@/features/settings/inboxes/NewInboxPage"
 import { LabelsPage } from "@/features/settings/labels/LabelsPage"
 import { MembersPage } from "@/features/settings/members/MembersPage"
 import { NotificationsPage } from "@/features/settings/notifications/NotificationsPage"
@@ -38,21 +33,16 @@ export function AppRoutes() {
           <Route path="notifications" element={<NotificationsPage />} />
           <Route path="workspace" element={<WorkspacePage />} />
           <Route path="members" element={<MembersPage />} />
-          <Route path="inboxes" element={<InboxesPage />} />
-          <Route path="inboxes/:inboxId" element={<InboxLayout />}>
-            <Route index element={<GeneralPage />} />
-            <Route path="hours" element={<HoursForm />} />
-            <Route path="channels" element={<ChannelsPage />} />
-            <Route path="access" element={<AccessSection />} />
-            <Route path="webhooks" element={<InboxWebhooksPage />} />
-            <Route path="advanced" element={<AdvancedPage />} />
-          </Route>
+          <Route path="new/:inboxId?/:channelId?" element={<NewInboxPage />} />
+          <Route path="inboxes/:inboxId" element={<InboxPage />} />
+          <Route path="inboxes/:inboxId/webhooks" element={<InboxWebhooksPage />} />
           <Route path="labels" element={<LabelsPage />} />
           <Route path="canned-replies" element={<CannedRepliesPage />} />
           <Route path="api-keys" element={<ApiKeysPage />} />
           <Route path="connected-apps" element={<ConnectedAppsPage />} />
           <Route path="webhooks" element={<WebhooksPage />} />
           <Route path="webhooks/:webhookId" element={<WebhookPage />} />
+          <Route path="*" element={<Navigate to="/settings" replace />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

@@ -1,6 +1,6 @@
-import { Trans } from "@lingui/react/macro"
+import { Trans, useLingui } from "@lingui/react/macro"
 import { ArrowLeftIcon, ChevronRightIcon } from "lucide-react"
-import { Link, NavLink } from "react-router"
+import { Link } from "react-router"
 
 import { ErrorLine } from "@/components/common"
 import { Button } from "@/components/ui/button"
@@ -12,27 +12,32 @@ export function PageHeader({
   description,
   back,
   action,
+  eyebrow,
   children,
 }: {
   title: React.ReactNode
   description?: React.ReactNode
-  back?: { to: string; label: string }
+  eyebrow?: React.ReactNode
+  back?: { to: string; label: string } | false
   action?: React.ReactNode
   children?: React.ReactNode
 }) {
+  const { t } = useLingui()
+  const to = back === undefined ? { to: "/settings", label: t`Settings` } : back
   return (
-    <header className="flex flex-col gap-1.5">
-      {back && (
-        <Link to={back.to} className="mb-2 inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground">
-          <ArrowLeftIcon className="size-4 rtl:rotate-180" />
-          {back.label}
+    <header className="flex flex-col">
+      {to && (
+        <Link to={to.to} className="mb-4.5 inline-flex w-fit items-center gap-1.5 text-sm text-faint transition-colors hover:text-foreground" data-testid="settings-back">
+          <ArrowLeftIcon className="size-3.5 rtl:rotate-180" />
+          {to.label}
         </Link>
       )}
+      {eyebrow && <p className="mb-2.5 text-[13px] text-faint">{eyebrow}</p>}
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <h1 className="min-w-0 text-2xl font-semibold tracking-[-0.02em] break-words">{title}</h1>
+        <h1 className="min-w-0 text-[28px] leading-tight font-semibold tracking-[-0.02em] break-words">{title}</h1>
         {action}
       </div>
-      {description && <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">{description}</p>}
+      {description && <p className="mt-1.5 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">{description}</p>}
       {children}
     </header>
   )
@@ -45,22 +50,22 @@ export function Section({
   children,
   className,
 }: {
-  title: React.ReactNode
+  title?: React.ReactNode
   description?: React.ReactNode
   action?: React.ReactNode
   children?: React.ReactNode
   className?: string
 }) {
   return (
-    <section className={cn("flex flex-col gap-4", className)}>
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div className="flex min-w-0 flex-col gap-1">
-          <h2 className="text-base font-semibold tracking-tight">{title}</h2>
-          {description && <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">{description}</p>}
+    <section className={cn("flex flex-col gap-2", className)}>
+      {(title || action) && (
+        <div className="mx-1 flex flex-wrap items-end justify-between gap-3">
+          {title && <h2 className="text-[13px] font-medium text-faint">{title}</h2>}
+          {action}
         </div>
-        {action}
-      </div>
+      )}
       {children}
+      {description && <p className="mx-1 mt-0.5 max-w-2xl text-[13px] leading-relaxed text-faint">{description}</p>}
     </section>
   )
 }
@@ -79,8 +84,8 @@ const cardClass = (p: CardProps) =>
 function CardBody(p: CardProps) {
   return (
     <>
-      <div className={cn(!p.flush && "flex flex-col gap-5 p-5 sm:p-6")}>{p.children}</div>
-      {p.footer && <div className="flex flex-wrap items-center gap-3 border-t bg-surface px-5 py-3 sm:px-6">{p.footer}</div>}
+      <div className={cn(!p.flush && "flex flex-col gap-5 p-4")}>{p.children}</div>
+      {p.footer && <div className="flex flex-wrap items-center gap-3 border-t px-4 py-3">{p.footer}</div>}
     </>
   )
 }
@@ -196,17 +201,18 @@ export function Rows({ children, className, ...props }: React.ComponentProps<"ul
 
 export function Row({ children, className, ...props }: React.ComponentProps<"li">) {
   return (
-    <li className={cn("flex items-center gap-3 px-5 py-3.5", className)} {...props}>
+    <li className={cn("flex min-h-[52px] items-center gap-3 px-4 py-3", className)} {...props}>
       {children}
     </li>
   )
 }
 
-export function LinkRow({ to, children, testId }: { to: string; children: React.ReactNode; testId?: string }) {
+export function LinkRow({ to, children, value, testId }: { to: string; children: React.ReactNode; value?: React.ReactNode; testId?: string }) {
   return (
     <li>
-      <Link to={to} className="flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-surface" data-testid={testId}>
+      <Link to={to} className="flex min-h-[52px] items-center gap-3 px-4 py-3 transition-colors hover:bg-background" data-testid={testId}>
         {children}
+        {value !== undefined && <span className="shrink-0 text-sm whitespace-nowrap text-faint">{value}</span>}
         <ChevronRightIcon className="size-4 shrink-0 text-faint rtl:rotate-180" />
       </Link>
     </li>
@@ -216,14 +222,14 @@ export function LinkRow({ to, children, testId }: { to: string; children: React.
 export function RowText({ title, detail }: { title: React.ReactNode; detail?: React.ReactNode }) {
   return (
     <div className="min-w-0 flex-1">
-      <p className="truncate text-sm font-medium">{title}</p>
-      {detail && <p className="truncate text-xs text-muted-foreground">{detail}</p>}
+      <p className="truncate text-sm">{title}</p>
+      {detail && <p className="mt-px truncate text-[13px] text-faint">{detail}</p>}
     </div>
   )
 }
 
 export function EmptyRow({ children }: { children: React.ReactNode }) {
-  return <p className="px-5 py-6 text-center text-sm text-muted-foreground">{children}</p>
+  return <p className="px-4 py-5 text-sm text-faint">{children}</p>
 }
 
 export function StatusTag({ tone = "muted", children, ...props }: { tone?: "muted" | "success" | "warning" | "danger"; children: React.ReactNode } & React.ComponentProps<"span">) {
@@ -241,24 +247,23 @@ export function StatusTag({ tone = "muted", children, ...props }: { tone?: "mute
   )
 }
 
-export function TabNav({ items, label }: { items: { to: string; label: React.ReactNode; end?: boolean }[]; label: string }) {
+
+export function RowIcon({ children }: { children: React.ReactNode }) {
   return (
-    <nav aria-label={label} className="-mx-1 flex items-center gap-1 overflow-x-auto pt-3">
-      {items.map((it) => (
-        <NavLink
-          key={it.to}
-          to={it.to}
-          end={it.end}
-          className={({ isActive }) =>
-            cn(
-              "h-8 shrink-0 rounded-full px-3 text-sm leading-8 whitespace-nowrap transition-colors",
-              isActive ? "bg-muted font-medium text-foreground" : "text-muted-foreground hover:text-foreground",
-            )
-          }
-        >
-          {it.label}
-        </NavLink>
-      ))}
-    </nav>
+    <span className="grid size-[34px] shrink-0 place-items-center rounded-[10px] border bg-background text-[13px] font-medium text-muted-foreground [&_svg]:size-4">
+      {children}
+    </span>
+  )
+}
+
+export function SettingRow({ title, hint, children, htmlFor }: { title: React.ReactNode; hint?: React.ReactNode; children?: React.ReactNode; htmlFor?: string }) {
+  return (
+    <li className="flex min-h-[52px] items-center gap-3 px-4 py-3 phone:flex-wrap">
+      <label htmlFor={htmlFor} className="min-w-0 flex-1 text-sm phone:min-w-[55%]">
+        {title}
+        {hint && <small className="mt-px block text-[13px] text-faint">{hint}</small>}
+      </label>
+      {children}
+    </li>
   )
 }

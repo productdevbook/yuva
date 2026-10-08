@@ -115,9 +115,21 @@ msgstr "{n, plural, one {# diğer konuşma} other {# diğer konuşma}}"
 msgid "{n} attempts"
 msgstr "{n} deneme"
 
+#: src/features/settings/inboxes/NewInboxPage.tsx
+msgid "{n} of 3"
+msgstr "{n} / 3"
+
 #: src/app/UserMenu.tsx
 msgid "{name} · {statusText}"
 msgstr "{name} · {statusText}"
+
+#: src/features/settings/inboxes/NewInboxPage.tsx
+msgid "{name} can now receive messages. One last step:"
+msgstr "{name} artık mesaj alabilir. Son bir adım kaldı:"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "{name} can reply"
+msgstr "{name} yanıtlayabilir"
 
 #: src/features/conversation/Collision.tsx
 msgid "{name} is typing a reply too."
@@ -211,10 +223,6 @@ msgstr "Bir taslak yazıldı"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Bir dosyanın içeriği türüyle uyuşmuyor. Dosyayı kontrol edip yeniden deneyin."
 
-#: src/features/settings/inboxes/GeneralPage.tsx
-msgid "A language tag such as en or tr."
-msgstr "en veya tr gibi bir dil kodu."
-
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
 msgstr "Kimse atanmamışken kişiden gelen sonraki bir mesaj."
@@ -245,18 +253,8 @@ msgstr "Kullanıcı adı TLS ya da STARTTLS ister: parola hiçbir zaman şifresi
 
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/inboxes/AccessSection.tsx
-#: src/features/settings/inboxes/InboxLayout.tsx
 msgid "Access"
 msgstr "Erişim"
-
-#: src/features/settings/inboxes/AccessSection.tsx
-msgid "Access for {name}"
-msgstr "{name} için erişim"
-
-#: src/features/settings/inboxes/CreateInboxDialog.tsx
-msgid "Acme App"
-msgstr "Acme Uygulaması"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Acme Support"
@@ -272,6 +270,7 @@ msgstr "Geçiş anahtarı ekle"
 
 #: src/app/Palette.tsx
 #: src/features/settings/notifications/InboxOverrides.tsx
+#: src/features/settings/SettingsLayout.tsx
 msgid "Add an inbox"
 msgstr "Gelen kutusu ekle"
 
@@ -280,7 +279,6 @@ msgid "Add at least one origin."
 msgstr "En az bir kaynak ekleyin."
 
 #: src/features/settings/channels/ChannelDialog.tsx
-#: src/features/settings/channels/ChannelsPage.tsx
 msgid "Add channel"
 msgstr "Kanal ekle"
 
@@ -288,10 +286,6 @@ msgstr "Kanal ekle"
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add endpoint"
 msgstr "Uç nokta ekle"
-
-#: src/features/settings/inboxes/HoursForm.tsx
-msgid "Add hours"
-msgstr "Saat ekle"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Add note"
@@ -314,17 +308,9 @@ msgstr "Eklenme: {created}, son kullanım: {used}"
 msgid "Admin"
 msgstr "Yönetici"
 
-#: src/features/settings/inboxes/InboxLayout.tsx
-msgid "Advanced"
-msgstr "Gelişmiş"
-
 #: src/components/common/text.ts
 msgid "Agent"
 msgstr "Temsilci"
-
-#: src/features/settings/inboxes/AccessSection.tsx
-msgid "Agents see this inbox only when they are given access. Owners and admins always see it."
-msgstr "Temsilciler bu gelen kutusunu yalnızca erişim verildiğinde görür. Sahipler ve yöneticiler her zaman görür."
 
 #: src/app/TopBar.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
@@ -344,7 +330,7 @@ msgstr "Tüm konuşmalar"
 msgid "All inboxes"
 msgstr "Tüm gelen kutuları"
 
-#: src/features/settings/inboxes/AdvancedPage.tsx
+#: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "All of its conversations are deleted with it."
 msgstr "Tüm konuşmaları da onunla birlikte silinir."
 
@@ -372,6 +358,10 @@ msgstr "İzin verilenler"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "İzin verilen kaynaklar"
+
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "Also for sign-in and notification e-mails"
+msgstr "Giriş ve bildirim e-postaları da bu dilde gelir"
 
 #: src/features/settings/webhooks/WebhookDialog.tsx
 msgid "Also send message.created for members' internal notes. Internal events are never sent."
@@ -420,6 +410,7 @@ msgstr "API"
 
 #: src/app/Palette.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/SettingsLayout.tsx
 msgid "API keys"
 msgstr "API anahtarları"
 
@@ -431,6 +422,10 @@ msgstr "Uygulama"
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "App builds with the old key can no longer start sessions until you ship one with the new key. People already signed in keep their session."
 msgstr "Eski anahtarlı uygulama sürümleri, yeni anahtarlı bir sürüm yayımlayana kadar oturum başlatamaz. Oturumu açık olanların oturumu sürer."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Appear online only in business hours"
+msgstr "Sadece mesai saatlerinde çevrimiçi görün"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "As above ({current})"
@@ -550,20 +545,11 @@ msgstr "Sol alt"
 msgid "Bottom right"
 msgstr "Sağ alt"
 
-#: src/features/settings/inboxes/GeneralPage.tsx
-msgid "Brand color"
-msgstr "Marka rengi"
-
-#: src/features/settings/inboxes/GeneralPage.tsx
-msgid "Branding"
-msgstr "Marka"
-
 #: src/components/common/text.ts
 msgid "Bug"
 msgstr "Hata"
 
-#: src/features/settings/inboxes/HoursForm.tsx
-#: src/features/settings/inboxes/InboxLayout.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
 msgstr "Çalışma saatleri"
 
@@ -580,6 +566,7 @@ msgstr "Vazgeç"
 #: src/features/conversation/composer/CannedMenu.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/SettingsLayout.tsx
 msgid "Canned replies"
 msgstr "Hazır yanıtlar"
 
@@ -615,10 +602,13 @@ msgstr "Kişileri değiştirme, silme ve birleştirme"
 msgid "Change, move and bulk-update conversations"
 msgstr "Konuşmaları değiştirme, taşıma ve toplu güncelleme"
 
-#: src/features/settings/channels/ChannelsPage.tsx
-#: src/features/settings/inboxes/InboxLayout.tsx
-msgid "Channels"
-msgstr "Kanallar"
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Channel added"
+msgstr "Kanal eklendi"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Channel removed"
+msgstr "Kanal kaldırıldı"
 
 #: src/features/auth/SignInPage.tsx
 msgid "Check your e-mail"
@@ -660,7 +650,6 @@ msgid "Close without reply"
 msgstr "Yanıtsız bitir"
 
 #: src/components/common/text.ts
-#: src/features/settings/inboxes/HoursForm.tsx
 msgid "Closed"
 msgstr "Kapalı"
 
@@ -672,7 +661,7 @@ msgstr "Bu kadar gündür dokunulmamış kapalı konuşmalar mesajları ve ekler
 msgid "Closed without a reply"
 msgstr "Yanıtsız bitti"
 
-#: src/features/settings/inboxes/HoursForm.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Closes"
 msgstr "Kapanış"
 
@@ -684,9 +673,17 @@ msgstr "Kod"
 msgid "Color"
 msgstr "Renk"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Colour"
+msgstr "Renk"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "Connect {clientName} to Yuva?"
 msgstr "{clientName} Yuva'ya bağlansın mı?"
+
+#: src/features/settings/SettingsLayout.tsx
+msgid "Connect your servers and bots to Yuva"
+msgstr "Sunucularını ve botlarını Yuva'ya bağla"
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
@@ -694,6 +691,7 @@ msgstr "Bağlandı: {created}"
 
 #: src/app/Palette.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/SettingsLayout.tsx
 msgid "Connected apps"
 msgstr "Bağlı uygulamalar"
 
@@ -714,20 +712,16 @@ msgstr "Bağlantılar"
 msgid "Contact details"
 msgstr "Kişi bilgileri"
 
-#: src/features/settings/inboxes/GeneralPage.tsx
-msgid "Contacts see the expected reply time instead of who is online."
-msgstr "Kişiler kimin çevrimiçi olduğu yerine beklenen yanıt süresini görür."
-
-#: src/features/settings/inboxes/GeneralPage.tsx
-msgid "Contacts see who is available, typing and read receipts."
-msgstr "Kişiler kimin müsait olduğunu, yazma göstergesini ve okundu bilgisini görür."
+#: src/features/settings/inboxes/NewInboxPage.tsx
+msgid "Continue"
+msgstr "Devam"
 
 #: src/features/contact/MergePreview.tsx
 #: src/features/inbox/AllDrawer.tsx
 msgid "Conversations"
 msgstr "Konuşmalar"
 
-#: src/features/settings/channels/ChannelsPage.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Conversations that started on it keep their messages."
 msgstr "Bu kanalda başlayan konuşmaların mesajları korunur."
 
@@ -748,7 +742,7 @@ msgstr "Şimdi kopyalayıp güvenli bir yerde saklayın; bir daha gösterilmeyec
 msgid "Copy it now and store it with your receiver; it is not shown again."
 msgstr "Şimdi kopyalayıp alıcı tarafında saklayın; bir daha gösterilmez."
 
-#: src/features/settings/inboxes/AdvancedPage.tsx
+#: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Copy it now and update your backend; it is not shown again."
 msgstr "Şimdi kopyalayıp sunucu tarafınızı güncelleyin; bir daha gösterilmeyecek."
 
@@ -770,17 +764,9 @@ msgstr "Sunucuya ulaşılamadı"
 msgid "Could not reach the server. Check your connection and try again."
 msgstr "Sunucuya ulaşılamadı. Bağlantınızı kontrol edip yeniden deneyin."
 
-#: src/features/settings/inboxes/CreateInboxDialog.tsx
-msgid "Create inbox"
-msgstr "Gelen kutusu oluştur"
-
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 msgid "Create key"
 msgstr "Anahtar oluştur"
-
-#: src/features/settings/inboxes/InboxesPage.tsx
-msgid "Create one to start receiving conversations."
-msgstr "Konuşma almaya başlamak için bir tane oluşturun."
 
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "Created"
@@ -806,21 +792,25 @@ msgstr "Tehlikeli bölge"
 msgid "Data retention"
 msgstr "Veri saklama"
 
-#: src/features/settings/inboxes/GeneralPage.tsx
-msgid "Default language"
-msgstr "Varsayılan dil"
+#: src/features/settings/SettingsLayout.tsx
+msgid "Data retention and deleting the workspace"
+msgstr "Veri saklama ve çalışma alanını silme"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Days"
+msgstr "Günler"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
 msgstr "Varsayılan: {fallback}"
 
 #: src/features/settings/canned/CannedRepliesPage.tsx
-#: src/features/settings/inboxes/AdvancedPage.tsx
+#: src/features/settings/inboxes/InboxSecurity.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete"
 msgstr "Sil"
 
-#: src/features/settings/inboxes/AdvancedPage.tsx
+#: src/features/settings/inboxes/InboxSecurity.tsx
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete {name}?"
 msgstr "{name} silinsin mi?"
@@ -829,7 +819,7 @@ msgstr "{name} silinsin mi?"
 msgid "Delete after (days)"
 msgstr "Silme süresi (gün)"
 
-#: src/features/settings/inboxes/AdvancedPage.tsx
+#: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Delete inbox"
 msgstr "Gelen kutusunu sil"
 
@@ -862,7 +852,7 @@ msgstr "Silinmiş gelen kutusu"
 msgid "Deleted member"
 msgstr "Silinmiş üye"
 
-#: src/features/settings/inboxes/AdvancedPage.tsx
+#: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
 msgstr "Kanalları, konuşmaları, mesajları ve ekleriyle birlikte silinir. Bu işlem geri alınamaz."
 
@@ -889,6 +879,10 @@ msgstr "Reddet"
 #: src/features/settings/webhooks/WebhookDialog.tsx
 msgid "Description (optional)"
 msgstr "Açıklama (isteğe bağlı)"
+
+#: src/features/settings/SettingsLayout.tsx
+msgid "Developer"
+msgstr "Geliştirici"
 
 #: src/features/conversation/Facts.tsx
 #: src/features/conversation/Feedback.tsx
@@ -937,7 +931,10 @@ msgstr "Taslak: {author}"
 #: src/components/common/text.ts
 #: src/features/auth/AuthLayout.tsx
 #: src/features/conversation/Facts.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/NewInboxPage.tsx
 #: src/features/settings/notifications/EventsSection.tsx
+#: src/features/settings/profile/ProfileForm.tsx
 msgid "E-mail"
 msgstr "E-posta"
 
@@ -969,7 +966,6 @@ msgstr "E-posta: {label}"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
-#: src/features/settings/channels/ChannelsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Edit"
@@ -1073,10 +1069,6 @@ msgstr "Bu çalışma alanındaki her şey tüm üyeler için silinir; widget'la
 msgid "Everywhere"
 msgstr "Her yerde"
 
-#: src/features/settings/inboxes/GeneralPage.tsx
-msgid "Expected reply time (minutes)"
-msgstr "Beklenen yanıt süresi (dakika)"
-
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Expired {expires}"
 msgstr "{expires} tarihinde süresi doldu"
@@ -1122,9 +1114,17 @@ msgstr "İlk konuşma"
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "Adresi ya da kanalın SMTP ayarlarını düzeltin, sonra yanıtı yeniden gönderin."
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "For developers"
+msgstr "Geliştiriciler için"
+
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "For every inbox in this workspace, unless an inbox below says otherwise."
 msgstr "Aşağıda farklı ayarlanmış bir gelen kutusu yoksa bu çalışma alanındaki tüm gelen kutuları için."
+
+#: src/features/settings/inboxes/NewInboxPage.tsx
+msgid "For example Fieldnote"
+msgstr "Örn. Fieldnote"
 
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "For signed-in users, your backend signs an identity token with the inbox's identity secret and the app passes it to the SDK."
@@ -1138,6 +1138,10 @@ msgstr "Sunucularınız, betikleriniz ve botlarınız için. Bir anahtar yalnız
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "Bu adrese gelen postayı Yuva deposundaki edge/ içindeki Cloudflare Email Worker'a ya da her iletiyi YUVA_INGRESS_SECRET ile imzalayıp bu sunucunun giriş adresine gönderen herhangi bir posta sunucusuna yönlendirin:"
 
+#: src/features/settings/inboxes/NewInboxPage.tsx
+msgid "Forward your mail"
+msgstr "E-postanı yönlendir"
+
 #: src/components/common/text.ts
 msgid "Friday"
 msgstr "Cuma"
@@ -1150,11 +1154,6 @@ msgstr "Gönderen adresi (isteğe bağlı)"
 msgid "Full API"
 msgstr "Tüm API"
 
-#: src/features/settings/inboxes/GeneralPage.tsx
-#: src/features/settings/inboxes/InboxLayout.tsx
-msgid "General"
-msgstr "Genel"
-
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Get notified on your phone or computer, even when the panel is closed."
 msgstr "Panel kapalıyken bile telefonunda ya da bilgisayarında bildirim al."
@@ -1163,12 +1162,16 @@ msgstr "Panel kapalıyken bile telefonunda ya da bilgisayarında bildirim al."
 msgid "Go to"
 msgstr "Git"
 
+#: src/features/settings/inboxes/NewInboxPage.tsx
+msgid "Go to the inbox"
+msgstr "Gelen kutusuna git"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Goes out through {via}"
 msgstr "{via} üzerinden gider"
 
 #: src/features/settings/channels/chat/ChatFields.tsx
-#: src/features/settings/inboxes/GeneralPage.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Greeting"
 msgstr "Karşılama mesajı"
 
@@ -1186,7 +1189,7 @@ msgstr "Ekipten birine ver"
 msgid "Handed to {name}"
 msgstr "Verildi: {name}"
 
-#: src/features/settings/inboxes/GeneralPage.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Hi! Ask us anything."
 msgstr "Merhaba! Bize her şeyi sorabilirsiniz."
 
@@ -1210,14 +1213,6 @@ msgstr "Yüksek"
 msgid "History"
 msgstr "Geçmiş"
 
-#: src/features/settings/channels/ChannelsPage.tsx
-msgid "How messages reach this inbox. E-mail channels receive and send mail, web chat channels power the chat widget, mobile app channels the iOS and Android SDKs, and API channels take feedback from your backend."
-msgstr "Mesajların bu gelen kutusuna nasıl ulaştığı. E-posta kanalları posta alır ve gönderir, web sohbeti kanalları sohbet penceresini, mobil uygulama kanalları iOS ve Android SDK'larını çalıştırır, API kanalları ise arka ucunuzdan geri bildirim alır."
-
-#: src/features/settings/inboxes/GeneralPage.tsx
-msgid "How the chat widget and the apps present this inbox."
-msgstr "Sohbet penceresi ve uygulamalar bu gelen kutusunu böyle gösterir."
-
 #: src/components/common/SecretDialog.tsx
 msgid "I saved it"
 msgstr "Kaydettim"
@@ -1234,10 +1229,13 @@ msgstr "Geri döndüm"
 msgid "Idea"
 msgstr "Fikir"
 
-#: src/features/settings/inboxes/AdvancedPage.tsx
-#: src/features/settings/inboxes/CreateInboxDialog.tsx
+#: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Identity secret"
 msgstr "Kimlik anahtarı"
+
+#: src/features/settings/inboxes/NewInboxPage.tsx
+msgid "Identity secret, shown only now"
+msgstr "Kimlik anahtarı, sadece şimdi görünür"
 
 #: src/features/conversation/LaterActions.tsx
 msgid "In 1 hour"
@@ -1261,7 +1259,6 @@ msgstr "Uygulama içi"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/InboxPicker.tsx
-#: src/features/settings/inboxes/InboxLayout.tsx
 #: src/features/settings/webhooks/WebhookDialog.tsx
 msgid "Inbox"
 msgstr "Gelen kutusu"
@@ -1270,14 +1267,9 @@ msgstr "Gelen kutusu"
 msgid "Inbox color"
 msgstr "Gelen kutusu rengi"
 
-#: src/features/settings/inboxes/InboxLayout.tsx
-msgid "Inbox settings"
-msgstr "Gelen kutusu ayarları"
-
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/inboxes/InboxesPage.tsx
-#: src/features/settings/inboxes/InboxLayout.tsx
+#: src/features/settings/SettingsLayout.tsx
 msgid "Inboxes"
 msgstr "Gelen kutuları"
 
@@ -1371,18 +1363,19 @@ msgstr "Tür"
 #: src/app/Palette.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/labels/LabelsPage.tsx
+#: src/features/settings/SettingsLayout.tsx
 msgid "Labels"
 msgstr "Etiketler"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Labels, priority, inbox"
-msgstr "Etiketler, öncelik, ürün"
+msgstr "Etiketler, öncelik, gelen kutusu"
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/members/Invites.tsx
-#: src/features/settings/profile/ProfileForm.tsx
 msgid "Language"
 msgstr "Dil"
 
@@ -1463,10 +1456,6 @@ msgstr "Eski mesajları yükle"
 msgid "Locale"
 msgstr "Dil ve bölge"
 
-#: src/features/settings/inboxes/GeneralPage.tsx
-msgid "Logo URL"
-msgstr "Logo adresi"
-
 #: src/components/common/text.ts
 msgid "Low"
 msgstr "Düşük"
@@ -1475,9 +1464,9 @@ msgstr "Düşük"
 msgid "Lowercase letters, digits and dashes."
 msgstr "Küçük harf, rakam ve tire."
 
-#: src/features/settings/inboxes/CreateInboxDialog.tsx
-msgid "Lowercase letters, digits and dashes. Used in addresses and the widget."
-msgstr "Küçük harf, rakam ve tire. Adreslerde ve sohbet bileşeninde kullanılır."
+#: src/features/settings/inboxes/NewInboxPage.tsx
+msgid "Mail sent to your support address"
+msgstr "Destek adresine gelen e-postalar"
 
 #: src/components/common/text.ts
 msgid "Manage canned replies"
@@ -1525,6 +1514,7 @@ msgstr "Üye"
 
 #: src/app/Palette.tsx
 #: src/features/settings/members/MembersPage.tsx
+#: src/features/settings/SettingsLayout.tsx
 msgid "Members"
 msgstr "Üyeler"
 
@@ -1546,13 +1536,10 @@ msgstr "Mesaj türü"
 
 #: src/components/common/text.ts
 #: src/features/settings/channels/app/AppFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/NewInboxPage.tsx
 msgid "Mobile app"
 msgstr "Mobil uygulama"
-
-#: src/features/settings/inboxes/CreateInboxDialog.tsx
-#: src/features/settings/inboxes/GeneralPage.tsx
-msgid "Mode"
-msgstr "Mod"
 
 #: src/components/common/text.ts
 msgid "Monday"
@@ -1575,14 +1562,12 @@ msgid "Moved from {from}"
 msgstr "{from} gelen kutusundan taşındı"
 
 #: src/app/UserMenu.tsx
-#: src/features/settings/profile/ProfilePage.tsx
 msgid "My profile"
 msgstr "Profilim"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/channels/ChannelDialog.tsx
-#: src/features/settings/inboxes/CreateInboxDialog.tsx
-#: src/features/settings/inboxes/GeneralPage.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 msgid "Name"
@@ -1618,14 +1603,9 @@ msgstr "Canlı bir gelen kutusunda yeni konuşma"
 msgid "New conversation in an async inbox"
 msgstr "Eşzamansız bir gelen kutusunda yeni konuşma"
 
-#: src/features/settings/inboxes/AdvancedPage.tsx
+#: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "New identity secret"
 msgstr "Yeni kimlik anahtarı"
-
-#: src/features/settings/inboxes/CreateInboxDialog.tsx
-#: src/features/settings/inboxes/InboxesPage.tsx
-msgid "New inbox"
-msgstr "Yeni gelen kutusu"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "New key"
@@ -1697,9 +1677,14 @@ msgstr "Henüz hazır yanıt yok"
 msgid "No canned replies yet. Add them in settings."
 msgstr "Henüz hazır yanıt yok. Ayarlardan ekleyebilirsin."
 
-#: src/features/settings/channels/ChannelsPage.tsx
-msgid "No channels yet."
-msgstr "Henüz kanal yok."
+#: src/features/settings/SettingsLayout.tsx
+msgid "No channels yet"
+msgstr "Henüz kanal yok"
+
+#. placeholder {0}: inbox.name
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "No channels yet. Add one so customers can write to {0}."
+msgstr "Henüz kanal yok. Müşteriler {0} için yazabilsin diye bir tane ekle."
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "No connected apps."
@@ -1712,10 +1697,6 @@ msgstr "Burada konuşma yok."
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "No endpoints yet."
 msgstr "Henüz uç nokta yok."
-
-#: src/features/settings/inboxes/InboxesPage.tsx
-msgid "No inboxes yet"
-msgstr "Henüz gelen kutusu yok"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "No labels yet"
@@ -1749,13 +1730,14 @@ msgstr "Konu yok"
 
 #: src/features/conversation/LaterActions.tsx
 msgid "Nobody else can see this inbox yet."
-msgstr "Bu ürünü henüz başka kimse göremiyor."
+msgstr "Bu gelen kutusunu henüz başka kimse göremiyor."
 
 #: src/features/inbox/WaitingPill.tsx
 msgid "Nobody is waiting"
 msgstr "Kimse beklemiyor"
 
 #: src/features/contact/MergePreview.tsx
+#: src/features/settings/SettingsLayout.tsx
 msgid "None"
 msgstr "Yok"
 
@@ -1787,6 +1769,10 @@ msgstr "Geçerli bir kaynak değil: {notOrigins}. Yalnızca şema ve alan adı y
 msgid "Not delivered"
 msgstr "Teslim edilemedi"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Not shown"
+msgstr "Gösterilmez"
+
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/conversation/QueueConversation.tsx
 msgid "Not spam"
@@ -1810,6 +1796,7 @@ msgstr "Burada aramana uyan bir şey yok."
 
 #: src/app/Palette.tsx
 #: src/features/settings/notifications/NotificationsPage.tsx
+#: src/features/settings/SettingsLayout.tsx
 msgid "Notifications"
 msgstr "Bildirimler"
 
@@ -1853,18 +1840,26 @@ msgstr "iPhone ve iPad'de Paylaş › Ana Ekrana Ekle ile Yuva'yı ana ekrana ek
 msgid "One inbox"
 msgstr "Tek gelen kutusu"
 
-#: src/features/settings/inboxes/InboxesPage.tsx
-msgid "One inbox per product or brand. Each has its own channels, hours and team."
-msgstr "Her ürün ya da marka için bir gelen kutusu. Her birinin kendi kanalları, saatleri ve ekibi olur."
+#: src/features/settings/inboxes/NewInboxPage.tsx
+msgid "One line on your site, a chat bubble in the corner"
+msgstr "Sitene bir satır kod, köşede bir sohbet balonu"
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Her satıra bir tane, 1 ile 20 arası. Sohbet penceresini yalnızca bu kaynaklardaki sayfalar kullanabilir."
 
+#: src/features/settings/SettingsLayout.tsx
+msgid "One per product or brand"
+msgstr "Her ürün ya da marka için bir tane"
+
 #: src/features/contact/Presence.tsx
 #: src/features/conversation/PersonHeader.tsx
 msgid "Online now"
 msgstr "Şu an çevrimiçi"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Online status"
+msgstr "Çevrimiçi durum"
 
 #. placeholder {0}: i.name
 #: src/app/Palette.tsx
@@ -1885,6 +1880,7 @@ msgstr "Çalışma alanını yalnızca sahipler silebilir."
 
 #: src/components/common/text.ts
 #: src/features/conversation/PersonHeader.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Open"
 msgstr "Açık"
 
@@ -1901,7 +1897,7 @@ msgstr "Aç: {name}"
 msgid "Open the next one"
 msgstr "Sıradakini aç"
 
-#: src/features/settings/inboxes/HoursForm.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Opens"
 msgstr "Açılış"
 
@@ -1919,6 +1915,10 @@ msgstr "Diğer"
 msgid "Other conversations"
 msgstr "Diğer konuşmalar"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Outside them the inbox counts as closed"
+msgstr "Mesai dışında kapalı sayılır"
+
 #: src/components/common/text.ts
 msgid "Owner"
 msgstr "Sahip"
@@ -1927,9 +1927,17 @@ msgstr "Sahip"
 msgid "Owners and admins see every inbox; agents see the inboxes they were given."
 msgstr "Sahipler ve yöneticiler tüm gelen kutularını görür; temsilciler yalnızca kendilerine verilenleri görür."
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Owners and admins see every inbox; members see the inboxes they are given."
+msgstr "Sahipler ve yöneticiler her gelen kutusunu görür; üyeler sadece kendilerine verilenleri."
+
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Pages that embed the old key can no longer start chats until you update the snippet. Visitors already chatting keep their session."
 msgstr "Eski anahtarı kullanan sayfalar, kodu güncelleyene kadar sohbet başlatamaz. Şu anda sohbet eden ziyaretçilerin oturumu sürer."
+
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "Panel language"
+msgstr "Panel dili"
 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
@@ -1971,7 +1979,6 @@ msgstr "Uygulamanızda oturum açmamış kişiler, arka ucunuzdan kimlik belirte
 msgid "Per inbox"
 msgstr "Gelen kutusuna göre"
 
-#: src/features/settings/inboxes/GeneralPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 msgid "Pick a color"
 msgstr "Renk seç"
@@ -1999,6 +2006,10 @@ msgstr "En az bir yetki seçin."
 #: src/features/oauth/ConsentPage.tsx
 msgid "Pick at least one."
 msgstr "En az birini seçin."
+
+#: src/features/settings/inboxes/NewInboxPage.tsx
+msgid "Pick one; you can add the others later."
+msgstr "Birini seç, diğerlerini sonra eklersin."
 
 #: src/features/contact/MergeContactDialog.tsx
 msgid "Pick the other contact. It is merged into this one and then deleted."
@@ -2028,12 +2039,16 @@ msgstr "Önizleme"
 msgid "Priority"
 msgstr "Öncelik"
 
+#: src/features/settings/inboxes/NewInboxPage.tsx
+msgid "Product name"
+msgstr "Ürün adı"
+
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 msgid "Production backend"
 msgstr "Canlı sunucu"
 
 #: src/app/Palette.tsx
-#: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/profile/ProfilePage.tsx
 msgid "Profile"
 msgstr "Profil"
 
@@ -2082,6 +2097,14 @@ msgstr "Konuşmaları, mesajları, etiketleri ve hazır yanıtları görme"
 msgid "Read the workspace, members, inboxes and channels"
 msgstr "Çalışma alanını, üyeleri, gelen kutularını ve kanalları görme"
 
+#: src/features/settings/inboxes/NewInboxPage.tsx
+msgid "Ready."
+msgstr "Hazır."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Receives only"
+msgstr "Sadece alır"
+
 #: src/features/settings/channels/ChannelSummary.tsx
 msgid "receives only, no SMTP account"
 msgstr "yalnızca alır, SMTP hesabı yok"
@@ -2106,8 +2129,8 @@ msgstr "Yenile"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Uzak görseller, postayı açtığınızı gönderene bildirebilir."
 
-#: src/features/settings/channels/ChannelsPage.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/members/MemberList.tsx
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -2115,9 +2138,11 @@ msgstr "Uzak görseller, postayı açtığınızı gönderene bildirebilir."
 msgid "Remove"
 msgstr "Kaldır"
 
+#. placeholder {0}: ch.name
 #. placeholder {0}: f.name
 #. placeholder {0}: p.name
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "{0} öğesini kaldır"
@@ -2131,11 +2156,7 @@ msgstr "{name} adlı üyeyi çıkar"
 msgid "Remove {name} from the workspace?"
 msgstr "{name} çalışma alanından çıkarılsın mı?"
 
-#: src/features/settings/inboxes/HoursForm.tsx
-msgid "Remove these hours"
-msgstr "Bu saatleri kaldır"
-
-#: src/features/settings/channels/ChannelsPage.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Remove this channel?"
 msgstr "Bu kanal kaldırılsın mı?"
 
@@ -2152,8 +2173,8 @@ msgid "Remove this passkey?"
 msgstr "Bu geçiş anahtarı kaldırılsın mı?"
 
 #: src/features/settings/profile/ProfilePage.tsx
-msgid "Removes you from every workspace and deletes your account. Messages you wrote stay, shown as from a deleted member."
-msgstr "Sizi tüm çalışma alanlarından çıkarır ve hesabınızı siler. Yazdığınız mesajlar kalır ve silinmiş bir üyeden gelmiş gibi görünür."
+msgid "Removes you from every workspace. Messages you wrote stay, shown as from a deleted member."
+msgstr "Seni tüm çalışma alanlarından çıkarır. Yazdığın mesajlar kalır, silinmiş bir üyeden gelmiş görünür."
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Replace"
@@ -2186,6 +2207,10 @@ msgstr "Siz temizleyene kadar bu adrese yanıt gönderilmez."
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Reply"
 msgstr "Yanıt"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Reply time"
+msgstr "Yanıt süresi"
 
 #: src/features/auth/AuthLayout.tsx
 msgid "Reply, assign and follow up together, across all of your products."
@@ -2237,17 +2262,17 @@ msgid "Role of {name}"
 msgstr "{name} adlı üyenin rolü"
 
 #: src/features/settings/channels/PublicKeyField.tsx
-#: src/features/settings/inboxes/AdvancedPage.tsx
+#: src/features/settings/inboxes/InboxSecurity.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Rotate"
 msgstr "Yenile"
 
-#: src/features/settings/inboxes/AdvancedPage.tsx
+#: src/features/settings/inboxes/InboxSecurity.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Rotate secret"
 msgstr "Anahtarı yenile"
 
-#: src/features/settings/inboxes/AdvancedPage.tsx
+#: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Rotate the identity secret?"
 msgstr "Kimlik anahtarı yenilensin mi?"
 
@@ -2258,6 +2283,10 @@ msgstr "Genel anahtar yenilensin mi?"
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Rotate the signing secret?"
 msgstr "İmzalama anahtarı yenilensin mi?"
+
+#: src/features/settings/inboxes/NewInboxPage.tsx
+msgid "Route mail for this address to Yuva's e-mail ingress, for example with the Cloudflare Email Worker in edge/. Replies go out through the SMTP account you entered."
+msgstr "Bu adrese gelen postayı Yuva'nın e-posta girişine yönlendir, örneğin edge/ içindeki Cloudflare Email Worker ile. Yanıtlar girdiğin SMTP hesabından gider."
 
 #: src/components/common/text.ts
 msgid "Saturday"
@@ -2272,10 +2301,8 @@ msgstr "Cumartesi"
 msgid "Save"
 msgstr "Kaydet"
 
-#: src/features/settings/inboxes/HoursForm.tsx
-msgid "Save hours"
-msgstr "Saatleri kaydet"
-
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/ui.tsx
 msgid "Saved"
 msgstr "Kaydedildi"
@@ -2371,6 +2398,10 @@ msgstr "Taslakları gönderme"
 msgid "Send events"
 msgstr "Olayları gönder"
 
+#: src/features/settings/SettingsLayout.tsx
+msgid "Send events to your own server"
+msgstr "Olayları kendi sunucuna gönder"
+
 #: src/features/auth/SignInPage.tsx
 msgid "Send me a code"
 msgstr "Bana kod gönder"
@@ -2415,6 +2446,8 @@ msgstr "Sunucu adresi"
 #: src/app/Palette.tsx
 #: src/app/TopBar.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/ui.tsx
 msgid "Settings"
 msgstr "Ayarlar"
 
@@ -2434,21 +2467,29 @@ msgstr "Alıntıyı göster ya da gizle"
 msgid "Show quoted text"
 msgstr "Alıntıyı göster"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Show the reply time"
+msgstr "Yanıt süresini göster"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Show who is online"
+msgstr "Kimin çevrimiçi olduğunu göster"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Shown before the first message. The inbox greeting when empty."
 msgstr "İlk mesajdan önce gösterilir. Boşsa gelen kutusunun karşılama mesajı kullanılır."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Shown in the chat window"
+msgstr "Sohbet penceresinde görünür"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 msgid "Shown on its messages. The key's name when empty."
 msgstr "Mesajlarında görünür. Boşsa anahtarın adı kullanılır."
 
-#: src/features/settings/inboxes/GeneralPage.tsx
-msgid "Shown to contacts in async mode. Leave empty to hide it."
-msgstr "Eşzamansız modda kişilere gösterilir. Gizlemek için boş bırakın."
-
 #: src/features/settings/profile/ProfileForm.tsx
-msgid "Shown to your team and to contacts."
-msgstr "Ekibinize ve kişilere gösterilir."
+msgid "Shown to your team and to contacts"
+msgstr "Ekibin ve müşteriler görür"
 
 #: src/features/auth/SignInPage.tsx
 msgid "Sign in"
@@ -2468,6 +2509,7 @@ msgstr "Kod yerine cihazınızın parmak izi, yüz tanıma veya ekran kilidiyle 
 
 #: src/app/Gate.tsx
 #: src/app/UserMenu.tsx
+#: src/features/settings/profile/ProfilePage.tsx
 msgid "Sign out"
 msgstr "Çıkış yap"
 
@@ -2491,8 +2533,11 @@ msgstr "İmzalama anahtarı"
 msgid "Since {since}"
 msgstr "Kayıt: {since}"
 
-#: src/features/settings/inboxes/CreateInboxDialog.tsx
-#: src/features/settings/inboxes/GeneralPage.tsx
+#: src/features/settings/inboxes/NewInboxPage.tsx
+msgid "Skip for now"
+msgstr "Şimdilik geç"
+
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Slug"
 msgstr "Kısa ad"
 
@@ -2520,6 +2565,10 @@ msgstr "Sunucuda bir sorun oluştu. Yeniden deneyin."
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Sort conversations by topic. Each label also gets its own view in the sidebar."
 msgstr "Konuşmaları konuya göre ayırın. Her etiketin kenar çubuğunda kendi görünümü de olur."
+
+#: src/features/settings/SettingsLayout.tsx
+msgid "Sort conversations your way"
+msgstr "Konuşmaları kendine göre ayır"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "STARTTLS (port 587)"
@@ -2566,6 +2615,7 @@ msgid "System"
 msgstr "Sistem"
 
 #: src/features/conversation/History.tsx
+#: src/features/settings/SettingsLayout.tsx
 msgid "Team"
 msgstr "Ekip"
 
@@ -2598,6 +2648,14 @@ msgstr "Yazdığınız için teşekkürler. Genellikle bir gün içinde yanıt v
 msgid "The channel name when empty."
 msgstr "Boşsa kanal adı kullanılır."
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "The chat shows when you usually reply"
+msgstr "Sohbet, genelde ne zaman yanıt verdiğini gösterir"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "The chat shows who is available and typing"
+msgstr "Sohbet, kimin çevrimiçi olduğunu ve yazdığını gösterir"
+
 #: src/features/auth/SignInPage.tsx
 msgid "The code is wrong or has expired."
 msgstr "Kod yanlış ya da süresi dolmuş."
@@ -2626,13 +2684,25 @@ msgstr "Yanıt süresi gösteren bir gelen kutusunda bir konuşmanın ilk mesaj�
 msgid "The first message of a conversation in an inbox that shows who is available."
 msgstr "Kimin müsait olduğunu gösteren bir gelen kutusunda bir konuşmanın ilk mesajı."
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "The first thing the chat says"
+msgstr "Sohbetin ilk söylediği"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "The full API: MCP, the REST API and live updates, like a member app."
 msgstr "Tüm API: bir üye uygulaması gibi MCP, REST API ve canlı güncellemeler."
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "The hours differ by day; changing them here sets the same hours for every chosen day."
+msgstr "Saatler günden güne farklı; burada değiştirirsen seçili her gün için aynı saatler kaydedilir."
+
 #: src/features/settings/webhooks/WebhookDialog.tsx
 msgid "The inbox cannot be changed later."
 msgstr "Gelen kutusu sonradan değiştirilemez."
+
+#: src/features/settings/inboxes/NewInboxPage.tsx
+msgid "The iOS and Android SDKs"
+msgstr "iOS ve Android SDK'ları"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
@@ -2645,10 +2715,6 @@ msgstr "Anahtar bu günün sonunda çalışmayı bırakır."
 #: src/features/settings/channels/ChannelDialog.tsx
 msgid "The kind cannot be changed later."
 msgstr "Tür daha sonra değiştirilemez."
-
-#: src/features/settings/profile/ProfileForm.tsx
-msgid "The language of the panel and of sign-in and notification e-mails."
-msgstr "Panelin, giriş ve bildirim e-postalarının dili."
 
 #: src/components/common/text.ts
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
@@ -2690,10 +2756,6 @@ msgstr "Ziyaretçi sohbette {0} adresini yazdı ama henüz doğrulamadı. Bu yan
 #: src/features/settings/members/MemberList.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Konuşmaları yerinde kalır; erişimleri hemen kalkar."
-
-#: src/features/settings/inboxes/AccessSection.tsx
-msgid "There are no agents in this workspace."
-msgstr "Bu çalışma alanında temsilci yok."
 
 #: src/features/settings/webhooks/WebhookDialog.tsx
 msgid "This address is private, loopback or link-local. Webhooks only reach public servers."
@@ -2784,13 +2846,9 @@ msgstr "Perşembe"
 msgid "Time"
 msgstr "Zaman"
 
-#: src/features/settings/inboxes/GeneralPage.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Time zone"
 msgstr "Saat dilimi"
-
-#: src/features/settings/inboxes/HoursForm.tsx
-msgid "Times are in the inbox's time zone. When off, the inbox counts as always open."
-msgstr "Saatler gelen kutusunun saat dilimine göredir. Kapalıyken gelen kutusu her zaman açık sayılır."
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
 msgid "Title"
@@ -2816,7 +2874,7 @@ msgstr "bugün saat {at}"
 msgid "Today at {at}"
 msgstr "Bugün saat {at}"
 
-#: src/features/settings/inboxes/AdvancedPage.tsx
+#: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Tokens signed with the current secret stop working at once."
 msgstr "Mevcut anahtarla imzalanmış belirteçler hemen geçersiz olur."
 
@@ -2940,10 +2998,6 @@ msgstr "En fazla 200 karakter girin."
 msgid "Use at most 500 characters."
 msgstr "En fazla 500 karakter kullanın."
 
-#: src/features/settings/inboxes/HoursForm.tsx
-msgid "Use business hours"
-msgstr "Çalışma saatlerini kullan"
-
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Use origins such as https://www.example.com, without a path."
 msgstr "https://www.example.com gibi, yol içermeyen kaynaklar kullanın."
@@ -2955,6 +3009,10 @@ msgstr "Önerilen yanıtı kullan"
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Use this reply"
 msgstr "Bu yanıtı kullan"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Used in addresses and the widget"
+msgstr "Adreslerde ve sohbet penceresinde kullanılır"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Username"
@@ -2999,20 +3057,43 @@ msgid "Webhook endpoint"
 msgstr "Webhook uç noktası"
 
 #: src/app/Palette.tsx
-#: src/features/settings/inboxes/InboxLayout.tsx
+#: src/features/settings/SettingsLayout.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/settings/webhooks/WebhooksPage.tsx
 msgid "Webhooks"
 msgstr "Webhook'lar"
 
+#. placeholder {0}: inbox.name
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Webhooks for {0}"
+msgstr "{0} webhook'ları"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Webhooks for this inbox"
+msgstr "Bu gelen kutusunun webhook'ları"
+
 #: src/features/settings/channels/ChannelDialog.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/inboxes/NewInboxPage.tsx
 msgid "Website chat"
 msgstr "Web sitesi sohbeti"
 
 #: src/components/common/text.ts
 msgid "Wednesday"
 msgstr "Çarşamba"
+
+#: src/features/settings/inboxes/NewInboxPage.tsx
+msgid "What is the product called?"
+msgstr "Ürünün adı ne?"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "What the customer sees"
+msgstr "Müşterinin gördüğü"
+
+#: src/features/settings/SettingsLayout.tsx
+msgid "What you write often"
+msgstr "Sık yazdıkların"
 
 #: src/features/conversation/LaterActions.tsx
 msgid "When {first} writes again"
@@ -3042,9 +3123,21 @@ msgstr "Başka biri onu sana atadığında."
 msgid "When to notify me"
 msgstr "Ne zaman bildirim alayım"
 
+#: src/features/settings/SettingsLayout.tsx
+msgid "When we let you know"
+msgstr "Sana ne zaman haber verelim"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "When your provider sends from another address. Replies still come to the support address."
 msgstr "Sağlayıcınız başka bir adresten gönderiyorsa. Yanıtlar yine destek adresine gelir."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Where customers write from"
+msgstr "Müşteriler nereden yazıyor"
+
+#: src/features/settings/inboxes/NewInboxPage.tsx
+msgid "Where will {name} customers write from?"
+msgstr "{name} müşterileri nereden yazacak?"
 
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "While off, no deliveries are made."
@@ -3057,6 +3150,10 @@ msgstr "Panel açıkken, çalışma saatlerinde"
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "While your status is Away, only new messages in conversations assigned to you and new assignments notify you. A conversation you have open in the panel never notifies you."
 msgstr "Durumun Uzakta iken yalnızca sana atanmış konuşmalardaki yeni mesajlar ve yeni atamalar için bildirim alırsın. Panelde açık olan bir konuşma için hiç bildirim almazsın."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Who can reply"
+msgstr "Kim yanıtlayabilir"
 
 #: src/features/conversation/LaterActions.tsx
 msgid "Who should take it?"
@@ -3084,8 +3181,33 @@ msgstr "Geri çek"
 msgid "Withdraw the invite for {0}"
 msgstr "{0} davetini geri çek"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Within {m} minutes"
+msgstr "{m} dakika içinde"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Within 4 hours"
+msgstr "4 saat içinde"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Within a day"
+msgstr "1 gün içinde"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Within an hour"
+msgstr "1 saat içinde"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Within minutes"
+msgstr "Birkaç dakika içinde"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Working"
+msgstr "Çalışıyor"
+
 #: src/app/Palette.tsx
 #: src/features/oauth/ConsentPage.tsx
+#: src/features/settings/SettingsLayout.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
 msgstr "Çalışma alanı"
@@ -3126,6 +3248,7 @@ msgstr "Dün"
 
 #: src/features/conversation/messages/Talk.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/SettingsLayout.tsx
 msgid "You"
 msgstr "Sen"
 
@@ -3157,10 +3280,6 @@ msgstr "Bunu yapma izniniz yok."
 msgid "You are the only owner of a workspace. Make someone else an owner there, or delete that workspace, before you delete your account."
 msgstr "Bir çalışma alanının tek sahibisiniz. Hesabınızı silmeden önce orada başka birini sahip yapın ya da o çalışma alanını silin."
 
-#: src/features/settings/inboxes/CreateInboxDialog.tsx
-msgid "You can change hours, branding and channels after creating it."
-msgstr "Saatleri, markayı ve kanalları oluşturduktan sonra değiştirebilirsiniz."
-
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Bağlantıyı istediğiniz zaman Ayarlar'da, Bağlı uygulamalar altında kaldırabilirsiniz."
@@ -3185,13 +3304,17 @@ msgstr "Artık bununla giriş yapamayacaksınız."
 msgid "you@company.com"
 msgstr "siz@sirket.com"
 
-#: src/features/settings/inboxes/AdvancedPage.tsx
+#: src/features/settings/inboxes/NewInboxPage.tsx
+msgid "Your backend signs identity tokens with it so Yuva knows who your signed-in users are. You can rotate it in the inbox settings."
+msgstr "Sunucun kimlik jetonlarını bununla imzalar; Yuva da giriş yapmış kullanıcılarını böyle tanır. Gelen kutusu ayarlarından yenileyebilirsin."
+
+#: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Your backend signs identity tokens with this secret so Yuva knows who your signed-in users are. It is shown only when created or rotated."
 msgstr "Sunucu tarafınız kimlik belirteçlerini bu anahtarla imzalar; böylece Yuva giriş yapmış kullanıcılarınızın kim olduğunu bilir. Anahtar yalnızca oluşturulduğunda veya yenilendiğinde gösterilir."
 
-#: src/features/settings/inboxes/CreateInboxDialog.tsx
-msgid "Your backend signs identity tokens with this secret. Copy it now and store it safely; it is not shown again."
-msgstr "Sunucu tarafınız kimlik belirteçlerini bu anahtarla imzalar. Şimdi kopyalayıp güvenli bir yerde saklayın; bir daha gösterilmeyecek."
+#: src/features/settings/inboxes/NewInboxPage.tsx
+msgid "Your customers will see this name."
+msgstr "Müşterilerin bu adı görecek."
 
 #: src/features/conversation/Collision.tsx
 msgid "Your draft is still here; send it as well or clear it."

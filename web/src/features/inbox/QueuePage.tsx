@@ -59,7 +59,7 @@ function CleanupBanner() {
       },
     )
   return (
-    <div className={`${banner} border border-dashed bg-card`} data-testid="cleanup-banner">
+    <div className={`${banner} border border-dashed bg-card phone:flex-wrap`} data-testid="cleanup-banner">
       <span className="flex shrink-0">
         {items.slice(0, 4).map((c) => (
           <ContactAvatar
@@ -70,7 +70,7 @@ function CleanupBanner() {
           />
         ))}
       </span>
-      <span className="min-w-0">
+      <span className="min-w-0 flex-1 phone:basis-[calc(100%-60px)]">
         <b className="block font-medium">
           <Trans>Quick cleanup</Trans>
         </b>

@@ -14,9 +14,11 @@ function labelOf(key: string) {
   return s.charAt(0).toLocaleUpperCase() + s.slice(1)
 }
 
-export function useFacts(c: Conversation, contact: Contact | undefined, others: number | undefined): [string, string][] {
+export type Fact = [label: string, value: string, raw?: boolean]
+
+export function useFacts(c: Conversation, contact: Contact | undefined, others: number | undefined): Fact[] {
   const { t } = useLingui()
-  const facts: [string, string][] = []
+  const facts: Fact[] = []
   const f = c.feedback
   if (f) {
     const app = [f.app_version, f.build && `(${f.build})`].filter(Boolean).join(" ")
@@ -28,7 +30,7 @@ export function useFacts(c: Conversation, contact: Contact | undefined, others: 
   if (contact?.emails[0]) facts.push([t`E-mail`, contact.emails[0]])
   for (const [k, v] of Object.entries(contact?.attributes ?? {})) {
     const value = shown(v)
-    if (value) facts.push([labelOf(k), value])
+    if (value) facts.push([labelOf(k), value, true])
   }
   const limit = others === undefined ? 4 : 3
   const out = facts.slice(0, limit)
@@ -38,7 +40,7 @@ export function useFacts(c: Conversation, contact: Contact | undefined, others: 
   return out
 }
 
-export function Facts({ facts, onOpen }: { facts: [string, string][]; onOpen: () => void }) {
+export function Facts({ facts, onOpen }: { facts: Fact[]; onOpen: () => void }) {
   const { t } = useLingui()
   if (facts.length === 0) return null
   return (
@@ -50,9 +52,9 @@ export function Facts({ facts, onOpen }: { facts: [string, string][]; onOpen: ()
       data-testid="facts"
     >
       <dl className="grid grid-cols-[repeat(auto-fit,minmax(130px,1fr))] phone:grid-cols-2 [&>div+div]:border-s phone:[&>div:nth-child(3)]:border-s-0 phone:[&>div:nth-child(n+3)]:border-t">
-        {facts.map(([k, v]) => (
+        {facts.map(([k, v, raw]) => (
           <div key={k} className="min-w-0 px-3.5 py-2.5">
-            <dt className="text-[11px] tracking-[0.04em] text-faint uppercase">{k}</dt>
+            <dt className={raw ? "truncate text-[11px] text-faint" : "truncate text-[11px] tracking-[0.04em] text-faint uppercase"}>{k}</dt>
             <dd className="mt-0.5 truncate text-[13px]" title={v}>
               {v}
             </dd>

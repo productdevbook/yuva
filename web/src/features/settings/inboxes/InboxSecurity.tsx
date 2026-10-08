@@ -1,17 +1,17 @@
 import { Trans } from "@lingui/react/macro"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
-import { Navigate, useNavigate } from "react-router"
+import { useNavigate } from "react-router"
 
 import { ErrorLine, SecretDialog, useConfirm } from "@/components/common"
 import { Button } from "@/components/ui/button"
-import { useInboxOutlet } from "@/features/settings/inboxes/InboxLayout"
+import { useInboxOutlet } from "@/features/settings/inboxes/InboxPage"
 import { Card, Section } from "@/features/settings/ui"
 import { api, unwrap } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 
-function IdentitySecret() {
+export function IdentitySecret() {
   const { inbox } = useInboxOutlet()
   const [secret, setSecret] = useState<string | null>(null)
   const [confirm, confirmDialog] = useConfirm()
@@ -60,7 +60,7 @@ function IdentitySecret() {
   )
 }
 
-function DeleteInbox() {
+export function DeleteInbox() {
   const qc = useQueryClient()
   const navigate = useNavigate()
   const { inbox } = useInboxOutlet()
@@ -70,7 +70,7 @@ function DeleteInbox() {
     mutationFn: () => unwrap(api.DELETE("/v1/inboxes/{inboxId}", { params: { path: { inboxId: inbox.id } } })),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: keys.inboxes(ws) })
-      navigate("/settings/inboxes")
+      navigate("/settings")
     },
   })
   const name = inbox.name
@@ -97,17 +97,5 @@ function DeleteInbox() {
       </Card>
       {confirmDialog}
     </Section>
-  )
-}
-
-export function AdvancedPage() {
-  const { canManage } = useSession()
-  const { inbox } = useInboxOutlet()
-  if (!canManage) return <Navigate to={`/settings/inboxes/${inbox.id}`} replace />
-  return (
-    <>
-      <IdentitySecret />
-      <DeleteInbox />
-    </>
   )
 }
