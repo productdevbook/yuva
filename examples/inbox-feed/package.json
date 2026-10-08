@@ -1,0 +1,17 @@
+{
+  "name": "yuva-example-inbox-feed",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "start": "node feed.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@useyuva/js": "file:../../sdk/js"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.3"
+  }
+}
