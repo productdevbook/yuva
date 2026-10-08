@@ -58,6 +58,9 @@ export function EventLine({ m, ctx }: { m: Message; ctx: ThreadContext }) {
         )
       break
     }
+    case "rated":
+      body = e.rating === "bad" ? <Trans>{actor} rated the conversation 👎</Trans> : <Trans>{actor} rated the conversation 👍</Trans>
+      break
     case "moved": {
       const from = ctx.inboxes.find((i) => i.id === e.previous_inbox_id)?.name ?? t`another inbox`
       body = <Trans>Moved from {from}</Trans>

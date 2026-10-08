@@ -100,9 +100,20 @@ function DayStats() {
     [median !== undefined ? formatDuration(median, i18n.locale) : "–", <Trans>median first reply</Trans>],
     [fmt.format(stats.closed), <Trans>closed today</Trans>],
   ]
+  const good = stats.ratings.good
+  const bad = stats.ratings.bad
+  if (good + bad > 0) {
+    const pct = new Intl.NumberFormat(i18n.locale, { style: "percent" }).format(good / (good + bad))
+    tiles.push([
+      pct,
+      <Trans>
+        satisfied · 👍 {good} 👎 {bad}
+      </Trans>,
+    ])
+  }
   return (
     <div
-      className="mx-auto mt-7 grid max-w-[520px] grid-cols-3 rounded-2xl border bg-card phone:grid-cols-1 [&>div+div]:border-s phone:[&>div+div]:border-s-0 phone:[&>div+div]:border-t"
+      className="mx-auto mt-7 grid max-w-[560px] auto-cols-fr grid-flow-col rounded-2xl phone:grid-flow-row border bg-card phone:grid-cols-1 [&>div+div]:border-s phone:[&>div+div]:border-s-0 phone:[&>div+div]:border-t"
       data-testid="day-stats"
     >
       {tiles.map(([value, label], i) => (

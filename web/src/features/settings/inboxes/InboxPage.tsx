@@ -228,6 +228,17 @@ function CustomerSees({ inbox }: { inbox: Inbox }) {
                 ))}
               </select>
             </SettingRow>
+            <SettingRow
+              title={<Trans>Ask for a rating after closing</Trans>}
+              hint={<Trans>E-mail contacts get a short e-mail with two links; chat and app contacts are asked in the widget or app.</Trans>}
+            >
+              <Switch
+                checked={inbox.ask_for_rating}
+                onCheckedChange={(on) => save({ ask_for_rating: on })}
+                aria-label={t`Ask for a rating after closing`}
+                data-testid="ask-for-rating"
+              />
+            </SettingRow>
             <SettingRow title={<Trans>Colour</Trans>} htmlFor="inbox-color">
               <input
                 id="inbox-color"

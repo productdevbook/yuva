@@ -53,6 +53,14 @@ msgid "{actor} closed the conversation"
 msgstr "{actor} closed the conversation"
 
 #: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} rated the conversation 👍"
+msgstr "{actor} rated the conversation 👍"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} rated the conversation 👎"
+msgstr "{actor} rated the conversation 👎"
+
+#: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} removed the assignee"
 msgstr "{actor} removed the assignee"
 
@@ -107,6 +115,14 @@ msgstr "{first} comes back after writing again"
 #: src/features/conversation/actions.ts
 msgid "{first} is at the end of the queue"
 msgstr "{first} is at the end of the queue"
+
+#: src/features/conversation/messages/Talk.tsx
+msgid "{first} rated the conversation 👍"
+msgstr "{first} rated the conversation 👍"
+
+#: src/features/conversation/messages/Talk.tsx
+msgid "{first} rated the conversation 👎"
+msgstr "{first} rated the conversation 👎"
 
 #: src/features/conversation/PersonHeader.tsx
 msgid "{hours, plural, one {Waiting for # hour} other {Waiting for # hours}}"
@@ -176,6 +192,10 @@ msgstr "{others} other conversations"
 #: src/app/TeamMenu.tsx
 msgid "{replies, plural, one {# reply} other {# replies}}"
 msgstr "{replies, plural, one {# reply} other {# replies}}"
+
+#: src/app/TeamMenu.tsx
+msgid "{satisfied} satisfied"
+msgstr "{satisfied} satisfied"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
@@ -473,6 +493,10 @@ msgstr "As above ({current})"
 #: src/app/Gate.tsx
 msgid "Ask an owner or admin of your workspace to invite you."
 msgstr "Ask an owner or admin of your workspace to invite you."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Ask for a rating after closing"
+msgstr "Ask for a rating after closing"
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Ask for an e-mail address when offline"
@@ -992,6 +1016,10 @@ msgstr "E-mail address"
 #: src/features/contact/MergePreview.tsx
 msgid "E-mail addresses"
 msgstr "E-mail addresses"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "E-mail contacts get a short e-mail with two links; chat and app contacts are asked in the widget or app."
+msgstr "E-mail contacts get a short e-mail with two links; chat and app contacts are asked in the widget or app."
 
 #: src/components/common/EmailHtml.tsx
 msgid "E-mail content"
@@ -2160,6 +2188,14 @@ msgstr "Queued. The new attempt shows up below in a moment."
 msgid "Quick cleanup"
 msgstr "Quick cleanup"
 
+#: src/features/conversation/rating.tsx
+msgid "Rated bad"
+msgstr "Rated bad"
+
+#: src/features/conversation/rating.tsx
+msgid "Rated good"
+msgstr "Rated good"
+
 #: src/components/common/text.ts
 msgid "Read contacts"
 msgstr "Read contacts"
@@ -2366,6 +2402,10 @@ msgstr "Rotate the signing secret?"
 #: src/features/settings/inboxes/NewInboxPage.tsx
 msgid "Route mail for this address to Yuva's e-mail ingress, for example with the Cloudflare Email Worker in edge/. Replies go out through the SMTP account you entered."
 msgstr "Route mail for this address to Yuva's e-mail ingress, for example with the Cloudflare Email Worker in edge/. Replies go out through the SMTP account you entered."
+
+#: src/features/inbox/QueuePage.tsx
+msgid "satisfied · 👍 {good} 👎 {bad}"
+msgstr "satisfied · 👍 {good} 👎 {bad}"
 
 #: src/components/common/text.ts
 msgid "Saturday"

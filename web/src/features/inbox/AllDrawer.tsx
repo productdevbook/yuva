@@ -8,6 +8,7 @@ import { formatShort, useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
+import { currentRating, RatingMark } from "@/features/conversation/rating"
 import { useConversations } from "@/features/inbox/queries"
 import { useQueue } from "@/features/inbox/queue"
 import { useShownId } from "@/features/inbox/WaitingPill"
@@ -35,6 +36,7 @@ export function ConversationRow({ c, current, onOpen }: { c: ConversationListIte
   const channel = useChannelMap().get(c.channel_id ?? "")
   const name = c.contact.name || c.contact.email || t`Unnamed contact`
   const preview = c.last_message?.text || c.subject
+  const rating = currentRating(c)
   return (
     <button
       type="button"
@@ -61,6 +63,12 @@ export function ConversationRow({ c, current, onOpen }: { c: ConversationListIte
             <span className="shrink-0">
               {inbox && "· "}
               {text.channel[channel.kind]}
+            </span>
+          )}
+          {rating && (
+            <span className="shrink-0">
+              {"· "}
+              <RatingMark rating={rating.rating} comment={rating.comment} />
             </span>
           )}
         </span>

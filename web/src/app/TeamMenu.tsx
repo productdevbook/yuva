@@ -46,6 +46,8 @@ export function TeamSummary({ className }: { className?: string }) {
   const closed = stats.closed
   const median = stats.median_first_reply_seconds
   const first = median !== undefined ? formatDuration(median, i18n.locale) : ""
+  const rated = stats.ratings.good + stats.ratings.bad
+  const satisfied = rated > 0 ? new Intl.NumberFormat(i18n.locale, { style: "percent" }).format(stats.ratings.good / rated) : ""
   return (
     <span className={className}>
       <Plural value={replies} one="# reply" other="# replies" />
@@ -57,6 +59,12 @@ export function TeamSummary({ className }: { className?: string }) {
       )}
       {" · "}
       <Plural value={closed} one="# closed" other="# closed" />
+      {rated > 0 && (
+        <>
+          {" · "}
+          <Trans>{satisfied} satisfied</Trans>
+        </>
+      )}
     </span>
   )
 }

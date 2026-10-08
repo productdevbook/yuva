@@ -53,6 +53,14 @@ msgid "{actor} closed the conversation"
 msgstr "{actor} konuşmayı kapattı"
 
 #: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} rated the conversation 👍"
+msgstr "{actor} konuşmayı değerlendirdi 👍"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "{actor} rated the conversation 👎"
+msgstr "{actor} konuşmayı değerlendirdi 👎"
+
+#: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} removed the assignee"
 msgstr "{actor} atamayı kaldırdı"
 
@@ -107,6 +115,14 @@ msgstr "{first} tekrar yazınca geri gelecek"
 #: src/features/conversation/actions.ts
 msgid "{first} is at the end of the queue"
 msgstr "{first} sıranın sonunda"
+
+#: src/features/conversation/messages/Talk.tsx
+msgid "{first} rated the conversation 👍"
+msgstr "{first} konuşmayı değerlendirdi 👍"
+
+#: src/features/conversation/messages/Talk.tsx
+msgid "{first} rated the conversation 👎"
+msgstr "{first} konuşmayı değerlendirdi 👎"
 
 #: src/features/conversation/PersonHeader.tsx
 msgid "{hours, plural, one {Waiting for # hour} other {Waiting for # hours}}"
@@ -176,6 +192,10 @@ msgstr "{others} diğer konuşma"
 #: src/app/TeamMenu.tsx
 msgid "{replies, plural, one {# reply} other {# replies}}"
 msgstr "{replies, plural, one {# yanıt} other {# yanıt}}"
+
+#: src/app/TeamMenu.tsx
+msgid "{satisfied} satisfied"
+msgstr "{satisfied} memnun"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
@@ -473,6 +493,10 @@ msgstr "Yukarıdaki gibi ({current})"
 #: src/app/Gate.tsx
 msgid "Ask an owner or admin of your workspace to invite you."
 msgstr "Çalışma alanınızın sahibinden ya da bir yöneticisinden sizi davet etmesini isteyin."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Ask for a rating after closing"
+msgstr "Bitince değerlendirme iste"
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Ask for an e-mail address when offline"
@@ -992,6 +1016,10 @@ msgstr "E-posta adresi"
 #: src/features/contact/MergePreview.tsx
 msgid "E-mail addresses"
 msgstr "E-posta adresleri"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "E-mail contacts get a short e-mail with two links; chat and app contacts are asked in the widget or app."
+msgstr "E-postayla yazanlara iki bağlantılı kısa bir e-posta gider; sohbet ve uygulamadan yazanlara pencerede ya da uygulamada sorulur."
 
 #: src/components/common/EmailHtml.tsx
 msgid "E-mail content"
@@ -2160,6 +2188,14 @@ msgstr "Sıraya alındı. Yeni deneme birazdan aşağıda görünür."
 msgid "Quick cleanup"
 msgstr "Hızlı temizlik"
 
+#: src/features/conversation/rating.tsx
+msgid "Rated bad"
+msgstr "Kötü değerlendirdi"
+
+#: src/features/conversation/rating.tsx
+msgid "Rated good"
+msgstr "İyi değerlendirdi"
+
 #: src/components/common/text.ts
 msgid "Read contacts"
 msgstr "Kişileri görme"
@@ -2366,6 +2402,10 @@ msgstr "İmzalama anahtarı yenilensin mi?"
 #: src/features/settings/inboxes/NewInboxPage.tsx
 msgid "Route mail for this address to Yuva's e-mail ingress, for example with the Cloudflare Email Worker in edge/. Replies go out through the SMTP account you entered."
 msgstr "Bu adrese gelen postayı Yuva'nın e-posta girişine yönlendir, örneğin edge/ içindeki Cloudflare Email Worker ile. Yanıtlar girdiğin SMTP hesabından gider."
+
+#: src/features/inbox/QueuePage.tsx
+msgid "satisfied · 👍 {good} 👎 {bad}"
+msgstr "memnun · 👍 {good} 👎 {bad}"
 
 #: src/components/common/text.ts
 msgid "Saturday"

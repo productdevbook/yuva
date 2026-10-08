@@ -5,6 +5,7 @@ import { ChannelIcon, ContactAvatar, Dot, MemberAvatar } from "@/components/comm
 import { formatDateTime, useEnumText } from "@/components/common/text"
 import { useContactPresence } from "@/features/contact/queries"
 import { CategoryChip } from "@/features/conversation/Feedback"
+import { currentRating, RatingMark } from "@/features/conversation/rating"
 import { RelatedLine } from "@/features/conversation/RelatedLine"
 import type { Channel, Conversation, Message } from "@/lib/api"
 import { useViewers } from "@/lib/presence"
@@ -65,7 +66,13 @@ function Status({ c, lastInbound }: { c: Conversation; lastInbound?: Message }) 
     const until = formatDateTime(c.snooze_until, i18n.locale)
     return <Trans>Snoozed until {until}</Trans>
   }
-  return <Trans>Done</Trans>
+  const rating = currentRating(c)
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <Trans>Done</Trans>
+      {rating && <RatingMark rating={rating.rating} comment={rating.comment} />}
+    </span>
+  )
 }
 
 function Watchers({ conversationId }: { conversationId: string }) {

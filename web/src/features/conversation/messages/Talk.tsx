@@ -349,6 +349,31 @@ function OlderDraft({ m, ctx }: { m: Message; ctx: ThreadContext }) {
   )
 }
 
+function Rated({ m, ctx, name }: { m: Message; ctx: ThreadContext; name: string }) {
+  const { i18n } = useLingui()
+  const rating = m.event?.rating
+  const first = name.split(" ")[0]
+  if (!rating) return <EventLine m={m} ctx={ctx} />
+  return (
+    <div className="my-2 flex justify-center" data-testid="rated">
+      <div
+        className={cn(
+          "max-w-[88%] rounded-2xl border px-3.5 py-2 text-center text-sm",
+          rating === "good" ? "border-green-600/25 bg-green-600/6" : "border-destructive/25 bg-destructive/5",
+        )}
+      >
+        <span className="font-medium">
+          {rating === "good" ? <Trans>{first} rated the conversation 👍</Trans> : <Trans>{first} rated the conversation 👎</Trans>}
+        </span>
+        {m.body && <span className="text-muted-foreground"> · “{m.body}”</span>}
+        <time className="ms-1.5 text-xs text-faint" dateTime={m.created_at} title={formatDateTime(m.created_at, i18n.locale)}>
+          {timeOf(m.created_at, i18n.locale)}
+        </time>
+      </div>
+    </div>
+  )
+}
+
 export function Talk({
   items,
   ctx,
@@ -373,7 +398,8 @@ export function Talk({
         const sep = day !== lastDay ? <div className="mt-2.5 mb-2 flex items-center gap-3 text-xs text-faint before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">{dayLabel(m.created_at)}</div> : null
         lastDay = day
         let body: React.ReactNode
-        if (m.kind === "event") body = <EventLine m={m} ctx={ctx} />
+        if (m.kind === "event" && m.event?.type === "rated") body = <Rated m={m} ctx={ctx} name={name} />
+        else if (m.kind === "event") body = <EventLine m={m} ctx={ctx} />
         else if (m.kind === "note") body = <Note m={m} ctx={ctx} />
         else if (m.draft) body = <OlderDraft m={m} ctx={ctx} />
         else if (m.id === feedbackId && conversation.feedback) body = <FeedbackCard m={m} feedback={conversation.feedback} />
