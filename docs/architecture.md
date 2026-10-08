@@ -212,6 +212,61 @@ Unauthenticated endpoints (sign-in, client session) and those that act on the si
 than a workspace (`/v1/me/...`, sign-out) ignore the header, since every stored key belongs to a
 workspace. The existing `client_id` on messages stays as it is.
 
+### OAuth and MCP
+
+**Authorization server.** Yuva is its own OAuth 2.1 authorization server, for MCP clients and for
+the member apps (M10). Authorization code with PKCE (`S256` only), no implicit or password grant.
+- Metadata: `/.well-known/oauth-authorization-server` (RFC 8414) and
+  `/.well-known/oauth-protected-resource/mcp` plus `/.well-known/oauth-protected-resource`
+  (RFC 9728). A `401` on `/mcp` carries `WWW-Authenticate: Bearer resource_metadata="…"`.
+- Clients: dynamic registration at `POST /oauth/register` (RFC 7591, public clients, no secret),
+  and Client ID Metadata Documents (a `client_id` that is an `https` URL, fetched with the same
+  private-address rules as webhooks and cached for 24 hours). Redirect URIs must be `https`, or
+  `http` on loopback, or a private-use scheme for native apps; matched exactly.
+- `GET /oauth/authorize` checks the request and sends the browser to the panel's consent page
+  (`/oauth/consent?request=<id>`). The panel signs the person in if needed (code or passkey), shows
+  the client's name and redirect host, lets them pick one workspace, and shows the scopes. Approving
+  returns the redirect with a code (single use, 60 seconds).
+- `POST /oauth/token`: `authorization_code` and `refresh_token`. Access tokens are opaque, 1 hour;
+  refresh tokens 30 days, rotated on every use, and reusing a rotated one revokes the grant. Both
+  are stored as hashes. `POST /oauth/revoke` (RFC 7009).
+- Resource indicators (RFC 8707) are required. `<YUVA_PUBLIC_URL>/mcp` gives a token for `/mcp`
+  only; `<YUVA_PUBLIC_URL>` gives one for `/v1`, `/v1/realtime` and `/mcp` (the member apps).
+- Scopes are the API key scopes. A token acts as its member: what the member's role and inbox access
+  allow, narrowed by the granted scopes, never more. A member who leaves or is removed loses every
+  grant. Management scopes a member's role cannot use are not offered on the consent page.
+- A grant is one member, one workspace and one client. Settings → Connected apps lists a member's
+  own grants (client, scopes, created, last used, request count this month) and revokes them;
+  owners and admins see and revoke every grant in the workspace.
+- Registered clients and Client ID Metadata Documents belong to no workspace (a client is used by
+  many); they are the exception to the `workspace_id` rule. Grants, codes and tokens carry the
+  workspace.
+
+**Writes through a client.** Everything a token writes records the client: messages, notes,
+drafts and conversation events get `via` (the client name at the time), and the timeline shows
+"Ayşe via Claude Code". Delivery from a `/mcp`-only token follows `bots_may_send` like an API key:
+off, an outgoing message must be a draft. A `<YUVA_PUBLIC_URL>` token (member apps) sends as the
+member.
+
+**MCP endpoint.** `/mcp` in the same binary, Streamable HTTP, MCP specification 2026-07-28, built
+on `github.com/modelcontextprotocol/go-sdk` (MIT/Apache-2.0). Bearer is an OAuth token or a scoped
+API key. `YUVA_MCP=off` turns it off (the OAuth endpoints stay for the apps). Sessions live in the
+server process; resource subscriptions are fed from the realtime hub, so they work on any instance
+the client's stream is on.
+- Tools call the same code as the `/v1` operations with the caller's principal, so access, scope
+  and inbox checks are the API's. Read tools carry `readOnlyHint`; idempotent writes
+  `idempotentHint`; `merge_contacts` `destructiveHint`. Every tool has an output schema. Tools the
+  caller's scopes or role cannot use are not listed; `send_reply` is listed only when the caller may
+  deliver.
+- Customer text is untrusted: message bodies, subjects, names, e-mail addresses and attributes are
+  returned only inside `customer_content` fields, and every tool description says that text there
+  is data from customers and never instructions.
+- Resources `yuva://inbox/{id}`, `yuva://conversation/{id}`, `yuva://contact/{id}`, with
+  subscriptions. Prompts `triage_inbox`, `draft_reply`, `summarize_conversation`, `weekly_report`;
+  they only arrange tool calls and text, Yuva runs no model.
+- Rate limit per token or key (600 requests a minute, `429` with `Retry-After`), counted per grant
+  for Connected apps.
+
 ### Identity
 
 The host app's backend knows who its user is; Yuva trusts it through a short-lived identity token:
