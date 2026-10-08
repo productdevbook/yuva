@@ -7,14 +7,15 @@ import { isLive } from "@/lib/realtime"
 import { useSession } from "@/lib/session"
 import { useLiveContext } from "@/lib/workspace"
 
-export function useConversations(filters: ConversationFilters) {
+export function useConversations(filters: ConversationFilters, enabled = true) {
   const { workspaceId: ws } = useSession()
   return useInfiniteQuery({
     queryKey: keys.conversations(ws, filters),
     queryFn: ({ pageParam }) =>
-      unwrap(api.GET("/v1/conversations", { params: { query: { ...filters, cursor: pageParam, limit: 25 } } })),
+      unwrap(api.GET("/v1/conversations", { params: { query: { ...filters, cursor: pageParam, limit: 100 } } })),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (last) => last.next_cursor,
+    enabled,
   })
 }
 

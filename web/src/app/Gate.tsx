@@ -90,7 +90,7 @@ export function Gate() {
   const onSwitch = useCallback(
     (id: string) => {
       choose(id)
-      navigate("/all")
+      navigate("/")
     },
     [choose, navigate],
   )

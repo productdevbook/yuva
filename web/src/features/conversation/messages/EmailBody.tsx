@@ -16,7 +16,7 @@ function isInlineImage(a: Message["attachments"][number]) {
   return !!a.content_id && a.content_type.startsWith("image/") && a.content_type !== "image/svg+xml"
 }
 
-export function EmailBody({ m, outgoing, expandQuoted }: { m: Message; outgoing: boolean; expandQuoted: boolean }) {
+export function EmailBody({ m, outgoing, expandQuoted, plain }: { m: Message; outgoing: boolean; expandQuoted: boolean; plain?: boolean }) {
   const { t } = useLingui()
   const { workspaceId } = useSession()
   const [quotedOwn, setQuotedOwn] = useState<boolean | null>(null)
@@ -39,16 +39,18 @@ export function EmailBody({ m, outgoing, expandQuoted }: { m: Message; outgoing:
   return (
     <>
       {html ? (
-        <div className="w-full overflow-hidden rounded-2xl border bg-white">
+        <div className="w-full overflow-hidden rounded-xl border bg-white">
           <EmailHtml html={html} images={images} inline={inline} />
         </div>
+      ) : plain ? (
+        text && <div className="text-[15px] leading-[1.65] break-words whitespace-pre-wrap">{text}</div>
       ) : (
         text && <Bubble tone={outgoing ? "out" : "in"}>{text}</Bubble>
       )}
       {quotedShown && detail.isPending && <Skeleton className="h-10 w-full" />}
       <ErrorLine error={quotedShown && detail.error} className="text-xs" />
       {(m.email?.quoted || (remote && !images)) && (
-        <div className={cn("flex flex-wrap gap-1", outgoing && "justify-end")}>
+        <div className={cn("flex flex-wrap gap-1", plain ? "-ms-2 mt-1" : outgoing && "justify-end")}>
           {m.email?.quoted && (
             <Button
               variant="ghost"

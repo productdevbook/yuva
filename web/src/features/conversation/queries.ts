@@ -93,30 +93,36 @@ export function useMoveConversation(id: string) {
   })
 }
 
-type Outgoing = MessageCreate & { client_id: string; files: File[] }
+export type Outgoing = MessageCreate & { client_id: string; files: File[] }
+
+export function postMessage(conversationId: string, { files, ...body }: Outgoing) {
+  const path = { params: { path: { conversationId } } }
+  if (files.length === 0) {
+    return unwrap(api.POST("/v1/conversations/{conversationId}/messages", { ...path, body }))
+  }
+  return unwrap(
+    api.POST("/v1/conversations/{conversationId}/messages", {
+      ...path,
+      body: { ...body, files: [] },
+      bodySerializer: () => {
+        const form = new FormData()
+        for (const [k, v] of Object.entries(body)) if (v !== undefined && v !== "") form.append(k, String(v))
+        for (const f of files) form.append("files", f, f.name)
+        return form
+      },
+    }),
+  )
+}
+
+export function patchConversation(id: string, body: ConversationUpdate) {
+  return unwrap(api.PATCH("/v1/conversations/{conversationId}", { params: { path: { conversationId: id } }, body }))
+}
 
 export function useSendMessage(conversationId: string) {
   const qc = useQueryClient()
   const live = useLiveContext()
   return useMutation({
-    mutationFn: ({ files, ...body }: Outgoing) => {
-      const path = { params: { path: { conversationId } } }
-      if (files.length === 0) {
-        return unwrap(api.POST("/v1/conversations/{conversationId}/messages", { ...path, body }))
-      }
-      return unwrap(
-        api.POST("/v1/conversations/{conversationId}/messages", {
-          ...path,
-          body: { ...body, files: [] },
-          bodySerializer: () => {
-            const form = new FormData()
-            for (const [k, v] of Object.entries(body)) if (v !== undefined && v !== "") form.append(k, String(v))
-            for (const f of files) form.append("files", f, f.name)
-            return form
-          },
-        }),
-      )
-    },
+    mutationFn: (out: Outgoing) => postMessage(conversationId, out),
     onSuccess: (data) => applyEvent(qc, live, { type: "message.created", data }),
   })
 }

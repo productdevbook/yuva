@@ -62,7 +62,7 @@ export function FeedbackDetails({ feedback }: { feedback: Feedback }) {
     copy([`${t`Category`}: ${text.category[feedback.category]}`, ...rows.map(([k, v]) => `${k}: ${v}`)].join("\n"))
   useHotkeys({ [SHORTCUTS.copyDetails]: () => void copyAll() })
   return (
-    <div className="flex items-start gap-2 rounded-xl bg-surface px-3.5 py-2.5" data-testid="feedback-details">
+    <div className="flex items-start gap-2 rounded-xl px-2.5 py-1.5" data-testid="feedback-details">
       <dl className="grid min-w-0 flex-1 grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1 text-xs sm:grid-cols-[auto_minmax(0,1fr)_auto_minmax(0,1fr)]">
         {rows.map(([k, v, mono]) => (
           <div key={k} className="contents">

@@ -1,8 +1,8 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { DownloadIcon, KeyboardIcon, LanguagesIcon, LogOutIcon, UserIcon } from "lucide-react"
+import { BuildingIcon, DownloadIcon, KeyboardIcon, LanguagesIcon, LogOutIcon, UserIcon } from "lucide-react"
 import { useNavigate } from "react-router"
 
+import { useShell } from "@/app/shell"
 import { PersonAvatar } from "@/components/common"
 import { useChangeLocale } from "@/components/common/LanguageMenu"
 import {
@@ -20,21 +20,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { locales, type Locale } from "@/i18n"
-import { api, unwrap, useVersion, type Availability } from "@/lib/api"
+import { useVersion, type Availability } from "@/lib/api"
+import { useSetAvailability } from "@/lib/availability"
 import { useInstallPrompt } from "@/lib/pwa"
 import { useRealtimeStatus } from "@/lib/realtime"
-import { meKey, useSession, useSignOut } from "@/lib/session"
+import { useSession, useSignOut } from "@/lib/session"
 import { cn } from "@/lib/utils"
 
 function statusClass(a: Availability, live: boolean) {
-  if (a === "away") return "bg-warning"
-  return live ? "bg-success" : "bg-faint"
+  if (a === "away") return "bg-zinc-400"
+  return live ? "bg-green-600" : "bg-zinc-400"
 }
 
-export function UserMenu({ onShortcuts }: { onShortcuts: () => void }) {
+export function UserMenu() {
   const { t, i18n } = useLingui()
-  const { me } = useSession()
-  const qc = useQueryClient()
+  const { me, membership, switchWorkspace } = useSession()
+  const { openShortcuts } = useShell()
   const navigate = useNavigate()
   const signOut = useSignOut()
   const install = useInstallPrompt()
@@ -42,33 +43,26 @@ export function UserMenu({ onShortcuts }: { onShortcuts: () => void }) {
   const version = useVersion().data?.version
   const live = useRealtimeStatus() === "live"
   const availability = me.person.availability
-  const setAvailability = useMutation({
-    mutationFn: (value: Availability) => unwrap(api.PATCH("/v1/me", { body: { availability: value } })),
-    onSuccess: (data) => qc.setQueryData(meKey, data),
-  })
+  const setAvailability = useSetAvailability()
+
   const statusText = availability === "away" ? t`Away` : live ? t`Available` : t`Offline`
   const name = me.person.name || me.person.email
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className="flex h-11 w-full items-center gap-2.5 rounded-lg px-2 text-start transition-colors outline-none hover:bg-muted aria-expanded:bg-muted"
+        className="relative ms-1 rounded-full p-0.5 outline-none"
+        aria-label={t`${name} · ${statusText}`}
+        title={statusText}
         data-testid="user-menu"
       >
-        <span className="relative shrink-0">
-          <PersonAvatar name={name} />
-          <span
-            className={cn("absolute -end-0.5 -bottom-0.5 size-2.5 rounded-full ring-2 ring-surface", statusClass(availability, live))}
-            title={statusText}
-            data-testid="availability-dot"
-            data-availability={availability}
-          />
-        </span>
-        <span className="flex min-w-0 flex-1 flex-col leading-tight">
-          <span className="truncate text-sm font-medium">{name}</span>
-          <span className="truncate text-xs text-faint">{statusText}</span>
-        </span>
+        <PersonAvatar name={name} className="size-[30px] bg-zinc-600 text-[11px] font-semibold text-white" />
+        <span
+          className={cn("absolute end-px bottom-px size-[9px] rounded-full ring-2 ring-background", statusClass(availability, live))}
+          data-testid="availability-dot"
+          data-availability={availability}
+        />
       </DropdownMenuTrigger>
-      <DropdownMenuContent side="top" className="w-72">
+      <DropdownMenuContent align="end" className="w-72">
         <DropdownMenuGroup>
           <DropdownMenuLabel className="truncate">{me.person.email}</DropdownMenuLabel>
           <DropdownMenuRadioGroup
@@ -123,7 +117,24 @@ export function UserMenu({ onShortcuts }: { onShortcuts: () => void }) {
             </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
-        <DropdownMenuItem onClick={onShortcuts}>
+        {me.memberships.length > 1 && (
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <BuildingIcon />
+              <span className="min-w-0 flex-1 truncate">{membership.workspace.name}</span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent className="min-w-56">
+              <DropdownMenuRadioGroup value={membership.workspace.id} onValueChange={(id) => switchWorkspace(String(id))}>
+                {me.memberships.map((m) => (
+                  <DropdownMenuRadioItem key={m.workspace.id} value={m.workspace.id}>
+                    <span className="truncate">{m.workspace.name}</span>
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+        )}
+        <DropdownMenuItem onClick={openShortcuts}>
           <KeyboardIcon />
           <Trans>Keyboard shortcuts</Trans>
           <span className="ms-auto text-xs text-faint">?</span>

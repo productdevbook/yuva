@@ -625,10 +625,15 @@ that allows only its own scripts, connections and workers, no framing (`frame-an
 no plugins; inline styles and any http(s) image stay allowed for the sandboxed e-mail frame, which
 inherits the policy. Every response carries `X-Content-Type-Options: nosniff`.
 
-- Sidebar: all, mine, unassigned, per inbox, per label. Conversation list with filters and
-  full-text search (Postgres FTS).
-- Thread: reply and note in one composer, canned replies on `/`, attachments, keyboard shortcuts,
-  contact sidebar with identity attributes, earlier conversations and channel delivery state.
+- Queue: one conversation at a time. The conversations waiting for the member (open, assigned to
+  them or to nobody, oldest first) are a queue; after a reply, close, snooze or hand-off the next
+  one opens, with an undo. A reply is held for a few seconds before it is posted so it can be
+  undone; "send" also sets `pending`, "send and close" sets `closed`. A bot's draft is offered as
+  the suggested reply. All conversations are in a drawer (waiting, snoozed, replied, with the team,
+  done) with full-text search (Postgres FTS); everything else is in a command palette.
+- Conversation: reply and note in one box, canned replies on `/`, attachments, keyboard shortcuts,
+  contact details with identity attributes, the contact's other conversations, channel delivery
+  state, and a notice when another member types a reply in the same conversation.
 - Settings: inboxes, channels, members and access, labels, canned replies, business hours,
   auto-replies, webhooks, API keys, retention and deleting the workspace; deleting one's own
   account in the profile.

@@ -65,12 +65,14 @@ export function EventLine({ m, ctx }: { m: Message; ctx: ThreadContext }) {
     }
   }
   return (
-    <p className="py-1 text-center text-xs text-faint" data-testid="event-line">
-      {body}
-      <span aria-hidden> · </span>
-      <time dateTime={m.created_at} title={formatDateTime(m.created_at, i18n.locale)}>
-        {timeOf(m.created_at, i18n.locale)}
-      </time>
-    </p>
+    <div className="my-2 flex justify-center" data-testid="event-line">
+      <span className="max-w-full rounded-full border bg-card px-2.5 py-[3px] text-center text-xs text-faint">
+        {body}
+        <span aria-hidden> · </span>
+        <time dateTime={m.created_at} title={formatDateTime(m.created_at, i18n.locale)}>
+          {timeOf(m.created_at, i18n.locale)}
+        </time>
+      </span>
+    </div>
   )
 }

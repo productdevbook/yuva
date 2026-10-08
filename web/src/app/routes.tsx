@@ -2,7 +2,7 @@ import { Navigate, Route, Routes } from "react-router"
 
 import { Gate } from "@/app/Gate"
 import { SignInPage } from "@/features/auth/SignInPage"
-import { InboxPage, OpenConversation } from "@/features/inbox/InboxPage"
+import { QueuePage } from "@/features/inbox/QueuePage"
 import { ConsentPage } from "@/features/oauth/ConsentPage"
 import { ApiKeysPage } from "@/features/settings/api-keys/ApiKeysPage"
 import { CannedRepliesPage } from "@/features/settings/canned/CannedRepliesPage"
@@ -30,7 +30,8 @@ export function AppRoutes() {
       <Route path="sign-in" element={<SignInPage />} />
       <Route path="oauth/consent" element={<ConsentPage />} />
       <Route element={<Gate />}>
-        <Route index element={<Navigate to="/all" replace />} />
+        <Route index element={<QueuePage />} />
+        <Route path="conversations/:conversationId" element={<QueuePage />} />
         <Route path="settings" element={<SettingsLayout />}>
           <Route index element={<SettingsIndex />} />
           <Route path="profile" element={<ProfilePage />} />
@@ -53,12 +54,7 @@ export function AppRoutes() {
           <Route path="webhooks" element={<WebhooksPage />} />
           <Route path="webhooks/:webhookId" element={<WebhookPage />} />
         </Route>
-        <Route path="conversations/:conversationId" element={<OpenConversation />} />
-        <Route path="inbox/:inboxId/:conversationId?" element={<InboxPage />} />
-        <Route path="label/:labelId/:conversationId?" element={<InboxPage />} />
-        <Route path="feedback" element={<Navigate to="/feedback/all" replace />} />
-        <Route path="feedback/:category/:conversationId?" element={<InboxPage />} />
-        <Route path=":view/:conversationId?" element={<InboxPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
   )
