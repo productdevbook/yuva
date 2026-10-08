@@ -1,9 +1,54 @@
 {
-  "name": "@yuva/js",
+  "name": "@useyuva/js",
   "version": "0.0.3",
-  "private": true,
+  "description": "Yuva for the web: a headless client for contacts, the <yuva-chat> element, React hooks and a typed /v1 client.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/productdevbook/yuva.git",
+    "directory": "sdk/js"
+  },
+  "bugs": "https://github.com/productdevbook/yuva/issues",
+  "keywords": [
+    "yuva",
+    "chat",
+    "support",
+    "live-chat",
+    "web-component",
+    "customer-messaging"
+  ],
   "type": "module",
+  "sideEffects": [
+    "./dist/esm/chat.js",
+    "./dist/yuva.js",
+    "./dist/yuva-chat.js"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/esm/index.js"
+    },
+    "./chat": {
+      "types": "./dist/types/chat.d.ts",
+      "default": "./dist/esm/chat.js"
+    },
+    "./react": {
+      "types": "./dist/types/react.d.ts",
+      "default": "./dist/esm/react.js"
+    },
+    "./api": {
+      "types": "./dist/types/api.d.ts",
+      "default": "./dist/esm/api.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "generate": "bunx openapi-typescript@7.13.0 ../../openapi/openapi.yaml -o src/schema.gen.ts",
     "extract": "lingui extract --clean --workers 1",
@@ -11,10 +56,20 @@
     "typecheck": "tsc --noEmit",
     "check": "bun run compile && bun run typecheck && bun test",
     "build": "bun run compile && bun scripts/build.ts",
-    "example": "bun scripts/serve.ts"
+    "example": "bun scripts/serve.ts",
+    "prepublishOnly": "bun run check && bun run build"
   },
   "dependencies": {
-    "@lingui/core": "^6.9.0"
+    "@lingui/core": "^6.9.0",
+    "openapi-fetch": "0.17.0"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "^20.14.5",
@@ -23,7 +78,9 @@
     "@lingui/format-po": "^6.9.0",
     "@lingui/native-tools": "^0.1.5",
     "@types/bun": "^1.4.2",
+    "@types/react": "19.2.2",
     "happy-dom": "^20.14.5",
+    "react": "19.2.0",
     "typescript": "^7.0.2"
   }
 }
