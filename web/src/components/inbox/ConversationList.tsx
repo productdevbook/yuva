@@ -313,7 +313,7 @@ function Row({
             {c.subject || <Trans>No subject</Trans>}
           </p>
           {typing ? (
-            <p className="flex min-w-0 items-center gap-1.5 text-xs text-primary" data-testid="row-typing">
+            <p className="flex min-w-0 items-center gap-1.5 text-xs text-brand" data-testid="row-typing">
               <TypingDots />
               <span className="truncate">
                 <Trans>typing…</Trans>
