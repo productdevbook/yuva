@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { CornerUpLeftIcon, FlagIcon } from "lucide-react"
+import { BotIcon, CornerUpLeftIcon, FlagIcon } from "lucide-react"
 import { Link } from "react-router"
 
 import { ChannelIcon, Dot, LabelChip, PersonAvatar, TypingDots } from "@/components/common"
@@ -105,6 +105,9 @@ export function ConversationRow({
                     {" — "}
                     {preview.author_type === "member" && (
                       <CornerUpLeftIcon className="me-1 inline size-3 align-[-1px]" aria-label={t`Reply`} />
+                    )}
+                    {preview.author_type === "bot" && (
+                      <BotIcon className="me-1 inline size-3 align-[-1px]" aria-label={t`Bot`} data-testid="preview-bot" />
                     )}
                     {preview.text || <Trans>Attachment</Trans>}
                   </span>

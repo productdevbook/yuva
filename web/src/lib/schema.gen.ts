@@ -404,7 +404,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** The current workspace */
+        /**
+         * The current workspace
+         * @description Scope: `inboxes:read`.
+         */
         get: operations["getWorkspace"];
         put?: never;
         post?: never;
@@ -423,7 +426,10 @@ export interface paths {
         head?: never;
         /**
          * Update the workspace
-         * @description Owners only, with a member session.
+         * @description `retention_days`: owners, or an API key with `workspace:manage`. `bots_may_send`: owners
+         *     and admins with a member session (`403 member_session_required` for a key).
+         *
+         *     Scope: `workspace:manage`.
          */
         patch: operations["updateWorkspace"];
         trace?: never;
@@ -435,7 +441,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List members */
+        /**
+         * List members
+         * @description Scope: `inboxes:read`.
+         */
         get: operations["listMembers"];
         put?: never;
         post?: never;
@@ -452,7 +461,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get a member */
+        /**
+         * Get a member
+         * @description Scope: `inboxes:read`.
+         */
         get: operations["getMember"];
         put?: never;
         post?: never;
@@ -529,7 +541,8 @@ export interface paths {
         /**
          * Create an API key
          * @description Owners and admins only, with a member session. The secret is returned once and stored
-         *     only as a hash.
+         *     only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`
+         *     or `workspace:manage` (`400 validation_failed`).
          */
         post: operations["createApiKey"];
         delete?: never;
@@ -555,7 +568,11 @@ export interface paths {
         delete: operations["revokeApiKey"];
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Rename an API key or change its bot
+         * @description Owners and admins only, with a member session.
+         */
+        patch: operations["updateApiKey"];
         trace?: never;
     };
     "/v1/inboxes": {
@@ -568,14 +585,18 @@ export interface paths {
         /**
          * List inboxes
          * @description Owners, admins and API keys see every inbox; agents see the inboxes they were given access
-         *     to.
+         *     to, and API keys limited to inboxes those inboxes.
+         *
+         *     Scope: `inboxes:read`.
          */
         get: operations["listInboxes"];
         put?: never;
         /**
          * Create an inbox
-         * @description Owners and admins only, with a member session. A new identity secret is generated; it is
+         * @description Owners, admins and API keys. A new identity secret is generated; it is
          *     returned here and on rotation only, and stored encrypted.
+         *
+         *     Scope: `inboxes:manage`.
          */
         post: operations["createInbox"];
         delete?: never;
@@ -594,21 +615,27 @@ export interface paths {
         /**
          * Get an inbox
          * @description An inbox the caller cannot see answers `404`.
+         *
+         *     Scope: `inboxes:read`.
          */
         get: operations["getInbox"];
         put?: never;
         post?: never;
         /**
          * Delete an inbox
-         * @description Owners and admins only, with a member session. Deletes its channels, conversations,
+         * @description Owners, admins and API keys. Deletes its channels, conversations,
          *     messages and attachments.
+         *
+         *     Scope: `inboxes:manage`.
          */
         delete: operations["deleteInbox"];
         options?: never;
         head?: never;
         /**
          * Update an inbox
-         * @description Owners and admins only, with a member session.
+         * @description Owners, admins and API keys.
+         *
+         *     Scope: `inboxes:manage`.
          */
         patch: operations["updateInbox"];
         trace?: never;
@@ -624,8 +651,10 @@ export interface paths {
         put?: never;
         /**
          * Rotate the identity secret
-         * @description Owners and admins only, with a member session. Replaces the inbox's identity secret, which
+         * @description Owners, admins and API keys. Replaces the inbox's identity secret, which
          *     host backends use to sign identity tokens; tokens signed with the old secret stop working.
+         *
+         *     Scope: `inboxes:manage`.
          */
         post: operations["rotateInboxIdentitySecret"];
         delete?: never;
@@ -645,6 +674,8 @@ export interface paths {
          * List members with access
          * @description Members granted access to this inbox. Owners and admins see every inbox without a grant and
          *     are not listed unless granted.
+         *
+         *     Scope: `inboxes:read`.
          */
         get: operations["listInboxMembers"];
         put?: never;
@@ -665,13 +696,17 @@ export interface paths {
         get?: never;
         /**
          * Give a member access
-         * @description Owners and admins only, with a member session. Granting twice is a no-op.
+         * @description Owners, admins and API keys. Granting twice is a no-op.
+         *
+         *     Scope: `inboxes:manage`.
          */
         put: operations["grantInboxAccess"];
         post?: never;
         /**
          * Take a member's access away
-         * @description Owners and admins only, with a member session.
+         * @description Owners, admins and API keys.
+         *
+         *     Scope: `inboxes:manage`.
          */
         delete: operations["revokeInboxAccess"];
         options?: never;
@@ -686,17 +721,22 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List an inbox's channels */
+        /**
+         * List an inbox's channels
+         * @description Scope: `inboxes:read`.
+         */
         get: operations["listChannels"];
         put?: never;
         /**
          * Add a channel
-         * @description Owners and admins only, with a member session. An `email` channel needs `email` (its
+         * @description Owners, admins and API keys. An `email` channel needs `email` (its
          *     address and outbound SMTP account); a `chat` channel needs `chat` (at least one allowed
          *     origin) and gets a generated public key; an `app` channel takes `app` (optional, defaults
          *     apply) and gets a generated public key; `settings` are stored as given.
          *     An address belongs to one channel of the whole server, because inbound mail picks its
          *     channel by the recipient alone; a taken address answers `409 email_address_taken`.
+         *
+         *     Scope: `inboxes:manage`.
          */
         post: operations["createChannel"];
         delete?: never;
@@ -712,23 +752,30 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get a channel */
+        /**
+         * Get a channel
+         * @description Scope: `inboxes:read`.
+         */
         get: operations["getChannel"];
         put?: never;
         post?: never;
         /**
          * Remove a channel
-         * @description Owners and admins only, with a member session. Conversations that started on it keep
+         * @description Owners, admins and API keys. Conversations that started on it keep
          *     their messages and lose their `channel_id`.
+         *
+         *     Scope: `inboxes:manage`.
          */
         delete: operations["deleteChannel"];
         options?: never;
         head?: never;
         /**
          * Update a channel
-         * @description Owners and admins only, with a member session. `email` replaces the e-mail settings as a
+         * @description Owners, admins and API keys. `email` replaces the e-mail settings as a
          *     whole, except that an absent `smtp.password` keeps the stored one; `chat` and `app` replace
          *     those settings as a whole, except the public key.
+         *
+         *     Scope: `inboxes:manage`.
          */
         patch: operations["updateChannel"];
         trace?: never;
@@ -744,9 +791,11 @@ export interface paths {
         put?: never;
         /**
          * Rotate a chat or app channel's public key
-         * @description Owners and admins only, with a member session. Gives a `chat` or `app` channel a new public
+         * @description Owners, admins and API keys. Gives a `chat` or `app` channel a new public
          *     key; widgets and apps built with the old key can no longer start sessions, existing contact
          *     sessions keep working. Other kinds answer `400`.
+         *
+         *     Scope: `inboxes:manage`.
          */
         post: operations["rotateChannelPublicKey"];
         delete?: never;
@@ -765,10 +814,15 @@ export interface paths {
         /**
          * List contacts
          * @description Newest first. `q` searches names, e-mail addresses and external ids.
+         *
+         *     Scope: `contacts:read`.
          */
         get: operations["listContacts"];
         put?: never;
-        /** Create a contact */
+        /**
+         * Create a contact
+         * @description Scope: `contacts:write`.
+         */
         post: operations["createContact"];
         delete?: never;
         options?: never;
@@ -787,6 +841,8 @@ export interface paths {
          * Find a contact by external id
          * @description The contact a host app knows by `external_id` in the given inbox. An inbox the caller
          *     cannot see answers `404`.
+         *
+         *     Scope: `contacts:read`.
          */
         get: operations["lookupContact"];
         put?: never;
@@ -809,12 +865,14 @@ export interface paths {
         post?: never;
         /**
          * Delete a contact by external id
-         * @description Owners, admins and API keys. Deletes the contact the host app knows by `external_id` in the
+         * @description Owners, admins and API keys not limited to inboxes. Deletes the contact the host app knows by `external_id` in the
          *     given inbox, exactly like `DELETE /v1/contacts/{contactId}`: all their conversations,
          *     messages, attachments, sessions and addresses, in every inbox. Call it when a user deletes
          *     their account in the host app (GDPR, KVKK). Emits `contact.deleted`, whose webhook payload
          *     still carries the external ids. An unknown external id, or an inbox the caller cannot see,
          *     answers `404`.
+         *
+         *     Scope: `contacts:write`.
          */
         delete: operations["deleteContactByExternalId"];
         options?: never;
@@ -829,14 +887,19 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get a contact */
+        /**
+         * Get a contact
+         * @description Scope: `contacts:read`.
+         */
         get: operations["getContact"];
         put?: never;
         post?: never;
         /**
          * Delete a contact
-         * @description Owners, admins and API keys. Deletes the contact with all their conversations, messages
+         * @description Owners, admins and API keys not limited to inboxes. Deletes the contact with all their conversations, messages
          *     and attachments.
+         *
+         *     Scope: `contacts:write`.
          */
         delete: operations["deleteContact"];
         options?: never;
@@ -844,6 +907,8 @@ export interface paths {
         /**
          * Update a contact
          * @description `emails`, `external_ids` and `attributes` replace the stored values when given.
+         *
+         *     Scope: `contacts:write`.
          */
         patch: operations["updateContact"];
         trace?: never;
@@ -859,13 +924,15 @@ export interface paths {
         put?: never;
         /**
          * Merge another contact into this one
-         * @description Owners, admins and API keys. The contact in the path keeps its id and gains the source's
+         * @description Owners, admins and API keys not limited to inboxes. The contact in the path keeps its id and gains the source's
          *     e-mail addresses, external ids, attributes (its own value wins on a key both have), its
          *     name and locale when it has none, and every conversation of the source. The source is
          *     deleted with its sessions and visitor ids; identity tokens and inbound mail for its
          *     addresses and external ids now find this contact. Emits `conversation.updated` for each
          *     moved conversation, `contact.updated` for this contact and `contact.deleted` (with
          *     `merged_into_id`) for the source.
+         *
+         *     Scope: `contacts:write`.
          */
         post: operations["mergeContact"];
         delete?: never;
@@ -887,6 +954,8 @@ export interface paths {
          *     foreground), and when one was last seen. A host backend that sends its own push
          *     notifications can skip the push while the contact is online; webhooks carry the same
          *     `contact.online`.
+         *
+         *     Scope: `contacts:read`.
          */
         get: operations["getContactPresence"];
         put?: never;
@@ -910,12 +979,17 @@ export interface paths {
          *     full-text search over the subject, the messages and notes, and the contact; a negated term
          *     (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
          *
+         *     Scope: `conversations:read`.
+         *
          *     Each item carries the contact (id, name, first e-mail address), a preview of the last
          *     `message` (notes and events are not previewed) and `unread` for the calling member.
          */
         get: operations["listConversations"];
         put?: never;
-        /** Start a conversation */
+        /**
+         * Start a conversation
+         * @description Scope: `conversations:write`.
+         */
         post: operations["createConversation"];
         delete?: never;
         options?: never;
@@ -936,6 +1010,8 @@ export interface paths {
          *     calling member (`0` for API keys), unassigned ones, and per inbox and per label. Inboxes and
          *     labels without open conversations are left out of their lists. Conversations flagged as
          *     spam are counted only in `spam`.
+         *
+         *     Scope: `conversations:read`.
          */
         get: operations["getConversationCounts"];
         put?: never;
@@ -965,6 +1041,8 @@ export interface paths {
          *     with `not_found`; one whose inbox the new assignee cannot access with
          *     `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
          *     member, a past `snooze_until`) is refused with `400` and changes nothing.
+         *
+         *     Scope: `conversations:write`.
          */
         post: operations["bulkUpdateConversations"];
         delete?: never;
@@ -980,7 +1058,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get a conversation */
+        /**
+         * Get a conversation
+         * @description Scope: `conversations:read`.
+         */
         get: operations["getConversation"];
         put?: never;
         post?: never;
@@ -991,6 +1072,8 @@ export interface paths {
          * Update a conversation
          * @description Changes to the assignee, the status and the labels are recorded as `event` messages.
          *     `snooze_until` is required with status `snoozed` and cleared by any other status.
+         *
+         *     Scope: `conversations:write`.
          */
         patch: operations["updateConversation"];
         trace?: never;
@@ -1013,6 +1096,8 @@ export interface paths {
          *     `409 no_email_channel` when the new inbox has none. The timeline gets a `moved` event.
          *     `conversation.updated` reports the new inbox; members watching the old one get
          *     `conversation.moved`.
+         *
+         *     Scope: `conversations:write`.
          */
         post: operations["moveConversation"];
         delete?: never;
@@ -1033,6 +1118,8 @@ export interface paths {
          * @description Messages, notes and events, oldest first by default. With `order=desc` the newest come
          *     first and `next_cursor` pages backward, so a thread can load its latest page and then
          *     older ones.
+         *
+         *     Scope: `conversations:read`.
          */
         get: operations["listMessages"];
         put?: never;
@@ -1040,7 +1127,16 @@ export interface paths {
          * Post a message or a note
          * @description Members post replies (`message`, direction `out`) and notes. An `in` message is written on
          *     behalf of the conversation's contact and is allowed with an API key only. Messages and notes
-         *     posted with an API key have a `system` author unless they are `in`.
+         *     posted with an API key have a `bot` author unless they are `in`.
+         *
+         *     Scope for API keys: `notes:write` for a note, `messages:write` for a message. While the
+         *     workspace's `bots_may_send` is off, a key's outgoing message must be a draft
+         *     (`403 bot_sending_disabled`).
+         *
+         *     `draft: true` stores an outgoing message as a draft: nothing is delivered, and
+         *     `draft.created` is emitted instead of `message.created`. Edit it with
+         *     `PATCH /v1/messages/{id}`, discard it with `DELETE /v1/messages/{id}` and deliver it with
+         *     `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message.
          *
          *     Send `multipart/form-data` to attach files: the fields of `MessageCreate` as form fields
          *     and up to 10 `files` parts. Each file must be within the server's size limit and have an
@@ -1132,10 +1228,68 @@ export interface paths {
          * @description Always served as a download (`Content-Disposition: attachment`). Links cannot carry
          *     headers, so the workspace can also be named with the `workspace_id` query parameter
          *     instead of `Yuva-Workspace`.
+         *
+         *     Scope: `conversations:read`.
          */
         get: operations["downloadAttachment"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messages/{messageId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Discard a draft
+         * @description Deletes a draft with its attachments; emits `draft.deleted`. Anything that is not a draft
+         *     answers `409 not_a_draft`.
+         *
+         *     Scope: `messages:write`.
+         */
+        delete: operations["deleteMessage"];
+        options?: never;
+        head?: never;
+        /**
+         * Edit a draft
+         * @description Changes a draft's text; emits `draft.updated`. Anything that is not a draft answers
+         *     `409 not_a_draft`.
+         *
+         *     Scope: `messages:write`.
+         */
+        patch: operations["updateMessage"];
+        trace?: never;
+    };
+    "/v1/messages/{messageId}/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send a draft
+         * @description Delivers a draft like a new outgoing message: its time becomes now, `sent_by` names who
+         *     sent it, the author stays the draft's author, and `message.created` is emitted (an e-mail
+         *     conversation e-mails it, as in `createMessage`). Anything that is not a draft answers
+         *     `409 not_a_draft`.
+         *
+         *     Members always may. An API key needs `drafts:send` and `messages:write`, and the
+         *     workspace's `bots_may_send` (`403 bot_sending_disabled`).
+         */
+        post: operations["sendMessage"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1154,6 +1308,8 @@ export interface paths {
          * @description The full text with the quoted history and signature that the thread hides, the full
          *     sanitized HTML, and the headers that matter. Only messages that came or went by e-mail
          *     have them; others answer `404`.
+         *
+         *     Scope: `conversations:read`.
          */
         get: operations["getMessageEmail"];
         put?: never;
@@ -1176,6 +1332,8 @@ export interface paths {
          * @description The message exactly as it was received, as `message/rfc822` (an `.eml` download). Only
          *     inbound e-mail keeps its original; others answer `404`. Links cannot carry headers, so the
          *     workspace can also be named with the `workspace_id` query parameter.
+         *
+         *     Scope: `conversations:read`.
          */
         get: operations["downloadMessageRaw"];
         put?: never;
@@ -1193,12 +1351,17 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List labels */
+        /**
+         * List labels
+         * @description Scope: `conversations:read`.
+         */
         get: operations["listLabels"];
         put?: never;
         /**
          * Create a label
-         * @description Owners and admins only, with a member session.
+         * @description Owners, admins and API keys.
+         *
+         *     Scope: `labels:write`.
          */
         post: operations["createLabel"];
         delete?: never;
@@ -1219,14 +1382,18 @@ export interface paths {
         post?: never;
         /**
          * Delete a label
-         * @description Owners and admins only, with a member session. Removes it from every conversation.
+         * @description Owners, admins and API keys. Removes it from every conversation.
+         *
+         *     Scope: `labels:write`.
          */
         delete: operations["deleteLabel"];
         options?: never;
         head?: never;
         /**
          * Update a label
-         * @description Owners and admins only, with a member session.
+         * @description Owners, admins and API keys.
+         *
+         *     Scope: `labels:write`.
          */
         patch: operations["updateLabel"];
         trace?: never;
@@ -1238,12 +1405,17 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List canned replies */
+        /**
+         * List canned replies
+         * @description Scope: `conversations:read`.
+         */
         get: operations["listCannedReplies"];
         put?: never;
         /**
          * Create a canned reply
-         * @description Owners and admins only, with a member session.
+         * @description Owners, admins and API keys.
+         *
+         *     Scope: `canned_replies:write`.
          */
         post: operations["createCannedReply"];
         delete?: never;
@@ -1264,14 +1436,18 @@ export interface paths {
         post?: never;
         /**
          * Delete a canned reply
-         * @description Owners and admins only, with a member session.
+         * @description Owners, admins and API keys.
+         *
+         *     Scope: `canned_replies:write`.
          */
         delete: operations["deleteCannedReply"];
         options?: never;
         head?: never;
         /**
          * Update a canned reply
-         * @description Owners and admins only, with a member session.
+         * @description Owners, admins and API keys.
+         *
+         *     Scope: `canned_replies:write`.
          */
         patch: operations["updateCannedReply"];
         trace?: never;
@@ -1287,6 +1463,8 @@ export interface paths {
          * Usage per month
          * @description Counters of the workspace per calendar month (UTC), newest first: conversations and
          *     messages (including notes, not events) created, and attachment bytes uploaded.
+         *
+         *     Scope: `workspace:manage`.
          */
         get: operations["getUsage"];
         put?: never;
@@ -1313,6 +1491,8 @@ export interface paths {
          *     workspace. The conversation starts on the inbox's oldest `api` channel; an inbox without one
          *     gets an `api` channel named `API` on the first request.
          *
+         *     Scope: `feedback:write`.
+         *
          *     The contact is found by the external id in the inbox, then by `contact.email`, or created;
          *     `name` and `email` are saved on it (an address that belongs to another contact is left
          *     there). The conversation has `kind: feedback` and is answered like any other; with
@@ -1338,6 +1518,8 @@ export interface paths {
          * List webhook endpoints
          * @description Owners, admins and API keys. Workspace endpoints (no `inbox_id`) and inbox endpoints;
          *     `inbox_id` lists only that inbox's endpoints.
+         *
+         *     Scope: `webhooks:manage`.
          */
         get: operations["listWebhooks"];
         put?: never;
@@ -1346,6 +1528,8 @@ export interface paths {
          * @description Owners, admins and API keys. Without `inbox_id` the endpoint receives the events of the
          *     whole workspace; with it, only those of that inbox (contact events for contacts with an
          *     external id or a conversation there). The signing secret is returned once.
+         *
+         *     Scope: `webhooks:manage`.
          *
          *     The URL must be `http` or `https` and may not point to a private, loopback or link-local
          *     address (checked again on every delivery, after resolving the name) unless the server
@@ -1367,13 +1551,18 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get a webhook endpoint */
+        /**
+         * Get a webhook endpoint
+         * @description Scope: `webhooks:manage`.
+         */
         get: operations["getWebhook"];
         put?: never;
         post?: never;
         /**
          * Remove a webhook endpoint
          * @description Owners, admins and API keys. Pending deliveries are dropped with it.
+         *
+         *     Scope: `webhooks:manage`.
          */
         delete: operations["deleteWebhook"];
         options?: never;
@@ -1383,6 +1572,8 @@ export interface paths {
          * @description Owners, admins and API keys. `enabled: true` turns an endpoint back on after it was
          *     disabled, clearing `disabled_reason`; deliveries that failed meanwhile can be sent again
          *     with redeliver.
+         *
+         *     Scope: `webhooks:manage`.
          */
         patch: operations["updateWebhook"];
         trace?: never;
@@ -1401,6 +1592,8 @@ export interface paths {
          * @description Owners, admins and API keys. Returns a new secret once. For 24 hours deliveries carry
          *     signatures with both the new and the old secret (`webhook-signature` lists both), so the
          *     receiver can switch without dropping events.
+         *
+         *     Scope: `webhooks:manage`.
          */
         post: operations["rotateWebhookSecret"];
         delete?: never;
@@ -1420,6 +1613,8 @@ export interface paths {
          * List an endpoint's deliveries
          * @description Owners, admins and API keys. Newest first, with the last attempt of each. Finished
          *     deliveries are kept 7 days.
+         *
+         *     Scope: `webhooks:manage`.
          */
         get: operations["listWebhookDeliveries"];
         put?: never;
@@ -1437,7 +1632,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get a delivery with its payload and attempts */
+        /**
+         * Get a delivery with its payload and attempts
+         * @description Scope: `webhooks:manage`.
+         */
         get: operations["getWebhookDelivery"];
         put?: never;
         post?: never;
@@ -1461,6 +1659,8 @@ export interface paths {
          * @description Owners, admins and API keys. Queues one more attempt now with the same `webhook-id` and
          *     payload (a new timestamp and signature), whatever the delivery's state. A disabled
          *     endpoint answers `409 webhook_disabled`.
+         *
+         *     Scope: `webhooks:manage`.
          */
         post: operations["redeliverWebhook"];
         delete?: never;
@@ -1480,6 +1680,8 @@ export interface paths {
          * The endpoint's delivery log
          * @description Owners, admins and API keys. The last attempts to the endpoint, newest first: status code,
          *     latency, the first 1 KiB of the response body and the error. The newest 100 are kept.
+         *
+         *     Scope: `webhooks:manage`.
          */
         get: operations["listWebhookAttempts"];
         put?: never;
@@ -1507,9 +1709,10 @@ export interface paths {
          *
          *     Every server message is one JSON text frame matching `RealtimeMessage`. Events carry an
          *     increasing `id`; within a workspace ids are in commit order. Owners, admins and API keys
-         *     receive every event of the workspace. Agents receive the events of the inboxes they can
-         *     access, contact events, and `inbox_access.changed` events about themselves; their access is
-         *     re-read when such an event arrives and every 30 seconds. `inbox.created` reaches owners,
+         *     receive every event of the workspace. Agents, and API keys limited to inboxes, receive the
+         *     events of the inboxes they can access and contact events; agents also get
+         *     `inbox_access.changed` events about themselves. Access is re-read when such an event
+         *     arrives and every 30 seconds. An API key needs `conversations:read`. `inbox.created` reaches owners,
          *     admins and API keys (an agent learns of a new inbox from `inbox_access.changed`);
          *     `inbox.deleted` reaches everyone who could see the inbox. `conversation.read` reaches only
          *     the connections of the member who read. `typing` (a contact or another member typing) has no
@@ -2071,6 +2274,66 @@ export interface webhooks {
         patch?: never;
         trace?: never;
     };
+    "draft.created": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A draft was written
+         * @description A bot or a member stored an outgoing message as a draft; nothing was delivered.
+         */
+        post: operations["webhookDraftCreated"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "draft.updated": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A draft was edited
+         * @description `data.message` is the draft after the edit.
+         */
+        post: operations["webhookDraftUpdated"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "draft.deleted": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A draft was discarded
+         * @description `data.message` is the draft as it was. Sending a draft sends `message.created` instead.
+         */
+        post: operations["webhookDraftDeleted"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export interface components {
     schemas: {
@@ -2112,15 +2375,25 @@ export interface components {
              * @description Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Absent when everything is kept.
              */
             retention_days?: number;
+            /**
+             * @description Whether API keys deliver messages. Off: a key's outgoing message must be a draft
+             *     (`403 bot_sending_disabled`) and a key cannot send drafts; members review and send
+             *     them. On: a key with `messages:write` sends directly, and one that also has
+             *     `drafts:send` sends drafts. Members always may.
+             */
+            bots_may_send: boolean;
             /** Format: date-time */
             created_at: string;
         };
+        /** @description Only the fields sent change; at least one is required. */
         WorkspaceUpdate: {
             /**
              * Format: int32
-             * @description `null` keeps everything.
+             * @description `null` keeps everything. Owners, or an API key with `workspace:manage`.
              */
-            retention_days: number | null;
+            retention_days?: number | null;
+            /** @description Owners and admins, with a member session. */
+            bots_may_send?: boolean;
         };
         WorkspaceDeletion: {
             /** @description The workspace's name, exactly; anything else is refused with `400 confirmation_mismatch`. */
@@ -2186,6 +2459,33 @@ export interface components {
         InviteList: {
             items: components["schemas"]["Invite"][];
         };
+        /**
+         * @description - `conversations:read`: list, get and count conversations; list messages; attachments,
+         *       message e-mail and raw source; list labels and canned replies.
+         *     - `conversations:write`: create, update (status, assignee, snooze, priority, labels), move
+         *       and bulk-update conversations.
+         *     - `messages:write`: outgoing and incoming messages, drafts: create, edit, discard.
+         *     - `drafts:send`: send a draft (`POST /v1/messages/{id}/send`), together with
+         *       `messages:write`.
+         *     - `notes:write`: notes.
+         *     - `contacts:read`: list, look up and get contacts, presence.
+         *     - `contacts:write`: create, update, delete and merge contacts.
+         *     - `inboxes:read`: workspace, members, inboxes, inbox members, channels.
+         *     - `inboxes:manage`: create, update and delete inboxes and channels, inbox access, secret
+         *       and key rotation.
+         *     - `labels:write`: create, update and delete labels.
+         *     - `canned_replies:write`: create, update and delete canned replies.
+         *     - `webhooks:manage`: webhooks, their deliveries and attempts.
+         *     - `workspace:manage`: update the workspace, usage.
+         *     - `feedback:write`: feedback.
+         * @enum {string}
+         */
+        ApiKeyScope: "conversations:read" | "conversations:write" | "messages:write" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write";
+        /**
+         * Format: uri
+         * @description An `https` image URL.
+         */
+        BotAvatarUrl: string;
         ApiKey: {
             /** Format: uuid */
             id: string;
@@ -2195,6 +2495,17 @@ export interface components {
              * @example yuva_k3x9q2mf
              */
             prefix: string;
+            scopes: components["schemas"]["ApiKeyScope"][];
+            /** @description The inboxes the key is limited to; absent when it sees every inbox. */
+            inbox_ids?: string[];
+            /**
+             * Format: date-time
+             * @description After this the key is refused with `401 api_key_expired`; absent when it does not expire.
+             */
+            expires_at?: string;
+            /** @description The bot's display name when it differs from `name`. */
+            bot_name?: string;
+            bot_avatar_url?: components["schemas"]["BotAvatarUrl"];
             /**
              * Format: uuid
              * @description The member who created the key, absent when that member was removed.
@@ -2209,6 +2520,28 @@ export interface components {
         };
         ApiKeyCreate: {
             name: string;
+            /** @description Every scope when absent. */
+            scopes?: components["schemas"]["ApiKeyScope"][];
+            /** @description Limits the key to these inboxes. */
+            inbox_ids?: string[];
+            /**
+             * Format: date-time
+             * @description Must be in the future.
+             */
+            expires_at?: string;
+            bot_name?: string;
+            bot_avatar_url?: components["schemas"]["BotAvatarUrl"];
+        };
+        /** @description Only the fields sent change. Scopes, inbox limit and expiry cannot change. */
+        ApiKeyUpdate: {
+            name?: string;
+            /** @description `null` shows the key's name. */
+            bot_name?: string | null;
+            /**
+             * Format: uri
+             * @description An `https` image URL; `null` removes it.
+             */
+            bot_avatar_url?: string | null;
         };
         ApiKeyCreated: {
             api_key: components["schemas"]["ApiKey"];
@@ -2674,7 +3007,7 @@ export interface components {
             count: number;
         };
         /** @enum {string} */
-        WebhookEventType: "conversation.created" | "conversation.updated" | "message.created" | "feedback.created" | "contact.updated" | "contact.deleted";
+        WebhookEventType: "conversation.created" | "conversation.updated" | "message.created" | "feedback.created" | "contact.updated" | "contact.deleted" | "draft.created" | "draft.updated" | "draft.deleted";
         WebhookEndpoint: {
             /** Format: uuid */
             id: string;
@@ -3128,8 +3461,11 @@ export interface components {
         MessageKind: "message" | "note" | "event";
         /** @enum {string} */
         Direction: "in" | "out";
-        /** @enum {string} */
-        AuthorType: "contact" | "member" | "system";
+        /**
+         * @description `bot` is an API key. Rows written with a key before bot authors existed have `system`.
+         * @enum {string}
+         */
+        AuthorType: "contact" | "member" | "system" | "bot";
         MessageAuthor: {
             type: components["schemas"]["AuthorType"];
             /**
@@ -3142,6 +3478,15 @@ export interface components {
              * @description Set for `contact`.
              */
             contact_id?: string;
+            /**
+             * Format: uuid
+             * @description Set for `bot`.
+             */
+            api_key_id?: string;
+            /** @description `bot` only: the bot's current display name. */
+            name?: string;
+            /** @description `bot` only, when the bot has an avatar. */
+            avatar_url?: string;
         };
         /** @enum {string} */
         EventType: "assigned" | "unassigned" | "status_changed" | "labels_changed" | "moved";
@@ -3209,7 +3554,18 @@ export interface components {
             attachments: components["schemas"]["Attachment"][];
             delivery?: components["schemas"]["MessageDelivery"];
             email?: components["schemas"]["MessageEmail"];
-            /** Format: date-time */
+            /**
+             * @description An outgoing message that is not delivered until it is sent
+             *     (`POST /v1/messages/{id}/send`). Drafts are shown only on `/v1`: never to contacts,
+             *     never e-mailed, notified, counted as unread, previewed or found by search.
+             */
+            draft: boolean;
+            /** @description Who sent a draft (`member` or `bot`); absent for messages that were never drafts. */
+            sent_by?: components["schemas"]["MessageAuthor"];
+            /**
+             * Format: date-time
+             * @description For a sent draft, when it was sent.
+             */
             created_at: string;
         };
         /** @description Delivery of an outgoing message by e-mail. */
@@ -3286,6 +3642,8 @@ export interface components {
             html?: string;
             /** @description Makes the request idempotent within the conversation. */
             client_id?: string;
+            /** @description Stores an outgoing message as a draft instead of delivering it. */
+            draft?: boolean;
         };
         MessageCreateMultipart: {
             /** @enum {string} */
@@ -3294,7 +3652,14 @@ export interface components {
             body?: string;
             html?: string;
             client_id?: string;
+            draft?: boolean;
             files?: string[];
+        };
+        /** @description Only the fields sent change. */
+        MessageUpdate: {
+            body?: string;
+            /** @description Sanitized before it is stored; `null` removes it. */
+            html?: string | null;
         };
         MessagePage: {
             items: components["schemas"]["Message"][];
@@ -3419,6 +3784,28 @@ export interface components {
              * @enum {string}
              */
             type: "message.created";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["Message"];
+        };
+        /**
+         * @description A draft was written, edited or discarded (`data` is the draft as it was). Sending a draft
+         *     emits `message.created`.
+         */
+        DraftEvent: {
+            /** Format: int64 */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "draft.created" | "draft.updated" | "draft.deleted";
             /** Format: uuid */
             workspace_id: string;
             /** Format: uuid */
@@ -3604,7 +3991,7 @@ export interface components {
             type: "resync_required";
         };
         /** @description One server message on `/v1/realtime`, told apart by `type`. */
-        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
         /**
          * @description `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
          *     hours. `away`: never shown as available.
@@ -3897,10 +4284,12 @@ export interface components {
         };
         ClientMessageAuthor: {
             type: components["schemas"]["AuthorType"];
-            /** @description `member` only: the member's display name, possibly empty. */
+            /** @description `member` and `bot` only: the display name, possibly empty for a member. */
             name?: string;
-            /** @description `member` only. */
+            /** @description `member` and `bot` only. */
             initials?: string;
+            /** @description `bot` only, when the bot has an avatar. */
+            avatar_url?: string;
         };
         ClientAttachment: {
             /**
@@ -4135,6 +4524,11 @@ export interface components {
              * @example not_found
              */
             code: string;
+            /**
+             * @description `insufficient_scope` only: the scope the API key lacks.
+             * @example messages:write
+             */
+            scope?: string;
             detail?: string;
         };
     };
@@ -4174,6 +4568,8 @@ export interface components {
         WorkspaceHeader: string;
         MemberId: string;
         InviteId: string;
+        /** @description Makes a retried request return the first response; see "Idempotency". */
+        IdempotencyKey: string;
         ApiKeyId: string;
         PasskeyId: string;
         PushSubscriptionId: string;
@@ -5000,6 +5396,8 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
             };
@@ -5082,6 +5480,8 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
             };
@@ -5134,6 +5534,39 @@ export interface operations {
             404: components["responses"]["Problem"];
         };
     };
+    updateApiKey: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                apiKeyId: components["parameters"]["ApiKeyId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApiKeyUpdate"];
+            };
+        };
+        responses: {
+            /** @description The key. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiKey"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     listInboxes: {
         parameters: {
             query?: never;
@@ -5163,6 +5596,8 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
             };
@@ -5282,6 +5717,8 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
             };
@@ -5420,6 +5857,8 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
             };
@@ -5542,6 +5981,8 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
             };
@@ -5604,6 +6045,8 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
             };
@@ -5781,6 +6224,8 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
             };
@@ -5892,6 +6337,8 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
             };
@@ -5948,6 +6395,8 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
             };
@@ -6039,6 +6488,8 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
             };
@@ -6108,6 +6559,8 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
             };
@@ -6154,6 +6607,8 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
             };
@@ -6187,6 +6642,8 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
             };
@@ -6246,6 +6703,98 @@ export interface operations {
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
+        };
+    };
+    deleteMessage: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                messageId: components["parameters"]["MessageId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Discarded. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    updateMessage: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                messageId: components["parameters"]["MessageId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MessageUpdate"];
+            };
+        };
+        responses: {
+            /** @description The draft. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Message"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    sendMessage: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                messageId: components["parameters"]["MessageId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The sent message. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Message"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
         };
     };
     getMessageEmail: {
@@ -6339,6 +6888,8 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
             };
@@ -6455,6 +7006,8 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
             };
@@ -6570,7 +7123,10 @@ export interface operations {
     createFeedback: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
             path?: never;
             cookie?: never;
         };
@@ -6636,6 +7192,8 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
             };
@@ -6754,6 +7312,8 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
             };
@@ -6846,6 +7406,8 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
             };
@@ -7067,7 +7629,10 @@ export interface operations {
     createClientConversation: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
             path?: never;
             cookie?: never;
         };
@@ -7155,7 +7720,10 @@ export interface operations {
     createClientMessage: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
             path: {
                 conversationId: components["parameters"]["ConversationId"];
             };
@@ -7198,7 +7766,10 @@ export interface operations {
     markClientConversationRead: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
             path: {
                 conversationId: components["parameters"]["ConversationId"];
             };
@@ -7228,7 +7799,10 @@ export interface operations {
     setClientTyping: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
             path: {
                 conversationId: components["parameters"]["ConversationId"];
             };
@@ -7257,7 +7831,10 @@ export interface operations {
     createClientFeedback: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
             path?: never;
             cookie?: never;
         };
@@ -7629,6 +8206,105 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["WebhookContactDeletedPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookDraftCreated: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookMessagePayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookDraftUpdated: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookMessagePayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookDraftDeleted: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookMessagePayload"];
             };
         };
         responses: {

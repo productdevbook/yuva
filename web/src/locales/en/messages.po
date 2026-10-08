@@ -121,6 +121,18 @@ msgid "A conversation started"
 msgstr "A conversation started"
 
 #: src/components/common/text.ts
+msgid "A draft was discarded"
+msgstr "A draft was discarded"
+
+#: src/components/common/text.ts
+msgid "A draft was edited"
+msgstr "A draft was edited"
+
+#: src/components/common/text.ts
+msgid "A draft was written"
+msgstr "A draft was written"
+
+#: src/components/common/text.ts
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "A file's content does not match its type. Check the file and try again."
 
@@ -253,6 +265,10 @@ msgstr "All inboxes"
 msgid "All of its conversations are deleted with it."
 msgstr "All of its conversations are deleted with it."
 
+#: src/features/settings/api-keys/ApiKeysPage.tsx
+msgid "All scopes"
+msgstr "All scopes"
+
 #: src/features/settings/channels/app/AppFields.tsx
 msgid "Allow anonymous users"
 msgstr "Allow anonymous users"
@@ -272,6 +288,10 @@ msgstr "Also send message.created for members' internal notes. Internal events a
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "An e-mail goes out only if the conversation is still unread by then."
 msgstr "An e-mail goes out only if the conversation is still unread by then."
+
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
+msgid "An https image URL."
+msgstr "An https image URL."
 
 #: src/features/settings/members/Invites.tsx
 msgid "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
@@ -417,9 +437,31 @@ msgstr "Back to the list"
 msgid "Billing"
 msgstr "Billing"
 
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
+msgid "Billing bot"
+msgstr "Billing bot"
+
 #: src/features/contact/ContactPanel.tsx
 msgid "Blocked"
 msgstr "Blocked"
+
+#: src/features/inbox/ConversationRow.tsx
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeysPage.tsx
+msgid "Bot"
+msgstr "Bot"
+
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
+msgid "Bot avatar"
+msgstr "Bot avatar"
+
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
+msgid "Bot name"
+msgstr "Bot name"
+
+#: src/features/settings/api-keys/ApiKeysPage.tsx
+msgid "Bots may send"
+msgstr "Bots may send"
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Bottom left"
@@ -452,6 +494,7 @@ msgstr "Can I schedule a newsletter for each subscriber?"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
+#: src/features/conversation/messages/Draft.tsx
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -482,6 +525,18 @@ msgstr "Change priority"
 #: src/features/conversation/controls/StatusMenu.tsx
 msgid "Change status"
 msgstr "Change status"
+
+#: src/components/common/text.ts
+msgid "Change the workspace and read usage"
+msgstr "Change the workspace and read usage"
+
+#: src/components/common/text.ts
+msgid "Change, delete and merge contacts"
+msgstr "Change, delete and merge contacts"
+
+#: src/components/common/text.ts
+msgid "Change, move and bulk-update conversations"
+msgstr "Change, move and bulk-update conversations"
 
 #: src/features/settings/channels/ChannelsPage.tsx
 #: src/features/settings/inboxes/InboxLayout.tsx
@@ -544,7 +599,6 @@ msgstr "Connecting…"
 msgid "Connection lost. Reconnecting…"
 msgstr "Connection lost. Reconnecting…"
 
-#: src/features/conversation/messages/context.ts
 #: src/features/inbox/InboxPage.tsx
 msgid "Contact"
 msgstr "Contact"
@@ -609,7 +663,7 @@ msgstr "Could not reach the server. Check your connection and try again."
 msgid "Create inbox"
 msgstr "Create inbox"
 
-#: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
 msgid "Create key"
 msgstr "Create key"
 
@@ -689,9 +743,9 @@ msgstr "Delete this workspace"
 msgid "Delete your account?"
 msgstr "Delete your account?"
 
-#: src/features/conversation/messages/context.ts
-msgid "Deleted member"
-msgstr "Deleted member"
+#: src/features/settings/api-keys/ApiKeysPage.tsx
+msgid "Deleted inbox"
+msgstr "Deleted inbox"
 
 #: src/features/settings/inboxes/AdvancedPage.tsx
 msgid "Deletes its channels, conversations, messages and attachments. This cannot be undone."
@@ -721,6 +775,19 @@ msgstr "Description (optional)"
 msgid "Device"
 msgstr "Device"
 
+#: src/features/conversation/messages/Draft.tsx
+#: src/features/conversation/ThreadView.tsx
+msgid "Discard"
+msgstr "Discard"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Discard the latest draft"
+msgstr "Discard the latest draft"
+
+#: src/features/conversation/ThreadView.tsx
+msgid "Discard this draft?"
+msgstr "Discard this draft?"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Display name"
 msgstr "Display name"
@@ -737,6 +804,18 @@ msgstr "Download {0}"
 #: src/features/conversation/messages/MessageItem.tsx
 msgid "Download the original e-mail (.eml)"
 msgstr "Download the original e-mail (.eml)"
+
+#: src/features/conversation/messages/MessageItem.tsx
+msgid "Draft"
+msgstr "Draft"
+
+#: src/features/conversation/messages/MessageItem.tsx
+msgid "Draft by {author}"
+msgstr "Draft by {author}"
+
+#: src/features/conversation/messages/Draft.tsx
+msgid "Draft text"
+msgstr "Draft text"
 
 #: src/components/common/text.ts
 #: src/features/auth/AuthLayout.tsx
@@ -770,12 +849,18 @@ msgstr "E-mail, live chat and in-app messages"
 msgid "E-mail: {label}"
 msgstr "E-mail: {label}"
 
+#: src/features/conversation/messages/Draft.tsx
+#: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/channels/ChannelsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Edit"
 msgstr "Edit"
+
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
+msgid "Edit API key"
+msgstr "Edit API key"
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
 msgid "Edit canned reply"
@@ -797,6 +882,10 @@ msgstr "Edit label"
 #: src/features/conversation/controls/LabelsMenu.tsx
 msgid "Edit labels"
 msgstr "Edit labels"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Edit the latest draft"
+msgstr "Edit the latest draft"
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Embed snippet"
@@ -843,6 +932,10 @@ msgstr "Every attempt has failed since {failingSince}. After 24 hours of failure
 msgid "Every customer conversation, in one place."
 msgstr "Every customer conversation, in one place."
 
+#: src/features/settings/api-keys/ApiKeysPage.tsx
+msgid "Every inbox"
+msgstr "Every inbox"
+
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Every inbox follows the settings above."
 msgstr "Every inbox follows the settings above."
@@ -862,6 +955,18 @@ msgstr "Everything in this workspace is deleted for every member, and its widget
 #: src/features/settings/inboxes/GeneralPage.tsx
 msgid "Expected reply time (minutes)"
 msgstr "Expected reply time (minutes)"
+
+#: src/features/settings/api-keys/ApiKeysPage.tsx
+msgid "Expired {expires}"
+msgstr "Expired {expires}"
+
+#: src/features/settings/api-keys/ApiKeysPage.tsx
+msgid "Expires"
+msgstr "Expires"
+
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
+msgid "Expires (optional)"
+msgstr "Expires (optional)"
 
 #: src/features/settings/members/Invites.tsx
 msgid "expires {expires}"
@@ -910,8 +1015,8 @@ msgid "For signed-in users, your backend signs an identity token with the inbox'
 msgstr "For signed-in users, your backend signs an identity token with the inbox's identity secret and the app passes it to the SDK."
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-msgid "For your backends and scripts. A key acts on this workspace only and cannot manage members or keys."
-msgstr "For your backends and scripts. A key acts on this workspace only and cannot manage members or keys."
+msgid "For your backends, scripts and bots. A key acts on this workspace only, within its scopes, and cannot manage members or keys. Its messages show its bot name."
+msgstr "For your backends, scripts and bots. A key acts on this workspace only, within its scopes, and cannot manage members or keys. Its messages show its bot name."
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
@@ -1009,6 +1114,8 @@ msgid "Inbox settings"
 msgstr "Inbox settings"
 
 #: src/app/Sidebar.tsx
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/inboxes/InboxesPage.tsx
 #: src/features/settings/inboxes/InboxLayout.tsx
 #: src/features/settings/SettingsLayout.tsx
@@ -1056,6 +1163,10 @@ msgstr "Invites"
 msgid "iOS and Android app"
 msgstr "iOS and Android app"
 
+#: src/features/conversation/ThreadView.tsx
+msgid "It is deleted and never sent."
+msgstr "It is deleted and never sent."
+
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "It is removed from every conversation."
 msgstr "It is removed from every conversation."
@@ -1072,14 +1183,14 @@ msgstr "It will no longer receive notifications."
 msgid "Keep"
 msgstr "Keep"
 
-#: src/features/settings/api-keys/ApiKeysPage.tsx
-msgid "Key name"
-msgstr "Key name"
-
 #: src/app/UserMenu.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Keyboard shortcuts"
 msgstr "Keyboard shortcuts"
+
+#: src/features/settings/api-keys/ApiKeysPage.tsx
+msgid "Keys"
+msgstr "Keys"
 
 #: src/features/settings/channels/ChannelDialog.tsx
 msgid "Kind"
@@ -1187,6 +1298,22 @@ msgstr "Lowercase letters, digits and dashes."
 msgid "Lowercase letters, digits and dashes. Used in addresses and the widget."
 msgstr "Lowercase letters, digits and dashes. Used in addresses and the widget."
 
+#: src/components/common/text.ts
+msgid "Manage canned replies"
+msgstr "Manage canned replies"
+
+#: src/components/common/text.ts
+msgid "Manage inboxes, channels and inbox access"
+msgstr "Manage inboxes, channels and inbox access"
+
+#: src/components/common/text.ts
+msgid "Manage labels"
+msgstr "Manage labels"
+
+#: src/components/common/text.ts
+msgid "Manage webhooks"
+msgstr "Manage webhooks"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "manual"
 msgstr "manual"
@@ -1272,6 +1399,7 @@ msgstr "Moved from {from}"
 msgid "My profile"
 msgstr "My profile"
 
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/channels/ChannelDialog.tsx
 #: src/features/settings/inboxes/CreateInboxDialog.tsx
 #: src/features/settings/inboxes/GeneralPage.tsx
@@ -1279,10 +1407,6 @@ msgstr "My profile"
 #: src/features/settings/profile/ProfileForm.tsx
 msgid "Name"
 msgstr "Name"
-
-#: src/features/settings/api-keys/ApiKeysPage.tsx
-msgid "Name, e.g. Production backend"
-msgstr "Name, e.g. Production backend"
 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
@@ -1294,8 +1418,16 @@ msgid "Navigation"
 msgstr "Navigation"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+msgid "Never"
+msgstr "Never"
+
+#: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "never used"
 msgstr "never used"
+
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
+msgid "New API key"
+msgstr "New API key"
 
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
@@ -1322,6 +1454,10 @@ msgstr "New identity secret"
 #: src/features/settings/inboxes/InboxesPage.tsx
 msgid "New inbox"
 msgstr "New inbox"
+
+#: src/features/settings/api-keys/ApiKeysPage.tsx
+msgid "New key"
+msgstr "New key"
 
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -1435,6 +1571,10 @@ msgstr "None"
 msgid "None (local relays and test servers only)"
 msgstr "None (local relays and test servers only)"
 
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
+msgid "None picked: the key sees every inbox."
+msgstr "None picked: the key sees every inbox."
+
 #: src/components/common/text.ts
 msgid "Normal"
 msgstr "Normal"
@@ -1466,6 +1606,10 @@ msgstr "Not changed: the assignee cannot see this conversation's inbox."
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Not delivered"
 msgstr "Not delivered"
+
+#: src/features/conversation/messages/MessageItem.tsx
+msgid "Not sent. A member reviews it first."
+msgstr "Not sent. A member reviews it first."
 
 #: src/features/conversation/controls/MoreMenu.tsx
 msgid "Not spam"
@@ -1667,6 +1811,10 @@ msgstr "Pick at least one event."
 msgid "Pick at least one platform."
 msgstr "Pick at least one platform."
 
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
+msgid "Pick at least one scope."
+msgstr "Pick at least one scope."
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "Pick the other contact. It is merged into this one and then deleted."
 msgstr "Pick the other contact. It is merged into this one and then deleted."
@@ -1678,6 +1826,10 @@ msgstr "Platforms"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Port"
 msgstr "Port"
+
+#: src/components/common/text.ts
+msgid "Post feedback for your app's users"
+msgstr "Post feedback for your app's users"
 
 #: src/components/common/text.ts
 msgid "Praise"
@@ -1694,6 +1846,10 @@ msgstr "Previous conversation"
 #: src/features/conversation/controls/PriorityMenu.tsx
 msgid "Priority"
 msgstr "Priority"
+
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
+msgid "Production backend"
+msgstr "Production backend"
 
 #: src/features/settings/profile/ProfileForm.tsx
 msgid "Profile"
@@ -1727,6 +1883,18 @@ msgstr "Push: {label}"
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "Queued. The new attempt shows up below in a moment."
 msgstr "Queued. The new attempt shows up below in a moment."
+
+#: src/components/common/text.ts
+msgid "Read contacts"
+msgstr "Read contacts"
+
+#: src/components/common/text.ts
+msgid "Read conversations, messages, labels and canned replies"
+msgstr "Read conversations, messages, labels and canned replies"
+
+#: src/components/common/text.ts
+msgid "Read the workspace, members, inboxes and channels"
+msgstr "Read the workspace, members, inboxes and channels"
 
 #: src/features/settings/channels/ChannelSummary.tsx
 msgid "receives only, no SMTP account"
@@ -1902,6 +2070,7 @@ msgstr "Rotate the signing secret?"
 msgid "Saturday"
 msgstr "Saturday"
 
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ChannelDialog.tsx
 #: src/features/settings/labels/LabelDialog.tsx
@@ -1909,6 +2078,10 @@ msgstr "Saturday"
 #: src/features/settings/webhooks/WebhookDialog.tsx
 msgid "Save"
 msgstr "Save"
+
+#: src/features/conversation/messages/Draft.tsx
+msgid "Save draft"
+msgstr "Save draft"
 
 #: src/features/settings/inboxes/HoursForm.tsx
 msgid "Save hours"
@@ -1921,6 +2094,19 @@ msgstr "Saved"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Saving removes the stored password."
 msgstr "Saving removes the stored password."
+
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/api-keys/ApiKeysPage.tsx
+msgid "Scopes"
+msgstr "Scopes"
+
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
+msgid "Scopes, inboxes and expiry cannot be changed later."
+msgstr "Scopes, inboxes and expiry cannot be changed later."
+
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
+msgid "Scopes, inboxes and expiry stay as they are. For different ones, create a new key."
+msgstr "Scopes, inboxes and expiry stay as they are. For different ones, create a new key."
 
 #: src/features/conversation/Feedback.tsx
 msgid "Screen"
@@ -1956,6 +2142,7 @@ msgstr "Select at most {MAX_BULK} conversations at a time."
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/Composer.tsx
+#: src/features/conversation/messages/Draft.tsx
 msgid "Send"
 msgstr "Send"
 
@@ -1975,6 +2162,10 @@ msgstr "Send a test notification to {name}"
 msgid "Send an auto-reply"
 msgstr "Send an auto-reply"
 
+#: src/components/common/text.ts
+msgid "Send drafts"
+msgstr "Send drafts"
+
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Send events"
 msgstr "Send events"
@@ -1986,6 +2177,10 @@ msgstr "Send me a code"
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Send the e-mail after"
 msgstr "Send the e-mail after"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the latest draft"
+msgstr "Send the latest draft"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Sending"
@@ -1999,6 +2194,10 @@ msgstr "Sending by e-mail…"
 #: src/features/settings/channels/ChannelSummary.tsx
 msgid "sends through {0}"
 msgstr "sends through {0}"
+
+#: src/features/conversation/messages/MessageItem.tsx
+msgid "sent by {sender}"
+msgstr "sent by {sender}"
 
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
@@ -2037,6 +2236,10 @@ msgstr "Show quoted text"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Shown before the first message. The inbox greeting when empty."
 msgstr "Shown before the first message. The inbox greeting when empty."
+
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
+msgid "Shown on its messages. The key's name when empty."
+msgstr "Shown on its messages. The key's name when empty."
 
 #: src/features/settings/inboxes/GeneralPage.tsx
 msgid "Shown to contacts in async mode. Leave empty to hide it."
@@ -2159,7 +2362,6 @@ msgid "Support e-mail"
 msgstr "Support e-mail"
 
 #: src/features/conversation/Feedback.tsx
-#: src/features/conversation/messages/context.ts
 msgid "System"
 msgstr "System"
 
@@ -2215,6 +2417,14 @@ msgstr "The first message of a conversation in an inbox that shows who is availa
 #: src/features/settings/webhooks/WebhookDialog.tsx
 msgid "The inbox cannot be changed later."
 msgstr "The inbox cannot be changed later."
+
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
+msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
+msgstr "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
+
+#: src/features/settings/api-keys/ApiKeyDialog.tsx
+msgid "The key stops working at the end of this day."
+msgstr "The key stops working at the end of this day."
 
 #: src/features/settings/channels/ChannelDialog.tsx
 msgid "The kind cannot be changed later."
@@ -2532,6 +2742,10 @@ msgstr "Wednesday"
 msgid "When nobody is available, the widget asks where to send the reply."
 msgstr "When nobody is available, the widget asks where to send the reply."
 
+#: src/features/settings/api-keys/ApiKeysPage.tsx
+msgid "When off, API keys can only write drafts, and a member reviews and sends them."
+msgstr "When off, API keys can only write drafts, and a member reviews and sends them."
+
 #: src/features/settings/notifications/events.ts
 msgid "When someone else assigns it to you."
 msgstr "When someone else assigns it to you."
@@ -2597,6 +2811,14 @@ msgstr "Write a reply"
 #: src/features/conversation/composer/Composer.tsx
 msgid "Write a reply…"
 msgstr "Write a reply…"
+
+#: src/components/common/text.ts
+msgid "Write messages and drafts"
+msgstr "Write messages and drafts"
+
+#: src/components/common/text.ts
+msgid "Write notes"
+msgstr "Write notes"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Write the auto-reply, or turn it off."

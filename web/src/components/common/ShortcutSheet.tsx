@@ -25,8 +25,15 @@ export const SHORTCUTS = {
   quoted: "q",
   contact: "c",
   copyDetails: "y",
+  editDraft: "d",
+  sendDraft: "D",
+  discardDraft: "X",
   help: "?",
 } as const
+
+export function keyLabel(k: string) {
+  return /^[A-Z]$/.test(k) ? ["Shift", k] : [k]
+}
 
 const mod = typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘" : "Ctrl"
 
@@ -68,6 +75,9 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
         [[SHORTCUTS.move], t`Move to another inbox`],
         [[SHORTCUTS.quoted], t`Show or hide quoted text`],
         [[SHORTCUTS.copyDetails], t`Copy the feedback details`],
+        [[SHORTCUTS.editDraft], t`Edit the latest draft`],
+        [keyLabel(SHORTCUTS.sendDraft), t`Send the latest draft`],
+        [keyLabel(SHORTCUTS.discardDraft), t`Discard the latest draft`],
       ],
     },
     { title: t`General`, items: [[[SHORTCUTS.help], t`Keyboard shortcuts`]] },

@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
-import { api, unwrap, type ConversationUpdate, type MessageCreate } from "@/lib/api"
+import { api, unwrap, type ConversationUpdate, type Message, type MessageCreate } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { applyEvent, applyRead } from "@/lib/live"
 import { isLive } from "@/lib/realtime"
@@ -119,4 +119,24 @@ export function useSendMessage(conversationId: string) {
     },
     onSuccess: (data) => applyEvent(qc, live, { type: "message.created", data }),
   })
+}
+
+export function useDraftActions() {
+  const qc = useQueryClient()
+  const live = useLiveContext()
+  const path = (m: Message) => ({ params: { path: { messageId: m.id } } })
+  const send = useMutation({
+    mutationFn: (m: Message) => unwrap(api.POST("/v1/messages/{messageId}/send", path(m))),
+    onSuccess: (data) => applyEvent(qc, live, { type: "message.created", data }),
+  })
+  const save = useMutation({
+    mutationFn: ({ m, body }: { m: Message; body: string }) =>
+      unwrap(api.PATCH("/v1/messages/{messageId}", { ...path(m), body: m.html ? { body, html: null } : { body } })),
+    onSuccess: (data) => applyEvent(qc, live, { type: "draft.updated", data }),
+  })
+  const discard = useMutation({
+    mutationFn: (m: Message) => unwrap(api.DELETE("/v1/messages/{messageId}", path(m))).then(() => m),
+    onSuccess: (data) => applyEvent(qc, live, { type: "draft.deleted", data }),
+  })
+  return { send, save, discard }
 }

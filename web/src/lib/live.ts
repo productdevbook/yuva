@@ -132,12 +132,35 @@ function newestFirst(a: Message, b: Message) {
   return a.id < b.id ? 1 : -1
 }
 
-function addMessage(qc: QueryClient, ctx: LiveContext, m: Message) {
-  qc.setQueryData<Messages>(keys.messages(ctx.ws, m.conversation_id), (old) => {
-    if (!old || old.pages.length === 0 || old.pages.some((p) => p.items.some((x) => x.id === m.id))) return old
-    const [first, ...rest] = old.pages
+function putMessage(qc: QueryClient, ws: string, m: Message) {
+  qc.setQueryData<Messages>(keys.messages(ws, m.conversation_id), (old) => {
+    if (!old || old.pages.length === 0) return old
+    const known = old.pages.flatMap((p) => p.items).find((x) => x.id === m.id)
+    if (known && (m.draft || !known.draft)) return old
+    const pages = old.pages.map((p) => ({ ...p, items: p.items.filter((x) => x.id !== m.id) }))
+    const [first, ...rest] = pages
     return { ...old, pages: [{ ...first, items: [m, ...first.items].sort(newestFirst) }, ...rest] }
   })
+}
+
+function dropMessage(qc: QueryClient, ws: string, m: Message) {
+  qc.setQueryData<Messages>(keys.messages(ws, m.conversation_id), (old) =>
+    old?.pages.some((p) => p.items.some((x) => x.id === m.id))
+      ? { ...old, pages: old.pages.map((p) => ({ ...p, items: p.items.filter((x) => x.id !== m.id) })) }
+      : old,
+  )
+}
+
+function updateDraft(qc: QueryClient, ws: string, m: Message) {
+  qc.setQueryData<Messages>(keys.messages(ws, m.conversation_id), (old) =>
+    old?.pages.some((p) => p.items.some((x) => x.id === m.id && x.draft))
+      ? { ...old, pages: old.pages.map((p) => ({ ...p, items: p.items.map((x) => (x.id === m.id && x.draft ? m : x)) })) }
+      : old,
+  )
+}
+
+function addMessage(qc: QueryClient, ctx: LiveContext, m: Message) {
+  putMessage(qc, ctx.ws, m)
   if (m.kind === "event") return
   const c = qc.getQueryData<Conversation>(keys.conversation(ctx.ws, m.conversation_id))
   const cached = c ?? findItem(qc, ctx.ws, m.conversation_id)
@@ -163,7 +186,7 @@ function addMessage(qc: QueryClient, ctx: LiveContext, m: Message) {
       created_at: m.created_at,
     }
   }
-  if (m.author.member_id !== ctx.memberId) patch.unread = true
+  if ((m.sent_by ?? m.author).member_id !== ctx.memberId) patch.unread = true
   if (c) qc.setQueryData(keys.conversation(ctx.ws, c.id), next)
   updateLists(qc, ctx, next, patch)
 }
@@ -251,6 +274,15 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
       return
     case "message.updated":
       replaceMessage(qc, ctx, event.data)
+      return
+    case "draft.created":
+      putMessage(qc, ctx.ws, event.data)
+      return
+    case "draft.updated":
+      updateDraft(qc, ctx.ws, event.data)
+      return
+    case "draft.deleted":
+      dropMessage(qc, ctx.ws, event.data)
       return
     case "conversation.read":
       if (event.data.member_id === ctx.memberId) applyRead(qc, ctx.ws, event.data)

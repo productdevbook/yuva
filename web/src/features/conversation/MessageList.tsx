@@ -33,7 +33,8 @@ export function MessageList({
   const top = useRef<HTMLDivElement>(null)
   const firstId = items[0]?.id
   const lastId = items[items.length - 1]?.id
-  const lastMine = items[items.length - 1]?.author.member_id === membership.member_id
+  const last = items[items.length - 1]
+  const lastMine = !!last && (last.sent_by ?? last.author).member_id === membership.member_id
   const atBottom = useRef(true)
   const shown = useRef<{ first?: string; last?: string; height: number }>({ height: 0 })
 

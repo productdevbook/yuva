@@ -4,6 +4,7 @@ const tones = {
   in: "rounded-ss-md bg-muted",
   out: "rounded-se-md bg-brand-wash",
   note: "border border-dashed border-input",
+  draft: "rounded-se-md border border-dashed border-warning/50 bg-warning/5",
 }
 
 export function Bubble({ tone, children }: { tone: keyof typeof tones; children: React.ReactNode }) {

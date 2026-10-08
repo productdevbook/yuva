@@ -3,7 +3,7 @@ import { SearchXIcon } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
-import { EmptyState } from "@/components/common"
+import { EmptyState, useConfirm } from "@/components/common"
 import { SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { useErrorText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
@@ -11,12 +11,19 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Composer, type ComposerHandle } from "@/features/conversation/composer/Composer"
 import type { MenuName } from "@/features/conversation/controls/shared"
 import { MessageList } from "@/features/conversation/MessageList"
-import { useConversation, useMessages, useMoveConversation, useUpdateConversation } from "@/features/conversation/queries"
+import type { DraftControls } from "@/features/conversation/messages/context"
+import {
+  useConversation,
+  useDraftActions,
+  useMessages,
+  useMoveConversation,
+  useUpdateConversation,
+} from "@/features/conversation/queries"
 import { ThreadHeader } from "@/features/conversation/ThreadHeader"
 import { TypingLine } from "@/features/conversation/TypingLine"
 import { useContact } from "@/features/contact/queries"
 import { useHotkeys } from "@/hooks/use-hotkeys"
-import { ApiError, isGone, type ConversationUpdate } from "@/lib/api"
+import { ApiError, isGone, type ConversationUpdate, type Message } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { useChannel, useInboxes, useLabels, useMemberMap } from "@/lib/workspace"
 
@@ -50,6 +57,9 @@ export function ThreadView({
   const [openMenu, setOpenMenu] = useState<MenuName | null>(null)
   const [expandQuoted, setExpandQuoted] = useState(false)
   const composer = useRef<ComposerHandle>(null)
+  const draftActions = useDraftActions()
+  const [editingDraft, setEditingDraft] = useState<string | null>(null)
+  const [confirm, confirmDialog] = useConfirm()
 
   const update = (body: ConversationUpdate) => {
     mover.reset()
@@ -58,6 +68,41 @@ export function ThreadView({
   const move = (inboxId: string) => {
     updater.reset()
     mover.mutate(inboxId)
+  }
+
+  const items = useMemo(() => (messages.data?.pages ?? []).toReversed().flatMap((p) => p.items.toReversed()), [messages.data])
+  const latestDraft = items.findLast((m) => m.draft)
+  const resetDrafts = () => {
+    draftActions.send.reset()
+    draftActions.save.reset()
+    draftActions.discard.reset()
+  }
+  const drafts: DraftControls = {
+    editing: editingDraft,
+    setEditing: setEditingDraft,
+    latest: latestDraft?.id,
+    pending: draftActions.send.isPending || draftActions.save.isPending || draftActions.discard.isPending,
+    error: draftActions.send.error ?? draftActions.save.error ?? draftActions.discard.error,
+    send: (m: Message) => {
+      resetDrafts()
+      setEditingDraft(null)
+      draftActions.send.mutate(m)
+    },
+    save: (m: Message, body: string) => {
+      resetDrafts()
+      draftActions.save.mutate({ m, body }, { onSuccess: () => setEditingDraft(null) })
+    },
+    discard: (m: Message) =>
+      confirm({
+        title: <Trans>Discard this draft?</Trans>,
+        description: <Trans>It is deleted and never sent.</Trans>,
+        confirm: <Trans>Discard</Trans>,
+        run: () => {
+          resetDrafts()
+          setEditingDraft(null)
+          draftActions.discard.mutate(m)
+        },
+      }),
   }
 
   useHotkeys(
@@ -77,13 +122,17 @@ export function ThreadView({
       [SHORTCUTS.quoted]: () => setExpandQuoted((x) => !x),
       [SHORTCUTS.contact]: onToggleContact,
       [SHORTCUTS.back]: () => navigate(backHref),
+      [SHORTCUTS.editDraft]: () => latestDraft && setEditingDraft(latestDraft.id),
+      [SHORTCUTS.sendDraft]: () => latestDraft && !drafts.pending && drafts.send(latestDraft),
+      [SHORTCUTS.discardDraft]: () => latestDraft && drafts.discard(latestDraft),
     },
     !!c && !isGone(conversation.error),
   )
 
-  const items = useMemo(() => (messages.data?.pages ?? []).toReversed().flatMap((p) => p.items.toReversed()), [messages.data])
-
-  useEffect(() => setOpenMenu(null), [conversationId])
+  useEffect(() => {
+    setOpenMenu(null)
+    setEditingDraft(null)
+  }, [conversationId])
 
   if (conversation.isPending) {
     return (
@@ -105,7 +154,7 @@ export function ThreadView({
   }
 
   const contactName = contact.data ? contact.data.name || contact.data.emails[0] || t`Unnamed contact` : "…"
-  const ctx = { members, contact: contact.data, labels, inboxes, subject: c.subject, expandQuoted }
+  const ctx = { members, contact: contact.data, labels, inboxes, subject: c.subject, expandQuoted, drafts }
   const isEmail = channel.data?.kind === "email"
   const lastInbound = items.findLast((m) => m.kind === "message" && m.direction === "in" && m.email)
   const emailTo = isEmail ? (lastInbound?.email?.from ?? contact.data?.emails[0]) : undefined
@@ -133,6 +182,7 @@ export function ThreadView({
       <MessageList conversationId={conversationId} messages={messages} items={items} ctx={ctx} />
       <TypingLine conversationId={conversationId} contactName={contactName} />
       <Composer ref={composer} conversationId={conversationId} emailTo={emailTo} undeliverable={undeliverable} />
+      {confirmDialog}
     </div>
   )
 }

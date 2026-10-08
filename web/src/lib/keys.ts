@@ -3,6 +3,7 @@ import type { ConversationQuery } from "@/lib/api"
 export type ConversationFilters = Omit<ConversationQuery, "cursor" | "limit">
 
 export const keys = {
+  workspace: (ws: string) => ["ws", ws, "workspace"] as const,
   members: (ws: string) => ["ws", ws, "members"] as const,
   invites: (ws: string) => ["ws", ws, "invites"] as const,
   apiKeys: (ws: string) => ["ws", ws, "api-keys"] as const,

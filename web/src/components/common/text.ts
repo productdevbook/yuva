@@ -2,6 +2,7 @@ import { useLingui } from "@lingui/react/macro"
 
 import {
   ApiError,
+  type ApiKeyScope,
   type AppPlatform,
   type ChannelKind,
   type ConversationStatus,
@@ -29,7 +30,27 @@ export const WEBHOOK_EVENTS: WebhookEventType[] = [
   "feedback.created",
   "contact.updated",
   "contact.deleted",
+  "draft.created",
+  "draft.updated",
+  "draft.deleted",
 ]
+export const API_KEY_SCOPES: ApiKeyScope[] = [
+  "conversations:read",
+  "conversations:write",
+  "messages:write",
+  "drafts:send",
+  "notes:write",
+  "contacts:read",
+  "contacts:write",
+  "inboxes:read",
+  "inboxes:manage",
+  "labels:write",
+  "canned_replies:write",
+  "webhooks:manage",
+  "workspace:manage",
+  "feedback:write",
+]
+export const WORKSPACE_WIDE_SCOPES: ApiKeyScope[] = ["inboxes:manage", "webhooks:manage", "workspace:manage"]
 export const DELIVERY_STATES: WebhookDeliveryState[] = ["pending", "succeeded", "failed"]
 
 export function useEnumText() {
@@ -58,7 +79,26 @@ export function useEnumText() {
       "feedback.created": t`Feedback arrived`,
       "contact.updated": t`A contact changed`,
       "contact.deleted": t`A contact was deleted`,
+      "draft.created": t`A draft was written`,
+      "draft.updated": t`A draft was edited`,
+      "draft.deleted": t`A draft was discarded`,
     } satisfies Record<WebhookEventType, string>,
+    scope: {
+      "conversations:read": t`Read conversations, messages, labels and canned replies`,
+      "conversations:write": t`Change, move and bulk-update conversations`,
+      "messages:write": t`Write messages and drafts`,
+      "drafts:send": t`Send drafts`,
+      "notes:write": t`Write notes`,
+      "contacts:read": t`Read contacts`,
+      "contacts:write": t`Change, delete and merge contacts`,
+      "inboxes:read": t`Read the workspace, members, inboxes and channels`,
+      "inboxes:manage": t`Manage inboxes, channels and inbox access`,
+      "labels:write": t`Manage labels`,
+      "canned_replies:write": t`Manage canned replies`,
+      "webhooks:manage": t`Manage webhooks`,
+      "workspace:manage": t`Change the workspace and read usage`,
+      "feedback:write": t`Post feedback for your app's users`,
+    } satisfies Record<ApiKeyScope, string>,
     delivery: { pending: t`Pending`, succeeded: t`Succeeded`, failed: t`Failed` } satisfies Record<
       WebhookDeliveryState,
       string
