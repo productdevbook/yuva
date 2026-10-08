@@ -1,0 +1,163 @@
+---
+import { headerCopy } from "@/copy/header"
+import { i18nFor } from "@/i18n"
+import { bcp47, brand, brandAssets, home, languageName, links, locales, type Locale } from "@/lib/routes"
+import GitHubIcon from "@/ui/GitHubIcon.astro"
+import LangMenu from "@/ui/LangMenu.astro"
+import Logo from "@/ui/Logo.astro"
+
+interface Props {
+  locale: Locale
+  paths: Record<Locale, string>
+}
+
+const { locale, paths } = Astro.props
+const t = headerCopy(i18nFor(locale), locale)
+const appUrl = import.meta.env.PUBLIC_APP_URL
+const link = "text-sm text-ink-soft transition-colors hover:text-ink aria-[current=page]:font-medium aria-[current=page]:text-ink"
+const path = Astro.url.pathname
+const current = (href: string) => (href.startsWith("/") && path.startsWith(href) ? "page" : undefined)
+const item = "flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-start text-sm outline-none hover:bg-paper-deep focus-visible:bg-paper-deep"
+---
+
+<header class="sticky top-0 z-50 border-b border-transparent bg-paper/80 backdrop-blur-lg transition-colors duration-300 data-scrolled:border-rule" data-header>
+  <div class="mx-auto flex h-16 max-w-6xl items-center gap-10 px-5 sm:px-8">
+    <a class="flex shrink-0 items-center gap-2.5" href={home[locale]} aria-label={t.home} data-logo>
+      <Logo size={26} />
+      <span class="text-[1.02rem] font-semibold tracking-tight">Yuva</span>
+    </a>
+    <div
+      class="fixed z-[60] min-w-60 rounded-xl border border-rule bg-sheet p-1.5 shadow-[0_16px_40px_-12px_rgb(15_23_42/0.28)]"
+      role="menu"
+      aria-label={t.logoMenu}
+      hidden
+      data-logo-menu
+    >
+      <button type="button" role="menuitem" class={item} data-copy-url={brandAssets.icon} data-done={t.copied}>
+        <Logo size={16} />
+        <span>{t.copyLogo}</span>
+      </button>
+      <button type="button" role="menuitem" class={item} data-copy-url={brandAssets.logo} data-done={t.copied}>
+        <span class="grid size-4 place-items-center text-[0.7rem] font-semibold">Aa</span>
+        <span>{t.copyWordmark}</span>
+      </button>
+      <a role="menuitem" class={item} href={brandAssets.icon} download="yuva-icon.svg">
+        <svg class="size-4 text-ink-soft" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+          ><path d="M8 2.5v8M4.5 7 8 10.5 11.5 7M3 13.5h10"></path></svg
+        >
+        <span>{t.downloadLogo}</span>
+      </a>
+      <div class="mx-2 my-1.5 h-px bg-rule" role="separator"></div>
+      <a role="menuitem" class={item} href={brand[locale]}>
+        <span class="size-4"></span>
+        <span>{t.brand}</span>
+        <span class="ms-auto text-ink-faint" aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <nav class="hidden items-center gap-7 md:flex" aria-label={t.sections}>
+      {t.nav.map((n) => <a class={link} href={n.href} aria-current={current(n.href)}>{n.label}</a>)}
+    </nav>
+
+    <div class="ms-auto flex items-center gap-5">
+      <LangMenu locale={locale} paths={paths} class="hidden sm:block" />
+      {appUrl && <a class:list={[link, "hidden sm:block"]} href={appUrl}>{t.signIn}</a>}
+      <a
+        class="inline-flex h-9 items-center gap-2 rounded-full border border-rule-strong px-3.5 text-sm font-medium transition-colors hover:border-ink/40 hover:bg-paper-deep"
+        href={links.repo}
+      >
+        <GitHubIcon size={15} />
+        <span class="max-[379px]:sr-only">GitHub</span>
+      </a>
+
+      <details class="group md:hidden" data-menu>
+        <summary
+          class="-me-2 grid size-9 cursor-pointer list-none place-content-center gap-[5px] rounded-md [&::-webkit-details-marker]:hidden"
+          aria-label={t.menu}
+        >
+          <span class="h-[1.5px] w-4 rounded-full bg-ink transition duration-200 group-open:translate-y-[3.25px] group-open:rotate-45"></span>
+          <span class="h-[1.5px] w-4 rounded-full bg-ink transition duration-200 group-open:-translate-y-[3.25px] group-open:-rotate-45"></span>
+        </summary>
+        <div class="fixed inset-x-0 top-16 border-b border-rule bg-paper px-5 pb-6 sm:px-8">
+          <nav class="grid" aria-label={t.sections}>
+            {t.nav.map((n) => <a class="border-b border-rule py-3.5 text-base aria-[current=page]:font-semibold" href={n.href} aria-current={current(n.href)}>{n.label}</a>)}
+            {
+              locales
+                .filter((l) => l !== locale)
+                .map((l) => (
+                  <a class="border-b border-rule py-3.5 text-base" href={paths[l]} hreflang={l} lang={bcp47[l]}>
+                    {languageName(l)}
+                  </a>
+                ))
+            }
+            {appUrl && <a class="border-b border-rule py-3.5 text-base" href={appUrl}>{t.signIn}</a>}
+          </nav>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>("[data-header]")
+  if (header) {
+    const update = () => header.toggleAttribute("data-scrolled", window.scrollY > 4)
+    update()
+    window.addEventListener("scroll", update, { passive: true })
+  }
+  const logo = document.querySelector<HTMLElement>("[data-logo]")
+  const menu = document.querySelector<HTMLElement>("[data-logo-menu]")
+  if (logo && menu) {
+    const items = () => [...menu.querySelectorAll<HTMLElement>('[role="menuitem"]')]
+    const close = () => {
+      if (menu.hidden) return
+      menu.hidden = true
+      logo.focus({ preventScroll: true })
+    }
+    logo.addEventListener("contextmenu", (e) => {
+      e.preventDefault()
+      const r = logo.getBoundingClientRect()
+      const x = e.clientX || r.left
+      const y = e.clientY || r.bottom + 6
+      menu.hidden = false
+      menu.style.left = `${Math.min(x, window.innerWidth - menu.offsetWidth - 8)}px`
+      menu.style.top = `${Math.min(y, window.innerHeight - menu.offsetHeight - 8)}px`
+      items()[0]?.focus()
+    })
+    menu.addEventListener("keydown", (e) => {
+      const list = items()
+      const i = list.indexOf(document.activeElement as HTMLElement)
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault()
+        const step = e.key === "ArrowDown" ? 1 : -1
+        list[(i + step + list.length) % list.length]?.focus()
+      } else if (e.key === "Escape" || e.key === "Tab") {
+        e.preventDefault()
+        close()
+      }
+    })
+    menu.querySelectorAll<HTMLElement>("[data-copy-url]").forEach((el) => {
+      el.addEventListener("click", async () => {
+        const svg = await (await fetch(el.dataset.copyUrl!)).text()
+        await navigator.clipboard.writeText(svg)
+        const label = el.querySelector("span:last-child")!
+        const before = label.textContent
+        label.textContent = el.dataset.done ?? ""
+        setTimeout(() => {
+          label.textContent = before
+          close()
+        }, 900)
+      })
+    })
+    document.addEventListener("pointerdown", (e) => {
+      if (!menu.contains(e.target as Node)) close()
+    })
+    window.addEventListener("scroll", close, { passive: true })
+    window.addEventListener("resize", close)
+  }
+  document.querySelectorAll<HTMLDetailsElement>("[data-menu]").forEach((d) => {
+    d.addEventListener("click", (e) => {
+      if ((e.target as HTMLElement).closest("nav a")) d.open = false
+    })
+  })
+</script>

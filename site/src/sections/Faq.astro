@@ -1,0 +1,33 @@
+---
+import type { HomeCopy } from "@/copy/home"
+import SectionHead from "@/ui/SectionHead.astro"
+import Stop from "@/ui/Stop.astro"
+
+interface Props {
+  t: HomeCopy["faq"]
+}
+
+const { t } = Astro.props
+---
+
+<Stop id="faq" labelledby="faq-title" tone="deep">
+  <div class="grid gap-12 lg:grid-cols-[1fr_1.6fr] lg:gap-16">
+    <SectionHead kicker={t.kicker} title={t.title} lead={t.lead} id="faq-title" />
+    <div class="min-w-0 border-t border-rule-strong">
+      {
+        t.items.map((f) => (
+          <details class="group border-b border-rule-strong">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-lg leading-snug font-semibold tracking-tight [&::-webkit-details-marker]:hidden">
+              <span class="transition-colors group-hover:text-brand">{f.q}</span>
+              <span
+                class="relative size-8 shrink-0 rounded-full border border-rule-strong group-open:rotate-45 group-open:bg-brand-wash before:absolute before:top-1/2 before:left-1/2 before:h-[1.5px] before:w-3 before:-translate-1/2 before:bg-ink after:absolute after:top-1/2 after:left-1/2 after:h-3 after:w-[1.5px] after:-translate-1/2 after:bg-ink"
+                aria-hidden="true"
+              />
+            </summary>
+            <p class="max-w-2xl pe-12 pb-6 leading-relaxed text-ink-soft">{f.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</Stop>

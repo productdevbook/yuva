@@ -1,0 +1,34 @@
+---
+import Logo from "@/ui/Logo.astro"
+
+interface Props {
+  title: string
+  size?: "lg" | "sm"
+  class?: string
+}
+
+const { title, size = "lg" } = Astro.props
+---
+
+<div
+  class:list={[
+    "flex aspect-[1200/630] flex-col justify-between overflow-hidden bg-[radial-gradient(120%_120%_at_100%_0%,#3a1a10,#09090b_62%)] text-white",
+    size === "lg" ? "rounded-3xl p-7 sm:p-10" : "rounded-2xl p-5",
+    Astro.props.class,
+  ]}
+  aria-hidden="true"
+>
+  <p class="flex items-center gap-2 text-sm">
+    <Logo size={size === "lg" ? 26 : 20} />
+    <span class="font-semibold">Yuva</span>
+    <span class="text-white/45">/ Blog</span>
+  </p>
+  <p
+    class:list={[
+      "max-w-[20ch] font-semibold tracking-[-0.03em] text-balance",
+      size === "lg" ? "text-[clamp(1.6rem,1rem+2.6vw,3rem)] leading-[1.05]" : "text-xl leading-tight",
+    ]}
+  >
+    {title}
+  </p>
+</div>

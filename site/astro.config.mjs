@@ -1,5 +1,4 @@
 // @ts-check
-import react from "@astrojs/react"
 import { lingui, linguiTransformerBabelPreset } from "@lingui/vite-plugin"
 import babel from "@rolldown/plugin-babel"
 import tailwindcss from "@tailwindcss/vite"
@@ -9,15 +8,14 @@ import { SITE } from "./src/lib/routes"
 export default defineConfig({
   site: SITE,
   output: "static",
-  integrations: [react()],
   i18n: {
-    locales: ["en", "tr"],
+    locales: ["en", "tr", "de"],
     defaultLocale: "en",
     routing: { prefixDefaultLocale: false },
   },
   build: { format: "directory", assets: "_site", inlineStylesheets: "always" },
   devToolbar: { enabled: false },
-  markdown: { syntaxHighlight: false },
+  markdown: { shikiConfig: { themes: { light: "github-light", dark: "github-dark" } } },
   vite: {
     plugins: [
       tailwindcss(),

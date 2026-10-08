@@ -1,0 +1,80 @@
+---
+import { msg } from "@lingui/core/macro"
+import { i18nFor } from "@/i18n"
+import { blog, brand, contact, home, links, releases, type Locale } from "@/lib/routes"
+import LangMenu from "@/ui/LangMenu.astro"
+import Logo from "@/ui/Logo.astro"
+
+interface Props {
+  locale: Locale
+  paths: Record<Locale, string>
+}
+
+const { locale, paths } = Astro.props
+const i18n = i18nFor(locale)
+const year = new Date().getFullYear()
+const columns = [
+  {
+    title: i18n._(msg`Product`),
+    items: [
+      { href: blog[locale], label: i18n._(msg`Blog`) },
+      { href: releases[locale], label: i18n._(msg`Releases`) },
+      { href: links.roadmap, label: i18n._(msg`Roadmap`) },
+      { href: brand[locale], label: i18n._(msg`Brand assets`) },
+    ],
+  },
+  {
+    title: i18n._(msg`Developers`),
+    items: [
+      { href: links.docs, label: i18n._(msg`Documentation`) },
+      { href: links.openapi, label: i18n._(msg`API contract`) },
+      { href: links.repo, label: i18n._(msg`Source code on GitHub`) },
+    ],
+  },
+  {
+    title: i18n._(msg`Project`),
+    items: [
+      { href: contact[locale], label: i18n._(msg`Contact`) },
+      { href: links.licensing, label: i18n._(msg`Licensing`) },
+      { href: links.contributing, label: i18n._(msg`Contributing`) },
+      { href: links.security, label: i18n._(msg`Report a vulnerability`) },
+    ],
+  },
+]
+const link = "text-ink-soft transition-colors hover:text-ink"
+---
+
+<footer class="border-t border-rule">
+  <div class="mx-auto max-w-6xl px-5 py-14 text-sm sm:px-8">
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <div>
+        <a class="inline-flex items-center gap-2.5" href={home[locale]}>
+          <Logo size={24} />
+          <span class="text-base font-semibold tracking-tight">Yuva</span>
+        </a>
+        <p class="mt-4 max-w-xs leading-relaxed text-ink-soft">{i18n._(msg`Open-source customer messaging for teams that run many products.`)}</p>
+        <p class="mt-2 max-w-xs text-ink-faint">{i18n._(msg`“Yuva” is Turkish for nest, or home.`)}</p>
+      </div>
+      {
+        columns.map((c) => (
+          <nav aria-label={c.title}>
+            <h2 class="font-semibold">{c.title}</h2>
+            <ul class="mt-4 grid gap-2.5">
+              {c.items.map((i) => (
+                <li>
+                  <a class={link} href={i.href}>
+                    {i.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))
+      }
+    </div>
+    <div class="mt-12 flex flex-col gap-3 border-t border-rule pt-6 text-ink-faint sm:flex-row sm:items-center sm:justify-between">
+      <p>{i18n._(msg`Server and panel under AGPL-3.0, SDKs and API contract under MIT.`)} © {year} productdevbook</p>
+      <LangMenu locale={locale} paths={paths} up />
+    </div>
+  </div>
+</footer>

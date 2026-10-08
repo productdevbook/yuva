@@ -1,0 +1,187 @@
+---
+import { contactCopy } from "@/copy/contact"
+import { i18nFor } from "@/i18n"
+import Base from "@/layouts/Base.astro"
+import { releases } from "@/lib/changelog"
+import { brand, contact, links, type Locale } from "@/lib/routes"
+import ContactIcon from "@/ui/ContactIcon.astro"
+import Logo from "@/ui/Logo.astro"
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const t = contactCopy(i18nFor(locale))
+const email = import.meta.env.PUBLIC_CONTACT_EMAIL as string | undefined
+const first = t.topics[0]!
+const mail = (topic: string) => `mailto:${email}?subject=${encodeURIComponent(`Yuva: ${topic}`)}`
+const all = releases()
+const facts = [
+  { label: t.facts.license, value: "AGPL-3.0 · MIT" },
+  { label: t.facts.stack, value: "Go · Postgres" },
+  { label: t.facts.channels, value: t.channelNames.join(" · ") },
+  { label: t.facts.apps, value: "Web · iOS · Android" },
+  { label: t.facts.releases, value: t.releasesValue(all.length, all[0]?.version ?? "") },
+  { label: t.facts.stage, value: t.stageValue },
+  { label: t.facts.model, value: t.modelValue },
+]
+const targets: Record<string, string> = { issues: links.issues, security: links.security, license: links.licensing, brand: brand[locale] }
+---
+
+<Base locale={locale} title={t.meta.title} description={t.meta.description} paths={contact}>
+  <div class="mx-auto max-w-6xl px-5 sm:px-8">
+    <section
+      class="grid min-h-[calc(100svh-4rem)] grid-cols-1 content-center items-center gap-14 py-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-20"
+      aria-labelledby="contact-title"
+    >
+      <div class="min-w-0">
+        <p class="text-sm font-medium text-brand">{t.kicker}</p>
+        <h1 id="contact-title" class="mt-4 text-[clamp(2.5rem,1.4rem+3.6vw,4.3rem)] leading-[1.04] font-semibold tracking-[-0.035em]">{t.title}</h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-pretty text-ink-soft">{t.lead}</p>
+        {
+          email && (
+            <p class="mt-8 text-sm text-ink-faint">
+              <button type="button" class="font-medium text-ink underline decoration-rule-strong underline-offset-4 hover:decoration-ink" data-copy={email} data-done={t.copied}>
+                {email}
+              </button>
+            </p>
+          )
+        }
+      </div>
+
+      <div class="min-w-0 rounded-3xl bg-paper-deep p-3 sm:p-5">
+        <form class="overflow-hidden rounded-2xl border border-rule bg-sheet shadow-[0_1px_2px_rgb(15_23_42/0.04),0_20px_50px_-24px_rgb(15_23_42/0.22)]" data-composer>
+          <div class="flex items-center gap-3 bg-signal px-5 py-4 text-white">
+            <Logo size={32} class="rounded-[22%] ring-2 ring-white/30" />
+            <div>
+              <p class="text-sm font-semibold">{t.team}</p>
+              <p class="text-xs text-white/75">{t.kicker}</p>
+            </div>
+          </div>
+          <div class="grid gap-3 px-5 py-5">
+            <p class="max-w-[85%] justify-self-start rounded-2xl rounded-ss-md bg-paper-deep px-4 py-3 text-[0.95rem]">{t.greeting}</p>
+            <p class="max-w-[85%] justify-self-end rounded-2xl rounded-se-md bg-signal px-4 py-3 text-[0.95rem] text-white" data-message aria-live="polite">
+              {first.message}
+            </p>
+          </div>
+          <fieldset class="border-t border-rule px-5 pt-4 pb-5">
+            <legend class="sr-only">{t.about}</legend>
+            <p class="text-xs font-medium text-ink-faint" aria-hidden="true">{t.about}</p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              {
+                t.topics.map((topic, i) => (
+                  <label class="cursor-pointer">
+                    <input class="peer sr-only" type="radio" name="topic" value={topic.label} data-text={topic.message} checked={i === 0} />
+                    <span class="inline-flex h-8 items-center rounded-full border border-rule-strong px-3.5 text-sm transition-colors peer-checked:border-signal peer-checked:bg-brand-wash peer-checked:text-brand peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand hover:bg-paper-deep">
+                      {topic.label}
+                    </span>
+                  </label>
+                ))
+              }
+            </div>
+          </fieldset>
+          <div class="flex items-center gap-3 border-t border-rule bg-paper-deep/60 px-5 py-3.5">
+            <span class="flex-1 truncate text-sm text-ink-faint">{email ?? ""}</span>
+            <a
+              class="inline-flex h-10 shrink-0 items-center gap-2 rounded-full bg-signal px-5 text-sm font-medium text-white transition-colors hover:bg-signal/90"
+              href={email ? mail(first.label) : links.issues}
+              data-mail={email}
+            >
+              {email ? t.write : t.noEmail}
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+                ><path d="M2.5 8h10M9 4.5 12.5 8 9 11.5"></path></svg
+              >
+            </a>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="border-t border-rule py-20" aria-labelledby="investors-title">
+      <h2 id="investors-title" class="text-3xl font-semibold tracking-[-0.025em]">{t.investorsTitle}</h2>
+      <div class="mt-10 grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-10">
+        <div class="overflow-hidden rounded-3xl bg-night p-7 text-night-ink sm:p-8">
+          <p class="flex items-center gap-2.5 text-sm font-semibold">
+            <Logo size={22} />
+            {t.glance}
+          </p>
+          <dl class="mt-6 divide-y divide-night-rule">
+            {
+              facts.map((f) => (
+                <div class="grid grid-cols-[7rem_minmax(0,1fr)] gap-4 py-3 text-sm">
+                  <dt class="text-night-soft">{f.label}</dt>
+                  <dd class="font-medium">{f.value}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+        <ol class="grid content-start gap-8">
+          {
+            t.investors.map((item, i) => (
+              <li class="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-4">
+                <span class="grid size-10 place-items-center rounded-full bg-brand-wash font-mono text-sm font-medium text-brand">{i + 1}</span>
+                <div>
+                  <h3 class="text-lg font-semibold tracking-tight">{item.title}</h3>
+                  <p class="mt-1.5 leading-relaxed text-ink-soft">{item.body}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <section class="border-t border-rule py-20" aria-labelledby="elsewhere-title">
+      <div class="grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-10">
+        <div>
+          <h2 id="elsewhere-title" class="text-3xl font-semibold tracking-[-0.025em]">{t.elsewhereTitle}</h2>
+          <p class="mt-4 max-w-sm leading-relaxed text-ink-soft">{t.elsewhereLead}</p>
+        </div>
+        <div class="rounded-3xl bg-paper-deep p-3 sm:p-5">
+          <ul class="divide-y divide-rule overflow-hidden rounded-2xl border border-rule bg-sheet">
+            {
+              t.elsewhere.map((item) => (
+                <li>
+                  <a class="group flex items-start gap-3.5 px-5 py-4 transition-colors hover:bg-paper-deep" href={targets[item.id]}>
+                    <span class="grid size-9 shrink-0 place-items-center rounded-full border border-rule text-ink-soft group-hover:text-brand">
+                      <ContactIcon name={item.id as "issues"} />
+                    </span>
+                    <span class="min-w-0 flex-1">
+                      <span class="flex items-center gap-2 text-sm">
+                        <span class="font-medium">{item.title}</span>
+                        <span class="ms-auto shrink-0 text-xs text-ink-faint group-hover:text-brand">{item.action} →</span>
+                      </span>
+                      <span class="mt-1 block text-sm text-ink-soft">{item.body}</span>
+                    </span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("[data-composer]")
+  const link = form?.querySelector<HTMLAnchorElement>("[data-mail]")
+  const message = form?.querySelector<HTMLElement>("[data-message]")
+  form?.addEventListener("change", (e) => {
+    const input = e.target as HTMLInputElement
+    if (message) message.textContent = input.dataset.text ?? ""
+    if (link?.dataset.mail) link.href = `mailto:${link.dataset.mail}?subject=${encodeURIComponent(`Yuva: ${input.value}`)}`
+  })
+  form?.addEventListener("submit", (e) => e.preventDefault())
+  document.querySelectorAll<HTMLElement>("[data-copy]").forEach((el) => {
+    el.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(el.dataset.copy!)
+      const before = el.textContent
+      el.textContent = el.dataset.done ?? ""
+      setTimeout(() => (el.textContent = before), 1400)
+    })
+  })
+</script>

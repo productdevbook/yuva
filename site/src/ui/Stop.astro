@@ -1,0 +1,22 @@
+---
+interface Props {
+  id?: string
+  labelledby: string
+  tone?: "paper" | "deep" | "night"
+  class?: string
+}
+
+const { id, labelledby, tone = "paper" } = Astro.props
+const tones = {
+  paper: "",
+  deep: "border-y border-rule bg-paper-deep",
+  night:
+    "bg-night text-ink [--ink:#fafafa] [--ink-soft:#a1a1aa] [--ink-faint:#8a8a93] [--rule:#27272a] [--rule-strong:#3f3f46] [--sheet:#131316] [--paper:#09090b] [--paper-deep:#0f0f12] [--brand:#ff8a5c] [--brand-wash:#2a140c]",
+}
+---
+
+<section id={id} aria-labelledby={labelledby} class:list={["scroll-mt-16", tones[tone], Astro.props.class]}>
+  <div class="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-28">
+    <slot />
+  </div>
+</section>

@@ -1,0 +1,45 @@
+---
+import type { HomeCopy } from "@/copy/home"
+import { links } from "@/lib/routes"
+import GitHubIcon from "@/ui/GitHubIcon.astro"
+
+interface Props {
+  t: HomeCopy["hero"]
+  class?: string
+}
+
+const { t } = Astro.props
+const appUrl = import.meta.env.PUBLIC_APP_URL
+const solid = "inline-flex h-11 items-center gap-2 rounded-full bg-signal px-5 text-[0.95rem] font-medium text-white transition-colors hover:bg-signal/90"
+const outline =
+  "inline-flex h-11 items-center gap-2 rounded-full border border-rule-strong px-5 text-[0.95rem] font-medium transition-colors hover:border-ink/40 hover:bg-paper-deep"
+---
+
+{
+  appUrl ? (
+    <div class:list={["grid gap-3 sm:grid-cols-2", Astro.props.class]}>
+      <a class="group rounded-2xl border border-signal/30 bg-brand-wash p-5 transition-colors hover:border-signal/60" href={appUrl}>
+        <p class="font-semibold tracking-tight">{t.hosted}</p>
+        <p class="mt-1.5 text-sm leading-relaxed text-ink-soft">{t.hostedBody}</p>
+        <span class="mt-4 inline-flex h-9 items-center rounded-full bg-signal px-4 text-sm font-medium text-white transition-colors group-hover:bg-signal/90">
+          {t.signUp}
+        </span>
+      </a>
+      <a class="group rounded-2xl border border-rule p-5 transition-colors hover:border-rule-strong hover:bg-paper-deep" href={links.quickStart}>
+        <p class="font-semibold tracking-tight">{t.selfHosted}</p>
+        <p class="mt-1.5 text-sm leading-relaxed text-ink-soft">{t.selfHostedBody}</p>
+        <span class="mt-4 inline-flex h-9 items-center rounded-full border border-rule-strong px-4 text-sm font-medium">{t.quickStart}</span>
+      </a>
+    </div>
+  ) : (
+    <div class:list={["flex flex-wrap gap-3", Astro.props.class]}>
+      <a class={solid} href={links.quickStart}>
+        {t.quickStart}
+      </a>
+      <a class={outline} href={links.repo}>
+        <GitHubIcon />
+        {t.github}
+      </a>
+    </div>
+  )
+}

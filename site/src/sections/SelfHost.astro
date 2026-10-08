@@ -1,0 +1,39 @@
+---
+import { Code } from "astro:components"
+import type { HomeCopy } from "@/copy/home"
+import { links } from "@/lib/routes"
+import SectionHead from "@/ui/SectionHead.astro"
+import Stop from "@/ui/Stop.astro"
+
+interface Props {
+  t: HomeCopy["host"]
+}
+
+const { t } = Astro.props
+---
+
+<Stop id="self-host" labelledby="host-title" tone="deep">
+  <div class="grid items-center gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
+    <div>
+      <SectionHead kicker={t.kicker} title={t.title} lead={t.lead} id="host-title" />
+      <p class="mt-6 flex flex-wrap gap-2 font-mono text-xs" aria-hidden="true">
+        {
+          t.stack.map((s) => (
+            <span class="rounded-md border border-rule-strong bg-sheet px-2.5 py-1 text-ink-soft">
+              {s.k}=<b class="font-semibold text-brand">{s.v}</b>
+            </span>
+          ))
+        }
+      </p>
+      <a class="mt-8 inline-flex text-sm font-medium text-brand hover:underline" href={links.quickStart}>{t.guide} →</a>
+    </div>
+    <div class="min-w-0 overflow-hidden rounded-2xl border border-night-rule bg-night shadow-paper">
+      <div class="flex gap-1.5 border-b border-night-rule px-4 py-3" aria-hidden="true">
+        <span class="size-2.5 rounded-full bg-white/15"></span>
+        <span class="size-2.5 rounded-full bg-white/15"></span>
+        <span class="size-2.5 rounded-full bg-white/15"></span>
+      </div>
+      <Code code={t.terminal} lang="sh" themes={{ light: "github-dark", dark: "github-dark" }} />
+    </div>
+  </div>
+</Stop>

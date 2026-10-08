@@ -1,0 +1,155 @@
+---
+import { render } from "astro:content"
+import { homeCopy } from "@/copy/home"
+import { blogCopy } from "@/copy/pages"
+import { i18nFor } from "@/i18n"
+import Base from "@/layouts/Base.astro"
+import { isoDay, minutes, posts, type Post } from "@/lib/blog"
+import { absolute, blog, post } from "@/lib/routes"
+import Logo from "@/ui/Logo.astro"
+import PostCover from "@/ui/PostCover.astro"
+import StartCards from "@/ui/StartCards.astro"
+
+interface Props {
+  entry: Post
+}
+
+const { entry } = Astro.props
+const i18n = i18nFor("en")
+const t = blogCopy(i18n)
+const hero = homeCopy(i18n).hero
+const { Content, headings } = await render(entry)
+const toc = headings.filter((h) => h.depth === 2)
+const others = (await posts()).filter((p) => p.id !== entry.id).slice(0, 3)
+const date = new Intl.DateTimeFormat("en-US", { dateStyle: "long", timeZone: "UTC" })
+const url = absolute(post(entry.id))
+const share = [
+  { label: "X", href: `https://x.com/intent/post?text=${encodeURIComponent(entry.data.title)}&url=${encodeURIComponent(url)}` },
+  { label: "LinkedIn", href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}` },
+]
+const pill = "inline-flex h-9 items-center rounded-full border border-rule-strong px-4 text-sm font-medium transition-colors hover:border-ink/40 hover:bg-paper-deep"
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: entry.data.title,
+    description: entry.data.description,
+    datePublished: entry.data.date.toISOString(),
+    author: { "@type": "Person", name: entry.data.author },
+    image: absolute(`/og/blog/${entry.id}.png`),
+    mainEntityOfPage: url,
+  },
+]
+---
+
+<Base
+  locale="en"
+  title={`${entry.data.title} · Yuva`}
+  description={entry.data.description}
+  paths={{ en: post(entry.id), tr: blog.tr, de: blog.de }}
+  translated={false}
+  type="article"
+  image={`/og/blog/${entry.id}.png`}
+  jsonLd={jsonLd}
+>
+  <article class="mx-auto max-w-6xl px-5 pt-12 pb-24 sm:px-8 sm:pt-16">
+    <header class="mx-auto max-w-3xl text-center">
+      <a class="text-sm text-ink-soft transition-colors hover:text-ink" href={blog.en}>← {t.back}</a>
+      <p class="mt-8 text-sm text-ink-faint">
+        <time datetime={isoDay(entry.data.date)}>{date.format(entry.data.date)}</time>
+        <span> · {t.readTime(minutes(entry))}</span>
+      </p>
+      <h1 class="mt-4 text-[clamp(2.3rem,1.5rem+3vw,3.6rem)] leading-[1.05] font-semibold tracking-[-0.035em]">{entry.data.title}</h1>
+      <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">{entry.data.description}</p>
+      <p class="mt-6 inline-flex items-center gap-2.5 text-sm">
+        <Logo size={28} />
+        <span class="font-medium">{entry.data.author}</span>
+      </p>
+    </header>
+
+    <PostCover title={entry.data.title} class="mx-auto mt-12 max-w-5xl" />
+
+    <div class="mx-auto mt-14 grid max-w-5xl gap-12 lg:grid-cols-[minmax(0,1fr)_14rem]">
+      <div class="min-w-0">
+        <div
+          class="prose-yuva prose max-w-none prose-headings:scroll-mt-24 prose-headings:tracking-tight prose-h2:mt-12 prose-a:font-medium prose-a:underline-offset-4 prose-code:before:content-none prose-code:after:content-none prose-li:my-1.5"
+        >
+          <Content />
+        </div>
+
+        <div class="mt-14 flex flex-wrap items-center gap-2 border-t border-rule pt-8">
+          <span class="me-2 text-sm font-medium text-ink-faint">{t.share}</span>
+          <button type="button" class={pill} data-copy-link={url} data-done={t.copied}>{t.copyLink}</button>
+          {share.map((s) => <a class={pill} href={s.href} rel="noopener" target="_blank">{s.label}</a>)}
+        </div>
+
+        <div class="mt-8 flex items-center gap-4 rounded-2xl border border-rule p-5">
+          <Logo size={44} />
+          <div>
+            <p class="font-semibold">{entry.data.author}</p>
+            <p class="text-sm text-ink-soft">{t.role}</p>
+          </div>
+        </div>
+      </div>
+
+      {
+        toc.length > 0 && (
+          <nav class="hidden lg:block" aria-labelledby="toc-title">
+            <div class="sticky top-24">
+              <p id="toc-title" class="text-sm font-semibold">
+                {t.onThisPage}
+              </p>
+              <ol class="mt-3 grid gap-2 border-s border-rule text-sm">
+                {toc.map((h) => (
+                  <li>
+                    <a class="-ms-px block border-s border-transparent ps-4 text-ink-soft transition-colors hover:border-ink hover:text-ink" href={`#${h.slug}`}>
+                      {h.text}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </nav>
+        )
+      }
+    </div>
+
+    <section class="mx-auto mt-20 max-w-5xl rounded-3xl bg-paper-deep p-6 sm:p-10" aria-labelledby="try-title">
+      <h2 id="try-title" class="text-2xl font-semibold tracking-tight">{t.tryTitle}</h2>
+      <p class="mt-2 text-ink-soft">{t.tryBody}</p>
+      <StartCards t={hero} class="mt-6" />
+    </section>
+
+    {
+      others.length > 0 && (
+        <section class="mx-auto mt-20 max-w-5xl" aria-labelledby="more-title">
+          <h2 id="more-title" class="text-sm font-medium text-ink-faint">
+            {t.more}
+          </h2>
+          <ul class="mt-6 grid gap-8 sm:grid-cols-3">
+            {others.map((p) => (
+              <li>
+                <a class="group block" href={post(p.id)}>
+                  <PostCover title={p.data.title} size="sm" />
+                  <p class="mt-4 text-sm text-ink-faint">{date.format(p.data.date)}</p>
+                  <h3 class="mt-1 font-semibold group-hover:text-brand">{p.data.title}</h3>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </article>
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>("[data-copy-link]").forEach((el) => {
+    el.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(el.dataset.copyLink!)
+      const before = el.textContent
+      el.textContent = el.dataset.done ?? ""
+      setTimeout(() => (el.textContent = before), 1400)
+    })
+  })
+</script>

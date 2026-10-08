@@ -1,0 +1,18 @@
+---
+interface Props {
+  kicker: string
+  title: string
+  lead?: string
+  id: string
+  center?: boolean
+}
+
+const { kicker, title, lead, id, center = false } = Astro.props
+---
+
+<header class:list={["max-w-2xl", center && "mx-auto text-center"]}>
+  <p class="text-sm font-medium text-brand">{kicker}</p>
+  <h2 id={id} class="mt-3 text-[clamp(2rem,1.4rem+2vw,3rem)] leading-[1.08] font-semibold tracking-[-0.03em]">{title}</h2>
+  {lead && <p class="mt-5 text-lg leading-relaxed text-pretty text-ink-soft">{lead}</p>}
+  <slot />
+</header>

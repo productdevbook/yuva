@@ -1,0 +1,148 @@
+---
+import { releasesCopy } from "@/copy/pages"
+import { i18nFor } from "@/i18n"
+import Base from "@/layouts/Base.astro"
+import { releases as list } from "@/lib/changelog"
+import { bcp47, links, releases, type Locale } from "@/lib/routes"
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const t = releasesCopy(i18nFor(locale))
+const all = list()
+const latest = all[0]?.version
+const timeline = [...all].reverse()
+const short = new Intl.DateTimeFormat(bcp47[locale], { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })
+const long = new Intl.DateTimeFormat(bcp47[locale], { dateStyle: "long", timeZone: "UTC" })
+const at = (d: string) => new Date(`${d}T00:00:00Z`)
+const dot: Record<string, string> = {
+  Added: "bg-emerald-500",
+  Changed: "bg-sky-500",
+  Deprecated: "bg-amber-500",
+  Removed: "bg-zinc-400",
+  Fixed: "bg-violet-500",
+  Security: "bg-brand",
+}
+const count = (r: (typeof all)[number]) => r.groups.reduce((n, g) => n + g.items.length, 0)
+const link = "font-medium text-brand hover:underline"
+const chip = "inline-flex items-center gap-1.5 rounded-full border border-rule bg-sheet px-2.5 py-1 text-xs text-ink-soft"
+const inline =
+  "[&_a]:font-medium [&_a]:text-brand [&_a]:underline-offset-4 hover:[&_a]:underline [&_code]:rounded-md [&_code]:bg-paper-deep [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.84em] [&_code]:text-ink [overflow-wrap:anywhere]"
+---
+
+<Base locale={locale} title={t.metaTitle} description={t.description} paths={releases}>
+  <div class="mx-auto max-w-6xl px-5 pt-16 pb-24 sm:px-8 sm:pt-24">
+    <header class="max-w-2xl">
+      <p class="text-sm font-medium text-brand">{t.kicker}</p>
+      <h1 class="mt-3 text-4xl font-semibold tracking-[-0.03em] sm:text-5xl">{t.title}</h1>
+      <p class="mt-4 text-lg leading-relaxed text-ink-soft">{t.lead}</p>
+      <p class="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-sm">
+        <a class={link} href={links.changelog}>{t.changelog}</a>
+        <a class={link} href={links.releasesOnGitHub}>{t.all}</a>
+      </p>
+      {locale !== "en" && <p class="mt-3 text-sm text-ink-faint">{t.english}</p>}
+    </header>
+
+    <nav class="mt-14 overflow-x-auto rounded-3xl bg-paper-deep" aria-label={t.track}>
+      <ol class="flex min-w-max px-6 pt-8 pb-7 sm:px-10">
+        {
+          timeline.map((r) => (
+            <li class="relative w-56 shrink-0 pe-6">
+              <span class="absolute start-3 end-0 top-[0.6875rem] h-px bg-rule-strong" aria-hidden="true" />
+              <a class="group relative block" href={`#v${r.version}`}>
+                <span
+                  class:list={[
+                    "relative block size-6 rounded-full border-2",
+                    r.version === latest ? "border-brand bg-brand shadow-[0_0_0_5px_var(--brand-wash)]" : "border-ink bg-paper-deep",
+                  ]}
+                  aria-hidden="true"
+                />
+                <span class="mt-4 flex items-center gap-2">
+                  <span class="text-xl font-semibold tracking-tight group-hover:text-brand">{r.version}</span>
+                  {r.version === latest && <span class="rounded-full bg-brand px-2 py-0.5 text-[0.7rem] font-medium text-white">{t.latest}</span>}
+                </span>
+                <time class="mt-0.5 block text-sm text-ink-faint" datetime={r.date}>
+                  {short.format(at(r.date))}
+                </time>
+                <span class="mt-3 flex flex-wrap gap-1.5">
+                  {r.groups.map((g) => (
+                    <span class={chip}>
+                      <span class:list={["size-1.5 rounded-full", dot[g.kind] ?? "bg-ink-faint"]} />
+                      {t.kinds[g.kind] ?? g.kind}
+                      <span class="text-ink-faint">{g.items.length}</span>
+                    </span>
+                  ))}
+                </span>
+              </a>
+            </li>
+          ))
+        }
+        <li class="w-48 shrink-0">
+          <a class="group block" href={links.roadmap}>
+            <span class="block size-6 rounded-full border-2 border-dashed border-rule-strong bg-paper-deep" aria-hidden="true"></span>
+            <span class="mt-4 block text-xl font-semibold tracking-tight text-ink-faint group-hover:text-ink">{t.next}</span>
+            <span class="mt-0.5 block text-sm text-ink-faint group-hover:text-brand">{t.nextBody} →</span>
+          </a>
+        </li>
+      </ol>
+    </nav>
+
+    <ol class="mt-16">
+      {
+        all.map((r) => (
+          <li class="grid gap-8 border-t border-rule py-14 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-12" id={`v${r.version}`}>
+            <div class="md:sticky md:top-24 md:self-start">
+              <h2 class="flex items-center gap-2.5">
+                <a class="text-3xl font-semibold tracking-[-0.03em] hover:text-brand" href={`#v${r.version}`}>
+                  {r.version}
+                </a>
+                {r.version === latest && <span class="rounded-full bg-brand-wash px-2 py-0.5 text-xs font-medium text-brand">{t.latest}</span>}
+              </h2>
+              <time class="mt-1.5 block text-ink-soft" datetime={r.date}>
+                {long.format(at(r.date))}
+              </time>
+              <p class="mt-1 text-sm text-ink-faint">{t.changes(count(r))}</p>
+              <p class="mt-5 flex flex-col gap-1.5 text-sm">
+                <a class={link} href={r.tag}>
+                  {t.tag} →
+                </a>
+                {r.compare && r.compare !== r.tag && (
+                  <a class={link} href={r.compare}>
+                    {t.compare} →
+                  </a>
+                )}
+              </p>
+            </div>
+
+            <div class="min-w-0" lang="en">
+              {r.intro && (
+                <p class:list={["mb-8 rounded-2xl border border-rule bg-paper-deep px-5 py-4 text-ink", inline]} set:html={r.intro} />
+              )}
+              <div class="grid gap-10">
+                {r.groups.map((g) => (
+                  <section>
+                    <h3 class="flex items-center gap-2 text-sm font-semibold" lang={bcp47[locale]}>
+                      <span class:list={["size-2 rounded-full", dot[g.kind] ?? "bg-ink-faint"]} />
+                      {t.kinds[g.kind] ?? g.kind}
+                      <span class="font-normal text-ink-faint">{g.items.length}</span>
+                    </h3>
+                    <ul class="mt-3 divide-y divide-rule rounded-2xl border border-rule">
+                      {g.items.map((item) => (
+                        <li class="min-w-0 px-5 py-4">
+                          {item.title && <p class="font-medium">{item.title}</p>}
+                          <p class:list={["leading-relaxed text-ink-soft", item.title && "mt-1", inline]} set:html={item.html} />
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                ))}
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</Base>

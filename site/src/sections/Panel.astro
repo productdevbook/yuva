@@ -1,0 +1,41 @@
+---
+import type { HomeCopy } from "@/copy/home"
+import type { Shots } from "@/lib/shots"
+import Icon from "@/ui/Icon.astro"
+import SectionHead from "@/ui/SectionHead.astro"
+import Shot from "@/ui/Shot.astro"
+import Stop from "@/ui/Stop.astro"
+
+interface Props {
+  t: HomeCopy["panel"]
+  shots: Shots
+}
+
+const { t, shots: s } = Astro.props
+---
+
+<Stop id="panel" labelledby="panel-title">
+  <div class="grid items-start gap-16 lg:grid-cols-[minmax(0,1fr)_19rem] lg:gap-20">
+    <div class="min-w-0">
+      <SectionHead kicker={t.kicker} title={t.title} lead={t.lead} id="panel-title" />
+      <dl class="mt-12 grid gap-x-10 gap-y-8 sm:grid-cols-2">
+        {
+          t.features.map((f) => (
+            <div class="border-t border-rule-strong pt-4">
+              <dt class="flex items-center gap-2.5 font-semibold tracking-tight">
+                {f.icon && <Icon name={f.icon} class="text-brand" />}
+                {f.title}
+              </dt>
+              <dd class="mt-1.5 text-sm leading-relaxed text-ink-soft">{f.body}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+    <div class="lg:sticky lg:top-24">
+      <div class="mx-auto w-[min(19rem,78vw)] overflow-hidden rounded-[2.6rem] border-[8px] border-zinc-900 shadow-[0_30px_60px_-30px_rgb(15_23_42/0.45)] dark:border-zinc-700 [&_img]:aspect-[390/760] [&_img]:object-cover [&_img]:object-top">
+        <Shot light={s.phone.light} dark={s.phone.dark} alt={t.phoneAlt} widths={[320, 480, 720, 1170]} sizes="(min-width: 1000px) 304px, 70vw" />
+      </div>
+    </div>
+  </div>
+</Stop>

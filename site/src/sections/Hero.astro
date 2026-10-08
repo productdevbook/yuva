@@ -1,0 +1,60 @@
+---
+import type { HomeCopy } from "@/copy/home"
+import type { Locale } from "@/lib/routes"
+import { releases, VERSION } from "@/lib/routes"
+import type { Shots } from "@/lib/shots"
+import InboxPreview from "@/ui/InboxPreview.astro"
+import Shot from "@/ui/Shot.astro"
+import StartCards from "@/ui/StartCards.astro"
+
+interface Props {
+  t: HomeCopy["hero"]
+  shots: Shots
+  locale: Locale
+}
+
+const { t, shots: s, locale } = Astro.props
+const appUrl = import.meta.env.PUBLIC_APP_URL
+---
+
+<section class="mx-auto flex min-h-[calc(100svh-4rem)] max-w-6xl flex-col px-5 sm:px-8" aria-labelledby="hero-title">
+  <div class="grid flex-1 grid-cols-1 content-center items-center gap-14 py-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-20">
+  <div class="min-w-0">
+    <a class="inline-flex items-center gap-2 text-sm text-ink-soft transition-colors hover:text-ink" href={`${releases[locale]}#v${VERSION}`}>
+      <span class="size-1.5 rounded-full bg-brand"></span>
+      {t.release}
+      <span aria-hidden="true">→</span>
+    </a>
+    <h1 id="hero-title" class="mt-6 text-[clamp(2.5rem,1.4rem+3.6vw,4.3rem)] leading-[1.04] font-semibold tracking-[-0.035em]">
+      {t.title}
+    </h1>
+    <p class="mt-6 max-w-xl text-lg leading-relaxed text-pretty text-ink-soft">{t.lead}</p>
+    <StartCards t={t} class="mt-9" />
+    <p class="mt-6 text-sm text-ink-faint">{appUrl ? t.tagsHosted : t.tags}</p>
+  </div>
+
+  <InboxPreview t={t.inbox} />
+  </div>
+
+  <div class="flex flex-col gap-3 border-t border-rule py-6 sm:flex-row sm:items-center sm:gap-8">
+    <p class="shrink-0 text-xs font-medium tracking-wide text-ink-faint uppercase">{t.worksWith}</p>
+    <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-ink-soft">
+      {t.stack.map((name) => <li>{name}</li>)}
+    </ul>
+  </div>
+</section>
+
+<section class="mx-auto max-w-6xl px-5 pb-24 sm:px-8">
+  <div class="rounded-[1.25rem] border border-rule bg-paper-deep p-2 max-sm:mx-auto max-sm:max-w-[316px] max-sm:rounded-[2.4rem]">
+    <div class="overflow-hidden rounded-[0.9rem] border border-rule max-sm:rounded-[2rem]">
+      <Shot
+        light={s.thread.light}
+        dark={s.thread.dark}
+        alt={t.shotAlt}
+        widths={[720, 1080, 1440, 2160, 2880]}
+        sizes="(min-width: 1180px) 1104px, calc(100vw - 48px)"
+        small={{ light: s.phoneThread.light, dark: s.phoneThread.dark, widths: [390, 585, 780], sizes: "300px" }}
+      />
+    </div>
+  </div>
+</section>

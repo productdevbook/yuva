@@ -1,72 +1,36 @@
 ---
 import "@fontsource-variable/geist"
+import "@fontsource-variable/geist-mono"
 import "@/styles/global.css"
 import geistLatin from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url"
 import geistLatinExt from "@fontsource-variable/geist/files/geist-latin-ext-wght-normal.woff2?url"
 import { msg } from "@lingui/core/macro"
-import Logo from "@/components/Logo.astro"
-import { buttonVariants } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
+import Footer from "@/layouts/Footer.astro"
+import Header from "@/layouts/Header.astro"
 import { i18nFor } from "@/i18n"
-import { absolute, bcp47, home, links, ogLocale, other, type Locale } from "@/lib/routes"
+import { absolute, bcp47, home, locales, ogLocale, type Locale } from "@/lib/routes"
 
 interface Props {
   locale: Locale
   title: string
   description: string
   jsonLd?: object[]
+  noindex?: boolean
+  paths?: Record<Locale, string>
+  translated?: boolean
+  type?: "website" | "article"
+  image?: string
 }
 
-const { locale, title, description, jsonLd = [] } = Astro.props
+const { locale, title, description, jsonLd = [], noindex = false, paths = home, translated = true, type = "website", image } = Astro.props
 const i18n = i18nFor(locale)
-const alt = other(locale)
-const canonical = absolute(home[locale])
-const ogImage = absolute(`/og/${locale}.png`)
+const canonical = absolute(paths[locale])
+const ogImage = absolute(image ?? `/og/${locale}.png`)
 const serialize = (o: object) => JSON.stringify(o).replace(/</g, "\\u003c")
-const year = new Date().getFullYear()
 const preload = locale === "tr" ? [geistLatin, geistLatinExt] : [geistLatin]
 
-const nav = [
-  { href: "#how", label: i18n._(msg`How it works`) },
-  { href: "#channels", label: i18n._(msg`Channels`) },
-  { href: "#developers", label: i18n._(msg`Developers`) },
-  { href: "#self-host", label: i18n._(msg`Self-host`) },
-  { href: "#faq", label: i18n._(msg`FAQ`) },
-]
-const switchLabel = new Intl.DisplayNames([alt], { type: "language" }).of(alt)!.replace(/^./, (c) => c.toLocaleUpperCase(alt))
 
-const footer = [
-  {
-    title: i18n._(msg`Project`),
-    items: [
-      { href: links.repo, label: i18n._(msg`Source code on GitHub`) },
-      { href: links.roadmap, label: i18n._(msg`Roadmap`) },
-      { href: links.issues, label: i18n._(msg`Issues`) },
-      { href: links.contributing, label: i18n._(msg`Contributing`) },
-    ],
-  },
-  {
-    title: i18n._(msg`Documentation`),
-    items: [
-      { href: links.install, label: i18n._(msg`Install`) },
-      { href: links.architecture, label: i18n._(msg`Architecture`) },
-      { href: links.webhooks, label: i18n._(msg`Webhooks`) },
-      { href: links.openapi, label: i18n._(msg`API contract`) },
-    ],
-  },
-  {
-    title: i18n._(msg`Legal`),
-    items: [
-      { href: links.licensing, label: i18n._(msg`Licensing`) },
-      { href: links.cla, label: i18n._(msg`Contributor License Agreement`) },
-      { href: links.trademark, label: i18n._(msg`Name and logo`) },
-      { href: links.security, label: i18n._(msg`Report a vulnerability`) },
-    ],
-  },
-]
-const appUrl = import.meta.env.PUBLIC_APP_URL
 ---
-
 <!doctype html>
 <html lang={bcp47[locale]}>
   <head>
@@ -74,23 +38,31 @@ const appUrl = import.meta.env.PUBLIC_APP_URL
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang="en" href={absolute(home.en)} />
-    <link rel="alternate" hreflang="tr" href={absolute(home.tr)} />
-    <link rel="alternate" hreflang="x-default" href={absolute(home.en)} />
+    {
+      noindex ? (
+        <meta name="robots" content="noindex" />
+      ) : (
+        <>
+          <link rel="canonical" href={canonical} />
+          {translated && locales.map((l) => <link rel="alternate" hreflang={l} href={absolute(paths[l])} />)}
+          {translated && <link rel="alternate" hreflang="x-default" href={absolute(paths.en)} />}
+        </>
+      )
+    }
     <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
     {preload.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title="Yuva blog" href="/blog/rss.xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta property="og:site_name" content="Yuva" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={type} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={ogLocale[locale]} />
-    <meta property="og:locale:alternate" content={ogLocale[alt]} />
+    {locales.filter((l) => l !== locale).map((l) => <meta property="og:locale:alternate" content={ogLocale[l]} />)}
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -99,74 +71,15 @@ const appUrl = import.meta.env.PUBLIC_APP_URL
     <meta name="twitter:image" content={ogImage} />
     {jsonLd.map((o) => <script is:inline type="application/ld+json" set:html={serialize(o)} />)}
   </head>
-  <body class="min-h-dvh overflow-x-clip">
+  <body class="min-h-dvh overflow-x-clip bg-paper">
     <a
-      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:bg-background focus:px-3 focus:py-2 focus:ring-3 focus:ring-ring/50"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-paper"
       href="#main">{i18n._(msg`Skip to content`)}</a
     >
-    <header class="sticky top-0 z-40 border-b bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
-      <div class="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4 sm:px-6">
-        <a class="flex shrink-0 items-center gap-2 font-semibold" href={home[locale]} aria-label={i18n._(msg`Yuva home`)}>
-          <Logo size={26} />
-          <span class="text-lg tracking-tight">Yuva</span>
-        </a>
-        <nav class="hidden flex-1 items-center gap-1 lg:flex" aria-label={i18n._(msg`Sections`)}>
-          {nav.map((n) => <a class={buttonVariants({ variant: "ghost", size: "sm" })} href={n.href}>{n.label}</a>)}
-        </nav>
-        <div class="ml-auto flex items-center gap-1">
-          <a class={buttonVariants({ variant: "ghost", size: "sm" })} href={home[alt]} hreflang={alt} lang={bcp47[alt]}>{switchLabel}</a>
-          {appUrl && <a class={buttonVariants({ variant: "ghost", size: "sm" })} href={appUrl}>{i18n._(msg`Sign in`)}</a>}
-          <a class={buttonVariants({ variant: "outline", size: "sm" })} href={links.repo}>
-            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"
-              ><path
-                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
-              ></path></svg
-            >
-            <span class="max-[379px]:sr-only">GitHub</span>
-          </a>
-        </div>
-      </div>
-    </header>
+    <Header locale={locale} paths={paths} />
     <main id="main">
       <slot />
     </main>
-    <footer class="border-t bg-muted/40">
-      <div class="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:grid-cols-2 sm:px-6 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
-        <div class="space-y-3">
-          <a class="flex items-center gap-2 font-semibold" href={home[locale]}>
-            <Logo size={24} />
-            <span>Yuva</span>
-          </a>
-          <p class="max-w-xs text-sm text-muted-foreground">{i18n._(msg`Open-source customer messaging for teams that run many products.`)}</p>
-          <p class="text-xs text-muted-foreground">{i18n._(msg`“Yuva” is Turkish for nest, or home.`)}</p>
-        </div>
-        {
-          footer.map((col) => (
-            <div>
-              <h2 class="mb-3 text-sm font-semibold">{col.title}</h2>
-              <ul class="space-y-2 text-sm">
-                {col.items.map((i) => (
-                  <li>
-                    <a class="text-muted-foreground hover:text-foreground hover:underline" href={i.href}>
-                      {i.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))
-        }
-      </div>
-      <div class="mx-auto max-w-6xl px-4 sm:px-6">
-        <Separator />
-        <div class="flex flex-col gap-3 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            {i18n._(msg`Server and panel under AGPL-3.0, SDKs and API contract under MIT.`)}
-            <span> © {year} productdevbook</span>
-          </p>
-          <a class="hover:text-foreground hover:underline" href={home[alt]} hreflang={alt} lang={bcp47[alt]}>{switchLabel}</a>
-        </div>
-      </div>
-    </footer>
+    <Footer locale={locale} paths={paths} />
   </body>
 </html>

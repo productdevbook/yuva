@@ -1,0 +1,110 @@
+---
+import { Code } from "astro:components"
+import type { HomeCopy } from "@/copy/home"
+import type { Shots } from "@/lib/shots"
+import ChannelIcon from "@/ui/ChannelIcon.astro"
+import SectionHead from "@/ui/SectionHead.astro"
+import Shot from "@/ui/Shot.astro"
+import Stop from "@/ui/Stop.astro"
+
+interface Props {
+  t: HomeCopy["channels"]
+  shots: Shots
+}
+
+const { t, shots: s } = Astro.props
+const { email, chat, app, api } = t
+const initials = email.letter.from
+  .split(/\s+/)
+  .map((w) => w[0])
+  .join("")
+  .slice(0, 2)
+const tile = "flex min-w-0 flex-col overflow-hidden rounded-3xl border"
+const light = "border-rule bg-sheet"
+const label = "inline-flex items-center gap-2 text-sm font-medium text-brand"
+const h3 = "mt-3 text-2xl font-semibold tracking-[-0.02em]"
+const more = "mt-5 inline-flex text-sm font-medium text-brand hover:underline"
+const points = "mt-5 grid gap-2 text-sm text-ink-soft"
+const point = "flex gap-2.5 before:mt-[0.45rem] before:size-1.5 before:shrink-0 before:rounded-full before:bg-rule-strong"
+---
+
+<Stop id="channels" labelledby="channels-title">
+  <SectionHead kicker={t.kicker} title={t.title} lead={t.lead} id="channels-title" />
+
+  <div class="mt-14 grid gap-4 lg:grid-cols-6">
+    <article class:list={[tile, light, "lg:col-span-3"]}>
+      <div class="p-7 sm:p-8">
+        <p class={label}><ChannelIcon name="mail" />{email.tag}</p>
+        <h3 class={h3}>{email.title}</h3>
+        <p class="mt-3 leading-relaxed text-ink-soft">{email.body}</p>
+        <ul class={points}>{email.points.map((p) => <li class={point}>{p}</li>)}</ul>
+        <a class={more} href={email.link.href}>{email.link.label} →</a>
+      </div>
+      <div class="mt-auto bg-paper-deep px-7 pt-7 sm:px-8" aria-hidden="true">
+        <div class="rounded-t-2xl border border-b-0 border-rule bg-sheet p-5">
+          <div class="flex items-center gap-3">
+            <span class="grid size-9 place-items-center rounded-full bg-indigo-500 text-sm font-semibold text-white">{initials}</span>
+            <div class="min-w-0">
+              <p class="text-sm font-medium">{email.letter.from}</p>
+              <p class="truncate text-sm text-ink-soft">{email.letter.subject}</p>
+            </div>
+          </div>
+          <p class="mt-4 text-sm leading-relaxed">{email.letter.body}</p>
+          <p class="mt-3 border-s-2 border-rule ps-3 text-sm text-ink-faint line-through decoration-ink-faint/50">{email.letter.quote}</p>
+          <p class="mt-4 flex flex-wrap gap-1.5">
+            {email.letter.marks.map((m) => <span class="rounded-full bg-paper-deep px-2.5 py-1 text-xs text-ink-soft">{m}</span>)}
+          </p>
+        </div>
+      </div>
+    </article>
+
+    <article class:list={[tile, light, "lg:col-span-3"]}>
+      <div class="p-7 sm:p-8">
+        <p class={label}><ChannelIcon name="chat" />{chat.tag}</p>
+        <h3 class={h3}>{chat.title}</h3>
+        <p class="mt-3 leading-relaxed text-ink-soft">{chat.body}</p>
+        <ul class={points}>{chat.points.map((p) => <li class={point}>{p}</li>)}</ul>
+        <a class={more} href={chat.link.href}>{chat.link.label} →</a>
+      </div>
+      <div class="mt-auto bg-paper-deep px-7 pt-7 sm:px-8">
+        <div class="overflow-hidden rounded-t-2xl border border-b-0 border-rule">
+          <Shot
+            light={s.widget.light}
+            dark={s.widget.dark}
+            alt={chat.shotAlt}
+            widths={[640, 960, 1280, 1920]}
+            sizes="(min-width: 1000px) 1000px, 180vw"
+            crop={{ x: 0.45, y: 0.08, w: 0.55, h: 0.6 }}
+          />
+        </div>
+      </div>
+    </article>
+
+    <article class:list={[tile, light, "lg:col-span-4 lg:flex-row"]}>
+      <div class="p-7 sm:p-8 lg:w-[55%]">
+        <p class={label}><ChannelIcon name="app" />{app.tag}</p>
+        <h3 class={h3}>{app.title}</h3>
+        <p class="mt-3 leading-relaxed text-ink-soft">{app.body}</p>
+        <ul class={points}>{app.points.map((p) => <li class={point}>{p}</li>)}</ul>
+        <a class={more} href={app.link.href}>{app.link.label} →</a>
+      </div>
+      <div class="flex flex-1 items-end justify-center bg-paper-deep px-8 pt-8">
+        <div class="w-full max-w-[15rem] overflow-hidden rounded-t-[2.2rem] border-[7px] border-b-0 border-zinc-900 dark:border-zinc-700 [&_img]:aspect-[9/14] [&_img]:object-cover [&_img]:object-top">
+          <Shot light={s.ios} alt={app.iosAlt} widths={[240, 360, 480]} sizes="240px" />
+        </div>
+      </div>
+    </article>
+
+    <article class:list={[tile, "border-transparent bg-night text-night-ink lg:col-span-2"]}>
+      <div class="p-7 sm:p-8">
+        <p class="inline-flex items-center gap-2 text-sm font-medium text-glow"><ChannelIcon name="api" />{api.tag}</p>
+        <h3 class={h3}>{api.title}</h3>
+        <p class="mt-3 text-sm leading-relaxed text-night-soft">{api.body}</p>
+        <a class="mt-5 inline-flex text-sm font-medium text-glow hover:underline" href={api.link.href}>{api.link.label} →</a>
+      </div>
+      <div class="mt-auto border-t border-night-rule text-[0.78rem] [&_.astro-code]:text-[0.74rem]">
+        <Code code={api.code} lang="sh" themes={{ light: "github-dark", dark: "github-dark" }} />
+      </div>
+    </article>
+  </div>
+</Stop>

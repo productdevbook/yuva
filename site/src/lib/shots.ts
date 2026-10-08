@@ -24,17 +24,20 @@ import widgetTrLight from "@/assets/shots/widget-tr-light.webp"
 import type { Locale } from "./routes"
 
 type Pair = { light: ImageMetadata; dark: ImageMetadata }
-type Shots = { thread: Pair; phoneThread: Pair; feedback: Pair; phone: Pair; widget: Pair; ios: ImageMetadata }
+export type Shots = { thread: Pair; phoneThread: Pair; feedback: Pair; phone: Pair; widget: Pair; ios: ImageMetadata }
+
+const en: Shots = {
+  thread: { light: threadEnLight, dark: threadEnDark },
+  phoneThread: { light: phoneThreadEnLight, dark: phoneThreadEnDark },
+  feedback: { light: feedbackEnLight, dark: feedbackEnDark },
+  phone: { light: phoneEnLight, dark: phoneEnDark },
+  widget: { light: widgetEnLight, dark: widgetEnDark },
+  ios: iosEn,
+}
 
 const byLocale: Record<Locale, Shots> = {
-  en: {
-    thread: { light: threadEnLight, dark: threadEnDark },
-    phoneThread: { light: phoneThreadEnLight, dark: phoneThreadEnDark },
-    feedback: { light: feedbackEnLight, dark: feedbackEnDark },
-    phone: { light: phoneEnLight, dark: phoneEnDark },
-    widget: { light: widgetEnLight, dark: widgetEnDark },
-    ios: iosEn,
-  },
+  en,
+  de: en,
   tr: {
     thread: { light: threadTrLight, dark: threadTrDark },
     phoneThread: { light: phoneThreadTrLight, dark: phoneThreadTrDark },

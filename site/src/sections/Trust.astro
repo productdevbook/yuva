@@ -1,0 +1,54 @@
+---
+import type { HomeCopy } from "@/copy/home"
+import { links } from "@/lib/routes"
+import Icon from "@/ui/Icon.astro"
+import SectionHead from "@/ui/SectionHead.astro"
+import Stop from "@/ui/Stop.astro"
+
+interface Props {
+  security: HomeCopy["trust"]
+  open: HomeCopy["open"]
+}
+
+const { security: s, open: o } = Astro.props
+---
+
+<Stop id="security" labelledby="sec-title">
+  <SectionHead kicker={s.kicker} title={s.title} lead={s.lead} id="sec-title" />
+  <ul class="mt-12 grid gap-4 md:grid-cols-3">
+    {
+      s.items.map((f) => (
+        <li class="rounded-3xl border border-rule p-7">
+          {f.icon && (
+            <span class="grid size-10 place-items-center rounded-full bg-brand-wash text-brand">
+              <Icon name={f.icon} />
+            </span>
+          )}
+          <h3 class="mt-5 font-semibold tracking-tight">{f.title}</h3>
+          <p class="mt-2 leading-relaxed text-ink-soft">{f.body}</p>
+        </li>
+      ))
+    }
+  </ul>
+  <a class="mt-6 inline-flex text-sm font-medium text-brand hover:underline" href={links.security}>{s.policy} →</a>
+</Stop>
+
+<Stop id="open-source" labelledby="oss-title" tone="night">
+  <div class="grid items-center gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
+    <div>
+      <SectionHead kicker={o.kicker} title={o.title} lead={o.lead} id="oss-title" />
+      <a class="mt-8 inline-flex text-sm font-medium text-brand hover:underline" href={links.licensing}>{o.read} →</a>
+    </div>
+    <ul class="grid gap-3 sm:grid-cols-2">
+      {
+        o.licenses.map((l) => (
+          <li class="rounded-2xl border border-rule bg-sheet p-6">
+            <span class="inline-flex rounded-full bg-brand-wash px-2.5 py-1 font-mono text-xs font-medium text-brand">{l.tag}</span>
+            <h3 class="mt-4 font-semibold tracking-tight">{l.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-ink-soft">{l.body}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Stop>

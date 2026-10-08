@@ -1,0 +1,83 @@
+---
+import { Code } from "astro:components"
+import type { HomeCopy } from "@/copy/home"
+import SectionHead from "@/ui/SectionHead.astro"
+import Stop from "@/ui/Stop.astro"
+
+interface Props {
+  t: HomeCopy["developers"]
+}
+
+const { t } = Astro.props
+const themes = { light: "github-light", dark: "github-dark" } as const
+---
+
+<Stop id="developers" labelledby="dev-title">
+  <div class="grid items-center gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
+    <div>
+      <SectionHead kicker={t.kicker} title={t.title} lead={t.lead} id="dev-title" />
+      <ul class="mt-8 flex flex-wrap gap-x-5 gap-y-2">
+        {
+          t.links.map((l) => (
+            <li>
+              <a class="text-sm font-medium text-brand hover:underline" href={l.href}>
+                {l.label} →
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <div class="min-w-0 overflow-hidden rounded-2xl border border-rule bg-sheet shadow-paper" data-tabs>
+      <div class="flex gap-1 overflow-x-auto border-b border-rule bg-paper-deep p-2" role="tablist" aria-label={t.snippetsLabel}>
+        {
+          t.snippets.map((sn, i) => (
+            <button
+              type="button"
+              role="tab"
+              id={`tab-${sn.id}`}
+              aria-controls={`panel-${sn.id}`}
+              aria-selected={i === 0 ? "true" : "false"}
+              tabindex={i === 0 ? 0 : -1}
+              class="shrink-0 cursor-pointer rounded-full border border-transparent px-3.5 py-1.5 text-sm text-ink-soft transition-colors hover:text-ink aria-selected:border-rule-strong aria-selected:bg-sheet aria-selected:text-brand"
+            >
+              {sn.label}
+            </button>
+          ))
+        }
+      </div>
+      {
+        t.snippets.map((sn, i) => (
+          <div role="tabpanel" id={`panel-${sn.id}`} aria-labelledby={`tab-${sn.id}`} hidden={i !== 0} tabindex="0">
+            <p class="px-5 pt-4 font-mono text-[0.64rem] tracking-[0.12em] text-ink-faint uppercase">{sn.title}</p>
+            <Code code={sn.code} lang={sn.lang as "go"} themes={themes} />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</Stop>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-tabs]").forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')]
+    const select = (tab: HTMLButtonElement) => {
+      for (const t of tabs) {
+        const on = t === tab
+        t.setAttribute("aria-selected", String(on))
+        t.tabIndex = on ? 0 : -1
+        root.querySelector<HTMLElement>(`#${t.getAttribute("aria-controls")}`)!.hidden = !on
+      }
+    }
+    tabs.forEach((tab, i) => {
+      tab.addEventListener("click", () => select(tab))
+      tab.addEventListener("keydown", (e) => {
+        const step = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0
+        if (!step) return
+        const next = tabs[(i + step + tabs.length) % tabs.length]!
+        select(next)
+        next.focus()
+      })
+    })
+  })
+</script>

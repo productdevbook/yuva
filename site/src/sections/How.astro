@@ -1,0 +1,91 @@
+---
+import type { HomeCopy } from "@/copy/home"
+import ChannelIcon from "@/ui/ChannelIcon.astro"
+import SectionHead from "@/ui/SectionHead.astro"
+import Stop from "@/ui/Stop.astro"
+
+interface Props {
+  t: HomeCopy["how"]
+  inbox: HomeCopy["hero"]["inbox"]
+}
+
+const { t, inbox } = Astro.props
+const products = [
+  { name: "Fieldnote", color: "bg-emerald-500", icons: ["app", "mail"] },
+  { name: "Paperboat", color: "bg-sky-500", icons: ["chat", "mail"] },
+  { name: "Tally", color: "bg-indigo-500", icons: ["mail", "api"] },
+] as const
+const event = `{
+  "type": "message.created",
+  "data": {
+    "message": { "direction": "out" },
+    "contact": { "online": false }
+  }
+}`
+const visual = "flex h-40 flex-col justify-center rounded-2xl bg-paper-deep p-4"
+---
+
+<Stop id="how" labelledby="how-title" tone="deep">
+  <SectionHead kicker={t.kicker} title={t.title} id="how-title" />
+  <ol class="mt-12 grid grid-cols-1 gap-4 md:grid-cols-3">
+    <li class="min-w-0 rounded-3xl border border-rule bg-sheet p-3">
+      <div class={visual} aria-hidden="true">
+        <ul class="grid gap-2">
+          {
+            products.map((p) => (
+              <li class="flex items-center gap-2 rounded-xl bg-sheet px-3 py-2 text-sm shadow-paper">
+                <span class:list={["size-2 rounded-full", p.color]} />
+                <span class="font-medium">{p.name}</span>
+                <span class="ms-auto flex gap-1.5 text-ink-faint">
+                  {p.icons.map((i) => <ChannelIcon name={i} />)}
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="p-4">
+        <h3 class="text-lg font-semibold tracking-tight">
+          <span class="me-2 text-brand">1</span>{t.steps[0]!.title}
+        </h3>
+        <p class="mt-2 leading-relaxed text-ink-soft">{t.steps[0]!.body}</p>
+      </div>
+    </li>
+
+    <li class="min-w-0 rounded-3xl border border-rule bg-sheet p-3">
+      <div class={visual} aria-hidden="true">
+        <ul class="divide-y divide-rule overflow-hidden rounded-xl bg-sheet shadow-paper">
+          {
+            inbox.rows.slice(0, 3).map((r) => (
+              <li class="flex items-center gap-2.5 px-3 py-2 text-sm">
+                <span class:list={["size-2 shrink-0 rounded-full", r.color]} />
+                <span class="truncate">{r.text}</span>
+                {r.unread && <span class="ms-auto size-1.5 shrink-0 rounded-full bg-brand" />}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="p-4">
+        <h3 class="text-lg font-semibold tracking-tight">
+          <span class="me-2 text-brand">2</span>{t.steps[1]!.title}
+        </h3>
+        <p class="mt-2 leading-relaxed text-ink-soft">{t.steps[1]!.body}</p>
+      </div>
+    </li>
+
+    <li class="min-w-0 rounded-3xl border border-rule bg-sheet p-3">
+      <div class="flex h-40 flex-col justify-center overflow-hidden rounded-2xl bg-night p-4" aria-hidden="true">
+        <pre class="font-mono text-[0.72rem] leading-relaxed text-night-soft"><code>{event.split("\n").map((line) => (
+          <span class:list={["block", line.includes("message.created") && "text-glow"]}>{line}</span>
+        ))}</code></pre>
+      </div>
+      <div class="p-4">
+        <h3 class="text-lg font-semibold tracking-tight">
+          <span class="me-2 text-brand">3</span>{t.steps[2]!.title}
+        </h3>
+        <p class="mt-2 leading-relaxed text-ink-soft">{t.steps[2]!.body}</p>
+      </div>
+    </li>
+  </ol>
+</Stop>

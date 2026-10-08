@@ -1,0 +1,49 @@
+---
+import { msg } from "@lingui/core/macro"
+import { i18nFor } from "@/i18n"
+import Base from "@/layouts/Base.astro"
+import { bcp47, home } from "@/lib/routes"
+import Logo from "@/ui/Logo.astro"
+
+const en = i18nFor("en")
+const tr = i18nFor("tr")
+const title = en._(msg`Page not found`)
+---
+
+<Base locale="en" title={`${title} · Yuva`} description={title} noindex>
+  <section class="mx-auto grid min-h-[calc(100svh-12rem)] max-w-6xl content-center justify-items-center px-5 py-24 text-center sm:px-8">
+    <div class="w-full max-w-md rounded-3xl bg-paper-deep p-3 text-start sm:p-4" aria-hidden="true">
+      <div class="overflow-hidden rounded-2xl border border-rule bg-sheet">
+        <div class="flex items-center gap-3 border-b border-rule px-5 py-3.5">
+          <Logo size={28} />
+          <p class="text-sm font-semibold">Yuva</p>
+          <span class="ms-auto rounded-full bg-brand-wash px-2.5 py-0.5 text-xs font-medium text-brand">{en._(msg`Undeliverable`)}</span>
+        </div>
+        <div class="px-5 py-5">
+          <p class="font-mono text-xs break-all text-ink-faint" data-path>/</p>
+          <p class="mt-2 rounded-2xl rounded-ss-md bg-paper-deep px-4 py-3 text-[0.95rem]">
+            {en._(msg`We looked in every inbox, but this page is not here. It may have moved, or the link may be wrong.`)}
+          </p>
+        </div>
+      </div>
+    </div>
+    <p class="mt-10 text-sm font-medium text-brand">404</p>
+    <h1 class="mt-2 text-4xl font-semibold tracking-tight sm:text-5xl">{title}</h1>
+    <p class="mt-3 text-lg text-ink-soft" lang={bcp47.tr}>{tr._(msg`Page not found`)}</p>
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+      <a class="inline-flex h-11 items-center rounded-full bg-signal px-5 text-[0.95rem] font-medium text-white transition-colors hover:bg-signal/90" href={home.en}
+        >{en._(msg`Back to the home page`)}</a
+      >
+      <a
+        class="inline-flex h-11 items-center rounded-full border border-rule-strong px-5 text-[0.95rem] font-medium transition-colors hover:bg-paper-deep"
+        href={home.tr}
+        lang={bcp47.tr}>{tr._(msg`Back to the home page`)}</a
+      >
+    </div>
+  </section>
+</Base>
+
+<script>
+  const el = document.querySelector("[data-path]")
+  if (el) el.textContent = window.location.pathname
+</script>
