@@ -2,6 +2,7 @@ package api_test
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -74,8 +75,31 @@ func TestClientRatings(t *testing.T) {
 	if rating["rating"] != "good" || rating["comment"] != "quick and kind" || c.str("closed_at") == "" {
 		t.Fatalf("panel conversation %s", c.raw)
 	}
+	sameConversation := func(where string, got map[string]any) {
+		t.Helper()
+		for k, want := range c.body {
+			if fmt.Sprint(got[k]) != fmt.Sprint(want) {
+				t.Fatalf("%s: %s = %v, want %v as GET returns", where, k, got[k], want)
+			}
+		}
+	}
+	var listed map[string]any
+	for _, it := range ct.agent.expect(http.StatusOK, "GET", "/v1/conversations?status=closed", nil).body["items"].([]any) {
+		if it.(map[string]any)["id"] == conv {
+			listed = it.(map[string]any)
+		}
+	}
+	if listed == nil {
+		t.Fatal("the rated conversation is not listed")
+	}
+	sameConversation("list", listed)
+	bulk := ct.owner.expect(http.StatusOK, "POST", "/v1/conversations/bulk", map[string]any{"conversation_ids": []string{conv}, "assignee_id": ct.agentID})
+	updated := bulk.body["updated"].([]any)[0].(map[string]any)
+	if updated["rating"] == nil || updated["closed_at"] != c.str("closed_at") {
+		t.Fatalf("bulk result %s", bulk.raw)
+	}
 	thread := messages(ct.agent, conv)
-	last := thread[len(thread)-1]
+	last := thread[len(thread)-2]
 	if ev := last["event"].(map[string]any); ev["type"] != "rated" || ev["rating"] != "good" || last["body"] != "quick and kind" ||
 		last["author"].(map[string]any)["type"] != "contact" {
 		t.Fatalf("rated event %v", last)

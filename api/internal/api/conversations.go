@@ -158,6 +158,7 @@ func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conver
 			Id: c.Id, InboxId: c.InboxId, ContactId: c.ContactId, ChannelId: c.ChannelId, Kind: c.Kind, Feedback: c.Feedback, Subject: c.Subject,
 			Status: c.Status, SnoozeUntil: c.SnoozeUntil, Priority: c.Priority, Spam: c.Spam, AssigneeId: c.AssigneeId, Labels: c.Labels,
 			LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt, CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt,
+			RelatedConversationId: c.RelatedConversationId, ClosedAt: c.ClosedAt, Rating: c.Rating,
 			Contact: contacts[r.ContactID], LastMessage: previews[r.ID], Unread: unread[r.ID],
 		}
 	}
