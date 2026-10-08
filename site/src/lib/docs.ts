@@ -7,7 +7,7 @@ import { docsRoot, REPO, type Locale } from "./routes"
 
 export type Doc = CollectionEntry<"docs">
 export type NavItem = { slug: string; title: string; rel: string; children?: NavItem[] }
-export type NavGroup = { title: string; items: NavItem[] }
+export type NavGroup = { key: string; title: string; items: NavItem[] }
 
 const groups = [
   { key: "start", slugs: ["install", "configuration", "operations"] },
@@ -77,8 +77,8 @@ export async function nav(locale: Locale): Promise<NavGroup[]> {
         }
       : { slug, title: title(all.get(slug)!), rel: docRel(slug) }
   return [
-    ...groups.map((g) => ({ title: t.groups[g.key], items: g.slugs.filter((slug) => slug === "api" || all.has(slug)).map(item) })),
-    ...(rest.length ? [{ title: t.groups.more, items: rest.map(item) }] : []),
+    ...groups.map((g) => ({ key: g.key, title: t.groups[g.key], items: g.slugs.filter((slug) => slug === "api" || all.has(slug)).map(item) })),
+    ...(rest.length ? [{ key: "more", title: t.groups.more, items: rest.map(item) }] : []),
   ]
 }
 

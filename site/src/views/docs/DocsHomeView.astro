@@ -2,8 +2,9 @@
 import { docsCopy } from "@/copy/docs"
 import { i18nFor } from "@/i18n"
 import Base from "@/layouts/Base.astro"
-import { docRel, href, nav } from "@/lib/docs"
+import { docRel, eventsRel, href, nav, type NavItem } from "@/lib/docs"
 import { docsPath, type Locale } from "@/lib/routes"
+import ChannelIcon from "@/ui/ChannelIcon.astro"
 import DocsSearch from "@/ui/DocsSearch.astro"
 
 interface Props {
@@ -13,54 +14,91 @@ interface Props {
 const { locale } = Astro.props
 const t = docsCopy(i18nFor(locale))
 const groups = await nav(locale)
+const steps = groups.filter((g) => t.home.steps[g.key])
+const others = groups.filter((g) => !t.home.steps[g.key])
+const find = (slug: string) => groups.flatMap((g) => g.items).find((i) => i.slug === slug)
+const popular = [
+  { label: t.home.quickStart, rel: `${docRel("install")}#quick-start-with-compose` },
+  ...["configuration", "webhooks", "api"].map((slug) => find(slug)).filter((i): i is NavItem => !!i).map((i) => ({ label: i.title, rel: i.rel })),
+]
+const icons: Record<string, "mail" | "chat" | "app" | "api"> = { email: "mail", widget: "chat", mobile: "app", api: "api" }
+const links = (item: NavItem) => (item.slug === "api" ? [item, { slug: "api/events", title: t.webhookEvents, rel: eventsRel }] : [item])
 ---
 
 <Base locale={locale} title={t.home.title} description={t.home.description} paths={docsPath("")}>
   <div class="mx-auto max-w-6xl px-5 sm:px-8">
-    <section class="max-w-2xl py-16 lg:py-24" aria-labelledby="docs-title">
+    <section class="mx-auto max-w-3xl py-16 text-center lg:py-24" aria-labelledby="docs-title">
       <p class="text-sm font-medium text-brand">{t.documentation}</p>
       <h1 id="docs-title" class="mt-3 text-[clamp(2.25rem,1.5rem+2.6vw,3.5rem)] leading-[1.06] font-semibold tracking-[-0.035em]">{t.home.heading}</h1>
-      <p class="mt-5 text-lg leading-relaxed text-ink-soft">{t.home.lead}</p>
-      {locale !== "en" && <p class="mt-3 text-sm text-ink-faint">{t.english}</p>}
-      <div class="mt-8 max-w-md">
+      <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">{t.home.lead}</p>
+      <div class="mx-auto mt-9 max-w-xl [&_button]:h-14 [&_button]:rounded-2xl [&_button]:px-5 [&_button]:text-base [&_button]:shadow-paper">
         <DocsSearch locale={locale} />
       </div>
+      <p class="mt-5 flex flex-wrap items-center justify-center gap-2 text-sm">
+        <span class="text-ink-faint">{t.home.popular}:</span>
+        {
+          popular.map((p) => (
+            <a class="rounded-full border border-rule px-3 py-1 text-ink-soft transition-colors hover:border-rule-strong hover:text-ink" href={href(locale, p.rel)}>
+              {p.label}
+            </a>
+          ))
+        }
+      </p>
+      {locale !== "en" && <p class="mt-6 text-sm text-ink-faint">{t.english}</p>}
     </section>
 
-    <section class="border-t border-rule py-14" aria-labelledby="start-title">
-      <h2 id="start-title" class="text-xl font-semibold tracking-tight">{t.home.startHere}</h2>
-      <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+    <section class="rounded-3xl bg-paper-deep p-3 sm:p-5" aria-label={t.documentation}>
+      <ol class="grid gap-3 lg:grid-cols-3">
         {
-          t.home.starts.map((s, i) => (
-            <li>
-              <a class="group flex h-full flex-col rounded-3xl border border-rule p-6 transition-colors hover:border-rule-strong hover:bg-paper-deep" href={href(locale, docRel(s.slug))}>
-                <span class="grid size-9 place-items-center rounded-full bg-brand-wash text-sm font-semibold text-brand">{i + 1}</span>
-                <span class="mt-5 font-semibold tracking-tight group-hover:text-brand">{s.label}</span>
-                <span class="mt-2 text-sm leading-relaxed text-ink-soft">{s.body}</span>
-              </a>
+          steps.map((g, i) => (
+            <li class="relative flex flex-col rounded-2xl border border-rule bg-sheet p-6 sm:p-7">
+              <div class="flex items-center gap-3">
+                <span class="grid size-9 shrink-0 place-items-center rounded-full bg-signal text-sm font-semibold text-white">{i + 1}</span>
+                <span class="h-px flex-1 bg-rule" aria-hidden="true" />
+                <span class="text-xs font-semibold tracking-wide text-ink-faint uppercase">{g.title}</span>
+              </div>
+              <h2 class="mt-6 text-xl font-semibold tracking-tight">{t.home.steps[g.key]!.title}</h2>
+              <p class="mt-2 text-sm leading-relaxed text-ink-soft">{t.home.steps[g.key]!.body}</p>
+              <ul class="mt-6 grid gap-1 border-t border-rule pt-4">
+                {g.items.flatMap(links).map((item) => (
+                  <li>
+                    <a class="group -mx-2 flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-paper-deep" href={href(locale, item.rel)}>
+                      {icons[item.slug] ? (
+                        <span class="grid size-7 shrink-0 place-items-center rounded-full border border-rule text-ink-soft group-hover:text-brand">
+                          <ChannelIcon name={icons[item.slug]!} />
+                        </span>
+                      ) : (
+                        <span class="grid size-7 shrink-0 place-items-center" aria-hidden="true">
+                          <span class="size-1.5 rounded-full bg-rule-strong group-hover:bg-brand" />
+                        </span>
+                      )}
+                      <span class="flex-1 font-medium group-hover:text-brand">{item.title}</span>
+                      <span class="text-ink-faint" aria-hidden="true">
+                        →
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </li>
           ))
         }
-      </ul>
+      </ol>
     </section>
 
-    <nav class="grid gap-10 border-t border-rule py-14 sm:grid-cols-2 lg:grid-cols-4" aria-label={t.documentation}>
+    <div class="flex flex-wrap items-center gap-x-6 gap-y-2 py-12 text-sm">
       {
-        groups.map((g) => (
-          <div>
-            <h2 class="text-xs font-semibold tracking-wide text-ink-faint uppercase">{g.title}</h2>
-            <ul class="mt-4 grid gap-2.5">
-              {g.items.map((item) => (
-                <li>
-                  <a class="text-ink-soft transition-colors hover:text-brand" href={href(locale, item.rel)}>
-                    {item.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+        others.map((g) => (
+          <>
+            <span class="font-semibold">{g.title}</span>
+            {g.items.map((item) => (
+              <a class="text-ink-soft transition-colors hover:text-brand" href={href(locale, item.rel)}>
+                {item.title}
+              </a>
+            ))}
+          </>
         ))
       }
-    </nav>
+    </div>
   </div>
 </Base>

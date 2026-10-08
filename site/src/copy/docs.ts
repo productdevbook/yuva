@@ -33,14 +33,19 @@ export function docsCopy(i18n: I18n) {
       lead: i18n._(
         msg`Install the server, connect your channels and integrate the widget, the mobile SDKs and the API. Written for the version on the main branch.`
       ),
-      startHere: i18n._(msg`Start here`),
-      starts: [
-        { slug: "install", label: i18n._(msg`Run Yuva`), body: i18n._(msg`One Docker image and Postgres, from compose file to the first owner.`) },
-        { slug: "email", label: i18n._(msg`Connect your support e-mail`), body: i18n._(msg`Bring your existing support address into Yuva and answer from the same address.`) },
-        { slug: "widget", label: i18n._(msg`Add live chat`), body: i18n._(msg`One script tag puts the chat widget on a website or inside your product.`) },
-        { slug: "mobile", label: i18n._(msg`Ship in-app messages`), body: i18n._(msg`Conversations and feedback in your iOS and Android apps.`) },
-        { slug: "api", label: i18n._(msg`Use the API`), body: i18n._(msg`Create inboxes and channels, post feedback and manage contacts.`) },
-      ],
+      popular: i18n._(msg`Popular`),
+      quickStart: i18n._(msg`Quick start`),
+      steps: {
+        start: { title: i18n._(msg`Run Yuva`), body: i18n._(msg`One Docker image and Postgres, from compose file to the first owner.`) },
+        channels: {
+          title: i18n._(msg`Connect your channels`),
+          body: i18n._(msg`Your support e-mail, live chat on your sites and messages inside your apps, in one inbox.`),
+        },
+        integrate: {
+          title: i18n._(msg`Integrate with your backend`),
+          body: i18n._(msg`Let your users write as themselves, react to events and automate the rest with the API.`),
+        },
+      } as Record<string, { title: string; body: string }>,
     },
     api: {
       description: i18n._(msg`Every Yuva endpoint and webhook event, generated from the OpenAPI 3.1 contract.`),
