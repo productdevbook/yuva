@@ -101,7 +101,7 @@ Accept: a fresh install from the guide works on a clean host.
 
 ## M9 — Headless and MCP (0.0.4)
 
-Status: planned; plan in issue #17.
+Status: in progress; plan in issue #17, decisions in `architecture.md` › Headless access.
 
 - Scoped API keys, bot authors, drafts, an event feed, idempotency keys, a published headless JS
   client and an API-only mode.

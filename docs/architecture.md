@@ -144,6 +144,72 @@ The slug is made from the name when omitted. The SMTP password is read from a fi
 from stdin, never from the command line; the auto-reply stays off. The inbox's identity secret is
 not printed; rotate it when an app needs one.
 
+### Headless access
+
+Everything the panel does is reachable without it: scripts, bots and other UIs use `/v1` with
+scoped API keys, and every key-authored message names its bot.
+
+**Scopes.** A key holds a list of scopes; every `/v1` operation a key may call needs exactly one:
+
+| Scope | Operations |
+|---|---|
+| `conversations:read` | list, get and count conversations; list messages; attachments, message e-mail and raw source; list labels and canned replies |
+| `conversations:write` | create, update (status, assignee, snooze, priority, labels), move and bulk-update conversations |
+| `messages:write` | outgoing and incoming messages, drafts: create, edit, discard |
+| `drafts:send` | send a draft (`POST /v1/messages/{id}/send`), together with `messages:write` |
+| `notes:write` | notes |
+| `contacts:read` | list, look up and get contacts, presence |
+| `contacts:write` | create, update, delete and merge contacts |
+| `inboxes:read` | workspace, members, inboxes, inbox members, channels |
+| `inboxes:manage` | create, update and delete inboxes and channels, inbox access, secret and key rotation |
+| `labels:write` | create, update and delete labels |
+| `canned_replies:write` | create, update and delete canned replies |
+| `webhooks:manage` | webhooks, their deliveries and attempts |
+| `workspace:manage` | update the workspace, usage |
+| `feedback:write` | feedback |
+
+A call without its scope gets `403 insufficient_scope` with the missing scope in `scope`. Keys made
+before scopes existed hold every scope above. `yuva api-key create` takes `--scope` (repeatable,
+default every scope) and `--inbox` (repeatable).
+
+A key may be limited to some inboxes. It then sees what an agent with access to exactly those
+inboxes sees; it cannot hold `inboxes:manage`, `webhooks:manage` or `workspace:manage` (refused when
+the key is made). An inbox that is deleted drops out of the limit; a key whose every inbox is gone
+sees nothing. A key may have an expiry; after it, the key gets `401 api_key_expired`. Scopes, inbox
+limit and expiry are fixed when the key is made; a different set needs a new key. Name, bot name and
+bot avatar can be changed (`PATCH /v1/api-keys/{id}`).
+
+**Bot authors.** Every key is a bot: a display name (the key's name unless one is given) and an
+optional avatar, an `https` image URL. Messages, notes and conversation events written with a key
+have author type `bot` and point at the key; the bot's current name and avatar are shown in the
+panel, the widget, the SDKs and webhook payloads. Outgoing e-mail from a bot uses the inbox's From
+address with the bot's name as display name. Rows written by keys before this have author `system`
+and stay so.
+
+**Drafts.** An outgoing message can be a draft (`draft: true` on create). A draft is visible only on
+`/v1` and to members: never on `/client/v1`, never e-mailed, never a notification, unread count,
+preview, first response, usage or search hit. It can be edited (`PATCH /v1/messages/{id}`) and
+discarded (`DELETE /v1/messages/{id}`); both answer `409 not_a_draft` for anything else.
+`POST /v1/messages/{id}/send` delivers it: the message becomes a normal outgoing message with the
+send time as its time, `sent_by` the member who sent it, and the draft author kept as author.
+Events: `draft.created`, `draft.updated`, `draft.deleted` on realtime and as webhook types an
+endpoint subscribes to; sending emits the usual `message.created`.
+
+The workspace setting `bots_may_send` (off for new workspaces; on after the upgrade for workspaces
+that had an active key, so their integrations keep working) decides whether keys deliver at all.
+Off: a key's outgoing message must be a draft, else `403 bot_sending_disabled`, and a key cannot
+send drafts. On: a key with `messages:write` sends directly and one that also has `drafts:send`
+sends drafts. Members always may.
+
+**Idempotency.** Every authenticated `POST` on `/v1` and `/client/v1` accepts an `Idempotency-Key`
+header (1 to 255 printable ASCII characters). The key is remembered for 24 hours per caller (API
+key, member or contact) together with the method, path, a SHA-256 of the body and the response. The
+same key with the same request returns the stored response with `Idempotent-Replayed: true`; with a
+different request `409 idempotency_key_reused`; while the first is still running
+`409 idempotency_key_in_use`. `5xx` answers are not stored, so the request can be retried.
+Unauthenticated endpoints (sign-in, client session) ignore the header. The existing `client_id` on
+messages stays as it is.
+
 ### Identity
 
 The host app's backend knows who its user is; Yuva trusts it through a short-lived identity token:
