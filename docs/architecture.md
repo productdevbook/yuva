@@ -632,7 +632,13 @@ inherits the policy. Every response carries `X-Content-Type-Options: nosniff`.
   one opens, with an undo. A reply is held for a few seconds before it is posted so it can be
   undone; "send" also sets `pending`, "send and close" sets `closed`. A bot's draft is offered as
   the suggested reply. The hand-off menu shows each teammate's presence and open load
-  (`assignees` in `/v1/conversations/counts`, over the inboxes the member can see). All conversations are in a drawer (waiting, snoozed, replied, with the team,
+  (`assignees` in `/v1/conversations/counts`, over the inboxes the member can see). An empty queue
+  shows what the team did today from `GET /v1/stats`: replies sent by members, conversations
+  closed and the median time to the first reply, per member too, over the inboxes the caller can
+  see. Nothing is stored for it: it is counted from `messages` on each request (indexed by
+  workspace and time) for a window of at most 366 days; "today" starts at midnight in the
+  `timezone` the panel sends (the browser's), since members and workspaces have no time zone of
+  their own. All conversations are in a drawer (waiting, snoozed, replied, with the team,
   done) with full-text search (Postgres FTS); everything else is in a command palette.
 - Conversation: reply and note in one box, canned replies on `/`, attachments, keyboard shortcuts,
   contact details with identity attributes, the contact's other conversations, channel delivery

@@ -2968,6 +2968,13 @@ type MemberPresenceEvent struct {
 // MemberPresenceEventType defines model for MemberPresenceEvent.Type.
 type MemberPresenceEventType string
 
+// MemberStats defines model for MemberStats.
+type MemberStats struct {
+	Closed   int64     `json:"closed"`
+	MemberId uuid.UUID `json:"member_id"`
+	Replies  int64     `json:"replies"`
+}
+
 // MemberUpdate defines model for MemberUpdate.
 type MemberUpdate struct {
 	Role Role `json:"role"`
@@ -3723,6 +3730,28 @@ type SmtpSettingsInput struct {
 // SmtpTls `starttls` upgrades a plain connection (port 587), `tls` connects with TLS (port 465),
 // `none` sends in the clear (local relays and test servers only).
 type SmtpTls string
+
+// Stats defines model for Stats.
+type Stats struct {
+	// Closed Times a conversation was closed, by anyone (members, API keys, the server).
+	Closed int64 `json:"closed"`
+
+	// FirstReplies Conversations whose first member reply to the contact was sent in the window.
+	FirstReplies int64 `json:"first_replies"`
+
+	// MedianFirstReplySeconds Median seconds from the contact's first message to that reply; absent when `first_replies` is 0.
+	MedianFirstReplySeconds *int64 `json:"median_first_reply_seconds,omitempty"`
+
+	// Members Per member, by member id.
+	Members []MemberStats `json:"members"`
+
+	// Replies Replies sent by members.
+	Replies int64     `json:"replies"`
+	Since   time.Time `json:"since"`
+
+	// Until When it was counted.
+	Until time.Time `json:"until"`
+}
 
 // StoredEvent An event as `GET /v1/events` returns it, told apart by `type`; the same objects realtime and webhooks carry.
 type StoredEvent struct {
@@ -4805,6 +4834,21 @@ type ListOAuthGrantsParams struct {
 
 // RevokeOAuthGrantParams defines parameters for RevokeOAuthGrant.
 type RevokeOAuthGrantParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetStatsParams defines parameters for GetStats.
+type GetStatsParams struct {
+	// InboxId Only this inbox (`404` when the caller cannot see it).
+	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+
+	// Since Start of the window; the start of today in `timezone` when absent.
+	Since *time.Time `form:"since,omitempty" json:"since,omitempty"`
+
+	// Timezone IANA time zone for the default `since`.
+	Timezone *string `form:"timezone,omitempty" json:"timezone,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -8142,6 +8186,23 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /v1/push/vapid-public-key (the `GetVapidPublicKey` operationId).
 	GetVapidPublicKey(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetStats Team activity since a moment
+	//
+	// What the team did in the inboxes the caller can see (or in one of them) from `since` until
+	// now: replies sent by members (messages members wrote or drafts they sent; not notes, not
+	// bots' own messages), conversations closed, and the median time from a contact's first
+	// message to the first member reply, over the conversations whose first reply falls in the
+	// window. `members` breaks replies and closes down per member, leaving out members with
+	// neither. Nothing is stored for it; it is counted from the messages each time.
+	//
+	// `since` defaults to the start of today in `timezone` (an IANA name, `UTC` by default); the
+	// panel sends the browser's zone. It must be in the past and at most 366 days ago.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Corresponds with GET /v1/stats (the `GetStats` operationId).
+	GetStats(ctx context.Context, params *GetStatsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetUsage Usage per month
 	//
@@ -11500,6 +11561,33 @@ func (c *Client) DenyOAuthRequest(ctx context.Context, oauthRequestId OAuthReque
 // Corresponds with GET /v1/push/vapid-public-key (the `GetVapidPublicKey` operationId).
 func (c *Client) GetVapidPublicKey(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetVapidPublicKeyRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetStats Team activity since a moment
+//
+// What the team did in the inboxes the caller can see (or in one of them) from `since` until
+// now: replies sent by members (messages members wrote or drafts they sent; not notes, not
+// bots' own messages), conversations closed, and the median time from a contact's first
+// message to the first member reply, over the conversations whose first reply falls in the
+// window. `members` breaks replies and closes down per member, leaving out members with
+// neither. Nothing is stored for it; it is counted from the messages each time.
+//
+// `since` defaults to the start of today in `timezone` (an IANA name, `UTC` by default); the
+// panel sends the browser's zone. It must be in the past and at most 366 days ago.
+//
+// Scope: `conversations:read`.
+//
+// Corresponds with GET /v1/stats (the `GetStats` operationId).
+func (c *Client) GetStats(ctx context.Context, params *GetStatsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetStatsRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -17485,6 +17573,99 @@ func NewGetVapidPublicKeyRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewGetStatsRequest constructs an http.Request for the GetStats method
+func NewGetStatsRequest(server string, params *GetStatsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/stats")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.InboxId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "inbox_id", *params.InboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Since != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "since", *params.Since, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date-time"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Timezone != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "timezone", *params.Timezone, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewGetUsageRequest constructs an http.Request for the GetUsage method
 func NewGetUsageRequest(server string, params *GetUsageParams) (*http.Request, error) {
 	var err error
@@ -20220,6 +20401,25 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /v1/push/vapid-public-key (the `GetVapidPublicKey` operationId).
 	GetVapidPublicKeyWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetVapidPublicKeyResponse, error)
+
+	// GetStatsWithResponse Team activity since a moment
+	//
+	// What the team did in the inboxes the caller can see (or in one of them) from `since` until
+	// now: replies sent by members (messages members wrote or drafts they sent; not notes, not
+	// bots' own messages), conversations closed, and the median time from a contact's first
+	// message to the first member reply, over the conversations whose first reply falls in the
+	// window. `members` breaks replies and closes down per member, leaving out members with
+	// neither. Nothing is stored for it; it is counted from the messages each time.
+	//
+	// `since` defaults to the start of today in `timezone` (an IANA name, `UTC` by default); the
+	// panel sends the browser's zone. It must be in the past and at most 366 days ago.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/stats (the `GetStats` operationId).
+	GetStatsWithResponse(ctx context.Context, params *GetStatsParams, reqEditors ...RequestEditorFn) (*GetStatsResponse, error)
 
 	// GetUsageWithResponse Usage per month
 	//
@@ -27044,6 +27244,75 @@ func (r GetVapidPublicKeyResponse) ContentType() string {
 	return ""
 }
 
+type GetStatsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Stats
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetStatsResponse) GetJSON200() *Stats {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r GetStatsResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetStatsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetStatsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r GetStatsResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r GetStatsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetStatsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetStatsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetStatsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetUsageResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -30651,6 +30920,31 @@ func (c *ClientWithResponses) GetVapidPublicKeyWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParseGetVapidPublicKeyResponse(rsp)
+}
+
+// GetStatsWithResponse Team activity since a moment
+//
+// What the team did in the inboxes the caller can see (or in one of them) from `since` until
+// now: replies sent by members (messages members wrote or drafts they sent; not notes, not
+// bots' own messages), conversations closed, and the median time from a contact's first
+// message to the first member reply, over the conversations whose first reply falls in the
+// window. `members` breaks replies and closes down per member, leaving out members with
+// neither. Nothing is stored for it; it is counted from the messages each time.
+//
+// `since` defaults to the start of today in `timezone` (an IANA name, `UTC` by default); the
+// panel sends the browser's zone. It must be in the past and at most 366 days ago.
+//
+// Scope: `conversations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/stats (the `GetStats` operationId).
+func (c *ClientWithResponses) GetStatsWithResponse(ctx context.Context, params *GetStatsParams, reqEditors ...RequestEditorFn) (*GetStatsResponse, error) {
+	rsp, err := c.GetStats(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetStatsResponse(rsp)
 }
 
 // GetUsageWithResponse Usage per month
@@ -36127,6 +36421,60 @@ func ParseGetVapidPublicKeyResponse(rsp *http.Response) (*GetVapidPublicKeyRespo
 			return nil, err
 		}
 		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetStatsResponse parses an HTTP response from a GetStatsWithResponse call
+func ParseGetStatsResponse(rsp *http.Response) (*GetStatsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetStatsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Stats
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest Problem

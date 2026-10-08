@@ -54,6 +54,7 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 
 	"ListConversations":     {oas.ConversationsRead},
 	"GetConversationCounts": {oas.ConversationsRead},
+	"GetStats":              {oas.ConversationsRead},
 	"GetConversation":       {oas.ConversationsRead},
 	"ListMessages":          {oas.ConversationsRead},
 	"DownloadAttachment":    {oas.ConversationsRead},

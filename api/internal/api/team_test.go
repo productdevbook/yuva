@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"net/url"
 	"testing"
 	"time"
 
@@ -171,4 +172,90 @@ func TestWhoIsViewing(t *testing.T) {
 		}
 		break
 	}
+}
+
+func TestStats(t *testing.T) {
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	other := newTeam(t, h)
+	key := tm.apiKey(h)
+	ownerID := tm.ownerMemberID(t)
+	tm.owner.expect(http.StatusNoContent, "PUT", "/v1/inboxes/"+tm.inbox+"/members/"+tm.agentID, nil)
+	hidden := tm.owner.expect(http.StatusCreated, "POST", "/v1/inboxes", map[string]any{"name": "Private", "slug": "private"}).body["inbox"].(map[string]any)["id"].(string)
+	since := h.clock.Now().Add(-time.Minute).UTC().Format(time.RFC3339Nano)
+
+	open := func(inbox string) string {
+		conv := key.expect(http.StatusCreated, "POST", "/v1/conversations", map[string]any{"inbox_id": inbox, "contact_id": tm.contact}).str("id")
+		post(key, conv, map[string]any{"kind": "message", "direction": "in", "body": "help"})
+		return conv
+	}
+	a := open(tm.inbox)
+	h.clock.Advance(599 * time.Second)
+	post(tm.agent, a, map[string]any{"kind": "message", "body": "on it"})
+	post(tm.owner, a, map[string]any{"kind": "message", "body": "and me"})
+	post(tm.owner, a, map[string]any{"kind": "note", "body": "a note is no reply"})
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/conversations/"+a, map[string]any{"status": "closed"})
+	b := open(hidden)
+	h.clock.Advance(1199 * time.Second)
+	post(tm.owner, b, map[string]any{"kind": "message", "body": "late"})
+	draft := post(key, b, map[string]any{"kind": "message", "body": "a bot's draft a member sends", "draft": true})
+	tm.owner.expect(http.StatusOK, "POST", "/v1/messages/"+draft+"/send", nil)
+
+	type stats struct {
+		MedianFirstReplySeconds *int64 `json:"median_first_reply_seconds"`
+		Members                 []struct {
+			MemberID        string `json:"member_id"`
+			Replies, Closed int64
+		}
+	}
+	get := func(c *client, query string) (stats, map[string]any) {
+		t.Helper()
+		r := c.expect(http.StatusOK, "GET", "/v1/stats?since="+url.QueryEscape(since)+query, nil)
+		var out stats
+		if err := json.Unmarshal(r.raw, &out); err != nil {
+			t.Fatal(err)
+		}
+		return out, r.body
+	}
+	o, raw := get(tm.owner, "")
+	if raw["replies"] != float64(4) || raw["closed"] != float64(1) || raw["first_replies"] != float64(2) || *o.MedianFirstReplySeconds != 900 || len(o.Members) != 2 {
+		t.Fatalf("owner stats %s", mustMarshal(raw))
+	}
+	for _, m := range o.Members {
+		if (m.MemberID == ownerID && (m.Replies != 3 || m.Closed != 1)) || (m.MemberID == tm.agentID && (m.Replies != 1 || m.Closed != 0)) {
+			t.Fatalf("per member %+v", o.Members)
+		}
+	}
+	ag, raw := get(tm.agent, "")
+	if raw["replies"] != float64(2) || raw["first_replies"] != float64(1) || *ag.MedianFirstReplySeconds != 600 {
+		t.Fatalf("agent stats %s", mustMarshal(raw))
+	}
+	_, raw = get(tm.owner, "&inbox_id="+hidden)
+	if raw["replies"] != float64(2) || raw["closed"] != float64(0) || raw["median_first_reply_seconds"] != float64(1200) {
+		t.Fatalf("one inbox %s", mustMarshal(raw))
+	}
+	if _, raw = get(key, ""); raw["replies"] != float64(4) {
+		t.Fatalf("key stats %s", mustMarshal(raw))
+	}
+	tm.agent.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/stats?inbox_id="+hidden, nil)
+	other.owner.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/stats?inbox_id="+tm.inbox, nil)
+	if _, raw = get(other.owner, ""); raw["replies"] != float64(0) || raw["median_first_reply_seconds"] != nil {
+		t.Fatalf("another workspace %s", mustMarshal(raw))
+	}
+	tm.owner.expectProblem(http.StatusBadRequest, "validation_failed", "GET", "/v1/stats?timezone=Mars/Base", nil)
+	tm.owner.expectProblem(http.StatusBadRequest, "validation_failed", "GET", "/v1/stats?since="+url.QueryEscape(h.clock.Now().Add(time.Hour).UTC().Format(time.RFC3339)), nil)
+	tm.owner.expectProblem(http.StatusBadRequest, "validation_failed", "GET", "/v1/stats?since=2000-01-01T00:00:00Z", nil)
+
+	r := tm.owner.expect(http.StatusOK, "GET", "/v1/stats?timezone=Asia/Tokyo", nil)
+	tokyo, _ := time.LoadLocation("Asia/Tokyo")
+	got, _ := time.Parse(time.RFC3339, r.str("since"))
+	now := h.clock.Now().In(tokyo)
+	if want := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, tokyo); !got.Equal(want) {
+		t.Fatalf("default since %s, want %s", got, want)
+	}
+}
+
+func mustMarshal(v any) string {
+	b, _ := json.Marshal(v)
+	return string(b)
 }

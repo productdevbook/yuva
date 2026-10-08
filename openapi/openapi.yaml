@@ -1850,6 +1850,60 @@ paths:
           $ref: "#/components/responses/Problem"
         "403":
           $ref: "#/components/responses/Problem"
+  /v1/stats:
+    get:
+      operationId: getStats
+      summary: Team activity since a moment
+      description: |
+        What the team did in the inboxes the caller can see (or in one of them) from `since` until
+        now: replies sent by members (messages members wrote or drafts they sent; not notes, not
+        bots' own messages), conversations closed, and the median time from a contact's first
+        message to the first member reply, over the conversations whose first reply falls in the
+        window. `members` breaks replies and closes down per member, leaving out members with
+        neither. Nothing is stored for it; it is counted from the messages each time.
+
+        `since` defaults to the start of today in `timezone` (an IANA name, `UTC` by default); the
+        panel sends the browser's zone. It must be in the past and at most 366 days ago.
+
+        Scope: `conversations:read`.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - name: inbox_id
+          in: query
+          description: Only this inbox (`404` when the caller cannot see it).
+          schema:
+            type: string
+            format: uuid
+        - name: since
+          in: query
+          description: Start of the window; the start of today in `timezone` when absent.
+          schema:
+            type: string
+            format: date-time
+        - name: timezone
+          in: query
+          description: IANA time zone for the default `since`.
+          schema:
+            type: string
+            maxLength: 64
+            default: UTC
+            examples: ["Europe/Istanbul"]
+      responses:
+        "200":
+          description: The activity.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Stats"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
   /v1/conversations/bulk:
     post:
       operationId: bulkUpdateConversations
@@ -6445,6 +6499,51 @@ components:
           type: string
           format: uuid
         count:
+          type: integer
+          format: int64
+    Stats:
+      type: object
+      required: [since, until, replies, closed, first_replies, members]
+      properties:
+        since:
+          type: string
+          format: date-time
+        until:
+          type: string
+          format: date-time
+          description: When it was counted.
+        replies:
+          type: integer
+          format: int64
+          description: Replies sent by members.
+        closed:
+          type: integer
+          format: int64
+          description: Times a conversation was closed, by anyone (members, API keys, the server).
+        first_replies:
+          type: integer
+          format: int64
+          description: Conversations whose first member reply to the contact was sent in the window.
+        median_first_reply_seconds:
+          type: integer
+          format: int64
+          description: Median seconds from the contact's first message to that reply; absent when `first_replies` is 0.
+        members:
+          type: array
+          description: Per member, by member id.
+          items:
+            $ref: "#/components/schemas/MemberStats"
+    MemberStats:
+      type: object
+      required: [member_id, replies, closed]
+      properties:
+        member_id:
+          type: string
+          format: uuid
+        replies:
+          type: integer
+          format: int64
+        closed:
           type: integer
           format: int64
     ConversationCounts:
