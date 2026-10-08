@@ -136,6 +136,15 @@ public actor YuvaClient {
             "POST", "client/v1/conversations/\(conversationId)/read", body: Body(fields: fields, files: []))
     }
 
+    public func rate(conversationId: String, rating: YuvaRating, comment: String? = nil) async throws -> YuvaConversation {
+        var fields = ["rating": rating.rawValue]
+        if let comment = comment?.trimmingCharacters(in: .whitespacesAndNewlines), !comment.isEmpty {
+            fields["comment"] = comment
+        }
+        return try await request(
+            "POST", "client/v1/conversations/\(conversationId)/rating", body: Body(json: fields))
+    }
+
     public func setTyping(conversationId: String, typing: Bool) async throws {
         let _: Empty = try await request(
             "POST", "client/v1/conversations/\(conversationId)/typing", body: Body(json: ["typing": typing]))
@@ -467,6 +476,8 @@ public actor YuvaClient {
     private struct StatusData: Decodable {
         let id: String
         let status: YuvaConversationStatus
+        let canRate: Bool?
+        let rating: String?
     }
 
     private struct ReadData: Decodable {
@@ -498,7 +509,9 @@ public actor YuvaClient {
             if let conversation = payload(YuvaConversation.self) { broadcast(.conversationCreated(conversation)) }
         case "conversation.updated":
             if let status = payload(StatusData.self) {
-                broadcast(.conversationUpdated(conversationId: status.id, status: status.status))
+                broadcast(.conversationUpdated(
+                    conversationId: status.id, status: status.status, canRate: status.canRate ?? false,
+                    rating: status.rating.flatMap(YuvaRating.init(rawValue:))))
             }
         case "message.created":
             if let message = payload(YuvaMessage.self) { broadcast(.messageCreated(message)) }
