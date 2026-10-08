@@ -1,113 +1,122 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { BellIcon, BuildingIcon, InboxIcon, KeyIcon, MessageSquareTextIcon, TagIcon, UserIcon, UsersIcon, WebhookIcon } from "lucide-react"
-import { NavLink, Outlet } from "react-router"
+import { ArrowLeftIcon, ChevronRightIcon } from "lucide-react"
+import { Link, Navigate, NavLink, Outlet, useLocation } from "react-router"
 
 import { PaneHeader } from "@/app/shell"
-import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+import { useIsMobile } from "@/hooks/use-media-query"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 
-export function SettingsLayout() {
+function useGroups() {
   const { t } = useLingui()
   const { canManage } = useSession()
-  const items = [
-    { to: "profile", label: t`My profile`, icon: UserIcon },
-    { to: "notifications", label: t`Notifications`, icon: BellIcon },
-    { to: "workspace", label: t`Workspace`, icon: BuildingIcon },
-    { to: "members", label: t`Members`, icon: UsersIcon },
-    { to: "inboxes", label: t`Inboxes`, icon: InboxIcon },
-    { to: "labels", label: t`Labels`, icon: TagIcon },
-    { to: "canned-replies", label: t`Canned replies`, icon: MessageSquareTextIcon },
-    ...(canManage
-      ? [
-          { to: "api-keys", label: t`API keys`, icon: KeyIcon },
-          { to: "webhooks", label: t`Webhooks`, icon: WebhookIcon },
-        ]
-      : []),
+  return [
+    {
+      title: t`Account`,
+      items: [
+        { to: "profile", label: t`My profile` },
+        { to: "notifications", label: t`Notifications` },
+      ],
+    },
+    {
+      title: t`Workspace`,
+      items: [
+        { to: "workspace", label: t`General` },
+        { to: "members", label: t`Members` },
+        { to: "inboxes", label: t`Inboxes` },
+        { to: "labels", label: t`Labels` },
+        { to: "canned-replies", label: t`Canned replies` },
+        ...(canManage
+          ? [
+              { to: "api-keys", label: t`API keys` },
+              { to: "webhooks", label: t`Webhooks` },
+            ]
+          : []),
+      ],
+    },
   ]
+}
+
+function SettingsNav({ list }: { list?: boolean }) {
+  const { t } = useLingui()
+  const groups = useGroups()
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <PaneHeader title={<Trans>Settings</Trans>} />
-      <div className="flex min-h-0 flex-1 flex-col md:flex-row">
-        <nav
-          aria-label={t`Settings`}
-          className="flex shrink-0 gap-1 overflow-x-auto border-b px-3 py-2 md:w-56 md:flex-col md:overflow-visible md:border-r md:border-b-0 md:py-4"
-        >
-          {items.map(({ to, label, icon: Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
-              className={({ isActive }) =>
-                cn(
-                  "flex shrink-0 items-center gap-2 rounded-md px-2.5 py-1.5 text-sm whitespace-nowrap transition-colors hover:bg-muted",
-                  isActive && "bg-accent font-medium text-accent-foreground hover:bg-accent",
-                )
-              }
-            >
-              <Icon className="size-4" />
-              {label}
-            </NavLink>
-          ))}
-        </nav>
+    <nav aria-label={t`Settings`} className="flex flex-col gap-6">
+      {groups.map((g) => (
+        <div key={g.title}>
+          <h2 className={cn("mb-1 text-xs font-medium text-faint", list ? "px-1" : "px-2.5")}>{g.title}</h2>
+          <ul className={cn("flex flex-col", list ? "divide-y rounded-2xl border" : "gap-px")}>
+            {g.items.map((it) => (
+              <li key={it.to}>
+                <NavLink
+                  to={`/settings/${it.to}`}
+                  className={({ isActive }) =>
+                    list
+                      ? "flex h-12 items-center justify-between px-4 text-[0.95rem]"
+                      : cn(
+                          "flex h-8 items-center rounded-lg px-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
+                          isActive && "bg-muted font-medium text-foreground",
+                        )
+                  }
+                >
+                  {it.label}
+                  {list && <ChevronRightIcon className="size-4 text-faint rtl:rotate-180" />}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </nav>
+  )
+}
+
+export function SettingsIndex() {
+  const isMobile = useIsMobile()
+  if (!isMobile) return <Navigate to="profile" replace />
+  return null
+}
+
+export function SettingsLayout() {
+  const { t } = useLingui()
+  const isMobile = useIsMobile()
+  const { pathname } = useLocation()
+  const atIndex = pathname.replace(/\/$/, "") === "/settings"
+  if (isMobile && atIndex) {
+    return (
+      <div className="flex min-h-0 flex-1 flex-col">
+        <PaneHeader title={<Trans>Settings</Trans>} />
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 pt-2 pb-8">
+          <SettingsNav list />
+        </div>
+      </div>
+    )
+  }
+  return (
+    <div className="flex min-h-0 flex-1">
+      <aside className="hidden w-56 shrink-0 flex-col border-e md:flex">
+        <PaneHeader title={<Trans>Settings</Trans>} />
+        <div className="min-h-0 flex-1 overflow-y-auto px-3 pt-1 pb-6">
+          <SettingsNav />
+        </div>
+      </aside>
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+        <PaneHeader
+          className="md:hidden"
+          title={<Trans>Settings</Trans>}
+          leading={
+            <Button variant="ghost" size="icon-sm" className="-ms-1.5" render={<Link to="/settings" />} aria-label={t`Back`}>
+              <ArrowLeftIcon />
+            </Button>
+          }
+        />
         <div className="min-h-0 flex-1 overflow-y-auto" data-testid="settings-scroll">
-          <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-6 md:px-8">
+          <div className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-4 pt-4 pb-16 sm:px-8 md:pt-10">
             <Outlet />
           </div>
         </div>
       </div>
     </div>
   )
-}
-
-export function Section({
-  title,
-  description,
-  action,
-  children,
-  className,
-}: {
-  title: React.ReactNode
-  description?: React.ReactNode
-  action?: React.ReactNode
-  children?: React.ReactNode
-  className?: string
-}) {
-  return (
-    <section className={cn("flex flex-col gap-4 rounded-xl border bg-card p-4 md:p-5", className)}>
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="flex min-w-0 flex-col gap-1">
-          <h2 className="text-base font-semibold">{title}</h2>
-          {description && <p className="text-sm text-muted-foreground">{description}</p>}
-        </div>
-        {action}
-      </div>
-      {children}
-    </section>
-  )
-}
-
-export function Field({
-  label,
-  htmlFor,
-  hint,
-  children,
-  className,
-}: {
-  label: React.ReactNode
-  htmlFor?: string
-  hint?: React.ReactNode
-  children: React.ReactNode
-  className?: string
-}) {
-  return (
-    <div className={cn("flex flex-col gap-1.5", className)}>
-      <Label htmlFor={htmlFor}>{label}</Label>
-      {children}
-      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
-    </div>
-  )
-}
-
-export function PageTitle({ children }: { children: React.ReactNode }) {
-  return <h1 className="text-xl font-semibold">{children}</h1>
 }

@@ -3,17 +3,24 @@ import { Navigate, Route, Routes } from "react-router"
 import { Gate } from "@/app/Gate"
 import { SignInPage } from "@/features/auth/SignInPage"
 import { InboxPage, OpenConversation } from "@/features/inbox/InboxPage"
-import { ApiKeysSettings } from "@/features/settings/ApiKeysSettings"
-import { CannedRepliesSettings } from "@/features/settings/CannedRepliesSettings"
-import { InboxesSettings } from "@/features/settings/InboxesSettings"
-import { InboxSettings } from "@/features/settings/InboxSettings"
-import { LabelsSettings } from "@/features/settings/LabelsSettings"
-import { MembersSettings } from "@/features/settings/MembersSettings"
-import { NotificationsSettings } from "@/features/settings/NotificationsSettings"
-import { ProfileSettings } from "@/features/settings/ProfileSettings"
-import { SettingsLayout } from "@/features/settings/SettingsLayout"
-import { WebhookSettings, WebhooksSettings } from "@/features/settings/WebhooksSettings"
-import { WorkspaceSettings } from "@/features/settings/WorkspaceSettings"
+import { ApiKeysPage } from "@/features/settings/api-keys/ApiKeysPage"
+import { CannedRepliesPage } from "@/features/settings/canned/CannedRepliesPage"
+import { ChannelsPage } from "@/features/settings/channels/ChannelsPage"
+import { AccessSection } from "@/features/settings/inboxes/AccessSection"
+import { AdvancedPage } from "@/features/settings/inboxes/AdvancedPage"
+import { GeneralPage } from "@/features/settings/inboxes/GeneralForm"
+import { HoursForm } from "@/features/settings/inboxes/HoursForm"
+import { InboxesPage } from "@/features/settings/inboxes/InboxesPage"
+import { InboxLayout } from "@/features/settings/inboxes/InboxLayout"
+import { InboxWebhooksPage } from "@/features/settings/inboxes/InboxWebhooksPage"
+import { LabelsPage } from "@/features/settings/labels/LabelsPage"
+import { MembersPage } from "@/features/settings/members/MembersPage"
+import { NotificationsPage } from "@/features/settings/notifications/NotificationsPage"
+import { ProfilePage } from "@/features/settings/profile/ProfilePage"
+import { SettingsIndex, SettingsLayout } from "@/features/settings/SettingsLayout"
+import { WebhookPage } from "@/features/settings/webhooks/WebhookPage"
+import { WebhooksPage } from "@/features/settings/webhooks/WebhooksPage"
+import { WorkspacePage } from "@/features/settings/workspace/WorkspacePage"
 
 export function AppRoutes() {
   return (
@@ -22,18 +29,25 @@ export function AppRoutes() {
       <Route element={<Gate />}>
         <Route index element={<Navigate to="/all" replace />} />
         <Route path="settings" element={<SettingsLayout />}>
-          <Route index element={<Navigate to="profile" replace />} />
-          <Route path="profile" element={<ProfileSettings />} />
-          <Route path="notifications" element={<NotificationsSettings />} />
-          <Route path="workspace" element={<WorkspaceSettings />} />
-          <Route path="members" element={<MembersSettings />} />
-          <Route path="inboxes" element={<InboxesSettings />} />
-          <Route path="inboxes/:inboxId" element={<InboxSettings />} />
-          <Route path="labels" element={<LabelsSettings />} />
-          <Route path="canned-replies" element={<CannedRepliesSettings />} />
-          <Route path="api-keys" element={<ApiKeysSettings />} />
-          <Route path="webhooks" element={<WebhooksSettings />} />
-          <Route path="webhooks/:webhookId" element={<WebhookSettings />} />
+          <Route index element={<SettingsIndex />} />
+          <Route path="profile" element={<ProfilePage />} />
+          <Route path="notifications" element={<NotificationsPage />} />
+          <Route path="workspace" element={<WorkspacePage />} />
+          <Route path="members" element={<MembersPage />} />
+          <Route path="inboxes" element={<InboxesPage />} />
+          <Route path="inboxes/:inboxId" element={<InboxLayout />}>
+            <Route index element={<GeneralPage />} />
+            <Route path="hours" element={<HoursForm />} />
+            <Route path="channels" element={<ChannelsPage />} />
+            <Route path="access" element={<AccessSection />} />
+            <Route path="webhooks" element={<InboxWebhooksPage />} />
+            <Route path="advanced" element={<AdvancedPage />} />
+          </Route>
+          <Route path="labels" element={<LabelsPage />} />
+          <Route path="canned-replies" element={<CannedRepliesPage />} />
+          <Route path="api-keys" element={<ApiKeysPage />} />
+          <Route path="webhooks" element={<WebhooksPage />} />
+          <Route path="webhooks/:webhookId" element={<WebhookPage />} />
         </Route>
         <Route path="conversations/:conversationId" element={<OpenConversation />} />
         <Route path="inbox/:inboxId/:conversationId?" element={<InboxPage />} />
