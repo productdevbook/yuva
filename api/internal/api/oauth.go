@@ -229,13 +229,30 @@ func validRedirectURI(raw string) bool {
 	case "https":
 		return u.Host != ""
 	case "http":
-		h := u.Hostname()
-		return h == "localhost" || h == "127.0.0.1" || h == "::1"
+		return loopbackHost(u.Hostname())
 	}
 	if slices.Contains(refusedSchemes, u.Scheme) || !privateSchemeR.MatchString(u.Scheme) {
 		return false
 	}
 	return u.Opaque != "" || u.Path != "" || u.Host != ""
+}
+
+// redirectMatches compares exactly, except that an http redirect on a loopback host may use any
+// port (RFC 8252 section 7.3). localhost counts as loopback because Claude Code registers it.
+func redirectMatches(registered, requested string) bool {
+	if registered == requested {
+		return true
+	}
+	r, err := url.Parse(registered)
+	if err != nil || r.Scheme != "http" || !loopbackHost(r.Hostname()) {
+		return false
+	}
+	q, err := url.Parse(requested)
+	if err != nil || !validRedirectURI(requested) {
+		return false
+	}
+	return q.Scheme == r.Scheme && q.Hostname() == r.Hostname() && q.User == nil &&
+		q.EscapedPath() == r.EscapedPath() && q.RawQuery == r.RawQuery && q.ForceQuery == r.ForceQuery
 }
 
 func redirectHost(raw string) string {
@@ -453,7 +470,7 @@ func (s *Server) serveOAuthAuthorize(w http.ResponseWriter, r *http.Request) {
 	case redirect == "":
 		plain(http.StatusBadRequest, "invalid_request: redirect_uri is required for a client with several redirect URIs")
 		return
-	case !slices.Contains(client.RedirectUris, redirect):
+	case !slices.ContainsFunc(client.RedirectUris, func(registered string) bool { return redirectMatches(registered, redirect) }):
 		plain(http.StatusBadRequest, "invalid_request: redirect_uri does not match any of the client's redirect URIs")
 		return
 	}

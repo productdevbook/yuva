@@ -42,6 +42,14 @@ func (h *harness) mcpSession(token string) *mcp.ClientSession {
 // for resource.
 func (h *harness) oauthToken(member *client, workspace, clientName, resource string, scopes []string) string {
 	h.t.Helper()
+	redirect := "http://127.0.0.1:33418/callback"
+	return h.oauthTokenVia(member, workspace, clientName, resource, scopes, redirect, redirect)
+}
+
+// oauthTokenVia registers the client with registeredURI as its redirect URI and runs the flow with
+// redirect.
+func (h *harness) oauthTokenVia(member *client, workspace, clientName, resource string, scopes []string, registeredURI, redirect string) string {
+	h.t.Helper()
 	ip := h.client().ip
 	post := func(path string, body io.Reader, ct string) *http.Response {
 		req, _ := http.NewRequest("POST", h.url+path, body)
@@ -53,8 +61,7 @@ func (h *harness) oauthToken(member *client, workspace, clientName, resource str
 		}
 		return res
 	}
-	redirect := "http://127.0.0.1:33418/callback"
-	reg, _ := json.Marshal(map[string]any{"client_name": clientName, "redirect_uris": []string{redirect}})
+	reg, _ := json.Marshal(map[string]any{"client_name": clientName, "redirect_uris": []string{registeredURI}})
 	res := post("/oauth/register", strings.NewReader(string(reg)), "application/json")
 	var registered struct {
 		ClientID string `json:"client_id"`
@@ -323,5 +330,70 @@ func TestMCPScopesAndInboxAccess(t *testing.T) {
 	resources, err := acs.ListResources(context.Background(), nil)
 	if err != nil || len(resources.Resources) != 1 || resources.Resources[0].URI != "yuva://inbox/"+other {
 		t.Fatalf("agent's resources: %v %v", resources, err)
+	}
+}
+
+func TestOAuthLoopbackRedirectAnyPort(t *testing.T) {
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	scopes := []string{"inboxes:read"}
+	for _, c := range []struct{ registered, used string }{
+		{"http://localhost/callback", "http://localhost:51234/callback"},
+		{"http://127.0.0.1/callback", "http://127.0.0.1:40001/callback"},
+		{"http://[::1]:8080/callback", "http://[::1]:9/callback"},
+	} {
+		if h.oauthTokenVia(tm.owner, tm.ws, "Loopback", testOrigin+"/mcp", scopes, c.registered, c.used) == "" {
+			t.Fatalf("%s via %s: no token", c.registered, c.used)
+		}
+	}
+
+	reg, _ := json.Marshal(map[string]any{"client_name": "Strict", "redirect_uris": []string{
+		"http://127.0.0.1/callback?x=1", "https://app.example.com:8443/callback", "com.example.app:/callback",
+	}})
+	req, _ := http.NewRequest("POST", h.url+"/oauth/register", strings.NewReader(string(reg)))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("X-Forwarded-For", h.client().ip)
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var registered struct {
+		ClientID string `json:"client_id"`
+	}
+	_ = json.NewDecoder(res.Body).Decode(&registered)
+	res.Body.Close()
+	if res.StatusCode != http.StatusCreated {
+		t.Fatalf("register: %d", res.StatusCode)
+	}
+	noFollow := &http.Client{CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
+	authorize := func(redirect string) int {
+		q := url.Values{
+			"response_type": {"code"}, "client_id": {registered.ClientID}, "redirect_uri": {redirect},
+			"code_challenge": {strings.Repeat("a", 43)}, "code_challenge_method": {"S256"}, "resource": {testOrigin + "/mcp"},
+		}
+		req, _ := http.NewRequest("GET", h.url+"/oauth/authorize?"+q.Encode(), nil)
+		req.Header.Set("X-Forwarded-For", h.client().ip)
+		res, err := noFollow.Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		res.Body.Close()
+		return res.StatusCode
+	}
+	for redirect, want := range map[string]int{
+		"http://127.0.0.1:5555/callback?x=1":     http.StatusFound,
+		"http://127.0.0.1:5555/callback?x=2":     http.StatusBadRequest,
+		"http://127.0.0.1:5555/other?x=1":        http.StatusBadRequest,
+		"http://localhost:5555/callback?x=1":     http.StatusBadRequest,
+		"https://127.0.0.1:5555/callback?x=1":    http.StatusBadRequest,
+		"https://app.example.com:8443/callback":  http.StatusFound,
+		"https://app.example.com:9443/callback":  http.StatusBadRequest,
+		"https://app.example.com/callback":       http.StatusBadRequest,
+		"com.example.app:/callback":              http.StatusFound,
+		"http://127.0.0.1:5555/callback?x=1#top": http.StatusBadRequest,
+	} {
+		if got := authorize(redirect); got != want {
+			t.Errorf("authorize with %s: %d, want %d", redirect, got, want)
+		}
 	}
 }

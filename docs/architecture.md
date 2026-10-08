@@ -285,10 +285,13 @@ the member apps (M10). Authorization code with PKCE (`S256` only), no implicit o
   and Client ID Metadata Documents (a `client_id` that is an `https` URL, fetched with the same
   private-address rules as webhooks and cached for 24 hours; its `client_id` must equal the URL and
   it must be a public client). Redirect URIs must be `https`, or `http` on loopback, or a
-  private-use scheme for native apps; matched exactly, and `redirect_uri` may be left out only when
-  the client has one. Registration answers `token_endpoint_auth_method: none` whatever was asked,
-  allows 20 registrations per address and hour, and clients that never got a grant are deleted
-  after 30 days. Client ids are `yuva_client_<random>`.
+  private-use scheme for native apps; matched exactly, except that an `http` URI on a loopback host
+  (`127.0.0.1`, `[::1]`, and `localhost`, which Claude Code registers) matches on any port, at
+  authorize as RFC 8252 §7.3 and OAuth 2.1 ask (the token request must repeat the URI the
+  authorization request used). `redirect_uri` may be left out only when the client has one.
+  Registration answers `token_endpoint_auth_method: none` whatever was asked, allows 20
+  registrations per address and hour, and clients that never got a grant are deleted after 30
+  days. Client ids are `yuva_client_<random>`.
 - `GET /oauth/authorize` checks the request and sends the browser to the panel's consent page
   (`/oauth/consent?request=<id>`). The panel signs the person in if needed (code or passkey), shows
   the client's name and redirect host, lets them pick one workspace, and shows the scopes. Approving
