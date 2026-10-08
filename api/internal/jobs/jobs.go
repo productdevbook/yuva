@@ -31,8 +31,9 @@ func Migrate(ctx context.Context, pool *pgxpool.Pool, log *slog.Logger) error {
 }
 
 const (
-	EventRetention   = 24 * time.Hour
-	WebhookRetention = 7 * 24 * time.Hour
+	EventRetention       = 24 * time.Hour
+	WebhookRetention     = 7 * 24 * time.Hour
+	IdempotencyRetention = 24 * time.Hour
 )
 
 func New(pool *pgxpool.Pool, q *store.Queries, log *slog.Logger, register ...func(*river.Workers)) (*river.Client[pgx.Tx], error) {
@@ -88,6 +89,9 @@ func (w *EventCleanupWorker) Work(ctx context.Context, _ *river.Job[EventCleanup
 			return fmt.Errorf("workspace %s: %w", id, err)
 		}
 		if _, err := w.Queries.DeleteFinishedWebhookDeliveries(ctx, store.DeleteFinishedWebhookDeliveriesParams{WorkspaceID: id, Before: w.Now().Add(-WebhookRetention)}); err != nil {
+			return fmt.Errorf("workspace %s: %w", id, err)
+		}
+		if _, err := w.Queries.DeleteIdempotencyKeysBefore(ctx, store.DeleteIdempotencyKeysBeforeParams{WorkspaceID: id, Before: w.Now().Add(-IdempotencyRetention)}); err != nil {
 			return fmt.Errorf("workspace %s: %w", id, err)
 		}
 	}

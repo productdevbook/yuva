@@ -229,6 +229,20 @@ type Event struct {
 	CreatedAt      time.Time
 }
 
+type IdempotencyKey struct {
+	WorkspaceID uuid.UUID
+	CallerType  string
+	CallerID    uuid.UUID
+	Key         string
+	Method      string
+	Path        string
+	BodySha256  []byte
+	Status      *int32
+	Headers     []byte
+	Body        []byte
+	CreatedAt   time.Time
+}
+
 type IdentityTokenID struct {
 	WorkspaceID uuid.UUID
 	InboxID     uuid.UUID

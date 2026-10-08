@@ -219,7 +219,7 @@ func (s *Server) Handler() http.Handler {
 		}
 		panel.ServeHTTP(w, r)
 	})
-	return s.recoverer(s.logRequests(noSniff(s.clientCORS(s.guardCookieWrites(s.limitBody(mux))))))
+	return s.recoverer(s.logRequests(noSniff(s.clientCORS(s.guardCookieWrites(s.limitBody(s.idempotency(mux)))))))
 }
 
 func noSniff(next http.Handler) http.Handler {

@@ -166,6 +166,9 @@ func (s *Server) authenticate(next oas.StrictHandlerFunc, operationID string) oa
 			if err != nil {
 				return nil, err
 			}
+			if replayed, err := s.claimIdempotency(ctx, w, r, c.workspaceID, callerContact, c.contactID); err != nil || replayed {
+				return nil, err
+			}
 			return next(context.WithValue(ctx, contactKey, c), w, r, request)
 		}
 		if workspaceQueryOperations[operationID] {
@@ -179,6 +182,15 @@ func (s *Server) authenticate(next oas.StrictHandlerFunc, operationID string) oa
 		}
 		if p.isKey() {
 			if err := keyMayCall(p, operationID); err != nil {
+				return nil, err
+			}
+		}
+		if kind != accessPerson {
+			callerType, callerID := callerMember, p.memberID
+			if p.isKey() {
+				callerType, callerID = callerAPIKey, p.keyID
+			}
+			if replayed, err := s.claimIdempotency(ctx, w, r, p.workspaceID, callerType, callerID); err != nil || replayed {
 				return nil, err
 			}
 		}
