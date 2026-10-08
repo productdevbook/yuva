@@ -80,6 +80,10 @@ chat.addEventListener("yuva-unread", (event) => {
 });
 ```
 
+`chat.rate(conversationId, "good" | "bad", comment?)` rates a closed conversation, as the visitor's
+own buttons do, and resolves with the updated conversation. When it cannot be rated it rejects
+with an error whose `status` is `409` and `code` is `already_rated` or `rating_unavailable`.
+
 ## 3. Signed-in users
 
 On a site where people are signed in, let them chat as themselves: your backend signs a short-lived
@@ -114,6 +118,9 @@ the name, e-mail and attributes from the token.
   have not read is e-mailed to them after `YUVA_CHAT_EMAIL_DELAY`. Yuva also mails the address a
   confirmation link; once they confirm it, their answers by e-mail continue the conversation. This
   needs an e-mail channel in the same inbox.
+- When the inbox asks for ratings, a closed conversation ends with "How did we do?" and 👍 / 👎,
+  then an optional comment. It can be rated once per close, for 30 days; the chosen rating stays
+  in the thread.
 
 ## Content Security Policy
 

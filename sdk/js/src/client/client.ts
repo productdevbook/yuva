@@ -9,10 +9,12 @@ import {
   type ClientInbox,
   type ClientMessage,
   type ClientMessagePage,
+  type ClientRatingCreate,
   type ClientReadState,
   type ClientRealtimeMessage,
   type ClientSession,
   type ClientSessionInfo,
+  type Rating,
   type Request,
 } from "./api";
 import { Realtime } from "./realtime";
@@ -286,6 +288,11 @@ export class YuvaClient {
       method: "POST",
       json: messageId ? { message_id: messageId } : {},
     });
+  }
+
+  rate(conversationId: string, rating: Rating, comment?: string): Promise<ClientConversation> {
+    const body: ClientRatingCreate = { rating, comment: comment?.trim() || undefined };
+    return this.#authed(`/client/v1/conversations/${encodeURIComponent(conversationId)}/rating`, { method: "POST", json: body });
   }
 
   setTyping(conversationId: string, typing: boolean): Promise<void> {

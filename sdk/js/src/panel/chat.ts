@@ -11,6 +11,7 @@ import {
   type ClientInbox,
   type ClientMessage,
   type ClientRealtimeMessage,
+  type Rating,
 } from "../client/api";
 import { createYuvaClient, randomId, type YuvaClient } from "../client/client";
 import { styles } from "./styles";
@@ -29,6 +30,11 @@ interface Pending {
   files: File[];
   state: "sending" | "failed" | "refused";
   status?: number;
+}
+
+interface RatingDraft {
+  choice: Rating;
+  state: "choosing" | "sending" | "failed";
 }
 
 interface Thread {
@@ -96,6 +102,11 @@ export class Chat implements PanelController {
   #emailSaved = false;
   #emailError = "";
   #connectedBefore = false;
+  #ratings = new Map<string, RatingDraft>();
+  #rateCard = el("div", "card rate");
+  #rateComment = el("textarea");
+  #rateKey = "";
+  #rateFor: string | null = null;
 
   #header = el("header", "header");
   #banner = el("div", "banner");
@@ -172,6 +183,9 @@ export class Chat implements PanelController {
     this.#emailInput.type = "email";
     this.#emailInput.required = true;
     this.#emailInput.autocomplete = "email";
+    this.#rateComment.rows = 2;
+    this.#rateComment.maxLength = 2000;
+    this.#rateComment.dir = "auto";
 
     document.addEventListener("visibilitychange", this.#onVisible);
     window.addEventListener("online", this.#onVisible);
@@ -232,6 +246,8 @@ export class Chat implements PanelController {
     this.#conversations.clear();
     this.#threads.clear();
     this.#pending = [];
+    this.#ratings.clear();
+    this.#rateKey = "";
     this.#view = null;
     this.#connectedBefore = false;
     this.#host.setUnread(0);
@@ -387,9 +403,12 @@ export class Chat implements PanelController {
         if (this.#connectedBefore) void this.#refreshInbox();
         this.#connectedBefore = true;
         return;
-      case "inbox.updated":
+      case "inbox.updated": {
+        const asked = this.#inbox?.ask_for_rating;
         this.#setInbox(message.data);
+        if (asked !== undefined && asked !== message.data.ask_for_rating) void this.#loadConversations().then(() => this.#render()).catch(() => undefined);
         break;
+      }
       case "resync_required":
         void this.#reload();
         return;
@@ -405,7 +424,9 @@ export class Chat implements PanelController {
         break;
       case "conversation.updated": {
         const conversation = this.#conversations.get(message.data.id);
-        if (conversation) this.#conversations.set(conversation.id, { ...conversation, status: message.data.status });
+        const { status, can_rate, rating } = message.data;
+        if (conversation) this.#conversations.set(conversation.id, { ...conversation, status, can_rate, rating });
+        if (!can_rate) this.#ratings.delete(message.data.id);
         break;
       }
       case "message.created":
@@ -587,6 +608,48 @@ export class Chat implements PanelController {
     }
     this.#render();
     this.#scrollToEnd();
+  }
+
+  async rate(id: string, rating: Rating, comment?: string): Promise<ClientConversation> {
+    try {
+      const conversation = await this.#client.rate(id, rating, comment);
+      this.#conversations.set(conversation.id, conversation);
+      this.#ratings.delete(id);
+      this.#render();
+      return conversation;
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 409) {
+        const current = await this.#client.getConversation(id).catch(() => null);
+        if (current) this.#conversations.set(current.id, current);
+        this.#ratings.delete(id);
+        this.#render();
+      }
+      throw error;
+    }
+  }
+
+  #choose(id: string, choice: Rating): void {
+    const draft = this.#ratings.get(id);
+    if (draft?.state === "sending") return;
+    this.#ratings.set(id, { choice, state: "choosing" });
+    this.#render();
+    this.#rateComment.focus({ preventScroll: true });
+    if (this.#atEnd) this.#scrollToEnd();
+  }
+
+  async #submitRating(id: string, withComment: boolean): Promise<void> {
+    const draft = this.#ratings.get(id);
+    if (!draft || draft.state === "sending") return;
+    draft.state = "sending";
+    this.#render();
+    try {
+      await this.rate(id, draft.choice, withComment ? this.#rateComment.value : undefined);
+      this.#rateComment.value = "";
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 409) return;
+      draft.state = "failed";
+      this.#render();
+    }
   }
 
   async #saveEmail(): Promise<void> {
@@ -903,6 +966,10 @@ export class Chat implements PanelController {
       }
     });
 
+    const conversation = id ? this.#conversations.get(id) : undefined;
+    const rate = conversation ? this.#renderRating(conversation) : null;
+    if (rate) nodes.push(rate);
+
     pending.forEach((item, i) => {
       const row = el("div", `row mine${i === 0 && messages.length > 0 && messages[messages.length - 1]?.author.type !== "contact" ? " group-gap" : ""}`);
       const bubble = el("div", "bubble");
@@ -937,11 +1004,75 @@ export class Chat implements PanelController {
       nodes.push(line);
     }
 
+    const root = this.#scroll.getRootNode() as Document | ShadowRoot;
+    const focused = root.activeElement === this.#rateComment;
+    const { selectionStart, selectionEnd } = this.#rateComment;
     this.#scroll.replaceChildren(...nodes);
+    if (focused && this.#rateComment.isConnected) {
+      this.#rateComment.focus({ preventScroll: true });
+      this.#rateComment.setSelectionRange(selectionStart, selectionEnd);
+    }
     this.#renderEmail();
     if (this.#body.firstChild !== this.#scroll) this.#body.replaceChildren(this.#scroll, this.#email, this.#composer);
     this.#scrollThread = id;
     if (!sameThread || atEnd) this.#scrollToEnd();
+  }
+
+  #renderRating(conversation: ClientConversation): HTMLElement | null {
+    const rated = conversation.status === "closed" ? conversation.rating : undefined;
+    const draft = conversation.can_rate && this.#inbox?.ask_for_rating ? this.#ratings.get(conversation.id) : undefined;
+    if (!rated && !(conversation.can_rate && this.#inbox?.ask_for_rating)) return null;
+    const card = this.#rateCard;
+    const key = [conversation.id, rated, draft?.choice, draft?.state, this.#host.config().locale].join(":");
+    if (key === this.#rateKey) return card;
+    this.#rateKey = key;
+    if (this.#rateFor !== conversation.id) {
+      this.#rateFor = conversation.id;
+      this.#rateComment.value = "";
+    }
+    const question = this.#t(msg`How did we do?`);
+    card.setAttribute("role", "group");
+    card.setAttribute("aria-label", question);
+    const choices = el("div", "choices");
+    for (const value of ["good", "bad"] as const) {
+      if (rated && rated !== value) continue;
+      const button = el("button", "choice", value === "good" ? "👍" : "👎");
+      button.type = "button";
+      const label = value === "good" ? this.#t(msg`Good`) : this.#t(msg`Bad`);
+      button.setAttribute("aria-label", label);
+      button.title = label;
+      button.setAttribute("aria-pressed", String((rated ?? draft?.choice) === value));
+      button.disabled = !!rated || draft?.state === "sending";
+      button.addEventListener("click", () => this.#choose(conversation.id, value));
+      choices.append(button);
+    }
+    if (rated) {
+      card.replaceChildren(choices, el("p", "", this.#t(msg`Thanks for your feedback`)));
+      return card;
+    }
+    card.replaceChildren(el("p", "", question), choices);
+    if (!draft) return card;
+    this.#rateComment.placeholder = this.#t(msg`Anything you'd like to add? (optional)`);
+    this.#rateComment.setAttribute("aria-label", this.#t(msg`Comment`));
+    this.#rateComment.disabled = draft.state === "sending";
+    const form = el("form");
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      void this.#submitRating(conversation.id, true);
+    });
+    const skip = el("button", "link", this.#t(msg`Skip`));
+    skip.type = "button";
+    skip.disabled = draft.state === "sending";
+    skip.addEventListener("click", () => void this.#submitRating(conversation.id, false));
+    const send = el("button", "", draft.state === "sending" ? this.#t(msg`Sending…`) : this.#t(msg`Send`));
+    send.type = "submit";
+    send.disabled = draft.state === "sending";
+    const actions = el("div", "actions");
+    actions.append(skip, send);
+    form.append(this.#rateComment, actions);
+    card.append(form);
+    if (draft.state === "failed") card.append(el("p", "error", this.#t(msg`Could not send your rating. Try again.`)));
+    return card;
   }
 
   #renderAttachments(attachments: ClientAttachment[]): HTMLElement {
