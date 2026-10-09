@@ -79,10 +79,13 @@ type contactSession struct {
 	body      map[string]any
 }
 
-func (ct chatTeam) session(h *harness, req map[string]any) contactSession {
+func (ct chatTeam) session(h *harness, req map[string]any, origin ...string) contactSession {
 	h.t.Helper()
 	c := h.client()
 	c.origin = ct.origin
+	if len(origin) > 0 {
+		c.origin = origin[0]
+	}
 	req["channel_key"] = ct.key
 	r := c.expect(http.StatusCreated, "POST", "/client/v1/session", req)
 	c.bearer = r.str("token")
@@ -198,6 +201,41 @@ func TestClientOriginsAndAnonymous(t *testing.T) {
 	r = ct.sessionStatus(h, "", map[string]any{"identity_token": ct.token(h, map[string]any{"sub": "u"})})
 	if r.status != http.StatusForbidden || r.str("code") != "origin_not_allowed" {
 		t.Fatalf("chat session without Origin: %d %s", r.status, r.raw)
+	}
+	if res := preflight(testOrigin); res.StatusCode != http.StatusNoContent || res.Header.Get("Access-Control-Allow-Origin") != testOrigin {
+		t.Fatalf("preflight from the server's own origin: %d %v", res.StatusCode, res.Header)
+	}
+	own := ct.session(h, map[string]any{"identity_token": ct.token(h, map[string]any{"sub": "own"})}, testOrigin)
+	own.start("from the panel's preview")
+	ws, _, err := dialContact(h, own.token, testOrigin, "")
+	if err != nil {
+		t.Fatalf("socket from the server's own origin: %v", err)
+	}
+	ws.ready()
+	sameOrigin := func(site string) response {
+		b, _ := json.Marshal(map[string]any{"channel_key": ct.key, "identity_token": ct.token(h, map[string]any{"sub": "same"})})
+		req, _ := http.NewRequest("POST", h.url+"/client/v1/session", bytes.NewReader(b))
+		req.Header.Set("Content-Type", "application/json")
+		if site != "" {
+			req.Header.Set("Sec-Fetch-Site", site)
+		}
+		res, err := http.DefaultClient.Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer res.Body.Close()
+		out := response{status: res.StatusCode, header: res.Header}
+		out.raw, _ = io.ReadAll(res.Body)
+		_ = json.Unmarshal(out.raw, &out.body)
+		return out
+	}
+	if r := sameOrigin("same-origin"); r.status != http.StatusCreated {
+		t.Fatalf("same-origin session without Origin: %d %s", r.status, r.raw)
+	}
+	for _, site := range []string{"same-site", "cross-site", "none"} {
+		if r := sameOrigin(site); r.status != http.StatusForbidden || r.str("code") != "origin_not_allowed" {
+			t.Fatalf("%s session without Origin: %d %s", site, r.status, r.raw)
+		}
 	}
 	nf := h.client()
 	nf.origin = ct.origin

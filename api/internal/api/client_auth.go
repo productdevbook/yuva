@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"net/http"
+	"net/url"
 	"slices"
 	"strings"
 	"time"
@@ -55,7 +56,8 @@ func originFrom(ctx context.Context) string {
 // clientCORS answers preflights for /client/v1 and refuses browsers from origins that no chat
 // channel allows. Whether the origin is allowed for the channel in question is checked once the
 // channel is known (from the public key or the session); requests without an Origin, which native
-// apps send, pass here and are refused later unless the channel is an app channel. Refusals carry
+// apps send, pass here and are refused later unless the channel is an app channel or the browser
+// says the request is same-origin, which counts as the server's own origin. Refusals carry
 // Access-Control-Allow-Origin so the widget can read them and hide itself.
 func (s *Server) clientCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -65,12 +67,15 @@ func (s *Server) clientCORS(next http.Handler) http.Handler {
 		}
 		raw := r.Header.Get("Origin")
 		if raw == "" {
+			if r.Header.Get("Sec-Fetch-Site") == "same-origin" {
+				r = r.WithContext(context.WithValue(r.Context(), originKey, s.ownOrigin()))
+			}
 			next.ServeHTTP(w, r)
 			return
 		}
 		origin, ok := normalizeOrigin(raw)
-		known := false
-		if ok {
+		known := ok && origin == s.ownOrigin()
+		if ok && !known {
 			var err error
 			if known, err = s.st.AnyChatChannelAllowsOrigin(r.Context(), origin); err != nil {
 				s.log.ErrorContext(r.Context(), "origin check", "error", err)
@@ -95,13 +100,24 @@ func (s *Server) clientCORS(next http.Handler) http.Handler {
 	})
 }
 
+// ownOrigin is YUVA_PUBLIC_URL's origin, which every chat channel allows so the panel can show a
+// live widget.
+func (s *Server) ownOrigin() string {
+	u, err := url.Parse(s.auth.PublicURL)
+	if err != nil {
+		return ""
+	}
+	o, _ := normalizeOrigin(u.Scheme + "://" + u.Host)
+	return o
+}
+
 // originAllowedFor checks a chat channel's origins; app channels serve native apps, which send no
 // Origin, so their keys are not tied to origins.
-func originAllowedFor(origin, kind string, allowed []string) bool {
+func (s *Server) originAllowedFor(origin, kind string, allowed []string) bool {
 	if kind == string(oas.ChannelKindApp) {
 		return true
 	}
-	return origin != "" && slices.Contains(allowed, origin)
+	return origin != "" && (origin == s.ownOrigin() || slices.Contains(allowed, origin))
 }
 
 func sessionChat(ch store.GetSessionChannelRow) store.ChatChannel {
@@ -132,7 +148,7 @@ func (s *Server) resolveContact(ctx context.Context, token string) (contactPrinc
 		return contactPrincipal{}, err
 	}
 	chat := sessionChat(ch)
-	if !originAllowedFor(originFrom(ctx), ch.Kind, chat.AllowedOrigins) {
+	if !s.originAllowedFor(originFrom(ctx), ch.Kind, chat.AllowedOrigins) {
 		return contactPrincipal{}, errOriginRefused
 	}
 	if sess.ContactBlocked {

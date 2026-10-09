@@ -58,6 +58,12 @@ func TestClientChannelSettings(t *testing.T) {
 	c.expectProblem(http.StatusNotFound, "not_found", "GET", "/client/v1/channels/yuva_pk_unknown", nil)
 	c.origin = ""
 	c.expectProblem(http.StatusForbidden, "origin_not_allowed", "GET", "/client/v1/channels/"+ct.key, nil)
+	c.origin = testOrigin
+	for _, key := range []string{ct.key, async.key} {
+		if r := c.expect(http.StatusOK, "GET", "/client/v1/channels/"+key, nil); r.header.Get("Access-Control-Allow-Origin") != testOrigin {
+			t.Fatalf("server's own origin: %v", r.header)
+		}
+	}
 
 	c.origin = ct.origin
 	limited := false

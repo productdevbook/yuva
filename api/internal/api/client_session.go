@@ -46,7 +46,7 @@ func (s *Server) CreateClientSession(ctx context.Context, req oas.CreateClientSe
 	if err := s.rateLimit(rateCheck{"session:channel:" + ch.ChannelID.String(), limitSessionPerChannel}); err != nil {
 		return nil, err
 	}
-	if !originAllowedFor(originFrom(ctx), ch.Kind, ch.AllowedOrigins) {
+	if !s.originAllowedFor(originFrom(ctx), ch.Kind, ch.AllowedOrigins) {
 		return nil, errOriginRefused
 	}
 	ws := ch.WorkspaceID
@@ -109,7 +109,7 @@ func (s *Server) GetClientChannel(ctx context.Context, req oas.GetClientChannelR
 	if err != nil {
 		return nil, err
 	}
-	if !originAllowedFor(originFrom(ctx), ch.Kind, ch.AllowedOrigins) {
+	if !s.originAllowedFor(originFrom(ctx), ch.Kind, ch.AllowedOrigins) {
 		return nil, errOriginRefused
 	}
 	inbox, err := s.st.GetInbox(ctx, store.GetInboxParams{WorkspaceID: ch.WorkspaceID, ID: ch.InboxID})
