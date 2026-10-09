@@ -1416,8 +1416,8 @@ export interface paths {
         /**
          * Get a message's e-mail details
          * @description The full text with the quoted history and signature that the thread hides, the full
-         *     sanitized HTML, and the headers that matter. Only messages that came or went by e-mail
-         *     have them; others answer `404`.
+         *     sanitized HTML, the original HTML with the sender's styling, and the headers that matter.
+         *     Only messages that came or went by e-mail have them; others answer `404`.
          *
          *     Scope: `conversations:read`.
          */
@@ -4341,7 +4341,16 @@ export interface components {
             full_text: string;
             /** @description The whole HTML part, sanitized. */
             full_html?: string;
-            /** @description `full_html` loads images from other servers; block them until the member asks. */
+            /**
+             * @description The whole HTML part of the kept original, built on request and sanitized with a policy
+             *     that keeps inline styles limited to an allowlist of CSS properties (no `url(`,
+             *     `expression` or `@import` values) and the colour, alignment and size attributes of
+             *     tables and `font`; never `<style>` blocks, scripts, forms, frames, stylesheets or event
+             *     handlers. `cid:` sources are kept as in `full_html`. Absent when the original is not
+             *     kept, has no HTML part or is too large.
+             */
+            original_html?: string;
+            /** @description `full_html` or `original_html` loads images from other servers; block them until the member asks. */
             has_remote_images: boolean;
             in_reply_to?: string;
             references?: string[];
