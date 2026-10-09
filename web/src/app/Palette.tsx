@@ -77,6 +77,7 @@ function useItems(open: boolean): Item[] {
       },
     })
     list.push({ group: t`Go to`, label: t`All conversations`, keys: [SHORTCUTS.search], run: () => openDrawer() })
+    go(t`Contacts`, "/contacts", keyLabel(SHORTCUTS.contacts))
     go(t`Settings`, "/settings", [mod, ","])
     go(t`Profile`, "/settings/profile")
     go(t`Notifications`, "/settings/notifications")

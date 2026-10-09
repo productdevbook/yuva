@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { SettingsIcon } from "lucide-react"
+import { BookUserIcon, SettingsIcon } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { Link, useLocation } from "react-router"
 
@@ -73,6 +73,17 @@ export function TopBar() {
             <span className="text-caption text-faint tabular-nums">{new Intl.NumberFormat(i18n.locale, { notation: "compact" }).format(all)}</span>
           </Button>
         )}
+        <Button
+          variant="ghost"
+          size="sm"
+          className={cn("phone:hidden", pathname.startsWith("/contacts") && "bg-muted text-foreground")}
+          render={<Link to="/contacts" />}
+          title={t`Contacts (G C)`}
+          data-testid="open-contacts"
+        >
+          <BookUserIcon />
+          <Trans>Contacts</Trans>
+        </Button>
         <Button
           variant="ghost"
           size="icon-sm"

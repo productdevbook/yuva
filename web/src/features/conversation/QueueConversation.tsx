@@ -6,9 +6,8 @@ import { EmptyState, toast } from "@/components/common"
 import { SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { useEnumText, useErrorText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
-import { ContactPanel } from "@/features/contact/ContactPanel"
+import { ContactSheet } from "@/features/contact/ContactSheet"
 import { useContact } from "@/features/contact/queries"
 import { readDraft, useQueueActions } from "@/features/conversation/actions"
 import { Beaten, TypingCollision } from "@/features/conversation/Collision"
@@ -240,6 +239,7 @@ function Loaded({ c, contact, channel }: { c: Conversation; contact?: Contact; c
         name={name}
         channel={channel}
         lastInbound={lastInbound}
+        onContact={() => setContactOpen(true)}
         menu={<ConversationMenu c={c} open={moreOpen} onOpenChange={setMoreOpen} update={update} move={move} onContact={() => setContactOpen(true)} />}
       />
       {c.spam && (
@@ -296,14 +296,7 @@ function Loaded({ c, contact, channel }: { c: Conversation; contact?: Contact; c
         </span>
       </div>
       {next && <UpNext c={next} onOpen={openNext} />}
-      <Sheet open={contactOpen} onOpenChange={setContactOpen}>
-        <SheetContent side="right" className="w-[400px] max-w-full bg-background phone:w-full" data-testid="contact-sheet">
-          <SheetTitle className="sr-only">
-            <Trans>Contact details</Trans>
-          </SheetTitle>
-          <ContactPanel contactId={c.contact_id} conversationId={c.id} hrefFor={(id) => `/conversations/${id}`} />
-        </SheetContent>
-      </Sheet>
+      <ContactSheet contactId={c.contact_id} conversationId={c.id} open={contactOpen} onOpenChange={setContactOpen} />
     </div>
   )
 }

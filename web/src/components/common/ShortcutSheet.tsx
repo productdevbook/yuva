@@ -24,9 +24,11 @@ export const SHORTCUTS = {
   view: "v",
   previous: "k",
   select: "x",
+  contacts: "g c",
 } as const
 
-export function keyLabel(k: string) {
+export function keyLabel(k: string): string[] {
+  if (k.includes(" ")) return k.split(" ").flatMap(keyLabel)
   return /^[A-Z]$/.test(k) ? ["⇧", k] : [k.toUpperCase()]
 }
 
@@ -81,6 +83,7 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
       items: [
         [[SHORTCUTS.search], t`Search conversations`],
         [k(SHORTCUTS.view), t`Switch between Queue and List`],
+        [k(SHORTCUTS.contacts), t`Contacts`],
         [[mod, "K"], t`Everything`],
         [[mod, ","], t`Settings`],
         [[SHORTCUTS.help], t`This list`],

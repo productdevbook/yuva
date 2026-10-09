@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { BuildingIcon, DownloadIcon, KeyboardIcon, LanguagesIcon, ListIcon, LogOutIcon, MonitorIcon, MoonIcon, RowsIcon, SunIcon, UserIcon } from "lucide-react"
+import { BookUserIcon, BuildingIcon, DownloadIcon, KeyboardIcon, LanguagesIcon, ListIcon, LogOutIcon, MonitorIcon, MoonIcon, RowsIcon, SunIcon, UserIcon } from "lucide-react"
 import { useNavigate } from "react-router"
 
 import { useShell } from "@/app/shell"
@@ -168,6 +168,11 @@ export function UserMenu() {
           {view === "list" ? <RowsIcon /> : <ListIcon />}
           {view === "list" ? <Trans>Switch to the queue</Trans> : <Trans>Switch to the list</Trans>}
           <span className="ms-auto text-caption text-faint">V</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate("/contacts")} className="hidden phone:flex" data-testid="menu-contacts">
+          <BookUserIcon />
+          <Trans>Contacts</Trans>
+          <span className="ms-auto text-caption text-faint">G C</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={openShortcuts}>
           <KeyboardIcon />

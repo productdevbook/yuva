@@ -16,6 +16,11 @@ msgstr "(siz)"
 msgid "{0, plural, one {# conversation} other {# conversations}}"
 msgstr "{0, plural, one {# konuşmada} other {# konuşmada}}"
 
+#. placeholder {0}: c.activity.open_conversations
+#: src/features/contact/ContactsPage.tsx
+msgid "{0, plural, one {# open} other {# open}}"
+msgstr "{0, plural, one {# açık} other {# açık}}"
+
 #. placeholder {0}: g.requests_this_month
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "{0, plural, one {# request} other {# requests}}"
@@ -89,6 +94,10 @@ msgstr "{author} · sadece ekip görür"
 msgid "{author}, sent by {by}"
 msgstr "{author}, gönderen: {by}"
 
+#: src/features/contact/ContactDetails.tsx
+msgid "{bad} bad"
+msgstr "{bad} kötü"
+
 #: src/app/TeamMenu.tsx
 msgid "{closed, plural, one {# closed} other {# closed}}"
 msgstr "{closed, plural, one {# bitti} other {# bitti}}"
@@ -128,6 +137,10 @@ msgstr "{first} konuşmayı değerlendirdi 👍"
 #: src/features/conversation/messages/Talk.tsx
 msgid "{first} rated the conversation 👎"
 msgstr "{first} konuşmayı değerlendirdi 👎"
+
+#: src/features/contact/ContactDetails.tsx
+msgid "{good} good"
+msgstr "{good} iyi"
 
 #: src/features/conversation/PersonHeader.tsx
 msgid "{hours, plural, one {Waiting for # hour} other {Waiting for # hours}}"
@@ -226,6 +239,10 @@ msgstr "*@example.com, alan adının başka bir kanala ait olmayan tüm adresler
 msgid "← later"
 msgstr "← sonraya bırak"
 
+#: src/features/contact/ContactDetails.tsx
+msgid "+ Add address"
+msgstr "+ Adres ekle"
+
 #: src/features/inbox/WaitingPill.tsx
 msgid "<0>{n}</0> waiting"
 msgstr "<0>{n}</0> bekliyor"
@@ -298,6 +315,10 @@ msgstr "Bir taslak yazıldı"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Bir dosyanın içeriği türüyle uyuşmuyor. Dosyayı kontrol edip yeniden deneyin."
 
+#: src/features/contact/ContactNotes.tsx
+msgid "A former teammate"
+msgstr "Eski bir ekip arkadaşı"
+
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
 msgstr "Kimse atanmamışken kişiden gelen sonraki bir mesaj."
@@ -336,6 +357,10 @@ msgstr "Erişim"
 msgid "Acme Support"
 msgstr "Acme Destek"
 
+#: src/features/contact/ContactDetails.tsx
+msgid "Add"
+msgstr "Ekle"
+
 #: src/features/conversation/LaterActions.tsx
 msgid "Add a note (optional)"
 msgstr "Not ekle (isteğe bağlı)"
@@ -363,6 +388,7 @@ msgstr "Kanal ekle"
 msgid "Add endpoint"
 msgstr "Uç nokta ekle"
 
+#: src/features/contact/ContactNotes.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Add note"
 msgstr "Not ekle"
@@ -393,6 +419,8 @@ msgid "Agree who replies."
 msgstr "Kimin yanıtlayacağına karar verin."
 
 #: src/app/TopBar.tsx
+#: src/features/contact/ContactDetails.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 msgid "All"
 msgstr "Tümü"
@@ -507,6 +535,10 @@ msgstr "Uygulama"
 msgid "App builds with the old key can no longer start sessions until you ship one with the new key. People already signed in keep their session."
 msgstr "Eski anahtarlı uygulama sürümleri, yeni anahtarlı bir sürüm yayımlayana kadar oturum başlatamaz. Oturumu açık olanların oturumu sürer."
 
+#: src/features/contact/ContactsPage.tsx
+msgid "App ids"
+msgstr "Uygulama kimlikleri"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Appear online only in business hours"
 msgstr "Sadece mesai saatlerinde çevrimiçi görün"
@@ -567,7 +599,6 @@ msgstr "Deneme kaydı"
 msgid "Attempts"
 msgstr "Denemeler"
 
-#: src/features/contact/ContactPanel.tsx
 #: src/features/contact/MergePreview.tsx
 msgid "Attributes"
 msgstr "Özellikler"
@@ -611,10 +642,12 @@ msgstr "Faturalama"
 msgid "Billing bot"
 msgstr "Fatura botu"
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/ContactPage.tsx
+#: src/features/contact/ContactSheet.tsx
 msgid "Blocked"
 msgstr "Engelli"
 
+#: src/features/contact/ContactNotes.tsx
 #: src/features/conversation/QueueConversation.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -641,6 +674,10 @@ msgstr "Sol alt"
 msgid "Bottom right"
 msgstr "Sağ alt"
 
+#: src/features/contact/ContactPage.tsx
+msgid "Breadcrumb"
+msgstr "Konum"
+
 #: src/components/common/text.ts
 msgid "Bug"
 msgstr "Hata"
@@ -655,6 +692,7 @@ msgstr "Her abone için ayrı bülten planlayabilir miyim?"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Cancel"
 msgstr "Vazgeç"
 
@@ -698,6 +736,10 @@ msgstr "Kişileri değiştirme, silme ve birleştirme"
 msgid "Change, move and bulk-update conversations"
 msgstr "Konuşmaları değiştirme, taşıma ve toplu güncelleme"
 
+#: src/features/contact/ContactDetails.tsx
+msgid "Channel"
+msgstr "Kanal"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Channel added"
 msgstr "Kanal eklendi"
@@ -714,7 +756,7 @@ msgstr "E-postanızı kontrol edin"
 msgid "Choose a workspace"
 msgstr "Bir çalışma alanı seçin"
 
-#: src/features/contact/EmailAddresses.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Clear"
 msgstr "Temizle"
 
@@ -729,6 +771,7 @@ msgstr "Seçimi temizle"
 
 #: src/components/ui/dialog.tsx
 #: src/components/ui/sheet.tsx
+#: src/features/contact/ContactSheet.tsx
 #: src/features/inbox/AllDrawer.tsx
 msgid "Close"
 msgstr "Kapat"
@@ -817,18 +860,56 @@ msgstr "Bağlantı koptu. Yeniden bağlanılıyor…"
 msgid "Connections"
 msgstr "Bağlantılar"
 
+#: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ContactsPage.tsx
+msgid "Contact"
+msgstr "Kişi"
+
+#: src/features/contact/ContactPage.tsx
+msgid "Contact and identities"
+msgstr "İletişim ve kimlikler"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/conversation/Facts.tsx
-#: src/features/conversation/QueueConversation.tsx
 msgid "Contact details"
 msgstr "Kişi bilgileri"
+
+#: src/features/conversation/ListPreview.tsx
+#: src/features/conversation/PersonHeader.tsx
+msgid "Contact details (C)"
+msgstr "Kişi bilgileri (C)"
+
+#: src/features/contact/ContactPage.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Contact since {since}"
+msgstr "{since} tarihinden beri kayıtlı"
+
+#: src/app/Palette.tsx
+#: src/app/TopBar.tsx
+#: src/app/UserMenu.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/contact/ContactPage.tsx
+#: src/features/contact/ContactsPage.tsx
+msgid "Contacts"
+msgstr "Kişiler"
+
+#: src/app/TopBar.tsx
+msgid "Contacts (G C)"
+msgstr "Kişiler (G C)"
 
 #: src/features/settings/inboxes/NewInboxPage.tsx
 msgid "Continue"
 msgstr "Devam"
 
+#: src/features/contact/ContactPage.tsx
+msgid "conversations"
+msgstr "konuşma"
+
+#: src/features/contact/ContactDetails.tsx
+#: src/features/contact/ContactPage.tsx
+#: src/features/contact/ContactSheet.tsx
 #: src/features/contact/MergePreview.tsx
 #: src/features/inbox/AllDrawer.tsx
 #: src/features/inbox/ListPage.tsx
@@ -927,6 +1008,7 @@ msgstr "Günler"
 msgid "Default: {fallback}"
 msgstr "Varsayılan: {fallback}"
 
+#: src/features/contact/ContactNotes.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/inboxes/InboxSecurity.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -958,6 +1040,14 @@ msgstr "{name} etiketi silinsin mi?"
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
 msgstr "Bu hazır yanıt silinsin mi?"
+
+#: src/features/contact/ContactNotes.tsx
+msgid "Delete this note"
+msgstr "Bu notu sil"
+
+#: src/features/contact/ContactNotes.tsx
+msgid "Delete this note?"
+msgstr "Bu not silinsin mi?"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete this workspace"
@@ -1003,6 +1093,11 @@ msgstr "Reddet"
 msgid "Description (optional)"
 msgstr "Açıklama (isteğe bağlı)"
 
+#: src/features/contact/ContactPage.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Details"
+msgstr "Bilgiler"
+
 #: src/features/settings/SettingsLayout.tsx
 msgid "Developer"
 msgstr "Geliştirici"
@@ -1033,6 +1128,7 @@ msgstr "DMARC başarısız"
 msgid "Do not both write."
 msgstr "İkiniz birden yazmayın."
 
+#: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/PersonHeader.tsx
 #: src/features/inbox/AllDrawer.tsx
 #: src/features/inbox/ListPage.tsx
@@ -1063,11 +1159,11 @@ msgid "E-mail"
 msgstr "E-posta"
 
 #: src/features/auth/SignInPage.tsx
+#: src/features/contact/ContactDetails.tsx
 #: src/features/settings/members/Invites.tsx
 msgid "E-mail address"
 msgstr "E-posta adresi"
 
-#: src/features/contact/ContactPanel.tsx
 #: src/features/contact/MergePreview.tsx
 msgid "E-mail addresses"
 msgstr "E-posta adresleri"
@@ -1213,7 +1309,6 @@ msgstr "Son geçerlilik (isteğe bağlı)"
 msgid "expires {expires}"
 msgstr "son geçerlilik: {expires}"
 
-#: src/features/contact/ContactPanel.tsx
 #: src/features/contact/MergePreview.tsx
 msgid "External ids"
 msgstr "Harici kimlikler"
@@ -1237,6 +1332,10 @@ msgstr "Uygulamadan gönderilen geri bildirim"
 #: src/features/conversation/Facts.tsx
 msgid "First conversation"
 msgstr "İlk konuşma"
+
+#: src/features/contact/ContactPage.tsx
+msgid "first reply"
+msgstr "ilk yanıt"
 
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
@@ -1325,6 +1424,10 @@ msgstr "Ekipten birine ver"
 msgid "Handed to {name}"
 msgstr "Verildi: {name}"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Has an open conversation"
+msgstr "Açık konuşması olan"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Hi! Ask us anything."
 msgstr "Merhaba! Bize her şeyi sorabilirsiniz."
@@ -1399,6 +1502,7 @@ msgid "In-app"
 msgstr "Uygulama içi"
 
 #: src/app/Palette.tsx
+#: src/features/contact/ContactDetails.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/settings/webhooks/WebhookDialog.tsx
 msgid "Inbox"
@@ -1417,6 +1521,10 @@ msgstr "Gelen kutuları"
 #: src/features/settings/webhooks/WebhookDialog.tsx
 msgid "Include notes"
 msgstr "Notları dahil et"
+
+#: src/features/contact/ContactSheet.tsx
+msgid "Info"
+msgstr "Bilgiler"
 
 #: src/features/settings/channels/app/AppInstall.tsx
 #: src/features/settings/channels/chat/ChatInstall.tsx
@@ -1463,6 +1571,10 @@ msgstr "Artık senin"
 msgid "It no longer exists or you cannot see it."
 msgstr "Artık yok ya da görme izniniz yok."
 
+#: src/features/contact/ContactDetails.tsx
+msgid "It opens assigned to you; write the first message there."
+msgstr "Sana atanmış olarak açılır; ilk mesajı orada yaz."
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "It will act as you, <0>{email}</0>, with only the access you allow below."
 msgstr "Sizin adınıza, <0>{email}</0> olarak, yalnızca aşağıda izin verdiğiniz kadarıyla çalışacak."
@@ -1505,6 +1617,10 @@ msgstr "Anahtarlar"
 msgid "Kind"
 msgstr "Tür"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Known"
+msgstr "Tanınan"
+
 #: src/app/Palette.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -1519,6 +1635,7 @@ msgstr "Etiketler, öncelik, gelen kutusu"
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
+#: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/members/Invites.tsx
 msgid "Language"
@@ -1528,6 +1645,10 @@ msgstr "Dil"
 msgid "Last attempt"
 msgstr "Son deneme"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Last conversation"
+msgstr "Son konuşma"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Last push failed: {failed}"
 msgstr "Son bildirim gönderilemedi: {failed}"
@@ -1535,6 +1656,10 @@ msgstr "Son bildirim gönderilemedi: {failed}"
 #: src/features/contact/Presence.tsx
 msgid "Last seen {seen}"
 msgstr "Son görülme: {seen}"
+
+#: src/features/contact/ContactPage.tsx
+msgid "last seen {seenText}"
+msgstr "son görülme {seenText}"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -1602,7 +1727,10 @@ msgstr "Canlı sohbet kimseyi müsait göstermez. Sana atanmış konuşmalar dı
 msgid "Load images"
 msgstr "Görselleri yükle"
 
-#: src/features/contact/OtherConversations.tsx
+#: src/features/contact/ContactNotes.tsx
+#: src/features/contact/ContactPage.tsx
+#: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 msgid "Load more"
 msgstr "Daha fazla yükle"
@@ -1698,6 +1826,7 @@ msgstr "Ekip arkadaşını an"
 msgid "Mentions: {names}"
 msgstr "Anılanlar: {names}"
 
+#: src/features/contact/ContactPage.tsx
 #: src/features/contact/MergeContactDialog.tsx
 msgid "Merge"
 msgstr "Birleştir"
@@ -1706,9 +1835,9 @@ msgstr "Birleştir"
 msgid "Merge a contact into {targetName}"
 msgstr "Bir kişiyi {targetName} ile birleştir"
 
-#: src/features/contact/ContactPanel.tsx
-msgid "Merge another contact into this one"
-msgstr "Başka bir kişiyi bununla birleştir"
+#: src/features/contact/ContactSheet.tsx
+msgid "Merge with another contact"
+msgstr "Başka kişiyle birleştir"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -1753,9 +1882,17 @@ msgstr "Profilim"
 msgid "Name"
 msgstr "Ad"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Name, e-mail or id"
+msgstr "Ad, e-posta veya kimlik"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "Ad, ör. İş bilgisayarı"
+
+#: src/features/contact/ContactDetails.tsx
+msgid "name@example.com"
+msgstr "ad@ornek.com"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Never"
@@ -1774,6 +1911,12 @@ msgstr "Yeni API anahtarı"
 #: src/features/settings/canned/CannedReplyDialog.tsx
 msgid "New canned reply"
 msgstr "Yeni hazır yanıt"
+
+#: src/features/contact/ContactDetails.tsx
+#: src/features/contact/ContactPage.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "New conversation"
+msgstr "Yeni konuşma"
 
 #: src/features/settings/notifications/events.ts
 msgid "New conversation in a live inbox"
@@ -1865,6 +2008,10 @@ msgstr "Henüz hazır yanıt yok"
 msgid "No canned replies yet. Add them in settings."
 msgstr "Henüz hazır yanıt yok. Ayarlardan ekleyebilirsin."
 
+#: src/features/contact/ContactDetails.tsx
+msgid "No channel"
+msgstr "Kanal yok"
+
 #: src/features/settings/SettingsLayout.tsx
 msgid "No channels yet"
 msgstr "Henüz kanal yok"
@@ -1878,6 +2025,23 @@ msgstr "Henüz kanal yok. Müşteriler {0} için yazabilsin diye bir tane ekle."
 msgid "No connected apps."
 msgstr "Bağlı uygulama yok."
 
+#: src/features/contact/ContactsPage.tsx
+msgid "No contact matches “{query}”."
+msgstr "“{query}” ile eşleşen kişi yok."
+
+#: src/features/contact/ContactsPage.tsx
+msgid "No contacts in this view."
+msgstr "Bu görünümde kişi yok."
+
+#: src/features/contact/ContactsPage.tsx
+msgid "No contacts yet. They appear when someone writes in."
+msgstr "Henüz kişi yok. Biri yazdığında burada görünür."
+
+#: src/features/contact/ContactsPage.tsx
+msgid "No conversations"
+msgstr "Konuşma yok"
+
+#: src/features/contact/ContactDetails.tsx
 #: src/features/inbox/AllDrawer.tsx
 #: src/features/inbox/ListPage.tsx
 msgid "No conversations here."
@@ -1911,7 +2075,7 @@ msgstr "Sonuç yok"
 msgid "No settings"
 msgstr "Ayar yok"
 
-#: src/features/contact/OtherConversations.tsx
+#: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/History.tsx
 #: src/features/conversation/RelatedLine.tsx
 msgid "No subject"
@@ -1967,9 +2131,17 @@ msgstr "Gösterilmez"
 msgid "Not spam"
 msgstr "Spam değil"
 
+#: src/features/contact/ContactNotes.tsx
+msgid "Note about this contact"
+msgstr "Kişi hakkında not"
+
 #: src/features/conversation/LaterActions.tsx
 msgid "Note for the teammate"
 msgstr "Ekip arkadaşı için not"
+
+#: src/features/contact/ContactSheet.tsx
+msgid "Notes"
+msgstr "Notlar"
 
 #: src/features/auth/AuthLayout.tsx
 msgid "Notes stopped syncing after the update"
@@ -1983,6 +2155,10 @@ msgstr "Hiçbiri"
 #: src/features/inbox/ListPage.tsx
 msgid "Nothing matches your search here."
 msgstr "Burada aramana uyan bir şey yok."
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Nothing open"
+msgstr "Açık konuşma yok"
 
 #: src/app/Palette.tsx
 #: src/features/settings/notifications/NotificationsPage.tsx
@@ -2080,6 +2256,8 @@ msgid "Only owners can delete the workspace."
 msgstr "Çalışma alanını yalnızca sahipler silebilir."
 
 #: src/components/common/text.ts
+#: src/features/contact/ContactDetails.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/conversation/PersonHeader.tsx
 msgid "Open"
 msgstr "Açık"
@@ -2097,6 +2275,10 @@ msgstr "Aç: {name}"
 #: src/features/conversation/ListPreview.tsx
 msgid "Open full screen"
 msgstr "Tam ekran aç"
+
+#: src/features/contact/ContactSheet.tsx
+msgid "Open page"
+msgstr "Sayfayı aç"
 
 #: src/features/conversation/QueueConversation.tsx
 msgid "Open the next one"
@@ -2116,7 +2298,6 @@ msgstr "Diğer"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/contact/OtherConversations.tsx
 msgid "Other conversations"
 msgstr "Diğer konuşmalar"
 
@@ -2303,6 +2484,10 @@ msgstr "Hızlı temizlik"
 msgid "Rated bad"
 msgstr "Kötü değerlendirdi"
 
+#: src/features/contact/ContactPage.tsx
+msgid "rated good"
+msgstr "iyi puan"
+
 #: src/features/conversation/rating.tsx
 msgid "Rated good"
 msgstr "İyi değerlendirdi"
@@ -2423,7 +2608,7 @@ msgstr "Yanıtlar"
 msgid "Replies go out through your own SMTP account. Leave the host empty to only receive mail."
 msgstr "Yanıtlar kendi SMTP hesabınızdan gider. Yalnızca posta almak için sunucuyu boş bırakın."
 
-#: src/features/contact/EmailAddresses.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Replies to this address are refused until you clear it."
 msgstr "Siz temizleyene kadar bu adrese yanıt gönderilmez."
 
@@ -2515,6 +2700,10 @@ msgstr "İmzalama anahtarı yenilensin mi?"
 msgid "Route mail for this address to Yuva's e-mail ingress, for example with the Cloudflare Email Worker in edge/. Replies go out through the SMTP account you entered."
 msgstr "Bu adrese gelen postayı Yuva'nın e-posta girişine yönlendir, örneğin edge/ içindeki Cloudflare Email Worker ile. Yanıtlar girdiğin SMTP hesabından gider."
 
+#: src/features/contact/ContactSheet.tsx
+msgid "Satisfaction"
+msgstr "Memnuniyet"
+
 #: src/features/inbox/QueuePage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
 msgstr "memnun · 👍 {good} 👎 {bad}"
@@ -2570,6 +2759,7 @@ msgid "Search by name, e-mail or external id"
 msgstr "Ad, e-posta ya da harici kimlikle ara"
 
 #: src/features/contact/ContactSearch.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "Search contacts"
 msgstr "Kişilerde ara"
 
@@ -2703,6 +2893,10 @@ msgstr "Ayarlar (JSON)"
 msgid "Shortcut"
 msgstr "Kısayol"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Show"
+msgstr "Göster"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Show or hide quoted text"
 msgstr "Alıntıyı göster ya da gizle"
@@ -2773,10 +2967,6 @@ msgstr "yalnızca oturum açmış kullanıcılar"
 msgid "Signing secret"
 msgstr "İmzalama anahtarı"
 
-#: src/features/contact/ContactPanel.tsx
-msgid "Since {since}"
-msgstr "Kayıt: {since}"
-
 #: src/features/settings/inboxes/NewInboxPage.tsx
 msgid "Skip for now"
 msgstr "Şimdilik geç"
@@ -2811,6 +3001,10 @@ msgstr "Girilen değerlerden bazıları geçerli değil."
 msgid "Someone mentions me in a note"
 msgstr "Biri beni bir notta andığında"
 
+#: src/features/contact/ContactNotes.tsx
+msgid "Something the team should know…"
+msgstr "Ekibin bilmesi gereken bir şey…"
+
 #: src/components/common/text.ts
 msgid "Something went wrong on the server. Try again."
 msgstr "Sunucuda bir sorun oluştu. Yeniden deneyin."
@@ -2823,10 +3017,15 @@ msgstr "Konuşmaları konuya göre ayırın. Her etiketin kenar çubuğunda kend
 msgid "Sort conversations your way"
 msgstr "Konuşmaları kendine göre ayır"
 
+#: src/features/contact/ContactDetails.tsx
+msgid "Start conversation"
+msgstr "Konuşmayı başlat"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (port 587)"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ListPage.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Status"
@@ -2840,6 +3039,10 @@ msgstr "{name} için özel ayarı kaldır"
 msgid "Struck-out values are not taken: this contact keeps its own value for those keys."
 msgstr "Üstü çizili değerler alınmaz: bu anahtarlarda bu kişinin kendi değeri kalır."
 
+#: src/features/contact/ContactDetails.tsx
+msgid "Subject"
+msgstr "Konu"
+
 #: src/components/common/text.ts
 msgid "Succeeded"
 msgstr "Başarılı"
@@ -2851,6 +3054,10 @@ msgstr "Öneren: {author}"
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Suggestion discarded"
 msgstr "Öneri silindi"
+
+#: src/features/contact/ContactPage.tsx
+msgid "Summary"
+msgstr "Özet"
 
 #: src/components/common/text.ts
 msgid "Sunday"
@@ -2901,6 +3108,10 @@ msgstr "Ekip"
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Team note"
 msgstr "Ekibe not"
+
+#: src/features/contact/ContactPage.tsx
+msgid "Team notes"
+msgstr "Ekip notları"
 
 #: src/app/TeamMenu.tsx
 msgid "Team right now"
@@ -3223,11 +3434,15 @@ msgstr "Onaylamak için e-posta adresinizi yazın"
 msgid "Typing · {where}"
 msgstr "Yazıyor · {where}"
 
-#: src/features/contact/EmailAddresses.tsx
+#: src/features/contact/ContactDetails.tsx
+msgid "Undeliverable"
+msgstr "Teslim edilemiyor"
+
+#: src/features/contact/ContactDetails.tsx
 msgid "Undeliverable: bounced, {since}"
 msgstr "Ulaşmıyor: geri döndü, {since}"
 
-#: src/features/contact/EmailAddresses.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Undeliverable: marked as spam by the recipient, {since}"
 msgstr "Ulaşmıyor: alıcı spam olarak işaretledi, {since}"
 
@@ -3241,8 +3456,10 @@ msgstr "Bilinmeyen cihaz"
 
 #: src/app/Palette.tsx
 #: src/app/TeamMenu.tsx
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/ContactPage.tsx
 #: src/features/contact/ContactSearch.tsx
+#: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/contact/MergeContactDialog.tsx
 #: src/features/conversation/ListPreview.tsx
 #: src/features/conversation/QueueConversation.tsx
@@ -3324,6 +3541,14 @@ msgstr "Sürüm"
 #: src/app/ViewToggle.tsx
 msgid "View"
 msgstr "Görünüm"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Visitor"
+msgstr "Ziyaretçi"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Visitors"
+msgstr "Ziyaretçiler"
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Visitors can chat without an identity token from your backend."
@@ -3607,6 +3832,10 @@ msgstr "Artık bununla giriş yapamayacaksınız."
 #: src/features/auth/SignInPage.tsx
 msgid "you@company.com"
 msgstr "siz@sirket.com"
+
+#: src/features/contact/ContactPage.tsx
+msgid "Your app or widget sends these when it identifies the contact."
+msgstr "Uygulamanız veya pencereniz kişiyi tanıtırken bunları gönderir."
 
 #: src/features/settings/inboxes/NewInboxPage.tsx
 msgid "Your backend signs identity tokens with it so Yuva knows who your signed-in users are. You can rotate it in the inbox settings."

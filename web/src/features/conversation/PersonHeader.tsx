@@ -107,30 +107,35 @@ export function PersonHeader({
   channel,
   lastInbound,
   menu,
+  onContact,
 }: {
   c: Conversation
   name: string
   channel?: Channel
   lastInbound?: Message
   menu: React.ReactNode
+  onContact: () => void
 }) {
+  const { t } = useLingui()
   const text = useEnumText()
   const inbox = useInboxes().data?.find((i) => i.id === c.inbox_id)
   const labels = (useLabels().data ?? []).filter((l) => c.labels.includes(l.id))
   const sep = <span aria-hidden>·</span>
   return (
     <div className="flex items-center gap-4" data-testid="person">
-      <span className="relative shrink-0">
+      <button type="button" tabIndex={-1} aria-hidden onClick={onContact} className="relative shrink-0 rounded-full">
         <ContactAvatar id={c.contact_id} name={name} className="size-14 phone:size-12" />
         {channel && (
           <span className="absolute -end-1 -bottom-1 grid size-6 place-items-center rounded-full border bg-card text-muted-foreground" title={text.channel[channel.kind]}>
             <ChannelIcon kind={channel.kind} className="size-[13px]" />
           </span>
         )}
-      </span>
+      </button>
       <div className="min-w-0 flex-1">
-        <h1 className="truncate text-page phone:text-title" data-testid="person-name">
-          {name}
+        <h1 className="text-page phone:text-title" data-testid="person-name">
+          <button type="button" onClick={onContact} title={t`Contact details (C)`} className="block max-w-full truncate rounded-md text-start decoration-faint underline-offset-4 hover:underline">
+            {name}
+          </button>
         </h1>
         <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-body text-faint">
           {inbox && (

@@ -7,6 +7,7 @@ import { SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { useEnumText, useErrorText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { ContactSheet } from "@/features/contact/ContactSheet"
 import { useContact } from "@/features/contact/queries"
 import { useQueueActions, type Flow } from "@/features/conversation/actions"
 import { ReplyBox, type ReplyHandle } from "@/features/conversation/composer/ReplyBox"
@@ -53,6 +54,7 @@ function Loaded({ c, contact, channel, flow, onFullScreen }: { c: Conversation; 
   const reply = useRef<ReplyHandle>(null)
   const scroller = useRef<HTMLDivElement>(null)
   const [menu, setMenu] = useState<LaterMenu>(null)
+  const [contactOpen, setContactOpen] = useState(false)
   const items = useMemo(() => (messages.data?.pages ?? []).toReversed().flatMap((p) => p.items.toReversed()), [messages.data])
   const suggestion = items.findLast((m) => m.draft)
   const shown = items.filter((m) => m !== suggestion)
@@ -84,22 +86,25 @@ function Loaded({ c, contact, channel, flow, onFullScreen }: { c: Conversation; 
     [SHORTCUTS.hand]: () => setMenu("hand"),
     [SHORTCUTS.close]: actions.close,
     [SHORTCUTS.spam]: () => updater.mutate({ spam: !c.spam }, { onError: (e) => toast(errorText(e)) }),
+    [SHORTCUTS.contact]: () => setContactOpen(true),
   })
 
   return (
     <div className="flex min-h-0 flex-1 flex-col" data-testid="preview" data-conversation-id={c.id}>
       <div className="flex flex-wrap items-center gap-3 px-6 pt-5 pb-3">
-        <span className="relative shrink-0">
+        <button type="button" tabIndex={-1} aria-hidden onClick={() => setContactOpen(true)} className="relative shrink-0 rounded-full">
           <ContactAvatar id={c.contact_id} name={name} className="size-11" />
           {channel && (
             <span className="absolute -end-1 -bottom-1 grid size-5 place-items-center rounded-full border bg-card text-muted-foreground">
               <ChannelIcon kind={channel.kind} className="size-[11px]" />
             </span>
           )}
-        </span>
+        </button>
         <div className="min-w-[180px] flex-1">
-          <h1 className="truncate text-title" data-testid="preview-name">
-            {name}
+          <h1 className="text-title" data-testid="preview-name">
+            <button type="button" onClick={() => setContactOpen(true)} title={t`Contact details (C)`} className="block max-w-full truncate rounded-md text-start decoration-faint underline-offset-4 hover:underline">
+              {name}
+            </button>
           </h1>
           <div className="flex flex-wrap items-center gap-x-1.5 text-small text-faint">
             {inbox && (
@@ -153,6 +158,7 @@ function Loaded({ c, contact, channel, flow, onFullScreen }: { c: Conversation; 
           <Trans>J / K to move · X to select · E to close · Enter for full screen</Trans>
         </p>
       </div>
+      <ContactSheet contactId={c.contact_id} conversationId={c.id} open={contactOpen} onOpenChange={setContactOpen} />
     </div>
   )
 }

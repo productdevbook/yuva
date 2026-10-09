@@ -16,6 +16,11 @@ msgstr "(you)"
 msgid "{0, plural, one {# conversation} other {# conversations}}"
 msgstr "{0, plural, one {# conversation} other {# conversations}}"
 
+#. placeholder {0}: c.activity.open_conversations
+#: src/features/contact/ContactsPage.tsx
+msgid "{0, plural, one {# open} other {# open}}"
+msgstr "{0, plural, one {# open} other {# open}}"
+
 #. placeholder {0}: g.requests_this_month
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "{0, plural, one {# request} other {# requests}}"
@@ -89,6 +94,10 @@ msgstr "{author} · only the team sees this"
 msgid "{author}, sent by {by}"
 msgstr "{author}, sent by {by}"
 
+#: src/features/contact/ContactDetails.tsx
+msgid "{bad} bad"
+msgstr "{bad} bad"
+
 #: src/app/TeamMenu.tsx
 msgid "{closed, plural, one {# closed} other {# closed}}"
 msgstr "{closed, plural, one {# closed} other {# closed}}"
@@ -128,6 +137,10 @@ msgstr "{first} rated the conversation 👍"
 #: src/features/conversation/messages/Talk.tsx
 msgid "{first} rated the conversation 👎"
 msgstr "{first} rated the conversation 👎"
+
+#: src/features/contact/ContactDetails.tsx
+msgid "{good} good"
+msgstr "{good} good"
 
 #: src/features/conversation/PersonHeader.tsx
 msgid "{hours, plural, one {Waiting for # hour} other {Waiting for # hours}}"
@@ -226,6 +239,10 @@ msgstr "*@example.com receives every address of the domain that no other channel
 msgid "← later"
 msgstr "← later"
 
+#: src/features/contact/ContactDetails.tsx
+msgid "+ Add address"
+msgstr "+ Add address"
+
 #: src/features/inbox/WaitingPill.tsx
 msgid "<0>{n}</0> waiting"
 msgstr "<0>{n}</0> waiting"
@@ -298,6 +315,10 @@ msgstr "A draft was written"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "A file's content does not match its type. Check the file and try again."
 
+#: src/features/contact/ContactNotes.tsx
+msgid "A former teammate"
+msgstr "A former teammate"
+
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
 msgstr "A later message from the contact while nobody is assigned."
@@ -336,6 +357,10 @@ msgstr "Access"
 msgid "Acme Support"
 msgstr "Acme Support"
 
+#: src/features/contact/ContactDetails.tsx
+msgid "Add"
+msgstr "Add"
+
 #: src/features/conversation/LaterActions.tsx
 msgid "Add a note (optional)"
 msgstr "Add a note (optional)"
@@ -363,6 +388,7 @@ msgstr "Add channel"
 msgid "Add endpoint"
 msgstr "Add endpoint"
 
+#: src/features/contact/ContactNotes.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Add note"
 msgstr "Add note"
@@ -393,6 +419,8 @@ msgid "Agree who replies."
 msgstr "Agree who replies."
 
 #: src/app/TopBar.tsx
+#: src/features/contact/ContactDetails.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 msgid "All"
 msgstr "All"
@@ -507,6 +535,10 @@ msgstr "App"
 msgid "App builds with the old key can no longer start sessions until you ship one with the new key. People already signed in keep their session."
 msgstr "App builds with the old key can no longer start sessions until you ship one with the new key. People already signed in keep their session."
 
+#: src/features/contact/ContactsPage.tsx
+msgid "App ids"
+msgstr "App ids"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Appear online only in business hours"
 msgstr "Appear online only in business hours"
@@ -567,7 +599,6 @@ msgstr "Attempt log"
 msgid "Attempts"
 msgstr "Attempts"
 
-#: src/features/contact/ContactPanel.tsx
 #: src/features/contact/MergePreview.tsx
 msgid "Attributes"
 msgstr "Attributes"
@@ -611,10 +642,12 @@ msgstr "Billing"
 msgid "Billing bot"
 msgstr "Billing bot"
 
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/ContactPage.tsx
+#: src/features/contact/ContactSheet.tsx
 msgid "Blocked"
 msgstr "Blocked"
 
+#: src/features/contact/ContactNotes.tsx
 #: src/features/conversation/QueueConversation.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -641,6 +674,10 @@ msgstr "Bottom left"
 msgid "Bottom right"
 msgstr "Bottom right"
 
+#: src/features/contact/ContactPage.tsx
+msgid "Breadcrumb"
+msgstr "Breadcrumb"
+
 #: src/components/common/text.ts
 msgid "Bug"
 msgstr "Bug"
@@ -655,6 +692,7 @@ msgstr "Can I schedule a newsletter for each subscriber?"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -698,6 +736,10 @@ msgstr "Change, delete and merge contacts"
 msgid "Change, move and bulk-update conversations"
 msgstr "Change, move and bulk-update conversations"
 
+#: src/features/contact/ContactDetails.tsx
+msgid "Channel"
+msgstr "Channel"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Channel added"
 msgstr "Channel added"
@@ -714,7 +756,7 @@ msgstr "Check your e-mail"
 msgid "Choose a workspace"
 msgstr "Choose a workspace"
 
-#: src/features/contact/EmailAddresses.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Clear"
 msgstr "Clear"
 
@@ -729,6 +771,7 @@ msgstr "Clear the selection"
 
 #: src/components/ui/dialog.tsx
 #: src/components/ui/sheet.tsx
+#: src/features/contact/ContactSheet.tsx
 #: src/features/inbox/AllDrawer.tsx
 msgid "Close"
 msgstr "Close"
@@ -817,18 +860,56 @@ msgstr "Connection lost. Reconnecting…"
 msgid "Connections"
 msgstr "Connections"
 
+#: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ContactsPage.tsx
+msgid "Contact"
+msgstr "Contact"
+
+#: src/features/contact/ContactPage.tsx
+msgid "Contact and identities"
+msgstr "Contact and identities"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/conversation/Facts.tsx
-#: src/features/conversation/QueueConversation.tsx
 msgid "Contact details"
 msgstr "Contact details"
+
+#: src/features/conversation/ListPreview.tsx
+#: src/features/conversation/PersonHeader.tsx
+msgid "Contact details (C)"
+msgstr "Contact details (C)"
+
+#: src/features/contact/ContactPage.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Contact since {since}"
+msgstr "Contact since {since}"
+
+#: src/app/Palette.tsx
+#: src/app/TopBar.tsx
+#: src/app/UserMenu.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/contact/ContactPage.tsx
+#: src/features/contact/ContactsPage.tsx
+msgid "Contacts"
+msgstr "Contacts"
+
+#: src/app/TopBar.tsx
+msgid "Contacts (G C)"
+msgstr "Contacts (G C)"
 
 #: src/features/settings/inboxes/NewInboxPage.tsx
 msgid "Continue"
 msgstr "Continue"
 
+#: src/features/contact/ContactPage.tsx
+msgid "conversations"
+msgstr "conversations"
+
+#: src/features/contact/ContactDetails.tsx
+#: src/features/contact/ContactPage.tsx
+#: src/features/contact/ContactSheet.tsx
 #: src/features/contact/MergePreview.tsx
 #: src/features/inbox/AllDrawer.tsx
 #: src/features/inbox/ListPage.tsx
@@ -927,6 +1008,7 @@ msgstr "Days"
 msgid "Default: {fallback}"
 msgstr "Default: {fallback}"
 
+#: src/features/contact/ContactNotes.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/inboxes/InboxSecurity.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -958,6 +1040,14 @@ msgstr "Delete the label {name}?"
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
 msgstr "Delete this canned reply?"
+
+#: src/features/contact/ContactNotes.tsx
+msgid "Delete this note"
+msgstr "Delete this note"
+
+#: src/features/contact/ContactNotes.tsx
+msgid "Delete this note?"
+msgstr "Delete this note?"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete this workspace"
@@ -1003,6 +1093,11 @@ msgstr "Deny"
 msgid "Description (optional)"
 msgstr "Description (optional)"
 
+#: src/features/contact/ContactPage.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Details"
+msgstr "Details"
+
 #: src/features/settings/SettingsLayout.tsx
 msgid "Developer"
 msgstr "Developer"
@@ -1033,6 +1128,7 @@ msgstr "DMARC failed"
 msgid "Do not both write."
 msgstr "Do not both write."
 
+#: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/PersonHeader.tsx
 #: src/features/inbox/AllDrawer.tsx
 #: src/features/inbox/ListPage.tsx
@@ -1063,11 +1159,11 @@ msgid "E-mail"
 msgstr "E-mail"
 
 #: src/features/auth/SignInPage.tsx
+#: src/features/contact/ContactDetails.tsx
 #: src/features/settings/members/Invites.tsx
 msgid "E-mail address"
 msgstr "E-mail address"
 
-#: src/features/contact/ContactPanel.tsx
 #: src/features/contact/MergePreview.tsx
 msgid "E-mail addresses"
 msgstr "E-mail addresses"
@@ -1213,7 +1309,6 @@ msgstr "Expires (optional)"
 msgid "expires {expires}"
 msgstr "expires {expires}"
 
-#: src/features/contact/ContactPanel.tsx
 #: src/features/contact/MergePreview.tsx
 msgid "External ids"
 msgstr "External ids"
@@ -1237,6 +1332,10 @@ msgstr "Feedback sent from the app"
 #: src/features/conversation/Facts.tsx
 msgid "First conversation"
 msgstr "First conversation"
+
+#: src/features/contact/ContactPage.tsx
+msgid "first reply"
+msgstr "first reply"
 
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
@@ -1325,6 +1424,10 @@ msgstr "Hand to a teammate"
 msgid "Handed to {name}"
 msgstr "Handed to {name}"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Has an open conversation"
+msgstr "Has an open conversation"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Hi! Ask us anything."
 msgstr "Hi! Ask us anything."
@@ -1399,6 +1502,7 @@ msgid "In-app"
 msgstr "In-app"
 
 #: src/app/Palette.tsx
+#: src/features/contact/ContactDetails.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/settings/webhooks/WebhookDialog.tsx
 msgid "Inbox"
@@ -1417,6 +1521,10 @@ msgstr "Inboxes"
 #: src/features/settings/webhooks/WebhookDialog.tsx
 msgid "Include notes"
 msgstr "Include notes"
+
+#: src/features/contact/ContactSheet.tsx
+msgid "Info"
+msgstr "Info"
 
 #: src/features/settings/channels/app/AppInstall.tsx
 #: src/features/settings/channels/chat/ChatInstall.tsx
@@ -1463,6 +1571,10 @@ msgstr "It is yours now"
 msgid "It no longer exists or you cannot see it."
 msgstr "It no longer exists or you cannot see it."
 
+#: src/features/contact/ContactDetails.tsx
+msgid "It opens assigned to you; write the first message there."
+msgstr "It opens assigned to you; write the first message there."
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "It will act as you, <0>{email}</0>, with only the access you allow below."
 msgstr "It will act as you, <0>{email}</0>, with only the access you allow below."
@@ -1505,6 +1617,10 @@ msgstr "Keys"
 msgid "Kind"
 msgstr "Kind"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Known"
+msgstr "Known"
+
 #: src/app/Palette.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -1519,6 +1635,7 @@ msgstr "Labels, priority, inbox"
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
+#: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/members/Invites.tsx
 msgid "Language"
@@ -1528,6 +1645,10 @@ msgstr "Language"
 msgid "Last attempt"
 msgstr "Last attempt"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Last conversation"
+msgstr "Last conversation"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Last push failed: {failed}"
 msgstr "Last push failed: {failed}"
@@ -1535,6 +1656,10 @@ msgstr "Last push failed: {failed}"
 #: src/features/contact/Presence.tsx
 msgid "Last seen {seen}"
 msgstr "Last seen {seen}"
+
+#: src/features/contact/ContactPage.tsx
+msgid "last seen {seenText}"
+msgstr "last seen {seenText}"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -1602,7 +1727,10 @@ msgstr "Live chat shows nobody available. Notifications pause, except for conver
 msgid "Load images"
 msgstr "Load images"
 
-#: src/features/contact/OtherConversations.tsx
+#: src/features/contact/ContactNotes.tsx
+#: src/features/contact/ContactPage.tsx
+#: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 msgid "Load more"
 msgstr "Load more"
@@ -1698,6 +1826,7 @@ msgstr "Mention a teammate"
 msgid "Mentions: {names}"
 msgstr "Mentions: {names}"
 
+#: src/features/contact/ContactPage.tsx
 #: src/features/contact/MergeContactDialog.tsx
 msgid "Merge"
 msgstr "Merge"
@@ -1706,9 +1835,9 @@ msgstr "Merge"
 msgid "Merge a contact into {targetName}"
 msgstr "Merge a contact into {targetName}"
 
-#: src/features/contact/ContactPanel.tsx
-msgid "Merge another contact into this one"
-msgstr "Merge another contact into this one"
+#: src/features/contact/ContactSheet.tsx
+msgid "Merge with another contact"
+msgstr "Merge with another contact"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -1753,9 +1882,17 @@ msgstr "My profile"
 msgid "Name"
 msgstr "Name"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Name, e-mail or id"
+msgstr "Name, e-mail or id"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "Name, e.g. Work laptop"
+
+#: src/features/contact/ContactDetails.tsx
+msgid "name@example.com"
+msgstr "name@example.com"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Never"
@@ -1774,6 +1911,12 @@ msgstr "New API key"
 #: src/features/settings/canned/CannedReplyDialog.tsx
 msgid "New canned reply"
 msgstr "New canned reply"
+
+#: src/features/contact/ContactDetails.tsx
+#: src/features/contact/ContactPage.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "New conversation"
+msgstr "New conversation"
 
 #: src/features/settings/notifications/events.ts
 msgid "New conversation in a live inbox"
@@ -1865,6 +2008,10 @@ msgstr "No canned replies yet"
 msgid "No canned replies yet. Add them in settings."
 msgstr "No canned replies yet. Add them in settings."
 
+#: src/features/contact/ContactDetails.tsx
+msgid "No channel"
+msgstr "No channel"
+
 #: src/features/settings/SettingsLayout.tsx
 msgid "No channels yet"
 msgstr "No channels yet"
@@ -1878,6 +2025,23 @@ msgstr "No channels yet. Add one so customers can write to {0}."
 msgid "No connected apps."
 msgstr "No connected apps."
 
+#: src/features/contact/ContactsPage.tsx
+msgid "No contact matches “{query}”."
+msgstr "No contact matches “{query}”."
+
+#: src/features/contact/ContactsPage.tsx
+msgid "No contacts in this view."
+msgstr "No contacts in this view."
+
+#: src/features/contact/ContactsPage.tsx
+msgid "No contacts yet. They appear when someone writes in."
+msgstr "No contacts yet. They appear when someone writes in."
+
+#: src/features/contact/ContactsPage.tsx
+msgid "No conversations"
+msgstr "No conversations"
+
+#: src/features/contact/ContactDetails.tsx
 #: src/features/inbox/AllDrawer.tsx
 #: src/features/inbox/ListPage.tsx
 msgid "No conversations here."
@@ -1911,7 +2075,7 @@ msgstr "No results"
 msgid "No settings"
 msgstr "No settings"
 
-#: src/features/contact/OtherConversations.tsx
+#: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/History.tsx
 #: src/features/conversation/RelatedLine.tsx
 msgid "No subject"
@@ -1967,9 +2131,17 @@ msgstr "Not shown"
 msgid "Not spam"
 msgstr "Not spam"
 
+#: src/features/contact/ContactNotes.tsx
+msgid "Note about this contact"
+msgstr "Note about this contact"
+
 #: src/features/conversation/LaterActions.tsx
 msgid "Note for the teammate"
 msgstr "Note for the teammate"
+
+#: src/features/contact/ContactSheet.tsx
+msgid "Notes"
+msgstr "Notes"
 
 #: src/features/auth/AuthLayout.tsx
 msgid "Notes stopped syncing after the update"
@@ -1983,6 +2155,10 @@ msgstr "Nothing"
 #: src/features/inbox/ListPage.tsx
 msgid "Nothing matches your search here."
 msgstr "Nothing matches your search here."
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Nothing open"
+msgstr "Nothing open"
 
 #: src/app/Palette.tsx
 #: src/features/settings/notifications/NotificationsPage.tsx
@@ -2080,6 +2256,8 @@ msgid "Only owners can delete the workspace."
 msgstr "Only owners can delete the workspace."
 
 #: src/components/common/text.ts
+#: src/features/contact/ContactDetails.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/conversation/PersonHeader.tsx
 msgid "Open"
 msgstr "Open"
@@ -2097,6 +2275,10 @@ msgstr "Open {name}"
 #: src/features/conversation/ListPreview.tsx
 msgid "Open full screen"
 msgstr "Open full screen"
+
+#: src/features/contact/ContactSheet.tsx
+msgid "Open page"
+msgstr "Open page"
 
 #: src/features/conversation/QueueConversation.tsx
 msgid "Open the next one"
@@ -2116,7 +2298,6 @@ msgstr "Other"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/contact/OtherConversations.tsx
 msgid "Other conversations"
 msgstr "Other conversations"
 
@@ -2303,6 +2484,10 @@ msgstr "Quick cleanup"
 msgid "Rated bad"
 msgstr "Rated bad"
 
+#: src/features/contact/ContactPage.tsx
+msgid "rated good"
+msgstr "rated good"
+
 #: src/features/conversation/rating.tsx
 msgid "Rated good"
 msgstr "Rated good"
@@ -2423,7 +2608,7 @@ msgstr "Replies"
 msgid "Replies go out through your own SMTP account. Leave the host empty to only receive mail."
 msgstr "Replies go out through your own SMTP account. Leave the host empty to only receive mail."
 
-#: src/features/contact/EmailAddresses.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Replies to this address are refused until you clear it."
 msgstr "Replies to this address are refused until you clear it."
 
@@ -2515,6 +2700,10 @@ msgstr "Rotate the signing secret?"
 msgid "Route mail for this address to Yuva's e-mail ingress, for example with the Cloudflare Email Worker in edge/. Replies go out through the SMTP account you entered."
 msgstr "Route mail for this address to Yuva's e-mail ingress, for example with the Cloudflare Email Worker in edge/. Replies go out through the SMTP account you entered."
 
+#: src/features/contact/ContactSheet.tsx
+msgid "Satisfaction"
+msgstr "Satisfaction"
+
 #: src/features/inbox/QueuePage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
 msgstr "satisfied · 👍 {good} 👎 {bad}"
@@ -2570,6 +2759,7 @@ msgid "Search by name, e-mail or external id"
 msgstr "Search by name, e-mail or external id"
 
 #: src/features/contact/ContactSearch.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "Search contacts"
 msgstr "Search contacts"
 
@@ -2703,6 +2893,10 @@ msgstr "Settings (JSON)"
 msgid "Shortcut"
 msgstr "Shortcut"
 
+#: src/features/contact/ContactsPage.tsx
+msgid "Show"
+msgstr "Show"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Show or hide quoted text"
 msgstr "Show or hide quoted text"
@@ -2773,10 +2967,6 @@ msgstr "signed-in users only"
 msgid "Signing secret"
 msgstr "Signing secret"
 
-#: src/features/contact/ContactPanel.tsx
-msgid "Since {since}"
-msgstr "Since {since}"
-
 #: src/features/settings/inboxes/NewInboxPage.tsx
 msgid "Skip for now"
 msgstr "Skip for now"
@@ -2811,6 +3001,10 @@ msgstr "Some of the values are not valid."
 msgid "Someone mentions me in a note"
 msgstr "Someone mentions me in a note"
 
+#: src/features/contact/ContactNotes.tsx
+msgid "Something the team should know…"
+msgstr "Something the team should know…"
+
 #: src/components/common/text.ts
 msgid "Something went wrong on the server. Try again."
 msgstr "Something went wrong on the server. Try again."
@@ -2823,10 +3017,15 @@ msgstr "Sort conversations by topic. Each label also gets its own view in the si
 msgid "Sort conversations your way"
 msgstr "Sort conversations your way"
 
+#: src/features/contact/ContactDetails.tsx
+msgid "Start conversation"
+msgstr "Start conversation"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (port 587)"
 
+#: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ListPage.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Status"
@@ -2840,6 +3039,10 @@ msgstr "Stop overriding {name}"
 msgid "Struck-out values are not taken: this contact keeps its own value for those keys."
 msgstr "Struck-out values are not taken: this contact keeps its own value for those keys."
 
+#: src/features/contact/ContactDetails.tsx
+msgid "Subject"
+msgstr "Subject"
+
 #: src/components/common/text.ts
 msgid "Succeeded"
 msgstr "Succeeded"
@@ -2851,6 +3054,10 @@ msgstr "Suggested by {author}"
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Suggestion discarded"
 msgstr "Suggestion discarded"
+
+#: src/features/contact/ContactPage.tsx
+msgid "Summary"
+msgstr "Summary"
 
 #: src/components/common/text.ts
 msgid "Sunday"
@@ -2901,6 +3108,10 @@ msgstr "Team"
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Team note"
 msgstr "Team note"
+
+#: src/features/contact/ContactPage.tsx
+msgid "Team notes"
+msgstr "Team notes"
 
 #: src/app/TeamMenu.tsx
 msgid "Team right now"
@@ -3223,11 +3434,15 @@ msgstr "Type your e-mail address to confirm"
 msgid "Typing · {where}"
 msgstr "Typing · {where}"
 
-#: src/features/contact/EmailAddresses.tsx
+#: src/features/contact/ContactDetails.tsx
+msgid "Undeliverable"
+msgstr "Undeliverable"
+
+#: src/features/contact/ContactDetails.tsx
 msgid "Undeliverable: bounced, {since}"
 msgstr "Undeliverable: bounced, {since}"
 
-#: src/features/contact/EmailAddresses.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Undeliverable: marked as spam by the recipient, {since}"
 msgstr "Undeliverable: marked as spam by the recipient, {since}"
 
@@ -3241,8 +3456,10 @@ msgstr "Unknown device"
 
 #: src/app/Palette.tsx
 #: src/app/TeamMenu.tsx
-#: src/features/contact/ContactPanel.tsx
+#: src/features/contact/ContactPage.tsx
 #: src/features/contact/ContactSearch.tsx
+#: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/contact/MergeContactDialog.tsx
 #: src/features/conversation/ListPreview.tsx
 #: src/features/conversation/QueueConversation.tsx
@@ -3324,6 +3541,14 @@ msgstr "Version"
 #: src/app/ViewToggle.tsx
 msgid "View"
 msgstr "View"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Visitor"
+msgstr "Visitor"
+
+#: src/features/contact/ContactsPage.tsx
+msgid "Visitors"
+msgstr "Visitors"
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Visitors can chat without an identity token from your backend."
@@ -3607,6 +3832,10 @@ msgstr "You will no longer be able to sign in with it."
 #: src/features/auth/SignInPage.tsx
 msgid "you@company.com"
 msgstr "you@company.com"
+
+#: src/features/contact/ContactPage.tsx
+msgid "Your app or widget sends these when it identifies the contact."
+msgstr "Your app or widget sends these when it identifies the contact."
 
 #: src/features/settings/inboxes/NewInboxPage.tsx
 msgid "Your backend signs identity tokens with it so Yuva knows who your signed-in users are. You can rotate it in the inbox settings."

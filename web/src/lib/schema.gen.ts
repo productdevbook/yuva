@@ -815,7 +815,9 @@ export interface paths {
         };
         /**
          * List contacts
-         * @description Newest first. `q` searches names, e-mail addresses and external ids.
+         * @description Newest first, or most recently active first with `sort=last_seen` (contacts never seen sort
+         *     by when they were created). `q` searches names, e-mail addresses and external ids.
+         *     Each item carries `activity`, counted over the inboxes the caller can see.
          *
          *     Scope: `contacts:read`.
          */
@@ -937,6 +939,80 @@ export interface paths {
          *     Scope: `contacts:write`.
          */
         post: operations["mergeContact"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/contacts/{contactId}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List notes about a contact
+         * @description Team-only notes about the contact, not tied to a conversation, newest first. Whoever can
+         *     see the contact can read and add them; contacts never see them, and no event or webhook
+         *     carries them.
+         *
+         *     Scope: `contacts:read`.
+         */
+        get: operations["listContactNotes"];
+        put?: never;
+        /**
+         * Add a note about a contact
+         * @description Scope: `contacts:write`.
+         */
+        post: operations["createContactNote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/contacts/{contactId}/notes/{noteId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete a note about a contact
+         * @description Its author (a member, or the API key that wrote it) or an owner or admin; anyone else gets
+         *     `403 forbidden`.
+         *
+         *     Scope: `contacts:write`.
+         */
+        delete: operations["deleteContactNote"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/contacts/{contactId}/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * How the team served a contact
+         * @description First-reply time and ratings over the contact's conversations the caller can see. The
+         *     counts of conversations are on the contact's `activity`.
+         *
+         *     Scope: `contacts:read` and `conversations:read`.
+         */
+        get: operations["getContactSummary"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -3451,10 +3527,74 @@ export interface components {
             locale?: components["schemas"]["LanguageTag"];
             /** @description The contact's addresses that must not be mailed. */
             undeliverable: components["schemas"]["UndeliverableEmail"][];
+            activity?: components["schemas"]["ContactActivity"];
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
             updated_at: string;
+        };
+        /**
+         * @description Only on `GET /v1/contacts` and `GET /v1/contacts/{contactId}`. The counts cover the
+         *     conversations the caller can see, spam left out; `last_seen_at` does not depend on the caller.
+         */
+        ContactActivity: {
+            /**
+             * Format: date-time
+             * @description The contact's last activity: a message (any channel), a rating, or use of a widget or
+             *     app session. Absent when never active.
+             */
+            last_seen_at?: string;
+            /** Format: int64 */
+            conversations: number;
+            /** Format: int64 */
+            open_conversations: number;
+            /**
+             * Format: date-time
+             * @description The last message in any of those conversations, else when the newest one started.
+             */
+            last_conversation_at?: string;
+        };
+        ContactNote: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            contact_id: string;
+            /** @description A `member` or a `bot` (API key); `member_id` is absent once the member was removed. */
+            author: components["schemas"]["MessageAuthor"];
+            /** @description Plain text. */
+            body: string;
+            /** Format: date-time */
+            created_at: string;
+        };
+        ContactNoteCreate: {
+            body: string;
+        };
+        ContactNotePage: {
+            items: components["schemas"]["ContactNote"][];
+            next_cursor?: string;
+        };
+        /**
+         * @description How the team has served the contact, over all their conversations the caller can see (spam
+         *     left out).
+         */
+        ContactSummary: {
+            /**
+             * Format: int64
+             * @description Conversations where a member answered the contact's first message.
+             */
+            first_replies: number;
+            /**
+             * Format: int64
+             * @description Median seconds from the contact's first message to the first member reply; absent when `first_replies` is 0.
+             */
+            median_first_reply_seconds?: number;
+            /** @description The latest rating of each conversation. */
+            ratings: {
+                /** Format: int64 */
+                good: number;
+                /** Format: int64 */
+                bad: number;
+            };
         };
         ContactPresence: {
             /** Format: uuid */
@@ -6776,6 +6916,14 @@ export interface operations {
             query?: {
                 /** @description Full-text search (Postgres `simple` configuration, `websearch` syntax). */
                 q?: components["parameters"]["Search"];
+                /**
+                 * @description `known`: the contact has an e-mail address or an external id. `visitor`: neither (an
+                 *     anonymous widget visitor, or someone known only by a typed, unconfirmed address).
+                 */
+                kind?: "known" | "visitor";
+                /** @description Only contacts with (`true`) or without (`false`) an open conversation the caller can see; spam does not count. */
+                has_open?: boolean;
+                sort?: "created" | "last_seen";
                 /** @description The `next_cursor` of the previous page. */
                 cursor?: components["parameters"]["Cursor"];
                 /** @description Page size, 1 to 100; 25 by default. */
@@ -7013,6 +7161,128 @@ export interface operations {
                 };
             };
             400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    listContactNotes: {
+        parameters: {
+            query?: {
+                /** @description The `next_cursor` of the previous page. */
+                cursor?: components["parameters"]["Cursor"];
+                /** @description Page size, 1 to 100; 25 by default. */
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                contactId: components["parameters"]["ContactId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of notes. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactNotePage"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    createContactNote: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                contactId: components["parameters"]["ContactId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContactNoteCreate"];
+            };
+        };
+        responses: {
+            /** @description The note. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactNote"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    deleteContactNote: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                contactId: components["parameters"]["ContactId"];
+                noteId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    getContactSummary: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                contactId: components["parameters"]["ContactId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The summary. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactSummary"];
+                };
+            };
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];

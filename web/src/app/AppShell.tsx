@@ -47,8 +47,13 @@ export function AppShell() {
   const { pathname } = useLocation()
   useHotkeys({
     [SHORTCUTS.help]: () => setShortcuts(true),
-    [SHORTCUTS.search]: () =>
-      view === "list" && pathname === "/" ? focusListSearch() : setDrawer((d) => ({ open: true, q: d.q, focus: d.focus + 1 })),
+    [SHORTCUTS.search]: () => {
+      const contacts = pathname === "/contacts" && document.querySelector<HTMLInputElement>("[data-testid=contacts-search]")
+      if (contacts) contacts.focus()
+      else if (view === "list" && pathname === "/") focusListSearch()
+      else setDrawer((d) => ({ open: true, q: d.q, focus: d.focus + 1 }))
+    },
+    [SHORTCUTS.contacts]: () => navigate("/contacts"),
     [SHORTCUTS.view]: () => {
       setView(view === "list" ? "queue" : "list")
       if (pathname !== "/") navigate("/")
