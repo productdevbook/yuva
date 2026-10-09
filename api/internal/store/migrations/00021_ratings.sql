@@ -1,5 +1,8 @@
 -- +goose Up
-ALTER TABLE inboxes ADD COLUMN ask_for_rating boolean NOT NULL DEFAULT false;
+ALTER TABLE inboxes
+    ADD COLUMN ask_for_rating boolean NOT NULL DEFAULT false,
+    ADD COLUMN rating_since   timestamptz,
+    ADD CHECK (ask_for_rating = (rating_since IS NOT NULL));
 
 ALTER TABLE conversations
     ADD COLUMN closed_at           timestamptz,
@@ -19,4 +22,4 @@ ALTER TABLE conversations
     DROP COLUMN rating_comment,
     DROP COLUMN rating,
     DROP COLUMN closed_at;
-ALTER TABLE inboxes DROP COLUMN ask_for_rating;
+ALTER TABLE inboxes DROP COLUMN rating_since, DROP COLUMN ask_for_rating;

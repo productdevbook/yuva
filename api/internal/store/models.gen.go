@@ -281,6 +281,7 @@ type Inbox struct {
 	CreatedAt            time.Time
 	UpdatedAt            time.Time
 	AskForRating         bool
+	RatingSince          *time.Time
 }
 
 type InboxMember struct {

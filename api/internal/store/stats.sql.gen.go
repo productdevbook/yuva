@@ -135,7 +135,7 @@ func (q *Queries) StatsFirstReplies(ctx context.Context, arg StatsFirstRepliesPa
 }
 
 const statsReplies = `-- name: StatsReplies :many
-SELECT coalesce(m.sent_by_member_id, m.author_member_id)::uuid AS member_id, count(*) AS n
+SELECT m.sent_by_member_id, m.author_member_id, count(*) AS n
 FROM messages m
 JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
 WHERE m.workspace_id = $1 AND m.created_at >= $2 AND m.created_at <= $3
@@ -145,7 +145,7 @@ WHERE m.workspace_id = $1 AND m.created_at >= $2 AND m.created_at <= $3
   AND ($5::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $6::uuid))
-GROUP BY 1
+GROUP BY 1, 2
 `
 
 type StatsRepliesParams struct {
@@ -158,8 +158,9 @@ type StatsRepliesParams struct {
 }
 
 type StatsRepliesRow struct {
-	MemberID uuid.UUID
-	N        int64
+	SentByMemberID *uuid.UUID
+	AuthorMemberID *uuid.UUID
+	N              int64
 }
 
 func (q *Queries) StatsReplies(ctx context.Context, arg StatsRepliesParams) ([]StatsRepliesRow, error) {
@@ -178,7 +179,7 @@ func (q *Queries) StatsReplies(ctx context.Context, arg StatsRepliesParams) ([]S
 	var items []StatsRepliesRow
 	for rows.Next() {
 		var i StatsRepliesRow
-		if err := rows.Scan(&i.MemberID, &i.N); err != nil {
+		if err := rows.Scan(&i.SentByMemberID, &i.AuthorMemberID, &i.N); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

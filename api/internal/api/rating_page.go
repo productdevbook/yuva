@@ -26,6 +26,8 @@ const (
 	ratingRequestDelay = 2 * time.Minute
 	ratingPathPrefix   = "/r/"
 	defaultBrandColor  = "#2563eb"
+	// maxRatingFormBytes fits a percent-encoded comment of maxRatingComment four-byte characters.
+	maxRatingFormBytes = 32 << 10
 )
 
 var ratingTokenContext = []byte("yuva rating link v1")
@@ -110,7 +112,7 @@ func (s *Server) RequestRating(ctx context.Context, workspaceID, conversationID 
 			return err
 		}
 		now := s.now()
-		if can, _ := ratingState(in.AskForRating, c.Status, c.ClosedAt, c.RatedAt, c.Rating, now); !can || c.Spam {
+		if can, _ := ratingState(in.RatingSince, c.Status, c.ClosedAt, c.RatedAt, c.Rating, now); !can || c.Spam {
 			return nil
 		}
 		replied, err := q.ConversationHasReply(ctx, store.ConversationHasReplyParams{WorkspaceID: workspaceID, ConversationID: c.ID})
@@ -154,6 +156,9 @@ func (s *Server) RequestRating(ctx context.Context, workspaceID, conversationID 
 		}
 		summary, err := s.queueEmail(ctx, q, events, plan, row)
 		if err != nil {
+			return err
+		}
+		if err := q.TouchConversation(ctx, store.TouchConversationParams{WorkspaceID: workspaceID, ID: c.ID, Now: now, IsMessage: true}); err != nil {
 			return err
 		}
 		if err := s.addUsage(ctx, q, workspaceID, 0, 1, 0); err != nil {
@@ -301,6 +306,7 @@ func (s *Server) serveRatingPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) serveRatingPost(w http.ResponseWriter, r *http.Request) {
+	r.Body = http.MaxBytesReader(w, r.Body, maxRatingFormBytes)
 	token := r.PathValue("token")
 	var (
 		c       store.Conversation
@@ -350,7 +356,7 @@ func (s *Server) answerRatingPage(w http.ResponseWriter, r *http.Request, token 
 		writeRatingPage(w, http.StatusNotFound, v)
 		return
 	}
-	can, current := ratingState(in.AskForRating, c.Status, c.ClosedAt, c.RatedAt, c.Rating, s.now())
+	can, current := ratingState(in.RatingSince, c.Status, c.ClosedAt, c.RatedAt, c.Rating, s.now())
 	switch {
 	case current != nil || errors.Is(rateErr, errAlreadyRated):
 		v.Heading = v.W.Already

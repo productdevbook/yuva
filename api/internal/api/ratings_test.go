@@ -33,9 +33,17 @@ func TestClientRatings(t *testing.T) {
 	}
 	cs.expectProblem(http.StatusConflict, "rating_unavailable", "POST", rate, map[string]any{"rating": "good"})
 
+	h.clock.Advance(time.Second)
 	if r := ct.owner.expect(http.StatusOK, "PATCH", "/v1/inboxes/"+ct.chatInbox, map[string]any{"ask_for_rating": true}); r.body["ask_for_rating"] != true {
 		t.Fatalf("inbox %s", r.raw)
 	}
+	if r := cs.expect(http.StatusOK, "GET", "/client/v1/conversations/"+conv, nil); r.body["can_rate"] != false {
+		t.Fatalf("closed before the inbox asked: %s", r.raw)
+	}
+	cs.expectProblem(http.StatusConflict, "rating_unavailable", "POST", rate, map[string]any{"rating": "good"})
+	cs.expect(http.StatusCreated, "POST", "/client/v1/conversations/"+conv+"/messages", map[string]any{"body": "thanks"})
+	h.clock.Advance(time.Second)
+	ct.agent.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"status": "closed"})
 	if r := ct.owner.expect(http.StatusOK, "PATCH", "/v1/inboxes/"+ct.chatInbox, map[string]any{"name": "Chat!"}); r.body["ask_for_rating"] != true {
 		t.Fatalf("another change turned ratings off: %s", r.raw)
 	}

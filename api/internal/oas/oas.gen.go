@@ -1694,7 +1694,7 @@ type ClientContact struct {
 type ClientConversation struct {
 	// CanRate The contact may rate it now with `POST /client/v1/conversations/{id}/rating`: the inbox
 	// asks for ratings (`ask_for_rating`), the conversation is closed, was closed at most 30
-	// days ago and has no rating since it was closed. A message from the contact reopens it,
+	// days ago and after the inbox started asking, and has no rating since it was closed. A message from the contact reopens it,
 	// and the next close allows a new rating.
 	CanRate   bool      `json:"can_rate"`
 	CreatedAt time.Time `json:"created_at"`
@@ -2795,7 +2795,8 @@ type IdentitySecret struct {
 type Inbox struct {
 	// AskForRating Contacts may rate a closed conversation (`good` or `bad`, with an optional comment):
 	// the widget and the mobile SDKs offer it, and e-mail contacts get a request with two
-	// links after a member's conversation is closed. Off by default.
+	// links after a member's conversation is closed. Off by default. Only conversations
+	// closed after it was turned on can be rated; turning it off and on again starts over.
 	AskForRating bool          `json:"ask_for_rating"`
 	Branding     InboxBranding `json:"branding"`
 

@@ -254,6 +254,7 @@ func (s *Server) AddWorkers(workers *river.Workers) {
 	river.AddWorker(workers, &retentionWorker{s: s})
 	river.AddWorker(workers, &workspaceDeleteWorker{s: s})
 	river.AddWorker(workers, &ratingRequestWorker{s: s})
+	river.AddWorker(workers, &presenceSweepWorker{s: s})
 }
 
 func truncateRunes(v string, n int) string {

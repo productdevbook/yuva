@@ -138,7 +138,7 @@ func clientConversationItems(ctx context.Context, q *store.Queries, cp contactPr
 	for i, r := range rows {
 		out[i] = clientConversationBody(r)
 		out[i].LastMessage, out[i].Unread, out[i].LastReadByMemberAt = byConv[r.ID], unread[r.ID], readAt[r.ID]
-		out[i].CanRate, out[i].Rating = ratingState(in.AskForRating, r.Status, r.ClosedAt, r.RatedAt, r.Rating, now)
+		out[i].CanRate, out[i].Rating = ratingState(in.RatingSince, r.Status, r.ClosedAt, r.RatedAt, r.Rating, now)
 	}
 	return out, nil
 }

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"cmp"
 	"context"
 	"slices"
 	"time"
@@ -70,7 +71,9 @@ func (s *Server) GetStats(ctx context.Context, req oas.GetStatsRequestObject) (o
 	}
 	for _, r := range replies {
 		out.Replies += r.N
-		member(r.MemberID).Replies += r.N
+		if id := cmp.Or(r.SentByMemberID, r.AuthorMemberID); id != nil {
+			member(*id).Replies += r.N
+		}
 	}
 	for _, r := range closed {
 		out.Closed += r.N

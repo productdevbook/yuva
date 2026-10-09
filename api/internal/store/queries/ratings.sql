@@ -21,7 +21,7 @@ SELECT EXISTS (
 -- name: StatsRatings :many
 SELECT c.inbox_id, c.rating::text AS rating, count(*) AS n
 FROM conversations c
-WHERE c.workspace_id = @workspace_id AND c.rated_at >= @since::timestamptz AND c.rated_at <= @until::timestamptz
+WHERE c.workspace_id = @workspace_id AND c.rated_at >= @since::timestamptz AND c.rated_at <= @until::timestamptz AND NOT c.spam
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv

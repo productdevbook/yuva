@@ -89,6 +89,9 @@ panel (embedded SPA) ─────────► /v1 + WS ──────�
   75 seconds. Members see their teammates the same way: `/v1/members` reports each member's
   `availability` and whether they are `online`, and a `member.presence` notice reaches the
   workspace's member connections when a member connects, disconnects or changes availability.
+  A connection that ends without closing (a process that died) only stops being seen, so a River
+  job every minute announces the members whose last connection went stale in the previous two
+  minutes.
 - The panel and the widget bundles are embedded with `go:embed`; one binary serves everything.
 - Configuration through environment variables. Secrets stored in the database (SMTP passwords,
   identity secrets, webhook secrets) are encrypted with AES-256-GCM under a master key,
@@ -702,7 +705,7 @@ and checked on every attempt.
 
 E-mail fallback: an event with e-mail on schedules one check per member and conversation after the
 member's delay (15 minutes by default). If the conversation still has contact messages (or an
-assignment, or notes mentioning the member) newer than the member's read position and the previous notification e-mail, one
+assignment, or notes mentioning the member while they have e-mail on for mentions) newer than the member's read position and the previous notification e-mail, one
 e-mail through the server's own mailer, in the member's locale, lists them and links to the
 conversation and to the notification settings; at most one per member and conversation per hour. A
 member's own message or note moves their read position to it, so the e-mail never lists what
@@ -713,7 +716,9 @@ they already answered.
 An inbox can ask contacts to rate their conversations (`ask_for_rating`, off by default). A
 contact rates a closed conversation `good` or `bad`, with an optional comment of at most 2,000
 characters, once per close: a message from the contact reopens it and the next close allows a new
-rating. A close can be rated for 30 days. Ratings are not stored for spam.
+rating. A close can be rated for 30 days, and only a close after the inbox started asking
+(`inboxes.rating_since`, set when `ask_for_rating` turns on and cleared when it turns off), so
+turning it on never offers old conversations. Ratings are not stored for spam.
 
 - Conversations keep `closed_at` (set when the status becomes `closed`) and the latest rating
   (`rating`, `rating_comment`, `rated_at`); a rating counts for the current close when `rated_at`
@@ -747,7 +752,9 @@ have an open conversation, with search over names, addresses and external ids.
   session use at most once per throttle period, realtime close), carried over on a merge, and
   indexed with `created_at` as fallback for the sort. It is the same for every member; an agent may
   see a contact rise in the order because of a conversation in an inbox they cannot see, but never
-  that conversation.
+  that conversation. Pages follow it by keyset, as conversations follow `last_activity_at`; it
+  only grows, so a contact active while someone pages moves above the pages already read and is
+  neither repeated nor on the later pages, which the API reference says.
 - `activity` (conversation counts, open ones, the last message time) is added only to
   `GET /v1/contacts` and `GET /v1/contacts/{id}`, by one grouped query per page over the
   conversations the caller can see, spam left out; events and webhooks carry the contact without it.

@@ -607,9 +607,22 @@ func (s *Server) SendNotificationEmail(ctx context.Context, a NotificationEmailA
 	if err != nil {
 		return nil, err
 	}
-	if mentionsOnly {
-		items = slices.DeleteFunc(items, func(it store.ListNotifiableMessagesRow) bool { return it.Kind != string(oas.MessageKindNote) })
+	overrides, err := s.st.ListInboxNotificationsOfInbox(ctx, store.ListInboxNotificationsOfInboxParams{WorkspaceID: ws, InboxID: c.InboxID})
+	if err != nil {
+		return nil, err
 	}
+	events := applyNotificationEvents(roleNotificationDefaults(r.Role), parseNotificationUpdate(r.NotificationEvents))
+	for _, o := range overrides {
+		if o.MemberID == r.ID {
+			events = applyNotificationEvents(events, parseNotificationUpdate(o.Events))
+		}
+	}
+	items = slices.DeleteFunc(items, func(it store.ListNotifiableMessagesRow) bool {
+		if it.Kind == string(oas.MessageKindNote) {
+			return !events.Mentioned.Email
+		}
+		return mentionsOnly
+	})
 	if len(items) == 0 {
 		return nil, nil
 	}

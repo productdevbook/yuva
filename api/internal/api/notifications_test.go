@@ -970,4 +970,14 @@ func TestNoteMentions(t *testing.T) {
 		!strings.Contains(mails[0].Text, "mentioned you in a note:\n> can you take this refund?") || strings.Contains(mails[0].Text, "need help") {
 		t.Fatalf("mention e-mail %+v", mails)
 	}
+
+	nt.agent.expect(http.StatusOK, "PATCH", "/v1/me/notifications", map[string]any{"events": map[string]any{"mentioned": map[string]any{"push": true, "email": false}}})
+	nt.owner.expect(http.StatusCreated, "POST", path, map[string]any{"kind": "note", "body": "and this one?", "mentions": []string{nt.agentID}})
+	h.clock.Advance(2 * time.Hour)
+	if _, err := h.srv.SendNotificationEmail(context.Background(), checks[0]); err != nil {
+		t.Fatal(err)
+	}
+	if mails := h.mail.to(agentEmail)[before:]; len(mails) != 1 {
+		t.Fatalf("mention e-mailed with mention e-mails off: %+v", mails[1:])
+	}
 }

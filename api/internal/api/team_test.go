@@ -74,6 +74,18 @@ func TestTeammatePresence(t *testing.T) {
 	if d := presenceOf(t, owner, tm.agentID); d["online"] != false {
 		t.Fatalf("agent disconnected: %v", d)
 	}
+
+	if _, err := h.st.Pool.Exec(context.Background(),
+		"INSERT INTO realtime_connections (id, workspace_id, member_id, seen_at) VALUES (gen_random_uuid(), $1, $2, $3)",
+		tm.ws, tm.agentID, h.clock.Now().Add(-2*time.Minute)); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.srv.AnnounceLapsedPresence(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	if d := presenceOf(t, owner, tm.agentID); d["online"] != false {
+		t.Fatalf("agent whose server died: %v", d)
+	}
 	for {
 		select {
 		case m := <-stranger.msgs:
@@ -271,6 +283,11 @@ func TestStats(t *testing.T) {
 	now := h.clock.Now().In(tokyo)
 	if want := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, tokyo); !got.Equal(want) {
 		t.Fatalf("default since %s, want %s", got, want)
+	}
+
+	tm.owner.expect(http.StatusNoContent, "DELETE", "/v1/members/"+tm.agentID, nil)
+	if o, raw = get(tm.owner, ""); raw["replies"] != float64(4) || len(o.Members) != 1 || o.Members[0].MemberID != ownerID {
+		t.Fatalf("stats after a member was removed %s", mustMarshal(raw))
 	}
 }
 

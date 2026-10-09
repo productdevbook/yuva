@@ -148,7 +148,7 @@ func (q *Queries) RateConversation(ctx context.Context, arg RateConversationPara
 const statsRatings = `-- name: StatsRatings :many
 SELECT c.inbox_id, c.rating::text AS rating, count(*) AS n
 FROM conversations c
-WHERE c.workspace_id = $1 AND c.rated_at >= $2::timestamptz AND c.rated_at <= $3::timestamptz
+WHERE c.workspace_id = $1 AND c.rated_at >= $2::timestamptz AND c.rated_at <= $3::timestamptz AND NOT c.spam
   AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid)
   AND ($5::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv

@@ -3,11 +3,15 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"strings"
 	"time"
 	"unicode"
 	"uuid"
 
+	"github.com/riverqueue/river"
+
+	"github.com/productdevbook/yuva/api/internal/jobs"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -119,4 +123,39 @@ func (s *Server) memberPresence(ctx context.Context, workspaceID, memberID uuid.
 	s.signal(ctx, realtime.Event{Type: realtime.MemberPresence, WorkspaceID: workspaceID, Data: mustJSON(oas.MemberPresence{
 		MemberId: memberID, Availability: oas.Availability(rows[0].Availability), Online: rows[0].Online,
 	})})
+}
+
+type presenceSweepWorker struct {
+	river.WorkerDefaults[jobs.PresenceSweepArgs]
+	s *Server
+}
+
+func (w *presenceSweepWorker) Work(ctx context.Context, _ *river.Job[jobs.PresenceSweepArgs]) error {
+	return w.s.AnnounceLapsedPresence(ctx)
+}
+
+// AnnounceLapsedPresence tells teammates about members whose last connection stopped being seen
+// without closing, as when a server process dies. The window covers two sweeps, so a late run
+// still finds them; a member may be announced twice.
+func (s *Server) AnnounceLapsedPresence(ctx context.Context) error {
+	ids, err := s.st.ListWorkspaceIDs(ctx)
+	if err != nil {
+		return err
+	}
+	fresh := s.now().Add(-presenceFresh)
+	for _, ws := range ids {
+		members, err := s.st.ListLapsedMembers(ctx, store.ListLapsedMembersParams{
+			WorkspaceID: ws, FreshAfter: fresh, LapsedAfter: fresh.Add(-2 * jobs.PresenceSweepInterval),
+		})
+		if err != nil {
+			return fmt.Errorf("workspace %s: %w", ws, err)
+		}
+		if len(members) > 0 {
+			s.presenceHint(ctx, ws)
+		}
+		for _, id := range members {
+			s.memberPresence(ctx, ws, id)
+		}
+	}
+	return nil
 }

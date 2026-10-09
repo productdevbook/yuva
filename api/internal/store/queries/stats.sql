@@ -1,5 +1,5 @@
 -- name: StatsReplies :many
-SELECT coalesce(m.sent_by_member_id, m.author_member_id)::uuid AS member_id, count(*) AS n
+SELECT m.sent_by_member_id, m.author_member_id, count(*) AS n
 FROM messages m
 JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
 WHERE m.workspace_id = @workspace_id AND m.created_at >= @since AND m.created_at <= @until
@@ -9,7 +9,7 @@ WHERE m.workspace_id = @workspace_id AND m.created_at >= @since AND m.created_at
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
-GROUP BY 1;
+GROUP BY 1, 2;
 
 -- name: StatsClosed :many
 SELECT m.author_member_id, count(*) AS n

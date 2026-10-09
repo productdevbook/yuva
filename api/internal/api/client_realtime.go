@@ -392,7 +392,7 @@ func (f *clientFilter) transform(ctx context.Context, e realtime.Event) ([]any, 
 		if c.Rating != nil {
 			ratedAt, rating = &c.Rating.RatedAt, (*string)(&c.Rating.Rating)
 		}
-		st.CanRate, st.Rating = ratingState(f.inbox.AskForRating, string(c.Status), c.ClosedAt, ratedAt, rating, f.s.now())
+		st.CanRate, st.Rating = ratingState(f.inbox.RatingSince, string(c.Status), c.ClosedAt, ratedAt, rating, f.s.now())
 		return frame(st), nil
 	case realtime.MessageCreated, realtime.MessageUpdated:
 		if !ownConv {

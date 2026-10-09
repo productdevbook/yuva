@@ -965,6 +965,39 @@ func (q *Queries) ListConversationsWithPendingReplies(ctx context.Context, arg L
 	return items, nil
 }
 
+const listLapsedMembers = `-- name: ListLapsedMembers :many
+SELECT member_id::uuid AS member_id FROM realtime_connections
+WHERE workspace_id = $1 AND member_id IS NOT NULL
+GROUP BY member_id
+HAVING max(seen_at) <= $2::timestamptz AND max(seen_at) > $3::timestamptz
+`
+
+type ListLapsedMembersParams struct {
+	WorkspaceID uuid.UUID
+	FreshAfter  time.Time
+	LapsedAfter time.Time
+}
+
+func (q *Queries) ListLapsedMembers(ctx context.Context, arg ListLapsedMembersParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listLapsedMembers, arg.WorkspaceID, arg.FreshAfter, arg.LapsedAfter)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var member_id uuid.UUID
+		if err := rows.Scan(&member_id); err != nil {
+			return nil, err
+		}
+		items = append(items, member_id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listMemberNames = `-- name: ListMemberNames :many
 SELECT m.id, p.name FROM members m JOIN people p ON p.id = m.person_id
 WHERE m.workspace_id = $1 AND m.id = ANY($2::uuid[])

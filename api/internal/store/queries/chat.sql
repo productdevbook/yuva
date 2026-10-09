@@ -327,3 +327,9 @@ DELETE FROM identity_token_ids WHERE workspace_id = @workspace_id AND inbox_id =
 INSERT INTO identity_token_ids (workspace_id, inbox_id, jti, expires_at)
 VALUES (@workspace_id, @inbox_id, @jti, @expires_at)
 ON CONFLICT DO NOTHING;
+
+-- name: ListLapsedMembers :many
+SELECT member_id::uuid AS member_id FROM realtime_connections
+WHERE workspace_id = @workspace_id AND member_id IS NOT NULL
+GROUP BY member_id
+HAVING max(seen_at) <= @fresh_after::timestamptz AND max(seen_at) > @lapsed_after::timestamptz;
