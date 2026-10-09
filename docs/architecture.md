@@ -754,6 +754,11 @@ have an open conversation, with search over names, addresses and external ids.
 - `GET /v1/contacts/{id}/summary` counts first replies with their median time and the latest
   rating of each conversation, over the same conversations, computed on request.
 - A contact's conversations are `GET /v1/conversations?contact_id=` with the usual filters.
+- Contact notes (`/v1/contacts/{id}/notes`) are team-only notes about the person, not tied to a
+  conversation: a `contact_notes` row with the author (a member or an API key) and the text.
+  Whoever can see the contact reads and adds them, under the same rule as the contact itself; only
+  the author or an owner or admin deletes one. Contacts never see them, no event or webhook
+  carries them, a merge moves them to the remaining contact and deleting the contact deletes them.
 
 ### Storage
 

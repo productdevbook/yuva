@@ -117,6 +117,16 @@ type ContactExternalID struct {
 	ContactID   uuid.UUID
 }
 
+type ContactNote struct {
+	ID             uuid.UUID
+	WorkspaceID    uuid.UUID
+	ContactID      uuid.UUID
+	AuthorMemberID *uuid.UUID
+	AuthorApiKeyID *uuid.UUID
+	Body           string
+	CreatedAt      time.Time
+}
+
 type ContactRead struct {
 	WorkspaceID       uuid.UUID
 	ConversationID    uuid.UUID

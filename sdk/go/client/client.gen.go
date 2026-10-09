@@ -2176,6 +2176,29 @@ type ContactMerge struct {
 	SourceId uuid.UUID `json:"source_id"`
 }
 
+// ContactNote defines model for ContactNote.
+type ContactNote struct {
+	// Author A `member` or a `bot` (API key); `member_id` is absent once the member was removed.
+	Author MessageAuthor `json:"author"`
+
+	// Body Plain text.
+	Body      string    `json:"body"`
+	ContactId uuid.UUID `json:"contact_id"`
+	CreatedAt time.Time `json:"created_at"`
+	Id        uuid.UUID `json:"id"`
+}
+
+// ContactNoteCreate defines model for ContactNoteCreate.
+type ContactNoteCreate struct {
+	Body string `json:"body"`
+}
+
+// ContactNotePage defines model for ContactNotePage.
+type ContactNotePage struct {
+	Items      []ContactNote `json:"items"`
+	NextCursor *string       `json:"next_cursor,omitempty"`
+}
+
 // ContactPage defines model for ContactPage.
 type ContactPage struct {
 	Items []Contact `json:"items"`
@@ -4649,6 +4672,30 @@ type MergeContactParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListContactNotesParams defines parameters for ListContactNotes.
+type ListContactNotesParams struct {
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CreateContactNoteParams defines parameters for CreateContactNote.
+type CreateContactNoteParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteContactNoteParams defines parameters for DeleteContactNote.
+type DeleteContactNoteParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetContactPresenceParams defines parameters for GetContactPresence.
 type GetContactPresenceParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -5354,6 +5401,9 @@ type UpdateContactJSONRequestBody = ContactUpdate
 
 // MergeContactJSONRequestBody defines body for MergeContact for application/json ContentType.
 type MergeContactJSONRequestBody = ContactMerge
+
+// CreateContactNoteJSONRequestBody defines body for CreateContactNote for application/json ContentType.
+type CreateContactNoteJSONRequestBody = ContactNoteCreate
 
 // CreateConversationJSONRequestBody defines body for CreateConversation for application/json ContentType.
 type CreateConversationJSONRequestBody = ConversationCreate
@@ -7429,6 +7479,45 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /v1/contacts/{contactId}/merge (the `MergeContact` operationId).
 	MergeContact(ctx context.Context, contactId ContactId, params *MergeContactParams, body MergeContactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListContactNotes List notes about a contact
+	//
+	// Team-only notes about the contact, not tied to a conversation, newest first. Whoever can
+	// see the contact can read and add them; contacts never see them, and no event or webhook
+	// carries them.
+	//
+	// Scope: `contacts:read`.
+	//
+	// Corresponds with GET /v1/contacts/{contactId}/notes (the `ListContactNotes` operationId).
+	ListContactNotes(ctx context.Context, contactId ContactId, params *ListContactNotesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateContactNoteWithBody Add a note about a contact
+	//
+	// Scope: `contacts:write`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/contacts/{contactId}/notes (the `CreateContactNote` operationId).
+	CreateContactNoteWithBody(ctx context.Context, contactId ContactId, params *CreateContactNoteParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateContactNote Add a note about a contact
+	//
+	// Scope: `contacts:write`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/contacts/{contactId}/notes (the `CreateContactNote` operationId).
+	CreateContactNote(ctx context.Context, contactId ContactId, params *CreateContactNoteParams, body CreateContactNoteJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteContactNote Delete a note about a contact
+	//
+	// Its author (a member, or the API key that wrote it) or an owner or admin; anyone else gets
+	// `403 forbidden`.
+	//
+	// Scope: `contacts:write`.
+	//
+	// Corresponds with DELETE /v1/contacts/{contactId}/notes/{noteId} (the `DeleteContactNote` operationId).
+	DeleteContactNote(ctx context.Context, contactId ContactId, noteId uuid.UUID, params *DeleteContactNoteParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetContactPresence Whether a contact is connected
 	//
@@ -10004,6 +10093,85 @@ func (c *Client) MergeContactWithBody(ctx context.Context, contactId ContactId, 
 // Corresponds with POST /v1/contacts/{contactId}/merge (the `MergeContact` operationId).
 func (c *Client) MergeContact(ctx context.Context, contactId ContactId, params *MergeContactParams, body MergeContactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewMergeContactRequest(c.Server, contactId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListContactNotes List notes about a contact
+//
+// Team-only notes about the contact, not tied to a conversation, newest first. Whoever can
+// see the contact can read and add them; contacts never see them, and no event or webhook
+// carries them.
+//
+// Scope: `contacts:read`.
+//
+// Corresponds with GET /v1/contacts/{contactId}/notes (the `ListContactNotes` operationId).
+func (c *Client) ListContactNotes(ctx context.Context, contactId ContactId, params *ListContactNotesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListContactNotesRequest(c.Server, contactId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateContactNoteWithBody Add a note about a contact
+//
+// Scope: `contacts:write`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/contacts/{contactId}/notes (the `CreateContactNote` operationId).
+func (c *Client) CreateContactNoteWithBody(ctx context.Context, contactId ContactId, params *CreateContactNoteParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateContactNoteRequestWithBody(c.Server, contactId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateContactNote Add a note about a contact
+//
+// Scope: `contacts:write`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/contacts/{contactId}/notes (the `CreateContactNote` operationId).
+func (c *Client) CreateContactNote(ctx context.Context, contactId ContactId, params *CreateContactNoteParams, body CreateContactNoteJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateContactNoteRequest(c.Server, contactId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteContactNote Delete a note about a contact
+//
+// Its author (a member, or the API key that wrote it) or an owner or admin; anyone else gets
+// `403 forbidden`.
+//
+// Scope: `contacts:write`.
+//
+// Corresponds with DELETE /v1/contacts/{contactId}/notes/{noteId} (the `DeleteContactNote` operationId).
+func (c *Client) DeleteContactNote(ctx context.Context, contactId ContactId, noteId uuid.UUID, params *DeleteContactNoteParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteContactNoteRequest(c.Server, contactId, noteId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -14584,6 +14752,212 @@ func NewMergeContactRequestWithBody(server string, contactId ContactId, params *
 			}
 
 			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewListContactNotesRequest constructs an http.Request for the ListContactNotes method
+func NewListContactNotesRequest(server string, contactId ContactId, params *ListContactNotesParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts/%s/notes", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: "int32"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewCreateContactNoteRequest calls the generic CreateContactNote builder with application/json body
+func NewCreateContactNoteRequest(server string, contactId ContactId, params *CreateContactNoteParams, body CreateContactNoteJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateContactNoteRequestWithBody(server, contactId, params, "application/json", bodyReader)
+}
+
+// NewCreateContactNoteRequestWithBody constructs an http.Request for the CreateContactNote method, with any body, and a specified content type
+func NewCreateContactNoteRequestWithBody(server string, contactId ContactId, params *CreateContactNoteParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts/%s/notes", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewDeleteContactNoteRequest constructs an http.Request for the DeleteContactNote method
+func NewDeleteContactNoteRequest(server string, contactId ContactId, noteId uuid.UUID, params *DeleteContactNoteParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "noteId", noteId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts/%s/notes/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
 		}
 
 	}
@@ -19807,6 +20181,49 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /v1/contacts/{contactId}/merge (the `MergeContact` operationId).
 	MergeContactWithResponse(ctx context.Context, contactId ContactId, params *MergeContactParams, body MergeContactJSONRequestBody, reqEditors ...RequestEditorFn) (*MergeContactResponse, error)
 
+	// ListContactNotesWithResponse List notes about a contact
+	//
+	// Team-only notes about the contact, not tied to a conversation, newest first. Whoever can
+	// see the contact can read and add them; contacts never see them, and no event or webhook
+	// carries them.
+	//
+	// Scope: `contacts:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/contacts/{contactId}/notes (the `ListContactNotes` operationId).
+	ListContactNotesWithResponse(ctx context.Context, contactId ContactId, params *ListContactNotesParams, reqEditors ...RequestEditorFn) (*ListContactNotesResponse, error)
+
+	// CreateContactNoteWithBodyWithResponse Add a note about a contact
+	//
+	// Scope: `contacts:write`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/contacts/{contactId}/notes (the `CreateContactNote` operationId).
+	CreateContactNoteWithBodyWithResponse(ctx context.Context, contactId ContactId, params *CreateContactNoteParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateContactNoteResponse, error)
+
+	// CreateContactNoteWithResponse Add a note about a contact
+	//
+	// Scope: `contacts:write`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/contacts/{contactId}/notes (the `CreateContactNote` operationId).
+	CreateContactNoteWithResponse(ctx context.Context, contactId ContactId, params *CreateContactNoteParams, body CreateContactNoteJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateContactNoteResponse, error)
+
+	// DeleteContactNoteWithResponse Delete a note about a contact
+	//
+	// Its author (a member, or the API key that wrote it) or an owner or admin; anyone else gets
+	// `403 forbidden`.
+	//
+	// Scope: `contacts:write`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/contacts/{contactId}/notes/{noteId} (the `DeleteContactNote` operationId).
+	DeleteContactNoteWithResponse(ctx context.Context, contactId ContactId, noteId uuid.UUID, params *DeleteContactNoteParams, reqEditors ...RequestEditorFn) (*DeleteContactNoteResponse, error)
+
 	// GetContactPresenceWithResponse Whether a contact is connected
 	//
 	// Whether the contact has a live `/client/v1/realtime` connection (widget or app in the
@@ -23887,6 +24304,199 @@ func (r MergeContactResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r MergeContactResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListContactNotesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ContactNotePage
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListContactNotesResponse) GetJSON200() *ContactNotePage {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r ListContactNotesResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListContactNotesResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListContactNotesResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ListContactNotesResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r ListContactNotesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListContactNotesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListContactNotesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListContactNotesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateContactNoteResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON201 the response for an HTTP 201 `application/json` response
+	JSON201 *ContactNote
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON201 returns the response for an HTTP 201 `application/json` response
+func (r CreateContactNoteResponse) GetJSON201() *ContactNote {
+	return r.JSON201
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r CreateContactNoteResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r CreateContactNoteResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r CreateContactNoteResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r CreateContactNoteResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r CreateContactNoteResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateContactNoteResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateContactNoteResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateContactNoteResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteContactNoteResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DeleteContactNoteResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeleteContactNoteResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r DeleteContactNoteResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteContactNoteResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteContactNoteResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteContactNoteResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteContactNoteResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -30003,6 +30613,73 @@ func (c *ClientWithResponses) MergeContactWithResponse(ctx context.Context, cont
 	return ParseMergeContactResponse(rsp)
 }
 
+// ListContactNotesWithResponse List notes about a contact
+//
+// Team-only notes about the contact, not tied to a conversation, newest first. Whoever can
+// see the contact can read and add them; contacts never see them, and no event or webhook
+// carries them.
+//
+// Scope: `contacts:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/contacts/{contactId}/notes (the `ListContactNotes` operationId).
+func (c *ClientWithResponses) ListContactNotesWithResponse(ctx context.Context, contactId ContactId, params *ListContactNotesParams, reqEditors ...RequestEditorFn) (*ListContactNotesResponse, error) {
+	rsp, err := c.ListContactNotes(ctx, contactId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListContactNotesResponse(rsp)
+}
+
+// CreateContactNoteWithBodyWithResponse Add a note about a contact
+//
+// Scope: `contacts:write`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/contacts/{contactId}/notes (the `CreateContactNote` operationId).
+func (c *ClientWithResponses) CreateContactNoteWithBodyWithResponse(ctx context.Context, contactId ContactId, params *CreateContactNoteParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateContactNoteResponse, error) {
+	rsp, err := c.CreateContactNoteWithBody(ctx, contactId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateContactNoteResponse(rsp)
+}
+
+// CreateContactNoteWithResponse Add a note about a contact
+//
+// Scope: `contacts:write`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/contacts/{contactId}/notes (the `CreateContactNote` operationId).
+func (c *ClientWithResponses) CreateContactNoteWithResponse(ctx context.Context, contactId ContactId, params *CreateContactNoteParams, body CreateContactNoteJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateContactNoteResponse, error) {
+	rsp, err := c.CreateContactNote(ctx, contactId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateContactNoteResponse(rsp)
+}
+
+// DeleteContactNoteWithResponse Delete a note about a contact
+//
+// Its author (a member, or the API key that wrote it) or an owner or admin; anyone else gets
+// `403 forbidden`.
+//
+// Scope: `contacts:write`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/contacts/{contactId}/notes/{noteId} (the `DeleteContactNote` operationId).
+func (c *ClientWithResponses) DeleteContactNoteWithResponse(ctx context.Context, contactId ContactId, noteId uuid.UUID, params *DeleteContactNoteParams, reqEditors ...RequestEditorFn) (*DeleteContactNoteResponse, error) {
+	rsp, err := c.DeleteContactNote(ctx, contactId, noteId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteContactNoteResponse(rsp)
+}
+
 // GetContactPresenceWithResponse Whether a contact is connected
 //
 // Whether the contact has a live `/client/v1/realtime` connection (widget or app in the
@@ -34127,6 +34804,157 @@ func ParseMergeContactResponse(rsp *http.Response) (*MergeContactResponse, error
 			return nil, err
 		}
 		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListContactNotesResponse parses an HTTP response from a ListContactNotesWithResponse call
+func ParseListContactNotesResponse(rsp *http.Response) (*ListContactNotesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListContactNotesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ContactNotePage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateContactNoteResponse parses an HTTP response from a CreateContactNoteWithResponse call
+func ParseCreateContactNoteResponse(rsp *http.Response) (*CreateContactNoteResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateContactNoteResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest ContactNote
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteContactNoteResponse parses an HTTP response from a DeleteContactNoteWithResponse call
+func ParseDeleteContactNoteResponse(rsp *http.Response) (*DeleteContactNoteResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteContactNoteResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Problem

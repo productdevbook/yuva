@@ -103,7 +103,10 @@ seen AS (
     UPDATE contacts t SET last_active_at = greatest(t.last_active_at, f.last_active_at)
     FROM contacts f
     WHERE t.workspace_id = @workspace_id AND t.id = @to_contact AND f.workspace_id = @workspace_id
-      AND f.id = @from_contact AND f.last_active_at IS NOT NULL)
+      AND f.id = @from_contact AND f.last_active_at IS NOT NULL),
+notes AS (
+    UPDATE contact_notes SET contact_id = @to_contact
+    WHERE contact_notes.workspace_id = @workspace_id AND contact_notes.contact_id = @from_contact)
 SELECT * FROM moved;
 
 -- name: MoveContactMessages :exec

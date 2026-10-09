@@ -1711,6 +1711,94 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+  /v1/contacts/{contactId}/notes:
+    get:
+      operationId: listContactNotes
+      summary: List notes about a contact
+      description: |
+        Team-only notes about the contact, not tied to a conversation, newest first. Whoever can
+        see the contact can read and add them; contacts never see them, and no event or webhook
+        carries them.
+
+        Scope: `contacts:read`.
+      tags: [contacts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ContactId"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: A page of notes.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactNotePage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createContactNote
+      summary: Add a note about a contact
+      description: "Scope: `contacts:write`."
+      tags: [contacts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ContactId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactNoteCreate"
+      responses:
+        "201":
+          description: The note.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactNote"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/contacts/{contactId}/notes/{noteId}:
+    delete:
+      operationId: deleteContactNote
+      summary: Delete a note about a contact
+      description: |
+        Its author (a member, or the API key that wrote it) or an owner or admin; anyone else gets
+        `403 forbidden`.
+
+        Scope: `contacts:write`.
+      tags: [contacts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ContactId"
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Deleted.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
   /v1/contacts/{contactId}/summary:
     get:
       operationId: getContactSummary
@@ -5891,6 +5979,43 @@ components:
           type: string
           format: date-time
           description: The last message in any of those conversations, else when the newest one started.
+    ContactNote:
+      type: object
+      required: [id, contact_id, author, body, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        contact_id:
+          type: string
+          format: uuid
+        author:
+          $ref: "#/components/schemas/MessageAuthor"
+          description: A `member` or a `bot` (API key); `member_id` is absent once the member was removed.
+        body:
+          type: string
+          description: Plain text.
+        created_at:
+          type: string
+          format: date-time
+    ContactNoteCreate:
+      type: object
+      required: [body]
+      properties:
+        body:
+          type: string
+          minLength: 1
+          maxLength: 10000
+    ContactNotePage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContactNote"
+        next_cursor:
+          type: string
     ContactSummary:
       type: object
       description: |

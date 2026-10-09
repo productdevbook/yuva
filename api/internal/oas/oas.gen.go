@@ -2178,6 +2178,29 @@ type ContactMerge struct {
 	SourceId uuid.UUID `json:"source_id"`
 }
 
+// ContactNote defines model for ContactNote.
+type ContactNote struct {
+	// Author A `member` or a `bot` (API key); `member_id` is absent once the member was removed.
+	Author MessageAuthor `json:"author"`
+
+	// Body Plain text.
+	Body      string    `json:"body"`
+	ContactId uuid.UUID `json:"contact_id"`
+	CreatedAt time.Time `json:"created_at"`
+	Id        uuid.UUID `json:"id"`
+}
+
+// ContactNoteCreate defines model for ContactNoteCreate.
+type ContactNoteCreate struct {
+	Body string `json:"body"`
+}
+
+// ContactNotePage defines model for ContactNotePage.
+type ContactNotePage struct {
+	Items      []ContactNote `json:"items"`
+	NextCursor *string       `json:"next_cursor,omitempty"`
+}
+
 // ContactPage defines model for ContactPage.
 type ContactPage struct {
 	Items []Contact `json:"items"`
@@ -4651,6 +4674,30 @@ type MergeContactParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListContactNotesParams defines parameters for ListContactNotes.
+type ListContactNotesParams struct {
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CreateContactNoteParams defines parameters for CreateContactNote.
+type CreateContactNoteParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteContactNoteParams defines parameters for DeleteContactNote.
+type DeleteContactNoteParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetContactPresenceParams defines parameters for GetContactPresence.
 type GetContactPresenceParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -5356,6 +5403,9 @@ type UpdateContactJSONRequestBody = ContactUpdate
 
 // MergeContactJSONRequestBody defines body for MergeContact for application/json ContentType.
 type MergeContactJSONRequestBody = ContactMerge
+
+// CreateContactNoteJSONRequestBody defines body for CreateContactNote for application/json ContentType.
+type CreateContactNoteJSONRequestBody = ContactNoteCreate
 
 // CreateConversationJSONRequestBody defines body for CreateConversation for application/json ContentType.
 type CreateConversationJSONRequestBody = ConversationCreate
@@ -6767,6 +6817,15 @@ type ServerInterface interface {
 	// MergeContact Merge another contact into this one
 	// (POST /v1/contacts/{contactId}/merge)
 	MergeContact(w http.ResponseWriter, r *http.Request, contactId ContactId, params MergeContactParams)
+	// ListContactNotes List notes about a contact
+	// (GET /v1/contacts/{contactId}/notes)
+	ListContactNotes(w http.ResponseWriter, r *http.Request, contactId ContactId, params ListContactNotesParams)
+	// CreateContactNote Add a note about a contact
+	// (POST /v1/contacts/{contactId}/notes)
+	CreateContactNote(w http.ResponseWriter, r *http.Request, contactId ContactId, params CreateContactNoteParams)
+	// DeleteContactNote Delete a note about a contact
+	// (DELETE /v1/contacts/{contactId}/notes/{noteId})
+	DeleteContactNote(w http.ResponseWriter, r *http.Request, contactId ContactId, noteId uuid.UUID, params DeleteContactNoteParams)
 	// GetContactPresence Whether a contact is connected
 	// (GET /v1/contacts/{contactId}/presence)
 	GetContactPresence(w http.ResponseWriter, r *http.Request, contactId ContactId, params GetContactPresenceParams)
@@ -8829,6 +8888,191 @@ func (siw *ServerInterfaceWrapper) MergeContact(w http.ResponseWriter, r *http.R
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.MergeContact(w, r, contactId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListContactNotes operation middleware
+func (siw *ServerInterfaceWrapper) ListContactNotes(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "contactId" -------------
+	var contactId ContactId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contactId", r.PathValue("contactId"), &contactId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contactId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListContactNotesParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int32"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListContactNotes(w, r, contactId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateContactNote operation middleware
+func (siw *ServerInterfaceWrapper) CreateContactNote(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "contactId" -------------
+	var contactId ContactId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contactId", r.PathValue("contactId"), &contactId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contactId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateContactNoteParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateContactNote(w, r, contactId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteContactNote operation middleware
+func (siw *ServerInterfaceWrapper) DeleteContactNote(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "contactId" -------------
+	var contactId ContactId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contactId", r.PathValue("contactId"), &contactId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contactId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "noteId" -------------
+	var noteId uuid.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "noteId", r.PathValue("noteId"), &noteId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "noteId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteContactNoteParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteContactNote(w, r, contactId, noteId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -12945,6 +13189,9 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}", wrapper.GetContact)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/contacts/{contactId}", wrapper.UpdateContact)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/contacts/{contactId}/merge", wrapper.MergeContact)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}/notes", wrapper.ListContactNotes)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/contacts/{contactId}/notes", wrapper.CreateContactNote)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/contacts/{contactId}/notes/{noteId}", wrapper.DeleteContactNote)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}/summary", wrapper.GetContactSummary)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}/presence", wrapper.GetContactPresence)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations", wrapper.ListConversations)
@@ -17057,6 +17304,231 @@ func (response MergeContact403ApplicationProblemPlusJSONResponse) VisitMergeCont
 type MergeContact404ApplicationProblemPlusJSONResponse Problem
 
 func (response MergeContact404ApplicationProblemPlusJSONResponse) VisitMergeContactResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListContactNotesRequestObject struct {
+	ContactId ContactId `json:"contactId"`
+	Params    ListContactNotesParams
+}
+
+type ListContactNotesResponseObject interface {
+	VisitListContactNotesResponse(w http.ResponseWriter) error
+}
+
+type ListContactNotes200JSONResponse ContactNotePage
+
+func (response ListContactNotes200JSONResponse) VisitListContactNotesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListContactNotes400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListContactNotes400ApplicationProblemPlusJSONResponse) VisitListContactNotesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListContactNotes401ApplicationProblemPlusJSONResponse Problem
+
+func (response ListContactNotes401ApplicationProblemPlusJSONResponse) VisitListContactNotesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListContactNotes403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListContactNotes403ApplicationProblemPlusJSONResponse) VisitListContactNotesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListContactNotes404ApplicationProblemPlusJSONResponse Problem
+
+func (response ListContactNotes404ApplicationProblemPlusJSONResponse) VisitListContactNotesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateContactNoteRequestObject struct {
+	ContactId ContactId `json:"contactId"`
+	Params    CreateContactNoteParams
+	Body      *CreateContactNoteJSONRequestBody
+}
+
+type CreateContactNoteResponseObject interface {
+	VisitCreateContactNoteResponse(w http.ResponseWriter) error
+}
+
+type CreateContactNote201JSONResponse ContactNote
+
+func (response CreateContactNote201JSONResponse) VisitCreateContactNoteResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateContactNote400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response CreateContactNote400ApplicationProblemPlusJSONResponse) VisitCreateContactNoteResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateContactNote401ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateContactNote401ApplicationProblemPlusJSONResponse) VisitCreateContactNoteResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateContactNote403ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateContactNote403ApplicationProblemPlusJSONResponse) VisitCreateContactNoteResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateContactNote404ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateContactNote404ApplicationProblemPlusJSONResponse) VisitCreateContactNoteResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteContactNoteRequestObject struct {
+	ContactId ContactId `json:"contactId"`
+	NoteId    uuid.UUID `json:"noteId"`
+	Params    DeleteContactNoteParams
+}
+
+type DeleteContactNoteResponseObject interface {
+	VisitDeleteContactNoteResponse(w http.ResponseWriter) error
+}
+
+type DeleteContactNote204Response struct {
+}
+
+func (response DeleteContactNote204Response) VisitDeleteContactNoteResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteContactNote401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteContactNote401ApplicationProblemPlusJSONResponse) VisitDeleteContactNoteResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteContactNote403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteContactNote403ApplicationProblemPlusJSONResponse) VisitDeleteContactNoteResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteContactNote404ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteContactNote404ApplicationProblemPlusJSONResponse) VisitDeleteContactNoteResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -22685,6 +23157,15 @@ type StrictServerInterface interface {
 	// MergeContact Merge another contact into this one
 	// (POST /v1/contacts/{contactId}/merge)
 	MergeContact(ctx context.Context, request MergeContactRequestObject) (MergeContactResponseObject, error)
+	// ListContactNotes List notes about a contact
+	// (GET /v1/contacts/{contactId}/notes)
+	ListContactNotes(ctx context.Context, request ListContactNotesRequestObject) (ListContactNotesResponseObject, error)
+	// CreateContactNote Add a note about a contact
+	// (POST /v1/contacts/{contactId}/notes)
+	CreateContactNote(ctx context.Context, request CreateContactNoteRequestObject) (CreateContactNoteResponseObject, error)
+	// DeleteContactNote Delete a note about a contact
+	// (DELETE /v1/contacts/{contactId}/notes/{noteId})
+	DeleteContactNote(ctx context.Context, request DeleteContactNoteRequestObject) (DeleteContactNoteResponseObject, error)
 	// GetContactPresence Whether a contact is connected
 	// (GET /v1/contacts/{contactId}/presence)
 	GetContactPresence(ctx context.Context, request GetContactPresenceRequestObject) (GetContactPresenceResponseObject, error)
@@ -24244,6 +24725,95 @@ func (sh *strictHandler) MergeContact(w http.ResponseWriter, r *http.Request, co
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(MergeContactResponseObject); ok {
 		if err := validResponse.VisitMergeContactResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListContactNotes operation middleware
+func (sh *strictHandler) ListContactNotes(w http.ResponseWriter, r *http.Request, contactId ContactId, params ListContactNotesParams) {
+	var request ListContactNotesRequestObject
+
+	request.ContactId = contactId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListContactNotes(ctx, request.(ListContactNotesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListContactNotes")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListContactNotesResponseObject); ok {
+		if err := validResponse.VisitListContactNotesResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreateContactNote operation middleware
+func (sh *strictHandler) CreateContactNote(w http.ResponseWriter, r *http.Request, contactId ContactId, params CreateContactNoteParams) {
+	var request CreateContactNoteRequestObject
+
+	request.ContactId = contactId
+	request.Params = params
+
+	var body CreateContactNoteJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateContactNote(ctx, request.(CreateContactNoteRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateContactNote")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(CreateContactNoteResponseObject); ok {
+		if err := validResponse.VisitCreateContactNoteResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteContactNote operation middleware
+func (sh *strictHandler) DeleteContactNote(w http.ResponseWriter, r *http.Request, contactId ContactId, noteId uuid.UUID, params DeleteContactNoteParams) {
+	var request DeleteContactNoteRequestObject
+
+	request.ContactId = contactId
+	request.NoteId = noteId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteContactNote(ctx, request.(DeleteContactNoteRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteContactNote")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteContactNoteResponseObject); ok {
+		if err := validResponse.VisitDeleteContactNoteResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

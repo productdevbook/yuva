@@ -106,3 +106,54 @@ func TestContactDirectory(t *testing.T) {
 	}
 	other.owner.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/conversations?contact_id="+known, nil)
 }
+
+func TestContactNotes(t *testing.T) {
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	other := newTeam(t, h)
+	key := tm.apiKey(h)
+	tm.owner.expect(http.StatusNoContent, "PUT", "/v1/inboxes/"+tm.inbox+"/members/"+tm.agentID, nil)
+	tm.conversation(tm.owner)
+	notes := "/v1/contacts/" + tm.contact + "/notes"
+
+	tm.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", notes, map[string]any{"body": "   "})
+	byOwner := tm.owner.expect(http.StatusCreated, "POST", notes, map[string]any{"body": "VIP since 2021"})
+	if a := byOwner.body["author"].(map[string]any); a["type"] != "member" || a["member_id"] != tm.ownerMemberID(t) || byOwner.str("contact_id") != tm.contact {
+		t.Fatalf("note %s", byOwner.raw)
+	}
+	h.clock.Advance(time.Second)
+	byAgent := tm.agent.expect(http.StatusCreated, "POST", notes, map[string]any{"body": "prefers e-mail"}).str("id")
+	h.clock.Advance(time.Second)
+	byKey := key.expect(http.StatusCreated, "POST", notes, map[string]any{"body": "plan: pro"})
+	if a := byKey.body["author"].(map[string]any); a["type"] != "bot" || a["api_key_id"] == nil {
+		t.Fatalf("bot note %s", byKey.raw)
+	}
+
+	page := tm.agent.expect(http.StatusOK, "GET", notes+"?limit=2", nil)
+	items := page.body["items"].([]any)
+	if len(items) != 2 || items[0].(map[string]any)["body"] != "plan: pro" || page.str("next_cursor") == "" {
+		t.Fatalf("first page %s", page.raw)
+	}
+	rest := tm.agent.expect(http.StatusOK, "GET", notes+"?limit=2&cursor="+page.str("next_cursor"), nil).body["items"].([]any)
+	if len(rest) != 1 || rest[0].(map[string]any)["body"] != "VIP since 2021" {
+		t.Fatalf("second page %v", rest)
+	}
+
+	other.owner.expectProblem(http.StatusNotFound, "not_found", "GET", notes, nil)
+	other.owner.expectProblem(http.StatusNotFound, "not_found", "POST", notes, map[string]any{"body": "x"})
+	other.owner.expectProblem(http.StatusNotFound, "not_found", "DELETE", notes+"/"+byAgent, nil)
+	tm.agent.expectProblem(http.StatusForbidden, "forbidden", "DELETE", notes+"/"+byOwner.str("id"), nil)
+	tm.agent.expectProblem(http.StatusForbidden, "forbidden", "DELETE", notes+"/"+byKey.str("id"), nil)
+	key.expect(http.StatusNoContent, "DELETE", notes+"/"+byKey.str("id"), nil)
+	tm.agent.expect(http.StatusNoContent, "DELETE", notes+"/"+byAgent, nil)
+	tm.owner.expectProblem(http.StatusNotFound, "not_found", "DELETE", notes+"/"+byAgent, nil)
+	if left := tm.owner.expect(http.StatusOK, "GET", notes, nil).body["items"].([]any); len(left) != 1 {
+		t.Fatalf("left %v", left)
+	}
+
+	hidden := tm.owner.expect(http.StatusCreated, "POST", "/v1/inboxes", map[string]any{"name": "Private", "slug": "private"}).body["inbox"].(map[string]any)["id"].(string)
+	secret := tm.owner.expect(http.StatusCreated, "POST", "/v1/contacts", map[string]any{"name": "Secret"}).str("id")
+	tm.owner.expect(http.StatusCreated, "POST", "/v1/conversations", map[string]any{"inbox_id": hidden, "contact_id": secret})
+	tm.owner.expect(http.StatusCreated, "POST", "/v1/contacts/"+secret+"/notes", map[string]any{"body": "hush"})
+	tm.agent.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/contacts/"+secret+"/notes", nil)
+}

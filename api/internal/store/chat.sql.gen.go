@@ -1399,7 +1399,10 @@ seen AS (
     UPDATE contacts t SET last_active_at = greatest(t.last_active_at, f.last_active_at)
     FROM contacts f
     WHERE t.workspace_id = $3 AND t.id = $1 AND f.workspace_id = $3
-      AND f.id = $4 AND f.last_active_at IS NOT NULL)
+      AND f.id = $4 AND f.last_active_at IS NOT NULL),
+notes AS (
+    UPDATE contact_notes SET contact_id = $1
+    WHERE contact_notes.workspace_id = $3 AND contact_notes.contact_id = $4)
 SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at FROM moved
 `
 
