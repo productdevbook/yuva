@@ -282,6 +282,8 @@ with the server URL as a variable and the stdio bridge as a package.
 
 **Authorization server.** Yuva is its own OAuth 2.1 authorization server, for MCP clients and for
 the member apps (M10). Authorization code with PKCE (`S256` only), no implicit or password grant.
+Client metadata must list `authorization_code` among its `grant_types`; other types it lists are
+ignored (claude.ai lists `jwt-bearer`), and registration answers with the two Yuva offers.
 - Metadata: `/.well-known/oauth-authorization-server` (RFC 8414) and
   `/.well-known/oauth-protected-resource/mcp` plus `/.well-known/oauth-protected-resource`
   (RFC 9728). A `401` on `/mcp` carries `WWW-Authenticate: Bearer resource_metadata="…"`.

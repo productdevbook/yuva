@@ -301,10 +301,10 @@ func (m *clientMetadata) check() error {
 			return oauthErr("invalid_redirect_uri", "redirect URIs must be https, http on a loopback host, or a private-use scheme, without a fragment: "+u)
 		}
 	}
-	for _, g := range m.GrantTypes {
-		if g != "authorization_code" && g != "refresh_token" {
-			return oauthErr("invalid_client_metadata", "grant_types may hold authorization_code and refresh_token")
-		}
+	// Grant types Yuva does not offer are ignored, not refused: claude.ai's metadata document also
+	// lists jwt-bearer, and the token endpoint only ever honours authorization_code and refresh_token.
+	if len(m.GrantTypes) > 0 && !slices.Contains(m.GrantTypes, "authorization_code") {
+		return oauthErr("invalid_client_metadata", "grant_types must include authorization_code")
 	}
 	for _, t := range m.ResponseTypes {
 		if t != "code" {
