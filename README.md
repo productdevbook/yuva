@@ -21,7 +21,7 @@ products in one shared inbox. Self-hosted, one Go binary with Postgres.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset=".github/assets/panel-dark.webp">
-  <img src=".github/assets/panel-light.webp" alt="The Yuva panel: conversations from three products in one list, an in-app conversation with a note and a reply, and the contact's details.">
+  <img src=".github/assets/panel-light.webp" alt="The Yuva panel: waiting conversations from three products in one list, and an in-app conversation beside it with a teammate's note and a suggested reply.">
 </picture>
 
 > [!WARNING]
