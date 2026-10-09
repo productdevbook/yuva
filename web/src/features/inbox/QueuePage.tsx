@@ -160,7 +160,7 @@ export function QueuePage() {
   }, [conversationId, currentId, head, setCurrent])
   useViewing(id ?? undefined)
   return (
-    <main className="mx-auto max-w-[700px] px-6 pt-7 pb-24 phone:px-4 phone:pt-4 phone:pb-[120px]" data-testid="queue">
+    <main className="mx-auto max-w-[840px] px-6 pt-7 pb-24 phone:px-4 phone:pt-4 phone:pb-[120px]" data-testid="queue">
       <AwayBanner />
       <CleanupBanner />
       {id ? (
