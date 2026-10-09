@@ -541,7 +541,10 @@ inline thread inside a product's own panel.
   e-mail address when nobody is available, a greeting and launcher overrides. `/client/v1` answers
   browsers only from origins some chat channel allows (CORS) and then checks the session's own
   channel: a request for a chat channel must carry one of its origins, and one without an `Origin`
-  header is refused. Session starts and contact writes are rate limited per IP address (per /64
+  header is refused. The server's own origin (`YUVA_PUBLIC_URL`) counts as allowed for every chat
+  channel, so the panel can show a live widget (the setup page's preview) without changing the
+  channel; a same-origin request without `Origin` counts as that origin only when it carries
+  `Sec-Fetch-Site: same-origin`. Session starts and contact writes are rate limited per IP address (per /64
   for IPv6) and per channel, counted in each process; finished windows are swept every minute and
   at most 100,000 are open at once (new keys beyond that are refused until a sweep). An IP address
   starts at most `YUVA_ANONYMOUS_CONTACTS_PER_HOUR` (20) new anonymous visitors per channel and
