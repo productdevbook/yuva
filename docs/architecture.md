@@ -636,6 +636,21 @@ that allows only its own scripts, connections and workers, no framing (`frame-an
 no plugins; inline styles and any http(s) image stay allowed for the sandboxed e-mail frame, which
 inherits the policy. Every response carries `X-Content-Type-Options: nosniff`.
 
+E-mail HTML has two views, both in a sandboxed `srcdoc` iframe under a CSP of its own (no
+scripts, no forms, images only from `data:`, the server's attachments and, once the member allows
+remote images, http(s)):
+- Reading (default): the sanitized HTML (`html`, `full_html`; bluemonday's UGC policy, so no
+  styles or colours survive) drawn in the panel's own type and theme colours, light or dark, redrawn
+  when the theme changes. It never scrolls sideways: tables, `width` attributes and images are held
+  to the frame's width and long words break. Images sit on a light plate so dark-on-transparent
+  logos stay visible in the dark theme.
+- Original, on demand ("Show original"): `original_html` from `GET /v1/messages/{id}/email`,
+  sanitized with a second policy that keeps inline styles limited to an allowlist of CSS
+  properties and the colour, background and size attributes, never `<style>` blocks, scripts,
+  forms or external stylesheets. It is drawn on white, as the sender designed it; content wider
+  than the frame is scaled down to fit (to 60% at most) and only beyond that scrolls inside the
+  frame, never the page.
+
 - Queue: one conversation at a time. The conversations waiting for the member (open, assigned to
   them or to nobody, oldest first) are a queue; after a reply, close, snooze or hand-off the next
   one opens, with an undo. A reply is held for a few seconds before it is posted so it can be
