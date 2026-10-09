@@ -198,7 +198,7 @@ func TestMCPPromptInjectionSendsNothing(t *testing.T) {
 	token := h.oauthToken(et.owner, et.ws, "Claude Code", testOrigin+"/mcp", []string{"conversations:read", "messages:write", "contacts:read"})
 	cs := h.mcpSession(token)
 	tools := toolNames(t, cs)
-	if !slices.Contains(tools, "draft_reply") || slices.Contains(tools, "send_reply") {
+	if !slices.Contains(tools, "draft_reply") || slices.Contains(tools, "send_reply") || slices.Contains(tools, "send_draft") {
 		t.Fatalf("tools with bots_may_send off: %v", tools)
 	}
 
@@ -243,6 +243,48 @@ func TestMCPPromptInjectionSendsNothing(t *testing.T) {
 	}
 	if jobs := h.jobs("email_send", et.ws); len(jobs) != 0 || h.smtp.count() != sentBefore {
 		t.Fatalf("e-mail queued or sent: %d jobs, %d sent", len(jobs), h.smtp.count()-sentBefore)
+	}
+}
+
+func TestMCPSendDraftDeliversTheDraft(t *testing.T) {
+	h := newHarness(t)
+	et := newEmailTeam(t, h, false)
+	r := h.ingest(et.address, buildMail(mailOpts{
+		from: "customer@example.net", to: et.address, subject: "Refund", messageID: newMessageID(), body: "Can I get a refund?",
+	}), nil)
+	if r.status != http.StatusAccepted {
+		t.Fatalf("ingest: %d %v", r.status, r.body)
+	}
+	conv := r.str("conversation_id")
+	et.owner.expect(http.StatusOK, "PATCH", "/v1/workspace", map[string]any{"bots_may_send": true})
+
+	token := h.oauthToken(et.owner, et.ws, "Codex", testOrigin+"/mcp", []string{"conversations:read", "messages:write", "drafts:send"})
+	cs := h.mcpSession(token)
+	if tools := toolNames(t, cs); !slices.Contains(tools, "send_draft") {
+		t.Fatalf("send_draft not listed: %v", tools)
+	}
+	draft, errText := callTool(t, cs, "draft_reply", map[string]any{"conversation_id": conv, "body": "Yes, refunded."})
+	if errText != "" {
+		t.Fatal(errText)
+	}
+	sent, errText := callTool(t, cs, "send_draft", map[string]any{"message_id": draft["id"]})
+	if errText != "" {
+		t.Fatal(errText)
+	}
+	if sent["id"] != draft["id"] || sent["draft"] == true {
+		t.Fatalf("send_draft returned %v for draft %v", sent, draft["id"])
+	}
+	var out []map[string]any
+	for _, m := range messages(et.owner, conv) {
+		if m["kind"] == "message" && m["direction"] == "out" {
+			out = append(out, m)
+		}
+	}
+	if len(out) != 1 || out[0]["id"] != draft["id"] || out[0]["draft"] == true {
+		t.Fatalf("outgoing messages after send_draft: %v", out)
+	}
+	if jobs := h.jobs("email_send", et.ws); len(jobs) != 1 {
+		t.Fatalf("e-mail jobs: %d", len(jobs))
 	}
 }
 
