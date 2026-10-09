@@ -8,7 +8,8 @@ import { CodeLine, CopyButton, Notice, Segmented } from "@/components/common"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useInbox } from "@/features/settings/inboxes/queries"
-import { DEFAULT_COLOR, MailMock, PhoneMock, PreviewCaption, SiteMock } from "@/features/setup/previews"
+import { LiveChat, useForgetPreviewVisitor } from "@/features/setup/LiveChat"
+import { DEFAULT_COLOR, MailMock, PhoneMock, PreviewCaption } from "@/features/setup/previews"
 import type { SetupKind, SetupState } from "@/features/setup/setup"
 import { SetupLayout, StepHeader } from "@/features/setup/SetupLayout"
 import { api, unwrap, useVersion, type Channel, type EmailChannel } from "@/lib/api"
@@ -227,17 +228,12 @@ export function InstallStep({ inboxId, channelId }: { inboxId: string; channelId
   const kind = channel ? setupKind(channel) : null
   const name = inbox?.name ?? ""
   const color = inbox?.branding.color ?? DEFAULT_COLOR
+  useForgetPreviewVisitor(channel?.chat?.public_key, `/setup/${inboxId}/${channelId}`)
   const preview = !channel ? null : kind === "chat" ? (
     <>
-      <SiteMock
-        host={new URL(channel.chat!.allowed_origins[0]!).host}
-        name={name}
-        greeting={channel.chat!.greeting}
-        color={channel.chat!.launcher.color ?? color}
-        position={channel.chat!.launcher.position}
-      />
+      <LiveChat publicKey={channel.chat!.public_key} />
       <PreviewCaption>
-        <Trans>This is how the chat looks on your site.</Trans>
+        <Trans>This is the live chat, as it looks on your site. You can try it here.</Trans>
       </PreviewCaption>
     </>
   ) : kind === "email" ? (

@@ -8,7 +8,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useConversations } from "@/features/inbox/queries"
 import { useInbox } from "@/features/settings/inboxes/queries"
 import { setupKind, useChannel } from "@/features/setup/InstallStep"
-import { DEFAULT_COLOR, FirstConversation, MailMock, PhoneMock, PreviewCaption, SiteMock } from "@/features/setup/previews"
+import { LiveChat, useForgetPreviewVisitor } from "@/features/setup/LiveChat"
+import { DEFAULT_COLOR, FirstConversation, MailMock, PhoneMock, PreviewCaption } from "@/features/setup/previews"
 import { SetupLayout, StepHeader } from "@/features/setup/SetupLayout"
 import type { Channel } from "@/lib/api"
 import { useRealtimeStatus } from "@/lib/realtime"
@@ -28,20 +29,12 @@ function Listening() {
   )
 }
 
-function ChatPreview({ channel, name, color }: { channel: Channel; name: string; color: string }) {
-  const chat = channel.chat!
+function ChatPreview({ channel }: { channel: Channel }) {
   return (
     <>
-      <SiteMock
-        host={new URL(chat.allowed_origins[0]!).host}
-        name={name}
-        greeting={chat.greeting}
-        color={chat.launcher.color ?? color}
-        position={chat.launcher.position}
-        waiting
-      />
+      <LiveChat publicKey={channel.chat!.public_key} />
       <PreviewCaption>
-        <Trans>It shows up here as soon as it reaches Yuva.</Trans>
+        <Trans>Write here as a visitor would. The page moves on as soon as the message reaches Yuva.</Trans>
       </PreviewCaption>
     </>
   )
@@ -57,6 +50,7 @@ export function WaitStep({ inboxId, channelId }: { inboxId: string; channelId: s
   const name = inbox?.name ?? ""
   const color = inbox?.branding.color ?? DEFAULT_COLOR
   const step = first ? 5 : 4
+  useForgetPreviewVisitor(channel?.chat?.public_key, `/setup/${inboxId}/${channelId}`)
 
   const preview = !channel ? null : first ? (
     <>
@@ -66,7 +60,7 @@ export function WaitStep({ inboxId, channelId }: { inboxId: string; channelId: s
       </PreviewCaption>
     </>
   ) : kind === "chat" ? (
-    <ChatPreview channel={channel} name={name} color={color} />
+    <ChatPreview channel={channel} />
   ) : kind === "email" ? (
     <>
       <MailMock name={name} to={channel.email!.address} waiting />
@@ -84,7 +78,7 @@ export function WaitStep({ inboxId, channelId }: { inboxId: string; channelId: s
   )
 
   return (
-    <SetupLayout step={step} back={first ? undefined : `/setup/${inboxId}/${channelId}`} preview={preview} previewOpen={!!first}>
+    <SetupLayout step={step} back={first ? undefined : `/setup/${inboxId}/${channelId}`} preview={preview} previewOpen={!!first || kind === "chat"}>
       {!channel || !kind ? (
         <div className="flex flex-col gap-4">
           <Skeleton className="h-8 w-3/4" />
@@ -114,7 +108,7 @@ export function WaitStep({ inboxId, channelId }: { inboxId: string; channelId: s
             }
           >
             {kind === "chat" ? (
-              <Trans>Open a page with the snippet and write in the chat, as a visitor would. The conversation appears here the moment it starts.</Trans>
+              <Trans>Write in the chat in the preview, or on a page with the snippet, as a visitor would. The conversation appears here the moment it starts.</Trans>
             ) : kind === "email" ? (
               <Trans>Write to {channel.email!.address} from any other address. The conversation appears here the moment the mail arrives.</Trans>
             ) : (
