@@ -351,9 +351,10 @@ type realtimeClientFrame struct {
 }
 
 // readMemberFrames reads what the panel sends: `viewing` records the conversation a member's
-// connection shows, so notifications about it stay quiet, tells the other members who can see it
-// and sends this connection the members already there; anything else is ignored. The connection
-// ends when reading fails, and its conversation is then left.
+// connection shows (none when the member cannot see it), so notifications about it stay quiet,
+// tells the other members who can see it and sends this connection the members already there;
+// anything else is ignored. The connection ends when reading fails, and its conversation is then
+// left.
 func (s *Server) readMemberFrames(ctx context.Context, cancel context.CancelFunc, conn *websocket.Conn, p principal, connID uuid.UUID, direct chan<- realtime.Event) {
 	defer cancel()
 	var shown *store.Conversation
@@ -377,20 +378,25 @@ func (s *Server) readMemberFrames(ctx context.Context, cancel context.CancelFunc
 		if typ != websocket.MessageText || connID == uuid.Nil() || json.Unmarshal(b, &f) != nil || f.Type != "viewing" {
 			continue
 		}
-		if err := s.st.SetConnectionViewing(ctx, store.SetConnectionViewingParams{
-			WorkspaceID: p.workspaceID, ID: connID, ConversationID: f.ConversationID, Now: s.now(),
-		}); err != nil {
-			if ctx.Err() == nil {
-				s.log.WarnContext(ctx, "realtime viewing", slog.Any("error", err))
-			}
-			continue
-		}
 		prev := shown
 		shown = nil
 		if f.ConversationID != nil {
 			if c, err := visibleConversation(ctx, s.st.Queries, p, *f.ConversationID, false); err == nil {
 				shown = &c
 			}
+		}
+		var viewing *uuid.UUID
+		if shown != nil {
+			viewing = &shown.ID
+		}
+		if err := s.st.SetConnectionViewing(ctx, store.SetConnectionViewingParams{
+			WorkspaceID: p.workspaceID, ID: connID, ConversationID: viewing, Now: s.now(),
+		}); err != nil {
+			if ctx.Err() == nil {
+				s.log.WarnContext(ctx, "realtime viewing", slog.Any("error", err))
+			}
+			shown = prev
+			continue
 		}
 		if prev != nil && (shown == nil || prev.ID != shown.ID) {
 			s.viewingChanged(ctx, *prev, p.memberID)
@@ -427,6 +433,9 @@ func (s *Server) sendViewers(ctx context.Context, c store.Conversation, memberID
 	}
 	for _, id := range viewers {
 		if id == memberID {
+			continue
+		}
+		if ok, err := memberHasInbox(ctx, s.st.Queries, c.WorkspaceID, c.InboxID, id); err != nil || !ok {
 			continue
 		}
 		e := viewingEvent(c, id, true)

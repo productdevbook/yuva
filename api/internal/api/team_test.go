@@ -153,8 +153,27 @@ func TestWhoIsViewing(t *testing.T) {
 		t.Fatalf("agent left: %v", d)
 	}
 
+	h.clock.Advance(time.Second)
+	sendFrame(t, agent, map[string]any{"type": "viewing", "conversation_id": secret})
+	var stored *string
+	for deadline := time.Now().Add(5 * time.Second); ; {
+		var seen time.Time
+		err := h.st.Pool.QueryRow(context.Background(),
+			"SELECT seen_at, viewing_conversation_id::text FROM realtime_connections WHERE member_id = $1", tm.agentID).Scan(&seen, &stored)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if seen.Equal(h.clock.Now()) || time.Now().After(deadline) {
+			break
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+	if stored != nil {
+		t.Fatalf("stored a conversation the agent cannot see: %s", *stored)
+	}
+	sendFrame(t, owner, map[string]any{"type": "viewing", "conversation_id": secret})
 	sendFrame(t, agent, map[string]any{"type": "viewing", "conversation_id": conv})
-	if d := viewingOf(t, owner); d["viewing"] != true {
+	if d := viewingOf(t, owner); d["member_id"] != tm.agentID || d["conversation_id"] != conv || d["viewing"] != true {
 		t.Fatalf("agent back: %v", d)
 	}
 	_ = agent.conn.CloseNow()
