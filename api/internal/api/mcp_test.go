@@ -445,3 +445,28 @@ func TestOAuthLoopbackRedirectAnyPort(t *testing.T) {
 		}
 	}
 }
+
+func TestOAuthRegistrationIgnoresUnofferedGrantTypes(t *testing.T) {
+	h := newHarness(t)
+	register := func(grants []string) (int, map[string]any) {
+		reg, _ := json.Marshal(map[string]any{"client_name": "Claude", "redirect_uris": []string{"https://claude.ai/api/mcp/auth_callback"}, "grant_types": grants})
+		req, _ := http.NewRequest("POST", h.url+"/oauth/register", strings.NewReader(string(reg)))
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("X-Forwarded-For", h.client().ip)
+		res, err := http.DefaultClient.Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer res.Body.Close()
+		var body map[string]any
+		_ = json.NewDecoder(res.Body).Decode(&body)
+		return res.StatusCode, body
+	}
+	status, body := register([]string{"authorization_code", "refresh_token", "urn:ietf:params:oauth:grant-type:jwt-bearer"})
+	if status != http.StatusCreated || fmt.Sprint(body["grant_types"]) != "[authorization_code refresh_token]" {
+		t.Fatalf("with jwt-bearer: %d %v", status, body)
+	}
+	if status, body := register([]string{"client_credentials"}); status != http.StatusBadRequest || body["error"] != "invalid_client_metadata" {
+		t.Fatalf("without authorization_code: %d %v", status, body)
+	}
+}
