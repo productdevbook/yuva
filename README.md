@@ -46,7 +46,7 @@ products in one shared inbox. Self-hosted, one Go binary with Postgres.
 ## Quick start
 
 ```sh
-docker pull ghcr.io/productdevbook/yuva:0.0.4
+docker pull ghcr.io/productdevbook/yuva:0.0.5
 ```
 
 1. Write `compose.yaml` and `.env` from the [install guide](docs/install.md#quick-start-with-compose).
