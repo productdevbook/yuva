@@ -1,6 +1,6 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { useQueries, useQuery } from "@tanstack/react-query"
-import { ArrowUpRightIcon, BellIcon, BuildingIcon, KeyRoundIcon, PlugIcon, PlusIcon, QuoteIcon, TagIcon, UsersIcon } from "lucide-react"
+import { ArrowUpRightIcon, BellIcon, BuildingIcon, KeyRoundIcon, PaletteIcon, PlugIcon, PlusIcon, QuoteIcon, TagIcon, UsersIcon } from "lucide-react"
 import { Outlet } from "react-router"
 
 import { initials, useEnumText } from "@/components/common/text"
@@ -58,6 +58,12 @@ export function SettingsIndex() {
                 <BellIcon />
               </RowIcon>
               <RowText title={<Trans>Notifications</Trans>} detail={<Trans>When we let you know</Trans>} />
+            </LinkRow>
+            <LinkRow to="appearance" testId="settings-appearance">
+              <RowIcon>
+                <PaletteIcon />
+              </RowIcon>
+              <RowText title={<Trans>Appearance</Trans>} detail={<Trans>Theme and e-mail view on this device</Trans>} />
             </LinkRow>
           </Rows>
         </Card>

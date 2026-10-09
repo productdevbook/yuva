@@ -8,6 +8,7 @@ import { HomePage } from "@/features/inbox/HomePage"
 import { QueuePage } from "@/features/inbox/QueuePage"
 import { ConsentPage } from "@/features/oauth/ConsentPage"
 import { ApiKeysPage } from "@/features/settings/api-keys/ApiKeysPage"
+import { AppearancePage } from "@/features/settings/appearance/AppearancePage"
 import { CannedRepliesPage } from "@/features/settings/canned/CannedRepliesPage"
 import { ConnectedAppsPage } from "@/features/settings/connected-apps/ConnectedAppsPage"
 import { InboxPage } from "@/features/settings/inboxes/InboxPage"
@@ -36,6 +37,7 @@ export function AppRoutes() {
           <Route index element={<SettingsIndex />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="notifications" element={<NotificationsPage />} />
+          <Route path="appearance" element={<AppearancePage />} />
           <Route path="workspace" element={<WorkspacePage />} />
           <Route path="members" element={<MembersPage />} />
           <Route path="new/:inboxId?/:channelId?" element={<NewInboxPage />} />

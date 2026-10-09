@@ -152,6 +152,11 @@ export function useDark() {
 
 const NO_INLINE: ReadonlyMap<string, string> = new Map()
 const MIN_SCALE = 0.6
+const heights = new Map<string, number>()
+
+export function knownHeight(key: string) {
+  return heights.get(key)
+}
 
 export function EmailHtml({
   html,
@@ -159,6 +164,8 @@ export function EmailHtml({
   inline = NO_INLINE,
   original = false,
   asSent = false,
+  heightKey,
+  initialHeight = 40,
   className,
 }: {
   html: string
@@ -166,11 +173,13 @@ export function EmailHtml({
   inline?: ReadonlyMap<string, string>
   original?: boolean
   asSent?: boolean
+  heightKey?: string
+  initialHeight?: number
   className?: string
 }) {
   const { t } = useLingui()
   const frame = useRef<HTMLIFrameElement>(null)
-  const [height, setHeight] = useState(40)
+  const [height, setHeight] = useState(() => (heightKey && heights.get(heightKey)) || initialHeight)
   const dark = useDark()
   const darkened = original && dark && !asSent
   const look = useMemo(() => lookOf(dark), [dark])
@@ -198,7 +207,9 @@ export function EmailHtml({
         box.style.transform = scale < 1 ? `scale(${scale})` : ""
       }
       const bar = original ? Math.max(0, (doc.defaultView?.innerHeight ?? 0) - root.clientHeight) : 0
-      setHeight(Math.ceil(box.offsetHeight * scale) + bar)
+      const h = Math.ceil(box.offsetHeight * scale) + bar
+      if (heightKey) heights.set(heightKey, h)
+      setHeight(h)
     }
     const start = () => {
       const doc = el.contentDocument
@@ -219,7 +230,7 @@ export function EmailHtml({
       el.removeEventListener("load", start)
       ro?.disconnect()
     }
-  }, [srcDoc, original])
+  }, [srcDoc, original, heightKey])
 
   return (
     <iframe
@@ -231,6 +242,7 @@ export function EmailHtml({
       className={cn("block w-full border-0", className)}
       style={{ height }}
       data-testid="email-html"
+      data-view={original ? "original" : "reading"}
     />
   )
 }

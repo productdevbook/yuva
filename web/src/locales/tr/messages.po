@@ -545,9 +545,10 @@ msgstr "Sadece mesai saatlerinde çevrimiçi görün"
 
 #: src/app/Palette.tsx
 #: src/app/UserMenu.tsx
-#: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/appearance/AppearancePage.tsx
+#: src/features/settings/SettingsLayout.tsx
 msgid "Appearance"
-msgstr "Tema"
+msgstr "Görünüm"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "As above ({current})"
@@ -984,7 +985,7 @@ msgid "Danger zone"
 msgstr "Tehlikeli bölge"
 
 #: src/app/UserMenu.tsx
-#: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/appearance/AppearancePage.tsx
 msgid "Dark"
 msgstr "Koyu"
 
@@ -1187,6 +1188,10 @@ msgstr "E-posta içeriği"
 #: src/features/settings/notifications/events.ts
 msgid "E-mail only"
 msgstr "Yalnızca e-posta"
+
+#: src/features/settings/appearance/AppearancePage.tsx
+msgid "E-mail view"
+msgstr "E-posta görünümü"
 
 #: src/features/auth/AuthLayout.tsx
 msgid "E-mail, live chat and in-app messages"
@@ -1464,6 +1469,10 @@ msgstr "Geçmiş"
 msgid "Home"
 msgstr "Ana sayfa"
 
+#: src/features/settings/appearance/AppearancePage.tsx
+msgid "How HTML e-mails open. You can still switch each message."
+msgstr "HTML e-postaların nasıl açılacağı. Her iletiyi yine de ayrı ayrı değiştirebilirsiniz."
+
 #: src/components/common/SecretDialog.tsx
 msgid "I saved it"
 msgstr "Kaydettim"
@@ -1702,7 +1711,7 @@ msgid "Leave it to the teammate who is typing"
 msgstr "Yazan ekip arkadaşına bırak"
 
 #: src/app/UserMenu.tsx
-#: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/appearance/AppearancePage.tsx
 msgid "Light"
 msgstr "Açık"
 
@@ -2300,6 +2309,10 @@ msgstr "Açılış"
 msgid "or"
 msgstr "veya"
 
+#: src/features/settings/appearance/AppearancePage.tsx
+msgid "Original"
+msgstr "Orijinal"
+
 #: src/components/common/text.ts
 msgid "Other"
 msgstr "Diğer"
@@ -2511,6 +2524,10 @@ msgstr "Konuşmaları, mesajları, etiketleri ve hazır yanıtları görme"
 #: src/components/common/text.ts
 msgid "Read the workspace, members, inboxes and channels"
 msgstr "Çalışma alanını, üyeleri, gelen kutularını ve kanalları görme"
+
+#: src/features/settings/appearance/AppearancePage.tsx
+msgid "Reading"
+msgstr "Okuma"
 
 #: src/features/settings/inboxes/NewInboxPage.tsx
 msgid "Ready."
@@ -2923,7 +2940,7 @@ msgstr "Alıntıyı göster"
 
 #: src/features/conversation/messages/EmailBody.tsx
 msgid "Show reading view"
-msgstr "Okuma görünümüne dön"
+msgstr "Okuma görünümünü göster"
 
 #: src/features/conversation/messages/EmailBody.tsx
 msgid "Show the colours the sender chose, on white"
@@ -3115,11 +3132,11 @@ msgstr "Görünümü değiştir (V)"
 
 #: src/app/UserMenu.tsx
 #: src/features/conversation/Feedback.tsx
-#: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/appearance/AppearancePage.tsx
 msgid "System"
 msgstr "Sistem"
 
-#: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/appearance/AppearancePage.tsx
 msgid "System follows your device"
 msgstr "Sistem, cihazının ayarını izler"
 
@@ -3278,6 +3295,18 @@ msgstr "Ziyaretçi sohbette {0} adresini yazdı ama henüz doğrulamadı. Bu yan
 #: src/features/settings/members/MemberList.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Konuşmaları yerinde kalır; erişimleri hemen kalkar."
+
+#: src/features/settings/appearance/AppearancePage.tsx
+msgid "Theme"
+msgstr "Tema"
+
+#: src/features/settings/SettingsLayout.tsx
+msgid "Theme and e-mail view on this device"
+msgstr "Bu cihazda tema ve e-posta görünümü"
+
+#: src/features/settings/appearance/AppearancePage.tsx
+msgid "These choices are kept on this device only."
+msgstr "Bu seçimler yalnızca bu cihazda saklanır."
 
 #: src/features/settings/webhooks/WebhookDialog.tsx
 msgid "This address is private, loopback or link-local. Webhooks only reach public servers."

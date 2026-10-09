@@ -81,6 +81,7 @@ function useItems(open: boolean): Item[] {
     go(t`Settings`, "/settings", [mod, ","])
     go(t`Profile`, "/settings/profile")
     go(t`Notifications`, "/settings/notifications")
+    go(t`Appearance`, "/settings/appearance")
     go(t`Members`, "/settings/members")
     go(t`Canned replies`, "/settings/canned-replies")
     go(t`Labels`, "/settings/labels")

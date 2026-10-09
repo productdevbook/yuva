@@ -9,7 +9,6 @@ import { Card, ChoiceSelect, Rows, Section, SettingRow } from "@/features/settin
 import { activate, locales } from "@/i18n"
 import { api, unwrap, type Locale } from "@/lib/api"
 import { meKey, useSession } from "@/lib/session"
-import { setTheme, useTheme, type Theme } from "@/lib/theme"
 
 export function ProfileForm() {
   const { t } = useLingui()
@@ -17,7 +16,6 @@ export function ProfileForm() {
   const errorText = useErrorText()
   const { me } = useSession()
   const [name, setName] = useState(me.person.name)
-  const theme = useTheme()
   const save = useMutation({
     mutationFn: (body: { name?: string; locale?: Locale }) => unwrap(api.PATCH("/v1/me", { body })),
     onSuccess: (data) => {
@@ -51,19 +49,6 @@ export function ProfileForm() {
               value={me.person.locale}
               onChange={(v) => save.mutate({ locale: v })}
               options={Object.entries(locales) as [Locale, string][]}
-            />
-          </SettingRow>
-          <SettingRow title={<Trans>Appearance</Trans>} hint={<Trans>System follows your device</Trans>} htmlFor="theme">
-            <ChoiceSelect<Theme>
-              id="theme"
-              label={t`Appearance`}
-              value={theme}
-              onChange={setTheme}
-              options={[
-                ["system", t`System`],
-                ["light", t`Light`],
-                ["dark", t`Dark`],
-              ]}
             />
           </SettingRow>
         </Rows>
