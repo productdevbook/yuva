@@ -11,9 +11,11 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { activate, i18n, initialLocale } from "@/i18n"
 import { ApiError } from "@/lib/api"
 import { startPwa } from "@/lib/pwa"
+import { startTheme } from "@/lib/theme"
 import { meKey } from "@/lib/session"
 
 activate(initialLocale())
+startTheme()
 startPwa()
 
 const queryClient: QueryClient = new QueryClient({

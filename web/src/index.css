@@ -3,7 +3,7 @@
 @import "@fontsource-variable/geist-mono";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (@media (prefers-color-scheme: dark));
+@custom-variant dark (&:where(.dark, .dark *));
 @custom-variant phone (@media (max-width: 680px));
 
 @theme inline {
@@ -40,7 +40,8 @@
 }
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
+  --radius: 0.75rem;
   --background: #fbfaf9;
   --foreground: #0b0b0f;
   --surface: #f4f2ef;
@@ -63,29 +64,28 @@
   --mate: #0e7490;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0c;
-    --foreground: #fafafa;
-    --surface: #101013;
-    --card: #131316;
-    --muted: #1c1c21;
-    --muted-foreground: #a1a1aa;
-    --faint: #8a8a93;
-    --border: #232327;
-    --input: #2e2e34;
-    --ring: #ff8a5c;
-    --primary: #d4431c;
-    --brand: #ff8a5c;
-    --brand-wash: #2a140c;
-    --destructive: #f87171;
-    --success: #4ade80;
-    --warning: #fbbf24;
-    --note: #221c0d;
-    --note-border: #3a3115;
-    --note-ink: #e3b54a;
-    --mate: #0891b2;
-  }
+:root.dark {
+  color-scheme: dark;
+  --background: #0a0a0c;
+  --foreground: #fafafa;
+  --surface: #101013;
+  --card: #131316;
+  --muted: #1c1c21;
+  --muted-foreground: #a1a1aa;
+  --faint: #8a8a93;
+  --border: #232327;
+  --input: #2e2e34;
+  --ring: #ff8a5c;
+  --primary: #d4431c;
+  --brand: #ff8a5c;
+  --brand-wash: #2a140c;
+  --destructive: #f87171;
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --note: #221c0d;
+  --note-border: #3a3115;
+  --note-ink: #e3b54a;
+  --mate: #0891b2;
 }
 
 @layer base {
