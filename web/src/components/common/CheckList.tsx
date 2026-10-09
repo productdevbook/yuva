@@ -28,7 +28,7 @@ export function CheckItem({
 }) {
   return (
     <li>
-      <Label className="gap-3 px-3.5 py-2.5 font-normal has-disabled:opacity-50" data-testid={testId}>
+      <Label className="gap-3 px-3.5 py-2.5 font-normal has-disabled:opacity-60" data-testid={testId}>
         <Checkbox checked={checked} disabled={disabled} onCheckedChange={onChange} />
         <span className="flex min-w-0 flex-1 flex-col">{children}</span>
       </Label>

@@ -12,7 +12,6 @@ export function ViewToggle({ className }: { className?: string }) {
   const here = pathname === "/" || pathname.startsWith("/conversations/")
   return (
     <Segmented<View | "">
-      look="segment"
       label={t`View`}
       value={here ? view : ""}
       onChange={(v) => {

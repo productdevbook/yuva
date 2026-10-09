@@ -59,7 +59,7 @@ function WorkspacePicker({ me, onChoose }: { me: Me; onChoose: (id: string) => v
       <ul className="flex flex-col gap-2">
         {me.memberships.map((m) => (
           <li key={m.workspace.id}>
-            <Item render={<button type="button" />} variant="outline" className="flex-nowrap hover:bg-surface [button]:hover:bg-surface"
+            <Item render={<button type="button" />} variant="outline" className="flex-nowrap hover:bg-muted [button]:hover:bg-muted"
               onClick={() => onChoose(m.workspace.id)}
             >
               <span className="flex-1 truncate font-medium">{m.workspace.name}</span>

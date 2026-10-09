@@ -86,7 +86,7 @@ function Row({
   const viewer = viewers[0] ? members.get(viewers[0]) : undefined
   return (
     <div
-      className={cn("flex items-center gap-2.5 rounded-xl px-2 py-2.5 transition-colors", current ? "bg-brand-wash" : "hover:bg-card")}
+      className={cn("flex items-center gap-2.5 rounded-xl px-2 py-2.5 transition-colors", current ? "bg-brand-wash" : "hover:bg-muted")}
       data-testid="list-row"
       data-conversation-id={c.id}
       aria-current={current || undefined}
@@ -95,7 +95,7 @@ function Row({
         checked={picked}
         onCheckedChange={onPick}
         aria-label={t`Select ${name}`}
-        className="size-[18px] rounded-[5px] data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground"
+        className="size-[18px] rounded-[5px]"
         data-testid="row-check"
       />
       <Item render={<button type="button" />} size="xs" className="min-w-0 flex-1 flex-nowrap p-0 [button]:hover:bg-transparent" onClick={onOpen}>
@@ -307,7 +307,6 @@ export function ListPage() {
       >
         <div className="flex flex-wrap items-center gap-1.5 px-4 py-3">
           <Segmented<Chip>
-            look="chip"
             label={t`Status`}
             value={chip}
             onChange={setChip}

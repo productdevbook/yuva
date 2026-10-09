@@ -12,7 +12,7 @@ export const popupClass =
   "max-h-(--available-height) overflow-x-hidden overflow-y-auto rounded-xl border bg-card p-1.5 text-foreground shadow-[0_16px_40px_-12px_rgb(15_23_42/0.28)] outline-none"
 
 const itemClass =
-  "relative flex cursor-default items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-body outline-none select-none data-highlighted:bg-muted data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+  "relative flex cursor-default items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-body outline-none select-none data-highlighted:bg-muted data-highlighted:text-foreground data-disabled:pointer-events-none data-disabled:opacity-60 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
 
 function DropdownMenuContent({
   align = "start",

@@ -7,7 +7,7 @@ import type { ConversationListItem } from "@/lib/api"
 import { Button } from "@/components/ui/button"
 import { Item } from "@/components/ui/item"
 
-const toggle = "justify-self-center text-faint hover:bg-card"
+const toggle = "justify-self-center text-faint hover:bg-muted"
 
 export function History({
   others,
@@ -40,7 +40,7 @@ export function History({
         const date = formatShort(o.last_activity_at, i18n.locale)
         const who = o.last_message?.author_type === "contact" ? first : t`Team`
         return (
-          <Item render={<button type="button" />} variant="outline" size="sm" className="block border-dashed text-small text-muted-foreground hover:border-solid [button]:hover:bg-card"
+          <Item render={<button type="button" />} variant="outline" size="sm" className="block border-dashed text-small text-muted-foreground hover:border-solid [button]:hover:bg-muted"
             key={o.id}
             onClick={() => navigate(`/conversations/${o.id}`)}
           >

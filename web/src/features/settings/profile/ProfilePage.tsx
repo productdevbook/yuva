@@ -21,7 +21,7 @@ export function ProfilePage() {
         <Card flush>
           <Rows>
             <li>
-              <Item render={<button type="button" />} className="min-h-[52px] rounded-none text-destructive [button]:hover:bg-background"
+              <Item render={<button type="button" />} className="min-h-[52px] rounded-none text-destructive [button]:hover:bg-muted"
                 onClick={async () => {
                   await signOut()
                   navigate("/sign-in", { replace: true })

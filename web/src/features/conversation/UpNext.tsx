@@ -10,7 +10,7 @@ export function UpNext({ c, onOpen }: { c: ConversationListItem; onOpen: () => v
   const inbox = useInboxes().data?.find((i) => i.id === c.inbox_id)
   const name = c.contact.name || c.contact.email || t`Unnamed contact`
   return (
-    <Item render={<button type="button" />} variant="outline" size="sm" className="mt-10 flex-nowrap border-dashed text-muted-foreground hover:border-solid hover:border-faint [button]:hover:bg-card"
+    <Item render={<button type="button" />} variant="outline" size="sm" className="mt-10 flex-nowrap border-dashed text-muted-foreground hover:border-solid hover:border-faint [button]:hover:bg-muted"
       onClick={onOpen}
       data-testid="up-next"
     >

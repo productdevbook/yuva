@@ -145,7 +145,7 @@ export function AllDrawer({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" showCloseButton={false} className="w-[420px] max-w-full bg-background phone:w-full" data-testid="all-drawer">
+      <SheetContent side="right" showCloseButton={false} className="w-[460px] max-w-full bg-background phone:w-full" data-testid="all-drawer">
         <div className="grid gap-3 border-b px-4.5 pt-4.5 pb-3">
           <div className="flex items-center">
             <SheetTitle className="text-title">
@@ -169,12 +169,11 @@ export function AllDrawer({
             />
           </InputGroup>
           <Segmented<Tab>
-            look="segment"
             label={t`Conversations`}
             value={tab}
             onChange={setTab}
-            className="w-full overflow-x-auto"
-            itemClassName="flex-1 px-2"
+            className="w-full overflow-x-auto [scrollbar-width:none]"
+            itemClassName="flex-auto shrink-0 px-1.5"
             items={TABS.map((k) => ({
               value: k,
               testId: `drawer-tab-${k}`,

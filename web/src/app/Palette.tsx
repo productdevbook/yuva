@@ -152,7 +152,7 @@ export function Palette({ open, onOpenChange }: { open: boolean; onOpenChange: (
                   key={`${x.label}:${i}`}
                   value={`${x.label} ${x.hint ?? ""} ${g.name} ${i}`}
                   onSelect={() => run(x)}
-                  className="gap-2.5 rounded-[10px]! px-3 py-[9px] data-selected:bg-brand-wash"
+                  className="gap-2.5 rounded-[10px]! px-3 py-[9px]"
                 >
                   <span className="truncate">{x.label}</span>
                   {x.hint && <small className="min-w-0 truncate text-caption text-faint">{x.hint}</small>}
@@ -173,7 +173,7 @@ export function Palette({ open, onOpenChange }: { open: boolean; onOpenChange: (
                 forceMount
                 value={`search ${search}`}
                 onSelect={() => run({ group: "", label: "", run: () => openDrawer(search) })}
-                className="gap-2.5 rounded-[10px]! px-3 py-[9px] data-selected:bg-brand-wash"
+                className="gap-2.5 rounded-[10px]! px-3 py-[9px]"
               >
                 <Trans>Search conversations for “{search}”</Trans>
               </CommandItem>

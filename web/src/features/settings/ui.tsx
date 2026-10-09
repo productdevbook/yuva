@@ -211,7 +211,7 @@ export function Row({ children, className, ...props }: React.ComponentProps<"li"
 export function LinkRow({ to, children, value, testId }: { to: string; children: React.ReactNode; value?: React.ReactNode; testId?: string }) {
   return (
     <li>
-      <Link to={to} className="flex min-h-[52px] items-center gap-3 px-4 py-3 transition-colors hover:bg-background" data-testid={testId}>
+      <Link to={to} className="flex min-h-[52px] items-center gap-3 px-4 py-3 transition-colors hover:bg-muted" data-testid={testId}>
         {children}
         {value !== undefined && <span className="shrink-0 text-body whitespace-nowrap text-faint">{value}</span>}
         <ChevronRightIcon className="size-4 shrink-0 text-faint rtl:rotate-180" />
@@ -251,7 +251,7 @@ export function StatusTag({ tone = "muted", children, ...props }: { tone?: "mute
 
 export function RowIcon({ children }: { children: React.ReactNode }) {
   return (
-    <span className="grid size-[34px] shrink-0 place-items-center rounded-[10px] border bg-background text-small font-medium text-muted-foreground [&_svg]:size-4">
+    <span className="grid size-[34px] shrink-0 place-items-center rounded-[10px] border bg-surface text-small font-medium text-muted-foreground [&_svg]:size-4">
       {children}
     </span>
   )

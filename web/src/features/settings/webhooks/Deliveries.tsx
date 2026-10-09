@@ -58,7 +58,7 @@ export function Deliveries({ endpoint }: { endpoint: WebhookEndpoint }) {
           <Rows>
             {items.map((d) => (
               <li key={d.id}>
-                <Item render={<button type="button" />} className="flex-nowrap rounded-none [button]:hover:bg-surface"
+                <Item render={<button type="button" />} className="flex-nowrap rounded-none [button]:hover:bg-muted"
                   onClick={() => setOpen(d.id)}
                   data-testid="delivery-row"
                 >

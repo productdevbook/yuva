@@ -58,7 +58,7 @@ function Suggestion({ m, ctx, onUse, onDiscard }: { m: Message; ctx: ThreadConte
         variant="ghost"
         size="icon-xs"
         onClick={onDiscard}
-        className="text-faint hover:bg-card"
+        className="text-faint hover:bg-muted"
         aria-label={t`Discard the suggested reply`}
         title={t`Discard the suggested reply`}
       >
@@ -268,15 +268,12 @@ export const ReplyBox = forwardRef<
     >
       <div className="flex items-center gap-0.5 px-2 pt-2">
         <Tabs value={mode} onValueChange={(v) => focus(v as "message" | "note")} className="gap-0">
-          <TabsList aria-label={t`Message type`} className="h-auto gap-0.5 bg-transparent p-0">
+          <TabsList aria-label={t`Message type`}>
             {(["message", "note"] as const).map((m) => (
               <TabsTrigger
                 key={m}
                 value={m}
-                className={cn(
-                  "flex-none rounded-lg px-2.5 text-faint data-active:shadow-none dark:data-active:border-transparent",
-                  note ? "data-active:bg-card data-active:text-note-ink dark:data-active:bg-card" : "data-active:bg-background data-active:text-foreground dark:data-active:bg-background",
-                )}
+                className={cn("flex-none px-3", note && "data-active:text-note-ink")}
               >
                 {m === "message" ? <Trans>Reply</Trans> : <Trans>Team note</Trans>}
               </TabsTrigger>
@@ -351,7 +348,7 @@ export const ReplyBox = forwardRef<
         <Button
           variant="ghost"
           size="icon-sm"
-          className="text-faint hover:bg-background"
+          className="text-faint hover:bg-muted"
           aria-label={t`Attach files`}
           title={t`Attach files`}
           onClick={() => fileInput.current?.click()}
@@ -360,7 +357,7 @@ export const ReplyBox = forwardRef<
         </Button>
         <Popover open={cannedOpen} onOpenChange={setCannedOpen}>
           <PopoverTrigger
-            render={<Button variant="ghost" size="sm" className="text-faint hover:bg-background aria-expanded:bg-background" />}
+            render={<Button variant="ghost" size="sm" className="text-faint hover:bg-muted aria-expanded:bg-muted" />}
             title={t`Canned replies`}
             data-testid="canned-button"
           >
