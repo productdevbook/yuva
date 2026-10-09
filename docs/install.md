@@ -38,7 +38,7 @@ services:
     restart: unless-stopped
 
   yuva:
-    image: ghcr.io/productdevbook/yuva:0.0.3
+    image: ghcr.io/productdevbook/yuva:0.0.4
     env_file: .env
     environment:
       YUVA_DATABASE_URL: postgres://yuva:${POSTGRES_PASSWORD}@db:5432/yuva?sslmode=disable
@@ -81,7 +81,7 @@ Keep `YUVA_MASTER_KEY` somewhere safe outside the server; see [Master key](#mast
 ### 3. Start
 
 ```sh
-docker run --rm ghcr.io/productdevbook/yuva:0.0.3 vapid-keys >> .env
+docker run --rm ghcr.io/productdevbook/yuva:0.0.4 vapid-keys >> .env
 docker compose up -d
 curl -s http://127.0.0.1:8080/readyz     # {"status":"ok"}
 ```
@@ -143,7 +143,7 @@ panel and the widget scripts, runs as a non-root user, and exposes `8080` (HTTP)
 [command](operations.md#operator-commands) runs in the same image.
 
 To build it yourself: check out the release tag and run
-`docker build -f deploy/Dockerfile --build-arg VERSION=0.0.3 -t ghcr.io/productdevbook/yuva:0.0.3 .`
+`docker build -f deploy/Dockerfile --build-arg VERSION=0.0.4 -t ghcr.io/productdevbook/yuva:0.0.4 .`
 
 `deploy/compose.yaml` in the repository is the development setup (a fixed master key, Mailpit,
 private webhooks allowed). Do not run it in production.
@@ -219,7 +219,7 @@ Members get notifications on their phones and desktops by installing the panel a
 turning on Web Push. That needs a VAPID key pair:
 
 ```sh
-docker run --rm ghcr.io/productdevbook/yuva:0.0.3 vapid-keys
+docker run --rm ghcr.io/productdevbook/yuva:0.0.4 vapid-keys
 # YUVA_VAPID_PUBLIC_KEY=…
 # YUVA_VAPID_PRIVATE_KEY=…
 ```

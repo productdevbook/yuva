@@ -101,7 +101,8 @@ Accept: a fresh install from the guide works on a clean host.
 
 ## M9 — Headless and MCP (0.0.4)
 
-Status: in progress; plan in issue #17, decisions in `architecture.md` › Headless access.
+Status: shipped in `v0.0.4`; plan in issue #17, decisions in `architecture.md` › Headless access and
+› OAuth and MCP. Still to check against a public server: claude.ai and one non-Claude client.
 
 - Scoped API keys, bot authors, drafts, an event feed, idempotency keys, a published headless JS
   client and an API-only mode.
@@ -112,7 +113,7 @@ Status: in progress; plan in issue #17, decisions in `architecture.md` › Headl
 Accept: Claude Code and claude.ai triage an inbox and draft replies a member sends from the panel;
 a prompt-injection e-mail sends nothing; a headless chat works with the panel turned off.
 
-## M10 — Native apps for members (0.0.4)
+## M10 — Native apps for members (0.0.5)
 
 Status: planned; iOS in issue #18, Android in issue #19.
 
