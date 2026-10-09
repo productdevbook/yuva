@@ -736,6 +736,25 @@ rating. A close can be rated for 30 days. Ratings are not stored for spam.
   nothing, since mail scanners open links: it shows the chosen rating preselected and a comment
   field, and only its POST rates.
 
+### Contacts directory
+
+The panel lists contacts newest first or most recently active first (`sort=last_seen`), filtered
+by `kind` (`known`: an e-mail address or an external id; `visitor`: neither) and by whether they
+have an open conversation, with search over names, addresses and external ids.
+
+- `contacts.last_active_at` is the contact's last message (any channel), rating or use of a widget
+  or app session. It is kept by the queries that write those (message insert, session start,
+  session use at most once per throttle period, realtime close), carried over on a merge, and
+  indexed with `created_at` as fallback for the sort. It is the same for every member; an agent may
+  see a contact rise in the order because of a conversation in an inbox they cannot see, but never
+  that conversation.
+- `activity` (conversation counts, open ones, the last message time) is added only to
+  `GET /v1/contacts` and `GET /v1/contacts/{id}`, by one grouped query per page over the
+  conversations the caller can see, spam left out; events and webhooks carry the contact without it.
+- `GET /v1/contacts/{id}/summary` counts first replies with their median time and the latest
+  rating of each conversation, over the same conversations, computed on request.
+- A contact's conversations are `GET /v1/conversations?contact_id=` with the usual filters.
+
 ### Storage
 
 Attachments and raw e-mails in S3-compatible storage (R2, S3, MinIO) or on local disk for a

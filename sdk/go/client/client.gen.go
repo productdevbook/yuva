@@ -1278,6 +1278,42 @@ func (e ListClientMessagesParamsOrder) Valid() bool {
 	}
 }
 
+// Defines values for ListContactsParamsKind.
+const (
+	Known   ListContactsParamsKind = "known"
+	Visitor ListContactsParamsKind = "visitor"
+)
+
+// Valid indicates whether the value is a known member of the ListContactsParamsKind enum.
+func (e ListContactsParamsKind) Valid() bool {
+	switch e {
+	case Known:
+		return true
+	case Visitor:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListContactsParamsSort.
+const (
+	Created  ListContactsParamsSort = "created"
+	LastSeen ListContactsParamsSort = "last_seen"
+)
+
+// Valid indicates whether the value is a known member of the ListContactsParamsSort enum.
+func (e ListContactsParamsSort) Valid() bool {
+	switch e {
+	case Created:
+		return true
+	case LastSeen:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ListMessagesParamsOrder.
 const (
 	ListMessagesParamsOrderAsc  ListMessagesParamsOrder = "asc"
@@ -2073,6 +2109,10 @@ type ClientTypingEventType string
 
 // Contact defines model for Contact.
 type Contact struct {
+	// Activity Only on `GET /v1/contacts` and `GET /v1/contacts/{contactId}`. The counts cover the
+	// conversations the caller can see, spam left out; `last_seen_at` does not depend on the caller.
+	Activity *ContactActivity `json:"activity,omitempty"`
+
 	// Attributes Free-form data about the contact (plan, app version, …), at most 16 KiB.
 	Attributes Attributes `json:"attributes"`
 
@@ -2092,6 +2132,20 @@ type Contact struct {
 	// Undeliverable The contact's addresses that must not be mailed.
 	Undeliverable []UndeliverableEmail `json:"undeliverable"`
 	UpdatedAt     time.Time            `json:"updated_at"`
+}
+
+// ContactActivity Only on `GET /v1/contacts` and `GET /v1/contacts/{contactId}`. The counts cover the
+// conversations the caller can see, spam left out; `last_seen_at` does not depend on the caller.
+type ContactActivity struct {
+	Conversations int64 `json:"conversations"`
+
+	// LastConversationAt The last message in any of those conversations, else when the newest one started.
+	LastConversationAt *time.Time `json:"last_conversation_at,omitempty"`
+
+	// LastSeenAt The contact's last activity: a message (any channel), a rating, or use of a widget or
+	// app session. Absent when never active.
+	LastSeenAt        *time.Time `json:"last_seen_at,omitempty"`
+	OpenConversations int64      `json:"open_conversations"`
 }
 
 // ContactCreate defines model for ContactCreate.
@@ -2147,6 +2201,22 @@ type ContactRef struct {
 
 	// MergedIntoId Set on `contact.deleted` when the contact was merged into this one.
 	MergedIntoId *uuid.UUID `json:"merged_into_id,omitempty"`
+}
+
+// ContactSummary How the team has served the contact, over all their conversations the caller can see (spam
+// left out).
+type ContactSummary struct {
+	// FirstReplies Conversations where a member answered the contact's first message.
+	FirstReplies int64 `json:"first_replies"`
+
+	// MedianFirstReplySeconds Median seconds from the contact's first message to the first member reply; absent when `first_replies` is 0.
+	MedianFirstReplySeconds *int64 `json:"median_first_reply_seconds,omitempty"`
+
+	// Ratings The latest rating of each conversation.
+	Ratings struct {
+		Bad  int64 `json:"bad"`
+		Good int64 `json:"good"`
+	} `json:"ratings"`
 }
 
 // ContactUpdate defines model for ContactUpdate.
@@ -4501,6 +4571,14 @@ type ListContactsParams struct {
 	// Q Full-text search (Postgres `simple` configuration, `websearch` syntax).
 	Q *Search `form:"q,omitempty" json:"q,omitempty"`
 
+	// Kind `known`: the contact has an e-mail address or an external id. `visitor`: neither (an
+	// anonymous widget visitor, or someone known only by a typed, unconfirmed address).
+	Kind *ListContactsParamsKind `form:"kind,omitempty" json:"kind,omitempty"`
+
+	// HasOpen Only contacts with (`true`) or without (`false`) an open conversation the caller can see; spam does not count.
+	HasOpen *bool                   `form:"has_open,omitempty" json:"has_open,omitempty"`
+	Sort    *ListContactsParamsSort `form:"sort,omitempty" json:"sort,omitempty"`
+
 	// Cursor The `next_cursor` of the previous page.
 	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
 
@@ -4510,6 +4588,12 @@ type ListContactsParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
+
+// ListContactsParamsKind defines parameters for ListContacts.
+type ListContactsParamsKind string
+
+// ListContactsParamsSort defines parameters for ListContacts.
+type ListContactsParamsSort string
 
 // CreateContactParams defines parameters for CreateContact.
 type CreateContactParams struct {
@@ -4567,6 +4651,12 @@ type MergeContactParams struct {
 
 // GetContactPresenceParams defines parameters for GetContactPresence.
 type GetContactPresenceParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetContactSummaryParams defines parameters for GetContactSummary.
+type GetContactSummaryParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -7216,7 +7306,9 @@ type ClientInterface interface {
 
 	// ListContacts List contacts
 	//
-	// Newest first. `q` searches names, e-mail addresses and external ids.
+	// Newest first, or most recently active first with `sort=last_seen` (contacts never seen sort
+	// by when they were created). `q` searches names, e-mail addresses and external ids.
+	// Each item carries `activity`, counted over the inboxes the caller can see.
 	//
 	// Scope: `contacts:read`.
 	//
@@ -7349,6 +7441,16 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /v1/contacts/{contactId}/presence (the `GetContactPresence` operationId).
 	GetContactPresence(ctx context.Context, contactId ContactId, params *GetContactPresenceParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetContactSummary How the team served a contact
+	//
+	// First-reply time and ratings over the contact's conversations the caller can see. The
+	// counts of conversations are on the contact's `activity`.
+	//
+	// Scope: `contacts:read` and `conversations:read`.
+	//
+	// Corresponds with GET /v1/contacts/{contactId}/summary (the `GetContactSummary` operationId).
+	GetContactSummary(ctx context.Context, contactId ContactId, params *GetContactSummaryParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListConversations List conversations
 	//
@@ -9678,7 +9780,9 @@ func (c *Client) RotateChannelPublicKey(ctx context.Context, channelId ChannelId
 
 // ListContacts List contacts
 //
-// Newest first. `q` searches names, e-mail addresses and external ids.
+// Newest first, or most recently active first with `sort=last_seen` (contacts never seen sort
+// by when they were created). `q` searches names, e-mail addresses and external ids.
+// Each item carries `activity`, counted over the inboxes the caller can see.
 //
 // Scope: `contacts:read`.
 //
@@ -9922,6 +10026,26 @@ func (c *Client) MergeContact(ctx context.Context, contactId ContactId, params *
 // Corresponds with GET /v1/contacts/{contactId}/presence (the `GetContactPresence` operationId).
 func (c *Client) GetContactPresence(ctx context.Context, contactId ContactId, params *GetContactPresenceParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetContactPresenceRequest(c.Server, contactId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetContactSummary How the team served a contact
+//
+// First-reply time and ratings over the contact's conversations the caller can see. The
+// counts of conversations are on the contact's `activity`.
+//
+// Scope: `contacts:read` and `conversations:read`.
+//
+// Corresponds with GET /v1/contacts/{contactId}/summary (the `GetContactSummary` operationId).
+func (c *Client) GetContactSummary(ctx context.Context, contactId ContactId, params *GetContactSummaryParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetContactSummaryRequest(c.Server, contactId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -13933,6 +14057,42 @@ func NewListContactsRequest(server string, params *ListContactsParams) (*http.Re
 
 		}
 
+		if params.Kind != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "kind", *params.Kind, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.HasOpen != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "has_open", *params.HasOpen, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Sort != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "sort", *params.Sort, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
 		if params.Cursor != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
@@ -14448,6 +14608,55 @@ func NewGetContactPresenceRequest(server string, contactId ContactId, params *Ge
 	}
 
 	operationPath := fmt.Sprintf("/v1/contacts/%s/presence", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewGetContactSummaryRequest constructs an http.Request for the GetContactSummary method
+func NewGetContactSummaryRequest(server string, contactId ContactId, params *GetContactSummaryParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts/%s/summary", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -19464,7 +19673,9 @@ type ClientWithResponsesInterface interface {
 
 	// ListContactsWithResponse List contacts
 	//
-	// Newest first. `q` searches names, e-mail addresses and external ids.
+	// Newest first, or most recently active first with `sort=last_seen` (contacts never seen sort
+	// by when they were created). `q` searches names, e-mail addresses and external ids.
+	// Each item carries `activity`, counted over the inboxes the caller can see.
 	//
 	// Scope: `contacts:read`.
 	//
@@ -19609,6 +19820,18 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /v1/contacts/{contactId}/presence (the `GetContactPresence` operationId).
 	GetContactPresenceWithResponse(ctx context.Context, contactId ContactId, params *GetContactPresenceParams, reqEditors ...RequestEditorFn) (*GetContactPresenceResponse, error)
+
+	// GetContactSummaryWithResponse How the team served a contact
+	//
+	// First-reply time and ratings over the contact's conversations the caller can see. The
+	// counts of conversations are on the contact's `activity`.
+	//
+	// Scope: `contacts:read` and `conversations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/contacts/{contactId}/summary (the `GetContactSummary` operationId).
+	GetContactSummaryWithResponse(ctx context.Context, contactId ContactId, params *GetContactSummaryParams, reqEditors ...RequestEditorFn) (*GetContactSummaryResponse, error)
 
 	// ListConversationsWithResponse List conversations
 	//
@@ -23726,6 +23949,68 @@ func (r GetContactPresenceResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetContactPresenceResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetContactSummaryResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ContactSummary
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetContactSummaryResponse) GetJSON200() *ContactSummary {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetContactSummaryResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetContactSummaryResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r GetContactSummaryResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r GetContactSummaryResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetContactSummaryResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetContactSummaryResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetContactSummaryResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -29518,7 +29803,9 @@ func (c *ClientWithResponses) RotateChannelPublicKeyWithResponse(ctx context.Con
 
 // ListContactsWithResponse List contacts
 //
-// Newest first. `q` searches names, e-mail addresses and external ids.
+// Newest first, or most recently active first with `sort=last_seen` (contacts never seen sort
+// by when they were created). `q` searches names, e-mail addresses and external ids.
+// Each item carries `activity`, counted over the inboxes the caller can see.
 //
 // Scope: `contacts:read`.
 //
@@ -29734,6 +30021,24 @@ func (c *ClientWithResponses) GetContactPresenceWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseGetContactPresenceResponse(rsp)
+}
+
+// GetContactSummaryWithResponse How the team served a contact
+//
+// First-reply time and ratings over the contact's conversations the caller can see. The
+// counts of conversations are on the contact's `activity`.
+//
+// Scope: `contacts:read` and `conversations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/contacts/{contactId}/summary (the `GetContactSummary` operationId).
+func (c *ClientWithResponses) GetContactSummaryWithResponse(ctx context.Context, contactId ContactId, params *GetContactSummaryParams, reqEditors ...RequestEditorFn) (*GetContactSummaryResponse, error) {
+	rsp, err := c.GetContactSummary(ctx, contactId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetContactSummaryResponse(rsp)
 }
 
 // ListConversationsWithResponse List conversations
@@ -33865,6 +34170,53 @@ func ParseGetContactPresenceResponse(rsp *http.Response) (*GetContactPresenceRes
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest ContactPresence
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetContactSummaryResponse parses an HTTP response from a GetContactSummaryWithResponse call
+func ParseGetContactSummaryResponse(rsp *http.Response) (*GetContactSummaryResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetContactSummaryResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ContactSummary
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

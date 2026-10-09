@@ -45,6 +45,7 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"LookupContact":      {oas.ContactsRead},
 	"GetContact":         {oas.ContactsRead},
 	"GetContactPresence": {oas.ContactsRead},
+	"GetContactSummary":  {oas.ContactsRead, oas.ConversationsRead},
 
 	"CreateContact":             {oas.ContactsWrite},
 	"UpdateContact":             {oas.ContactsWrite},

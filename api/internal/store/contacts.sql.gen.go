@@ -70,6 +70,110 @@ func (q *Queries) ContactExists(ctx context.Context, arg ContactExistsParams) (b
 	return found, err
 }
 
+const contactFirstReplies = `-- name: ContactFirstReplies :many
+SELECT a.asked_at::timestamptz AS asked_at, min(o.created_at)::timestamptz AS replied_at
+FROM (
+    SELECT i.conversation_id, min(i.created_at) AS asked_at
+    FROM messages i
+    JOIN conversations cv ON cv.workspace_id = i.workspace_id AND cv.id = i.conversation_id
+    WHERE i.workspace_id = $1 AND cv.contact_id = $2 AND NOT cv.spam
+      AND i.kind = 'message' AND i.direction = 'in'
+      AND ($3::bool OR EXISTS (
+          SELECT 1 FROM inbox_viewers iv
+          WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $4::uuid))
+    GROUP BY i.conversation_id
+) a
+JOIN messages o ON o.workspace_id = $1 AND o.conversation_id = a.conversation_id
+    AND o.kind = 'message' AND o.direction = 'out' AND NOT o.draft
+    AND (o.author_type = 'member' OR o.sent_by_member_id IS NOT NULL)
+    AND o.created_at > a.asked_at
+GROUP BY a.conversation_id, a.asked_at
+`
+
+type ContactFirstRepliesParams struct {
+	WorkspaceID uuid.UUID
+	ContactID   uuid.UUID
+	AllInboxes  bool
+	ViewerID    uuid.UUID
+}
+
+type ContactFirstRepliesRow struct {
+	AskedAt   time.Time
+	RepliedAt time.Time
+}
+
+func (q *Queries) ContactFirstReplies(ctx context.Context, arg ContactFirstRepliesParams) ([]ContactFirstRepliesRow, error) {
+	rows, err := q.db.Query(ctx, contactFirstReplies,
+		arg.WorkspaceID,
+		arg.ContactID,
+		arg.AllInboxes,
+		arg.ViewerID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ContactFirstRepliesRow
+	for rows.Next() {
+		var i ContactFirstRepliesRow
+		if err := rows.Scan(&i.AskedAt, &i.RepliedAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const contactRatings = `-- name: ContactRatings :many
+SELECT cv.rating::text AS rating, count(*) AS n
+FROM conversations cv
+WHERE cv.workspace_id = $1 AND cv.contact_id = $2 AND NOT cv.spam AND cv.rating IS NOT NULL
+  AND ($3::bool OR EXISTS (
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $4::uuid))
+GROUP BY 1
+`
+
+type ContactRatingsParams struct {
+	WorkspaceID uuid.UUID
+	ContactID   uuid.UUID
+	AllInboxes  bool
+	ViewerID    uuid.UUID
+}
+
+type ContactRatingsRow struct {
+	Rating string
+	N      int64
+}
+
+func (q *Queries) ContactRatings(ctx context.Context, arg ContactRatingsParams) ([]ContactRatingsRow, error) {
+	rows, err := q.db.Query(ctx, contactRatings,
+		arg.WorkspaceID,
+		arg.ContactID,
+		arg.AllInboxes,
+		arg.ViewerID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ContactRatingsRow
+	for rows.Next() {
+		var i ContactRatingsRow
+		if err := rows.Scan(&i.Rating, &i.N); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const contactVisibleToViewer = `-- name: ContactVisibleToViewer :one
 SELECT coalesce(EXISTS (SELECT 1 FROM conversations cv JOIN inbox_viewers iv
                ON iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $1
@@ -247,6 +351,65 @@ func (q *Queries) GetContactIDByExternalID(ctx context.Context, arg GetContactID
 	return contact_id, err
 }
 
+const listContactActivity = `-- name: ListContactActivity :many
+SELECT c.id, c.last_active_at, count(cv.id) AS conversations,
+       count(cv.id) FILTER (WHERE cv.status = 'open') AS open_conversations,
+       coalesce(max(coalesce(cv.last_message_at, cv.created_at)), c.created_at)::timestamptz AS last_conversation_at
+FROM contacts c
+LEFT JOIN conversations cv ON cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND NOT cv.spam
+  AND ($1::bool OR EXISTS (
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $2::uuid))
+WHERE c.workspace_id = $3 AND c.id = ANY($4::uuid[])
+GROUP BY c.id, c.last_active_at
+`
+
+type ListContactActivityParams struct {
+	AllInboxes  bool
+	ViewerID    uuid.UUID
+	WorkspaceID uuid.UUID
+	Ids         []uuid.UUID
+}
+
+type ListContactActivityRow struct {
+	ID                 uuid.UUID
+	LastActiveAt       *time.Time
+	Conversations      int64
+	OpenConversations  int64
+	LastConversationAt time.Time
+}
+
+func (q *Queries) ListContactActivity(ctx context.Context, arg ListContactActivityParams) ([]ListContactActivityRow, error) {
+	rows, err := q.db.Query(ctx, listContactActivity,
+		arg.AllInboxes,
+		arg.ViewerID,
+		arg.WorkspaceID,
+		arg.Ids,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListContactActivityRow
+	for rows.Next() {
+		var i ListContactActivityRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.LastActiveAt,
+			&i.Conversations,
+			&i.OpenConversations,
+			&i.LastConversationAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listContactEmails = `-- name: ListContactEmails :many
 SELECT contact_id, email FROM contact_emails
 WHERE workspace_id = $1 AND contact_id = ANY($2::uuid[])
@@ -405,16 +568,27 @@ WHERE c.workspace_id = $1
    OR (NOT EXISTS (SELECT 1 FROM conversations cv WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id)
        AND NOT EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id))))
   AND ($3::text IS NULL OR c.search @@ websearch_to_tsquery('simple', translate($3::text, 'İı', 'ii')))
-  AND ($4::timestamptz IS NULL
-       OR (c.created_at, c.id) < ($4::timestamptz, $5::uuid))
+  AND ($4::text IS NULL OR ($4::text = 'known') = (
+      EXISTS (SELECT 1 FROM contact_emails e WHERE e.workspace_id = c.workspace_id AND e.contact_id = c.id)
+      OR EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)))
+  AND ($5::bool IS NULL OR $5::bool = EXISTS (
+      SELECT 1 FROM conversations cv
+      WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND cv.status = 'open' AND NOT cv.spam
+        AND ($2::uuid IS NULL OR EXISTS (
+            SELECT 1 FROM inbox_viewers iv
+            WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $2::uuid))))
+  AND ($6::timestamptz IS NULL
+       OR (c.created_at, c.id) < ($6::timestamptz, $7::uuid))
 ORDER BY c.created_at DESC, c.id DESC
-LIMIT $6
+LIMIT $8
 `
 
 type ListContactsParams struct {
 	WorkspaceID uuid.UUID
 	ViewerID    *uuid.UUID
 	Q           *string
+	Kind        *string
+	HasOpen     *bool
 	CursorAt    *time.Time
 	CursorID    *uuid.UUID
 	Lim         int32
@@ -437,6 +611,8 @@ func (q *Queries) ListContacts(ctx context.Context, arg ListContactsParams) ([]L
 		arg.WorkspaceID,
 		arg.ViewerID,
 		arg.Q,
+		arg.Kind,
+		arg.HasOpen,
 		arg.CursorAt,
 		arg.CursorID,
 		arg.Lim,
@@ -458,6 +634,100 @@ func (q *Queries) ListContacts(ctx context.Context, arg ListContactsParams) ([]L
 			&i.UpdatedAt,
 			&i.Locale,
 			&i.TypedEmail,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listContactsByActivity = `-- name: ListContactsByActivity :many
+SELECT id, workspace_id, name, attributes, blocked, created_at, updated_at, locale, typed_email,
+       coalesce(c.last_active_at, c.created_at)::timestamptz AS active_at
+FROM contacts c
+WHERE c.workspace_id = $1
+  AND ($2::uuid IS NULL OR (
+      EXISTS (SELECT 1 FROM conversations cv JOIN inbox_viewers iv
+              ON iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $2::uuid
+              WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id)
+   OR EXISTS (SELECT 1 FROM contact_external_ids x JOIN inbox_viewers iv
+              ON iv.workspace_id = x.workspace_id AND iv.inbox_id = x.inbox_id AND iv.viewer_id = $2::uuid
+              WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)
+   OR (NOT EXISTS (SELECT 1 FROM conversations cv WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id)
+       AND NOT EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id))))
+  AND ($3::text IS NULL OR c.search @@ websearch_to_tsquery('simple', translate($3::text, 'İı', 'ii')))
+  AND ($4::text IS NULL OR ($4::text = 'known') = (
+      EXISTS (SELECT 1 FROM contact_emails e WHERE e.workspace_id = c.workspace_id AND e.contact_id = c.id)
+      OR EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)))
+  AND ($5::bool IS NULL OR $5::bool = EXISTS (
+      SELECT 1 FROM conversations cv
+      WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND cv.status = 'open' AND NOT cv.spam
+        AND ($2::uuid IS NULL OR EXISTS (
+            SELECT 1 FROM inbox_viewers iv
+            WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $2::uuid))))
+  AND ($6::timestamptz IS NULL
+       OR (coalesce(c.last_active_at, c.created_at), c.id) < ($6::timestamptz, $7::uuid))
+ORDER BY coalesce(c.last_active_at, c.created_at) DESC, c.id DESC
+LIMIT $8
+`
+
+type ListContactsByActivityParams struct {
+	WorkspaceID uuid.UUID
+	ViewerID    *uuid.UUID
+	Q           *string
+	Kind        *string
+	HasOpen     *bool
+	CursorAt    *time.Time
+	CursorID    *uuid.UUID
+	Lim         int32
+}
+
+type ListContactsByActivityRow struct {
+	ID          uuid.UUID
+	WorkspaceID uuid.UUID
+	Name        string
+	Attributes  []byte
+	Blocked     bool
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	Locale      *string
+	TypedEmail  *string
+	ActiveAt    time.Time
+}
+
+func (q *Queries) ListContactsByActivity(ctx context.Context, arg ListContactsByActivityParams) ([]ListContactsByActivityRow, error) {
+	rows, err := q.db.Query(ctx, listContactsByActivity,
+		arg.WorkspaceID,
+		arg.ViewerID,
+		arg.Q,
+		arg.Kind,
+		arg.HasOpen,
+		arg.CursorAt,
+		arg.CursorID,
+		arg.Lim,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListContactsByActivityRow
+	for rows.Next() {
+		var i ListContactsByActivityRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.WorkspaceID,
+			&i.Name,
+			&i.Attributes,
+			&i.Blocked,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Locale,
+			&i.TypedEmail,
+			&i.ActiveAt,
 		); err != nil {
 			return nil, err
 		}

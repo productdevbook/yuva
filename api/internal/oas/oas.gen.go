@@ -1280,6 +1280,42 @@ func (e ListClientMessagesParamsOrder) Valid() bool {
 	}
 }
 
+// Defines values for ListContactsParamsKind.
+const (
+	Known   ListContactsParamsKind = "known"
+	Visitor ListContactsParamsKind = "visitor"
+)
+
+// Valid indicates whether the value is a known member of the ListContactsParamsKind enum.
+func (e ListContactsParamsKind) Valid() bool {
+	switch e {
+	case Known:
+		return true
+	case Visitor:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListContactsParamsSort.
+const (
+	Created  ListContactsParamsSort = "created"
+	LastSeen ListContactsParamsSort = "last_seen"
+)
+
+// Valid indicates whether the value is a known member of the ListContactsParamsSort enum.
+func (e ListContactsParamsSort) Valid() bool {
+	switch e {
+	case Created:
+		return true
+	case LastSeen:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ListMessagesParamsOrder.
 const (
 	ListMessagesParamsOrderAsc  ListMessagesParamsOrder = "asc"
@@ -2075,6 +2111,10 @@ type ClientTypingEventType string
 
 // Contact defines model for Contact.
 type Contact struct {
+	// Activity Only on `GET /v1/contacts` and `GET /v1/contacts/{contactId}`. The counts cover the
+	// conversations the caller can see, spam left out; `last_seen_at` does not depend on the caller.
+	Activity *ContactActivity `json:"activity,omitempty"`
+
 	// Attributes Free-form data about the contact (plan, app version, …), at most 16 KiB.
 	Attributes Attributes `json:"attributes"`
 
@@ -2094,6 +2134,20 @@ type Contact struct {
 	// Undeliverable The contact's addresses that must not be mailed.
 	Undeliverable []UndeliverableEmail `json:"undeliverable"`
 	UpdatedAt     time.Time            `json:"updated_at"`
+}
+
+// ContactActivity Only on `GET /v1/contacts` and `GET /v1/contacts/{contactId}`. The counts cover the
+// conversations the caller can see, spam left out; `last_seen_at` does not depend on the caller.
+type ContactActivity struct {
+	Conversations int64 `json:"conversations"`
+
+	// LastConversationAt The last message in any of those conversations, else when the newest one started.
+	LastConversationAt *time.Time `json:"last_conversation_at,omitempty"`
+
+	// LastSeenAt The contact's last activity: a message (any channel), a rating, or use of a widget or
+	// app session. Absent when never active.
+	LastSeenAt        *time.Time `json:"last_seen_at,omitempty"`
+	OpenConversations int64      `json:"open_conversations"`
 }
 
 // ContactCreate defines model for ContactCreate.
@@ -2149,6 +2203,22 @@ type ContactRef struct {
 
 	// MergedIntoId Set on `contact.deleted` when the contact was merged into this one.
 	MergedIntoId *uuid.UUID `json:"merged_into_id,omitempty"`
+}
+
+// ContactSummary How the team has served the contact, over all their conversations the caller can see (spam
+// left out).
+type ContactSummary struct {
+	// FirstReplies Conversations where a member answered the contact's first message.
+	FirstReplies int64 `json:"first_replies"`
+
+	// MedianFirstReplySeconds Median seconds from the contact's first message to the first member reply; absent when `first_replies` is 0.
+	MedianFirstReplySeconds *int64 `json:"median_first_reply_seconds,omitempty"`
+
+	// Ratings The latest rating of each conversation.
+	Ratings struct {
+		Bad  int64 `json:"bad"`
+		Good int64 `json:"good"`
+	} `json:"ratings"`
 }
 
 // ContactUpdate defines model for ContactUpdate.
@@ -4503,6 +4573,14 @@ type ListContactsParams struct {
 	// Q Full-text search (Postgres `simple` configuration, `websearch` syntax).
 	Q *Search `form:"q,omitempty" json:"q,omitempty"`
 
+	// Kind `known`: the contact has an e-mail address or an external id. `visitor`: neither (an
+	// anonymous widget visitor, or someone known only by a typed, unconfirmed address).
+	Kind *ListContactsParamsKind `form:"kind,omitempty" json:"kind,omitempty"`
+
+	// HasOpen Only contacts with (`true`) or without (`false`) an open conversation the caller can see; spam does not count.
+	HasOpen *bool                   `form:"has_open,omitempty" json:"has_open,omitempty"`
+	Sort    *ListContactsParamsSort `form:"sort,omitempty" json:"sort,omitempty"`
+
 	// Cursor The `next_cursor` of the previous page.
 	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
 
@@ -4512,6 +4590,12 @@ type ListContactsParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
+
+// ListContactsParamsKind defines parameters for ListContacts.
+type ListContactsParamsKind string
+
+// ListContactsParamsSort defines parameters for ListContacts.
+type ListContactsParamsSort string
 
 // CreateContactParams defines parameters for CreateContact.
 type CreateContactParams struct {
@@ -4569,6 +4653,12 @@ type MergeContactParams struct {
 
 // GetContactPresenceParams defines parameters for GetContactPresence.
 type GetContactPresenceParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetContactSummaryParams defines parameters for GetContactSummary.
+type GetContactSummaryParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -6680,6 +6770,9 @@ type ServerInterface interface {
 	// GetContactPresence Whether a contact is connected
 	// (GET /v1/contacts/{contactId}/presence)
 	GetContactPresence(w http.ResponseWriter, r *http.Request, contactId ContactId, params GetContactPresenceParams)
+	// GetContactSummary How the team served a contact
+	// (GET /v1/contacts/{contactId}/summary)
+	GetContactSummary(w http.ResponseWriter, r *http.Request, contactId ContactId, params GetContactSummaryParams)
 	// ListConversations List conversations
 	// (GET /v1/conversations)
 	ListConversations(w http.ResponseWriter, r *http.Request, params ListConversationsParams)
@@ -8235,6 +8328,45 @@ func (siw *ServerInterfaceWrapper) ListContacts(w http.ResponseWriter, r *http.R
 		return
 	}
 
+	// ------------- Optional query parameter "kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "kind", r.URL.Query(), &params.Kind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "has_open" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "has_open", r.URL.Query(), &params.HasOpen, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "has_open"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "has_open", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "sort" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "sort", r.URL.Query(), &params.Sort, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "sort"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sort", Err: err})
+		}
+		return
+	}
+
 	// ------------- Optional query parameter "cursor" -------------
 
 	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
@@ -8747,6 +8879,56 @@ func (siw *ServerInterfaceWrapper) GetContactPresence(w http.ResponseWriter, r *
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetContactPresence(w, r, contactId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetContactSummary operation middleware
+func (siw *ServerInterfaceWrapper) GetContactSummary(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "contactId" -------------
+	var contactId ContactId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contactId", r.PathValue("contactId"), &contactId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contactId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetContactSummaryParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetContactSummary(w, r, contactId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -12763,6 +12945,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}", wrapper.GetContact)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/contacts/{contactId}", wrapper.UpdateContact)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/contacts/{contactId}/merge", wrapper.MergeContact)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}/summary", wrapper.GetContactSummary)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}/presence", wrapper.GetContactPresence)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations", wrapper.ListConversations)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations", wrapper.CreateConversation)
@@ -16941,6 +17124,73 @@ func (response GetContactPresence403ApplicationProblemPlusJSONResponse) VisitGet
 type GetContactPresence404ApplicationProblemPlusJSONResponse Problem
 
 func (response GetContactPresence404ApplicationProblemPlusJSONResponse) VisitGetContactPresenceResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetContactSummaryRequestObject struct {
+	ContactId ContactId `json:"contactId"`
+	Params    GetContactSummaryParams
+}
+
+type GetContactSummaryResponseObject interface {
+	VisitGetContactSummaryResponse(w http.ResponseWriter) error
+}
+
+type GetContactSummary200JSONResponse ContactSummary
+
+func (response GetContactSummary200JSONResponse) VisitGetContactSummaryResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetContactSummary401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetContactSummary401ApplicationProblemPlusJSONResponse) VisitGetContactSummaryResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetContactSummary403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetContactSummary403ApplicationProblemPlusJSONResponse) VisitGetContactSummaryResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetContactSummary404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetContactSummary404ApplicationProblemPlusJSONResponse) VisitGetContactSummaryResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -22438,6 +22688,9 @@ type StrictServerInterface interface {
 	// GetContactPresence Whether a contact is connected
 	// (GET /v1/contacts/{contactId}/presence)
 	GetContactPresence(ctx context.Context, request GetContactPresenceRequestObject) (GetContactPresenceResponseObject, error)
+	// GetContactSummary How the team served a contact
+	// (GET /v1/contacts/{contactId}/summary)
+	GetContactSummary(ctx context.Context, request GetContactSummaryRequestObject) (GetContactSummaryResponseObject, error)
 	// ListConversations List conversations
 	// (GET /v1/conversations)
 	ListConversations(ctx context.Context, request ListConversationsRequestObject) (ListConversationsResponseObject, error)
@@ -24018,6 +24271,33 @@ func (sh *strictHandler) GetContactPresence(w http.ResponseWriter, r *http.Reque
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(GetContactPresenceResponseObject); ok {
 		if err := validResponse.VisitGetContactPresenceResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetContactSummary operation middleware
+func (sh *strictHandler) GetContactSummary(w http.ResponseWriter, r *http.Request, contactId ContactId, params GetContactSummaryParams) {
+	var request GetContactSummaryRequestObject
+
+	request.ContactId = contactId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetContactSummary(ctx, request.(GetContactSummaryRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetContactSummary")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetContactSummaryResponseObject); ok {
+		if err := validResponse.VisitGetContactSummaryResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

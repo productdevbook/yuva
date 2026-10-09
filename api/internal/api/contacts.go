@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"slices"
+	"time"
 	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
@@ -256,42 +257,140 @@ func writeContactKeys(ctx context.Context, q *store.Queries, workspaceID, contac
 
 func (s *Server) ListContacts(ctx context.Context, req oas.ListContactsRequestObject) (oas.ListContactsResponseObject, error) {
 	p := principalFrom(ctx)
-	lim, err := pageSize(req.Params.Limit)
+	prm := req.Params
+	lim, err := pageSize(prm.Limit)
 	if err != nil {
 		return nil, err
 	}
-	at, id, err := decodeCursor(req.Params.Cursor)
+	at, id, err := decodeCursor(prm.Cursor)
 	if err != nil {
 		return nil, err
 	}
-	q, err := searchQuery(req.Params.Q)
+	q, err := searchQuery(prm.Q)
 	if err != nil {
 		return nil, err
+	}
+	if prm.Kind != nil && !prm.Kind.Valid() {
+		return nil, errValidation("kind must be known or visitor")
+	}
+	if prm.Sort != nil && !prm.Sort.Valid() {
+		return nil, errValidation("sort must be created or last_seen")
 	}
 	var viewer *uuid.UUID
 	if !p.seesAllInboxes() {
 		id := p.viewerID()
 		viewer = &id
 	}
-	rows, err := s.st.ListContacts(ctx, store.ListContactsParams{WorkspaceID: p.workspaceID, ViewerID: viewer, Q: q, CursorAt: at, CursorID: id, Lim: lim + 1})
-	if err != nil {
-		return nil, err
+	arg := store.ListContactsParams{
+		WorkspaceID: p.workspaceID, ViewerID: viewer, Q: q, Kind: (*string)(prm.Kind), HasOpen: prm.HasOpen,
+		CursorAt: at, CursorID: id, Lim: lim + 1,
+	}
+	var (
+		rows []contactRow
+		pos  []time.Time
+	)
+	if prm.Sort != nil && *prm.Sort == oas.LastSeen {
+		found, err := s.st.ListContactsByActivity(ctx, store.ListContactsByActivityParams(arg))
+		if err != nil {
+			return nil, err
+		}
+		for _, r := range found {
+			rows = append(rows, contactRow{ID: r.ID, WorkspaceID: r.WorkspaceID, Name: r.Name, Attributes: r.Attributes, Blocked: r.Blocked,
+				CreatedAt: r.CreatedAt, UpdatedAt: r.UpdatedAt, Locale: r.Locale, TypedEmail: r.TypedEmail})
+			pos = append(pos, r.ActiveAt)
+		}
+	} else {
+		found, err := s.st.ListContacts(ctx, arg)
+		if err != nil {
+			return nil, err
+		}
+		for _, r := range found {
+			rows = append(rows, contactRow(r))
+			pos = append(pos, r.CreatedAt)
+		}
 	}
 	var next *string
 	if len(rows) > int(lim) {
 		rows = rows[:lim]
-		c := encodeCursor(rows[lim-1].CreatedAt, rows[lim-1].ID)
+		c := encodeCursor(pos[lim-1], rows[lim-1].ID)
 		next = &c
 	}
-	conv := make([]contactRow, len(rows))
-	for i, r := range rows {
-		conv[i] = contactRow(r)
-	}
-	items, err := s.contactBodies(ctx, s.st.Queries, p.workspaceID, conv)
+	items, err := s.contactBodies(ctx, s.st.Queries, p.workspaceID, rows)
 	if err != nil {
 		return nil, err
 	}
+	if err := s.withActivity(ctx, p, items); err != nil {
+		return nil, err
+	}
 	return oas.ListContacts200JSONResponse{Items: items, NextCursor: next}, nil
+}
+
+// withActivity adds what the caller may know of each contact's conversations and when the contact
+// was last active.
+func (s *Server) withActivity(ctx context.Context, p principal, items []oas.Contact) error {
+	ids := make([]uuid.UUID, len(items))
+	for i, c := range items {
+		ids[i] = c.Id
+	}
+	rows, err := s.st.ListContactActivity(ctx, store.ListContactActivityParams{
+		WorkspaceID: p.workspaceID, Ids: ids, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(),
+	})
+	if err != nil {
+		return err
+	}
+	byID := make(map[uuid.UUID]store.ListContactActivityRow, len(rows))
+	for _, r := range rows {
+		byID[r.ID] = r
+	}
+	for i := range items {
+		r := byID[items[i].Id]
+		a := &oas.ContactActivity{LastSeenAt: r.LastActiveAt, Conversations: r.Conversations, OpenConversations: r.OpenConversations}
+		if r.Conversations > 0 {
+			a.LastConversationAt = &r.LastConversationAt
+		}
+		items[i].Activity = a
+	}
+	return nil
+}
+
+func (s *Server) GetContactSummary(ctx context.Context, req oas.GetContactSummaryRequestObject) (oas.GetContactSummaryResponseObject, error) {
+	p := principalFrom(ctx)
+	if _, err := s.st.GetContact(ctx, store.GetContactParams{WorkspaceID: p.workspaceID, ID: req.ContactId}); store.IsNotFound(err) {
+		return nil, errContactGone
+	} else if err != nil {
+		return nil, err
+	}
+	if err := visibleContact(ctx, s.st.Queries, p, req.ContactId); err != nil {
+		return nil, err
+	}
+	firsts, err := s.st.ContactFirstReplies(ctx, store.ContactFirstRepliesParams{
+		WorkspaceID: p.workspaceID, ContactID: req.ContactId, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(),
+	})
+	if err != nil {
+		return nil, err
+	}
+	ratings, err := s.st.ContactRatings(ctx, store.ContactRatingsParams{
+		WorkspaceID: p.workspaceID, ContactID: req.ContactId, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(),
+	})
+	if err != nil {
+		return nil, err
+	}
+	out := oas.GetContactSummary200JSONResponse{FirstReplies: int64(len(firsts))}
+	if len(firsts) > 0 {
+		rows := make([]store.StatsFirstRepliesRow, len(firsts))
+		for i, f := range firsts {
+			rows[i] = store.StatsFirstRepliesRow(f)
+		}
+		out.MedianFirstReplySeconds = new(medianSeconds(rows))
+	}
+	for _, r := range ratings {
+		if r.Rating == string(oas.Good) {
+			out.Ratings.Good = r.N
+		} else {
+			out.Ratings.Bad = r.N
+		}
+	}
+	return out, nil
 }
 
 func (s *Server) CreateContact(ctx context.Context, req oas.CreateContactRequestObject) (oas.CreateContactResponseObject, error) {
@@ -357,7 +456,11 @@ func (s *Server) GetContact(ctx context.Context, req oas.GetContactRequestObject
 	if err != nil {
 		return nil, err
 	}
-	return oas.GetContact200JSONResponse(out), nil
+	items := []oas.Contact{out}
+	if err := s.withActivity(ctx, p, items); err != nil {
+		return nil, err
+	}
+	return oas.GetContact200JSONResponse(items[0]), nil
 }
 
 func (s *Server) LookupContact(ctx context.Context, req oas.LookupContactRequestObject) (oas.LookupContactResponseObject, error) {
@@ -601,7 +704,8 @@ func (s *Server) MergeContact(ctx context.Context, req oas.MergeContactRequestOb
 		if err := q.RefreshContactSearch(ctx, store.RefreshContactSearchParams{WorkspaceID: p.workspaceID, ID: to}); err != nil {
 			return err
 		}
-		for _, c := range moved {
+		for _, row := range moved {
+			c := store.Conversation(row)
 			body, err := oneConversation(ctx, q, c)
 			if err != nil {
 				return err

@@ -1442,13 +1442,34 @@ paths:
       operationId: listContacts
       summary: List contacts
       description: |
-        Newest first. `q` searches names, e-mail addresses and external ids.
+        Newest first, or most recently active first with `sort=last_seen` (contacts never seen sort
+        by when they were created). `q` searches names, e-mail addresses and external ids.
+        Each item carries `activity`, counted over the inboxes the caller can see.
 
         Scope: `contacts:read`.
       tags: [contacts]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
         - $ref: "#/components/parameters/Search"
+        - name: kind
+          in: query
+          description: |
+            `known`: the contact has an e-mail address or an external id. `visitor`: neither (an
+            anonymous widget visitor, or someone known only by a typed, unconfirmed address).
+          schema:
+            type: string
+            enum: [known, visitor]
+        - name: has_open
+          in: query
+          description: Only contacts with (`true`) or without (`false`) an open conversation the caller can see; spam does not count.
+          schema:
+            type: boolean
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [created, last_seen]
+            default: created
         - $ref: "#/components/parameters/Cursor"
         - $ref: "#/components/parameters/Limit"
       responses:
@@ -1684,6 +1705,32 @@ paths:
                 $ref: "#/components/schemas/Contact"
         "400":
           $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/contacts/{contactId}/summary:
+    get:
+      operationId: getContactSummary
+      summary: How the team served a contact
+      description: |
+        First-reply time and ratings over the contact's conversations the caller can see. The
+        counts of conversations are on the contact's `activity`.
+
+        Scope: `contacts:read` and `conversations:read`.
+      tags: [contacts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ContactId"
+      responses:
+        "200":
+          description: The summary.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactSummary"
         "401":
           $ref: "#/components/responses/Problem"
         "403":
@@ -5813,12 +5860,63 @@ components:
           description: The contact's addresses that must not be mailed.
           items:
             $ref: "#/components/schemas/UndeliverableEmail"
+        activity:
+          $ref: "#/components/schemas/ContactActivity"
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
+    ContactActivity:
+      type: object
+      description: |
+        Only on `GET /v1/contacts` and `GET /v1/contacts/{contactId}`. The counts cover the
+        conversations the caller can see, spam left out; `last_seen_at` does not depend on the caller.
+      required: [conversations, open_conversations]
+      properties:
+        last_seen_at:
+          type: string
+          format: date-time
+          description: |
+            The contact's last activity: a message (any channel), a rating, or use of a widget or
+            app session. Absent when never active.
+        conversations:
+          type: integer
+          format: int64
+        open_conversations:
+          type: integer
+          format: int64
+        last_conversation_at:
+          type: string
+          format: date-time
+          description: The last message in any of those conversations, else when the newest one started.
+    ContactSummary:
+      type: object
+      description: |
+        How the team has served the contact, over all their conversations the caller can see (spam
+        left out).
+      required: [first_replies, ratings]
+      properties:
+        first_replies:
+          type: integer
+          format: int64
+          description: Conversations where a member answered the contact's first message.
+        median_first_reply_seconds:
+          type: integer
+          format: int64
+          description: Median seconds from the contact's first message to the first member reply; absent when `first_replies` is 0.
+        ratings:
+          type: object
+          required: [good, bad]
+          description: The latest rating of each conversation.
+          properties:
+            good:
+              type: integer
+              format: int64
+            bad:
+              type: integer
+              format: int64
     ContactPresence:
       type: object
       required: [contact_id, online]

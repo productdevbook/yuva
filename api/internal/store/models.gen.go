@@ -90,16 +90,17 @@ type ChatVisitor struct {
 }
 
 type Contact struct {
-	ID          uuid.UUID
-	WorkspaceID uuid.UUID
-	Name        string
-	Attributes  []byte
-	Blocked     bool
-	Search      interface{}
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	Locale      *string
-	TypedEmail  *string
+	ID           uuid.UUID
+	WorkspaceID  uuid.UUID
+	Name         string
+	Attributes   []byte
+	Blocked      bool
+	Search       interface{}
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	Locale       *string
+	TypedEmail   *string
+	LastActiveAt *time.Time
 }
 
 type ContactEmail struct {
