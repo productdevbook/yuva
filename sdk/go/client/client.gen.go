@@ -3358,14 +3358,22 @@ type MessageEmailDetail struct {
 	// FullText The whole text part, quoted history and signature included.
 	FullText string `json:"full_text"`
 
-	// HasRemoteImages `full_html` loads images from other servers; block them until the member asks.
+	// HasRemoteImages `full_html` or `original_html` loads images from other servers; block them until the member asks.
 	HasRemoteImages bool `json:"has_remote_images"`
 
 	// Headers Selected headers as received (Date, Reply-To, Auto-Submitted, Precedence, …).
-	Headers    map[string]string `json:"headers"`
-	InReplyTo  *string           `json:"in_reply_to,omitempty"`
-	MessageId  string            `json:"message_id"`
-	References *[]string         `json:"references,omitempty"`
+	Headers   map[string]string `json:"headers"`
+	InReplyTo *string           `json:"in_reply_to,omitempty"`
+	MessageId string            `json:"message_id"`
+
+	// OriginalHtml The whole HTML part of the kept original, built on request and sanitized with a policy
+	// that keeps inline styles limited to an allowlist of CSS properties (no `url(`,
+	// `expression` or `@import` values) and the colour, alignment and size attributes of
+	// tables and `font`; never `<style>` blocks, scripts, forms, frames, stylesheets or event
+	// handlers. `cid:` sources are kept as in `full_html`. Absent when the original is not
+	// kept, has no HTML part or is too large.
+	OriginalHtml *string   `json:"original_html,omitempty"`
+	References   *[]string `json:"references,omitempty"`
 }
 
 // MessageEvent defines model for MessageEvent.
@@ -8425,8 +8433,8 @@ type ClientInterface interface {
 	// GetMessageEmail Get a message's e-mail details
 	//
 	// The full text with the quoted history and signature that the thread hides, the full
-	// sanitized HTML, and the headers that matter. Only messages that came or went by e-mail
-	// have them; others answer `404`.
+	// sanitized HTML, the original HTML with the sender's styling, and the headers that matter.
+	// Only messages that came or went by e-mail have them; others answer `404`.
 	//
 	// Scope: `conversations:read`.
 	//
@@ -11860,8 +11868,8 @@ func (c *Client) UpdateMessage(ctx context.Context, messageId MessageId, params 
 // GetMessageEmail Get a message's e-mail details
 //
 // The full text with the quoted history and signature that the thread hides, the full
-// sanitized HTML, and the headers that matter. Only messages that came or went by e-mail
-// have them; others answer `404`.
+// sanitized HTML, the original HTML with the sender's styling, and the headers that matter.
+// Only messages that came or went by e-mail have them; others answer `404`.
 //
 // Scope: `conversations:read`.
 //
@@ -21200,8 +21208,8 @@ type ClientWithResponsesInterface interface {
 	// GetMessageEmailWithResponse Get a message's e-mail details
 	//
 	// The full text with the quoted history and signature that the thread hides, the full
-	// sanitized HTML, and the headers that matter. Only messages that came or went by e-mail
-	// have them; others answer `404`.
+	// sanitized HTML, the original HTML with the sender's styling, and the headers that matter.
+	// Only messages that came or went by e-mail have them; others answer `404`.
 	//
 	// Scope: `conversations:read`.
 	//
@@ -32120,8 +32128,8 @@ func (c *ClientWithResponses) UpdateMessageWithResponse(ctx context.Context, mes
 // GetMessageEmailWithResponse Get a message's e-mail details
 //
 // The full text with the quoted history and signature that the thread hides, the full
-// sanitized HTML, and the headers that matter. Only messages that came or went by e-mail
-// have them; others answer `404`.
+// sanitized HTML, the original HTML with the sender's styling, and the headers that matter.
+// Only messages that came or went by e-mail have them; others answer `404`.
 //
 // Scope: `conversations:read`.
 //

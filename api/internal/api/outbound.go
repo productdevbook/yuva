@@ -466,10 +466,11 @@ func (s *Server) GetMessageEmail(ctx context.Context, req oas.GetMessageEmailReq
 	if err != nil {
 		return nil, err
 	}
+	original := s.originalHTML(ctx, me)
 	out := oas.GetMessageEmail200JSONResponse{
-		MessageId: me.HeaderMessageID, FullText: me.FullText, FullHtml: me.FullHtml, InReplyTo: me.InReplyTo,
+		MessageId: me.HeaderMessageID, FullText: me.FullText, FullHtml: me.FullHtml, OriginalHtml: original, InReplyTo: me.InReplyTo,
 		AuthenticationResults: me.AuthenticationResults, Headers: map[string]string{},
-		HasRemoteImages: me.FullHtml != nil && email.HasRemoteImages(*me.FullHtml),
+		HasRemoteImages: me.FullHtml != nil && email.HasRemoteImages(*me.FullHtml) || original != nil && email.HasRemoteImages(*original),
 	}
 	if len(me.ReferencesIds) > 0 {
 		refs := me.ReferencesIds
@@ -477,6 +478,30 @@ func (s *Server) GetMessageEmail(ctx context.Context, req oas.GetMessageEmailReq
 	}
 	_ = json.Unmarshal(me.Headers, &out.Headers)
 	return out, nil
+}
+
+func (s *Server) originalHTML(ctx context.Context, me store.MessageEmail) *string {
+	if me.RawKey == nil || me.RawSize != nil && *me.RawSize > MaxIngressBytes {
+		return nil
+	}
+	body, err := s.objects.Open(ctx, *me.RawKey)
+	if err != nil {
+		return nil
+	}
+	defer body.Close()
+	raw, err := io.ReadAll(io.LimitReader(body, MaxIngressBytes+1))
+	if err != nil || len(raw) > MaxIngressBytes {
+		return nil
+	}
+	m, err := email.Parse(raw)
+	if err != nil || strings.TrimSpace(m.HTML) == "" {
+		return nil
+	}
+	clean := strings.TrimSpace(s.original.Sanitize(m.HTML))
+	if clean == "" || len(clean) > maxFullHTMLBytes {
+		return nil
+	}
+	return &clean
 }
 
 func (s *Server) visibleMessageEmail(ctx context.Context, p principal, messageID uuid.UUID) (store.MessageEmail, error) {

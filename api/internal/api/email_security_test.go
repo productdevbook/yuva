@@ -231,3 +231,69 @@ func TestInlineImagesAndRemoteImageFlag(t *testing.T) {
 		t.Fatalf("plain mail: %v", pm)
 	}
 }
+
+const styledMailHTML = `<html><head><style>body { color: red } @import url(https://evil.example.com/x.css);</style>` +
+	`<link rel="stylesheet" href="https://evil.example.com/y.css"></head><body>` +
+	`<center><table bgcolor="#ffeecc" width="600" border="0" cellpadding="4" cellspacing="0" style="border-collapse: collapse; background: url(https://tracker.example.com/bg.png)">` +
+	`<tr><td align="center" valign="top" style="color: #333333; font-family: Arial, sans-serif; padding: 8px 12px; position: absolute; background-image: url(https://tracker.example.com/td.png)">` +
+	`<font color="#0066cc" face="Arial">Your order shipped</font></td></tr></table></center>` +
+	`<p style="color: expression(alert(1)); margin: 0 0 12px 0">Track it below.</p>` +
+	`<a href="javascript:alert(1)" style="color: #0066cc; text-decoration: underline">Track</a>` +
+	`<div onclick="steal()" style="width: 100px; behavior: url(x.htc)">Box</div>` +
+	`<img src="cid:logo@client.example.net" alt="logo">` +
+	`<script>alert(1)</script><form action="https://evil.example.com"><input name="pw"></form>` +
+	`<iframe src="https://evil.example.com"></iframe>` +
+	`<blockquote type="cite">Earlier mail</blockquote></body></html>`
+
+func TestOriginalHTMLKeepsAllowedStyles(t *testing.T) {
+	h := newHarness(t)
+	et := newEmailTeam(t, h, false)
+	raw := fmt.Sprintf("From: Shop <%s>\r\nTo: %s\r\nSubject: Shipped\r\nMessage-ID: <%s>\r\n"+
+		"MIME-Version: 1.0\r\nContent-Type: multipart/alternative; boundary=alt\r\n\r\n"+
+		"--alt\r\nContent-Type: text/plain; charset=utf-8\r\n\r\nYour order shipped\r\n"+
+		"--alt\r\nContent-Type: text/html; charset=utf-8\r\n\r\n%s\r\n--alt--\r\n",
+		unique("shop")+"@example.net", et.address, newMessageID(), styledMailHTML)
+	r := h.ingest(et.address, []byte(raw), nil)
+	if r.str("status") != "stored" {
+		t.Fatalf("ingest: %d %v", r.status, r.body)
+	}
+	m := lastOf(messages(et.owner, r.str("conversation_id")), "message")
+	html, _ := m["html"].(string)
+	if !strings.Contains(html, "Your order shipped") || !strings.Contains(html, `src="cid:logo@client.example.net"`) ||
+		strings.Contains(html, "style=") || strings.Contains(html, "bgcolor") || strings.Contains(html, "<center>") ||
+		strings.Contains(html, "Earlier mail") {
+		t.Fatalf("html changed: %q", html)
+	}
+
+	detail := et.owner.expect(http.StatusOK, "GET", "/v1/messages/"+r.str("message_id")+"/email", nil)
+	if full := detail.str("full_html"); strings.Contains(full, "style=") || strings.Contains(full, "bgcolor") {
+		t.Fatalf("full_html keeps styling: %q", full)
+	}
+	orig := detail.str("original_html")
+	for _, want := range []string{
+		`<center>`, `bgcolor="#ffeecc"`, `width="600"`, `cellpadding="4"`, `cellspacing="0"`, `border="0"`,
+		`style="border-collapse: collapse"`, `align="center"`, `valign="top"`,
+		`style="color: #333333; font-family: Arial, sans-serif; padding: 8px 12px"`,
+		`<font color="#0066cc" face="Arial">`, `style="margin: 0 0 12px 0"`,
+		`style="color: #0066cc; text-decoration: underline"`, `style="width: 100px"`,
+		`src="cid:logo@client.example.net"`, `Earlier mail`,
+	} {
+		if !strings.Contains(orig, want) {
+			t.Errorf("original_html lacks %s: %q", want, orig)
+		}
+	}
+	for _, refused := range []string{
+		"<style", "@import", "evil.example.com", "url(", "expression", "position", "behavior",
+		"javascript:", "onclick", "<script", "alert", "<form", "<input", "<iframe", "<link",
+	} {
+		if strings.Contains(orig, refused) {
+			t.Errorf("original_html keeps %s: %q", refused, orig)
+		}
+	}
+
+	plain := h.ingest(et.address, buildMail(mailOpts{from: unique("plain") + "@example.net", to: et.address, subject: "x", messageID: newMessageID(), body: "x"}), nil)
+	pd := et.owner.expect(http.StatusOK, "GET", "/v1/messages/"+plain.str("message_id")+"/email", nil)
+	if _, ok := pd.body["original_html"]; ok {
+		t.Fatalf("plain mail has original_html: %s", pd.raw)
+	}
+}

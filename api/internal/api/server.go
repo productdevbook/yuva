@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/netip"
 	"net/url"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -50,6 +51,7 @@ type Server struct {
 	objects  storage.Storage
 	attach   AttachmentSettings
 	sanitize *bluemonday.Policy
+	original *bluemonday.Policy
 	hub      *realtime.Hub
 	jobs     *river.Client[pgx.Tx]
 	ingress  IngressSettings
@@ -188,7 +190,7 @@ func New(d Deps) *Server {
 	}
 	srv := &Server{
 		log: d.Log, st: d.Store, version: d.Version, mailer: d.Mailer, webauthn: d.WebAuthn, auth: d.Auth, now: now,
-		secrets: d.Secrets, objects: d.Storage, attach: d.Attachments, sanitize: htmlPolicy(),
+		secrets: d.Secrets, objects: d.Storage, attach: d.Attachments, sanitize: htmlPolicy(), original: originalHTMLPolicy(),
 		hub: d.Hub, jobs: jobs, ingress: d.Ingress, ingestQ: make(chan struct{}, ingestSlots), sender: sender, smtpPriv: d.SMTPAllowPrivate, snsCerts: newCertCache(fetch), fetch: fetch,
 		chat: chat, limits: newRateLimiter(), webhooks: d.Webhooks, hooks: hooks, push: pusher,
 		noPanel: d.DisablePanel, noWidget: d.DisableWidget,
@@ -205,6 +207,64 @@ var _ oas.StrictServerInterface = (*Server)(nil)
 func htmlPolicy() *bluemonday.Policy {
 	p := bluemonday.UGCPolicy()
 	p.AllowURLSchemeWithCustomPolicy("cid", func(u *url.URL) bool { return u.Opaque != "" })
+	return p
+}
+
+var originalStyles = []string{
+	"color", "background-color", "background",
+	"font", "font-family", "font-size", "font-style", "font-variant", "font-weight", "font-stretch",
+	"text-align", "text-decoration", "text-decoration-color", "text-decoration-line", "text-decoration-style",
+	"text-indent", "text-overflow", "text-shadow", "text-transform", "text-size-adjust",
+	"line-height", "letter-spacing",
+	"margin", "margin-top", "margin-right", "margin-bottom", "margin-left",
+	"padding", "padding-top", "padding-right", "padding-bottom", "padding-left",
+	"border", "border-color", "border-style", "border-width", "border-radius",
+	"border-top", "border-right", "border-bottom", "border-left",
+	"border-top-color", "border-right-color", "border-bottom-color", "border-left-color",
+	"border-top-style", "border-right-style", "border-bottom-style", "border-left-style",
+	"border-top-width", "border-right-width", "border-bottom-width", "border-left-width",
+	"border-top-left-radius", "border-top-right-radius", "border-bottom-right-radius", "border-bottom-left-radius",
+	"border-collapse", "border-spacing",
+	"width", "max-width", "min-width", "height", "max-height",
+	"display", "vertical-align", "table-layout", "caption-side", "empty-cells",
+	"list-style", "list-style-type", "list-style-position",
+	"white-space", "word-break", "overflow-wrap", "word-wrap",
+}
+
+var refusedStyleValues = []string{"url(", "image(", "image-set(", "cross-fade(", "element(", "src(", "expression", "@import", "javascript:", "\\"}
+
+func safeStyleValue(v string) bool {
+	for _, r := range refusedStyleValues {
+		if strings.Contains(v, r) {
+			return false
+		}
+	}
+	return true
+}
+
+var (
+	htmlColour     = regexp.MustCompile(`^(#[0-9a-fA-F]{3,8}|[a-zA-Z]{1,30}|rgba?\([0-9., %]{1,40}\))$`)
+	htmlLength     = regexp.MustCompile(`^[0-9]{1,5}(\.[0-9]{1,3})?(%|px)?$`)
+	htmlFontFace   = regexp.MustCompile(`^[\p{L}\p{N} ,'"_-]{1,200}$`)
+	htmlFontSize   = regexp.MustCompile(`^[+-]?[1-7]$`)
+	htmlTableParts = []string{"table", "thead", "tbody", "tfoot", "tr", "td", "th", "col", "colgroup", "caption"}
+)
+
+// originalHTMLPolicy draws an e-mail as its sender designed it: htmlPolicy plus inline styles from an
+// allowlist and the presentational attributes of tables and font.
+func originalHTMLPolicy() *bluemonday.Policy {
+	p := htmlPolicy()
+	p.AllowStyles(originalStyles...).MatchingHandler(safeStyleValue).Globally()
+	presentational := append(append([]string{}, htmlTableParts...), "font", "center")
+	p.AllowAttrs("bgcolor").Matching(htmlColour).OnElements(htmlTableParts...)
+	p.AllowAttrs("color").Matching(htmlColour).OnElements("font")
+	p.AllowAttrs("face").Matching(htmlFontFace).OnElements("font")
+	p.AllowAttrs("size").Matching(htmlFontSize).OnElements("font")
+	p.AllowAttrs("align").Matching(bluemonday.CellAlign).OnElements(presentational...)
+	p.AllowAttrs("valign").Matching(bluemonday.CellVerticalAlign).OnElements(htmlTableParts...)
+	p.AllowAttrs("width", "height").Matching(htmlLength).OnElements(htmlTableParts...)
+	p.AllowAttrs("border", "cellpadding", "cellspacing").Matching(bluemonday.Integer).OnElements("table")
+	p.AllowNoAttrs().OnElements("font", "center")
 	return p
 }
 
