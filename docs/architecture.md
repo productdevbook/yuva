@@ -639,12 +639,12 @@ inherits the policy. Every response carries `X-Content-Type-Options: nosniff`.
 E-mail HTML has two views, both in a sandboxed `srcdoc` iframe under a CSP of its own (no
 scripts, no forms, images only from `data:`, the server's attachments and, once the member allows
 remote images, http(s)):
-- Reading (default): the sanitized HTML (`html`, `full_html`; bluemonday's UGC policy, so no
+- Reading: the sanitized HTML (`html`, `full_html`; bluemonday's UGC policy, so no
   styles or colours survive) drawn in the panel's own type and theme colours, light or dark, redrawn
   when the theme changes. It never scrolls sideways: tables, `width` attributes and images are held
   to the frame's width and long words break. Images sit on a light plate so dark-on-transparent
   logos stay visible in the dark theme.
-- Original, on demand ("Show original"): `original_html` from `GET /v1/messages/{id}/email`,
+- Original (the default when the message has one): `original_html` from `GET /v1/messages/{id}/email`,
   sanitized with a second policy that keeps inline styles limited to an allowlist of CSS
   properties and the colour, background and size attributes, never `<style>` blocks, scripts,
   forms or external stylesheets. In the light theme it is drawn on white, as the sender designed
@@ -656,6 +656,17 @@ remote images, http(s)):
   gets one wrong. Content wider than the frame is scaled down to fit (to 60% at most) and only
   beyond that scrolls inside the frame, never the page.
 
+- Which e-mail view opens first is a per-device preference next to the theme (Settings ›
+  Appearance: Original or Reading, Original by default); each message can still be switched.
+- Setup: a full-screen, two-column page in the sign-in design (steps and form on the left, a live
+  preview on the right) takes an owner or admin from an empty workspace to its first
+  conversation: name the inbox, pick a channel (website chat, e-mail or app), install it (snippet,
+  forwarding address or SDK lines), then wait live for the first message, which the preview's own
+  chat widget can send. It opens on its own while the workspace has no conversation (it can be put
+  off; that is remembered per workspace on the device), and adding an inbox later uses the same page.
+- Connect an assistant (Settings › Connected apps): one page per client (Claude, Claude Code, Codex,
+  ChatGPT, Cursor, VS Code, other MCP clients) with the server's own `/mcp` URL, a copyable command
+  or config, install links where the client has them, and the steps; a new grant shows up there live.
 - Queue: one conversation at a time. The conversations waiting for the member (open, assigned to
   them or to nobody, oldest first) are a queue; after a reply, close, snooze or hand-off the next
   one opens, with an undo. A reply is held for a few seconds before it is posted so it can be
