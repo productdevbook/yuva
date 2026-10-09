@@ -5,13 +5,13 @@ can copy them into your own code. The walkthrough is the [Headless guide](../doc
 
 | Example | What | Runs on |
 |---|---|---|
-| [headless-chat](headless-chat) | A terminal chat for a contact, built only on `createYuvaClient()` from `@useyuva/js` | Node 22.18+ |
-| [inbox-feed](inbox-feed) | Follows a workspace through the event feed `GET /v1/events` with the typed `/v1` client from `@useyuva/js/api` | Node 22.18+ |
+| [headless-chat](headless-chat) | A terminal chat for a contact, built only on `createYuvaClient()` from `yuva` | Node 22.18+ |
+| [inbox-feed](inbox-feed) | Follows a workspace through the event feed `GET /v1/events` with the typed `/v1` client from `yuva/api` | Node 22.18+ |
 | [draft-bot](draft-bot) | A webhook receiver that verifies the signature and answers every incoming message with a draft | Go 1.27 |
 
-The JS examples point at the SDK in this repository (`file:../../sdk/js`), since `@useyuva/js` is
+The JS examples point at the SDK in this repository (`file:../../sdk/js`), since `yuva` is
 not on npm yet; build it once with `bun install && bun run build` in `sdk/js`. In your own project,
-depend on `@useyuva/js` instead. The Go example uses `sdk/go` through a `replace` directive in its
+depend on `yuva` instead. The Go example uses `sdk/go` through a `replace` directive in its
 `go.mod`; drop that line in your own module.
 
 ## headless-chat

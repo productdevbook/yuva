@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { setTimeout as sleep } from "node:timers/promises";
-import { createYuvaApi, type components } from "@useyuva/js/api";
+import { createYuvaApi, type components } from "yuva/api";
 
 type StoredEvent = components["schemas"]["StoredEvent"];
 

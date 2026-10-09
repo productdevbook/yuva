@@ -240,13 +240,13 @@ stops serving the widget scripts. The API, realtime, ingress and `/mcp` stay. Wi
 its paths answer `404` and `/oauth/authorize` checks the client and `redirect_uri` as usual, then
 redirects back with `error=temporarily_unavailable`. `/client/v1` stays with the widget off.
 
-**JS packages.** The JS SDK is published to npm as `@useyuva/js` (the `@yuva` scope belongs to
+**JS packages.** The JS SDK is published to npm as the unscoped package `yuva` (the `@yuva` scope belongs to
 someone else), MIT, versioned with the repository:
-- `@useyuva/js`: `createYuvaClient()`, the contact side (`/client/v1`) without DOM: sessions,
+- `yuva`: `createYuvaClient()`, the contact side (`/client/v1`) without DOM: sessions,
   identity tokens, conversations, messages, attachments, typing, read state, realtime with resume.
-- `@useyuva/js/chat`: the `<yuva-chat>` element, built on that client; the script-tag build stays.
-- `@useyuva/js/react`: `YuvaProvider`, `useConversations`, `useMessages` (React is an optional peer).
-- `@useyuva/js/api`: a typed `/v1` client for TypeScript backends, generated from the contract.
+- `yuva/chat`: the `<yuva-chat>` element, built on that client; the script-tag build stays.
+- `yuva/react`: `YuvaProvider`, `useConversations`, `useMessages` (React is an optional peer).
+- `yuva/api`: a typed `/v1` client for TypeScript backends, generated from the contract.
 `sdk/go` gets a `/v1` client generated from the contract (`sdk/go/client`), next to `identity` and
 `webhook`.
 
