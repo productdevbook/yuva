@@ -76,7 +76,7 @@ What changed: [changelog](CHANGELOG.md).
 | `site/` | Website and documentation | AGPL-3.0 |
 | `deploy/` | Docker and Compose | AGPL-3.0 |
 | `openapi/` | API contract | MIT |
-| `sdk/js` | `yuva`: headless client, `<yuva-chat>`, React hooks, typed `/v1` client | MIT |
+| `sdk/js` | `useyuva`: headless client, `<yuva-chat>`, React hooks, typed `/v1` client | MIT |
 | `sdk/swift`, `sdk/kotlin` | iOS and Android SDKs | MIT |
 | `sdk/go` | Typed `/v1` client, identity tokens and webhook verification | MIT |
 | `examples/` | Headless chat, event feed and draft bot | MIT |
