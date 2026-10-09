@@ -50,7 +50,8 @@ workspace allows bots to send.
 **Drafts and "via".** `draft_reply` stores a draft; a member reviews it in the conversation and
 sends, edits or discards it. Everything written through OAuth carries the client's name: the
 timeline shows "Ayşe via Claude Code", and the message's `author` has `via`. Writes with an API key
-are by the key's bot. `send_reply` and `send_draft` exist only when the workspace setting **Bots may send** is on
+are by the key's bot. While you have a draft in a conversation, `send_reply` there answers
+`draft_pending`: send the draft with `send_draft` or discard it. `send_reply` and `send_draft` exist only when the workspace setting **Bots may send** is on
 (see [Headless](headless.md#bots-may-send)).
 
 Each token or key may make 600 requests a minute (`429` with `Retry-After` beyond).

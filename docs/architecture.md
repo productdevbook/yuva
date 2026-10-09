@@ -358,7 +358,8 @@ re-checks its token every 30 seconds and ends when the token stops working. The 
 - Writes carry `destructiveHint: false` except `merge_contacts`; `assign`, `set_status`, `snooze`,
   the label tools, `move_conversation` and `bulk_update` carry `idempotentHint`; `send_reply` and
   `send_draft` (`SendMessage`, delivering a stored draft instead of a copy of its text) carry
-  `openWorldHint`.
+  `openWorldHint`. `send_reply` answers `409 draft_pending` while the caller (the same key,
+  or the same member through the same client) has a draft in that conversation.
 - `resources/list` lists the inboxes the caller sees. `yuva://inbox/{id}` holds the inbox and, with
   `conversations:read`, its latest open conversations; it is updated by `inbox.*` and
   `conversation.created`, `.updated` and `.moved` there. `yuva://conversation/{id}` is updated by

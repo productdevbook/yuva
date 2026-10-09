@@ -12,6 +12,36 @@ import (
 	"uuid"
 )
 
+const callerDraftInConversation = `-- name: CallerDraftInConversation :one
+SELECT id FROM messages
+WHERE workspace_id = $1 AND conversation_id = $2 AND draft
+  AND (author_api_key_id = $3
+       OR (author_member_id = $4 AND via IS NOT DISTINCT FROM $5))
+ORDER BY created_at DESC, id DESC
+LIMIT 1
+`
+
+type CallerDraftInConversationParams struct {
+	WorkspaceID    uuid.UUID
+	ConversationID uuid.UUID
+	ApiKeyID       *uuid.UUID
+	MemberID       *uuid.UUID
+	Via            *string
+}
+
+func (q *Queries) CallerDraftInConversation(ctx context.Context, arg CallerDraftInConversationParams) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, callerDraftInConversation,
+		arg.WorkspaceID,
+		arg.ConversationID,
+		arg.ApiKeyID,
+		arg.MemberID,
+		arg.Via,
+	)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
 const createAttachment = `-- name: CreateAttachment :one
 INSERT INTO attachments (id, workspace_id, conversation_id, message_id, storage_key, filename,
                          content_type, size_bytes, content_id, inline, created_at)
