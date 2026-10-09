@@ -86,7 +86,7 @@ function BrandPanel() {
           </ul>
         </div>
         <div className="max-w-md">
-          <p className="text-[clamp(1.6rem,0.9rem+1.4vw,2.1rem)] font-medium text-balance">
+          <p className="text-page text-balance">
             <Trans>Every customer conversation, in one place.</Trans>
           </p>
           <p className="mt-3 text-muted-foreground">

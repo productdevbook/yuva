@@ -172,8 +172,8 @@ export function AllDrawer({
             label={t`Conversations`}
             value={tab}
             onChange={setTab}
-            className="w-full overflow-x-auto [scrollbar-width:none]"
-            itemClassName="flex-auto shrink-0 px-1.5"
+            className="w-full"
+            itemClassName="flex-auto shrink-0 px-1.5 phone:h-auto phone:min-w-0 phone:flex-1 phone:shrink phone:flex-col phone:gap-0 phone:px-1 phone:py-1"
             items={TABS.map((k) => ({
               value: k,
               testId: `drawer-tab-${k}`,
@@ -181,7 +181,7 @@ export function AllDrawer({
                 <>
                   {labels[k]}
                   {!rows[k].pending && (
-                    <span className="ms-1 text-caption font-normal text-faint tabular-nums">
+                    <span className="ms-1 text-caption font-normal text-faint tabular-nums phone:ms-0">
                       {fmt.format(rows[k].items.length)}
                       {rows[k].more && "+"}
                     </span>
