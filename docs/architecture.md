@@ -647,9 +647,14 @@ remote images, http(s)):
 - Original, on demand ("Show original"): `original_html` from `GET /v1/messages/{id}/email`,
   sanitized with a second policy that keeps inline styles limited to an allowlist of CSS
   properties and the colour, background and size attributes, never `<style>` blocks, scripts,
-  forms or external stylesheets. It is drawn on white, as the sender designed it; content wider
-  than the frame is scaled down to fit (to 60% at most) and only beyond that scrolls inside the
-  frame, never the page.
+  forms or external stylesheets. In the light theme it is drawn on white, as the sender designed
+  it. In the dark theme it is darkened automatically before it reaches the frame (the frame runs
+  no scripts): colours from inline styles and `bgcolor`/`color` attributes are mapped in OKLCH,
+  light backgrounds to dark ones of the same hue, text lightened until it reaches WCAG 4.5:1
+  against the background it sits on, borders alike; elements without a colour take the theme's;
+  images are left as they are. A button shows the mail as sent, on white, when the conversion
+  gets one wrong. Content wider than the frame is scaled down to fit (to 60% at most) and only
+  beyond that scrolls inside the frame, never the page.
 
 - Queue: one conversation at a time. The conversations waiting for the member (open, assigned to
   them or to nobody, oldest first) are a queue; after a reply, close, snooze or hand-off the next
