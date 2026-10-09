@@ -10,6 +10,7 @@ import { ConsentPage } from "@/features/oauth/ConsentPage"
 import { ApiKeysPage } from "@/features/settings/api-keys/ApiKeysPage"
 import { AppearancePage } from "@/features/settings/appearance/AppearancePage"
 import { CannedRepliesPage } from "@/features/settings/canned/CannedRepliesPage"
+import { AssistantPage } from "@/features/settings/connected-apps/AssistantPage"
 import { ConnectedAppsPage } from "@/features/settings/connected-apps/ConnectedAppsPage"
 import { InboxPage } from "@/features/settings/inboxes/InboxPage"
 import { InboxWebhooksPage } from "@/features/settings/inboxes/InboxWebhooksPage"
@@ -47,6 +48,7 @@ export function AppRoutes() {
           <Route path="canned-replies" element={<CannedRepliesPage />} />
           <Route path="api-keys" element={<ApiKeysPage />} />
           <Route path="connected-apps" element={<ConnectedAppsPage />} />
+          <Route path="connected-apps/:assistant" element={<AssistantPage />} />
           <Route path="webhooks" element={<WebhooksPage />} />
           <Route path="webhooks/:webhookId" element={<WebhookPage />} />
           <Route path="*" element={<Navigate to="/settings" replace />} />

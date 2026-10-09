@@ -98,6 +98,10 @@ msgstr "{author}, sent by {by}"
 msgid "{bad} bad"
 msgstr "{bad} bad"
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "{clientName} is connected"
+msgstr "{clientName} is connected"
+
 #: src/app/TeamMenu.tsx
 msgid "{closed, plural, one {# closed} other {# closed}}"
 msgstr "{closed, plural, one {# closed} other {# closed}}"
@@ -190,6 +194,14 @@ msgstr "{name} can now receive messages. One last step:"
 msgid "{name} can reply"
 msgstr "{name} can reply"
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "{name} connects from its vendor's cloud, so it needs this server at a public https address. The panel is open at {url}, which it probably cannot reach."
+msgstr "{name} connects from its vendor's cloud, so it needs this server at a public https address. The panel is open at {url}, which it probably cannot reach."
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "{name} docs"
+msgstr "{name} docs"
+
 #: src/features/conversation/PersonHeader.tsx
 msgid "{name} is looking"
 msgstr "{name} is looking"
@@ -255,6 +267,10 @@ msgstr "<0>{n}</0> waiting for you"
 msgid "<0>Android:</0> add the library from <1>sdk/kotlin</1> in the Yuva repository and configure it with the same two values."
 msgstr "<0>Android:</0> add the library from <1>sdk/kotlin</1> in the Yuva repository and configure it with the same two values."
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "<0>Bots may send</0> is on in this workspace, so an assistant with the scope to write messages can send replies itself. Without it, replies stay drafts."
+msgstr "<0>Bots may send</0> is on in this workspace, so an assistant with the scope to write messages can send replies itself. Without it, replies stay drafts."
+
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "<0>iOS:</0> add the Yuva repository as a Swift package and use the <1>YuvaKit</1> library; create the client with the server URL and this key."
 msgstr "<0>iOS:</0> add the Yuva repository as a Swift package and use the <1>YuvaKit</1> library; create the client with the server URL and this key."
@@ -274,6 +290,14 @@ msgstr "1 other conversation"
 #: src/features/settings/channels/ChannelSummary.tsx
 msgid "1 setting"
 msgstr "1 setting"
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "A client that cannot sign in can send an API key as <0>Authorization: Bearer</0>; an owner or admin makes one."
+msgstr "A client that cannot sign in can send an API key as <0>Authorization: Bearer</0>; an owner or admin makes one."
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "A client that cannot sign in can send an API key as <0>Authorization: Bearer</0>. Make one in <1>API keys</1>."
+msgstr "A client that cannot sign in can send an API key as <0>Authorization: Bearer</0>. Make one in <1>API keys</1>."
 
 #: src/components/common/text.ts
 msgid "A contact changed"
@@ -298,6 +322,14 @@ msgstr "A conversation is assigned to me"
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "A conversation started"
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "A custom connector, for claude.ai and Claude Desktop. It acts as you, with the access you allow."
+msgstr "A custom connector, for claude.ai and Claude Desktop. It acts as you, with the access you allow."
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "A custom MCP server in ChatGPT on the web. It acts as you, with the access you allow."
+msgstr "A custom MCP server in ChatGPT on the web. It acts as you, with the access you allow."
 
 #: src/components/common/text.ts
 msgid "A draft was discarded"
@@ -369,6 +401,10 @@ msgstr "Add a note (optional)"
 msgid "Add a passkey"
 msgstr "Add a passkey"
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Add a remote server with the Streamable HTTP transport and the server URL. Many clients take a configuration like this:"
+msgstr "Add a remote server with the Streamable HTTP transport and the server URL. Many clients take a configuration like this:"
+
 #: src/app/Palette.tsx
 #: src/features/settings/notifications/InboxOverrides.tsx
 #: src/features/settings/SettingsLayout.tsx
@@ -392,6 +428,14 @@ msgstr "Add endpoint"
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Add note"
 msgstr "Add note"
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Add the server in a terminal:"
+msgstr "Add the server in a terminal:"
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Add to Cursor"
+msgstr "Add to Cursor"
 
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -487,6 +531,10 @@ msgstr "An https image URL."
 msgid "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
 msgstr "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "An owner or admin can let assistants send on their own with Bots may send."
+msgstr "An owner or admin can let assistants send on their own with Bots may send."
+
 #: src/features/settings/channels/ChannelSummary.tsx
 msgid "anonymous users allowed"
 msgstr "anonymous users allowed"
@@ -511,6 +559,14 @@ msgstr "another inbox"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Answering"
 msgstr "Answering"
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Any client that speaks MCP over HTTP"
+msgstr "Any client that speaks MCP over HTTP"
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Any client that speaks MCP over HTTP. It acts as you, with the access you allow."
+msgstr "Any client that speaks MCP over HTTP. It acts as you, with the access you allow."
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Anything using this key stops working at once."
@@ -549,6 +605,10 @@ msgstr "Appear online only in business hours"
 #: src/features/settings/SettingsLayout.tsx
 msgid "Appearance"
 msgstr "Appearance"
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "As {name}, since {when}"
+msgstr "As {name}, since {when}"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "As above ({current})"
@@ -757,6 +817,10 @@ msgstr "Check your e-mail"
 msgid "Choose a workspace"
 msgstr "Choose a workspace"
 
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "claude.ai and Claude Desktop"
+msgstr "claude.ai and Claude Desktop"
+
 #: src/features/contact/ContactDetails.tsx
 msgid "Clear"
 msgstr "Clear"
@@ -769,6 +833,10 @@ msgstr "Clear the search"
 #: src/features/inbox/ListPage.tsx
 msgid "Clear the selection"
 msgstr "Clear the selection"
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "CLI and IDE extension"
+msgstr "CLI and IDE extension"
 
 #: src/components/ui/dialog.tsx
 #: src/components/ui/sheet.tsx
@@ -835,23 +903,41 @@ msgstr "Color"
 msgid "Colour"
 msgstr "Colour"
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Confirm the warning and select <0>Create as a plugin</0>. ChatGPT registers itself with this server."
+msgstr "Confirm the warning and select <0>Create as a plugin</0>. ChatGPT registers itself with this server."
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "Connect {clientName} to Yuva?"
 msgstr "Connect {clientName} to Yuva?"
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Connect an assistant"
+msgstr "Connect an assistant"
 
 #: src/features/settings/SettingsLayout.tsx
 msgid "Connect your servers and bots to Yuva"
 msgstr "Connect your servers and bots to Yuva"
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "Connected"
+msgstr "Connected"
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Connected {created}"
 msgstr "Connected {created}"
 
 #: src/app/Palette.tsx
+#: src/features/settings/connected-apps/AssistantPage.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 #: src/features/settings/SettingsLayout.tsx
 msgid "Connected apps"
 msgstr "Connected apps"
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Connected under another name? All connections are in <0>Connected apps</0>."
+msgstr "Connected under another name? All connections are in <0>Connected apps</0>."
 
 #: src/app/ConnectionBanner.tsx
 msgid "Connection lost. Reconnecting…"
@@ -1362,6 +1448,10 @@ msgstr "Fix the address or the channel's SMTP settings, then send the reply agai
 msgid "Follow the system appearance"
 msgstr "Follow the system appearance"
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "For a client that only starts local programs, use the <0>yuva mcp stdio</0> bridge from the setup guide."
+msgstr "For a client that only starts local programs, use the <0>yuva mcp stdio</0> bridge from the setup guide."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "For developers"
 msgstr "For developers"
@@ -1397,6 +1487,10 @@ msgstr "Friday"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "From address (optional)"
 msgstr "From address (optional)"
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "From the terminal"
+msgstr "From the terminal"
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Full API"
@@ -1510,6 +1604,18 @@ msgstr "in an hour"
 msgid "In an hour"
 msgstr "In an hour"
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "In ChatGPT on the web, open <0>Plugins</0>, select the plus button, then <1>Add custom MCP server</1>."
+msgstr "In ChatGPT on the web, open <0>Plugins</0>, select the plus button, then <1>Add custom MCP server</1>."
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "In Claude, open <0>Customize › Connectors</0> and choose <1>Add custom connector</1>. It works for claude.ai and Claude Desktop alike."
+msgstr "In Claude, open <0>Customize › Connectors</0> and choose <1>Add custom connector</1>. It works for claude.ai and Claude Desktop alike."
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
+msgstr "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
+
 #: src/features/conversation/Feedback.tsx
 msgid "In the app and by e-mail"
 msgstr "In the app and by e-mail"
@@ -1552,6 +1658,18 @@ msgstr "Install"
 msgid "Install app"
 msgstr "Install app"
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Install in VS Code"
+msgstr "Install in VS Code"
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Install the server in Cursor; it opens and asks you to confirm."
+msgstr "Install the server in Cursor; it opens and asks you to confirm."
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Install the server in VS Code; it opens the server's page, where you select Install."
+msgstr "Install the server in VS Code; it opens the server's page, where you select Install."
+
 #: src/features/conversation/Feedback.tsx
 msgid "Installation"
 msgstr "Installation"
@@ -1575,6 +1693,14 @@ msgstr "iOS and Android app"
 #: src/features/oauth/ConsentPage.tsx
 msgid "It also asked for access your role here cannot give:"
 msgstr "It also asked for access your role here cannot give:"
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "It goes into <0>~/.codex/config.toml</0>, which the Codex CLI and IDE extension share."
+msgstr "It goes into <0>~/.codex/config.toml</0>, which the Codex CLI and IDE extension share."
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
+msgstr "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "It is removed from every conversation."
@@ -1777,6 +1903,7 @@ msgstr "Lowercase letters, digits and dashes."
 msgid "Mail sent to your support address"
 msgstr "Mail sent to your support address"
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Manage"
 msgstr "Manage"
@@ -1898,6 +2025,14 @@ msgstr "My profile"
 #: src/features/settings/profile/ProfileForm.tsx
 msgid "Name"
 msgstr "Name"
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Name it Yuva, paste the server URL and leave authentication on signing in. If Claude asks how to identify itself, keep its published identity. Click <0>Add</0>, then <1>Connect</1>."
+msgstr "Name it Yuva, paste the server URL and leave authentication on signing in. If Claude asks how to identify itself, keep its published identity. Click <0>Add</0>, then <1>Connect</1>."
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Name it Yuva. Under <0>Connection</0> choose <1>Public endpoint</1> and paste the server URL; choose OAuth for authentication."
+msgstr "Name it Yuva. Under <0>Connection</0> choose <1>Public endpoint</1> and paste the server URL; choose OAuth for authentication."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Name, e-mail or id"
@@ -2135,6 +2270,10 @@ msgstr "Not a secret: it ships inside your app. Native apps send no origin, so t
 msgid "Not an origin: {notOrigins}. Use scheme and host only, such as https://www.example.com."
 msgstr "Not an origin: {notOrigins}. Use scheme and host only, such as https://www.example.com."
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Not connected yet. This page updates when you finish signing in."
+msgstr "Not connected yet. This page updates when you finish signing in."
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Not delivered"
 msgstr "Not delivered"
@@ -2225,6 +2364,14 @@ msgstr "On for this device."
 msgid "On iPhone and iPad, add Yuva to your Home Screen with Share › Add to Home Screen, then open it from there to turn on notifications."
 msgstr "On iPhone and iPad, add Yuva to your Home Screen with Share › Add to Home Screen, then open it from there to turn on notifications."
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "On Team and Enterprise plans an owner adds it once in <0>Organization settings › Connectors</0>; members then find it under Connectors and click Connect."
+msgstr "On Team and Enterprise plans an owner adds it once in <0>Organization settings › Connectors</0>; members then find it under Connectors and click Connect."
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "On the web"
+msgstr "On the web"
+
 #: src/features/auth/AuthLayout.tsx
 msgid "One inbox"
 msgstr "One inbox"
@@ -2240,6 +2387,10 @@ msgstr "One per line, 1 to 20. Only pages on these origins can use the widget."
 #: src/features/settings/SettingsLayout.tsx
 msgid "One per product or brand"
 msgstr "One per product or brand"
+
+#: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+msgid "One-click install"
+msgstr "One-click install"
 
 #: src/app/TeamMenu.tsx
 #: src/features/conversation/LaterActions.tsx
@@ -2288,6 +2439,14 @@ msgstr "Open {0}"
 msgid "Open {name}"
 msgstr "Open {name}"
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Open ChatGPT plugins"
+msgstr "Open ChatGPT plugins"
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Open Claude connectors"
+msgstr "Open Claude connectors"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ListPreview.tsx
 msgid "Open full screen"
@@ -2309,6 +2468,18 @@ msgstr "Opens"
 msgid "or"
 msgstr "or"
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Or put this in <0>~/.cursor/mcp.json</0> for every project, or in <1>.cursor/mcp.json</1> for one:"
+msgstr "Or put this in <0>~/.cursor/mcp.json</0> for every project, or in <1>.cursor/mcp.json</1> for one:"
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Or run <0>/mcp</0> inside a session. On a machine without a browser, add <1>--no-browser</1> and open the printed link yourself."
+msgstr "Or run <0>/mcp</0> inside a session. On a machine without a browser, add <1>--no-browser</1> and open the printed link yourself."
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Or run the command below, or put the configuration in <0>.vscode/mcp.json</0> (or run <1>MCP: Add Server</1>):"
+msgstr "Or run the command below, or put the configuration in <0>.vscode/mcp.json</0> (or run <1>MCP: Add Server</1>):"
+
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Original"
 msgstr "Original"
@@ -2321,6 +2492,10 @@ msgstr "Other"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Other conversations"
 msgstr "Other conversations"
+
+#: src/features/settings/connected-apps/assistants.ts
+msgid "Other MCP client"
+msgstr "Other MCP client"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the inbox counts as closed"
@@ -2425,6 +2600,10 @@ msgstr "Pick one; you can add the others later."
 #: src/features/contact/MergeContactDialog.tsx
 msgid "Pick the other contact. It is merged into this one and then deleted."
 msgstr "Pick the other contact. It is merged into this one and then deleted."
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Pick the workspace <0>{workspace}</0>, check the scopes and allow. You go back to {clientName}, and the connection shows up here."
+msgstr "Pick the workspace <0>{workspace}</0>, check the scopes and allow. You go back to {clientName}, and the connection shows up here."
 
 #: src/features/settings/channels/app/AppFields.tsx
 msgid "Platforms"
@@ -2633,6 +2812,10 @@ msgstr "Replies"
 msgid "Replies go out through your own SMTP account. Leave the host empty to only receive mail."
 msgstr "Replies go out through your own SMTP account. Leave the host empty to only receive mail."
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Replies the assistant writes are drafts: you or a teammate review them in the conversation and send them. It shows as you, via the assistant."
+msgstr "Replies the assistant writes are drafts: you or a teammate review them in the conversation and send them. It shows as you, via the assistant."
+
 #: src/features/contact/ContactDetails.tsx
 msgid "Replies to this address are refused until you clear it."
 msgstr "Replies to this address are refused until you clear it."
@@ -2811,6 +2994,14 @@ msgstr "Search people, actions or settings"
 msgid "Search people, actions or settings…"
 msgstr "Search people, actions or settings…"
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Search, triage and draft replies from Codex. It acts as you, with the access you allow."
+msgstr "Search, triage and draft replies from Codex. It acts as you, with the access you allow."
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Search, triage and draft replies from your terminal. It acts as you, with the access you allow."
+msgstr "Search, triage and draft replies from your terminal. It acts as you, with the access you allow."
+
 #: src/features/inbox/ListPage.tsx
 msgid "Select {name}"
 msgstr "Select {name}"
@@ -2899,6 +3090,7 @@ msgid "Sent to {first} and closed"
 msgstr "Sent to {first} and closed"
 
 #: src/features/settings/channels/app/AppInstall.tsx
+#: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Server URL"
 msgstr "Server URL"
 
@@ -2913,6 +3105,10 @@ msgstr "Settings"
 #: src/features/settings/channels/ChannelDialog.tsx
 msgid "Settings (JSON)"
 msgstr "Settings (JSON)"
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Setup guide"
+msgstr "Setup guide"
 
 #: src/features/settings/canned/CannedReplyDialog.tsx
 msgid "Shortcut"
@@ -2974,6 +3170,10 @@ msgstr "Shown to your team and to contacts"
 msgid "Sign in"
 msgstr "Sign in"
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Sign in from the client. It finds everything from the URL: OAuth 2.1 with PKCE, registering itself automatically or with a Client ID Metadata Document."
+msgstr "Sign in from the client. It finds everything from the URL: OAuth 2.1 with PKCE, registering itself automatically or with a Client ID Metadata Document."
+
 #: src/features/auth/SignInPage.tsx
 msgid "Sign in to Yuva"
 msgstr "Sign in to Yuva"
@@ -2985,6 +3185,10 @@ msgstr "Sign in with a passkey"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Sign in with your device's fingerprint, face or screen lock instead of a code."
 msgstr "Sign in with your device's fingerprint, face or screen lock instead of a code."
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Sign in:"
+msgstr "Sign in:"
 
 #: src/app/Gate.tsx
 #: src/app/UserMenu.tsx
@@ -3062,6 +3266,10 @@ msgstr "Sort conversations your way"
 msgid "Start conversation"
 msgstr "Start conversation"
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Start the server. VS Code asks to sign in to Yuva and opens your browser."
+msgstr "Start the server. VS Code asks to sign in to Yuva and opens your browser."
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (port 587)"
@@ -3071,6 +3279,10 @@ msgstr "STARTTLS (port 587)"
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Status"
 msgstr "Status"
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Steps"
+msgstr "Steps"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Stop overriding {name}"
@@ -3091,6 +3303,10 @@ msgstr "Succeeded"
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Suggested by {author}"
 msgstr "Suggested by {author}"
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Suggested scopes"
+msgstr "Suggested scopes"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Suggestion discarded"
@@ -3194,6 +3410,10 @@ msgstr "The chat shows who is available and typing"
 #: src/features/auth/SignInPage.tsx
 msgid "The code is wrong or has expired."
 msgstr "The code is wrong or has expired."
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "The consent page ticks what the client asks for. Leave out what you do not want it to do; it never gets more than your role allows."
+msgstr "The consent page ticks what the client asks for. Leave out what you do not want it to do; it never gets more than your role allows."
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "The customer does not see this"
@@ -3408,6 +3628,10 @@ msgstr "Title"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "TLS (port 465)"
 msgstr "TLS (port 465)"
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "To let assistants send on their own, turn on <0>Bots may send</0>."
+msgstr "To let assistants send on their own, turn on <0>Bots may send</0>."
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "To: {emailTo}"
@@ -3783,6 +4007,14 @@ msgstr "Within an hour"
 msgid "Within minutes"
 msgstr "Within minutes"
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Work with conversations from agent mode in VS Code. It acts as you, with the access you allow."
+msgstr "Work with conversations from agent mode in VS Code. It acts as you, with the access you allow."
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Work with conversations from Cursor's agent. It acts as you, with the access you allow."
+msgstr "Work with conversations from Cursor's agent. It acts as you, with the access you allow."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Working"
 msgstr "Working"
@@ -3898,6 +4130,10 @@ msgstr "Your backend signs identity tokens with it so Yuva knows who your signed
 msgid "Your backend signs identity tokens with this secret so Yuva knows who your signed-in users are. It is shown only when created or rotated."
 msgstr "Your backend signs identity tokens with this secret so Yuva knows who your signed-in users are. It is shown only when created or rotated."
 
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Your browser opens the consent page on <0>{host}</0>. Sign in with a code or a passkey if you are not signed in already."
+msgstr "Your browser opens the consent page on <0>{host}</0>. Sign in with a code or a passkey if you are not signed in already."
+
 #: src/features/settings/inboxes/NewInboxPage.tsx
 msgid "Your customers will see this name."
 msgstr "Your customers will see this name."
@@ -3909,6 +4145,10 @@ msgstr "Your draft is still here; send it as well or clear it."
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Your new API key"
 msgstr "Your new API key"
+
+#: src/features/settings/connected-apps/AssistantPage.tsx
+msgid "Your plan and workspace policies decide whether custom MCP servers are available."
+msgstr "Your plan and workspace policies decide whether custom MCP servers are available."
 
 #. placeholder {0}: errorText(err)
 #: src/features/conversation/actions.ts

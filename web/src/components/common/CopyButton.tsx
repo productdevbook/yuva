@@ -35,3 +35,14 @@ export function CodeLine({ value, testId }: { value: string; testId?: string }) 
     </div>
   )
 }
+
+export function CodeBlock({ value, testId }: { value: string; testId?: string }) {
+  return (
+    <div className="min-w-0 rounded-xl border bg-surface py-2 ps-3.5 pe-2 after:block after:clear-both">
+      <CopyButton value={value} className="float-end ms-3" />
+      <pre className="py-1 font-mono text-caption leading-relaxed whitespace-pre-wrap [overflow-wrap:anywhere]" data-testid={testId}>
+        {value}
+      </pre>
+    </div>
+  )
+}

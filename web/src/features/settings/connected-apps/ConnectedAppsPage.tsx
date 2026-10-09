@@ -1,11 +1,13 @@
 import { Plural, Trans, useLingui } from "@lingui/react/macro"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { PlugIcon } from "lucide-react"
 
 import { ErrorLine, useConfirm } from "@/components/common"
 import { API_KEY_SCOPES, formatDateTime, useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
-import { Card, EmptyRow, PageHeader, Row, Rows, Section } from "@/features/settings/ui"
+import { ASSISTANTS, grantsFor, useAssistantName, type AssistantId } from "@/features/settings/connected-apps/assistants"
+import { useGrants } from "@/features/settings/connected-apps/queries"
+import { Card, EmptyRow, LinkRow, PageHeader, Row, RowIcon, Rows, RowText, Section, StatusTag } from "@/features/settings/ui"
 import { api, unwrap, type OAuthGrant } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
@@ -85,11 +87,56 @@ function GrantRow({ g, showMember, onRevoke }: { g: OAuthGrant; showMember: bool
   )
 }
 
+function Assistants({ grants }: { grants: OAuthGrant[] | undefined }) {
+  const { membership } = useSession()
+  const nameOf = useAssistantName()
+  const details: Record<AssistantId, React.ReactNode> = {
+    claude: <Trans>claude.ai and Claude Desktop</Trans>,
+    "claude-code": <Trans>From the terminal</Trans>,
+    codex: <Trans>CLI and IDE extension</Trans>,
+    chatgpt: <Trans>On the web</Trans>,
+    cursor: <Trans>One-click install</Trans>,
+    vscode: <Trans>One-click install</Trans>,
+    other: <Trans>Any client that speaks MCP over HTTP</Trans>,
+  }
+  return (
+    <Section title={<Trans>Connect an assistant</Trans>}>
+      <Card flush>
+        <Rows>
+          {ASSISTANTS.map((a) => {
+            const Icon = a.icon
+            const connected = grants && grantsFor(a, grants, membership.member_id, new Set()).length > 0
+            return (
+              <LinkRow
+                key={a.id}
+                to={a.id}
+                testId="assistant-row"
+                value={
+                  connected ? (
+                    <StatusTag tone="success">
+                      <Trans>Connected</Trans>
+                    </StatusTag>
+                  ) : undefined
+                }
+              >
+                <RowIcon>
+                  <Icon />
+                </RowIcon>
+                <RowText title={nameOf(a)} detail={details[a.id]} />
+              </LinkRow>
+            )
+          })}
+        </Rows>
+      </Card>
+    </Section>
+  )
+}
+
 export function ConnectedAppsPage() {
   const qc = useQueryClient()
   const { workspaceId: ws, canManage } = useSession()
   const [confirm, confirmDialog] = useConfirm()
-  const list = useQuery({ queryKey: keys.oauthGrants(ws), queryFn: () => unwrap(api.GET("/v1/oauth/grants")).then((r) => r.items) })
+  const list = useGrants()
   const revoke = useMutation({
     mutationFn: (id: string) => unwrap(api.DELETE("/v1/oauth/grants/{oauthGrantId}", { params: { path: { oauthGrantId: id } } })),
     onSettled: () => qc.invalidateQueries({ queryKey: keys.oauthGrants(ws) }),
@@ -111,6 +158,7 @@ export function ConnectedAppsPage() {
           )
         }
       />
+      <Assistants grants={list.data} />
       <Section title={<Trans>Connections</Trans>}>
         <Card flush>
           {list.data && list.data.length === 0 ? (
