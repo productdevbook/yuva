@@ -141,8 +141,33 @@ jobs:
           path: dist/
           if-no-files-found: error
 
+  npm:
+    needs: version
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write
+    defaults:
+      run:
+        working-directory: sdk/js
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - name: publish with npm trusted publishing
+        env:
+          PRERELEASE: ${{ needs.version.outputs.prerelease }}
+        run: |
+          tag=latest
+          [[ "$PRERELEASE" == true ]] && tag=next
+          npm publish --access public --tag "$tag"
+
   release:
-    needs: [version, image, mcpb]
+    needs: [version, image, mcpb, npm]
     runs-on: ubuntu-latest
     permissions:
       contents: write

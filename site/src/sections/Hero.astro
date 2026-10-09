@@ -1,7 +1,7 @@
 ---
 import type { HomeCopy } from "@/copy/home"
 import type { Locale } from "@/lib/routes"
-import { releases, VERSION } from "@/lib/routes"
+import { links } from "@/lib/routes"
 import type { Shots } from "@/lib/shots"
 import InboxPreview from "@/ui/InboxPreview.astro"
 import Shot from "@/ui/Shot.astro"
@@ -20,7 +20,7 @@ const appUrl = import.meta.env.PUBLIC_APP_URL
 <section class="mx-auto flex min-h-[calc(100svh-4rem)] max-w-6xl flex-col px-5 sm:px-8" aria-labelledby="hero-title">
   <div class="grid flex-1 grid-cols-1 content-center items-center gap-14 py-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-20">
   <div class="min-w-0">
-    <a class="inline-flex items-center gap-2 text-sm text-ink-soft transition-colors hover:text-ink" href={`${releases[locale]}#v${VERSION}`}>
+    <a class="inline-flex items-center gap-2 text-sm text-ink-soft transition-colors hover:text-ink" href={links.release}>
       <span class="size-1.5 rounded-full bg-brand"></span>
       {t.release}
       <span aria-hidden="true">→</span>

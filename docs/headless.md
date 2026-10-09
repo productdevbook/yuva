@@ -10,7 +10,7 @@ webhooks and drafts. Working code for each is in [`examples/`](../examples), MIT
   Every key is a bot with a name, which is shown on what it writes.
 - [Your own inbox UI](#your-own-inbox-ui): read and write over `/v1`, and follow changes through
   the [event feed](#event-feed) or [realtime](#realtime).
-- [Your own chat UI](#your-own-chat-ui): `createYuvaClient()` from `@useyuva/js` speaks the contact
+- [Your own chat UI](#your-own-chat-ui): `createYuvaClient()` from `useyuva` speaks the contact
   API without any DOM.
 - [A bot that answers with drafts](#a-bot-that-answers-with-drafts): a webhook tells it a message
   came in; it posts a draft, and a member sends it, unless the workspace lets bots send.
@@ -80,14 +80,14 @@ session, or you can register your app as an [OAuth client](mcp.md#oauth) so it a
 Typed clients are generated from the [OpenAPI contract](../openapi/openapi.yaml):
 
 ```ts
-import { createYuvaApi } from "@useyuva/js/api";
+import { createYuvaApi } from "useyuva/api";
 
 const api = createYuvaApi({ server: "https://support.example.com", apiKey: process.env.YUVA_API_KEY! });
 const { data, error } = await api.GET("/v1/conversations", { params: { query: { status: "open" } } });
 ```
 
 In Go, `github.com/productdevbook/yuva/sdk/go/client` is the same contract
-([sdk/go/README.md](../sdk/go/README.md)). `@useyuva/js` is not on npm yet; until it is, build it
+([sdk/go/README.md](../sdk/go/README.md)). `useyuva` is not on npm yet; until it is, build it
 from `sdk/js` and depend on it by path, as the examples do.
 
 ### Event feed
@@ -118,11 +118,11 @@ days. `typing` frames have no `id` and are not replayed.
 ## Your own chat UI
 
 Contacts use the contact API (`/client/v1`) with a session of their own, never an API key.
-`createYuvaClient()` from `@useyuva/js` wraps it without any DOM, so it runs in browsers, Node 22+,
+`createYuvaClient()` from `useyuva` wraps it without any DOM, so it runs in browsers, Node 22+,
 Bun, Deno and workers. The [`<yuva-chat>` element](widget.md) is built on it.
 
 ```ts
-import { createYuvaClient } from "@useyuva/js";
+import { createYuvaClient } from "useyuva";
 
 const yuva = createYuvaClient({
   server: "https://support.example.com",
@@ -147,7 +147,7 @@ await yuva.sendMessage(conversation.id, { body: "One more thing" });
 - `storage` keeps the session and visitor id: `localStorage` in browsers, memory elsewhere unless
   you pass your own `{ getItem, setItem }`.
 - `connect()` keeps realtime open and resumes after the last event on reconnect.
-- `@useyuva/js/react` adds `YuvaProvider`, `useConversations()` and `useMessages(id)`.
+- `useyuva/react` adds `YuvaProvider`, `useConversations()` and `useMessages(id)`.
 
 Every option and method is in the [SDK README](../sdk/js/README.md).
 [`examples/headless-chat`](../examples/headless-chat) is a terminal chat built only on the client.

@@ -46,7 +46,7 @@ products in one shared inbox. Self-hosted, one Go binary with Postgres.
 ## Quick start
 
 ```sh
-docker pull ghcr.io/productdevbook/yuva:0.0.3
+docker pull ghcr.io/productdevbook/yuva:0.0.4
 ```
 
 1. Write `compose.yaml` and `.env` from the [install guide](docs/install.md#quick-start-with-compose).
@@ -76,7 +76,7 @@ What changed: [changelog](CHANGELOG.md).
 | `site/` | Website and documentation | AGPL-3.0 |
 | `deploy/` | Docker and Compose | AGPL-3.0 |
 | `openapi/` | API contract | MIT |
-| `sdk/js` | `@useyuva/js`: headless client, `<yuva-chat>`, React hooks, typed `/v1` client | MIT |
+| `sdk/js` | `useyuva`: headless client, `<yuva-chat>`, React hooks, typed `/v1` client | MIT |
 | `sdk/swift`, `sdk/kotlin` | iOS and Android SDKs | MIT |
 | `sdk/go` | Typed `/v1` client, identity tokens and webhook verification | MIT |
 | `examples/` | Headless chat, event feed and draft bot | MIT |

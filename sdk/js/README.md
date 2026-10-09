@@ -1,16 +1,16 @@
-# @useyuva/js
+# useyuva
 
 JavaScript SDK for [Yuva](https://github.com/productdevbook/yuva), open-source customer messaging.
 
 | Import | What |
 |---|---|
-| `@useyuva/js` | `createYuvaClient()`: the contact side (`/client/v1`) without DOM. Browsers, Node 22+, Bun, Deno, workers. |
-| `@useyuva/js/chat` | The `<yuva-chat>` web component, built on that client. Browser only. |
-| `@useyuva/js/react` | `YuvaProvider`, `useConversations`, `useMessages`. React 18+ is an optional peer. |
-| `@useyuva/js/api` | A typed `/v1` client for backends (API key), generated from the OpenAPI contract. |
+| `useyuva` | `createYuvaClient()`: the contact side (`/client/v1`) without DOM. Browsers, Node 22+, Bun, Deno, workers. |
+| `useyuva/chat` | The `<yuva-chat>` web component, built on that client. Browser only. |
+| `useyuva/react` | `YuvaProvider`, `useConversations`, `useMessages`. React 18+ is an optional peer. |
+| `useyuva/api` | A typed `/v1` client for backends (API key), generated from the OpenAPI contract. |
 
 ```sh
-npm install @useyuva/js
+npm install useyuva
 ```
 
 Without a bundler, the server hosts the widget itself: `<script src="https://<your-yuva>/yuva.js" defer></script>`.
@@ -18,7 +18,7 @@ Without a bundler, the server hosts the widget itself: `<script src="https://<yo
 ## Client
 
 ```ts
-import { createYuvaClient } from "@useyuva/js";
+import { createYuvaClient } from "useyuva";
 
 const yuva = createYuvaClient({
   server: "https://support.example.com",
@@ -68,7 +68,7 @@ Errors are `ApiError` with `status` and the problem `code` (`status` 0 and `netw
 ## Chat element
 
 ```ts
-import "@useyuva/js/chat";
+import "useyuva/chat";
 ```
 
 ```html
@@ -80,8 +80,8 @@ Attributes, methods and events are in [docs/widget.md](https://github.com/produc
 ## React
 
 ```tsx
-import { createYuvaClient } from "@useyuva/js";
-import { YuvaProvider, useConversations, useMessages } from "@useyuva/js/react";
+import { createYuvaClient } from "useyuva";
+import { YuvaProvider, useConversations, useMessages } from "useyuva/react";
 
 const yuva = createYuvaClient({ server, channel });
 
@@ -107,7 +107,7 @@ follow realtime events. Start a new conversation with `client.startConversation(
 ## Typed /v1 client
 
 ```ts
-import { createYuvaApi } from "@useyuva/js/api";
+import { createYuvaApi } from "useyuva/api";
 
 const api = createYuvaApi({ server: "https://support.example.com", apiKey: process.env.YUVA_API_KEY! });
 const { data, error } = await api.GET("/v1/inboxes");

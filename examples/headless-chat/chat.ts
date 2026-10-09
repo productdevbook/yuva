@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { createInterface } from "node:readline/promises";
-import { createYuvaClient, type ClientMessage, type YuvaStorage } from "@useyuva/js";
+import { createYuvaClient, type ClientMessage, type YuvaStorage } from "useyuva";
 
 const server = process.env.YUVA_SERVER ?? "http://localhost:8080";
 const channel = process.env.YUVA_CHANNEL;
