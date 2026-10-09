@@ -113,7 +113,7 @@ function Password({ f, set, error, taken }: Props) {
   )
 }
 
-function Sending(p: Props) {
+export function Sending(p: Props) {
   const { t } = useLingui()
   const { f, set, error } = p
   const invalid = useInvalid(p)

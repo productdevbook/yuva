@@ -170,10 +170,6 @@ msgstr "{n} attempts"
 msgid "{n} closed"
 msgstr "{n} closed"
 
-#: src/features/settings/inboxes/NewInboxPage.tsx
-msgid "{n} of 3"
-msgstr "{n} of 3"
-
 #: src/features/inbox/ListPage.tsx
 msgid "{n} selected"
 msgstr "{n} selected"
@@ -185,10 +181,6 @@ msgstr "{n} snoozed"
 #: src/app/UserMenu.tsx
 msgid "{name} · {statusText}"
 msgstr "{name} · {statusText}"
-
-#: src/features/settings/inboxes/NewInboxPage.tsx
-msgid "{name} can now receive messages. One last step:"
-msgstr "{name} can now receive messages. One last step:"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "{name} can reply"
@@ -209,6 +201,10 @@ msgstr "{name} is looking"
 #: src/features/conversation/Collision.tsx
 msgid "{name} is looking at this too."
 msgstr "{name} is looking at this too."
+
+#: src/features/setup/WaitStep.tsx
+msgid "{name} is ready. Reply to it, and invite your team in Settings › Members when you like."
+msgstr "{name} is ready. Reply to it, and invite your team in Settings › Members when you like."
 
 #: src/features/conversation/Collision.tsx
 msgid "{name} is typing a reply too."
@@ -291,6 +287,10 @@ msgstr "1 other conversation"
 msgid "1 setting"
 msgstr "1 setting"
 
+#: src/features/setup/ChannelStep.tsx
+msgid "A chat bubble on your site, from one line of HTML"
+msgstr "A chat bubble on your site, from one line of HTML"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "A client that cannot sign in can send an API key as <0>Authorization: Bearer</0>; an owner or admin makes one."
 msgstr "A client that cannot sign in can send an API key as <0>Authorization: Bearer</0>; an owner or admin makes one."
@@ -371,6 +371,10 @@ msgstr "A new version of Yuva is ready."
 msgid "A note for the team… type @ to mention a teammate"
 msgstr "A note for the team… type @ to mention a teammate"
 
+#: src/features/setup/previews.tsx
+msgid "A question about {name}"
+msgstr "A question about {name}"
+
 #: src/features/conversation/PersonHeader.tsx
 #: src/features/conversation/QueueConversation.tsx
 msgid "A teammate"
@@ -412,6 +416,7 @@ msgid "Add an inbox"
 msgstr "Add an inbox"
 
 #: src/features/settings/channels/chat/ChatFields.tsx
+#: src/features/setup/AddChannelStep.tsx
 msgid "Add at least one origin."
 msgstr "Add at least one origin."
 
@@ -429,6 +434,14 @@ msgstr "Add endpoint"
 msgid "Add note"
 msgstr "Add note"
 
+#: src/features/setup/InstallStep.tsx
+msgid "Add the chat to your site"
+msgstr "Add the chat to your site"
+
+#: src/features/setup/InstallStep.tsx
+msgid "Add the SDK and create one client"
+msgstr "Add the SDK and create one client"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add the server in a terminal:"
 msgstr "Add the server in a terminal:"
@@ -436,6 +449,10 @@ msgstr "Add the server in a terminal:"
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
 msgstr "Add to Cursor"
+
+#: src/features/setup/InstallStep.tsx
+msgid "Add Yuva to your app"
+msgstr "Add Yuva to your app"
 
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/profile/Passkeys.tsx
@@ -496,10 +513,12 @@ msgid "Allow"
 msgstr "Allow"
 
 #: src/features/settings/channels/app/AppFields.tsx
+#: src/features/setup/AddChannelStep.tsx
 msgid "Allow anonymous users"
 msgstr "Allow anonymous users"
 
 #: src/features/settings/channels/chat/ChatFields.tsx
+#: src/features/setup/AddChannelStep.tsx
 msgid "Allow anonymous visitors"
 msgstr "Allow anonymous visitors"
 
@@ -527,6 +546,10 @@ msgstr "An e-mail goes out only if the conversation is still unread by then."
 msgid "An https image URL."
 msgstr "An https image URL."
 
+#: src/features/setup/NameStep.tsx
+msgid "An inbox collects the conversations of one product or brand. Name it after the product your customers know."
+msgstr "An inbox collects the conversations of one product or brand. Name it after the product your customers know."
+
 #: src/features/settings/members/Invites.tsx
 msgid "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
 msgstr "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
@@ -545,6 +568,7 @@ msgstr "anonymous visitors allowed"
 
 #: src/components/common/text.ts
 #: src/features/settings/channels/email/EmailFields.tsx
+#: src/features/setup/AddChannelStep.tsx
 msgid "Another channel already receives mail at this address."
 msgstr "Another channel already receives mail at this address."
 
@@ -567,6 +591,10 @@ msgstr "Any client that speaks MCP over HTTP"
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Any client that speaks MCP over HTTP. It acts as you, with the access you allow."
 msgstr "Any client that speaks MCP over HTTP. It acts as you, with the access you allow."
+
+#: src/features/setup/AddChannelStep.tsx
+msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
+msgstr "Anyone on your site can write. Turn it off when only signed-in users may chat."
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Anything using this key stops working at once."
@@ -605,6 +633,10 @@ msgstr "Appear online only in business hours"
 #: src/features/settings/SettingsLayout.tsx
 msgid "Appearance"
 msgstr "Appearance"
+
+#: src/features/setup/previews.tsx
+msgid "Arrived"
+msgstr "Arrived"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "As {name}, since {when}"
@@ -684,6 +716,7 @@ msgid "Away"
 msgstr "Away"
 
 #: src/features/contact/MergeContactDialog.tsx
+#: src/features/setup/SetupLayout.tsx
 msgid "Back"
 msgstr "Back"
 
@@ -754,6 +787,7 @@ msgstr "Can I schedule a newsletter for each subscriber?"
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/setup/SetupLayout.tsx
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -798,6 +832,7 @@ msgid "Change, move and bulk-update conversations"
 msgstr "Change, move and bulk-update conversations"
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/setup/SetupLayout.tsx
 msgid "Channel"
 msgstr "Channel"
 
@@ -939,6 +974,10 @@ msgstr "Connected apps"
 msgid "Connected under another name? All connections are in <0>Connected apps</0>."
 msgstr "Connected under another name? All connections are in <0>Connected apps</0>."
 
+#: src/features/setup/WaitStep.tsx
+msgid "Connecting…"
+msgstr "Connecting…"
+
 #: src/app/ConnectionBanner.tsx
 msgid "Connection lost. Reconnecting…"
 msgstr "Connection lost. Reconnecting…"
@@ -986,7 +1025,9 @@ msgstr "Contacts"
 msgid "Contacts (G C)"
 msgstr "Contacts (G C)"
 
-#: src/features/settings/inboxes/NewInboxPage.tsx
+#: src/features/setup/AddChannelStep.tsx
+#: src/features/setup/InstallStep.tsx
+#: src/features/setup/NameStep.tsx
 msgid "Continue"
 msgstr "Continue"
 
@@ -1037,6 +1078,10 @@ msgstr "Copy it now and update your receiver; the old secret keeps signing for 2
 msgid "Copy the feedback details"
 msgstr "Copy the feedback details"
 
+#: src/features/setup/InstallStep.tsx
+msgid "Copy the lines below. They already contain this server's address and the channel's public key, which is not a secret."
+msgstr "Copy the lines below. They already contain this server's address and the channel's public key, which is not a secret."
+
 #: src/app/Gate.tsx
 #: src/features/oauth/ConsentPage.tsx
 msgid "Could not reach the server"
@@ -1065,6 +1110,14 @@ msgstr "Created {created} by {by}"
 #: src/features/auth/AuthLayout.tsx
 msgid "Custom domain still shows as unverified"
 msgstr "Custom domain still shows as unverified"
+
+#: src/features/setup/ChannelStep.tsx
+msgid "Customers keep writing to the address they know."
+msgstr "Customers keep writing to the address they know."
+
+#: src/features/setup/NameStep.tsx
+msgid "Customers see this name in the chat, in your apps and on e-mails."
+msgstr "Customers see this name in the chat, in your apps and on e-mails."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Danger zone"
@@ -1219,14 +1272,23 @@ msgstr "Display name"
 msgid "DMARC failed"
 msgstr "DMARC failed"
 
+#: src/features/setup/InstallStep.tsx
+msgid "DNS checklist"
+msgstr "DNS checklist"
+
 #: src/features/conversation/Collision.tsx
 msgid "Do not both write."
 msgstr "Do not both write."
+
+#: src/features/setup/SetupLayout.tsx
+msgid "Do this later"
+msgstr "Do this later"
 
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/PersonHeader.tsx
 #: src/features/inbox/AllDrawer.tsx
 #: src/features/inbox/ListPage.tsx
+#: src/features/setup/SetupLayout.tsx
 msgid "Done"
 msgstr "Done"
 
@@ -1247,9 +1309,9 @@ msgstr "Draft by {author}"
 #: src/features/auth/AuthLayout.tsx
 #: src/features/conversation/Facts.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/inboxes/NewInboxPage.tsx
 #: src/features/settings/notifications/EventsSection.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/setup/ChannelStep.tsx
 msgid "E-mail"
 msgstr "E-mail"
 
@@ -1286,6 +1348,11 @@ msgstr "E-mail, live chat and in-app messages"
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "E-mail: {label}"
 msgstr "E-mail: {label}"
+
+#: src/features/setup/AddChannelStep.tsx
+#: src/features/setup/InstallStep.tsx
+msgid "Each new e-mail starts a conversation; replies continue it."
+msgstr "Each new e-mail starts a conversation; replies continue it."
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
@@ -1432,6 +1499,10 @@ msgstr "Feedback sent from the app"
 msgid "First conversation"
 msgstr "First conversation"
 
+#: src/features/setup/SetupLayout.tsx
+msgid "First message"
+msgstr "First message"
+
 #: src/features/contact/ContactPage.tsx
 msgid "first reply"
 msgstr "first reply"
@@ -1452,6 +1523,14 @@ msgstr "Follow the system appearance"
 msgid "For a client that only starts local programs, use the <0>yuva mcp stdio</0> bridge from the setup guide."
 msgstr "For a client that only starts local programs, use the <0>yuva mcp stdio</0> bridge from the setup guide."
 
+#: src/features/setup/NameStep.tsx
+msgid "For automatic messages"
+msgstr "For automatic messages"
+
+#: src/features/setup/NameStep.tsx
+msgid "For business hours"
+msgstr "For business hours"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "For developers"
 msgstr "For developers"
@@ -1460,13 +1539,17 @@ msgstr "For developers"
 msgid "For every inbox in this workspace, unless an inbox below says otherwise."
 msgstr "For every inbox in this workspace, unless an inbox below says otherwise."
 
-#: src/features/settings/inboxes/NewInboxPage.tsx
+#: src/features/setup/NameStep.tsx
 msgid "For example Fieldnote"
 msgstr "For example Fieldnote"
 
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "For signed-in users, your backend signs an identity token with the inbox's identity secret and the app passes it to the SDK."
 msgstr "For signed-in users, your backend signs an identity token with the inbox's identity secret and the app passes it to the SDK."
+
+#: src/features/setup/InstallStep.tsx
+msgid "For signed-in users: the identity secret, shown only now"
+msgstr "For signed-in users: the identity secret, shown only now"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "For your backends, scripts and bots. A key acts on this workspace only, within its scopes, and cannot manage members or keys. Its messages show its bot name."
@@ -1476,13 +1559,13 @@ msgstr "For your backends, scripts and bots. A key acts on this workspace only, 
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 
-#: src/features/settings/inboxes/NewInboxPage.tsx
-msgid "Forward your mail"
-msgstr "Forward your mail"
-
 #: src/components/common/text.ts
 msgid "Friday"
 msgstr "Friday"
+
+#: src/features/setup/previews.tsx
+msgid "From"
+msgstr "From"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "From address (optional)"
@@ -1496,17 +1579,25 @@ msgstr "From the terminal"
 msgid "Full API"
 msgstr "Full API"
 
+#: src/features/setup/InstallStep.tsx
+msgid "Full guide, with the screens and push notifications"
+msgstr "Full guide, with the screens and push notifications"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Get notified on your phone or computer, even when the panel is closed."
 msgstr "Get notified on your phone or computer, even when the panel is closed."
 
+#: src/features/setup/AddChannelStep.tsx
+msgid "Get the SDK lines"
+msgstr "Get the SDK lines"
+
+#: src/features/setup/AddChannelStep.tsx
+msgid "Get the snippet"
+msgstr "Get the snippet"
+
 #: src/app/Palette.tsx
 msgid "Go to"
 msgstr "Go to"
-
-#: src/features/settings/inboxes/NewInboxPage.tsx
-msgid "Go to the inbox"
-msgstr "Go to the inbox"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Goes out through {via}"
@@ -1535,11 +1626,24 @@ msgstr "Handed to {name}"
 msgid "Has an open conversation"
 msgstr "Has an open conversation"
 
+#: src/features/setup/WaitStep.tsx
+msgid "Hello from the setup"
+msgstr "Hello from the setup"
+
+#: src/features/setup/previews.tsx
+msgid "Help and feedback"
+msgstr "Help and feedback"
+
+#: src/features/setup/ChannelStep.tsx
+msgid "Help and feedback inside your iOS or Android app"
+msgstr "Help and feedback inside your iOS or Android app"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Hi! Ask us anything."
 msgstr "Hi! Ask us anything."
 
 #: src/features/settings/channels/chat/ChatFields.tsx
+#: src/features/setup/previews.tsx
 msgid "Hi! How can we help?"
 msgstr "Hi! How can we help?"
 
@@ -1550,6 +1654,10 @@ msgstr "Hide"
 #: src/features/conversation/messages/EmailBody.tsx
 msgid "Hide quoted text"
 msgstr "Hide quoted text"
+
+#: src/features/setup/SetupLayout.tsx
+msgid "Hide the preview"
+msgstr "Hide the preview"
 
 #: src/components/common/text.ts
 msgid "High"
@@ -1586,10 +1694,6 @@ msgstr "Idea"
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Identity secret"
 msgstr "Identity secret"
-
-#: src/features/settings/inboxes/NewInboxPage.tsx
-msgid "Identity secret, shown only now"
-msgstr "Identity secret, shown only now"
 
 #: src/features/conversation/LaterActions.tsx
 #: src/features/inbox/ListPage.tsx
@@ -1651,6 +1755,7 @@ msgstr "Info"
 
 #: src/features/settings/channels/app/AppInstall.tsx
 #: src/features/settings/channels/chat/ChatInstall.tsx
+#: src/features/setup/SetupLayout.tsx
 msgid "Install"
 msgstr "Install"
 
@@ -1690,6 +1795,10 @@ msgstr "Invites"
 msgid "iOS and Android app"
 msgstr "iOS and Android app"
 
+#: src/features/setup/previews.tsx
+msgid "Is there a way to export my notes?"
+msgstr "Is there a way to export my notes?"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "It also asked for access your role here cannot give:"
 msgstr "It also asked for access your role here cannot give:"
@@ -1717,6 +1826,10 @@ msgstr "It no longer exists or you cannot see it."
 #: src/features/contact/ContactDetails.tsx
 msgid "It opens assigned to you; write the first message there."
 msgstr "It opens assigned to you; write the first message there."
+
+#: src/features/setup/WaitStep.tsx
+msgid "It shows up here as soon as it reaches Yuva."
+msgstr "It shows up here as soon as it reaches Yuva."
 
 #: src/features/oauth/ConsentPage.tsx
 msgid "It will act as you, <0>{email}</0>, with only the access you allow below."
@@ -1781,6 +1894,7 @@ msgstr "Labels, priority, inbox"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/members/Invites.tsx
+#: src/features/setup/NameStep.tsx
 msgid "Language"
 msgstr "Language"
 
@@ -1851,8 +1965,13 @@ msgid "List"
 msgstr "List"
 
 #: src/features/settings/channels/chat/ChatFields.tsx
+#: src/features/setup/AddChannelStep.tsx
 msgid "List at most 20 origins."
 msgstr "List at most 20 origins."
+
+#: src/features/setup/WaitStep.tsx
+msgid "Listening for the first message…"
+msgstr "Listening for the first message…"
 
 #: src/components/common/text.ts
 msgid "Live"
@@ -1899,9 +2018,9 @@ msgstr "Low"
 msgid "Lowercase letters, digits and dashes."
 msgstr "Lowercase letters, digits and dashes."
 
-#: src/features/settings/inboxes/NewInboxPage.tsx
-msgid "Mail sent to your support address"
-msgstr "Mail sent to your support address"
+#: src/features/setup/ChannelStep.tsx
+msgid "Mail to your support address, answered from it"
+msgstr "Mail to your support address, answered from it"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -1983,6 +2102,10 @@ msgstr "Merge a contact into {targetName}"
 msgid "Merge with another contact"
 msgstr "Merge with another contact"
 
+#: src/features/setup/previews.tsx
+msgid "Message"
+msgstr "Message"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
 msgstr "Message type"
@@ -1990,7 +2113,7 @@ msgstr "Message type"
 #: src/components/common/text.ts
 #: src/features/settings/channels/app/AppFields.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/inboxes/NewInboxPage.tsx
+#: src/features/setup/ChannelStep.tsx
 msgid "Mobile app"
 msgstr "Mobile app"
 
@@ -2023,6 +2146,7 @@ msgstr "My profile"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/setup/SetupLayout.tsx
 msgid "Name"
 msgstr "Name"
 
@@ -2078,6 +2202,10 @@ msgstr "New conversation in a live inbox"
 msgid "New conversation in an async inbox"
 msgstr "New conversation in an async inbox"
 
+#: src/features/setup/WaitStep.tsx
+msgid "New conversations land in your queue, oldest first."
+msgstr "New conversations land in your queue, oldest first."
+
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "New identity secret"
 msgstr "New identity secret"
@@ -2090,6 +2218,10 @@ msgstr "New key"
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "New label"
 msgstr "New label"
+
+#: src/features/setup/previews.tsx
+msgid "New message"
+msgstr "New message"
 
 #: src/features/settings/notifications/events.ts
 msgid "New message in a conversation assigned to me"
@@ -2227,6 +2359,10 @@ msgstr "No results"
 msgid "No settings"
 msgstr "No settings"
 
+#: src/features/setup/InstallStep.tsx
+msgid "No SMTP account yet: mail arrives, but replies cannot go out until you add one in the inbox settings."
+msgstr "No SMTP account yet: mail arrives, but replies cannot go out until you add one in the inbox settings."
+
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/History.tsx
 #: src/features/conversation/RelatedLine.tsx
@@ -2267,6 +2403,7 @@ msgid "Not a secret: it ships inside your app. Native apps send no origin, so th
 msgstr "Not a secret: it ships inside your app. Native apps send no origin, so the key is not tied to one."
 
 #: src/features/settings/channels/chat/ChatFields.tsx
+#: src/features/setup/AddChannelStep.tsx
 msgid "Not an origin: {notOrigins}. Use scheme and host only, such as https://www.example.com."
 msgstr "Not an origin: {notOrigins}. Use scheme and host only, such as https://www.example.com."
 
@@ -2376,13 +2513,13 @@ msgstr "On the web"
 msgid "One inbox"
 msgstr "One inbox"
 
-#: src/features/settings/inboxes/NewInboxPage.tsx
-msgid "One line on your site, a chat bubble in the corner"
-msgstr "One line on your site, a chat bubble in the corner"
-
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "One per line, 1 to 20. Only pages on these origins can use the widget."
+
+#: src/features/setup/AddChannelStep.tsx
+msgid "One per line, up to 20."
+msgstr "One per line, up to 20."
 
 #: src/features/settings/SettingsLayout.tsx
 msgid "One per product or brand"
@@ -2423,6 +2560,10 @@ msgstr "Only owners can change this."
 msgid "Only owners can delete the workspace."
 msgstr "Only owners can delete the workspace."
 
+#: src/features/setup/AddChannelStep.tsx
+msgid "Only pages on these addresses can open the chat. Enter scheme and host, without a path."
+msgstr "Only pages on these addresses can open the chat. Enter scheme and host, without a path."
+
 #: src/components/common/text.ts
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -2438,6 +2579,10 @@ msgstr "Open {0}"
 #: src/features/inbox/WaitingPill.tsx
 msgid "Open {name}"
 msgstr "Open {name}"
+
+#: src/features/setup/WaitStep.tsx
+msgid "Open a page with the snippet and write in the chat, as a visitor would. The conversation appears here the moment it starts."
+msgstr "Open a page with the snippet and write in the chat, as a visitor would. The conversation appears here the moment it starts."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Open ChatGPT plugins"
@@ -2456,9 +2601,17 @@ msgstr "Open full screen"
 msgid "Open page"
 msgstr "Open page"
 
+#: src/features/setup/WaitStep.tsx
+msgid "Open the conversation"
+msgstr "Open the conversation"
+
 #: src/features/conversation/QueueConversation.tsx
 msgid "Open the next one"
 msgstr "Open the next one"
+
+#: src/features/setup/InstallStep.tsx
+msgid "Open your site"
+msgstr "Open your site"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Opens"
@@ -2541,6 +2694,10 @@ msgstr "Password set"
 msgid "Paste it before the closing body tag of every page that should show the chat."
 msgstr "Paste it before the closing body tag of every page that should show the chat."
 
+#: src/features/setup/InstallStep.tsx
+msgid "Paste this before the closing body tag of your pages"
+msgstr "Paste this before the closing body tag of your pages"
+
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "Payload"
 msgstr "Payload"
@@ -2554,8 +2711,13 @@ msgid "Pending deliveries are dropped with it."
 msgstr "Pending deliveries are dropped with it."
 
 #: src/features/settings/channels/app/AppFields.tsx
+#: src/features/setup/AddChannelStep.tsx
 msgid "People who are not signed in to your app can write without an identity token from your backend."
 msgstr "People who are not signed in to your app can write without an identity token from your backend."
+
+#: src/features/setup/ChannelStep.tsx
+msgid "People write from inside your app, signed in as themselves."
+msgstr "People write from inside your app, signed in as themselves."
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Per inbox"
@@ -2582,6 +2744,7 @@ msgid "Pick at least one event."
 msgstr "Pick at least one event."
 
 #: src/features/settings/channels/app/AppFields.tsx
+#: src/features/setup/AddChannelStep.tsx
 msgid "Pick at least one platform."
 msgstr "Pick at least one platform."
 
@@ -2593,19 +2756,24 @@ msgstr "Pick at least one scope."
 msgid "Pick at least one."
 msgstr "Pick at least one."
 
-#: src/features/settings/inboxes/NewInboxPage.tsx
-msgid "Pick one; you can add the others later."
-msgstr "Pick one; you can add the others later."
-
 #: src/features/contact/MergeContactDialog.tsx
 msgid "Pick the other contact. It is merged into this one and then deleted."
 msgstr "Pick the other contact. It is merged into this one and then deleted."
+
+#: src/features/setup/AddChannelStep.tsx
+msgid "Pick the platforms; the next step shows the lines to add to each app."
+msgstr "Pick the platforms; the next step shows the lines to add to each app."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Pick the workspace <0>{workspace}</0>, check the scopes and allow. You go back to {clientName}, and the connection shows up here."
 msgstr "Pick the workspace <0>{workspace}</0>, check the scopes and allow. You go back to {clientName}, and the connection shows up here."
 
+#: src/features/setup/InstallStep.tsx
+msgid "Platform"
+msgstr "Platform"
+
 #: src/features/settings/channels/app/AppFields.tsx
+#: src/features/setup/AddChannelStep.tsx
 msgid "Platforms"
 msgstr "Platforms"
 
@@ -2623,6 +2791,7 @@ msgstr "Praise"
 
 #: src/features/inbox/ListPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
+#: src/features/setup/SetupLayout.tsx
 msgid "Preview"
 msgstr "Preview"
 
@@ -2630,7 +2799,7 @@ msgstr "Preview"
 msgid "Priority"
 msgstr "Priority"
 
-#: src/features/settings/inboxes/NewInboxPage.tsx
+#: src/features/setup/NameStep.tsx
 msgid "Product name"
 msgstr "Product name"
 
@@ -2667,6 +2836,10 @@ msgstr "Push only"
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Push: {label}"
 msgstr "Push: {label}"
+
+#: src/features/setup/InstallStep.tsx
+msgid "Put the SDK's conversations view behind a Help button in your app, then send a message from it."
+msgstr "Put the SDK's conversations view behind a Help button in your app, then send a message from it."
 
 #: src/app/ViewToggle.tsx
 msgid "Queue"
@@ -2707,10 +2880,6 @@ msgstr "Read the workspace, members, inboxes and channels"
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Reading"
 msgstr "Reading"
-
-#: src/features/settings/inboxes/NewInboxPage.tsx
-msgid "Ready."
-msgstr "Ready."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Receives only"
@@ -2805,8 +2974,14 @@ msgid "Replied in the thread of another conversation"
 msgstr "Replied in the thread of another conversation"
 
 #: src/features/conversation/Feedback.tsx
+#: src/features/setup/InstallStep.tsx
 msgid "Replies"
 msgstr "Replies"
+
+#. placeholder {0}: email.smtp.host
+#: src/features/setup/InstallStep.tsx
+msgid "Replies go out through {0}. Add the SPF and DKIM records your mail provider gives you, so they reach the inbox and not spam."
+msgstr "Replies go out through {0}. Add the SPF and DKIM records your mail provider gives you, so they reach the inbox and not spam."
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Replies go out through your own SMTP account. Leave the host empty to only receive mail."
@@ -2904,9 +3079,13 @@ msgstr "Rotate the public key?"
 msgid "Rotate the signing secret?"
 msgstr "Rotate the signing secret?"
 
-#: src/features/settings/inboxes/NewInboxPage.tsx
-msgid "Route mail for this address to Yuva's e-mail ingress, for example with the Cloudflare Email Worker in edge/. Replies go out through the SMTP account you entered."
-msgstr "Route mail for this address to Yuva's e-mail ingress, for example with the Cloudflare Email Worker in edge/. Replies go out through the SMTP account you entered."
+#: src/features/setup/InstallStep.tsx
+msgid "Route your mail to Yuva"
+msgstr "Route your mail to Yuva"
+
+#: src/features/setup/WaitStep.tsx
+msgid "Run your app with the SDK and send a message. The conversation appears here the moment it starts."
+msgstr "Run your app with the SDK and send a message. The conversation appears here the moment it starts."
 
 #: src/features/contact/ContactSheet.tsx
 msgid "Satisfaction"
@@ -2938,6 +3117,10 @@ msgstr "Saved"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Saving removes the stored password."
 msgstr "Saving removes the stored password."
+
+#: src/features/setup/WaitStep.tsx
+msgid "Say hello from your site"
+msgstr "Say hello from your site"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -3019,9 +3202,17 @@ msgstr "Selected conversations"
 msgid "Send"
 msgstr "Send"
 
+#: src/features/setup/WaitStep.tsx
+msgid "Send a message from your app"
+msgstr "Send a message from your app"
+
 #: src/features/auth/SignInPage.tsx
 msgid "Send a new code"
 msgstr "Send a new code"
+
+#: src/features/setup/WaitStep.tsx
+msgid "Send a test e-mail"
+msgstr "Send a test e-mail"
 
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Send a test notification"
@@ -3051,6 +3242,11 @@ msgstr "Send events"
 #: src/features/settings/SettingsLayout.tsx
 msgid "Send events to your own server"
 msgstr "Send events to your own server"
+
+#. placeholder {0}: email.address
+#: src/features/setup/InstallStep.tsx
+msgid "Send mail for {0} to Yuva"
+msgstr "Send mail for {0} to Yuva"
 
 #: src/features/auth/SignInPage.tsx
 msgid "Send me a code"
@@ -3110,6 +3306,10 @@ msgstr "Settings (JSON)"
 msgid "Setup guide"
 msgstr "Setup guide"
 
+#: src/features/setup/SetupLayout.tsx
+msgid "Setup steps"
+msgstr "Setup steps"
+
 #: src/features/settings/canned/CannedReplyDialog.tsx
 msgid "Shortcut"
 msgstr "Shortcut"
@@ -3141,6 +3341,14 @@ msgstr "Show reading view"
 #: src/features/conversation/messages/EmailBody.tsx
 msgid "Show the colours the sender chose, on white"
 msgstr "Show the colours the sender chose, on white"
+
+#: src/features/setup/InstallStep.tsx
+msgid "Show the conversation screen"
+msgstr "Show the conversation screen"
+
+#: src/features/setup/SetupLayout.tsx
+msgid "Show the preview"
+msgstr "Show the preview"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Show the reply time"
@@ -3212,10 +3420,6 @@ msgstr "signed-in users only"
 msgid "Signing secret"
 msgstr "Signing secret"
 
-#: src/features/settings/inboxes/NewInboxPage.tsx
-msgid "Skip for now"
-msgstr "Skip for now"
-
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Slug"
 msgstr "Slug"
@@ -3270,6 +3474,10 @@ msgstr "Start conversation"
 msgid "Start the server. VS Code asks to sign in to Yuva and opens your browser."
 msgstr "Start the server. VS Code asks to sign in to Yuva and opens your browser."
 
+#: src/features/setup/ChannelStep.tsx
+msgid "Start with one. You can add the others later in the inbox settings."
+msgstr "Start with one. You can add the others later in the inbox settings."
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (port 587)"
@@ -3279,6 +3487,14 @@ msgstr "STARTTLS (port 587)"
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Status"
 msgstr "Status"
+
+#: src/features/setup/SetupLayout.tsx
+msgid "Step {step} of {STEP_COUNT}"
+msgstr "Step {step} of {STEP_COUNT}"
+
+#: src/features/setup/InstallStep.tsx
+msgid "Step-by-step guide"
+msgstr "Step-by-step guide"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Steps"
@@ -3293,6 +3509,7 @@ msgid "Struck-out values are not taken: this contact keeps its own value for tho
 msgstr "Struck-out values are not taken: this contact keeps its own value for those keys."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/setup/previews.tsx
 msgid "Subject"
 msgstr "Subject"
 
@@ -3321,12 +3538,17 @@ msgid "Sunday"
 msgstr "Sunday"
 
 #: src/features/settings/channels/email/EmailFields.tsx
+#: src/features/setup/AddChannelStep.tsx
 msgid "Support address"
 msgstr "Support address"
 
 #: src/features/settings/channels/ChannelDialog.tsx
 msgid "Support e-mail"
 msgstr "Support e-mail"
+
+#: src/features/setup/previews.tsx
+msgid "support@your-company.com"
+msgstr "support@your-company.com"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Switch between Queue and List"
@@ -3395,9 +3617,21 @@ msgstr "Thanks for writing"
 msgid "Thanks for writing. We usually answer within a day."
 msgstr "Thanks for writing. We usually answer within a day."
 
+#: src/features/setup/previews.tsx
+msgid "The app logs me out after the update."
+msgstr "The app logs me out after the update."
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "The channel name when empty."
 msgstr "The channel name when empty."
+
+#: src/features/setup/AddChannelStep.tsx
+msgid "The chat appears in the corner of every page that has the snippet."
+msgstr "The chat appears in the corner of every page that has the snippet."
+
+#: src/features/setup/InstallStep.tsx
+msgid "The chat bubble appears on these addresses:"
+msgstr "The chat bubble appears on these addresses:"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "The chat shows when you usually reply"
@@ -3455,10 +3689,6 @@ msgstr "The hours differ by day; changing them here sets the same hours for ever
 msgid "The inbox cannot be changed later."
 msgstr "The inbox cannot be changed later."
 
-#: src/features/settings/inboxes/NewInboxPage.tsx
-msgid "The iOS and Android SDKs"
-msgstr "The iOS and Android SDKs"
-
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 msgid "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
 msgstr "The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace."
@@ -3494,6 +3724,11 @@ msgstr "The password is too long."
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "The previous secret also signs until {rotatedUntil}."
 msgstr "The previous secret also signs until {rotatedUntil}."
+
+#: src/features/setup/AddChannelStep.tsx
+#: src/features/setup/InstallStep.tsx
+msgid "The SDKs bring ready-made screens, or a client for your own."
+msgstr "The SDKs bring ready-made screens, or a client for your own."
 
 #: src/features/conversation/messages/Talk.tsx
 msgid "The sender's domain did not authorize this mail. It may be forged."
@@ -3581,6 +3816,10 @@ msgstr "This e-mail address bounced or complained, so the reply was not sent. Cl
 msgid "This file type is not allowed."
 msgstr "This file type is not allowed."
 
+#: src/features/setup/InstallStep.tsx
+msgid "This is how the chat looks on your site."
+msgstr "This is how the chat looks on your site."
+
 #: src/features/settings/channels/ChannelDialog.tsx
 msgid "This is not a JSON object."
 msgstr "This is not a JSON object."
@@ -3618,6 +3857,7 @@ msgid "Time"
 msgstr "Time"
 
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/setup/NameStep.tsx
 msgid "Time zone"
 msgstr "Time zone"
 
@@ -3628,6 +3868,10 @@ msgstr "Title"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "TLS (port 465)"
 msgstr "TLS (port 465)"
+
+#: src/features/setup/previews.tsx
+msgid "To"
+msgstr "To"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "To let assistants send on their own, turn on <0>Bots may send</0>."
@@ -3744,6 +3988,7 @@ msgstr "Unknown device"
 #: src/features/inbox/AllDrawer.tsx
 #: src/features/inbox/ListPage.tsx
 #: src/features/inbox/WaitingPill.tsx
+#: src/features/setup/previews.tsx
 msgid "Unnamed contact"
 msgstr "Unnamed contact"
 
@@ -3788,12 +4033,17 @@ msgid "Use at most 500 characters."
 msgstr "Use at most 500 characters."
 
 #: src/features/settings/channels/chat/ChatFields.tsx
+#: src/features/setup/AddChannelStep.tsx
 msgid "Use origins such as https://www.example.com, without a path."
 msgstr "Use origins such as https://www.example.com, without a path."
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Use the suggested reply"
 msgstr "Use the suggested reply"
+
+#: src/features/setup/AddChannelStep.tsx
+msgid "Use the support address you already have. Mail sent to it will arrive here."
+msgstr "Use the support address you already have. Mail sent to it will arrive here."
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Use this reply"
@@ -3806,6 +4056,10 @@ msgstr "Used in addresses and the widget"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Username"
 msgstr "Username"
+
+#: src/features/setup/previews.tsx
+msgid "Usually replies within a day"
+msgstr "Usually replies within a day"
 
 #: src/features/settings/webhooks/SignatureHint.tsx
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
@@ -3831,15 +4085,27 @@ msgstr "Visitors"
 msgid "Visitors can chat without an identity token from your backend."
 msgstr "Visitors can chat without an identity token from your backend."
 
+#: src/features/setup/ChannelStep.tsx
+msgid "Visitors write from any page of your site; you answer here, live."
+msgstr "Visitors write from any page of your site; you answer here, live."
+
 #: src/app/Palette.tsx
 #: src/features/inbox/AllDrawer.tsx
 #: src/features/inbox/ListPage.tsx
 msgid "Waiting"
 msgstr "Waiting"
 
+#: src/features/setup/previews.tsx
+msgid "Waiting for it to arrive"
+msgstr "Waiting for it to arrive"
+
 #: src/features/conversation/PersonHeader.tsx
 msgid "Waiting for the customer"
 msgstr "Waiting for the customer"
+
+#: src/features/setup/previews.tsx
+msgid "Waiting for the first message"
+msgstr "Waiting for the first message"
 
 #: src/features/auth/SignInPage.tsx
 msgid "We e-mail you a one-time code. No password to remember."
@@ -3875,9 +4141,13 @@ msgstr "Webhooks for {0}"
 msgid "Webhooks for this inbox"
 msgstr "Webhooks for this inbox"
 
+#: src/features/setup/AddChannelStep.tsx
+msgid "Website addresses"
+msgstr "Website addresses"
+
 #: src/features/settings/channels/ChannelDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/inboxes/NewInboxPage.tsx
+#: src/features/setup/ChannelStep.tsx
 msgid "Website chat"
 msgstr "Website chat"
 
@@ -3885,9 +4155,9 @@ msgstr "Website chat"
 msgid "Wednesday"
 msgstr "Wednesday"
 
-#: src/features/settings/inboxes/NewInboxPage.tsx
-msgid "What is the product called?"
-msgstr "What is the product called?"
+#: src/features/setup/NameStep.tsx
+msgid "What should customers see?"
+msgstr "What should customers see?"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the customer sees"
@@ -3941,9 +4211,21 @@ msgstr "When your provider sends from another address. Replies still come to the
 msgid "Where customers write from"
 msgstr "Where customers write from"
 
-#: src/features/settings/inboxes/NewInboxPage.tsx
-msgid "Where will {name} customers write from?"
-msgstr "Where will {name} customers write from?"
+#: src/features/setup/ChannelStep.tsx
+msgid "Where do {name} customers write from?"
+msgstr "Where do {name} customers write from?"
+
+#: src/features/setup/AddChannelStep.tsx
+msgid "Which address do customers write to?"
+msgstr "Which address do customers write to?"
+
+#: src/features/setup/AddChannelStep.tsx
+msgid "Which apps will use it?"
+msgstr "Which apps will use it?"
+
+#: src/features/setup/AddChannelStep.tsx
+msgid "Which sites will show the chat?"
+msgstr "Which sites will show the chat?"
 
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "While off, no deliveries are made."
@@ -3968,6 +4250,10 @@ msgstr "Who should take it?"
 #: src/features/conversation/PersonHeader.tsx
 msgid "With {name}"
 msgstr "With {name}"
+
+#: src/features/setup/InstallStep.tsx
+msgid "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
+msgstr "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the Yuva repository and add a routing rule for the address with the action Send to a Worker. Any other mail server can post each message, signed with YUVA_INGRESS_SECRET, to:"
 
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "with notes"
@@ -4030,6 +4316,10 @@ msgstr "Workspace"
 msgid "Workspace members"
 msgstr "Workspace members"
 
+#: src/features/setup/previews.tsx
+msgid "Write a message…"
+msgstr "Write a message…"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Write a note for the team"
@@ -4039,6 +4329,10 @@ msgstr "Write a note for the team"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Write a reply"
 msgstr "Write a reply"
+
+#: src/features/setup/WaitStep.tsx
+msgid "Write a test e-mail"
+msgstr "Write a test e-mail"
 
 #: src/components/common/text.ts
 msgid "Write messages and drafts"
@@ -4051,6 +4345,11 @@ msgstr "Write notes"
 #: src/features/settings/channels/email/form.ts
 msgid "Write the auto-reply, or turn it off."
 msgstr "Write the auto-reply, or turn it off."
+
+#. placeholder {0}: channel.email!.address
+#: src/features/setup/WaitStep.tsx
+msgid "Write to {0} from any other address. The conversation appears here the moment the mail arrives."
+msgstr "Write to {0} from any other address. The conversation appears here the moment the mail arrives."
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Write to {first}…"
@@ -4098,6 +4397,10 @@ msgstr "You are the only owner of a workspace. Make someone else an owner there,
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "You can disconnect it at any time in Settings, under Connected apps."
 
+#: src/features/setup/WaitStep.tsx
+msgid "You can leave this page: the conversation will wait for you in the queue."
+msgstr "You can leave this page: the conversation will wait for you in the queue."
+
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "You get a new secret once. For 24 hours every delivery carries two signatures, one with the new and one with the old secret, so you can update your receiver without losing events."
 msgstr "You get a new secret once. For 24 hours every delivery carries two signatures, one with the new and one with the old secret, so you can update your receiver without losing events."
@@ -4122,9 +4425,9 @@ msgstr "you@company.com"
 msgid "Your app or widget sends these when it identifies the contact."
 msgstr "Your app or widget sends these when it identifies the contact."
 
-#: src/features/settings/inboxes/NewInboxPage.tsx
-msgid "Your backend signs identity tokens with it so Yuva knows who your signed-in users are. You can rotate it in the inbox settings."
-msgstr "Your backend signs identity tokens with it so Yuva knows who your signed-in users are. You can rotate it in the inbox settings."
+#: src/features/setup/InstallStep.tsx
+msgid "Your backend signs identity tokens with it so customers write as themselves. Keep it on your server; you can rotate it in the inbox settings."
+msgstr "Your backend signs identity tokens with it so customers write as themselves. Keep it on your server; you can rotate it in the inbox settings."
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Your backend signs identity tokens with this secret so Yuva knows who your signed-in users are. It is shown only when created or rotated."
@@ -4134,13 +4437,13 @@ msgstr "Your backend signs identity tokens with this secret so Yuva knows who yo
 msgid "Your browser opens the consent page on <0>{host}</0>. Sign in with a code or a passkey if you are not signed in already."
 msgstr "Your browser opens the consent page on <0>{host}</0>. Sign in with a code or a passkey if you are not signed in already."
 
-#: src/features/settings/inboxes/NewInboxPage.tsx
-msgid "Your customers will see this name."
-msgstr "Your customers will see this name."
-
 #: src/features/conversation/Collision.tsx
 msgid "Your draft is still here; send it as well or clear it."
 msgstr "Your draft is still here; send it as well or clear it."
+
+#: src/features/setup/WaitStep.tsx
+msgid "Your first conversation is here"
+msgstr "Your first conversation is here"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Your new API key"
@@ -4149,6 +4452,14 @@ msgstr "Your new API key"
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Your plan and workspace policies decide whether custom MCP servers are available."
 msgstr "Your plan and workspace policies decide whether custom MCP servers are available."
+
+#: src/features/setup/previews.tsx
+msgid "Your product"
+msgstr "Your product"
+
+#: src/features/setup/previews.tsx
+msgid "Your replies go out from this address"
+msgstr "Your replies go out from this address"
 
 #. placeholder {0}: errorText(err)
 #: src/features/conversation/actions.ts
@@ -4167,6 +4478,10 @@ msgstr "Your session has ended. Sign in again."
 #: src/features/auth/AuthLayout.tsx
 msgid "Yuva {version}"
 msgstr "Yuva {version}"
+
+#: src/features/setup/InstallStep.tsx
+msgid "Yuva does not run a mail server: your domain's mail is passed to it."
+msgstr "Yuva does not run a mail server: your domain's mail is passed to it."
 
 #: src/features/settings/webhooks/WebhookDialog.tsx
 msgid "Yuva sends a signed POST request with a JSON body for every event you pick."

@@ -156,7 +156,7 @@ function Channels({ inbox }: { inbox: Inbox }) {
   )
 }
 
-const LANGS = ["en", "tr", "de", "fr", "es", "it", "nl", "pt", "ar", "ja"]
+export const LANGS = ["en", "tr", "de", "fr", "es", "it", "nl", "pt", "ar", "ja"]
 const PROMISES = [15, 60, 240, 1440]
 
 function languageName(tag: string, locale: string) {

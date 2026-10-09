@@ -88,7 +88,7 @@ function useItems(open: boolean): Item[] {
     go(t`Connected apps`, "/settings/connected-apps")
     for (const i of inboxes) go(t`${i.name} settings`, `/settings/inboxes/${i.id}`)
     if (canManage) {
-      go(t`Add an inbox`, "/settings/new")
+      go(t`Add an inbox`, "/setup")
       go(t`API keys`, "/settings/api-keys")
       go(t`Webhooks`, "/settings/webhooks")
       go(t`Workspace`, "/settings/workspace")

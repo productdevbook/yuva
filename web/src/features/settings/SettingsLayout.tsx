@@ -85,7 +85,7 @@ export function SettingsIndex() {
               </LinkRow>
             ))}
             {canManage && (
-              <LinkRow to="new" testId="add-inbox">
+              <LinkRow to="/setup" state={{ back: "/settings" }} testId="add-inbox">
                 <RowIcon>
                   <PlusIcon />
                 </RowIcon>

@@ -8,6 +8,7 @@ import { TopBar } from "@/app/TopBar"
 import { Toaster } from "@/components/common"
 import { SHORTCUTS, ShortcutSheet } from "@/components/common/ShortcutSheet"
 import { AllDrawer } from "@/features/inbox/AllDrawer"
+import { useOpenSetup } from "@/features/setup/setup"
 import { focusListSearch } from "@/features/inbox/listSearch"
 import { QueueProvider, useQueue } from "@/features/inbox/queue"
 import { useHotkeys } from "@/hooks/use-hotkeys"
@@ -33,6 +34,7 @@ export function AppShell() {
   const [drawer, setDrawer] = useState<{ open: boolean; q: string; focus: number }>({ open: false, q: "", focus: 0 })
   useRealtime(workspaceId, membership.member_id)
   useRegisterPushOnStart()
+  useOpenSetup()
 
   const shell = useMemo(
     () => ({
@@ -80,7 +82,7 @@ export function AppShell() {
       <ShellContext.Provider value={shell}>
         <Title />
         <div className="min-h-svh bg-background">
-          <TopBar />
+          {!pathname.startsWith("/setup") && <TopBar />}
           <Outlet />
         </div>
         <AllDrawer

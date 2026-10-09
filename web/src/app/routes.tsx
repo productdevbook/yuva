@@ -14,7 +14,6 @@ import { AssistantPage } from "@/features/settings/connected-apps/AssistantPage"
 import { ConnectedAppsPage } from "@/features/settings/connected-apps/ConnectedAppsPage"
 import { InboxPage } from "@/features/settings/inboxes/InboxPage"
 import { InboxWebhooksPage } from "@/features/settings/inboxes/InboxWebhooksPage"
-import { NewInboxPage } from "@/features/settings/inboxes/NewInboxPage"
 import { LabelsPage } from "@/features/settings/labels/LabelsPage"
 import { MembersPage } from "@/features/settings/members/MembersPage"
 import { NotificationsPage } from "@/features/settings/notifications/NotificationsPage"
@@ -23,6 +22,7 @@ import { SettingsIndex, SettingsLayout } from "@/features/settings/SettingsLayou
 import { WebhookPage } from "@/features/settings/webhooks/WebhookPage"
 import { WebhooksPage } from "@/features/settings/webhooks/WebhooksPage"
 import { WorkspacePage } from "@/features/settings/workspace/WorkspacePage"
+import { SetupPage } from "@/features/setup/SetupPage"
 
 export function AppRoutes() {
   return (
@@ -32,6 +32,11 @@ export function AppRoutes() {
       <Route element={<Gate />}>
         <Route index element={<HomePage />} />
         <Route path="conversations/:conversationId" element={<QueuePage />} />
+        <Route path="setup" element={<SetupPage />} />
+        <Route path="setup/:inboxId" element={<SetupPage />} />
+        <Route path="setup/:inboxId/add/:kind" element={<SetupPage />} />
+        <Route path="setup/:inboxId/:channelId" element={<SetupPage />} />
+        <Route path="setup/:inboxId/:channelId/wait" element={<SetupPage wait />} />
         <Route path="contacts" element={<ContactsPage />} />
         <Route path="contacts/:contactId" element={<ContactPage />} />
         <Route path="settings" element={<SettingsLayout />}>
@@ -41,7 +46,7 @@ export function AppRoutes() {
           <Route path="appearance" element={<AppearancePage />} />
           <Route path="workspace" element={<WorkspacePage />} />
           <Route path="members" element={<MembersPage />} />
-          <Route path="new/:inboxId?/:channelId?" element={<NewInboxPage />} />
+          <Route path="new/*" element={<Navigate to="/setup" replace />} />
           <Route path="inboxes/:inboxId" element={<InboxPage />} />
           <Route path="inboxes/:inboxId/webhooks" element={<InboxWebhooksPage />} />
           <Route path="labels" element={<LabelsPage />} />
