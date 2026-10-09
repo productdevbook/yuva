@@ -3,6 +3,7 @@ import geistLatin from "@fontsource-variable/geist/files/geist-latin-wght-normal
 import { useLingui } from "@lingui/react/macro"
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react"
 
+import { darkenTree, parseColor } from "@/lib/emailDark"
 import { cn } from "@/lib/utils"
 
 function cidOf(src: string) {
@@ -25,7 +26,7 @@ export function placedContentIds(html: string) {
   return ids
 }
 
-function prepare(html: string, images: boolean, inline: ReadonlyMap<string, string>) {
+function prepare(html: string, images: boolean, inline: ReadonlyMap<string, string>, page?: string) {
   const doc = new DOMParser().parseFromString(html, "text/html")
   for (const img of doc.querySelectorAll("img[src]")) {
     const id = cidOf(img.getAttribute("src") ?? "")
@@ -41,6 +42,8 @@ function prepare(html: string, images: boolean, inline: ReadonlyMap<string, stri
       el.removeAttribute("srcset")
     }
   }
+  const base = page ? parseColor(page) : undefined
+  if (base) darkenTree(doc.body, base)
   return doc.body.innerHTML
 }
 
@@ -54,6 +57,7 @@ type Look = {
   border: string
   link: string
   code: string
+  card: string
 }
 
 function lookOf(dark: boolean): Look {
@@ -69,6 +73,7 @@ function lookOf(dark: boolean): Look {
     border: v("--border", dark ? "#232327" : "#e4e4e7"),
     link: v("--brand", dark ? "#ff8a5c" : "#c2410c"),
     code: v("--muted", dark ? "#1c1c21" : "#f1f1f3"),
+    card: v("--card", dark ? "#131316" : "#ffffff"),
   }
 }
 
@@ -93,22 +98,23 @@ blockquote{margin:.5em 0;padding-left:.75em;border-left:2px solid ${l.border};co
 #y>:first-child,p:first-child{margin-top:0}#y>:last-child,p:last-child{margin-bottom:0}`
 }
 
-function originalStyle(l: Look) {
-  return `:root{color-scheme:light}
-html{margin:0;padding:0;background:#fff;overflow-x:auto;overflow-y:hidden}
-body{margin:0;padding:0;font-family:${l.font};font-size:14px;line-height:1.5;color:#171717;overflow-wrap:anywhere}
+function originalStyle(l: Look, darkened: boolean) {
+  return `:root{color-scheme:${darkened ? "dark" : "light"}}
+html{margin:0;padding:0;background:${darkened ? l.card : "#fff"};overflow-x:auto;overflow-y:hidden}
+body{margin:0;padding:0;font-family:${l.font};font-size:14px;line-height:1.5;color:${darkened ? l.fg : "#171717"};overflow-wrap:anywhere}
+${darkened ? `a{color:${l.link}}` : ""}
 #y{display:flow-root;box-sizing:border-box;padding:12px;transform-origin:0 0}
 img{height:auto}
 img:not([src]),img[src^="cid:"]{display:none}`
 }
 
-function frameDocument(html: string, images: boolean, inline: ReadonlyMap<string, string>, style: string) {
+function frameDocument(html: string, images: boolean, inline: ReadonlyMap<string, string>, style: string, page?: string) {
   const own = `${window.location.origin}/v1/attachments/`
   const img = images ? "data: https: http:" : inline.size > 0 ? `data: ${own}` : "data:"
   return `<!doctype html><html><head><meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src ${img}; font-src data:">
 <base target="_blank">
-<style>${style}</style></head><body><div id="y">${prepare(html, images, inline)}</div></body></html>`
+<style>${style}</style></head><body><div id="y">${prepare(html, images, inline, page)}</div></body></html>`
 }
 
 const GEIST = [
@@ -140,7 +146,7 @@ function subscribeDark(change: () => void) {
   return () => mo.disconnect()
 }
 
-function useDark() {
+export function useDark() {
   return useSyncExternalStore(subscribeDark, () => document.documentElement.classList.contains("dark"))
 }
 
@@ -152,23 +158,27 @@ export function EmailHtml({
   images,
   inline = NO_INLINE,
   original = false,
+  asSent = false,
   className,
 }: {
   html: string
   images: boolean
   inline?: ReadonlyMap<string, string>
   original?: boolean
+  asSent?: boolean
   className?: string
 }) {
   const { t } = useLingui()
   const frame = useRef<HTMLIFrameElement>(null)
   const [height, setHeight] = useState(40)
   const dark = useDark()
-  const style = useMemo(() => {
-    const look = lookOf(dark)
-    return original ? originalStyle(look) : readingStyle(look)
-  }, [dark, original])
-  const srcDoc = useMemo(() => frameDocument(html, images, inline, style), [html, images, inline, style])
+  const darkened = original && dark && !asSent
+  const look = useMemo(() => lookOf(dark), [dark])
+  const style = useMemo(() => (original ? originalStyle(look, darkened) : readingStyle(look)), [look, original, darkened])
+  const srcDoc = useMemo(
+    () => frameDocument(html, images, inline, style, darkened ? look.card : undefined),
+    [html, images, inline, style, darkened, look],
+  )
 
   useEffect(() => {
     const el = frame.current

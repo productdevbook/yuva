@@ -2,7 +2,7 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { useEffect, useMemo, useState } from "react"
 
 import { ErrorLine } from "@/components/common"
-import { EmailHtml, placedContentIds } from "@/components/common/EmailHtml"
+import { EmailHtml, placedContentIds, useDark } from "@/components/common/EmailHtml"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Attachments } from "@/features/conversation/messages/Attachments"
@@ -22,6 +22,8 @@ export function EmailBody({ m, outgoing, expandQuoted, plain }: { m: Message; ou
   const [quotedOwn, setQuotedOwn] = useState<boolean | null>(null)
   const [images, setImages] = useState(false)
   const [originalOwn, setOriginalOwn] = useState(false)
+  const [asSent, setAsSent] = useState(false)
+  const dark = useDark()
   useEffect(() => setQuotedOwn(null), [expandQuoted])
   const quotedWanted = !!m.email?.quoted && (quotedOwn ?? expandQuoted)
   const detail = useMessageEmail(m.id, quotedWanted || originalOwn)
@@ -44,8 +46,8 @@ export function EmailBody({ m, outgoing, expandQuoted, plain }: { m: Message; ou
   return (
     <>
       {originalHtml ? (
-        <div className="w-full overflow-hidden rounded-xl border bg-white">
-          <EmailHtml html={originalHtml} images={images} inline={inline} original />
+        <div className={cn("w-full overflow-hidden rounded-xl border", dark && !asSent ? "bg-card" : "bg-white")}>
+          <EmailHtml html={originalHtml} images={images} inline={inline} original asSent={asSent} />
         </div>
       ) : html ? (
         plain ? (
@@ -73,6 +75,18 @@ export function EmailBody({ m, outgoing, expandQuoted, plain }: { m: Message; ou
               data-testid="original-toggle"
             >
               {originalOwn ? <Trans>Show reading view</Trans> : <Trans>Show original</Trans>}
+            </Button>
+          )}
+          {originalHtml && dark && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setAsSent(!asSent)}
+              aria-pressed={asSent}
+              title={asSent ? t`Darken the colours to match the theme` : t`Show the colours the sender chose, on white`}
+              data-testid="as-sent-toggle"
+            >
+              {asSent ? <Trans>Darken</Trans> : <Trans>Show as sent</Trans>}
             </Button>
           )}
           {m.email?.quoted && !originalHtml && (
