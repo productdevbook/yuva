@@ -27,6 +27,7 @@ your scopes or role cannot use are not listed.
 | `get_contact`, `lookup_contact` | `contacts:read` |
 | `draft_reply` | `messages:write` |
 | `send_reply`, listed only when the caller may deliver | `messages:write`, and bots may send |
+| `send_draft` (sends a draft made with `draft_reply`), listed only when the caller may deliver | `messages:write` and `drafts:send`, and bots may send |
 | `add_note` | `notes:write` |
 | `assign`, `set_status`, `snooze`, `add_labels`, `remove_labels`, `move_conversation`, `bulk_update` | `conversations:write` |
 | `merge_contacts`, owners and admins (and keys without an inbox limit) | `contacts:write` |
@@ -49,7 +50,7 @@ workspace allows bots to send.
 **Drafts and "via".** `draft_reply` stores a draft; a member reviews it in the conversation and
 sends, edits or discards it. Everything written through OAuth carries the client's name: the
 timeline shows "Ayşe via Claude Code", and the message's `author` has `via`. Writes with an API key
-are by the key's bot. `send_reply` exists only when the workspace setting **Bots may send** is on
+are by the key's bot. `send_reply` and `send_draft` exist only when the workspace setting **Bots may send** is on
 (see [Headless](headless.md#bots-may-send)).
 
 Each token or key may make 600 requests a minute (`429` with `Retry-After` beyond).

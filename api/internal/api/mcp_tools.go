@@ -225,6 +225,10 @@ type replyIn struct {
 	Body           string    `json:"body" jsonschema:"plain text"`
 }
 
+type sendDraftIn struct {
+	MessageID uuid.UUID `json:"message_id" jsonschema:"the id draft_reply returned"`
+}
+
 type assignIn struct {
 	ConversationID uuid.UUID  `json:"conversation_id"`
 	AssigneeID     *uuid.UUID `json:"assignee_id,omitempty" jsonschema:"a member id; omit to unassign"`
@@ -469,12 +473,26 @@ var mcpTools = []mcpTool{
 			})
 		}),
 	defineTool("send_reply", "Send a reply",
-		"Sends a reply to the contact now, by e-mail or chat. Prefer draft_reply unless the person you work for asked to send. Maps to POST /v1/conversations/{id}/messages.",
+		"Sends a new reply to the contact now, by e-mail or chat. Prefer draft_reply unless the person you work for asked to send; to send a draft that exists, use send_draft. Maps to POST /v1/conversations/{id}/messages.",
 		delivering, nil, mcpTool{ops: []string{"CreateMessage"}, scopes: []oas.ApiKeyScope{oas.MessagesWrite}, allow: mayDeliver},
 		func(ctx context.Context, c *mcpCall, in replyIn) (mcpMessage, error) {
 			return c.createMessage(ctx, in.ConversationID, oas.MessageCreate{
 				Kind: oas.MessageCreateKindMessage, Direction: new(oas.Out), Body: &in.Body,
 			})
+		}),
+	defineTool("send_draft", "Send a draft",
+		"Delivers a draft that already exists, by e-mail or chat, so the conversation keeps one message instead of the draft and a copy. Use it when the person you work for asks to send a draft from draft_reply; never send_reply with the same text. Maps to POST /v1/messages/{id}/send.",
+		delivering, nil, mcpTool{ops: []string{"SendMessage"}, allow: mayDeliver},
+		func(ctx context.Context, c *mcpCall, in sendDraftIn) (mcpMessage, error) {
+			res, err := c.s.SendMessage(ctx, oas.SendMessageRequestObject{MessageId: in.MessageID})
+			if err != nil {
+				return mcpMessage{}, err
+			}
+			m, ok := res.(oas.SendMessage200JSONResponse)
+			if !ok {
+				return mcpMessage{}, errInternal
+			}
+			return messageOut(oas.Message(m)), nil
 		}),
 	defineTool("add_note", "Add a note",
 		"Adds an internal note that only members see. Maps to POST /v1/conversations/{id}/messages with kind note.",

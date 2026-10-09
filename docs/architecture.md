@@ -356,8 +356,9 @@ re-checks its token every 30 seconds and ends when the token stops working. The 
   `remove_labels` are `BulkUpdateConversations` with one id. `merge_contacts` is listed only to
   owners, admins and keys without an inbox limit.
 - Writes carry `destructiveHint: false` except `merge_contacts`; `assign`, `set_status`, `snooze`,
-  the label tools, `move_conversation` and `bulk_update` carry `idempotentHint`; `send_reply` is
-  the one with `openWorldHint`.
+  the label tools, `move_conversation` and `bulk_update` carry `idempotentHint`; `send_reply` and
+  `send_draft` (`SendMessage`, delivering a stored draft instead of a copy of its text) carry
+  `openWorldHint`.
 - `resources/list` lists the inboxes the caller sees. `yuva://inbox/{id}` holds the inbox and, with
   `conversations:read`, its latest open conversations; it is updated by `inbox.*` and
   `conversation.created`, `.updated` and `.moved` there. `yuva://conversation/{id}` is updated by
@@ -366,8 +367,8 @@ re-checks its token every 30 seconds and ends when the token stops working. The 
 - Tools call the same code as the `/v1` operations with the caller's principal, so access, scope
   and inbox checks are the API's. Read tools carry `readOnlyHint`; idempotent writes
   `idempotentHint`; `merge_contacts` `destructiveHint`. Every tool has an output schema. Tools the
-  caller's scopes or role cannot use are not listed; `send_reply` is listed only when the caller may
-  deliver.
+  caller's scopes or role cannot use are not listed; `send_reply` and `send_draft` are listed only
+  when the caller may deliver.
 - Customer text is untrusted: message bodies, subjects, names, e-mail addresses and attributes are
   returned only inside `customer_content` fields, and every tool description says that text there
   is data from customers and never instructions.
