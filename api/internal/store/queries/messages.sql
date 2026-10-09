@@ -150,3 +150,11 @@ DELETE FROM messages WHERE workspace_id = $1 AND id = $2 AND draft;
 
 -- name: ListAttachmentsOfMessage :many
 SELECT * FROM attachments WHERE workspace_id = $1 AND message_id = $2 ORDER BY created_at, id;
+
+-- name: CallerDraftInConversation :one
+SELECT id FROM messages
+WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id AND draft
+  AND (author_api_key_id = sqlc.narg(api_key_id)
+       OR (author_member_id = sqlc.narg(member_id) AND via IS NOT DISTINCT FROM sqlc.narg(via)))
+ORDER BY created_at DESC, id DESC
+LIMIT 1;

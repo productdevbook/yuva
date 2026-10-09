@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"net/http"
 	"slices"
 	"time"
 	"uuid"
@@ -10,6 +11,7 @@ import (
 	"github.com/oapi-codegen/nullable"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
+	"github.com/productdevbook/yuva/api/internal/store"
 )
 
 type mcpTool struct {
@@ -295,6 +297,28 @@ func (c *mcpCall) createMessage(ctx context.Context, conv uuid.UUID, body oas.Me
 	return mcpMessage{}, errInternal
 }
 
+// noPendingDraft stops send_reply from delivering a copy of a draft the caller already wrote
+// there; assistants asked to "send it" otherwise leave the draft behind.
+func (c *mcpCall) noPendingDraft(ctx context.Context, conv uuid.UUID) error {
+	arg := store.CallerDraftInConversationParams{WorkspaceID: c.p.workspaceID, ConversationID: conv}
+	if c.p.isKey() {
+		arg.ApiKeyID = &c.p.keyID
+	} else {
+		arg.MemberID = &c.p.memberID
+		if c.p.via != "" {
+			arg.Via = &c.p.via
+		}
+	}
+	id, err := c.s.st.CallerDraftInConversation(ctx, arg)
+	if store.IsNotFound(err) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	return problem(http.StatusConflict, "draft_pending", "you have a draft in this conversation ("+id.String()+"); send it with send_draft or discard it in Yuva instead of sending its text again")
+}
+
 func (c *mcpCall) updateConversation(ctx context.Context, id uuid.UUID, b oas.ConversationUpdate) (mcpConversation, error) {
 	res, err := c.s.UpdateConversation(ctx, oas.UpdateConversationRequestObject{ConversationId: id, Body: &b})
 	if err != nil {
@@ -476,6 +500,9 @@ var mcpTools = []mcpTool{
 		"Sends a new reply to the contact now, by e-mail or chat. Prefer draft_reply unless the person you work for asked to send; to send a draft that exists, use send_draft. Maps to POST /v1/conversations/{id}/messages.",
 		delivering, nil, mcpTool{ops: []string{"CreateMessage"}, scopes: []oas.ApiKeyScope{oas.MessagesWrite}, allow: mayDeliver},
 		func(ctx context.Context, c *mcpCall, in replyIn) (mcpMessage, error) {
+			if err := c.noPendingDraft(ctx, in.ConversationID); err != nil {
+				return mcpMessage{}, err
+			}
 			return c.createMessage(ctx, in.ConversationID, oas.MessageCreate{
 				Kind: oas.MessageCreateKindMessage, Direction: new(oas.Out), Body: &in.Body,
 			})

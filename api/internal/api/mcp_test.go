@@ -267,6 +267,9 @@ func TestMCPSendDraftDeliversTheDraft(t *testing.T) {
 	if errText != "" {
 		t.Fatal(errText)
 	}
+	if _, errText := callTool(t, cs, "send_reply", map[string]any{"conversation_id": conv, "body": "Yes, refunded."}); !strings.Contains(errText, "draft_pending") {
+		t.Fatalf("send_reply with a pending draft: %q", errText)
+	}
 	sent, errText := callTool(t, cs, "send_draft", map[string]any{"message_id": draft["id"]})
 	if errText != "" {
 		t.Fatal(errText)
@@ -285,6 +288,9 @@ func TestMCPSendDraftDeliversTheDraft(t *testing.T) {
 	}
 	if jobs := h.jobs("email_send", et.ws); len(jobs) != 1 {
 		t.Fatalf("e-mail jobs: %d", len(jobs))
+	}
+	if _, errText := callTool(t, cs, "send_reply", map[string]any{"conversation_id": conv, "body": "Anything else?"}); errText != "" {
+		t.Fatalf("send_reply without a pending draft: %s", errText)
 	}
 }
 
