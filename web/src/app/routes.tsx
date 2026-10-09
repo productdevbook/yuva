@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router"
 
 import { Gate } from "@/app/Gate"
 import { SignInPage } from "@/features/auth/SignInPage"
+import { HomePage } from "@/features/inbox/HomePage"
 import { QueuePage } from "@/features/inbox/QueuePage"
 import { ConsentPage } from "@/features/oauth/ConsentPage"
 import { ApiKeysPage } from "@/features/settings/api-keys/ApiKeysPage"
@@ -25,7 +26,7 @@ export function AppRoutes() {
       <Route path="sign-in" element={<SignInPage />} />
       <Route path="oauth/consent" element={<ConsentPage />} />
       <Route element={<Gate />}>
-        <Route index element={<QueuePage />} />
+        <Route index element={<HomePage />} />
         <Route path="conversations/:conversationId" element={<QueuePage />} />
         <Route path="settings" element={<SettingsLayout />}>
           <Route index element={<SettingsIndex />} />

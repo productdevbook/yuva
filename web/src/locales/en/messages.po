@@ -26,6 +26,11 @@ msgstr "{0, plural, one {# request} other {# requests}}"
 msgid "{0} closed"
 msgstr "{0} closed"
 
+#. placeholder {0}: viewer.name || viewer.email
+#: src/features/inbox/ListPage.tsx
+msgid "{0} is looking"
+msgstr "{0} is looking"
+
 #. placeholder {0}: items.length
 #: src/features/inbox/QueuePage.tsx
 msgid "{0} marked as spam · no reply needed"
@@ -136,13 +141,29 @@ msgstr "{minutes, plural, one {Waiting for # minute} other {Waiting for # minute
 msgid "{n, plural, one {# other conversation} other {# other conversations}}"
 msgstr "{n, plural, one {# other conversation} other {# other conversations}}"
 
+#: src/features/inbox/ListPage.tsx
+msgid "{n} assigned to you"
+msgstr "{n} assigned to you"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "{n} attempts"
 
+#: src/features/inbox/ListPage.tsx
+msgid "{n} closed"
+msgstr "{n} closed"
+
 #: src/features/settings/inboxes/NewInboxPage.tsx
 msgid "{n} of 3"
 msgstr "{n} of 3"
+
+#: src/features/inbox/ListPage.tsx
+msgid "{n} selected"
+msgstr "{n} selected"
+
+#: src/features/inbox/ListPage.tsx
+msgid "{n} snoozed"
+msgstr "{n} snoozed"
 
 #: src/app/UserMenu.tsx
 msgid "{name} · {statusText}"
@@ -503,6 +524,7 @@ msgid "Ask for an e-mail address when offline"
 msgstr "Ask for an e-mail address when offline"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/inbox/ListPage.tsx
 msgid "Assign to me"
 msgstr "Assign to me"
 
@@ -563,7 +585,6 @@ msgstr "Away"
 msgid "Back"
 msgstr "Back"
 
-#: src/app/TopBar.tsx
 #: src/features/conversation/QueueConversation.tsx
 msgid "Back to the queue"
 msgstr "Back to the queue"
@@ -687,9 +708,23 @@ msgstr "Choose a workspace"
 msgid "Clear"
 msgstr "Clear"
 
+#: src/features/inbox/ListSearchBox.tsx
+msgid "Clear the search"
+msgstr "Clear the search"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/inbox/ListPage.tsx
+msgid "Clear the selection"
+msgstr "Clear the selection"
+
 #: src/components/ui/dialog.tsx
 #: src/components/ui/sheet.tsx
 #: src/features/inbox/AllDrawer.tsx
+msgid "Close"
+msgstr "Close"
+
+#: src/features/inbox/ListPage.tsx
+msgctxt "conversation"
 msgid "Close"
 msgstr "Close"
 
@@ -787,6 +822,7 @@ msgstr "Continue"
 
 #: src/features/contact/MergePreview.tsx
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListPage.tsx
 msgid "Conversations"
 msgstr "Conversations"
 
@@ -981,6 +1017,7 @@ msgstr "Do not both write."
 
 #: src/features/conversation/PersonHeader.tsx
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListPage.tsx
 msgid "Done"
 msgstr "Done"
 
@@ -1290,6 +1327,10 @@ msgstr "High"
 msgid "History"
 msgstr "History"
 
+#: src/app/TopBar.tsx
+msgid "Home"
+msgstr "Home"
+
 #: src/components/common/SecretDialog.tsx
 msgid "I saved it"
 msgstr "I saved it"
@@ -1315,6 +1356,7 @@ msgid "Identity secret, shown only now"
 msgstr "Identity secret, shown only now"
 
 #: src/features/conversation/LaterActions.tsx
+#: src/features/inbox/ListPage.tsx
 msgid "In 1 hour"
 msgstr "In 1 hour"
 
@@ -1411,6 +1453,10 @@ msgstr "It will no longer receive notifications."
 msgid "Its access ends at once. To use it again, connect it again."
 msgstr "Its access ends at once. To use it again, connect it again."
 
+#: src/features/conversation/ListPreview.tsx
+msgid "J / K to move · X to select · E to close · Enter for full screen"
+msgstr "J / K to move · X to select · E to close · Enter for full screen"
+
 #: src/features/conversation/LaterActions.tsx
 msgid "Just move it to the end of the queue"
 msgstr "Just move it to the end of the queue"
@@ -1500,6 +1546,11 @@ msgstr "Leave it to {name}"
 msgid "Leave it to the teammate who is typing"
 msgstr "Leave it to the teammate who is typing"
 
+#: src/app/ViewToggle.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "List"
+msgstr "List"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "List at most 20 origins."
 msgstr "List at most 20 origins."
@@ -1525,6 +1576,7 @@ msgstr "Load images"
 msgid "Load more"
 msgstr "Load more"
 
+#: src/features/conversation/ListPreview.tsx
 #: src/features/conversation/QueueConversation.tsx
 msgid "Load older messages"
 msgstr "Load older messages"
@@ -1729,6 +1781,10 @@ msgstr "New password"
 msgid "New signing secret"
 msgstr "New signing secret"
 
+#: src/features/inbox/ListPage.tsx
+msgid "Newest first"
+msgstr "Newest first"
+
 #: src/features/settings/webhooks/Deliveries.tsx
 msgid "Newest first. Finished deliveries are kept for 7 days."
 msgstr "Newest first. Finished deliveries are kept for 7 days."
@@ -1745,6 +1801,10 @@ msgstr "next attempt {when}"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Next in the queue"
 msgstr "Next in the queue"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Next or previous conversation"
+msgstr "Next or previous conversation"
 
 #: src/features/conversation/controls/shared.ts
 msgid "Next week"
@@ -1788,6 +1848,7 @@ msgid "No connected apps."
 msgstr "No connected apps."
 
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListPage.tsx
 msgid "No conversations here."
 msgstr "No conversations here."
 
@@ -1888,6 +1949,7 @@ msgid "Nothing"
 msgstr "Nothing"
 
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListPage.tsx
 msgid "Nothing matches your search here."
 msgstr "Nothing matches your search here."
 
@@ -1922,6 +1984,10 @@ msgstr "Off for this device."
 #: src/features/conversation/LaterActions.tsx
 msgid "Offline"
 msgstr "Offline"
+
+#: src/features/inbox/ListPage.tsx
+msgid "Oldest first"
+msgstr "Oldest first"
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "On"
@@ -1995,6 +2061,11 @@ msgstr "Open {0}"
 #: src/features/inbox/WaitingPill.tsx
 msgid "Open {name}"
 msgstr "Open {name}"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/ListPreview.tsx
+msgid "Open full screen"
+msgstr "Open full screen"
 
 #: src/features/conversation/QueueConversation.tsx
 msgid "Open the next one"
@@ -2090,6 +2161,10 @@ msgstr "Pick a color"
 msgid "Pick a color."
 msgstr "Pick a color."
 
+#: src/features/inbox/ListPage.tsx
+msgid "Pick a conversation to see it here."
+msgstr "Pick a conversation to see it here."
+
 #: src/features/settings/channels/email/form.ts
 msgid "Pick a TLS mode."
 msgstr "Pick a TLS mode."
@@ -2134,6 +2209,7 @@ msgstr "Post feedback for your app's users"
 msgid "Praise"
 msgstr "Praise"
 
+#: src/features/inbox/ListPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 msgid "Preview"
 msgstr "Preview"
@@ -2179,6 +2255,10 @@ msgstr "Push only"
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Push: {label}"
 msgstr "Push: {label}"
+
+#: src/app/ViewToggle.tsx
+msgid "Queue"
+msgstr "Queue"
 
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "Queued. The new attempt shows up below in a moment."
@@ -2292,6 +2372,7 @@ msgid "Replace"
 msgstr "Replace"
 
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListPage.tsx
 msgid "Replied"
 msgstr "Replied"
 
@@ -2463,6 +2544,7 @@ msgstr "Search contacts"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListSearchBox.tsx
 msgid "Search conversations"
 msgstr "Search conversations"
 
@@ -2472,6 +2554,7 @@ msgid "Search conversations for “{0}”"
 msgstr "Search conversations for “{0}”"
 
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListSearchBox.tsx
 msgid "Search people or messages"
 msgstr "Search people or messages"
 
@@ -2482,6 +2565,18 @@ msgstr "Search people, actions or settings"
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings…"
 msgstr "Search people, actions or settings…"
+
+#: src/features/inbox/ListPage.tsx
+msgid "Select {name}"
+msgstr "Select {name}"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select or unselect"
+msgstr "Select or unselect"
+
+#: src/features/inbox/ListPage.tsx
+msgid "Selected conversations"
+msgstr "Selected conversations"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/Talk.tsx
@@ -2664,8 +2759,13 @@ msgstr "Slug"
 msgid "SMTP host"
 msgstr "SMTP host"
 
+#: src/features/inbox/ListPage.tsx
+msgid "Snooze"
+msgstr "Snooze"
+
 #: src/components/common/text.ts
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListPage.tsx
 msgid "Snoozed"
 msgstr "Snoozed"
 
@@ -2732,6 +2832,24 @@ msgstr "Support address"
 #: src/features/settings/channels/ChannelDialog.tsx
 msgid "Support e-mail"
 msgstr "Support e-mail"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Switch between Queue and List"
+msgstr "Switch between Queue and List"
+
+#: src/app/Palette.tsx
+#: src/app/UserMenu.tsx
+msgid "Switch to the list"
+msgstr "Switch to the list"
+
+#: src/app/Palette.tsx
+#: src/app/UserMenu.tsx
+msgid "Switch to the queue"
+msgstr "Switch to the queue"
+
+#: src/app/ViewToggle.tsx
+msgid "Switch view (V)"
+msgstr "Switch view (V)"
 
 #: src/features/conversation/Feedback.tsx
 msgid "System"
@@ -3019,6 +3137,7 @@ msgid "Tomorrow at {at}"
 msgstr "Tomorrow at {at}"
 
 #: src/features/conversation/controls/shared.ts
+#: src/features/inbox/ListPage.tsx
 msgid "Tomorrow morning"
 msgstr "Tomorrow morning"
 
@@ -3088,9 +3207,11 @@ msgstr "Unknown device"
 #: src/features/contact/ContactPanel.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/MergeContactDialog.tsx
+#: src/features/conversation/ListPreview.tsx
 #: src/features/conversation/QueueConversation.tsx
 #: src/features/conversation/UpNext.tsx
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListPage.tsx
 #: src/features/inbox/WaitingPill.tsx
 msgid "Unnamed contact"
 msgstr "Unnamed contact"
@@ -3163,12 +3284,17 @@ msgstr "Verify every request before trusting it: the <0>webhook-signature</0> he
 msgid "Version"
 msgstr "Version"
 
+#: src/app/ViewToggle.tsx
+msgid "View"
+msgstr "View"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Visitors can chat without an identity token from your backend."
 msgstr "Visitors can chat without an identity token from your backend."
 
 #: src/app/Palette.tsx
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListPage.tsx
 msgid "Waiting"
 msgstr "Waiting"
 

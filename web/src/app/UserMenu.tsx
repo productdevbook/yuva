@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { BuildingIcon, DownloadIcon, KeyboardIcon, LanguagesIcon, LogOutIcon, UserIcon } from "lucide-react"
+import { BuildingIcon, DownloadIcon, KeyboardIcon, LanguagesIcon, ListIcon, LogOutIcon, RowsIcon, UserIcon } from "lucide-react"
 import { useNavigate } from "react-router"
 
 import { useShell } from "@/app/shell"
@@ -26,6 +26,7 @@ import { useInstallPrompt } from "@/lib/pwa"
 import { useRealtimeStatus } from "@/lib/realtime"
 import { useSession, useSignOut } from "@/lib/session"
 import { cn } from "@/lib/utils"
+import { useView } from "@/lib/view"
 
 function statusClass(a: Availability, live: boolean) {
   if (a === "away") return "bg-zinc-400"
@@ -36,6 +37,7 @@ export function UserMenu() {
   const { t, i18n } = useLingui()
   const { me, membership, switchWorkspace } = useSession()
   const { openShortcuts } = useShell()
+  const [view, setView] = useView()
   const navigate = useNavigate()
   const signOut = useSignOut()
   const install = useInstallPrompt()
@@ -134,6 +136,17 @@ export function UserMenu() {
             </DropdownMenuSubContent>
           </DropdownMenuSub>
         )}
+        <DropdownMenuItem
+          onClick={() => {
+            setView(view === "list" ? "queue" : "list")
+            navigate("/")
+          }}
+          data-testid="menu-switch-view"
+        >
+          {view === "list" ? <RowsIcon /> : <ListIcon />}
+          {view === "list" ? <Trans>Switch to the queue</Trans> : <Trans>Switch to the list</Trans>}
+          <span className="ms-auto text-xs text-faint">V</span>
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={openShortcuts}>
           <KeyboardIcon />
           <Trans>Keyboard shortcuts</Trans>

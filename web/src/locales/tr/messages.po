@@ -26,6 +26,11 @@ msgstr "{0, plural, one {# istek} other {# istek}}"
 msgid "{0} closed"
 msgstr "{0} konuşma bitti"
 
+#. placeholder {0}: viewer.name || viewer.email
+#: src/features/inbox/ListPage.tsx
+msgid "{0} is looking"
+msgstr "{0} bakıyor"
+
 #. placeholder {0}: items.length
 #: src/features/inbox/QueuePage.tsx
 msgid "{0} marked as spam · no reply needed"
@@ -136,13 +141,29 @@ msgstr "{minutes, plural, one {# dakikadır bekliyor} other {# dakikadır bekliy
 msgid "{n, plural, one {# other conversation} other {# other conversations}}"
 msgstr "{n, plural, one {# diğer konuşma} other {# diğer konuşma}}"
 
+#: src/features/inbox/ListPage.tsx
+msgid "{n} assigned to you"
+msgstr "{n} konuşma sana atandı"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "{n} deneme"
 
+#: src/features/inbox/ListPage.tsx
+msgid "{n} closed"
+msgstr "{n} konuşma bitti"
+
 #: src/features/settings/inboxes/NewInboxPage.tsx
 msgid "{n} of 3"
 msgstr "{n} / 3"
+
+#: src/features/inbox/ListPage.tsx
+msgid "{n} selected"
+msgstr "{n} seçili"
+
+#: src/features/inbox/ListPage.tsx
+msgid "{n} snoozed"
+msgstr "{n} konuşma ertelendi"
 
 #: src/app/UserMenu.tsx
 msgid "{name} · {statusText}"
@@ -503,6 +524,7 @@ msgid "Ask for an e-mail address when offline"
 msgstr "Çevrimdışıyken e-posta adresi iste"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/inbox/ListPage.tsx
 msgid "Assign to me"
 msgstr "Bana ata"
 
@@ -563,7 +585,6 @@ msgstr "Uzakta"
 msgid "Back"
 msgstr "Geri"
 
-#: src/app/TopBar.tsx
 #: src/features/conversation/QueueConversation.tsx
 msgid "Back to the queue"
 msgstr "Sıraya dön"
@@ -687,11 +708,25 @@ msgstr "Bir çalışma alanı seçin"
 msgid "Clear"
 msgstr "Temizle"
 
+#: src/features/inbox/ListSearchBox.tsx
+msgid "Clear the search"
+msgstr "Aramayı temizle"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/inbox/ListPage.tsx
+msgid "Clear the selection"
+msgstr "Seçimi temizle"
+
 #: src/components/ui/dialog.tsx
 #: src/components/ui/sheet.tsx
 #: src/features/inbox/AllDrawer.tsx
 msgid "Close"
 msgstr "Kapat"
+
+#: src/features/inbox/ListPage.tsx
+msgctxt "conversation"
+msgid "Close"
+msgstr "Bitir"
 
 #: src/features/conversation/QueueConversation.tsx
 msgid "close →"
@@ -787,6 +822,7 @@ msgstr "Devam"
 
 #: src/features/contact/MergePreview.tsx
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListPage.tsx
 msgid "Conversations"
 msgstr "Konuşmalar"
 
@@ -981,6 +1017,7 @@ msgstr "İkiniz birden yazmayın."
 
 #: src/features/conversation/PersonHeader.tsx
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListPage.tsx
 msgid "Done"
 msgstr "Bitti"
 
@@ -1290,6 +1327,10 @@ msgstr "Yüksek"
 msgid "History"
 msgstr "Geçmiş"
 
+#: src/app/TopBar.tsx
+msgid "Home"
+msgstr "Ana sayfa"
+
 #: src/components/common/SecretDialog.tsx
 msgid "I saved it"
 msgstr "Kaydettim"
@@ -1315,6 +1356,7 @@ msgid "Identity secret, shown only now"
 msgstr "Kimlik anahtarı, sadece şimdi görünür"
 
 #: src/features/conversation/LaterActions.tsx
+#: src/features/inbox/ListPage.tsx
 msgid "In 1 hour"
 msgstr "1 saat sonra"
 
@@ -1411,6 +1453,10 @@ msgstr "Bu cihaz artık bildirim almayacak."
 msgid "Its access ends at once. To use it again, connect it again."
 msgstr "Erişimi hemen sona erer. Yeniden kullanmak için tekrar bağlamanız gerekir."
 
+#: src/features/conversation/ListPreview.tsx
+msgid "J / K to move · X to select · E to close · Enter for full screen"
+msgstr "J / K ile listede gez · X seç · E bitir · Enter tam ekran"
+
 #: src/features/conversation/LaterActions.tsx
 msgid "Just move it to the end of the queue"
 msgstr "Sadece sıranın sonuna at"
@@ -1500,6 +1546,11 @@ msgstr "Bırak, {name} yanıtlasın"
 msgid "Leave it to the teammate who is typing"
 msgstr "Yazan ekip arkadaşına bırak"
 
+#: src/app/ViewToggle.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "List"
+msgstr "Liste"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "List at most 20 origins."
 msgstr "En fazla 20 kaynak yazın."
@@ -1525,6 +1576,7 @@ msgstr "Görselleri yükle"
 msgid "Load more"
 msgstr "Daha fazla yükle"
 
+#: src/features/conversation/ListPreview.tsx
 #: src/features/conversation/QueueConversation.tsx
 msgid "Load older messages"
 msgstr "Eski mesajları yükle"
@@ -1729,6 +1781,10 @@ msgstr "Yeni parola"
 msgid "New signing secret"
 msgstr "Yeni imzalama anahtarı"
 
+#: src/features/inbox/ListPage.tsx
+msgid "Newest first"
+msgstr "En yeni önce"
+
 #: src/features/settings/webhooks/Deliveries.tsx
 msgid "Newest first. Finished deliveries are kept for 7 days."
 msgstr "En yenisi başta. Tamamlanan gönderimler 7 gün saklanır."
@@ -1745,6 +1801,10 @@ msgstr "sonraki deneme {when}"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Next in the queue"
 msgstr "Sıradakine geç"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Next or previous conversation"
+msgstr "Sonraki ya da önceki konuşma"
 
 #: src/features/conversation/controls/shared.ts
 msgid "Next week"
@@ -1788,6 +1848,7 @@ msgid "No connected apps."
 msgstr "Bağlı uygulama yok."
 
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListPage.tsx
 msgid "No conversations here."
 msgstr "Burada konuşma yok."
 
@@ -1888,6 +1949,7 @@ msgid "Nothing"
 msgstr "Hiçbiri"
 
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListPage.tsx
 msgid "Nothing matches your search here."
 msgstr "Burada aramana uyan bir şey yok."
 
@@ -1922,6 +1984,10 @@ msgstr "Bu cihazda kapalı."
 #: src/features/conversation/LaterActions.tsx
 msgid "Offline"
 msgstr "Çevrimdışı"
+
+#: src/features/inbox/ListPage.tsx
+msgid "Oldest first"
+msgstr "En eski önce"
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "On"
@@ -1995,6 +2061,11 @@ msgstr "{0} dosyasını aç"
 #: src/features/inbox/WaitingPill.tsx
 msgid "Open {name}"
 msgstr "Aç: {name}"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/ListPreview.tsx
+msgid "Open full screen"
+msgstr "Tam ekran aç"
 
 #: src/features/conversation/QueueConversation.tsx
 msgid "Open the next one"
@@ -2090,6 +2161,10 @@ msgstr "Renk seç"
 msgid "Pick a color."
 msgstr "Bir renk seçin."
 
+#: src/features/inbox/ListPage.tsx
+msgid "Pick a conversation to see it here."
+msgstr "Burada görmek için bir konuşma seç."
+
 #: src/features/settings/channels/email/form.ts
 msgid "Pick a TLS mode."
 msgstr "Bir TLS kipi seçin."
@@ -2134,6 +2209,7 @@ msgstr "Uygulamanızın kullanıcıları adına geri bildirim gönderme"
 msgid "Praise"
 msgstr "Övgü"
 
+#: src/features/inbox/ListPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 msgid "Preview"
 msgstr "Önizleme"
@@ -2179,6 +2255,10 @@ msgstr "Yalnızca anlık"
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Push: {label}"
 msgstr "Anlık bildirim: {label}"
+
+#: src/app/ViewToggle.tsx
+msgid "Queue"
+msgstr "Sıra"
 
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "Queued. The new attempt shows up below in a moment."
@@ -2292,6 +2372,7 @@ msgid "Replace"
 msgstr "Değiştir"
 
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListPage.tsx
 msgid "Replied"
 msgstr "Yanıtlandı"
 
@@ -2463,6 +2544,7 @@ msgstr "Kişilerde ara"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListSearchBox.tsx
 msgid "Search conversations"
 msgstr "Konuşmalarda ara"
 
@@ -2472,6 +2554,7 @@ msgid "Search conversations for “{0}”"
 msgstr "Konuşmalarda “{0}” ara"
 
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListSearchBox.tsx
 msgid "Search people or messages"
 msgstr "Kişi veya mesaj ara"
 
@@ -2482,6 +2565,18 @@ msgstr "Kişi, işlem veya ayar ara"
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings…"
 msgstr "Kişi, işlem veya ayar ara…"
+
+#: src/features/inbox/ListPage.tsx
+msgid "Select {name}"
+msgstr "Seç: {name}"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select or unselect"
+msgstr "Seç ya da seçimi kaldır"
+
+#: src/features/inbox/ListPage.tsx
+msgid "Selected conversations"
+msgstr "Seçili konuşmalar"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/Talk.tsx
@@ -2664,8 +2759,13 @@ msgstr "Kısa ad"
 msgid "SMTP host"
 msgstr "SMTP sunucusu"
 
+#: src/features/inbox/ListPage.tsx
+msgid "Snooze"
+msgstr "Ertele"
+
 #: src/components/common/text.ts
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListPage.tsx
 msgid "Snoozed"
 msgstr "Ertelendi"
 
@@ -2732,6 +2832,24 @@ msgstr "Destek adresi"
 #: src/features/settings/channels/ChannelDialog.tsx
 msgid "Support e-mail"
 msgstr "Destek e-postası"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Switch between Queue and List"
+msgstr "Sıra ile Liste arasında geç"
+
+#: src/app/Palette.tsx
+#: src/app/UserMenu.tsx
+msgid "Switch to the list"
+msgstr "Listeye geç"
+
+#: src/app/Palette.tsx
+#: src/app/UserMenu.tsx
+msgid "Switch to the queue"
+msgstr "Sıraya geç"
+
+#: src/app/ViewToggle.tsx
+msgid "Switch view (V)"
+msgstr "Görünümü değiştir (V)"
 
 #: src/features/conversation/Feedback.tsx
 msgid "System"
@@ -3019,6 +3137,7 @@ msgid "Tomorrow at {at}"
 msgstr "Yarın saat {at}"
 
 #: src/features/conversation/controls/shared.ts
+#: src/features/inbox/ListPage.tsx
 msgid "Tomorrow morning"
 msgstr "Yarın sabah"
 
@@ -3088,9 +3207,11 @@ msgstr "Bilinmeyen cihaz"
 #: src/features/contact/ContactPanel.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/MergeContactDialog.tsx
+#: src/features/conversation/ListPreview.tsx
 #: src/features/conversation/QueueConversation.tsx
 #: src/features/conversation/UpNext.tsx
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListPage.tsx
 #: src/features/inbox/WaitingPill.tsx
 msgid "Unnamed contact"
 msgstr "Adsız kişi"
@@ -3163,12 +3284,17 @@ msgstr "Her isteğe güvenmeden önce doğrulayın: <0>webhook-signature</0> ba�
 msgid "Version"
 msgstr "Sürüm"
 
+#: src/app/ViewToggle.tsx
+msgid "View"
+msgstr "Görünüm"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Visitors can chat without an identity token from your backend."
 msgstr "Ziyaretçiler, sunucunuzdan bir kimlik belirteci olmadan da sohbet edebilir."
 
 #: src/app/Palette.tsx
 #: src/features/inbox/AllDrawer.tsx
+#: src/features/inbox/ListPage.tsx
 msgid "Waiting"
 msgstr "Bekliyor"
 

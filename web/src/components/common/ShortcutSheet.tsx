@@ -21,6 +21,9 @@ export const SHORTCUTS = {
   copyDetails: "y",
   search: "/",
   help: "?",
+  view: "v",
+  previous: "k",
+  select: "x",
 } as const
 
 export function keyLabel(k: string) {
@@ -63,9 +66,21 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
       ],
     },
     {
+      title: t`List`,
+      items: [
+        [[k(SHORTCUTS.next)[0], k(SHORTCUTS.previous)[0]], t`Next or previous conversation`],
+        [k(SHORTCUTS.select), t`Select or unselect`],
+        [["↵"], t`Open full screen`],
+        [k(SHORTCUTS.close), t`Close without a reply`],
+        [k(SHORTCUTS.reply), t`Write a reply`],
+        [["Esc"], t`Clear the selection`],
+      ],
+    },
+    {
       title: t`Everywhere`,
       items: [
         [[SHORTCUTS.search], t`Search conversations`],
+        [k(SHORTCUTS.view), t`Switch between Queue and List`],
         [[mod, "K"], t`Everything`],
         [[mod, ","], t`Settings`],
         [[SHORTCUTS.help], t`This list`],

@@ -12,6 +12,7 @@ import { hasCommands, runCommand, type CommandName } from "@/features/conversati
 import { useInboxFilter, useQueue } from "@/features/inbox/queue"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
+import { useView } from "@/lib/view"
 import { useChannelMap, useInboxes } from "@/lib/workspace"
 
 type Item = { group: string; label: string; hint?: string; keys?: string[]; run: () => void }
@@ -27,6 +28,7 @@ function useItems(open: boolean): Item[] {
   const inboxes = useInboxes().data ?? []
   const channels = useChannelMap()
   const [, setFilter] = useInboxFilter()
+  const [view, setView] = useView()
   const commands = open && hasCommands() && (pathname === "/" || pathname.startsWith("/conversations/"))
   return useMemo(() => {
     if (!open) return []
@@ -65,6 +67,15 @@ function useItems(open: boolean): Item[] {
       for (const i of inboxes) list.push({ group: t`Inbox`, label: t`Only ${i.name}`, run: () => (setFilter(i.id), queue.setCurrent(null)) })
     }
     const go = (label: string, to: string, keys?: string[]) => list.push({ group: t`Go to`, label, keys, run: () => navigate(to) })
+    list.push({
+      group: t`Go to`,
+      label: view === "list" ? t`Switch to the queue` : t`Switch to the list`,
+      keys: keyLabel(SHORTCUTS.view),
+      run: () => {
+        setView(view === "list" ? "queue" : "list")
+        if (pathname !== "/") navigate("/")
+      },
+    })
     list.push({ group: t`Go to`, label: t`All conversations`, keys: [SHORTCUTS.search], run: () => openDrawer() })
     go(t`Settings`, "/settings", [mod, ","])
     go(t`Profile`, "/settings/profile")
@@ -82,7 +93,7 @@ function useItems(open: boolean): Item[] {
     }
     list.push({ group: t`Go to`, label: t`Keyboard shortcuts`, keys: [SHORTCUTS.help], run: openShortcuts })
     return list
-  }, [open, commands, queue, inboxes, channels, text, t, navigate, openDrawer, openShortcuts, setFilter, canManage])
+  }, [open, commands, queue, inboxes, channels, text, t, navigate, openDrawer, openShortcuts, setFilter, canManage, view, setView, pathname])
 }
 
 export function Palette({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { Outlet, useNavigate } from "react-router"
+import { Outlet, useLocation, useNavigate } from "react-router"
 
 import { ConnectionBanner } from "@/app/ConnectionBanner"
 import { Palette } from "@/app/Palette"
@@ -8,11 +8,13 @@ import { TopBar } from "@/app/TopBar"
 import { Toaster } from "@/components/common"
 import { SHORTCUTS, ShortcutSheet } from "@/components/common/ShortcutSheet"
 import { AllDrawer } from "@/features/inbox/AllDrawer"
+import { focusListSearch } from "@/features/inbox/listSearch"
 import { QueueProvider, useQueue } from "@/features/inbox/queue"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useRegisterPushOnStart } from "@/lib/push"
 import { useRealtime } from "@/lib/realtime"
 import { useSession } from "@/lib/session"
+import { useView } from "@/lib/view"
 
 function Title() {
   const { waiting } = useQueue()
@@ -41,9 +43,16 @@ export function AppShell() {
     [],
   )
 
+  const [view, setView] = useView()
+  const { pathname } = useLocation()
   useHotkeys({
     [SHORTCUTS.help]: () => setShortcuts(true),
-    [SHORTCUTS.search]: () => setDrawer((d) => ({ open: true, q: d.q, focus: d.focus + 1 })),
+    [SHORTCUTS.search]: () =>
+      view === "list" && pathname === "/" ? focusListSearch() : setDrawer((d) => ({ open: true, q: d.q, focus: d.focus + 1 })),
+    [SHORTCUTS.view]: () => {
+      setView(view === "list" ? "queue" : "list")
+      if (pathname !== "/") navigate("/")
+    },
   })
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

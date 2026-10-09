@@ -33,7 +33,7 @@ function WaitingFor({ since }: { since: string }) {
   return <Plural value={days} one="Waiting for # day" other="Waiting for # days" />
 }
 
-function Status({ c, lastInbound }: { c: Conversation; lastInbound?: Message }) {
+export function Status({ c, lastInbound }: { c: Conversation; lastInbound?: Message }) {
   const { i18n } = useLingui()
   const { membership } = useSession()
   const members = useMemberMap()
@@ -75,7 +75,7 @@ function Status({ c, lastInbound }: { c: Conversation; lastInbound?: Message }) 
   )
 }
 
-function Watchers({ conversationId }: { conversationId: string }) {
+export function Watchers({ conversationId }: { conversationId: string }) {
   const { t } = useLingui()
   const { membership } = useSession()
   const members = useMemberMap()

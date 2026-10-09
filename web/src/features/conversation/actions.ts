@@ -75,7 +75,9 @@ function revertOf(c: Conversation): ConversationUpdate {
 
 export type SendRequest = { body: string; files: File[]; close: boolean; suggestion?: Message }
 
-export function useQueueActions(c: Conversation, contactName: string) {
+export type Flow = { advance: (fromId: string) => void; show: (id: string) => void }
+
+export function useQueueActions(c: Conversation, contactName: string, flow?: Flow) {
   const { t } = useLingui()
   const qc = useQueryClient()
   const live = useLiveContext()
@@ -83,12 +85,14 @@ export function useQueueActions(c: Conversation, contactName: string) {
   const errorText = useErrorText()
   const { membership } = useSession()
   const first = firstName(contactName)
+  const advance = flow?.advance ?? queue.advance
+  const show = flow?.show ?? queue.show
 
   const apply = (data: Conversation) => applyEvent(qc, live, { type: "conversation.updated", data })
   const patch = (body: ConversationUpdate) => patchConversation(c.id, body).then(apply)
   const back = () => {
     queue.unleave(c.id)
-    queue.show(c.id)
+    show(c.id)
   }
   const failed = (err: unknown) => {
     queue.unleave(c.id)
@@ -96,7 +100,7 @@ export function useQueueActions(c: Conversation, contactName: string) {
   }
   const finish = (body: ConversationUpdate, done: string, revert: ConversationUpdate = revertOf(c)) => {
     queue.leave(c.id)
-    queue.advance(c.id)
+    advance(c.id)
     patch(body).then(
       () => toast(done, () => patch(revert).then(back, failed)),
       failed,
@@ -111,13 +115,13 @@ export function useQueueActions(c: Conversation, contactName: string) {
     untilReply: () => finish({ status: "pending" }, t`${first} comes back after writing again`),
     later: () => {
       queue.defer(c.id)
-      queue.advance(c.id)
+      advance(c.id)
       toast(t`${first} is at the end of the queue`)
     },
     hand: (member: Member, note: string) => {
       const name = firstName(member.name || member.email)
       queue.leave(c.id)
-      queue.advance(c.id)
+      advance(c.id)
       const noted = note.trim()
         ? postMessage(c.id, { kind: "note", body: note.trim(), client_id: crypto.randomUUID(), files: [] }).then(addMessage)
         : Promise.resolve()
@@ -149,7 +153,7 @@ export function useQueueActions(c: Conversation, contactName: string) {
         writeDraft(c.id, { mode: "message", body: now.body || body, files: now.files.length ? now.files : files })
       }
       queue.leave(c.id)
-      queue.advance(c.id)
+      advance(c.id)
       writeDraft(c.id, { body: "", mode: "message", files: [] })
       hold(key, () => {
         const deliver = async () => {
