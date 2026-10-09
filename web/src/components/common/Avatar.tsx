@@ -1,15 +1,15 @@
-import { useState } from "react"
-
 import { initials } from "@/components/common/text"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 
-const avatarClass = "inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-muted text-[11px] font-medium text-muted-foreground"
+const rootClass = "size-7 items-center justify-center bg-muted text-[11px] font-medium text-muted-foreground after:hidden"
+const fallbackClass = "bg-transparent text-[length:inherit] font-[inherit] tracking-[inherit] text-inherit"
 
 export function PersonAvatar({ name, className }: { name: string; className?: string }) {
   return (
-    <span aria-hidden className={cn(avatarClass, className)}>
-      {initials(name)}
-    </span>
+    <Avatar aria-hidden className={cn(rootClass, className)}>
+      <AvatarFallback className={fallbackClass}>{initials(name)}</AvatarFallback>
+    </Avatar>
   )
 }
 
@@ -23,29 +23,22 @@ export function colorFor(id: string) {
 
 export function ContactAvatar({ id, name, className }: { id: string; name: string; className?: string }) {
   return (
-    <span
+    <Avatar
       aria-hidden
-      className={cn("inline-flex size-7 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold tracking-tight text-white", className)}
+      className={cn(rootClass, "font-semibold tracking-tight text-white", className)}
       style={{ backgroundColor: colorFor(id) }}
     >
-      {initials(name)}
-    </span>
+      <AvatarFallback className={fallbackClass}>{initials(name)}</AvatarFallback>
+    </Avatar>
   )
 }
 
 export function BotAvatar({ name, url, className }: { name: string; url?: string; className?: string }) {
-  const [failed, setFailed] = useState<string | null>(null)
-  if (!url || failed === url) return <PersonAvatar name={name} className={className} />
   return (
-    <img
-      src={url}
-      alt=""
-      aria-hidden
-      referrerPolicy="no-referrer"
-      loading="lazy"
-      onError={() => setFailed(url)}
-      className={cn(avatarClass, "object-cover", className)}
-    />
+    <Avatar aria-hidden className={cn(rootClass, className)}>
+      {url && <AvatarImage src={url} alt="" referrerPolicy="no-referrer" loading="lazy" />}
+      <AvatarFallback className={fallbackClass}>{initials(name)}</AvatarFallback>
+    </Avatar>
   )
 }
 
@@ -65,18 +58,11 @@ export function MemberAvatar({
   const here = online && !away
   return (
     <span className="relative inline-flex shrink-0">
-      <span
-        aria-hidden
-        className={cn(
-          "inline-flex size-[26px] items-center justify-center rounded-full bg-mate text-[10px] font-semibold text-white",
-          !here && "opacity-55",
-          className,
-        )}
-      >
-        {initials(name)}
-      </span>
+      <Avatar aria-hidden className={cn(rootClass, "size-[26px] bg-mate text-[10px] font-semibold text-white", !here && online !== undefined && "opacity-55", className)}>
+        <AvatarFallback className={fallbackClass}>{initials(name)}</AvatarFallback>
+      </Avatar>
       {online !== undefined && (
-        <span className={cn("absolute -end-px -bottom-px size-2 rounded-full ring-2", ring, here ? "bg-green-600" : "bg-zinc-400")} />
+        <span className={cn("absolute -end-px -bottom-px size-2 rounded-full ring-2", ring, here ? "bg-success" : "bg-faint")} />
       )}
     </span>
   )

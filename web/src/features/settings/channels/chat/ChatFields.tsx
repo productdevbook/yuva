@@ -7,6 +7,7 @@ import { POSITIONS, type ChatField, type ChatForm, type ChatInputResult } from "
 import { FieldError, FormBlock } from "@/features/settings/channels/parts"
 import { Field, ToggleRow } from "@/features/settings/ui"
 import type { ChatLauncherPosition } from "@/lib/api"
+import { Input } from "@/components/ui/input"
 
 export function ChatFields({
   f,
@@ -92,12 +93,12 @@ export function ChatFields({
             <Switch checked={f.customColor} onCheckedChange={(customColor) => set({ customColor })} aria-label={t`Use a custom launcher color`} />
             {f.customColor ? (
               <>
-                <input
+                <Input
                   id="chat-color"
                   type="color"
                   value={f.color}
                   onChange={(e) => set({ color: e.target.value })}
-                  className="h-8 w-10 cursor-pointer rounded-lg border bg-background p-0.5"
+                  className="h-8 w-10 cursor-pointer rounded-lg p-0.5"
                   aria-label={t`Launcher color`}
                 />
                 <code className="font-mono text-xs text-muted-foreground">{f.color}</code>

@@ -13,6 +13,8 @@ import { api, ApiError, unwrap, type ApiKeyScope, type OAuthRequest } from "@/li
 import { signInPath } from "@/lib/next"
 import { useMe, useSignOut } from "@/lib/session"
 import { cn } from "@/lib/utils"
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 const heading = "text-[1.75rem] leading-tight font-semibold tracking-[-0.03em] sm:text-[2rem]"
 const pill = "h-11 text-[0.95rem]"
@@ -140,27 +142,25 @@ function Consent({ req, email }: { req: OAuthRequest; email: string }) {
             <span id="consent-workspace" className="text-sm font-medium">
               <Trans>Workspace</Trans>
             </span>
-            <ul className="divide-y rounded-xl border">
+            <RadioGroup
+              aria-labelledby="consent-workspace"
+              value={workspaceId}
+              onValueChange={(v) => {
+                const w = req.workspaces.find((x) => x.workspace_id === v)
+                if (!w) return
+                setWorkspaceId(w.workspace_id)
+                setScopes(defaultScopes(req, API_KEY_SCOPES.filter((s) => w.scopes.includes(s))))
+              }}
+              className="gap-0 divide-y rounded-xl border"
+            >
               {req.workspaces.map((w) => (
-                <li key={w.workspace_id}>
-                  <label className="flex items-center gap-3 px-3.5 py-2.5" data-testid="consent-workspace">
-                    <input
-                      type="radio"
-                      name="workspace"
-                      value={w.workspace_id}
-                      checked={w.workspace_id === workspaceId}
-                      onChange={() => {
-                        setWorkspaceId(w.workspace_id)
-                        setScopes(defaultScopes(req, API_KEY_SCOPES.filter((s) => w.scopes.includes(s))))
-                      }}
-                      className="size-4 accent-[var(--brand)]"
-                    />
-                    <span className="min-w-0 flex-1 truncate text-sm">{w.name}</span>
-                    <span className="shrink-0 text-xs text-faint">{text.role[w.role]}</span>
-                  </label>
-                </li>
+                <Label key={w.workspace_id} className="gap-3 px-3.5 py-2.5 font-normal leading-normal" data-testid="consent-workspace">
+                  <RadioGroupItem value={w.workspace_id} />
+                  <span className="min-w-0 flex-1 truncate text-sm">{w.name}</span>
+                  <span className="shrink-0 text-xs text-faint">{text.role[w.role]}</span>
+                </Label>
               ))}
-            </ul>
+            </RadioGroup>
           </div>
 
           {offered.length === 0 ? (
@@ -231,13 +231,9 @@ function Consent({ req, email }: { req: OAuthRequest; email: string }) {
       )}
       <p className="mt-6 text-xs leading-relaxed text-faint">
         <Trans>You can disconnect it at any time in Settings, under Connected apps.</Trans>{" "}
-        <button
-          type="button"
-          className="text-muted-foreground underline underline-offset-4 hover:text-foreground"
-          onClick={() => void signOut()}
-        >
+        <Button variant="link" className="text-xs font-normal text-muted-foreground underline hover:text-foreground" onClick={() => void signOut()}>
           <Trans>Use another account</Trans>
-        </button>
+        </Button>
       </p>
     </AuthLayout>
   )

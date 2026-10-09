@@ -2,6 +2,8 @@ import { useLingui } from "@lingui/react/macro"
 import { SearchIcon, XIcon } from "lucide-react"
 import { useEffect, useRef } from "react"
 
+import { Kbd } from "@/components/common"
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
 import { setListQuery, useListSearch } from "@/features/inbox/listSearch"
 
 export function ListSearchBox() {
@@ -12,9 +14,11 @@ export function ListSearchBox() {
     if (focus) input.current?.focus()
   }, [focus])
   return (
-    <label className="flex w-[min(420px,100%)] min-w-0 items-center gap-2 justify-self-center rounded-[10px] border bg-card px-3 py-2 text-faint focus-within:border-input">
-      <SearchIcon className="size-[15px] shrink-0" />
-      <input
+    <InputGroup className="h-10 w-[min(420px,100%)] justify-self-center rounded-[10px] border-border bg-card shadow-none dark:bg-card">
+      <InputGroupAddon>
+        <SearchIcon className="size-[15px] text-faint" />
+      </InputGroupAddon>
+      <InputGroupInput
         ref={input}
         value={query}
         onChange={(e) => setListQuery(e.target.value)}
@@ -26,16 +30,17 @@ export function ListSearchBox() {
         }}
         placeholder={t`Search people or messages`}
         aria-label={t`Search conversations`}
-        className="min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-faint md:text-sm"
         data-testid="list-search"
       />
-      {query ? (
-        <button type="button" onClick={() => setListQuery("")} aria-label={t`Clear the search`} className="text-faint hover:text-foreground">
-          <XIcon className="size-3.5" />
-        </button>
-      ) : (
-        <kbd className="rounded-[5px] border px-1 font-mono text-[10px] text-faint phone:hidden">/</kbd>
-      )}
-    </label>
+      <InputGroupAddon align="inline-end">
+        {query ? (
+          <InputGroupButton size="icon-xs" onClick={() => setListQuery("")} aria-label={t`Clear the search`}>
+            <XIcon />
+          </InputGroupButton>
+        ) : (
+          <Kbd className="phone:hidden">/</Kbd>
+        )}
+      </InputGroupAddon>
+    </InputGroup>
   )
 }

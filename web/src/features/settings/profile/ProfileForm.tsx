@@ -5,11 +5,11 @@ import { useState } from "react"
 import { toast } from "@/components/common"
 import { useErrorText } from "@/components/common/text"
 import { Input } from "@/components/ui/input"
-import { selectClass } from "@/features/settings/inboxes/InboxPage"
-import { Card, Rows, Section, SettingRow } from "@/features/settings/ui"
+import { Card, ChoiceSelect, Rows, Section, SettingRow } from "@/features/settings/ui"
 import { activate, locales } from "@/i18n"
 import { api, unwrap, type Locale } from "@/lib/api"
 import { meKey, useSession } from "@/lib/session"
+import { setTheme, useTheme, type Theme } from "@/lib/theme"
 
 export function ProfileForm() {
   const { t } = useLingui()
@@ -17,6 +17,7 @@ export function ProfileForm() {
   const errorText = useErrorText()
   const { me } = useSession()
   const [name, setName] = useState(me.person.name)
+  const theme = useTheme()
   const save = useMutation({
     mutationFn: (body: { name?: string; locale?: Locale }) => unwrap(api.PATCH("/v1/me", { body })),
     onSuccess: (data) => {
@@ -44,13 +45,26 @@ export function ProfileForm() {
             <span className="truncate text-sm text-faint">{me.person.email}</span>
           </SettingRow>
           <SettingRow title={<Trans>Panel language</Trans>} hint={<Trans>Also for sign-in and notification e-mails</Trans>} htmlFor="locale">
-            <select id="locale" className={selectClass} value={me.person.locale} onChange={(e) => save.mutate({ locale: e.target.value as Locale })}>
-              {Object.entries(locales).map(([k, v]) => (
-                <option key={k} value={k}>
-                  {v}
-                </option>
-              ))}
-            </select>
+            <ChoiceSelect<Locale>
+              id="locale"
+              label={t`Panel language`}
+              value={me.person.locale}
+              onChange={(v) => save.mutate({ locale: v })}
+              options={Object.entries(locales) as [Locale, string][]}
+            />
+          </SettingRow>
+          <SettingRow title={<Trans>Appearance</Trans>} hint={<Trans>System follows your device</Trans>} htmlFor="theme">
+            <ChoiceSelect<Theme>
+              id="theme"
+              label={t`Appearance`}
+              value={theme}
+              onChange={setTheme}
+              options={[
+                ["system", t`System`],
+                ["light", t`Light`],
+                ["dark", t`Dark`],
+              ]}
+            />
           </SettingRow>
         </Rows>
       </Card>

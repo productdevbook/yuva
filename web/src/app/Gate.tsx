@@ -58,14 +58,15 @@ function WorkspacePicker({ me, onChoose }: { me: Me; onChoose: (id: string) => v
       <ul className="flex flex-col gap-2">
         {me.memberships.map((m) => (
           <li key={m.workspace.id}>
-            <button
-              type="button"
+            <Button
+              variant="plain"
+              size="auto"
               onClick={() => onChoose(m.workspace.id)}
-              className="flex w-full items-center gap-3 rounded-2xl border px-4 py-3.5 text-start transition-colors hover:border-input hover:bg-surface"
+              className="flex w-full gap-3 rounded-2xl border-border px-4 py-3.5 text-base hover:border-input hover:bg-surface"
             >
               <span className="flex-1 truncate font-medium">{m.workspace.name}</span>
               <ChevronRightIcon className="size-4 text-faint" />
-            </button>
+            </Button>
           </li>
         ))}
       </ul>

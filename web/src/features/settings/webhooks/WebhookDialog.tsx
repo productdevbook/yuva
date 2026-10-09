@@ -16,6 +16,7 @@ import { api, ApiError, unwrap, type WebhookEndpoint, type WebhookEventType } fr
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { useInboxes } from "@/lib/workspace"
+import { Label } from "@/components/ui/label"
 
 function urlProblem(err: unknown): "private" | "invalid" | null {
   if (!(err instanceof ApiError) || err.status !== 400 || !err.detail) return null
@@ -141,13 +142,13 @@ export function WebhookDialog({
               <ul className="divide-y rounded-xl border">
                 {WEBHOOK_EVENTS.map((ev) => (
                   <li key={ev}>
-                    <label className="flex items-center gap-3 px-3.5 py-2.5">
+                    <Label className="gap-3 px-3.5 py-2.5 leading-normal font-normal">
                       <Checkbox checked={events.has(ev)} onCheckedChange={(on) => toggle(ev, on)} aria-label={ev} />
                       <span className="flex min-w-0 flex-1 flex-col">
                         <span className="text-sm">{text.event[ev]}</span>
                         <code className="font-mono text-xs text-faint">{ev}</code>
                       </span>
-                    </label>
+                    </Label>
                   </li>
                 ))}
               </ul>

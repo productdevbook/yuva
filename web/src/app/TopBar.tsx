@@ -1,13 +1,14 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { SettingsIcon } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
-import { Link, NavLink, useLocation } from "react-router"
+import { Link, useLocation } from "react-router"
 
 import { useShell } from "@/app/shell"
 import { TeamMenu } from "@/app/TeamMenu"
 import { UserMenu } from "@/app/UserMenu"
 import { ViewToggle } from "@/app/ViewToggle"
 import { YuvaMark } from "@/components/common"
+import { Button } from "@/components/ui/button"
 import { InboxPicker } from "@/features/inbox/InboxPicker"
 import { ListSearchBox } from "@/features/inbox/ListSearchBox"
 import { useCounts } from "@/features/inbox/queries"
@@ -15,9 +16,6 @@ import { useQueue } from "@/features/inbox/queue"
 import { WaitingPill } from "@/features/inbox/WaitingPill"
 import { cn } from "@/lib/utils"
 import { useView } from "@/lib/view"
-
-export const navLinkClass =
-  "inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
 
 export function TopBar() {
   const { t, i18n } = useLingui()
@@ -68,22 +66,24 @@ export function TopBar() {
       <div className="flex items-center justify-end gap-1">
         <TeamMenu />
         {!listing && (
-          <button type="button" className={navLinkClass} onClick={() => openDrawer()} data-testid="open-all">
+          <Button variant="ghost" size="sm" className="rounded-lg px-2.5 font-normal" onClick={() => openDrawer()} data-testid="open-all">
             <span className="phone:hidden">
               <Trans>All</Trans>
             </span>
             <span className="text-xs text-faint tabular-nums">{new Intl.NumberFormat(i18n.locale, { notation: "compact" }).format(all)}</span>
-          </button>
+          </Button>
         )}
-        <NavLink
-          to="/settings"
-          className={({ isActive }) => cn(navLinkClass, "w-8 justify-center px-0", isActive && "bg-muted text-foreground")}
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className={cn("rounded-lg", pathname.startsWith("/settings") && "bg-muted text-foreground")}
+          render={<Link to="/settings" />}
           aria-label={t`Settings`}
           title={t`Settings`}
           data-testid="open-settings"
         >
           <SettingsIcon className="size-[17px]" />
-        </NavLink>
+        </Button>
         <UserMenu />
       </div>
     </nav>

@@ -8,6 +8,8 @@ import { useIsPhone } from "@/hooks/use-media-query"
 import { cn } from "@/lib/utils"
 import { useAllViewers } from "@/lib/presence"
 import { useInboxes, useMemberMap } from "@/lib/workspace"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 
 export function useShownId() {
   const { waiting, currentId } = useQueue()
@@ -46,14 +48,15 @@ export function WaitingPill() {
           const name = c.contact.name || c.contact.email || t`Unnamed contact`
           const inbox = inboxes.find((i) => i.id === c.inbox_id)?.name
           return (
-            <button
+            <Button
               key={c.id}
-              type="button"
+              variant="plain"
+              size="auto"
               onClick={() => show(c.id)}
               title={inbox ? `${name} · ${inbox}` : name}
               aria-label={t`Open ${name}`}
               className={cn(
-                "relative -ms-[3px] rounded-full ring-2 ring-card transition-transform first:ms-0 hover:z-10 hover:-translate-y-px",
+                "relative -ms-[3px] overflow-visible rounded-full ring-2 ring-card transition-transform first:ms-0 hover:z-10 hover:-translate-y-px",
                 c.id === shown && "z-[1] ring-brand",
               )}
             >
@@ -61,17 +64,17 @@ export function WaitingPill() {
               {viewers.get(c.id)?.slice(0, 1).map((id) => {
                 const m = members.get(id)
                 return (
-                  <i
+                  <Badge
                     key={id}
-                    className="absolute -end-1 -top-1 grid size-3.5 place-items-center rounded-full border-2 border-card bg-mate text-[7px] font-semibold text-white not-italic"
+                    className="absolute -end-1 -top-1 size-3.5 rounded-full border-2 border-card bg-mate p-0 text-[7px] font-semibold text-white"
                     title={m ? m.name || m.email : undefined}
                     data-testid="pill-viewer"
                   >
                     {initials(m ? m.name || m.email : "?").charAt(0)}
-                  </i>
+                  </Badge>
                 )
               })}
-            </button>
+            </Button>
           )
         })}
         {more > 0 && (

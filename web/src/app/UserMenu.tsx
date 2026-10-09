@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { BuildingIcon, DownloadIcon, KeyboardIcon, LanguagesIcon, ListIcon, LogOutIcon, RowsIcon, UserIcon } from "lucide-react"
+import { BuildingIcon, DownloadIcon, KeyboardIcon, LanguagesIcon, ListIcon, LogOutIcon, MonitorIcon, MoonIcon, RowsIcon, SunIcon, UserIcon } from "lucide-react"
 import { useNavigate } from "react-router"
 
 import { useShell } from "@/app/shell"
@@ -27,10 +27,11 @@ import { useRealtimeStatus } from "@/lib/realtime"
 import { useSession, useSignOut } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useView } from "@/lib/view"
+import { setTheme, useTheme, type Theme } from "@/lib/theme"
 
 function statusClass(a: Availability, live: boolean) {
-  if (a === "away") return "bg-zinc-400"
-  return live ? "bg-green-600" : "bg-zinc-400"
+  if (a === "away") return "bg-faint"
+  return live ? "bg-success" : "bg-faint"
 }
 
 export function UserMenu() {
@@ -38,6 +39,7 @@ export function UserMenu() {
   const { me, membership, switchWorkspace } = useSession()
   const { openShortcuts } = useShell()
   const [view, setView] = useView()
+  const theme = useTheme()
   const navigate = useNavigate()
   const signOut = useSignOut()
   const install = useInstallPrompt()
@@ -57,7 +59,7 @@ export function UserMenu() {
         title={statusText}
         data-testid="user-menu"
       >
-        <PersonAvatar name={name} className="size-[30px] bg-zinc-600 text-[11px] font-semibold text-white" />
+        <PersonAvatar name={name} className="size-[30px] bg-muted-foreground text-[11px] font-semibold text-background" />
         <span
           className={cn("absolute end-px bottom-px size-[9px] rounded-full ring-2 ring-background", statusClass(availability, live))}
           data-testid="availability-dot"
@@ -136,6 +138,25 @@ export function UserMenu() {
             </DropdownMenuSubContent>
           </DropdownMenuSub>
         )}
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            {theme === "dark" ? <MoonIcon /> : theme === "light" ? <SunIcon /> : <MonitorIcon />}
+            <Trans>Appearance</Trans>
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent className="min-w-36">
+            <DropdownMenuRadioGroup value={theme} onValueChange={(v) => setTheme(v as Theme)}>
+              <DropdownMenuRadioItem value="system" data-testid="theme-system">
+                <Trans>System</Trans>
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="light" data-testid="theme-light">
+                <Trans>Light</Trans>
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="dark" data-testid="theme-dark">
+                <Trans>Dark</Trans>
+              </DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
         <DropdownMenuItem
           onClick={() => {
             setView(view === "list" ? "queue" : "list")

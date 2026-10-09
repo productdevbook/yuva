@@ -10,6 +10,7 @@ import { Field } from "@/features/settings/ui"
 import { api, unwrap, type Label } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 const PALETTE = ["#71717a", "#ef4444", "#f97316", "#eab308", "#22c55e", "#14b8a6", "#3b82f6", "#8b5cf6", "#ec4899"]
 
@@ -47,23 +48,23 @@ export function LabelDialog({ label, onClose }: { label: Label | null; onClose: 
           </Field>
           <Field label={<Trans>Color</Trans>}>
             <div className="flex flex-wrap items-center gap-2">
-              {PALETTE.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  aria-label={c}
-                  aria-pressed={c === color}
-                  onClick={() => setColor(c)}
-                  className="size-6 rounded-full ring-offset-2 ring-offset-card aria-pressed:ring-2 aria-pressed:ring-foreground"
-                  style={{ backgroundColor: c }}
-                />
-              ))}
-              <input
+              <ToggleGroup value={[color]} onValueChange={(v) => v[0] && setColor(String(v[0]))} aria-label={t`Color`} className="flex-wrap gap-2">
+                {PALETTE.map((c) => (
+                  <ToggleGroupItem
+                    key={c}
+                    value={c}
+                    aria-label={c}
+                    className="size-6 min-w-6 rounded-full p-0 ring-offset-2 ring-offset-card hover:bg-transparent aria-pressed:bg-transparent aria-pressed:ring-2 aria-pressed:ring-foreground"
+                    style={{ backgroundColor: c }}
+                  />
+                ))}
+              </ToggleGroup>
+              <Input
                 type="color"
                 value={color}
                 onChange={(e) => setColor(e.target.value)}
                 aria-label={t`Pick a color`}
-                className="h-7 w-10 cursor-pointer rounded-lg border bg-transparent p-0.5"
+                className="h-7 w-10 cursor-pointer rounded-lg bg-transparent p-0.5"
               />
             </div>
           </Field>

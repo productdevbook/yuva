@@ -1,4 +1,5 @@
 import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
 
 export function CheckList({ labelId, label, hint, children }: { labelId: string; label: React.ReactNode; hint?: React.ReactNode; children: React.ReactNode }) {
   return (
@@ -27,10 +28,10 @@ export function CheckItem({
 }) {
   return (
     <li>
-      <label className="flex items-center gap-3 px-3.5 py-2.5 has-disabled:opacity-50" data-testid={testId}>
+      <Label className="gap-3 px-3.5 py-2.5 leading-normal font-normal has-disabled:opacity-50" data-testid={testId}>
         <Checkbox checked={checked} disabled={disabled} onCheckedChange={onChange} />
         <span className="flex min-w-0 flex-1 flex-col">{children}</span>
-      </label>
+      </Label>
     </li>
   )
 }

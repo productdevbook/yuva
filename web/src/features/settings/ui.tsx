@@ -5,6 +5,7 @@ import { Link } from "react-router"
 import { ErrorLine } from "@/components/common"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 
 export function PageHeader({
@@ -181,13 +182,13 @@ export function ToggleRow({
   children: React.ReactNode
 }) {
   return (
-    <label className="flex items-start justify-between gap-4 text-sm">
+    <Label className="items-start justify-between gap-4 leading-normal font-normal">
       <span className="flex flex-col gap-0.5">
         <span className="font-medium">{title}</span>
         {hint && <span className="text-xs leading-relaxed text-muted-foreground">{hint}</span>}
       </span>
       {children}
-    </label>
+    </Label>
   )
 }
 
@@ -259,11 +260,45 @@ export function RowIcon({ children }: { children: React.ReactNode }) {
 export function SettingRow({ title, hint, children, htmlFor }: { title: React.ReactNode; hint?: React.ReactNode; children?: React.ReactNode; htmlFor?: string }) {
   return (
     <li className="flex min-h-[52px] items-center gap-3 px-4 py-3 phone:flex-wrap">
-      <label htmlFor={htmlFor} className="min-w-0 flex-1 text-sm phone:min-w-[55%]">
+      <Label htmlFor={htmlFor} className="block min-w-0 flex-1 leading-normal font-normal phone:min-w-[55%]">
         {title}
         {hint && <small className="mt-px block text-[13px] text-faint">{hint}</small>}
-      </label>
+      </Label>
       {children}
     </li>
+  )
+}
+
+export function ChoiceSelect<T extends string>({
+  id,
+  value,
+  onChange,
+  options,
+  label,
+  disabled,
+  className,
+}: {
+  id?: string
+  value: T
+  onChange: (value: T) => void
+  options: readonly (readonly [T, string])[]
+  label?: string
+  disabled?: boolean
+  className?: string
+}) {
+  const items = Object.fromEntries(options) as Record<T, string>
+  return (
+    <Select value={value} items={items} onValueChange={(v) => v !== null && onChange(v as T)} disabled={disabled}>
+      <SelectTrigger id={id} aria-label={label} className={cn("max-w-full min-w-0 rounded-[10px] bg-background", className)}>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent className="min-w-48">
+        {options.map(([v, l]) => (
+          <SelectItem key={v} value={v}>
+            {l}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   )
 }

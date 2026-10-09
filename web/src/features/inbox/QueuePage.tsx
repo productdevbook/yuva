@@ -13,24 +13,26 @@ import { useQueue } from "@/features/inbox/queue"
 import { useSetAvailability } from "@/lib/availability"
 import { useViewing } from "@/lib/realtime"
 import { useSession } from "@/lib/session"
+import { Button } from "@/components/ui/button"
+import { Alert } from "@/components/ui/alert"
 
 const banner = "mb-4.5 flex items-center gap-3 rounded-[14px] py-2.5 ps-3.5 pe-2.5 text-sm"
-const bannerButton = "h-8 shrink-0 rounded-full border bg-card px-3 text-[13px] hover:border-faint disabled:opacity-50"
+const bannerButton = "shrink-0 border-border bg-card text-[13px] font-normal hover:border-faint"
 
 function AwayBanner() {
   const { me } = useSession()
   const set = useSetAvailability()
   if (me.person.availability !== "away") return null
   return (
-    <div className={`${banner} border bg-card text-muted-foreground`} data-testid="away-banner">
+    <Alert role="status" className={`${banner} border-border bg-card text-muted-foreground`} data-testid="away-banner">
       <span className="inline-flex min-w-0 items-center gap-2">
         <ClockIcon className="size-[13px] shrink-0" />
         <Trans>You are away. Live chat shows nobody available and notifications pause.</Trans>
       </span>
-      <button type="button" className={`${bannerButton} ms-auto`} onClick={() => set.mutate("auto")} disabled={set.isPending}>
+      <Button variant="outline" size="sm" className={`${bannerButton} ms-auto`} onClick={() => set.mutate("auto")} disabled={set.isPending}>
         <Trans>I'm back</Trans>
-      </button>
-    </div>
+      </Button>
+    </Alert>
   )
 }
 
@@ -59,7 +61,7 @@ function CleanupBanner() {
       },
     )
   return (
-    <div className={`${banner} border border-dashed bg-card phone:flex-wrap`} data-testid="cleanup-banner">
+    <Alert role="status" className={`${banner} border-dashed border-border bg-card phone:flex-wrap`} data-testid="cleanup-banner">
       <span className="flex shrink-0">
         {items.slice(0, 4).map((c) => (
           <ContactAvatar
@@ -78,13 +80,13 @@ function CleanupBanner() {
           <Trans>{items.length} marked as spam · no reply needed</Trans>
         </small>
       </span>
-      <button type="button" className={`${bannerButton} ms-auto`} onClick={() => navigate(`/conversations/${items[0].id}`)}>
+      <Button variant="outline" size="sm" className={`${bannerButton} ms-auto`} onClick={() => navigate(`/conversations/${items[0].id}`)}>
         <Trans>Review</Trans>
-      </button>
-      <button type="button" className={bannerButton} onClick={closeAll} disabled={bulk.isPending} data-testid="cleanup-close-all">
+      </Button>
+      <Button variant="outline" size="sm" className={bannerButton} onClick={closeAll} disabled={bulk.isPending} data-testid="cleanup-close-all">
         <Trans>Close all</Trans>
-      </button>
-    </div>
+      </Button>
+    </Alert>
   )
 }
 
@@ -140,9 +142,9 @@ function EmptyQueue() {
         <Trans>When a new message arrives, it will be here.</Trans>
       </p>
       <DayStats />
-      <button type="button" onClick={() => openDrawer()} className="mt-6 h-9 rounded-full border bg-card px-3.5 text-sm hover:border-faint">
+      <Button variant="outline" onClick={() => openDrawer()} className="mt-6 border-border bg-card px-3.5 font-normal hover:border-faint">
         <Trans>All conversations</Trans>
-      </button>
+      </Button>
     </div>
   )
 }

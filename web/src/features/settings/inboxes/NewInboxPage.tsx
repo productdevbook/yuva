@@ -14,6 +14,7 @@ import { PageHeader, RowIcon, Section } from "@/features/settings/ui"
 import { api, ApiError, unwrap, type ChannelKind } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
+import { Input } from "@/components/ui/input"
 
 type FlowState = { secret?: string }
 
@@ -51,14 +52,14 @@ function NameStep() {
       }}
     >
       <PageHeader eyebrow={<Steps n={1} />} title={<Trans>What is the product called?</Trans>} description={<Trans>Your customers will see this name.</Trans>} />
-      <input
+      <Input
         autoFocus
         value={name}
         onChange={(e) => setName(e.target.value)}
         maxLength={200}
         placeholder={t`For example Fieldnote`}
         aria-label={t`Product name`}
-        className="mt-6 w-full rounded-[14px] border bg-card px-4 py-3.5 text-xl outline-none focus:border-brand"
+        className="mt-6 h-auto rounded-[14px] bg-card px-4 py-3.5 text-xl md:text-xl"
         data-testid="new-inbox-name"
       />
       <ErrorLine error={create.error} className="mt-3" />
@@ -92,11 +93,12 @@ function ChannelStep({ inboxId }: { inboxId: string }) {
       />
       <div className="grid gap-2.5">
         {picks.map(([k, title, hint]) => (
-          <button
+          <Button
             key={k}
-            type="button"
+            variant="plain"
+            size="auto"
             onClick={() => setKind(k)}
-            className="flex items-center gap-3.5 rounded-2xl border bg-card p-4 text-start transition-colors hover:border-brand"
+            className="flex gap-3.5 rounded-2xl border-border bg-card p-4 hover:border-brand"
             data-testid={`pick-${k}`}
           >
             <RowIcon>
@@ -106,7 +108,7 @@ function ChannelStep({ inboxId }: { inboxId: string }) {
               <b className="block font-medium">{title}</b>
               <small className="text-[13px] text-faint">{hint}</small>
             </span>
-          </button>
+          </Button>
         ))}
       </div>
       <p className="text-center text-sm">

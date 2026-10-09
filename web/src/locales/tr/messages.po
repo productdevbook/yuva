@@ -507,6 +507,12 @@ msgstr "Eski anahtarlı uygulama sürümleri, yeni anahtarlı bir sürüm yayım
 msgid "Appear online only in business hours"
 msgstr "Sadece mesai saatlerinde çevrimiçi görün"
 
+#: src/app/Palette.tsx
+#: src/app/UserMenu.tsx
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "Appearance"
+msgstr "Tema"
+
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "As above ({current})"
 msgstr "Yukarıdaki gibi ({current})"
@@ -893,6 +899,15 @@ msgstr "Özel alan adı hâlâ doğrulanmamış görünüyor"
 msgid "Danger zone"
 msgstr "Tehlikeli bölge"
 
+#: src/app/UserMenu.tsx
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "Dark"
+msgstr "Koyu"
+
+#: src/app/Palette.tsx
+msgid "Dark appearance"
+msgstr "Koyu tema"
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Data retention"
 msgstr "Veri saklama"
@@ -1228,6 +1243,10 @@ msgstr "ilk yanıt {first}"
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "Adresi ya da kanalın SMTP ayarlarını düzeltin, sonra yanıtı yeniden gönderin."
 
+#: src/app/Palette.tsx
+msgid "Follow the system appearance"
+msgstr "Sistem temasını izle"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "For developers"
 msgstr "Geliştiriciler için"
@@ -1545,6 +1564,15 @@ msgstr "Bırak, {name} yanıtlasın"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Leave it to the teammate who is typing"
 msgstr "Yazan ekip arkadaşına bırak"
+
+#: src/app/UserMenu.tsx
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "Light"
+msgstr "Açık"
+
+#: src/app/Palette.tsx
+msgid "Light appearance"
+msgstr "Açık tema"
 
 #: src/app/ViewToggle.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -2548,10 +2576,9 @@ msgstr "Kişilerde ara"
 msgid "Search conversations"
 msgstr "Konuşmalarda ara"
 
-#. placeholder {0}: q.trim()
 #: src/app/Palette.tsx
-msgid "Search conversations for “{0}”"
-msgstr "Konuşmalarda “{0}” ara"
+msgid "Search conversations for “{search}”"
+msgstr "Konuşmalarda “{search}” ara"
 
 #: src/features/inbox/AllDrawer.tsx
 #: src/features/inbox/ListSearchBox.tsx
@@ -2797,6 +2824,7 @@ msgstr "Konuşmaları kendine göre ayır"
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (port 587)"
 
+#: src/features/inbox/ListPage.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Status"
 msgstr "Durum"
@@ -2851,9 +2879,15 @@ msgstr "Sıraya geç"
 msgid "Switch view (V)"
 msgstr "Görünümü değiştir (V)"
 
+#: src/app/UserMenu.tsx
 #: src/features/conversation/Feedback.tsx
+#: src/features/settings/profile/ProfileForm.tsx
 msgid "System"
 msgstr "Sistem"
+
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "System follows your device"
+msgstr "Sistem, cihazının ayarını izler"
 
 #: src/app/TeamMenu.tsx
 #: src/features/conversation/History.tsx

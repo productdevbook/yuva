@@ -1,6 +1,7 @@
 import { useLingui } from "@lingui/react/macro"
 import { useMemo } from "react"
 
+import { Command, CommandItem, CommandList } from "@/components/ui/command"
 import { popupClass } from "@/components/ui/dropdown-menu"
 import type { CannedReply } from "@/lib/api"
 import { cn } from "@/lib/utils"
@@ -24,25 +25,29 @@ export function useCannedMatches(query: string | null) {
 export function CannedMenu({ items, active, onPick }: { items: CannedReply[]; active: number; onPick: (c: CannedReply) => void }) {
   const { t } = useLingui()
   return (
-    <ul role="listbox" aria-label={t`Canned replies`} className={cn(popupClass, "absolute start-0 bottom-full z-20 mb-2 max-h-64 w-full max-w-md")}>
-      {items.map((c, i) => (
-        <li key={c.id} role="option" aria-selected={i === active}>
-          <button
-            type="button"
-            onMouseDown={(e) => {
-              e.preventDefault()
-              onPick(c)
-            }}
-            className={cn("flex w-full flex-col items-start gap-0.5 rounded-lg px-2.5 py-1.5 text-start text-sm", i === active && "bg-muted")}
+    <Command
+      value={items[active]?.id ?? ""}
+      shouldFilter={false}
+      label={t`Canned replies`}
+      className={cn(popupClass, "absolute start-0 bottom-full z-20 mb-2 h-auto max-h-64 w-full max-w-md rounded-xl! p-1.5")}
+    >
+      <CommandList className="max-h-60">
+        {items.map((c) => (
+          <CommandItem
+            key={c.id}
+            value={c.id}
+            onSelect={() => onPick(c)}
+            onMouseDown={(e) => e.preventDefault()}
+            className="flex flex-col items-start gap-0.5 rounded-lg px-2.5 py-1.5 data-selected:bg-muted"
           >
             <span className="flex w-full items-center gap-2">
               <span className="font-mono text-xs text-faint">/{c.shortcut}</span>
               <span className="truncate font-medium">{c.title}</span>
             </span>
             <span className="line-clamp-1 text-xs text-muted-foreground">{c.body}</span>
-          </button>
-        </li>
-      ))}
-    </ul>
+          </CommandItem>
+        ))}
+      </CommandList>
+    </Command>
   )
 }

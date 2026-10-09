@@ -3,7 +3,7 @@ import { CheckIcon, ClockIcon, UserRoundCheckIcon, XIcon } from "lucide-react"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 
-import { ContactAvatar, Dot, MemberAvatar, toast } from "@/components/common"
+import { ContactAvatar, Dot, MemberAvatar, Segmented, toast } from "@/components/common"
 import { SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { formatDuration, formatShort, useEnumText, useErrorText } from "@/components/common/text"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -23,6 +23,8 @@ import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useView } from "@/lib/view"
 import { useChannelMap, useInboxes, useMemberMap } from "@/lib/workspace"
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 
 type Chip = "open" | "pending" | "snoozed" | "closed"
 const CHIPS: Chip[] = ["open", "pending", "snoozed", "closed"]
@@ -88,15 +90,14 @@ function Row({
       data-conversation-id={c.id}
       aria-current={current || undefined}
     >
-      <input
-        type="checkbox"
+      <Checkbox
         checked={picked}
-        onChange={onPick}
+        onCheckedChange={onPick}
         aria-label={t`Select ${name}`}
-        className="size-[18px] shrink-0 cursor-pointer accent-primary"
+        className="size-[18px] rounded-[5px] data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground"
         data-testid="row-check"
       />
-      <button type="button" onClick={onOpen} className="flex min-w-0 flex-1 items-center gap-3 text-start">
+      <Button variant="plain" size="auto" onClick={onOpen} className="flex min-w-0 flex-1 gap-3 rounded-lg">
         <ContactAvatar id={c.contact.id} name={name} className="size-9 text-xs" />
         <span className="min-w-0 flex-1">
           <span className="flex min-w-0 items-baseline gap-2">
@@ -112,7 +113,7 @@ function Row({
           </span>
           {preview && <span className="mt-0.5 block truncate text-[13px] text-muted-foreground">{preview}</span>}
         </span>
-      </button>
+      </Button>
       {viewer && (
         <span title={t`${viewer.name || viewer.email} is looking`} data-testid="row-viewer">
           <MemberAvatar name={viewer.name || viewer.email} className="size-5 text-[8px]" />
@@ -158,19 +159,19 @@ function BulkBar({ rows, picked, onClear }: { rows: ConversationListItem[]; pick
   const morning = new Date()
   morning.setDate(morning.getDate() + 1)
   morning.setHours(9, 0, 0, 0)
-  const button = "inline-flex h-8 items-center gap-1.5 rounded-lg bg-zinc-800 px-3 text-[13px] text-white transition-colors hover:bg-zinc-700 disabled:opacity-50"
+  const button = "rounded-lg bg-background/12 px-3 text-[13px] font-normal text-background hover:bg-background/20 hover:text-background aria-expanded:bg-background/20 aria-expanded:text-background [&_svg]:size-3.5"
   return (
-    <div className="mx-3 mb-2 flex flex-wrap items-center gap-2 rounded-xl bg-zinc-950 py-2 ps-3.5 pe-2 text-[13px] text-white" role="toolbar" aria-label={t`Selected conversations`} data-testid="bulk-bar">
+    <div className="mx-3 mb-2 flex flex-wrap items-center gap-2 rounded-xl bg-foreground py-2 ps-3.5 pe-2 text-[13px] text-background" role="toolbar" aria-label={t`Selected conversations`} data-testid="bulk-bar">
       <span className="flex-1">
         <Trans>{n} selected</Trans>
       </span>
-      <button type="button" className={button} disabled={bulk.isPending} onClick={() => run({ status: "closed" }, t`${n} closed`, statusBack)} data-testid="bulk-close">
-        <CheckIcon className="size-3.5" />
+      <Button variant="ghost" size="sm" className={button} disabled={bulk.isPending} onClick={() => run({ status: "closed" }, t`${n} closed`, statusBack)} data-testid="bulk-close">
+        <CheckIcon />
         <Trans context="conversation">Close</Trans>
-      </button>
+      </Button>
       <DropdownMenu>
-        <DropdownMenuTrigger className={button} disabled={bulk.isPending} data-testid="bulk-snooze">
-          <ClockIcon className="size-3.5" />
+        <DropdownMenuTrigger render={<Button variant="ghost" size="sm" className={button} />} disabled={bulk.isPending} data-testid="bulk-snooze">
+          <ClockIcon />
           <Trans>Snooze</Trans>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -188,19 +189,20 @@ function BulkBar({ rows, picked, onClear }: { rows: ConversationListItem[]; pick
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <button
-        type="button"
+      <Button
+        variant="ghost"
+        size="sm"
         className={button}
         disabled={bulk.isPending}
         onClick={() => run({ assignee_id: membership.member_id }, t`${n} assigned to you`, (c) => ({ assignee_id: c.assignee_id ?? null }))}
         data-testid="bulk-assign"
       >
-        <UserRoundCheckIcon className="size-3.5" />
+        <UserRoundCheckIcon />
         <Trans>Assign to me</Trans>
-      </button>
-      <button type="button" onClick={onClear} aria-label={t`Clear the selection`} className="grid size-8 place-items-center rounded-lg text-white hover:bg-zinc-800">
-        <XIcon className="size-4" />
-      </button>
+      </Button>
+      <Button variant="ghost" size="icon-sm" onClick={onClear} aria-label={t`Clear the selection`} className="rounded-lg text-background hover:bg-background/20 hover:text-background">
+        <XIcon />
+      </Button>
     </div>
   )
 }
@@ -303,30 +305,27 @@ export function ListPage() {
         className="flex min-w-0 flex-[1_1_420px] flex-col border-e phone:border-e-0"
       >
         <div className="flex flex-wrap items-center gap-1.5 px-4 py-3">
-          {CHIPS.map((k) => {
-            const l = lists[k]
-            return (
-              <button
-                key={k}
-                type="button"
-                aria-pressed={chip === k}
-                onClick={() => setChip(k)}
-                className={cn(
-                  "rounded-full border px-3 py-1.5 text-[13px] transition-colors",
-                  chip === k ? "border-foreground bg-foreground text-background" : "bg-card text-muted-foreground hover:text-foreground",
-                )}
-                data-testid={`chip-${k}`}
-              >
-                {labels[k]}{" "}
-                {!l.pending && (
-                  <span className="opacity-70 tabular-nums">
-                    {fmt.format(l.items.length)}
-                    {l.more && "+"}
-                  </span>
-                )}
-              </button>
-            )
-          })}
+          <Segmented<Chip>
+            look="chip"
+            label={t`Status`}
+            value={chip}
+            onChange={setChip}
+            items={CHIPS.map((k) => ({
+              value: k,
+              testId: `chip-${k}`,
+              label: (
+                <>
+                  {labels[k]}
+                  {!lists[k].pending && (
+                    <span className="opacity-70 tabular-nums">
+                      {fmt.format(lists[k].items.length)}
+                      {lists[k].more && "+"}
+                    </span>
+                  )}
+                </>
+              ),
+            }))}
+          />
           <span className="flex-1" />
           <span className="text-xs text-faint">{chip === "open" ? <Trans>Oldest first</Trans> : <Trans>Newest first</Trans>}</span>
         </div>

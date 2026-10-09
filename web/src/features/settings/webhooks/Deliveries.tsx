@@ -57,10 +57,11 @@ export function Deliveries({ endpoint }: { endpoint: WebhookEndpoint }) {
           <Rows>
             {items.map((d) => (
               <li key={d.id}>
-                <button
-                  type="button"
+                <Button
+                  variant="plain"
+                  size="auto"
                   onClick={() => setOpen(d.id)}
-                  className="flex w-full items-center gap-3 px-5 py-3 text-start transition-colors hover:bg-surface"
+                  className="flex w-full gap-3 rounded-none px-5 py-3 hover:bg-surface"
                   data-testid="delivery-row"
                 >
                   <div className="flex min-w-0 flex-1 flex-col gap-1">
@@ -81,7 +82,7 @@ export function Deliveries({ endpoint }: { endpoint: WebhookEndpoint }) {
                     </span>
                   )}
                   <ChevronRightIcon className="size-4 shrink-0 text-faint rtl:rotate-180" />
-                </button>
+                </Button>
               </li>
             ))}
           </Rows>

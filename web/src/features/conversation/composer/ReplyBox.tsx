@@ -16,6 +16,11 @@ import { useSession } from "@/lib/session"
 import { useTypingSender } from "@/lib/typing"
 import { cn } from "@/lib/utils"
 import { useAssignableMembers, useCannedReplies } from "@/lib/workspace"
+import { Button } from "@/components/ui/button"
+import { Command, CommandEmpty, CommandItem, CommandList } from "@/components/ui/command"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Textarea } from "@/components/ui/textarea"
 
 export type ReplyHandle = {
   focus: (mode?: "message" | "note") => void
@@ -25,7 +30,7 @@ export type ReplyHandle = {
 
 const MAX_FILES = 10
 
-export const pillButton = "inline-flex h-9 items-center gap-1.5 rounded-full border px-3.5 text-sm transition-colors disabled:opacity-50"
+const pill = "px-3.5 font-normal phone:px-3"
 
 function Suggestion({ m, ctx, onUse, onDiscard }: { m: Message; ctx: ThreadContext; onUse: () => void; onDiscard: () => void }) {
   const { t } = useLingui()
@@ -35,7 +40,7 @@ function Suggestion({ m, ctx, onUse, onDiscard }: { m: Message; ctx: ThreadConte
       className="mx-2.5 mb-2 flex items-start gap-2.5 rounded-xl border border-dashed border-brand/35 bg-brand-wash/60 py-2.5 ps-3 pe-1.5 text-[13px] leading-normal text-muted-foreground transition-colors hover:border-solid hover:text-foreground"
       data-testid="suggestion"
     >
-      <button type="button" onClick={onUse} className="flex min-w-0 flex-1 items-start gap-2.5 text-start" title={t`Use this reply`}>
+      <Button variant="plain" size="auto" onClick={onUse} className="flex min-w-0 flex-1 items-start gap-2.5 rounded-md text-[13px] leading-normal text-inherit" title={t`Use this reply`}>
         {m.author.type === "bot" ? (
           <BotAvatar name={author} url={m.author.avatar_url} className="mt-px size-4 text-[8px]" />
         ) : (
@@ -48,16 +53,17 @@ function Suggestion({ m, ctx, onUse, onDiscard }: { m: Message; ctx: ThreadConte
           <span className="line-clamp-2">{m.body}</span>
         </span>
         <Kbd className="mt-0.5 bg-card">Tab</Kbd>
-      </button>
-      <button
-        type="button"
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon-xs"
         onClick={onDiscard}
-        className="grid size-6 shrink-0 place-items-center rounded-md text-faint transition-colors hover:bg-card hover:text-foreground"
+        className="rounded-md text-faint hover:bg-card"
         aria-label={t`Discard the suggested reply`}
         title={t`Discard the suggested reply`}
       >
-        <XIcon className="size-3.5" />
-      </button>
+        <XIcon />
+      </Button>
     </div>
   )
 }
@@ -260,22 +266,23 @@ export const ReplyBox = forwardRef<
       }}
       data-testid="reply-box"
     >
-      <div className="flex items-center gap-0.5 px-2 pt-2" role="tablist" aria-label={t`Message type`}>
-        {(["message", "note"] as const).map((m) => (
-          <button
-            key={m}
-            type="button"
-            role="tab"
-            aria-selected={mode === m}
-            onClick={() => focus(m)}
-            className={cn(
-              "rounded-lg px-2.5 py-[5px] text-[13px] text-faint transition-colors",
-              mode === m && (note ? "bg-card font-medium text-note-ink" : "bg-background font-medium text-foreground"),
-            )}
-          >
-            {m === "message" ? <Trans>Reply</Trans> : <Trans>Team note</Trans>}
-          </button>
-        ))}
+      <div className="flex items-center gap-0.5 px-2 pt-2">
+        <Tabs value={mode} onValueChange={(v) => focus(v as "message" | "note")} className="gap-0">
+          <TabsList aria-label={t`Message type`} className="h-auto gap-0.5 bg-transparent p-0">
+            {(["message", "note"] as const).map((m) => (
+              <TabsTrigger
+                key={m}
+                value={m}
+                className={cn(
+                  "h-auto flex-none rounded-lg px-2.5 py-[5px] text-[13px] font-normal text-faint data-active:font-medium data-active:shadow-none dark:data-active:border-transparent",
+                  note ? "data-active:bg-card data-active:text-note-ink dark:data-active:bg-card" : "data-active:bg-background data-active:text-foreground dark:data-active:bg-background",
+                )}
+              >
+                {m === "message" ? <Trans>Reply</Trans> : <Trans>Team note</Trans>}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
         <span className="ms-auto min-w-0 truncate pe-2 text-xs text-faint" data-testid={!note && emailTo ? "composer-email-to" : undefined}>
           {hint}
         </span>
@@ -287,14 +294,14 @@ export const ReplyBox = forwardRef<
       )}
       {menuOpen && <CannedMenu items={matches} active={pick} onPick={insertSlash} />}
       {mentionOpen && <MentionMenu items={mentionMatches} active={pick} onPick={insertMention} />}
-      <textarea
+      <Textarea
         ref={textarea}
         value={body}
         rows={3}
         data-testid="composer-input"
         aria-label={note ? t`Team note` : t`Reply`}
         placeholder={note ? t`A note for the team… type @ to mention a teammate` : t`Write to ${first}…`}
-        className="field-sizing-content block max-h-[50vh] min-h-[84px] w-full resize-none bg-transparent px-4 py-2.5 text-[15px] leading-[1.55] outline-none placeholder:text-faint focus-visible:outline-none"
+        className="max-h-[50vh] min-h-[84px] resize-none rounded-none border-0 bg-transparent px-4 py-2.5 text-[15px] leading-[1.55] shadow-none hover:border-0 focus-visible:ring-0 md:text-[15px] dark:bg-transparent"
         onChange={(e) => {
           setBody(e.target.value)
           setCaret(e.target.selectionStart)
@@ -315,14 +322,15 @@ export const ReplyBox = forwardRef<
               <PaperclipIcon className="size-3 shrink-0 text-faint" />
               <span className="max-w-48 truncate">{f.name}</span>
               <span className="text-faint">{formatBytes(f.size, i18n.locale)}</span>
-              <button
-                type="button"
-                className="grid size-5 place-items-center rounded text-faint hover:text-foreground"
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                className="size-5 rounded text-faint [&_svg]:size-3"
                 aria-label={t`Remove ${f.name}`}
                 onClick={() => setFiles((all) => all.filter((_, j) => j !== i))}
               >
-                <XIcon className="size-3" />
-              </button>
+                <XIcon />
+              </Button>
             </li>
           ))}
         </ul>
@@ -340,76 +348,57 @@ export const ReplyBox = forwardRef<
             e.target.value = ""
           }}
         />
-        <button
-          type="button"
-          className="inline-flex h-8 min-w-8 items-center justify-center rounded-lg px-2 text-faint transition-colors hover:bg-background hover:text-foreground"
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="rounded-lg text-faint hover:bg-background"
           aria-label={t`Attach files`}
           title={t`Attach files`}
           onClick={() => fileInput.current?.click()}
         >
-          <PaperclipIcon className="size-4" />
-        </button>
-        <button
-          type="button"
-          className="inline-flex h-8 items-center gap-1.5 rounded-lg px-2 text-[13px] text-faint transition-colors hover:bg-background hover:text-foreground aria-expanded:bg-background aria-expanded:text-foreground"
-          aria-expanded={cannedOpen}
-          onClick={() => setCannedOpen((o) => !o)}
-          title={t`Canned replies`}
-          data-testid="canned-button"
-        >
-          <SlashIcon className="size-4" />
-          <span className="phone:hidden">
-            <Trans>Canned reply</Trans>
-          </span>
-        </button>
-        {cannedOpen && (
-          <div className={cn(popupClass, "absolute start-2.5 bottom-12 z-20 w-[min(320px,calc(100vw-48px))] p-1.5")} role="listbox" aria-label={t`Canned replies`}>
-            {canned.length === 0 ? (
-              <p className="px-3 py-6 text-center text-sm text-faint">
-                <Trans>No canned replies yet. Add them in settings.</Trans>
-              </p>
-            ) : (
-              canned.map((r) => (
-                <button
-                  key={r.id}
-                  type="button"
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => insertCanned(r)}
-                  className="block w-full rounded-lg px-2.5 py-2 text-start text-sm hover:bg-background"
-                >
-                  {r.title}
-                  <small className="block truncate text-xs text-faint">{r.body}</small>
-                </button>
-              ))
-            )}
-          </div>
-        )}
+          <PaperclipIcon />
+        </Button>
+        <Popover open={cannedOpen} onOpenChange={setCannedOpen}>
+          <PopoverTrigger
+            render={<Button variant="ghost" size="sm" className="rounded-lg px-2 text-[13px] font-normal text-faint hover:bg-background aria-expanded:bg-background" />}
+            title={t`Canned replies`}
+            data-testid="canned-button"
+          >
+            <SlashIcon />
+            <span className="phone:hidden">
+              <Trans>Canned reply</Trans>
+            </span>
+          </PopoverTrigger>
+          <PopoverContent side="top" align="start" className={cn(popupClass, "w-[min(320px,calc(100vw-48px))] gap-0 rounded-xl p-0 ring-0")}>
+            <Command className="bg-transparent p-1.5" label={t`Canned replies`}>
+              <CommandList className="max-h-72">
+                <CommandEmpty className="px-3 py-6 text-faint">
+                  <Trans>No canned replies yet. Add them in settings.</Trans>
+                </CommandEmpty>
+                {canned.map((r) => (
+                  <CommandItem key={r.id} value={`${r.title} ${r.shortcut} ${r.id}`} onSelect={() => insertCanned(r)} className="block rounded-lg px-2.5 py-2 data-selected:bg-muted">
+                    {r.title}
+                    <small className="block truncate text-xs text-faint">{r.body}</small>
+                  </CommandItem>
+                ))}
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
         <span className="flex-1" />
         {note ? (
-          <button
-            type="button"
-            className={cn(pillButton, "border-primary bg-primary text-white hover:brightness-105")}
-            onClick={addNote}
-            disabled={!hasContent || noting}
-            data-testid="composer-note"
-          >
+          <Button className={pill} onClick={addNote} disabled={!hasContent || noting} data-testid="composer-note">
             <Trans>Add note</Trans>
-          </button>
+          </Button>
         ) : (
           <>
             <span className="me-1.5 text-xs text-faint phone:hidden">{mod}↵</span>
-            <button type="button" className={cn(pillButton, "bg-card hover:border-faint phone:px-3")} onClick={() => send(false)} disabled={!hasContent} data-testid="composer-send">
+            <Button variant="outline" className={cn(pill, "border-border bg-card hover:border-faint")} onClick={() => send(false)} disabled={!hasContent} data-testid="composer-send">
               <Trans>Send</Trans>
-            </button>
-            <button
-              type="button"
-              className={cn(pillButton, "border-primary bg-primary text-white hover:brightness-105 phone:px-3")}
-              onClick={() => send(true)}
-              disabled={!hasContent}
-              data-testid="composer-send-close"
-            >
+            </Button>
+            <Button className={pill} onClick={() => send(true)} disabled={!hasContent} data-testid="composer-send-close">
               <Trans>Send and close</Trans>
-            </button>
+            </Button>
           </>
         )}
       </div>

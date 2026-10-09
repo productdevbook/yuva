@@ -15,6 +15,8 @@ import { useDraftActions } from "@/features/conversation/queries"
 import { attachmentUrl, rawMessageUrl, type Conversation, type Feedback, type FeedbackCategory, type Message } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
+import { Separator } from "@/components/ui/separator"
+import { Badge } from "@/components/ui/badge"
 
 const GROUP_MS = 5 * 60_000
 
@@ -62,7 +64,7 @@ function useDayLabel() {
   }
 }
 
-const tagClass = "inline-flex items-center rounded-full px-1.5 py-px text-[11px] font-medium"
+const tagClass = "h-auto px-1.5 py-px text-[11px]"
 
 function EmailTags({ m }: { m: Message }) {
   const { t } = useLingui()
@@ -77,18 +79,18 @@ function EmailTags({ m }: { m: Message }) {
         </span>
       )}
       {e.auto && (
-        <span className={cn(tagClass, "bg-muted text-muted-foreground")} title={t`Automatic mail never triggers an automatic reply.`}>
+        <Badge variant="secondary" className={cn(tagClass, "text-muted-foreground")} title={t`Automatic mail never triggers an automatic reply.`}>
           <Trans>Auto-reply</Trans>
-        </span>
+        </Badge>
       )}
       {e.dmarc === "fail" && (
-        <span className={cn(tagClass, "bg-destructive/8 text-destructive")} title={t`The sender's domain did not authorize this mail. It may be forged.`}>
+        <Badge variant="destructive" className={tagClass} title={t`The sender's domain did not authorize this mail. It may be forged.`}>
           <Trans>DMARC failed</Trans>
-        </span>
+        </Badge>
       )}
       {e.unverified_sender && (
         <Tooltip>
-          <TooltipTrigger render={<span tabIndex={0} className={cn(tagClass, "bg-warning/10 text-warning")} data-testid="unverified-sender" />}>
+          <TooltipTrigger render={<Badge tabIndex={0} className={cn(tagClass, "bg-warning/10 text-warning")} data-testid="unverified-sender" />}>
             <Trans>Unverified sender</Trans>
           </TooltipTrigger>
           <TooltipContent className="block max-w-72">
@@ -140,9 +142,9 @@ function Letter({ m, ctx, name }: { m: Message; ctx: ThreadContext; name: string
 }
 
 const categoryTag: Record<FeedbackCategory, string> = {
-  bug: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300",
-  idea: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300",
-  praise: "bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300",
+  bug: "bg-destructive/10 text-destructive",
+  idea: "bg-warning/12 text-warning",
+  praise: "bg-success/12 text-success",
   other: "bg-muted text-muted-foreground",
 }
 
@@ -156,7 +158,7 @@ function FeedbackCard({ m, feedback }: { m: Message; feedback: Feedback }) {
   return (
     <div className="overflow-hidden rounded-2xl border bg-card" data-testid="feedback-card" data-message-id={m.id}>
       <div className="flex items-center gap-2 border-b px-4 py-3 text-[13px]">
-        <span className={cn("rounded-md px-2 py-0.5 text-xs font-medium", categoryTag[category])}>{text.category[category]}</span>
+        <Badge className={cn("rounded-md px-2", categoryTag[category])}>{text.category[category]}</Badge>
         <Trans>Feedback sent from the app</Trans>
         <time className="ms-auto text-faint" dateTime={m.created_at} title={formatDateTime(m.created_at, i18n.locale)}>
           {timeOf(m.created_at, i18n.locale)}
@@ -264,7 +266,7 @@ function Face({ m, side, ctx, name }: { m: Message; side: Side; ctx: ThreadConte
   const by = useAuthorName({ ...m, author: m.sent_by ?? m.author }, ctx)
   if (side === "in") return <ContactAvatar id={ctx.contact?.id ?? m.conversation_id} name={name} className="size-[26px] text-[10px]" />
   if (side === "bot") return <BotAvatar name={author} url={m.author.avatar_url} className="size-[26px] text-[10px]" />
-  return <PersonAvatar name={by} className={cn("size-[26px] text-[10px] font-semibold text-white", side === "me" ? "bg-zinc-600" : "bg-mate")} />
+  return <PersonAvatar name={by} className={cn("size-[26px] text-[10px] font-semibold text-white", side === "me" ? "bg-muted-foreground text-background" : "bg-mate")} />
 }
 
 function Meta({ m, side, ctx, name }: { m: Message; side: Side; ctx: ThreadContext; name: string }) {
@@ -359,7 +361,7 @@ function Rated({ m, ctx, name }: { m: Message; ctx: ThreadContext; name: string 
       <div
         className={cn(
           "max-w-[88%] rounded-2xl border px-3.5 py-2 text-center text-sm",
-          rating === "good" ? "border-green-600/25 bg-green-600/6" : "border-destructive/25 bg-destructive/5",
+          rating === "good" ? "border-success/25 bg-success/6" : "border-destructive/25 bg-destructive/5",
         )}
       >
         <span className="font-medium">
@@ -395,7 +397,7 @@ export function Talk({
     <div className="flex flex-col">
       {items.map((m, i) => {
         const day = new Date(m.created_at).toDateString()
-        const sep = day !== lastDay ? <div className="mt-2.5 mb-2 flex items-center gap-3 text-xs text-faint before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">{dayLabel(m.created_at)}</div> : null
+        const sep = day !== lastDay ? <div className="mt-2.5 mb-2 flex items-center gap-3 text-xs text-faint"><Separator className="flex-1" />{dayLabel(m.created_at)}<Separator className="flex-1" /></div> : null
         lastDay = day
         let body: React.ReactNode
         if (m.kind === "event" && m.event?.type === "rated") body = <Rated m={m} ctx={ctx} name={name} />

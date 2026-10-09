@@ -1,19 +1,19 @@
-import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
+import { Command as CommandPrimitive } from "cmdk"
 import { Trans, useLingui } from "@lingui/react/macro"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useLocation, useNavigate } from "react-router"
 
 import { useShell } from "@/app/shell"
 import { Kbd } from "@/components/common"
 import { keyLabel, mod, SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { useEnumText } from "@/components/common/text"
-import { overlayClass } from "@/components/ui/dialog"
+import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandItem, CommandList, CommandShortcut } from "@/components/ui/command"
 import { hasCommands, runCommand, type CommandName } from "@/features/conversation/commands"
 import { useInboxFilter, useQueue } from "@/features/inbox/queue"
 import { useSession } from "@/lib/session"
-import { cn } from "@/lib/utils"
 import { useView } from "@/lib/view"
 import { useChannelMap, useInboxes } from "@/lib/workspace"
+import { setTheme } from "@/lib/theme"
 
 type Item = { group: string; label: string; hint?: string; keys?: string[]; run: () => void }
 
@@ -92,6 +92,9 @@ function useItems(open: boolean): Item[] {
       go(t`Workspace`, "/settings/workspace")
     }
     list.push({ group: t`Go to`, label: t`Keyboard shortcuts`, keys: [SHORTCUTS.help], run: openShortcuts })
+    list.push({ group: t`Appearance`, label: t`Light appearance`, run: () => setTheme("light") })
+    list.push({ group: t`Appearance`, label: t`Dark appearance`, run: () => setTheme("dark") })
+    list.push({ group: t`Appearance`, label: t`Follow the system appearance`, run: () => setTheme("system") })
     return list
   }, [open, commands, queue, inboxes, channels, text, t, navigate, openDrawer, openShortcuts, setFilter, canManage, view, setView, pathname])
 }
@@ -100,104 +103,84 @@ export function Palette({ open, onOpenChange }: { open: boolean; onOpenChange: (
   const { t } = useLingui()
   const { openDrawer } = useShell()
   const [q, setQ] = useState("")
-  const [index, setIndex] = useState(0)
-  const listRef = useRef<HTMLDivElement>(null)
   const all = useItems(open)
-  const query = q.trim().toLowerCase()
-  const items = useMemo(() => {
-    const found = all.filter((x) => `${x.label} ${x.hint ?? ""} ${x.group}`.toLowerCase().includes(query))
-    if (query.length >= 2) {
-      found.push({ group: t`Search`, label: t`Search conversations for “${q.trim()}”`, run: () => openDrawer(q.trim()) })
-    }
-    return found
-  }, [all, query, q, t, openDrawer])
-  const active = Math.max(0, Math.min(index, items.length - 1))
-
   useEffect(() => {
-    if (open) {
-      setQ("")
-      setIndex(0)
-    }
+    if (open) setQ("")
   }, [open])
-  useEffect(() => {
-    listRef.current?.querySelector('[data-active="true"]')?.scrollIntoView({ block: "nearest" })
-  }, [active, open])
-
-  const run = (x: Item | undefined) => {
-    if (!x) return
+  const groups = useMemo(() => {
+    const out: { name: string; items: Item[] }[] = []
+    for (const x of all) {
+      const g = out.at(-1)
+      if (g && g.name === x.group) g.items.push(x)
+      else out.push({ name: x.group, items: [x] })
+    }
+    return out
+  }, [all])
+  const run = (x: Item) => {
     onOpenChange(false)
     x.run()
   }
-
-  let last = ""
+  const search = q.trim()
   return (
-    <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
-      <DialogPrimitive.Portal>
-        <DialogPrimitive.Backdrop className={overlayClass} />
-        <DialogPrimitive.Popup
-          className="fixed top-[14vh] left-1/2 z-50 w-[560px] max-w-[calc(100%-32px)] -translate-x-1/2 overflow-hidden rounded-[18px] border bg-card text-foreground shadow-[0_30px_80px_-20px_rgb(0_0_0/0.35)] outline-none"
-          data-testid="palette"
-        >
-          <DialogPrimitive.Title className="sr-only">
-            <Trans>Everything</Trans>
-          </DialogPrimitive.Title>
-          <input
-            autoFocus
-            value={q}
-            onChange={(e) => {
-              setQ(e.target.value)
-              setIndex(0)
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-                e.preventDefault()
-                setIndex(active + (e.key === "ArrowDown" ? 1 : -1))
-              } else if (e.key === "Enter") {
-                e.preventDefault()
-                run(items[active])
-              }
-            }}
-            placeholder={t`Search people, actions or settings…`}
-            aria-label={t`Search people, actions or settings`}
-            className="w-full border-b bg-transparent px-[18px] py-4 text-base outline-none placeholder:text-faint"
-          />
-          <div ref={listRef} className="max-h-[50vh] overflow-y-auto p-1.5" role="listbox">
-            {items.length === 0 && (
-              <p className="px-4 py-10 text-center text-sm text-faint">
-                <Trans>No results</Trans>
-              </p>
-            )}
-            {items.map((x, i) => {
-              const head = x.group !== last
-              last = x.group
-              return (
-                <div key={`${x.group}:${x.label}:${i}`}>
-                  {head && <div className="px-3 pt-2.5 pb-1 text-[11px] tracking-[0.04em] text-faint uppercase">{x.group}</div>}
-                  <button
-                    type="button"
-                    role="option"
-                    aria-selected={i === active}
-                    data-active={i === active}
-                    onMouseMove={() => i !== active && setIndex(i)}
-                    onClick={() => run(x)}
-                    className={cn("flex w-full items-center gap-2.5 rounded-[10px] px-3 py-[9px] text-start text-sm", i === active && "bg-brand-wash")}
-                  >
-                    <span className="truncate">{x.label}</span>
-                    {x.hint && <small className="min-w-0 truncate text-xs text-faint">{x.hint}</small>}
-                    {x.keys && (
-                      <span className="ms-auto flex shrink-0 gap-1">
-                        {x.keys.map((k) => (
-                          <Kbd key={k}>{k}</Kbd>
-                        ))}
-                      </span>
-                    )}
-                  </button>
-                </div>
-              )
-            })}
-          </div>
-        </DialogPrimitive.Popup>
-      </DialogPrimitive.Portal>
-    </DialogPrimitive.Root>
+    <CommandDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={t`Everything`}
+      description={t`Search people, actions or settings`}
+      className="top-[14vh] w-[560px] max-w-[calc(100%-32px)] gap-0 rounded-[18px]! border bg-card p-0 shadow-[0_30px_80px_-20px_rgb(0_0_0/0.35)] sm:max-w-[560px]"
+    >
+      <Command className="rounded-[18px]! bg-card p-0" data-testid="palette" loop>
+        <CommandPrimitive.Input
+          value={q}
+          onValueChange={setQ}
+          placeholder={t`Search people, actions or settings…`}
+          aria-label={t`Search people, actions or settings`}
+          className="w-full border-b bg-transparent px-[18px] py-4 text-base outline-none placeholder:text-faint"
+        />
+        <CommandList className="max-h-[50vh] p-1.5">
+          <CommandEmpty className="py-10 text-faint">
+            <Trans>No results</Trans>
+          </CommandEmpty>
+          {groups.map((g) => (
+            <CommandGroup
+              key={`${g.name}:${g.items[0]?.label}`}
+              heading={g.name}
+              className="p-0 **:[[cmdk-group-heading]]:px-3 **:[[cmdk-group-heading]]:pt-2.5 **:[[cmdk-group-heading]]:pb-1 **:[[cmdk-group-heading]]:text-[11px] **:[[cmdk-group-heading]]:font-normal **:[[cmdk-group-heading]]:tracking-[0.04em] **:[[cmdk-group-heading]]:text-faint **:[[cmdk-group-heading]]:uppercase"
+            >
+              {g.items.map((x, i) => (
+                <CommandItem
+                  key={`${x.label}:${i}`}
+                  value={`${x.label} ${x.hint ?? ""} ${g.name} ${i}`}
+                  onSelect={() => run(x)}
+                  className="gap-2.5 rounded-[10px]! px-3 py-[9px] data-selected:bg-brand-wash"
+                >
+                  <span className="truncate">{x.label}</span>
+                  {x.hint && <small className="min-w-0 truncate text-xs text-faint">{x.hint}</small>}
+                  {x.keys && (
+                    <CommandShortcut className="flex gap-1 tracking-normal">
+                      {x.keys.map((k) => (
+                        <Kbd key={k}>{k}</Kbd>
+                      ))}
+                    </CommandShortcut>
+                  )}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          ))}
+          {search.length >= 2 && (
+            <CommandGroup heading={t`Search`} forceMount className="p-0 **:[[cmdk-group-heading]]:px-3 **:[[cmdk-group-heading]]:pt-2.5 **:[[cmdk-group-heading]]:pb-1 **:[[cmdk-group-heading]]:text-[11px] **:[[cmdk-group-heading]]:font-normal **:[[cmdk-group-heading]]:text-faint **:[[cmdk-group-heading]]:uppercase">
+              <CommandItem
+                forceMount
+                value={`search ${search}`}
+                onSelect={() => run({ group: "", label: "", run: () => openDrawer(search) })}
+                className="gap-2.5 rounded-[10px]! px-3 py-[9px] data-selected:bg-brand-wash"
+              >
+                <Trans>Search conversations for “{search}”</Trans>
+              </CommandItem>
+            </CommandGroup>
+          )}
+        </CommandList>
+      </Command>
+    </CommandDialog>
   )
 }

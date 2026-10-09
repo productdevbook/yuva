@@ -32,6 +32,7 @@ import { useSession } from "@/lib/session"
 import { useViewers } from "@/lib/presence"
 import { useTyping } from "@/lib/typing"
 import { useChannel, useChannelMap, useInboxes, useLabels, useMemberMap } from "@/lib/workspace"
+import { Alert } from "@/components/ui/alert"
 
 export function QueueConversation({ id }: { id: string }) {
   const errorText = useErrorText()
@@ -223,16 +224,16 @@ function Loaded({ c, contact, channel }: { c: Conversation; contact?: Contact; c
   return (
     <div onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} data-testid="conversation" data-conversation-id={c.id}>
       {movedAway && (
-        <div className="mb-5 flex items-center gap-3 rounded-[14px] border border-dashed bg-card py-2.5 ps-3.5 pe-2.5 text-sm text-muted-foreground" role="status" data-testid="moved-away">
+        <Alert role="status" className="mb-5 flex items-center gap-3 rounded-[14px] border-dashed border-border bg-card py-2.5 ps-3.5 pe-2.5 text-muted-foreground" data-testid="moved-away">
           <span className="flex-1">
             <Trans>This conversation is no longer waiting for you.</Trans>
           </span>
           {next && (
-            <button type="button" onClick={openNext} className="h-8 rounded-full border bg-background px-3 text-[13px] hover:border-faint">
+            <Button variant="outline" size="sm" onClick={openNext} className="border-border text-[13px] font-normal hover:border-faint">
               <Trans>Open the next one</Trans>
-            </button>
+            </Button>
           )}
-        </div>
+        </Alert>
       )}
       <PersonHeader
         c={c}
@@ -243,14 +244,14 @@ function Loaded({ c, contact, channel }: { c: Conversation; contact?: Contact; c
         menu={<ConversationMenu c={c} open={moreOpen} onOpenChange={setMoreOpen} update={update} move={move} onContact={() => setContactOpen(true)} />}
       />
       {c.spam && (
-        <p className="mt-4 flex items-center gap-3 rounded-xl bg-destructive/6 px-3.5 py-2 text-[13px]" role="status" data-testid="spam-banner">
+        <Alert role="status" variant="destructive" className="mt-4 flex items-center gap-3 rounded-xl border-transparent bg-destructive/6 px-3.5 py-2 text-[13px] text-foreground" data-testid="spam-banner">
           <span className="flex-1">
             <Trans>Marked as spam: left out of the queue and never answered automatically.</Trans>
           </span>
-          <button type="button" className="font-medium underline underline-offset-2" onClick={() => update({ spam: false })}>
+          <Button variant="link" className="text-[13px] text-foreground underline" onClick={() => update({ spam: false })}>
             <Trans>Not spam</Trans>
-          </button>
-        </p>
+          </Button>
+        </Alert>
       )}
       <Facts facts={facts} onOpen={() => setContactOpen(true)} />
       <div className="mt-7 grid gap-1.5">

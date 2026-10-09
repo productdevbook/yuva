@@ -1,6 +1,7 @@
 import { useLingui } from "@lingui/react/macro"
 
 import type { Contact, Conversation } from "@/lib/api"
+import { Button } from "@/components/ui/button"
 
 function shown(v: unknown) {
   if (typeof v === "string") return v.trim() || null
@@ -44,10 +45,11 @@ export function Facts({ facts, onOpen }: { facts: Fact[]; onOpen: () => void }) 
   const { t } = useLingui()
   if (facts.length === 0) return null
   return (
-    <button
-      type="button"
+    <Button
+      variant="plain"
+      size="auto"
       onClick={onOpen}
-      className="mt-5 block w-full rounded-[14px] border bg-card text-start transition-colors hover:border-input"
+      className="mt-5 block w-full rounded-[14px] border-border bg-card transition-colors hover:border-input"
       title={t`Contact details`}
       data-testid="facts"
     >
@@ -61,6 +63,6 @@ export function Facts({ facts, onOpen }: { facts: Fact[]; onOpen: () => void }) 
           </div>
         ))}
       </dl>
-    </button>
+    </Button>
   )
 }

@@ -13,6 +13,7 @@ import { api, unwrap } from "@/lib/api"
 import { safeNext } from "@/lib/next"
 import { signInWithPasskey } from "@/lib/passkey"
 import { meKey, useMe } from "@/lib/session"
+import { Separator } from "@/components/ui/separator"
 
 const pill = "h-11 text-[0.95rem]"
 const field = "h-11 rounded-xl px-3.5"
@@ -101,9 +102,9 @@ export function SignInPage() {
             </Button>
           </form>
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <span className="h-px flex-1 bg-border" />
+            <Separator className="flex-1" />
             <Trans>or</Trans>
-            <span className="h-px flex-1 bg-border" />
+            <Separator className="flex-1" />
           </div>
           <Button variant="outline" onClick={() => passkey.mutate()} disabled={passkey.isPending} className={pill}>
             <KeyRoundIcon />

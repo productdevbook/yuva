@@ -1,10 +1,13 @@
-import { Popover } from "@base-ui/react/popover"
 import { Plural, Trans, useLingui } from "@lingui/react/macro"
+import { useState } from "react"
 import { useNavigate } from "react-router"
 
 import { MemberAvatar } from "@/components/common"
 import { formatDuration } from "@/components/common/text"
+import { Button } from "@/components/ui/button"
 import { popupClass } from "@/components/ui/dropdown-menu"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Separator } from "@/components/ui/separator"
 import { useStats } from "@/features/inbox/queries"
 import { useQueue } from "@/features/inbox/queue"
 import { useIsPhone } from "@/hooks/use-media-query"
@@ -77,13 +80,14 @@ export function TeamMenu() {
   const mates = (useMembers().data ?? []).filter((m) => m.id !== membership.member_id)
   const activity = useMemberActivity()
   const label = useConversationName()
+  const [open, setOpen] = useState(false)
   if (mates.length === 0) return null
   const order = [...mates].sort((a, b) => Number(b.online && b.availability === "auto") - Number(a.online && a.availability === "auto"))
   const shown = order.slice(0, phone ? 1 : 3)
   return (
-    <Popover.Root>
-      <Popover.Trigger
-        className="flex items-center rounded-full px-1.5 py-1 transition-colors outline-none hover:bg-muted aria-expanded:bg-muted"
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger
+        render={<Button variant="ghost" size="sm" className="gap-0 rounded-full px-1.5" />}
         aria-label={t`Team`}
         title={t`Team`}
         data-testid="team-button"
@@ -93,10 +97,8 @@ export function TeamMenu() {
             <MemberAvatar name={m.name || m.email} online={m.online} away={m.availability === "away"} className="ring-2 ring-background" />
           </span>
         ))}
-      </Popover.Trigger>
-      <Popover.Portal>
-        <Popover.Positioner side="bottom" align="end" sideOffset={8} className="z-50">
-          <Popover.Popup className={cn(popupClass, "w-[300px] max-w-[calc(100vw-24px)]")} data-testid="team-popup">
+      </PopoverTrigger>
+      <PopoverContent side="bottom" align="end" sideOffset={8} className={cn(popupClass, "w-[300px] max-w-[calc(100vw-24px)] gap-0 rounded-xl p-1.5 ring-0")} data-testid="team-popup">
             <p className="px-2.5 pt-1.5 pb-1 text-xs font-medium text-faint">
               <Trans>Team right now</Trans>
             </p>
@@ -124,29 +126,31 @@ export function TeamMenu() {
                 </>
               )
               return a && m.online && !away ? (
-                <Popover.Close
+                <Button
                   key={m.id}
-                  className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-start outline-none hover:bg-muted focus-visible:bg-muted"
-                  onClick={() => navigate(`/conversations/${a.conversationId}`)}
+                  variant="ghost"
+                  className="h-auto w-full justify-start gap-2.5 rounded-lg px-2.5 py-2 text-start font-normal text-foreground"
+                  onClick={() => {
+                    setOpen(false)
+                    navigate(`/conversations/${a.conversationId}`)
+                  }}
                 >
                   {row}
-                </Popover.Close>
+                </Button>
               ) : (
                 <div key={m.id} className="flex items-center gap-2.5 px-2.5 py-2">
                   {row}
                 </div>
               )
             })}
-            <div className="mx-1.5 my-1 h-px bg-border" />
+            <Separator className="mx-1.5 my-1 w-auto" />
             <div className="px-2.5 pt-1 pb-1.5">
               <span className="block text-sm">
                 <Trans>The team today</Trans>
               </span>
               <TeamSummary className="block text-xs text-faint" />
             </div>
-          </Popover.Popup>
-        </Popover.Positioner>
-      </Popover.Portal>
-    </Popover.Root>
+      </PopoverContent>
+    </Popover>
   )
 }

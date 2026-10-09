@@ -12,6 +12,7 @@ import { useViewers } from "@/lib/presence"
 import { useSession } from "@/lib/session"
 import { useTyping } from "@/lib/typing"
 import { useInboxes, useLabels, useMemberMap } from "@/lib/workspace"
+import { Button } from "@/components/ui/button"
 
 function useNow(ms: number) {
   const [now, setNow] = useState(() => Date.now())
@@ -40,7 +41,7 @@ export function Status({ c, lastInbound }: { c: Conversation; lastInbound?: Mess
   const presence = useContactPresence(c.contact_id).data
   if (presence?.online) {
     return (
-      <span className="inline-flex items-center gap-[5px] text-green-600 dark:text-green-500" data-testid="contact-online">
+      <span className="inline-flex items-center gap-[5px] text-success" data-testid="contact-online">
         <span className="size-1.5 rounded-full bg-current" />
         <Trans>Online now</Trans>
       </span>
@@ -123,19 +124,19 @@ export function PersonHeader({
   const sep = <span aria-hidden>·</span>
   return (
     <div className="flex items-center gap-4" data-testid="person">
-      <button type="button" onClick={onContact} className="relative shrink-0 rounded-full" aria-label={t`Contact details`}>
+      <Button variant="plain" size="auto" onClick={onContact} className="relative shrink-0 overflow-visible rounded-full" aria-label={t`Contact details`}>
         <ContactAvatar id={c.contact_id} name={name} className="size-14 text-[19px] phone:size-12 phone:text-base" />
         {channel && (
           <span className="absolute -end-1 -bottom-1 grid size-6 place-items-center rounded-full border bg-card text-muted-foreground" title={text.channel[channel.kind]}>
             <ChannelIcon kind={channel.kind} className="size-[13px]" />
           </span>
         )}
-      </button>
+      </Button>
       <div className="min-w-0 flex-1">
         <h1 className="truncate text-[26px] leading-[1.15] font-semibold tracking-[-0.025em] phone:text-[22px]" data-testid="person-name">
-          <button type="button" onClick={onContact} className="max-w-full truncate text-start">
+          <Button variant="plain" size="auto" onClick={onContact} className="block max-w-full truncate rounded-md text-[length:inherit] font-[inherit] tracking-[inherit]">
             {name}
-          </button>
+          </Button>
         </h1>
         <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-sm text-faint">
           {inbox && (

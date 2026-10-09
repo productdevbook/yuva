@@ -3,7 +3,7 @@ import { SearchIcon, XIcon } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 
-import { ContactAvatar, Dot, ErrorLine } from "@/components/common"
+import { ContactAvatar, Dot, ErrorLine, Segmented } from "@/components/common"
 import { formatShort, useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
@@ -16,6 +16,8 @@ import type { ConversationListItem, ConversationStatus } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useChannelMap, useInboxes } from "@/lib/workspace"
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 type Tab = "waiting" | "snoozed" | "pending" | "team" | "closed"
 const TABS: Tab[] = ["waiting", "snoozed", "pending", "team", "closed"]
@@ -38,10 +40,11 @@ export function ConversationRow({ c, current, onOpen }: { c: ConversationListIte
   const preview = c.last_message?.text || c.subject
   const rating = currentRating(c)
   return (
-    <button
-      type="button"
+    <Button
+      variant="plain"
+      size="auto"
       onClick={onOpen}
-      className={cn("flex w-full gap-3 rounded-xl px-2.5 py-3 text-start transition-colors hover:bg-card", current && "bg-brand-wash hover:bg-brand-wash")}
+      className={cn("flex w-full items-start gap-3 rounded-xl px-2.5 py-3 hover:bg-card", current && "bg-brand-wash hover:bg-brand-wash")}
       data-testid="drawer-row"
     >
       <ContactAvatar id={c.contact.id} name={name} className="size-9 text-xs" />
@@ -74,7 +77,7 @@ export function ConversationRow({ c, current, onOpen }: { c: ConversationListIte
         </span>
         {preview && <span className="mt-0.5 block truncate text-[13px] text-muted-foreground">{preview}</span>}
       </span>
-    </button>
+    </Button>
   )
 }
 
@@ -154,47 +157,45 @@ export function AllDrawer({
               <XIcon />
             </Button>
           </div>
-          <label className="flex items-center gap-2 rounded-xl border bg-card px-3 py-2 text-faint focus-within:border-input">
-            <SearchIcon className="size-[15px] shrink-0" />
-            <input
+          <InputGroup className="h-10 rounded-xl border-border bg-card shadow-none dark:bg-card">
+            <InputGroupAddon>
+              <SearchIcon className="size-[15px] text-faint" />
+            </InputGroupAddon>
+            <InputGroupInput
               ref={input}
               value={query}
               onChange={(e) => onQuery(e.target.value)}
               placeholder={t`Search people or messages`}
               aria-label={t`Search conversations`}
-              className="min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-faint md:text-sm"
               data-testid="drawer-search"
             />
-          </label>
-          <div role="tablist" className="flex gap-0.5 overflow-x-auto rounded-[10px] border bg-card p-[3px]">
-            {TABS.map((k) => {
-              const r = rows[k]
-              return (
-                <button
-                  key={k}
-                  type="button"
-                  role="tab"
-                  aria-selected={tab === k}
-                  onClick={() => setTab(k)}
-                  className={cn(
-                    "flex-1 rounded-[7px] px-1.5 py-1.5 text-[13px] whitespace-nowrap text-muted-foreground transition-colors",
-                    tab === k && "bg-background font-medium text-foreground shadow-[0_1px_2px_rgb(0_0_0/0.06)]",
-                  )}
-                  data-testid={`drawer-tab-${k}`}
-                >
+          </InputGroup>
+          <Segmented<Tab>
+            look="segment"
+            label={t`Conversations`}
+            value={tab}
+            onChange={setTab}
+            className="w-full overflow-x-auto"
+            itemClassName="flex-1 px-1.5"
+            items={TABS.map((k) => ({
+              value: k,
+              testId: `drawer-tab-${k}`,
+              label: (
+                <>
                   {labels[k]}
-                  {!r.pending && (
+                  {!rows[k].pending && (
                     <span className="ms-1 text-xs font-normal text-faint tabular-nums">
-                      {fmt.format(r.items.length)}
-                      {r.more && "+"}
+                      {fmt.format(rows[k].items.length)}
+                      {rows[k].more && "+"}
                     </span>
                   )}
-                </button>
-              )
-            })}
-          </div>
+                </>
+              ),
+            }))}
+          />
         </div>
-        <div className="min-h-0 flex-1 overflow-y-auto p-2">
+        <ScrollArea className="min-h-0 flex-1">
+          <div className="p-2">
           {current.pending ? (
             <div className="grid gap-2 p-2">
               <Skeleton className="h-14 w-full rounded-xl" />
@@ -208,7 +209,8 @@ export function AllDrawer({
             current.items.map((c) => <ConversationRow key={c.id} c={c} current={c.id === shown} onOpen={() => openRow(c)} />)
           )}
           <ErrorLine error={current.error} className="px-3 py-2" />
-        </div>
+          </div>
+        </ScrollArea>
       </SheetContent>
     </Sheet>
   )

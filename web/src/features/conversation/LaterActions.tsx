@@ -1,9 +1,11 @@
-import { Popover } from "@base-ui/react/popover"
 import { Plural, Trans, useLingui } from "@lingui/react/macro"
 import { CheckIcon, ClockIcon, UserRoundPlusIcon } from "lucide-react"
 import { useState } from "react"
 
-import { MemberAvatar } from "@/components/common"
+import { Kbd, MemberAvatar } from "@/components/common"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { popupClass } from "@/components/ui/dropdown-menu"
 import {
   DropdownMenu,
@@ -23,11 +25,10 @@ import { useAssignableMembers } from "@/lib/workspace"
 
 export type LaterMenu = "snooze" | "hand" | null
 
-const link =
-  "inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[13px] text-muted-foreground transition-colors outline-none hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground"
+const link = <Button variant="ghost" size="sm" className="rounded-lg px-2.5 text-[13px] font-normal [&_svg]:size-[13px]" />
 
 function Key({ children }: { children: React.ReactNode }) {
-  return <kbd className="rounded-[5px] border px-1 font-mono text-[10px] font-medium text-faint phone:hidden">{children}</kbd>
+  return <Kbd className="h-4 min-w-4 rounded-[5px] bg-transparent font-mono text-[10px] text-faint phone:hidden">{children}</Kbd>
 }
 
 function useSnoozeTimes() {
@@ -76,7 +77,7 @@ export function LaterActions({
   return (
     <div className="mt-3 flex flex-wrap justify-center gap-0.5 phone:gap-0" data-testid="later-actions">
       <DropdownMenu open={menu === "snooze"} onOpenChange={(o) => setMenu(o ? "snooze" : null)}>
-        <DropdownMenuTrigger className={link} data-testid="snooze-menu">
+        <DropdownMenuTrigger render={link} data-testid="snooze-menu">
           <ClockIcon className="size-[13px]" />
           <Trans>Later</Trans>
           <Key>S</Key>
@@ -103,21 +104,19 @@ export function LaterActions({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Popover.Root
+      <Popover
         open={menu === "hand"}
         onOpenChange={(o) => {
           setMenu(o ? "hand" : null)
           if (!o) setNote("")
         }}
       >
-        <Popover.Trigger className={link} data-testid="hand-menu">
+        <PopoverTrigger render={link} data-testid="hand-menu">
           <UserRoundPlusIcon className="size-[13px]" />
           <Trans>Hand to a teammate</Trans>
           <Key>A</Key>
-        </Popover.Trigger>
-        <Popover.Portal>
-          <Popover.Positioner side="top" align="center" sideOffset={6} className="z-50">
-            <Popover.Popup className={cn(popupClass, "w-[300px] max-w-[calc(100vw-32px)]")} data-testid="hand-popup">
+        </PopoverTrigger>
+        <PopoverContent side="top" align="center" sideOffset={6} className={cn(popupClass, "w-[300px] max-w-[calc(100vw-32px)] gap-0 rounded-xl p-1.5 ring-0")} data-testid="hand-popup">
               <p className="px-2.5 pt-1.5 pb-1 text-xs font-medium text-faint">
                 <Trans>Who should take it?</Trans>
               </p>
@@ -129,15 +128,15 @@ export function LaterActions({
               {people.map((m) => {
                 const who = m.name || m.email
                 return (
-                  <button
+                  <Button
                     key={m.id}
-                    type="button"
+                    variant="ghost"
                     onClick={() => {
                       setMenu(null)
                       actions.hand(m, note)
                       setNote("")
                     }}
-                    className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-start text-sm outline-none hover:bg-muted focus-visible:bg-muted"
+                    className="h-auto w-full justify-start gap-2.5 rounded-lg px-2.5 py-2 text-start font-normal text-foreground"
                   >
                     <MemberAvatar name={who} online={m.online} away={m.availability === "away"} ring="ring-card" />
                     <span className="min-w-0 flex-1">
@@ -148,30 +147,28 @@ export function LaterActions({
                         <Plural value={load.get(m.id) ?? 0} one="# conversation" other="# conversations" />
                       </small>
                     </span>
-                  </button>
+                  </Button>
                 )
               })}
               {people.length > 0 && (
-                <input
+                <Input
                   autoFocus
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                   placeholder={t`Add a note (optional)`}
                   aria-label={t`Note for the teammate`}
-                  className="mt-1.5 w-full rounded-[10px] border bg-background px-3 py-2 text-base outline-none focus:border-brand md:text-sm"
+                  className="mt-1.5 rounded-[10px]"
                   data-testid="hand-note"
                 />
               )}
-            </Popover.Popup>
-          </Popover.Positioner>
-        </Popover.Portal>
-      </Popover.Root>
+      </PopoverContent>
+      </Popover>
 
-      <button type="button" className={link} onClick={actions.close} data-testid="close-conversation">
-        <CheckIcon className="size-[13px]" />
+      <Button variant="ghost" size="sm" className="rounded-lg px-2.5 text-[13px] font-normal [&_svg]:size-[13px]" onClick={actions.close} data-testid="close-conversation">
+        <CheckIcon />
         <Trans>Close without reply</Trans>
         <Key>E</Key>
-      </button>
+      </Button>
     </div>
   )
 }

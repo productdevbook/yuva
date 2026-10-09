@@ -6,6 +6,7 @@ import { Switch } from "@/components/ui/switch"
 import type { AppForm } from "@/features/settings/channels/app/form"
 import { FieldError, FormBlock } from "@/features/settings/channels/parts"
 import { ToggleRow } from "@/features/settings/ui"
+import { Label } from "@/components/ui/label"
 
 export function AppFields({ f, set }: { f: AppForm; set: (patch: Partial<AppForm>) => void }) {
   const { t } = useLingui()
@@ -19,14 +20,14 @@ export function AppFields({ f, set }: { f: AppForm; set: (patch: Partial<AppForm
         </span>
         <div className="flex gap-5" role="group" aria-labelledby="app-platforms">
           {PLATFORMS.map((p) => (
-            <label key={p} className="flex items-center gap-2 text-sm">
+            <Label key={p} className="font-normal">
               <Checkbox
                 checked={f.platforms.includes(p)}
                 onCheckedChange={(on) => set({ platforms: on ? [...f.platforms, p] : f.platforms.filter((x) => x !== p) })}
                 aria-invalid={(none && f.touched) || undefined}
               />
               {text.platform[p]}
-            </label>
+            </Label>
           ))}
         </div>
         <FieldError id="err-app-platforms">{none && <Trans>Pick at least one platform.</Trans>}</FieldError>

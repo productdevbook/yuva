@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useContactSearch } from "@/features/contact/queries"
 import { contactName } from "@/features/contact/Section"
 import type { Contact } from "@/lib/api"
+import { Button } from "@/components/ui/button"
 
 export function ContactSearch({ exclude, onPick }: { exclude: string; onPick: (c: Contact) => void }) {
   const { t } = useLingui()
@@ -51,9 +52,10 @@ export function ContactSearch({ exclude, onPick }: { exclude: string; onPick: (c
             const detail = c.emails[0] ?? c.external_ids[0]?.external_id
             return (
               <li key={c.id}>
-                <button
-                  type="button"
-                  className="flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-start text-sm transition-colors outline-none hover:bg-surface focus-visible:bg-surface"
+                <Button
+                  variant="plain"
+                  size="auto"
+                  className="flex w-full gap-3 rounded-lg px-2 py-1.5 hover:bg-surface focus-visible:bg-surface"
                   onClick={() => onPick(c)}
                   data-testid="merge-candidate"
                 >
@@ -62,7 +64,7 @@ export function ContactSearch({ exclude, onPick }: { exclude: string; onPick: (c
                     <span className="truncate font-medium">{name}</span>
                     {detail && detail !== name && <span className="truncate text-xs text-muted-foreground">{detail}</span>}
                   </span>
-                </button>
+                </Button>
               </li>
             )
           })

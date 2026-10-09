@@ -15,11 +15,13 @@ import { ChannelDialog } from "@/features/settings/channels/ChannelDialog"
 import { ChannelSummary } from "@/features/settings/channels/ChannelSummary"
 import { DeleteInbox, IdentitySecret } from "@/features/settings/inboxes/InboxSecurity"
 import { useInbox, useSaveInbox } from "@/features/settings/inboxes/queries"
-import { Card, EmptyRow, PageHeader, Row, RowIcon, Rows, RowText, Section, SettingRow, StatusTag } from "@/features/settings/ui"
+import { Card, ChoiceSelect, EmptyRow, PageHeader, Row, RowIcon, Rows, RowText, Section, SettingRow, StatusTag } from "@/features/settings/ui"
 import { api, unwrap, type BusinessHours, type Channel, type ChannelKind, type Inbox, type InboxUpdate, type Weekday } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { useInboxMembers, useMembers } from "@/lib/workspace"
+import { Toggle } from "@/components/ui/toggle"
+import { Label } from "@/components/ui/label"
 
 const InboxContext = createContext<{ inbox: Inbox } | null>(null)
 
@@ -29,8 +31,6 @@ export function useInboxOutlet() {
   return v
 }
 
-export const selectClass =
-  "h-9 max-w-full min-w-0 cursor-pointer rounded-[10px] border bg-background px-2.5 text-sm outline-none focus:border-brand disabled:cursor-not-allowed disabled:opacity-50"
 const fieldClass = "h-9 w-60 min-w-0 rounded-[10px] bg-background phone:w-40"
 
 function useAutosave(inbox: Inbox) {
@@ -78,9 +78,10 @@ function Channels({ inbox }: { inbox: Inbox }) {
           <Rows>
             {(channels.data ?? []).map((ch) => (
               <Row key={ch.id} data-testid="channel-row" className="pe-2">
-                <button
-                  type="button"
-                  className="flex min-w-0 flex-1 items-center gap-3 text-start disabled:cursor-default"
+                <Button
+                  variant="plain"
+                  size="auto"
+                  className="flex min-w-0 flex-1 gap-3 rounded-lg disabled:opacity-100"
                   onClick={() => setEditing({ channel: ch })}
                   disabled={!canManage}
                 >
@@ -95,7 +96,7 @@ function Channels({ inbox }: { inbox: Inbox }) {
                       </>
                     }
                   />
-                </button>
+                </Button>
                 {channelState(ch) === "ok" ? (
                   <StatusTag tone="success">
                     <Trans>Working</Trans>
@@ -195,38 +196,38 @@ function CustomerSees({ inbox }: { inbox: Inbox }) {
               />
             </SettingRow>
             <SettingRow title={<Trans>Language</Trans>} htmlFor="inbox-locale">
-              <select id="inbox-locale" className={selectClass} value={inbox.default_locale} onChange={(e) => save({ default_locale: e.target.value })}>
-                {langs.map((l) => (
-                  <option key={l} value={l}>
-                    {languageName(l, i18n.locale)}
-                  </option>
-                ))}
-              </select>
+              <ChoiceSelect
+                id="inbox-locale"
+                label={t`Language`}
+                value={inbox.default_locale}
+                onChange={(v) => save({ default_locale: v })}
+                options={langs.map((l) => [l, languageName(l, i18n.locale)] as const)}
+              />
             </SettingRow>
             <SettingRow
               title={<Trans>Online status</Trans>}
               hint={inbox.mode === "live" ? <Trans>The chat shows who is available and typing</Trans> : <Trans>The chat shows when you usually reply</Trans>}
               htmlFor="inbox-mode"
             >
-              <select id="inbox-mode" className={selectClass} value={inbox.mode} onChange={(e) => save({ mode: e.target.value as Inbox["mode"] })}>
-                <option value="live">{t`Show who is online`}</option>
-                <option value="async">{t`Show the reply time`}</option>
-              </select>
+              <ChoiceSelect<Inbox["mode"]>
+                id="inbox-mode"
+                label={t`Online status`}
+                value={inbox.mode}
+                onChange={(v) => save({ mode: v })}
+                options={[
+                  ["live", t`Show who is online`],
+                  ["async", t`Show the reply time`],
+                ]}
+              />
             </SettingRow>
             <SettingRow title={<Trans>Reply time</Trans>} hint={<Trans>Shown in the chat window</Trans>} htmlFor="inbox-promise">
-              <select
+              <ChoiceSelect
                 id="inbox-promise"
-                className={selectClass}
-                value={promise ?? ""}
-                onChange={(e) => save({ expected_reply_minutes: e.target.value === "" ? null : Number(e.target.value) })}
-              >
-                <option value="">{t`Not shown`}</option>
-                {promises.map((m) => (
-                  <option key={m} value={m}>
-                    {promiseText(m)}
-                  </option>
-                ))}
-              </select>
+                label={t`Reply time`}
+                value={promise ? String(promise) : "none"}
+                onChange={(v) => save({ expected_reply_minutes: v === "none" ? null : Number(v) })}
+                options={[["none", t`Not shown`] as const, ...promises.map((m) => [String(m), promiseText(m)] as const)]}
+              />
             </SettingRow>
             <SettingRow
               title={<Trans>Ask for a rating after closing</Trans>}
@@ -240,22 +241,22 @@ function CustomerSees({ inbox }: { inbox: Inbox }) {
               />
             </SettingRow>
             <SettingRow title={<Trans>Colour</Trans>} htmlFor="inbox-color">
-              <input
+              <Input
                 id="inbox-color"
                 type="color"
                 value={color}
                 onChange={(e) => setColor(e.target.value)}
                 onBlur={() => color !== inbox.branding.color && branding({ color })}
-                className="h-9 w-12 cursor-pointer rounded-[10px] border bg-background p-1"
+                className="h-9 w-12 cursor-pointer rounded-[10px] p-1"
               />
             </SettingRow>
             <li className="flex flex-col gap-2 px-4 py-3">
-              <label htmlFor="inbox-greeting" className="text-sm">
+              <Label htmlFor="inbox-greeting" className="block leading-normal font-normal">
                 <Trans>Greeting</Trans>
                 <small className="mt-px block text-[13px] text-faint">
                   <Trans>The first thing the chat says</Trans>
                 </small>
-              </label>
+              </Label>
               <Textarea
                 id="inbox-greeting"
                 rows={2}
@@ -317,25 +318,21 @@ function Hours({ inbox }: { inbox: Inbox }) {
                   {WEEKDAYS.map((d) => {
                     const on = days.has(d)
                     return (
-                      <button
+                      <Toggle
                         key={d}
-                        type="button"
-                        aria-pressed={on}
+                        pressed={on}
+                        aria-label={text.weekday[d]}
                         title={text.weekday[d]}
-                        onClick={() => {
+                        onPressedChange={() => {
                           const next = new Set(days)
                           if (on) next.delete(d)
                           else next.add(d)
                           write(next)
                         }}
-                        className={
-                          on
-                            ? "grid size-8 place-items-center rounded-full border border-primary bg-primary text-xs text-white"
-                            : "grid size-8 place-items-center rounded-full border text-xs hover:border-faint"
-                        }
+                        className="size-8 min-w-8 rounded-full border border-border px-0 text-xs font-normal hover:border-faint hover:bg-transparent aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground"
                       >
                         {short(d)}
-                      </button>
+                      </Toggle>
                     )
                   })}
                 </span>

@@ -4,9 +4,9 @@ import { useNavigate } from "react-router"
 
 import { formatShort, useEnumText } from "@/components/common/text"
 import type { ConversationListItem } from "@/lib/api"
+import { Button } from "@/components/ui/button"
 
-const toggle =
-  "inline-flex items-center gap-1.5 justify-self-center rounded-full px-2.5 py-1 text-xs text-faint transition-colors hover:bg-card hover:text-foreground"
+const toggle = "justify-self-center px-2.5 text-xs font-normal text-faint hover:bg-card [&_svg]:size-[13px]"
 
 export function History({
   others,
@@ -26,10 +26,10 @@ export function History({
   const n = others.length
   if (!open) {
     return (
-      <button type="button" className={toggle} onClick={onToggle} aria-expanded={false} data-testid="history-toggle">
-        <ClockIcon className="size-[13px]" />
+      <Button variant="ghost" size="xs" className={toggle} onClick={onToggle} aria-expanded={false} data-testid="history-toggle">
+        <ClockIcon />
         <Plural value={n} one="# other conversation" other="# other conversations" />
-      </button>
+      </Button>
     )
   }
   const first = name.split(" ")[0]
@@ -39,11 +39,12 @@ export function History({
         const date = formatShort(o.last_activity_at, i18n.locale)
         const who = o.last_message?.author_type === "contact" ? first : t`Team`
         return (
-          <button
+          <Button
             key={o.id}
-            type="button"
+            variant="plain"
+            size="auto"
             onClick={() => navigate(`/conversations/${o.id}`)}
-            className="rounded-[14px] border border-dashed px-3.5 py-3 text-start text-[13px] text-muted-foreground transition-colors hover:border-solid hover:bg-card"
+            className="block rounded-[14px] border-dashed border-border px-3.5 py-3 text-[13px] text-muted-foreground hover:border-solid hover:bg-card"
           >
             <span className="mb-1.5 flex items-baseline gap-2">
               <b className="min-w-0 truncate font-medium text-foreground">{o.subject || <Trans>No subject</Trans>}</b>
@@ -56,12 +57,12 @@ export function History({
                 <span className="text-faint">{who}:</span> {o.last_message.text}
               </span>
             )}
-          </button>
+          </Button>
         )
       })}
-      <button type="button" className={toggle} onClick={onToggle} aria-expanded data-testid="history-toggle">
+      <Button variant="ghost" size="xs" className={toggle} onClick={onToggle} aria-expanded data-testid="history-toggle">
         <Trans>Hide</Trans>
-      </button>
+      </Button>
     </div>
   )
 }
