@@ -269,12 +269,14 @@ with the server URL as a variable and the stdio bridge as a package.
   Windows runs `server/yuva.exe` (amd64). `user_config` asks for `url` and `api_key` (sensitive)
   and passes them as `YUVA_URL` and `YUVA_API_KEY`. The binaries are the full `yuva` without the
   built panel, so the bundle stays near 60 MB.
-- `server.json` uses the registry schema `2025-12-11`. The remote is `https://{host}/mcp` with
-  `host` as a required variable (the schema allows a variable in the host, not yet a whole base
+- `server.json` uses the registry schema `2025-12-11`. The remote is `https://{yuva_host}/mcp` with
+  `yuva_host` as a required variable (the registry refuses a remote URL another server already
+  lists, and `https://{host}/mcp` is taken) (the schema allows a variable in the host, not yet a whole base
   URL). The package is `registryType: mcpb` pointing at the release's `yuva.mcpb`. The file in the
   repository has no `fileSha256`; the release workflow fills the version, the asset URL and the
-  hash and attaches that `server.json` to the release, which is what gets published. Its version
-  and the manifest's move with the repository version.
+  hash and attaches that `server.json` to the release; for a stable tag the `registry` job publishes it
+  with GitHub OIDC (no token), as `io.github.productdevbook/yuva`. Its version and the manifest's
+  move with the repository version.
 
 ### OAuth and MCP
 

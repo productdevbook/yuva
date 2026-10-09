@@ -268,8 +268,9 @@ Take the binary from `yuva.mcpb`, which is a zip archive (`server/<os>-<arch>/yu
   server fails that call but keeps the bridge running. A `401` (wrong, expired or revoked key) ends
   it with exit status 1.
 
-The repository's `server.json` describes Yuva for the [MCP Registry](https://registry.modelcontextprotocol.io):
-the remote endpoint `https://{host}/mcp` and the bundle as a package.
+Yuva is listed in the [MCP Registry](https://registry.modelcontextprotocol.io) as
+`io.github.productdevbook/yuva`: the remote endpoint `https://{yuva_host}/mcp` (your server's host)
+and the bundle as a package.
 
 ## Turn it off
 
