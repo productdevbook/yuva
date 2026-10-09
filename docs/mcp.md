@@ -155,10 +155,10 @@ draft a reply in Turkish to the open conversation in the Turkish inbox."
 
 ### ChatGPT
 
-ChatGPT connects to remote MCP servers in developer mode, on the web, over OAuth only: it cannot
-send an API key. Add the server as a custom MCP server with the URL
-`https://support.example.com/mcp` and OAuth authentication; ChatGPT registers itself and opens
-Yuva's consent page. Your server needs a public `https` URL. Plans, the menu path and the
+ChatGPT connects to remote MCP servers on the web, over OAuth only: it cannot send an API key. In
+[Plugins](https://chatgpt.com/plugins), use the plus button → **Add custom MCP server**, choose a
+public endpoint with the URL `https://support.example.com/mcp` and OAuth authentication, and create
+it as a plugin; ChatGPT registers itself and opens Yuva's consent page. Your server needs a public `https` URL. Plans, the menu path and the
 redirect URI are in OpenAI's guide:
 [connect from ChatGPT](https://developers.openai.com/plugins/deploy/connect-chatgpt).
 
