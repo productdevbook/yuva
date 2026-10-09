@@ -113,7 +113,7 @@ export function WebhookDialog({
                 placeholder="https://api.example.com/yuva/webhook"
                 onChange={(e) => setUrl(e.target.value)}
                 aria-invalid={!!bad || undefined}
-                className="font-mono text-xs"
+                className="font-mono text-caption"
               />
             </Field>
             <Field label={<Trans>Description (optional)</Trans>} htmlFor="webhook-description">
@@ -136,24 +136,24 @@ export function WebhookDialog({
               </Field>
             )}
             <div className="flex min-w-0 flex-col gap-2" role="group" aria-labelledby="webhook-events">
-              <span id="webhook-events" className="text-sm font-medium">
+              <span id="webhook-events" className="text-body font-medium">
                 <Trans>Events</Trans>
               </span>
               <ul className="divide-y rounded-xl border">
                 {WEBHOOK_EVENTS.map((ev) => (
                   <li key={ev}>
-                    <Label className="gap-3 px-3.5 py-2.5 leading-normal font-normal">
+                    <Label className="gap-3 px-3.5 py-2.5 font-normal">
                       <Checkbox checked={events.has(ev)} onCheckedChange={(on) => toggle(ev, on)} aria-label={ev} />
                       <span className="flex min-w-0 flex-1 flex-col">
-                        <span className="text-sm">{text.event[ev]}</span>
-                        <code className="font-mono text-xs text-faint">{ev}</code>
+                        <span className="text-body">{text.event[ev]}</span>
+                        <code className="font-mono text-caption text-faint">{ev}</code>
                       </span>
                     </Label>
                   </li>
                 ))}
               </ul>
               {touched && chosen.length === 0 && (
-                <p role="alert" className="text-xs text-destructive">
+                <p role="alert" className="text-caption text-destructive">
                   <Trans>Pick at least one event.</Trans>
                 </p>
               )}

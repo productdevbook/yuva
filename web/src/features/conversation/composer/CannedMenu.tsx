@@ -41,10 +41,10 @@ export function CannedMenu({ items, active, onPick }: { items: CannedReply[]; ac
             className="flex flex-col items-start gap-0.5 rounded-lg px-2.5 py-1.5 data-selected:bg-muted"
           >
             <span className="flex w-full items-center gap-2">
-              <span className="font-mono text-xs text-faint">/{c.shortcut}</span>
+              <span className="font-mono text-caption text-faint">/{c.shortcut}</span>
               <span className="truncate font-medium">{c.title}</span>
             </span>
-            <span className="line-clamp-1 text-xs text-muted-foreground">{c.body}</span>
+            <span className="line-clamp-1 text-caption text-muted-foreground">{c.body}</span>
           </CommandItem>
         ))}
       </CommandList>

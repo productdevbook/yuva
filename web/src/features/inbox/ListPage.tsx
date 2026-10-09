@@ -25,6 +25,7 @@ import { useView } from "@/lib/view"
 import { useChannelMap, useInboxes, useMemberMap } from "@/lib/workspace"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Item } from "@/components/ui/item"
 
 type Chip = "open" | "pending" | "snoozed" | "closed"
 const CHIPS: Chip[] = ["open", "pending", "snoozed", "closed"]
@@ -97,26 +98,26 @@ function Row({
         className="size-[18px] rounded-[5px] data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground"
         data-testid="row-check"
       />
-      <Button variant="plain" size="auto" onClick={onOpen} className="flex min-w-0 flex-1 gap-3 rounded-lg">
-        <ContactAvatar id={c.contact.id} name={name} className="size-9 text-xs" />
+      <Item render={<button type="button" />} size="xs" className="min-w-0 flex-1 flex-nowrap p-0 [button]:hover:bg-transparent" onClick={onOpen}>
+        <ContactAvatar id={c.contact.id} name={name} className="size-9" />
         <span className="min-w-0 flex-1">
           <span className="flex min-w-0 items-baseline gap-2">
-            <b className={cn("max-w-[65%] min-w-0 shrink-0 truncate", c.unread ? "font-semibold" : "font-medium")}>{name}</b>
-            <span className="inline-flex min-w-0 shrink items-center gap-[5px] truncate text-xs text-faint">
+            <b className={cn("max-w-[65%] min-w-0 shrink-0 truncate", c.unread ? "font-medium" : "font-medium")}>{name}</b>
+            <span className="inline-flex min-w-0 shrink items-center gap-[5px] truncate text-caption text-faint">
               {inbox && <Dot color={inbox.branding.color} className="size-[7px] rounded-[2px]" />}
               <span className="truncate">{[inbox?.name, channel && text.channel[channel.kind]].filter(Boolean).join(" · ")}</span>
               {rating && <RatingMark rating={rating.rating} comment={rating.comment} />}
             </span>
-            <span className={cn("ms-auto shrink-0 text-xs whitespace-nowrap", urgent ? "text-brand" : "text-faint")} data-urgent={urgent}>
+            <span className={cn("ms-auto shrink-0 text-caption whitespace-nowrap", urgent ? "text-brand" : "text-faint")} data-urgent={urgent}>
               {wait}
             </span>
           </span>
-          {preview && <span className="mt-0.5 block truncate text-[13px] text-muted-foreground">{preview}</span>}
+          {preview && <span className="mt-0.5 block truncate text-small text-muted-foreground">{preview}</span>}
         </span>
-      </Button>
+      </Item>
       {viewer && (
         <span title={t`${viewer.name || viewer.email} is looking`} data-testid="row-viewer">
-          <MemberAvatar name={viewer.name || viewer.email} className="size-5 text-[8px]" />
+          <MemberAvatar name={viewer.name || viewer.email} className="size-5" />
         </span>
       )}
     </div>
@@ -159,9 +160,9 @@ function BulkBar({ rows, picked, onClear }: { rows: ConversationListItem[]; pick
   const morning = new Date()
   morning.setDate(morning.getDate() + 1)
   morning.setHours(9, 0, 0, 0)
-  const button = "rounded-lg bg-background/12 px-3 text-[13px] font-normal text-background hover:bg-background/20 hover:text-background aria-expanded:bg-background/20 aria-expanded:text-background [&_svg]:size-3.5"
+  const button = "bg-background/12 text-background hover:bg-background/20 hover:text-background aria-expanded:bg-background/20 aria-expanded:text-background"
   return (
-    <div className="mx-3 mb-2 flex flex-wrap items-center gap-2 rounded-xl bg-foreground py-2 ps-3.5 pe-2 text-[13px] text-background" role="toolbar" aria-label={t`Selected conversations`} data-testid="bulk-bar">
+    <div className="mx-3 mb-2 flex flex-wrap items-center gap-2 rounded-xl bg-foreground py-2 ps-3.5 pe-2 text-small text-background" role="toolbar" aria-label={t`Selected conversations`} data-testid="bulk-bar">
       <span className="flex-1">
         <Trans>{n} selected</Trans>
       </span>
@@ -179,13 +180,13 @@ function BulkBar({ rows, picked, onClear }: { rows: ConversationListItem[]; pick
             <span className="flex-1">
               <Trans>In 1 hour</Trans>
             </span>
-            <span className="text-xs text-faint">{time.format(inHour)}</span>
+            <span className="text-caption text-faint">{time.format(inHour)}</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => run({ status: "snoozed", snooze_until: morning.toISOString() }, t`${n} snoozed`, statusBack)}>
             <span className="flex-1">
               <Trans>Tomorrow morning</Trans>
             </span>
-            <span className="text-xs text-faint">{time.format(morning)}</span>
+            <span className="text-caption text-faint">{time.format(morning)}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -200,7 +201,7 @@ function BulkBar({ rows, picked, onClear }: { rows: ConversationListItem[]; pick
         <UserRoundCheckIcon />
         <Trans>Assign to me</Trans>
       </Button>
-      <Button variant="ghost" size="icon-sm" onClick={onClear} aria-label={t`Clear the selection`} className="rounded-lg text-background hover:bg-background/20 hover:text-background">
+      <Button variant="ghost" size="icon-sm" onClick={onClear} aria-label={t`Clear the selection`} className="text-background hover:bg-background/20 hover:text-background">
         <XIcon />
       </Button>
     </div>
@@ -327,7 +328,7 @@ export function ListPage() {
             }))}
           />
           <span className="flex-1" />
-          <span className="text-xs text-faint">{chip === "open" ? <Trans>Oldest first</Trans> : <Trans>Newest first</Trans>}</span>
+          <span className="text-caption text-faint">{chip === "open" ? <Trans>Oldest first</Trans> : <Trans>Newest first</Trans>}</span>
         </div>
         {picked.size > 0 && <BulkBar rows={rows} picked={picked} onClear={() => setPicked(new Set())} />}
         <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto px-2 pb-4 phone:overflow-visible" data-testid="list">
@@ -337,7 +338,7 @@ export function ListPage() {
               <Skeleton className="h-14 w-full rounded-xl" />
             </div>
           ) : rows.length === 0 ? (
-            <p className="px-4 py-12 text-center text-sm text-faint">
+            <p className="px-4 py-12 text-center text-body text-faint">
               {q ? <Trans>Nothing matches your search here.</Trans> : <Trans>No conversations here.</Trans>}
             </p>
           ) : (
@@ -361,7 +362,7 @@ export function ListPage() {
           {current ? (
             <ListPreview key={current.id} id={current.id} flow={flow} onFullScreen={() => fullScreen(current.id)} />
           ) : (
-            <p className="m-auto text-sm text-faint">
+            <p className="m-auto text-body text-faint">
               <Trans>Pick a conversation to see it here.</Trans>
             </p>
           )}

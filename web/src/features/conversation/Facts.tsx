@@ -1,7 +1,7 @@
 import { useLingui } from "@lingui/react/macro"
 
 import type { Contact, Conversation } from "@/lib/api"
-import { Button } from "@/components/ui/button"
+import { Item } from "@/components/ui/item"
 
 function shown(v: unknown) {
   if (typeof v === "string") return v.trim() || null
@@ -45,24 +45,23 @@ export function Facts({ facts, onOpen }: { facts: Fact[]; onOpen: () => void }) 
   const { t } = useLingui()
   if (facts.length === 0) return null
   return (
-    <Button
-      variant="plain"
-      size="auto"
+    <Item render={<button type="button" />} variant="outline" className="mt-5 block bg-card p-0 hover:border-input [button]:hover:bg-card"
       onClick={onOpen}
-      className="mt-5 block w-full rounded-[14px] border-border bg-card transition-colors hover:border-input"
       title={t`Contact details`}
       data-testid="facts"
     >
       <dl className="grid grid-cols-[repeat(auto-fit,minmax(130px,1fr))] phone:grid-cols-2 [&>div+div]:border-s phone:[&>div:nth-child(3)]:border-s-0 phone:[&>div:nth-child(n+3)]:border-t">
         {facts.map(([k, v, raw]) => (
           <div key={k} className="min-w-0 px-3.5 py-2.5">
-            <dt className={raw ? "truncate text-[11px] text-faint" : "truncate text-[11px] tracking-[0.04em] text-faint uppercase"}>{k}</dt>
-            <dd className="mt-0.5 truncate text-[13px]" title={v}>
+            <dt className="eyebrow truncate" lang={raw ? "" : undefined}>
+              {k}
+            </dt>
+            <dd className="mt-0.5 truncate text-small" title={v}>
               {v}
             </dd>
           </div>
         ))}
       </dl>
-    </Button>
+    </Item>
   )
 }

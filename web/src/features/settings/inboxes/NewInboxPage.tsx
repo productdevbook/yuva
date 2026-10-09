@@ -15,6 +15,7 @@ import { api, ApiError, unwrap, type ChannelKind } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { Input } from "@/components/ui/input"
+import { Item } from "@/components/ui/item"
 
 type FlowState = { secret?: string }
 
@@ -59,7 +60,7 @@ function NameStep() {
         maxLength={200}
         placeholder={t`For example Fieldnote`}
         aria-label={t`Product name`}
-        className="mt-6 h-auto rounded-[14px] bg-card px-4 py-3.5 text-xl md:text-xl"
+        className="mt-6 h-auto rounded-[14px] bg-card px-4 py-3.5 text-title md:text-title"
         data-testid="new-inbox-name"
       />
       <ErrorLine error={create.error} className="mt-3" />
@@ -93,12 +94,9 @@ function ChannelStep({ inboxId }: { inboxId: string }) {
       />
       <div className="grid gap-2.5">
         {picks.map(([k, title, hint]) => (
-          <Button
+          <Item render={<button type="button" />} variant="outline" className="bg-card hover:border-brand"
             key={k}
-            variant="plain"
-            size="auto"
             onClick={() => setKind(k)}
-            className="flex gap-3.5 rounded-2xl border-border bg-card p-4 hover:border-brand"
             data-testid={`pick-${k}`}
           >
             <RowIcon>
@@ -106,12 +104,12 @@ function ChannelStep({ inboxId }: { inboxId: string }) {
             </RowIcon>
             <span>
               <b className="block font-medium">{title}</b>
-              <small className="text-[13px] text-faint">{hint}</small>
+              <small className="text-small text-faint">{hint}</small>
             </span>
-          </Button>
+          </Item>
         ))}
       </div>
-      <p className="text-center text-sm">
+      <p className="text-center text-body">
         <Link to={`/settings/inboxes/${inboxId}`} className="text-faint hover:text-foreground">
           <Trans>Skip for now</Trans>
         </Link>
@@ -146,7 +144,7 @@ function DoneStep({ inboxId, channelId }: { inboxId: string; channelId: string }
       {channel?.email && (
         <Section title={<Trans>Forward your mail</Trans>}>
           <CodeLine value={channel.email.address} />
-          <p className="mx-1 text-[13px] leading-relaxed text-faint">
+          <p className="mx-1 text-small text-faint">
             <Trans>
               Route mail for this address to Yuva's e-mail ingress, for example with the Cloudflare Email Worker in edge/.
               Replies go out through the SMTP account you entered.

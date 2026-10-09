@@ -33,7 +33,7 @@ export function AttemptLog({ endpoint }: { endpoint: WebhookEndpoint }) {
           </EmptyRow>
         ) : (
           <div className="max-h-96 overflow-auto">
-            <table className="w-full text-xs" data-testid="attempts-table">
+            <table className="w-full text-caption" data-testid="attempts-table">
               <thead className="sticky top-0 bg-surface text-muted-foreground">
                 <tr>
                   <th className={th}>

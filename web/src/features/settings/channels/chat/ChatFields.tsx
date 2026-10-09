@@ -42,7 +42,7 @@ export function ChatFields({
           id="chat-origins"
           rows={3}
           spellCheck={false}
-          className="font-mono text-xs"
+          className="font-mono text-caption"
           value={f.origins}
           placeholder={"https://www.example.com\nhttps://app.example.com"}
           onChange={(e) => set({ origins: e.target.value })}
@@ -101,10 +101,10 @@ export function ChatFields({
                   className="h-8 w-10 cursor-pointer rounded-lg p-0.5"
                   aria-label={t`Launcher color`}
                 />
-                <code className="font-mono text-xs text-muted-foreground">{f.color}</code>
+                <code className="font-mono text-caption text-muted-foreground">{f.color}</code>
               </>
             ) : (
-              <span className="text-sm text-muted-foreground">
+              <span className="text-body text-muted-foreground">
                 <Trans>Inbox color</Trans>
               </span>
             )}

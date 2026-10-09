@@ -19,7 +19,7 @@ export function Notice({
   className?: string
 } & Omit<React.ComponentProps<"div">, "children">) {
   return (
-    <div className={cn("flex gap-2.5 rounded-xl px-3.5 py-3 text-sm leading-relaxed", tones[tone], className)} {...props}>
+    <div className={cn("flex gap-2.5 rounded-xl px-3.5 py-3 text-body", tones[tone], className)} {...props}>
       {Icon && (
         <Icon
           className={cn(

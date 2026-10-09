@@ -52,7 +52,7 @@ export function TopBar() {
       <div className="flex min-w-0 items-center gap-1.5">
         <Link
           to="/"
-          className="flex items-center gap-2 rounded-lg py-1 ps-1 pe-2 text-[15px] font-semibold tracking-tight transition-colors hover:bg-muted phone:pe-1"
+          className="flex items-center gap-2 rounded-lg py-1 ps-1 pe-2 text-reading font-medium transition-colors hover:bg-muted phone:pe-1"
           aria-label={t`Home`}
         >
           <YuvaMark className="size-6" />
@@ -66,17 +66,17 @@ export function TopBar() {
       <div className="flex items-center justify-end gap-1">
         <TeamMenu />
         {!listing && (
-          <Button variant="ghost" size="sm" className="rounded-lg px-2.5 font-normal" onClick={() => openDrawer()} data-testid="open-all">
+          <Button variant="ghost" size="sm" onClick={() => openDrawer()} data-testid="open-all">
             <span className="phone:hidden">
               <Trans>All</Trans>
             </span>
-            <span className="text-xs text-faint tabular-nums">{new Intl.NumberFormat(i18n.locale, { notation: "compact" }).format(all)}</span>
+            <span className="text-caption text-faint tabular-nums">{new Intl.NumberFormat(i18n.locale, { notation: "compact" }).format(all)}</span>
           </Button>
         )}
         <Button
           variant="ghost"
           size="icon-sm"
-          className={cn("rounded-lg", pathname.startsWith("/settings") && "bg-muted text-foreground")}
+          className={cn(pathname.startsWith("/settings") && "bg-muted text-foreground")}
           render={<Link to="/settings" />}
           aria-label={t`Settings`}
           title={t`Settings`}

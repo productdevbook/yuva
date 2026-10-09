@@ -28,14 +28,14 @@ function GrantRow({ g, showMember, onRevoke }: { g: OAuthGrant; showMember: bool
       </span>
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <div className="flex min-w-0 items-start justify-between gap-2">
-          <p className="min-w-0 text-sm font-medium break-words" data-testid="grant-client">
+          <p className="min-w-0 text-body font-medium break-words" data-testid="grant-client">
             {g.client.name}
           </p>
           <Button variant="ghost" size="sm" className="-my-1" onClick={onRevoke} data-testid="grant-revoke">
             <Trans>Revoke</Trans>
           </Button>
         </div>
-        <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
+        <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-0.5 text-caption text-muted-foreground">
           {showMember && (
             <>
               <dt className="text-faint">
@@ -75,7 +75,7 @@ function GrantRow({ g, showMember, onRevoke }: { g: OAuthGrant; showMember: bool
             <Plural value={g.requests_this_month} one="# request" other="# requests" />
           </dd>
         </dl>
-        <p className="text-xs text-faint">
+        <p className="text-caption text-faint">
           <Trans>Connected {created}</Trans>
           {" · "}
           {used ? <Trans>last used {used}</Trans> : <Trans>never used</Trans>}

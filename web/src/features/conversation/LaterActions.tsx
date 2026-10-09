@@ -22,13 +22,14 @@ import type { Conversation } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useAssignableMembers } from "@/lib/workspace"
+import { Item } from "@/components/ui/item"
 
 export type LaterMenu = "snooze" | "hand" | null
 
-const link = <Button variant="ghost" size="sm" className="rounded-lg px-2.5 text-[13px] font-normal [&_svg]:size-[13px]" />
+const link = <Button variant="ghost" size="sm" />
 
 function Key({ children }: { children: React.ReactNode }) {
-  return <Kbd className="h-4 min-w-4 rounded-[5px] bg-transparent font-mono text-[10px] text-faint phone:hidden">{children}</Kbd>
+  return <Kbd className="phone:hidden">{children}</Kbd>
 }
 
 function useSnoozeTimes() {
@@ -78,7 +79,7 @@ export function LaterActions({
     <div className="mt-3 flex flex-wrap justify-center gap-0.5 phone:gap-0" data-testid="later-actions">
       <DropdownMenu open={menu === "snooze"} onOpenChange={(o) => setMenu(o ? "snooze" : null)}>
         <DropdownMenuTrigger render={link} data-testid="snooze-menu">
-          <ClockIcon className="size-[13px]" />
+          <ClockIcon />
           <Trans>Later</Trans>
           <Key>S</Key>
         </DropdownMenuTrigger>
@@ -90,7 +91,7 @@ export function LaterActions({
             {times.map((o) => (
               <DropdownMenuItem key={o.label} onClick={() => actions.snooze(o.at, o.when)}>
                 <span className="flex-1">{o.label}</span>
-                {o.detail && <span className="text-xs text-faint">{o.detail}</span>}
+                {o.detail && <span className="text-caption text-faint">{o.detail}</span>}
               </DropdownMenuItem>
             ))}
             <DropdownMenuItem onClick={actions.untilReply}>
@@ -112,42 +113,43 @@ export function LaterActions({
         }}
       >
         <PopoverTrigger render={link} data-testid="hand-menu">
-          <UserRoundPlusIcon className="size-[13px]" />
+          <UserRoundPlusIcon />
           <Trans>Hand to a teammate</Trans>
           <Key>A</Key>
         </PopoverTrigger>
         <PopoverContent side="top" align="center" sideOffset={6} className={cn(popupClass, "w-[300px] max-w-[calc(100vw-32px)] gap-0 rounded-xl p-1.5 ring-0")} data-testid="hand-popup">
-              <p className="px-2.5 pt-1.5 pb-1 text-xs font-medium text-faint">
+              <p className="px-2.5 pt-1.5 pb-1 text-caption font-medium text-faint">
                 <Trans>Who should take it?</Trans>
               </p>
               {people.length === 0 && (
-                <p className="px-2.5 py-2 text-sm text-muted-foreground">
+                <p className="px-2.5 py-2 text-body text-muted-foreground">
                   <Trans>Nobody else can see this inbox yet.</Trans>
                 </p>
               )}
               {people.map((m) => {
                 const who = m.name || m.email
                 return (
-                  <Button
+                  <Item
                     key={m.id}
-                    variant="ghost"
+                    render={<button type="button" />}
+                    size="xs"
                     onClick={() => {
                       setMenu(null)
                       actions.hand(m, note)
                       setNote("")
                     }}
-                    className="h-auto w-full justify-start gap-2.5 rounded-lg px-2.5 py-2 text-start font-normal text-foreground"
+                    className="flex-nowrap"
                   >
                     <MemberAvatar name={who} online={m.online} away={m.availability === "away"} ring="ring-card" />
                     <span className="min-w-0 flex-1">
                       <span className="block truncate">{who}</span>
-                      <small className="block truncate text-xs text-faint">
+                      <small className="block truncate text-caption text-faint">
                         {m.availability === "away" ? <Trans>Away</Trans> : m.online ? <Trans>Online</Trans> : <Trans>Offline</Trans>}
                         {" · "}
                         <Plural value={load.get(m.id) ?? 0} one="# conversation" other="# conversations" />
                       </small>
                     </span>
-                  </Button>
+                  </Item>
                 )
               })}
               {people.length > 0 && (
@@ -164,7 +166,7 @@ export function LaterActions({
       </PopoverContent>
       </Popover>
 
-      <Button variant="ghost" size="sm" className="rounded-lg px-2.5 text-[13px] font-normal [&_svg]:size-[13px]" onClick={actions.close} data-testid="close-conversation">
+      <Button variant="ghost" size="sm" onClick={actions.close} data-testid="close-conversation">
         <CheckIcon />
         <Trans>Close without reply</Trans>
         <Key>E</Key>

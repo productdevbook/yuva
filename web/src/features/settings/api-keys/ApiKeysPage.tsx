@@ -76,12 +76,12 @@ function KeyRow({ k, onEdit, onRevoke }: { k: ApiKey; onEdit: () => void; onRevo
       <BotAvatar name={bot} url={k.bot_avatar_url} className="mt-0.5 size-8" />
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <div className="flex min-w-0 items-start justify-between gap-2">
-          <p className="min-w-0 text-sm font-medium break-words">
-            {k.name} <code className="font-mono text-xs font-normal text-faint">{k.prefix}…</code>
+          <p className="min-w-0 text-body font-medium break-words">
+            {k.name} <code className="font-mono text-caption font-normal text-faint">{k.prefix}…</code>
           </p>
           {actions}
         </div>
-        <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
+        <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-0.5 text-caption text-muted-foreground">
           <dt className="text-faint">
             <Trans>Bot</Trans>
           </dt>
@@ -117,7 +117,7 @@ function KeyRow({ k, onEdit, onRevoke }: { k: ApiKey; onEdit: () => void; onRevo
             {!expires ? <Trans>Never</Trans> : expired ? <Trans>Expired {expires}</Trans> : expires}
           </dd>
         </dl>
-        <p className="text-xs text-faint">
+        <p className="text-caption text-faint">
           {by ? <Trans>Created {created} by {by}</Trans> : <Trans>Created {created}</Trans>}
           {" · "}
           {used ? <Trans>last used {used}</Trans> : <Trans>never used</Trans>}

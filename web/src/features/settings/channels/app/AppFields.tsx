@@ -15,7 +15,7 @@ export function AppFields({ f, set }: { f: AppForm; set: (patch: Partial<AppForm
   return (
     <FormBlock title={<Trans>Mobile app</Trans>}>
       <div className="flex flex-col gap-2">
-        <span className="text-sm font-medium" id="app-platforms">
+        <span className="text-body font-medium" id="app-platforms">
           <Trans>Platforms</Trans>
         </span>
         <div className="flex gap-5" role="group" aria-labelledby="app-platforms">

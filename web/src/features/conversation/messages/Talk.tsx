@@ -64,7 +64,7 @@ function useDayLabel() {
   }
 }
 
-const tagClass = "h-auto px-1.5 py-px text-[11px]"
+const tagClass = "h-auto px-1.5 py-px text-caption"
 
 function EmailTags({ m }: { m: Message }) {
   const { t } = useLingui()
@@ -111,8 +111,8 @@ function Letter({ m, ctx, name }: { m: Message; ctx: ThreadContext; name: string
   const e = m.email!
   return (
     <div className="rounded-2xl border bg-card px-[18px] py-4" data-testid="message" data-message-id={m.id}>
-      {e.subject && <div className="text-[15px] font-semibold break-words">{e.subject}</div>}
-      <div className="mt-0.5 mb-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-faint">
+      {e.subject && <div className="text-reading font-medium break-words">{e.subject}</div>}
+      <div className="mt-0.5 mb-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-caption text-faint">
         <span className="min-w-0 truncate">
           {name} &lt;{e.from}&gt;
         </span>
@@ -157,14 +157,14 @@ function FeedbackCard({ m, feedback }: { m: Message; feedback: Feedback }) {
   const rest = m.attachments.filter((a) => !shots.includes(a))
   return (
     <div className="overflow-hidden rounded-2xl border bg-card" data-testid="feedback-card" data-message-id={m.id}>
-      <div className="flex items-center gap-2 border-b px-4 py-3 text-[13px]">
+      <div className="flex items-center gap-2 border-b px-4 py-3 text-small">
         <Badge className={cn("rounded-md px-2", categoryTag[category])}>{text.category[category]}</Badge>
         <Trans>Feedback sent from the app</Trans>
         <time className="ms-auto text-faint" dateTime={m.created_at} title={formatDateTime(m.created_at, i18n.locale)}>
           {timeOf(m.created_at, i18n.locale)}
         </time>
       </div>
-      <div className={cn("grid items-start gap-4 px-4 py-3.5 text-[15px] leading-[1.55]", shots.length > 0 && "grid-cols-[1fr_72px] phone:grid-cols-1")}>
+      <div className={cn("grid items-start gap-4 px-4 py-3.5 text-reading", shots.length > 0 && "grid-cols-[1fr_72px] phone:grid-cols-1")}>
         <div className="break-words whitespace-pre-wrap">{m.body}</div>
         {shots.length > 0 && (
           <div className="flex flex-col gap-2 phone:flex-row">
@@ -229,7 +229,7 @@ function NoteBody({ m, ctx }: { m: Message; ctx: ThreadContext }) {
     <>
       <div className="break-words whitespace-pre-wrap">{parts}</div>
       {missing.length > 0 && (
-        <div className="mt-1 text-xs text-note-ink">
+        <div className="mt-1 text-caption text-note-ink">
           <Trans>Mentions: {names}</Trans>
         </div>
       )}
@@ -241,8 +241,8 @@ function Note({ m, ctx }: { m: Message; ctx: ThreadContext }) {
   const { i18n } = useLingui()
   const author = useAuthorName(m, ctx)
   return (
-    <div className="my-2.5 rounded-[14px] border border-note-border bg-note px-3.5 py-3 text-sm leading-[1.55]" data-testid="note" data-message-id={m.id}>
-      <div className="mb-1 flex items-center gap-1.5 text-xs font-medium text-note-ink">
+    <div className="my-2.5 rounded-[14px] border border-note-border bg-note px-3.5 py-3 text-body" data-testid="note" data-message-id={m.id}>
+      <div className="mb-1 flex items-center gap-1.5 text-caption font-medium text-note-ink">
         <LockIcon className="size-3" />
         <span className="min-w-0 truncate">
           <Trans>{author} · only the team sees this</Trans>
@@ -264,9 +264,9 @@ function Note({ m, ctx }: { m: Message; ctx: ThreadContext }) {
 function Face({ m, side, ctx, name }: { m: Message; side: Side; ctx: ThreadContext; name: string }) {
   const author = useAuthorName(m, ctx)
   const by = useAuthorName({ ...m, author: m.sent_by ?? m.author }, ctx)
-  if (side === "in") return <ContactAvatar id={ctx.contact?.id ?? m.conversation_id} name={name} className="size-[26px] text-[10px]" />
-  if (side === "bot") return <BotAvatar name={author} url={m.author.avatar_url} className="size-[26px] text-[10px]" />
-  return <PersonAvatar name={by} className={cn("size-[26px] text-[10px] font-semibold text-white", side === "me" ? "bg-muted-foreground text-background" : "bg-mate")} />
+  if (side === "in") return <ContactAvatar id={ctx.contact?.id ?? m.conversation_id} name={name} className="size-[26px]" />
+  if (side === "bot") return <BotAvatar name={author} url={m.author.avatar_url} className="size-[26px]" />
+  return <PersonAvatar name={by} className={cn("size-[26px] text-white", side === "me" ? "bg-muted-foreground text-background" : "bg-mate")} />
 }
 
 function Meta({ m, side, ctx, name }: { m: Message; side: Side; ctx: ThreadContext; name: string }) {
@@ -275,7 +275,7 @@ function Meta({ m, side, ctx, name }: { m: Message; side: Side; ctx: ThreadConte
   const by = useAuthorName({ ...m, author: m.sent_by ?? m.author }, ctx)
   const who = side === "in" ? name.split(" ")[0] : side === "me" && !m.sent_by ? t`You` : m.sent_by ? t`${author}, sent by ${by}` : author
   return (
-    <div className={cn("mx-1 mt-1 text-[11px] text-faint", side !== "in" && "text-end")}>
+    <div className={cn("mx-1 mt-1 text-caption text-faint", side !== "in" && "text-end")}>
       {who} ·{" "}
       <time dateTime={m.created_at} title={formatDateTime(m.created_at, i18n.locale)}>
         {timeOf(m.created_at, i18n.locale)}
@@ -304,7 +304,7 @@ function Line({ m, ctx, name, me, last }: { m: Message; ctx: ThreadContext; name
           m.body && (
             <div
               className={cn(
-                "rounded-[18px] border px-[15px] py-[11px] text-[15px] leading-[1.55] break-words whitespace-pre-wrap",
+                "rounded-[18px] border px-[15px] py-[11px] text-reading break-words whitespace-pre-wrap",
                 side === "in" && "bg-card",
                 side === "me" && "border-primary bg-primary text-white",
                 side === "mate" && "border-transparent bg-mate text-white",
@@ -333,17 +333,17 @@ function OlderDraft({ m, ctx }: { m: Message; ctx: ThreadContext }) {
   const { send, discard } = useDraftActions()
   return (
     <div className="flex max-w-[88%] flex-col items-end gap-1.5 self-end" data-testid="draft" data-message-id={m.id}>
-      <span className="text-[11px] text-faint">
+      <span className="text-caption text-faint">
         <Trans>Draft by {author}</Trans>
       </span>
-      <div className="rounded-[18px] border border-dashed border-warning/50 bg-warning/5 px-[15px] py-[11px] text-[15px] leading-[1.55] break-words whitespace-pre-wrap">
+      <div className="rounded-[18px] border border-dashed border-warning/50 bg-warning/5 px-[15px] py-[11px] text-reading break-words whitespace-pre-wrap">
         {m.body}
       </div>
       <div className="flex gap-1">
-        <Button size="xs" onClick={() => send.mutate(m)} disabled={send.isPending || discard.isPending}>
+        <Button size="sm" onClick={() => send.mutate(m)} disabled={send.isPending || discard.isPending}>
           <Trans>Send</Trans>
         </Button>
-        <Button variant="ghost" size="xs" onClick={() => discard.mutate(m)} disabled={send.isPending || discard.isPending}>
+        <Button variant="ghost" size="sm" onClick={() => discard.mutate(m)} disabled={send.isPending || discard.isPending}>
           <Trans>Discard</Trans>
         </Button>
       </div>
@@ -360,7 +360,7 @@ function Rated({ m, ctx, name }: { m: Message; ctx: ThreadContext; name: string 
     <div className="my-2 flex justify-center" data-testid="rated">
       <div
         className={cn(
-          "max-w-[88%] rounded-2xl border px-3.5 py-2 text-center text-sm",
+          "max-w-[88%] rounded-2xl border px-3.5 py-2 text-center text-body",
           rating === "good" ? "border-success/25 bg-success/6" : "border-destructive/25 bg-destructive/5",
         )}
       >
@@ -368,7 +368,7 @@ function Rated({ m, ctx, name }: { m: Message; ctx: ThreadContext; name: string 
           {rating === "good" ? <Trans>{first} rated the conversation 👍</Trans> : <Trans>{first} rated the conversation 👎</Trans>}
         </span>
         {m.body && <span className="text-muted-foreground"> · “{m.body}”</span>}
-        <time className="ms-1.5 text-xs text-faint" dateTime={m.created_at} title={formatDateTime(m.created_at, i18n.locale)}>
+        <time className="ms-1.5 text-caption text-faint" dateTime={m.created_at} title={formatDateTime(m.created_at, i18n.locale)}>
           {timeOf(m.created_at, i18n.locale)}
         </time>
       </div>
@@ -397,7 +397,7 @@ export function Talk({
     <div className="flex flex-col">
       {items.map((m, i) => {
         const day = new Date(m.created_at).toDateString()
-        const sep = day !== lastDay ? <div className="mt-2.5 mb-2 flex items-center gap-3 text-xs text-faint"><Separator className="flex-1" />{dayLabel(m.created_at)}<Separator className="flex-1" /></div> : null
+        const sep = day !== lastDay ? <div className="mt-2.5 mb-2 flex items-center gap-3 text-caption text-faint"><Separator className="flex-1" />{dayLabel(m.created_at)}<Separator className="flex-1" /></div> : null
         lastDay = day
         let body: React.ReactNode
         if (m.kind === "event" && m.event?.type === "rated") body = <Rated m={m} ctx={ctx} name={name} />
@@ -420,7 +420,7 @@ export function Talk({
 
 export function TypingNote({ name }: { name: string }) {
   return (
-    <div className="mt-1.5 flex items-center gap-2.5 text-[13px] text-faint" role="status" data-testid="typing">
+    <div className="mt-1.5 flex items-center gap-2.5 text-small text-faint" role="status" data-testid="typing">
       <span className="inline-flex rounded-[14px] border bg-card px-3 py-2.5">
         <TypingDots className="gap-[3px] [&>span]:size-[5px]" />
       </span>

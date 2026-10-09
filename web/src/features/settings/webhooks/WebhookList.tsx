@@ -54,8 +54,8 @@ export function WebhookList({ inboxId }: { inboxId?: string }) {
               return (
                 <LinkRow key={e.id} to={`/settings/webhooks/${e.id}`} testId="webhook-row">
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-mono text-xs font-medium">{e.url}</p>
-                    <p className="truncate text-xs text-muted-foreground">
+                    <p className="truncate font-mono text-caption font-medium">{e.url}</p>
+                    <p className="truncate text-caption text-muted-foreground">
                       {e.description && <>{e.description} · </>}
                       {!inboxId && (
                         <>

@@ -28,7 +28,7 @@ export function CategoryChip({ category, className }: { category: FeedbackCatego
   const Icon = categoryIcons[category]
   return (
     <span
-      className={cn("inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground", className)}
+      className={cn("inline-flex shrink-0 items-center gap-1 text-caption text-muted-foreground", className)}
       data-testid="category-chip"
       data-category={category}
     >
@@ -63,7 +63,7 @@ export function FeedbackDetails({ feedback }: { feedback: Feedback }) {
   useHotkeys({ [SHORTCUTS.copyDetails]: () => void copyAll() })
   return (
     <div className="flex items-start gap-2 rounded-xl px-2.5 py-1.5" data-testid="feedback-details">
-      <dl className="grid min-w-0 flex-1 grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1 text-xs sm:grid-cols-[auto_minmax(0,1fr)_auto_minmax(0,1fr)]">
+      <dl className="grid min-w-0 flex-1 grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1 text-caption sm:grid-cols-[auto_minmax(0,1fr)_auto_minmax(0,1fr)]">
         {rows.map(([k, v, mono]) => (
           <div key={k} className="contents">
             <dt className="text-faint">{k}</dt>

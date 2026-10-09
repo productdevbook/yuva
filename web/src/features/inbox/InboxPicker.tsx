@@ -26,7 +26,8 @@ export function InboxPicker({ className }: { className?: string }) {
     >
       <SelectTrigger
         aria-label={t`Inbox`}
-        className={cn("h-8 max-w-48 border-transparent bg-transparent ps-2 pe-2 text-muted-foreground shadow-none hover:border-transparent hover:bg-muted hover:text-foreground", className)}
+        size="sm"
+        className={cn("max-w-48 border-transparent bg-transparent ps-2 pe-2 text-muted-foreground shadow-none hover:border-transparent hover:bg-muted hover:text-foreground", className)}
         data-testid="inbox-picker"
       >
         <SelectValue />

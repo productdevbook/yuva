@@ -135,7 +135,7 @@ export function Palette({ open, onOpenChange }: { open: boolean; onOpenChange: (
           onValueChange={setQ}
           placeholder={t`Search people, actions or settings…`}
           aria-label={t`Search people, actions or settings`}
-          className="w-full border-b bg-transparent px-[18px] py-4 text-base outline-none placeholder:text-faint"
+          className="w-full border-b bg-transparent px-[18px] py-4 text-base outline-none md:text-body placeholder:text-faint"
         />
         <CommandList className="max-h-[50vh] p-1.5">
           <CommandEmpty className="py-10 text-faint">
@@ -145,7 +145,7 @@ export function Palette({ open, onOpenChange }: { open: boolean; onOpenChange: (
             <CommandGroup
               key={`${g.name}:${g.items[0]?.label}`}
               heading={g.name}
-              className="p-0 **:[[cmdk-group-heading]]:px-3 **:[[cmdk-group-heading]]:pt-2.5 **:[[cmdk-group-heading]]:pb-1 **:[[cmdk-group-heading]]:text-[11px] **:[[cmdk-group-heading]]:font-normal **:[[cmdk-group-heading]]:tracking-[0.04em] **:[[cmdk-group-heading]]:text-faint **:[[cmdk-group-heading]]:uppercase"
+              className="p-0 **:[[cmdk-group-heading]]:px-3 **:[[cmdk-group-heading]]:pt-2.5 **:[[cmdk-group-heading]]:pb-1 **:[[cmdk-group-heading]]:text-caption **:[[cmdk-group-heading]]:font-medium **:[[cmdk-group-heading]]:text-faint"
             >
               {g.items.map((x, i) => (
                 <CommandItem
@@ -155,9 +155,9 @@ export function Palette({ open, onOpenChange }: { open: boolean; onOpenChange: (
                   className="gap-2.5 rounded-[10px]! px-3 py-[9px] data-selected:bg-brand-wash"
                 >
                   <span className="truncate">{x.label}</span>
-                  {x.hint && <small className="min-w-0 truncate text-xs text-faint">{x.hint}</small>}
+                  {x.hint && <small className="min-w-0 truncate text-caption text-faint">{x.hint}</small>}
                   {x.keys && (
-                    <CommandShortcut className="flex gap-1 tracking-normal">
+                    <CommandShortcut className="flex gap-1">
                       {x.keys.map((k) => (
                         <Kbd key={k}>{k}</Kbd>
                       ))}
@@ -168,7 +168,7 @@ export function Palette({ open, onOpenChange }: { open: boolean; onOpenChange: (
             </CommandGroup>
           ))}
           {search.length >= 2 && (
-            <CommandGroup heading={t`Search`} forceMount className="p-0 **:[[cmdk-group-heading]]:px-3 **:[[cmdk-group-heading]]:pt-2.5 **:[[cmdk-group-heading]]:pb-1 **:[[cmdk-group-heading]]:text-[11px] **:[[cmdk-group-heading]]:font-normal **:[[cmdk-group-heading]]:text-faint **:[[cmdk-group-heading]]:uppercase">
+            <CommandGroup heading={t`Search`} forceMount className="p-0 **:[[cmdk-group-heading]]:px-3 **:[[cmdk-group-heading]]:pt-2.5 **:[[cmdk-group-heading]]:pb-1 **:[[cmdk-group-heading]]:text-caption **:[[cmdk-group-heading]]:font-medium **:[[cmdk-group-heading]]:text-faint">
               <CommandItem
                 forceMount
                 value={`search ${search}`}

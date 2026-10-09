@@ -15,9 +15,8 @@ import { signInWithPasskey } from "@/lib/passkey"
 import { meKey, useMe } from "@/lib/session"
 import { Separator } from "@/components/ui/separator"
 
-const pill = "h-11 text-[0.95rem]"
 const field = "h-11 rounded-xl px-3.5"
-const alert = "rounded-xl border border-destructive/25 bg-destructive/5 px-3.5 py-2.5 text-sm text-destructive"
+const alert = "rounded-xl border border-destructive/25 bg-destructive/5 px-3.5 py-2.5 text-body text-destructive"
 
 export function SignInPage() {
   const { t } = useLingui()
@@ -55,10 +54,10 @@ export function SignInPage() {
             <MailIcon className="size-5" />
           </span>
         )}
-        <h1 className="text-[1.75rem] leading-tight font-semibold tracking-[-0.03em] sm:text-[2rem]">
+        <h1 className="text-page">
           {step === "email" ? <Trans>Sign in to Yuva</Trans> : <Trans>Check your e-mail</Trans>}
         </h1>
-        <p className="mt-3 leading-relaxed text-pretty text-muted-foreground">
+        <p className="mt-3 text-pretty text-muted-foreground">
           {step === "email" ? (
             <Trans>We e-mail you a one-time code. No password to remember.</Trans>
           ) : (
@@ -96,17 +95,17 @@ export function SignInPage() {
               />
             </div>
             <ErrorLine error={request.error} className={alert} />
-            <Button type="submit" disabled={request.isPending} className={pill}>
+            <Button type="submit" disabled={request.isPending} size="lg">
               <MailIcon />
               <Trans>Send me a code</Trans>
             </Button>
           </form>
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          <div className="flex items-center gap-3 text-caption text-muted-foreground">
             <Separator className="flex-1" />
             <Trans>or</Trans>
             <Separator className="flex-1" />
           </div>
-          <Button variant="outline" onClick={() => passkey.mutate()} disabled={passkey.isPending} className={pill}>
+          <Button variant="outline" onClick={() => passkey.mutate()} disabled={passkey.isPending} size="lg">
             <KeyRoundIcon />
             <Trans>Sign in with a passkey</Trans>
           </Button>
@@ -138,7 +137,7 @@ export function SignInPage() {
               autoFocus
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-              className="h-14 rounded-xl text-center font-mono text-2xl tracking-[0.5em] md:text-2xl"
+              className="h-14 rounded-xl text-center font-mono text-page tracking-[0.5em]"
             />
           </div>
           {verify.error && (
@@ -147,7 +146,7 @@ export function SignInPage() {
             </p>
           )}
           <ErrorLine error={request.error} className={alert} />
-          <Button type="submit" disabled={verify.isPending || code.length !== 6} className={pill}>
+          <Button type="submit" disabled={verify.isPending || code.length !== 6} size="lg">
             <Trans>Sign in</Trans>
           </Button>
           <div className="flex flex-wrap items-center justify-between gap-2">

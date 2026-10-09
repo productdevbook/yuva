@@ -6,6 +6,34 @@
 @custom-variant dark (&:where(.dark, .dark *));
 @custom-variant phone (@media (max-width: 680px));
 
+@theme {
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1rem;
+  --text-small: 0.8125rem;
+  --text-small--line-height: 1.125rem;
+  --text-body: 0.875rem;
+  --text-body--line-height: 1.25rem;
+  --text-reading: 0.9375rem;
+  --text-reading--line-height: 1.5rem;
+  --text-title: 1.25rem;
+  --text-title--line-height: 1.75rem;
+  --text-title--letter-spacing: -0.01em;
+  --text-title--font-weight: 600;
+  --text-page: 1.625rem;
+  --text-page--line-height: 2rem;
+  --text-page--letter-spacing: -0.02em;
+  --text-page--font-weight: 600;
+}
+
+@utility eyebrow {
+  font-size: var(--text-caption);
+  line-height: var(--text-caption--line-height);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
 @theme inline {
   --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, "SF Mono", Menlo, monospace;
@@ -96,7 +124,7 @@
     @apply bg-background font-sans text-foreground antialiased;
   }
   body {
-    @apply bg-background;
+    @apply bg-background text-body;
   }
   h1,
   h2,

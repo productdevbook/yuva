@@ -16,8 +16,8 @@ import { useSession } from "@/lib/session"
 import { Button } from "@/components/ui/button"
 import { Alert } from "@/components/ui/alert"
 
-const banner = "mb-4.5 flex items-center gap-3 rounded-[14px] py-2.5 ps-3.5 pe-2.5 text-sm"
-const bannerButton = "shrink-0 border-border bg-card text-[13px] font-normal hover:border-faint"
+const banner = "mb-4.5 flex items-center gap-3 rounded-[14px] py-2.5 ps-3.5 pe-2.5 text-body"
+const bannerButton = "shrink-0"
 
 function AwayBanner() {
   const { me } = useSession()
@@ -68,7 +68,7 @@ function CleanupBanner() {
             key={c.id}
             id={c.contact.id}
             name={c.contact.name || c.contact.email || "?"}
-            className="-ms-1.5 size-6 text-[9px] ring-2 ring-card first:ms-0"
+            className="-ms-1.5 size-6 ring-2 ring-card first:ms-0"
           />
         ))}
       </span>
@@ -76,7 +76,7 @@ function CleanupBanner() {
         <b className="block font-medium">
           <Trans>Quick cleanup</Trans>
         </b>
-        <small className="block text-xs text-faint">
+        <small className="block text-caption text-faint">
           <Trans>{items.length} marked as spam · no reply needed</Trans>
         </small>
       </span>
@@ -120,8 +120,8 @@ function DayStats() {
     >
       {tiles.map(([value, label], i) => (
         <div key={i} className="grid gap-0.5 px-3 py-4">
-          <b className="text-2xl font-semibold tracking-[-0.02em] tabular-nums">{value}</b>
-          <span className="text-xs text-faint">{label}</span>
+          <b className="text-page tabular-nums">{value}</b>
+          <span className="text-caption text-faint">{label}</span>
         </div>
       ))}
     </div>
@@ -135,14 +135,14 @@ function EmptyQueue() {
       <div className="mx-auto mb-5.5 grid size-[72px] place-items-center rounded-[22px] bg-brand-wash text-brand">
         <CheckIcon className="size-8" />
       </div>
-      <h1 className="text-[30px] font-semibold tracking-[-0.025em]">
+      <h1 className="text-page">
         <Trans>Everyone has been answered.</Trans>
       </h1>
-      <p className="mt-2 text-[15px] text-muted-foreground">
+      <p className="mt-2 text-reading text-muted-foreground">
         <Trans>When a new message arrives, it will be here.</Trans>
       </p>
       <DayStats />
-      <Button variant="outline" onClick={() => openDrawer()} className="mt-6 border-border bg-card px-3.5 font-normal hover:border-faint">
+      <Button variant="outline" onClick={() => openDrawer()} className="mt-6">
         <Trans>All conversations</Trans>
       </Button>
     </div>

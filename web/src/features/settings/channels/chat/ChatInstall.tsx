@@ -31,7 +31,7 @@ export function ChatInstall({ channel }: { channel: Channel }) {
       />
       <Field label={<Trans>Embed snippet</Trans>} hint={<Trans>Paste it before the closing body tag of every page that should show the chat.</Trans>}>
         <div className="flex flex-col gap-2">
-          <pre className="max-w-full rounded-xl border bg-surface px-3 py-2 font-mono text-xs break-all whitespace-pre-wrap" data-testid="chat-snippet">
+          <pre className="max-w-full rounded-xl border bg-surface px-3 py-2 font-mono text-caption break-all whitespace-pre-wrap" data-testid="chat-snippet">
             {snippet}
           </pre>
           <CopyButton value={snippet} className="self-start" />

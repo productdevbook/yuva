@@ -28,17 +28,17 @@ export function PageHeader({
   return (
     <header className="flex flex-col">
       {to && (
-        <Link to={to.to} className="mb-4.5 inline-flex w-fit items-center gap-1.5 text-sm text-faint transition-colors hover:text-foreground" data-testid="settings-back">
+        <Link to={to.to} className="mb-4.5 inline-flex w-fit items-center gap-1.5 text-body text-faint transition-colors hover:text-foreground" data-testid="settings-back">
           <ArrowLeftIcon className="size-3.5 rtl:rotate-180" />
           {to.label}
         </Link>
       )}
-      {eyebrow && <p className="mb-2.5 text-[13px] text-faint">{eyebrow}</p>}
+      {eyebrow && <p className="mb-2.5 text-small text-faint">{eyebrow}</p>}
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <h1 className="min-w-0 text-[28px] leading-tight font-semibold tracking-[-0.02em] break-words">{title}</h1>
+        <h1 className="min-w-0 text-page break-words">{title}</h1>
         {action}
       </div>
-      {description && <p className="mt-1.5 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">{description}</p>}
+      {description && <p className="mt-1.5 max-w-2xl text-reading text-muted-foreground">{description}</p>}
       {children}
     </header>
   )
@@ -61,12 +61,12 @@ export function Section({
     <section className={cn("flex flex-col gap-2", className)}>
       {(title || action) && (
         <div className="mx-1 flex flex-wrap items-end justify-between gap-3">
-          {title && <h2 className="text-[13px] font-medium text-faint">{title}</h2>}
+          {title && <h2 className="text-small font-medium text-faint">{title}</h2>}
           {action}
         </div>
       )}
       {children}
-      {description && <p className="mx-1 mt-0.5 max-w-2xl text-[13px] leading-relaxed text-faint">{description}</p>}
+      {description && <p className="mx-1 mt-0.5 max-w-2xl text-small text-faint">{description}</p>}
     </section>
   )
 }
@@ -131,7 +131,7 @@ export function FormActions({
     <>
       <ErrorLine error={error} className="min-w-0 flex-1" />
       {saved && !error && (
-        <span className="flex-1 text-sm text-muted-foreground" role="status">
+        <span className="flex-1 text-body text-muted-foreground" role="status">
           <Trans>Saved</Trans>
         </span>
       )}
@@ -162,11 +162,11 @@ export function Field({
       <Label htmlFor={htmlFor}>{label}</Label>
       {children}
       {error ? (
-        <p role="alert" className="text-xs text-destructive">
+        <p role="alert" className="text-small text-destructive">
           {error}
         </p>
       ) : (
-        hint && <p className="text-xs leading-relaxed text-muted-foreground">{hint}</p>
+        hint && <p className="text-small text-faint">{hint}</p>
       )}
     </div>
   )
@@ -182,10 +182,10 @@ export function ToggleRow({
   children: React.ReactNode
 }) {
   return (
-    <Label className="items-start justify-between gap-4 leading-normal font-normal">
+    <Label className="items-start justify-between gap-4 font-normal">
       <span className="flex flex-col gap-0.5">
         <span className="font-medium">{title}</span>
-        {hint && <span className="text-xs leading-relaxed text-muted-foreground">{hint}</span>}
+        {hint && <span className="text-small text-faint">{hint}</span>}
       </span>
       {children}
     </Label>
@@ -213,7 +213,7 @@ export function LinkRow({ to, children, value, testId }: { to: string; children:
     <li>
       <Link to={to} className="flex min-h-[52px] items-center gap-3 px-4 py-3 transition-colors hover:bg-background" data-testid={testId}>
         {children}
-        {value !== undefined && <span className="shrink-0 text-sm whitespace-nowrap text-faint">{value}</span>}
+        {value !== undefined && <span className="shrink-0 text-body whitespace-nowrap text-faint">{value}</span>}
         <ChevronRightIcon className="size-4 shrink-0 text-faint rtl:rotate-180" />
       </Link>
     </li>
@@ -223,21 +223,21 @@ export function LinkRow({ to, children, value, testId }: { to: string; children:
 export function RowText({ title, detail }: { title: React.ReactNode; detail?: React.ReactNode }) {
   return (
     <div className="min-w-0 flex-1">
-      <p className="truncate text-sm">{title}</p>
-      {detail && <p className="mt-px truncate text-[13px] text-faint">{detail}</p>}
+      <p className="truncate text-body">{title}</p>
+      {detail && <p className="mt-px truncate text-small text-faint">{detail}</p>}
     </div>
   )
 }
 
 export function EmptyRow({ children }: { children: React.ReactNode }) {
-  return <p className="px-4 py-5 text-sm text-faint">{children}</p>
+  return <p className="px-4 py-5 text-body text-faint">{children}</p>
 }
 
 export function StatusTag({ tone = "muted", children, ...props }: { tone?: "muted" | "success" | "warning" | "danger"; children: React.ReactNode } & React.ComponentProps<"span">) {
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 items-center gap-1.5 text-xs font-medium",
+        "inline-flex shrink-0 items-center gap-1.5 text-caption font-medium",
         tone === "success" ? "text-success" : tone === "warning" ? "text-warning" : tone === "danger" ? "text-destructive" : "text-muted-foreground",
       )}
       {...props}
@@ -251,7 +251,7 @@ export function StatusTag({ tone = "muted", children, ...props }: { tone?: "mute
 
 export function RowIcon({ children }: { children: React.ReactNode }) {
   return (
-    <span className="grid size-[34px] shrink-0 place-items-center rounded-[10px] border bg-background text-[13px] font-medium text-muted-foreground [&_svg]:size-4">
+    <span className="grid size-[34px] shrink-0 place-items-center rounded-[10px] border bg-background text-small font-medium text-muted-foreground [&_svg]:size-4">
       {children}
     </span>
   )
@@ -260,9 +260,9 @@ export function RowIcon({ children }: { children: React.ReactNode }) {
 export function SettingRow({ title, hint, children, htmlFor }: { title: React.ReactNode; hint?: React.ReactNode; children?: React.ReactNode; htmlFor?: string }) {
   return (
     <li className="flex min-h-[52px] items-center gap-3 px-4 py-3 phone:flex-wrap">
-      <Label htmlFor={htmlFor} className="block min-w-0 flex-1 leading-normal font-normal phone:min-w-[55%]">
+      <Label htmlFor={htmlFor} className="block min-w-0 flex-1 font-normal phone:min-w-[55%]">
         {title}
-        {hint && <small className="mt-px block text-[13px] text-faint">{hint}</small>}
+        {hint && <small className="mt-px block text-small text-faint">{hint}</small>}
       </Label>
       {children}
     </li>
@@ -289,7 +289,7 @@ export function ChoiceSelect<T extends string>({
   const items = Object.fromEntries(options) as Record<T, string>
   return (
     <Select value={value} items={items} onValueChange={(v) => v !== null && onChange(v as T)} disabled={disabled}>
-      <SelectTrigger id={id} aria-label={label} className={cn("max-w-full min-w-0 rounded-[10px] bg-background", className)}>
+      <SelectTrigger id={id} aria-label={label} className={cn("max-w-full min-w-0 bg-background", className)}>
         <SelectValue />
       </SelectTrigger>
       <SelectContent className="min-w-48">

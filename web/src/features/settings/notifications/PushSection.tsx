@@ -33,24 +33,24 @@ function Device({
   return (
     <Row>
       <div className="min-w-0 flex-1">
-        <p className="flex flex-wrap items-center gap-2 text-sm font-medium">
+        <p className="flex flex-wrap items-center gap-2 text-body font-medium">
           <span className="truncate">{name}</span>
           {mine && (
-            <span className="rounded-full bg-muted px-2 py-px text-xs font-normal text-muted-foreground">
+            <span className="rounded-full bg-muted px-2 py-px text-caption font-normal text-muted-foreground">
               <Trans>This device</Trans>
             </span>
           )}
         </p>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-caption text-muted-foreground">
           {delivered ? <Trans>Added {created}, last delivered {delivered}</Trans> : <Trans>Added {created}</Trans>}
         </p>
         {failed && (
-          <p className="text-xs text-destructive">
+          <p className="text-caption text-destructive">
             <Trans>Last push failed: {failed}</Trans>
           </p>
         )}
         {tested && (
-          <p role="status" className="text-xs text-success">
+          <p role="status" className="text-caption text-success">
             <Trans>Test sent. It should arrive in a few seconds.</Trans>
           </p>
         )}
@@ -131,14 +131,14 @@ export function PushSection() {
     <Section title={<Trans>Push notifications</Trans>} description={<Trans>Get notified on your phone or computer, even when the panel is closed.</Trans>}>
       <Card flush>
         {status ? (
-          <p className="px-5 py-4 text-sm text-muted-foreground" data-testid="push-status">
+          <p className="px-5 py-4 text-body text-muted-foreground" data-testid="push-status">
             {status}
           </p>
         ) : (
           vapid.data &&
           list.data && (
             <div className="flex flex-wrap items-center gap-3 px-5 py-4" data-testid="push-this-device">
-              <p className="min-w-0 flex-1 text-sm">{mine ? <Trans>On for this device.</Trans> : <Trans>Off for this device.</Trans>}</p>
+              <p className="min-w-0 flex-1 text-body">{mine ? <Trans>On for this device.</Trans> : <Trans>Off for this device.</Trans>}</p>
               {mine ? (
                 <Button variant="outline" size="sm" disabled={turnOff.isPending} onClick={() => turnOff.mutate()}>
                   <Trans>Turn off</Trans>
@@ -174,7 +174,7 @@ export function PushSection() {
           </Rows>
         )}
         {turnOn.data === "denied" && permission !== "denied" && (
-          <p role="alert" className="px-5 pb-4 text-sm text-muted-foreground">
+          <p role="alert" className="px-5 pb-4 text-body text-muted-foreground">
             <Trans>Notifications were not allowed.</Trans>
           </p>
         )}

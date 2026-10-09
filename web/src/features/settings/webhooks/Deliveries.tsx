@@ -14,6 +14,7 @@ import { useRefreshLog } from "@/features/settings/webhooks/queries"
 import { api, unwrap, type WebhookDeliveryState, type WebhookEndpoint } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
+import { Item } from "@/components/ui/item"
 
 export function Deliveries({ endpoint }: { endpoint: WebhookEndpoint }) {
   const { t, i18n } = useLingui()
@@ -57,19 +58,16 @@ export function Deliveries({ endpoint }: { endpoint: WebhookEndpoint }) {
           <Rows>
             {items.map((d) => (
               <li key={d.id}>
-                <Button
-                  variant="plain"
-                  size="auto"
+                <Item render={<button type="button" />} className="flex-nowrap rounded-none [button]:hover:bg-surface"
                   onClick={() => setOpen(d.id)}
-                  className="flex w-full gap-3 rounded-none px-5 py-3 hover:bg-surface"
                   data-testid="delivery-row"
                 >
                   <div className="flex min-w-0 flex-1 flex-col gap-1">
                     <span className="flex min-w-0 items-center gap-3">
-                      <code className="truncate font-mono text-xs font-medium">{d.event_type}</code>
+                      <code className="truncate font-mono text-caption font-medium">{d.event_type}</code>
                       <DeliveryStateTag state={d.state} />
                     </span>
-                    <span className="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+                    <span className="flex flex-wrap items-center gap-x-2 text-caption text-muted-foreground">
                       <time dateTime={d.created_at}>{formatDateTime(d.created_at, i18n.locale)}</time>
                       <Attempts n={d.attempts} />
                       {d.state === "pending" && d.next_attempt_at && <NextAttempt at={d.next_attempt_at} />}
@@ -78,11 +76,11 @@ export function Deliveries({ endpoint }: { endpoint: WebhookEndpoint }) {
                   {d.last_attempt && (
                     <span className="flex shrink-0 flex-col items-end gap-0.5" title={t`Last attempt`}>
                       <AttemptResult a={d.last_attempt} />
-                      <span className="text-xs text-faint tabular-nums">{d.last_attempt.latency_ms} ms</span>
+                      <span className="text-caption text-faint tabular-nums">{d.last_attempt.latency_ms} ms</span>
                     </span>
                   )}
                   <ChevronRightIcon className="size-4 shrink-0 text-faint rtl:rotate-180" />
-                </Button>
+                </Item>
               </li>
             ))}
           </Rows>

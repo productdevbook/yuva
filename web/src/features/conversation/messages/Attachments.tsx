@@ -6,7 +6,7 @@ import { attachmentUrl, type Attachment } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 
-const chip = "max-w-full rounded-xl border bg-card text-xs transition-colors hover:border-input"
+const chip = "max-w-full rounded-xl border bg-card text-caption transition-colors hover:border-input"
 
 function AttachmentChip({ a }: { a: Attachment }) {
   const { t, i18n } = useLingui()

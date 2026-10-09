@@ -43,18 +43,18 @@ export function EmailBody({ m, outgoing, expandQuoted, plain }: { m: Message; ou
           <EmailHtml html={html} images={images} inline={inline} />
         </div>
       ) : plain ? (
-        text && <div className="text-[15px] leading-[1.65] break-words whitespace-pre-wrap">{text}</div>
+        text && <div className="text-reading break-words whitespace-pre-wrap">{text}</div>
       ) : (
         text && <Bubble tone={outgoing ? "out" : "in"}>{text}</Bubble>
       )}
       {quotedShown && detail.isPending && <Skeleton className="h-10 w-full" />}
-      <ErrorLine error={quotedShown && detail.error} className="text-xs" />
+      <ErrorLine error={quotedShown && detail.error} className="text-caption" />
       {(m.email?.quoted || (remote && !images)) && (
         <div className={cn("flex flex-wrap gap-1", plain ? "-ms-2 mt-1" : outgoing && "justify-end")}>
           {m.email?.quoted && (
             <Button
               variant="ghost"
-              size="xs"
+              size="sm"
               onClick={() => setQuotedOwn(!quotedShown)}
               aria-expanded={quotedShown}
               data-testid="quoted-toggle"
@@ -65,7 +65,7 @@ export function EmailBody({ m, outgoing, expandQuoted, plain }: { m: Message; ou
           {remote && !images && (
             <Button
               variant="ghost"
-              size="xs"
+              size="sm"
               onClick={() => setImages(true)}
               title={t`Remote images can tell the sender that you opened the mail.`}
               data-testid="load-images"

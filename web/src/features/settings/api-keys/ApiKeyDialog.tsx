@@ -108,7 +108,7 @@ export function ApiKeyDialog({ apiKey, onClose, onCreated }: { apiKey: ApiKey | 
                     value={avatar}
                     placeholder="https://"
                     onChange={(e) => setAvatar(e.target.value)}
-                    className="min-w-0 font-mono text-xs"
+                    className="min-w-0 font-mono text-caption"
                   />
                 </div>
               </Field>
@@ -119,7 +119,7 @@ export function ApiKeyDialog({ apiKey, onClose, onCreated }: { apiKey: ApiKey | 
                   labelId="key-inboxes"
                   label={<Trans>Inboxes</Trans>}
                   hint={
-                    <p className="text-xs leading-relaxed text-muted-foreground">
+                    <p className="text-caption text-muted-foreground">
                       {limited ? (
                         <Trans>The key sees only these inboxes and cannot manage inboxes, webhooks or the workspace.</Trans>
                       ) : (
@@ -130,7 +130,7 @@ export function ApiKeyDialog({ apiKey, onClose, onCreated }: { apiKey: ApiKey | 
                 >
                   {inboxes.map((i) => (
                     <CheckItem key={i.id} checked={limit.has(i.id)} onChange={(on) => setLimit((s) => toggled(s, i.id, on))} testId="key-inbox">
-                      <span className="flex items-center gap-2 text-sm">
+                      <span className="flex items-center gap-2 text-body">
                         <Dot color={i.branding.color} className="size-2" />
                         <span className="truncate">{i.name}</span>
                       </span>
@@ -143,7 +143,7 @@ export function ApiKeyDialog({ apiKey, onClose, onCreated }: { apiKey: ApiKey | 
                   hint={
                     touched &&
                     chosen.length === 0 && (
-                      <p role="alert" className="text-xs text-destructive">
+                      <p role="alert" className="text-caption text-destructive">
                         <Trans>Pick at least one scope.</Trans>
                       </p>
                     )
@@ -157,8 +157,8 @@ export function ApiKeyDialog({ apiKey, onClose, onCreated }: { apiKey: ApiKey | 
                       onChange={(on) => setScopes((x) => toggled(x, s, on))}
                       testId="key-scope"
                     >
-                      <span className="text-sm">{text.scope[s]}</span>
-                      <code className="font-mono text-xs text-faint">{s}</code>
+                      <span className="text-body">{text.scope[s]}</span>
+                      <code className="font-mono text-caption text-faint">{s}</code>
                     </CheckItem>
                   ))}
                 </CheckList>

@@ -1,5 +1,5 @@
 import { Menu as MenuPrimitive } from "@base-ui/react/menu"
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 import { CheckIcon, ChevronRightIcon } from "lucide-react"
 
 const DropdownMenu = MenuPrimitive.Root
@@ -12,7 +12,7 @@ export const popupClass =
   "max-h-(--available-height) overflow-x-hidden overflow-y-auto rounded-xl border bg-card p-1.5 text-foreground shadow-[0_16px_40px_-12px_rgb(15_23_42/0.28)] outline-none"
 
 const itemClass =
-  "relative flex cursor-default items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-sm outline-none select-none data-highlighted:bg-muted data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+  "relative flex cursor-default items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-body outline-none select-none data-highlighted:bg-muted data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
 
 function DropdownMenuContent({
   align = "start",
@@ -31,7 +31,7 @@ function DropdownMenuContent({
 }
 
 function DropdownMenuLabel({ className, ...props }: MenuPrimitive.GroupLabel.Props) {
-  return <MenuPrimitive.GroupLabel className={cn("px-2.5 pt-1.5 pb-1 text-xs font-medium text-faint", className)} {...props} />
+  return <MenuPrimitive.GroupLabel className={cn("px-2.5 pt-1.5 pb-1 text-caption font-medium text-faint", className)} {...props} />
 }
 
 function DropdownMenuItem({

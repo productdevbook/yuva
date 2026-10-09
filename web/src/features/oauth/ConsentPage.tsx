@@ -12,12 +12,10 @@ import { activate, i18n } from "@/i18n"
 import { api, ApiError, unwrap, type ApiKeyScope, type OAuthRequest } from "@/lib/api"
 import { signInPath } from "@/lib/next"
 import { useMe, useSignOut } from "@/lib/session"
-import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
-const heading = "text-[1.75rem] leading-tight font-semibold tracking-[-0.03em] sm:text-[2rem]"
-const pill = "h-11 text-[0.95rem]"
+const heading = "text-page"
 
 function defaultScopes(req: OAuthRequest, offered: ApiKeyScope[]) {
   const asked = req.requested_scopes
@@ -31,7 +29,7 @@ function Ended({ title, children }: { title: React.ReactNode; children: React.Re
         <ClockIcon className="size-5" />
       </span>
       <h1 className={heading}>{title}</h1>
-      <p className="mt-3 leading-relaxed text-pretty text-muted-foreground" data-testid="consent-ended">
+      <p className="mt-3 text-pretty text-muted-foreground" data-testid="consent-ended">
         {children}
       </p>
     </AuthLayout>
@@ -49,8 +47,8 @@ function Expired() {
 function Fact({ label, children, testId }: { label: React.ReactNode; children: React.ReactNode; testId?: string }) {
   return (
     <div className="flex flex-col gap-0.5 px-4 py-3" data-testid={testId}>
-      <dt className="text-xs text-faint">{label}</dt>
-      <dd className="text-sm break-words">{children}</dd>
+      <dt className="text-caption text-faint">{label}</dt>
+      <dd className="text-body break-words">{children}</dd>
     </div>
   )
 }
@@ -95,7 +93,7 @@ function Consent({ req, email }: { req: OAuthRequest; email: string }) {
       <h1 className={heading} data-testid="consent-title">
         <Trans>Connect {clientName} to Yuva?</Trans>
       </h1>
-      <p className="mt-3 leading-relaxed text-pretty text-muted-foreground">
+      <p className="mt-3 text-pretty text-muted-foreground">
         <Trans>
           It will act as you, <span className="font-medium break-words text-foreground">{email}</span>, with only the access
           you allow below.
@@ -105,7 +103,7 @@ function Consent({ req, email }: { req: OAuthRequest; email: string }) {
       <dl className="mt-6 divide-y rounded-2xl border">
         <Fact label={<Trans>App</Trans>} testId="consent-client">
           <span className="font-medium">{clientName}</span>
-          <span className="block text-xs text-muted-foreground">
+          <span className="block text-caption text-muted-foreground">
             <Trans>This is the name the app gives itself. Yuva has not verified it.</Trans>
           </span>
           {req.client.client_uri && (
@@ -113,7 +111,7 @@ function Consent({ req, email }: { req: OAuthRequest; email: string }) {
               href={req.client.client_uri}
               target="_blank"
               rel="noreferrer noopener"
-              className="mt-0.5 inline-flex items-center gap-1 text-xs text-brand underline-offset-4 hover:underline"
+              className="mt-0.5 inline-flex items-center gap-1 text-caption text-brand underline-offset-4 hover:underline"
             >
               {req.client.client_uri}
               <ArrowUpRightIcon className="size-3" />
@@ -121,7 +119,7 @@ function Consent({ req, email }: { req: OAuthRequest; email: string }) {
           )}
         </Fact>
         <Fact label={<Trans>Returns you to</Trans>} testId="consent-redirect">
-          <code className="font-mono text-[0.8rem]">{host}</code>
+          <code className="font-mono text-small">{host}</code>
         </Fact>
         <Fact label={<Trans>Access</Trans>} testId="consent-resource">
           {req.resource === "mcp" ? (
@@ -139,7 +137,7 @@ function Consent({ req, email }: { req: OAuthRequest; email: string }) {
       ) : (
         <div className="mt-6 flex flex-col gap-5">
           <div className="flex min-w-0 flex-col gap-2" role="radiogroup" aria-labelledby="consent-workspace">
-            <span id="consent-workspace" className="text-sm font-medium">
+            <span id="consent-workspace" className="text-body font-medium">
               <Trans>Workspace</Trans>
             </span>
             <RadioGroup
@@ -154,10 +152,10 @@ function Consent({ req, email }: { req: OAuthRequest; email: string }) {
               className="gap-0 divide-y rounded-xl border"
             >
               {req.workspaces.map((w) => (
-                <Label key={w.workspace_id} className="gap-3 px-3.5 py-2.5 font-normal leading-normal" data-testid="consent-workspace">
+                <Label key={w.workspace_id} className="gap-3 px-3.5 py-2.5 font-normal" data-testid="consent-workspace">
                   <RadioGroupItem value={w.workspace_id} />
-                  <span className="min-w-0 flex-1 truncate text-sm">{w.name}</span>
-                  <span className="shrink-0 text-xs text-faint">{text.role[w.role]}</span>
+                  <span className="min-w-0 flex-1 truncate text-body">{w.name}</span>
+                  <span className="shrink-0 text-caption text-faint">{text.role[w.role]}</span>
                 </Label>
               ))}
             </RadioGroup>
@@ -174,12 +172,12 @@ function Consent({ req, email }: { req: OAuthRequest; email: string }) {
               hint={
                 <>
                   {chosen.length === 0 && (
-                    <p role="alert" className="text-xs text-destructive">
+                    <p role="alert" className="text-caption text-destructive">
                       <Trans>Pick at least one.</Trans>
                     </p>
                   )}
                   {unavailable.length > 0 && (
-                    <p className="text-xs leading-relaxed text-muted-foreground" data-testid="consent-unavailable">
+                    <p className="text-caption text-muted-foreground" data-testid="consent-unavailable">
                       <Trans>It also asked for access your role here cannot give:</Trans>{" "}
                       <span className="font-mono">{unavailable.join(", ")}</span>
                     </p>
@@ -201,8 +199,8 @@ function Consent({ req, email }: { req: OAuthRequest; email: string }) {
                   }
                   testId="consent-scope"
                 >
-                  <span className="text-sm">{text.scope[s]}</span>
-                  <code className="font-mono text-xs text-faint">{s}</code>
+                  <span className="text-body">{text.scope[s]}</span>
+                  <code className="font-mono text-caption text-faint">{s}</code>
                 </CheckItem>
               ))}
             </CheckList>
@@ -213,25 +211,25 @@ function Consent({ req, email }: { req: OAuthRequest; email: string }) {
       <ErrorLine error={error} className="mt-5" />
       <div className="mt-6 flex flex-col gap-2.5 sm:flex-row-reverse">
         <Button
-          className={cn(pill, "sm:flex-1")}
+          size="lg" className="sm:flex-1"
           disabled={busy || !workspace || chosen.length === 0}
           onClick={() => approve.mutate()}
           data-testid="consent-approve"
         >
           <Trans>Allow</Trans>
         </Button>
-        <Button variant="outline" className={cn(pill, "sm:flex-1")} disabled={busy} onClick={() => deny.mutate()} data-testid="consent-deny">
+        <Button variant="outline" size="lg" className="sm:flex-1" disabled={busy} onClick={() => deny.mutate()} data-testid="consent-deny">
           <Trans>Deny</Trans>
         </Button>
       </div>
       {leaving && (
-        <p role="status" className="mt-4 text-sm text-muted-foreground">
+        <p role="status" className="mt-4 text-body text-muted-foreground">
           <Trans>Returning you to {host}…</Trans>
         </p>
       )}
-      <p className="mt-6 text-xs leading-relaxed text-faint">
+      <p className="mt-6 text-caption text-faint">
         <Trans>You can disconnect it at any time in Settings, under Connected apps.</Trans>{" "}
-        <Button variant="link" className="text-xs font-normal text-muted-foreground underline hover:text-foreground" onClick={() => void signOut()}>
+        <Button variant="link" className="text-muted-foreground underline hover:text-foreground" onClick={() => void signOut()}>
           <Trans>Use another account</Trans>
         </Button>
       </p>

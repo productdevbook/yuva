@@ -90,7 +90,7 @@ function Loaded({ c, contact, channel, flow, onFullScreen }: { c: Conversation; 
     <div className="flex min-h-0 flex-1 flex-col" data-testid="preview" data-conversation-id={c.id}>
       <div className="flex flex-wrap items-center gap-3 px-6 pt-5 pb-3">
         <span className="relative shrink-0">
-          <ContactAvatar id={c.contact_id} name={name} className="size-11 text-[15px]" />
+          <ContactAvatar id={c.contact_id} name={name} className="size-11" />
           {channel && (
             <span className="absolute -end-1 -bottom-1 grid size-5 place-items-center rounded-full border bg-card text-muted-foreground">
               <ChannelIcon kind={channel.kind} className="size-[11px]" />
@@ -98,10 +98,10 @@ function Loaded({ c, contact, channel, flow, onFullScreen }: { c: Conversation; 
           )}
         </span>
         <div className="min-w-[180px] flex-1">
-          <h1 className="truncate text-xl font-semibold tracking-[-0.02em]" data-testid="preview-name">
+          <h1 className="truncate text-title" data-testid="preview-name">
             {name}
           </h1>
-          <div className="flex flex-wrap items-center gap-x-1.5 text-[13px] text-faint">
+          <div className="flex flex-wrap items-center gap-x-1.5 text-small text-faint">
             {inbox && (
               <span className="inline-flex items-center gap-1.5 text-muted-foreground">
                 <Dot color={inbox.branding.color} className="size-2 rounded-[3px]" />
@@ -149,7 +149,7 @@ function Loaded({ c, contact, channel, flow, onFullScreen }: { c: Conversation; 
           autoFocus={false}
         />
         <LaterActions c={c} name={name} actions={actions} menu={menu} setMenu={setMenu} />
-        <p className="mt-2 text-center text-xs text-faint">
+        <p className="mt-2 text-center text-caption text-faint">
           <Trans>J / K to move · X to select · E to close · Enter for full screen</Trans>
         </p>
       </div>

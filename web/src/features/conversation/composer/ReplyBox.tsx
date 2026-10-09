@@ -21,6 +21,7 @@ import { Command, CommandEmpty, CommandItem, CommandList } from "@/components/ui
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
+import { Item } from "@/components/ui/item"
 
 export type ReplyHandle = {
   focus: (mode?: "message" | "note") => void
@@ -30,35 +31,34 @@ export type ReplyHandle = {
 
 const MAX_FILES = 10
 
-const pill = "px-3.5 font-normal phone:px-3"
 
 function Suggestion({ m, ctx, onUse, onDiscard }: { m: Message; ctx: ThreadContext; onUse: () => void; onDiscard: () => void }) {
   const { t } = useLingui()
   const author = useAuthorName(m, ctx)
   return (
     <div
-      className="mx-2.5 mb-2 flex items-start gap-2.5 rounded-xl border border-dashed border-brand/35 bg-brand-wash/60 py-2.5 ps-3 pe-1.5 text-[13px] leading-normal text-muted-foreground transition-colors hover:border-solid hover:text-foreground"
+      className="mx-2.5 mb-2 flex items-start gap-2.5 rounded-xl border border-dashed border-brand/35 bg-brand-wash/60 py-2.5 ps-3 pe-1.5 text-small text-muted-foreground transition-colors hover:border-solid hover:text-foreground"
       data-testid="suggestion"
     >
-      <Button variant="plain" size="auto" onClick={onUse} className="flex min-w-0 flex-1 items-start gap-2.5 rounded-md text-[13px] leading-normal text-inherit" title={t`Use this reply`}>
+      <Item render={<button type="button" />} size="xs" className="min-w-0 flex-1 flex-nowrap items-start p-0 text-small text-inherit [button]:hover:bg-transparent" onClick={onUse} title={t`Use this reply`}>
         {m.author.type === "bot" ? (
-          <BotAvatar name={author} url={m.author.avatar_url} className="mt-px size-4 text-[8px]" />
+          <BotAvatar name={author} url={m.author.avatar_url} className="mt-px size-4" />
         ) : (
           <SparklesIcon className="mt-0.5 size-3.5 shrink-0 text-brand" />
         )}
         <span className="min-w-0 flex-1">
-          <span className="block text-[11px] text-faint">
+          <span className="block text-caption text-faint">
             <Trans>Suggested by {author}</Trans>
           </span>
           <span className="line-clamp-2">{m.body}</span>
         </span>
         <Kbd className="mt-0.5 bg-card">Tab</Kbd>
-      </Button>
+      </Item>
       <Button
         variant="ghost"
         size="icon-xs"
         onClick={onDiscard}
-        className="rounded-md text-faint hover:bg-card"
+        className="text-faint hover:bg-card"
         aria-label={t`Discard the suggested reply`}
         title={t`Discard the suggested reply`}
       >
@@ -274,7 +274,7 @@ export const ReplyBox = forwardRef<
                 key={m}
                 value={m}
                 className={cn(
-                  "h-auto flex-none rounded-lg px-2.5 py-[5px] text-[13px] font-normal text-faint data-active:font-medium data-active:shadow-none dark:data-active:border-transparent",
+                  "flex-none rounded-lg px-2.5 text-faint data-active:shadow-none dark:data-active:border-transparent",
                   note ? "data-active:bg-card data-active:text-note-ink dark:data-active:bg-card" : "data-active:bg-background data-active:text-foreground dark:data-active:bg-background",
                 )}
               >
@@ -283,12 +283,12 @@ export const ReplyBox = forwardRef<
             ))}
           </TabsList>
         </Tabs>
-        <span className="ms-auto min-w-0 truncate pe-2 text-xs text-faint" data-testid={!note && emailTo ? "composer-email-to" : undefined}>
+        <span className="ms-auto min-w-0 truncate pe-2 text-caption text-faint" data-testid={!note && emailTo ? "composer-email-to" : undefined}>
           {hint}
         </span>
       </div>
       {!note && undeliverable && (
-        <p className="mx-3 mt-2 rounded-lg bg-destructive/6 px-3 py-2 text-xs text-destructive" data-testid="composer-undeliverable">
+        <p className="mx-3 mt-2 rounded-lg bg-destructive/6 px-3 py-2 text-caption text-destructive" data-testid="composer-undeliverable">
           <Trans>This address is undeliverable. Clear it in the contact details before you reply.</Trans>
         </p>
       )}
@@ -301,7 +301,7 @@ export const ReplyBox = forwardRef<
         data-testid="composer-input"
         aria-label={note ? t`Team note` : t`Reply`}
         placeholder={note ? t`A note for the team… type @ to mention a teammate` : t`Write to ${first}…`}
-        className="max-h-[50vh] min-h-[84px] resize-none rounded-none border-0 bg-transparent px-4 py-2.5 text-[15px] leading-[1.55] shadow-none hover:border-0 focus-visible:ring-0 md:text-[15px] dark:bg-transparent"
+        className="max-h-[50vh] min-h-[84px] resize-none rounded-none border-0 bg-transparent px-4 py-2.5 text-reading shadow-none hover:border-0 focus-visible:ring-0 md:text-reading dark:bg-transparent"
         onChange={(e) => {
           setBody(e.target.value)
           setCaret(e.target.selectionStart)
@@ -318,14 +318,14 @@ export const ReplyBox = forwardRef<
       {files.length > 0 && (
         <ul className="flex flex-wrap gap-1.5 px-4 pb-2">
           {files.map((f, i) => (
-            <li key={`${f.name}-${i}`} className="flex max-w-full items-center gap-1.5 rounded-lg border bg-background py-0.5 ps-2 pe-0.5 text-xs">
+            <li key={`${f.name}-${i}`} className="flex max-w-full items-center gap-1.5 rounded-lg border bg-background py-0.5 ps-2 pe-0.5 text-caption">
               <PaperclipIcon className="size-3 shrink-0 text-faint" />
               <span className="max-w-48 truncate">{f.name}</span>
               <span className="text-faint">{formatBytes(f.size, i18n.locale)}</span>
               <Button
                 variant="ghost"
                 size="icon-xs"
-                className="size-5 rounded text-faint [&_svg]:size-3"
+                className="text-faint"
                 aria-label={t`Remove ${f.name}`}
                 onClick={() => setFiles((all) => all.filter((_, j) => j !== i))}
               >
@@ -335,7 +335,7 @@ export const ReplyBox = forwardRef<
           ))}
         </ul>
       )}
-      <ErrorLine error={error} className="px-4 pb-2 text-xs" />
+      <ErrorLine error={error} className="px-4 pb-2 text-caption" />
       <div className="relative flex items-center gap-1 px-2.5 pb-2.5">
         <input
           ref={fileInput}
@@ -351,7 +351,7 @@ export const ReplyBox = forwardRef<
         <Button
           variant="ghost"
           size="icon-sm"
-          className="rounded-lg text-faint hover:bg-background"
+          className="text-faint hover:bg-background"
           aria-label={t`Attach files`}
           title={t`Attach files`}
           onClick={() => fileInput.current?.click()}
@@ -360,7 +360,7 @@ export const ReplyBox = forwardRef<
         </Button>
         <Popover open={cannedOpen} onOpenChange={setCannedOpen}>
           <PopoverTrigger
-            render={<Button variant="ghost" size="sm" className="rounded-lg px-2 text-[13px] font-normal text-faint hover:bg-background aria-expanded:bg-background" />}
+            render={<Button variant="ghost" size="sm" className="text-faint hover:bg-background aria-expanded:bg-background" />}
             title={t`Canned replies`}
             data-testid="canned-button"
           >
@@ -378,7 +378,7 @@ export const ReplyBox = forwardRef<
                 {canned.map((r) => (
                   <CommandItem key={r.id} value={`${r.title} ${r.shortcut} ${r.id}`} onSelect={() => insertCanned(r)} className="block rounded-lg px-2.5 py-2 data-selected:bg-muted">
                     {r.title}
-                    <small className="block truncate text-xs text-faint">{r.body}</small>
+                    <small className="block truncate text-caption text-faint">{r.body}</small>
                   </CommandItem>
                 ))}
               </CommandList>
@@ -387,16 +387,16 @@ export const ReplyBox = forwardRef<
         </Popover>
         <span className="flex-1" />
         {note ? (
-          <Button className={pill} onClick={addNote} disabled={!hasContent || noting} data-testid="composer-note">
+          <Button onClick={addNote} disabled={!hasContent || noting} data-testid="composer-note">
             <Trans>Add note</Trans>
           </Button>
         ) : (
           <>
-            <span className="me-1.5 text-xs text-faint phone:hidden">{mod}↵</span>
-            <Button variant="outline" className={cn(pill, "border-border bg-card hover:border-faint")} onClick={() => send(false)} disabled={!hasContent} data-testid="composer-send">
+            <span className="me-1.5 text-caption text-faint phone:hidden">{mod}↵</span>
+            <Button variant="outline" onClick={() => send(false)} disabled={!hasContent} data-testid="composer-send">
               <Trans>Send</Trans>
             </Button>
-            <Button className={pill} onClick={() => send(true)} disabled={!hasContent} data-testid="composer-send-close">
+            <Button onClick={() => send(true)} disabled={!hasContent} data-testid="composer-send-close">
               <Trans>Send and close</Trans>
             </Button>
           </>

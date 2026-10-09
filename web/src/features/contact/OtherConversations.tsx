@@ -33,12 +33,12 @@ export function OtherConversations({
             const Icon = statusIcons[o.status]
             return (
               <li key={o.id}>
-                <Link to={hrefFor(o.id)} className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-surface">
+                <Link to={hrefFor(o.id)} className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-body transition-colors hover:bg-surface">
                   <Icon className="size-3.5 shrink-0 text-faint" aria-label={text.status[o.status]} />
                   <span className={cn("min-w-0 flex-1 truncate", !o.subject && "text-muted-foreground italic")}>
                     {o.subject || <Trans>No subject</Trans>}
                   </span>
-                  <span className="shrink-0 text-xs text-faint">{formatShort(o.last_activity_at, i18n.locale)}</span>
+                  <span className="shrink-0 text-caption text-faint">{formatShort(o.last_activity_at, i18n.locale)}</span>
                 </Link>
               </li>
             )

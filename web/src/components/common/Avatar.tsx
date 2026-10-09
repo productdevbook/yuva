@@ -2,8 +2,8 @@ import { initials } from "@/components/common/text"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 
-const rootClass = "size-7 items-center justify-center bg-muted text-[11px] font-medium text-muted-foreground after:hidden"
-const fallbackClass = "bg-transparent text-[length:inherit] font-[inherit] tracking-[inherit] text-inherit"
+const rootClass = "@container size-7 items-center justify-center bg-muted font-medium text-muted-foreground after:hidden"
+const fallbackClass = "bg-transparent text-[length:38cqw] font-[inherit] text-inherit"
 
 export function PersonAvatar({ name, className }: { name: string; className?: string }) {
   return (
@@ -25,7 +25,7 @@ export function ContactAvatar({ id, name, className }: { id: string; name: strin
   return (
     <Avatar
       aria-hidden
-      className={cn(rootClass, "font-semibold tracking-tight text-white", className)}
+      className={cn(rootClass, "text-white", className)}
       style={{ backgroundColor: colorFor(id) }}
     >
       <AvatarFallback className={fallbackClass}>{initials(name)}</AvatarFallback>
@@ -58,7 +58,7 @@ export function MemberAvatar({
   const here = online && !away
   return (
     <span className="relative inline-flex shrink-0">
-      <Avatar aria-hidden className={cn(rootClass, "size-[26px] bg-mate text-[10px] font-semibold text-white", !here && online !== undefined && "opacity-55", className)}>
+      <Avatar aria-hidden className={cn(rootClass, "size-[26px] bg-mate text-white", !here && online !== undefined && "opacity-55", className)}>
         <AvatarFallback className={fallbackClass}>{initials(name)}</AvatarFallback>
       </Avatar>
       {online !== undefined && (

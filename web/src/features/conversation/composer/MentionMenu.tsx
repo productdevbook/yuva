@@ -34,7 +34,7 @@ export function MentionMenu({ items, active, onPick }: { items: Member[]; active
             <MemberAvatar name={m.name || m.email} online={m.online} away={m.availability === "away"} ring="ring-card" />
             <span className="min-w-0 flex-1">
               <span className="block truncate">{m.name || m.email}</span>
-              <small className="block truncate text-xs text-faint">{m.email}</small>
+              <small className="block truncate text-caption text-faint">{m.email}</small>
             </span>
           </CommandItem>
         ))}

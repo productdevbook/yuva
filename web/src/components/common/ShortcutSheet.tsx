@@ -99,10 +99,10 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
         <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
           {groups.map((g) => (
             <section key={g.title} className="flex flex-col">
-              <h3 className="mb-1 text-xs font-medium text-faint">{g.title}</h3>
+              <h3 className="mb-1 text-small font-medium text-faint">{g.title}</h3>
               <ul className="flex flex-col">
                 {g.items.map(([ks, label]) => (
-                  <li key={label} className="flex items-center justify-between gap-3 border-t py-1.5 text-sm">
+                  <li key={label} className="flex items-center justify-between gap-3 border-t py-1.5 text-body">
                     <span>{label}</span>
                     <span className="flex shrink-0 gap-1">
                       {ks.map((key) => (

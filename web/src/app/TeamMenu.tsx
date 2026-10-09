@@ -17,6 +17,7 @@ import { useSession } from "@/lib/session"
 import { useAllTyping } from "@/lib/typing"
 import { cn } from "@/lib/utils"
 import { useMembers } from "@/lib/workspace"
+import { Item } from "@/components/ui/item"
 
 export function useConversationName() {
   const { t } = useLingui()
@@ -87,7 +88,7 @@ export function TeamMenu() {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
-        render={<Button variant="ghost" size="sm" className="gap-0 rounded-full px-1.5" />}
+        render={<Button variant="ghost" size="sm" />}
         aria-label={t`Team`}
         title={t`Team`}
         data-testid="team-button"
@@ -99,7 +100,7 @@ export function TeamMenu() {
         ))}
       </PopoverTrigger>
       <PopoverContent side="bottom" align="end" sideOffset={8} className={cn(popupClass, "w-[300px] max-w-[calc(100vw-24px)] gap-0 rounded-xl p-1.5 ring-0")} data-testid="team-popup">
-            <p className="px-2.5 pt-1.5 pb-1 text-xs font-medium text-faint">
+            <p className="px-2.5 pt-1.5 pb-1 text-caption font-medium text-faint">
               <Trans>Team right now</Trans>
             </p>
             {order.map((m) => {
@@ -118,25 +119,26 @@ export function TeamMenu() {
                     : t`Online`
               const row = (
                 <>
-                  <MemberAvatar name={name} online={m.online} away={away} className="size-[30px] text-[11px]" ring="ring-card" />
+                  <MemberAvatar name={name} online={m.online} away={away} className="size-[30px]" ring="ring-card" />
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm">{name}</span>
-                    <small className="block truncate text-xs text-faint">{what}</small>
+                    <span className="block truncate text-body">{name}</span>
+                    <small className="block truncate text-caption text-faint">{what}</small>
                   </span>
                 </>
               )
               return a && m.online && !away ? (
-                <Button
+                <Item
                   key={m.id}
-                  variant="ghost"
-                  className="h-auto w-full justify-start gap-2.5 rounded-lg px-2.5 py-2 text-start font-normal text-foreground"
+                  render={<button type="button" />}
+                  size="xs"
+                  className="flex-nowrap"
                   onClick={() => {
                     setOpen(false)
                     navigate(`/conversations/${a.conversationId}`)
                   }}
                 >
                   {row}
-                </Button>
+                </Item>
               ) : (
                 <div key={m.id} className="flex items-center gap-2.5 px-2.5 py-2">
                   {row}
@@ -145,10 +147,10 @@ export function TeamMenu() {
             })}
             <Separator className="mx-1.5 my-1 w-auto" />
             <div className="px-2.5 pt-1 pb-1.5">
-              <span className="block text-sm">
+              <span className="block text-body">
                 <Trans>The team today</Trans>
               </span>
-              <TeamSummary className="block text-xs text-faint" />
+              <TeamSummary className="block text-caption text-faint" />
             </div>
       </PopoverContent>
     </Popover>

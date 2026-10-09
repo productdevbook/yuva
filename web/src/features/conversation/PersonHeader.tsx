@@ -12,7 +12,6 @@ import { useViewers } from "@/lib/presence"
 import { useSession } from "@/lib/session"
 import { useTyping } from "@/lib/typing"
 import { useInboxes, useLabels, useMemberMap } from "@/lib/workspace"
-import { Button } from "@/components/ui/button"
 
 function useNow(ms: number) {
   const [now, setNow] = useState(() => Date.now())
@@ -92,10 +91,10 @@ export function Watchers({ conversationId }: { conversationId: string }) {
     return (
       <span
         key={id}
-        className="ms-1 inline-flex items-center gap-[5px] rounded-full border border-mate/35 bg-mate/10 py-0.5 ps-0.5 pe-2 text-xs text-muted-foreground"
+        className="ms-1 inline-flex items-center gap-[5px] rounded-full border border-mate/35 bg-mate/10 py-0.5 ps-0.5 pe-2 text-caption text-muted-foreground"
         data-testid="viewer-chip"
       >
-        <MemberAvatar name={full} className="size-[18px] text-[8px]" />
+        <MemberAvatar name={full} className="size-[18px]" />
         {typing.includes(id) ? <Trans>{name} is typing…</Trans> : <Trans>{name} is looking</Trans>}
       </span>
     )
@@ -107,38 +106,33 @@ export function PersonHeader({
   name,
   channel,
   lastInbound,
-  onContact,
   menu,
 }: {
   c: Conversation
   name: string
   channel?: Channel
   lastInbound?: Message
-  onContact: () => void
   menu: React.ReactNode
 }) {
-  const { t } = useLingui()
   const text = useEnumText()
   const inbox = useInboxes().data?.find((i) => i.id === c.inbox_id)
   const labels = (useLabels().data ?? []).filter((l) => c.labels.includes(l.id))
   const sep = <span aria-hidden>·</span>
   return (
     <div className="flex items-center gap-4" data-testid="person">
-      <Button variant="plain" size="auto" onClick={onContact} className="relative shrink-0 overflow-visible rounded-full" aria-label={t`Contact details`}>
-        <ContactAvatar id={c.contact_id} name={name} className="size-14 text-[19px] phone:size-12 phone:text-base" />
+      <span className="relative shrink-0">
+        <ContactAvatar id={c.contact_id} name={name} className="size-14 phone:size-12" />
         {channel && (
           <span className="absolute -end-1 -bottom-1 grid size-6 place-items-center rounded-full border bg-card text-muted-foreground" title={text.channel[channel.kind]}>
             <ChannelIcon kind={channel.kind} className="size-[13px]" />
           </span>
         )}
-      </Button>
+      </span>
       <div className="min-w-0 flex-1">
-        <h1 className="truncate text-[26px] leading-[1.15] font-semibold tracking-[-0.025em] phone:text-[22px]" data-testid="person-name">
-          <Button variant="plain" size="auto" onClick={onContact} className="block max-w-full truncate rounded-md text-[length:inherit] font-[inherit] tracking-[inherit]">
-            {name}
-          </Button>
+        <h1 className="truncate text-page phone:text-title" data-testid="person-name">
+          {name}
         </h1>
-        <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-sm text-faint">
+        <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-body text-faint">
           {inbox && (
             <span className="inline-flex items-center gap-1.5 text-muted-foreground">
               <Dot color={inbox.branding.color} className="size-2 rounded-[3px]" />
@@ -161,7 +155,7 @@ export function PersonHeader({
             </>
           )}
           {labels.map((l) => (
-            <span key={l.id} className="inline-flex items-center gap-1 rounded-full border bg-card px-2 py-px text-xs text-muted-foreground">
+            <span key={l.id} className="inline-flex items-center gap-1 rounded-full border bg-card px-2 py-px text-caption text-muted-foreground">
               <Dot color={l.color} className="size-1.5" />
               {l.name}
             </span>

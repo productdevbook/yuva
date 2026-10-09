@@ -1,18 +1,17 @@
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { cn } from "@/lib/utils"
 
+const item = "h-8 min-w-0 px-3 text-body font-medium text-muted-foreground hover:bg-transparent hover:text-foreground aria-pressed:text-foreground"
+
 const looks = {
-  soft: {
-    group: "gap-1",
-    item: "h-7 min-w-0 rounded-full px-2.5 text-[0.8rem] font-normal text-muted-foreground hover:bg-transparent hover:text-foreground aria-pressed:bg-muted aria-pressed:font-medium aria-pressed:text-foreground",
-  },
+  soft: { group: "gap-1", item: cn(item, "rounded-full aria-pressed:bg-muted") },
   segment: {
     group: "gap-0.5 rounded-[10px] border bg-card p-[3px]",
-    item: "h-auto min-w-0 rounded-[7px] px-3 py-1.5 text-[13px] font-normal text-muted-foreground hover:bg-transparent hover:text-foreground aria-pressed:bg-background aria-pressed:font-medium aria-pressed:text-foreground aria-pressed:shadow-[0_1px_2px_rgb(0_0_0/0.06)]",
+    item: cn(item, "h-7 rounded-[7px] aria-pressed:bg-background aria-pressed:shadow-[0_1px_2px_rgb(0_0_0/0.06)]"),
   },
   chip: {
     group: "flex-wrap gap-1.5",
-    item: "h-auto min-w-0 rounded-full border bg-card px-3 py-1.5 text-[13px] font-normal text-muted-foreground hover:bg-card hover:text-foreground aria-pressed:border-foreground aria-pressed:bg-foreground aria-pressed:text-background aria-pressed:hover:bg-foreground",
+    item: cn(item, "rounded-full border bg-card hover:bg-card aria-pressed:border-foreground aria-pressed:bg-foreground aria-pressed:text-background aria-pressed:hover:bg-foreground"),
   },
 }
 

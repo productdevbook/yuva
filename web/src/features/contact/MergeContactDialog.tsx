@@ -14,7 +14,7 @@ import type { Contact } from "@/lib/api"
 function Who({ name }: { name: string }) {
   return (
     <span className="flex max-w-[calc(50%-1rem)] min-w-0 items-center gap-2">
-      <PersonAvatar name={name} className="size-6 text-[10px]" />
+      <PersonAvatar name={name} className="size-6" />
       <span className="min-w-0 truncate font-medium">{name}</span>
     </span>
   )
@@ -61,7 +61,7 @@ export function MergeContactDialog({ target, open, onOpenChange }: { target: Con
         )}
         {source && (
           <>
-            <div className="flex min-w-0 items-center gap-3 text-sm">
+            <div className="flex min-w-0 items-center gap-3 text-body">
               <Who name={sourceName} />
               <ArrowRightIcon className="size-4 shrink-0 text-faint rtl:rotate-180" />
               <Who name={targetName} />

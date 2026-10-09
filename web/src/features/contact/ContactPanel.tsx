@@ -47,20 +47,20 @@ export function ContactPanel({ contactId, conversationId, hrefFor }: { contactId
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-y-auto" data-testid="contact-panel">
       <div className="flex flex-col items-start gap-3 px-5 pt-5 pb-4">
-        <PersonAvatar name={name} className="size-12 text-sm" />
+        <PersonAvatar name={name} className="size-12" />
         <div className="flex min-w-0 flex-col gap-1">
-          <p className="truncate text-base font-semibold tracking-tight">{name}</p>
+          <p className="truncate text-title">{name}</p>
           <Presence contactId={c.id} />
-          <p className="text-xs text-faint">
+          <p className="text-caption text-faint">
             <Trans>Since {since}</Trans>
           </p>
           {c.locale && (
-            <p className="text-xs text-faint" data-testid="contact-locale">
+            <p className="text-caption text-faint" data-testid="contact-locale">
               {languageName(c.locale, i18n.locale)}
             </p>
           )}
           {c.blocked && (
-            <span className="mt-1 w-fit rounded-full bg-destructive/8 px-2 py-0.5 text-xs font-medium text-destructive">
+            <span className="mt-1 w-fit rounded-full bg-destructive/8 px-2 py-0.5 text-caption font-medium text-destructive">
               <Trans>Blocked</Trans>
             </span>
           )}
@@ -73,11 +73,11 @@ export function ContactPanel({ contactId, conversationId, hrefFor }: { contactId
       )}
       {c.external_ids.length > 0 && (
         <Section title={<Trans>External ids</Trans>}>
-          <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1.5 text-sm">
+          <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1.5 text-body">
             {c.external_ids.map((x) => (
               <div key={`${x.inbox_id}:${x.external_id}`} className="contents">
                 <dt className="truncate text-muted-foreground">{inboxes.find((i) => i.id === x.inbox_id)?.name ?? "?"}</dt>
-                <dd className="truncate font-mono text-xs leading-5">{x.external_id}</dd>
+                <dd className="truncate font-mono text-caption">{x.external_id}</dd>
               </div>
             ))}
           </dl>
@@ -85,7 +85,7 @@ export function ContactPanel({ contactId, conversationId, hrefFor }: { contactId
       )}
       {attrs.length > 0 && (
         <Section title={<Trans>Attributes</Trans>}>
-          <dl className="grid grid-cols-[minmax(0,auto)_minmax(0,1fr)] gap-x-4 gap-y-1.5 text-sm">
+          <dl className="grid grid-cols-[minmax(0,auto)_minmax(0,1fr)] gap-x-4 gap-y-1.5 text-body">
             {attrs.map(([k, v]) => (
               <div key={k} className="contents">
                 <dt className="truncate text-muted-foreground">{k}</dt>

@@ -68,7 +68,7 @@ export function LabelDialog({ label, onClose }: { label: Label | null; onClose: 
               />
             </div>
           </Field>
-          <LabelChip name={name || t`Preview`} color={color} className="text-sm" />
+          <LabelChip name={name || t`Preview`} color={color} className="text-body" />
           <ErrorLine error={save.error} />
           <DialogFooter>
             <Button type="submit" disabled={save.isPending}>

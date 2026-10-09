@@ -28,6 +28,7 @@ import { useSession, useSignOut } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useView } from "@/lib/view"
 import { setTheme, useTheme, type Theme } from "@/lib/theme"
+import { Button } from "@/components/ui/button"
 
 function statusClass(a: Availability, live: boolean) {
   if (a === "away") return "bg-faint"
@@ -54,12 +55,12 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className="relative ms-1 rounded-full p-0.5 outline-none"
+        render={<Button variant="ghost" size="icon" className="relative" />}
         aria-label={t`${name} · ${statusText}`}
         title={statusText}
         data-testid="user-menu"
       >
-        <PersonAvatar name={name} className="size-[30px] bg-muted-foreground text-[11px] font-semibold text-background" />
+        <PersonAvatar name={name} className="size-[30px] bg-muted-foreground text-background" />
         <span
           className={cn("absolute end-px bottom-px size-[9px] rounded-full ring-2 ring-background", statusClass(availability, live))}
           data-testid="availability-dot"
@@ -79,7 +80,7 @@ export function UserMenu() {
               <span className={cn("mt-1.5 size-2 shrink-0 rounded-full", statusClass("auto", true))} />
               <span className="flex flex-col gap-0.5">
                 <Trans>Available</Trans>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-caption text-muted-foreground">
                   <Trans>While the panel is open, in business hours</Trans>
                 </span>
               </span>
@@ -88,14 +89,14 @@ export function UserMenu() {
               <span className={cn("mt-1.5 size-2 shrink-0 rounded-full", statusClass("away", true))} />
               <span className="flex flex-col gap-0.5">
                 <Trans>Away</Trans>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-caption text-muted-foreground">
                   <Trans>Live chat shows nobody available. Notifications pause, except for conversations assigned to you.</Trans>
                 </span>
               </span>
             </DropdownMenuRadioItem>
           </DropdownMenuRadioGroup>
           {setAvailability.error && (
-            <p role="alert" className="px-2.5 py-1 text-xs text-destructive">
+            <p role="alert" className="px-2.5 py-1 text-caption text-destructive">
               <Trans>The status was not changed. Try again.</Trans>
             </p>
           )}
@@ -109,7 +110,7 @@ export function UserMenu() {
           <DropdownMenuSubTrigger>
             <LanguagesIcon />
             <Trans>Language</Trans>
-            <span className="ms-auto text-xs text-faint uppercase">{i18n.locale}</span>
+            <span className="eyebrow ms-auto">{i18n.locale}</span>
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent className="min-w-36">
             <DropdownMenuRadioGroup value={i18n.locale} onValueChange={(v) => changeLocale(v as Locale)}>
@@ -166,12 +167,12 @@ export function UserMenu() {
         >
           {view === "list" ? <RowsIcon /> : <ListIcon />}
           {view === "list" ? <Trans>Switch to the queue</Trans> : <Trans>Switch to the list</Trans>}
-          <span className="ms-auto text-xs text-faint">V</span>
+          <span className="ms-auto text-caption text-faint">V</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={openShortcuts}>
           <KeyboardIcon />
           <Trans>Keyboard shortcuts</Trans>
-          <span className="ms-auto text-xs text-faint">?</span>
+          <span className="ms-auto text-caption text-faint">?</span>
         </DropdownMenuItem>
         {install && (
           <DropdownMenuItem onClick={() => void install()} data-testid="install-app">
@@ -190,7 +191,7 @@ export function UserMenu() {
           <Trans>Sign out</Trans>
         </DropdownMenuItem>
         {version && (
-          <p className="px-2.5 pt-1.5 pb-1 text-xs text-faint">
+          <p className="px-2.5 pt-1.5 pb-1 text-caption text-faint">
             <Trans>Yuva {version}</Trans>
           </p>
         )}

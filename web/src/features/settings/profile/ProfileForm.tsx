@@ -42,7 +42,7 @@ export function ProfileForm() {
             />
           </SettingRow>
           <SettingRow title={<Trans>E-mail</Trans>}>
-            <span className="truncate text-sm text-faint">{me.person.email}</span>
+            <span className="truncate text-body text-faint">{me.person.email}</span>
           </SettingRow>
           <SettingRow title={<Trans>Panel language</Trans>} hint={<Trans>Also for sign-in and notification e-mails</Trans>} htmlFor="locale">
             <ChoiceSelect<Locale>

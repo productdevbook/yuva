@@ -107,7 +107,7 @@ export function Invites() {
           </Rows>
         ) : (
           invites.data && (
-            <p className="px-5 py-4 text-sm text-muted-foreground">
+            <p className="px-5 py-4 text-body text-muted-foreground">
               <Trans>No pending invites.</Trans>
             </p>
           )

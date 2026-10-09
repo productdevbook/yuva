@@ -7,7 +7,7 @@ const STANDARD_WEBHOOKS = "https://www.standardwebhooks.com"
 
 export function SignatureHint() {
   return (
-    <Notice icon={InfoIcon} className="text-xs" data-testid="signature-hint">
+    <Notice icon={InfoIcon} className="text-caption" data-testid="signature-hint">
       <p>
         <Trans>
           Verify every request before trusting it: the <code className="font-mono">webhook-signature</code> header

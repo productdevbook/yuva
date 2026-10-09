@@ -26,13 +26,13 @@ export function WaitingPill() {
   const inboxes = useInboxes().data ?? []
   const shown = useShownId()
   const phone = useIsPhone()
-  const max = phone ? 3 : 8
+  const max = phone ? 1 : 8
   const viewers = useAllViewers()
   const members = useMemberMap()
   const n = waiting.length
   if (n === 0) {
     return (
-      <div className="justify-self-center rounded-full border bg-card px-3.5 py-1.5 text-sm text-muted-foreground" data-testid="waiting-pill">
+      <div className="justify-self-center rounded-full border bg-card px-3.5 py-1.5 text-body text-muted-foreground" data-testid="waiting-pill">
         <Trans>Nobody is waiting</Trans>
       </div>
     )
@@ -40,7 +40,7 @@ export function WaitingPill() {
   const more = n - max
   return (
     <div
-      className="flex min-w-0 items-center gap-2.5 justify-self-center rounded-full border bg-card py-1 ps-1 pe-3.5 text-sm text-muted-foreground phone:gap-2 phone:py-[3px] phone:ps-[3px] phone:pe-2.5"
+      className="flex max-w-full min-w-0 items-center gap-2.5 justify-self-center rounded-full border bg-card py-1 ps-1 pe-3.5 text-body text-muted-foreground phone:gap-2 phone:py-[3px] phone:ps-[3px] phone:pe-2.5"
       data-testid="waiting-pill"
     >
       <div className="flex shrink-0">
@@ -50,23 +50,23 @@ export function WaitingPill() {
           return (
             <Button
               key={c.id}
-              variant="plain"
-              size="auto"
+              variant="ghost"
+              size="icon-sm"
               onClick={() => show(c.id)}
               title={inbox ? `${name} · ${inbox}` : name}
               aria-label={t`Open ${name}`}
               className={cn(
-                "relative -ms-[3px] overflow-visible rounded-full ring-2 ring-card transition-transform first:ms-0 hover:z-10 hover:-translate-y-px",
+                "relative -ms-1 overflow-visible ring-2 ring-card first:ms-0 hover:z-10 hover:bg-transparent",
                 c.id === shown && "z-[1] ring-brand",
               )}
             >
-              <ContactAvatar id={c.contact.id} name={name} className="size-7 text-[10px]" />
+              <ContactAvatar id={c.contact.id} name={name} className="size-8" />
               {viewers.get(c.id)?.slice(0, 1).map((id) => {
                 const m = members.get(id)
                 return (
                   <Badge
                     key={id}
-                    className="absolute -end-1 -top-1 size-3.5 rounded-full border-2 border-card bg-mate p-0 text-[7px] font-semibold text-white"
+                    className="absolute -end-1 -top-1 size-3.5 rounded-full border-2 border-card bg-mate p-0 text-caption font-medium text-white"
                     title={m ? m.name || m.email : undefined}
                     data-testid="pill-viewer"
                   >
@@ -77,16 +77,22 @@ export function WaitingPill() {
             </Button>
           )
         })}
-        {more > 0 && (
-          <span className="relative -ms-[3px] grid size-7 place-items-center rounded-full bg-muted text-[10px] font-semibold text-muted-foreground ring-2 ring-card">
+        {more > 0 && !phone && (
+          <span className="relative -ms-[3px] grid size-7 place-items-center rounded-full bg-muted text-caption font-medium text-muted-foreground ring-2 ring-card">
             +{more}
           </span>
         )}
       </div>
-      <span className="truncate phone:text-[13px]">
-        <Trans>
-          <b className="font-semibold text-foreground">{n}</b> waiting for you
-        </Trans>
+      <span className="truncate phone:text-small">
+        {phone ? (
+          <Trans>
+            <b className="font-medium text-foreground">{n}</b> waiting
+          </Trans>
+        ) : (
+          <Trans>
+            <b className="font-medium text-foreground">{n}</b> waiting for you
+          </Trans>
+        )}
       </span>
     </div>
   )

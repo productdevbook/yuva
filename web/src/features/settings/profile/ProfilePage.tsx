@@ -6,7 +6,7 @@ import { Passkeys } from "@/features/settings/profile/Passkeys"
 import { ProfileForm } from "@/features/settings/profile/ProfileForm"
 import { Card, PageHeader, Rows, Section, SettingRow } from "@/features/settings/ui"
 import { useSession, useSignOut } from "@/lib/session"
-import { Button } from "@/components/ui/button"
+import { Item } from "@/components/ui/item"
 
 export function ProfilePage() {
   const { me } = useSession()
@@ -21,17 +21,14 @@ export function ProfilePage() {
         <Card flush>
           <Rows>
             <li>
-              <Button
-                variant="plain"
-                size="auto"
-                className="flex min-h-[52px] w-full rounded-none px-4 py-3 text-destructive hover:bg-background"
+              <Item render={<button type="button" />} className="min-h-[52px] rounded-none text-destructive [button]:hover:bg-background"
                 onClick={async () => {
                   await signOut()
                   navigate("/sign-in", { replace: true })
                 }}
               >
                 <Trans>Sign out</Trans>
-              </Button>
+              </Item>
             </li>
             <SettingRow
               title={<Trans>Delete my account</Trans>}

@@ -22,6 +22,7 @@ import { useSession } from "@/lib/session"
 import { useInboxMembers, useMembers } from "@/lib/workspace"
 import { Toggle } from "@/components/ui/toggle"
 import { Label } from "@/components/ui/label"
+import { Item } from "@/components/ui/item"
 
 const InboxContext = createContext<{ inbox: Inbox } | null>(null)
 
@@ -78,12 +79,11 @@ function Channels({ inbox }: { inbox: Inbox }) {
           <Rows>
             {(channels.data ?? []).map((ch) => (
               <Row key={ch.id} data-testid="channel-row" className="pe-2">
-                <Button
-                  variant="plain"
-                  size="auto"
-                  className="flex min-w-0 flex-1 gap-3 rounded-lg disabled:opacity-100"
+                <Item
+                  render={<button type="button" disabled={!canManage} />}
+                  size="xs"
+                  className="min-w-0 flex-1 flex-nowrap px-0 disabled:cursor-default [button]:hover:bg-transparent"
                   onClick={() => setEditing({ channel: ch })}
-                  disabled={!canManage}
                 >
                   <RowIcon>
                     <ChannelIcon kind={ch.kind} />
@@ -96,7 +96,7 @@ function Channels({ inbox }: { inbox: Inbox }) {
                       </>
                     }
                   />
-                </Button>
+                </Item>
                 {channelState(ch) === "ok" ? (
                   <StatusTag tone="success">
                     <Trans>Working</Trans>
@@ -251,9 +251,9 @@ function CustomerSees({ inbox }: { inbox: Inbox }) {
               />
             </SettingRow>
             <li className="flex flex-col gap-2 px-4 py-3">
-              <Label htmlFor="inbox-greeting" className="block leading-normal font-normal">
+              <Label htmlFor="inbox-greeting" className="block font-normal">
                 <Trans>Greeting</Trans>
-                <small className="mt-px block text-[13px] text-faint">
+                <small className="mt-px block text-small text-faint">
                   <Trans>The first thing the chat says</Trans>
                 </small>
               </Label>
@@ -329,7 +329,7 @@ function Hours({ inbox }: { inbox: Inbox }) {
                           else next.add(d)
                           write(next)
                         }}
-                        className="size-8 min-w-8 rounded-full border border-border px-0 text-xs font-normal hover:border-faint hover:bg-transparent aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground"
+                        className="size-8 min-w-8 rounded-full border border-border px-0 hover:border-faint hover:bg-transparent aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground"
                       >
                         {short(d)}
                       </Toggle>

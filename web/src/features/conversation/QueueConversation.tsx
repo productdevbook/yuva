@@ -229,7 +229,7 @@ function Loaded({ c, contact, channel }: { c: Conversation; contact?: Contact; c
             <Trans>This conversation is no longer waiting for you.</Trans>
           </span>
           {next && (
-            <Button variant="outline" size="sm" onClick={openNext} className="border-border text-[13px] font-normal hover:border-faint">
+            <Button variant="outline" size="sm" onClick={openNext}>
               <Trans>Open the next one</Trans>
             </Button>
           )}
@@ -240,15 +240,14 @@ function Loaded({ c, contact, channel }: { c: Conversation; contact?: Contact; c
         name={name}
         channel={channel}
         lastInbound={lastInbound}
-        onContact={() => setContactOpen(true)}
         menu={<ConversationMenu c={c} open={moreOpen} onOpenChange={setMoreOpen} update={update} move={move} onContact={() => setContactOpen(true)} />}
       />
       {c.spam && (
-        <Alert role="status" variant="destructive" className="mt-4 flex items-center gap-3 rounded-xl border-transparent bg-destructive/6 px-3.5 py-2 text-[13px] text-foreground" data-testid="spam-banner">
+        <Alert role="status" variant="destructive" className="mt-4 flex items-center gap-3 rounded-xl border-transparent bg-destructive/6 px-3.5 py-2 text-small text-foreground" data-testid="spam-banner">
           <span className="flex-1">
             <Trans>Marked as spam: left out of the queue and never answered automatically.</Trans>
           </span>
-          <Button variant="link" className="text-[13px] text-foreground underline" onClick={() => update({ spam: false })}>
+          <Button variant="link" className="text-foreground underline" onClick={() => update({ spam: false })}>
             <Trans>Not spam</Trans>
           </Button>
         </Alert>
@@ -267,7 +266,7 @@ function Loaded({ c, contact, channel }: { c: Conversation; contact?: Contact; c
             <Skeleton className="h-12 w-1/2 justify-self-end rounded-[18px]" />
           </div>
         ) : messages.error ? (
-          <p className="text-sm text-destructive">{errorText(messages.error)}</p>
+          <p className="text-body text-destructive">{errorText(messages.error)}</p>
         ) : (
           <Talk items={shown} ctx={ctx} conversation={c} name={name} feedbackId={feedbackId} />
         )}
@@ -288,7 +287,7 @@ function Loaded({ c, contact, channel }: { c: Conversation; contact?: Contact; c
         autoFocus={fine}
       />
       <LaterActions c={c} name={name} actions={actions} menu={menu} setMenu={setMenu} />
-      <div className="mt-4.5 hidden justify-between px-1 text-xs text-faint phone:flex" aria-hidden>
+      <div className="mt-4.5 hidden justify-between px-1 text-caption text-faint phone:flex" aria-hidden>
         <span>
           <Trans>← later</Trans>
         </span>

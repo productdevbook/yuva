@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils"
 import { useChannelMap, useInboxes } from "@/lib/workspace"
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Item } from "@/components/ui/item"
 
 type Tab = "waiting" | "snoozed" | "pending" | "team" | "closed"
 const TABS: Tab[] = ["waiting", "snoozed", "pending", "team", "closed"]
@@ -40,22 +41,19 @@ export function ConversationRow({ c, current, onOpen }: { c: ConversationListIte
   const preview = c.last_message?.text || c.subject
   const rating = currentRating(c)
   return (
-    <Button
-      variant="plain"
-      size="auto"
+    <Item render={<button type="button" />} size="sm" className={cn("flex-nowrap items-start", current && "bg-brand-wash [button]:hover:bg-brand-wash")}
       onClick={onOpen}
-      className={cn("flex w-full items-start gap-3 rounded-xl px-2.5 py-3 hover:bg-card", current && "bg-brand-wash hover:bg-brand-wash")}
       data-testid="drawer-row"
     >
-      <ContactAvatar id={c.contact.id} name={name} className="size-9 text-xs" />
+      <ContactAvatar id={c.contact.id} name={name} className="size-9" />
       <span className="min-w-0 flex-1">
         <span className="flex items-baseline gap-2">
-          <b className={cn("min-w-0 truncate font-medium", c.unread && "font-semibold")}>{name}</b>
-          <time className="ms-auto shrink-0 text-xs text-faint" dateTime={c.last_activity_at}>
+          <b className={cn("min-w-0 truncate font-medium", c.unread && "font-medium")}>{name}</b>
+          <time className="ms-auto shrink-0 text-caption text-faint" dateTime={c.last_activity_at}>
             {formatShort(c.last_activity_at, i18n.locale)}
           </time>
         </span>
-        <span className="mt-px flex min-w-0 items-center gap-1.5 text-xs text-faint">
+        <span className="mt-px flex min-w-0 items-center gap-1.5 text-caption text-faint">
           {inbox && (
             <>
               <Dot color={inbox.branding.color} className="size-2 rounded-[3px]" />
@@ -75,9 +73,9 @@ export function ConversationRow({ c, current, onOpen }: { c: ConversationListIte
             </span>
           )}
         </span>
-        {preview && <span className="mt-0.5 block truncate text-[13px] text-muted-foreground">{preview}</span>}
+        {preview && <span className="mt-0.5 block truncate text-small text-muted-foreground">{preview}</span>}
       </span>
-    </Button>
+    </Item>
   )
 }
 
@@ -150,7 +148,7 @@ export function AllDrawer({
       <SheetContent side="right" showCloseButton={false} className="w-[420px] max-w-full bg-background phone:w-full" data-testid="all-drawer">
         <div className="grid gap-3 border-b px-4.5 pt-4.5 pb-3">
           <div className="flex items-center">
-            <SheetTitle className="text-[17px]">
+            <SheetTitle className="text-title">
               <Trans>Conversations</Trans>
             </SheetTitle>
             <Button variant="ghost" size="icon-sm" className="ms-auto" onClick={() => onOpenChange(false)} aria-label={t`Close`}>
@@ -176,7 +174,7 @@ export function AllDrawer({
             value={tab}
             onChange={setTab}
             className="w-full overflow-x-auto"
-            itemClassName="flex-1 px-1.5"
+            itemClassName="flex-1 px-2"
             items={TABS.map((k) => ({
               value: k,
               testId: `drawer-tab-${k}`,
@@ -184,7 +182,7 @@ export function AllDrawer({
                 <>
                   {labels[k]}
                   {!rows[k].pending && (
-                    <span className="ms-1 text-xs font-normal text-faint tabular-nums">
+                    <span className="ms-1 text-caption font-normal text-faint tabular-nums">
                       {fmt.format(rows[k].items.length)}
                       {rows[k].more && "+"}
                     </span>
@@ -202,7 +200,7 @@ export function AllDrawer({
               <Skeleton className="h-14 w-full rounded-xl" />
             </div>
           ) : current.items.length === 0 ? (
-            <p className="px-4 py-12 text-center text-sm text-faint">
+            <p className="px-4 py-12 text-center text-body text-faint">
               {q ? <Trans>Nothing matches your search here.</Trans> : <Trans>No conversations here.</Trans>}
             </p>
           ) : (

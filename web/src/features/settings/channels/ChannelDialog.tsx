@@ -158,7 +158,7 @@ export function ChannelDialog({
                   id="channel-settings"
                   rows={6}
                   spellCheck={false}
-                  className="font-mono text-xs"
+                  className="font-mono text-caption"
                   value={raw}
                   aria-invalid={!settings}
                   onChange={(e) => setRaw(e.target.value)}

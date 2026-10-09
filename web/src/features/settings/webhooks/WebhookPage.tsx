@@ -121,24 +121,24 @@ function EndpointCard({ e }: { e: WebhookEndpoint }) {
         <Switch checked={e.enabled} disabled={toggle.isPending} onCheckedChange={(on) => toggle.mutate(on)} aria-label={t`Send events`} data-testid="webhook-enabled" />
       </ToggleRow>
       <div className="flex flex-col gap-2">
-        <p className="text-sm font-medium">
+        <p className="text-body font-medium">
           <Trans>Events</Trans>
         </p>
         <ul className="flex flex-wrap gap-1.5">
           {e.events.map((ev) => (
-            <li key={ev} className="rounded-full bg-muted px-2.5 py-0.5 font-mono text-xs" title={text.event[ev]}>
+            <li key={ev} className="rounded-full bg-muted px-2.5 py-0.5 font-mono text-caption" title={text.event[ev]}>
               {ev}
             </li>
           ))}
           {e.include_notes && (
-            <li className="rounded-full border px-2.5 py-0.5 text-xs text-muted-foreground">
+            <li className="rounded-full border px-2.5 py-0.5 text-caption text-muted-foreground">
               <Trans>with notes</Trans>
             </li>
           )}
         </ul>
       </div>
       {rotatedUntil && (
-        <p className="text-xs text-muted-foreground" data-testid="webhook-rotated">
+        <p className="text-caption text-muted-foreground" data-testid="webhook-rotated">
           <Trans>The previous secret also signs until {rotatedUntil}.</Trans>
         </p>
       )}
@@ -172,7 +172,7 @@ export function WebhookPage() {
         back={{ to: "/settings/webhooks", label: t`Webhooks` }}
         title={
           e ? (
-            <span className="font-mono text-lg break-all" data-testid="webhook-url">
+            <span className="font-mono text-title break-all" data-testid="webhook-url">
               {e.url}
             </span>
           ) : (

@@ -12,8 +12,9 @@ import { activate, i18n } from "@/i18n"
 import type { Me } from "@/lib/api"
 import { signInPath } from "@/lib/next"
 import { pickMembership, SessionProvider, useMe, useSignOut, useWorkspaceChoice } from "@/lib/session"
+import { Item } from "@/components/ui/item"
 
-const heading = "text-[1.75rem] leading-tight font-semibold tracking-[-0.03em] sm:text-[2rem]"
+const heading = "text-page"
 
 function NoWorkspace({ email }: { email: string }) {
   const signOut = useSignOut()
@@ -26,10 +27,10 @@ function NoWorkspace({ email }: { email: string }) {
       <h1 className={heading}>
         <Trans>You are not a member of any workspace</Trans>
       </h1>
-      <p className="mt-3 leading-relaxed text-muted-foreground">
+      <p className="mt-3 text-muted-foreground">
         <Trans>Ask an owner or admin of your workspace to invite you.</Trans>
       </p>
-      <p className="mt-4 rounded-xl bg-surface px-3.5 py-2.5 text-sm break-words">{email}</p>
+      <p className="mt-4 rounded-xl bg-surface px-3.5 py-2.5 text-body break-words">{email}</p>
       <div className="mt-8 flex flex-wrap items-center gap-2">
         <Button
           type="button"
@@ -58,15 +59,12 @@ function WorkspacePicker({ me, onChoose }: { me: Me; onChoose: (id: string) => v
       <ul className="flex flex-col gap-2">
         {me.memberships.map((m) => (
           <li key={m.workspace.id}>
-            <Button
-              variant="plain"
-              size="auto"
+            <Item render={<button type="button" />} variant="outline" className="flex-nowrap hover:bg-surface [button]:hover:bg-surface"
               onClick={() => onChoose(m.workspace.id)}
-              className="flex w-full gap-3 rounded-2xl border-border px-4 py-3.5 text-base hover:border-input hover:bg-surface"
             >
               <span className="flex-1 truncate font-medium">{m.workspace.name}</span>
               <ChevronRightIcon className="size-4 text-faint" />
-            </Button>
+            </Item>
           </li>
         ))}
       </ul>
