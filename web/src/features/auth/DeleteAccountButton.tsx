@@ -54,7 +54,7 @@ export function DeleteAccountButton({ email, size }: { email: string; size?: "sm
         pending={remove.isPending}
         error={
           lastOwner ? (
-            <p role="alert" className="text-sm text-destructive">
+            <p role="alert" className="text-body text-destructive">
               <Trans>
                 You are the only owner of a workspace. Make someone else an owner there, or delete that workspace,
                 before you delete your account.

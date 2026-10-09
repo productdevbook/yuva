@@ -18,8 +18,8 @@ export function EmptyState({
           <Icon className="size-5" />
         </span>
       )}
-      <p className="text-sm font-medium">{title}</p>
-      {children && <div className="max-w-xs text-sm leading-relaxed text-muted-foreground">{children}</div>}
+      <p className="text-body font-medium">{title}</p>
+      {children && <div className="max-w-xs text-body text-muted-foreground">{children}</div>}
     </div>
   )
 }

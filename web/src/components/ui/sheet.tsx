@@ -1,6 +1,6 @@
 import { Dialog as SheetPrimitive } from "@base-ui/react/dialog"
 import { Trans } from "@lingui/react/macro"
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 import { XIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -21,7 +21,7 @@ function SheetContent({
       <SheetPrimitive.Popup
         data-side={side}
         className={cn(
-          "fixed inset-y-0 z-50 flex w-[min(22rem,88vw)] flex-col bg-card text-sm text-foreground shadow-[0_0_60px_-20px_rgb(15_23_42/0.4)] outline-none",
+          "fixed inset-y-0 z-50 flex w-[min(22rem,88vw)] flex-col bg-card text-body text-foreground shadow-[0_0_60px_-20px_rgb(15_23_42/0.4)] outline-none",
           side === "right" ? "right-0 border-l" : "left-0 border-r",
           className,
         )}
@@ -46,11 +46,11 @@ function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function SheetTitle({ className, ...props }: SheetPrimitive.Title.Props) {
-  return <SheetPrimitive.Title className={cn("font-semibold tracking-tight", className)} {...props} />
+  return <SheetPrimitive.Title className={cn("", className)} {...props} />
 }
 
 function SheetDescription({ className, ...props }: SheetPrimitive.Description.Props) {
-  return <SheetPrimitive.Description className={cn("text-sm text-muted-foreground", className)} {...props} />
+  return <SheetPrimitive.Description className={cn("text-body text-muted-foreground", className)} {...props} />
 }
 
 export { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle }

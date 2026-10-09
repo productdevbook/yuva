@@ -1,42 +1,100 @@
-import { useLingui } from "@lingui/react/macro"
 import { useEffect, useMemo, useState } from "react"
-import { Outlet, useLocation } from "react-router"
+import { Outlet, useLocation, useNavigate } from "react-router"
 
 import { ConnectionBanner } from "@/app/ConnectionBanner"
+import { Palette } from "@/app/Palette"
 import { ShellContext } from "@/app/shell"
-import { Sidebar } from "@/app/Sidebar"
-import { ShortcutSheet, useShortcutSheet } from "@/components/common/ShortcutSheet"
-import { Sheet, SheetContent } from "@/components/ui/sheet"
+import { TopBar } from "@/app/TopBar"
+import { Toaster } from "@/components/common"
+import { SHORTCUTS, ShortcutSheet } from "@/components/common/ShortcutSheet"
+import { AllDrawer } from "@/features/inbox/AllDrawer"
+import { focusListSearch } from "@/features/inbox/listSearch"
+import { QueueProvider, useQueue } from "@/features/inbox/queue"
+import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useRegisterPushOnStart } from "@/lib/push"
 import { useRealtime } from "@/lib/realtime"
 import { useSession } from "@/lib/session"
+import { useView } from "@/lib/view"
+
+function Title() {
+  const { waiting } = useQueue()
+  const n = waiting.length
+  useEffect(() => {
+    document.title = n ? `(${n}) Yuva` : "Yuva"
+  }, [n])
+  return null
+}
 
 export function AppShell() {
-  const { t } = useLingui()
-  const sheet = useShortcutSheet()
   const { workspaceId, membership } = useSession()
-  const [navOpen, setNavOpen] = useState(false)
-  const { pathname } = useLocation()
+  const navigate = useNavigate()
+  const [shortcuts, setShortcuts] = useState(false)
+  const [palette, setPalette] = useState(false)
+  const [drawer, setDrawer] = useState<{ open: boolean; q: string; focus: number }>({ open: false, q: "", focus: 0 })
   useRealtime(workspaceId, membership.member_id)
   useRegisterPushOnStart()
-  useEffect(() => setNavOpen(false), [pathname])
-  const shell = useMemo(() => ({ openNav: () => setNavOpen(true) }), [])
-  const sidebar = <Sidebar onShortcuts={() => sheet.setOpen(true)} />
+
+  const shell = useMemo(
+    () => ({
+      openDrawer: (q?: string) => setDrawer((d) => ({ open: true, q: q ?? d.q, focus: q === undefined ? d.focus : d.focus + 1 })),
+      openPalette: () => setPalette(true),
+      openShortcuts: () => setShortcuts(true),
+    }),
+    [],
+  )
+
+  const [view, setView] = useView()
+  const { pathname } = useLocation()
+  useHotkeys({
+    [SHORTCUTS.help]: () => setShortcuts(true),
+    [SHORTCUTS.search]: () => {
+      const contacts = pathname === "/contacts" && document.querySelector<HTMLInputElement>("[data-testid=contacts-search]")
+      if (contacts) contacts.focus()
+      else if (view === "list" && pathname === "/") focusListSearch()
+      else setDrawer((d) => ({ open: true, q: d.q, focus: d.focus + 1 }))
+    },
+    [SHORTCUTS.contacts]: () => navigate("/contacts"),
+    [SHORTCUTS.view]: () => {
+      setView(view === "list" ? "queue" : "list")
+      if (pathname !== "/") navigate("/")
+    },
+  })
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!(e.metaKey || e.ctrlKey) || e.altKey) return
+      const key = e.key.toLowerCase()
+      if (key === "k") {
+        e.preventDefault()
+        setPalette((p) => !p)
+      } else if (key === ",") {
+        e.preventDefault()
+        navigate("/settings")
+      }
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [navigate])
+
   return (
-    <ShellContext.Provider value={shell}>
-      <div className="flex h-svh overflow-hidden bg-background">
-        <aside className="hidden w-60 shrink-0 md:block">{sidebar}</aside>
-        <main className="flex min-h-0 min-w-0 flex-1 flex-col">
+    <QueueProvider>
+      <ShellContext.Provider value={shell}>
+        <Title />
+        <div className="min-h-svh bg-background">
+          <TopBar />
           <Outlet />
-        </main>
-      </div>
-      <Sheet open={navOpen} onOpenChange={setNavOpen}>
-        <SheetContent side="left" className="w-[min(18rem,85vw)] border-0" aria-label={t`Navigation`} showCloseButton={false}>
-          {sidebar}
-        </SheetContent>
-      </Sheet>
-      <ShortcutSheet open={sheet.open} onOpenChange={sheet.setOpen} />
-      <ConnectionBanner />
-    </ShellContext.Provider>
+        </div>
+        <AllDrawer
+          open={drawer.open}
+          onOpenChange={(open) => setDrawer((d) => ({ ...d, open }))}
+          query={drawer.q}
+          onQuery={(q) => setDrawer((d) => ({ ...d, q }))}
+          focusKey={drawer.focus}
+        />
+        <Palette open={palette} onOpenChange={setPalette} />
+        <ShortcutSheet open={shortcuts} onOpenChange={setShortcuts} />
+        <Toaster />
+        <ConnectionBanner />
+      </ShellContext.Provider>
+    </QueueProvider>
   )
 }

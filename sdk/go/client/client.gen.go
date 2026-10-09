@@ -449,6 +449,7 @@ const (
 	Assigned      EventType = "assigned"
 	LabelsChanged EventType = "labels_changed"
 	Moved         EventType = "moved"
+	Rated         EventType = "rated"
 	StatusChanged EventType = "status_changed"
 	Unassigned    EventType = "unassigned"
 )
@@ -461,6 +462,8 @@ func (e EventType) Valid() bool {
 	case LabelsChanged:
 		return true
 	case Moved:
+		return true
+	case Rated:
 		return true
 	case StatusChanged:
 		return true
@@ -663,6 +666,21 @@ func (e Locale) Valid() bool {
 	case En:
 		return true
 	case Tr:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MemberPresenceEventType.
+const (
+	MemberPresenceEventTypeMemberPresence MemberPresenceEventType = "member.presence"
+)
+
+// Valid indicates whether the value is a known member of the MemberPresenceEventType enum.
+func (e MemberPresenceEventType) Valid() bool {
+	switch e {
+	case MemberPresenceEventTypeMemberPresence:
 		return true
 	default:
 		return false
@@ -960,6 +978,7 @@ func (e Priority) Valid() bool {
 // Defines values for PushNotificationEvent.
 const (
 	AssignedToMe                    PushNotificationEvent = "assigned_to_me"
+	Mentioned                       PushNotificationEvent = "mentioned"
 	MessageInMyConversation         PushNotificationEvent = "message_in_my_conversation"
 	MessageInUnassignedConversation PushNotificationEvent = "message_in_unassigned_conversation"
 	NewAsyncConversation            PushNotificationEvent = "new_async_conversation"
@@ -972,6 +991,8 @@ func (e PushNotificationEvent) Valid() bool {
 	switch e {
 	case AssignedToMe:
 		return true
+	case Mentioned:
+		return true
 	case MessageInMyConversation:
 		return true
 	case MessageInUnassignedConversation:
@@ -981,6 +1002,24 @@ func (e PushNotificationEvent) Valid() bool {
 	case NewLiveConversation:
 		return true
 	case Test:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for Rating.
+const (
+	Bad  Rating = "bad"
+	Good Rating = "good"
+)
+
+// Valid indicates whether the value is a known member of the Rating enum.
+func (e Rating) Valid() bool {
+	switch e {
+	case Bad:
+		return true
+	case Good:
 		return true
 	default:
 		return false
@@ -1110,6 +1149,21 @@ func (e UndeliverableEmailReason) Valid() bool {
 	}
 }
 
+// Defines values for ViewingEventType.
+const (
+	ViewingEventTypeViewing ViewingEventType = "viewing"
+)
+
+// Valid indicates whether the value is a known member of the ViewingEventType enum.
+func (e ViewingEventType) Valid() bool {
+	switch e {
+	case ViewingEventTypeViewing:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for WebhookDeliveryState.
 const (
 	WebhookDeliveryStateFailed    WebhookDeliveryState = "failed"
@@ -1136,6 +1190,7 @@ const (
 	WebhookEventTypeContactDeleted      WebhookEventType = "contact.deleted"
 	WebhookEventTypeContactUpdated      WebhookEventType = "contact.updated"
 	WebhookEventTypeConversationCreated WebhookEventType = "conversation.created"
+	WebhookEventTypeConversationRated   WebhookEventType = "conversation.rated"
 	WebhookEventTypeConversationUpdated WebhookEventType = "conversation.updated"
 	WebhookEventTypeDraftCreated        WebhookEventType = "draft.created"
 	WebhookEventTypeDraftDeleted        WebhookEventType = "draft.deleted"
@@ -1152,6 +1207,8 @@ func (e WebhookEventType) Valid() bool {
 	case WebhookEventTypeContactUpdated:
 		return true
 	case WebhookEventTypeConversationCreated:
+		return true
+	case WebhookEventTypeConversationRated:
 		return true
 	case WebhookEventTypeConversationUpdated:
 		return true
@@ -1215,6 +1272,42 @@ func (e ListClientMessagesParamsOrder) Valid() bool {
 	case ListClientMessagesParamsOrderAsc:
 		return true
 	case ListClientMessagesParamsOrderDesc:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListContactsParamsKind.
+const (
+	Known   ListContactsParamsKind = "known"
+	Visitor ListContactsParamsKind = "visitor"
+)
+
+// Valid indicates whether the value is a known member of the ListContactsParamsKind enum.
+func (e ListContactsParamsKind) Valid() bool {
+	switch e {
+	case Known:
+		return true
+	case Visitor:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListContactsParamsSort.
+const (
+	Created  ListContactsParamsSort = "created"
+	LastSeen ListContactsParamsSort = "last_seen"
+)
+
+// Valid indicates whether the value is a known member of the ListContactsParamsSort enum.
+func (e ListContactsParamsSort) Valid() bool {
+	switch e {
+	case Created:
+		return true
+	case LastSeen:
 		return true
 	default:
 		return false
@@ -1597,6 +1690,11 @@ type ClientContact struct {
 
 // ClientConversation defines model for ClientConversation.
 type ClientConversation struct {
+	// CanRate The contact may rate it now with `POST /client/v1/conversations/{id}/rating`: the inbox
+	// asks for ratings (`ask_for_rating`), the conversation is closed, was closed at most 30
+	// days ago and after the inbox started asking, and has no rating since it was closed. A message from the contact reopens it,
+	// and the next close allows a new rating.
+	CanRate   bool      `json:"can_rate"`
 	CreatedAt time.Time `json:"created_at"`
 
 	// Feedback `feedback` conversations only.
@@ -1611,9 +1709,12 @@ type ClientConversation struct {
 	// LastReadByMemberAt `live` inboxes only: members have read every message created at or before this time
 	// (the latest read position of any member, as in the `read` realtime frame). Absent
 	// when no member has read the conversation, and in `async` inboxes.
-	LastReadByMemberAt *time.Time         `json:"last_read_by_member_at,omitempty"`
-	Status             ConversationStatus `json:"status"`
-	Subject            string             `json:"subject"`
+	LastReadByMemberAt *time.Time `json:"last_read_by_member_at,omitempty"`
+
+	// Rating The contact's rating since the last close; absent when they have not rated it.
+	Rating  *Rating            `json:"rating,omitempty"`
+	Status  ConversationStatus `json:"status"`
+	Subject string             `json:"subject"`
 
 	// Unread A message from a member is newer than the contact's read cursor.
 	Unread bool `json:"unread"`
@@ -1665,7 +1766,10 @@ type ClientConversationPage struct {
 
 // ClientConversationStatus defines model for ClientConversationStatus.
 type ClientConversationStatus struct {
+	// CanRate As on `ClientConversation`.
+	CanRate   bool               `json:"can_rate"`
 	Id        uuid.UUID          `json:"id"`
+	Rating    *Rating            `json:"rating,omitempty"`
 	Status    ConversationStatus `json:"status"`
 	UpdatedAt time.Time          `json:"updated_at"`
 }
@@ -1740,7 +1844,10 @@ type ClientFeedbackCreateMultipart struct {
 // ClientInbox The inbox's public settings. `live` inboxes carry `presence`; `async` inboxes never do and
 // show `expected_reply_minutes` instead.
 type ClientInbox struct {
-	Branding InboxBranding `json:"branding"`
+	// AskForRating The inbox asks contacts to rate closed conversations; offer it where `can_rate` is true
+	// on a conversation.
+	AskForRating bool          `json:"ask_for_rating"`
+	Branding     InboxBranding `json:"branding"`
 
 	// BusinessHours When `enabled` is false the inbox counts as always open.
 	BusinessHours BusinessHours      `json:"business_hours"`
@@ -1892,6 +1999,13 @@ type ClientPresenceEvent struct {
 // ClientPresenceEventType defines model for ClientPresenceEvent.Type.
 type ClientPresenceEventType string
 
+// ClientRatingCreate defines model for ClientRatingCreate.
+type ClientRatingCreate struct {
+	// Comment Optional; blank is the same as absent.
+	Comment *string `json:"comment,omitempty"`
+	Rating  Rating  `json:"rating"`
+}
+
 // ClientRead defines model for ClientRead.
 type ClientRead struct {
 	ConversationId uuid.UUID `json:"conversation_id"`
@@ -1995,6 +2109,10 @@ type ClientTypingEventType string
 
 // Contact defines model for Contact.
 type Contact struct {
+	// Activity Only on `GET /v1/contacts` and `GET /v1/contacts/{contactId}`. The counts cover the
+	// conversations the caller can see, spam left out; `last_seen_at` does not depend on the caller.
+	Activity *ContactActivity `json:"activity,omitempty"`
+
 	// Attributes Free-form data about the contact (plan, app version, …), at most 16 KiB.
 	Attributes Attributes `json:"attributes"`
 
@@ -2014,6 +2132,20 @@ type Contact struct {
 	// Undeliverable The contact's addresses that must not be mailed.
 	Undeliverable []UndeliverableEmail `json:"undeliverable"`
 	UpdatedAt     time.Time            `json:"updated_at"`
+}
+
+// ContactActivity Only on `GET /v1/contacts` and `GET /v1/contacts/{contactId}`. The counts cover the
+// conversations the caller can see, spam left out; `last_seen_at` does not depend on the caller.
+type ContactActivity struct {
+	Conversations int64 `json:"conversations"`
+
+	// LastConversationAt The last message in any of those conversations, else when the newest one started.
+	LastConversationAt *time.Time `json:"last_conversation_at,omitempty"`
+
+	// LastSeenAt The contact's last activity: a message (any channel), a rating, or use of a widget or
+	// app session. Absent when never active.
+	LastSeenAt        *time.Time `json:"last_seen_at,omitempty"`
+	OpenConversations int64      `json:"open_conversations"`
 }
 
 // ContactCreate defines model for ContactCreate.
@@ -2044,6 +2176,29 @@ type ContactMerge struct {
 	SourceId uuid.UUID `json:"source_id"`
 }
 
+// ContactNote defines model for ContactNote.
+type ContactNote struct {
+	// Author A `member` or a `bot` (API key); `member_id` is absent once the member was removed.
+	Author MessageAuthor `json:"author"`
+
+	// Body Plain text.
+	Body      string    `json:"body"`
+	ContactId uuid.UUID `json:"contact_id"`
+	CreatedAt time.Time `json:"created_at"`
+	Id        uuid.UUID `json:"id"`
+}
+
+// ContactNoteCreate defines model for ContactNoteCreate.
+type ContactNoteCreate struct {
+	Body string `json:"body"`
+}
+
+// ContactNotePage defines model for ContactNotePage.
+type ContactNotePage struct {
+	Items      []ContactNote `json:"items"`
+	NextCursor *string       `json:"next_cursor,omitempty"`
+}
+
 // ContactPage defines model for ContactPage.
 type ContactPage struct {
 	Items []Contact `json:"items"`
@@ -2069,6 +2224,22 @@ type ContactRef struct {
 
 	// MergedIntoId Set on `contact.deleted` when the contact was merged into this one.
 	MergedIntoId *uuid.UUID `json:"merged_into_id,omitempty"`
+}
+
+// ContactSummary How the team has served the contact, over all their conversations the caller can see (spam
+// left out).
+type ContactSummary struct {
+	// FirstReplies Conversations where a member answered the contact's first message.
+	FirstReplies int64 `json:"first_replies"`
+
+	// MedianFirstReplySeconds Median seconds from the contact's first message to the first member reply; absent when `first_replies` is 0.
+	MedianFirstReplySeconds *int64 `json:"median_first_reply_seconds,omitempty"`
+
+	// Ratings The latest rating of each conversation.
+	Ratings struct {
+		Bad  int64 `json:"bad"`
+		Good int64 `json:"good"`
+	} `json:"ratings"`
 }
 
 // ContactUpdate defines model for ContactUpdate.
@@ -2103,6 +2274,9 @@ type Conversation struct {
 
 	// ChannelId The channel it started on; absent when unknown or removed.
 	ChannelId *uuid.UUID `json:"channel_id,omitempty"`
+
+	// ClosedAt When it was last closed; absent when it never was.
+	ClosedAt  *time.Time `json:"closed_at,omitempty"`
 	ContactId uuid.UUID  `json:"contact_id"`
 	CreatedAt time.Time  `json:"created_at"`
 
@@ -2123,6 +2297,11 @@ type Conversation struct {
 	// LastMessageAt The last `message` to or from the contact.
 	LastMessageAt *time.Time `json:"last_message_at,omitempty"`
 	Priority      Priority   `json:"priority"`
+
+	// Rating The contact's latest rating. A conversation can be rated once each time it is closed, so
+	// this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
+	// has it as a `rated` event message whose body is the comment.
+	Rating *ConversationRating `json:"rating,omitempty"`
 
 	// RelatedConversationId Set when this conversation was opened for a sender who answered in the e-mail thread of
 	// another contact's conversation (a forward, a CC'd colleague): the conversation whose
@@ -2185,6 +2364,10 @@ type ConversationContact struct {
 type ConversationCounts struct {
 	All int64 `json:"all"`
 
+	// Assignees Per assignee's member id: each member's open load, for choosing whom to hand a
+	// conversation to. Counts only the inboxes the caller can see.
+	Assignees []CountByID `json:"assignees"`
+
 	// Feedback Open feedback conversations (included in the other counts too).
 	Feedback int64 `json:"feedback"`
 
@@ -2242,6 +2425,9 @@ type ConversationListItem struct {
 	// ChannelId The channel it started on; absent when unknown or removed.
 	ChannelId *uuid.UUID `json:"channel_id,omitempty"`
 
+	// ClosedAt When it was last closed; absent when it never was.
+	ClosedAt *time.Time `json:"closed_at,omitempty"`
+
 	// Contact The conversation's contact, enough for a list row.
 	Contact   ConversationContact `json:"contact"`
 	ContactId uuid.UUID           `json:"contact_id"`
@@ -2267,6 +2453,11 @@ type ConversationListItem struct {
 	// LastMessageAt The last `message` to or from the contact.
 	LastMessageAt *time.Time `json:"last_message_at,omitempty"`
 	Priority      Priority   `json:"priority"`
+
+	// Rating The contact's latest rating. A conversation can be rated once each time it is closed, so
+	// this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
+	// has it as a `rated` event message whose body is the comment.
+	Rating *ConversationRating `json:"rating,omitempty"`
 
 	// RelatedConversationId Set when this conversation was opened for a sender who answered in the e-mail thread of
 	// another contact's conversation (a forward, a CC'd colleague): the conversation whose
@@ -2322,6 +2513,15 @@ type ConversationPage struct {
 
 	// NextCursor Absent on the last page.
 	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// ConversationRating The contact's latest rating. A conversation can be rated once each time it is closed, so
+// this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
+// has it as a `rated` event message whose body is the comment.
+type ConversationRating struct {
+	Comment *string   `json:"comment,omitempty"`
+	RatedAt time.Time `json:"rated_at"`
+	Rating  Rating    `json:"rating"`
 }
 
 // ConversationRead A member's read cursor in a conversation.
@@ -2591,7 +2791,12 @@ type IdentitySecret struct {
 
 // Inbox defines model for Inbox.
 type Inbox struct {
-	Branding InboxBranding `json:"branding"`
+	// AskForRating Contacts may rate a closed conversation (`good` or `bad`, with an optional comment):
+	// the widget and the mobile SDKs offer it, and e-mail contacts get a request with two
+	// links after a member's conversation is closed. Off by default. Only conversations
+	// closed after it was turned on can be rated; turning it off and on again starts over.
+	AskForRating bool          `json:"ask_for_rating"`
+	Branding     InboxBranding `json:"branding"`
 
 	// BusinessHours When `enabled` is false the inbox counts as always open.
 	BusinessHours BusinessHours `json:"business_hours"`
@@ -2651,7 +2856,8 @@ type InboxBranding struct {
 
 // InboxCreate defines model for InboxCreate.
 type InboxCreate struct {
-	Branding *InboxBranding `json:"branding,omitempty"`
+	AskForRating *bool          `json:"ask_for_rating,omitempty"`
+	Branding     *InboxBranding `json:"branding,omitempty"`
 
 	// BusinessHours When `enabled` is false the inbox counts as always open.
 	BusinessHours *BusinessHours `json:"business_hours,omitempty"`
@@ -2730,6 +2936,13 @@ type InboxNotificationsUpdate struct {
 	Events NotificationEventsUpdate `json:"events"`
 }
 
+// InboxRatingStats defines model for InboxRatingStats.
+type InboxRatingStats struct {
+	Bad     int64     `json:"bad"`
+	Good    int64     `json:"good"`
+	InboxId uuid.UUID `json:"inbox_id"`
+}
+
 // InboxRef defines model for InboxRef.
 type InboxRef struct {
 	Id uuid.UUID `json:"id"`
@@ -2737,7 +2950,8 @@ type InboxRef struct {
 
 // InboxUpdate defines model for InboxUpdate.
 type InboxUpdate struct {
-	Branding *InboxBranding `json:"branding,omitempty"`
+	AskForRating *bool          `json:"ask_for_rating,omitempty"`
+	Branding     *InboxBranding `json:"branding,omitempty"`
 
 	// BusinessHours When `enabled` is false the inbox counts as always open.
 	BusinessHours *BusinessHours `json:"business_hours,omitempty"`
@@ -2885,12 +3099,19 @@ type MeUpdate struct {
 
 // Member defines model for Member.
 type Member struct {
-	CreatedAt time.Time `json:"created_at"`
+	// Availability `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
+	// hours. `away`: never shown as available.
+	Availability Availability `json:"availability"`
+	CreatedAt    time.Time    `json:"created_at"`
 
 	// Email Examples: owner@example.com
-	Email    Email     `json:"email"`
-	Id       uuid.UUID `json:"id"`
-	Name     string    `json:"name"`
+	Email Email     `json:"email"`
+	Id    uuid.UUID `json:"id"`
+	Name  string    `json:"name"`
+
+	// Online The member has a `/v1/realtime` connection seen in the last 75 seconds (any panel tab
+	// or device). `member.presence` events on `/v1/realtime` report changes.
+	Online   bool      `json:"online"`
 	PersonId uuid.UUID `json:"person_id"`
 	Role     Role      `json:"role"`
 }
@@ -2898,6 +3119,38 @@ type Member struct {
 // MemberList defines model for MemberList.
 type MemberList struct {
 	Items []Member `json:"items"`
+}
+
+// MemberPresence defines model for MemberPresence.
+type MemberPresence struct {
+	// Availability `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
+	// hours. `away`: never shown as available.
+	Availability Availability `json:"availability"`
+	MemberId     uuid.UUID    `json:"member_id"`
+	Online       bool         `json:"online"`
+}
+
+// MemberPresenceEvent A member's `availability` or `online` changed (they opened or closed the panel, or set
+// themselves away). Carries the member's current state, so it may repeat the previous one.
+// Not stored: it has no `id` and is not replayed; reload `/v1/members` after a reconnect.
+// A server process that stops without closing its connections sends none: such members
+// turn offline in `/v1/members` 75 seconds later. Sent to member sessions only, the member's
+// own included.
+type MemberPresenceEvent struct {
+	CreatedAt   time.Time               `json:"created_at"`
+	Data        MemberPresence          `json:"data"`
+	Type        MemberPresenceEventType `json:"type"`
+	WorkspaceId uuid.UUID               `json:"workspace_id"`
+}
+
+// MemberPresenceEventType defines model for MemberPresenceEvent.Type.
+type MemberPresenceEventType string
+
+// MemberStats defines model for MemberStats.
+type MemberStats struct {
+	Closed   int64     `json:"closed"`
+	MemberId uuid.UUID `json:"member_id"`
+	Replies  int64     `json:"replies"`
 }
 
 // MemberUpdate defines model for MemberUpdate.
@@ -2948,6 +3201,9 @@ type Message struct {
 	// change (assignment, status, labels).
 	Kind MessageKind `json:"kind"`
 
+	// Mentions Members a note mentions (notes only; absent when it mentions nobody).
+	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
+
 	// SentBy Who sent a draft (`member` or `bot`); absent for messages that were never drafts.
 	SentBy *MessageAuthor `json:"sent_by,omitempty"`
 }
@@ -2992,6 +3248,13 @@ type MessageCreate struct {
 	// Html Sanitized before it is stored.
 	Html *string           `json:"html,omitempty"`
 	Kind MessageCreateKind `json:"kind"`
+
+	// Mentions Notes only: members to notify about the note. Each must be a member of the workspace
+	// who can see the conversation's inbox (`400 validation_failed` otherwise). They get the
+	// `mentioned` notification (realtime as `message.created`, Web Push and e-mail per their
+	// notification settings); the author is never notified. The panel shows mentions in the
+	// body as it likes; the server does not parse `@` in the text.
+	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
 }
 
 // MessageCreateKind defines model for MessageCreate.Kind.
@@ -3006,6 +3269,9 @@ type MessageCreateMultipart struct {
 	Files     *[]openapi_types.File      `json:"files,omitempty"`
 	Html      *string                    `json:"html,omitempty"`
 	Kind      MessageCreateMultipartKind `json:"kind"`
+
+	// Mentions Notes only; repeat the field once per member id.
+	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
 }
 
 // MessageCreateMultipartKind defines model for MessageCreateMultipart.Kind.
@@ -3118,9 +3384,12 @@ type MessageEvent struct {
 	// PreviousInboxId The inbox it moved from (`moved`).
 	PreviousInboxId *uuid.UUID          `json:"previous_inbox_id,omitempty"`
 	PreviousStatus  *ConversationStatus `json:"previous_status,omitempty"`
-	RemovedLabels   *[]uuid.UUID        `json:"removed_labels,omitempty"`
-	Status          *ConversationStatus `json:"status,omitempty"`
-	Type            EventType           `json:"type"`
+
+	// Rating `rated` only: the contact's rating; the message body is their comment.
+	Rating        *Rating             `json:"rating,omitempty"`
+	RemovedLabels *[]uuid.UUID        `json:"removed_labels,omitempty"`
+	Status        *ConversationStatus `json:"status,omitempty"`
+	Type          EventType           `json:"type"`
 }
 
 // MessageKind `message` goes to or comes from the contact, `note` is for members only, `event` records a
@@ -3184,6 +3453,7 @@ type NotificationChannels struct {
 // NotificationEvents defines model for NotificationEvents.
 type NotificationEvents struct {
 	AssignedToMe                    NotificationChannels `json:"assigned_to_me"`
+	Mentioned                       NotificationChannels `json:"mentioned"`
 	MessageInMyConversation         NotificationChannels `json:"message_in_my_conversation"`
 	MessageInUnassignedConversation NotificationChannels `json:"message_in_unassigned_conversation"`
 	NewAsyncConversation            NotificationChannels `json:"new_async_conversation"`
@@ -3193,6 +3463,7 @@ type NotificationEvents struct {
 // NotificationEventsUpdate Some events and their channels.
 type NotificationEventsUpdate struct {
 	AssignedToMe                    *NotificationChannels `json:"assigned_to_me,omitempty"`
+	Mentioned                       *NotificationChannels `json:"mentioned,omitempty"`
 	MessageInMyConversation         *NotificationChannels `json:"message_in_my_conversation,omitempty"`
 	MessageInUnassignedConversation *NotificationChannels `json:"message_in_unassigned_conversation,omitempty"`
 	NewAsyncConversation            *NotificationChannels `json:"new_async_conversation,omitempty"`
@@ -3566,6 +3837,16 @@ type PushSubscriptionList struct {
 	Items []PushSubscription `json:"items"`
 }
 
+// Rating defines model for Rating.
+type Rating string
+
+// RatingStats Ratings contacts gave in the window, in total and per inbox (inboxes without any are left out).
+type RatingStats struct {
+	Bad     int64              `json:"bad"`
+	Good    int64              `json:"good"`
+	Inboxes []InboxRatingStats `json:"inboxes"`
+}
+
 // RealtimeMessage One server message on `/v1/realtime`, told apart by `type`.
 type RealtimeMessage struct {
 	union json.RawMessage
@@ -3640,6 +3921,31 @@ type SmtpSettingsInput struct {
 // SmtpTls `starttls` upgrades a plain connection (port 587), `tls` connects with TLS (port 465),
 // `none` sends in the clear (local relays and test servers only).
 type SmtpTls string
+
+// Stats defines model for Stats.
+type Stats struct {
+	// Closed Times a conversation was closed, by anyone (members, API keys, the server).
+	Closed int64 `json:"closed"`
+
+	// FirstReplies Conversations whose first member reply to the contact was sent in the window.
+	FirstReplies int64 `json:"first_replies"`
+
+	// MedianFirstReplySeconds Median seconds from the contact's first message to that reply; absent when `first_replies` is 0.
+	MedianFirstReplySeconds *int64 `json:"median_first_reply_seconds,omitempty"`
+
+	// Members Per member, by member id.
+	Members []MemberStats `json:"members"`
+
+	// Ratings Ratings contacts gave in the window, in total and per inbox (inboxes without any are left out).
+	Ratings RatingStats `json:"ratings"`
+
+	// Replies Replies sent by members.
+	Replies int64     `json:"replies"`
+	Since   time.Time `json:"since"`
+
+	// Until When it was counted.
+	Until time.Time `json:"until"`
+}
 
 // StoredEvent An event as `GET /v1/events` returns it, told apart by `type`; the same objects realtime and webhooks carry.
 type StoredEvent struct {
@@ -3729,6 +4035,32 @@ type Version struct {
 	// Examples: 0.1.0
 	Version string `json:"version"`
 }
+
+// Viewing defines model for Viewing.
+type Viewing struct {
+	ConversationId uuid.UUID `json:"conversation_id"`
+	MemberId       uuid.UUID `json:"member_id"`
+
+	// Viewing `false` when the member no longer has the conversation open anywhere.
+	Viewing bool `json:"viewing"`
+}
+
+// ViewingEvent Another member opened (`viewing: true`) or left a conversation, as their panel reported
+// with a `viewing` frame; leaving includes hiding the page and disconnecting. Right after a
+// connection reports a conversation, it also gets one `viewing: true` event for every other
+// member who already has it open. Not stored: it has no `id` and is not replayed. Sent to
+// member sessions that can see the conversation's inbox; members do not get their own.
+type ViewingEvent struct {
+	ConversationId uuid.UUID        `json:"conversation_id"`
+	CreatedAt      time.Time        `json:"created_at"`
+	Data           Viewing          `json:"data"`
+	InboxId        uuid.UUID        `json:"inbox_id"`
+	Type           ViewingEventType `json:"type"`
+	WorkspaceId    uuid.UUID        `json:"workspace_id"`
+}
+
+// ViewingEventType defines model for ViewingEvent.Type.
+type ViewingEventType string
 
 // WebhookAttempt defines model for WebhookAttempt.
 type WebhookAttempt struct {
@@ -4263,6 +4595,14 @@ type ListContactsParams struct {
 	// Q Full-text search (Postgres `simple` configuration, `websearch` syntax).
 	Q *Search `form:"q,omitempty" json:"q,omitempty"`
 
+	// Kind `known`: the contact has an e-mail address or an external id. `visitor`: neither (an
+	// anonymous widget visitor, or someone known only by a typed, unconfirmed address).
+	Kind *ListContactsParamsKind `form:"kind,omitempty" json:"kind,omitempty"`
+
+	// HasOpen Only contacts with (`true`) or without (`false`) an open conversation the caller can see; spam does not count.
+	HasOpen *bool                   `form:"has_open,omitempty" json:"has_open,omitempty"`
+	Sort    *ListContactsParamsSort `form:"sort,omitempty" json:"sort,omitempty"`
+
 	// Cursor The `next_cursor` of the previous page.
 	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
 
@@ -4272,6 +4612,12 @@ type ListContactsParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
+
+// ListContactsParamsKind defines parameters for ListContacts.
+type ListContactsParamsKind string
+
+// ListContactsParamsSort defines parameters for ListContacts.
+type ListContactsParamsSort string
 
 // CreateContactParams defines parameters for CreateContact.
 type CreateContactParams struct {
@@ -4327,8 +4673,38 @@ type MergeContactParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListContactNotesParams defines parameters for ListContactNotes.
+type ListContactNotesParams struct {
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CreateContactNoteParams defines parameters for CreateContactNote.
+type CreateContactNoteParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteContactNoteParams defines parameters for DeleteContactNote.
+type DeleteContactNoteParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetContactPresenceParams defines parameters for GetContactPresence.
 type GetContactPresenceParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetContactSummaryParams defines parameters for GetContactSummary.
+type GetContactSummaryParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -4700,6 +5076,21 @@ type RevokeOAuthGrantParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// GetStatsParams defines parameters for GetStats.
+type GetStatsParams struct {
+	// InboxId Only this inbox (`404` when the caller cannot see it).
+	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+
+	// Since Start of the window; the start of today in `timezone` when absent.
+	Since *time.Time `form:"since,omitempty" json:"since,omitempty"`
+
+	// Timezone IANA time zone for the default `since`.
+	Timezone *string `form:"timezone,omitempty" json:"timezone,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetUsageParams defines parameters for GetUsage.
 type GetUsageParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -4848,6 +5239,20 @@ type WebhookConversationCreatedParams struct {
 	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
 }
 
+// WebhookConversationRatedParams defines parameters for WebhookConversationRated.
+type WebhookConversationRatedParams struct {
+	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
+	WebhookId WebhookIdHeader `json:"webhook-id"`
+
+	// WebhookTimestamp Unix seconds of this attempt. Refuse values far from your clock.
+	WebhookTimestamp WebhookTimestampHeader `json:"webhook-timestamp"`
+
+	// WebhookSignature Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+	// `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+	// `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
+}
+
 // WebhookConversationUpdatedParams defines parameters for WebhookConversationUpdated.
 type WebhookConversationUpdatedParams struct {
 	// WebhookId The delivery's id, the same on every retry; use it to ignore duplicates.
@@ -4947,6 +5352,9 @@ type CreateClientMessageJSONRequestBody = ClientMessageCreate
 // CreateClientMessageMultipartRequestBody defines body for CreateClientMessage for multipart/form-data ContentType.
 type CreateClientMessageMultipartRequestBody = ClientMessageCreateMultipart
 
+// RateClientConversationJSONRequestBody defines body for RateClientConversation for application/json ContentType.
+type RateClientConversationJSONRequestBody = ClientRatingCreate
+
 // MarkClientConversationReadJSONRequestBody defines body for MarkClientConversationRead for application/json ContentType.
 type MarkClientConversationReadJSONRequestBody = ClientReadCreate
 
@@ -4994,6 +5402,9 @@ type UpdateContactJSONRequestBody = ContactUpdate
 
 // MergeContactJSONRequestBody defines body for MergeContact for application/json ContentType.
 type MergeContactJSONRequestBody = ContactMerge
+
+// CreateContactNoteJSONRequestBody defines body for CreateContactNote for application/json ContentType.
+type CreateContactNoteJSONRequestBody = ContactNoteCreate
 
 // CreateConversationJSONRequestBody defines body for CreateConversation for application/json ContentType.
 type CreateConversationJSONRequestBody = ConversationCreate
@@ -5087,6 +5498,9 @@ type WebhookContactUpdatedJSONRequestBody = WebhookContactPayload
 
 // WebhookConversationCreatedJSONRequestBody defines body for WebhookConversationCreated for application/json ContentType.
 type WebhookConversationCreatedJSONRequestBody = WebhookConversationPayload
+
+// WebhookConversationRatedJSONRequestBody defines body for WebhookConversationRated for application/json ContentType.
+type WebhookConversationRatedJSONRequestBody = WebhookConversationPayload
 
 // WebhookConversationUpdatedJSONRequestBody defines body for WebhookConversationUpdated for application/json ContentType.
 type WebhookConversationUpdatedJSONRequestBody = WebhookConversationPayload
@@ -5727,6 +6141,58 @@ func (t *RealtimeMessage) MergeTypingEvent(v TypingEvent) error {
 	return err
 }
 
+// AsMemberPresenceEvent returns the union data inside the RealtimeMessage as a MemberPresenceEvent
+func (t RealtimeMessage) AsMemberPresenceEvent() (MemberPresenceEvent, error) {
+	var body MemberPresenceEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromMemberPresenceEvent overwrites any union data inside the RealtimeMessage as the provided MemberPresenceEvent
+func (t *RealtimeMessage) FromMemberPresenceEvent(v MemberPresenceEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeMemberPresenceEvent performs a merge with any union data inside the RealtimeMessage, using the provided MemberPresenceEvent
+func (t *RealtimeMessage) MergeMemberPresenceEvent(v MemberPresenceEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsViewingEvent returns the union data inside the RealtimeMessage as a ViewingEvent
+func (t RealtimeMessage) AsViewingEvent() (ViewingEvent, error) {
+	var body ViewingEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewingEvent overwrites any union data inside the RealtimeMessage as the provided ViewingEvent
+func (t *RealtimeMessage) FromViewingEvent(v ViewingEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewingEvent performs a merge with any union data inside the RealtimeMessage, using the provided ViewingEvent
+func (t *RealtimeMessage) MergeViewingEvent(v ViewingEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsRealtimeReady returns the union data inside the RealtimeMessage as a RealtimeReady
 func (t RealtimeMessage) AsRealtimeReady() (RealtimeReady, error) {
 	var body RealtimeReady
@@ -5819,6 +6285,8 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsInboxUpdatedEvent()
 	case "inbox_access.changed":
 		return t.AsInboxAccessChangedEvent()
+	case "member.presence":
+		return t.AsMemberPresenceEvent()
 	case "message.created":
 		return t.AsMessageCreatedEvent()
 	case "message.updated":
@@ -5829,6 +6297,8 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsRealtimeResyncRequired()
 	case "typing":
 		return t.AsTypingEvent()
+	case "viewing":
+		return t.AsViewingEvent()
 	default:
 		return nil, errors.New("unknown discriminator value: " + discriminator)
 	}
@@ -6419,6 +6889,34 @@ type ClientInterface interface {
 	// Corresponds with POST /client/v1/conversations/{conversationId}/messages (the `CreateClientMessage` operationId).
 	CreateClientMessage(ctx context.Context, conversationId ConversationId, params *CreateClientMessageParams, body CreateClientMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// RateClientConversationWithBody Rate a closed conversation
+	//
+	// Records the contact's rating (`good` or `bad`) and optional comment for a conversation
+	// whose `can_rate` is true. It is stored once per close: members see it in the thread as a
+	// `rated` event and on the conversation, and it sends the `conversation.rated` webhook.
+	// Answers `409 rating_unavailable` when `can_rate` is false (the inbox does not ask for
+	// ratings, the conversation is open, the close is older than 30 days) and
+	// `409 already_rated` when the contact already rated this close.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /client/v1/conversations/{conversationId}/rating (the `RateClientConversation` operationId).
+	RateClientConversationWithBody(ctx context.Context, conversationId ConversationId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RateClientConversation Rate a closed conversation
+	//
+	// Records the contact's rating (`good` or `bad`) and optional comment for a conversation
+	// whose `can_rate` is true. It is stored once per close: members see it in the thread as a
+	// `rated` event and on the conversation, and it sends the `conversation.rated` webhook.
+	// Answers `409 rating_unavailable` when `can_rate` is false (the inbox does not ask for
+	// ratings, the conversation is open, the close is older than 30 days) and
+	// `409 already_rated` when the contact already rated this close.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /client/v1/conversations/{conversationId}/rating (the `RateClientConversation` operationId).
+	RateClientConversation(ctx context.Context, conversationId ConversationId, body RateClientConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// MarkClientConversationReadWithBody Mark a conversation read
 	//
 	// Moves the contact's read cursor to `message_id`, or to the latest message when it is
@@ -6859,7 +7357,11 @@ type ClientInterface interface {
 
 	// ListContacts List contacts
 	//
-	// Newest first. `q` searches names, e-mail addresses and external ids.
+	// Newest first, or most recently active first with `sort=last_seen` (contacts never seen sort
+	// by when they were created). `q` searches names, e-mail addresses and external ids.
+	// With `sort=last_seen`, a contact who becomes active while you page moves above the pages
+	// already read and does not appear on the later ones; no contact appears twice.
+	// Each item carries `activity`, counted over the inboxes the caller can see.
 	//
 	// Scope: `contacts:read`.
 	//
@@ -6981,6 +7483,45 @@ type ClientInterface interface {
 	// Corresponds with POST /v1/contacts/{contactId}/merge (the `MergeContact` operationId).
 	MergeContact(ctx context.Context, contactId ContactId, params *MergeContactParams, body MergeContactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListContactNotes List notes about a contact
+	//
+	// Team-only notes about the contact, not tied to a conversation, newest first. Whoever can
+	// see the contact can read and add them; contacts never see them, and no event or webhook
+	// carries them.
+	//
+	// Scope: `contacts:read`.
+	//
+	// Corresponds with GET /v1/contacts/{contactId}/notes (the `ListContactNotes` operationId).
+	ListContactNotes(ctx context.Context, contactId ContactId, params *ListContactNotesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateContactNoteWithBody Add a note about a contact
+	//
+	// Scope: `contacts:write`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/contacts/{contactId}/notes (the `CreateContactNote` operationId).
+	CreateContactNoteWithBody(ctx context.Context, contactId ContactId, params *CreateContactNoteParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateContactNote Add a note about a contact
+	//
+	// Scope: `contacts:write`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/contacts/{contactId}/notes (the `CreateContactNote` operationId).
+	CreateContactNote(ctx context.Context, contactId ContactId, params *CreateContactNoteParams, body CreateContactNoteJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteContactNote Delete a note about a contact
+	//
+	// Its author (a member, or the API key that wrote it) or an owner or admin; anyone else gets
+	// `403 forbidden`.
+	//
+	// Scope: `contacts:write`.
+	//
+	// Corresponds with DELETE /v1/contacts/{contactId}/notes/{noteId} (the `DeleteContactNote` operationId).
+	DeleteContactNote(ctx context.Context, contactId ContactId, noteId uuid.UUID, params *DeleteContactNoteParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetContactPresence Whether a contact is connected
 	//
 	// Whether the contact has a live `/client/v1/realtime` connection (widget or app in the
@@ -6992,6 +7533,16 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /v1/contacts/{contactId}/presence (the `GetContactPresence` operationId).
 	GetContactPresence(ctx context.Context, contactId ContactId, params *GetContactPresenceParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetContactSummary How the team served a contact
+	//
+	// First-reply time and ratings over the contact's conversations the caller can see. The
+	// counts of conversations are on the contact's `activity`.
+	//
+	// Scope: `contacts:read` and `conversations:read`.
+	//
+	// Corresponds with GET /v1/contacts/{contactId}/summary (the `GetContactSummary` operationId).
+	GetContactSummary(ctx context.Context, contactId ContactId, params *GetContactSummaryParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListConversations List conversations
 	//
@@ -7064,8 +7615,8 @@ type ClientInterface interface {
 	// GetConversationCounts Count open conversations
 	//
 	// Open conversations in the inboxes the caller can see: all of them, those assigned to the
-	// calling member (`0` for API keys), unassigned ones, and per inbox and per label. Inboxes and
-	// labels without open conversations are left out of their lists. Conversations flagged as
+	// calling member (`0` for API keys), unassigned ones, and per inbox, per assignee and per
+	// label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
 	// spam are counted only in `spam`.
 	//
 	// Scope: `conversations:read`.
@@ -7795,6 +8346,8 @@ type ClientInterface interface {
 
 	// ListMembers List members
 	//
+	// Every member of the workspace with their `availability` and whether they are `online`.
+	//
 	// Scope: `inboxes:read`.
 	//
 	// Corresponds with GET /v1/members (the `ListMembers` operationId).
@@ -7975,6 +8528,23 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /v1/push/vapid-public-key (the `GetVapidPublicKey` operationId).
 	GetVapidPublicKey(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetStats Team activity since a moment
+	//
+	// What the team did in the inboxes the caller can see (or in one of them) from `since` until
+	// now: replies sent by members (messages members wrote or drafts they sent; not notes, not
+	// bots' own messages), conversations closed, the median time from a contact's first
+	// message to the first member reply, over the conversations whose first reply falls in the
+	// window, and the ratings contacts gave in it. `members` breaks replies and closes down per member, leaving out members with
+	// neither. Nothing is stored for it; it is counted from the messages each time.
+	//
+	// `since` defaults to the start of today in `timezone` (an IANA name, `UTC` by default); the
+	// panel sends the browser's zone. It must be in the past and at most 366 days ago.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Corresponds with GET /v1/stats (the `GetStats` operationId).
+	GetStats(ctx context.Context, params *GetStatsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetUsage Usage per month
 	//
@@ -8424,6 +8994,54 @@ func (c *Client) CreateClientMessageWithBody(ctx context.Context, conversationId
 // Corresponds with POST /client/v1/conversations/{conversationId}/messages (the `CreateClientMessage` operationId).
 func (c *Client) CreateClientMessage(ctx context.Context, conversationId ConversationId, params *CreateClientMessageParams, body CreateClientMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateClientMessageRequest(c.Server, conversationId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RateClientConversationWithBody Rate a closed conversation
+//
+// Records the contact's rating (`good` or `bad`) and optional comment for a conversation
+// whose `can_rate` is true. It is stored once per close: members see it in the thread as a
+// `rated` event and on the conversation, and it sends the `conversation.rated` webhook.
+// Answers `409 rating_unavailable` when `can_rate` is false (the inbox does not ask for
+// ratings, the conversation is open, the close is older than 30 days) and
+// `409 already_rated` when the contact already rated this close.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /client/v1/conversations/{conversationId}/rating (the `RateClientConversation` operationId).
+func (c *Client) RateClientConversationWithBody(ctx context.Context, conversationId ConversationId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRateClientConversationRequestWithBody(c.Server, conversationId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RateClientConversation Rate a closed conversation
+//
+// Records the contact's rating (`good` or `bad`) and optional comment for a conversation
+// whose `can_rate` is true. It is stored once per close: members see it in the thread as a
+// `rated` event and on the conversation, and it sends the `conversation.rated` webhook.
+// Answers `409 rating_unavailable` when `can_rate` is false (the inbox does not ask for
+// ratings, the conversation is open, the close is older than 30 days) and
+// `409 already_rated` when the contact already rated this close.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /client/v1/conversations/{conversationId}/rating (the `RateClientConversation` operationId).
+func (c *Client) RateClientConversation(ctx context.Context, conversationId ConversationId, body RateClientConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRateClientConversationRequest(c.Server, conversationId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -9254,7 +9872,11 @@ func (c *Client) RotateChannelPublicKey(ctx context.Context, channelId ChannelId
 
 // ListContacts List contacts
 //
-// Newest first. `q` searches names, e-mail addresses and external ids.
+// Newest first, or most recently active first with `sort=last_seen` (contacts never seen sort
+// by when they were created). `q` searches names, e-mail addresses and external ids.
+// With `sort=last_seen`, a contact who becomes active while you page moves above the pages
+// already read and does not appear on the later ones; no contact appears twice.
+// Each item carries `activity`, counted over the inboxes the caller can see.
 //
 // Scope: `contacts:read`.
 //
@@ -9486,6 +10108,85 @@ func (c *Client) MergeContact(ctx context.Context, contactId ContactId, params *
 	return c.Client.Do(req)
 }
 
+// ListContactNotes List notes about a contact
+//
+// Team-only notes about the contact, not tied to a conversation, newest first. Whoever can
+// see the contact can read and add them; contacts never see them, and no event or webhook
+// carries them.
+//
+// Scope: `contacts:read`.
+//
+// Corresponds with GET /v1/contacts/{contactId}/notes (the `ListContactNotes` operationId).
+func (c *Client) ListContactNotes(ctx context.Context, contactId ContactId, params *ListContactNotesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListContactNotesRequest(c.Server, contactId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateContactNoteWithBody Add a note about a contact
+//
+// Scope: `contacts:write`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/contacts/{contactId}/notes (the `CreateContactNote` operationId).
+func (c *Client) CreateContactNoteWithBody(ctx context.Context, contactId ContactId, params *CreateContactNoteParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateContactNoteRequestWithBody(c.Server, contactId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateContactNote Add a note about a contact
+//
+// Scope: `contacts:write`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/contacts/{contactId}/notes (the `CreateContactNote` operationId).
+func (c *Client) CreateContactNote(ctx context.Context, contactId ContactId, params *CreateContactNoteParams, body CreateContactNoteJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateContactNoteRequest(c.Server, contactId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteContactNote Delete a note about a contact
+//
+// Its author (a member, or the API key that wrote it) or an owner or admin; anyone else gets
+// `403 forbidden`.
+//
+// Scope: `contacts:write`.
+//
+// Corresponds with DELETE /v1/contacts/{contactId}/notes/{noteId} (the `DeleteContactNote` operationId).
+func (c *Client) DeleteContactNote(ctx context.Context, contactId ContactId, noteId uuid.UUID, params *DeleteContactNoteParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteContactNoteRequest(c.Server, contactId, noteId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // GetContactPresence Whether a contact is connected
 //
 // Whether the contact has a live `/client/v1/realtime` connection (widget or app in the
@@ -9498,6 +10199,26 @@ func (c *Client) MergeContact(ctx context.Context, contactId ContactId, params *
 // Corresponds with GET /v1/contacts/{contactId}/presence (the `GetContactPresence` operationId).
 func (c *Client) GetContactPresence(ctx context.Context, contactId ContactId, params *GetContactPresenceParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetContactPresenceRequest(c.Server, contactId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetContactSummary How the team served a contact
+//
+// First-reply time and ratings over the contact's conversations the caller can see. The
+// counts of conversations are on the contact's `activity`.
+//
+// Scope: `contacts:read` and `conversations:read`.
+//
+// Corresponds with GET /v1/contacts/{contactId}/summary (the `GetContactSummary` operationId).
+func (c *Client) GetContactSummary(ctx context.Context, contactId ContactId, params *GetContactSummaryParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetContactSummaryRequest(c.Server, contactId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -9629,8 +10350,8 @@ func (c *Client) BulkUpdateConversations(ctx context.Context, params *BulkUpdate
 // GetConversationCounts Count open conversations
 //
 // Open conversations in the inboxes the caller can see: all of them, those assigned to the
-// calling member (`0` for API keys), unassigned ones, and per inbox and per label. Inboxes and
-// labels without open conversations are left out of their lists. Conversations flagged as
+// calling member (`0` for API keys), unassigned ones, and per inbox, per assignee and per
+// label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
 // spam are counted only in `spam`.
 //
 // Scope: `conversations:read`.
@@ -10980,6 +11701,8 @@ func (c *Client) TestPushSubscription(ctx context.Context, pushSubscriptionId Pu
 
 // ListMembers List members
 //
+// Every member of the workspace with their `availability` and whether they are `online`.
+//
 // Scope: `inboxes:read`.
 //
 // Corresponds with GET /v1/members (the `ListMembers` operationId).
@@ -11331,6 +12054,33 @@ func (c *Client) DenyOAuthRequest(ctx context.Context, oauthRequestId OAuthReque
 // Corresponds with GET /v1/push/vapid-public-key (the `GetVapidPublicKey` operationId).
 func (c *Client) GetVapidPublicKey(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetVapidPublicKeyRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetStats Team activity since a moment
+//
+// What the team did in the inboxes the caller can see (or in one of them) from `since` until
+// now: replies sent by members (messages members wrote or drafts they sent; not notes, not
+// bots' own messages), conversations closed, the median time from a contact's first
+// message to the first member reply, over the conversations whose first reply falls in the
+// window, and the ratings contacts gave in it. `members` breaks replies and closes down per member, leaving out members with
+// neither. Nothing is stored for it; it is counted from the messages each time.
+//
+// `since` defaults to the start of today in `timezone` (an IANA name, `UTC` by default); the
+// panel sends the browser's zone. It must be in the past and at most 366 days ago.
+//
+// Scope: `conversations:read`.
+//
+// Corresponds with GET /v1/stats (the `GetStats` operationId).
+func (c *Client) GetStats(ctx context.Context, params *GetStatsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetStatsRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -12154,6 +12904,53 @@ func NewCreateClientMessageRequestWithBody(server string, conversationId Convers
 		}
 
 	}
+
+	return req, nil
+}
+
+// NewRateClientConversationRequest calls the generic RateClientConversation builder with application/json body
+func NewRateClientConversationRequest(server string, conversationId ConversationId, body RateClientConversationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRateClientConversationRequestWithBody(server, conversationId, "application/json", bodyReader)
+}
+
+// NewRateClientConversationRequestWithBody constructs an http.Request for the RateClientConversation method, with any body, and a specified content type
+func NewRateClientConversationRequestWithBody(server string, conversationId ConversationId, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/client/v1/conversations/%s/rating", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -13433,6 +14230,42 @@ func NewListContactsRequest(server string, params *ListContactsParams) (*http.Re
 
 		}
 
+		if params.Kind != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "kind", *params.Kind, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.HasOpen != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "has_open", *params.HasOpen, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Sort != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "sort", *params.Sort, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
 		if params.Cursor != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
@@ -13931,6 +14764,212 @@ func NewMergeContactRequestWithBody(server string, contactId ContactId, params *
 	return req, nil
 }
 
+// NewListContactNotesRequest constructs an http.Request for the ListContactNotes method
+func NewListContactNotesRequest(server string, contactId ContactId, params *ListContactNotesParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts/%s/notes", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: "int32"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewCreateContactNoteRequest calls the generic CreateContactNote builder with application/json body
+func NewCreateContactNoteRequest(server string, contactId ContactId, params *CreateContactNoteParams, body CreateContactNoteJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateContactNoteRequestWithBody(server, contactId, params, "application/json", bodyReader)
+}
+
+// NewCreateContactNoteRequestWithBody constructs an http.Request for the CreateContactNote method, with any body, and a specified content type
+func NewCreateContactNoteRequestWithBody(server string, contactId ContactId, params *CreateContactNoteParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts/%s/notes", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewDeleteContactNoteRequest constructs an http.Request for the DeleteContactNote method
+func NewDeleteContactNoteRequest(server string, contactId ContactId, noteId uuid.UUID, params *DeleteContactNoteParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "noteId", noteId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts/%s/notes/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewGetContactPresenceRequest constructs an http.Request for the GetContactPresence method
 func NewGetContactPresenceRequest(server string, contactId ContactId, params *GetContactPresenceParams) (*http.Request, error) {
 	var err error
@@ -13948,6 +14987,55 @@ func NewGetContactPresenceRequest(server string, contactId ContactId, params *Ge
 	}
 
 	operationPath := fmt.Sprintf("/v1/contacts/%s/presence", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewGetContactSummaryRequest constructs an http.Request for the GetContactSummary method
+func NewGetContactSummaryRequest(server string, contactId ContactId, params *GetContactSummaryParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts/%s/summary", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -17316,6 +18404,99 @@ func NewGetVapidPublicKeyRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewGetStatsRequest constructs an http.Request for the GetStats method
+func NewGetStatsRequest(server string, params *GetStatsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/stats")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.InboxId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "inbox_id", *params.InboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Since != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "since", *params.Since, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date-time"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Timezone != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "timezone", *params.Timezone, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewGetUsageRequest constructs an http.Request for the GetUsage method
 func NewGetUsageRequest(server string, params *GetUsageParams) (*http.Request, error) {
 	var err error
@@ -18375,6 +19556,34 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /client/v1/conversations/{conversationId}/messages (the `CreateClientMessage` operationId).
 	CreateClientMessageWithResponse(ctx context.Context, conversationId ConversationId, params *CreateClientMessageParams, body CreateClientMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateClientMessageResponse, error)
 
+	// RateClientConversationWithBodyWithResponse Rate a closed conversation
+	//
+	// Records the contact's rating (`good` or `bad`) and optional comment for a conversation
+	// whose `can_rate` is true. It is stored once per close: members see it in the thread as a
+	// `rated` event and on the conversation, and it sends the `conversation.rated` webhook.
+	// Answers `409 rating_unavailable` when `can_rate` is false (the inbox does not ask for
+	// ratings, the conversation is open, the close is older than 30 days) and
+	// `409 already_rated` when the contact already rated this close.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /client/v1/conversations/{conversationId}/rating (the `RateClientConversation` operationId).
+	RateClientConversationWithBodyWithResponse(ctx context.Context, conversationId ConversationId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RateClientConversationResponse, error)
+
+	// RateClientConversationWithResponse Rate a closed conversation
+	//
+	// Records the contact's rating (`good` or `bad`) and optional comment for a conversation
+	// whose `can_rate` is true. It is stored once per close: members see it in the thread as a
+	// `rated` event and on the conversation, and it sends the `conversation.rated` webhook.
+	// Answers `409 rating_unavailable` when `can_rate` is false (the inbox does not ask for
+	// ratings, the conversation is open, the close is older than 30 days) and
+	// `409 already_rated` when the contact already rated this close.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /client/v1/conversations/{conversationId}/rating (the `RateClientConversation` operationId).
+	RateClientConversationWithResponse(ctx context.Context, conversationId ConversationId, body RateClientConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*RateClientConversationResponse, error)
+
 	// MarkClientConversationReadWithBodyWithResponse Mark a conversation read
 	//
 	// Moves the contact's read cursor to `message_id`, or to the latest message when it is
@@ -18843,7 +20052,11 @@ type ClientWithResponsesInterface interface {
 
 	// ListContactsWithResponse List contacts
 	//
-	// Newest first. `q` searches names, e-mail addresses and external ids.
+	// Newest first, or most recently active first with `sort=last_seen` (contacts never seen sort
+	// by when they were created). `q` searches names, e-mail addresses and external ids.
+	// With `sort=last_seen`, a contact who becomes active while you page moves above the pages
+	// already read and does not appear on the later ones; no contact appears twice.
+	// Each item carries `activity`, counted over the inboxes the caller can see.
 	//
 	// Scope: `contacts:read`.
 	//
@@ -18975,6 +20188,49 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /v1/contacts/{contactId}/merge (the `MergeContact` operationId).
 	MergeContactWithResponse(ctx context.Context, contactId ContactId, params *MergeContactParams, body MergeContactJSONRequestBody, reqEditors ...RequestEditorFn) (*MergeContactResponse, error)
 
+	// ListContactNotesWithResponse List notes about a contact
+	//
+	// Team-only notes about the contact, not tied to a conversation, newest first. Whoever can
+	// see the contact can read and add them; contacts never see them, and no event or webhook
+	// carries them.
+	//
+	// Scope: `contacts:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/contacts/{contactId}/notes (the `ListContactNotes` operationId).
+	ListContactNotesWithResponse(ctx context.Context, contactId ContactId, params *ListContactNotesParams, reqEditors ...RequestEditorFn) (*ListContactNotesResponse, error)
+
+	// CreateContactNoteWithBodyWithResponse Add a note about a contact
+	//
+	// Scope: `contacts:write`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/contacts/{contactId}/notes (the `CreateContactNote` operationId).
+	CreateContactNoteWithBodyWithResponse(ctx context.Context, contactId ContactId, params *CreateContactNoteParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateContactNoteResponse, error)
+
+	// CreateContactNoteWithResponse Add a note about a contact
+	//
+	// Scope: `contacts:write`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/contacts/{contactId}/notes (the `CreateContactNote` operationId).
+	CreateContactNoteWithResponse(ctx context.Context, contactId ContactId, params *CreateContactNoteParams, body CreateContactNoteJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateContactNoteResponse, error)
+
+	// DeleteContactNoteWithResponse Delete a note about a contact
+	//
+	// Its author (a member, or the API key that wrote it) or an owner or admin; anyone else gets
+	// `403 forbidden`.
+	//
+	// Scope: `contacts:write`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/contacts/{contactId}/notes/{noteId} (the `DeleteContactNote` operationId).
+	DeleteContactNoteWithResponse(ctx context.Context, contactId ContactId, noteId uuid.UUID, params *DeleteContactNoteParams, reqEditors ...RequestEditorFn) (*DeleteContactNoteResponse, error)
+
 	// GetContactPresenceWithResponse Whether a contact is connected
 	//
 	// Whether the contact has a live `/client/v1/realtime` connection (widget or app in the
@@ -18988,6 +20244,18 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /v1/contacts/{contactId}/presence (the `GetContactPresence` operationId).
 	GetContactPresenceWithResponse(ctx context.Context, contactId ContactId, params *GetContactPresenceParams, reqEditors ...RequestEditorFn) (*GetContactPresenceResponse, error)
+
+	// GetContactSummaryWithResponse How the team served a contact
+	//
+	// First-reply time and ratings over the contact's conversations the caller can see. The
+	// counts of conversations are on the contact's `activity`.
+	//
+	// Scope: `contacts:read` and `conversations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/contacts/{contactId}/summary (the `GetContactSummary` operationId).
+	GetContactSummaryWithResponse(ctx context.Context, contactId ContactId, params *GetContactSummaryParams, reqEditors ...RequestEditorFn) (*GetContactSummaryResponse, error)
 
 	// ListConversationsWithResponse List conversations
 	//
@@ -19062,8 +20330,8 @@ type ClientWithResponsesInterface interface {
 	// GetConversationCountsWithResponse Count open conversations
 	//
 	// Open conversations in the inboxes the caller can see: all of them, those assigned to the
-	// calling member (`0` for API keys), unassigned ones, and per inbox and per label. Inboxes and
-	// labels without open conversations are left out of their lists. Conversations flagged as
+	// calling member (`0` for API keys), unassigned ones, and per inbox, per assignee and per
+	// label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
 	// spam are counted only in `spam`.
 	//
 	// Scope: `conversations:read`.
@@ -19845,6 +21113,8 @@ type ClientWithResponsesInterface interface {
 
 	// ListMembersWithResponse List members
 	//
+	// Every member of the workspace with their `availability` and whether they are `online`.
+	//
 	// Scope: `inboxes:read`.
 	//
 	// Returns a wrapper object for the known response body format(s).
@@ -20049,6 +21319,25 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /v1/push/vapid-public-key (the `GetVapidPublicKey` operationId).
 	GetVapidPublicKeyWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetVapidPublicKeyResponse, error)
+
+	// GetStatsWithResponse Team activity since a moment
+	//
+	// What the team did in the inboxes the caller can see (or in one of them) from `since` until
+	// now: replies sent by members (messages members wrote or drafts they sent; not notes, not
+	// bots' own messages), conversations closed, the median time from a contact's first
+	// message to the first member reply, over the conversations whose first reply falls in the
+	// window, and the ratings contacts gave in it. `members` breaks replies and closes down per member, leaving out members with
+	// neither. Nothing is stored for it; it is counted from the messages each time.
+	//
+	// `since` defaults to the start of today in `timezone` (an IANA name, `UTC` by default); the
+	// panel sends the browser's zone. It must be in the past and at most 366 days ago.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/stats (the `GetStats` operationId).
+	GetStatsWithResponse(ctx context.Context, params *GetStatsParams, reqEditors ...RequestEditorFn) (*GetStatsResponse, error)
 
 	// GetUsageWithResponse Usage per month
 	//
@@ -20851,6 +22140,82 @@ func (r CreateClientMessageResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r CreateClientMessageResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RateClientConversationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON201 the response for an HTTP 201 `application/json` response
+	JSON201 *ClientConversation
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON201 returns the response for an HTTP 201 `application/json` response
+func (r RateClientConversationResponse) GetJSON201() *ClientConversation {
+	return r.JSON201
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r RateClientConversationResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r RateClientConversationResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r RateClientConversationResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r RateClientConversationResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r RateClientConversationResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r RateClientConversationResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RateClientConversationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RateClientConversationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RateClientConversationResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -22952,6 +24317,199 @@ func (r MergeContactResponse) ContentType() string {
 	return ""
 }
 
+type ListContactNotesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ContactNotePage
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListContactNotesResponse) GetJSON200() *ContactNotePage {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r ListContactNotesResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListContactNotesResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListContactNotesResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ListContactNotesResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r ListContactNotesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListContactNotesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListContactNotesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListContactNotesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateContactNoteResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON201 the response for an HTTP 201 `application/json` response
+	JSON201 *ContactNote
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON201 returns the response for an HTTP 201 `application/json` response
+func (r CreateContactNoteResponse) GetJSON201() *ContactNote {
+	return r.JSON201
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r CreateContactNoteResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r CreateContactNoteResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r CreateContactNoteResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r CreateContactNoteResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r CreateContactNoteResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateContactNoteResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateContactNoteResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateContactNoteResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteContactNoteResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DeleteContactNoteResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeleteContactNoteResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r DeleteContactNoteResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteContactNoteResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteContactNoteResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteContactNoteResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteContactNoteResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetContactPresenceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -23008,6 +24566,68 @@ func (r GetContactPresenceResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetContactPresenceResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetContactSummaryResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ContactSummary
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetContactSummaryResponse) GetJSON200() *ContactSummary {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetContactSummaryResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetContactSummaryResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r GetContactSummaryResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r GetContactSummaryResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetContactSummaryResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetContactSummaryResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetContactSummaryResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -26873,6 +28493,75 @@ func (r GetVapidPublicKeyResponse) ContentType() string {
 	return ""
 }
 
+type GetStatsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Stats
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetStatsResponse) GetJSON200() *Stats {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r GetStatsResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetStatsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetStatsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r GetStatsResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r GetStatsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetStatsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetStatsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetStatsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetUsageResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -27995,6 +29684,46 @@ func (c *ClientWithResponses) CreateClientMessageWithResponse(ctx context.Contex
 	return ParseCreateClientMessageResponse(rsp)
 }
 
+// RateClientConversationWithBodyWithResponse Rate a closed conversation
+//
+// Records the contact's rating (`good` or `bad`) and optional comment for a conversation
+// whose `can_rate` is true. It is stored once per close: members see it in the thread as a
+// `rated` event and on the conversation, and it sends the `conversation.rated` webhook.
+// Answers `409 rating_unavailable` when `can_rate` is false (the inbox does not ask for
+// ratings, the conversation is open, the close is older than 30 days) and
+// `409 already_rated` when the contact already rated this close.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /client/v1/conversations/{conversationId}/rating (the `RateClientConversation` operationId).
+func (c *ClientWithResponses) RateClientConversationWithBodyWithResponse(ctx context.Context, conversationId ConversationId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RateClientConversationResponse, error) {
+	rsp, err := c.RateClientConversationWithBody(ctx, conversationId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRateClientConversationResponse(rsp)
+}
+
+// RateClientConversationWithResponse Rate a closed conversation
+//
+// Records the contact's rating (`good` or `bad`) and optional comment for a conversation
+// whose `can_rate` is true. It is stored once per close: members see it in the thread as a
+// `rated` event and on the conversation, and it sends the `conversation.rated` webhook.
+// Answers `409 rating_unavailable` when `can_rate` is false (the inbox does not ask for
+// ratings, the conversation is open, the close is older than 30 days) and
+// `409 already_rated` when the contact already rated this close.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /client/v1/conversations/{conversationId}/rating (the `RateClientConversation` operationId).
+func (c *ClientWithResponses) RateClientConversationWithResponse(ctx context.Context, conversationId ConversationId, body RateClientConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*RateClientConversationResponse, error) {
+	rsp, err := c.RateClientConversation(ctx, conversationId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRateClientConversationResponse(rsp)
+}
+
 // MarkClientConversationReadWithBodyWithResponse Mark a conversation read
 //
 // Moves the contact's read cursor to `message_id`, or to the latest message when it is
@@ -28691,7 +30420,11 @@ func (c *ClientWithResponses) RotateChannelPublicKeyWithResponse(ctx context.Con
 
 // ListContactsWithResponse List contacts
 //
-// Newest first. `q` searches names, e-mail addresses and external ids.
+// Newest first, or most recently active first with `sort=last_seen` (contacts never seen sort
+// by when they were created). `q` searches names, e-mail addresses and external ids.
+// With `sort=last_seen`, a contact who becomes active while you page moves above the pages
+// already read and does not appear on the later ones; no contact appears twice.
+// Each item carries `activity`, counted over the inboxes the caller can see.
 //
 // Scope: `contacts:read`.
 //
@@ -28889,6 +30622,73 @@ func (c *ClientWithResponses) MergeContactWithResponse(ctx context.Context, cont
 	return ParseMergeContactResponse(rsp)
 }
 
+// ListContactNotesWithResponse List notes about a contact
+//
+// Team-only notes about the contact, not tied to a conversation, newest first. Whoever can
+// see the contact can read and add them; contacts never see them, and no event or webhook
+// carries them.
+//
+// Scope: `contacts:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/contacts/{contactId}/notes (the `ListContactNotes` operationId).
+func (c *ClientWithResponses) ListContactNotesWithResponse(ctx context.Context, contactId ContactId, params *ListContactNotesParams, reqEditors ...RequestEditorFn) (*ListContactNotesResponse, error) {
+	rsp, err := c.ListContactNotes(ctx, contactId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListContactNotesResponse(rsp)
+}
+
+// CreateContactNoteWithBodyWithResponse Add a note about a contact
+//
+// Scope: `contacts:write`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/contacts/{contactId}/notes (the `CreateContactNote` operationId).
+func (c *ClientWithResponses) CreateContactNoteWithBodyWithResponse(ctx context.Context, contactId ContactId, params *CreateContactNoteParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateContactNoteResponse, error) {
+	rsp, err := c.CreateContactNoteWithBody(ctx, contactId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateContactNoteResponse(rsp)
+}
+
+// CreateContactNoteWithResponse Add a note about a contact
+//
+// Scope: `contacts:write`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/contacts/{contactId}/notes (the `CreateContactNote` operationId).
+func (c *ClientWithResponses) CreateContactNoteWithResponse(ctx context.Context, contactId ContactId, params *CreateContactNoteParams, body CreateContactNoteJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateContactNoteResponse, error) {
+	rsp, err := c.CreateContactNote(ctx, contactId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateContactNoteResponse(rsp)
+}
+
+// DeleteContactNoteWithResponse Delete a note about a contact
+//
+// Its author (a member, or the API key that wrote it) or an owner or admin; anyone else gets
+// `403 forbidden`.
+//
+// Scope: `contacts:write`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/contacts/{contactId}/notes/{noteId} (the `DeleteContactNote` operationId).
+func (c *ClientWithResponses) DeleteContactNoteWithResponse(ctx context.Context, contactId ContactId, noteId uuid.UUID, params *DeleteContactNoteParams, reqEditors ...RequestEditorFn) (*DeleteContactNoteResponse, error) {
+	rsp, err := c.DeleteContactNote(ctx, contactId, noteId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteContactNoteResponse(rsp)
+}
+
 // GetContactPresenceWithResponse Whether a contact is connected
 //
 // Whether the contact has a live `/client/v1/realtime` connection (widget or app in the
@@ -28907,6 +30707,24 @@ func (c *ClientWithResponses) GetContactPresenceWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseGetContactPresenceResponse(rsp)
+}
+
+// GetContactSummaryWithResponse How the team served a contact
+//
+// First-reply time and ratings over the contact's conversations the caller can see. The
+// counts of conversations are on the contact's `activity`.
+//
+// Scope: `contacts:read` and `conversations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/contacts/{contactId}/summary (the `GetContactSummary` operationId).
+func (c *ClientWithResponses) GetContactSummaryWithResponse(ctx context.Context, contactId ContactId, params *GetContactSummaryParams, reqEditors ...RequestEditorFn) (*GetContactSummaryResponse, error) {
+	rsp, err := c.GetContactSummary(ctx, contactId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetContactSummaryResponse(rsp)
 }
 
 // ListConversationsWithResponse List conversations
@@ -29012,8 +30830,8 @@ func (c *ClientWithResponses) BulkUpdateConversationsWithResponse(ctx context.Co
 // GetConversationCountsWithResponse Count open conversations
 //
 // Open conversations in the inboxes the caller can see: all of them, those assigned to the
-// calling member (`0` for API keys), unassigned ones, and per inbox and per label. Inboxes and
-// labels without open conversations are left out of their lists. Conversations flagged as
+// calling member (`0` for API keys), unassigned ones, and per inbox, per assignee and per
+// label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
 // spam are counted only in `spam`.
 //
 // Scope: `conversations:read`.
@@ -30167,6 +31985,8 @@ func (c *ClientWithResponses) TestPushSubscriptionWithResponse(ctx context.Conte
 
 // ListMembersWithResponse List members
 //
+// Every member of the workspace with their `availability` and whether they are `online`.
+//
 // Scope: `inboxes:read`.
 //
 // Returns a wrapper object for the known response body format(s).
@@ -30478,6 +32298,31 @@ func (c *ClientWithResponses) GetVapidPublicKeyWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParseGetVapidPublicKeyResponse(rsp)
+}
+
+// GetStatsWithResponse Team activity since a moment
+//
+// What the team did in the inboxes the caller can see (or in one of them) from `since` until
+// now: replies sent by members (messages members wrote or drafts they sent; not notes, not
+// bots' own messages), conversations closed, the median time from a contact's first
+// message to the first member reply, over the conversations whose first reply falls in the
+// window, and the ratings contacts gave in it. `members` breaks replies and closes down per member, leaving out members with
+// neither. Nothing is stored for it; it is counted from the messages each time.
+//
+// `since` defaults to the start of today in `timezone` (an IANA name, `UTC` by default); the
+// panel sends the browser's zone. It must be in the past and at most 366 days ago.
+//
+// Scope: `conversations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/stats (the `GetStats` operationId).
+func (c *ClientWithResponses) GetStatsWithResponse(ctx context.Context, params *GetStatsParams, reqEditors ...RequestEditorFn) (*GetStatsResponse, error) {
+	rsp, err := c.GetStats(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetStatsResponse(rsp)
 }
 
 // GetUsageWithResponse Usage per month
@@ -31286,6 +33131,67 @@ func ParseCreateClientMessageResponse(rsp *http.Response) (*CreateClientMessageR
 			return nil, err
 		}
 		response.ApplicationproblemJSON429 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRateClientConversationResponse parses an HTTP response from a RateClientConversationWithResponse call
+func ParseRateClientConversationResponse(rsp *http.Response) (*RateClientConversationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RateClientConversationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest ClientConversation
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
 
 	}
 
@@ -32934,6 +34840,157 @@ func ParseMergeContactResponse(rsp *http.Response) (*MergeContactResponse, error
 	return response, nil
 }
 
+// ParseListContactNotesResponse parses an HTTP response from a ListContactNotesWithResponse call
+func ParseListContactNotesResponse(rsp *http.Response) (*ListContactNotesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListContactNotesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ContactNotePage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateContactNoteResponse parses an HTTP response from a CreateContactNoteWithResponse call
+func ParseCreateContactNoteResponse(rsp *http.Response) (*CreateContactNoteResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateContactNoteResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest ContactNote
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteContactNoteResponse parses an HTTP response from a DeleteContactNoteWithResponse call
+func ParseDeleteContactNoteResponse(rsp *http.Response) (*DeleteContactNoteResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteContactNoteResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetContactPresenceResponse parses an HTTP response from a GetContactPresenceWithResponse call
 func ParseGetContactPresenceResponse(rsp *http.Response) (*GetContactPresenceResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -32950,6 +35007,53 @@ func ParseGetContactPresenceResponse(rsp *http.Response) (*GetContactPresenceRes
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest ContactPresence
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetContactSummaryResponse parses an HTTP response from a GetContactSummaryWithResponse call
+func ParseGetContactSummaryResponse(rsp *http.Response) (*GetContactSummaryResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetContactSummaryResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ContactSummary
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -35967,6 +38071,60 @@ func ParseGetVapidPublicKeyResponse(rsp *http.Response) (*GetVapidPublicKeyRespo
 	return response, nil
 }
 
+// ParseGetStatsResponse parses an HTTP response from a GetStatsWithResponse call
+func ParseGetStatsResponse(rsp *http.Response) (*GetStatsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetStatsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Stats
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetUsageResponse parses an HTTP response from a GetUsageWithResponse call
 func ParseGetUsageResponse(rsp *http.Response) (*GetUsageResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -36745,6 +38903,11 @@ type WebhookInitiatorInterface interface {
 
 	WebhookConversationCreated(ctx context.Context, targetURL string, params *WebhookConversationCreatedParams, body WebhookConversationCreatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// WebhookConversationRatedWithBody fires the conversation.rated webhook with any body
+	WebhookConversationRatedWithBody(ctx context.Context, targetURL string, params *WebhookConversationRatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	WebhookConversationRated(ctx context.Context, targetURL string, params *WebhookConversationRatedParams, body WebhookConversationRatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// WebhookConversationUpdatedWithBody fires the conversation.updated webhook with any body
 	WebhookConversationUpdatedWithBody(ctx context.Context, targetURL string, params *WebhookConversationUpdatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -36838,6 +39001,30 @@ func (p *WebhookInitiator) WebhookConversationCreatedWithBody(ctx context.Contex
 
 func (p *WebhookInitiator) WebhookConversationCreated(ctx context.Context, targetURL string, params *WebhookConversationCreatedParams, body WebhookConversationCreatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewWebhookConversationCreatedWebhookRequest(targetURL, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookConversationRatedWithBody(ctx context.Context, targetURL string, params *WebhookConversationRatedParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookConversationRatedWebhookRequestWithBody(targetURL, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := p.applyWebhookEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return p.Client.Do(req)
+}
+
+func (p *WebhookInitiator) WebhookConversationRated(ctx context.Context, targetURL string, params *WebhookConversationRatedParams, body WebhookConversationRatedJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWebhookConversationRatedWebhookRequest(targetURL, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -37127,6 +39314,67 @@ func NewWebhookConversationCreatedWebhookRequest(targetURL string, params *Webho
 
 // NewWebhookConversationCreatedWebhookRequestWithBody builds a POST request for the conversation.created webhook with any body
 func NewWebhookConversationCreatedWebhookRequestWithBody(targetURL string, params *WebhookConversationCreatedParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+	_ = err
+
+	reqURL, err := url.Parse(targetURL)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, reqURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithOptions("simple", false, "webhook-id", params.WebhookId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-id", headerParam0)
+
+		var headerParam1 string
+
+		headerParam1, err = runtime.StyleParamWithOptions("simple", false, "webhook-timestamp", params.WebhookTimestamp, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-timestamp", headerParam1)
+
+		var headerParam2 string
+
+		headerParam2, err = runtime.StyleParamWithOptions("simple", false, "webhook-signature", params.WebhookSignature, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("webhook-signature", headerParam2)
+
+	}
+	return req, nil
+}
+
+// NewWebhookConversationRatedWebhookRequest builds a application/json POST request for the conversation.rated webhook
+func NewWebhookConversationRatedWebhookRequest(targetURL string, params *WebhookConversationRatedParams, body WebhookConversationRatedJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewWebhookConversationRatedWebhookRequestWithBody(targetURL, params, "application/json", bodyReader)
+}
+
+// NewWebhookConversationRatedWebhookRequestWithBody builds a POST request for the conversation.rated webhook with any body
+func NewWebhookConversationRatedWebhookRequestWithBody(targetURL string, params *WebhookConversationRatedParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 	_ = err
 

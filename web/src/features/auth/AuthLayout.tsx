@@ -13,14 +13,14 @@ export function AuthLayout({ children, wide }: { children: React.ReactNode; wide
         <header className="flex h-16 shrink-0 items-center justify-between gap-4">
           <span className="flex items-center gap-2.5">
             <YuvaMark className="size-[26px]" />
-            <span className="text-[1.02rem] font-semibold tracking-tight">Yuva</span>
+            <span className="text-title">Yuva</span>
           </span>
           <LanguageMenu />
         </header>
         <main className="flex flex-1 items-start justify-center pt-[8vh] pb-10 sm:items-center sm:py-16">
           <div className={wide ? "w-full max-w-[26rem]" : "w-full max-w-[22rem]"}>{children}</div>
         </main>
-        <footer className="flex h-14 shrink-0 items-center text-xs text-faint">
+        <footer className="flex h-14 shrink-0 items-center text-caption text-faint">
           {version && <Trans>Yuva {version}</Trans>}
         </footer>
       </div>
@@ -45,18 +45,18 @@ function BrandPanel() {
   return (
     <aside className="hidden p-3 lg:flex" aria-hidden="true">
       <div className="flex flex-1 flex-col justify-between gap-12 overflow-hidden rounded-[1.75rem] bg-surface p-12">
-        <p className="flex items-center gap-2 text-sm text-muted-foreground">
+        <p className="flex items-center gap-2 text-body text-muted-foreground">
           <span className="size-1.5 rounded-full bg-brand" />
           <Trans>E-mail, live chat and in-app messages</Trans>
         </p>
         <div className="mx-auto w-full max-w-md overflow-hidden rounded-2xl border bg-card shadow-[0_1px_2px_rgb(15_23_42/0.04),0_24px_60px_-28px_rgb(15_23_42/0.35)]">
           <div className="flex items-center justify-between border-b px-5 py-3.5">
-            <p className="text-sm font-semibold tracking-tight">
+            <p className="text-body font-medium">
               <Trans>One inbox</Trans>
             </p>
             <ul className="flex items-center gap-3">
               {rows.map((r) => (
-                <li key={r.product} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <li key={r.product} className="flex items-center gap-1.5 text-caption text-muted-foreground">
                   <span className={`size-1.5 rounded-full ${r.dot}`} />
                   {r.product}
                 </li>
@@ -70,26 +70,26 @@ function BrandPanel() {
                   <r.icon className="size-4" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 text-sm">
+                  <div className="flex items-center gap-2 text-body">
                     <span className="truncate font-medium">{r.name}</span>
                     <span className="flex shrink-0 items-center gap-1.5 text-muted-foreground">
                       <span className={`size-1.5 rounded-full ${r.dot}`} />
                       {r.product}
                     </span>
-                    <span className="ms-auto shrink-0 text-xs text-muted-foreground">{text[i]!.channel}</span>
+                    <span className="ms-auto shrink-0 text-caption text-muted-foreground">{text[i]!.channel}</span>
                     {r.unread && <span className="size-2 shrink-0 rounded-full bg-brand" />}
                   </div>
-                  <p className="mt-1 truncate text-sm text-muted-foreground">{text[i]!.subject}</p>
+                  <p className="mt-1 truncate text-body text-muted-foreground">{text[i]!.subject}</p>
                 </div>
               </li>
             ))}
           </ul>
         </div>
         <div className="max-w-md">
-          <p className="text-[clamp(1.6rem,0.9rem+1.4vw,2.1rem)] leading-[1.1] font-semibold tracking-[-0.03em] text-balance">
+          <p className="text-page text-balance">
             <Trans>Every customer conversation, in one place.</Trans>
           </p>
-          <p className="mt-3 leading-relaxed text-muted-foreground">
+          <p className="mt-3 text-muted-foreground">
             <Trans>Reply, assign and follow up together, across all of your products.</Trans>
           </p>
         </div>

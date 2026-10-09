@@ -9,7 +9,7 @@ import { useInboxes } from "@/lib/workspace"
 function Part({ title, children }: { title: React.ReactNode; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-1">
-      <h3 className="text-xs font-medium text-faint">{title}</h3>
+      <h3 className="text-small font-medium text-faint">{title}</h3>
       {children}
     </section>
   )
@@ -23,7 +23,7 @@ export function MergePreview({ source, target }: { source: Contact; target: Cont
   const own = target.attributes ?? {}
   const attrs = Object.entries(source.attributes ?? {})
   const none = (
-    <p className="text-sm text-muted-foreground">
+    <p className="text-body text-muted-foreground">
       <Trans>None</Trans>
     </p>
   )
@@ -34,7 +34,7 @@ export function MergePreview({ source, target }: { source: Contact; target: Cont
         {conversations.isPending ? (
           <Skeleton className="h-5 w-32" />
         ) : (
-          <p className="text-sm" data-testid="merge-conversations">
+          <p className="text-body" data-testid="merge-conversations">
             {conversations.data?.more ? (
               <Trans>More than {count} conversations</Trans>
             ) : (
@@ -47,7 +47,7 @@ export function MergePreview({ source, target }: { source: Contact; target: Cont
         {emails.length === 0 ? (
           none
         ) : (
-          <ul className="flex flex-col gap-0.5 text-sm">
+          <ul className="flex flex-col gap-0.5 text-body">
             {emails.map((e) => (
               <li key={e} className="truncate">
                 {e}
@@ -60,11 +60,11 @@ export function MergePreview({ source, target }: { source: Contact; target: Cont
         {source.external_ids.length === 0 ? (
           none
         ) : (
-          <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-0.5 text-sm">
+          <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-0.5 text-body">
             {source.external_ids.map((x) => (
               <div key={`${x.inbox_id}:${x.external_id}`} className="contents">
                 <dt className="truncate text-muted-foreground">{inboxes.find((i) => i.id === x.inbox_id)?.name ?? "?"}</dt>
-                <dd className="truncate font-mono text-xs leading-5">{x.external_id}</dd>
+                <dd className="truncate font-mono text-caption">{x.external_id}</dd>
               </div>
             ))}
           </dl>
@@ -74,7 +74,7 @@ export function MergePreview({ source, target }: { source: Contact; target: Cont
         {attrs.length === 0 ? (
           none
         ) : (
-          <dl className="grid grid-cols-[minmax(0,auto)_minmax(0,1fr)] gap-x-4 gap-y-0.5 text-sm">
+          <dl className="grid grid-cols-[minmax(0,auto)_minmax(0,1fr)] gap-x-4 gap-y-0.5 text-body">
             {attrs.map(([k, v]) => (
               <div key={k} className="contents">
                 <dt className="truncate text-muted-foreground">{k}</dt>
@@ -92,7 +92,7 @@ export function MergePreview({ source, target }: { source: Contact; target: Cont
           </dl>
         )}
         {attrs.some(([k]) => k in own) && (
-          <p className="text-xs text-muted-foreground">
+          <p className="text-caption text-muted-foreground">
             <Trans>Struck-out values are not taken: this contact keeps its own value for those keys.</Trans>
           </p>
         )}

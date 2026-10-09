@@ -58,6 +58,9 @@ export function EventLine({ m, ctx }: { m: Message; ctx: ThreadContext }) {
         )
       break
     }
+    case "rated":
+      body = e.rating === "bad" ? <Trans>{actor} rated the conversation 👎</Trans> : <Trans>{actor} rated the conversation 👍</Trans>
+      break
     case "moved": {
       const from = ctx.inboxes.find((i) => i.id === e.previous_inbox_id)?.name ?? t`another inbox`
       body = <Trans>Moved from {from}</Trans>
@@ -65,12 +68,14 @@ export function EventLine({ m, ctx }: { m: Message; ctx: ThreadContext }) {
     }
   }
   return (
-    <p className="py-1 text-center text-xs text-faint" data-testid="event-line">
-      {body}
-      <span aria-hidden> · </span>
-      <time dateTime={m.created_at} title={formatDateTime(m.created_at, i18n.locale)}>
-        {timeOf(m.created_at, i18n.locale)}
-      </time>
-    </p>
+    <div className="my-2 flex justify-center" data-testid="event-line">
+      <span className="max-w-full rounded-full border bg-card px-2.5 py-[3px] text-center text-caption text-faint">
+        {body}
+        <span aria-hidden> · </span>
+        <time dateTime={m.created_at} title={formatDateTime(m.created_at, i18n.locale)}>
+          {timeOf(m.created_at, i18n.locale)}
+        </time>
+      </span>
+    </div>
   )
 }

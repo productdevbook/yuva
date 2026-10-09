@@ -31,7 +31,7 @@ export function LanguageMenu() {
     <DropdownMenu>
       <DropdownMenuTrigger render={<Button variant="ghost" size="sm" aria-label={t`Language`} />}>
         <LanguagesIcon />
-        <span className="uppercase">{i18n.locale}</span>
+        <span className="eyebrow">{i18n.locale}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-36">
         {Object.entries(locales).map(([k, v]) => (

@@ -37,18 +37,20 @@ export function ChannelDialog({
   channel,
   onClose,
   onCreated,
+  kind: preset,
 }: {
   inboxId: string
   channel: Channel | null
   onClose: () => void
   onCreated: (ch: Channel) => void
+  kind?: ChannelKind
 }) {
   const { t } = useLingui()
   const qc = useQueryClient()
   const { workspaceId: ws } = useSession()
   const text = useEnumText()
   const fieldErrors = useEmailFieldErrors()
-  const [kind, setKind] = useState<ChannelKind>(channel?.kind ?? "email")
+  const [kind, setKind] = useState<ChannelKind>(channel?.kind ?? preset ?? "email")
   const [name, setName] = useState(channel?.name ?? "")
   const [raw, setRaw] = useState(channel ? JSON.stringify(channel.settings, null, 2) : "{}")
   const [email, setEmail] = useState<EmailForm>(() => emailForm(channel?.email))
@@ -156,7 +158,7 @@ export function ChannelDialog({
                   id="channel-settings"
                   rows={6}
                   spellCheck={false}
-                  className="font-mono text-xs"
+                  className="font-mono text-caption"
                   value={raw}
                   aria-invalid={!settings}
                   onChange={(e) => setRaw(e.target.value)}

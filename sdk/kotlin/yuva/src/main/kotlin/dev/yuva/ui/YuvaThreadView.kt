@@ -30,15 +30,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -55,6 +59,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import dev.yuva.R
@@ -62,10 +70,13 @@ import dev.yuva.YuvaAttachment
 import dev.yuva.YuvaAuthorType
 import dev.yuva.YuvaClient
 import dev.yuva.YuvaConversation
+import dev.yuva.YuvaConversationStatus
 import dev.yuva.YuvaEvent
+import dev.yuva.YuvaException
 import dev.yuva.YuvaInbox
 import dev.yuva.YuvaMessage
 import dev.yuva.YuvaOrder
+import dev.yuva.YuvaRating
 import dev.yuva.YuvaUpload
 import java.io.File
 import java.time.Instant
@@ -106,6 +117,9 @@ internal class ThreadState(val client: YuvaClient, conversationId: String?, priv
     var loading by mutableStateOf(conversationId != null)
     var failed by mutableStateOf(false)
     var olderCursor by mutableStateOf<String?>(null)
+    var ratingChoice by mutableStateOf<YuvaRating?>(null)
+    var ratingSending by mutableStateOf(false)
+    var ratingError by mutableStateOf<Int?>(null)
     var visible = false
     private var loadingOlder = false
     private var typingClear: Job? = null
@@ -169,7 +183,14 @@ internal class ThreadState(val client: YuvaClient, conversationId: String?, priv
                     }
                 }
                 is YuvaEvent.Presence -> runCatching { inbox = client.refreshSession().inbox }
-                is YuvaEvent.InboxUpdated -> inbox = event.inbox
+                is YuvaEvent.InboxUpdated -> {
+                    val asked = inbox?.askForRating
+                    inbox = event.inbox
+                    val id = conversationId
+                    if (asked != null && asked != event.inbox.askForRating && id != null) {
+                        conversation = runCatching { client.conversation(id) }.getOrNull() ?: conversation
+                    }
+                }
                 is YuvaEvent.ConnectionChanged -> connected = event.connected
                 is YuvaEvent.ResyncRequired -> load()
                 else -> Unit
@@ -183,6 +204,36 @@ internal class ThreadState(val client: YuvaClient, conversationId: String?, priv
         if (message.author.type == YuvaAuthorType.MEMBER) {
             typingName = null
             markRead()
+        }
+    }
+
+    val showsRating: Boolean
+        get() {
+            val current = conversation ?: return false
+            return current.status == YuvaConversationStatus.CLOSED && (current.canRate || current.rating != null)
+        }
+
+    fun rate(rating: YuvaRating, comment: String?) {
+        val id = conversationId ?: return
+        if (ratingSending) return
+        ratingSending = true
+        ratingError = null
+        scope.launch {
+            try {
+                conversation = client.rate(id, rating, comment)
+                ratingChoice = null
+            } catch (error: YuvaException) {
+                if (error.status == 409) {
+                    conversation = runCatching { client.conversation(id) }.getOrNull() ?: conversation
+                    ratingChoice = null
+                } else {
+                    ratingError = errorMessage(error)
+                }
+            } catch (error: Exception) {
+                ratingError = errorMessage(error)
+            } finally {
+                ratingSending = false
+            }
         }
     }
 
@@ -294,7 +345,7 @@ fun YuvaThreadView(
         }
     }
     val lastId = state.items.lastOrNull()?.id
-    LaunchedEffect(lastId, state.typingName) {
+    LaunchedEffect(lastId, state.typingName, state.showsRating) {
         val count = listState.layoutInfo.totalItemsCount
         if (count > 0) listState.animateScrollToItem(count - 1)
     }
@@ -346,6 +397,9 @@ fun YuvaThreadView(
                             showStatus = item.mine && (item.id == lastMine || item.state != DeliveryState.SENT),
                             onRetry = { state.retry(item.id) },
                         )
+                    }
+                    if (state.showsRating) {
+                        item(key = "rating") { RatingCard(state) }
                     }
                     state.typingName?.let { name ->
                         item(key = "typing") {
@@ -428,6 +482,92 @@ private fun Greeting(inbox: YuvaInbox?) {
         }
     }
 }
+
+@Composable
+private fun RatingCard(state: ThreadState) {
+    var comment by remember { mutableStateOf("") }
+    val rated = state.conversation?.rating
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, top = 8.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        if (rated != null) {
+            val label = stringResource(ratingLabel(rated))
+            Text(
+                ratingEmoji(rated),
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier.semantics { contentDescription = label },
+            )
+            Text(
+                stringResource(R.string.yuva_rating_thanks),
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.testTag("yuva.rating.thanks"),
+            )
+            return@Column
+        }
+        Text(stringResource(R.string.yuva_rating_prompt), style = MaterialTheme.typography.titleSmall, textAlign = TextAlign.Center)
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            YuvaRating.entries.forEach { rating ->
+                val selected = state.ratingChoice == rating
+                val label = stringResource(ratingLabel(rating))
+                val modifier = Modifier
+                    .testTag("yuva.rating.${rating.value}")
+                    .semantics {
+                        contentDescription = label
+                        this.selected = selected
+                    }
+                val content: @Composable () -> Unit = {
+                    Text(ratingEmoji(rating), style = MaterialTheme.typography.titleLarge)
+                }
+                if (selected) {
+                    FilledTonalButton(onClick = {}, enabled = !state.ratingSending, modifier = modifier) { content() }
+                } else {
+                    OutlinedButton(onClick = { state.ratingChoice = rating }, enabled = !state.ratingSending, modifier = modifier) {
+                        content()
+                    }
+                }
+            }
+        }
+        val choice = state.ratingChoice ?: return@Column
+        OutlinedTextField(
+            value = comment,
+            onValueChange = { comment = it.take(2000) },
+            placeholder = { Text(stringResource(R.string.yuva_rating_comment_placeholder)) },
+            minLines = 2,
+            maxLines = 5,
+            enabled = !state.ratingSending,
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.fillMaxWidth().testTag("yuva.rating.comment"),
+        )
+        state.ratingError?.let {
+            Text(stringResource(it), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.error)
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            TextButton(
+                onClick = { state.rate(choice, null) },
+                enabled = !state.ratingSending,
+                modifier = Modifier.testTag("yuva.rating.skip"),
+            ) { Text(stringResource(R.string.yuva_rating_skip)) }
+            Button(
+                onClick = { state.rate(choice, comment) },
+                enabled = !state.ratingSending,
+                modifier = Modifier.testTag("yuva.rating.send"),
+            ) { Text(stringResource(R.string.yuva_rating_send)) }
+        }
+    }
+}
+
+private fun ratingEmoji(rating: YuvaRating) = if (rating == YuvaRating.GOOD) "👍" else "👎"
+
+private fun ratingLabel(rating: YuvaRating) =
+    if (rating == YuvaRating.GOOD) R.string.yuva_rating_good else R.string.yuva_rating_bad
 
 @Composable
 private fun MessageRow(item: ThreadItem, client: YuvaClient, seen: Boolean, showStatus: Boolean, onRetry: () -> Unit) {

@@ -2,6 +2,8 @@ import type { IdentityTokenSource } from "./client/client";
 import type { components } from "./schema.gen";
 
 export type { IdentityTokenSource };
+export type Rating = components["schemas"]["Rating"];
+export type ClientConversation = components["schemas"]["ClientConversation"];
 
 export type Layout = "launcher" | "embedded";
 
@@ -38,6 +40,7 @@ export interface PanelController {
   closed(): void;
   identityChanged(): void;
   signOut(): Promise<void>;
+  rate(conversationId: string, rating: Rating, comment?: string): Promise<ClientConversation>;
   destroy(): void;
 }
 

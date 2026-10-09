@@ -39,3 +39,15 @@ UPDATE members SET role = $3 WHERE workspace_id = $1 AND id = $2;
 
 -- name: DeleteMember :exec
 DELETE FROM members WHERE workspace_id = $1 AND id = $2;
+
+-- name: ListMemberPresence :many
+SELECT m.id, p.availability, EXISTS (
+    SELECT 1 FROM realtime_connections rc
+    WHERE rc.workspace_id = m.workspace_id AND rc.member_id = m.id AND rc.seen_at > @fresh_after
+)::bool AS online
+FROM members m JOIN people p ON p.id = m.person_id
+WHERE m.workspace_id = @workspace_id AND m.id = ANY(@ids::uuid[]);
+
+-- name: ListPersonMembers :many
+SELECT m.workspace_id, m.id FROM members m JOIN workspaces w ON w.id = m.workspace_id
+WHERE m.person_id = $1 AND w.deleted_at IS NULL;

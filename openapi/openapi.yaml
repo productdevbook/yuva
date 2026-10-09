@@ -130,19 +130,20 @@ tags:
       - `message_in_unassigned_conversation`: a later contact message in an unassigned
         conversation; every member with access is a candidate.
       - `assigned_to_me`: someone else assigned a conversation to the member.
+      - `mentioned`: someone else mentioned the member in a note (`mentions` on the note).
 
       Never notified: the member who caused it (their own assignment), conversations marked spam,
       a member whose open panel reports that it is showing that conversation (the `viewing` frame
       on `/v1/realtime`), and, while the member's `availability` is `away`, everything except
-      `message_in_my_conversation` and `assigned_to_me`.
+      `message_in_my_conversation`, `assigned_to_me` and `mentioned`.
 
       Defaults by role (`defaults` in `NotificationSettings`): push for everything except, for
       agents, `new_async_conversation` and `message_in_unassigned_conversation`; e-mail only for
-      `message_in_my_conversation` and `assigned_to_me`, for every role.
+      `message_in_my_conversation`, `assigned_to_me` and `mentioned`, for every role.
 
       E-mail fallback: when an event with `email: true` is still unread after
       `email_delay_minutes` (15 by default), one e-mail lists the conversation's unread contact
-      messages and links to it; at most one e-mail per conversation and member per hour. It goes
+      messages and the notes mentioning the member, and links to it; at most one e-mail per conversation and member per hour. It goes
       to the person's sign-in address in their locale.
   - name: webhooks
     description: |
@@ -759,7 +760,10 @@ paths:
     get:
       operationId: listMembers
       summary: List members
-      description: "Scope: `inboxes:read`."
+      description: |
+        Every member of the workspace with their `availability` and whether they are `online`.
+
+        Scope: `inboxes:read`.
       tags: [workspace]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
@@ -1438,13 +1442,36 @@ paths:
       operationId: listContacts
       summary: List contacts
       description: |
-        Newest first. `q` searches names, e-mail addresses and external ids.
+        Newest first, or most recently active first with `sort=last_seen` (contacts never seen sort
+        by when they were created). `q` searches names, e-mail addresses and external ids.
+        With `sort=last_seen`, a contact who becomes active while you page moves above the pages
+        already read and does not appear on the later ones; no contact appears twice.
+        Each item carries `activity`, counted over the inboxes the caller can see.
 
         Scope: `contacts:read`.
       tags: [contacts]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
         - $ref: "#/components/parameters/Search"
+        - name: kind
+          in: query
+          description: |
+            `known`: the contact has an e-mail address or an external id. `visitor`: neither (an
+            anonymous widget visitor, or someone known only by a typed, unconfirmed address).
+          schema:
+            type: string
+            enum: [known, visitor]
+        - name: has_open
+          in: query
+          description: Only contacts with (`true`) or without (`false`) an open conversation the caller can see; spam does not count.
+          schema:
+            type: boolean
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [created, last_seen]
+            default: created
         - $ref: "#/components/parameters/Cursor"
         - $ref: "#/components/parameters/Limit"
       responses:
@@ -1686,6 +1713,120 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+  /v1/contacts/{contactId}/notes:
+    get:
+      operationId: listContactNotes
+      summary: List notes about a contact
+      description: |
+        Team-only notes about the contact, not tied to a conversation, newest first. Whoever can
+        see the contact can read and add them; contacts never see them, and no event or webhook
+        carries them.
+
+        Scope: `contacts:read`.
+      tags: [contacts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ContactId"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: A page of notes.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactNotePage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createContactNote
+      summary: Add a note about a contact
+      description: "Scope: `contacts:write`."
+      tags: [contacts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ContactId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactNoteCreate"
+      responses:
+        "201":
+          description: The note.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactNote"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/contacts/{contactId}/notes/{noteId}:
+    delete:
+      operationId: deleteContactNote
+      summary: Delete a note about a contact
+      description: |
+        Its author (a member, or the API key that wrote it) or an owner or admin; anyone else gets
+        `403 forbidden`.
+
+        Scope: `contacts:write`.
+      tags: [contacts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ContactId"
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Deleted.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/contacts/{contactId}/summary:
+    get:
+      operationId: getContactSummary
+      summary: How the team served a contact
+      description: |
+        First-reply time and ratings over the contact's conversations the caller can see. The
+        counts of conversations are on the contact's `activity`.
+
+        Scope: `contacts:read` and `conversations:read`.
+      tags: [contacts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ContactId"
+      responses:
+        "200":
+          description: The summary.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactSummary"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
   /v1/contacts/{contactId}/presence:
     get:
       operationId: getContactPresence
@@ -1827,8 +1968,8 @@ paths:
       summary: Count open conversations
       description: |
         Open conversations in the inboxes the caller can see: all of them, those assigned to the
-        calling member (`0` for API keys), unassigned ones, and per inbox and per label. Inboxes and
-        labels without open conversations are left out of their lists. Conversations flagged as
+        calling member (`0` for API keys), unassigned ones, and per inbox, per assignee and per
+        label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
         spam are counted only in `spam`.
 
         Scope: `conversations:read`.
@@ -1845,6 +1986,60 @@ paths:
         "401":
           $ref: "#/components/responses/Problem"
         "403":
+          $ref: "#/components/responses/Problem"
+  /v1/stats:
+    get:
+      operationId: getStats
+      summary: Team activity since a moment
+      description: |
+        What the team did in the inboxes the caller can see (or in one of them) from `since` until
+        now: replies sent by members (messages members wrote or drafts they sent; not notes, not
+        bots' own messages), conversations closed, the median time from a contact's first
+        message to the first member reply, over the conversations whose first reply falls in the
+        window, and the ratings contacts gave in it. `members` breaks replies and closes down per member, leaving out members with
+        neither. Nothing is stored for it; it is counted from the messages each time.
+
+        `since` defaults to the start of today in `timezone` (an IANA name, `UTC` by default); the
+        panel sends the browser's zone. It must be in the past and at most 366 days ago.
+
+        Scope: `conversations:read`.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - name: inbox_id
+          in: query
+          description: Only this inbox (`404` when the caller cannot see it).
+          schema:
+            type: string
+            format: uuid
+        - name: since
+          in: query
+          description: Start of the window; the start of today in `timezone` when absent.
+          schema:
+            type: string
+            format: date-time
+        - name: timezone
+          in: query
+          description: IANA time zone for the default `since`.
+          schema:
+            type: string
+            maxLength: 64
+            default: UTC
+            examples: ["Europe/Istanbul"]
+      responses:
+        "200":
+          description: The activity.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Stats"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
           $ref: "#/components/responses/Problem"
   /v1/conversations/bulk:
     post:
@@ -3184,7 +3379,10 @@ paths:
         admins and API keys (an agent learns of a new inbox from `inbox_access.changed`);
         `inbox.deleted` reaches everyone who could see the inbox. `conversation.read` reaches only
         the connections of the member who read. `typing` (a contact or another member typing) has no
-        `id`, is not stored and is not replayed.
+        `id`, is not stored and is not replayed. `member.presence` (a member of the workspace opened
+        or closed the panel or changed `availability`) reaches member sessions only, also has no
+        `id` and is not replayed; so does `viewing` (another member opened or left a conversation),
+        which follows inbox access like conversation events.
 
         A member session's open connection also makes the member available to contacts of `live`
         inboxes they can access (see `availability` on `/v1/me`).
@@ -3201,8 +3399,10 @@ paths:
         a text frame `{"type": "viewing", "conversation_id": "<id>"}`, and
         `{"type": "viewing", "conversation_id": null}` when it shows none or the page is hidden;
         send it again after every reconnect. While a connection of the member views a
-        conversation, the member gets no push or e-mail notification about it. Other client
-        frames are ignored. Close codes: 1008 (`unauthenticated`, `forbidden`) when the session
+        conversation, the member gets no push or e-mail notification about it. Other members who
+        can see the conversation get a `viewing` event when the member opens or leaves it, and
+        the reporting connection gets a `viewing` event for each other member already there.
+        Other client frames are ignored. Close codes: 1008 (`unauthenticated`, `forbidden`) when the session
         or membership ends, 1013 (`slow_consumer`) when the client does not read fast enough, 1012
         (`restart`) when the server restarts or loses its event feed. Reconnect with
         `last_event_id` after any of them except 1008. While the server is reconnecting its own event
@@ -3578,6 +3778,45 @@ paths:
         "403":
           $ref: "#/components/responses/Problem"
         "404":
+          $ref: "#/components/responses/Problem"
+  /client/v1/conversations/{conversationId}/rating:
+    post:
+      operationId: rateClientConversation
+      summary: Rate a closed conversation
+      description: |
+        Records the contact's rating (`good` or `bad`) and optional comment for a conversation
+        whose `can_rate` is true. It is stored once per close: members see it in the thread as a
+        `rated` event and on the conversation, and it sends the `conversation.rated` webhook.
+        Answers `409 rating_unavailable` when `can_rate` is false (the inbox does not ask for
+        ratings, the conversation is open, the close is older than 30 days) and
+        `409 already_rated` when the contact already rated this close.
+      tags: [client]
+      security:
+        - contactSession: []
+      parameters:
+        - $ref: "#/components/parameters/ConversationId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientRatingCreate"
+      responses:
+        "201":
+          description: The conversation with its rating.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientConversation"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
           $ref: "#/components/responses/Problem"
   /client/v1/conversations/{conversationId}/typing:
     post:
@@ -4111,6 +4350,28 @@ webhooks:
       summary: A conversation started
       description: |
         Any channel, feedback included (which also sends `feedback.created`).
+      tags: [webhooks]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/WebhookIdHeader"
+        - $ref: "#/components/parameters/WebhookTimestampHeader"
+        - $ref: "#/components/parameters/WebhookSignatureHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookConversationPayload"
+      responses:
+        "200":
+          description: Any 2xx answer counts as delivered.
+  conversation.rated:
+    post:
+      operationId: webhookConversationRated
+      summary: A contact rated a conversation
+      description: |
+        The contact rated a closed conversation; `conversation.rating` holds the rating and
+        comment. Sent once per rating, with `conversation.updated` for the same change.
       tags: [webhooks]
       security: []
       parameters:
@@ -4679,7 +4940,7 @@ components:
           $ref: "#/components/schemas/Availability"
     Member:
       type: object
-      required: [id, person_id, email, name, role, created_at]
+      required: [id, person_id, email, name, role, availability, online, created_at]
       properties:
         id:
           type: string
@@ -4693,9 +4954,89 @@ components:
           type: string
         role:
           $ref: "#/components/schemas/Role"
+        availability:
+          $ref: "#/components/schemas/Availability"
+        online:
+          type: boolean
+          description: |
+            The member has a `/v1/realtime` connection seen in the last 75 seconds (any panel tab
+            or device). `member.presence` events on `/v1/realtime` report changes.
         created_at:
           type: string
           format: date-time
+    MemberPresence:
+      type: object
+      required: [member_id, availability, online]
+      properties:
+        member_id:
+          type: string
+          format: uuid
+        availability:
+          $ref: "#/components/schemas/Availability"
+        online:
+          type: boolean
+    Viewing:
+      type: object
+      required: [member_id, conversation_id, viewing]
+      properties:
+        member_id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        viewing:
+          type: boolean
+          description: "`false` when the member no longer has the conversation open anywhere."
+    ViewingEvent:
+      type: object
+      description: |
+        Another member opened (`viewing: true`) or left a conversation, as their panel reported
+        with a `viewing` frame; leaving includes hiding the page and disconnecting. Right after a
+        connection reports a conversation, it also gets one `viewing: true` event for every other
+        member who already has it open. Not stored: it has no `id` and is not replayed. Sent to
+        member sessions that can see the conversation's inbox; members do not get their own.
+      required: [type, workspace_id, inbox_id, conversation_id, created_at, data]
+      properties:
+        type:
+          type: string
+          enum: [viewing]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/Viewing"
+    MemberPresenceEvent:
+      type: object
+      description: |
+        A member's `availability` or `online` changed (they opened or closed the panel, or set
+        themselves away). Carries the member's current state, so it may repeat the previous one.
+        Not stored: it has no `id` and is not replayed; reload `/v1/members` after a reconnect.
+        A server process that stops without closing its connections sends none: such members
+        turn offline in `/v1/members` 75 seconds later. Sent to member sessions only, the member's
+        own included.
+      required: [type, workspace_id, created_at, data]
+      properties:
+        type:
+          type: string
+          enum: [member.presence]
+        workspace_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/MemberPresence"
     MemberList:
       type: object
       required: [items]
@@ -5010,7 +5351,7 @@ components:
           description: An e-mail when it is still unread after `email_delay_minutes`.
     NotificationEvents:
       type: object
-      required: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me]
+      required: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me, mentioned]
       properties:
         new_live_conversation:
           $ref: "#/components/schemas/NotificationChannels"
@@ -5021,6 +5362,8 @@ components:
         message_in_unassigned_conversation:
           $ref: "#/components/schemas/NotificationChannels"
         assigned_to_me:
+          $ref: "#/components/schemas/NotificationChannels"
+        mentioned:
           $ref: "#/components/schemas/NotificationChannels"
     NotificationEventsUpdate:
       type: object
@@ -5035,6 +5378,8 @@ components:
         message_in_unassigned_conversation:
           $ref: "#/components/schemas/NotificationChannels"
         assigned_to_me:
+          $ref: "#/components/schemas/NotificationChannels"
+        mentioned:
           $ref: "#/components/schemas/NotificationChannels"
     NotificationSettings:
       type: object
@@ -5094,7 +5439,7 @@ components:
         event:
           type: string
           description: What caused it (see the `notifications` tag), or `test`.
-          enum: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me, test]
+          enum: [new_live_conversation, new_async_conversation, message_in_my_conversation, message_in_unassigned_conversation, assigned_to_me, mentioned, test]
         title:
           type: string
           description: The inbox name and the contact's name.
@@ -5222,7 +5567,7 @@ components:
           maxLength: 500
     Inbox:
       type: object
-      required: [id, name, slug, branding, default_locale, timezone, mode, business_hours, created_at, updated_at]
+      required: [id, name, slug, branding, default_locale, timezone, mode, business_hours, ask_for_rating, created_at, updated_at]
       properties:
         id:
           type: string
@@ -5247,6 +5592,13 @@ components:
           description: Shown to contacts in `async` mode; absent when not set.
         business_hours:
           $ref: "#/components/schemas/BusinessHours"
+        ask_for_rating:
+          type: boolean
+          description: |
+            Contacts may rate a closed conversation (`good` or `bad`, with an optional comment):
+            the widget and the mobile SDKs offer it, and e-mail contacts get a request with two
+            links after a member's conversation is closed. Off by default. Only conversations
+            closed after it was turned on can be rated; turning it off and on again starts over.
         created_at:
           type: string
           format: date-time
@@ -5280,6 +5632,9 @@ components:
           maximum: 43200
         business_hours:
           $ref: "#/components/schemas/BusinessHours"
+        ask_for_rating:
+          type: boolean
+          default: false
     InboxUpdate:
       type: object
       minProperties: 1
@@ -5307,6 +5662,8 @@ components:
           description: "`null` clears it."
         business_hours:
           $ref: "#/components/schemas/BusinessHours"
+        ask_for_rating:
+          type: boolean
     InboxCreated:
       type: object
       required: [inbox, identity_secret]
@@ -5594,12 +5951,100 @@ components:
           description: The contact's addresses that must not be mailed.
           items:
             $ref: "#/components/schemas/UndeliverableEmail"
+        activity:
+          $ref: "#/components/schemas/ContactActivity"
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
+    ContactActivity:
+      type: object
+      description: |
+        Only on `GET /v1/contacts` and `GET /v1/contacts/{contactId}`. The counts cover the
+        conversations the caller can see, spam left out; `last_seen_at` does not depend on the caller.
+      required: [conversations, open_conversations]
+      properties:
+        last_seen_at:
+          type: string
+          format: date-time
+          description: |
+            The contact's last activity: a message (any channel), a rating, or use of a widget or
+            app session. Absent when never active.
+        conversations:
+          type: integer
+          format: int64
+        open_conversations:
+          type: integer
+          format: int64
+        last_conversation_at:
+          type: string
+          format: date-time
+          description: The last message in any of those conversations, else when the newest one started.
+    ContactNote:
+      type: object
+      required: [id, contact_id, author, body, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        contact_id:
+          type: string
+          format: uuid
+        author:
+          $ref: "#/components/schemas/MessageAuthor"
+          description: A `member` or a `bot` (API key); `member_id` is absent once the member was removed.
+        body:
+          type: string
+          description: Plain text.
+        created_at:
+          type: string
+          format: date-time
+    ContactNoteCreate:
+      type: object
+      required: [body]
+      properties:
+        body:
+          type: string
+          minLength: 1
+          maxLength: 10000
+    ContactNotePage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContactNote"
+        next_cursor:
+          type: string
+    ContactSummary:
+      type: object
+      description: |
+        How the team has served the contact, over all their conversations the caller can see (spam
+        left out).
+      required: [first_replies, ratings]
+      properties:
+        first_replies:
+          type: integer
+          format: int64
+          description: Conversations where a member answered the contact's first message.
+        median_first_reply_seconds:
+          type: integer
+          format: int64
+          description: Median seconds from the contact's first message to the first member reply; absent when `first_replies` is 0.
+        ratings:
+          type: object
+          required: [good, bad]
+          description: The latest rating of each conversation.
+          properties:
+            good:
+              type: integer
+              format: int64
+            bad:
+              type: integer
+              format: int64
     ContactPresence:
       type: object
       required: [contact_id, online]
@@ -5676,7 +6121,7 @@ components:
           format: int64
     WebhookEventType:
       type: string
-      enum: [conversation.created, conversation.updated, message.created, feedback.created, contact.updated, contact.deleted, draft.created, draft.updated, draft.deleted]
+      enum: [conversation.created, conversation.updated, conversation.rated, message.created, feedback.created, contact.updated, contact.deleted, draft.created, draft.updated, draft.deleted]
     WebhookEndpoint:
       type: object
       required: [id, url, description, events, include_notes, enabled, created_at, updated_at]
@@ -6154,12 +6599,36 @@ components:
           type: string
           format: date-time
           description: The last message or note, or the creation time.
+        closed_at:
+          type: string
+          format: date-time
+          description: When it was last closed; absent when it never was.
+        rating:
+          $ref: "#/components/schemas/ConversationRating"
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
+    ConversationRating:
+      type: object
+      description: |
+        The contact's latest rating. A conversation can be rated once each time it is closed, so
+        this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
+        has it as a `rated` event message whose body is the comment.
+      required: [rating, rated_at]
+      properties:
+        rating:
+          $ref: "#/components/schemas/Rating"
+        comment:
+          type: string
+        rated_at:
+          type: string
+          format: date-time
+    Rating:
+      type: string
+      enum: [good, bad]
     ConversationCreate:
       type: object
       required: [inbox_id, contact_id]
@@ -6355,10 +6824,85 @@ components:
         count:
           type: integer
           format: int64
+    Stats:
+      type: object
+      required: [since, until, replies, closed, first_replies, members, ratings]
+      properties:
+        since:
+          type: string
+          format: date-time
+        until:
+          type: string
+          format: date-time
+          description: When it was counted.
+        replies:
+          type: integer
+          format: int64
+          description: Replies sent by members.
+        closed:
+          type: integer
+          format: int64
+          description: Times a conversation was closed, by anyone (members, API keys, the server).
+        first_replies:
+          type: integer
+          format: int64
+          description: Conversations whose first member reply to the contact was sent in the window.
+        median_first_reply_seconds:
+          type: integer
+          format: int64
+          description: Median seconds from the contact's first message to that reply; absent when `first_replies` is 0.
+        ratings:
+          $ref: "#/components/schemas/RatingStats"
+        members:
+          type: array
+          description: Per member, by member id.
+          items:
+            $ref: "#/components/schemas/MemberStats"
+    RatingStats:
+      type: object
+      description: Ratings contacts gave in the window, in total and per inbox (inboxes without any are left out).
+      required: [good, bad, inboxes]
+      properties:
+        good:
+          type: integer
+          format: int64
+        bad:
+          type: integer
+          format: int64
+        inboxes:
+          type: array
+          items:
+            $ref: "#/components/schemas/InboxRatingStats"
+    InboxRatingStats:
+      type: object
+      required: [inbox_id, good, bad]
+      properties:
+        inbox_id:
+          type: string
+          format: uuid
+        good:
+          type: integer
+          format: int64
+        bad:
+          type: integer
+          format: int64
+    MemberStats:
+      type: object
+      required: [member_id, replies, closed]
+      properties:
+        member_id:
+          type: string
+          format: uuid
+        replies:
+          type: integer
+          format: int64
+        closed:
+          type: integer
+          format: int64
     ConversationCounts:
       type: object
       description: Open conversations in the inboxes the caller can see.
-      required: [all, mine, unassigned, spam, inboxes, labels, feedback, feedback_categories]
+      required: [all, mine, unassigned, spam, inboxes, labels, assignees, feedback, feedback_categories]
       properties:
         feedback:
           type: integer
@@ -6385,6 +6929,13 @@ components:
         inboxes:
           type: array
           description: Per inbox id.
+          items:
+            $ref: "#/components/schemas/CountByID"
+        assignees:
+          type: array
+          description: |
+            Per assignee's member id: each member's open load, for choosing whom to hand a
+            conversation to. Counts only the inboxes the caller can see.
           items:
             $ref: "#/components/schemas/CountByID"
         labels:
@@ -6461,7 +7012,7 @@ components:
             "Ayşe via Claude Code"; absent for the panel, API keys and contacts.
     EventType:
       type: string
-      enum: [assigned, unassigned, status_changed, labels_changed, moved]
+      enum: [assigned, unassigned, status_changed, labels_changed, moved, rated]
     MessageEvent:
       type: object
       required: [type]
@@ -6498,6 +7049,9 @@ components:
           type: string
           format: uuid
           description: The inbox it moved from (`moved`).
+        rating:
+          $ref: "#/components/schemas/Rating"
+          description: "`rated` only: the contact's rating; the message body is their comment."
     Attachment:
       type: object
       required: [id, filename, content_type, size, inline, created_at]
@@ -6567,6 +7121,12 @@ components:
         sent_by:
           $ref: "#/components/schemas/MessageAuthor"
           description: Who sent a draft (`member` or `bot`); absent for messages that were never drafts.
+        mentions:
+          type: array
+          description: "Members a note mentions (notes only; absent when it mentions nobody)."
+          items:
+            type: string
+            format: uuid
         created_at:
           type: string
           format: date-time
@@ -6691,6 +7251,19 @@ components:
         draft:
           type: boolean
           description: Stores an outgoing message as a draft instead of delivering it.
+        mentions:
+          type: array
+          maxItems: 50
+          uniqueItems: true
+          description: |
+            Notes only: members to notify about the note. Each must be a member of the workspace
+            who can see the conversation's inbox (`400 validation_failed` otherwise). They get the
+            `mentioned` notification (realtime as `message.created`, Web Push and e-mail per their
+            notification settings); the author is never notified. The panel shows mentions in the
+            body as it likes; the server does not parse `@` in the text.
+          items:
+            type: string
+            format: uuid
     MessageCreateMultipart:
       type: object
       required: [kind]
@@ -6712,6 +7285,13 @@ components:
           maxLength: 200
         draft:
           type: boolean
+        mentions:
+          type: array
+          maxItems: 50
+          description: Notes only; repeat the field once per member id.
+          items:
+            type: string
+            format: uuid
         files:
           type: array
           maxItems: 10
@@ -7281,6 +7861,8 @@ components:
         - $ref: "#/components/schemas/InboxAccessChangedEvent"
         - $ref: "#/components/schemas/ConversationReadEvent"
         - $ref: "#/components/schemas/TypingEvent"
+        - $ref: "#/components/schemas/MemberPresenceEvent"
+        - $ref: "#/components/schemas/ViewingEvent"
         - $ref: "#/components/schemas/RealtimeReady"
         - $ref: "#/components/schemas/RealtimeResyncRequired"
       discriminator:
@@ -7302,6 +7884,8 @@ components:
           inbox_access.changed: "#/components/schemas/InboxAccessChangedEvent"
           conversation.read: "#/components/schemas/ConversationReadEvent"
           typing: "#/components/schemas/TypingEvent"
+          member.presence: "#/components/schemas/MemberPresenceEvent"
+          viewing: "#/components/schemas/ViewingEvent"
           ready: "#/components/schemas/RealtimeReady"
           resync_required: "#/components/schemas/RealtimeResyncRequired"
     Availability:
@@ -7634,7 +8218,7 @@ components:
       description: |
         The inbox's public settings. `live` inboxes carry `presence`; `async` inboxes never do and
         show `expected_reply_minutes` instead.
-      required: [id, name, branding, default_locale, timezone, mode, business_hours, open_now, chat, feedback_categories]
+      required: [id, name, branding, default_locale, timezone, mode, business_hours, open_now, chat, feedback_categories, ask_for_rating]
       properties:
         id:
           type: string
@@ -7667,6 +8251,11 @@ components:
           description: The categories `POST /client/v1/feedback` accepts, in display order.
           items:
             $ref: "#/components/schemas/FeedbackCategory"
+        ask_for_rating:
+          type: boolean
+          description: |
+            The inbox asks contacts to rate closed conversations; offer it where `can_rate` is true
+            on a conversation.
     ClientContact:
       type: object
       required: [id, name, identified]
@@ -7711,13 +8300,18 @@ components:
               description: The contact session token. It is not shown again.
     ClientConversationStatus:
       type: object
-      required: [id, status, updated_at]
+      required: [id, status, can_rate, updated_at]
       properties:
         id:
           type: string
           format: uuid
         status:
           $ref: "#/components/schemas/ConversationStatus"
+        can_rate:
+          type: boolean
+          description: As on `ClientConversation`.
+        rating:
+          $ref: "#/components/schemas/Rating"
         updated_at:
           type: string
           format: date-time
@@ -7738,7 +8332,7 @@ components:
           format: date-time
     ClientConversation:
       type: object
-      required: [id, kind, subject, status, unread, created_at]
+      required: [id, kind, subject, status, unread, can_rate, created_at]
       properties:
         id:
           type: string
@@ -7767,9 +8361,29 @@ components:
             `live` inboxes only: members have read every message created at or before this time
             (the latest read position of any member, as in the `read` realtime frame). Absent
             when no member has read the conversation, and in `async` inboxes.
+        can_rate:
+          type: boolean
+          description: |
+            The contact may rate it now with `POST /client/v1/conversations/{id}/rating`: the inbox
+            asks for ratings (`ask_for_rating`), the conversation is closed, was closed at most 30
+            days ago and after the inbox started asking, and has no rating since it was closed. A message from the contact reopens it,
+            and the next close allows a new rating.
+        rating:
+          $ref: "#/components/schemas/Rating"
+          description: The contact's rating since the last close; absent when they have not rated it.
         created_at:
           type: string
           format: date-time
+    ClientRatingCreate:
+      type: object
+      required: [rating]
+      properties:
+        rating:
+          $ref: "#/components/schemas/Rating"
+        comment:
+          type: string
+          maxLength: 2000
+          description: Optional; blank is the same as absent.
     ClientConversationPage:
       type: object
       required: [items]

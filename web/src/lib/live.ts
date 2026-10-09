@@ -115,6 +115,7 @@ function refreshCounts(qc: QueryClient, ws: string) {
     setTimeout(() => {
       countTimers.delete(ws)
       void qc.invalidateQueries({ queryKey: keys.counts(ws) })
+      void qc.invalidateQueries({ queryKey: keys.stats(ws) })
     }, 400),
   )
 }
@@ -187,6 +188,7 @@ function addMessage(qc: QueryClient, ctx: LiveContext, m: Message) {
     }
   }
   if ((m.sent_by ?? m.author).member_id !== ctx.memberId) patch.unread = true
+  if (m.kind === "message" && m.direction === "out") refreshCounts(qc, ctx.ws)
   if (c) qc.setQueryData(keys.conversation(ctx.ws, c.id), next)
   updateLists(qc, ctx, next, patch)
 }
@@ -244,6 +246,8 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
     case "conversation.updated":
       knowMember(qc, ctx.ws, event.data.assignee_id)
       setConversation(qc, ctx, event.data)
+      void qc.invalidateQueries({ queryKey: keys.contact(ctx.ws, event.data.contact_id), refetchType: "active" })
+      void qc.invalidateQueries({ queryKey: keys.contactSummary(ctx.ws, event.data.contact_id) })
       if (event.type === "conversation.created") {
         void qc.invalidateQueries({ queryKey: keys.contactPresence(ctx.ws, event.data.contact_id) })
       }
@@ -289,7 +293,8 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
       return
     case "contact.updated": {
       const contact = event.data
-      qc.setQueryData<Contact>(keys.contact(ctx.ws, contact.id), contact)
+      qc.setQueryData<Contact>(keys.contact(ctx.ws, contact.id), (old) => ({ ...contact, activity: contact.activity ?? old?.activity }))
+      void qc.invalidateQueries({ queryKey: keys.contactSearch(ctx.ws) })
       for (const [key, data] of listCaches(qc, ctx.ws)) {
         if (!data?.pages.some((p) => p.items.some((x) => x.contact.id === contact.id))) continue
         const ref = { id: contact.id, name: contact.name, email: contact.emails[0] }
@@ -311,6 +316,7 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
       if (event.data.merged_into_id) followMerge(qc, ctx.ws, event.data.id, event.data.merged_into_id)
       qc.removeQueries({ queryKey: keys.contact(ctx.ws, event.data.id) })
       qc.removeQueries({ queryKey: keys.contactPresence(ctx.ws, event.data.id) })
+      void qc.invalidateQueries({ queryKey: keys.contactSearch(ctx.ws) })
       void qc.invalidateQueries({ queryKey: keys.conversationLists(ctx.ws) })
       refreshCounts(qc, ctx.ws)
       return

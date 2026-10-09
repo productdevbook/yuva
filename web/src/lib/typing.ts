@@ -12,6 +12,7 @@ const typists = new Map<string, Map<string, Entry>>()
 const snapshots = new Map<string, TypingAuthor[]>()
 const listeners = new Set<() => void>()
 const EMPTY: TypingAuthor[] = []
+let everything = new Map<string, TypingAuthor[]>()
 
 function authorKey(a: TypingAuthor) {
   return a.type === "contact" ? `c:${a.contact_id}` : `m:${a.member_id}`
@@ -24,6 +25,7 @@ function changed(conversationId: string) {
     typists.delete(conversationId)
     snapshots.delete(conversationId)
   }
+  everything = new Map(snapshots)
   listeners.forEach((l) => l())
 }
 
@@ -61,6 +63,7 @@ export function clearTyping() {
   for (const entries of typists.values()) for (const e of entries.values()) clearTimeout(e.timer)
   typists.clear()
   snapshots.clear()
+  everything = new Map()
   listeners.forEach((l) => l())
 }
 
@@ -73,6 +76,10 @@ function subscribe(l: () => void) {
 
 export function useTyping(conversationId: string): TypingAuthor[] {
   return useSyncExternalStore(subscribe, () => snapshots.get(conversationId) ?? EMPTY)
+}
+
+export function useAllTyping(): Map<string, TypingAuthor[]> {
+  return useSyncExternalStore(subscribe, () => everything)
 }
 
 export function useContactTyping(conversationId: string) {

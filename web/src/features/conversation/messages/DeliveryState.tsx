@@ -8,7 +8,7 @@ export function DeliveryState({ d }: { d: MessageDelivery }) {
   const { i18n } = useLingui()
   if (d.state === "queued") {
     return (
-      <span className="text-xs text-faint" data-testid="delivery" data-state="queued">
+      <span className="text-caption text-faint" data-testid="delivery" data-state="queued">
         <Trans>Sending by e-mail…</Trans>
       </span>
     )
@@ -16,7 +16,7 @@ export function DeliveryState({ d }: { d: MessageDelivery }) {
   if (d.state === "sent") {
     return (
       <span
-        className="inline-flex items-center gap-1 text-xs text-faint"
+        className="inline-flex items-center gap-1 text-caption text-faint"
         title={formatDateTime(d.updated_at, i18n.locale)}
         data-testid="delivery"
         data-state="sent"
@@ -29,7 +29,7 @@ export function DeliveryState({ d }: { d: MessageDelivery }) {
   return (
     <div
       role="alert"
-      className="flex max-w-sm flex-col gap-0.5 rounded-xl bg-destructive/6 px-3 py-2 text-xs"
+      className="flex max-w-sm flex-col gap-0.5 rounded-xl bg-destructive/6 px-3 py-2 text-caption"
       data-testid="delivery"
       data-state="failed"
     >

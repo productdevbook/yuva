@@ -376,7 +376,8 @@ func (s *Server) mergeContact(ctx context.Context, q *store.Queries, events *eve
 	if err := q.MoveContactEmails(ctx, store.MoveContactEmailsParams{WorkspaceID: ws, FromContact: from, ToContact: to}); err != nil {
 		return err
 	}
-	for _, c := range moved {
+	for _, row := range moved {
+		c := store.Conversation(row)
 		body, err := oneConversation(ctx, q, c)
 		if err != nil {
 			return err
@@ -417,6 +418,7 @@ func (s *Server) clientInbox(ctx context.Context, q *store.Queries, in store.Inb
 			AskEmailOffline: chat.AskEmailOffline, AllowAnonymous: chat.AllowAnonymous,
 		},
 		FeedbackCategories: feedbackCategories,
+		AskForRating:       in.AskForRating,
 	}
 	if out.Chat.Greeting == "" && b.Branding.Greeting != nil {
 		out.Chat.Greeting = *b.Branding.Greeting

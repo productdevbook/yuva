@@ -16,8 +16,6 @@ export function menuProps(name: MenuName, p: Pick<ControlProps, "openMenu" | "se
   return { open: p.openMenu === name, onOpenChange: (open: boolean) => p.setOpenMenu(open ? name : null) }
 }
 
-export const pillClass =
-  "inline-flex h-7 max-w-52 shrink-0 items-center gap-1.5 rounded-full border px-2.5 text-xs text-muted-foreground transition-colors outline-none hover:bg-surface hover:text-foreground aria-expanded:bg-surface aria-expanded:text-foreground disabled:opacity-50 [&_svg]:size-3.5 [&_svg]:shrink-0"
 
 export const statusIcons: Record<ConversationStatus, React.ComponentType<{ className?: string }>> = {
   open: CircleIcon,

@@ -30,7 +30,7 @@ function InboxOverride({ inbox, override, settings, onDropDraft }: { inbox: Inbo
     <Card flush data-testid="inbox-override">
       <div className="flex items-center gap-2.5 px-5 py-3">
         <Dot color={inbox.branding.color} />
-        <span className="min-w-0 flex-1 truncate text-sm font-medium">{inbox.name}</span>
+        <span className="min-w-0 flex-1 truncate text-body font-medium">{inbox.name}</span>
         <Button variant="ghost" size="icon-sm" aria-label={t`Stop overriding ${name}`} disabled={remove.isPending} onClick={() => (override ? remove.mutate() : onDropDraft())}>
           <Trash2Icon />
         </Button>
@@ -41,7 +41,7 @@ function InboxOverride({ inbox, override, settings, onDropDraft }: { inbox: Inbo
         const value = toChoice(events[e])
         return (
           <div key={e} className="flex flex-col gap-2 border-t px-5 py-3 sm:flex-row sm:items-center sm:gap-3">
-            <span className="min-w-0 flex-1 text-sm">{text[e].label}</span>
+            <span className="min-w-0 flex-1 text-body">{text[e].label}</span>
             <Select value={value} onValueChange={(v) => change(e, v as Choice)} items={items}>
               <SelectTrigger size="sm" className={cn("w-full sm:w-60", value === "inherit" && "text-muted-foreground")} aria-label={`${inbox.name}: ${text[e].label}`}>
                 <SelectValue />
@@ -85,7 +85,7 @@ export function InboxOverrides({ settings }: { settings: NotificationSettings })
           ))}
         </div>
       ) : (
-        <p className="text-sm text-muted-foreground">
+        <p className="text-body text-muted-foreground">
           <Trans>Every inbox follows the settings above.</Trans>
         </p>
       )}

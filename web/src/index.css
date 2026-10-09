@@ -3,7 +3,36 @@
 @import "@fontsource-variable/geist-mono";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (@media (prefers-color-scheme: dark));
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant phone (@media (max-width: 680px));
+
+@theme {
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1rem;
+  --text-small: 0.8125rem;
+  --text-small--line-height: 1.125rem;
+  --text-body: 0.875rem;
+  --text-body--line-height: 1.25rem;
+  --text-reading: 0.9375rem;
+  --text-reading--line-height: 1.5rem;
+  --text-title: 1.25rem;
+  --text-title--line-height: 1.75rem;
+  --text-title--letter-spacing: -0.01em;
+  --text-title--font-weight: 600;
+  --text-page: 1.625rem;
+  --text-page--line-height: 2rem;
+  --text-page--letter-spacing: -0.02em;
+  --text-page--font-weight: 600;
+}
+
+@utility eyebrow {
+  font-size: var(--text-caption);
+  line-height: var(--text-caption--line-height);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
 
 @theme inline {
   --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
@@ -32,18 +61,23 @@
   --color-destructive: var(--destructive);
   --color-success: var(--success);
   --color-warning: var(--warning);
+  --color-note: var(--note);
+  --color-note-border: var(--note-border);
+  --color-note-ink: var(--note-ink);
+  --color-mate: var(--mate);
 }
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
+  --radius: 0.75rem;
   --background: #ffffff;
   --foreground: #0b0b0f;
   --surface: #f7f7f8;
   --card: #ffffff;
   --muted: #f1f1f3;
-  --muted-foreground: #52525b;
-  --faint: #71717a;
-  --border: #ececef;
+  --muted-foreground: #3f3f46;
+  --faint: #63636b;
+  --border: #e4e4e7;
   --input: #d4d4d8;
   --ring: #e4572e;
   --primary: #d4431c;
@@ -52,27 +86,34 @@
   --destructive: #dc2626;
   --success: #15803d;
   --warning: #b45309;
+  --note: #fdf5e2;
+  --note-border: #f1e3bd;
+  --note-ink: #8a6100;
+  --mate: #0e7490;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #09090b;
-    --foreground: #fafafa;
-    --surface: #0f0f12;
-    --card: #121216;
-    --muted: #1a1a1f;
-    --muted-foreground: #a1a1aa;
-    --faint: #8a8a93;
-    --border: #1f1f23;
-    --input: #2e2e34;
-    --ring: #ff8a5c;
-    --primary: #d4431c;
-    --brand: #ff8a5c;
-    --brand-wash: #2a140c;
-    --destructive: #f87171;
-    --success: #4ade80;
-    --warning: #fbbf24;
-  }
+:root.dark {
+  color-scheme: dark;
+  --background: #0a0a0c;
+  --foreground: #fafafa;
+  --surface: #101013;
+  --card: #131316;
+  --muted: #1c1c21;
+  --muted-foreground: #a1a1aa;
+  --faint: #8a8a93;
+  --border: #232327;
+  --input: #2e2e34;
+  --ring: #ff8a5c;
+  --primary: #d4431c;
+  --brand: #ff8a5c;
+  --brand-wash: #2a140c;
+  --destructive: #f87171;
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --note: #221c0d;
+  --note-border: #3a3115;
+  --note-ink: #e3b54a;
+  --mate: #0891b2;
 }
 
 @layer base {
@@ -83,7 +124,7 @@
     @apply bg-background font-sans text-foreground antialiased;
   }
   body {
-    @apply bg-background;
+    @apply bg-background text-body;
   }
   h1,
   h2,

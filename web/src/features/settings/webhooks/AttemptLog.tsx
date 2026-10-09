@@ -33,7 +33,7 @@ export function AttemptLog({ endpoint }: { endpoint: WebhookEndpoint }) {
           </EmptyRow>
         ) : (
           <div className="max-h-96 overflow-auto">
-            <table className="w-full text-xs" data-testid="attempts-table">
+            <table className="w-full text-caption" data-testid="attempts-table">
               <thead className="sticky top-0 bg-surface text-muted-foreground">
                 <tr>
                   <th className={th}>
@@ -52,7 +52,7 @@ export function AttemptLog({ endpoint }: { endpoint: WebhookEndpoint }) {
               </thead>
               <tbody className="divide-y">
                 {list.data.map((a) => (
-                  <tr key={a.id} className="cursor-pointer align-top transition-colors hover:bg-surface" onClick={() => setOpen(a.delivery_id)} data-testid="attempt-row">
+                  <tr key={a.id} className="cursor-pointer align-top transition-colors hover:bg-muted" onClick={() => setOpen(a.delivery_id)} data-testid="attempt-row">
                     <td className="px-4 py-2 whitespace-nowrap">
                       {formatDateTime(a.attempted_at, i18n.locale)}
                       {a.manual && <ManualTag />}

@@ -52,7 +52,7 @@ export function DeleteWorkspace() {
             </Button>
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-body text-muted-foreground">
             <Trans>Only owners can delete the workspace.</Trans>
           </p>
         )}

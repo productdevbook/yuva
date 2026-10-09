@@ -45,7 +45,7 @@ final class ConversationsModel {
             switch event {
             case .conversationCreated(let conversation):
                 upsert(conversation)
-            case .conversationUpdated(let id, _), .read(let id, _):
+            case .conversationUpdated(let id, _, _, _), .read(let id, _):
                 await refresh(id)
             case .messageCreated(let message):
                 await refresh(message.conversationId)

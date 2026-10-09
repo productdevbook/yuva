@@ -58,12 +58,12 @@ export function NextAttempt({ at }: { at: string }) {
 }
 
 export function AttemptResult({ a }: { a: WebhookAttempt }) {
-  return <span className={cn("font-mono text-xs", a.success ? "text-success" : "text-destructive")}>{a.status_code ?? <Trans>no answer</Trans>}</span>
+  return <span className={cn("font-mono text-caption", a.success ? "text-success" : "text-destructive")}>{a.status_code ?? <Trans>no answer</Trans>}</span>
 }
 
 export function ManualTag() {
   return (
-    <span className="ms-1.5 rounded-full bg-muted px-1.5 py-px text-[10px] font-medium text-muted-foreground">
+    <span className="ms-1.5 rounded-full bg-muted px-1.5 py-px text-caption font-medium text-muted-foreground">
       <Trans>manual</Trans>
     </span>
   )

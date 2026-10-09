@@ -15,7 +15,8 @@ SELECT * FROM conversations WHERE workspace_id = $1 AND id = $2 FOR UPDATE;
 
 -- name: UpdateConversation :one
 UPDATE conversations SET subject = @subject, status = @status, snooze_until = @snooze_until,
-    priority = @priority, assignee_id = @assignee_id, spam = @spam, updated_at = @now
+    priority = @priority, assignee_id = @assignee_id, spam = @spam, updated_at = @now,
+    closed_at = CASE WHEN @status = 'closed' AND status <> 'closed' THEN @now ELSE closed_at END
 WHERE workspace_id = @workspace_id AND id = @id
 RETURNING *;
 
@@ -91,14 +92,13 @@ CROSS JOIN LATERAL (
 WHERE c.workspace_id = @workspace_id AND c.id = ANY(@conversation_ids::uuid[]);
 
 -- name: CountOpenConversations :many
-SELECT c.inbox_id, coalesce(c.assignee_id = sqlc.narg(member_id)::uuid, false)::bool AS mine,
-       (c.assignee_id IS NULL)::bool AS unassigned, c.spam, count(*) AS n
+SELECT c.inbox_id, c.assignee_id, c.spam, count(*) AS n
 FROM conversations c
 WHERE c.workspace_id = @workspace_id AND c.status = 'open'
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
-GROUP BY 1, 2, 3, 4;
+GROUP BY 1, 2, 3;
 
 -- name: CountOpenConversationsByLabel :many
 SELECT cl.label_id, count(*) AS n

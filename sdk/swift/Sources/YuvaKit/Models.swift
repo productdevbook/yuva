@@ -16,6 +16,10 @@ public enum YuvaInboxMode: String, Codable, Sendable {
     case live, async
 }
 
+public enum YuvaRating: String, Codable, Sendable, CaseIterable {
+    case good, bad
+}
+
 public struct YuvaMember: Codable, Sendable, Hashable {
     public let name: String
     public let initials: String
@@ -43,6 +47,9 @@ public struct YuvaInbox: Codable, Sendable {
     public let expectedReplyMinutes: Int?
     public let presence: YuvaPresence?
     private let feedbackCategoryNames: [String]?
+    private let askForRatingValue: Bool?
+
+    public var askForRating: Bool { askForRatingValue ?? false }
 
     public var feedbackCategories: [YuvaFeedbackCategory] {
         (feedbackCategoryNames ?? []).compactMap(YuvaFeedbackCategory.init(rawValue:))
@@ -51,6 +58,7 @@ public struct YuvaInbox: Codable, Sendable {
     enum CodingKeys: String, CodingKey {
         case id, name, branding, defaultLocale, timezone, mode, openNow, expectedReplyMinutes, presence
         case feedbackCategoryNames = "feedbackCategories"
+        case askForRatingValue = "askForRating"
     }
 }
 
@@ -86,12 +94,14 @@ public struct YuvaConversation: Codable, Sendable, Identifiable, Hashable {
     public let lastMessageAt: Date?
     public let unread: Bool
     public let lastReadByMemberAt: Date?
+    public let canRate: Bool
+    public let rating: YuvaRating?
     public let createdAt: Date
 
     public init(
         id: String, kind: YuvaConversationKind? = .conversation, feedback: YuvaFeedbackInfo? = nil, subject: String,
         status: YuvaConversationStatus, lastMessage: YuvaMessagePreview?, lastMessageAt: Date?, unread: Bool,
-        lastReadByMemberAt: Date?, createdAt: Date
+        lastReadByMemberAt: Date?, canRate: Bool = false, rating: YuvaRating? = nil, createdAt: Date
     ) {
         self.id = id
         self.kind = kind
@@ -102,7 +112,25 @@ public struct YuvaConversation: Codable, Sendable, Identifiable, Hashable {
         self.lastMessageAt = lastMessageAt
         self.unread = unread
         self.lastReadByMemberAt = lastReadByMemberAt
+        self.canRate = canRate
+        self.rating = rating
         self.createdAt = createdAt
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        kind = try container.decodeIfPresent(YuvaConversationKind.self, forKey: .kind)
+        feedback = try container.decodeIfPresent(YuvaFeedbackInfo.self, forKey: .feedback)
+        subject = try container.decode(String.self, forKey: .subject)
+        status = try container.decode(YuvaConversationStatus.self, forKey: .status)
+        lastMessage = try container.decodeIfPresent(YuvaMessagePreview.self, forKey: .lastMessage)
+        lastMessageAt = try container.decodeIfPresent(Date.self, forKey: .lastMessageAt)
+        unread = try container.decode(Bool.self, forKey: .unread)
+        lastReadByMemberAt = try container.decodeIfPresent(Date.self, forKey: .lastReadByMemberAt)
+        canRate = try container.decodeIfPresent(Bool.self, forKey: .canRate) ?? false
+        rating = try? container.decodeIfPresent(YuvaRating.self, forKey: .rating)
+        createdAt = try container.decode(Date.self, forKey: .createdAt)
     }
 }
 
@@ -165,7 +193,7 @@ public struct YuvaUpload: Sendable {
 
 public enum YuvaEvent: Sendable {
     case conversationCreated(YuvaConversation)
-    case conversationUpdated(conversationId: String, status: YuvaConversationStatus)
+    case conversationUpdated(conversationId: String, status: YuvaConversationStatus, canRate: Bool, rating: YuvaRating?)
     case messageCreated(YuvaMessage)
     case messageUpdated(YuvaMessage)
     case read(conversationId: String, readAt: Date)

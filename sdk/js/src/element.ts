@@ -8,10 +8,12 @@ import {
   writeStored,
   type ChatConfig,
   type IdentityTokenSource,
+  type ClientConversation,
   type Layout,
   type LauncherStyle,
   type PanelController,
   type PanelModule,
+  type Rating,
 } from "./types";
 
 const styles = `
@@ -200,6 +202,10 @@ export class YuvaChatElement extends HTMLElement {
     this.#identity = null;
     this.removeAttribute("identity-token");
     if (this.#controller) await (await this.#controller).signOut();
+  }
+
+  async rate(conversationId: string, rating: Rating, comment?: string): Promise<ClientConversation> {
+    return (await this.#ensureController()).rate(conversationId, rating, comment);
   }
 
   connectedCallback(): void {

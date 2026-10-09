@@ -53,7 +53,7 @@ function Receiving({ f, set, error, taken }: Props) {
         />
         <FieldError id="err-address">{taken ? <Trans>Another channel already receives mail at this address.</Trans> : error("address")}</FieldError>
       </Field>
-      <Notice className="text-xs" data-testid="ingress-hint">
+      <Notice className="text-caption" data-testid="ingress-hint">
         <p>
           <Trans>
             Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail
@@ -73,7 +73,7 @@ function Password({ f, set, error, taken }: Props) {
     <Field label={<Trans>Password</Trans>} htmlFor="smtp-password">
       {f.password === null ? (
         <div className="flex h-9 items-center gap-2" data-testid="smtp-password-set">
-          <span className="inline-flex min-w-0 flex-1 items-center gap-1.5 text-sm">
+          <span className="inline-flex min-w-0 flex-1 items-center gap-1.5 text-body">
             <CheckIcon className="size-4 shrink-0 text-success" />
             <Trans>Password set</Trans>
           </span>
@@ -104,7 +104,7 @@ function Password({ f, set, error, taken }: Props) {
         </div>
       )}
       {f.clearing && f.password === "" && (
-        <p className="text-xs text-muted-foreground" data-testid="smtp-password-cleared">
+        <p className="text-caption text-muted-foreground" data-testid="smtp-password-cleared">
           <Trans>Saving removes the stored password.</Trans>
         </p>
       )}
@@ -153,7 +153,7 @@ function Sending(p: Props) {
           <FieldError id="err-from_address">{error("from_address")}</FieldError>
         </Field>
       </div>
-      <p className="text-xs text-muted-foreground">
+      <p className="text-caption text-muted-foreground">
         <Trans>Replies go out through your own SMTP account. Leave the host empty to only receive mail.</Trans>
       </p>
       <div className="grid gap-5 sm:grid-cols-[1fr_7rem]">
@@ -205,7 +205,7 @@ function Sending(p: Props) {
         </Field>
         <Password {...p} />
       </div>
-      <p className="text-xs text-muted-foreground">
+      <p className="text-caption text-muted-foreground">
         <Trans>The password is stored encrypted and never shown again.</Trans>
       </p>
     </FormBlock>
@@ -221,7 +221,7 @@ function AutoReply(p: Props) {
       title={<Trans>Auto-reply</Trans>}
       action={<Switch checked={f.autoReply} onCheckedChange={(autoReply) => set({ autoReply })} aria-label={t`Send an auto-reply`} />}
     >
-      <p className="-mt-2 text-xs leading-relaxed text-muted-foreground">
+      <p className="-mt-2 text-caption text-muted-foreground">
         <Trans>Greets new conversations by e-mail, once per contact within the interval. Never sent to automatic mail or spam.</Trans>
       </p>
       {f.autoReply && (

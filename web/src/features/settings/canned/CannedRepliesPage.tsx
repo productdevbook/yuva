@@ -45,10 +45,10 @@ export function CannedRepliesPage() {
           <Rows>
             {(replies.data ?? []).map((r) => (
               <Row key={r.id} className="items-start" data-testid="canned-row">
-                <code className="mt-0.5 shrink-0 font-mono text-xs text-faint">/{r.shortcut}</code>
+                <code className="mt-0.5 shrink-0 font-mono text-caption text-faint">/{r.shortcut}</code>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{r.title}</p>
-                  <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">{r.body}</p>
+                  <p className="truncate text-body font-medium">{r.title}</p>
+                  <p className="line-clamp-2 text-caption text-muted-foreground">{r.body}</p>
                 </div>
                 {canManage && (
                   <>

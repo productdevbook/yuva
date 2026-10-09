@@ -12,7 +12,7 @@ export function Dot({ color, className }: { color?: string | null; className?: s
 
 export function LabelChip({ name, color, className }: { name: string; color: string; className?: string }) {
   return (
-    <span className={cn("inline-flex max-w-40 items-center gap-1.5 text-xs text-muted-foreground", className)}>
+    <span className={cn("inline-flex max-w-40 items-center gap-1.5 text-caption text-muted-foreground", className)}>
       <Dot color={color} className="size-1.5" />
       <span className="truncate">{name}</span>
     </span>

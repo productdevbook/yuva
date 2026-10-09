@@ -2,7 +2,9 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useEffect, useSyncExternalStore } from "react"
 
 import type { RealtimeMessage } from "@/lib/api"
+import { keys } from "@/lib/keys"
 import { applyEvent, type LiveEvent } from "@/lib/live"
+import { applyPresence, applyViewing, clearViewing } from "@/lib/presence"
 import { meKey } from "@/lib/session"
 import { applyTyping, clearTyping, stopTyping } from "@/lib/typing"
 
@@ -93,6 +95,7 @@ export function useRealtime(ws: string, memberId: string) {
           setStatus(ws, "live")
           viewingSocket = s
           viewingSent = null
+          void qc.invalidateQueries({ queryKey: keys.members(ws) })
           reportViewing()
           return
         }
@@ -102,6 +105,14 @@ export function useRealtime(ws: string, memberId: string) {
         }
         if (msg.type === "typing") {
           applyTyping(msg.data)
+          return
+        }
+        if (msg.type === "member.presence") {
+          applyPresence(qc, ws, msg.data)
+          return
+        }
+        if (msg.type === "viewing") {
+          if (msg.data.member_id !== memberId) applyViewing(msg.data)
           return
         }
         cursor = Math.max(cursor ?? 0, msg.id)
@@ -115,6 +126,7 @@ export function useRealtime(ws: string, memberId: string) {
         if (socket !== s) return
         socket = null
         clearTyping()
+        clearViewing()
         if (stopped || hidden) return
         setStatus(ws, "offline")
         if (e.code === 1008) {
@@ -144,6 +156,7 @@ export function useRealtime(ws: string, memberId: string) {
       socket = null
       s?.close(1000)
       clearTyping()
+      clearViewing()
     }
     const onPageShow = () => {
       hidden = false

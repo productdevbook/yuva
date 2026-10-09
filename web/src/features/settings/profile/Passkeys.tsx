@@ -60,7 +60,7 @@ export function Passkeys() {
               </Button>
             </form>
           ) : (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-body text-muted-foreground">
               <Trans>This browser does not support passkeys.</Trans>
             </p>
           )
@@ -98,13 +98,13 @@ export function Passkeys() {
           </Rows>
         ) : (
           list.data && (
-            <p className="px-5 py-4 text-sm text-muted-foreground">
+            <p className="px-5 py-4 text-body text-muted-foreground">
               <Trans>You have no passkeys yet.</Trans>
             </p>
           )
         )}
         {add.error && (
-          <p role="alert" className="px-5 pb-4 text-sm text-destructive">
+          <p role="alert" className="px-5 pb-4 text-body text-destructive">
             <Trans>The passkey was not added. Try again.</Trans>
           </p>
         )}

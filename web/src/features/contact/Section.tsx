@@ -1,12 +1,3 @@
-export function Section({ title, children }: { title: React.ReactNode; children: React.ReactNode }) {
-  return (
-    <section className="flex flex-col gap-2 border-t px-5 py-4">
-      <h3 className="text-xs font-medium text-faint">{title}</h3>
-      {children}
-    </section>
-  )
-}
-
 export function attrValue(v: unknown) {
   if (v === null || v === undefined) return "—"
   if (typeof v === "object") return JSON.stringify(v)

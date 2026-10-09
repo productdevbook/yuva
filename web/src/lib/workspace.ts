@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query"
+import { useQueries, useQuery } from "@tanstack/react-query"
+import { useMemo } from "react"
 
-import { api, unwrap } from "@/lib/api"
+import { api, unwrap, type Channel } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import type { LiveContext } from "@/lib/live"
 import { useSession } from "@/lib/session"
@@ -78,4 +79,23 @@ export function useChannel(id: string | undefined) {
     staleTime: 5 * 60_000,
     retry: false,
   })
+}
+
+export function useChannelMap() {
+  const { workspaceId: ws } = useSession()
+  const inboxes = useInboxes().data ?? []
+  const results = useQueries({
+    queries: inboxes.map((i) => ({
+      queryKey: keys.channels(ws, i.id),
+      queryFn: () =>
+        unwrap(api.GET("/v1/inboxes/{inboxId}/channels", { params: { path: { inboxId: i.id } } })).then((r) => r.items),
+      staleTime: 5 * 60_000,
+    })),
+  })
+  const stamp = results.map((r) => r.dataUpdatedAt).join(",")
+  return useMemo(() => {
+    const map = new Map<string, Channel>()
+    for (const r of results) for (const ch of r.data ?? []) map.set(ch.id, ch)
+    return map
+  }, [stamp])
 }

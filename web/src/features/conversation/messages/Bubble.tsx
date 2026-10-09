@@ -9,7 +9,7 @@ const tones = {
 
 export function Bubble({ tone, children }: { tone: keyof typeof tones; children: React.ReactNode }) {
   return (
-    <div className={cn("max-w-full rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed break-words whitespace-pre-wrap", tones[tone])}>
+    <div className={cn("max-w-full rounded-2xl px-3.5 py-2.5 text-body break-words whitespace-pre-wrap", tones[tone])}>
       {children}
     </div>
   )

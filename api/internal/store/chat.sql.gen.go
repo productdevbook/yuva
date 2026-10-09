@@ -155,10 +155,15 @@ func (q *Queries) CreateChatVisitor(ctx context.Context, arg CreateChatVisitorPa
 }
 
 const createContactSession = `-- name: CreateContactSession :one
-INSERT INTO contact_sessions (id, workspace_id, channel_id, inbox_id, contact_id, token_hash, identified,
-                              created_at, expires_at, last_seen_at)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $8)
-RETURNING id, workspace_id, channel_id, inbox_id, contact_id, token_hash, identified, created_at, expires_at, last_seen_at
+WITH s AS (
+    INSERT INTO contact_sessions (id, workspace_id, channel_id, inbox_id, contact_id, token_hash, identified,
+                                  created_at, expires_at, last_seen_at)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $8)
+    RETURNING id, workspace_id, channel_id, inbox_id, contact_id, token_hash, identified, created_at, expires_at, last_seen_at),
+seen AS (
+    UPDATE contacts SET last_active_at = greatest(coalesce(contacts.last_active_at, s.last_seen_at), s.last_seen_at)
+    FROM s WHERE contacts.workspace_id = s.workspace_id AND contacts.id = s.contact_id)
+SELECT id, workspace_id, channel_id, inbox_id, contact_id, token_hash, identified, created_at, expires_at, last_seen_at FROM s
 `
 
 type CreateContactSessionParams struct {
@@ -173,7 +178,20 @@ type CreateContactSessionParams struct {
 	ExpiresAt   time.Time
 }
 
-func (q *Queries) CreateContactSession(ctx context.Context, arg CreateContactSessionParams) (ContactSession, error) {
+type CreateContactSessionRow struct {
+	ID          uuid.UUID
+	WorkspaceID uuid.UUID
+	ChannelID   uuid.UUID
+	InboxID     uuid.UUID
+	ContactID   uuid.UUID
+	TokenHash   []byte
+	Identified  bool
+	CreatedAt   time.Time
+	ExpiresAt   time.Time
+	LastSeenAt  time.Time
+}
+
+func (q *Queries) CreateContactSession(ctx context.Context, arg CreateContactSessionParams) (CreateContactSessionRow, error) {
 	row := q.db.QueryRow(ctx, createContactSession,
 		arg.ID,
 		arg.WorkspaceID,
@@ -185,7 +203,7 @@ func (q *Queries) CreateContactSession(ctx context.Context, arg CreateContactSes
 		arg.Now,
 		arg.ExpiresAt,
 	)
-	var i ContactSession
+	var i CreateContactSessionRow
 	err := row.Scan(
 		&i.ID,
 		&i.WorkspaceID,
@@ -840,7 +858,7 @@ func (q *Queries) ListContactConversationIDs(ctx context.Context, arg ListContac
 }
 
 const listContactConversations = `-- name: ListContactConversations :many
-SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address FROM conversations c
+SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address, c.closed_at, c.rating, c.rating_comment, c.rated_at, c.rating_requested_at FROM conversations c
 WHERE c.workspace_id = $1 AND c.inbox_id = $2 AND c.contact_id = $3
   AND ($4::timestamptz IS NULL
        OR (coalesce(c.last_message_at, c.created_at), c.id) < ($4::timestamptz, $5::uuid))
@@ -896,6 +914,11 @@ func (q *Queries) ListContactConversations(ctx context.Context, arg ListContactC
 			&i.Kind,
 			&i.Feedback,
 			&i.EmailAddress,
+			&i.ClosedAt,
+			&i.Rating,
+			&i.RatingComment,
+			&i.RatedAt,
+			&i.RatingRequestedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -935,6 +958,39 @@ func (q *Queries) ListConversationsWithPendingReplies(ctx context.Context, arg L
 			return nil, err
 		}
 		items = append(items, id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listLapsedMembers = `-- name: ListLapsedMembers :many
+SELECT member_id::uuid AS member_id FROM realtime_connections
+WHERE workspace_id = $1 AND member_id IS NOT NULL
+GROUP BY member_id
+HAVING max(seen_at) <= $2::timestamptz AND max(seen_at) > $3::timestamptz
+`
+
+type ListLapsedMembersParams struct {
+	WorkspaceID uuid.UUID
+	FreshAfter  time.Time
+	LapsedAfter time.Time
+}
+
+func (q *Queries) ListLapsedMembers(ctx context.Context, arg ListLapsedMembersParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listLapsedMembers, arg.WorkspaceID, arg.FreshAfter, arg.LapsedAfter)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var member_id uuid.UUID
+		if err := rows.Scan(&member_id); err != nil {
+			return nil, err
+		}
+		items = append(items, member_id)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -1086,7 +1142,7 @@ func (q *Queries) ListPersonWorkspaceIDs(ctx context.Context, personID uuid.UUID
 const listPublicMessages = `-- name: ListPublicMessages :many
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
-       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -1130,6 +1186,7 @@ type ListPublicMessagesRow struct {
 	SentByApiKeyID    *uuid.UUID
 	Via               *string
 	SentVia           *string
+	Mentions          []uuid.UUID
 	BotName           string
 	BotAvatarUrl      string
 	SentByBotName     string
@@ -1173,6 +1230,7 @@ func (q *Queries) ListPublicMessages(ctx context.Context, arg ListPublicMessages
 			&i.SentByApiKeyID,
 			&i.Via,
 			&i.SentVia,
+			&i.Mentions,
 			&i.BotName,
 			&i.BotAvatarUrl,
 			&i.SentByBotName,
@@ -1190,7 +1248,7 @@ func (q *Queries) ListPublicMessages(ctx context.Context, arg ListPublicMessages
 const listPublicMessagesDesc = `-- name: ListPublicMessagesDesc :many
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
-       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -1234,6 +1292,7 @@ type ListPublicMessagesDescRow struct {
 	SentByApiKeyID    *uuid.UUID
 	Via               *string
 	SentVia           *string
+	Mentions          []uuid.UUID
 	BotName           string
 	BotAvatarUrl      string
 	SentByBotName     string
@@ -1277,6 +1336,7 @@ func (q *Queries) ListPublicMessagesDesc(ctx context.Context, arg ListPublicMess
 			&i.SentByApiKeyID,
 			&i.Via,
 			&i.SentVia,
+			&i.Mentions,
 			&i.BotName,
 			&i.BotAvatarUrl,
 			&i.SentByBotName,
@@ -1364,9 +1424,19 @@ func (q *Queries) MarkContactRead(ctx context.Context, arg MarkContactReadParams
 }
 
 const moveContactConversations = `-- name: MoveContactConversations :many
-UPDATE conversations SET contact_id = $1, updated_at = $2
-WHERE workspace_id = $3 AND contact_id = $4
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address
+WITH moved AS (
+    UPDATE conversations SET contact_id = $1, updated_at = $2
+    WHERE conversations.workspace_id = $3 AND conversations.contact_id = $4
+    RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at),
+seen AS (
+    UPDATE contacts t SET last_active_at = greatest(t.last_active_at, f.last_active_at)
+    FROM contacts f
+    WHERE t.workspace_id = $3 AND t.id = $1 AND f.workspace_id = $3
+      AND f.id = $4 AND f.last_active_at IS NOT NULL),
+notes AS (
+    UPDATE contact_notes SET contact_id = $1
+    WHERE contact_notes.workspace_id = $3 AND contact_notes.contact_id = $4)
+SELECT id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at FROM moved
 `
 
 type MoveContactConversationsParams struct {
@@ -1376,7 +1446,37 @@ type MoveContactConversationsParams struct {
 	FromContact uuid.UUID
 }
 
-func (q *Queries) MoveContactConversations(ctx context.Context, arg MoveContactConversationsParams) ([]Conversation, error) {
+type MoveContactConversationsRow struct {
+	ID                    uuid.UUID
+	WorkspaceID           uuid.UUID
+	InboxID               uuid.UUID
+	ContactID             uuid.UUID
+	ChannelID             *uuid.UUID
+	Subject               string
+	Status                string
+	SnoozeUntil           *time.Time
+	Priority              string
+	AssigneeID            *uuid.UUID
+	LastMessageAt         *time.Time
+	LastActivityAt        time.Time
+	CreatedAt             time.Time
+	UpdatedAt             time.Time
+	Spam                  bool
+	EmailToken            *string
+	RelatedConversationID *uuid.UUID
+	ContinuityThrough     *time.Time
+	ContinuitySentAt      *time.Time
+	Kind                  string
+	Feedback              []byte
+	EmailAddress          *string
+	ClosedAt              *time.Time
+	Rating                *string
+	RatingComment         *string
+	RatedAt               *time.Time
+	RatingRequestedAt     *time.Time
+}
+
+func (q *Queries) MoveContactConversations(ctx context.Context, arg MoveContactConversationsParams) ([]MoveContactConversationsRow, error) {
 	rows, err := q.db.Query(ctx, moveContactConversations,
 		arg.ToContact,
 		arg.Now,
@@ -1387,9 +1487,9 @@ func (q *Queries) MoveContactConversations(ctx context.Context, arg MoveContactC
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Conversation
+	var items []MoveContactConversationsRow
 	for rows.Next() {
-		var i Conversation
+		var i MoveContactConversationsRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.WorkspaceID,
@@ -1413,6 +1513,11 @@ func (q *Queries) MoveContactConversations(ctx context.Context, arg MoveContactC
 			&i.Kind,
 			&i.Feedback,
 			&i.EmailAddress,
+			&i.ClosedAt,
+			&i.Rating,
+			&i.RatingComment,
+			&i.RatedAt,
+			&i.RatingRequestedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -1552,8 +1657,12 @@ func (q *Queries) SeeConnection(ctx context.Context, arg SeeConnectionParams) er
 }
 
 const seeContactSession = `-- name: SeeContactSession :exec
-UPDATE contact_sessions SET last_seen_at = greatest(last_seen_at, $1::timestamptz)
-WHERE workspace_id = $2 AND id = $3
+WITH s AS (
+    UPDATE contact_sessions SET last_seen_at = greatest(contact_sessions.last_seen_at, $1::timestamptz)
+    WHERE contact_sessions.workspace_id = $2 AND contact_sessions.id = $3
+    RETURNING contact_sessions.workspace_id, contact_sessions.contact_id, contact_sessions.last_seen_at)
+UPDATE contacts SET last_active_at = greatest(coalesce(contacts.last_active_at, s.last_seen_at), s.last_seen_at)
+FROM s WHERE contacts.workspace_id = s.workspace_id AND contacts.id = s.contact_id
 `
 
 type SeeContactSessionParams struct {
@@ -1734,8 +1843,13 @@ func (q *Queries) TakeEmailConfirmation(ctx context.Context, arg TakeEmailConfir
 }
 
 const touchContactSession = `-- name: TouchContactSession :exec
-UPDATE contact_sessions SET last_seen_at = $1::timestamptz, expires_at = $2::timestamptz
-WHERE workspace_id = $3 AND id = $4 AND last_seen_at < $5::timestamptz
+WITH s AS (
+    UPDATE contact_sessions SET last_seen_at = $1::timestamptz, expires_at = $2::timestamptz
+    WHERE contact_sessions.workspace_id = $3 AND contact_sessions.id = $4
+      AND contact_sessions.last_seen_at < $5::timestamptz
+    RETURNING contact_sessions.workspace_id, contact_sessions.contact_id, contact_sessions.last_seen_at)
+UPDATE contacts SET last_active_at = greatest(coalesce(contacts.last_active_at, s.last_seen_at), s.last_seen_at)
+FROM s WHERE contacts.workspace_id = s.workspace_id AND contacts.id = s.contact_id
 `
 
 type TouchContactSessionParams struct {

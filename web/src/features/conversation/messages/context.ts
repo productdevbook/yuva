@@ -9,18 +9,6 @@ export type ThreadContext = {
   inboxes: Inbox[]
   subject: string
   expandQuoted: boolean
-  drafts: DraftControls
-}
-
-export type DraftControls = {
-  editing: string | null
-  setEditing: (id: string | null) => void
-  latest?: string
-  pending: boolean
-  error: unknown
-  send: (m: Message) => void
-  save: (m: Message, body: string) => void
-  discard: (m: Message) => void
 }
 
 function nameOf(a: MessageAuthor, ctx: ThreadContext, t: ReturnType<typeof useLingui>["t"]) {

@@ -26,7 +26,7 @@ export function RetentionForm() {
           isOwner ? (
             <FormActions pending={save.isPending} disabled={!dirty} saved={save.isSuccess && !dirty} error={save.error} />
           ) : (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-body text-muted-foreground">
               <Trans>Only owners can change this.</Trans>
             </p>
           )

@@ -151,6 +151,18 @@ export const styles = `
 }
 .card button { padding: 8px 12px; border: 0; border-radius: 8px; background: var(--yuva-accent); color: var(--yuva-on-accent); font: inherit; font-weight: 600; cursor: pointer; }
 .card .error { margin: 6px 0 0; color: var(--yuva-danger); }
+.card button:disabled { opacity: 0.6; cursor: default; }
+.rate { text-align: center; }
+.choices { display: flex; justify-content: center; gap: 10px; }
+.card .choice { inline-size: 44px; block-size: 44px; padding: 0; border: 1px solid var(--yuva-border); border-radius: 50%; background: var(--yuva-bg); font-size: 20px; line-height: 1; }
+.card .choice:hover:not(:disabled), .card .choice[aria-pressed="true"] { border-color: var(--yuva-accent); box-shadow: 0 0 0 1px var(--yuva-accent); }
+.card .choice:disabled { opacity: 1; }
+.card .choice:focus-visible { outline: 2px solid var(--yuva-accent); outline-offset: 2px; }
+.rate .choices + p { margin: 8px 0 0; }
+.rate form { flex-direction: column; margin-block-start: 10px; }
+.rate textarea { box-sizing: border-box; inline-size: 100%; padding: 8px 10px; border: 1px solid var(--yuva-border); border-radius: 8px; background: var(--yuva-bg); color: inherit; font: inherit; resize: vertical; }
+.rate .actions { display: flex; justify-content: flex-end; align-items: center; gap: 14px; }
+.card .link { padding: 0; background: none; color: var(--yuva-muted); font-weight: 400; }
 .composer { border-block-start: 1px solid var(--yuva-border); padding: 8px; }
 .composer form { display: flex; gap: 4px; align-items: flex-end; }
 .composer textarea {
@@ -176,6 +188,6 @@ export const styles = `
 .chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-inline-size: 180px; }
 .chip .icon { inline-size: 22px; block-size: 22px; }
 .banner { padding: 6px 12px; background: var(--yuva-soft); color: var(--yuva-muted); font-size: 13px; text-align: center; }
-@media (max-width: 480px) { .composer textarea, .card input { font-size: 16px; } }
+@media (max-width: 480px) { .composer textarea, .card input, .card textarea { font-size: 16px; } }
 .sr { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 `;

@@ -90,16 +90,17 @@ type ChatVisitor struct {
 }
 
 type Contact struct {
-	ID          uuid.UUID
-	WorkspaceID uuid.UUID
-	Name        string
-	Attributes  []byte
-	Blocked     bool
-	Search      interface{}
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	Locale      *string
-	TypedEmail  *string
+	ID           uuid.UUID
+	WorkspaceID  uuid.UUID
+	Name         string
+	Attributes   []byte
+	Blocked      bool
+	Search       interface{}
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	Locale       *string
+	TypedEmail   *string
+	LastActiveAt *time.Time
 }
 
 type ContactEmail struct {
@@ -114,6 +115,16 @@ type ContactExternalID struct {
 	InboxID     uuid.UUID
 	ExternalID  string
 	ContactID   uuid.UUID
+}
+
+type ContactNote struct {
+	ID             uuid.UUID
+	WorkspaceID    uuid.UUID
+	ContactID      uuid.UUID
+	AuthorMemberID *uuid.UUID
+	AuthorApiKeyID *uuid.UUID
+	Body           string
+	CreatedAt      time.Time
 }
 
 type ContactRead struct {
@@ -160,6 +171,11 @@ type Conversation struct {
 	Kind                  string
 	Feedback              []byte
 	EmailAddress          *string
+	ClosedAt              *time.Time
+	Rating                *string
+	RatingComment         *string
+	RatedAt               *time.Time
+	RatingRequestedAt     *time.Time
 }
 
 type ConversationLabel struct {
@@ -264,6 +280,8 @@ type Inbox struct {
 	IdentitySecret       []byte
 	CreatedAt            time.Time
 	UpdatedAt            time.Time
+	AskForRating         bool
+	RatingSince          *time.Time
 }
 
 type InboxMember struct {
@@ -351,6 +369,7 @@ type Message struct {
 	SentByApiKeyID    *uuid.UUID
 	Via               *string
 	SentVia           *string
+	Mentions          []uuid.UUID
 }
 
 type MessageEmail struct {

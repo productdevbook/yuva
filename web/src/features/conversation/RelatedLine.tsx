@@ -9,7 +9,7 @@ export function RelatedLine({ id, hrefFor }: { id: string; hrefFor: (id: string)
   if (related.isPending) return null
   const title = related.data?.subject || t`No subject`
   return (
-    <p className="min-w-0 truncate text-xs text-faint" data-testid="related-conversation">
+    <p className="min-w-0 truncate text-caption text-faint" data-testid="related-conversation">
       {related.data ? (
         <Trans>
           Replied in the thread of{" "}

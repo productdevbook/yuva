@@ -31,10 +31,11 @@ func Migrate(ctx context.Context, pool *pgxpool.Pool, log *slog.Logger) error {
 }
 
 const (
-	EventRetention       = 7 * 24 * time.Hour
-	WebhookRetention     = 7 * 24 * time.Hour
-	IdempotencyRetention = 24 * time.Hour
-	UnusedOAuthClientAge = 30 * 24 * time.Hour
+	EventRetention        = 7 * 24 * time.Hour
+	WebhookRetention      = 7 * 24 * time.Hour
+	IdempotencyRetention  = 24 * time.Hour
+	UnusedOAuthClientAge  = 30 * 24 * time.Hour
+	PresenceSweepInterval = time.Minute
 )
 
 func New(pool *pgxpool.Pool, q *store.Queries, log *slog.Logger, register ...func(*river.Workers)) (*river.Client[pgx.Tx], error) {
@@ -54,6 +55,9 @@ func New(pool *pgxpool.Pool, q *store.Queries, log *slog.Logger, register ...fun
 			river.NewPeriodicJob(river.PeriodicInterval(time.Hour), func() (river.JobArgs, *river.InsertOpts) {
 				return RetentionArgs{}, nil
 			}, &river.PeriodicJobOpts{ID: "retention", RunOnStart: true}),
+			river.NewPeriodicJob(river.PeriodicInterval(PresenceSweepInterval), func() (river.JobArgs, *river.InsertOpts) {
+				return PresenceSweepArgs{}, nil
+			}, &river.PeriodicJobOpts{ID: "presence_sweep"}),
 		},
 	})
 }
@@ -62,6 +66,11 @@ func New(pool *pgxpool.Pool, q *store.Queries, log *slog.Logger, register ...fun
 type RetentionArgs struct{}
 
 func (RetentionArgs) Kind() string { return "retention" }
+
+// PresenceSweepArgs is worked by the api package, which owns the realtime signals.
+type PresenceSweepArgs struct{}
+
+func (PresenceSweepArgs) Kind() string { return "presence_sweep" }
 
 type EventCleanupArgs struct{}
 

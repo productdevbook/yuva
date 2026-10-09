@@ -8,7 +8,7 @@ import { defineConfig, type Plugin } from "vite"
 
 const server = "http://127.0.0.1:8809"
 const proxy = Object.fromEntries(
-  ["/v1", "/client/v1", "/healthz", "/readyz", "/ingress"].map((path) => [path, { target: server, ws: true }]),
+  ["/v1", "/client/v1", "/healthz", "/readyz", "/ingress", "/r/"].map((path) => [path, { target: server, ws: true }]),
 )
 
 function serviceWorker(): Plugin {

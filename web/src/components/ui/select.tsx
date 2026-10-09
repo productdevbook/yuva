@@ -1,5 +1,5 @@
 import { Select as SelectPrimitive } from "@base-ui/react/select"
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react"
 
 import { popupClass } from "@/components/ui/dropdown-menu"
@@ -19,7 +19,7 @@ function SelectTrigger({
   return (
     <SelectPrimitive.Trigger
       className={cn(
-        "flex w-fit items-center justify-between gap-2 rounded-xl border border-input bg-background ps-3 pe-2.5 text-sm whitespace-nowrap transition-colors outline-none hover:border-foreground/25 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/15 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive data-placeholder:text-faint [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "flex w-fit items-center justify-between gap-2 rounded-xl border border-input bg-background ps-3 pe-2.5 text-body whitespace-nowrap transition-colors outline-none hover:border-foreground/25 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/25 disabled:cursor-not-allowed disabled:opacity-60 aria-invalid:border-destructive data-placeholder:text-faint [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         size === "sm" ? "h-8" : "h-9",
         className,
       )}
@@ -47,7 +47,7 @@ function SelectItem({ className, children, ...props }: SelectPrimitive.Item.Prop
   return (
     <SelectPrimitive.Item
       className={cn(
-        "relative flex w-full cursor-default items-center gap-2 rounded-lg py-1.5 ps-2.5 pe-8 text-sm outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:bg-muted",
+        "relative flex w-full cursor-default items-center gap-2 rounded-lg py-1.5 ps-2.5 pe-8 text-body outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-60 data-highlighted:bg-muted data-highlighted:text-foreground data-selected:font-medium",
         className,
       )}
       {...props}

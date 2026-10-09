@@ -1,6 +1,6 @@
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
 import { Trans } from "@lingui/react/macro"
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 import { XIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -21,7 +21,7 @@ function DialogContent({
       <DialogPrimitive.Popup
         data-slot="dialog-content"
         className={cn(
-          "fixed top-1/2 left-1/2 z-50 grid max-h-[calc(100svh-2rem)] w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-5 overflow-y-auto rounded-2xl border bg-card p-6 text-sm text-foreground shadow-[0_24px_60px_-24px_rgb(15_23_42/0.35)] outline-none sm:max-w-md",
+          "fixed top-1/2 left-1/2 z-50 grid max-h-[calc(100svh-2rem)] w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-5 overflow-y-auto rounded-2xl border bg-card p-6 text-body text-foreground shadow-[0_24px_60px_-24px_rgb(15_23_42/0.35)] outline-none sm:max-w-md",
           className,
         )}
         {...props}
@@ -49,11 +49,11 @@ function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function DialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
-  return <DialogPrimitive.Title className={cn("text-lg font-semibold tracking-tight", className)} {...props} />
+  return <DialogPrimitive.Title className={cn("text-title", className)} {...props} />
 }
 
 function DialogDescription({ className, ...props }: DialogPrimitive.Description.Props) {
-  return <DialogPrimitive.Description className={cn("text-sm leading-relaxed text-muted-foreground", className)} {...props} />
+  return <DialogPrimitive.Description className={cn("text-body text-muted-foreground", className)} {...props} />
 }
 
 export { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle }

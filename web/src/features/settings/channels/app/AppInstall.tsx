@@ -26,7 +26,7 @@ export function AppInstall({ channel }: { channel: Channel }) {
           </Trans>
         }
       />
-      <Notice className="text-xs" data-testid="app-hint">
+      <Notice className="text-caption" data-testid="app-hint">
         <ul className="flex flex-col gap-1.5">
           <li>
             <Trans>

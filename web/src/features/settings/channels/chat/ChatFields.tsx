@@ -7,6 +7,7 @@ import { POSITIONS, type ChatField, type ChatForm, type ChatInputResult } from "
 import { FieldError, FormBlock } from "@/features/settings/channels/parts"
 import { Field, ToggleRow } from "@/features/settings/ui"
 import type { ChatLauncherPosition } from "@/lib/api"
+import { Input } from "@/components/ui/input"
 
 export function ChatFields({
   f,
@@ -41,7 +42,7 @@ export function ChatFields({
           id="chat-origins"
           rows={3}
           spellCheck={false}
-          className="font-mono text-xs"
+          className="font-mono text-caption"
           value={f.origins}
           placeholder={"https://www.example.com\nhttps://app.example.com"}
           onChange={(e) => set({ origins: e.target.value })}
@@ -92,18 +93,18 @@ export function ChatFields({
             <Switch checked={f.customColor} onCheckedChange={(customColor) => set({ customColor })} aria-label={t`Use a custom launcher color`} />
             {f.customColor ? (
               <>
-                <input
+                <Input
                   id="chat-color"
                   type="color"
                   value={f.color}
                   onChange={(e) => set({ color: e.target.value })}
-                  className="h-8 w-10 cursor-pointer rounded-lg border bg-background p-0.5"
+                  className="h-8 w-10 cursor-pointer rounded-lg p-0.5"
                   aria-label={t`Launcher color`}
                 />
-                <code className="font-mono text-xs text-muted-foreground">{f.color}</code>
+                <code className="font-mono text-caption text-muted-foreground">{f.color}</code>
               </>
             ) : (
-              <span className="text-sm text-muted-foreground">
+              <span className="text-body text-muted-foreground">
                 <Trans>Inbox color</Trans>
               </span>
             )}

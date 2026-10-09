@@ -47,7 +47,7 @@ export function LabelsPage() {
               <Row key={l.id} data-testid="label-row">
                 <Dot color={l.color} className="size-2.5" />
                 <RowText title={l.name} />
-                <span className="font-mono text-xs text-faint">{l.color}</span>
+                <span className="font-mono text-caption text-faint">{l.color}</span>
                 {canManage && (
                   <>
                     <Button variant="ghost" size="icon-sm" aria-label={t`Edit`} onClick={() => setEditing(l)}>

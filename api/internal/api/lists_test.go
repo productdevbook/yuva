@@ -287,8 +287,8 @@ func TestConversationCounts(t *testing.T) {
 	open(inboxB, map[string]any{"assignee_id": ownerMe})
 
 	type counts struct {
-		All, Mine, Unassigned int64
-		Inboxes, Labels       []struct {
+		All, Mine, Unassigned      int64
+		Inboxes, Labels, Assignees []struct {
 			ID    string `json:"id"`
 			Count int64  `json:"count"`
 		}
@@ -317,9 +317,15 @@ func TestConversationCounts(t *testing.T) {
 		byID(o.Inboxes)[tm.inbox] != 3 || byID(o.Inboxes)[inboxB] != 2 || len(o.Labels) != 1 || byID(o.Labels)[label] != 2 {
 		t.Fatalf("owner counts %+v", o)
 	}
+	if len(o.Assignees) != 2 || byID(o.Assignees)[ownerMe] != 2 || byID(o.Assignees)[tm.agentID] != 1 {
+		t.Fatalf("owner counts by assignee %+v", o.Assignees)
+	}
 	a := get(tm.agent)
 	if a.All != 3 || a.Mine != 1 || a.Unassigned != 1 || len(a.Inboxes) != 1 || byID(a.Inboxes)[tm.inbox] != 3 || byID(a.Labels)[label] != 1 {
 		t.Fatalf("agent counts %+v", a)
+	}
+	if len(a.Assignees) != 2 || byID(a.Assignees)[ownerMe] != 1 || byID(a.Assignees)[tm.agentID] != 1 {
+		t.Fatalf("agent counts by assignee %+v", a.Assignees)
 	}
 	k := get(key)
 	if k.All != 5 || k.Mine != 0 || k.Unassigned != 2 {

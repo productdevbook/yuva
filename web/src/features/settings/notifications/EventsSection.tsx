@@ -51,7 +51,7 @@ export function EventsSection({ settings }: { settings: NotificationSettings }) 
         }
       >
         <div className="flex flex-col" data-testid="notification-events">
-          <div className="flex items-center gap-3 px-5 pt-4 pb-2 text-xs font-medium text-faint">
+          <div className="flex items-center gap-3 px-5 pt-4 pb-2 text-caption font-medium text-faint">
             <span className="flex-1" />
             <span className="w-14 text-center">
               <Trans>Push</Trans>
@@ -66,10 +66,10 @@ export function EventsSection({ settings }: { settings: NotificationSettings }) 
             return (
               <div key={e} className="flex items-center gap-3 border-t px-5 py-3">
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium">{label}</p>
-                  <p className="text-xs leading-relaxed text-muted-foreground">{text[e].hint}</p>
+                  <p className="text-body font-medium">{label}</p>
+                  <p className="text-caption text-muted-foreground">{text[e].hint}</p>
                   {toChoice(settings.events[e]) !== toChoice(settings.defaults[e]) && (
-                    <p className="text-xs text-faint" data-testid="event-default">
+                    <p className="text-caption text-faint" data-testid="event-default">
                       <Trans>Default: {fallback}</Trans>
                     </p>
                   )}

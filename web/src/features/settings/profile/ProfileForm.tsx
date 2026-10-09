@@ -2,50 +2,72 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 
+import { toast } from "@/components/common"
+import { useErrorText } from "@/components/common/text"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Field, FormActions, FormCard, Section } from "@/features/settings/ui"
-import { locales } from "@/i18n"
+import { Card, ChoiceSelect, Rows, Section, SettingRow } from "@/features/settings/ui"
+import { activate, locales } from "@/i18n"
 import { api, unwrap, type Locale } from "@/lib/api"
 import { meKey, useSession } from "@/lib/session"
+import { setTheme, useTheme, type Theme } from "@/lib/theme"
 
 export function ProfileForm() {
   const { t } = useLingui()
   const qc = useQueryClient()
+  const errorText = useErrorText()
   const { me } = useSession()
   const [name, setName] = useState(me.person.name)
-  const [locale, setLocale] = useState<Locale>(me.person.locale)
+  const theme = useTheme()
   const save = useMutation({
-    mutationFn: () => unwrap(api.PATCH("/v1/me", { body: { name, locale } })),
-    onSuccess: (data) => qc.setQueryData(meKey, data),
+    mutationFn: (body: { name?: string; locale?: Locale }) => unwrap(api.PATCH("/v1/me", { body })),
+    onSuccess: (data) => {
+      qc.setQueryData(meKey, data)
+      activate(data.person.locale)
+      toast(t`Saved`)
+    },
+    onError: (e) => toast(errorText(e)),
   })
-  const dirty = name !== me.person.name || locale !== me.person.locale
   return (
-    <Section title={<Trans>Profile</Trans>}>
-      <FormCard
-        onSubmit={() => save.mutate()}
-        footer={<FormActions pending={save.isPending} disabled={!dirty} saved={save.isSuccess && !dirty} error={save.error} />}
-      >
-        <div className="grid gap-5 sm:grid-cols-2">
-          <Field label={<Trans>Name</Trans>} htmlFor="name" hint={<Trans>Shown to your team and to contacts.</Trans>}>
-            <Input id="name" value={name} maxLength={200} onChange={(e) => setName(e.target.value)} />
-          </Field>
-          <Field label={<Trans>Language</Trans>} hint={<Trans>The language of the panel and of sign-in and notification e-mails.</Trans>}>
-            <Select value={locale} onValueChange={(v) => setLocale(v as Locale)} items={locales}>
-              <SelectTrigger className="w-full" aria-label={t`Language`}>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(locales).map(([k, v]) => (
-                  <SelectItem key={k} value={k}>
-                    {v}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
-        </div>
-      </FormCard>
+    <Section>
+      <Card flush>
+        <Rows>
+          <SettingRow title={<Trans>Name</Trans>} hint={<Trans>Shown to your team and to contacts</Trans>} htmlFor="name">
+            <Input
+              id="name"
+              value={name}
+              maxLength={200}
+              className="h-9 w-60 rounded-[10px] bg-background phone:w-40"
+              onChange={(e) => setName(e.target.value)}
+              onBlur={() => name.trim() !== me.person.name && save.mutate({ name: name.trim() })}
+            />
+          </SettingRow>
+          <SettingRow title={<Trans>E-mail</Trans>}>
+            <span className="truncate text-body text-faint">{me.person.email}</span>
+          </SettingRow>
+          <SettingRow title={<Trans>Panel language</Trans>} hint={<Trans>Also for sign-in and notification e-mails</Trans>} htmlFor="locale">
+            <ChoiceSelect<Locale>
+              id="locale"
+              label={t`Panel language`}
+              value={me.person.locale}
+              onChange={(v) => save.mutate({ locale: v })}
+              options={Object.entries(locales) as [Locale, string][]}
+            />
+          </SettingRow>
+          <SettingRow title={<Trans>Appearance</Trans>} hint={<Trans>System follows your device</Trans>} htmlFor="theme">
+            <ChoiceSelect<Theme>
+              id="theme"
+              label={t`Appearance`}
+              value={theme}
+              onChange={setTheme}
+              options={[
+                ["system", t`System`],
+                ["light", t`Light`],
+                ["dark", t`Dark`],
+              ]}
+            />
+          </SettingRow>
+        </Rows>
+      </Card>
     </Section>
   )
 }

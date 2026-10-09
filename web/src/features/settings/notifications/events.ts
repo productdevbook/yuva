@@ -11,6 +11,7 @@ export const EVENTS: EventName[] = [
   "message_in_my_conversation",
   "message_in_unassigned_conversation",
   "assigned_to_me",
+  "mentioned",
 ]
 
 export const DELAYS = [5, 15, 30, 60, 120, 240, 1440]
@@ -32,6 +33,7 @@ export function useEventText(): Record<EventName, { label: string; hint: string 
       hint: t`A later message from the contact while nobody is assigned.`,
     },
     assigned_to_me: { label: t`A conversation is assigned to me`, hint: t`When someone else assigns it to you.` },
+    mentioned: { label: t`Someone mentions me in a note`, hint: t`When a teammate adds you to a note with @.` },
   }
 }
 

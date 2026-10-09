@@ -61,6 +61,10 @@ YuvaFeedbackView(client: yuva, screenshot: nil, screen: "Settings") {
 category (bug, idea, praise, other), optional screenshots and the device details (app version,
 build, OS, device model, locale).
 
+When the inbox asks for ratings (Settings → the inbox), the thread shows a small card under a closed
+conversation: "How did we do?" with thumbs up and down, then an optional comment. It shows once
+per close, for 30 days, and keeps the chosen rating after it is sent.
+
 When the user signs in to your app, call `try await yuva.identify()`; when they sign out,
 `await yuva.signOut()`, which ends the session on the server too.
 
@@ -72,6 +76,9 @@ let page = try await yuva.conversations()
 let started = try await yuva.startConversation(body: "Hello")
 try await yuva.sendMessage(conversationId: id, body: "Thanks")
 try await yuva.sendFeedback(YuvaFeedback(category: .bug, body: "The export button does nothing"))
+if conversation.canRate {
+    try await yuva.rate(conversationId: conversation.id, rating: .good, comment: "Quick answer")
+}
 for await event in yuva.events() { … }   // live updates while subscribed
 ```
 
@@ -138,8 +145,9 @@ YuvaFeedbackView(client = yuva, screen = "Settings", onDone = { navController.po
 
 `yuva.identify()` after sign-in, `yuva.signOut()` on sign-out (both `suspend`). The headless
 client has the same calls as on iOS: `start()`, `conversations()`, `messages(...)`,
-`startConversation(...)`, `sendMessage(...)`, `sendFeedback(YuvaFeedback(...))`, and `events()`, a
-`SharedFlow` of live updates while collected.
+`startConversation(...)`, `sendMessage(...)`, `sendFeedback(YuvaFeedback(...))`,
+`rate(conversationId, YuvaRating.GOOD, comment)` for conversations whose `canRate` is true, and
+`events()`, a `SharedFlow` of live updates while collected.
 
 ## 4. Push notifications
 

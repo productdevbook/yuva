@@ -1,106 +1,115 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { useState } from "react"
 
 import { Kbd } from "@/components/common/Kbd"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { useHotkeys } from "@/hooks/use-hotkeys"
 
 export const SHORTCUTS = {
   next: "j",
-  previous: "k",
-  search: "/",
-  back: "Escape",
   reply: "r",
   note: "n",
   attach: "f",
-  assign: "a",
-  assignMe: "i",
-  status: "s",
+  snooze: "s",
+  hand: "a",
   close: "e",
-  reopen: "o",
-  priority: "p",
-  labels: "l",
-  spam: "!",
-  move: "m",
-  quoted: "q",
+  leave: "L",
+  history: "h",
   contact: "c",
+  more: ".",
+  spam: "!",
+  quoted: "q",
+  discardSuggestion: "X",
   copyDetails: "y",
-  editDraft: "d",
-  sendDraft: "D",
-  discardDraft: "X",
+  search: "/",
   help: "?",
+  view: "v",
+  previous: "k",
+  select: "x",
+  contacts: "g c",
 } as const
 
-export function keyLabel(k: string) {
-  return /^[A-Z]$/.test(k) ? ["Shift", k] : [k]
+export function keyLabel(k: string): string[] {
+  if (k.includes(" ")) return k.split(" ").flatMap(keyLabel)
+  return /^[A-Z]$/.test(k) ? ["⇧", k] : [k.toUpperCase()]
 }
 
-const mod = typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘" : "Ctrl"
-
-export function useShortcutSheet() {
-  const [open, setOpen] = useState(false)
-  useHotkeys({ [SHORTCUTS.help]: () => setOpen(true) })
-  return { open, setOpen }
-}
+export const mod = typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘" : "Ctrl"
 
 export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const { t } = useLingui()
+  const k = keyLabel
   const groups: { title: string; items: [string[], string][] }[] = [
     {
-      title: t`Conversations`,
+      title: t`Answering`,
       items: [
-        [[SHORTCUTS.next], t`Next conversation`],
-        [[SHORTCUTS.previous], t`Previous conversation`],
-        [[SHORTCUTS.search], t`Search`],
-        [["Esc"], t`Back to the list`],
-        [[SHORTCUTS.contact], t`Show or hide the contact`],
+        [k(SHORTCUTS.reply), t`Write a reply`],
+        [k(SHORTCUTS.note), t`Write a note for the team`],
+        [[mod, "↵"], t`Send and close`],
+        [["⇧", mod, "↵"], t`Send only`],
+        [["Tab"], t`Use the suggested reply`],
+        [k(SHORTCUTS.discardSuggestion), t`Discard the suggested reply`],
+        [k(SHORTCUTS.attach), t`Attach files`],
+        [["/"], t`Canned replies, in the reply box`],
+        [k(SHORTCUTS.leave), t`Leave it to the teammate who is typing`],
       ],
     },
     {
-      title: t`Thread`,
+      title: t`This conversation`,
       items: [
-        [[SHORTCUTS.reply], t`Write a reply`],
-        [[SHORTCUTS.note], t`Write a note`],
-        [[SHORTCUTS.attach], t`Attach files`],
-        [[mod, "Enter"], t`Send`],
-        [["/"], t`Insert a canned reply (in the composer)`],
-        [[SHORTCUTS.assign], t`Assign`],
-        [[SHORTCUTS.assignMe], t`Assign to me`],
-        [[SHORTCUTS.status], t`Change status`],
-        [[SHORTCUTS.close], t`Close`],
-        [[SHORTCUTS.reopen], t`Reopen`],
-        [[SHORTCUTS.priority], t`Change priority`],
-        [[SHORTCUTS.labels], t`Edit labels`],
-        [[SHORTCUTS.spam], t`Mark or unmark as spam`],
-        [[SHORTCUTS.move], t`Move to another inbox`],
-        [[SHORTCUTS.quoted], t`Show or hide quoted text`],
-        [[SHORTCUTS.copyDetails], t`Copy the feedback details`],
-        [[SHORTCUTS.editDraft], t`Edit the latest draft`],
-        [keyLabel(SHORTCUTS.sendDraft), t`Send the latest draft`],
-        [keyLabel(SHORTCUTS.discardDraft), t`Discard the latest draft`],
+        [k(SHORTCUTS.next), t`Next in the queue`],
+        [k(SHORTCUTS.snooze), t`Later`],
+        [k(SHORTCUTS.hand), t`Hand to a teammate`],
+        [k(SHORTCUTS.close), t`Close without a reply`],
+        [k(SHORTCUTS.history), t`Other conversations`],
+        [k(SHORTCUTS.contact), t`Contact details`],
+        [k(SHORTCUTS.more), t`Labels, priority, inbox`],
+        [k(SHORTCUTS.spam), t`Mark or unmark as spam`],
+        [k(SHORTCUTS.quoted), t`Show or hide quoted text`],
+        [k(SHORTCUTS.copyDetails), t`Copy the feedback details`],
       ],
     },
-    { title: t`General`, items: [[[SHORTCUTS.help], t`Keyboard shortcuts`]] },
+    {
+      title: t`List`,
+      items: [
+        [[k(SHORTCUTS.next)[0], k(SHORTCUTS.previous)[0]], t`Next or previous conversation`],
+        [k(SHORTCUTS.select), t`Select or unselect`],
+        [["↵"], t`Open full screen`],
+        [k(SHORTCUTS.close), t`Close without a reply`],
+        [k(SHORTCUTS.reply), t`Write a reply`],
+        [["Esc"], t`Clear the selection`],
+      ],
+    },
+    {
+      title: t`Everywhere`,
+      items: [
+        [[SHORTCUTS.search], t`Search conversations`],
+        [k(SHORTCUTS.view), t`Switch between Queue and List`],
+        [k(SHORTCUTS.contacts), t`Contacts`],
+        [[mod, "K"], t`Everything`],
+        [[mod, ","], t`Settings`],
+        [[SHORTCUTS.help], t`This list`],
+        [["Esc"], t`Close a panel or leave a field`],
+      ],
+    },
   ]
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[85svh] overflow-y-auto sm:max-w-xl">
+      <DialogContent className="max-h-[85svh] overflow-y-auto sm:max-w-2xl" data-testid="shortcut-sheet">
         <DialogHeader>
           <DialogTitle>
             <Trans>Keyboard shortcuts</Trans>
           </DialogTitle>
         </DialogHeader>
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
           {groups.map((g) => (
-            <section key={g.title} className="flex flex-col gap-2">
-              <h3 className="text-xs font-medium text-faint">{g.title}</h3>
-              <ul className="flex flex-col gap-1.5">
+            <section key={g.title} className="flex flex-col">
+              <h3 className="mb-1 text-small font-medium text-faint">{g.title}</h3>
+              <ul className="flex flex-col">
                 {g.items.map(([ks, label]) => (
-                  <li key={label} className="flex items-center justify-between gap-3 text-sm text-muted-foreground">
+                  <li key={label} className="flex items-center justify-between gap-3 border-t py-1.5 text-body">
                     <span>{label}</span>
                     <span className="flex shrink-0 gap-1">
-                      {ks.map((k) => (
-                        <Kbd key={k}>{k}</Kbd>
+                      {ks.map((key) => (
+                        <Kbd key={key}>{key}</Kbd>
                       ))}
                     </span>
                   </li>

@@ -7,14 +7,15 @@ import { isLive } from "@/lib/realtime"
 import { useSession } from "@/lib/session"
 import { useLiveContext } from "@/lib/workspace"
 
-export function useConversations(filters: ConversationFilters) {
+export function useConversations(filters: ConversationFilters, enabled = true) {
   const { workspaceId: ws } = useSession()
   return useInfiniteQuery({
     queryKey: keys.conversations(ws, filters),
     queryFn: ({ pageParam }) =>
-      unwrap(api.GET("/v1/conversations", { params: { query: { ...filters, cursor: pageParam, limit: 25 } } })),
+      unwrap(api.GET("/v1/conversations", { params: { query: { ...filters, cursor: pageParam, limit: 100 } } })),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (last) => last.next_cursor,
+    enabled,
   })
 }
 
@@ -37,5 +38,15 @@ export function useBulkUpdateConversations() {
         for (const c of data.updated) void qc.invalidateQueries({ queryKey: keys.messages(live.ws, c.id) })
       }
     },
+  })
+}
+
+export function useStats(inboxId: string) {
+  const { workspaceId: ws } = useSession()
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  return useQuery({
+    queryKey: [...keys.stats(ws), inboxId, timezone],
+    queryFn: () => unwrap(api.GET("/v1/stats", { params: { query: { inbox_id: inboxId || undefined, timezone } } })),
+    staleTime: 60_000,
   })
 }

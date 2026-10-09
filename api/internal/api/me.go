@@ -67,12 +67,13 @@ func (s *Server) UpdateMe(ctx context.Context, req oas.UpdateMeRequestObject) (o
 		if err := s.st.SetPersonAvailability(ctx, store.SetPersonAvailabilityParams{ID: personID, Availability: string(*b.Availability)}); err != nil {
 			return nil, err
 		}
-		workspaces, err := s.st.ListPersonWorkspaceIDs(ctx, personID)
+		members, err := s.st.ListPersonMembers(ctx, personID)
 		if err != nil {
 			return nil, err
 		}
-		for _, ws := range workspaces {
-			s.presenceHint(ctx, ws)
+		for _, m := range members {
+			s.presenceHint(ctx, m.WorkspaceID)
+			s.memberPresence(ctx, m.WorkspaceID, m.ID)
 		}
 	}
 	me, err := buildMe(ctx, s.st.Queries, personID)

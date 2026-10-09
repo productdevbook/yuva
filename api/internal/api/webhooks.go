@@ -42,7 +42,8 @@ var (
 )
 
 var webhookEventTypes = []oas.WebhookEventType{
-	oas.WebhookEventTypeConversationCreated, oas.WebhookEventTypeConversationUpdated, oas.WebhookEventTypeMessageCreated,
+	oas.WebhookEventTypeConversationCreated, oas.WebhookEventTypeConversationUpdated, oas.WebhookEventTypeConversationRated,
+	oas.WebhookEventTypeMessageCreated,
 	oas.WebhookEventTypeFeedbackCreated, oas.WebhookEventTypeContactUpdated, oas.WebhookEventTypeContactDeleted,
 	oas.WebhookEventTypeDraftCreated, oas.WebhookEventTypeDraftUpdated, oas.WebhookEventTypeDraftDeleted,
 }
@@ -636,7 +637,8 @@ func (s *Server) webhookPayloads(ctx context.Context, q *store.Queries, ev store
 		if err := json.Unmarshal(ev.Payload, &m); err != nil {
 			return nil, nil, err
 		}
-		if m.Kind == oas.MessageKindEvent {
+		rated := m.Kind == oas.MessageKindEvent && m.Event != nil && m.Event.Type == oas.Rated
+		if m.Kind == oas.MessageKindEvent && !rated {
 			return nil, nil, nil
 		}
 		c, err := q.GetConversation(ctx, store.GetConversationParams{WorkspaceID: ws, ID: m.ConversationId})
@@ -655,6 +657,10 @@ func (s *Server) webhookPayloads(ctx context.Context, q *store.Queries, ev store
 			return nil, nil, err
 		}
 		inbox := c.InboxID
+		if rated {
+			typ := string(oas.WebhookEventTypeConversationRated)
+			return []webhookOut{{typ: typ, body: payload(typ, &inbox, oas.WebhookConversationData{Conversation: conv, Contact: *contact})}}, []uuid.UUID{inbox}, nil
+		}
 		return []webhookOut{{typ: ev.Type, note: m.Kind == oas.MessageKindNote, body: payload(ev.Type, &inbox, oas.WebhookMessageData{
 			Message: m, Conversation: conv, Contact: *contact,
 		})}}, []uuid.UUID{inbox}, nil

@@ -86,7 +86,12 @@ panel (embedded SPA) ─────────► /v1 + WS ──────�
   Typing and presence notices are not stored: they travel as the payload of a second `NOTIFY`
   channel, have no id and are never replayed. Each open realtime connection is a row in
   `realtime_connections`, seen on every heartbeat; presence is read from the rows seen in the last
-  75 seconds.
+  75 seconds. Members see their teammates the same way: `/v1/members` reports each member's
+  `availability` and whether they are `online`, and a `member.presence` notice reaches the
+  workspace's member connections when a member connects, disconnects or changes availability.
+  A connection that ends without closing (a process that died) only stops being seen, so a River
+  job every minute announces the members whose last connection went stale in the previous two
+  minutes.
 - The panel and the widget bundles are embedded with `go:embed`; one binary serves everything.
 - Configuration through environment variables. Secrets stored in the database (SMTP passwords,
   identity secrets, webhook secrets) are encrypted with AES-256-GCM under a master key,
@@ -594,8 +599,8 @@ internal events are never sent), an enabled flag and a signing secret: 32 random
 as `whsec_<base64>`, stored encrypted under the master key, rotatable. After a rotation the old
 secret keeps signing next to the new one for 24 hours.
 
-Events: `conversation.created`, `conversation.updated`, `message.created`, `feedback.created`,
-`contact.updated`, `contact.deleted`. Payloads follow Standard Webhooks: `{type, timestamp,
+Events: `conversation.created`, `conversation.updated`, `conversation.rated`, `message.created`,
+`feedback.created`, `contact.updated`, `contact.deleted`. Payloads follow Standard Webhooks: `{type, timestamp,
 workspace_id, inbox_id, data}`, with the conversation, message and contact in `data`; the contact
 carries `external_ids` (so the host maps it to its own user) and `online`. `contact.deleted`
 carries the external ids the contact had.
@@ -631,10 +636,26 @@ that allows only its own scripts, connections and workers, no framing (`frame-an
 no plugins; inline styles and any http(s) image stay allowed for the sandboxed e-mail frame, which
 inherits the policy. Every response carries `X-Content-Type-Options: nosniff`.
 
-- Sidebar: all, mine, unassigned, per inbox, per label. Conversation list with filters and
-  full-text search (Postgres FTS).
-- Thread: reply and note in one composer, canned replies on `/`, attachments, keyboard shortcuts,
-  contact sidebar with identity attributes, earlier conversations and channel delivery state.
+- Queue: one conversation at a time. The conversations waiting for the member (open, assigned to
+  them or to nobody, oldest first) are a queue; after a reply, close, snooze or hand-off the next
+  one opens, with an undo. A reply is held for a few seconds before it is posted so it can be
+  undone; "send" also sets `pending`, "send and close" sets `closed`. A bot's draft is offered as
+  the suggested reply. The hand-off menu shows each teammate's presence and open load
+  (`assignees` in `/v1/conversations/counts`, over the inboxes the member can see). An empty queue
+  shows what the team did today from `GET /v1/stats`: replies sent by members, conversations
+  closed and the median time to the first reply, per member too, over the inboxes the caller can
+  see. Nothing is stored for it: it is counted from `messages` on each request (indexed by
+  workspace and time) for a window of at most 366 days; "today" starts at midnight in the
+  `timezone` the panel sends (the browser's), since members and workspaces have no time zone of
+  their own. All conversations are in a drawer (waiting, snoozed, replied, with the team,
+  done) with full-text search (Postgres FTS); everything else is in a command palette.
+- Conversation: reply and note in one box, canned replies on `/`, attachments, keyboard shortcuts,
+  contact details with identity attributes, the contact's other conversations, channel delivery
+  state, and a notice when another member types a reply in the same conversation or has it open.
+  The panel reports the conversation it shows with a `viewing` frame on `/v1/realtime`; the server
+  keeps it on the connection's row (see Member notifications), sends a `viewing` notice to the
+  other members who can see the conversation when a member opens or leaves it (hiding the page and
+  disconnecting count as leaving), and answers the frame with the members already there.
 - Settings: inboxes, channels, members and access, labels, canned replies, business hours,
   auto-replies, webhooks, API keys, retention and deleting the workspace; deleting one's own
   account in the profile.
@@ -651,21 +672,23 @@ inherits the policy. Every response carries `X-Content-Type-Options: nosniff`.
 
 ### Member notifications
 
-Five events notify members: the first message of a conversation, from the contact, in a `live`
+Six events notify members: the first message of a conversation, from the contact, in a `live`
 or an `async` inbox (every member with access is a candidate); a later contact message in a
-conversation assigned to the member, or in an unassigned one (every member with access); and
-someone else assigning a conversation to the member. A River job queued in the transaction that
+conversation assigned to the member, or in an unassigned one (every member with access);
+someone else assigning a conversation to the member; and someone else mentioning the member in a
+note. A note names its mentions as member ids (`mentions` on `POST .../messages`, each a member
+who can see the inbox), stored on the message; the server does not parse `@` in the text. A River job queued in the transaction that
 stored the message picks the recipients. Nobody is notified about their own action, about a
 conversation marked spam, or about a conversation their open panel shows: the panel reports it
 with a `viewing` frame on `/v1/realtime`, stored on the connection's row and trusted while the
 connection is fresh (75 seconds). A member set to `away` gets only the events about
-conversations assigned to them.
+conversations assigned to them and mentions.
 
 Each member chooses push and e-mail per event, and can override events per inbox. Defaults by
 role: push for everything, except that agents get no push for new `async` conversations and for
 messages in unassigned conversations (owners and admins triage those); e-mail only for messages
-in conversations assigned to the member and for assignments, for every role, since being
-assigned makes anyone responsible.
+in conversations assigned to the member, for assignments and for mentions, for every role, since
+being assigned or asked makes anyone responsible.
 
 Web Push follows RFC 8030, 8291 and 8292 through `webpush-go`, with the server's VAPID keys
 (`YUVA_VAPID_PUBLIC_KEY`, `YUVA_VAPID_PRIVATE_KEY`, `YUVA_VAPID_SUBJECT`; `yuva vapid-keys` makes
@@ -682,11 +705,67 @@ and checked on every attempt.
 
 E-mail fallback: an event with e-mail on schedules one check per member and conversation after the
 member's delay (15 minutes by default). If the conversation still has contact messages (or an
-assignment) newer than the member's read position and the previous notification e-mail, one
+assignment, or notes mentioning the member while they have e-mail on for mentions) newer than the member's read position and the previous notification e-mail, one
 e-mail through the server's own mailer, in the member's locale, lists them and links to the
 conversation and to the notification settings; at most one per member and conversation per hour. A
 member's own message or note moves their read position to it, so the e-mail never lists what
 they already answered.
+
+### Satisfaction ratings
+
+An inbox can ask contacts to rate their conversations (`ask_for_rating`, off by default). A
+contact rates a closed conversation `good` or `bad`, with an optional comment of at most 2,000
+characters, once per close: a message from the contact reopens it and the next close allows a new
+rating. A close can be rated for 30 days, and only a close after the inbox started asking
+(`inboxes.rating_since`, set when `ask_for_rating` turns on and cleared when it turns off), so
+turning it on never offers old conversations. Ratings are not stored for spam.
+
+- Conversations keep `closed_at` (set when the status becomes `closed`) and the latest rating
+  (`rating`, `rating_comment`, `rated_at`); a rating counts for the current close when `rated_at`
+  is not before `closed_at`. The rating is also a `rated` event message in the thread, authored by
+  the contact, with the comment as its body; contacts never see event messages.
+- Widget and SDKs: `ask_for_rating` on the inbox's public settings, `can_rate` and `rating` on each
+  `ClientConversation` (and on the realtime status frame when a conversation closes), and
+  `POST /client/v1/conversations/{id}/rating`.
+- Members see it on the conversation (`rating`, `closed_at`) and in the thread; `conversation.rated`
+  goes to webhooks; `/v1/stats` counts ratings given in its window, in total and per inbox.
+- E-mail contacts: two minutes after a member or API key closes an e-mail conversation (time to
+  undo), a River job checks that it is still closed and unrated, a member or bot replied in it and
+  the address is deliverable, then sends one automatic reply in the thread (`Auto-Submitted`, in
+  the contact's language, else the inbox's) with two links, `/r/{token}?rating=good|bad`, once per
+  close. The token seals the workspace, the conversation and the close time under the master key,
+  so nothing is stored for it and a later close makes it invalid; the request is a message in the
+  thread, so members can see the links.
+- `/r/{token}` is a page the server renders itself: no scripts or external assets, the inbox's
+  name and branding colour, English, Turkish or German by the inbox's language. Opening it stores
+  nothing, since mail scanners open links: it shows the chosen rating preselected and a comment
+  field, and only its POST rates.
+
+### Contacts directory
+
+The panel lists contacts newest first or most recently active first (`sort=last_seen`), filtered
+by `kind` (`known`: an e-mail address or an external id; `visitor`: neither) and by whether they
+have an open conversation, with search over names, addresses and external ids.
+
+- `contacts.last_active_at` is the contact's last message (any channel), rating or use of a widget
+  or app session. It is kept by the queries that write those (message insert, session start,
+  session use at most once per throttle period, realtime close), carried over on a merge, and
+  indexed with `created_at` as fallback for the sort. It is the same for every member; an agent may
+  see a contact rise in the order because of a conversation in an inbox they cannot see, but never
+  that conversation. Pages follow it by keyset, as conversations follow `last_activity_at`; it
+  only grows, so a contact active while someone pages moves above the pages already read and is
+  neither repeated nor on the later pages, which the API reference says.
+- `activity` (conversation counts, open ones, the last message time) is added only to
+  `GET /v1/contacts` and `GET /v1/contacts/{id}`, by one grouped query per page over the
+  conversations the caller can see, spam left out; events and webhooks carry the contact without it.
+- `GET /v1/contacts/{id}/summary` counts first replies with their median time and the latest
+  rating of each conversation, over the same conversations, computed on request.
+- A contact's conversations are `GET /v1/conversations?contact_id=` with the usual filters.
+- Contact notes (`/v1/contacts/{id}/notes`) are team-only notes about the person, not tied to a
+  conversation: a `contact_notes` row with the author (a member or an API key) and the text.
+  Whoever can see the contact reads and adds them, under the same rule as the contact itself; only
+  the author or an owner or admin deletes one. Contacts never see them, no event or webhook
+  carries them, a merge moves them to the remaining contact and deleting the contact deletes them.
 
 ### Storage
 

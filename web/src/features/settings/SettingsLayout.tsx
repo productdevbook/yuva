@@ -1,123 +1,156 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ArrowLeftIcon, ChevronRightIcon } from "lucide-react"
-import { Link, Navigate, NavLink, Outlet, useLocation } from "react-router"
+import { useQueries, useQuery } from "@tanstack/react-query"
+import { ArrowUpRightIcon, BellIcon, BuildingIcon, KeyRoundIcon, PlugIcon, PlusIcon, QuoteIcon, TagIcon, UsersIcon } from "lucide-react"
+import { Outlet } from "react-router"
 
-import { PaneHeader } from "@/app/shell"
-import { Button } from "@/components/ui/button"
-import { useIsMobile } from "@/hooks/use-media-query"
+import { initials, useEnumText } from "@/components/common/text"
+import { Card, LinkRow, PageHeader, RowIcon, Rows, RowText, Section } from "@/features/settings/ui"
+import { api, unwrap } from "@/lib/api"
+import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
-import { cn } from "@/lib/utils"
+import { useCannedReplies, useInboxes, useLabels, useMembers } from "@/lib/workspace"
 
-function useGroups() {
-  const { t } = useLingui()
-  const { canManage } = useSession()
-  return [
-    {
-      title: t`Account`,
-      items: [
-        { to: "profile", label: t`My profile` },
-        { to: "notifications", label: t`Notifications` },
-      ],
-    },
-    {
-      title: t`Workspace`,
-      items: [
-        { to: "workspace", label: t`General` },
-        { to: "members", label: t`Members` },
-        { to: "inboxes", label: t`Inboxes` },
-        { to: "labels", label: t`Labels` },
-        { to: "canned-replies", label: t`Canned replies` },
-        { to: "connected-apps", label: t`Connected apps` },
-        ...(canManage
-          ? [
-              { to: "api-keys", label: t`API keys` },
-              { to: "webhooks", label: t`Webhooks` },
-            ]
-          : []),
-      ],
-    },
-  ]
-}
-
-function SettingsNav({ list }: { list?: boolean }) {
-  const { t } = useLingui()
-  const groups = useGroups()
+export function SettingsLayout() {
   return (
-    <nav aria-label={t`Settings`} className="flex flex-col gap-6">
-      {groups.map((g) => (
-        <div key={g.title}>
-          <h2 className={cn("mb-1 text-xs font-medium text-faint", list ? "px-1" : "px-2.5")}>{g.title}</h2>
-          <ul className={cn("flex flex-col", list ? "divide-y rounded-2xl border" : "gap-px")}>
-            {g.items.map((it) => (
-              <li key={it.to}>
-                <NavLink
-                  to={`/settings/${it.to}`}
-                  className={({ isActive }) =>
-                    list
-                      ? "flex h-12 items-center justify-between px-4 text-[0.95rem]"
-                      : cn(
-                          "flex h-8 items-center rounded-lg px-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
-                          isActive && "bg-muted font-medium text-foreground",
-                        )
-                  }
-                >
-                  {it.label}
-                  {list && <ChevronRightIcon className="size-4 text-faint rtl:rotate-180" />}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </nav>
+    <main className="mx-auto flex w-full max-w-[640px] flex-col gap-8 px-6 pt-6 pb-24 phone:px-4 phone:pt-4" data-testid="settings">
+      <Outlet />
+    </main>
   )
 }
 
-export function SettingsIndex() {
-  const isMobile = useIsMobile()
-  if (!isMobile) return <Navigate to="profile" replace />
-  return null
+function useInboxChannels() {
+  const { workspaceId: ws } = useSession()
+  const inboxes = useInboxes().data ?? []
+  const results = useQueries({
+    queries: inboxes.map((i) => ({
+      queryKey: keys.channels(ws, i.id),
+      queryFn: () => unwrap(api.GET("/v1/inboxes/{inboxId}/channels", { params: { path: { inboxId: i.id } } })).then((r) => r.items),
+      staleTime: 5 * 60_000,
+    })),
+  })
+  return inboxes.map((inbox, i) => ({ inbox, channels: results[i]?.data }))
 }
 
-export function SettingsLayout() {
+export function SettingsIndex() {
   const { t } = useLingui()
-  const isMobile = useIsMobile()
-  const { pathname } = useLocation()
-  const atIndex = pathname.replace(/\/$/, "") === "/settings"
-  if (isMobile && atIndex) {
-    return (
-      <div className="flex min-h-0 flex-1 flex-col">
-        <PaneHeader title={<Trans>Settings</Trans>} />
-        <div className="min-h-0 flex-1 overflow-y-auto px-4 pt-2 pb-8">
-          <SettingsNav list />
-        </div>
-      </div>
-    )
-  }
+  const text = useEnumText()
+  const { me, membership, canManage, workspaceId: ws } = useSession()
+  const inboxes = useInboxChannels()
+  const members = useMembers().data
+  const canned = useCannedReplies().data
+  const labels = useLabels().data
+  const apiKeys = useQuery({ queryKey: keys.apiKeys(ws), queryFn: () => unwrap(api.GET("/v1/api-keys")).then((r) => r.items), enabled: canManage })
+  const hooks = useQuery({ queryKey: keys.webhooks(ws), queryFn: () => unwrap(api.GET("/v1/webhooks")).then((r) => r.items), enabled: canManage })
+  const name = me.person.name || me.person.email
+  const list = (n?: number) => (n === undefined ? "" : n)
   return (
-    <div className="flex min-h-0 flex-1">
-      <aside className="hidden w-56 shrink-0 flex-col border-e md:flex">
-        <PaneHeader title={<Trans>Settings</Trans>} />
-        <div className="min-h-0 flex-1 overflow-y-auto px-3 pt-1 pb-6">
-          <SettingsNav />
-        </div>
-      </aside>
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <PaneHeader
-          className="md:hidden"
-          title={<Trans>Settings</Trans>}
-          leading={
-            <Button variant="ghost" size="icon-sm" className="-ms-1.5" render={<Link to="/settings" />} aria-label={t`Back`}>
-              <ArrowLeftIcon />
-            </Button>
-          }
-        />
-        <div className="min-h-0 flex-1 overflow-y-auto" data-testid="settings-scroll">
-          <div className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-4 pt-4 pb-16 sm:px-8 md:pt-10">
-            <Outlet />
-          </div>
-        </div>
-      </div>
-    </div>
+    <>
+      <PageHeader title={<Trans>Settings</Trans>} back={false} />
+      <Section title={<Trans>You</Trans>}>
+        <Card flush>
+          <Rows>
+            <LinkRow to="profile" testId="settings-profile">
+              <RowIcon>{initials(name)}</RowIcon>
+              <RowText title={name} detail={me.person.email} />
+            </LinkRow>
+            <LinkRow to="notifications">
+              <RowIcon>
+                <BellIcon />
+              </RowIcon>
+              <RowText title={<Trans>Notifications</Trans>} detail={<Trans>When we let you know</Trans>} />
+            </LinkRow>
+          </Rows>
+        </Card>
+      </Section>
+      <Section title={<Trans>Inboxes</Trans>}>
+        <Card flush>
+          <Rows>
+            {inboxes.map(({ inbox, channels }) => (
+              <LinkRow key={inbox.id} to={`inboxes/${inbox.id}`} testId="inbox-row">
+                <RowIcon>
+                  <span style={{ color: inbox.branding.color }}>
+                    {inbox.name.charAt(0).toLocaleUpperCase()}
+                  </span>
+                </RowIcon>
+                <RowText
+                  title={inbox.name}
+                  detail={channels ? [...new Set(channels.map((c) => text.channel[c.kind]))].join(", ") || t`No channels yet` : " "}
+                />
+              </LinkRow>
+            ))}
+            {canManage && (
+              <LinkRow to="new" testId="add-inbox">
+                <RowIcon>
+                  <PlusIcon />
+                </RowIcon>
+                <RowText title={<Trans>Add an inbox</Trans>} detail={<Trans>One per product or brand</Trans>} />
+              </LinkRow>
+            )}
+          </Rows>
+        </Card>
+      </Section>
+      <Section title={<Trans>Team</Trans>}>
+        <Card flush>
+          <Rows>
+            <LinkRow to="members" value={list(members?.length)}>
+              <RowIcon>
+                <UsersIcon />
+              </RowIcon>
+              <RowText title={<Trans>Members</Trans>} detail={(members ?? []).map((m) => (m.name || m.email).split(" ")[0]).join(", ")} />
+            </LinkRow>
+            <LinkRow to="canned-replies" value={list(canned?.length)}>
+              <RowIcon>
+                <QuoteIcon />
+              </RowIcon>
+              <RowText title={<Trans>Canned replies</Trans>} detail={<Trans>What you write often</Trans>} />
+            </LinkRow>
+            <LinkRow to="labels" value={list(labels?.length)}>
+              <RowIcon>
+                <TagIcon />
+              </RowIcon>
+              <RowText title={<Trans>Labels</Trans>} detail={<Trans>Sort conversations your way</Trans>} />
+            </LinkRow>
+            <LinkRow to="connected-apps">
+              <RowIcon>
+                <PlugIcon />
+              </RowIcon>
+              <RowText title={<Trans>Connected apps</Trans>} />
+            </LinkRow>
+          </Rows>
+        </Card>
+      </Section>
+      {canManage && (
+        <Section title={<Trans>Developer</Trans>}>
+          <Card flush>
+            <Rows>
+              <LinkRow to="api-keys" value={list(apiKeys.data?.length)}>
+                <RowIcon>
+                  <KeyRoundIcon />
+                </RowIcon>
+                <RowText title={<Trans>API keys</Trans>} detail={<Trans>Connect your servers and bots to Yuva</Trans>} />
+              </LinkRow>
+              <LinkRow to="webhooks" value={hooks.data ? hooks.data.length || t`None` : ""}>
+                <RowIcon>
+                  <ArrowUpRightIcon />
+                </RowIcon>
+                <RowText title={<Trans>Webhooks</Trans>} detail={<Trans>Send events to your own server</Trans>} />
+              </LinkRow>
+            </Rows>
+          </Card>
+        </Section>
+      )}
+      <Section title={<Trans>Workspace</Trans>}>
+        <Card flush>
+          <Rows>
+            <LinkRow to="workspace">
+              <RowIcon>
+                <BuildingIcon />
+              </RowIcon>
+              <RowText title={membership.workspace.name} detail={<Trans>Data retention and deleting the workspace</Trans>} />
+            </LinkRow>
+          </Rows>
+        </Card>
+      </Section>
+    </>
   )
 }

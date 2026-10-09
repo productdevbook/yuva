@@ -5,7 +5,7 @@ export function ErrorLine({ error, className }: { error: unknown; className?: st
   const text = useErrorText()
   if (!error) return null
   return (
-    <p role="alert" className={cn("text-sm text-destructive", className)}>
+    <p role="alert" className={cn("text-body text-destructive", className)}>
       {text(error)}
     </p>
   )

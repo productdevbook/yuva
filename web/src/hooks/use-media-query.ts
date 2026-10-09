@@ -12,3 +12,5 @@ export function useMediaQuery(query: string) {
 }
 
 export const useIsMobile = () => !useMediaQuery("(min-width: 768px)")
+
+export const useIsPhone = () => useMediaQuery("(max-width: 680px)")

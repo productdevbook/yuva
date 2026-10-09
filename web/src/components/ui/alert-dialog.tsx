@@ -1,5 +1,5 @@
 import { AlertDialog as AlertDialogPrimitive } from "@base-ui/react/alert-dialog"
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 
 import { Button } from "@/components/ui/button"
 import { overlayClass } from "@/components/ui/dialog"
@@ -30,12 +30,12 @@ function AlertDialogFooter({ className, ...props }: React.ComponentProps<"div">)
 }
 
 function AlertDialogTitle({ className, ...props }: AlertDialogPrimitive.Title.Props) {
-  return <AlertDialogPrimitive.Title className={cn("text-lg font-semibold tracking-tight", className)} {...props} />
+  return <AlertDialogPrimitive.Title className={cn("text-title", className)} {...props} />
 }
 
 function AlertDialogDescription({ className, ...props }: AlertDialogPrimitive.Description.Props) {
   return (
-    <AlertDialogPrimitive.Description className={cn("text-sm leading-relaxed text-muted-foreground", className)} {...props} />
+    <AlertDialogPrimitive.Description className={cn("text-body text-muted-foreground", className)} {...props} />
   )
 }
 

@@ -92,6 +92,7 @@ SELECT id, kind, body, author_member_id, created_at FROM messages
 WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id AND created_at > @after
   AND ((kind = 'message' AND author_type = 'contact')
        OR (kind = 'event' AND event->>'type' = 'assigned' AND (event->>'assignee_id')::uuid = @member_id::uuid
-           AND author_member_id IS DISTINCT FROM @member_id::uuid))
+           AND author_member_id IS DISTINCT FROM @member_id::uuid)
+       OR (kind = 'note' AND @member_id::uuid = ANY(mentions) AND author_member_id IS DISTINCT FROM @member_id::uuid))
 ORDER BY created_at, id
 LIMIT 50;

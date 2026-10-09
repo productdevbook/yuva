@@ -28,7 +28,7 @@ const identitySecretPrefix = "yuva_is_"
 func inboxBody(in store.Inbox) oas.Inbox {
 	out := oas.Inbox{
 		Id: in.ID, Name: in.Name, Slug: in.Slug, DefaultLocale: in.DefaultLocale, Timezone: in.Timezone,
-		Mode: oas.InboxMode(in.Mode), ExpectedReplyMinutes: in.ExpectedReplyMinutes,
+		Mode: oas.InboxMode(in.Mode), ExpectedReplyMinutes: in.ExpectedReplyMinutes, AskForRating: in.AskForRating,
 		CreatedAt: in.CreatedAt, UpdatedAt: in.UpdatedAt,
 	}
 	_ = json.Unmarshal(in.Branding, &out.Branding)
@@ -177,7 +177,7 @@ func (s *Server) CreateInbox(ctx context.Context, req oas.CreateInboxRequestObje
 		in, err = q.CreateInbox(ctx, store.CreateInboxParams{
 			ID: id, WorkspaceID: p.workspaceID, Name: f.name, Slug: f.slug, Branding: mustJSON(f.branding),
 			DefaultLocale: f.locale, Timezone: f.timezone, Mode: f.mode, ExpectedReplyMinutes: f.replyMinutes,
-			BusinessHours: mustJSON(f.hours), IdentitySecret: sealed, Now: s.now(),
+			BusinessHours: mustJSON(f.hours), IdentitySecret: sealed, AskForRating: b.AskForRating, Now: s.now(),
 		})
 		if store.IsUniqueViolation(err) {
 			return errSlugTaken
@@ -244,6 +244,10 @@ func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObje
 		if b.BusinessHours != nil {
 			f.hours = *b.BusinessHours
 		}
+		ask := cur.AskForRating
+		if b.AskForRating != nil {
+			ask = *b.AskForRating
+		}
 		if b.ExpectedReplyMinutes.IsSpecified() {
 			f.replyMinutes = nil
 			if !b.ExpectedReplyMinutes.IsNull() {
@@ -257,7 +261,7 @@ func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObje
 		out, err = q.UpdateInbox(ctx, store.UpdateInboxParams{
 			WorkspaceID: p.workspaceID, ID: cur.ID, Name: f.name, Slug: f.slug, Branding: mustJSON(f.branding),
 			DefaultLocale: f.locale, Timezone: f.timezone, Mode: f.mode, ExpectedReplyMinutes: f.replyMinutes,
-			BusinessHours: mustJSON(f.hours), Now: s.now(),
+			BusinessHours: mustJSON(f.hours), AskForRating: ask, Now: s.now(),
 		})
 		if store.IsUniqueViolation(err) {
 			return errSlugTaken
@@ -339,6 +343,9 @@ func (s *Server) ListInboxMembers(ctx context.Context, req oas.ListInboxMembersR
 	out := oas.ListInboxMembers200JSONResponse{Items: make([]oas.Member, 0, len(rows))}
 	for _, r := range rows {
 		out.Items = append(out.Items, memberBody(store.GetMemberRow(r)))
+	}
+	if err := s.withPresence(ctx, s.st.Queries, p.workspaceID, out.Items); err != nil {
+		return nil, err
 	}
 	return out, nil
 }

@@ -26,6 +26,7 @@ export const PLATFORMS: AppPlatform[] = ["ios", "android"]
 export const WEBHOOK_EVENTS: WebhookEventType[] = [
   "conversation.created",
   "conversation.updated",
+  "conversation.rated",
   "message.created",
   "feedback.created",
   "contact.updated",
@@ -75,6 +76,7 @@ export function useEnumText() {
     event: {
       "conversation.created": t`A conversation started`,
       "conversation.updated": t`A conversation changed`,
+      "conversation.rated": t`A contact rated a conversation`,
       "message.created": t`A message was added`,
       "feedback.created": t`Feedback arrived`,
       "contact.updated": t`A contact changed`,
@@ -164,6 +166,10 @@ export function formatBytes(n: number, locale: string) {
   return `${new Intl.NumberFormat(locale, { maximumFractionDigits: i === 0 ? 0 : 1 }).format(v)} ${units[i]}`
 }
 
+export function formatDate(iso: string, locale: string) {
+  return new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(iso))
+}
+
 export function formatDateTime(iso: string, locale: string) {
   return new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso))
 }
@@ -192,4 +198,10 @@ export function initials(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean)
   if (parts.length === 0) return "?"
   return (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toLocaleUpperCase()
+}
+
+export function formatDuration(seconds: number, locale: string) {
+  const unit = seconds < 60 ? "second" : seconds < 3600 ? "minute" : seconds < 86400 ? "hour" : "day"
+  const size = { second: 1, minute: 60, hour: 3600, day: 86400 }[unit]
+  return new Intl.NumberFormat(locale, { style: "unit", unit, unitDisplay: "short", maximumFractionDigits: 0 }).format(Math.round(seconds / size))
 }

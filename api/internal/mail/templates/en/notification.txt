@@ -1,4 +1,4 @@
-{{.Inbox}}: {{if .Contact}}{{.Contact}}{{else}}a visitor{{end}} is waiting for an answer
+{{if or .Messages .Assigned}}{{.Inbox}}: {{if .Contact}}{{.Contact}}{{else}}a visitor{{end}} is waiting for an answer{{else}}{{.Inbox}}: you were mentioned in a note{{end}}
 
 {{if .Assigned}}{{if .AssignedBy}}{{.AssignedBy}} assigned you{{else}}You were assigned{{end}} a conversation in {{.Inbox}}{{if .Subject}}: {{.Subject}}{{end}}.
 
@@ -7,6 +7,9 @@
 > {{.}}{{end}}
 {{if .More}}…and {{.More}} more.
 {{end}}
+{{end}}{{range .Mentions}}{{if .By}}{{.By}}{{else}}Someone{{end}} mentioned you in a note:
+> {{.Text}}
+
 {{end}}Open the conversation: {{.URL}}
 
 You get this e-mail because it was still unread after {{.Minutes}} minutes. Choose which e-mails you get: {{.SettingsURL}}

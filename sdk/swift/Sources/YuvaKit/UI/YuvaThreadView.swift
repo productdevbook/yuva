@@ -27,6 +27,9 @@ final class ThreadModel {
     var connected = true
     var loading = false
     var failed = false
+    var ratingChoice: YuvaRating?
+    var ratingSending = false
+    var ratingError: String?
     private var olderCursor: String?
     private var loadingOlder = false
     private var typingClear: Task<Void, Never>?
@@ -83,8 +86,8 @@ final class ThreadModel {
                     typingName = nil
                     await markRead()
                 }
-            case .conversationUpdated(let id, _):
-                if id == conversationId { conversation = try? await client.conversation(id: id) }
+            case .conversationUpdated(let id, _, _, _):
+                if id == conversationId, let updated = try? await client.conversation(id: id) { conversation = updated }
             case .read(let id, let readAt):
                 if id == conversationId { memberReadAt = max(memberReadAt ?? readAt, readAt) }
             case .typing(let id, let typing, let author):
@@ -100,7 +103,12 @@ final class ThreadModel {
             case .presence:
                 inbox = try? await client.refreshSession().inbox
             case .inboxUpdated(let updated):
+                let asked = inbox?.askForRating
                 inbox = updated
+                if asked != nil, asked != updated.askForRating, let id = conversationId,
+                   let refreshed = try? await client.conversation(id: id) {
+                    conversation = refreshed
+                }
             case .connectionChanged(let connected):
                 self.connected = connected
             case .resyncRequired:
@@ -108,6 +116,27 @@ final class ThreadModel {
             default:
                 break
             }
+        }
+    }
+
+    var showsRating: Bool {
+        guard let conversation, conversation.status == .closed else { return false }
+        return conversation.canRate || conversation.rating != nil
+    }
+
+    func rate(_ rating: YuvaRating, comment: String?) async {
+        guard let id = conversationId, !ratingSending else { return }
+        ratingSending = true
+        ratingError = nil
+        defer { ratingSending = false }
+        do {
+            conversation = try await client.rate(conversationId: id, rating: rating, comment: comment)
+            ratingChoice = nil
+        } catch let error as YuvaError where error.status == 409 {
+            if let refreshed = try? await client.conversation(id: id) { conversation = refreshed }
+            ratingChoice = nil
+        } catch {
+            ratingError = L.message(for: error)
         }
     }
 
@@ -252,6 +281,9 @@ public struct YuvaThreadView: View {
                         }
                         .id(item.id)
                     }
+                    if model.showsRating {
+                        RatingCard(model: model).id("rating")
+                    }
                     if let name = model.typingName {
                         HStack {
                             Text(name.isEmpty ? L.t("thread.typingSomeone") : L.f("thread.typing", name))
@@ -269,6 +301,9 @@ public struct YuvaThreadView: View {
             .onChange(of: model.items.last?.id) { _, id in
                 guard let id else { return }
                 withAnimation { proxy.scrollTo(id, anchor: .bottom) }
+            }
+            .onChange(of: model.showsRating) { _, shows in
+                if shows { withAnimation { proxy.scrollTo("rating", anchor: .bottom) } }
             }
             .onChange(of: model.typingName) { _, name in
                 if name != nil { withAnimation { proxy.scrollTo("typing", anchor: .bottom) } }
@@ -349,6 +384,76 @@ public struct YuvaThreadView: View {
                 }
             }
         }
+    }
+}
+
+struct RatingCard: View {
+    let model: ThreadModel
+    @State private var comment = ""
+
+    var body: some View {
+        VStack(spacing: 10) {
+            if let rating = model.conversation?.rating {
+                Image(systemName: Self.symbol(rating, filled: true))
+                    .font(.title2).foregroundStyle(.tint)
+                    .accessibilityLabel(L.t("rating." + rating.rawValue))
+                Text(L.t("rating.thanks")).font(.callout).multilineTextAlignment(.center)
+                    .accessibilityIdentifier("yuva.rating.thanks")
+            } else {
+                Text(L.t("rating.prompt")).font(.callout.weight(.medium)).multilineTextAlignment(.center)
+                HStack(spacing: 16) {
+                    ForEach(YuvaRating.allCases, id: \.self) { rating in
+                        Button {
+                            model.ratingChoice = rating
+                        } label: {
+                            Image(systemName: Self.symbol(rating, filled: model.ratingChoice == rating))
+                                .font(.title2).frame(width: 44, height: 36)
+                        }
+                        .buttonStyle(.bordered)
+                        .clipShape(Capsule())
+                        .accessibilityLabel(L.t("rating." + rating.rawValue))
+                        .accessibilityAddTraits(model.ratingChoice == rating ? .isSelected : [])
+                        .accessibilityIdentifier("yuva.rating." + rating.rawValue)
+                    }
+                }
+                if let choice = model.ratingChoice {
+                    TextField(L.t("rating.commentPlaceholder"), text: $comment, axis: .vertical)
+                        .lineLimit(2...5)
+                        .textFieldStyle(.plain)
+                        .padding(.horizontal, 12).padding(.vertical, 8)
+                        .background(RoundedRectangle(cornerRadius: 12).fill(.background))
+                        .onChange(of: comment) { _, value in
+                            if value.count > 2000 { comment = String(value.prefix(2000)) }
+                        }
+                        .accessibilityIdentifier("yuva.rating.comment")
+                    if let error = model.ratingError {
+                        Text(error).font(.caption).foregroundStyle(.red)
+                    }
+                    HStack {
+                        Button(L.t("rating.skip")) {
+                            Task { await model.rate(choice, comment: nil) }
+                        }
+                        .buttonStyle(.bordered)
+                        .accessibilityIdentifier("yuva.rating.skip")
+                        Button(L.t("rating.send")) {
+                            Task { await model.rate(choice, comment: comment) }
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .accessibilityIdentifier("yuva.rating.send")
+                    }
+                }
+            }
+        }
+        .disabled(model.ratingSending)
+        .frame(maxWidth: .infinity)
+        .padding(16)
+        .background(RoundedRectangle(cornerRadius: 16).fill(.quaternary.opacity(0.5)))
+        .padding(.horizontal)
+        .padding(.top, 8)
+    }
+
+    private static func symbol(_ rating: YuvaRating, filled: Bool) -> String {
+        (rating == .good ? "hand.thumbsup" : "hand.thumbsdown") + (filled ? ".fill" : "")
     }
 }
 

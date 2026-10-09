@@ -42,10 +42,15 @@ SELECT EXISTS (
 ) AS allowed;
 
 -- name: CreateContactSession :one
-INSERT INTO contact_sessions (id, workspace_id, channel_id, inbox_id, contact_id, token_hash, identified,
-                              created_at, expires_at, last_seen_at)
-VALUES (@id, @workspace_id, @channel_id, @inbox_id, @contact_id, @token_hash, @identified, @now, @expires_at, @now)
-RETURNING *;
+WITH s AS (
+    INSERT INTO contact_sessions (id, workspace_id, channel_id, inbox_id, contact_id, token_hash, identified,
+                                  created_at, expires_at, last_seen_at)
+    VALUES (@id, @workspace_id, @channel_id, @inbox_id, @contact_id, @token_hash, @identified, @now, @expires_at, @now)
+    RETURNING *),
+seen AS (
+    UPDATE contacts SET last_active_at = greatest(coalesce(contacts.last_active_at, s.last_seen_at), s.last_seen_at)
+    FROM s WHERE contacts.workspace_id = s.workspace_id AND contacts.id = s.contact_id)
+SELECT * FROM s;
 
 -- A contact session token names no workspace (see "Hosting for others later").
 -- name: GetContactSessionByTokenHash :one
@@ -55,12 +60,21 @@ JOIN workspaces w ON w.id = s.workspace_id
 WHERE s.token_hash = $1 AND s.expires_at > $2 AND w.deleted_at IS NULL;
 
 -- name: TouchContactSession :exec
-UPDATE contact_sessions SET last_seen_at = @now::timestamptz, expires_at = @expires_at::timestamptz
-WHERE workspace_id = @workspace_id AND id = @id AND last_seen_at < @stale_before::timestamptz;
+WITH s AS (
+    UPDATE contact_sessions SET last_seen_at = @now::timestamptz, expires_at = @expires_at::timestamptz
+    WHERE contact_sessions.workspace_id = @workspace_id AND contact_sessions.id = @id
+      AND contact_sessions.last_seen_at < @stale_before::timestamptz
+    RETURNING contact_sessions.workspace_id, contact_sessions.contact_id, contact_sessions.last_seen_at)
+UPDATE contacts SET last_active_at = greatest(coalesce(contacts.last_active_at, s.last_seen_at), s.last_seen_at)
+FROM s WHERE contacts.workspace_id = s.workspace_id AND contacts.id = s.contact_id;
 
 -- name: SeeContactSession :exec
-UPDATE contact_sessions SET last_seen_at = greatest(last_seen_at, @now::timestamptz)
-WHERE workspace_id = @workspace_id AND id = @id;
+WITH s AS (
+    UPDATE contact_sessions SET last_seen_at = greatest(contact_sessions.last_seen_at, @now::timestamptz)
+    WHERE contact_sessions.workspace_id = @workspace_id AND contact_sessions.id = @id
+    RETURNING contact_sessions.workspace_id, contact_sessions.contact_id, contact_sessions.last_seen_at)
+UPDATE contacts SET last_active_at = greatest(coalesce(contacts.last_active_at, s.last_seen_at), s.last_seen_at)
+FROM s WHERE contacts.workspace_id = s.workspace_id AND contacts.id = s.contact_id;
 
 -- name: DeleteContactSession :exec
 DELETE FROM contact_sessions WHERE workspace_id = $1 AND id = $2;
@@ -81,9 +95,19 @@ DELETE FROM chat_visitors WHERE workspace_id = $1 AND inbox_id = $2 AND visitor_
 SELECT EXISTS (SELECT 1 FROM chat_visitors WHERE workspace_id = $1 AND contact_id = $2) AS visitor;
 
 -- name: MoveContactConversations :many
-UPDATE conversations SET contact_id = @to_contact, updated_at = @now
-WHERE workspace_id = @workspace_id AND contact_id = @from_contact
-RETURNING *;
+WITH moved AS (
+    UPDATE conversations SET contact_id = @to_contact, updated_at = @now
+    WHERE conversations.workspace_id = @workspace_id AND conversations.contact_id = @from_contact
+    RETURNING *),
+seen AS (
+    UPDATE contacts t SET last_active_at = greatest(t.last_active_at, f.last_active_at)
+    FROM contacts f
+    WHERE t.workspace_id = @workspace_id AND t.id = @to_contact AND f.workspace_id = @workspace_id
+      AND f.id = @from_contact AND f.last_active_at IS NOT NULL),
+notes AS (
+    UPDATE contact_notes SET contact_id = @to_contact
+    WHERE contact_notes.workspace_id = @workspace_id AND contact_notes.contact_id = @from_contact)
+SELECT * FROM moved;
 
 -- name: MoveContactMessages :exec
 UPDATE messages SET author_contact_id = @to_contact
@@ -139,7 +163,7 @@ GROUP BY r.conversation_id;
 -- name: ListPublicMessages :many
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
-       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -154,7 +178,7 @@ LIMIT @lim;
 -- name: ListPublicMessagesDesc :many
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
-       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -303,3 +327,9 @@ DELETE FROM identity_token_ids WHERE workspace_id = @workspace_id AND inbox_id =
 INSERT INTO identity_token_ids (workspace_id, inbox_id, jti, expires_at)
 VALUES (@workspace_id, @inbox_id, @jti, @expires_at)
 ON CONFLICT DO NOTHING;
+
+-- name: ListLapsedMembers :many
+SELECT member_id::uuid AS member_id FROM realtime_connections
+WHERE workspace_id = @workspace_id AND member_id IS NOT NULL
+GROUP BY member_id
+HAVING max(seen_at) <= @fresh_after::timestamptz AND max(seen_at) > @lapsed_after::timestamptz;
