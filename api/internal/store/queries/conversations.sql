@@ -44,6 +44,10 @@ WHERE c.workspace_id = @workspace_id
   AND (sqlc.narg(label_id)::uuid IS NULL OR EXISTS (
       SELECT 1 FROM conversation_labels cl
       WHERE cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id AND cl.label_id = sqlc.narg(label_id)::uuid))
+  AND (sqlc.narg(pinned)::bool IS NULL OR sqlc.narg(pinned)::bool = EXISTS (
+      SELECT 1 FROM conversation_member_states s
+      WHERE s.workspace_id = c.workspace_id AND s.conversation_id = c.id
+        AND s.member_id = sqlc.narg(pinned_by)::uuid AND s.pinned_at IS NOT NULL))
   AND (sqlc.narg(q)::text IS NULL OR (
       to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate(sqlc.narg(q)::text, 'İı', 'ii'))
       OR EXISTS (

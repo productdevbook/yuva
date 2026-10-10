@@ -176,12 +176,21 @@ type Conversation struct {
 	RatingComment         *string
 	RatedAt               *time.Time
 	RatingRequestedAt     *time.Time
+	LastReadByContactAt   *time.Time
 }
 
 type ConversationLabel struct {
 	WorkspaceID    uuid.UUID
 	ConversationID uuid.UUID
 	LabelID        uuid.UUID
+}
+
+type ConversationMemberState struct {
+	WorkspaceID    uuid.UUID
+	MemberID       uuid.UUID
+	ConversationID uuid.UUID
+	PinnedAt       *time.Time
+	MarkedUnreadAt *time.Time
 }
 
 type ConversationRead struct {

@@ -9,6 +9,7 @@ const buttonVariants = cva(
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100",
         outline: "border-border bg-card text-foreground hover:border-faint aria-expanded:border-faint",
+        secondary: "bg-muted text-foreground hover:bg-muted/80 aria-expanded:bg-muted/80",
         ghost: "text-muted-foreground hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground",
         destructive: "bg-destructive/10 text-destructive hover:bg-destructive/15",
         link: "h-auto! rounded-none px-0! text-brand underline-offset-4 hover:underline",
@@ -45,4 +46,4 @@ function Button({
   )
 }
 
-export { Button }
+export { Button, buttonVariants }

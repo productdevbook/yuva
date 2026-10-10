@@ -3,23 +3,21 @@ import { Outlet, useLocation, useNavigate } from "react-router"
 
 import { ConnectionBanner } from "@/app/ConnectionBanner"
 import { Palette } from "@/app/Palette"
-import { ShellContext } from "@/app/shell"
-import { TopBar } from "@/app/TopBar"
+import { useGo } from "@/app/Rail"
+import { isChats, ShellContext } from "@/app/shell"
 import { Toaster } from "@/components/common"
 import { SHORTCUTS, ShortcutSheet } from "@/components/common/ShortcutSheet"
-import { AllDrawer } from "@/features/inbox/AllDrawer"
-import { useOpenSetup } from "@/features/setup/setup"
 import { focusListSearch } from "@/features/inbox/listSearch"
-import { QueueProvider, useQueue } from "@/features/inbox/queue"
+import { useCounts } from "@/features/inbox/queries"
+import { useOpenSetup } from "@/features/setup/setup"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useRegisterPushOnStart } from "@/lib/push"
 import { useRealtime } from "@/lib/realtime"
 import { useSession } from "@/lib/session"
-import { useView } from "@/lib/view"
 
 function Title() {
-  const { waiting } = useQueue()
-  const n = waiting.length
+  const counts = useCounts().data
+  const n = counts ? counts.mine + counts.unassigned : 0
   useEffect(() => {
     document.title = n ? `(${n}) Yuva` : "Yuva"
   }, [n])
@@ -31,35 +29,35 @@ export function AppShell() {
   const navigate = useNavigate()
   const [shortcuts, setShortcuts] = useState(false)
   const [palette, setPalette] = useState(false)
-  const [drawer, setDrawer] = useState<{ open: boolean; q: string; focus: number }>({ open: false, q: "", focus: 0 })
   useRealtime(workspaceId, membership.member_id)
   useRegisterPushOnStart()
   useOpenSetup()
 
   const shell = useMemo(
     () => ({
-      openDrawer: (q?: string) => setDrawer((d) => ({ open: true, q: q ?? d.q, focus: q === undefined ? d.focus : d.focus + 1 })),
       openPalette: () => setPalette(true),
       openShortcuts: () => setShortcuts(true),
     }),
     [],
   )
 
-  const [view, setView] = useView()
   const { pathname } = useLocation()
+  const chats = isChats(pathname)
+  const go = useGo()
   useHotkeys({
     [SHORTCUTS.help]: () => setShortcuts(true),
     [SHORTCUTS.search]: () => {
-      const contacts = pathname === "/contacts" && document.querySelector<HTMLInputElement>("[data-testid=contacts-search]")
-      if (contacts) contacts.focus()
-      else if (view === "list" && pathname === "/") focusListSearch()
-      else setDrawer((d) => ({ open: true, q: d.q, focus: d.focus + 1 }))
+      const contacts = pathname.startsWith("/contacts") && document.querySelector<HTMLInputElement>("[data-testid=contacts-search]")
+      if (contacts) return contacts.focus()
+      if (!chats) navigate("/")
+      focusListSearch()
     },
-    [SHORTCUTS.contacts]: () => navigate("/contacts"),
-    [SHORTCUTS.view]: () => {
-      setView(view === "list" ? "queue" : "list")
-      if (pathname !== "/") navigate("/")
-    },
+    [SHORTCUTS.contacts]: () => go("contacts"),
+    [SHORTCUTS.conversations]: () => go("conversations"),
+    [SHORTCUTS.team]: () => go("team"),
+    [SHORTCUTS.reports]: () => go("reports"),
+    [SHORTCUTS.assistants]: () => go("assistants"),
+    [SHORTCUTS.mentions]: () => go("mentions"),
   })
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -78,25 +76,15 @@ export function AppShell() {
   }, [navigate])
 
   return (
-    <QueueProvider>
-      <ShellContext.Provider value={shell}>
-        <Title />
-        <div className="min-h-svh bg-background">
-          {!pathname.startsWith("/setup") && <TopBar />}
-          <Outlet />
-        </div>
-        <AllDrawer
-          open={drawer.open}
-          onOpenChange={(open) => setDrawer((d) => ({ ...d, open }))}
-          query={drawer.q}
-          onQuery={(q) => setDrawer((d) => ({ ...d, q }))}
-          focusKey={drawer.focus}
-        />
-        <Palette open={palette} onOpenChange={setPalette} />
-        <ShortcutSheet open={shortcuts} onOpenChange={setShortcuts} />
-        <Toaster />
-        <ConnectionBanner />
-      </ShellContext.Provider>
-    </QueueProvider>
+    <ShellContext.Provider value={shell}>
+      <Title />
+      <div className="min-h-svh bg-background">
+        <Outlet />
+      </div>
+      <Palette open={palette} onOpenChange={setPalette} />
+      <ShortcutSheet open={shortcuts} onOpenChange={setShortcuts} />
+      <Toaster />
+      <ConnectionBanner />
+    </ShellContext.Provider>
   )
 }

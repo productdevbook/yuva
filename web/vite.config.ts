@@ -11,6 +11,27 @@ const proxy = Object.fromEntries(
   ["/v1", "/client/v1", "/healthz", "/readyz", "/ingress", "/r/", "/yuva.js", "/yuva-chat.js"].map((path) => [path, { target: server, ws: true }]),
 )
 
+const EMOJIBASE = "emojibase"
+const emojibaseFiles = ["en/data.json", "en/messages.json"]
+
+function emojibase(): Plugin {
+  const source = (file: string) => readFileSync(resolve(import.meta.dirname, "node_modules/emojibase-data", file))
+  return {
+    name: "yuva-emojibase",
+    configureServer(server) {
+      server.middlewares.use(`/${EMOJIBASE}`, (req, res, next) => {
+        const file = (req.url ?? "").split("?")[0].replace(/^\//, "")
+        if (!emojibaseFiles.includes(file)) return next()
+        res.setHeader("Content-Type", "application/json")
+        res.end(source(file))
+      })
+    },
+    generateBundle() {
+      for (const file of emojibaseFiles) this.emitFile({ type: "asset", fileName: `${EMOJIBASE}/${file}`, source: source(file) })
+    },
+  }
+}
+
 function serviceWorker(): Plugin {
   let publicDir = ""
   return {
@@ -26,7 +47,7 @@ function serviceWorker(): Plugin {
         const hash = createHash("sha256")
         const files: string[] = []
         for (const [name, chunk] of Object.entries(bundle)) {
-          if (name.endsWith(".map")) continue
+          if (name.endsWith(".map") || name.startsWith(`${EMOJIBASE}/`)) continue
           files.push(`/${name}`)
           hash.update(name)
           if (chunk.type === "asset") hash.update(chunk.source)
@@ -56,7 +77,7 @@ function serviceWorker(): Plugin {
 
 export default defineConfig({
   base: "/",
-  plugins: [react(), lingui({ macroTransform: true }), tailwindcss(), serviceWorker()],
+  plugins: [react(), lingui({ macroTransform: true }), tailwindcss(), emojibase(), serviceWorker()],
   resolve: {
     alias: {
       "@": resolve(import.meta.dirname, "./src"),

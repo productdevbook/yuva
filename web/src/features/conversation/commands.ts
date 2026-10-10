@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react"
 
-export type CommandName = "reply" | "note" | "snooze" | "hand" | "close" | "contact" | "more" | "history" | "next"
+export type CommandName = "reply" | "note" | "snooze" | "hand" | "labels" | "close" | "contact" | "more" | "history"
 
 type Handlers = Partial<Record<CommandName, () => void>>
 

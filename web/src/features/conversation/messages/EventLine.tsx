@@ -1,6 +1,7 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 
 import { formatDateTime, useEnumText } from "@/components/common/text"
+import { Marker, MarkerContent } from "@/components/ui/marker"
 import { timeOf, useAuthorName, type ThreadContext } from "@/features/conversation/messages/context"
 import type { Message } from "@/lib/api"
 
@@ -68,14 +69,14 @@ export function EventLine({ m, ctx }: { m: Message; ctx: ThreadContext }) {
     }
   }
   return (
-    <div className="my-2 flex justify-center" data-testid="event-line">
-      <span className="max-w-full rounded-full border bg-card px-2.5 py-[3px] text-center text-caption text-faint">
+    <Marker className="justify-center py-2" data-testid="event-line">
+      <MarkerContent className="max-w-full rounded-full border bg-card px-2.5 py-[3px] text-center text-caption text-faint">
         {body}
         <span aria-hidden> · </span>
         <time dateTime={m.created_at} title={formatDateTime(m.created_at, i18n.locale)}>
           {timeOf(m.created_at, i18n.locale)}
         </time>
-      </span>
-    </div>
+      </MarkerContent>
+    </Marker>
   )
 }

@@ -1,8 +1,9 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { useState } from "react"
-import { Link, useParams } from "react-router"
+import { useParams } from "react-router"
 
 import { ContactAvatar, ErrorLine } from "@/components/common"
+import { Pane, PaneBack } from "@/components/common/Column"
 import { formatDateTime, formatDuration, formatRelative } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -58,17 +59,18 @@ export function ContactPage() {
 
   if (contact.isPending) {
     return (
-      <main className="mx-auto flex w-full max-w-[1040px] flex-col gap-4 px-6 pt-6 phone:px-4">
+      <Pane wide className="gap-4">
         <Skeleton className="h-4 w-40" />
         <Skeleton className="size-16 rounded-full" />
-      </main>
+      </Pane>
     )
   }
   if (!c) {
     return (
-      <main className="mx-auto w-full max-w-[1040px] px-6 pt-6 phone:px-4">
+      <Pane wide>
+        <PaneBack to="/contacts" label={t`Contacts`} />
         <ErrorLine error={contact.error} />
-      </main>
+      </Pane>
     )
   }
 
@@ -82,16 +84,8 @@ export function ContactPage() {
   const attrs = !!c.locale || Object.keys(c.attributes ?? {}).length > 0
 
   return (
-    <main className="mx-auto w-full max-w-[1040px] px-6 pt-6 pb-20 phone:px-4 phone:pt-4" data-testid="contact-page">
-      <nav aria-label={t`Breadcrumb`} className="mb-4 flex min-w-0 items-center gap-1.5 text-small text-faint">
-        <Link to="/contacts" className="transition-colors hover:text-foreground">
-          <Trans>Contacts</Trans>
-        </Link>
-        <span aria-hidden>/</span>
-        <span className="truncate" aria-current="page">
-          {name}
-        </span>
-      </nav>
+    <Pane wide className="block" testId="contact-page">
+      <PaneBack to="/contacts" label={t`Contacts`} />
 
       <header className="flex flex-wrap items-center gap-4">
         <ContactAvatar id={c.id} name={name} className="size-16" />
@@ -181,6 +175,6 @@ export function ContactPage() {
 
       {canManage && <MergeContactDialog target={c} open={merging} onOpenChange={setMerging} />}
       <NewConversationDialog contact={c} open={starting} onOpenChange={setStarting} />
-    </main>
+    </Pane>
   )
 }

@@ -4,7 +4,9 @@ import type {
   Contact,
   Conversation,
   ConversationListItem,
+  ConversationPin,
   ConversationRead,
+  DraftItem,
   Inbox,
   Member,
   Message,
@@ -30,8 +32,9 @@ function previewText(body: string) {
   return runes.length > PREVIEW_RUNES ? runes.slice(0, PREVIEW_RUNES).join("").trim() + "…" : text
 }
 
-function matches(c: Conversation, f: ConversationFilters, memberId: string) {
+function matches(c: Conversation & { pinned_at?: string }, f: ConversationFilters, memberId: string) {
   if (!!f.spam !== c.spam) return false
+  if (f.pinned !== undefined && !!c.pinned_at !== f.pinned) return false
   if (f.status && c.status !== f.status) return false
   if ((f.kind || f.category) && c.kind !== (f.kind ?? "feedback")) return false
   if (f.category && c.feedback?.category !== f.category) return false
@@ -91,7 +94,7 @@ function updateLists(qc: QueryClient, ctx: LiveContext, c: Conversation, patch: 
     }
     if (!base) continue
     const item: ConversationListItem = { ...base, ...c, ...patch }
-    qc.setQueryData<Lists>(key, (old) => (old ? placeInList(old, item, matches(c, f, ctx.memberId)) : old))
+    qc.setQueryData<Lists>(key, (old) => (old ? placeInList(old, item, matches(item, f, ctx.memberId)) : old))
   }
 }
 
@@ -214,6 +217,13 @@ export function applyRead(qc: QueryClient, ws: string, read: ConversationRead) {
   patchItem(qc, ws, read.conversation_id, { unread: read.unread })
 }
 
+export function applyPin(qc: QueryClient, ws: string, pin: ConversationPin) {
+  patchItem(qc, ws, pin.conversation_id, { pinned_at: pin.pinned_at })
+  for (const [key] of listCaches(qc, ws)) {
+    if (((key as QueryKey)[3] as ConversationFilters).pinned !== undefined) void qc.invalidateQueries({ queryKey: key, exact: true })
+  }
+}
+
 function knowMember(qc: QueryClient, ws: string, id: string | undefined) {
   if (!id) return
   const members = qc.getQueryData<Member[]>(keys.members(ws))
@@ -236,6 +246,20 @@ function followMerge(qc: QueryClient, ws: string, from: string, to: string) {
   }
 }
 
+function refreshMentions(qc: QueryClient, ws: string) {
+  void qc.invalidateQueries({ queryKey: keys.mentions(ws) })
+}
+
+function refreshDrafts(qc: QueryClient, ws: string) {
+  void qc.invalidateQueries({ queryKey: keys.draftLists(ws) })
+}
+
+function listsDraftsOf(qc: QueryClient, ws: string, test: (item: DraftItem) => boolean) {
+  return qc
+    .getQueriesData<InfiniteData<{ items: DraftItem[] }, string | undefined>>({ queryKey: keys.draftLists(ws) })
+    .some(([, data]) => data?.pages.some((p) => p.items.some(test)))
+}
+
 function byName(a: Inbox, b: Inbox) {
   return a.name.localeCompare(b.name) || (a.id < b.id ? -1 : 1)
 }
@@ -246,6 +270,7 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
     case "conversation.updated":
       knowMember(qc, ctx.ws, event.data.assignee_id)
       setConversation(qc, ctx, event.data)
+      if (event.type === "conversation.updated" && listsDraftsOf(qc, ctx.ws, (x) => x.conversation.id === event.data.id)) refreshDrafts(qc, ctx.ws)
       void qc.invalidateQueries({ queryKey: keys.contact(ctx.ws, event.data.contact_id), refetchType: "active" })
       void qc.invalidateQueries({ queryKey: keys.contactSummary(ctx.ws, event.data.contact_id) })
       if (event.type === "conversation.created") {
@@ -266,11 +291,15 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
         void qc.resetQueries({ queryKey: keys.messages(ctx.ws, id), exact: true })
       }
       refreshCounts(qc, ctx.ws)
+      refreshMentions(qc, ctx.ws)
+      refreshDrafts(qc, ctx.ws)
       return
     }
     case "message.created":
       knowMember(qc, ctx.ws, event.data.author.member_id)
       addMessage(qc, ctx, event.data)
+      if (event.data.kind === "note" && event.data.mentions?.includes(ctx.memberId)) refreshMentions(qc, ctx.ws)
+      if (listsDraftsOf(qc, ctx.ws, (x) => x.draft.id === event.data.id)) refreshDrafts(qc, ctx.ws)
       if (event.data.author.contact_id) {
         void qc.invalidateQueries({ queryKey: keys.contactPresence(ctx.ws, event.data.author.contact_id) })
         if (event.data.email) void qc.invalidateQueries({ queryKey: keys.contact(ctx.ws, event.data.author.contact_id) })
@@ -281,16 +310,32 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
       return
     case "draft.created":
       putMessage(qc, ctx.ws, event.data)
+      refreshDrafts(qc, ctx.ws)
       return
     case "draft.updated":
       updateDraft(qc, ctx.ws, event.data)
+      refreshDrafts(qc, ctx.ws)
       return
     case "draft.deleted":
       dropMessage(qc, ctx.ws, event.data)
+      refreshDrafts(qc, ctx.ws)
       return
     case "conversation.read":
-      if (event.data.member_id === ctx.memberId) applyRead(qc, ctx.ws, event.data)
+      if (event.data.member_id !== ctx.memberId) return
+      applyRead(qc, ctx.ws, event.data)
+      refreshMentions(qc, ctx.ws)
       return
+    case "conversation.pin":
+      if (event.data.member_id === ctx.memberId) applyPin(qc, ctx.ws, event.data)
+      return
+    case "contact.read": {
+      const { conversation_id: id, read_at } = event.data
+      qc.setQueryData<Conversation>(keys.conversation(ctx.ws, id), (old) =>
+        old && (!old.last_read_by_contact_at || Date.parse(old.last_read_by_contact_at) < Date.parse(read_at)) ? { ...old, last_read_by_contact_at: read_at } : old,
+      )
+      patchItem(qc, ctx.ws, id, { last_read_by_contact_at: read_at })
+      return
+    }
     case "contact.updated": {
       const contact = event.data
       qc.setQueryData<Contact>(keys.contact(ctx.ws, contact.id), (old) => ({ ...contact, activity: contact.activity ?? old?.activity }))
@@ -361,6 +406,8 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
         void qc.invalidateQueries({ queryKey: ["ws", ctx.ws, "conversation"] })
         void qc.invalidateQueries({ queryKey: ["ws", ctx.ws, "messages"] })
         refreshCounts(qc, ctx.ws)
+        refreshMentions(qc, ctx.ws)
+        refreshDrafts(qc, ctx.ws)
       }
       return
   }

@@ -42,6 +42,68 @@ func (q *Queries) CallerDraftInConversation(ctx context.Context, arg CallerDraft
 	return id, err
 }
 
+const countDrafts = `-- name: CountDrafts :one
+SELECT count(*) FROM messages m
+JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
+WHERE m.workspace_id = $1 AND m.draft
+  AND ($2::bool OR EXISTS (
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3))
+  AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid)
+  AND ($5::text IS NULL
+       OR ($5::text = 'bot' AND m.author_type = 'bot')
+       OR ($5::text = 'assistant' AND m.author_type = 'member' AND m.via IS NOT NULL)
+       OR ($5::text = 'member' AND m.author_type = 'member' AND m.via IS NULL))
+`
+
+type CountDraftsParams struct {
+	WorkspaceID uuid.UUID
+	AllInboxes  bool
+	ViewerID    uuid.UUID
+	InboxID     *uuid.UUID
+	AuthorKind  *string
+}
+
+func (q *Queries) CountDrafts(ctx context.Context, arg CountDraftsParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countDrafts,
+		arg.WorkspaceID,
+		arg.AllInboxes,
+		arg.ViewerID,
+		arg.InboxID,
+		arg.AuthorKind,
+	)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const countUnseenMentions = `-- name: CountUnseenMentions :one
+SELECT count(*) FROM messages m
+JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
+LEFT JOIN conversation_reads r
+       ON r.workspace_id = m.workspace_id AND r.conversation_id = m.conversation_id AND r.member_id = $1
+WHERE m.workspace_id = $2 AND m.kind = 'note' AND NOT m.draft
+  AND m.mentions @> ARRAY[$1::uuid]
+  AND m.author_member_id IS DISTINCT FROM $1::uuid
+  AND ($3::bool OR EXISTS (
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $1))
+  AND (r.last_read_at IS NULL OR (r.last_read_at, r.last_read_message_id) < (m.created_at, m.id))
+`
+
+type CountUnseenMentionsParams struct {
+	MemberID    uuid.UUID
+	WorkspaceID uuid.UUID
+	AllInboxes  bool
+}
+
+func (q *Queries) CountUnseenMentions(ctx context.Context, arg CountUnseenMentionsParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countUnseenMentions, arg.MemberID, arg.WorkspaceID, arg.AllInboxes)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createAttachment = `-- name: CreateAttachment :one
 INSERT INTO attachments (id, workspace_id, conversation_id, message_id, storage_key, filename,
                          content_type, size_bytes, content_id, inline, created_at)
@@ -565,6 +627,255 @@ func (q *Queries) ListAttachmentsOfMessage(ctx context.Context, arg ListAttachme
 			&i.CreatedAt,
 			&i.ContentID,
 			&i.Inline,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listConversationSummaries = `-- name: ListConversationSummaries :many
+SELECT id, inbox_id, subject, status, contact_id FROM conversations
+WHERE workspace_id = $1 AND id = ANY($2::uuid[])
+`
+
+type ListConversationSummariesParams struct {
+	WorkspaceID uuid.UUID
+	Ids         []uuid.UUID
+}
+
+type ListConversationSummariesRow struct {
+	ID        uuid.UUID
+	InboxID   uuid.UUID
+	Subject   string
+	Status    string
+	ContactID uuid.UUID
+}
+
+func (q *Queries) ListConversationSummaries(ctx context.Context, arg ListConversationSummariesParams) ([]ListConversationSummariesRow, error) {
+	rows, err := q.db.Query(ctx, listConversationSummaries, arg.WorkspaceID, arg.Ids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListConversationSummariesRow
+	for rows.Next() {
+		var i ListConversationSummariesRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.InboxID,
+			&i.Subject,
+			&i.Status,
+			&i.ContactID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listDrafts = `-- name: ListDrafts :many
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM messages m
+JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
+WHERE m.workspace_id = $1 AND m.draft
+  AND ($2::bool OR EXISTS (
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3))
+  AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid)
+  AND ($5::text IS NULL
+       OR ($5::text = 'bot' AND m.author_type = 'bot')
+       OR ($5::text = 'assistant' AND m.author_type = 'member' AND m.via IS NOT NULL)
+       OR ($5::text = 'member' AND m.author_type = 'member' AND m.via IS NULL))
+  AND ($6::timestamptz IS NULL
+       OR (m.created_at, m.id) < ($6::timestamptz, $7::uuid))
+ORDER BY m.created_at DESC, m.id DESC
+LIMIT $8
+`
+
+type ListDraftsParams struct {
+	WorkspaceID uuid.UUID
+	AllInboxes  bool
+	ViewerID    uuid.UUID
+	InboxID     *uuid.UUID
+	AuthorKind  *string
+	CursorAt    *time.Time
+	CursorID    *uuid.UUID
+	Lim         int32
+}
+
+type ListDraftsRow struct {
+	ID                uuid.UUID
+	WorkspaceID       uuid.UUID
+	ConversationID    uuid.UUID
+	Kind              string
+	Direction         *string
+	AuthorType        string
+	AuthorMemberID    *uuid.UUID
+	AuthorContactID   *uuid.UUID
+	Body              string
+	Html              *string
+	ClientID          *string
+	Event             []byte
+	CreatedAt         time.Time
+	DeliveryState     *string
+	DeliveryError     *string
+	DeliveryUpdatedAt *time.Time
+	AuthorApiKeyID    *uuid.UUID
+	Draft             bool
+	SentByMemberID    *uuid.UUID
+	SentByApiKeyID    *uuid.UUID
+	Via               *string
+	SentVia           *string
+	Mentions          []uuid.UUID
+	BotName           string
+	BotAvatarUrl      string
+	SentByBotName     string
+}
+
+func (q *Queries) ListDrafts(ctx context.Context, arg ListDraftsParams) ([]ListDraftsRow, error) {
+	rows, err := q.db.Query(ctx, listDrafts,
+		arg.WorkspaceID,
+		arg.AllInboxes,
+		arg.ViewerID,
+		arg.InboxID,
+		arg.AuthorKind,
+		arg.CursorAt,
+		arg.CursorID,
+		arg.Lim,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListDraftsRow
+	for rows.Next() {
+		var i ListDraftsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.WorkspaceID,
+			&i.ConversationID,
+			&i.Kind,
+			&i.Direction,
+			&i.AuthorType,
+			&i.AuthorMemberID,
+			&i.AuthorContactID,
+			&i.Body,
+			&i.Html,
+			&i.ClientID,
+			&i.Event,
+			&i.CreatedAt,
+			&i.DeliveryState,
+			&i.DeliveryError,
+			&i.DeliveryUpdatedAt,
+			&i.AuthorApiKeyID,
+			&i.Draft,
+			&i.SentByMemberID,
+			&i.SentByApiKeyID,
+			&i.Via,
+			&i.SentVia,
+			&i.Mentions,
+			&i.BotName,
+			&i.BotAvatarUrl,
+			&i.SentByBotName,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listMentions = `-- name: ListMentions :many
+SELECT m.id, m.conversation_id, m.author_type, m.author_member_id, m.author_api_key_id, m.via,
+       left(m.body, 1000)::text AS body, m.created_at,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       (r.last_read_at IS NOT NULL AND (r.last_read_at, r.last_read_message_id) >= (m.created_at, m.id))::bool AS seen
+FROM messages m
+JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
+LEFT JOIN conversation_reads r
+       ON r.workspace_id = m.workspace_id AND r.conversation_id = m.conversation_id AND r.member_id = $1
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+WHERE m.workspace_id = $2 AND m.kind = 'note' AND NOT m.draft
+  AND m.mentions @> ARRAY[$1::uuid]
+  AND m.author_member_id IS DISTINCT FROM $1::uuid
+  AND ($3::bool OR EXISTS (
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $1))
+  AND ($4::timestamptz IS NULL
+       OR (m.created_at, m.id) < ($4::timestamptz, $5::uuid))
+ORDER BY m.created_at DESC, m.id DESC
+LIMIT $6
+`
+
+type ListMentionsParams struct {
+	MemberID    uuid.UUID
+	WorkspaceID uuid.UUID
+	AllInboxes  bool
+	CursorAt    *time.Time
+	CursorID    *uuid.UUID
+	Lim         int32
+}
+
+type ListMentionsRow struct {
+	ID             uuid.UUID
+	ConversationID uuid.UUID
+	AuthorType     string
+	AuthorMemberID *uuid.UUID
+	AuthorApiKeyID *uuid.UUID
+	Via            *string
+	Body           string
+	CreatedAt      time.Time
+	BotName        string
+	BotAvatarUrl   string
+	Seen           bool
+}
+
+func (q *Queries) ListMentions(ctx context.Context, arg ListMentionsParams) ([]ListMentionsRow, error) {
+	rows, err := q.db.Query(ctx, listMentions,
+		arg.MemberID,
+		arg.WorkspaceID,
+		arg.AllInboxes,
+		arg.CursorAt,
+		arg.CursorID,
+		arg.Lim,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListMentionsRow
+	for rows.Next() {
+		var i ListMentionsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.ConversationID,
+			&i.AuthorType,
+			&i.AuthorMemberID,
+			&i.AuthorApiKeyID,
+			&i.Via,
+			&i.Body,
+			&i.CreatedAt,
+			&i.BotName,
+			&i.BotAvatarUrl,
+			&i.Seen,
 		); err != nil {
 			return nil, err
 		}

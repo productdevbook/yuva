@@ -88,6 +88,10 @@ img:not([src]),img[src^="cid:"],img[width="0"],img[width="1"],img[height="0"],im
 ${l.dark ? "img[src]{background:#ededf0;padding:2px;border-radius:4px}" : ""}
 table{width:auto!important;table-layout:auto;border-collapse:collapse}
 td,th{width:auto!important;min-width:0;vertical-align:top;text-align:start}
+td,th{padding:.375em .75em}
+td:first-child,th:first-child{padding-inline-start:0}td:last-child,th:last-child{padding-inline-end:0}
+tr+tr>td,tr+tr>th{border-top:1px solid ${l.border}}thead>tr:last-child>*{border-bottom:1px solid ${l.border}}
+th{font-weight:600}
 pre{white-space:pre-wrap;font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.9em;background:${l.code};padding:.5em .75em;border-radius:6px}
 code{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.9em}
 a{color:${l.link};text-decoration:underline;text-underline-offset:3px}
@@ -180,6 +184,7 @@ export function EmailHtml({
   const { t } = useLingui()
   const frame = useRef<HTMLIFrameElement>(null)
   const [height, setHeight] = useState(() => (heightKey && heights.get(heightKey)) || initialHeight)
+  const [edge, setEdge] = useState({ left: false, right: false })
   const dark = useDark()
   const darkened = original && dark && !asSent
   const look = useMemo(() => lookOf(dark), [dark])
@@ -193,12 +198,33 @@ export function EmailHtml({
     const el = frame.current
     if (!el) return
     let ro: ResizeObserver | undefined
-    let ready: Document | undefined
+    let ready: { doc: Document; box: HTMLElement; win: Window } | undefined
+    let raf = 0
+    const measure = () => {
+      if (!ready) return
+      const root = ready.doc.scrollingElement ?? ready.doc.documentElement
+      const max = original ? root.scrollWidth - root.clientWidth : 0
+      const x = Math.abs(root.scrollLeft)
+      const left = max > 1 && x > 1
+      const right = max > 1 && x < max - 1
+      setEdge((e) => (e.left === left && e.right === right ? e : { left, right }))
+    }
+    const refit = () => {
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(() => {
+        if (!ready) return
+        fit(ready.doc, ready.box)
+        measure()
+      })
+    }
+    const outer = new ResizeObserver(refit)
+    outer.observe(el)
+    if (el.parentElement) outer.observe(el.parentElement)
     const fit = (doc: Document, box: HTMLElement) => {
       const root = doc.documentElement
       let scale = 1
       if (original) {
-        const width = root.clientWidth
+        const width = el.clientWidth || root.clientWidth
         box.style.transform = ""
         box.style.width = `${width}px`
         const natural = box.scrollWidth
@@ -215,34 +241,59 @@ export function EmailHtml({
       const doc = el.contentDocument
       const win = el.contentWindow as (Window & typeof globalThis) | null
       const box = doc?.getElementById("y")
-      if (!doc || !win || !box || ready === doc) return
-      ready = doc
+      if (!doc || !win || !box || ready?.doc === doc) return
+      ready?.win.removeEventListener("scroll", measure)
+      ready = { doc, box, win }
+      win.addEventListener("scroll", measure, { passive: true })
       addFonts(win, doc)
       ro?.disconnect()
-      ro = new ResizeObserver(() => fit(doc, box))
+      ro = new win.ResizeObserver(refit)
       ro.observe(doc.documentElement)
       ro.observe(box)
       fit(doc, box)
+      refit()
     }
     el.addEventListener("load", start)
     start()
     return () => {
       el.removeEventListener("load", start)
+      ready?.win.removeEventListener("scroll", measure)
+      cancelAnimationFrame(raf)
+      outer.disconnect()
       ro?.disconnect()
     }
   }, [srcDoc, original, heightKey])
 
+  const fade = darkened ? look.card : "#fff"
   return (
-    <iframe
-      ref={frame}
-      title={t`E-mail content`}
-      srcDoc={srcDoc}
-      sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-      referrerPolicy="no-referrer"
-      className={cn("block w-full border-0", className)}
-      style={{ height }}
-      data-testid="email-html"
-      data-view={original ? "original" : "reading"}
-    />
+    <div className="relative">
+      <iframe
+        ref={frame}
+        title={t`E-mail content`}
+        srcDoc={srcDoc}
+        sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+        referrerPolicy="no-referrer"
+        className={cn("block w-full border-0", className)}
+        style={{ height }}
+        data-testid="email-html"
+        data-view={original ? "original" : "reading"}
+      />
+      {edge.left && (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 left-0 w-8"
+          style={{ background: `linear-gradient(to right, ${fade}, transparent)`, boxShadow: "inset 6px 0 6px -6px rgb(0 0 0 / 0.3)" }}
+          data-testid="email-scroll-left"
+        />
+      )}
+      {edge.right && (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 right-0 w-8"
+          style={{ background: `linear-gradient(to left, ${fade}, transparent)`, boxShadow: "inset -6px 0 6px -6px rgb(0 0 0 / 0.3)" }}
+          data-testid="email-scroll-right"
+        />
+      )}
+    </div>
   )
 }

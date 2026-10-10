@@ -161,3 +161,78 @@ WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id AND dr
        OR (author_member_id = sqlc.narg(member_id) AND via IS NOT DISTINCT FROM sqlc.narg(via)))
 ORDER BY created_at DESC, id DESC
 LIMIT 1;
+
+-- name: ListDrafts :many
+SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
+       m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
+       m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
+FROM messages m
+JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
+WHERE m.workspace_id = @workspace_id AND m.draft
+  AND (@all_inboxes::bool OR EXISTS (
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id))
+  AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
+  AND (sqlc.narg(author_kind)::text IS NULL
+       OR (sqlc.narg(author_kind)::text = 'bot' AND m.author_type = 'bot')
+       OR (sqlc.narg(author_kind)::text = 'assistant' AND m.author_type = 'member' AND m.via IS NOT NULL)
+       OR (sqlc.narg(author_kind)::text = 'member' AND m.author_type = 'member' AND m.via IS NULL))
+  AND (sqlc.narg(cursor_at)::timestamptz IS NULL
+       OR (m.created_at, m.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
+ORDER BY m.created_at DESC, m.id DESC
+LIMIT @lim;
+
+-- name: CountDrafts :one
+SELECT count(*) FROM messages m
+JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
+WHERE m.workspace_id = @workspace_id AND m.draft
+  AND (@all_inboxes::bool OR EXISTS (
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id))
+  AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
+  AND (sqlc.narg(author_kind)::text IS NULL
+       OR (sqlc.narg(author_kind)::text = 'bot' AND m.author_type = 'bot')
+       OR (sqlc.narg(author_kind)::text = 'assistant' AND m.author_type = 'member' AND m.via IS NOT NULL)
+       OR (sqlc.narg(author_kind)::text = 'member' AND m.author_type = 'member' AND m.via IS NULL));
+
+-- name: ListMentions :many
+SELECT m.id, m.conversation_id, m.author_type, m.author_member_id, m.author_api_key_id, m.via,
+       left(m.body, 1000)::text AS body, m.created_at,
+       coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
+       (r.last_read_at IS NOT NULL AND (r.last_read_at, r.last_read_message_id) >= (m.created_at, m.id))::bool AS seen
+FROM messages m
+JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
+LEFT JOIN conversation_reads r
+       ON r.workspace_id = m.workspace_id AND r.conversation_id = m.conversation_id AND r.member_id = @member_id
+LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
+WHERE m.workspace_id = @workspace_id AND m.kind = 'note' AND NOT m.draft
+  AND m.mentions @> ARRAY[@member_id::uuid]
+  AND m.author_member_id IS DISTINCT FROM @member_id::uuid
+  AND (@all_inboxes::bool OR EXISTS (
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @member_id))
+  AND (sqlc.narg(cursor_at)::timestamptz IS NULL
+       OR (m.created_at, m.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
+ORDER BY m.created_at DESC, m.id DESC
+LIMIT @lim;
+
+-- name: CountUnseenMentions :one
+SELECT count(*) FROM messages m
+JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
+LEFT JOIN conversation_reads r
+       ON r.workspace_id = m.workspace_id AND r.conversation_id = m.conversation_id AND r.member_id = @member_id
+WHERE m.workspace_id = @workspace_id AND m.kind = 'note' AND NOT m.draft
+  AND m.mentions @> ARRAY[@member_id::uuid]
+  AND m.author_member_id IS DISTINCT FROM @member_id::uuid
+  AND (@all_inboxes::bool OR EXISTS (
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @member_id))
+  AND (r.last_read_at IS NULL OR (r.last_read_at, r.last_read_message_id) < (m.created_at, m.id));
+
+-- name: ListConversationSummaries :many
+SELECT id, inbox_id, subject, status, contact_id FROM conversations
+WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[]);

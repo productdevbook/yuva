@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button"
 import { popupClass } from "@/components/ui/dropdown-menu"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
-import { useStats } from "@/features/inbox/queries"
-import { useQueue } from "@/features/inbox/queue"
+import { useConversations, useStats } from "@/features/inbox/queries"
+import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { useIsPhone } from "@/hooks/use-media-query"
 import type { Member } from "@/lib/api"
 import { useAllViewers } from "@/lib/presence"
@@ -21,7 +21,7 @@ import { Item } from "@/components/ui/item"
 
 export function useConversationName() {
   const { t } = useLingui()
-  const { open } = useQueue()
+  const open = useConversations({ status: "open" })
   const items = open.data?.pages.flatMap((p) => p.items) ?? []
   return (id: string) => {
     const c = items.find((x) => x.id === id)
@@ -41,9 +41,26 @@ export function useMemberActivity() {
   }
 }
 
+export function useMemberStatus() {
+  const { t } = useLingui()
+  const activity = useMemberActivity()
+  const label = useConversationName()
+  return (m: Member) => {
+    const away = m.availability === "away"
+    const a = activity(m)
+    const where = a ? label(a.conversationId) : ""
+    const text = away ? t`Away` : !m.online ? t`Offline` : a ? (a.typing ? t`Typing · ${where}` : t`Looking at ${where}`) : t`Online`
+    return { text, conversationId: a && m.online && !away ? a.conversationId : undefined }
+  }
+}
+
+export function byPresence(a: Member, b: Member) {
+  return Number(b.online && b.availability === "auto") - Number(a.online && a.availability === "auto")
+}
+
 export function TeamSummary({ className }: { className?: string }) {
   const { i18n } = useLingui()
-  const { inboxId } = useQueue()
+  const [inboxId] = useInboxFilter()
   const stats = useStats(inboxId).data
   if (!stats) return null
   const replies = stats.replies
@@ -79,11 +96,10 @@ export function TeamMenu() {
   const { membership } = useSession()
   const phone = useIsPhone()
   const mates = (useMembers().data ?? []).filter((m) => m.id !== membership.member_id)
-  const activity = useMemberActivity()
-  const label = useConversationName()
+  const status = useMemberStatus()
   const [open, setOpen] = useState(false)
   if (mates.length === 0) return null
-  const order = [...mates].sort((a, b) => Number(b.online && b.availability === "auto") - Number(a.online && a.availability === "auto"))
+  const order = [...mates].sort(byPresence)
   const shown = order.slice(0, phone ? 1 : 3)
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -106,17 +122,7 @@ export function TeamMenu() {
             {order.map((m) => {
               const name = m.name || m.email
               const away = m.availability === "away"
-              const a = activity(m)
-              const where = a ? label(a.conversationId) : ""
-              const what = away
-                ? t`Away`
-                : !m.online
-                  ? t`Offline`
-                  : a
-                    ? a.typing
-                      ? t`Typing · ${where}`
-                      : t`Looking at ${where}`
-                    : t`Online`
+              const { text: what, conversationId } = status(m)
               const row = (
                 <>
                   <MemberAvatar name={name} online={m.online} away={away} className="size-[30px]" ring="ring-card" />
@@ -126,7 +132,7 @@ export function TeamMenu() {
                   </span>
                 </>
               )
-              return a && m.online && !away ? (
+              return conversationId ? (
                 <Item
                   key={m.id}
                   render={<button type="button" />}
@@ -134,7 +140,7 @@ export function TeamMenu() {
                   className="flex-nowrap"
                   onClick={() => {
                     setOpen(false)
-                    navigate(`/conversations/${a.conversationId}`)
+                    navigate(`/conversations/${conversationId}`)
                   }}
                 >
                   {row}

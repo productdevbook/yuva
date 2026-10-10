@@ -397,6 +397,35 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/me/mentions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Notes that mention you
+         * @description Notes in the workspace whose `mentions` name the calling member, written by someone else,
+         *     newest first, in conversations the member can see now. Each item has the note (a preview
+         *     of its text and its author), the conversation, and `seen`: whether the member has read the
+         *     conversation up to the note (`POST /v1/conversations/{id}/read`, or writing in it). The
+         *     page carries `unseen`, the number of unseen mentions over all pages, for a badge. Member
+         *     sessions only.
+         *
+         *     Realtime: a new mention arrives as `message.created` with `kind: note` and the member in
+         *     `mentions`; `conversation.read` changes `seen`; `conversation.moved` and
+         *     `inbox_access.changed` can hide or show items.
+         */
+        get: operations["listMentions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/workspace": {
         parameters: {
             query?: never;
@@ -1062,7 +1091,8 @@ export interface paths {
          *     Scope: `conversations:read`.
          *
          *     Each item carries the contact (id, name, first e-mail address), a preview of the last
-         *     `message` (notes and events are not previewed) and `unread` for the calling member.
+         *     `message` (notes and events are not previewed), and `unread` and `pinned_at` for the
+         *     calling member.
          */
         get: operations["listConversations"];
         put?: never;
@@ -1301,6 +1331,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/conversations/{conversationId}/unread": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark a conversation unread
+         * @description Marks the conversation unread for the calling member, wherever their read cursor is: it is
+         *     `unread` in their lists until they read it again (`POST .../read`, or a message or note
+         *     of their own). Others are not affected. A `conversation.read` event with `unread: true`
+         *     reaches the member's connections. Member sessions only.
+         */
+        post: operations["markConversationUnread"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/conversations/{conversationId}/pin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Pin a conversation
+         * @description Pins the conversation to the top of the calling member's lists; nobody else sees it.
+         *     Pinning a pinned conversation keeps its `pinned_at`. A `conversation.pin` event reaches the
+         *     member's connections. Member sessions only.
+         */
+        put: operations["pinConversation"];
+        post?: never;
+        /**
+         * Unpin a conversation
+         * @description Takes the calling member's pin away; unpinning a conversation that is not pinned changes
+         *     nothing. A `conversation.pin` event reaches the member's connections when a pin was
+         *     removed. Member sessions only.
+         */
+        delete: operations["unpinConversation"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/conversations/{conversationId}/typing": {
         parameters: {
             query?: never;
@@ -1320,6 +1401,37 @@ export interface paths {
          *     sessions only.
          */
         post: operations["setMemberTyping"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/drafts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List pending drafts
+         * @description Drafts waiting to be sent, edited or discarded in the conversations the caller can see,
+         *     newest first, each with its conversation. `author` narrows them to drafts by bots (API
+         *     keys), by assistants (members through an OAuth client, `author.via` set) or by members in
+         *     the panel. The page carries `total`, the number of drafts matching the filters over all
+         *     pages, for a badge.
+         *
+         *     Scope: `conversations:read`.
+         *
+         *     Realtime: `draft.created`, `draft.updated` and `draft.deleted` carry the draft; a sent
+         *     draft arrives as `message.created` with the draft's id and `draft: false`;
+         *     `conversation.updated`, `conversation.moved` and `inbox_access.changed` can change the
+         *     conversation summary or hide items.
+         */
+        get: operations["listDrafts"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1997,14 +2109,15 @@ export interface paths {
          *     arrives and every 30 seconds. An API key or token needs `conversations:read`, and contact
          *     events reach it only with `contacts:read`. `inbox.created` reaches owners,
          *     admins and API keys (an agent learns of a new inbox from `inbox_access.changed`);
-         *     `inbox.deleted` reaches everyone who could see the inbox. `conversation.read` reaches only
-         *     the connections of the member who read. `typing` (a contact or another member typing) has no
+         *     `inbox.deleted` reaches everyone who could see the inbox. `conversation.read` and
+         *     `conversation.pin` reach only the connections of the member who read or pinned. `typing` (a contact or another member typing) has no
          *     `id`, is not stored and is not replayed. `member.presence` (a member of the workspace opened
          *     or closed the panel or changed `availability`) reaches member sessions only, also has no
          *     `id` and is not replayed; so does `viewing` (another member opened or left a conversation),
          *     which follows inbox access like conversation events. `contact.presence` (a contact
          *     connected to or disconnected from `/client/v1/realtime`) follows contact events, also has no
-         *     `id` and is not replayed.
+         *     `id` and is not replayed. `contact.read` (the contact read the conversation up to a
+         *     message) follows conversation events.
          *
          *     A member session's open connection also makes the member available to contacts of `live`
          *     inboxes they can access (see `availability` on `/v1/me`).
@@ -2214,6 +2327,8 @@ export interface paths {
          * Mark a conversation read
          * @description Moves the contact's read cursor to `message_id`, or to the latest message when it is
          *     absent; it only moves forward. Replies the contact has read are not e-mailed to them.
+         *     When it moves, members see it as the conversation's `last_read_by_contact_at` and a
+         *     `contact.read` event on `/v1/realtime`.
          */
         post: operations["markClientConversationRead"];
         delete?: never;
@@ -3950,6 +4065,14 @@ export interface components {
              */
             closed_at?: string;
             rating?: components["schemas"]["ConversationRating"];
+            /**
+             * Format: date-time
+             * @description The contact has read every message created at or before this time, in the widget or
+             *     an app (`POST /client/v1/conversations/{id}/read`). Absent until the contact has read
+             *     anything, and in conversations the contact only reaches by e-mail. A `contact.read`
+             *     event tells when it moves.
+             */
+            last_read_by_contact_at?: string;
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
@@ -4064,14 +4187,74 @@ export interface components {
             last_message?: components["schemas"]["MessagePreview"];
             /**
              * @description A message or note from someone other than the calling member is newer than the
-             *     member's read cursor. Always `false` for API keys.
+             *     member's read cursor, or the member marked it unread. Always `false` for API keys.
              */
             unread: boolean;
+            /**
+             * Format: date-time
+             * @description When the calling member pinned it; absent when they did not, and for API keys.
+             */
+            pinned_at?: string;
         };
         ConversationPage: {
             items: components["schemas"]["ConversationListItem"][];
             /** @description Absent on the last page. */
             next_cursor?: string;
+        };
+        /** @description Enough of a conversation to show where an item belongs. */
+        ConversationSummary: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            subject: string;
+            status: components["schemas"]["ConversationStatus"];
+            contact: components["schemas"]["ConversationContact"];
+        };
+        MentionNote: {
+            /** Format: uuid */
+            id: string;
+            /** @description The plain-text body on one line, cut to 140 characters with `…` when longer. */
+            text: string;
+            author: components["schemas"]["MessageAuthor"];
+            /** Format: date-time */
+            created_at: string;
+        };
+        Mention: {
+            note: components["schemas"]["MentionNote"];
+            conversation: components["schemas"]["ConversationSummary"];
+            /** @description The calling member has read the conversation up to this note. */
+            seen: boolean;
+        };
+        MentionPage: {
+            items: components["schemas"]["Mention"][];
+            /** @description Absent on the last page. */
+            next_cursor?: string;
+            /**
+             * Format: int64
+             * @description Unseen mentions over all pages.
+             */
+            unseen: number;
+        };
+        /**
+         * @description `bot`: written with an API key. `assistant`: written by a member through an OAuth client.
+         *     `member`: written by a member in the panel.
+         * @enum {string}
+         */
+        DraftAuthorKind: "bot" | "assistant" | "member";
+        DraftItem: {
+            draft: components["schemas"]["Message"];
+            conversation: components["schemas"]["ConversationSummary"];
+        };
+        DraftPage: {
+            items: components["schemas"]["DraftItem"][];
+            /** @description Absent on the last page. */
+            next_cursor?: string;
+            /**
+             * Format: int64
+             * @description Drafts matching the filters over all pages.
+             */
+            total: number;
         };
         CountByID: {
             /** Format: uuid */
@@ -4183,7 +4366,20 @@ export interface components {
              * @description Absent when the conversation has nothing to read yet.
              */
             last_read_message_id?: string;
+            /** @description Something is newer than the cursor, or the member marked it unread. */
             unread: boolean;
+        };
+        /** @description Whether a member pinned a conversation to the top of their lists. */
+        ConversationPin: {
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: uuid */
+            member_id: string;
+            /**
+             * Format: date-time
+             * @description Absent when it is not pinned.
+             */
+            pinned_at?: string;
         };
         /**
          * @description `message` goes to or comes from the contact, `note` is for members only, `event` records a
@@ -4695,6 +4891,56 @@ export interface components {
             created_at: string;
             data: components["schemas"]["ConversationRead"];
         };
+        /** @description The contact's read position in a conversation. */
+        ContactRead: {
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: uuid */
+            last_read_message_id: string;
+            /**
+             * Format: date-time
+             * @description The contact has read every message created at or before this time.
+             */
+            read_at: string;
+        };
+        /** @description The contact read the conversation further, in the widget or an app. */
+        ContactReadEvent: {
+            /** Format: int64 */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "contact.read";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["ContactRead"];
+        };
+        /** @description The receiving member pinned or unpinned a conversation, in this or another tab or device. */
+        ConversationPinEvent: {
+            /** Format: int64 */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "conversation.pin";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["ConversationPin"];
+        };
         /** @description A member was given or lost access to an inbox. Reload the inboxes and conversations when it is about you. */
         InboxAccessChangedEvent: {
             /** Format: int64 */
@@ -4751,7 +4997,7 @@ export interface components {
             type: "resync_required";
         };
         /** @description An event as `GET /v1/events` returns it, told apart by `type`; the same objects realtime and webhooks carry. */
-        StoredEvent: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"];
+        StoredEvent: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"];
         EventPage: {
             events: components["schemas"]["StoredEvent"][];
             /**
@@ -4770,7 +5016,7 @@ export interface components {
             id: number;
         };
         /** @description One server message on `/v1/realtime`, told apart by `type`. */
-        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ContactPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ContactPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
         /**
          * @description `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
          *     hours. `away`: never shown as available.
@@ -6106,6 +6352,37 @@ export interface operations {
             404: components["responses"]["Problem"];
         };
     };
+    listMentions: {
+        parameters: {
+            query?: {
+                /** @description The `next_cursor` of the previous page. */
+                cursor?: components["parameters"]["Cursor"];
+                /** @description Page size, 1 to 100; 25 by default. */
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of mentions. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MentionPage"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
     getWorkspace: {
         parameters: {
             query?: never;
@@ -7368,6 +7645,11 @@ export interface operations {
                 kind?: components["schemas"]["ConversationKind"];
                 /** @description Only feedback of this category (implies `kind=feedback`). */
                 category?: components["schemas"]["FeedbackCategory"];
+                /**
+                 * @description `true` lists only the conversations the calling member pinned, `false` only the others;
+                 *     without it, both. Member sessions only (`400 validation_failed` for API keys).
+                 */
+                pinned?: boolean;
                 /** @description Full-text search (Postgres `simple` configuration, `websearch` syntax). */
                 q?: components["parameters"]["Search"];
                 /** @description The `next_cursor` of the previous page. */
@@ -7738,6 +8020,92 @@ export interface operations {
             404: components["responses"]["Problem"];
         };
     };
+    markConversationUnread: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The member's read state. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationRead"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    pinConversation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The member's pin. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationPin"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    unpinConversation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The member's pin, without `pinned_at`. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationPin"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     setMemberTyping: {
         parameters: {
             query?: never;
@@ -7764,6 +8132,41 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    listDrafts: {
+        parameters: {
+            query?: {
+                /** @description Only drafts in this inbox. An inbox the caller cannot see answers `404`. */
+                inbox_id?: string;
+                author?: components["schemas"]["DraftAuthorKind"];
+                /** @description The `next_cursor` of the previous page. */
+                cursor?: components["parameters"]["Cursor"];
+                /** @description Page size, 1 to 100; 25 by default. */
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of drafts. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DraftPage"];
+                };
             };
             400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];

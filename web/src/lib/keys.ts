@@ -1,6 +1,8 @@
-import type { ConversationQuery } from "@/lib/api"
+import type { ConversationQuery, DraftAuthorKind } from "@/lib/api"
 
 export type ConversationFilters = Omit<ConversationQuery, "cursor" | "limit">
+
+export type DraftFilters = { inbox_id?: string; author?: DraftAuthorKind }
 
 export const keys = {
   workspace: (ws: string) => ["ws", ws, "workspace"] as const,
@@ -35,4 +37,7 @@ export const keys = {
   messageEmail: (ws: string, id: string) => ["ws", ws, "message-email", id] as const,
   passkeys: ["me", "passkeys"] as const,
   notifications: (ws: string) => ["ws", ws, "notifications"] as const,
+  mentions: (ws: string) => ["ws", ws, "mentions"] as const,
+  draftLists: (ws: string) => ["ws", ws, "drafts"] as const,
+  drafts: (ws: string, f: DraftFilters) => ["ws", ws, "drafts", f] as const,
 }

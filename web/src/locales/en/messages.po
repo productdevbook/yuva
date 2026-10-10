@@ -12,34 +12,51 @@ msgid "(you)"
 msgstr "(you)"
 
 #. placeholder {0}: load.get(m.id) ?? 0
-#: src/features/conversation/LaterActions.tsx
+#: src/features/conversation/HeaderActions.tsx
 msgid "{0, plural, one {# conversation} other {# conversations}}"
 msgstr "{0, plural, one {# conversation} other {# conversations}}"
 
 #. placeholder {0}: c.activity.open_conversations
-#: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ContactsColumn.tsx
 msgid "{0, plural, one {# open} other {# open}}"
 msgstr "{0, plural, one {# open} other {# open}}"
+
+#. placeholder {0}: g.requests_this_month
+#: src/features/inbox/SidePanels.tsx
+msgid "{0, plural, one {# request this month} other {# requests this month}}"
+msgstr "{0, plural, one {# request this month} other {# requests this month}}"
 
 #. placeholder {0}: g.requests_this_month
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "{0, plural, one {# request} other {# requests}}"
 msgstr "{0, plural, one {# request} other {# requests}}"
 
+#. placeholder {0}: fmt.format(s.members.length)
+#: src/features/reports/ReportsColumn.tsx
+msgid "{0} active today"
+msgstr "{0} active today"
+
 #. placeholder {0}: done.length
-#: src/features/inbox/QueuePage.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "{0} closed"
 msgstr "{0} closed"
 
-#. placeholder {0}: viewer.name || viewer.email
-#: src/features/inbox/ListPage.tsx
-msgid "{0} is looking"
-msgstr "{0} is looking"
-
 #. placeholder {0}: items.length
-#: src/features/inbox/QueuePage.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "{0} marked as spam · no reply needed"
 msgstr "{0} marked as spam · no reply needed"
+
+#. placeholder {0}: hitIndex + 1
+#. placeholder {1}: hits.length
+#: src/features/conversation/ChatView.tsx
+msgid "{0} of {1}"
+msgstr "{0} of {1}"
+
+#. placeholder {0}: fmt.format(s.replies)
+#. placeholder {1}: fmt.format(s.closed)
+#: src/features/reports/ReportsColumn.tsx
+msgid "{0} replies · {1} closed"
+msgstr "{0} replies · {1} closed"
 
 #. placeholder {0}: i.name
 #: src/app/Palette.tsx
@@ -86,11 +103,7 @@ msgstr "{actor} reopened the conversation"
 msgid "{actor} set the status to {status}"
 msgstr "{actor} set the status to {status}"
 
-#: src/features/conversation/messages/Talk.tsx
-msgid "{author} · only the team sees this"
-msgstr "{author} · only the team sees this"
-
-#: src/features/conversation/messages/Talk.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, sent by {by}"
 
@@ -118,7 +131,7 @@ msgstr "{count} events"
 msgid "{count} settings"
 msgstr "{count} settings"
 
-#: src/features/conversation/PersonHeader.tsx
+#: src/features/conversation/ConversationStatus.tsx
 msgid "{days, plural, one {Waiting for # day} other {Waiting for # days}}"
 msgstr "{days, plural, one {Waiting for # day} other {Waiting for # days}}"
 
@@ -130,15 +143,11 @@ msgstr "{first} comes back {when}"
 msgid "{first} comes back after writing again"
 msgstr "{first} comes back after writing again"
 
-#: src/features/conversation/actions.ts
-msgid "{first} is at the end of the queue"
-msgstr "{first} is at the end of the queue"
-
-#: src/features/conversation/messages/Talk.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "{first} rated the conversation 👍"
 msgstr "{first} rated the conversation 👍"
 
-#: src/features/conversation/messages/Talk.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "{first} rated the conversation 👎"
 msgstr "{first} rated the conversation 👎"
 
@@ -146,11 +155,11 @@ msgstr "{first} rated the conversation 👎"
 msgid "{good} good"
 msgstr "{good} good"
 
-#: src/features/conversation/PersonHeader.tsx
+#: src/features/conversation/ConversationStatus.tsx
 msgid "{hours, plural, one {Waiting for # hour} other {Waiting for # hours}}"
 msgstr "{hours, plural, one {Waiting for # hour} other {Waiting for # hours}}"
 
-#: src/features/conversation/PersonHeader.tsx
+#: src/features/conversation/ConversationStatus.tsx
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
 msgstr "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
 
@@ -158,29 +167,18 @@ msgstr "{minutes, plural, one {Waiting for # minute} other {Waiting for # minute
 msgid "{n, plural, one {# other conversation} other {# other conversations}}"
 msgstr "{n, plural, one {# other conversation} other {# other conversations}}"
 
-#: src/features/inbox/ListPage.tsx
-msgid "{n} assigned to you"
-msgstr "{n} assigned to you"
-
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "{n} attempts"
 
-#: src/features/inbox/ListPage.tsx
-msgid "{n} closed"
-msgstr "{n} closed"
-
-#: src/features/inbox/ListPage.tsx
-msgid "{n} selected"
-msgstr "{n} selected"
-
-#: src/features/inbox/ListPage.tsx
-msgid "{n} snoozed"
-msgstr "{n} snoozed"
-
 #: src/app/UserMenu.tsx
 msgid "{name} · {statusText}"
 msgstr "{name} · {statusText}"
+
+#: src/features/team/MemberPage.tsx
+#: src/features/team/TeamColumn.tsx
+msgid "{name} (you)"
+msgstr "{name} (you)"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "{name} can reply"
@@ -194,7 +192,7 @@ msgstr "{name} connects from its vendor's cloud, so it needs this server at a pu
 msgid "{name} docs"
 msgstr "{name} docs"
 
-#: src/features/conversation/PersonHeader.tsx
+#: src/features/conversation/ConversationStatus.tsx
 msgid "{name} is looking"
 msgstr "{name} is looking"
 
@@ -210,8 +208,8 @@ msgstr "{name} is ready. Reply to it, and invite your team in Settings › Membe
 msgid "{name} is typing a reply too."
 msgstr "{name} is typing a reply too."
 
-#: src/features/conversation/messages/Talk.tsx
-#: src/features/conversation/PersonHeader.tsx
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "{name} is typing…"
 msgstr "{name} is typing…"
 
@@ -220,6 +218,7 @@ msgid "{name} replied before you."
 msgstr "{name} replied before you."
 
 #: src/features/conversation/messages/context.ts
+#: src/features/inbox/SidePanels.tsx
 msgid "{name} via {via}"
 msgstr "{name} via {via}"
 
@@ -227,9 +226,13 @@ msgstr "{name} via {via}"
 msgid "{names} will be notified"
 msgstr "{names} will be notified"
 
-#: src/features/conversation/Facts.tsx
-msgid "{others} other conversations"
-msgstr "{others} other conversations"
+#: src/features/team/TeamColumn.tsx
+msgid "{open, plural, one {# open} other {# open}}"
+msgstr "{open, plural, one {# open} other {# open}}"
+
+#: src/features/reports/ReportsColumn.tsx
+msgid "{pct} satisfied"
+msgstr "{pct} satisfied"
 
 #: src/app/TeamMenu.tsx
 msgid "{replies, plural, one {# reply} other {# replies}}"
@@ -239,25 +242,17 @@ msgstr "{replies, plural, one {# reply} other {# replies}}"
 msgid "{satisfied} satisfied"
 msgstr "{satisfied} satisfied"
 
+#: src/features/inbox/SidePanels.tsx
+msgid "{who} in {contact}"
+msgstr "{who} in {contact}"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
 msgstr "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
 
-#: src/features/conversation/QueueConversation.tsx
-msgid "← later"
-msgstr "← later"
-
 #: src/features/contact/ContactDetails.tsx
 msgid "+ Add address"
 msgstr "+ Add address"
-
-#: src/features/inbox/WaitingPill.tsx
-msgid "<0>{n}</0> waiting"
-msgstr "<0>{n}</0> waiting"
-
-#: src/features/inbox/WaitingPill.tsx
-msgid "<0>{n}</0> waiting for you"
-msgstr "<0>{n}</0> waiting for you"
 
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "<0>Android:</0> add the library from <1>sdk/kotlin</1> in the Yuva repository and configure it with the same two values."
@@ -278,10 +273,6 @@ msgstr "1 attempt"
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "1 event"
 msgstr "1 event"
-
-#: src/features/conversation/Facts.tsx
-msgid "1 other conversation"
-msgstr "1 other conversation"
 
 #: src/features/settings/channels/ChannelSummary.tsx
 msgid "1 setting"
@@ -331,6 +322,10 @@ msgstr "A custom connector, for claude.ai and Claude Desktop. It acts as you, wi
 msgid "A custom MCP server in ChatGPT on the web. It acts as you, with the access you allow."
 msgstr "A custom MCP server in ChatGPT on the web. It acts as you, with the access you allow."
 
+#: src/features/settings/notifications/TabAlertsSection.tsx
+msgid "A desktop notification and a short sound for new messages in conversations assigned to you or to nobody."
+msgstr "A desktop notification and a short sound for new messages in conversations assigned to you or to nobody."
+
 #: src/components/common/text.ts
 msgid "A draft was discarded"
 msgstr "A draft was discarded"
@@ -375,8 +370,8 @@ msgstr "A note for the team… type @ to mention a teammate"
 msgid "A question about {name}"
 msgstr "A question about {name}"
 
-#: src/features/conversation/PersonHeader.tsx
-#: src/features/conversation/QueueConversation.tsx
+#: src/features/conversation/ChatView.tsx
+#: src/features/conversation/ConversationStatus.tsx
 msgid "A teammate"
 msgstr "A teammate"
 
@@ -397,7 +392,7 @@ msgstr "Acme Support"
 msgid "Add"
 msgstr "Add"
 
-#: src/features/conversation/LaterActions.tsx
+#: src/features/conversation/HeaderActions.tsx
 msgid "Add a note (optional)"
 msgstr "Add a note (optional)"
 
@@ -410,8 +405,9 @@ msgid "Add a remote server with the Streamable HTTP transport and the server URL
 msgstr "Add a remote server with the Streamable HTTP transport and the server URL. Many clients take a configuration like this:"
 
 #: src/app/Palette.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/settings/notifications/InboxOverrides.tsx
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
 msgstr "Add an inbox"
 
@@ -479,17 +475,17 @@ msgstr "Agent"
 msgid "Agree who replies."
 msgstr "Agree who replies."
 
-#: src/app/TopBar.tsx
+#: src/features/settings/notifications/TabAlertsSection.tsx
+msgid "Alert me while the tab is in the background"
+msgstr "Alert me while the tab is in the background"
+
 #: src/features/contact/ContactDetails.tsx
-#: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ContactsColumn.tsx
+#: src/features/inbox/ChatList.tsx
+#: src/features/inbox/SidePanels.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 msgid "All"
 msgstr "All"
-
-#: src/app/Palette.tsx
-#: src/features/inbox/QueuePage.tsx
-msgid "All conversations"
-msgstr "All conversations"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/InboxPicker.tsx
@@ -521,6 +517,10 @@ msgstr "Allow anonymous users"
 #: src/features/setup/AddChannelStep.tsx
 msgid "Allow anonymous visitors"
 msgstr "Allow anonymous visitors"
+
+#: src/features/settings/notifications/TabAlertsSection.tsx
+msgid "Allow desktop notifications"
+msgstr "Allow desktop notifications"
 
 #: src/features/oauth/ConsentPage.tsx
 msgid "Allow it to"
@@ -606,7 +606,7 @@ msgstr "API"
 
 #: src/app/Palette.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "API keys"
 msgstr "API keys"
 
@@ -619,10 +619,6 @@ msgstr "App"
 msgid "App builds with the old key can no longer start sessions until you ship one with the new key. People already signed in keep their session."
 msgstr "App builds with the old key can no longer start sessions until you ship one with the new key. People already signed in keep their session."
 
-#: src/features/contact/ContactsPage.tsx
-msgid "App ids"
-msgstr "App ids"
-
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Appear online only in business hours"
 msgstr "Appear online only in business hours"
@@ -630,7 +626,7 @@ msgstr "Appear online only in business hours"
 #: src/app/Palette.tsx
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "Appearance"
 msgstr "Appearance"
 
@@ -658,10 +654,31 @@ msgstr "Ask for a rating after closing"
 msgid "Ask for an e-mail address when offline"
 msgstr "Ask for an e-mail address when offline"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "Assign (A)"
+msgstr "Assign (A)"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Assign or hand to a teammate"
+msgstr "Assign or hand to a teammate"
+
 #: src/features/conversation/ConversationMenu.tsx
-#: src/features/inbox/ListPage.tsx
+#: src/features/conversation/HeaderActions.tsx
 msgid "Assign to me"
 msgstr "Assign to me"
+
+#. placeholder {0}: assignee.name || assignee.email
+#: src/features/conversation/ChatView.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Assigned to {0}"
+msgstr "Assigned to {0}"
+
+#: src/app/Rail.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Assistants"
+msgstr "Assistants"
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Assistants and apps that members connected with their own sign-in. Each acts as that member, only within the access they allowed. As an owner or admin you see and can revoke every member's connections."
@@ -670,6 +687,10 @@ msgstr "Assistants and apps that members connected with their own sign-in. Each 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Assistants and apps you connected with your sign-in. Each acts as you, only within the access you allowed."
 msgstr "Assistants and apps you connected with your sign-in. Each acts as you, only within the access you allowed."
+
+#: src/app/Rail.tsx
+msgid "Assistants, {drafts} drafts waiting"
+msgstr "Assistants, {drafts} drafts waiting"
 
 #: src/components/common/text.ts
 msgid "Async"
@@ -696,12 +717,12 @@ msgstr "Attempts"
 msgid "Attributes"
 msgstr "Attributes"
 
-#: src/features/conversation/messages/Talk.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Auto-reply"
 msgstr "Auto-reply"
 
-#: src/features/conversation/messages/Talk.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "Automatic mail never triggers an automatic reply."
 
@@ -709,9 +730,13 @@ msgstr "Automatic mail never triggers an automatic reply."
 msgid "Available"
 msgstr "Available"
 
+#: src/features/team/TeamColumn.tsx
+msgid "available now"
+msgstr "available now"
+
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
-#: src/features/conversation/LaterActions.tsx
+#: src/features/conversation/HeaderActions.tsx
 msgid "Away"
 msgstr "Away"
 
@@ -720,9 +745,9 @@ msgstr "Away"
 msgid "Back"
 msgstr "Back"
 
-#: src/features/conversation/QueueConversation.tsx
-msgid "Back to the queue"
-msgstr "Back to the queue"
+#: src/features/conversation/ChatView.tsx
+msgid "Back to the list"
+msgstr "Back to the list"
 
 #: src/features/conversation/ConversationMenu.tsx
 msgid "Back to waiting"
@@ -742,7 +767,9 @@ msgid "Blocked"
 msgstr "Blocked"
 
 #: src/features/contact/ContactNotes.tsx
-#: src/features/conversation/QueueConversation.tsx
+#: src/features/conversation/ChatView.tsx
+#: src/features/inbox/ChatList.tsx
+#: src/features/inbox/SidePanels.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Bot"
@@ -756,6 +783,10 @@ msgstr "Bot avatar"
 msgid "Bot name"
 msgstr "Bot name"
 
+#: src/features/inbox/SidePanels.tsx
+msgid "Bots"
+msgstr "Bots"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Bots may send"
 msgstr "Bots may send"
@@ -768,10 +799,6 @@ msgstr "Bottom left"
 msgid "Bottom right"
 msgstr "Bottom right"
 
-#: src/features/contact/ContactPage.tsx
-msgid "Breadcrumb"
-msgstr "Breadcrumb"
-
 #: src/components/common/text.ts
 msgid "Bug"
 msgstr "Bug"
@@ -780,6 +807,11 @@ msgstr "Bug"
 msgid "Business hours"
 msgstr "Business hours"
 
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "By member"
+msgstr "By member"
+
 #: src/features/auth/AuthLayout.tsx
 msgid "Can I schedule a newsletter for each subscriber?"
 msgstr "Can I schedule a newsletter for each subscriber?"
@@ -787,6 +819,7 @@ msgstr "Can I schedule a newsletter for each subscriber?"
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Cancel"
 msgstr "Cancel"
@@ -795,7 +828,7 @@ msgstr "Cancel"
 #: src/features/conversation/composer/CannedMenu.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "Canned replies"
 msgstr "Canned replies"
 
@@ -811,7 +844,7 @@ msgstr "Canned reply"
 msgid "Category"
 msgstr "Category"
 
-#: src/features/conversation/messages/Talk.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Cc: {cc}"
 msgstr "Cc: {cc}"
 
@@ -852,6 +885,10 @@ msgstr "Check your e-mail"
 msgid "Choose a workspace"
 msgstr "Choose a workspace"
 
+#: src/features/inbox/ChatsPage.tsx
+msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
+msgstr "Choose one from the list, or move with ↑ ↓ and open it with Enter."
+
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "claude.ai and Claude Desktop"
 msgstr "claude.ai and Claude Desktop"
@@ -860,14 +897,10 @@ msgstr "claude.ai and Claude Desktop"
 msgid "Clear"
 msgstr "Clear"
 
-#: src/features/inbox/ListSearchBox.tsx
+#: src/features/contact/ContactsColumn.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Clear the search"
 msgstr "Clear the search"
-
-#: src/components/common/ShortcutSheet.tsx
-#: src/features/inbox/ListPage.tsx
-msgid "Clear the selection"
-msgstr "Clear the selection"
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "CLI and IDE extension"
@@ -876,37 +909,45 @@ msgstr "CLI and IDE extension"
 #: src/components/ui/dialog.tsx
 #: src/components/ui/sheet.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/inbox/AllDrawer.tsx
 msgid "Close"
 msgstr "Close"
 
-#: src/features/inbox/ListPage.tsx
+#: src/features/conversation/HeaderActions.tsx
 msgctxt "conversation"
 msgid "Close"
 msgstr "Close"
 
-#: src/features/conversation/QueueConversation.tsx
-msgid "close →"
-msgstr "close →"
+#: src/features/conversation/HeaderActions.tsx
+msgid "Close (E)"
+msgstr "Close (E)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Close a panel or leave a field"
 msgstr "Close a panel or leave a field"
 
-#: src/features/inbox/QueuePage.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Close all"
 msgstr "Close all"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
-msgid "Close without a reply"
-msgstr "Close without a reply"
+msgid "Close or reopen"
+msgstr "Close or reopen"
 
-#: src/features/conversation/LaterActions.tsx
-msgid "Close without reply"
-msgstr "Close without reply"
+#: src/features/conversation/ChatView.tsx
+msgid "Close the search"
+msgstr "Close the search"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Close the search (Esc)"
+msgstr "Close the search (Esc)"
+
+#: src/features/reports/ReportPages.tsx
+msgid "closed"
+msgstr "closed"
 
 #: src/components/common/text.ts
+#: src/features/reports/ReportPages.tsx
 msgid "Closed"
 msgstr "Closed"
 
@@ -914,13 +955,10 @@ msgstr "Closed"
 msgid "Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Leave empty to keep everything."
 msgstr "Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Leave empty to keep everything."
 
-#: src/features/inbox/QueuePage.tsx
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/team/MemberPage.tsx
 msgid "closed today"
 msgstr "closed today"
-
-#: src/features/conversation/actions.ts
-msgid "Closed without a reply"
-msgstr "Closed without a reply"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Closes"
@@ -942,6 +980,10 @@ msgstr "Colour"
 msgid "Confirm the warning and select <0>Create as a plugin</0>. ChatGPT registers itself with this server."
 msgstr "Confirm the warning and select <0>Create as a plugin</0>. ChatGPT registers itself with this server."
 
+#: src/features/inbox/SidePanels.tsx
+msgid "Connect"
+msgstr "Connect"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "Connect {clientName} to Yuva?"
 msgstr "Connect {clientName} to Yuva?"
@@ -951,7 +993,11 @@ msgstr "Connect {clientName} to Yuva?"
 msgid "Connect an assistant"
 msgstr "Connect an assistant"
 
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Connect an assistant such as Claude or ChatGPT"
+msgstr "Connect an assistant such as Claude or ChatGPT"
+
+#: src/features/settings/SettingsColumn.tsx
 msgid "Connect your servers and bots to Yuva"
 msgstr "Connect your servers and bots to Yuva"
 
@@ -964,9 +1010,10 @@ msgid "Connected {created}"
 msgstr "Connected {created}"
 
 #: src/app/Palette.tsx
+#: src/features/inbox/SidePanels.tsx
 #: src/features/settings/connected-apps/AssistantPage.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "Connected apps"
 msgstr "Connected apps"
 
@@ -987,7 +1034,7 @@ msgid "Connections"
 msgstr "Connections"
 
 #: src/features/contact/ContactSheet.tsx
-#: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/SidePanels.tsx
 msgid "Contact"
 msgstr "Contact"
 
@@ -997,13 +1044,12 @@ msgstr "Contact and identities"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/contact/ContactSheet.tsx
 #: src/features/conversation/ConversationMenu.tsx
-#: src/features/conversation/Facts.tsx
 msgid "Contact details"
 msgstr "Contact details"
 
-#: src/features/conversation/ListPreview.tsx
-#: src/features/conversation/PersonHeader.tsx
+#: src/features/conversation/ChatView.tsx
 msgid "Contact details (C)"
 msgstr "Contact details (C)"
 
@@ -1013,17 +1059,14 @@ msgid "Contact since {since}"
 msgstr "Contact since {since}"
 
 #: src/app/Palette.tsx
-#: src/app/TopBar.tsx
+#: src/app/Rail.tsx
 #: src/app/UserMenu.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactPage.tsx
-#: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ContactsColumn.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Contacts"
 msgstr "Contacts"
-
-#: src/app/TopBar.tsx
-msgid "Contacts (G C)"
-msgstr "Contacts (G C)"
 
 #: src/features/setup/AddChannelStep.tsx
 #: src/features/setup/InstallStep.tsx
@@ -1031,16 +1074,29 @@ msgstr "Contacts (G C)"
 msgid "Continue"
 msgstr "Continue"
 
+#: src/features/conversation/actions.ts
+msgid "Conversation closed"
+msgstr "Conversation closed"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Conversation list"
+msgstr "Conversation list"
+
+#: src/features/conversation/actions.ts
+msgid "Conversation reopened"
+msgstr "Conversation reopened"
+
 #: src/features/contact/ContactPage.tsx
 msgid "conversations"
 msgstr "conversations"
 
+#: src/app/Rail.tsx
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactPage.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/MergePreview.tsx
-#: src/features/inbox/AllDrawer.tsx
-#: src/features/inbox/ListPage.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Conversations"
 msgstr "Conversations"
 
@@ -1048,12 +1104,18 @@ msgstr "Conversations"
 msgid "Conversations that started on it keep their messages."
 msgstr "Conversations that started on it keep their messages."
 
+#: src/app/Rail.tsx
+msgid "Conversations, {unread} unread"
+msgstr "Conversations, {unread} unread"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/Feedback.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 msgid "Copied"
 msgstr "Copied"
 
 #: src/components/common/CopyButton.tsx
+#: src/features/conversation/messages/MessageActions.tsx
 msgid "Copy"
 msgstr "Copy"
 
@@ -1081,6 +1143,10 @@ msgstr "Copy the feedback details"
 #: src/features/setup/InstallStep.tsx
 msgid "Copy the lines below. They already contain this server's address and the channel's public key, which is not a secret."
 msgstr "Copy the lines below. They already contain this server's address and the channel's public key, which is not a secret."
+
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Could not copy"
+msgstr "Could not copy"
 
 #: src/app/Gate.tsx
 #: src/features/oauth/ConsentPage.tsx
@@ -1144,7 +1210,7 @@ msgstr "Darken the colours to match the theme"
 msgid "Data retention"
 msgstr "Data retention"
 
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "Data retention and deleting the workspace"
 msgstr "Data retention and deleting the workspace"
 
@@ -1205,10 +1271,13 @@ msgstr "Delete this workspace"
 msgid "Delete your account?"
 msgstr "Delete your account?"
 
+#: src/features/reports/ReportPages.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Deleted inbox"
 msgstr "Deleted inbox"
 
+#: src/features/inbox/SidePanels.tsx
+#: src/features/reports/ReportPages.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Deleted member"
 msgstr "Deleted member"
@@ -1241,21 +1310,28 @@ msgstr "Deny"
 msgid "Description (optional)"
 msgstr "Description (optional)"
 
+#: src/features/settings/notifications/TabAlertsSection.tsx
+msgid "Desktop notifications are allowed."
+msgstr "Desktop notifications are allowed."
+
+#: src/features/settings/notifications/TabAlertsSection.tsx
+msgid "Desktop notifications are blocked for this site in the browser's settings, so only the sound plays."
+msgstr "Desktop notifications are blocked for this site in the browser's settings, so only the sound plays."
+
 #: src/features/contact/ContactPage.tsx
 #: src/features/contact/ContactSheet.tsx
 msgid "Details"
 msgstr "Details"
 
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "Developer"
 msgstr "Developer"
 
-#: src/features/conversation/Facts.tsx
 #: src/features/conversation/Feedback.tsx
 msgid "Device"
 msgstr "Device"
 
-#: src/features/conversation/messages/Talk.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Discard"
 msgstr "Discard"
 
@@ -1268,7 +1344,7 @@ msgstr "Discard the suggested reply"
 msgid "Display name"
 msgstr "Display name"
 
-#: src/features/conversation/messages/Talk.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "DMARC failed"
 msgstr "DMARC failed"
 
@@ -1284,10 +1360,13 @@ msgstr "Do not both write."
 msgid "Do this later"
 msgstr "Do this later"
 
+#: src/features/contact/ConversationMedia.tsx
+msgid "Documents"
+msgstr "Documents"
+
 #: src/features/contact/ContactDetails.tsx
-#: src/features/conversation/PersonHeader.tsx
-#: src/features/inbox/AllDrawer.tsx
-#: src/features/inbox/ListPage.tsx
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Done"
 msgstr "Done"
@@ -1297,17 +1376,37 @@ msgstr "Done"
 msgid "Download {0}"
 msgstr "Download {0}"
 
-#: src/features/conversation/messages/Talk.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Download the original e-mail (.eml)"
 msgstr "Download the original e-mail (.eml)"
 
-#: src/features/conversation/messages/Talk.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Draft author"
+msgstr "Draft author"
+
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/inbox/SidePanels.tsx
 msgid "Draft by {author}"
 msgstr "Draft by {author}"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Draft text"
+msgstr "Draft text"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Draft:"
+msgstr "Draft:"
+
+#: src/features/inbox/SidePanels.tsx
+msgid "Drafts waiting"
+msgstr "Drafts waiting"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Drop files to attach them to your reply"
+msgstr "Drop files to attach them to your reply"
+
 #: src/components/common/text.ts
 #: src/features/auth/AuthLayout.tsx
-#: src/features/conversation/Facts.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/notifications/EventsSection.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -1354,6 +1453,7 @@ msgstr "E-mail: {label}"
 msgid "Each new e-mail starts a conversation; replies continue it."
 msgstr "Each new e-mail starts a conversation; replies continue it."
 
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -1384,6 +1484,10 @@ msgstr "Edit label"
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Embed snippet"
 msgstr "Embed snippet"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Emoji"
+msgstr "Emoji"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Encryption"
@@ -1434,16 +1538,21 @@ msgstr "Every inbox"
 msgid "Every inbox follows the settings above."
 msgstr "Every inbox follows the settings above."
 
+#: src/features/inbox/ChatList.tsx
+msgid "Every open conversation has someone."
+msgstr "Every open conversation has someone."
+
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Every request to this endpoint, newest first. The newest 100 are kept."
 
-#: src/features/inbox/QueuePage.tsx
+#: src/features/inbox/ChatsPage.tsx
 msgid "Everyone has been answered."
 msgstr "Everyone has been answered."
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Everything"
 msgstr "Everything"
 
@@ -1491,17 +1600,21 @@ msgstr "Failing"
 msgid "Feedback arrived"
 msgstr "Feedback arrived"
 
-#: src/features/conversation/messages/Talk.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Feedback sent from the app"
 msgstr "Feedback sent from the app"
 
-#: src/features/conversation/Facts.tsx
-msgid "First conversation"
-msgstr "First conversation"
+#: src/features/inbox/ChatList.tsx
+msgid "Filter"
+msgstr "Filter"
 
 #: src/features/setup/SetupLayout.tsx
 msgid "First message"
 msgstr "First message"
+
+#: src/features/reports/ReportPages.tsx
+msgid "first replies"
+msgstr "first replies"
 
 #: src/features/contact/ContactPage.tsx
 msgid "first reply"
@@ -1555,9 +1668,21 @@ msgstr "For signed-in users: the identity secret, shown only now"
 msgid "For your backends, scripts and bots. A key acts on this workspace only, within its scopes, and cannot manage members or keys. Its messages show its bot name."
 msgstr "For your backends, scripts and bots. A key acts on this workspace only, within its scopes, and cannot manage members or keys. Its messages show its bot name."
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward as a note mentioning"
+msgstr "Forward as a note mentioning"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
 msgstr "Forward mail for this address to the Cloudflare Email Worker in edge/ of the Yuva repository, or to any mail server that posts each message to this server's ingress URL, signed with YUVA_INGRESS_SECRET:"
+
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Forward to a teammate"
+msgstr "Forward to a teammate"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Forwarded to {label} as a note"
+msgstr "Forwarded to {label} as a note"
 
 #: src/components/common/text.ts
 msgid "Friday"
@@ -1599,6 +1724,10 @@ msgstr "Get the snippet"
 msgid "Go to"
 msgstr "Go to"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Go to the latest message"
+msgstr "Go to the latest message"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Goes out through {via}"
 msgstr "Goes out through {via}"
@@ -1612,17 +1741,11 @@ msgstr "Greeting"
 msgid "Greets new conversations by e-mail, once per contact within the interval. Never sent to automatic mail or spam."
 msgstr "Greets new conversations by e-mail, once per contact within the interval. Never sent to automatic mail or spam."
 
-#: src/app/Palette.tsx
-#: src/components/common/ShortcutSheet.tsx
-#: src/features/conversation/LaterActions.tsx
-msgid "Hand to a teammate"
-msgstr "Hand to a teammate"
-
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "Handed to {name}"
 
-#: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "Has an open conversation"
 
@@ -1663,14 +1786,6 @@ msgstr "Hide the preview"
 msgid "High"
 msgstr "High"
 
-#: src/features/conversation/Facts.tsx
-msgid "History"
-msgstr "History"
-
-#: src/app/TopBar.tsx
-msgid "Home"
-msgstr "Home"
-
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "How HTML e-mails open. You can still switch each message."
 msgstr "How HTML e-mails open. You can still switch each message."
@@ -1683,7 +1798,7 @@ msgstr "I saved it"
 msgid "I'll reply"
 msgstr "I'll reply"
 
-#: src/features/inbox/QueuePage.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "I'm back"
 msgstr "I'm back"
 
@@ -1695,12 +1810,11 @@ msgstr "Idea"
 msgid "Identity secret"
 msgstr "Identity secret"
 
-#: src/features/conversation/LaterActions.tsx
-#: src/features/inbox/ListPage.tsx
+#: src/features/conversation/HeaderActions.tsx
 msgid "In 1 hour"
 msgstr "In 1 hour"
 
-#: src/features/conversation/LaterActions.tsx
+#: src/features/conversation/HeaderActions.tsx
 msgid "in an hour"
 msgstr "in an hour"
 
@@ -1724,6 +1838,10 @@ msgstr "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgid "In the app and by e-mail"
 msgstr "In the app and by e-mail"
 
+#: src/features/settings/notifications/TabAlertsSection.tsx
+msgid "In this browser tab"
+msgstr "In this browser tab"
+
 #: src/features/auth/AuthLayout.tsx
 msgid "In-app"
 msgstr "In-app"
@@ -1741,7 +1859,7 @@ msgstr "Inbox color"
 
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "Inboxes"
 msgstr "Inboxes"
 
@@ -1843,15 +1961,7 @@ msgstr "It will no longer receive notifications."
 msgid "Its access ends at once. To use it again, connect it again."
 msgstr "Its access ends at once. To use it again, connect it again."
 
-#: src/features/conversation/ListPreview.tsx
-msgid "J / K to move · X to select · E to close · Enter for full screen"
-msgstr "J / K to move · X to select · E to close · Enter for full screen"
-
-#: src/features/conversation/LaterActions.tsx
-msgid "Just move it to the end of the queue"
-msgstr "Just move it to the end of the queue"
-
-#: src/features/conversation/PersonHeader.tsx
+#: src/features/conversation/ConversationStatus.tsx
 msgid "Just wrote"
 msgstr "Just wrote"
 
@@ -1862,6 +1972,7 @@ msgstr "Keep"
 #: src/app/Palette.tsx
 #: src/app/UserMenu.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Keyboard shortcuts"
 msgstr "Keyboard shortcuts"
 
@@ -1873,21 +1984,21 @@ msgstr "Keys"
 msgid "Kind"
 msgstr "Kind"
 
-#: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ContactsColumn.tsx
 msgid "Known"
 msgstr "Known"
 
 #: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/labels/LabelsPage.tsx
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "Labels"
 msgstr "Labels"
 
-#: src/app/Palette.tsx
-#: src/components/common/ShortcutSheet.tsx
-msgid "Labels, priority, inbox"
-msgstr "Labels, priority, inbox"
+#: src/features/conversation/HeaderActions.tsx
+msgid "Labels (L)"
+msgstr "Labels (L)"
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
@@ -1901,10 +2012,6 @@ msgstr "Language"
 #: src/features/settings/webhooks/Deliveries.tsx
 msgid "Last attempt"
 msgstr "Last attempt"
-
-#: src/features/contact/ContactsPage.tsx
-msgid "Last conversation"
-msgstr "Last conversation"
 
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Last push failed: {failed}"
@@ -1923,14 +2030,15 @@ msgstr "last seen {seenText}"
 msgid "last used {used}"
 msgstr "last used {used}"
 
+#: src/features/inbox/SidePanels.tsx
+msgid "Last used {used}"
+msgstr "Last used {used}"
+
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Latency"
 msgstr "Latency"
 
-#: src/app/Palette.tsx
 #: src/components/common/ServiceWorkerBridge.tsx
-#: src/components/common/ShortcutSheet.tsx
-#: src/features/conversation/LaterActions.tsx
 msgid "Later"
 msgstr "Later"
 
@@ -1959,10 +2067,9 @@ msgstr "Light"
 msgid "Light appearance"
 msgstr "Light appearance"
 
-#: src/app/ViewToggle.tsx
-#: src/components/common/ShortcutSheet.tsx
-msgid "List"
-msgstr "List"
+#: src/features/contact/ConversationMedia.tsx
+msgid "Links"
+msgstr "Links"
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/setup/AddChannelStep.tsx
@@ -1991,20 +2098,28 @@ msgstr "Load images"
 
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactPage.tsx
+#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
+#: src/features/team/MemberPage.tsx
 msgid "Load more"
 msgstr "Load more"
 
-#: src/features/conversation/ListPreview.tsx
-#: src/features/conversation/QueueConversation.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Load older messages"
 msgstr "Load older messages"
+
+#: src/features/conversation/composer/EmojiPanel.tsx
+msgid "Loading…"
+msgstr "Loading…"
 
 #: src/features/conversation/Feedback.tsx
 msgid "Locale"
 msgstr "Locale"
+
+#: src/features/contact/ConversationMedia.tsx
+msgid "Look in older messages"
+msgstr "Look in older messages"
 
 #: src/app/TeamMenu.tsx
 msgid "Looking at {where}"
@@ -2047,17 +2162,30 @@ msgstr "Manage webhooks"
 msgid "manual"
 msgstr "manual"
 
+#: src/features/inbox/ChatList.tsx
+msgid "Mark as read"
+msgstr "Mark as read"
+
 #: src/features/conversation/ConversationMenu.tsx
 msgid "Mark as spam"
 msgstr "Mark as spam"
+
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Mark as unread"
+msgstr "Mark as unread"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Mark as unread and go back to the list"
+msgstr "Mark as unread and go back to the list"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "Mark or unmark as spam"
 
-#: src/features/conversation/QueueConversation.tsx
-msgid "Marked as spam: left out of the queue and never answered automatically."
-msgstr "Marked as spam: left out of the queue and never answered automatically."
+#: src/features/conversation/ChatView.tsx
+msgid "Marked as spam: never answered automatically."
+msgstr "Marked as spam: never answered automatically."
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "MCP only"
@@ -2067,17 +2195,29 @@ msgstr "MCP only"
 msgid "MCP only: the assistant tools of this workspace."
 msgstr "MCP only: the assistant tools of this workspace."
 
-#: src/features/inbox/QueuePage.tsx
+#: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ConversationMedia.tsx
+msgid "Media"
+msgstr "Media"
+
+#: src/features/contact/ContactSheet.tsx
+msgid "Media, links and docs"
+msgstr "Media, links and docs"
+
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/reports/ReportPages.tsx
 msgid "median first reply"
 msgstr "median first reply"
 
+#: src/features/reports/ReportPages.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
 msgstr "Member"
 
 #: src/app/Palette.tsx
+#: src/features/inbox/SidePanels.tsx
 #: src/features/settings/members/MembersPage.tsx
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "Members"
 msgstr "Members"
 
@@ -2085,9 +2225,23 @@ msgstr "Members"
 msgid "Mention a teammate"
 msgstr "Mention a teammate"
 
-#: src/features/conversation/messages/Talk.tsx
+#: src/app/Rail.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "Mentions"
+msgstr "Mentions"
+
+#: src/app/Rail.tsx
+msgid "Mentions, {unseen} unseen"
+msgstr "Mentions, {unseen} unseen"
+
+#: src/features/conversation/messages/Thread.tsx
 msgid "Mentions: {names}"
 msgstr "Mentions: {names}"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Menu"
+msgstr "Menu"
 
 #: src/features/contact/ContactPage.tsx
 #: src/features/contact/MergeContactDialog.tsx
@@ -2110,6 +2264,14 @@ msgstr "Message"
 msgid "Message type"
 msgstr "Message type"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Messages"
+msgstr "Messages"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Mine"
+msgstr "Mine"
+
 #: src/components/common/text.ts
 #: src/features/settings/channels/app/AppFields.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -2128,6 +2290,10 @@ msgstr "More actions"
 #: src/features/contact/MergePreview.tsx
 msgid "More than {count} conversations"
 msgstr "More than {count} conversations"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move through the list"
+msgstr "Move through the list"
 
 #: src/features/conversation/ConversationMenu.tsx
 msgid "Move to inbox"
@@ -2158,7 +2324,7 @@ msgstr "Name it Yuva, paste the server URL and leave authentication on signing i
 msgid "Name it Yuva. Under <0>Connection</0> choose <1>Public endpoint</1> and paste the server URL; choose OAuth for authentication."
 msgstr "Name it Yuva. Under <0>Connection</0> choose <1>Public endpoint</1> and paste the server URL; choose OAuth for authentication."
 
-#: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ContactsColumn.tsx
 msgid "Name, e-mail or id"
 msgstr "Name, e-mail or id"
 
@@ -2191,6 +2357,7 @@ msgstr "New canned reply"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactPage.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "New conversation"
 msgstr "New conversation"
 
@@ -2203,8 +2370,8 @@ msgid "New conversation in an async inbox"
 msgstr "New conversation in an async inbox"
 
 #: src/features/setup/WaitStep.tsx
-msgid "New conversations land in your queue, oldest first."
-msgstr "New conversations land in your queue, oldest first."
+msgid "New conversations show up at the top of your conversation list."
+msgstr "New conversations show up at the top of your conversation list."
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "New identity secret"
@@ -2220,6 +2387,7 @@ msgid "New label"
 msgstr "New label"
 
 #: src/features/setup/previews.tsx
+#: src/lib/alerts.ts
 msgid "New message"
 msgstr "New message"
 
@@ -2239,9 +2407,13 @@ msgstr "New password"
 msgid "New signing secret"
 msgstr "New signing secret"
 
-#: src/features/inbox/ListPage.tsx
-msgid "Newest first"
-msgstr "Newest first"
+#: src/features/conversation/ChatView.tsx
+msgid "Newer match"
+msgstr "Newer match"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Newer match (⇧Enter)"
+msgstr "Newer match (⇧Enter)"
 
 #: src/features/settings/webhooks/Deliveries.tsx
 msgid "Newest first. Finished deliveries are kept for 7 days."
@@ -2255,15 +2427,6 @@ msgstr "Next attempt"
 msgid "next attempt {when}"
 msgstr "next attempt {when}"
 
-#: src/app/Palette.tsx
-#: src/components/common/ShortcutSheet.tsx
-msgid "Next in the queue"
-msgstr "Next in the queue"
-
-#: src/components/common/ShortcutSheet.tsx
-msgid "Next or previous conversation"
-msgstr "Next or previous conversation"
-
 #: src/features/conversation/controls/shared.ts
 msgid "Next week"
 msgstr "Next week"
@@ -2275,6 +2438,10 @@ msgstr "no answer"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "No API keys yet."
 msgstr "No API keys yet."
+
+#: src/features/inbox/SidePanels.tsx
+msgid "No assistant is connected yet. Connect Claude, ChatGPT, Cursor or another MCP client to let it read and draft replies."
+msgstr "No assistant is connected yet. Connect Claude, ChatGPT, Cursor or another MCP client to let it read and draft replies."
 
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "No attempt yet."
@@ -2296,7 +2463,7 @@ msgstr "No canned replies yet. Add them in settings."
 msgid "No channel"
 msgstr "No channel"
 
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "No channels yet"
 msgstr "No channels yet"
 
@@ -2309,27 +2476,33 @@ msgstr "No channels yet. Add one so customers can write to {0}."
 msgid "No connected apps."
 msgstr "No connected apps."
 
-#: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ContactsColumn.tsx
 msgid "No contact matches “{query}”."
 msgstr "No contact matches “{query}”."
 
-#: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ContactsColumn.tsx
 msgid "No contacts in this view."
 msgstr "No contacts in this view."
 
-#: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ContactsColumn.tsx
 msgid "No contacts yet. They appear when someone writes in."
 msgstr "No contacts yet. They appear when someone writes in."
 
-#: src/features/contact/ContactsPage.tsx
-msgid "No conversations"
-msgstr "No conversations"
-
 #: src/features/contact/ContactDetails.tsx
-#: src/features/inbox/AllDrawer.tsx
-#: src/features/inbox/ListPage.tsx
 msgid "No conversations here."
 msgstr "No conversations here."
+
+#: src/features/inbox/ChatList.tsx
+msgid "No conversations yet."
+msgstr "No conversations yet."
+
+#: src/features/inbox/SidePanels.tsx
+msgid "No drafts are waiting. Replies an assistant, a bot or a teammate drafts show up here until someone sends or discards them."
+msgstr "No drafts are waiting. Replies an assistant, a bot or a teammate drafts show up here until someone sends or discards them."
+
+#: src/features/conversation/composer/EmojiPanel.tsx
+msgid "No emoji found."
+msgstr "No emoji found."
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "No endpoints yet."
@@ -2340,8 +2513,25 @@ msgid "No labels yet"
 msgstr "No labels yet"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/conversation/HeaderActions.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "No labels yet. Add them in settings."
+
+#: src/features/conversation/ChatView.tsx
+msgid "No matches"
+msgstr "No matches"
+
+#: src/features/contact/ConversationMedia.tsx
+msgid "No media, links or documents in this conversation yet."
+msgstr "No media, links or documents in this conversation yet."
+
+#: src/features/inbox/ChatList.tsx
+msgid "No messages yet"
+msgstr "No messages yet"
+
+#: src/features/inbox/SidePanels.tsx
+msgid "No one has mentioned you in a note yet. When a teammate writes @ and your name, the note shows up here."
+msgstr "No one has mentioned you in a note yet. When a teammate writes @ and your name, the note shows up here."
 
 #: src/features/contact/ContactSearch.tsx
 msgid "No other contact matches."
@@ -2350,6 +2540,14 @@ msgstr "No other contact matches."
 #: src/features/settings/members/Invites.tsx
 msgid "No pending invites."
 msgstr "No pending invites."
+
+#: src/features/reports/ReportsColumn.tsx
+msgid "No ratings today"
+msgstr "No ratings today"
+
+#: src/features/reports/ReportPages.tsx
+msgid "No ratings today."
+msgstr "No ratings today."
 
 #: src/app/Palette.tsx
 msgid "No results"
@@ -2369,16 +2567,20 @@ msgstr "No SMTP account yet: mail arrives, but replies cannot go out until you a
 msgid "No subject"
 msgstr "No subject"
 
-#: src/features/conversation/LaterActions.tsx
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "No teammate can see this inbox"
+msgstr "No teammate can see this inbox"
+
+#: src/features/conversation/HeaderActions.tsx
 msgid "Nobody else can see this inbox yet."
 msgstr "Nobody else can see this inbox yet."
 
-#: src/features/inbox/WaitingPill.tsx
-msgid "Nobody is waiting"
-msgstr "Nobody is waiting"
+#: src/features/reports/ReportPages.tsx
+msgid "Nobody has replied or closed anything yet today."
+msgstr "Nobody has replied or closed anything yet today."
 
 #: src/features/contact/MergePreview.tsx
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "None"
 msgstr "None"
 
@@ -2419,16 +2621,20 @@ msgstr "Not delivered"
 msgid "Not shown"
 msgstr "Not shown"
 
+#: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
-#: src/features/conversation/QueueConversation.tsx
 msgid "Not spam"
 msgstr "Not spam"
+
+#: src/features/inbox/SidePanels.tsx
+msgid "Not used yet"
+msgstr "Not used yet"
 
 #: src/features/contact/ContactNotes.tsx
 msgid "Note about this contact"
 msgstr "Note about this contact"
 
-#: src/features/conversation/LaterActions.tsx
+#: src/features/conversation/HeaderActions.tsx
 msgid "Note for the teammate"
 msgstr "Note for the teammate"
 
@@ -2444,18 +2650,25 @@ msgstr "Notes stopped syncing after the update"
 msgid "Nothing"
 msgstr "Nothing"
 
-#: src/features/inbox/AllDrawer.tsx
-#: src/features/inbox/ListPage.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Nothing is assigned to you."
+msgstr "Nothing is assigned to you."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Nothing is done yet."
+msgstr "Nothing is done yet."
+
+#: src/features/inbox/ChatList.tsx
+msgid "Nothing is snoozed."
+msgstr "Nothing is snoozed."
+
+#: src/features/inbox/ChatList.tsx
 msgid "Nothing matches your search here."
 msgstr "Nothing matches your search here."
 
-#: src/features/contact/ContactsPage.tsx
-msgid "Nothing open"
-msgstr "Nothing open"
-
 #: src/app/Palette.tsx
 #: src/features/settings/notifications/NotificationsPage.tsx
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "Notifications"
 msgstr "Notifications"
 
@@ -2481,13 +2694,17 @@ msgstr "Off for this device."
 
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
-#: src/features/conversation/LaterActions.tsx
+#: src/features/conversation/HeaderActions.tsx
 msgid "Offline"
 msgstr "Offline"
 
-#: src/features/inbox/ListPage.tsx
-msgid "Oldest first"
-msgstr "Oldest first"
+#: src/features/conversation/ChatView.tsx
+msgid "Older match"
+msgstr "Older match"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Older match (Enter)"
+msgstr "Older match (Enter)"
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "On"
@@ -2521,7 +2738,7 @@ msgstr "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgid "One per line, up to 20."
 msgstr "One per line, up to 20."
 
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "One per product or brand"
 msgstr "One per product or brand"
 
@@ -2530,12 +2747,13 @@ msgid "One-click install"
 msgstr "One-click install"
 
 #: src/app/TeamMenu.tsx
-#: src/features/conversation/LaterActions.tsx
+#: src/features/conversation/HeaderActions.tsx
 msgid "Online"
 msgstr "Online"
 
 #: src/features/contact/Presence.tsx
-#: src/features/conversation/PersonHeader.tsx
+#: src/features/conversation/ConversationStatus.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Online now"
 msgstr "Online now"
 
@@ -2564,10 +2782,18 @@ msgstr "Only owners can delete the workspace."
 msgid "Only pages on these addresses can open the chat. Enter scheme and host, without a path."
 msgstr "Only pages on these addresses can open the chat. Enter scheme and host, without a path."
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Only the team sees this"
+msgstr "Only the team sees this"
+
+#: src/features/settings/notifications/TabAlertsSection.tsx
+msgid "Only while the panel is open in this browser. Away, you are alerted only about conversations assigned to you."
+msgstr "Only while the panel is open in this browser. Away, you are alerted only about conversations assigned to you."
+
 #: src/components/common/text.ts
 #: src/features/contact/ContactDetails.tsx
-#: src/features/contact/ContactsPage.tsx
-#: src/features/conversation/PersonHeader.tsx
+#: src/features/contact/ContactsColumn.tsx
+#: src/features/conversation/ConversationStatus.tsx
 msgid "Open"
 msgstr "Open"
 
@@ -2575,10 +2801,6 @@ msgstr "Open"
 #: src/features/conversation/messages/Attachments.tsx
 msgid "Open {0}"
 msgstr "Open {0}"
-
-#: src/features/inbox/WaitingPill.tsx
-msgid "Open {name}"
-msgstr "Open {name}"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Open ChatGPT plugins"
@@ -2588,26 +2810,43 @@ msgstr "Open ChatGPT plugins"
 msgid "Open Claude connectors"
 msgstr "Open Claude connectors"
 
-#: src/components/common/ShortcutSheet.tsx
-#: src/features/conversation/ListPreview.tsx
-msgid "Open full screen"
-msgstr "Open full screen"
+#: src/app/Palette.tsx
+msgid "Open conversations"
+msgstr "Open conversations"
+
+#: src/features/team/MemberPage.tsx
+#: src/features/team/TeamColumn.tsx
+msgid "Open conversations assigned"
+msgstr "Open conversations assigned"
 
 #: src/features/contact/ContactSheet.tsx
 msgid "Open page"
 msgstr "Open page"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/setup/WaitStep.tsx
 msgid "Open the conversation"
 msgstr "Open the conversation"
 
-#: src/features/conversation/QueueConversation.tsx
-msgid "Open the next one"
-msgstr "Open the next one"
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the next or previous conversation"
+msgstr "Open the next or previous conversation"
+
+#: src/features/team/MemberPage.tsx
+msgid "Open what they see"
+msgstr "Open what they see"
 
 #: src/features/setup/InstallStep.tsx
 msgid "Open your site"
 msgstr "Open your site"
+
+#: src/features/team/MemberPage.tsx
+msgid "open, assigned"
+msgstr "open, assigned"
+
+#: src/features/team/TeamColumn.tsx
+msgid "open, unassigned"
+msgstr "open, unassigned"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Opens"
@@ -2727,9 +2966,21 @@ msgstr "Pick a color"
 msgid "Pick a color."
 msgstr "Pick a color."
 
-#: src/features/inbox/ListPage.tsx
-msgid "Pick a conversation to see it here."
-msgstr "Pick a conversation to see it here."
+#: src/features/contact/ContactsColumn.tsx
+msgid "Pick a contact"
+msgstr "Pick a contact"
+
+#: src/features/inbox/ChatsPage.tsx
+msgid "Pick a conversation"
+msgstr "Pick a conversation"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Pick a setting on the left."
+msgstr "Pick a setting on the left."
+
+#: src/features/team/TeamColumn.tsx
+msgid "Pick a teammate"
+msgstr "Pick a teammate"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Pick a TLS mode."
@@ -2764,6 +3015,23 @@ msgstr "Pick the platforms; the next step shows the lines to add to each app."
 msgid "Pick the workspace <0>{workspace}</0>, check the scopes and allow. You go back to {clientName}, and the connection shows up here."
 msgstr "Pick the workspace <0>{workspace}</0>, check the scopes and allow. You go back to {clientName}, and the connection shows up here."
 
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Pin to the top"
+msgstr "Pin to the top"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Pin to the top of your list, or unpin"
+msgstr "Pin to the top of your list, or unpin"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Pinned"
+msgstr "Pinned"
+
+#: src/features/inbox/memberState.ts
+msgid "Pinned to the top of your list"
+msgstr "Pinned to the top of your list"
+
 #: src/features/setup/InstallStep.tsx
 msgid "Platform"
 msgstr "Platform"
@@ -2772,6 +3040,10 @@ msgstr "Platform"
 #: src/features/setup/AddChannelStep.tsx
 msgid "Platforms"
 msgstr "Platforms"
+
+#: src/features/settings/notifications/TabAlertsSection.tsx
+msgid "Play the sound"
+msgstr "Play the sound"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Port"
@@ -2785,7 +3057,6 @@ msgstr "Post feedback for your app's users"
 msgid "Praise"
 msgstr "Praise"
 
-#: src/features/inbox/ListPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Preview"
@@ -2794,6 +3065,11 @@ msgstr "Preview"
 #: src/features/conversation/ConversationMenu.tsx
 msgid "Priority"
 msgstr "Priority"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Priority, inbox, spam and more"
+msgstr "Priority, inbox, spam and more"
 
 #: src/features/setup/NameStep.tsx
 msgid "Product name"
@@ -2837,15 +3113,11 @@ msgstr "Push: {label}"
 msgid "Put the SDK's conversations view behind a Help button in your app, then send a message from it."
 msgstr "Put the SDK's conversations view behind a Help button in your app, then send a message from it."
 
-#: src/app/ViewToggle.tsx
-msgid "Queue"
-msgstr "Queue"
-
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "Queued. The new attempt shows up below in a moment."
 msgstr "Queued. The new attempt shows up below in a moment."
 
-#: src/features/inbox/QueuePage.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Quick cleanup"
 msgstr "Quick cleanup"
 
@@ -2860,6 +3132,15 @@ msgstr "rated good"
 #: src/features/conversation/rating.tsx
 msgid "Rated good"
 msgstr "Rated good"
+
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Ratings"
+msgstr "Ratings"
+
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Read"
+msgstr "Read"
 
 #: src/components/common/text.ts
 msgid "Read contacts"
@@ -2952,14 +3233,13 @@ msgstr "Remove this passkey?"
 msgid "Removes you from every workspace. Messages you wrote stay, shown as from a deleted member."
 msgstr "Removes you from every workspace. Messages you wrote stay, shown as from a deleted member."
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "Reopen"
+msgstr "Reopen"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Replace"
 msgstr "Replace"
-
-#: src/features/inbox/AllDrawer.tsx
-#: src/features/inbox/ListPage.tsx
-msgid "Replied"
-msgstr "Replied"
 
 #: src/features/conversation/RelatedLine.tsx
 msgid "Replied in the thread of <0>{title}</0>"
@@ -2969,10 +3249,20 @@ msgstr "Replied in the thread of <0>{title}</0>"
 msgid "Replied in the thread of another conversation"
 msgstr "Replied in the thread of another conversation"
 
+#: src/features/reports/ReportPages.tsx
+msgid "replies"
+msgstr "replies"
+
 #: src/features/conversation/Feedback.tsx
+#: src/features/reports/ReportPages.tsx
 #: src/features/setup/InstallStep.tsx
 msgid "Replies"
 msgstr "Replies"
+
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Replies and closes"
+msgstr "Replies and closes"
 
 #. placeholder {0}: email.smtp.host
 #: src/features/setup/InstallStep.tsx
@@ -2991,7 +3281,8 @@ msgstr "Replies the assistant writes are drafts: you or a teammate review them i
 msgid "Replies to this address are refused until you clear it."
 msgstr "Replies to this address are refused until you clear it."
 
-#: src/features/inbox/QueuePage.tsx
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/team/MemberPage.tsx
 msgid "replies today"
 msgstr "replies today"
 
@@ -3003,9 +3294,20 @@ msgstr "Reply"
 msgid "Reply time"
 msgstr "Reply time"
 
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Reply with a quote"
+msgstr "Reply with a quote"
+
 #: src/features/auth/AuthLayout.tsx
 msgid "Reply, assign and follow up together, across all of your products."
 msgstr "Reply, assign and follow up together, across all of your products."
+
+#: src/app/Rail.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/reports/ReportPages.tsx
+#: src/features/reports/ReportsColumn.tsx
+msgid "Reports"
+msgstr "Reports"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
@@ -3023,7 +3325,7 @@ msgstr "Returning you to {host}…"
 msgid "Returns you to"
 msgstr "Returns you to"
 
-#: src/features/inbox/QueuePage.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Review"
 msgstr "Review"
 
@@ -3087,7 +3389,11 @@ msgstr "Run your app with the SDK and send a message. The conversation appears h
 msgid "Satisfaction"
 msgstr "Satisfaction"
 
-#: src/features/inbox/QueuePage.tsx
+#: src/features/reports/ReportPages.tsx
+msgid "satisfied"
+msgstr "satisfied"
+
+#: src/features/inbox/ChatsPage.tsx
 msgid "satisfied · 👍 {good} 👎 {bad}"
 msgstr "satisfied · 👍 {good} 👎 {bad}"
 
@@ -3103,6 +3409,10 @@ msgstr "Saturday"
 #: src/features/settings/webhooks/WebhookDialog.tsx
 msgid "Save"
 msgstr "Save"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Save draft"
+msgstr "Save draft"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -3132,12 +3442,12 @@ msgstr "Scopes, inboxes and expiry cannot be changed later."
 msgid "Scopes, inboxes and expiry stay as they are. For different ones, create a new key."
 msgstr "Scopes, inboxes and expiry stay as they are. For different ones, create a new key."
 
-#: src/features/conversation/Facts.tsx
 #: src/features/conversation/Feedback.tsx
 msgid "Screen"
 msgstr "Screen"
 
 #: src/app/Palette.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Search"
 msgstr "Search"
 
@@ -3145,14 +3455,18 @@ msgstr "Search"
 msgid "Search by name, e-mail or external id"
 msgstr "Search by name, e-mail or external id"
 
+#: src/features/contact/ContactsColumn.tsx
+msgid "Search by name, e-mail or the id your app gives them, then open one to see their conversations, details and notes."
+msgstr "Search by name, e-mail or the id your app gives them, then open one to see their conversations, details and notes."
+
+#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSearch.tsx
-#: src/features/contact/ContactsPage.tsx
 msgid "Search contacts"
 msgstr "Search contacts"
 
+#: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/inbox/AllDrawer.tsx
-#: src/features/inbox/ListSearchBox.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Search conversations"
 msgstr "Search conversations"
 
@@ -3160,10 +3474,27 @@ msgstr "Search conversations"
 msgid "Search conversations for “{search}”"
 msgstr "Search conversations for “{search}”"
 
-#: src/features/inbox/AllDrawer.tsx
-#: src/features/inbox/ListSearchBox.tsx
-msgid "Search people or messages"
-msgstr "Search people or messages"
+#: src/features/conversation/composer/EmojiPanel.tsx
+msgid "Search emoji"
+msgstr "Search emoji"
+
+#: src/features/conversation/composer/EmojiPanel.tsx
+msgid "Search emoji (in English)"
+msgstr "Search emoji (in English)"
+
+#: src/features/conversation/ChatView.tsx
+msgid "Search in the loaded messages"
+msgstr "Search in the loaded messages"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/ChatView.tsx
+msgid "Search in this conversation"
+msgstr "Search in this conversation"
+
+#. placeholder {0}: keyLabel(SHORTCUTS.find).join("")
+#: src/features/conversation/ChatView.tsx
+msgid "Search in this conversation ({0})"
+msgstr "Search in this conversation ({0})"
 
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
@@ -3181,20 +3512,16 @@ msgstr "Search, triage and draft replies from Codex. It acts as you, with the ac
 msgid "Search, triage and draft replies from your terminal. It acts as you, with the access you allow."
 msgstr "Search, triage and draft replies from your terminal. It acts as you, with the access you allow."
 
-#: src/features/inbox/ListPage.tsx
-msgid "Select {name}"
-msgstr "Select {name}"
+#: src/app/Rail.tsx
+msgid "Sections"
+msgstr "Sections"
 
-#: src/components/common/ShortcutSheet.tsx
-msgid "Select or unselect"
-msgstr "Select or unselect"
-
-#: src/features/inbox/ListPage.tsx
-msgid "Selected conversations"
-msgstr "Selected conversations"
+#: src/features/team/TeamColumn.tsx
+msgid "See where they are, what they hold open and what they did today."
+msgstr "See where they are, what they hold open and what they did today."
 
 #: src/features/conversation/composer/ReplyBox.tsx
-#: src/features/conversation/messages/Talk.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Send"
 msgstr "Send"
 
@@ -3235,7 +3562,7 @@ msgstr "Send drafts"
 msgid "Send events"
 msgstr "Send events"
 
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "Send events to your own server"
 msgstr "Send events to your own server"
 
@@ -3252,13 +3579,13 @@ msgstr "Send me a code"
 msgid "Send only"
 msgstr "Send only"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send or add the note, in a chat or app conversation (⇧↵ for a new line)"
+msgstr "Send or add the note, in a chat or app conversation (⇧↵ for a new line)"
+
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Send the e-mail after"
 msgstr "Send the e-mail after"
-
-#: src/components/common/ShortcutSheet.tsx
-msgid "Send, in a live chat (⇧↵ for a new line)"
-msgstr "Send, in a live chat (⇧↵ for a new line)"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Sending"
@@ -3268,10 +3595,26 @@ msgstr "Sending"
 msgid "Sending by e-mail…"
 msgstr "Sending by e-mail…"
 
+#: src/features/conversation/messages/Thread.tsx
+msgid "Sending, then closing…"
+msgstr "Sending, then closing…"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Sending…"
+msgstr "Sending…"
+
 #. placeholder {0}: ch.email.smtp.host
 #: src/features/settings/channels/ChannelSummary.tsx
 msgid "sends through {0}"
 msgstr "sends through {0}"
+
+#: src/features/conversation/messages/MessageActions.tsx
+msgid "Sent"
+msgstr "Sent"
+
+#: src/lib/alerts.ts
+msgid "Sent an attachment"
+msgstr "Sent an attachment"
 
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
@@ -3291,12 +3634,17 @@ msgid "Server URL"
 msgstr "Server URL"
 
 #: src/app/Palette.tsx
-#: src/app/TopBar.tsx
+#: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/inbox/ChatList.tsx
+#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/ui.tsx
 msgid "Settings"
 msgstr "Settings"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Settings ({mod},)"
+msgstr "Settings ({mod},)"
 
 #: src/features/settings/channels/ChannelDialog.tsx
 msgid "Settings (JSON)"
@@ -3314,13 +3662,17 @@ msgstr "Setup steps"
 msgid "Shortcut"
 msgstr "Shortcut"
 
-#: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ContactsColumn.tsx
 msgid "Show"
 msgstr "Show"
 
 #: src/features/conversation/messages/EmailBody.tsx
 msgid "Show as sent"
 msgstr "Show as sent"
+
+#: src/features/inbox/SidePanels.tsx
+msgid "Show more"
+msgstr "Show more"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Show or hide quoted text"
@@ -3428,17 +3780,21 @@ msgstr "Slug"
 msgid "SMTP host"
 msgstr "SMTP host"
 
-#: src/features/inbox/ListPage.tsx
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 msgid "Snooze"
 msgstr "Snooze"
 
+#: src/features/conversation/HeaderActions.tsx
+msgid "Snooze (S)"
+msgstr "Snooze (S)"
+
 #: src/components/common/text.ts
-#: src/features/inbox/AllDrawer.tsx
-#: src/features/inbox/ListPage.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "Snoozed"
 msgstr "Snoozed"
 
-#: src/features/conversation/PersonHeader.tsx
+#: src/features/conversation/ConversationStatus.tsx
 msgid "Snoozed until {until}"
 msgstr "Snoozed until {until}"
 
@@ -3462,7 +3818,7 @@ msgstr "Something went wrong on the server. Try again."
 msgid "Sort conversations by topic. Each label also gets its own view in the sidebar."
 msgstr "Sort conversations by topic. Each label also gets its own view in the sidebar."
 
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "Sort conversations your way"
 msgstr "Sort conversations your way"
 
@@ -3482,8 +3838,6 @@ msgstr "Start with one. You can add the others later in the inbox settings."
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (port 587)"
 
-#: src/features/contact/ContactsPage.tsx
-#: src/features/inbox/ListPage.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Status"
 msgstr "Status"
@@ -3550,24 +3904,6 @@ msgstr "Support e-mail"
 msgid "support@your-company.com"
 msgstr "support@your-company.com"
 
-#: src/components/common/ShortcutSheet.tsx
-msgid "Switch between Queue and List"
-msgstr "Switch between Queue and List"
-
-#: src/app/Palette.tsx
-#: src/app/UserMenu.tsx
-msgid "Switch to the list"
-msgstr "Switch to the list"
-
-#: src/app/Palette.tsx
-#: src/app/UserMenu.tsx
-msgid "Switch to the queue"
-msgstr "Switch to the queue"
-
-#: src/app/ViewToggle.tsx
-msgid "Switch view (V)"
-msgstr "Switch view (V)"
-
 #: src/app/UserMenu.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
@@ -3578,9 +3914,13 @@ msgstr "System"
 msgid "System follows your device"
 msgstr "System follows your device"
 
+#: src/app/Rail.tsx
 #: src/app/TeamMenu.tsx
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/History.tsx
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/team/MemberPage.tsx
+#: src/features/team/TeamColumn.tsx
 msgid "Team"
 msgstr "Team"
 
@@ -3591,6 +3931,10 @@ msgstr "Team note"
 #: src/features/contact/ContactPage.tsx
 msgid "Team notes"
 msgstr "Team notes"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Team reply"
+msgstr "Team reply"
 
 #: src/app/TeamMenu.tsx
 msgid "Team right now"
@@ -3620,6 +3964,10 @@ msgstr "Thanks for writing. We usually answer within a day."
 #: src/features/setup/previews.tsx
 msgid "The app logs me out after the update."
 msgstr "The app logs me out after the update."
+
+#: src/features/settings/notifications/TabAlertsSection.tsx
+msgid "The browser has to allow desktop notifications first; until then only the sound plays."
+msgstr "The browser has to allow desktop notifications first; until then only the sound plays."
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "The channel name when empty."
@@ -3730,7 +4078,7 @@ msgstr "The previous secret also signs until {rotatedUntil}."
 msgid "The SDKs bring ready-made screens, or a client for your own."
 msgstr "The SDKs bring ready-made screens, or a client for your own."
 
-#: src/features/conversation/messages/Talk.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "The sender's domain did not authorize this mail. It may be forged."
 msgstr "The sender's domain did not authorize this mail. It may be forged."
 
@@ -3742,8 +4090,12 @@ msgstr "The status was not changed. Try again."
 msgid "The team today"
 msgstr "The team today"
 
+#: src/features/team/TeamColumn.tsx
+msgid "The team today:"
+msgstr "The team today:"
+
 #. placeholder {0}: e.from
-#: src/features/conversation/messages/Talk.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "The visitor typed {0} in the chat and has not confirmed it yet. This reply came from that address, so it may not be from the visitor."
 msgstr "The visitor typed {0} in the chat and has not confirmed it yet. This reply came from that address, so it may not be from the visitor."
 
@@ -3755,7 +4107,7 @@ msgstr "Their conversations stay; they lose access at once."
 msgid "Theme"
 msgstr "Theme"
 
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "Theme and e-mail view on this device"
 msgstr "Theme and e-mail view on this device"
 
@@ -3775,6 +4127,10 @@ msgstr "This address is undeliverable. Clear it in the contact details before yo
 msgid "This browser cannot receive push notifications."
 msgstr "This browser cannot receive push notifications."
 
+#: src/features/settings/notifications/TabAlertsSection.tsx
+msgid "This browser cannot show desktop notifications, so only the sound plays."
+msgstr "This browser cannot show desktop notifications, so only the sound plays."
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "This browser does not support passkeys."
 msgstr "This browser does not support passkeys."
@@ -3792,11 +4148,7 @@ msgstr "This contact keeps its own value"
 msgid "This conversation"
 msgstr "This conversation"
 
-#: src/features/conversation/QueueConversation.tsx
-msgid "This conversation is no longer waiting for you."
-msgstr "This conversation is no longer waiting for you."
-
-#: src/features/conversation/QueueConversation.tsx
+#: src/features/conversation/ChatView.tsx
 msgid "This conversation is not available"
 msgstr "This conversation is not available"
 
@@ -3831,6 +4183,10 @@ msgstr "This is the name the app gives itself. Yuva has not verified it."
 #: src/components/common/ShortcutSheet.tsx
 msgid "This list"
 msgstr "This list"
+
+#: src/features/team/MemberPage.tsx
+msgid "This member is not in the workspace any more."
+msgstr "This member is not in the workspace any more."
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
@@ -3881,32 +4237,36 @@ msgstr "To let assistants send on their own, turn on <0>Bots may send</0>."
 msgid "To: {emailTo}"
 msgstr "To: {emailTo}"
 
-#: src/features/conversation/messages/Talk.tsx
+#: src/features/conversation/messages/Thread.tsx
+#: src/features/reports/ReportsColumn.tsx
 msgid "Today"
 msgstr "Today"
 
-#: src/features/conversation/LaterActions.tsx
+#: src/features/conversation/HeaderActions.tsx
 msgid "today at {at}"
 msgstr "today at {at}"
 
-#: src/features/conversation/LaterActions.tsx
+#: src/features/conversation/HeaderActions.tsx
 msgid "Today at {at}"
 msgstr "Today at {at}"
+
+#: src/features/reports/ReportPages.tsx
+msgid "Today since midnight, over the inboxes you can see."
+msgstr "Today since midnight, over the inboxes you can see."
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
 msgid "Tokens signed with the current secret stop working at once."
 msgstr "Tokens signed with the current secret stop working at once."
 
-#: src/features/conversation/LaterActions.tsx
+#: src/features/conversation/HeaderActions.tsx
 msgid "tomorrow at {at}"
 msgstr "tomorrow at {at}"
 
-#: src/features/conversation/LaterActions.tsx
+#: src/features/conversation/HeaderActions.tsx
 msgid "Tomorrow at {at}"
 msgstr "Tomorrow at {at}"
 
 #: src/features/conversation/controls/shared.ts
-#: src/features/inbox/ListPage.tsx
 msgid "Tomorrow morning"
 msgstr "Tomorrow morning"
 
@@ -3955,6 +4315,14 @@ msgstr "Type your e-mail address to confirm"
 msgid "Typing · {where}"
 msgstr "Typing · {where}"
 
+#: src/features/inbox/ChatList.tsx
+msgid "typing…"
+msgstr "typing…"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Unassigned"
+msgstr "Unassigned"
+
 #: src/features/contact/ContactDetails.tsx
 msgid "Undeliverable"
 msgstr "Undeliverable"
@@ -3978,27 +4346,32 @@ msgstr "Unknown device"
 #: src/app/Palette.tsx
 #: src/app/TeamMenu.tsx
 #: src/features/contact/ContactPage.tsx
+#: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/contact/MergeContactDialog.tsx
-#: src/features/conversation/ListPreview.tsx
-#: src/features/conversation/QueueConversation.tsx
-#: src/features/conversation/UpNext.tsx
-#: src/features/inbox/AllDrawer.tsx
-#: src/features/inbox/ListPage.tsx
-#: src/features/inbox/WaitingPill.tsx
+#: src/features/conversation/ChatView.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/setup/previews.tsx
 msgid "Unnamed contact"
 msgstr "Unnamed contact"
 
-#: src/features/conversation/messages/Talk.tsx
+#: src/features/conversation/ConversationMenu.tsx
+#: src/features/inbox/ChatList.tsx
+msgid "Unpin"
+msgstr "Unpin"
+
+#: src/features/inbox/memberState.ts
+msgid "Unpinned"
+msgstr "Unpinned"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Unread"
+msgstr "Unread"
+
+#: src/features/conversation/messages/Thread.tsx
 msgid "Unverified sender"
 msgstr "Unverified sender"
-
-#: src/features/conversation/UpNext.tsx
-msgid "Up next"
-msgstr "Up next"
 
 #: src/components/common/text.ts
 msgid "Urgent"
@@ -4065,19 +4438,11 @@ msgstr "Usually replies within a day"
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
 msgstr "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
 
-#: src/features/conversation/Facts.tsx
-msgid "Version"
-msgstr "Version"
-
-#: src/app/ViewToggle.tsx
-msgid "View"
-msgstr "View"
-
-#: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ContactsColumn.tsx
 msgid "Visitor"
 msgstr "Visitor"
 
-#: src/features/contact/ContactsPage.tsx
+#: src/features/contact/ContactsColumn.tsx
 msgid "Visitors"
 msgstr "Visitors"
 
@@ -4089,17 +4454,11 @@ msgstr "Visitors can chat without an identity token from your backend."
 msgid "Visitors write from any page of your site; you answer here, live."
 msgstr "Visitors write from any page of your site; you answer here, live."
 
-#: src/app/Palette.tsx
-#: src/features/inbox/AllDrawer.tsx
-#: src/features/inbox/ListPage.tsx
-msgid "Waiting"
-msgstr "Waiting"
-
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "Waiting for it to arrive"
 
-#: src/features/conversation/PersonHeader.tsx
+#: src/features/conversation/ConversationStatus.tsx
 msgid "Waiting for the customer"
 msgstr "Waiting for the customer"
 
@@ -4125,7 +4484,7 @@ msgid "Webhook endpoint"
 msgstr "Webhook endpoint"
 
 #: src/app/Palette.tsx
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/settings/webhooks/WebhooksPage.tsx
@@ -4163,17 +4522,17 @@ msgstr "What should customers see?"
 msgid "What the customer sees"
 msgstr "What the customer sees"
 
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "What you write often"
 msgstr "What you write often"
 
-#: src/features/conversation/LaterActions.tsx
+#: src/features/conversation/HeaderActions.tsx
 msgid "When {first} writes again"
 msgstr "When {first} writes again"
 
-#: src/features/inbox/QueuePage.tsx
-msgid "When a new message arrives, it will be here."
-msgstr "When a new message arrives, it will be here."
+#: src/features/inbox/ChatsPage.tsx
+msgid "When a new message arrives, it will be in the list."
+msgstr "When a new message arrives, it will be in the list."
 
 #: src/features/settings/notifications/events.ts
 msgid "When a teammate adds you to a note with @."
@@ -4187,7 +4546,7 @@ msgstr "When nobody is available, the widget asks where to send the reply."
 msgid "When off, API keys can only write drafts, and a member reviews and sends them."
 msgstr "When off, API keys can only write drafts, and a member reviews and sends them."
 
-#: src/features/conversation/LaterActions.tsx
+#: src/features/conversation/HeaderActions.tsx
 msgid "When should it come back?"
 msgstr "When should it come back?"
 
@@ -4199,7 +4558,7 @@ msgstr "When someone else assigns it to you."
 msgid "When to notify me"
 msgstr "When to notify me"
 
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "When we let you know"
 msgstr "When we let you know"
 
@@ -4243,11 +4602,19 @@ msgstr "While your status is Away, only new messages in conversations assigned t
 msgid "Who can reply"
 msgstr "Who can reply"
 
-#: src/features/conversation/LaterActions.tsx
+#: src/features/team/TeamColumn.tsx
+msgid "Who is here"
+msgstr "Who is here"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Who is it for?"
+msgstr "Who is it for?"
+
+#: src/features/conversation/HeaderActions.tsx
 msgid "Who should take it?"
 msgstr "Who should take it?"
 
-#: src/features/conversation/PersonHeader.tsx
+#: src/features/conversation/ConversationStatus.tsx
 msgid "With {name}"
 msgstr "With {name}"
 
@@ -4258,11 +4625,6 @@ msgstr "With Cloudflare Email Routing, deploy the Email Worker from edge/ of the
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "with notes"
 msgstr "with notes"
-
-#: src/app/Palette.tsx
-#: src/features/inbox/AllDrawer.tsx
-msgid "With team"
-msgstr "With team"
 
 #: src/features/settings/members/Invites.tsx
 msgid "Withdraw"
@@ -4307,7 +4669,7 @@ msgstr "Working"
 
 #: src/app/Palette.tsx
 #: src/features/oauth/ConsentPage.tsx
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
 msgstr "Workspace"
@@ -4363,13 +4725,13 @@ msgstr "Write to {0} from any other address. The conversation appears here the m
 msgid "Write to {first}…"
 msgstr "Write to {first}…"
 
-#: src/features/conversation/messages/Talk.tsx
+#: src/features/conversation/messages/Thread.tsx
 msgid "Yesterday"
 msgstr "Yesterday"
 
-#: src/features/conversation/messages/Talk.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/SettingsLayout.tsx
+#: src/features/settings/SettingsColumn.tsx
 msgid "You"
 msgstr "You"
 
@@ -4381,7 +4743,7 @@ msgstr "You are available"
 msgid "You are away"
 msgstr "You are away"
 
-#: src/features/inbox/QueuePage.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "You are away. Live chat shows nobody available and notifications pause."
 msgstr "You are away. Live chat shows nobody available and notifications pause."
 
@@ -4406,8 +4768,8 @@ msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "You can disconnect it at any time in Settings, under Connected apps."
 
 #: src/features/setup/WaitStep.tsx
-msgid "You can leave this page: the conversation will wait for you in the queue."
-msgstr "You can leave this page: the conversation will wait for you in the queue."
+msgid "You can leave this page: the conversation will wait for you in your conversation list."
+msgstr "You can leave this page: the conversation will wait for you in your conversation list."
 
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "You get a new secret once. For 24 hours every delivery carries two signatures, one with the new and one with the old secret, so you can update your receiver without losing events."
@@ -4416,6 +4778,10 @@ msgstr "You get a new secret once. For 24 hours every delivery carries two signa
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "You have no passkeys yet."
+
+#: src/features/inbox/ChatList.tsx
+msgid "You have read everything."
+msgstr "You have read everything."
 
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. This cannot be undone."

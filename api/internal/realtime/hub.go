@@ -32,6 +32,8 @@ const (
 	InboxDeleted        = "inbox.deleted"
 	InboxAccessChanged  = "inbox_access.changed"
 	ConversationRead    = "conversation.read"
+	ContactRead         = "contact.read"
+	ConversationPin     = "conversation.pin"
 	Typing              = "typing"
 	PresenceHint        = "presence.hint"
 	MemberPresence      = "member.presence"

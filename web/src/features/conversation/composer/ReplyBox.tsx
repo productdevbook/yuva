@@ -1,12 +1,12 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { PaperclipIcon, SlashIcon, SparklesIcon, XIcon } from "lucide-react"
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react"
+import { PaperclipIcon, SlashIcon, SmileIcon, SparklesIcon, XIcon } from "lucide-react"
+import { forwardRef, lazy, Suspense, useEffect, useImperativeHandle, useRef, useState } from "react"
 
 import { BotAvatar, ErrorLine, Kbd, toast } from "@/components/common"
 import { mod } from "@/components/common/ShortcutSheet"
 import { formatBytes } from "@/components/common/text"
 import { popupClass } from "@/components/ui/dropdown-menu"
-import { firstName, readDraft, writeDraft, type QueueActions } from "@/features/conversation/actions"
+import { firstName, readDraft, writeDraft, type ConversationActions } from "@/features/conversation/actions"
 import { CannedMenu, slashToken, useCannedMatches } from "@/features/conversation/composer/CannedMenu"
 import { MentionMenu, mentionToken } from "@/features/conversation/composer/MentionMenu"
 import { useAuthorName, type ThreadContext } from "@/features/conversation/messages/context"
@@ -27,9 +27,25 @@ export type ReplyHandle = {
   focus: (mode?: "message" | "note") => void
   attach: () => void
   discardSuggestion: () => void
+  quote: (text: string) => void
+  addFiles: (files: File[]) => void
 }
 
 const MAX_FILES = 10
+
+const EmojiPanel = lazy(() => import("@/features/conversation/composer/EmojiPanel"))
+
+function FileThumb({ file }: { file: File }) {
+  const [url, setUrl] = useState<string | null>(null)
+  useEffect(() => {
+    if (!file.type.startsWith("image/") || file.type === "image/svg+xml") return
+    const u = URL.createObjectURL(file)
+    setUrl(u)
+    return () => URL.revokeObjectURL(u)
+  }, [file])
+  if (!url) return <PaperclipIcon className="size-3 shrink-0 text-faint" />
+  return <img src={url} alt="" className="size-6 shrink-0 rounded object-cover" />
+}
 
 
 function Suggestion({ m, ctx, onUse, onDiscard }: { m: Message; ctx: ThreadContext; onUse: () => void; onDiscard: () => void }) {
@@ -78,10 +94,11 @@ export const ReplyBox = forwardRef<
     undeliverable?: boolean
     suggestion?: Message
     ctx: ThreadContext
-    actions: QueueActions
+    actions: ConversationActions
     autoFocus: boolean
+    className?: string
   }
->(function ReplyBox({ c, contactName, via, emailTo, undeliverable, suggestion, ctx, actions, autoFocus }, ref) {
+>(function ReplyBox({ c, contactName, via, emailTo, undeliverable, suggestion, ctx, actions, autoFocus, className }, ref) {
   const { t, i18n } = useLingui()
   const initial = useRef(readDraft(c.id)).current
   const [mode, setMode] = useState(initial.mode)
@@ -92,6 +109,7 @@ export const ReplyBox = forwardRef<
   const [pick, setPick] = useState(0)
   const [dismissed, setDismissed] = useState<number | null>(null)
   const [cannedOpen, setCannedOpen] = useState(false)
+  const [emojiOpen, setEmojiOpen] = useState(false)
   const [noting, setNoting] = useState(false)
   const [mentioned, setMentioned] = useState<{ id: string; label: string }[]>([])
   const [error, setError] = useState<unknown>(null)
@@ -129,7 +147,18 @@ export const ReplyBox = forwardRef<
     if (linked === suggestion.id) setLinked(null)
     discard.mutate(suggestion, { onSuccess: () => toast(t`Suggestion discarded`), onError: (e) => setError(e) })
   }
-  useImperativeHandle(ref, () => ({ focus, attach: () => fileInput.current?.click(), discardSuggestion: dropSuggestion }))
+  const quote = (text: string) => {
+    const next = body.trim() ? `${text}\n\n${body}` : `${text}\n\n`
+    setBody(next)
+    setCaret(next.length)
+    requestAnimationFrame(() => {
+      const el = textarea.current
+      if (!el) return
+      el.focus()
+      el.setSelectionRange(next.length, next.length)
+    })
+  }
+  useImperativeHandle(ref, () => ({ focus, attach: () => fileInput.current?.click(), discardSuggestion: dropSuggestion, quote, addFiles }))
 
   const at = note ? mentionToken(body, caret) : null
   const people = useAssignableMembers(c.inbox_id).filter((m) => m.id !== membership.member_id)
@@ -159,6 +188,12 @@ export const ReplyBox = forwardRef<
     const label = m.name || m.email
     setMentioned((all) => (all.some((x) => x.id === m.id) ? all : [...all, { id: m.id, label }]))
     insertAt(`@${label} `, at.start, caret)
+  }
+  const insertEmoji = (emoji: string) => {
+    setEmojiOpen(false)
+    const start = textarea.current?.selectionStart ?? body.length
+    const end = textarea.current?.selectionEnd ?? start
+    insertAt(emoji, start, end)
   }
   const insertCanned = (r: CannedReply) => {
     setCannedOpen(false)
@@ -249,9 +284,10 @@ export const ReplyBox = forwardRef<
       else send(!e.shiftKey)
       return
     }
-    if (e.key === "Enter" && actions.live && !note && !e.shiftKey && !e.altKey && !e.nativeEvent.isComposing) {
+    if (e.key === "Enter" && actions.chat && !e.shiftKey && !e.altKey && !e.nativeEvent.isComposing) {
       e.preventDefault()
-      send(false)
+      if (note) addNote()
+      else send(false)
       return
     }
     if (e.key === "Escape") {
@@ -265,14 +301,10 @@ export const ReplyBox = forwardRef<
   return (
     <div
       className={cn(
-        "relative mt-6 rounded-[20px] border bg-card shadow-[0_1px_2px_rgb(0_0_0/0.04),0_8px_24px_-12px_rgb(0_0_0/0.08)] transition-colors focus-within:border-brand/45",
+        "@container/composer relative rounded-2xl border bg-card transition-colors focus-within:border-brand/45",
         note && "border-note-border bg-note focus-within:border-note-ink/40",
+        className,
       )}
-      onDragOver={(e) => e.preventDefault()}
-      onDrop={(e) => {
-        e.preventDefault()
-        addFiles(Array.from(e.dataTransfer.files))
-      }}
       data-testid="reply-box"
     >
       <div className="flex items-center gap-0.5 px-2 pt-2">
@@ -302,12 +334,13 @@ export const ReplyBox = forwardRef<
       {mentionOpen && <MentionMenu items={mentionMatches} active={pick} onPick={insertMention} />}
       <Textarea
         ref={textarea}
+        name="reply-body"
         value={body}
-        rows={3}
+        rows={2}
         data-testid="composer-input"
         aria-label={note ? t`Team note` : t`Reply`}
         placeholder={note ? t`A note for the team… type @ to mention a teammate` : t`Write to ${first}…`}
-        className="max-h-[50vh] min-h-[84px] resize-none rounded-none border-0 bg-transparent px-4 py-2.5 text-reading shadow-none hover:border-0 focus-visible:ring-0 md:text-reading dark:bg-transparent"
+        className="max-h-[40vh] min-h-[64px] resize-none rounded-none border-0 bg-transparent px-4 py-2.5 text-reading shadow-none hover:border-0 focus-visible:ring-0 md:text-reading dark:bg-transparent"
         onChange={(e) => {
           setBody(e.target.value)
           setCaret(e.target.selectionStart)
@@ -317,6 +350,12 @@ export const ReplyBox = forwardRef<
           else typing.typed()
         }}
         onBlur={typing.stop}
+        onPaste={(e) => {
+          const pasted = Array.from(e.clipboardData.files)
+          if (pasted.length === 0) return
+          e.preventDefault()
+          addFiles(pasted)
+        }}
         onSelect={(e) => setCaret(e.currentTarget.selectionStart)}
         onKeyDown={onKeyDown}
       />
@@ -325,7 +364,7 @@ export const ReplyBox = forwardRef<
         <ul className="flex flex-wrap gap-1.5 px-4 pb-2">
           {files.map((f, i) => (
             <li key={`${f.name}-${i}`} className="flex max-w-full items-center gap-1.5 rounded-lg border bg-background py-0.5 ps-2 pe-0.5 text-caption">
-              <PaperclipIcon className="size-3 shrink-0 text-faint" />
+              <FileThumb file={f} />
               <span className="max-w-48 truncate">{f.name}</span>
               <span className="text-faint">{formatBytes(f.size, i18n.locale)}</span>
               <Button
@@ -342,10 +381,11 @@ export const ReplyBox = forwardRef<
         </ul>
       )}
       <ErrorLine error={error} className="px-4 pb-2 text-caption" />
-      <div className="relative flex items-center gap-1 px-2.5 pb-2.5">
+      <div className="relative flex flex-wrap items-center gap-1 px-2.5 pb-2.5">
         <input
           ref={fileInput}
           type="file"
+          name="reply-files"
           multiple
           hidden
           data-testid="composer-files"
@@ -364,6 +404,19 @@ export const ReplyBox = forwardRef<
         >
           <PaperclipIcon />
         </Button>
+        <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
+          <PopoverTrigger
+            render={<Button variant="ghost" size="icon-sm" className="text-faint hover:bg-muted aria-expanded:bg-muted" />}
+            aria-label={t`Emoji`}
+            title={t`Emoji`}
+            data-testid="emoji-button"
+          >
+            <SmileIcon />
+          </PopoverTrigger>
+          <PopoverContent side="top" align="start" className={cn(popupClass, "w-[min(320px,calc(100vw-24px))] gap-0 overflow-hidden rounded-xl p-0 ring-0")}>
+            <Suspense fallback={<div className="h-[340px]" />}>{emojiOpen && <EmojiPanel onPick={insertEmoji} />}</Suspense>
+          </PopoverContent>
+        </Popover>
         <Popover open={cannedOpen} onOpenChange={setCannedOpen}>
           <PopoverTrigger
             render={<Button variant="ghost" size="sm" className="text-faint hover:bg-muted aria-expanded:bg-muted" />}
@@ -371,7 +424,7 @@ export const ReplyBox = forwardRef<
             data-testid="canned-button"
           >
             <SlashIcon />
-            <span className="phone:hidden">
+            <span className="@max-md/composer:hidden">
               <Trans>Canned reply</Trans>
             </span>
           </PopoverTrigger>
@@ -392,17 +445,17 @@ export const ReplyBox = forwardRef<
           </PopoverContent>
         </Popover>
         <span className="flex-1" />
+        <span className="me-1.5 text-caption text-faint @max-md/composer:hidden">{actions.chat ? "↵" : `${mod}↵`}</span>
         {note ? (
           <Button onClick={addNote} disabled={!hasContent || noting} data-testid="composer-note">
             <Trans>Add note</Trans>
           </Button>
         ) : (
           <>
-            <span className="me-1.5 text-caption text-faint phone:hidden">{actions.live ? "↵" : `${mod}↵`}</span>
-            <Button variant={actions.live ? "default" : "outline"} onClick={() => send(false)} disabled={!hasContent} data-testid="composer-send">
+            <Button variant={actions.chat ? "default" : "outline"} onClick={() => send(false)} disabled={!hasContent} data-testid="composer-send">
               <Trans>Send</Trans>
             </Button>
-            <Button variant={actions.live ? "outline" : "default"} onClick={() => send(true)} disabled={!hasContent} data-testid="composer-send-close">
+            <Button variant={actions.chat ? "outline" : "default"} onClick={() => send(true)} disabled={!hasContent} data-testid="composer-send-close">
               <Trans>Send and close</Trans>
             </Button>
           </>

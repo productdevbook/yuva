@@ -2,7 +2,7 @@ import { useLingui } from "@lingui/react/macro"
 
 import { Dot } from "@/components/common"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useInboxFilter, useQueue } from "@/features/inbox/queue"
+import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { cn } from "@/lib/utils"
 import { useInboxes } from "@/lib/workspace"
 
@@ -12,18 +12,10 @@ export function InboxPicker({ className }: { className?: string }) {
   const { t } = useLingui()
   const inboxes = useInboxes().data ?? []
   const [value, set] = useInboxFilter()
-  const { setCurrent } = useQueue()
   if (inboxes.length < 2) return null
   const items: Record<string, string> = { [ALL]: t`All inboxes`, ...Object.fromEntries(inboxes.map((i) => [i.id, i.name])) }
   return (
-    <Select
-      value={value || ALL}
-      items={items}
-      onValueChange={(v) => {
-        set(!v || v === ALL ? "" : String(v))
-        setCurrent(null)
-      }}
-    >
+    <Select value={value || ALL} items={items} onValueChange={(v) => set(!v || v === ALL ? "" : String(v))}>
       <SelectTrigger
         aria-label={t`Inbox`}
         size="sm"

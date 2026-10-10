@@ -206,6 +206,12 @@ RETURNING *;
 -- name: GetContactRead :one
 SELECT * FROM contact_reads WHERE workspace_id = $1 AND conversation_id = $2;
 
+-- name: SetConversationContactRead :one
+UPDATE conversations SET last_read_by_contact_at = @read_at
+WHERE workspace_id = @workspace_id AND id = @id
+  AND (last_read_by_contact_at IS NULL OR last_read_by_contact_at < @read_at)
+RETURNING *;
+
 -- name: GetClientAttachment :one
 SELECT a.* FROM attachments a
 JOIN messages m ON m.workspace_id = a.workspace_id AND m.id = a.message_id

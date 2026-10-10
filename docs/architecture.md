@@ -90,7 +90,10 @@ panel (embedded SPA) ─────────► /v1 + WS ──────�
   `availability` and whether they are `online`, and a `member.presence` notice reaches the
   workspace's member connections when a member connects, disconnects or changes availability.
   Contacts likewise: a `contact.presence` notice reaches the member connections that can see the
-  contact whenever one of its `/client/v1/realtime` connections opens or closes.
+  contact whenever one of its `/client/v1/realtime` connections opens or closes. When a contact
+  reads further in the widget or an app, the conversation's `last_read_by_contact_at` moves (kept
+  on the conversation row next to `contact_reads`) and a stored `contact.read` event reaches the
+  members who can see the conversation; it never goes to webhooks or to contacts.
   A connection that ends without closing (a process that died) only stops being seen, so a River
   job every minute announces the members and contacts whose last connection went stale in the
   previous two minutes.
@@ -167,7 +170,7 @@ scoped API keys, and every key-authored message names its bot.
 
 | Scope | Operations |
 |---|---|
-| `conversations:read` | list, get and count conversations; list messages; attachments, message e-mail and raw source; list labels and canned replies |
+| `conversations:read` | list, get and count conversations; list messages and pending drafts; attachments, message e-mail and raw source; list labels and canned replies |
 | `conversations:write` | create, update (status, assignee, snooze, priority, labels), move and bulk-update conversations |
 | `messages:write` | outgoing and incoming messages, drafts: create, edit, discard |
 | `drafts:send` | send a draft (`POST /v1/messages/{id}/send`), together with `messages:write` |
@@ -208,6 +211,13 @@ discarded (`DELETE /v1/messages/{id}`); both answer `409 not_a_draft` for anythi
 send time as its time, `sent_by` the member who sent it, and the draft author kept as author.
 Events: `draft.created`, `draft.updated`, `draft.deleted` on realtime and as webhook types an
 endpoint subscribes to; sending emits the usual `message.created`.
+`GET /v1/drafts` lists the drafts waiting in the conversations the caller can see, newest first,
+each with a conversation summary (id, inbox, subject, status, contact), filtered by `inbox_id` and
+by `author`: `bot` (written with a key), `assistant` (a member through an OAuth client, `via` set)
+or `member` (the panel); `total` counts the matches over all pages for a badge. Keys and tokens call
+it with `conversations:read`. A client keeps it current from the draft events above and
+`message.created` (a sent draft keeps its id), plus `conversation.updated`, `conversation.moved` and
+`inbox_access.changed`.
 
 The workspace setting `bots_may_send` (off for new workspaces; on after the upgrade for workspaces
 that had an active key, so their integrations keep working) decides whether keys deliver at all.
@@ -647,7 +657,8 @@ remote images, http(s)):
 - Reading: the sanitized HTML (`html`, `full_html`; bluemonday's UGC policy, so no
   styles or colours survive) drawn in the panel's own type and theme colours, light or dark, redrawn
   when the theme changes. It never scrolls sideways: tables, `width` attributes and images are held
-  to the frame's width and long words break. Images sit on a light plate so dark-on-transparent
+  to the frame's width and long words break. Table cells are padded, rows divided by a thin line
+  in the theme's border colour, and header cells bold. Images sit on a light plate so dark-on-transparent
   logos stay visible in the dark theme.
 - Original (the default when the message has one): `original_html` from `GET /v1/messages/{id}/email`,
   sanitized with a second policy that keeps inline styles limited to an allowlist of CSS
@@ -659,7 +670,8 @@ remote images, http(s)):
   against the background it sits on, borders alike; elements without a colour take the theme's;
   images are left as they are. A button shows the mail as sent, on white, when the conversion
   gets one wrong. Content wider than the frame is scaled down to fit (to 60% at most) and only
-  beyond that scrolls inside the frame, never the page.
+  beyond that scrolls inside the frame, never the page; a soft fade on the edge that has more to
+  scroll shows that it does.
 
 - Which e-mail view opens first is a per-device preference next to the theme (Settings ›
   Appearance: Original or Reading, Original by default); each message can still be switched.
@@ -672,26 +684,86 @@ remote images, http(s)):
 - Connect an assistant (Settings › Connected apps): one page per client (Claude, Claude Code, Codex,
   ChatGPT, Cursor, VS Code, other MCP clients) with the server's own `/mcp` URL, a copyable command
   or config, install links where the client has them, and the steps; a new grant shows up there live.
-- Queue: one conversation at a time. The conversations waiting for the member (open, assigned to
-  them or to nobody, oldest first) are a queue; after a reply, close, snooze or hand-off the next
-  one opens, with an undo. A reply is held for a few seconds before it is posted so it can be
-  undone; "send" also sets `pending`, "send and close" sets `closed`. A bot's draft is offered as
-  the suggested reply. Live conversations are different: a conversation from a chat or app
-  channel whose contact is online right now is talked through, not processed. Its replies are sent
-  at once (no hold), leave the status `open` and keep the member in it; only close, snooze or
-  hand-off moves on, and Enter sends there. Such live conversations come first in the queue (the
-  longest-waiting first among them), ahead of the oldest e-mail. The hand-off menu shows each teammate's presence and open load
-  (`assignees` in `/v1/conversations/counts`, over the inboxes the member can see). An empty queue
-  shows what the team did today from `GET /v1/stats`: replies sent by members, conversations
-  closed and the median time to the first reply, per member too, over the inboxes the caller can
-  see. Nothing is stored for it: it is counted from `messages` on each request (indexed by
-  workspace and time) for a window of at most 366 days; "today" starts at midnight in the
-  `timezone` the panel sends (the browser's), since members and workspaces have no time zone of
-  their own. All conversations are in a drawer (waiting, snoozed, replied, with the team,
-  done) with full-text search (Postgres FTS); everything else is in a command palette.
-- Conversation: reply and note in one box, canned replies on `/`, attachments, keyboard shortcuts,
-  contact details with identity attributes, the contact's other conversations, channel delivery
-  state, and a notice when another member types a reply in the same conversation or has it open.
+- Main screen, in the shape of a messaging app: a narrow icon rail and three columns on a desktop.
+  Every page except setup and the OAuth consent page lives in this shell: the rail picks what the
+  left column lists, and the chosen item opens in the main area (nothing chosen shows a short
+  placeholder there). Contacts (`/contacts`) lists the directory with its search and filters on
+  the left and opens a contact's page in the main area; Settings (`/settings`) lists the settings
+  groups on the left (You, Inboxes, Team, Developer for owners and admins, Workspace) and opens
+  each page in the main area, at the same URLs as before.
+  The rail switches the left column between Conversations (with the number of unread
+  conversations among the loaded ones), Mentions (the notes that mention the member from
+  `/v1/me/mentions`, unseen ones marked and counted on the rail from `unseen`), Team (`/team`: each member's presence, what they are looking at
+  and their open load from `assignees` in `/v1/conversations/counts`; a member opens in the main
+  area with their open assigned conversations and today's replies and closes), Reports (`/reports`:
+  today's `/v1/stats` in three pages opened in the main area: replies, closes and first replies;
+  ratings, in total and per inbox; per member) and Assistants
+  (the pending drafts from `/v1/drafts`, filtered by author kind and inbox, with `total` on the
+  rail, above the connected apps from `/v1/oauth/grants`); both lists refresh from the realtime
+  events named with their endpoints, and a row opens its conversation at the note or draft
+  (`?m=<message id>`, loading older pages until it is there). The rail also leads to contacts and
+  settings and holds
+  the member's avatar with the availability switch. Each entry has a tooltip and a `G` shortcut.
+  On a phone the rail is a tab bar under the left column, and every section has the two screens
+  of the conversations: the list first, then the chosen page with a back button. The conversations column has the workspace, new
+  conversation and a menu to contacts, setup, the command palette and the shortcuts; a search field (Postgres FTS over people and messages);
+  filter chips (All, Unread, Mine, Unassigned, Snoozed, Done, which are the list filters `status`
+  and `assignee`, Unread filtering the loaded rows by `unread`) and an inbox picker; then the
+  conversation list, most recent activity first, paged as it scrolls and kept current from the
+  realtime connection. A row shows the contact, the last message (marked when a bot or the team
+  wrote it, replaced by the member's unsent draft or by "typing…"; a team reply in a chat or app
+  conversation shows ✓, or ✓✓ once `last_read_by_contact_at` reaches it), the time, an unread mark, the
+  channel, the assignee and a green dot when the contact of a chat or app conversation is online.
+  ↑/↓ move through the list, Enter opens, J/K open the next or previous one. Each member can pin
+  conversations to the top of their own list and mark one unread again, from the row's context
+  menu or the conversation's menu (P, U): `PUT`/`DELETE /v1/conversations/{id}/pin` and
+  `POST /v1/conversations/{id}/unread`, kept per member in `conversation_member_states` next to the
+  read cursors. The list item carries `pinned_at` for the caller, `pinned=true|false` filters on
+  it, a mark shows as `unread` until the member reads the conversation or writes in it, and
+  `conversation.pin` and `conversation.read` events reach only that member's connections. Pinned
+  conversations of the current filter stand in their own section above the rest. In the middle, the
+  open conversation (`/conversations/:id`): a header with the contact, channel, status, assignee
+  and the actions (assign or hand off, snooze, labels, close or reopen, more), the thread built on
+  shadcn's chat components (message, bubble, marker, attachment, message scroller) with date
+  separators. Every item is a chat bubble in a message with header and footer slots, the contact
+  on one side and the team on the other, never a wide card: an e-mail shows its subject on the
+  first message and whenever it changes, then the body, its HTML (original or reading view) in a
+  bubble that grows to the thread's width, with sender and tags in the header and time, view
+  toggles, quoted text, remote images and the `.eml` download in the footer; a note is a bubble
+  from its author on the team's side in the note colour, marked in its footer as seen only by the
+  team; feedback is a bubble from the contact with its category in the header; attachments of any
+  message use the attachment component, images as thumbnails; drafts are outgoing bubbles with
+  Send / Edit / Discard; events and dates are markers. The thread sticks to the newest message
+  while the member is at the bottom and loads older pages on scrolling up; the composer is at the
+  bottom. On the right, the contact details, toggled
+  from the header; below 1200 px wide they open as a sheet, never as a third column, and the
+  header drops the inbox name, the assignee, the labels button and the close button's text when
+  the conversation is narrower than 36rem, so the contact's name keeps its room. On a phone the list and the conversation are
+  two screens with a back button. With nothing open the middle shows what the team did today
+  from `GET /v1/stats`: replies sent by members, conversations closed and the median time to the
+  first reply, per member too, over the inboxes the caller can see. Nothing is stored for it: it
+  is counted from `messages` on each request (indexed by workspace and time) for a window of at
+  most 366 days; "today" starts at midnight in the `timezone` the panel sends (the browser's),
+  since members and workspaces have no time zone of their own.
+- Acting on a conversation never opens another one. Close, snooze and hand-off apply at once and
+  offer an undo in a toast. A reply is held for a few seconds before it is posted, shown in the
+  thread as sending, so it can be undone; "send" also sets `pending`, "send and close" sets
+  `closed`. A bot's draft is offered as the suggested reply. Live conversations are different: a
+  conversation from a chat or app channel whose contact is online right now is talked through.
+  Its replies are sent at once (no hold) and leave the status `open`. In every chat or app
+  conversation, online or not, Enter sends and Shift+Enter starts a new line; in e-mail
+  ⌘/Ctrl+Enter sends and Enter starts a new line. A note takes the same keys as its conversation.
+  The hand-off menu shows each teammate's presence and open load
+  (`assignees` in `/v1/conversations/counts`, over the inboxes the member can see). Everything
+  else is in a command palette.
+- Conversation: reply and note in one box, canned replies on `/`, attachments (picked, pasted or
+  dropped anywhere on the conversation), an emoji picker (frimousse, MIT; its Emojibase data is
+  served by the server itself under `/emojibase/`, loaded on first use and not precached),
+  keyboard shortcuts, contact details with identity attributes, the contact's other conversations,
+  the conversation's media, links and documents (from the loaded messages), channel delivery
+  state, ✓/✓✓ read receipts on the team's chat and app messages, actions on each message (reply
+  with a quote, copy, forward to a teammate as a note that mentions them), a search within the
+  loaded messages of the open conversation that highlights the matches and jumps between them, and a notice when another member types a reply in the same conversation or has it open.
   The panel reports the conversation it shows with a `viewing` frame on `/v1/realtime`; the server
   keeps it on the connection's row (see Member notifications), sends a `viewing` notice to the
   other members who can see the conversation when a member opens or leaves it (hiding the page and
@@ -730,6 +802,16 @@ messages in unassigned conversations (owners and admins triage those); e-mail on
 in conversations assigned to the member, for assignments and for mentions, for every role, since
 being assigned or asked makes anyone responsible.
 
+`GET /v1/me/mentions` lists the notes that mention the calling member, written by someone else,
+newest first, in the conversations the member can see now (losing an inbox hides its mentions), each
+with a preview of the note, its author and a conversation summary. A mention is `seen` once the
+member's read position in that conversation (the same cursor as `unread`, moved by reading or
+writing there) reaches the note; there is no separate mark. `unseen` in the answer counts the
+unseen ones over all pages. Mentions belong to a member, so the list needs a member session; keys and
+OAuth tokens get `403 member_session_required`. A partial GIN index on `messages.mentions` for notes
+serves it. A client keeps it current from `message.created` (a note whose `mentions` holds the
+member), `conversation.read`, `conversation.moved` and `inbox_access.changed`.
+
 Web Push follows RFC 8030, 8291 and 8292 through `webpush-go`, with the server's VAPID keys
 (`YUVA_VAPID_PUBLIC_KEY`, `YUVA_VAPID_PRIVATE_KEY`, `YUVA_VAPID_SUBJECT`; `yuva vapid-keys` makes
 a pair; push is off without them). A subscription belongs to the browser and to the session that
@@ -742,6 +824,13 @@ workspace ids. 404 and 410 from the push service delete the subscription, 429, 5
 errors are retried (5 attempts), other answers are recorded on the subscription. Push endpoints
 pass the webhook address checks: `https` only, never a private or link-local address, resolved
 and checked on every attempt.
+
+While the panel is open, each browser can also alert in the tab itself (Settings ›
+Notifications, off by default, kept on the device): while the tab is hidden, a contact's new
+message in a conversation assigned to the member or to nobody (only the assigned ones while away)
+plays a short sound and, once the member has allowed it with the button there (never asked on
+load), shows a desktop notification with the same `tag` as the Web Push one, so the two replace
+each other instead of stacking.
 
 E-mail fallback: an event with e-mail on schedules one check per member and conversation after the
 member's delay (15 minutes by default). If the conversation still has contact messages (or an
