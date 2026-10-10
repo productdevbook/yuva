@@ -1,7 +1,7 @@
 import Foundation
 
 public enum Yuva {
-    public static let version = "0.0.5"
+    public static let version = "0.0.6"
 
     public static func handleNotification(_ userInfo: [AnyHashable: Any]) -> String? {
         if let id = userInfo["yuva_conversation_id"] as? String { return id }
