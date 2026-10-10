@@ -1132,3 +1132,43 @@ func readableRefusal(h http.Header, origin string) bool {
 		h.Get("Access-Control-Allow-Credentials") == "" && h.Get("Access-Control-Allow-Methods") == "" &&
 		h.Get("Access-Control-Allow-Headers") == ""
 }
+
+func TestContactReadReceipt(t *testing.T) {
+	h := newHarness(t)
+	ct := newChatTeam(t, h, "live", true)
+	cs := ct.session(h, map[string]any{})
+	conv := cs.start("hi")
+	members := ct.agent.dial("")
+	members.ready()
+
+	h.clock.Advance(time.Second)
+	reply := ct.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "body": "Hello!"})
+	if got := ct.agent.expect(http.StatusOK, "GET", "/v1/conversations/"+conv, nil).body["last_read_by_contact_at"]; got != nil {
+		t.Fatalf("read by the contact before reading: %v", got)
+	}
+
+	h.clock.Advance(time.Second)
+	cs.expect(http.StatusOK, "POST", "/client/v1/conversations/"+conv+"/read", nil)
+	m := members.nextNot("message.created", "conversation.updated", "conversation.read", "presence", "member.presence", "contact.presence", "viewing")
+	var read struct {
+		ConversationID string    `json:"conversation_id"`
+		LastRead       string    `json:"last_read_message_id"`
+		ReadAt         time.Time `json:"read_at"`
+	}
+	_ = json.Unmarshal(m.Data, &read)
+	sent, _ := time.Parse(time.RFC3339Nano, reply.str("created_at"))
+	if m.Type != "contact.read" || m.ConversationID != conv || m.ID == 0 || read.LastRead != reply.str("id") || !read.ReadAt.Equal(sent) {
+		t.Fatalf("event %s %s, want contact.read up to the reply", m.Type, m.Data)
+	}
+	at, _ := time.Parse(time.RFC3339Nano, ct.agent.expect(http.StatusOK, "GET", "/v1/conversations/"+conv, nil).str("last_read_by_contact_at"))
+	if !at.Equal(sent) {
+		t.Fatalf("last_read_by_contact_at %v, want %v", at, sent)
+	}
+	item := ct.agent.expect(http.StatusOK, "GET", "/v1/conversations?contact_id="+cs.contactID, nil).body["items"].([]any)[0].(map[string]any)
+	if item["last_read_by_contact_at"] == nil {
+		t.Fatalf("list item without the contact's read position: %v", item)
+	}
+
+	cs.expect(http.StatusOK, "POST", "/client/v1/conversations/"+conv+"/read", nil)
+	members.quiet(300*time.Millisecond, "presence", "member.presence", "contact.presence", "viewing")
+}

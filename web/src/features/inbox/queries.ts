@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { api, unwrap, type ConversationBulkUpdate } from "@/lib/api"
-import { keys, type ConversationFilters } from "@/lib/keys"
+import { keys, type ConversationFilters, type DraftFilters } from "@/lib/keys"
 import { applyEvent } from "@/lib/live"
 import { isLive } from "@/lib/realtime"
 import { useSession } from "@/lib/session"
@@ -48,5 +48,26 @@ export function useStats(inboxId: string) {
     queryKey: [...keys.stats(ws), inboxId, timezone],
     queryFn: () => unwrap(api.GET("/v1/stats", { params: { query: { inbox_id: inboxId || undefined, timezone } } })),
     staleTime: 60_000,
+  })
+}
+
+export function useMentions(enabled = true) {
+  const { workspaceId: ws } = useSession()
+  return useInfiniteQuery({
+    queryKey: keys.mentions(ws),
+    queryFn: ({ pageParam }) => unwrap(api.GET("/v1/me/mentions", { params: { query: { cursor: pageParam, limit: 50 } } })),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (last) => last.next_cursor,
+    enabled,
+  })
+}
+
+export function useDrafts(filters: DraftFilters) {
+  const { workspaceId: ws } = useSession()
+  return useInfiniteQuery({
+    queryKey: keys.drafts(ws, filters),
+    queryFn: ({ pageParam }) => unwrap(api.GET("/v1/drafts", { params: { query: { ...filters, cursor: pageParam, limit: 50 } } })),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (last) => last.next_cursor,
   })
 }

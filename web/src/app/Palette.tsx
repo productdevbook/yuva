@@ -3,15 +3,16 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { useEffect, useMemo, useState } from "react"
 import { useLocation, useNavigate } from "react-router"
 
-import { useShell } from "@/app/shell"
+import { isChats, useShell } from "@/app/shell"
 import { Kbd } from "@/components/common"
 import { keyLabel, mod, SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { useEnumText } from "@/components/common/text"
 import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandItem, CommandList, CommandShortcut } from "@/components/ui/command"
 import { hasCommands, runCommand, type CommandName } from "@/features/conversation/commands"
-import { useInboxFilter, useQueue } from "@/features/inbox/queue"
+import { useInboxFilter } from "@/features/inbox/inboxFilter"
+import { focusListSearch, setListQuery } from "@/features/inbox/listSearch"
+import { useConversations } from "@/features/inbox/queries"
 import { useSession } from "@/lib/session"
-import { useView } from "@/lib/view"
 import { useChannelMap, useInboxes } from "@/lib/workspace"
 import { setTheme } from "@/lib/theme"
 
@@ -23,13 +24,12 @@ function useItems(open: boolean): Item[] {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { canManage } = useSession()
-  const { openDrawer, openShortcuts } = useShell()
-  const queue = useQueue()
+  const { openShortcuts } = useShell()
   const inboxes = useInboxes().data ?? []
   const channels = useChannelMap()
-  const [, setFilter] = useInboxFilter()
-  const [view, setView] = useView()
-  const commands = open && hasCommands() && (pathname === "/" || pathname.startsWith("/conversations/"))
+  const [inboxId, setFilter] = useInboxFilter()
+  const recent = useConversations({ status: "open", inbox_id: inboxId || undefined }, open)
+  const commands = open && hasCommands() && pathname.startsWith("/conversations/")
   return useMemo(() => {
     if (!open) return []
     const inboxName = (id: string) => inboxes.find((i) => i.id === id)?.name
@@ -38,12 +38,9 @@ function useItems(open: boolean): Item[] {
       return [inboxName(inboxId), ch && text.channel[ch.kind]].filter(Boolean).join(" · ")
     }
     const list: Item[] = []
-    for (const c of queue.waiting) {
-      list.push({ group: t`Waiting`, label: c.contact.name || c.contact.email || t`Unnamed contact`, hint: where(c.inbox_id, c.channel_id), run: () => queue.show(c.id) })
-    }
-    for (const c of queue.team) {
+    for (const c of recent.data?.pages[0]?.items ?? []) {
       list.push({
-        group: t`With team`,
+        group: t`Open conversations`,
         label: c.contact.name || c.contact.email || t`Unnamed contact`,
         hint: where(c.inbox_id, c.channel_id),
         run: () => navigate(`/conversations/${c.id}`),
@@ -54,29 +51,28 @@ function useItems(open: boolean): Item[] {
         list.push({ group: t`This conversation`, label, keys: key ? keyLabel(key) : undefined, run: () => runCommand(name) })
       act("reply", t`Write a reply`, SHORTCUTS.reply)
       act("note", t`Write a note for the team`, SHORTCUTS.note)
-      act("snooze", t`Later`, SHORTCUTS.snooze)
-      act("hand", t`Hand to a teammate`, SHORTCUTS.hand)
-      act("close", t`Close without a reply`, SHORTCUTS.close)
+      act("hand", t`Assign or hand to a teammate`, SHORTCUTS.hand)
+      act("snooze", t`Snooze`, SHORTCUTS.snooze)
+      act("labels", t`Labels`, SHORTCUTS.labels)
+      act("close", t`Close or reopen`, SHORTCUTS.close)
       act("history", t`Other conversations`, SHORTCUTS.history)
       act("contact", t`Contact details`, SHORTCUTS.contact)
-      act("more", t`Labels, priority, inbox`, SHORTCUTS.more)
-      act("next", t`Next in the queue`, SHORTCUTS.next)
+      act("more", t`Priority, inbox, spam and more`, SHORTCUTS.more)
     }
     if (inboxes.length > 1) {
-      list.push({ group: t`Inbox`, label: t`All inboxes`, run: () => (setFilter(""), queue.setCurrent(null)) })
-      for (const i of inboxes) list.push({ group: t`Inbox`, label: t`Only ${i.name}`, run: () => (setFilter(i.id), queue.setCurrent(null)) })
+      list.push({ group: t`Inbox`, label: t`All inboxes`, run: () => setFilter("") })
+      for (const i of inboxes) list.push({ group: t`Inbox`, label: t`Only ${i.name}`, run: () => setFilter(i.id) })
     }
     const go = (label: string, to: string, keys?: string[]) => list.push({ group: t`Go to`, label, keys, run: () => navigate(to) })
     list.push({
       group: t`Go to`,
-      label: view === "list" ? t`Switch to the queue` : t`Switch to the list`,
-      keys: keyLabel(SHORTCUTS.view),
+      label: t`Search conversations`,
+      keys: [SHORTCUTS.search],
       run: () => {
-        setView(view === "list" ? "queue" : "list")
-        if (pathname !== "/") navigate("/")
+        if (!isChats(pathname)) navigate("/")
+        focusListSearch()
       },
     })
-    list.push({ group: t`Go to`, label: t`All conversations`, keys: [SHORTCUTS.search], run: () => openDrawer() })
     go(t`Contacts`, "/contacts", keyLabel(SHORTCUTS.contacts))
     go(t`Settings`, "/settings", [mod, ","])
     go(t`Profile`, "/settings/profile")
@@ -98,12 +94,13 @@ function useItems(open: boolean): Item[] {
     list.push({ group: t`Appearance`, label: t`Dark appearance`, run: () => setTheme("dark") })
     list.push({ group: t`Appearance`, label: t`Follow the system appearance`, run: () => setTheme("system") })
     return list
-  }, [open, commands, queue, inboxes, channels, text, t, navigate, openDrawer, openShortcuts, setFilter, canManage, view, setView, pathname])
+  }, [open, commands, recent.data, inboxes, channels, text, t, navigate, openShortcuts, setFilter, canManage, pathname])
 }
 
 export function Palette({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const { t } = useLingui()
-  const { openDrawer } = useShell()
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
   const [q, setQ] = useState("")
   const all = useItems(open)
   useEffect(() => {
@@ -174,7 +171,16 @@ export function Palette({ open, onOpenChange }: { open: boolean; onOpenChange: (
               <CommandItem
                 forceMount
                 value={`search ${search}`}
-                onSelect={() => run({ group: "", label: "", run: () => openDrawer(search) })}
+                onSelect={() =>
+                  run({
+                    group: "",
+                    label: "",
+                    run: () => {
+                      setListQuery(search)
+                      if (!isChats(pathname)) navigate("/")
+                    },
+                  })
+                }
                 className="gap-2.5 rounded-[10px]! px-3 py-[9px]"
               >
                 <Trans>Search conversations for “{search}”</Trans>

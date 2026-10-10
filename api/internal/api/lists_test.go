@@ -562,3 +562,102 @@ func TestInboxCreatedAndDeletedEvents(t *testing.T) {
 		}
 	}
 }
+
+func TestPinAndMarkUnread(t *testing.T) {
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	key := tm.apiKey(h)
+	other := newTeam(t, h)
+	tm.owner.expect(http.StatusNoContent, "PUT", "/v1/inboxes/"+tm.inbox+"/members/"+tm.agentID, nil)
+	conv := tm.conversation(tm.owner)
+	rest := tm.conversation(tm.owner)
+	post(key, conv, map[string]any{"kind": "message", "direction": "in", "body": "hello"})
+	tm.agent.expect(http.StatusOK, "POST", "/v1/conversations/"+conv+"/read", nil)
+	tab, ownerWS := tm.agent.dial(""), tm.owner.dial("")
+	tab.ready()
+	ownerWS.ready()
+	ids := func(items []map[string]any) []string {
+		var out []string
+		for _, it := range items {
+			out = append(out, it["id"].(string))
+		}
+		return out
+	}
+
+	pin := tm.agent.expect(http.StatusOK, "PUT", "/v1/conversations/"+conv+"/pin", nil)
+	at := pin.str("pinned_at")
+	if at == "" || pin.str("member_id") != tm.agentID || pin.str("conversation_id") != conv {
+		t.Fatalf("pin: %s", pin.raw)
+	}
+	if again := tm.agent.expect(http.StatusOK, "PUT", "/v1/conversations/"+conv+"/pin", nil); again.str("pinned_at") != at {
+		t.Fatalf("pinning twice moved pinned_at: %s", again.raw)
+	}
+	if m := tab.nextNot("presence", "member.presence"); m.Type != "conversation.pin" || m.ConversationID != conv || !strings.Contains(string(m.Data), `"pinned_at"`) {
+		t.Fatalf("pin event %s %s", m.Type, m.Data)
+	}
+	if got := itemByID(listItems(tm.agent, ""), conv)["pinned_at"]; got != at {
+		t.Fatalf("pinned_at in the agent's list: %v", got)
+	}
+	if got := itemByID(listItems(tm.owner, ""), conv)["pinned_at"]; got != nil {
+		t.Fatalf("the owner sees the agent's pin: %v", got)
+	}
+	if got := ids(listItems(tm.agent, "?pinned=true")); !slices.Equal(got, []string{conv}) {
+		t.Fatalf("pinned=true: %v", got)
+	}
+	if got := ids(listItems(tm.agent, "?pinned=false")); slices.Contains(got, conv) || !slices.Contains(got, rest) {
+		t.Fatalf("pinned=false: %v", got)
+	}
+	if got := listItems(tm.owner, "?pinned=true"); len(got) != 0 {
+		t.Fatalf("the owner's pinned list: %v", ids(got))
+	}
+	key.expectProblem(http.StatusBadRequest, "validation_failed", "GET", "/v1/conversations?pinned=true", nil)
+	key.expectProblem(http.StatusForbidden, "member_session_required", "PUT", "/v1/conversations/"+conv+"/pin", nil)
+	key.expectProblem(http.StatusForbidden, "member_session_required", "POST", "/v1/conversations/"+conv+"/unread", nil)
+	other.owner.expectProblem(http.StatusNotFound, "not_found", "PUT", "/v1/conversations/"+conv+"/pin", nil)
+	other.owner.expectProblem(http.StatusNotFound, "not_found", "POST", "/v1/conversations/"+conv+"/unread", nil)
+
+	if itemByID(listItems(tm.agent, ""), conv)["unread"] != false {
+		t.Fatal("unread before marking")
+	}
+	r := tm.agent.expect(http.StatusOK, "POST", "/v1/conversations/"+conv+"/unread", nil)
+	if r.body["unread"] != true || r.str("member_id") != tm.agentID {
+		t.Fatalf("mark unread: %s", r.raw)
+	}
+	if m := tab.nextNot("presence", "member.presence"); m.Type != "conversation.read" || !strings.Contains(string(m.Data), `"unread":true`) {
+		t.Fatalf("unread event %s %s", m.Type, m.Data)
+	}
+	if itemByID(listItems(tm.agent, ""), conv)["unread"] != true || itemByID(listItems(tm.owner, ""), conv)["unread"] != true {
+		t.Fatal("marked unread is not unread")
+	}
+	tm.owner.expect(http.StatusOK, "POST", "/v1/conversations/"+conv+"/read", nil)
+	if itemByID(listItems(tm.agent, ""), conv)["unread"] != true {
+		t.Fatal("another member's read cleared the mark")
+	}
+	r = tm.agent.expect(http.StatusOK, "POST", "/v1/conversations/"+conv+"/read", nil)
+	if r.body["unread"] != false {
+		t.Fatalf("read after marking unread: %s", r.raw)
+	}
+	if m := tab.nextNot("presence", "member.presence"); m.Type != "conversation.read" || !strings.Contains(string(m.Data), `"unread":false`) {
+		t.Fatalf("read event after the mark %s %s", m.Type, m.Data)
+	}
+	tm.agent.expect(http.StatusOK, "POST", "/v1/conversations/"+rest+"/unread", nil)
+	tab.nextNot("presence", "member.presence")
+	tm.agent.expect(http.StatusCreated, "POST", "/v1/conversations/"+rest+"/messages", map[string]any{"kind": "note", "body": "seen"})
+	if itemByID(listItems(tm.agent, ""), rest)["unread"] != false {
+		t.Fatal("a note of one's own did not clear the mark")
+	}
+
+	unpin := tm.agent.expect(http.StatusOK, "DELETE", "/v1/conversations/"+conv+"/pin", nil)
+	if unpin.body["pinned_at"] != nil {
+		t.Fatalf("unpin: %s", unpin.raw)
+	}
+	if got := itemByID(listItems(tm.agent, ""), conv)["pinned_at"]; got != nil {
+		t.Fatalf("still pinned: %v", got)
+	}
+	tm.agent.expect(http.StatusOK, "DELETE", "/v1/conversations/"+conv+"/pin", nil)
+	for _, m := range ownerWS.until(func(m wsMessage) bool { return m.Type == "message.created" && m.ConversationID == rest }) {
+		if m.Type == "conversation.pin" || (m.Type == "conversation.read" && strings.Contains(string(m.Data), tm.agentID)) {
+			t.Fatalf("the owner got the agent's %s: %s", m.Type, m.Data)
+		}
+	}
+}

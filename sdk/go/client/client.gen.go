@@ -315,6 +315,21 @@ func (e ContactPresenceEventType) Valid() bool {
 	}
 }
 
+// Defines values for ContactReadEventType.
+const (
+	ContactReadEventTypeContactRead ContactReadEventType = "contact.read"
+)
+
+// Valid indicates whether the value is a known member of the ContactReadEventType enum.
+func (e ContactReadEventType) Valid() bool {
+	switch e {
+	case ContactReadEventTypeContactRead:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ContactUpdatedEventType.
 const (
 	ContactUpdatedEventTypeContactUpdated ContactUpdatedEventType = "contact.updated"
@@ -381,6 +396,21 @@ func (e ConversationMovedEventType) Valid() bool {
 	}
 }
 
+// Defines values for ConversationPinEventType.
+const (
+	ConversationPinEventTypeConversationPin ConversationPinEventType = "conversation.pin"
+)
+
+// Valid indicates whether the value is a known member of the ConversationPinEventType enum.
+func (e ConversationPinEventType) Valid() bool {
+	switch e {
+	case ConversationPinEventTypeConversationPin:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ConversationReadEventType.
 const (
 	ConversationReadEventTypeConversationRead ConversationReadEventType = "conversation.read"
@@ -432,6 +462,27 @@ func (e Direction) Valid() bool {
 	case In:
 		return true
 	case Out:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DraftAuthorKind.
+const (
+	DraftAuthorKindAssistant DraftAuthorKind = "assistant"
+	DraftAuthorKindBot       DraftAuthorKind = "bot"
+	DraftAuthorKindMember    DraftAuthorKind = "member"
+)
+
+// Valid indicates whether the value is a known member of the DraftAuthorKind enum.
+func (e DraftAuthorKind) Valid() bool {
+	switch e {
+	case DraftAuthorKindAssistant:
+		return true
+	case DraftAuthorKindBot:
+		return true
+	case DraftAuthorKindMember:
 		return true
 	default:
 		return false
@@ -2248,6 +2299,31 @@ type ContactPresenceEvent struct {
 // ContactPresenceEventType defines model for ContactPresenceEvent.Type.
 type ContactPresenceEventType string
 
+// ContactRead The contact's read position in a conversation.
+type ContactRead struct {
+	ConversationId    uuid.UUID `json:"conversation_id"`
+	LastReadMessageId uuid.UUID `json:"last_read_message_id"`
+
+	// ReadAt The contact has read every message created at or before this time.
+	ReadAt time.Time `json:"read_at"`
+}
+
+// ContactReadEvent The contact read the conversation further, in the widget or an app.
+type ContactReadEvent struct {
+	ConversationId uuid.UUID `json:"conversation_id"`
+	CreatedAt      time.Time `json:"created_at"`
+
+	// Data The contact's read position in a conversation.
+	Data        ContactRead          `json:"data"`
+	Id          int64                `json:"id"`
+	InboxId     uuid.UUID            `json:"inbox_id"`
+	Type        ContactReadEventType `json:"type"`
+	WorkspaceId uuid.UUID            `json:"workspace_id"`
+}
+
+// ContactReadEventType defines model for ContactReadEvent.Type.
+type ContactReadEventType string
+
 // ContactRef defines model for ContactRef.
 type ContactRef struct {
 	Id uuid.UUID `json:"id"`
@@ -2326,7 +2402,13 @@ type Conversation struct {
 
 	// LastMessageAt The last `message` to or from the contact.
 	LastMessageAt *time.Time `json:"last_message_at,omitempty"`
-	Priority      Priority   `json:"priority"`
+
+	// LastReadByContactAt The contact has read every message created at or before this time, in the widget or
+	// an app (`POST /client/v1/conversations/{id}/read`). Absent until the contact has read
+	// anything, and in conversations the contact only reaches by e-mail. A `contact.read`
+	// event tells when it moves.
+	LastReadByContactAt *time.Time `json:"last_read_by_contact_at,omitempty"`
+	Priority            Priority   `json:"priority"`
 
 	// Rating The contact's latest rating. A conversation can be rated once each time it is closed, so
 	// this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
@@ -2482,7 +2564,16 @@ type ConversationListItem struct {
 
 	// LastMessageAt The last `message` to or from the contact.
 	LastMessageAt *time.Time `json:"last_message_at,omitempty"`
-	Priority      Priority   `json:"priority"`
+
+	// LastReadByContactAt The contact has read every message created at or before this time, in the widget or
+	// an app (`POST /client/v1/conversations/{id}/read`). Absent until the contact has read
+	// anything, and in conversations the contact only reaches by e-mail. A `contact.read`
+	// event tells when it moves.
+	LastReadByContactAt *time.Time `json:"last_read_by_contact_at,omitempty"`
+
+	// PinnedAt When the calling member pinned it; absent when they did not, and for API keys.
+	PinnedAt *time.Time `json:"pinned_at,omitempty"`
+	Priority Priority   `json:"priority"`
 
 	// Rating The contact's latest rating. A conversation can be rated once each time it is closed, so
 	// this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
@@ -2503,7 +2594,7 @@ type ConversationListItem struct {
 	Subject string             `json:"subject"`
 
 	// Unread A message or note from someone other than the calling member is newer than the
-	// member's read cursor. Always `false` for API keys.
+	// member's read cursor, or the member marked it unread. Always `false` for API keys.
 	Unread    bool      `json:"unread"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -2545,6 +2636,31 @@ type ConversationPage struct {
 	NextCursor *string `json:"next_cursor,omitempty"`
 }
 
+// ConversationPin Whether a member pinned a conversation to the top of their lists.
+type ConversationPin struct {
+	ConversationId uuid.UUID `json:"conversation_id"`
+	MemberId       uuid.UUID `json:"member_id"`
+
+	// PinnedAt Absent when it is not pinned.
+	PinnedAt *time.Time `json:"pinned_at,omitempty"`
+}
+
+// ConversationPinEvent The receiving member pinned or unpinned a conversation, in this or another tab or device.
+type ConversationPinEvent struct {
+	ConversationId uuid.UUID `json:"conversation_id"`
+	CreatedAt      time.Time `json:"created_at"`
+
+	// Data Whether a member pinned a conversation to the top of their lists.
+	Data        ConversationPin          `json:"data"`
+	Id          int64                    `json:"id"`
+	InboxId     uuid.UUID                `json:"inbox_id"`
+	Type        ConversationPinEventType `json:"type"`
+	WorkspaceId uuid.UUID                `json:"workspace_id"`
+}
+
+// ConversationPinEventType defines model for ConversationPinEvent.Type.
+type ConversationPinEventType string
+
 // ConversationRating The contact's latest rating. A conversation can be rated once each time it is closed, so
 // this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
 // has it as a `rated` event message whose body is the comment.
@@ -2561,7 +2677,9 @@ type ConversationRead struct {
 	// LastReadMessageId Absent when the conversation has nothing to read yet.
 	LastReadMessageId *uuid.UUID `json:"last_read_message_id,omitempty"`
 	MemberId          uuid.UUID  `json:"member_id"`
-	Unread            bool       `json:"unread"`
+
+	// Unread Something is newer than the cursor, or the member marked it unread.
+	Unread bool `json:"unread"`
 }
 
 // ConversationReadCreate defines model for ConversationReadCreate.
@@ -2589,6 +2707,16 @@ type ConversationReadEventType string
 // ConversationStatus defines model for ConversationStatus.
 type ConversationStatus string
 
+// ConversationSummary Enough of a conversation to show where an item belongs.
+type ConversationSummary struct {
+	// Contact The conversation's contact, enough for a list row.
+	Contact ConversationContact `json:"contact"`
+	Id      uuid.UUID           `json:"id"`
+	InboxId uuid.UUID           `json:"inbox_id"`
+	Status  ConversationStatus  `json:"status"`
+	Subject string              `json:"subject"`
+}
+
 // ConversationUpdate defines model for ConversationUpdate.
 type ConversationUpdate struct {
 	// AssigneeId A member with access to the inbox; `null` unassigns.
@@ -2614,6 +2742,10 @@ type CountByID struct {
 // Direction defines model for Direction.
 type Direction string
 
+// DraftAuthorKind `bot`: written with an API key. `assistant`: written by a member through an OAuth client.
+// `member`: written by a member in the panel.
+type DraftAuthorKind string
+
 // DraftEvent A draft was written, edited or discarded (`data` is the draft as it was). Sending a draft
 // emits `message.created`.
 type DraftEvent struct {
@@ -2628,6 +2760,24 @@ type DraftEvent struct {
 
 // DraftEventType defines model for DraftEvent.Type.
 type DraftEventType string
+
+// DraftItem defines model for DraftItem.
+type DraftItem struct {
+	// Conversation Enough of a conversation to show where an item belongs.
+	Conversation ConversationSummary `json:"conversation"`
+	Draft        Message             `json:"draft"`
+}
+
+// DraftPage defines model for DraftPage.
+type DraftPage struct {
+	Items []DraftItem `json:"items"`
+
+	// NextCursor Absent on the last page.
+	NextCursor *string `json:"next_cursor,omitempty"`
+
+	// Total Drafts matching the filters over all pages.
+	Total int64 `json:"total"`
+}
 
 // Email Examples: owner@example.com
 type Email = openapi_types.Email
@@ -3193,6 +3343,37 @@ type Membership struct {
 	MemberId  uuid.UUID `json:"member_id"`
 	Role      Role      `json:"role"`
 	Workspace Workspace `json:"workspace"`
+}
+
+// Mention defines model for Mention.
+type Mention struct {
+	// Conversation Enough of a conversation to show where an item belongs.
+	Conversation ConversationSummary `json:"conversation"`
+	Note         MentionNote         `json:"note"`
+
+	// Seen The calling member has read the conversation up to this note.
+	Seen bool `json:"seen"`
+}
+
+// MentionNote defines model for MentionNote.
+type MentionNote struct {
+	Author    MessageAuthor `json:"author"`
+	CreatedAt time.Time     `json:"created_at"`
+	Id        uuid.UUID     `json:"id"`
+
+	// Text The plain-text body on one line, cut to 140 characters with `…` when longer.
+	Text string `json:"text"`
+}
+
+// MentionPage defines model for MentionPage.
+type MentionPage struct {
+	Items []Mention `json:"items"`
+
+	// NextCursor Absent on the last page.
+	NextCursor *string `json:"next_cursor,omitempty"`
+
+	// Unseen Unseen mentions over all pages.
+	Unseen int64 `json:"unseen"`
 }
 
 // Message defines model for Message.
@@ -4769,6 +4950,10 @@ type ListConversationsParams struct {
 	// Category Only feedback of this category (implies `kind=feedback`).
 	Category *FeedbackCategory `form:"category,omitempty" json:"category,omitempty"`
 
+	// Pinned `true` lists only the conversations the calling member pinned, `false` only the others;
+	// without it, both. Member sessions only (`400 validation_failed` for API keys).
+	Pinned *bool `form:"pinned,omitempty" json:"pinned,omitempty"`
+
 	// Q Full-text search (Postgres `simple` configuration, `websearch` syntax).
 	Q *Search `form:"q,omitempty" json:"q,omitempty"`
 
@@ -4853,6 +5038,18 @@ type MoveConversationParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// UnpinConversationParams defines parameters for UnpinConversation.
+type UnpinConversationParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// PinConversationParams defines parameters for PinConversation.
+type PinConversationParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // MarkConversationReadParams defines parameters for MarkConversationRead.
 type MarkConversationReadParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
@@ -4866,6 +5063,31 @@ type MarkConversationReadParams struct {
 type SetMemberTypingParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// MarkConversationUnreadParams defines parameters for MarkConversationUnread.
+type MarkConversationUnreadParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListDraftsParams defines parameters for ListDrafts.
+type ListDraftsParams struct {
+	// InboxId Only drafts in this inbox. An inbox the caller cannot see answers `404`.
+	InboxId *uuid.UUID       `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+	Author  *DraftAuthorKind `form:"author,omitempty" json:"author,omitempty"`
+
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
 
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
@@ -5014,6 +5236,18 @@ type DeleteLabelParams struct {
 
 // UpdateLabelParams defines parameters for UpdateLabel.
 type UpdateLabelParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListMentionsParams defines parameters for ListMentions.
+type ListMentionsParams struct {
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -6153,6 +6387,58 @@ func (t *RealtimeMessage) MergeConversationReadEvent(v ConversationReadEvent) er
 	return err
 }
 
+// AsContactReadEvent returns the union data inside the RealtimeMessage as a ContactReadEvent
+func (t RealtimeMessage) AsContactReadEvent() (ContactReadEvent, error) {
+	var body ContactReadEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromContactReadEvent overwrites any union data inside the RealtimeMessage as the provided ContactReadEvent
+func (t *RealtimeMessage) FromContactReadEvent(v ContactReadEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeContactReadEvent performs a merge with any union data inside the RealtimeMessage, using the provided ContactReadEvent
+func (t *RealtimeMessage) MergeContactReadEvent(v ContactReadEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsConversationPinEvent returns the union data inside the RealtimeMessage as a ConversationPinEvent
+func (t RealtimeMessage) AsConversationPinEvent() (ConversationPinEvent, error) {
+	var body ConversationPinEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationPinEvent overwrites any union data inside the RealtimeMessage as the provided ConversationPinEvent
+func (t *RealtimeMessage) FromConversationPinEvent(v ConversationPinEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationPinEvent performs a merge with any union data inside the RealtimeMessage, using the provided ConversationPinEvent
+func (t *RealtimeMessage) MergeConversationPinEvent(v ConversationPinEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsTypingEvent returns the union data inside the RealtimeMessage as a TypingEvent
 func (t RealtimeMessage) AsTypingEvent() (TypingEvent, error) {
 	var body TypingEvent
@@ -6327,12 +6613,16 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsContactDeletedEvent()
 	case "contact.presence":
 		return t.AsContactPresenceEvent()
+	case "contact.read":
+		return t.AsContactReadEvent()
 	case "contact.updated":
 		return t.AsContactUpdatedEvent()
 	case "conversation.created":
 		return t.AsConversationEvent()
 	case "conversation.moved":
 		return t.AsConversationMovedEvent()
+	case "conversation.pin":
+		return t.AsConversationPinEvent()
 	case "conversation.read":
 		return t.AsConversationReadEvent()
 	case "conversation.updated":
@@ -6692,6 +6982,58 @@ func (t *StoredEvent) MergeConversationReadEvent(v ConversationReadEvent) error 
 	return err
 }
 
+// AsContactReadEvent returns the union data inside the StoredEvent as a ContactReadEvent
+func (t StoredEvent) AsContactReadEvent() (ContactReadEvent, error) {
+	var body ContactReadEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromContactReadEvent overwrites any union data inside the StoredEvent as the provided ContactReadEvent
+func (t *StoredEvent) FromContactReadEvent(v ContactReadEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeContactReadEvent performs a merge with any union data inside the StoredEvent, using the provided ContactReadEvent
+func (t *StoredEvent) MergeContactReadEvent(v ContactReadEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsConversationPinEvent returns the union data inside the StoredEvent as a ConversationPinEvent
+func (t StoredEvent) AsConversationPinEvent() (ConversationPinEvent, error) {
+	var body ConversationPinEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationPinEvent overwrites any union data inside the StoredEvent as the provided ConversationPinEvent
+func (t *StoredEvent) FromConversationPinEvent(v ConversationPinEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationPinEvent performs a merge with any union data inside the StoredEvent, using the provided ConversationPinEvent
+func (t *StoredEvent) MergeConversationPinEvent(v ConversationPinEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 func (t StoredEvent) Discriminator() (string, error) {
 	var discriminator struct {
 		Discriminator string `json:"type"`
@@ -6708,12 +7050,16 @@ func (t StoredEvent) ValueByDiscriminator() (interface{}, error) {
 	switch discriminator {
 	case "contact.deleted":
 		return t.AsContactDeletedEvent()
+	case "contact.read":
+		return t.AsContactReadEvent()
 	case "contact.updated":
 		return t.AsContactUpdatedEvent()
 	case "conversation.created":
 		return t.AsConversationEvent()
 	case "conversation.moved":
 		return t.AsConversationMovedEvent()
+	case "conversation.pin":
+		return t.AsConversationPinEvent()
 	case "conversation.read":
 		return t.AsConversationReadEvent()
 	case "conversation.updated":
@@ -6987,6 +7333,8 @@ type ClientInterface interface {
 	//
 	// Moves the contact's read cursor to `message_id`, or to the latest message when it is
 	// absent; it only moves forward. Replies the contact has read are not e-mailed to them.
+	// When it moves, members see it as the conversation's `last_read_by_contact_at` and a
+	// `contact.read` event on `/v1/realtime`.
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -6997,6 +7345,8 @@ type ClientInterface interface {
 	//
 	// Moves the contact's read cursor to `message_id`, or to the latest message when it is
 	// absent; it only moves forward. Replies the contact has read are not e-mailed to them.
+	// When it moves, members see it as the conversation's `last_read_by_contact_at` and a
+	// `contact.read` event on `/v1/realtime`.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -7619,7 +7969,8 @@ type ClientInterface interface {
 	// Scope: `conversations:read`.
 	//
 	// Each item carries the contact (id, name, first e-mail address), a preview of the last
-	// `message` (notes and events are not previewed) and `unread` for the calling member.
+	// `message` (notes and events are not previewed), and `unread` and `pinned_at` for the
+	// calling member.
 	//
 	// Corresponds with GET /v1/conversations (the `ListConversations` operationId).
 	ListConversations(ctx context.Context, params *ListConversationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -7850,6 +8201,24 @@ type ClientInterface interface {
 	// Corresponds with POST /v1/conversations/{conversationId}/move (the `MoveConversation` operationId).
 	MoveConversation(ctx context.Context, conversationId ConversationId, params *MoveConversationParams, body MoveConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// UnpinConversation Unpin a conversation
+	//
+	// Takes the calling member's pin away; unpinning a conversation that is not pinned changes
+	// nothing. A `conversation.pin` event reaches the member's connections when a pin was
+	// removed. Member sessions only.
+	//
+	// Corresponds with DELETE /v1/conversations/{conversationId}/pin (the `UnpinConversation` operationId).
+	UnpinConversation(ctx context.Context, conversationId ConversationId, params *UnpinConversationParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PinConversation Pin a conversation
+	//
+	// Pins the conversation to the top of the calling member's lists; nobody else sees it.
+	// Pinning a pinned conversation keeps its `pinned_at`. A `conversation.pin` event reaches the
+	// member's connections. Member sessions only.
+	//
+	// Corresponds with PUT /v1/conversations/{conversationId}/pin (the `PinConversation` operationId).
+	PinConversation(ctx context.Context, conversationId ConversationId, params *PinConversationParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// MarkConversationReadWithBody Mark a conversation read
 	//
 	// Moves the calling member's read cursor to `message_id`, or to the latest message, note or
@@ -7903,6 +8272,34 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /v1/conversations/{conversationId}/typing (the `SetMemberTyping` operationId).
 	SetMemberTyping(ctx context.Context, conversationId ConversationId, params *SetMemberTypingParams, body SetMemberTypingJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// MarkConversationUnread Mark a conversation unread
+	//
+	// Marks the conversation unread for the calling member, wherever their read cursor is: it is
+	// `unread` in their lists until they read it again (`POST .../read`, or a message or note
+	// of their own). Others are not affected. A `conversation.read` event with `unread: true`
+	// reaches the member's connections. Member sessions only.
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/unread (the `MarkConversationUnread` operationId).
+	MarkConversationUnread(ctx context.Context, conversationId ConversationId, params *MarkConversationUnreadParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListDrafts List pending drafts
+	//
+	// Drafts waiting to be sent, edited or discarded in the conversations the caller can see,
+	// newest first, each with its conversation. `author` narrows them to drafts by bots (API
+	// keys), by assistants (members through an OAuth client, `author.via` set) or by members in
+	// the panel. The page carries `total`, the number of drafts matching the filters over all
+	// pages, for a badge.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Realtime: `draft.created`, `draft.updated` and `draft.deleted` carry the draft; a sent
+	// draft arrives as `message.created` with the draft's id and `draft: false`;
+	// `conversation.updated`, `conversation.moved` and `inbox_access.changed` can change the
+	// conversation summary or hide items.
+	//
+	// Corresponds with GET /v1/drafts (the `ListDrafts` operationId).
+	ListDrafts(ctx context.Context, params *ListDraftsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListEvents Events after a cursor
 	//
@@ -8271,6 +8668,22 @@ type ClientInterface interface {
 	//
 	// Corresponds with PATCH /v1/me (the `UpdateMe` operationId).
 	UpdateMe(ctx context.Context, body UpdateMeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListMentions Notes that mention you
+	//
+	// Notes in the workspace whose `mentions` name the calling member, written by someone else,
+	// newest first, in conversations the member can see now. Each item has the note (a preview
+	// of its text and its author), the conversation, and `seen`: whether the member has read the
+	// conversation up to the note (`POST /v1/conversations/{id}/read`, or writing in it). The
+	// page carries `unseen`, the number of unseen mentions over all pages, for a badge. Member
+	// sessions only.
+	//
+	// Realtime: a new mention arrives as `message.created` with `kind: note` and the member in
+	// `mentions`; `conversation.read` changes `seen`; `conversation.moved` and
+	// `inbox_access.changed` can hide or show items.
+	//
+	// Corresponds with GET /v1/me/mentions (the `ListMentions` operationId).
+	ListMentions(ctx context.Context, params *ListMentionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetNotificationSettings Your notification settings
 	//
@@ -9122,6 +9535,8 @@ func (c *Client) RateClientConversation(ctx context.Context, conversationId Conv
 //
 // Moves the contact's read cursor to `message_id`, or to the latest message when it is
 // absent; it only moves forward. Replies the contact has read are not e-mailed to them.
+// When it moves, members see it as the conversation's `last_read_by_contact_at` and a
+// `contact.read` event on `/v1/realtime`.
 //
 // Takes any type of body and a specified content type.
 //
@@ -9142,6 +9557,8 @@ func (c *Client) MarkClientConversationReadWithBody(ctx context.Context, convers
 //
 // Moves the contact's read cursor to `message_id`, or to the latest message when it is
 // absent; it only moves forward. Replies the contact has read are not e-mailed to them.
+// When it moves, members see it as the conversation's `last_read_by_contact_at` and a
+// `contact.read` event on `/v1/realtime`.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -10304,7 +10721,8 @@ func (c *Client) GetContactSummary(ctx context.Context, contactId ContactId, par
 // Scope: `conversations:read`.
 //
 // Each item carries the contact (id, name, first e-mail address), a preview of the last
-// `message` (notes and events are not previewed) and `unread` for the calling member.
+// `message` (notes and events are not previewed), and `unread` and `pinned_at` for the
+// calling member.
 //
 // Corresponds with GET /v1/conversations (the `ListConversations` operationId).
 func (c *Client) ListConversations(ctx context.Context, params *ListConversationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -10675,6 +11093,44 @@ func (c *Client) MoveConversation(ctx context.Context, conversationId Conversati
 	return c.Client.Do(req)
 }
 
+// UnpinConversation Unpin a conversation
+//
+// Takes the calling member's pin away; unpinning a conversation that is not pinned changes
+// nothing. A `conversation.pin` event reaches the member's connections when a pin was
+// removed. Member sessions only.
+//
+// Corresponds with DELETE /v1/conversations/{conversationId}/pin (the `UnpinConversation` operationId).
+func (c *Client) UnpinConversation(ctx context.Context, conversationId ConversationId, params *UnpinConversationParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnpinConversationRequest(c.Server, conversationId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PinConversation Pin a conversation
+//
+// Pins the conversation to the top of the calling member's lists; nobody else sees it.
+// Pinning a pinned conversation keeps its `pinned_at`. A `conversation.pin` event reaches the
+// member's connections. Member sessions only.
+//
+// Corresponds with PUT /v1/conversations/{conversationId}/pin (the `PinConversation` operationId).
+func (c *Client) PinConversation(ctx context.Context, conversationId ConversationId, params *PinConversationParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPinConversationRequest(c.Server, conversationId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // MarkConversationReadWithBody Mark a conversation read
 //
 // Moves the calling member's read cursor to `message_id`, or to the latest message, note or
@@ -10759,6 +11215,54 @@ func (c *Client) SetMemberTypingWithBody(ctx context.Context, conversationId Con
 // Corresponds with POST /v1/conversations/{conversationId}/typing (the `SetMemberTyping` operationId).
 func (c *Client) SetMemberTyping(ctx context.Context, conversationId ConversationId, params *SetMemberTypingParams, body SetMemberTypingJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSetMemberTypingRequest(c.Server, conversationId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// MarkConversationUnread Mark a conversation unread
+//
+// Marks the conversation unread for the calling member, wherever their read cursor is: it is
+// `unread` in their lists until they read it again (`POST .../read`, or a message or note
+// of their own). Others are not affected. A `conversation.read` event with `unread: true`
+// reaches the member's connections. Member sessions only.
+//
+// Corresponds with POST /v1/conversations/{conversationId}/unread (the `MarkConversationUnread` operationId).
+func (c *Client) MarkConversationUnread(ctx context.Context, conversationId ConversationId, params *MarkConversationUnreadParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewMarkConversationUnreadRequest(c.Server, conversationId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListDrafts List pending drafts
+//
+// Drafts waiting to be sent, edited or discarded in the conversations the caller can see,
+// newest first, each with its conversation. `author` narrows them to drafts by bots (API
+// keys), by assistants (members through an OAuth client, `author.via` set) or by members in
+// the panel. The page carries `total`, the number of drafts matching the filters over all
+// pages, for a badge.
+//
+// Scope: `conversations:read`.
+//
+// Realtime: `draft.created`, `draft.updated` and `draft.deleted` carry the draft; a sent
+// draft arrives as `message.created` with the draft's id and `draft: false`;
+// `conversation.updated`, `conversation.moved` and `inbox_access.changed` can change the
+// conversation summary or hide items.
+//
+// Corresponds with GET /v1/drafts (the `ListDrafts` operationId).
+func (c *Client) ListDrafts(ctx context.Context, params *ListDraftsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListDraftsRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -11457,6 +11961,32 @@ func (c *Client) UpdateMeWithBody(ctx context.Context, contentType string, body 
 // Corresponds with PATCH /v1/me (the `UpdateMe` operationId).
 func (c *Client) UpdateMe(ctx context.Context, body UpdateMeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateMeRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListMentions Notes that mention you
+//
+// Notes in the workspace whose `mentions` name the calling member, written by someone else,
+// newest first, in conversations the member can see now. Each item has the note (a preview
+// of its text and its author), the conversation, and `seen`: whether the member has read the
+// conversation up to the note (`POST /v1/conversations/{id}/read`, or writing in it). The
+// page carries `unseen`, the number of unseen mentions over all pages, for a badge. Member
+// sessions only.
+//
+// Realtime: a new mention arrives as `message.created` with `kind: note` and the member in
+// `mentions`; `conversation.read` changes `seen`; `conversation.moved` and
+// `inbox_access.changed` can hide or show items.
+//
+// Corresponds with GET /v1/me/mentions (the `ListMentions` operationId).
+func (c *Client) ListMentions(ctx context.Context, params *ListMentionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListMentionsRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -15258,6 +15788,18 @@ func NewListConversationsRequest(server string, params *ListConversationsParams)
 
 		}
 
+		if params.Pinned != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "pinned", *params.Pinned, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
 		if params.Q != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "q", *params.Q, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
@@ -15854,6 +16396,104 @@ func NewMoveConversationRequestWithBody(server string, conversationId Conversati
 	return req, nil
 }
 
+// NewUnpinConversationRequest constructs an http.Request for the UnpinConversation method
+func NewUnpinConversationRequest(server string, conversationId ConversationId, params *UnpinConversationParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/conversations/%s/pin", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewPinConversationRequest constructs an http.Request for the PinConversation method
+func NewPinConversationRequest(server string, conversationId ConversationId, params *PinConversationParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/conversations/%s/pin", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewMarkConversationReadRequest calls the generic MarkConversationRead builder with application/json body
 func NewMarkConversationReadRequest(server string, conversationId ConversationId, params *MarkConversationReadParams, body MarkConversationReadJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -15993,6 +16633,171 @@ func NewSetMemberTypingRequestWithBody(server string, conversationId Conversatio
 			}
 
 			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewMarkConversationUnreadRequest constructs an http.Request for the MarkConversationUnread method
+func NewMarkConversationUnreadRequest(server string, conversationId ConversationId, params *MarkConversationUnreadParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/conversations/%s/unread", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewListDraftsRequest constructs an http.Request for the ListDrafts method
+func NewListDraftsRequest(server string, params *ListDraftsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/drafts")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.InboxId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "inbox_id", *params.InboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Author != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "author", *params.Author, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: "int32"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
 		}
 
 	}
@@ -17264,6 +18069,87 @@ func NewUpdateMeRequestWithBody(server string, contentType string, body io.Reade
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListMentionsRequest constructs an http.Request for the ListMentions method
+func NewListMentionsRequest(server string, params *ListMentionsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/me/mentions")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: "int32"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
 
 	return req, nil
 }
@@ -19654,6 +20540,8 @@ type ClientWithResponsesInterface interface {
 	//
 	// Moves the contact's read cursor to `message_id`, or to the latest message when it is
 	// absent; it only moves forward. Replies the contact has read are not e-mailed to them.
+	// When it moves, members see it as the conversation's `last_read_by_contact_at` and a
+	// `contact.read` event on `/v1/realtime`.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -19664,6 +20552,8 @@ type ClientWithResponsesInterface interface {
 	//
 	// Moves the contact's read cursor to `message_id`, or to the latest message when it is
 	// absent; it only moves forward. Replies the contact has read are not e-mailed to them.
+	// When it moves, members see it as the conversation's `last_read_by_contact_at` and a
+	// `contact.read` event on `/v1/realtime`.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -20332,7 +21222,8 @@ type ClientWithResponsesInterface interface {
 	// Scope: `conversations:read`.
 	//
 	// Each item carries the contact (id, name, first e-mail address), a preview of the last
-	// `message` (notes and events are not previewed) and `unread` for the calling member.
+	// `message` (notes and events are not previewed), and `unread` and `pinned_at` for the
+	// calling member.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -20571,6 +21462,28 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /v1/conversations/{conversationId}/move (the `MoveConversation` operationId).
 	MoveConversationWithResponse(ctx context.Context, conversationId ConversationId, params *MoveConversationParams, body MoveConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*MoveConversationResponse, error)
 
+	// UnpinConversationWithResponse Unpin a conversation
+	//
+	// Takes the calling member's pin away; unpinning a conversation that is not pinned changes
+	// nothing. A `conversation.pin` event reaches the member's connections when a pin was
+	// removed. Member sessions only.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/conversations/{conversationId}/pin (the `UnpinConversation` operationId).
+	UnpinConversationWithResponse(ctx context.Context, conversationId ConversationId, params *UnpinConversationParams, reqEditors ...RequestEditorFn) (*UnpinConversationResponse, error)
+
+	// PinConversationWithResponse Pin a conversation
+	//
+	// Pins the conversation to the top of the calling member's lists; nobody else sees it.
+	// Pinning a pinned conversation keeps its `pinned_at`. A `conversation.pin` event reaches the
+	// member's connections. Member sessions only.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/conversations/{conversationId}/pin (the `PinConversation` operationId).
+	PinConversationWithResponse(ctx context.Context, conversationId ConversationId, params *PinConversationParams, reqEditors ...RequestEditorFn) (*PinConversationResponse, error)
+
 	// MarkConversationReadWithBodyWithResponse Mark a conversation read
 	//
 	// Moves the calling member's read cursor to `message_id`, or to the latest message, note or
@@ -20624,6 +21537,38 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /v1/conversations/{conversationId}/typing (the `SetMemberTyping` operationId).
 	SetMemberTypingWithResponse(ctx context.Context, conversationId ConversationId, params *SetMemberTypingParams, body SetMemberTypingJSONRequestBody, reqEditors ...RequestEditorFn) (*SetMemberTypingResponse, error)
+
+	// MarkConversationUnreadWithResponse Mark a conversation unread
+	//
+	// Marks the conversation unread for the calling member, wherever their read cursor is: it is
+	// `unread` in their lists until they read it again (`POST .../read`, or a message or note
+	// of their own). Others are not affected. A `conversation.read` event with `unread: true`
+	// reaches the member's connections. Member sessions only.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/unread (the `MarkConversationUnread` operationId).
+	MarkConversationUnreadWithResponse(ctx context.Context, conversationId ConversationId, params *MarkConversationUnreadParams, reqEditors ...RequestEditorFn) (*MarkConversationUnreadResponse, error)
+
+	// ListDraftsWithResponse List pending drafts
+	//
+	// Drafts waiting to be sent, edited or discarded in the conversations the caller can see,
+	// newest first, each with its conversation. `author` narrows them to drafts by bots (API
+	// keys), by assistants (members through an OAuth client, `author.via` set) or by members in
+	// the panel. The page carries `total`, the number of drafts matching the filters over all
+	// pages, for a badge.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Realtime: `draft.created`, `draft.updated` and `draft.deleted` carry the draft; a sent
+	// draft arrives as `message.created` with the draft's id and `draft: false`;
+	// `conversation.updated`, `conversation.moved` and `inbox_access.changed` can change the
+	// conversation summary or hide items.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/drafts (the `ListDrafts` operationId).
+	ListDraftsWithResponse(ctx context.Context, params *ListDraftsParams, reqEditors ...RequestEditorFn) (*ListDraftsResponse, error)
 
 	// ListEventsWithResponse Events after a cursor
 	//
@@ -21022,6 +21967,24 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with PATCH /v1/me (the `UpdateMe` operationId).
 	UpdateMeWithResponse(ctx context.Context, body UpdateMeJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateMeResponse, error)
+
+	// ListMentionsWithResponse Notes that mention you
+	//
+	// Notes in the workspace whose `mentions` name the calling member, written by someone else,
+	// newest first, in conversations the member can see now. Each item has the note (a preview
+	// of its text and its author), the conversation, and `seen`: whether the member has read the
+	// conversation up to the note (`POST /v1/conversations/{id}/read`, or writing in it). The
+	// page carries `unseen`, the number of unseen mentions over all pages, for a badge. Member
+	// sessions only.
+	//
+	// Realtime: a new mention arrives as `message.created` with `kind: note` and the member in
+	// `mentions`; `conversation.read` changes `seen`; `conversation.moved` and
+	// `inbox_access.changed` can hide or show items.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/me/mentions (the `ListMentions` operationId).
+	ListMentionsWithResponse(ctx context.Context, params *ListMentionsParams, reqEditors ...RequestEditorFn) (*ListMentionsResponse, error)
 
 	// GetNotificationSettingsWithResponse Your notification settings
 	//
@@ -25328,6 +26291,130 @@ func (r MoveConversationResponse) ContentType() string {
 	return ""
 }
 
+type UnpinConversationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ConversationPin
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UnpinConversationResponse) GetJSON200() *ConversationPin {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r UnpinConversationResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r UnpinConversationResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r UnpinConversationResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r UnpinConversationResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UnpinConversationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnpinConversationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UnpinConversationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PinConversationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ConversationPin
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PinConversationResponse) GetJSON200() *ConversationPin {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r PinConversationResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r PinConversationResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r PinConversationResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r PinConversationResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PinConversationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PinConversationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PinConversationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type MarkConversationReadResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -25453,6 +26540,137 @@ func (r SetMemberTypingResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r SetMemberTypingResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type MarkConversationUnreadResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ConversationRead
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r MarkConversationUnreadResponse) GetJSON200() *ConversationRead {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r MarkConversationUnreadResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r MarkConversationUnreadResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r MarkConversationUnreadResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r MarkConversationUnreadResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r MarkConversationUnreadResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r MarkConversationUnreadResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r MarkConversationUnreadResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListDraftsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *DraftPage
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListDraftsResponse) GetJSON200() *DraftPage {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r ListDraftsResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListDraftsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListDraftsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ListDraftsResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r ListDraftsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListDraftsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListDraftsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListDraftsResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -26941,6 +28159,68 @@ func (r UpdateMeResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r UpdateMeResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListMentionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *MentionPage
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListMentionsResponse) GetJSON200() *MentionPage {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r ListMentionsResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListMentionsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListMentionsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r ListMentionsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListMentionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListMentionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListMentionsResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -29794,6 +31074,8 @@ func (c *ClientWithResponses) RateClientConversationWithResponse(ctx context.Con
 //
 // Moves the contact's read cursor to `message_id`, or to the latest message when it is
 // absent; it only moves forward. Replies the contact has read are not e-mailed to them.
+// When it moves, members see it as the conversation's `last_read_by_contact_at` and a
+// `contact.read` event on `/v1/realtime`.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -29810,6 +31092,8 @@ func (c *ClientWithResponses) MarkClientConversationReadWithBodyWithResponse(ctx
 //
 // Moves the contact's read cursor to `message_id`, or to the latest message when it is
 // absent; it only moves forward. Replies the contact has read are not e-mailed to them.
+// When it moves, members see it as the conversation's `last_read_by_contact_at` and a
+// `contact.read` event on `/v1/realtime`.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -30802,7 +32086,8 @@ func (c *ClientWithResponses) GetContactSummaryWithResponse(ctx context.Context,
 // Scope: `conversations:read`.
 //
 // Each item carries the contact (id, name, first e-mail address), a preview of the last
-// `message` (notes and events are not previewed) and `unread` for the calling member.
+// `message` (notes and events are not previewed), and `unread` and `pinned_at` for the
+// calling member.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -31125,6 +32410,40 @@ func (c *ClientWithResponses) MoveConversationWithResponse(ctx context.Context, 
 	return ParseMoveConversationResponse(rsp)
 }
 
+// UnpinConversationWithResponse Unpin a conversation
+//
+// Takes the calling member's pin away; unpinning a conversation that is not pinned changes
+// nothing. A `conversation.pin` event reaches the member's connections when a pin was
+// removed. Member sessions only.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/conversations/{conversationId}/pin (the `UnpinConversation` operationId).
+func (c *ClientWithResponses) UnpinConversationWithResponse(ctx context.Context, conversationId ConversationId, params *UnpinConversationParams, reqEditors ...RequestEditorFn) (*UnpinConversationResponse, error) {
+	rsp, err := c.UnpinConversation(ctx, conversationId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnpinConversationResponse(rsp)
+}
+
+// PinConversationWithResponse Pin a conversation
+//
+// Pins the conversation to the top of the calling member's lists; nobody else sees it.
+// Pinning a pinned conversation keeps its `pinned_at`. A `conversation.pin` event reaches the
+// member's connections. Member sessions only.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/conversations/{conversationId}/pin (the `PinConversation` operationId).
+func (c *ClientWithResponses) PinConversationWithResponse(ctx context.Context, conversationId ConversationId, params *PinConversationParams, reqEditors ...RequestEditorFn) (*PinConversationResponse, error) {
+	rsp, err := c.PinConversation(ctx, conversationId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePinConversationResponse(rsp)
+}
+
 // MarkConversationReadWithBodyWithResponse Mark a conversation read
 //
 // Moves the calling member's read cursor to `message_id`, or to the latest message, note or
@@ -31201,6 +32520,50 @@ func (c *ClientWithResponses) SetMemberTypingWithResponse(ctx context.Context, c
 		return nil, err
 	}
 	return ParseSetMemberTypingResponse(rsp)
+}
+
+// MarkConversationUnreadWithResponse Mark a conversation unread
+//
+// Marks the conversation unread for the calling member, wherever their read cursor is: it is
+// `unread` in their lists until they read it again (`POST .../read`, or a message or note
+// of their own). Others are not affected. A `conversation.read` event with `unread: true`
+// reaches the member's connections. Member sessions only.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/conversations/{conversationId}/unread (the `MarkConversationUnread` operationId).
+func (c *ClientWithResponses) MarkConversationUnreadWithResponse(ctx context.Context, conversationId ConversationId, params *MarkConversationUnreadParams, reqEditors ...RequestEditorFn) (*MarkConversationUnreadResponse, error) {
+	rsp, err := c.MarkConversationUnread(ctx, conversationId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseMarkConversationUnreadResponse(rsp)
+}
+
+// ListDraftsWithResponse List pending drafts
+//
+// Drafts waiting to be sent, edited or discarded in the conversations the caller can see,
+// newest first, each with its conversation. `author` narrows them to drafts by bots (API
+// keys), by assistants (members through an OAuth client, `author.via` set) or by members in
+// the panel. The page carries `total`, the number of drafts matching the filters over all
+// pages, for a badge.
+//
+// Scope: `conversations:read`.
+//
+// Realtime: `draft.created`, `draft.updated` and `draft.deleted` carry the draft; a sent
+// draft arrives as `message.created` with the draft's id and `draft: false`;
+// `conversation.updated`, `conversation.moved` and `inbox_access.changed` can change the
+// conversation summary or hide items.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/drafts (the `ListDrafts` operationId).
+func (c *ClientWithResponses) ListDraftsWithResponse(ctx context.Context, params *ListDraftsParams, reqEditors ...RequestEditorFn) (*ListDraftsResponse, error) {
+	rsp, err := c.ListDrafts(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListDraftsResponse(rsp)
 }
 
 // ListEventsWithResponse Events after a cursor
@@ -31797,6 +33160,30 @@ func (c *ClientWithResponses) UpdateMeWithResponse(ctx context.Context, body Upd
 		return nil, err
 	}
 	return ParseUpdateMeResponse(rsp)
+}
+
+// ListMentionsWithResponse Notes that mention you
+//
+// Notes in the workspace whose `mentions` name the calling member, written by someone else,
+// newest first, in conversations the member can see now. Each item has the note (a preview
+// of its text and its author), the conversation, and `seen`: whether the member has read the
+// conversation up to the note (`POST /v1/conversations/{id}/read`, or writing in it). The
+// page carries `unseen`, the number of unseen mentions over all pages, for a badge. Member
+// sessions only.
+//
+// Realtime: a new mention arrives as `message.created` with `kind: note` and the member in
+// `mentions`; `conversation.read` changes `seen`; `conversation.moved` and
+// `inbox_access.changed` can hide or show items.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/me/mentions (the `ListMentions` operationId).
+func (c *ClientWithResponses) ListMentionsWithResponse(ctx context.Context, params *ListMentionsParams, reqEditors ...RequestEditorFn) (*ListMentionsResponse, error) {
+	rsp, err := c.ListMentions(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListMentionsResponse(rsp)
 }
 
 // GetNotificationSettingsWithResponse Your notification settings
@@ -35644,6 +37031,100 @@ func ParseMoveConversationResponse(rsp *http.Response) (*MoveConversationRespons
 	return response, nil
 }
 
+// ParseUnpinConversationResponse parses an HTTP response from a UnpinConversationWithResponse call
+func ParseUnpinConversationResponse(rsp *http.Response) (*UnpinConversationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnpinConversationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ConversationPin
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePinConversationResponse parses an HTTP response from a PinConversationWithResponse call
+func ParsePinConversationResponse(rsp *http.Response) (*PinConversationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PinConversationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ConversationPin
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseMarkConversationReadResponse parses an HTTP response from a MarkConversationReadWithResponse call
 func ParseMarkConversationReadResponse(rsp *http.Response) (*MarkConversationReadResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -35714,6 +37195,107 @@ func ParseSetMemberTypingResponse(rsp *http.Response) (*SetMemberTypingResponse,
 	switch {
 	case rsp.StatusCode == 204:
 		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseMarkConversationUnreadResponse parses an HTTP response from a MarkConversationUnreadWithResponse call
+func ParseMarkConversationUnreadResponse(rsp *http.Response) (*MarkConversationUnreadResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &MarkConversationUnreadResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ConversationRead
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListDraftsResponse parses an HTTP response from a ListDraftsWithResponse call
+func ParseListDraftsResponse(rsp *http.Response) (*ListDraftsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListDraftsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DraftPage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest Problem
@@ -36894,6 +38476,53 @@ func ParseUpdateMeResponse(rsp *http.Response) (*UpdateMeResponse, error) {
 			return nil, err
 		}
 		response.ApplicationproblemJSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListMentionsResponse parses an HTTP response from a ListMentionsWithResponse call
+func ParseListMentionsResponse(rsp *http.Response) (*ListMentionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListMentionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MentionPage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
 
 	}
 

@@ -3,6 +3,7 @@ import { useEffect, useSyncExternalStore } from "react"
 
 import type { RealtimeMessage } from "@/lib/api"
 import { keys } from "@/lib/keys"
+import { alertNewMessage } from "@/lib/alerts"
 import { applyEvent, type LiveEvent } from "@/lib/live"
 import { applyPresence, applyViewing, clearViewing } from "@/lib/presence"
 import { meKey } from "@/lib/session"
@@ -124,6 +125,7 @@ export function useRealtime(ws: string, memberId: string) {
         if (msg.type === "message.created" && msg.data.kind === "message" && msg.data.author.type === "contact") {
           stopTyping(msg.data.conversation_id, { type: "contact", contact_id: msg.data.author.contact_id })
         }
+        if (msg.type === "message.created") alertNewMessage(qc, ws, memberId, msg.data)
         applyEvent(qc, ctx, { type: msg.type, data: msg.data } as LiveEvent)
       }
       s.onclose = (e) => {

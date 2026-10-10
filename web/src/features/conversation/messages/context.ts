@@ -9,6 +9,11 @@ export type ThreadContext = {
   inboxes: Inbox[]
   subject: string
   expandQuoted: boolean
+  inboxId?: string
+  contactReadAt?: string
+  find?: { query: string; current?: string }
+  onQuote?: (m: Message) => void
+  onForward?: (m: Message, to: Member) => void
 }
 
 function nameOf(a: MessageAuthor, ctx: ThreadContext, t: ReturnType<typeof useLingui>["t"]) {

@@ -56,7 +56,7 @@ export function WaitStep({ inboxId, channelId }: { inboxId: string; channelId: s
     <>
       <FirstConversation item={first} name={name} kind={kind ?? "chat"} />
       <PreviewCaption>
-        <Trans>New conversations land in your queue, oldest first.</Trans>
+        <Trans>New conversations show up at the top of your conversation list.</Trans>
       </PreviewCaption>
     </>
   ) : kind === "chat" ? (
@@ -129,7 +129,7 @@ export function WaitStep({ inboxId, channelId }: { inboxId: string; channelId: s
               </Button>
             )}
             <Notice className="text-small">
-              <Trans>You can leave this page: the conversation will wait for you in the queue.</Trans>
+              <Trans>You can leave this page: the conversation will wait for you in your conversation list.</Trans>
             </Notice>
           </div>
         </>

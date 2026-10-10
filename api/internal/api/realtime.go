@@ -316,12 +316,14 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 			return false, nil
 		}
 	}
-	if e.Type == realtime.ConversationRead {
-		var r oas.ConversationRead
+	if e.Type == realtime.ConversationRead || e.Type == realtime.ConversationPin {
+		var r struct {
+			MemberID uuid.UUID `json:"member_id"`
+		}
 		if err := json.Unmarshal(e.Data, &r); err != nil {
 			return false, err
 		}
-		return !f.p.isKey() && r.MemberId == f.p.memberID, nil
+		return !f.p.isKey() && r.MemberID == f.p.memberID, nil
 	}
 	if f.p.seesAllInboxes() {
 		return true, nil

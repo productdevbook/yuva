@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { EllipsisIcon, FlagIcon, InboxIcon, RotateCcwIcon, ShieldAlertIcon, ShieldCheckIcon, TagIcon, UserIcon, UserRoundCheckIcon } from "lucide-react"
+import { EllipsisIcon, FlagIcon, InboxIcon, MailIcon, PinIcon, PinOffIcon, RotateCcwIcon, ShieldAlertIcon, ShieldCheckIcon, TagIcon, UserIcon, UserRoundCheckIcon } from "lucide-react"
 
 import { Dot, Kbd } from "@/components/common"
 import { keyLabel, SHORTCUTS } from "@/components/common/ShortcutSheet"
@@ -30,6 +30,9 @@ export function ConversationMenu({
   update,
   move,
   onContact,
+  pinned,
+  onPin,
+  onUnread,
 }: {
   c: Conversation
   open: boolean
@@ -37,6 +40,9 @@ export function ConversationMenu({
   update: (body: ConversationUpdate) => void
   move: (inboxId: string) => void
   onContact: () => void
+  pinned: boolean
+  onPin: () => void
+  onUnread: () => void
 }) {
   const { t } = useLingui()
   const text = useEnumText()
@@ -74,6 +80,18 @@ export function ConversationMenu({
             <Trans>Back to waiting</Trans>
           </DropdownMenuItem>
         )}
+        <DropdownMenuItem onClick={onPin} data-testid="header-pin">
+          {pinned ? <PinOffIcon /> : <PinIcon />}
+          <span className="flex-1">{pinned ? <Trans>Unpin</Trans> : <Trans>Pin to the top</Trans>}</span>
+          <Kbd>{SHORTCUTS.pin}</Kbd>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={onUnread} data-testid="header-unread">
+          <MailIcon />
+          <span className="flex-1">
+            <Trans>Mark as unread</Trans>
+          </span>
+          <Kbd>{SHORTCUTS.unread}</Kbd>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>

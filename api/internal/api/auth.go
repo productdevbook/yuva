@@ -58,8 +58,12 @@ var operationAccess = map[string]access{
 	"DeletePasskey":             accessPerson,
 	"DeleteMe":                  accessPerson,
 
-	"MarkConversationRead": accessMember,
-	"SetMemberTyping":      accessMember,
+	"MarkConversationRead":   accessMember,
+	"MarkConversationUnread": accessMember,
+	"PinConversation":        accessMember,
+	"UnpinConversation":      accessMember,
+	"SetMemberTyping":        accessMember,
+	"ListMentions":           accessMember,
 
 	"GetVapidPublicKey":          accessPerson,
 	"ListPushSubscriptions":      accessPerson,

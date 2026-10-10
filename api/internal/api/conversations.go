@@ -142,7 +142,15 @@ func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conver
 		}
 	}
 	unread := map[uuid.UUID]bool{}
+	pinned := map[uuid.UUID]*time.Time{}
 	if !p.isKey() {
+		pins, err := s.st.ListPinnedConversations(ctx, store.ListPinnedConversationsParams{WorkspaceID: p.workspaceID, MemberID: p.memberID, ConversationIds: ids})
+		if err != nil {
+			return nil, err
+		}
+		for _, r := range pins {
+			pinned[r.ConversationID] = &r.PinnedAt
+		}
 		ur, err := s.st.ListUnreadConversations(ctx, store.ListUnreadConversationsParams{WorkspaceID: p.workspaceID, MemberID: p.memberID, ConversationIds: ids})
 		if err != nil {
 			return nil, err
@@ -158,8 +166,8 @@ func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conver
 			Id: c.Id, InboxId: c.InboxId, ContactId: c.ContactId, ChannelId: c.ChannelId, Kind: c.Kind, Feedback: c.Feedback, Subject: c.Subject,
 			Status: c.Status, SnoozeUntil: c.SnoozeUntil, Priority: c.Priority, Spam: c.Spam, AssigneeId: c.AssigneeId, Labels: c.Labels,
 			LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt, CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt,
-			RelatedConversationId: c.RelatedConversationId, ClosedAt: c.ClosedAt, Rating: c.Rating,
-			Contact: contacts[r.ContactID], LastMessage: previews[r.ID], Unread: unread[r.ID],
+			RelatedConversationId: c.RelatedConversationId, ClosedAt: c.ClosedAt, Rating: c.Rating, LastReadByContactAt: c.LastReadByContactAt,
+			Contact: contacts[r.ContactID], LastMessage: previews[r.ID], Unread: unread[r.ID], PinnedAt: pinned[r.ID],
 		}
 	}
 	return out, nil
@@ -174,7 +182,7 @@ func conversationBody(c store.Conversation, labels []uuid.UUID) oas.Conversation
 		Kind: oas.ConversationKind(c.Kind), Feedback: conversationFeedback(c), Status: oas.ConversationStatus(c.Status), SnoozeUntil: c.SnoozeUntil, Priority: oas.Priority(c.Priority), Spam: c.Spam,
 		AssigneeId: c.AssigneeID, Labels: labels, LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt,
 		CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt, RelatedConversationId: c.RelatedConversationID,
-		ClosedAt: c.ClosedAt, Rating: conversationRating(c),
+		ClosedAt: c.ClosedAt, Rating: conversationRating(c), LastReadByContactAt: c.LastReadByContactAt,
 	}
 }
 
@@ -342,6 +350,12 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 		if !found {
 			return nil, errContactGone
 		}
+	}
+	if prm.Pinned != nil {
+		if p.isKey() {
+			return nil, errValidation("pinned needs a member session")
+		}
+		arg.Pinned, arg.PinnedBy = prm.Pinned, &p.memberID
 	}
 	if prm.Status != nil {
 		if !prm.Status.Valid() {

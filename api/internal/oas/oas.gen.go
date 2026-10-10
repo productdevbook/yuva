@@ -317,6 +317,21 @@ func (e ContactPresenceEventType) Valid() bool {
 	}
 }
 
+// Defines values for ContactReadEventType.
+const (
+	ContactReadEventTypeContactRead ContactReadEventType = "contact.read"
+)
+
+// Valid indicates whether the value is a known member of the ContactReadEventType enum.
+func (e ContactReadEventType) Valid() bool {
+	switch e {
+	case ContactReadEventTypeContactRead:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ContactUpdatedEventType.
 const (
 	ContactUpdatedEventTypeContactUpdated ContactUpdatedEventType = "contact.updated"
@@ -383,6 +398,21 @@ func (e ConversationMovedEventType) Valid() bool {
 	}
 }
 
+// Defines values for ConversationPinEventType.
+const (
+	ConversationPinEventTypeConversationPin ConversationPinEventType = "conversation.pin"
+)
+
+// Valid indicates whether the value is a known member of the ConversationPinEventType enum.
+func (e ConversationPinEventType) Valid() bool {
+	switch e {
+	case ConversationPinEventTypeConversationPin:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ConversationReadEventType.
 const (
 	ConversationReadEventTypeConversationRead ConversationReadEventType = "conversation.read"
@@ -434,6 +464,27 @@ func (e Direction) Valid() bool {
 	case In:
 		return true
 	case Out:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DraftAuthorKind.
+const (
+	DraftAuthorKindAssistant DraftAuthorKind = "assistant"
+	DraftAuthorKindBot       DraftAuthorKind = "bot"
+	DraftAuthorKindMember    DraftAuthorKind = "member"
+)
+
+// Valid indicates whether the value is a known member of the DraftAuthorKind enum.
+func (e DraftAuthorKind) Valid() bool {
+	switch e {
+	case DraftAuthorKindAssistant:
+		return true
+	case DraftAuthorKindBot:
+		return true
+	case DraftAuthorKindMember:
 		return true
 	default:
 		return false
@@ -2250,6 +2301,31 @@ type ContactPresenceEvent struct {
 // ContactPresenceEventType defines model for ContactPresenceEvent.Type.
 type ContactPresenceEventType string
 
+// ContactRead The contact's read position in a conversation.
+type ContactRead struct {
+	ConversationId    uuid.UUID `json:"conversation_id"`
+	LastReadMessageId uuid.UUID `json:"last_read_message_id"`
+
+	// ReadAt The contact has read every message created at or before this time.
+	ReadAt time.Time `json:"read_at"`
+}
+
+// ContactReadEvent The contact read the conversation further, in the widget or an app.
+type ContactReadEvent struct {
+	ConversationId uuid.UUID `json:"conversation_id"`
+	CreatedAt      time.Time `json:"created_at"`
+
+	// Data The contact's read position in a conversation.
+	Data        ContactRead          `json:"data"`
+	Id          int64                `json:"id"`
+	InboxId     uuid.UUID            `json:"inbox_id"`
+	Type        ContactReadEventType `json:"type"`
+	WorkspaceId uuid.UUID            `json:"workspace_id"`
+}
+
+// ContactReadEventType defines model for ContactReadEvent.Type.
+type ContactReadEventType string
+
 // ContactRef defines model for ContactRef.
 type ContactRef struct {
 	Id uuid.UUID `json:"id"`
@@ -2328,7 +2404,13 @@ type Conversation struct {
 
 	// LastMessageAt The last `message` to or from the contact.
 	LastMessageAt *time.Time `json:"last_message_at,omitempty"`
-	Priority      Priority   `json:"priority"`
+
+	// LastReadByContactAt The contact has read every message created at or before this time, in the widget or
+	// an app (`POST /client/v1/conversations/{id}/read`). Absent until the contact has read
+	// anything, and in conversations the contact only reaches by e-mail. A `contact.read`
+	// event tells when it moves.
+	LastReadByContactAt *time.Time `json:"last_read_by_contact_at,omitempty"`
+	Priority            Priority   `json:"priority"`
 
 	// Rating The contact's latest rating. A conversation can be rated once each time it is closed, so
 	// this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
@@ -2484,7 +2566,16 @@ type ConversationListItem struct {
 
 	// LastMessageAt The last `message` to or from the contact.
 	LastMessageAt *time.Time `json:"last_message_at,omitempty"`
-	Priority      Priority   `json:"priority"`
+
+	// LastReadByContactAt The contact has read every message created at or before this time, in the widget or
+	// an app (`POST /client/v1/conversations/{id}/read`). Absent until the contact has read
+	// anything, and in conversations the contact only reaches by e-mail. A `contact.read`
+	// event tells when it moves.
+	LastReadByContactAt *time.Time `json:"last_read_by_contact_at,omitempty"`
+
+	// PinnedAt When the calling member pinned it; absent when they did not, and for API keys.
+	PinnedAt *time.Time `json:"pinned_at,omitempty"`
+	Priority Priority   `json:"priority"`
 
 	// Rating The contact's latest rating. A conversation can be rated once each time it is closed, so
 	// this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
@@ -2505,7 +2596,7 @@ type ConversationListItem struct {
 	Subject string             `json:"subject"`
 
 	// Unread A message or note from someone other than the calling member is newer than the
-	// member's read cursor. Always `false` for API keys.
+	// member's read cursor, or the member marked it unread. Always `false` for API keys.
 	Unread    bool      `json:"unread"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -2547,6 +2638,31 @@ type ConversationPage struct {
 	NextCursor *string `json:"next_cursor,omitempty"`
 }
 
+// ConversationPin Whether a member pinned a conversation to the top of their lists.
+type ConversationPin struct {
+	ConversationId uuid.UUID `json:"conversation_id"`
+	MemberId       uuid.UUID `json:"member_id"`
+
+	// PinnedAt Absent when it is not pinned.
+	PinnedAt *time.Time `json:"pinned_at,omitempty"`
+}
+
+// ConversationPinEvent The receiving member pinned or unpinned a conversation, in this or another tab or device.
+type ConversationPinEvent struct {
+	ConversationId uuid.UUID `json:"conversation_id"`
+	CreatedAt      time.Time `json:"created_at"`
+
+	// Data Whether a member pinned a conversation to the top of their lists.
+	Data        ConversationPin          `json:"data"`
+	Id          int64                    `json:"id"`
+	InboxId     uuid.UUID                `json:"inbox_id"`
+	Type        ConversationPinEventType `json:"type"`
+	WorkspaceId uuid.UUID                `json:"workspace_id"`
+}
+
+// ConversationPinEventType defines model for ConversationPinEvent.Type.
+type ConversationPinEventType string
+
 // ConversationRating The contact's latest rating. A conversation can be rated once each time it is closed, so
 // this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
 // has it as a `rated` event message whose body is the comment.
@@ -2563,7 +2679,9 @@ type ConversationRead struct {
 	// LastReadMessageId Absent when the conversation has nothing to read yet.
 	LastReadMessageId *uuid.UUID `json:"last_read_message_id,omitempty"`
 	MemberId          uuid.UUID  `json:"member_id"`
-	Unread            bool       `json:"unread"`
+
+	// Unread Something is newer than the cursor, or the member marked it unread.
+	Unread bool `json:"unread"`
 }
 
 // ConversationReadCreate defines model for ConversationReadCreate.
@@ -2591,6 +2709,16 @@ type ConversationReadEventType string
 // ConversationStatus defines model for ConversationStatus.
 type ConversationStatus string
 
+// ConversationSummary Enough of a conversation to show where an item belongs.
+type ConversationSummary struct {
+	// Contact The conversation's contact, enough for a list row.
+	Contact ConversationContact `json:"contact"`
+	Id      uuid.UUID           `json:"id"`
+	InboxId uuid.UUID           `json:"inbox_id"`
+	Status  ConversationStatus  `json:"status"`
+	Subject string              `json:"subject"`
+}
+
 // ConversationUpdate defines model for ConversationUpdate.
 type ConversationUpdate struct {
 	// AssigneeId A member with access to the inbox; `null` unassigns.
@@ -2616,6 +2744,10 @@ type CountByID struct {
 // Direction defines model for Direction.
 type Direction string
 
+// DraftAuthorKind `bot`: written with an API key. `assistant`: written by a member through an OAuth client.
+// `member`: written by a member in the panel.
+type DraftAuthorKind string
+
 // DraftEvent A draft was written, edited or discarded (`data` is the draft as it was). Sending a draft
 // emits `message.created`.
 type DraftEvent struct {
@@ -2630,6 +2762,24 @@ type DraftEvent struct {
 
 // DraftEventType defines model for DraftEvent.Type.
 type DraftEventType string
+
+// DraftItem defines model for DraftItem.
+type DraftItem struct {
+	// Conversation Enough of a conversation to show where an item belongs.
+	Conversation ConversationSummary `json:"conversation"`
+	Draft        Message             `json:"draft"`
+}
+
+// DraftPage defines model for DraftPage.
+type DraftPage struct {
+	Items []DraftItem `json:"items"`
+
+	// NextCursor Absent on the last page.
+	NextCursor *string `json:"next_cursor,omitempty"`
+
+	// Total Drafts matching the filters over all pages.
+	Total int64 `json:"total"`
+}
 
 // Email Examples: owner@example.com
 type Email = openapi_types.Email
@@ -3195,6 +3345,37 @@ type Membership struct {
 	MemberId  uuid.UUID `json:"member_id"`
 	Role      Role      `json:"role"`
 	Workspace Workspace `json:"workspace"`
+}
+
+// Mention defines model for Mention.
+type Mention struct {
+	// Conversation Enough of a conversation to show where an item belongs.
+	Conversation ConversationSummary `json:"conversation"`
+	Note         MentionNote         `json:"note"`
+
+	// Seen The calling member has read the conversation up to this note.
+	Seen bool `json:"seen"`
+}
+
+// MentionNote defines model for MentionNote.
+type MentionNote struct {
+	Author    MessageAuthor `json:"author"`
+	CreatedAt time.Time     `json:"created_at"`
+	Id        uuid.UUID     `json:"id"`
+
+	// Text The plain-text body on one line, cut to 140 characters with `…` when longer.
+	Text string `json:"text"`
+}
+
+// MentionPage defines model for MentionPage.
+type MentionPage struct {
+	Items []Mention `json:"items"`
+
+	// NextCursor Absent on the last page.
+	NextCursor *string `json:"next_cursor,omitempty"`
+
+	// Unseen Unseen mentions over all pages.
+	Unseen int64 `json:"unseen"`
 }
 
 // Message defines model for Message.
@@ -4771,6 +4952,10 @@ type ListConversationsParams struct {
 	// Category Only feedback of this category (implies `kind=feedback`).
 	Category *FeedbackCategory `form:"category,omitempty" json:"category,omitempty"`
 
+	// Pinned `true` lists only the conversations the calling member pinned, `false` only the others;
+	// without it, both. Member sessions only (`400 validation_failed` for API keys).
+	Pinned *bool `form:"pinned,omitempty" json:"pinned,omitempty"`
+
 	// Q Full-text search (Postgres `simple` configuration, `websearch` syntax).
 	Q *Search `form:"q,omitempty" json:"q,omitempty"`
 
@@ -4855,6 +5040,18 @@ type MoveConversationParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// UnpinConversationParams defines parameters for UnpinConversation.
+type UnpinConversationParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// PinConversationParams defines parameters for PinConversation.
+type PinConversationParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // MarkConversationReadParams defines parameters for MarkConversationRead.
 type MarkConversationReadParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
@@ -4868,6 +5065,31 @@ type MarkConversationReadParams struct {
 type SetMemberTypingParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// MarkConversationUnreadParams defines parameters for MarkConversationUnread.
+type MarkConversationUnreadParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListDraftsParams defines parameters for ListDrafts.
+type ListDraftsParams struct {
+	// InboxId Only drafts in this inbox. An inbox the caller cannot see answers `404`.
+	InboxId *uuid.UUID       `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+	Author  *DraftAuthorKind `form:"author,omitempty" json:"author,omitempty"`
+
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
 
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
@@ -5016,6 +5238,18 @@ type DeleteLabelParams struct {
 
 // UpdateLabelParams defines parameters for UpdateLabel.
 type UpdateLabelParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListMentionsParams defines parameters for ListMentions.
+type ListMentionsParams struct {
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -6155,6 +6389,58 @@ func (t *RealtimeMessage) MergeConversationReadEvent(v ConversationReadEvent) er
 	return err
 }
 
+// AsContactReadEvent returns the union data inside the RealtimeMessage as a ContactReadEvent
+func (t RealtimeMessage) AsContactReadEvent() (ContactReadEvent, error) {
+	var body ContactReadEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromContactReadEvent overwrites any union data inside the RealtimeMessage as the provided ContactReadEvent
+func (t *RealtimeMessage) FromContactReadEvent(v ContactReadEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeContactReadEvent performs a merge with any union data inside the RealtimeMessage, using the provided ContactReadEvent
+func (t *RealtimeMessage) MergeContactReadEvent(v ContactReadEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsConversationPinEvent returns the union data inside the RealtimeMessage as a ConversationPinEvent
+func (t RealtimeMessage) AsConversationPinEvent() (ConversationPinEvent, error) {
+	var body ConversationPinEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationPinEvent overwrites any union data inside the RealtimeMessage as the provided ConversationPinEvent
+func (t *RealtimeMessage) FromConversationPinEvent(v ConversationPinEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationPinEvent performs a merge with any union data inside the RealtimeMessage, using the provided ConversationPinEvent
+func (t *RealtimeMessage) MergeConversationPinEvent(v ConversationPinEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsTypingEvent returns the union data inside the RealtimeMessage as a TypingEvent
 func (t RealtimeMessage) AsTypingEvent() (TypingEvent, error) {
 	var body TypingEvent
@@ -6329,12 +6615,16 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsContactDeletedEvent()
 	case "contact.presence":
 		return t.AsContactPresenceEvent()
+	case "contact.read":
+		return t.AsContactReadEvent()
 	case "contact.updated":
 		return t.AsContactUpdatedEvent()
 	case "conversation.created":
 		return t.AsConversationEvent()
 	case "conversation.moved":
 		return t.AsConversationMovedEvent()
+	case "conversation.pin":
+		return t.AsConversationPinEvent()
 	case "conversation.read":
 		return t.AsConversationReadEvent()
 	case "conversation.updated":
@@ -6694,6 +6984,58 @@ func (t *StoredEvent) MergeConversationReadEvent(v ConversationReadEvent) error 
 	return err
 }
 
+// AsContactReadEvent returns the union data inside the StoredEvent as a ContactReadEvent
+func (t StoredEvent) AsContactReadEvent() (ContactReadEvent, error) {
+	var body ContactReadEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromContactReadEvent overwrites any union data inside the StoredEvent as the provided ContactReadEvent
+func (t *StoredEvent) FromContactReadEvent(v ContactReadEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeContactReadEvent performs a merge with any union data inside the StoredEvent, using the provided ContactReadEvent
+func (t *StoredEvent) MergeContactReadEvent(v ContactReadEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsConversationPinEvent returns the union data inside the StoredEvent as a ConversationPinEvent
+func (t StoredEvent) AsConversationPinEvent() (ConversationPinEvent, error) {
+	var body ConversationPinEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromConversationPinEvent overwrites any union data inside the StoredEvent as the provided ConversationPinEvent
+func (t *StoredEvent) FromConversationPinEvent(v ConversationPinEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeConversationPinEvent performs a merge with any union data inside the StoredEvent, using the provided ConversationPinEvent
+func (t *StoredEvent) MergeConversationPinEvent(v ConversationPinEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 func (t StoredEvent) Discriminator() (string, error) {
 	var discriminator struct {
 		Discriminator string `json:"type"`
@@ -6710,12 +7052,16 @@ func (t StoredEvent) ValueByDiscriminator() (interface{}, error) {
 	switch discriminator {
 	case "contact.deleted":
 		return t.AsContactDeletedEvent()
+	case "contact.read":
+		return t.AsContactReadEvent()
 	case "contact.updated":
 		return t.AsContactUpdatedEvent()
 	case "conversation.created":
 		return t.AsConversationEvent()
 	case "conversation.moved":
 		return t.AsConversationMovedEvent()
+	case "conversation.pin":
+		return t.AsConversationPinEvent()
 	case "conversation.read":
 		return t.AsConversationReadEvent()
 	case "conversation.updated":
@@ -6926,12 +7272,24 @@ type ServerInterface interface {
 	// MoveConversation Move a conversation to another inbox
 	// (POST /v1/conversations/{conversationId}/move)
 	MoveConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params MoveConversationParams)
+	// UnpinConversation Unpin a conversation
+	// (DELETE /v1/conversations/{conversationId}/pin)
+	UnpinConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params UnpinConversationParams)
+	// PinConversation Pin a conversation
+	// (PUT /v1/conversations/{conversationId}/pin)
+	PinConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params PinConversationParams)
 	// MarkConversationRead Mark a conversation read
 	// (POST /v1/conversations/{conversationId}/read)
 	MarkConversationRead(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params MarkConversationReadParams)
 	// SetMemberTyping Tell others you are typing
 	// (POST /v1/conversations/{conversationId}/typing)
 	SetMemberTyping(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params SetMemberTypingParams)
+	// MarkConversationUnread Mark a conversation unread
+	// (POST /v1/conversations/{conversationId}/unread)
+	MarkConversationUnread(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params MarkConversationUnreadParams)
+	// ListDrafts List pending drafts
+	// (GET /v1/drafts)
+	ListDrafts(w http.ResponseWriter, r *http.Request, params ListDraftsParams)
 	// ListEvents Events after a cursor
 	// (GET /v1/events)
 	ListEvents(w http.ResponseWriter, r *http.Request, params ListEventsParams)
@@ -7004,6 +7362,9 @@ type ServerInterface interface {
 	// UpdateMe Update the signed-in person
 	// (PATCH /v1/me)
 	UpdateMe(w http.ResponseWriter, r *http.Request)
+	// ListMentions Notes that mention you
+	// (GET /v1/me/mentions)
+	ListMentions(w http.ResponseWriter, r *http.Request, params ListMentionsParams)
 	// GetNotificationSettings Your notification settings
 	// (GET /v1/me/notifications)
 	GetNotificationSettings(w http.ResponseWriter, r *http.Request, params GetNotificationSettingsParams)
@@ -9362,6 +9723,19 @@ func (siw *ServerInterfaceWrapper) ListConversations(w http.ResponseWriter, r *h
 		return
 	}
 
+	// ------------- Optional query parameter "pinned" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "pinned", r.URL.Query(), &params.Pinned, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "pinned"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "pinned", Err: err})
+		}
+		return
+	}
+
 	// ------------- Optional query parameter "q" -------------
 
 	err = runtime.BindQueryParameterWithOptions("form", true, false, "q", r.URL.Query(), &params.Q, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
@@ -9921,6 +10295,106 @@ func (siw *ServerInterfaceWrapper) MoveConversation(w http.ResponseWriter, r *ht
 	handler.ServeHTTP(w, r)
 }
 
+// UnpinConversation operation middleware
+func (siw *ServerInterfaceWrapper) UnpinConversation(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UnpinConversationParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UnpinConversation(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PinConversation operation middleware
+func (siw *ServerInterfaceWrapper) PinConversation(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PinConversationParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PinConversation(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // MarkConversationRead operation middleware
 func (siw *ServerInterfaceWrapper) MarkConversationRead(w http.ResponseWriter, r *http.Request) {
 
@@ -10050,6 +10524,168 @@ func (siw *ServerInterfaceWrapper) SetMemberTyping(w http.ResponseWriter, r *htt
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.SetMemberTyping(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// MarkConversationUnread operation middleware
+func (siw *ServerInterfaceWrapper) MarkConversationUnread(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params MarkConversationUnreadParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.MarkConversationUnread(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListDrafts operation middleware
+func (siw *ServerInterfaceWrapper) ListDrafts(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListDraftsParams
+
+	// ------------- Optional query parameter "inbox_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "inbox_id", r.URL.Query(), &params.InboxId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "inbox_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inbox_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "author" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "author", r.URL.Query(), &params.Author, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "author"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "author", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int32"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListDrafts(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -11200,6 +11836,73 @@ func (siw *ServerInterfaceWrapper) UpdateMe(w http.ResponseWriter, r *http.Reque
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.UpdateMe(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListMentions operation middleware
+func (siw *ServerInterfaceWrapper) ListMentions(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListMentionsParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int32"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListMentions(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -13219,6 +13922,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/me/notifications", wrapper.UpdateNotificationSettings)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/me/notifications/inboxes/{inboxId}", wrapper.DeleteInboxNotifications)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/me/notifications/inboxes/{inboxId}", wrapper.SetInboxNotifications)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/me/mentions", wrapper.ListMentions)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/workspace", wrapper.DeleteWorkspace)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/workspace", wrapper.GetWorkspace)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/workspace", wrapper.UpdateWorkspace)
@@ -13272,7 +13976,11 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}/messages", wrapper.ListMessages)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/messages", wrapper.CreateMessage)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/read", wrapper.MarkConversationRead)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/unread", wrapper.MarkConversationUnread)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/conversations/{conversationId}/pin", wrapper.UnpinConversation)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/conversations/{conversationId}/pin", wrapper.PinConversation)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/typing", wrapper.SetMemberTyping)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/drafts", wrapper.ListDrafts)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/attachments/{attachmentId}", wrapper.DownloadAttachment)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/messages/{messageId}", wrapper.DeleteMessage)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/messages/{messageId}", wrapper.UpdateMessage)
@@ -18486,6 +19194,140 @@ func (response MoveConversation409ApplicationProblemPlusJSONResponse) VisitMoveC
 	return err
 }
 
+type UnpinConversationRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Params         UnpinConversationParams
+}
+
+type UnpinConversationResponseObject interface {
+	VisitUnpinConversationResponse(w http.ResponseWriter) error
+}
+
+type UnpinConversation200JSONResponse ConversationPin
+
+func (response UnpinConversation200JSONResponse) VisitUnpinConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UnpinConversation401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UnpinConversation401ApplicationProblemPlusJSONResponse) VisitUnpinConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UnpinConversation403ApplicationProblemPlusJSONResponse Problem
+
+func (response UnpinConversation403ApplicationProblemPlusJSONResponse) VisitUnpinConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UnpinConversation404ApplicationProblemPlusJSONResponse Problem
+
+func (response UnpinConversation404ApplicationProblemPlusJSONResponse) VisitUnpinConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PinConversationRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Params         PinConversationParams
+}
+
+type PinConversationResponseObject interface {
+	VisitPinConversationResponse(w http.ResponseWriter) error
+}
+
+type PinConversation200JSONResponse ConversationPin
+
+func (response PinConversation200JSONResponse) VisitPinConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PinConversation401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response PinConversation401ApplicationProblemPlusJSONResponse) VisitPinConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PinConversation403ApplicationProblemPlusJSONResponse Problem
+
+func (response PinConversation403ApplicationProblemPlusJSONResponse) VisitPinConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PinConversation404ApplicationProblemPlusJSONResponse Problem
+
+func (response PinConversation404ApplicationProblemPlusJSONResponse) VisitPinConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type MarkConversationReadRequestObject struct {
 	ConversationId ConversationId `json:"conversationId"`
 	Params         MarkConversationReadParams
@@ -18633,6 +19475,153 @@ func (response SetMemberTyping403ApplicationProblemPlusJSONResponse) VisitSetMem
 type SetMemberTyping404ApplicationProblemPlusJSONResponse Problem
 
 func (response SetMemberTyping404ApplicationProblemPlusJSONResponse) VisitSetMemberTypingResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MarkConversationUnreadRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Params         MarkConversationUnreadParams
+}
+
+type MarkConversationUnreadResponseObject interface {
+	VisitMarkConversationUnreadResponse(w http.ResponseWriter) error
+}
+
+type MarkConversationUnread200JSONResponse ConversationRead
+
+func (response MarkConversationUnread200JSONResponse) VisitMarkConversationUnreadResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MarkConversationUnread401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response MarkConversationUnread401ApplicationProblemPlusJSONResponse) VisitMarkConversationUnreadResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MarkConversationUnread403ApplicationProblemPlusJSONResponse Problem
+
+func (response MarkConversationUnread403ApplicationProblemPlusJSONResponse) VisitMarkConversationUnreadResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MarkConversationUnread404ApplicationProblemPlusJSONResponse Problem
+
+func (response MarkConversationUnread404ApplicationProblemPlusJSONResponse) VisitMarkConversationUnreadResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListDraftsRequestObject struct {
+	Params ListDraftsParams
+}
+
+type ListDraftsResponseObject interface {
+	VisitListDraftsResponse(w http.ResponseWriter) error
+}
+
+type ListDrafts200JSONResponse DraftPage
+
+func (response ListDrafts200JSONResponse) VisitListDraftsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListDrafts400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListDrafts400ApplicationProblemPlusJSONResponse) VisitListDraftsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListDrafts401ApplicationProblemPlusJSONResponse Problem
+
+func (response ListDrafts401ApplicationProblemPlusJSONResponse) VisitListDraftsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListDrafts403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListDrafts403ApplicationProblemPlusJSONResponse) VisitListDraftsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListDrafts404ApplicationProblemPlusJSONResponse Problem
+
+func (response ListDrafts404ApplicationProblemPlusJSONResponse) VisitListDraftsResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -20286,6 +21275,72 @@ func (response UpdateMe401ApplicationProblemPlusJSONResponse) VisitUpdateMeRespo
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListMentionsRequestObject struct {
+	Params ListMentionsParams
+}
+
+type ListMentionsResponseObject interface {
+	VisitListMentionsResponse(w http.ResponseWriter) error
+}
+
+type ListMentions200JSONResponse MentionPage
+
+func (response ListMentions200JSONResponse) VisitListMentionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListMentions400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListMentions400ApplicationProblemPlusJSONResponse) VisitListMentionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListMentions401ApplicationProblemPlusJSONResponse Problem
+
+func (response ListMentions401ApplicationProblemPlusJSONResponse) VisitListMentionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListMentions403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListMentions403ApplicationProblemPlusJSONResponse) VisitListMentionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -23266,12 +24321,24 @@ type StrictServerInterface interface {
 	// MoveConversation Move a conversation to another inbox
 	// (POST /v1/conversations/{conversationId}/move)
 	MoveConversation(ctx context.Context, request MoveConversationRequestObject) (MoveConversationResponseObject, error)
+	// UnpinConversation Unpin a conversation
+	// (DELETE /v1/conversations/{conversationId}/pin)
+	UnpinConversation(ctx context.Context, request UnpinConversationRequestObject) (UnpinConversationResponseObject, error)
+	// PinConversation Pin a conversation
+	// (PUT /v1/conversations/{conversationId}/pin)
+	PinConversation(ctx context.Context, request PinConversationRequestObject) (PinConversationResponseObject, error)
 	// MarkConversationRead Mark a conversation read
 	// (POST /v1/conversations/{conversationId}/read)
 	MarkConversationRead(ctx context.Context, request MarkConversationReadRequestObject) (MarkConversationReadResponseObject, error)
 	// SetMemberTyping Tell others you are typing
 	// (POST /v1/conversations/{conversationId}/typing)
 	SetMemberTyping(ctx context.Context, request SetMemberTypingRequestObject) (SetMemberTypingResponseObject, error)
+	// MarkConversationUnread Mark a conversation unread
+	// (POST /v1/conversations/{conversationId}/unread)
+	MarkConversationUnread(ctx context.Context, request MarkConversationUnreadRequestObject) (MarkConversationUnreadResponseObject, error)
+	// ListDrafts List pending drafts
+	// (GET /v1/drafts)
+	ListDrafts(ctx context.Context, request ListDraftsRequestObject) (ListDraftsResponseObject, error)
 	// ListEvents Events after a cursor
 	// (GET /v1/events)
 	ListEvents(ctx context.Context, request ListEventsRequestObject) (ListEventsResponseObject, error)
@@ -23344,6 +24411,9 @@ type StrictServerInterface interface {
 	// UpdateMe Update the signed-in person
 	// (PATCH /v1/me)
 	UpdateMe(ctx context.Context, request UpdateMeRequestObject) (UpdateMeResponseObject, error)
+	// ListMentions Notes that mention you
+	// (GET /v1/me/mentions)
+	ListMentions(ctx context.Context, request ListMentionsRequestObject) (ListMentionsResponseObject, error)
 	// GetNotificationSettings Your notification settings
 	// (GET /v1/me/notifications)
 	GetNotificationSettings(ctx context.Context, request GetNotificationSettingsRequestObject) (GetNotificationSettingsResponseObject, error)
@@ -25227,6 +26297,60 @@ func (sh *strictHandler) MoveConversation(w http.ResponseWriter, r *http.Request
 	}
 }
 
+// UnpinConversation operation middleware
+func (sh *strictHandler) UnpinConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params UnpinConversationParams) {
+	var request UnpinConversationRequestObject
+
+	request.ConversationId = conversationId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UnpinConversation(ctx, request.(UnpinConversationRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UnpinConversation")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UnpinConversationResponseObject); ok {
+		if err := validResponse.VisitUnpinConversationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// PinConversation operation middleware
+func (sh *strictHandler) PinConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params PinConversationParams) {
+	var request PinConversationRequestObject
+
+	request.ConversationId = conversationId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.PinConversation(ctx, request.(PinConversationRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "PinConversation")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(PinConversationResponseObject); ok {
+		if err := validResponse.VisitPinConversationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // MarkConversationRead operation middleware
 func (sh *strictHandler) MarkConversationRead(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params MarkConversationReadParams) {
 	var request MarkConversationReadRequestObject
@@ -25294,6 +26418,59 @@ func (sh *strictHandler) SetMemberTyping(w http.ResponseWriter, r *http.Request,
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(SetMemberTypingResponseObject); ok {
 		if err := validResponse.VisitSetMemberTypingResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// MarkConversationUnread operation middleware
+func (sh *strictHandler) MarkConversationUnread(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params MarkConversationUnreadParams) {
+	var request MarkConversationUnreadRequestObject
+
+	request.ConversationId = conversationId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.MarkConversationUnread(ctx, request.(MarkConversationUnreadRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "MarkConversationUnread")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(MarkConversationUnreadResponseObject); ok {
+		if err := validResponse.VisitMarkConversationUnreadResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListDrafts operation middleware
+func (sh *strictHandler) ListDrafts(w http.ResponseWriter, r *http.Request, params ListDraftsParams) {
+	var request ListDraftsRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListDrafts(ctx, request.(ListDraftsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListDrafts")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListDraftsResponseObject); ok {
+		if err := validResponse.VisitListDraftsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -25989,6 +27166,32 @@ func (sh *strictHandler) UpdateMe(w http.ResponseWriter, r *http.Request) {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(UpdateMeResponseObject); ok {
 		if err := validResponse.VisitUpdateMeResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListMentions operation middleware
+func (sh *strictHandler) ListMentions(w http.ResponseWriter, r *http.Request, params ListMentionsParams) {
+	var request ListMentionsRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListMentions(ctx, request.(ListMentionsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListMentions")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListMentionsResponseObject); ok {
+		if err := validResponse.VisitListMentionsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

@@ -17,6 +17,7 @@ import {
   sinceText,
   useContactConversations,
 } from "@/features/contact/ContactDetails"
+import { ConversationMedia } from "@/features/contact/ConversationMedia"
 import { MergeContactDialog } from "@/features/contact/MergeContactDialog"
 import { Presence } from "@/features/contact/Presence"
 import { ContactNotes, useNoteCount } from "@/features/contact/ContactNotes"
@@ -24,9 +25,11 @@ import { useContact, useContactSummary } from "@/features/contact/queries"
 import { contactName } from "@/features/contact/Section"
 import { useSession } from "@/lib/session"
 
-type Tab = "info" | "conversations" | "notes"
+type Tab = "info" | "conversations" | "notes" | "media"
 
-function Body({ contactId, conversationId, onClose }: { contactId: string; conversationId?: string; onClose: () => void }) {
+function Body({ contactId, conversationId, onClose, inline }: { contactId: string; conversationId?: string; onClose: () => void; inline?: boolean }) {
+  const Title = inline ? "h2" : SheetTitle
+  const Description = inline ? "p" : SheetDescription
   const { t, i18n } = useLingui()
   const { canManage } = useSession()
   const contact = useContact(contactId)
@@ -84,12 +87,12 @@ function Body({ contactId, conversationId, onClose }: { contactId: string; conve
       {top}
       <div className="flex flex-col items-center gap-1.5 border-b px-5 pt-3 pb-4 text-center">
         <ContactAvatar id={c.id} name={name} className="size-16" />
-        <SheetTitle className="mt-1 max-w-full truncate text-title" data-testid="contact-sheet-name">
+        <Title className="mt-1 max-w-full truncate text-title" data-testid="contact-sheet-name">
           {name}
-        </SheetTitle>
-        <SheetDescription className="text-small text-muted-foreground">
+        </Title>
+        <Description className="text-small text-muted-foreground">
           <Trans>Contact since {since}</Trans>
-        </SheetDescription>
+        </Description>
         <Presence contactId={c.id} />
         {c.blocked && (
           <span className="mt-1 rounded-md bg-destructive/10 px-2 py-0.5 text-caption text-destructive">
@@ -125,6 +128,7 @@ function Body({ contactId, conversationId, onClose }: { contactId: string; conve
               </>
             ),
           },
+          ...(conversationId ? [{ value: "media" as const, testId: "contact-tab-media", label: t`Media`, title: t`Media, links and docs` }] : []),
         ]}
       />
       <div className="min-h-0 flex-1 overflow-y-auto p-4">
@@ -155,6 +159,8 @@ function Body({ contactId, conversationId, onClose }: { contactId: string; conve
           </div>
         ) : tab === "notes" ? (
           <ContactNotes contactId={c.id} />
+        ) : tab === "media" && conversationId ? (
+          <ConversationMedia conversationId={conversationId} />
         ) : (
           <div className="flex flex-col gap-2">
             <ConversationRows items={conversations.items} currentId={conversationId} pending={conversations.isPending} />
@@ -199,5 +205,14 @@ export function ContactSheet({
         {open && <Body contactId={contactId} conversationId={conversationId} onClose={() => onOpenChange(false)} />}
       </SheetContent>
     </Sheet>
+  )
+}
+
+export function ContactPanel({ contactId, conversationId, onClose }: { contactId: string; conversationId?: string; onClose: () => void }) {
+  const { t } = useLingui()
+  return (
+    <aside aria-label={t`Contact details`} className="flex h-full min-h-0 flex-col bg-background" data-testid="contact-panel">
+      <Body contactId={contactId} conversationId={conversationId} onClose={onClose} inline />
+    </aside>
   )
 }

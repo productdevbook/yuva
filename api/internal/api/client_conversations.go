@@ -555,12 +555,29 @@ func (s *Server) MarkClientConversationRead(ctx context.Context, req oas.MarkCli
 		}
 		msgID, msgAt = m.ID, m.CreatedAt
 	}
-	read, err := s.st.MarkContactRead(ctx, store.MarkContactReadParams{
-		WorkspaceID: cp.workspaceID, ConversationID: c.ID, MessageID: msgID, MessageAt: msgAt, Now: s.now(),
+	var read store.ContactRead
+	err = s.inTx(ctx, cp.workspaceID, func(q *store.Queries, events *eventBatch) error {
+		var err error
+		read, err = q.MarkContactRead(ctx, store.MarkContactReadParams{
+			WorkspaceID: cp.workspaceID, ConversationID: c.ID, MessageID: msgID, MessageAt: msgAt, Now: s.now(),
+		})
+		if store.IsNotFound(err) {
+			read, err = q.GetContactRead(ctx, store.GetContactReadParams{WorkspaceID: cp.workspaceID, ConversationID: c.ID})
+			return err
+		}
+		if err != nil {
+			return err
+		}
+		moved, err := q.SetConversationContactRead(ctx, store.SetConversationContactReadParams{WorkspaceID: cp.workspaceID, ID: c.ID, ReadAt: &read.LastReadAt})
+		if store.IsNotFound(err) {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		events.conversation(realtime.ContactRead, moved, oas.ContactRead{ConversationId: c.ID, LastReadMessageId: read.LastReadMessageID, ReadAt: read.LastReadAt})
+		return nil
 	})
-	if store.IsNotFound(err) {
-		read, err = s.st.GetContactRead(ctx, store.GetContactReadParams{WorkspaceID: cp.workspaceID, ConversationID: c.ID})
-	}
 	if err != nil {
 		return nil, err
 	}

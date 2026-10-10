@@ -28,7 +28,11 @@ export function PageHeader({
   return (
     <header className="flex flex-col">
       {to && (
-        <Link to={to.to} className="mb-4.5 inline-flex w-fit items-center gap-1.5 text-body text-faint transition-colors hover:text-foreground" data-testid="settings-back">
+        <Link
+          to={to.to}
+          className={cn("mb-4.5 w-fit items-center gap-1.5 text-body text-faint transition-colors hover:text-foreground", back === undefined ? "hidden phone:inline-flex" : "inline-flex")}
+          data-testid="settings-back"
+        >
           <ArrowLeftIcon className="size-3.5 rtl:rotate-180" />
           {to.label}
         </Link>

@@ -211,3 +211,66 @@ func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObje
 	}
 	return oas.SendMessage200JSONResponse(out), nil
 }
+
+func (s *Server) ListDrafts(ctx context.Context, req oas.ListDraftsRequestObject) (oas.ListDraftsResponseObject, error) {
+	p := principalFrom(ctx)
+	prm := req.Params
+	lim, err := pageSize(prm.Limit)
+	if err != nil {
+		return nil, err
+	}
+	at, cid, err := decodeCursor(prm.Cursor)
+	if err != nil {
+		return nil, err
+	}
+	var kind *string
+	if prm.Author != nil {
+		if !prm.Author.Valid() {
+			return nil, errValidation("author must be bot, assistant or member")
+		}
+		k := string(*prm.Author)
+		kind = &k
+	}
+	if prm.InboxId != nil {
+		if _, err := visibleInbox(ctx, s.st.Queries, p, *prm.InboxId); err != nil {
+			return nil, err
+		}
+	}
+	rows, err := s.st.ListDrafts(ctx, store.ListDraftsParams{
+		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(),
+		InboxID: prm.InboxId, AuthorKind: kind, CursorAt: at, CursorID: cid, Lim: lim + 1,
+	})
+	if err != nil {
+		return nil, err
+	}
+	total, err := s.st.CountDrafts(ctx, store.CountDraftsParams{
+		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), InboxID: prm.InboxId, AuthorKind: kind,
+	})
+	if err != nil {
+		return nil, err
+	}
+	var next *string
+	if len(rows) > int(lim) {
+		rows = rows[:lim]
+		c := encodeCursor(rows[lim-1].CreatedAt, rows[lim-1].ID)
+		next = &c
+	}
+	ids := make([]uuid.UUID, len(rows))
+	convIDs := make([]uuid.UUID, len(rows))
+	for i, r := range rows {
+		ids[i], convIDs[i] = r.ID, r.ConversationID
+	}
+	atts, err := messageAttachments(ctx, s.st.Queries, p.workspaceID, ids)
+	if err != nil {
+		return nil, err
+	}
+	convs, err := s.conversationSummaries(ctx, p.workspaceID, convIDs)
+	if err != nil {
+		return nil, err
+	}
+	items := make([]oas.DraftItem, len(rows))
+	for i, r := range rows {
+		items[i] = oas.DraftItem{Draft: messageBody(messageRow(r), atts[r.ID]), Conversation: convs[r.ConversationID]}
+	}
+	return oas.ListDrafts200JSONResponse{Items: items, NextCursor: next, Total: total}, nil
+}

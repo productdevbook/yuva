@@ -10,11 +10,15 @@ function talksLive(ch: Channel | undefined) {
   return ch?.kind === "chat" || ch?.kind === "app"
 }
 
-export function useIsLive(c: Conversation) {
+export function useIsChat(c: Conversation) {
   const channels = useChannelMap()
   const known = c.channel_id ? channels.get(c.channel_id) : undefined
   const fetched = useChannel(c.channel_id && !known ? c.channel_id : undefined).data
-  const chat = talksLive(known ?? fetched)
+  return talksLive(known ?? fetched)
+}
+
+export function useIsLive(c: Conversation) {
+  const chat = useIsChat(c)
   const presence = useContactPresence(chat ? c.contact_id : undefined).data
   return chat && presence?.contact_id === c.contact_id && presence.online
 }

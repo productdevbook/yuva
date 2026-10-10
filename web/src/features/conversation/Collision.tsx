@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Alert } from "@/components/ui/alert"
 
-const box = "relative z-[1] mt-6 -mb-3 flex items-center gap-2.5 rounded-[14px] border py-2.5 ps-3 pe-2.5 text-small text-muted-foreground phone:flex-wrap"
+const box = "relative z-[1] flex items-center gap-2.5 rounded-[14px] border py-2.5 ps-3 pe-2.5 text-small text-muted-foreground phone:flex-wrap"
 
 export function TypingCollision({ name: full, typing, onLeave, onClaim }: { name: string; typing: boolean; onLeave: () => void; onClaim: () => void }) {
   const name = firstName(full)

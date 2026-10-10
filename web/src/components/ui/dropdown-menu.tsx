@@ -7,6 +7,7 @@ const DropdownMenuTrigger = MenuPrimitive.Trigger
 const DropdownMenuGroup = MenuPrimitive.Group
 const DropdownMenuRadioGroup = MenuPrimitive.RadioGroup
 const DropdownMenuSub = MenuPrimitive.SubmenuRoot
+const DropdownMenuPortal = MenuPrimitive.Portal
 
 export const popupClass =
   "max-h-(--available-height) overflow-x-hidden overflow-y-auto rounded-xl border bg-card p-1.5 text-foreground shadow-[0_16px_40px_-12px_rgb(15_23_42/0.28)] outline-none"
@@ -18,12 +19,13 @@ function DropdownMenuContent({
   align = "start",
   side = "bottom",
   sideOffset = 6,
+  alignOffset = 0,
   className,
   ...props
-}: MenuPrimitive.Popup.Props & Pick<MenuPrimitive.Positioner.Props, "align" | "side" | "sideOffset">) {
+}: MenuPrimitive.Popup.Props & Pick<MenuPrimitive.Positioner.Props, "align" | "alignOffset" | "side" | "sideOffset">) {
   return (
     <MenuPrimitive.Portal>
-      <MenuPrimitive.Positioner className="isolate z-50 outline-none" align={align} side={side} sideOffset={sideOffset}>
+      <MenuPrimitive.Positioner className="isolate z-50 outline-none" align={align} alignOffset={alignOffset} side={side} sideOffset={sideOffset}>
         <MenuPrimitive.Popup className={cn(popupClass, "min-w-44", className)} {...props} />
       </MenuPrimitive.Positioner>
     </MenuPrimitive.Portal>
@@ -37,11 +39,13 @@ function DropdownMenuLabel({ className, ...props }: MenuPrimitive.GroupLabel.Pro
 function DropdownMenuItem({
   className,
   variant = "default",
+  inset,
   ...props
-}: MenuPrimitive.Item.Props & { variant?: "default" | "destructive" }) {
+}: MenuPrimitive.Item.Props & { variant?: "default" | "destructive"; inset?: boolean }) {
   return (
     <MenuPrimitive.Item
-      className={cn(itemClass, variant === "destructive" && "text-destructive [&_svg]:text-destructive!", className)}
+      data-inset={inset}
+      className={cn(itemClass, inset && "ps-8", variant === "destructive" && "text-destructive [&_svg]:text-destructive!", className)}
       {...props}
     />
   )
@@ -86,8 +90,14 @@ function DropdownMenuSeparator({ className, ...props }: MenuPrimitive.Separator.
   return <MenuPrimitive.Separator className={cn("-mx-1.5 my-1.5 h-px bg-border", className)} {...props} />
 }
 
+function DropdownMenuShortcut({ className, ...props }: React.ComponentProps<"span">) {
+  return <span className={cn("ms-auto text-caption text-faint", className)} {...props} />
+}
+
 export {
   DropdownMenu,
+  DropdownMenuPortal,
+  DropdownMenuShortcut,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuGroup,

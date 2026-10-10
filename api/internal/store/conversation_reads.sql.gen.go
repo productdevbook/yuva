@@ -12,6 +12,44 @@ import (
 	"uuid"
 )
 
+const clearMarkedUnread = `-- name: ClearMarkedUnread :execrows
+UPDATE conversation_member_states SET marked_unread_at = NULL
+WHERE workspace_id = $1 AND member_id = $2 AND conversation_id = $3
+  AND marked_unread_at IS NOT NULL
+`
+
+type ClearMarkedUnreadParams struct {
+	WorkspaceID    uuid.UUID
+	MemberID       uuid.UUID
+	ConversationID uuid.UUID
+}
+
+func (q *Queries) ClearMarkedUnread(ctx context.Context, arg ClearMarkedUnreadParams) (int64, error) {
+	result, err := q.db.Exec(ctx, clearMarkedUnread, arg.WorkspaceID, arg.MemberID, arg.ConversationID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
+const getConversationPin = `-- name: GetConversationPin :one
+SELECT pinned_at::timestamptz FROM conversation_member_states
+WHERE workspace_id = $1 AND member_id = $2 AND conversation_id = $3 AND pinned_at IS NOT NULL
+`
+
+type GetConversationPinParams struct {
+	WorkspaceID    uuid.UUID
+	MemberID       uuid.UUID
+	ConversationID uuid.UUID
+}
+
+func (q *Queries) GetConversationPin(ctx context.Context, arg GetConversationPinParams) (time.Time, error) {
+	row := q.db.QueryRow(ctx, getConversationPin, arg.WorkspaceID, arg.MemberID, arg.ConversationID)
+	var pinned_at time.Time
+	err := row.Scan(&pinned_at)
+	return pinned_at, err
+}
+
 const getConversationRead = `-- name: GetConversationRead :one
 SELECT workspace_id, member_id, conversation_id, last_read_message_id, last_read_at, updated_at FROM conversation_reads WHERE workspace_id = $1 AND member_id = $2 AND conversation_id = $3
 `
@@ -36,6 +74,43 @@ func (q *Queries) GetConversationRead(ctx context.Context, arg GetConversationRe
 	return i, err
 }
 
+const listPinnedConversations = `-- name: ListPinnedConversations :many
+SELECT conversation_id, pinned_at::timestamptz AS pinned_at FROM conversation_member_states
+WHERE workspace_id = $1 AND member_id = $2 AND conversation_id = ANY($3::uuid[])
+  AND pinned_at IS NOT NULL
+`
+
+type ListPinnedConversationsParams struct {
+	WorkspaceID     uuid.UUID
+	MemberID        uuid.UUID
+	ConversationIds []uuid.UUID
+}
+
+type ListPinnedConversationsRow struct {
+	ConversationID uuid.UUID
+	PinnedAt       time.Time
+}
+
+func (q *Queries) ListPinnedConversations(ctx context.Context, arg ListPinnedConversationsParams) ([]ListPinnedConversationsRow, error) {
+	rows, err := q.db.Query(ctx, listPinnedConversations, arg.WorkspaceID, arg.MemberID, arg.ConversationIds)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListPinnedConversationsRow
+	for rows.Next() {
+		var i ListPinnedConversationsRow
+		if err := rows.Scan(&i.ConversationID, &i.PinnedAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listUnreadConversations = `-- name: ListUnreadConversations :many
 SELECT c.id FROM conversations c
 LEFT JOIN conversation_reads r
@@ -47,6 +122,10 @@ WHERE c.workspace_id = $2 AND c.id = ANY($3::uuid[])
         AND m.kind IN ('message', 'note') AND NOT m.draft
         AND m.author_member_id IS DISTINCT FROM $1::uuid
         AND (r.last_read_at IS NULL OR (m.created_at, m.id) > (r.last_read_at, r.last_read_message_id)))
+UNION
+SELECT s.conversation_id FROM conversation_member_states s
+WHERE s.workspace_id = $2 AND s.member_id = $1 AND s.conversation_id = ANY($3::uuid[])
+  AND s.marked_unread_at IS NOT NULL
 `
 
 type ListUnreadConversationsParams struct {
@@ -112,4 +191,76 @@ func (q *Queries) MarkConversationRead(ctx context.Context, arg MarkConversation
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const markConversationUnread = `-- name: MarkConversationUnread :exec
+INSERT INTO conversation_member_states (workspace_id, member_id, conversation_id, marked_unread_at)
+VALUES ($1, $2, $3, $4::timestamptz)
+ON CONFLICT (workspace_id, member_id, conversation_id) DO UPDATE
+SET marked_unread_at = coalesce(conversation_member_states.marked_unread_at, excluded.marked_unread_at)
+`
+
+type MarkConversationUnreadParams struct {
+	WorkspaceID    uuid.UUID
+	MemberID       uuid.UUID
+	ConversationID uuid.UUID
+	Now            time.Time
+}
+
+func (q *Queries) MarkConversationUnread(ctx context.Context, arg MarkConversationUnreadParams) error {
+	_, err := q.db.Exec(ctx, markConversationUnread,
+		arg.WorkspaceID,
+		arg.MemberID,
+		arg.ConversationID,
+		arg.Now,
+	)
+	return err
+}
+
+const pinConversation = `-- name: PinConversation :one
+INSERT INTO conversation_member_states (workspace_id, member_id, conversation_id, pinned_at)
+VALUES ($1, $2, $3, $4::timestamptz)
+ON CONFLICT (workspace_id, member_id, conversation_id) DO UPDATE
+SET pinned_at = excluded.pinned_at
+WHERE conversation_member_states.pinned_at IS NULL
+RETURNING pinned_at::timestamptz
+`
+
+type PinConversationParams struct {
+	WorkspaceID    uuid.UUID
+	MemberID       uuid.UUID
+	ConversationID uuid.UUID
+	Now            time.Time
+}
+
+func (q *Queries) PinConversation(ctx context.Context, arg PinConversationParams) (time.Time, error) {
+	row := q.db.QueryRow(ctx, pinConversation,
+		arg.WorkspaceID,
+		arg.MemberID,
+		arg.ConversationID,
+		arg.Now,
+	)
+	var pinned_at time.Time
+	err := row.Scan(&pinned_at)
+	return pinned_at, err
+}
+
+const unpinConversation = `-- name: UnpinConversation :execrows
+UPDATE conversation_member_states SET pinned_at = NULL
+WHERE workspace_id = $1 AND member_id = $2 AND conversation_id = $3
+  AND pinned_at IS NOT NULL
+`
+
+type UnpinConversationParams struct {
+	WorkspaceID    uuid.UUID
+	MemberID       uuid.UUID
+	ConversationID uuid.UUID
+}
+
+func (q *Queries) UnpinConversation(ctx context.Context, arg UnpinConversationParams) (int64, error) {
+	result, err := q.db.Exec(ctx, unpinConversation, arg.WorkspaceID, arg.MemberID, arg.ConversationID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
 }

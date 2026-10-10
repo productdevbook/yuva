@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { BookUserIcon, BuildingIcon, DownloadIcon, KeyboardIcon, LanguagesIcon, ListIcon, LogOutIcon, MonitorIcon, MoonIcon, RowsIcon, SunIcon, UserIcon } from "lucide-react"
+import { BookUserIcon, BuildingIcon, DownloadIcon, KeyboardIcon, LanguagesIcon, LogOutIcon, MonitorIcon, MoonIcon, SunIcon, UserIcon } from "lucide-react"
 import { useNavigate } from "react-router"
 
 import { useShell } from "@/app/shell"
@@ -26,7 +26,6 @@ import { useInstallPrompt } from "@/lib/pwa"
 import { useRealtimeStatus } from "@/lib/realtime"
 import { useSession, useSignOut } from "@/lib/session"
 import { cn } from "@/lib/utils"
-import { useView } from "@/lib/view"
 import { setTheme, useTheme, type Theme } from "@/lib/theme"
 import { Button } from "@/components/ui/button"
 
@@ -35,11 +34,10 @@ function statusClass(a: Availability, live: boolean) {
   return live ? "bg-success" : "bg-faint"
 }
 
-export function UserMenu() {
+export function UserMenu({ align = "end", side = "bottom" }: { align?: "start" | "end"; side?: "bottom" | "inline-end" | "top" }) {
   const { t, i18n } = useLingui()
   const { me, membership, switchWorkspace } = useSession()
   const { openShortcuts } = useShell()
-  const [view, setView] = useView()
   const theme = useTheme()
   const navigate = useNavigate()
   const signOut = useSignOut()
@@ -67,7 +65,7 @@ export function UserMenu() {
           data-availability={availability}
         />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-72">
+      <DropdownMenuContent align={align} side={side} className="w-72">
         <DropdownMenuGroup>
           <DropdownMenuLabel className="truncate">{me.person.email}</DropdownMenuLabel>
           <DropdownMenuRadioGroup
@@ -158,17 +156,6 @@ export function UserMenu() {
             </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
-        <DropdownMenuItem
-          onClick={() => {
-            setView(view === "list" ? "queue" : "list")
-            navigate("/")
-          }}
-          data-testid="menu-switch-view"
-        >
-          {view === "list" ? <RowsIcon /> : <ListIcon />}
-          {view === "list" ? <Trans>Switch to the queue</Trans> : <Trans>Switch to the list</Trans>}
-          <span className="ms-auto text-caption text-faint">V</span>
-        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate("/contacts")} className="hidden phone:flex" data-testid="menu-contacts">
           <BookUserIcon />
           <Trans>Contacts</Trans>

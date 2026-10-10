@@ -676,6 +676,39 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+  /v1/me/mentions:
+    get:
+      operationId: listMentions
+      summary: Notes that mention you
+      description: |
+        Notes in the workspace whose `mentions` name the calling member, written by someone else,
+        newest first, in conversations the member can see now. Each item has the note (a preview
+        of its text and its author), the conversation, and `seen`: whether the member has read the
+        conversation up to the note (`POST /v1/conversations/{id}/read`, or writing in it). The
+        page carries `unseen`, the number of unseen mentions over all pages, for a badge. Member
+        sessions only.
+
+        Realtime: a new mention arrives as `message.created` with `kind: note` and the member in
+        `mentions`; `conversation.read` changes `seen`; `conversation.moved` and
+        `inbox_access.changed` can hide or show items.
+      tags: [notifications]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: A page of mentions.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MentionPage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
   /v1/workspace:
     get:
       operationId: getWorkspace
@@ -1867,7 +1900,8 @@ paths:
         Scope: `conversations:read`.
 
         Each item carries the contact (id, name, first e-mail address), a preview of the last
-        `message` (notes and events are not previewed) and `unread` for the calling member.
+        `message` (notes and events are not previewed), and `unread` and `pinned_at` for the
+        calling member.
       tags: [conversations]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
@@ -1915,6 +1949,13 @@ paths:
           description: Only feedback of this category (implies `kind=feedback`).
           schema:
             $ref: "#/components/schemas/FeedbackCategory"
+        - name: pinned
+          in: query
+          description: |
+            `true` lists only the conversations the calling member pinned, `false` only the others;
+            without it, both. Member sessions only (`400 validation_failed` for API keys).
+          schema:
+            type: boolean
         - $ref: "#/components/parameters/Search"
         - $ref: "#/components/parameters/Cursor"
         - $ref: "#/components/parameters/Limit"
@@ -2328,6 +2369,82 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+  /v1/conversations/{conversationId}/unread:
+    post:
+      operationId: markConversationUnread
+      summary: Mark a conversation unread
+      description: |
+        Marks the conversation unread for the calling member, wherever their read cursor is: it is
+        `unread` in their lists until they read it again (`POST .../read`, or a message or note
+        of their own). Others are not affected. A `conversation.read` event with `unread: true`
+        reaches the member's connections. Member sessions only.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+      responses:
+        "200":
+          description: The member's read state.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConversationRead"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/conversations/{conversationId}/pin:
+    put:
+      operationId: pinConversation
+      summary: Pin a conversation
+      description: |
+        Pins the conversation to the top of the calling member's lists; nobody else sees it.
+        Pinning a pinned conversation keeps its `pinned_at`. A `conversation.pin` event reaches the
+        member's connections. Member sessions only.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+      responses:
+        "200":
+          description: The member's pin.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConversationPin"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: unpinConversation
+      summary: Unpin a conversation
+      description: |
+        Takes the calling member's pin away; unpinning a conversation that is not pinned changes
+        nothing. A `conversation.pin` event reaches the member's connections when a pin was
+        removed. Member sessions only.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+      responses:
+        "200":
+          description: The member's pin, without `pinned_at`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConversationPin"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
   /v1/conversations/{conversationId}/typing:
     post:
       operationId: setMemberTyping
@@ -2353,6 +2470,53 @@ paths:
       responses:
         "204":
           description: Sent.
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/drafts:
+    get:
+      operationId: listDrafts
+      summary: List pending drafts
+      description: |
+        Drafts waiting to be sent, edited or discarded in the conversations the caller can see,
+        newest first, each with its conversation. `author` narrows them to drafts by bots (API
+        keys), by assistants (members through an OAuth client, `author.via` set) or by members in
+        the panel. The page carries `total`, the number of drafts matching the filters over all
+        pages, for a badge.
+
+        Scope: `conversations:read`.
+
+        Realtime: `draft.created`, `draft.updated` and `draft.deleted` carry the draft; a sent
+        draft arrives as `message.created` with the draft's id and `draft: false`;
+        `conversation.updated`, `conversation.moved` and `inbox_access.changed` can change the
+        conversation summary or hide items.
+      tags: [messages]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - name: inbox_id
+          in: query
+          description: Only drafts in this inbox. An inbox the caller cannot see answers `404`.
+          schema:
+            type: string
+            format: uuid
+        - name: author
+          in: query
+          schema:
+            $ref: "#/components/schemas/DraftAuthorKind"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: A page of drafts.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DraftPage"
         "400":
           $ref: "#/components/responses/Problem"
         "401":
@@ -3377,14 +3541,15 @@ paths:
         arrives and every 30 seconds. An API key or token needs `conversations:read`, and contact
         events reach it only with `contacts:read`. `inbox.created` reaches owners,
         admins and API keys (an agent learns of a new inbox from `inbox_access.changed`);
-        `inbox.deleted` reaches everyone who could see the inbox. `conversation.read` reaches only
-        the connections of the member who read. `typing` (a contact or another member typing) has no
+        `inbox.deleted` reaches everyone who could see the inbox. `conversation.read` and
+        `conversation.pin` reach only the connections of the member who read or pinned. `typing` (a contact or another member typing) has no
         `id`, is not stored and is not replayed. `member.presence` (a member of the workspace opened
         or closed the panel or changed `availability`) reaches member sessions only, also has no
         `id` and is not replayed; so does `viewing` (another member opened or left a conversation),
         which follows inbox access like conversation events. `contact.presence` (a contact
         connected to or disconnected from `/client/v1/realtime`) follows contact events, also has no
-        `id` and is not replayed.
+        `id` and is not replayed. `contact.read` (the contact read the conversation up to a
+        message) follows conversation events.
 
         A member session's open connection also makes the member available to contacts of `live`
         inboxes they can access (see `availability` on `/v1/me`).
@@ -3754,6 +3919,8 @@ paths:
       description: |
         Moves the contact's read cursor to `message_id`, or to the latest message when it is
         absent; it only moves forward. Replies the contact has read are not e-mailed to them.
+        When it moves, members see it as the conversation's `last_read_by_contact_at` and a
+        `contact.read` event on `/v1/realtime`.
       tags: [client]
       security:
         - contactSession: []
@@ -6628,6 +6795,14 @@ components:
           description: When it was last closed; absent when it never was.
         rating:
           $ref: "#/components/schemas/ConversationRating"
+        last_read_by_contact_at:
+          type: string
+          format: date-time
+          description: |
+            The contact has read every message created at or before this time, in the widget or
+            an app (`POST /client/v1/conversations/{id}/read`). Absent until the contact has read
+            anything, and in conversations the contact only reaches by e-mail. A `contact.read`
+            event tells when it moves.
         created_at:
           type: string
           format: date-time
@@ -6825,7 +7000,11 @@ components:
               type: boolean
               description: |
                 A message or note from someone other than the calling member is newer than the
-                member's read cursor. Always `false` for API keys.
+                member's read cursor, or the member marked it unread. Always `false` for API keys.
+            pinned_at:
+              type: string
+              format: date-time
+              description: When the calling member pinned it; absent when they did not, and for API keys.
     ConversationPage:
       type: object
       required: [items]
@@ -6837,6 +7016,93 @@ components:
         next_cursor:
           type: string
           description: Absent on the last page.
+    ConversationSummary:
+      type: object
+      description: Enough of a conversation to show where an item belongs.
+      required: [id, inbox_id, subject, status, contact]
+      properties:
+        id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        subject:
+          type: string
+        status:
+          $ref: "#/components/schemas/ConversationStatus"
+        contact:
+          $ref: "#/components/schemas/ConversationContact"
+    MentionNote:
+      type: object
+      required: [id, text, author, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        text:
+          type: string
+          description: The plain-text body on one line, cut to 140 characters with `…` when longer.
+        author:
+          $ref: "#/components/schemas/MessageAuthor"
+        created_at:
+          type: string
+          format: date-time
+    Mention:
+      type: object
+      required: [note, conversation, seen]
+      properties:
+        note:
+          $ref: "#/components/schemas/MentionNote"
+        conversation:
+          $ref: "#/components/schemas/ConversationSummary"
+        seen:
+          type: boolean
+          description: The calling member has read the conversation up to this note.
+    MentionPage:
+      type: object
+      required: [items, unseen]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Mention"
+        next_cursor:
+          type: string
+          description: Absent on the last page.
+        unseen:
+          type: integer
+          format: int64
+          description: Unseen mentions over all pages.
+    DraftAuthorKind:
+      type: string
+      description: |
+        `bot`: written with an API key. `assistant`: written by a member through an OAuth client.
+        `member`: written by a member in the panel.
+      enum: [bot, assistant, member]
+    DraftItem:
+      type: object
+      required: [draft, conversation]
+      properties:
+        draft:
+          $ref: "#/components/schemas/Message"
+        conversation:
+          $ref: "#/components/schemas/ConversationSummary"
+    DraftPage:
+      type: object
+      required: [items, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/DraftItem"
+        next_cursor:
+          type: string
+          description: Absent on the last page.
+        total:
+          type: integer
+          format: int64
+          description: Drafts matching the filters over all pages.
     CountByID:
       type: object
       required: [id, count]
@@ -6990,6 +7256,22 @@ components:
           description: Absent when the conversation has nothing to read yet.
         unread:
           type: boolean
+          description: Something is newer than the cursor, or the member marked it unread.
+    ConversationPin:
+      type: object
+      description: Whether a member pinned a conversation to the top of their lists.
+      required: [conversation_id, member_id]
+      properties:
+        conversation_id:
+          type: string
+          format: uuid
+        member_id:
+          type: string
+          format: uuid
+        pinned_at:
+          type: string
+          format: date-time
+          description: Absent when it is not pinned.
     MessageKind:
       type: string
       description: |
@@ -7750,6 +8032,71 @@ components:
           format: date-time
         data:
           $ref: "#/components/schemas/ConversationRead"
+    ContactRead:
+      type: object
+      description: The contact's read position in a conversation.
+      required: [conversation_id, last_read_message_id, read_at]
+      properties:
+        conversation_id:
+          type: string
+          format: uuid
+        last_read_message_id:
+          type: string
+          format: uuid
+        read_at:
+          type: string
+          format: date-time
+          description: The contact has read every message created at or before this time.
+    ContactReadEvent:
+      type: object
+      description: The contact read the conversation further, in the widget or an app.
+      required: [id, type, workspace_id, inbox_id, conversation_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [contact.read]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/ContactRead"
+    ConversationPinEvent:
+      type: object
+      description: The receiving member pinned or unpinned a conversation, in this or another tab or device.
+      required: [id, type, workspace_id, inbox_id, conversation_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [conversation.pin]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/ConversationPin"
     InboxAccessChangedEvent:
       type: object
       description: A member was given or lost access to an inbox. Reload the inboxes and conversations when it is about you.
@@ -7836,6 +8183,8 @@ components:
         - $ref: "#/components/schemas/InboxDeletedEvent"
         - $ref: "#/components/schemas/InboxAccessChangedEvent"
         - $ref: "#/components/schemas/ConversationReadEvent"
+        - $ref: "#/components/schemas/ContactReadEvent"
+        - $ref: "#/components/schemas/ConversationPinEvent"
       discriminator:
         propertyName: type
         mapping:
@@ -7854,6 +8203,8 @@ components:
           inbox.deleted: "#/components/schemas/InboxDeletedEvent"
           inbox_access.changed: "#/components/schemas/InboxAccessChangedEvent"
           conversation.read: "#/components/schemas/ConversationReadEvent"
+          contact.read: "#/components/schemas/ContactReadEvent"
+          conversation.pin: "#/components/schemas/ConversationPinEvent"
     EventPage:
       type: object
       required: [events, next, has_more]
@@ -7892,6 +8243,8 @@ components:
         - $ref: "#/components/schemas/InboxDeletedEvent"
         - $ref: "#/components/schemas/InboxAccessChangedEvent"
         - $ref: "#/components/schemas/ConversationReadEvent"
+        - $ref: "#/components/schemas/ContactReadEvent"
+        - $ref: "#/components/schemas/ConversationPinEvent"
         - $ref: "#/components/schemas/TypingEvent"
         - $ref: "#/components/schemas/MemberPresenceEvent"
         - $ref: "#/components/schemas/ContactPresenceEvent"
@@ -7916,6 +8269,8 @@ components:
           inbox.deleted: "#/components/schemas/InboxDeletedEvent"
           inbox_access.changed: "#/components/schemas/InboxAccessChangedEvent"
           conversation.read: "#/components/schemas/ConversationReadEvent"
+          contact.read: "#/components/schemas/ContactReadEvent"
+          conversation.pin: "#/components/schemas/ConversationPinEvent"
           typing: "#/components/schemas/TypingEvent"
           member.presence: "#/components/schemas/MemberPresenceEvent"
           contact.presence: "#/components/schemas/ContactPresenceEvent"

@@ -17,7 +17,7 @@ UPDATE conversations SET rating_requested_at = $1::timestamptz
 WHERE workspace_id = $2 AND id = $3 AND status = 'closed' AND closed_at = $4 AND NOT spam
   AND (rating_requested_at IS NULL OR rating_requested_at < closed_at)
   AND (rated_at IS NULL OR rated_at < closed_at)
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at
 `
 
 type ClaimRatingRequestParams struct {
@@ -63,6 +63,7 @@ func (q *Queries) ClaimRatingRequest(ctx context.Context, arg ClaimRatingRequest
 		&i.RatingComment,
 		&i.RatedAt,
 		&i.RatingRequestedAt,
+		&i.LastReadByContactAt,
 	)
 	return i, err
 }
@@ -91,7 +92,7 @@ const rateConversation = `-- name: RateConversation :one
 UPDATE conversations SET rating = $1::text, rating_comment = $2, rated_at = $3::timestamptz, updated_at = $3::timestamptz
 WHERE workspace_id = $4 AND id = $5 AND status = 'closed' AND closed_at = $6
   AND (rated_at IS NULL OR rated_at < closed_at)
-RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at
+RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at
 `
 
 type RateConversationParams struct {
@@ -141,6 +142,7 @@ func (q *Queries) RateConversation(ctx context.Context, arg RateConversationPara
 		&i.RatingComment,
 		&i.RatedAt,
 		&i.RatingRequestedAt,
+		&i.LastReadByContactAt,
 	)
 	return i, err
 }
