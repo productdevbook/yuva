@@ -41,6 +41,7 @@ export function DailyChart({ rows, config, stacked, className, testId }: { rows:
             strokeWidth={stacked ? 1 : 0}
             radius={stacked ? (i === keys.length - 1 ? [4, 4, 0, 0] : 0) : [4, 4, 0, 0]}
             maxBarSize={28}
+            isAnimationActive={false}
           />
         ))}
       </BarChart>
