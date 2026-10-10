@@ -79,7 +79,7 @@ export function homeCopy(i18n: I18n) {
         ] as { icon: "mail" | "chat" | "app" | "api"; channel: string; name: string; product: string; color: string; text: string; unread: boolean }[],
       },
       shotAlt: i18n._(
-        msg`The Yuva queue: people from three products waiting at the top, and an in-app conversation with the details the app sent, a teammate's note and a suggested reply.`
+        msg`The Yuva panel: conversations from three products in one list, and an e-mail conversation open as a chat, with a teammate's note and a suggested reply.`
       ),
     },
 
@@ -191,7 +191,7 @@ export function homeCopy(i18n: I18n) {
         { icon: "bolt", title: i18n._(msg`Realtime`), body: i18n._(msg`New messages, typing and teammates' changes appear live over WebSocket.`) },
         { icon: "bell", title: i18n._(msg`Notifications`), body: i18n._(msg`Install the panel as an app and get Web Push on phones and desktops, with e-mail as a fallback.`) },
       ] as Item[],
-      phoneAlt: i18n._(msg`The panel on a phone: the conversation list with each person's product, channel and waiting time.`),
+      phoneAlt: i18n._(msg`The panel on a phone: the conversation list with each person's channel and latest message, and the tabs at the bottom.`),
     },
 
     developers: {
