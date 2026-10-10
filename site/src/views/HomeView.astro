@@ -41,7 +41,7 @@ const jsonLd = [
 <Base locale={locale} title={c.meta.title} description={c.meta.description} jsonLd={jsonLd}>
   <Hero t={c.hero} shots={shots(locale)} locale={locale} />
   <Channels t={c.channels} shots={shots(locale)} />
-  <How t={c.how} inbox={c.hero.inbox} />
+  <How t={c.how} />
   <Panel t={c.panel} shots={shots(locale)} />
   <Developers t={c.developers} />
   <SelfHost t={c.host} />

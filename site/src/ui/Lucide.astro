@@ -1,0 +1,40 @@
+---
+interface Props {
+  name: keyof typeof nodes
+  class?: string
+}
+
+const nodes = {
+  mail: [
+    ["path", { d: "m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" }],
+    ["rect", { x: "2", y: "4", width: "20", height: "16", rx: "2" }],
+  ],
+  chat: [
+    [
+      "path",
+      {
+        d: "M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719",
+      },
+    ],
+  ],
+  phone: [
+    ["rect", { width: "14", height: "20", x: "5", y: "2", rx: "2", ry: "2" }],
+    ["path", { d: "M12 18h.01" }],
+  ],
+  sparkles: [
+    [
+      "path",
+      {
+        d: "M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z",
+      },
+    ],
+    ["path", { d: "M20 2v4" }],
+    ["path", { d: "M22 4h-4" }],
+    ["circle", { cx: "4", cy: "20", r: "2" }],
+  ],
+} satisfies Record<string, [string, Record<string, string>][]>
+---
+
+<svg class:list={["size-4 shrink-0", Astro.props.class]} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  {nodes[Astro.props.name].map(([Tag, attrs]) => <Tag {...attrs} />)}
+</svg>
