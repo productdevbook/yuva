@@ -20,16 +20,18 @@ export function homeCopy(i18n: I18n) {
     },
 
     hero: {
-      release: i18n._(msg`New in ${version}: bulk actions, contact merge and moving conversations`),
-      title: i18n._(msg`One inbox for every product you run.`),
+      release: i18n._(msg`New: a chat-style panel for every conversation`),
+      releaseShort: i18n._(msg`New: a chat-style panel`),
+      title: i18n._(msg`Every support channel, answered as one chat.`),
       lead: i18n._(
-        msg`Yuva brings support e-mail, live chat and in-app conversations from all of your products into one shared inbox for your team. It is open source and runs as one Go binary with Postgres, so you can also host it yourself.`
+        msg`Yuva puts e-mail, live chat on your website and messages from your iOS and Android apps into one chat-style panel for your team. AI assistants such as Claude, ChatGPT and Cursor connect through MCP and draft replies; a teammate reviews and sends them. Open source, one Go binary with Postgres.`
       ),
       signUp: i18n._(msg`Create an account`),
       hosted: i18n._(msg`Hosted`),
       hostedBody: i18n._(msg`Create an account on our service and start without running a server.`),
       selfHosted: i18n._(msg`Self-hosted`),
       selfHostedBody: i18n._(msg`One Docker image and Postgres on your own server.`),
+      selfHost: i18n._(msg`Or host it yourself`),
       quickStart: i18n._(msg`Read the quick start`),
       quickStartHref: quickStart,
       github: i18n._(msg`View on GitHub`),
@@ -37,49 +39,23 @@ export function homeCopy(i18n: I18n) {
       tagsHosted: i18n._(msg`Open source · Hosted or self-hosted · Pre-alpha`),
       worksWith: i18n._(msg`Works with`),
       stack: ["Cloudflare Email Workers", "Amazon SES", "Postmark", "S3 · R2 · MinIO", "APNs · FCM", "Docker"],
-      inbox: {
-        title: i18n._(msg`One inbox`),
-        rows: [
-          {
-            icon: "app",
-            channel: i18n._(msg`In-app`),
-            name: "Priya Raman",
-            product: "Fieldnote",
-            color: "bg-emerald-500",
-            text: i18n._(msg`Notes stopped syncing after the update`),
-            unread: true,
-          },
-          {
-            icon: "chat",
-            channel: i18n._(msg`Live chat`),
-            name: "Lina Haddad",
-            product: "Paperboat",
-            color: "bg-sky-500",
-            text: i18n._(msg`Can I schedule a newsletter in each subscriber's time zone?`),
-            unread: true,
-          },
-          {
-            icon: "mail",
-            channel: i18n._(msg`E-mail`),
-            name: i18n._(msg`Amara Okafor`),
-            product: "Tally",
-            color: "bg-indigo-500",
-            text: i18n._(msg`Custom domain still shows as unverified`),
-            unread: false,
-          },
-          {
-            icon: "api",
-            channel: i18n._(msg`API`),
-            name: "Hiroshi Tanaka",
-            product: "Tally",
-            color: "bg-indigo-500",
-            text: i18n._(msg`Invoice for September`),
-            unread: false,
-          },
-        ] as { icon: "mail" | "chat" | "app" | "api"; channel: string; name: string; product: string; color: string; text: string; unread: boolean }[],
+      badges: {
+        email: i18n._(msg`E-mail`),
+        live: i18n._(msg`Live chat`),
+        liveNote: i18n._(msg`online`),
+        draft: i18n._(msg`Reply draft`),
+        draftNote: i18n._(msg`via Claude Code`),
       },
+      channelsLabel: i18n._(msg`Channels`),
+      channels: [
+        { icon: "mail", label: i18n._(msg`E-mail`), href: docs("email/") },
+        { icon: "chat", label: i18n._(msg`Website chat`), href: docs("widget/") },
+        { icon: "phone", label: "iOS", href: docs("mobile/") },
+        { icon: "phone", label: "Android", href: docs("mobile/") },
+        { icon: "sparkles", label: i18n._(msg`AI assistants (MCP)`), note: "Claude · ChatGPT · Cursor", href: docs("mcp/") },
+      ] as { icon: "mail" | "chat" | "phone" | "sparkles"; label: string; note?: string; href: string }[],
       shotAlt: i18n._(
-        msg`The Yuva panel: conversations from three products in one list, and an e-mail conversation open as a chat, with a teammate's note and a suggested reply.`
+        msg`The Yuva messaging panel: conversations from e-mail, live chat and apps in one list, and a conversation open as a chat, with a team note and a reply an assistant drafted for a teammate to send.`
       ),
     },
 
@@ -104,6 +80,11 @@ export function homeCopy(i18n: I18n) {
           ),
         },
       ] as Item[],
+      rows: [
+        { color: "bg-emerald-500", text: i18n._(msg`Notes stopped syncing after the update`), unread: true },
+        { color: "bg-sky-500", text: i18n._(msg`Can I schedule a newsletter in each subscriber's time zone?`), unread: true },
+        { color: "bg-indigo-500", text: i18n._(msg`Custom domain still shows as unverified`), unread: false },
+      ],
     },
 
     channels: {

@@ -6,10 +6,9 @@ import Stop from "@/ui/Stop.astro"
 
 interface Props {
   t: HomeCopy["how"]
-  inbox: HomeCopy["hero"]["inbox"]
 }
 
-const { t, inbox } = Astro.props
+const { t } = Astro.props
 const products = [
   { name: "Fieldnote", color: "bg-emerald-500", icons: ["app", "mail"] },
   { name: "Paperboat", color: "bg-sky-500", icons: ["chat", "mail"] },
@@ -56,7 +55,7 @@ const visual = "flex h-40 flex-col justify-center rounded-2xl bg-paper-deep p-4"
       <div class={visual} aria-hidden="true">
         <ul class="divide-y divide-rule overflow-hidden rounded-xl bg-sheet shadow-paper">
           {
-            inbox.rows.slice(0, 3).map((r) => (
+            t.rows.map((r) => (
               <li class="flex items-center gap-2.5 px-3 py-2 text-sm">
                 <span class:list={["size-2 shrink-0 rounded-full", r.color]} />
                 <span class="truncate">{r.text}</span>
