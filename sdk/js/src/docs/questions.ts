@@ -56,13 +56,17 @@ export class YuvaPageQuestionsElement extends YuvaDocsElement {
   }
 
   protected pageChanged(): void {
-    void this.reload();
+    void this.#load(false);
   }
 
-  async reload(): Promise<void> {
+  reload(): Promise<void> {
+    return this.#load(true);
+  }
+
+  async #load(force: boolean): Promise<void> {
     const page = this.pageUrl;
     const key = `${this.server} ${this.channel} ${page}`;
-    if (!this.channel || this.refused) return;
+    if (!this.channel || !page || this.refused || (!force && this.#loadedFor === key)) return;
     this.#loadedFor = key;
     try {
       const { items } = await this.client().pageAnswers(page);
@@ -70,7 +74,7 @@ export class YuvaPageQuestionsElement extends YuvaDocsElement {
       this.#answers = items;
       this.render();
     } catch (error) {
-      if (this.#loadedFor === key) this.refusal(error);
+      if (this.#loadedFor === key && !this.refusal(error)) this.#loadedFor = "";
     }
   }
 

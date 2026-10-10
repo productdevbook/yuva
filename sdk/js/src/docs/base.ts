@@ -10,6 +10,8 @@ import { followPage, pageOf } from "./page";
 
 const catalogs: Record<string, Messages> = { en, tr };
 
+const settings = new Map<string, Promise<ClientInbox>>();
+
 const Base = (typeof HTMLElement === "undefined" ? class {} : HTMLElement) as typeof HTMLElement;
 
 const scriptSrc = typeof document !== "undefined" && document.currentScript instanceof HTMLScriptElement ? document.currentScript.src : "";
@@ -84,6 +86,8 @@ export abstract class YuvaDocsElement extends Base {
   #identity: IdentityTokenSource | null = null;
   #unfollow: (() => void) | null = null;
   #settingsFor = "";
+  #connected = false;
+  #accentColor = "";
 
   constructor() {
     super();
@@ -139,10 +143,11 @@ export abstract class YuvaDocsElement extends Base {
   setIdentityToken(source: IdentityTokenSource | null): void {
     this.#identity = source;
     this.#client?.setIdentityToken(() => this.#identityToken());
-    if (this.isConnected && !this.refused) this.render();
+    if (this.#connected && !this.refused) this.render();
   }
 
   connectedCallback(): void {
+    this.#connected = true;
     this.#unfollow ??= followPage(() => this.#syncPage());
     this.pageUrl = pageOf(this.getAttribute("page"));
     this.#applyLocale();
@@ -152,12 +157,13 @@ export abstract class YuvaDocsElement extends Base {
   }
 
   disconnectedCallback(): void {
+    this.#connected = false;
     this.#unfollow?.();
     this.#unfollow = null;
   }
 
   attributeChangedCallback(name: string, previous: string | null, value: string | null): void {
-    if (!this.isConnected || previous === value) return;
+    if (!this.#connected || previous === value) return;
     if (name === "channel" || name === "server") {
       this.#client?.reset();
       this.#client = null;
@@ -225,6 +231,11 @@ export abstract class YuvaDocsElement extends Base {
     style.textContent = baseStyles + css;
     const wrapper = el("div", "frame");
     wrapper.dir = this.direction;
+    wrapper.lang = this.locale;
+    if (this.#accentColor) {
+      wrapper.style.setProperty("--yuva-accent", this.#accentColor);
+      wrapper.style.setProperty("--yuva-on-accent", contrastOn(this.#accentColor));
+    }
     wrapper.append(...children);
     let focused: Element | null = null;
     try {
@@ -239,7 +250,7 @@ export abstract class YuvaDocsElement extends Base {
   }
 
   #syncPage(): void {
-    if (!this.isConnected) return;
+    if (!this.#connected) return;
     const page = pageOf(this.getAttribute("page"));
     if (page === this.pageUrl) return;
     this.pageUrl = page;
@@ -251,7 +262,6 @@ export abstract class YuvaDocsElement extends Base {
   #applyLocale(): void {
     const locale = this.locale;
     this.#messages = catalogs[locale] ?? en;
-    this.setAttribute("lang", locale);
     this.direction = this.getAttribute("dir") === "rtl" ? "rtl" : this.getAttribute("dir") === "ltr" ? "ltr" : directionOf(locale);
   }
 
@@ -262,8 +272,13 @@ export abstract class YuvaDocsElement extends Base {
     this.#settingsFor = key;
     const stored = readStored(channel).launcher;
     if (stored?.color) this.#accent(stored.color);
-    this.client()
-      .channelSettings()
+    let request = settings.get(key);
+    if (!request) {
+      request = this.client().channelSettings();
+      settings.set(key, request);
+      request.catch(() => settings.delete(key));
+    }
+    request
       .then((inbox) => {
         if (this.channel !== channel) return;
         this.inbox = inbox;
@@ -279,7 +294,6 @@ export abstract class YuvaDocsElement extends Base {
 
   #accent(color: string): void {
     if (!/^#[0-9a-f]{6}$/i.test(color)) return;
-    this.style.setProperty("--yuva-accent", color);
-    this.style.setProperty("--yuva-on-accent", contrastOn(color));
+    this.#accentColor = color;
   }
 }
