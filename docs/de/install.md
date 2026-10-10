@@ -107,8 +107,8 @@ support.example.com {
 
 Öffnen Sie `YUVA_PUBLIC_URL`, geben Sie Ihre Adresse ein und melden Sie sich mit dem Code aus der
 E-Mail an. Ohne SMTP steht der Code in `docker compose logs yuva`. Laden Sie dann Ihr Team ein,
-legen Sie einen Posteingang an und richten Sie [E-Mail](email.md), das [Web-Widget](../widget.md)
-oder die [Mobile-SDKs](../mobile.md) ein.
+legen Sie einen Posteingang an und richten Sie [E-Mail](email.md), das [Web-Widget](widget.md)
+oder die [Mobile-SDKs](mobile.md) ein.
 
 ## Referenz
 
