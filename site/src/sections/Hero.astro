@@ -15,27 +15,31 @@ interface Props {
 
 const { t, shots: s } = Astro.props
 const appUrl = import.meta.env.PUBLIC_APP_URL
-const button = "inline-flex h-11 items-center gap-2 rounded-full px-5 text-[0.95rem] font-medium transition-colors"
-const badge =
-  "absolute z-10 flex items-center gap-2 rounded-full border border-rule bg-sheet/95 px-3 py-1.5 text-xs font-medium whitespace-nowrap shadow-paper backdrop-blur sm:px-3.5 sm:py-2 sm:text-sm"
+const button =
+  "inline-flex h-10 items-center gap-2 rounded-full px-4 text-sm font-medium transition-colors sm:h-11 sm:px-5 sm:text-[0.95rem]"
+const callout = "pointer-events-none absolute z-10 hidden -translate-y-1/2 items-center min-[90rem]:flex"
+const card = "flex items-center gap-2 rounded-xl border border-rule bg-sheet px-3 py-2 text-sm whitespace-nowrap shadow-paper"
+const line = "h-px w-4 bg-rule-strong"
+const dot = "size-1.5 shrink-0 rounded-full bg-ink-faint"
 ---
 
 <section class="overflow-x-clip" aria-labelledby="hero-title">
-  <div class="mx-auto max-w-6xl px-5 pt-12 sm:px-8 sm:pt-20">
+  <div class="mx-auto max-w-6xl px-5 pt-8 sm:px-8 sm:pt-20">
     <div class="mx-auto max-w-3xl text-center">
       <a
         class="inline-flex max-w-full items-center gap-2 rounded-full border border-rule py-1 ps-1 pe-3 text-sm text-ink-soft transition-colors hover:border-rule-strong hover:text-ink"
         href={links.release}
       >
         <span class="rounded-full bg-brand-wash px-2 py-0.5 font-mono text-xs font-medium text-brand">{VERSION}</span>
-        <span class="truncate">{t.release}</span>
+        <span class="truncate sm:hidden">{t.releaseShort}</span>
+        <span class="truncate max-sm:hidden">{t.release}</span>
         <span aria-hidden="true">→</span>
       </a>
-      <h1 id="hero-title" class="mt-6 text-[clamp(2.4rem,1.2rem+4vw,4.5rem)] leading-[1.03] font-semibold tracking-[-0.035em] text-balance">
+      <h1 id="hero-title" class="mt-5 text-[clamp(2.15rem,1.2rem+4vw,4.5rem)] sm:mt-6 leading-[1.03] font-semibold tracking-[-0.035em] text-balance">
         {t.title}
       </h1>
-      <p class="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-pretty text-ink-soft sm:text-lg">{t.lead}</p>
-      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+      <p class="mx-auto mt-4 max-w-2xl text-[0.95rem] leading-normal text-pretty text-ink-soft sm:mt-6 sm:text-lg sm:leading-relaxed">{t.lead}</p>
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-2 sm:mt-8 sm:gap-3">
         <a class:list={[button, "bg-signal text-white hover:bg-signal/90"]} href={appUrl ?? t.quickStartHref}>
           {appUrl ? t.signUp : t.quickStart}
         </a>
@@ -45,17 +49,17 @@ const badge =
         </a>
         {
           appUrl && (
-            <a class="inline-flex h-11 items-center px-2 text-[0.95rem] font-medium text-ink-soft underline-offset-4 transition-colors hover:text-ink hover:underline" href={t.quickStartHref}>
+            <a class="inline-flex h-9 items-center px-2 text-sm sm:h-11 sm:text-[0.95rem] font-medium text-ink-soft underline-offset-4 transition-colors hover:text-ink hover:underline" href={t.quickStartHref}>
               {t.selfHost}
               <span class="ms-1.5" aria-hidden="true">→</span>
             </a>
           )
         }
       </div>
-      <p class="mt-5 text-sm text-ink-faint">{appUrl ? t.tagsHosted : t.tags}</p>
+      <p class="mt-3 text-xs text-ink-faint sm:mt-5 sm:text-sm">{appUrl ? t.tagsHosted : t.tags}</p>
     </div>
 
-    <div class="relative mt-12 sm:mt-16">
+    <div class="relative mt-8 sm:mt-16">
       <div
         class="pointer-events-none absolute inset-x-0 -top-16 h-2/3 bg-[radial-gradient(50%_60%_at_50%_40%,var(--color-brand-wash),transparent)]"
         aria-hidden="true"
@@ -75,18 +79,36 @@ const badge =
             />
           </div>
         </div>
-        <span class:list={[badge, "top-[7%] -start-3 sm:top-[20%] sm:-start-4 lg:-start-8"]} aria-hidden="true">
-          <Lucide name="mail" class="text-ink-soft" />
-          {t.badges.email}
-        </span>
-        <span class:list={[badge, "top-[30%] -end-3 sm:top-[44%] sm:-start-4 sm:end-auto lg:-start-10"]} aria-hidden="true">
-          <span class="size-2 rounded-full bg-emerald-500"></span>
-          {t.badges.live}
-        </span>
-        <span class:list={[badge, "bottom-[24%] -start-3 sm:start-auto sm:bottom-auto sm:top-[57%] sm:-end-4 lg:-end-8"]} aria-hidden="true">
-          <Lucide name="sparkles" class="text-brand" />
-          {t.badges.draft}
-        </span>
+        <div class:list={[callout, "end-[calc(100%-0.5rem)] top-[23.5%]"]} aria-hidden="true">
+          <span class={card}>
+            <Lucide name="mail" class="text-ink-soft" />
+            <span class="font-medium">{t.badges.email}</span>
+          </span>
+          <span class={line}></span>
+          <span class={dot}></span>
+        </div>
+        <div class:list={[callout, "end-[calc(100%-0.5rem)] top-[46.5%]"]} aria-hidden="true">
+          <span class={card}>
+            <span class="size-2 shrink-0 rounded-full bg-emerald-500"></span>
+            <span class="flex flex-col leading-tight">
+              <span class="font-medium">{t.badges.live}</span>
+              <span class="text-xs text-ink-faint">{t.badges.liveNote}</span>
+            </span>
+          </span>
+          <span class={line}></span>
+          <span class={dot}></span>
+        </div>
+        <div class:list={[callout, "start-[calc(100%-0.5rem)] top-[66%]"]} aria-hidden="true">
+          <span class={dot}></span>
+          <span class={line}></span>
+          <span class={card}>
+            <Lucide name="sparkles" class="text-brand" />
+            <span class="flex flex-col leading-tight">
+              <span class="font-medium">{t.badges.draft}</span>
+              <span class="text-xs text-ink-faint">{t.badges.draftNote}</span>
+            </span>
+          </span>
+        </div>
       </div>
     </div>
 

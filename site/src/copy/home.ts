@@ -21,6 +21,7 @@ export function homeCopy(i18n: I18n) {
 
     hero: {
       release: i18n._(msg`New: a chat-style panel for every conversation`),
+      releaseShort: i18n._(msg`New: a chat-style panel`),
       title: i18n._(msg`Every support channel, answered as one chat.`),
       lead: i18n._(
         msg`Yuva puts e-mail, live chat on your website and messages from your iOS and Android apps into one chat-style panel for your team. AI assistants such as Claude, ChatGPT and Cursor connect through MCP and draft replies; a teammate reviews and sends them. Open source, one Go binary with Postgres.`
@@ -40,8 +41,10 @@ export function homeCopy(i18n: I18n) {
       stack: ["Cloudflare Email Workers", "Amazon SES", "Postmark", "S3 · R2 · MinIO", "APNs · FCM", "Docker"],
       badges: {
         email: i18n._(msg`E-mail`),
-        live: i18n._(msg`Live chat · online`),
-        draft: i18n._(msg`Draft · via Claude Code`),
+        live: i18n._(msg`Live chat`),
+        liveNote: i18n._(msg`online`),
+        draft: i18n._(msg`Reply draft`),
+        draftNote: i18n._(msg`via Claude Code`),
       },
       channelsLabel: i18n._(msg`Channels`),
       channels: [
