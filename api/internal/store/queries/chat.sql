@@ -333,3 +333,9 @@ SELECT member_id::uuid AS member_id FROM realtime_connections
 WHERE workspace_id = @workspace_id AND member_id IS NOT NULL
 GROUP BY member_id
 HAVING max(seen_at) <= @fresh_after::timestamptz AND max(seen_at) > @lapsed_after::timestamptz;
+
+-- name: ListLapsedContacts :many
+SELECT contact_id::uuid AS contact_id FROM realtime_connections
+WHERE workspace_id = @workspace_id AND contact_id IS NOT NULL
+GROUP BY contact_id
+HAVING max(seen_at) <= @fresh_after::timestamptz AND max(seen_at) > @lapsed_after::timestamptz;

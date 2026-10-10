@@ -35,6 +35,7 @@ const (
 	Typing              = "typing"
 	PresenceHint        = "presence.hint"
 	MemberPresence      = "member.presence"
+	ContactPresence     = "contact.presence"
 	Viewing             = "viewing"
 	ChannelUpdated      = "channel.updated"
 )

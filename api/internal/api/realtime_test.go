@@ -91,9 +91,9 @@ func (c *client) dial(query string) *wsClient {
 	return w
 }
 
-// teamSignals are the notices about teammates that every member connection gets; tests that do
-// not look for them skip them.
-var teamSignals = map[string]bool{"member.presence": true, "viewing": true}
+// teamSignals are the notices about teammates and contacts' presence that member connections get;
+// tests that do not look for them skip them.
+var teamSignals = map[string]bool{"member.presence": true, "viewing": true, "contact.presence": true}
 
 func (w *wsClient) next() wsMessage {
 	w.t.Helper()

@@ -295,3 +295,72 @@ func mustMarshal(v any) string {
 	b, _ := json.Marshal(v)
 	return string(b)
 }
+
+func contactPresenceOf(t *testing.T, w *wsClient, contact string) map[string]any {
+	t.Helper()
+	for {
+		m := w.nextOf("contact.presence")
+		var d map[string]any
+		if err := json.Unmarshal(m.Data, &d); err != nil {
+			t.Fatal(err)
+		}
+		if d["contact_id"] == contact {
+			return d
+		}
+	}
+}
+
+func TestContactPresenceEvents(t *testing.T) {
+	h := newHarness(t)
+	ct := newChatTeam(t, h, "live", true)
+	outsider := newTeam(t, h)
+	cs := ct.session(h, map[string]any{})
+	cs.start("hello")
+	ct.owner.expect(http.StatusNoContent, "DELETE", "/v1/inboxes/"+ct.chatInbox+"/members/"+ct.agentID, nil)
+
+	owner := ct.owner.dial("")
+	owner.ready()
+	agent := ct.agent.dial("")
+	agent.ready()
+	stranger := outsider.owner.dial("")
+	stranger.ready()
+
+	visitor, _, err := dialContact(h, cs.token, ct.origin, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	visitor.ready()
+	if d := contactPresenceOf(t, owner, cs.contactID); d["online"] != true || d["last_seen_at"] == nil {
+		t.Fatalf("contact connected: %v", d)
+	}
+	_ = visitor.conn.CloseNow()
+	if d := contactPresenceOf(t, owner, cs.contactID); d["online"] != false {
+		t.Fatalf("contact disconnected: %v", d)
+	}
+
+	if _, err := h.st.Pool.Exec(context.Background(),
+		"INSERT INTO realtime_connections (id, workspace_id, contact_id, seen_at) VALUES (gen_random_uuid(), $1, $2, $3)",
+		ct.ws, cs.contactID, h.clock.Now().Add(-2*time.Minute)); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.srv.AnnounceLapsedPresence(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	if d := contactPresenceOf(t, owner, cs.contactID); d["online"] != false {
+		t.Fatalf("contact whose server died: %v", d)
+	}
+
+	for _, w := range []*wsClient{agent, stranger} {
+	drain:
+		for {
+			select {
+			case m := <-w.msgs:
+				if m.Type == "contact.presence" {
+					t.Fatalf("a member who cannot see the contact got %s", m.Data)
+				}
+			case <-time.After(300 * time.Millisecond):
+				break drain
+			}
+		}
+	}
+}

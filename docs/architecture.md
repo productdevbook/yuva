@@ -89,9 +89,11 @@ panel (embedded SPA) ─────────► /v1 + WS ──────�
   75 seconds. Members see their teammates the same way: `/v1/members` reports each member's
   `availability` and whether they are `online`, and a `member.presence` notice reaches the
   workspace's member connections when a member connects, disconnects or changes availability.
+  Contacts likewise: a `contact.presence` notice reaches the member connections that can see the
+  contact whenever one of its `/client/v1/realtime` connections opens or closes.
   A connection that ends without closing (a process that died) only stops being seen, so a River
-  job every minute announces the members whose last connection went stale in the previous two
-  minutes.
+  job every minute announces the members and contacts whose last connection went stale in the
+  previous two minutes.
 - The panel and the widget bundles are embedded with `go:embed`; one binary serves everything.
 - Configuration through environment variables. Secrets stored in the database (SMTP passwords,
   identity secrets, webhook secrets) are encrypted with AES-256-GCM under a master key,

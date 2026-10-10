@@ -303,7 +303,7 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 		if f.p.isKey() || v.MemberId == f.p.memberID {
 			return false, nil
 		}
-	case realtime.ContactUpdated, realtime.ContactDeleted:
+	case realtime.ContactUpdated, realtime.ContactDeleted, realtime.ContactPresence:
 		if requireScope(f.p, oas.ContactsRead) != nil {
 			return false, nil
 		}
@@ -334,6 +334,13 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 			return false, err
 		}
 		return q.ContactVisibleToViewer(ctx, store.ContactVisibleToViewerParams{WorkspaceID: f.p.workspaceID, ViewerID: f.p.viewerID(), ContactID: c.ID})
+	}
+	if e.Type == realtime.ContactPresence {
+		var c oas.ContactPresence
+		if err := json.Unmarshal(e.Data, &c); err != nil {
+			return false, err
+		}
+		return q.ContactVisibleToViewer(ctx, store.ContactVisibleToViewerParams{WorkspaceID: f.p.workspaceID, ViewerID: f.p.viewerID(), ContactID: c.ContactId})
 	}
 	if e.InboxID == nil {
 		return true, nil

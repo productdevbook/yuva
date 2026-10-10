@@ -302,6 +302,21 @@ func (e ContactDeletedEventType) Valid() bool {
 	}
 }
 
+// Defines values for ContactPresenceEventType.
+const (
+	ContactPresenceEventTypeContactPresence ContactPresenceEventType = "contact.presence"
+)
+
+// Valid indicates whether the value is a known member of the ContactPresenceEventType enum.
+func (e ContactPresenceEventType) Valid() bool {
+	switch e {
+	case ContactPresenceEventTypeContactPresence:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ContactUpdatedEventType.
 const (
 	ContactUpdatedEventTypeContactUpdated ContactUpdatedEventType = "contact.updated"
@@ -2219,6 +2234,21 @@ type ContactPresence struct {
 	// Online A `/client/v1/realtime` connection of the contact was seen in the last 75 seconds.
 	Online bool `json:"online"`
 }
+
+// ContactPresenceEvent One of a contact's `/client/v1/realtime` connections opened or closed. Carries the
+// contact's current presence, so it may repeat the previous one.
+// Not stored: it has no `id` and is not replayed; read `/v1/contacts/{contactId}/presence`
+// after a reconnect. A connection that ends without closing (a server process that died) is
+// announced within about two minutes.
+type ContactPresenceEvent struct {
+	CreatedAt   time.Time                `json:"created_at"`
+	Data        ContactPresence          `json:"data"`
+	Type        ContactPresenceEventType `json:"type"`
+	WorkspaceId uuid.UUID                `json:"workspace_id"`
+}
+
+// ContactPresenceEventType defines model for ContactPresenceEvent.Type.
+type ContactPresenceEventType string
 
 // ContactRef defines model for ContactRef.
 type ContactRef struct {
@@ -6177,6 +6207,32 @@ func (t *RealtimeMessage) MergeMemberPresenceEvent(v MemberPresenceEvent) error 
 	return err
 }
 
+// AsContactPresenceEvent returns the union data inside the RealtimeMessage as a ContactPresenceEvent
+func (t RealtimeMessage) AsContactPresenceEvent() (ContactPresenceEvent, error) {
+	var body ContactPresenceEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromContactPresenceEvent overwrites any union data inside the RealtimeMessage as the provided ContactPresenceEvent
+func (t *RealtimeMessage) FromContactPresenceEvent(v ContactPresenceEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeContactPresenceEvent performs a merge with any union data inside the RealtimeMessage, using the provided ContactPresenceEvent
+func (t *RealtimeMessage) MergeContactPresenceEvent(v ContactPresenceEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsViewingEvent returns the union data inside the RealtimeMessage as a ViewingEvent
 func (t RealtimeMessage) AsViewingEvent() (ViewingEvent, error) {
 	var body ViewingEvent
@@ -6271,6 +6327,8 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 	switch discriminator {
 	case "contact.deleted":
 		return t.AsContactDeletedEvent()
+	case "contact.presence":
+		return t.AsContactPresenceEvent()
 	case "contact.updated":
 		return t.AsContactUpdatedEvent()
 	case "conversation.created":

@@ -125,6 +125,18 @@ func (s *Server) memberPresence(ctx context.Context, workspaceID, memberID uuid.
 	})})
 }
 
+// announceContactPresence tells the workspace's members whether a contact is online now.
+func (s *Server) announceContactPresence(ctx context.Context, workspaceID, contactID uuid.UUID) {
+	online, last, err := s.contactPresence(context.WithoutCancel(ctx), s.st.Queries, workspaceID, contactID)
+	if err != nil {
+		s.log.WarnContext(ctx, "contact presence", "error", err)
+		return
+	}
+	s.signal(ctx, realtime.Event{Type: realtime.ContactPresence, WorkspaceID: workspaceID, Data: mustJSON(oas.ContactPresence{
+		ContactId: contactID, Online: online, LastSeenAt: last,
+	})})
+}
+
 type presenceSweepWorker struct {
 	river.WorkerDefaults[jobs.PresenceSweepArgs]
 	s *Server
@@ -134,9 +146,9 @@ func (w *presenceSweepWorker) Work(ctx context.Context, _ *river.Job[jobs.Presen
 	return w.s.AnnounceLapsedPresence(ctx)
 }
 
-// AnnounceLapsedPresence tells teammates about members whose last connection stopped being seen
-// without closing, as when a server process dies. The window covers two sweeps, so a late run
-// still finds them; a member may be announced twice.
+// AnnounceLapsedPresence tells teammates about members and contacts whose last connection stopped
+// being seen without closing, as when a server process dies. The window covers two sweeps, so a
+// late run still finds them; one may be announced twice.
 func (s *Server) AnnounceLapsedPresence(ctx context.Context) error {
 	ids, err := s.st.ListWorkspaceIDs(ctx)
 	if err != nil {
@@ -155,6 +167,15 @@ func (s *Server) AnnounceLapsedPresence(ctx context.Context) error {
 		}
 		for _, id := range members {
 			s.memberPresence(ctx, ws, id)
+		}
+		contacts, err := s.st.ListLapsedContacts(ctx, store.ListLapsedContactsParams{
+			WorkspaceID: ws, FreshAfter: fresh, LapsedAfter: fresh.Add(-2 * jobs.PresenceSweepInterval),
+		})
+		if err != nil {
+			return fmt.Errorf("workspace %s: %w", ws, err)
+		}
+		for _, id := range contacts {
+			s.announceContactPresence(ctx, ws, id)
 		}
 	}
 	return nil

@@ -965,6 +965,39 @@ func (q *Queries) ListConversationsWithPendingReplies(ctx context.Context, arg L
 	return items, nil
 }
 
+const listLapsedContacts = `-- name: ListLapsedContacts :many
+SELECT contact_id::uuid AS contact_id FROM realtime_connections
+WHERE workspace_id = $1 AND contact_id IS NOT NULL
+GROUP BY contact_id
+HAVING max(seen_at) <= $2::timestamptz AND max(seen_at) > $3::timestamptz
+`
+
+type ListLapsedContactsParams struct {
+	WorkspaceID uuid.UUID
+	FreshAfter  time.Time
+	LapsedAfter time.Time
+}
+
+func (q *Queries) ListLapsedContacts(ctx context.Context, arg ListLapsedContactsParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listLapsedContacts, arg.WorkspaceID, arg.FreshAfter, arg.LapsedAfter)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var contact_id uuid.UUID
+		if err := rows.Scan(&contact_id); err != nil {
+			return nil, err
+		}
+		items = append(items, contact_id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listLapsedMembers = `-- name: ListLapsedMembers :many
 SELECT member_id::uuid AS member_id FROM realtime_connections
 WHERE workspace_id = $1 AND member_id IS NOT NULL
