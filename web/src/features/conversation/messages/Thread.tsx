@@ -304,7 +304,7 @@ function FeedbackMessage({ m, ctx, name, feedback }: { m: Message; ctx: ThreadCo
       <MessageContent className="max-w-[88%] gap-1 phone:max-w-[94%]">
         <MessageHeader className={headerClass}>
           <Badge className={cn(tagClass, "rounded-md", categoryTag[category])}>{text.category[category]}</Badge>
-          <Trans>Feedback sent from the app</Trans>
+          {feedback.page_url ? <Trans>Feedback sent from a documentation page</Trans> : <Trans>Feedback sent from the app</Trans>}
         </MessageHeader>
         <Bubble variant="outline" className="max-w-full *:data-[slot=bubble-content]:bg-card">
           <BubbleContent className={cn("rounded-2xl rounded-es-md p-0", ctx.find?.current === m.id && hitRing)}>

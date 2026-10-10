@@ -74,6 +74,7 @@ function useItems(open: boolean): Item[] {
       },
     })
     go(t`Contacts`, "/contacts", keyLabel(SHORTCUTS.contacts))
+    go(t`Docs`, "/docs", keyLabel(SHORTCUTS.docs))
     go(t`Settings`, "/settings", [mod, ","])
     go(t`Profile`, "/settings/profile")
     go(t`Notifications`, "/settings/notifications")

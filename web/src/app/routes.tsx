@@ -5,6 +5,7 @@ import { Layout } from "@/app/Layout"
 import { SignInPage } from "@/features/auth/SignInPage"
 import { ContactPage } from "@/features/contact/ContactPage"
 import { ContactsHome } from "@/features/contact/ContactsColumn"
+import { DocsHome, DocsOverview, DocsPagePane } from "@/features/docs/DocsPages"
 import { ChatsPage } from "@/features/inbox/ChatsPage"
 import { ConsentPage } from "@/features/oauth/ConsentPage"
 import { ApiKeysPage } from "@/features/settings/api-keys/ApiKeysPage"
@@ -53,6 +54,9 @@ export function AppRoutes() {
             <Route path="members" element={<MembersReport />} />
             <Route path="*" element={<Navigate to="/reports" replace />} />
           </Route>
+          <Route path="docs" element={<DocsHome />} />
+          <Route path="docs/overview" element={<DocsOverview />} />
+          <Route path="docs/page" element={<DocsPagePane />} />
           <Route path="settings">
             <Route index element={<SettingsHome />} />
             <Route element={<SettingsPane />}>

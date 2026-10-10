@@ -1,5 +1,5 @@
 import { useLingui } from "@lingui/react/macro"
-import { AtSignIcon, BarChart3Icon, BookUserIcon, BotIcon, MessagesSquareIcon, SettingsIcon, UsersIcon } from "lucide-react"
+import { AtSignIcon, BarChart3Icon, BookOpenTextIcon, BookUserIcon, BotIcon, MessagesSquareIcon, SettingsIcon, UsersIcon } from "lucide-react"
 import { useLocation, useNavigate } from "react-router"
 
 import { isChats, sectionOf, type Section } from "@/app/shell"
@@ -28,6 +28,7 @@ function useEntries(): Entry[] {
     { key: "contacts", label: t`Contacts`, icon: BookUserIcon, shortcut: SHORTCUTS.contacts },
     { key: "team", label: t`Team`, icon: UsersIcon, shortcut: SHORTCUTS.team },
     { key: "reports", label: t`Reports`, icon: BarChart3Icon, shortcut: SHORTCUTS.reports },
+    { key: "docs", label: t`Docs`, icon: BookOpenTextIcon, shortcut: SHORTCUTS.docs },
     { key: "assistants", label: t`Assistants`, icon: BotIcon, shortcut: SHORTCUTS.assistants, badge: drafts, badgeLabel: t`Assistants, ${drafts} drafts waiting` },
   ]
 }

@@ -17,6 +17,7 @@ import { useCommandHandlers } from "@/features/conversation/commands"
 import { ReplyBox, type ReplyHandle } from "@/features/conversation/composer/ReplyBox"
 import { ConversationMenu } from "@/features/conversation/ConversationMenu"
 import { CategoryChip } from "@/features/conversation/Feedback"
+import { usePagePublishing } from "@/features/docs/PageContext"
 import { CloseButton, HandMenu, LabelsMenu, SnoozeMenu, type HeaderMenu } from "@/features/conversation/HeaderActions"
 import { History } from "@/features/conversation/History"
 import type { ThreadContext } from "@/features/conversation/messages/context"
@@ -175,6 +176,7 @@ function Loaded({ c, contact, channel, onBack, panel, inlinePanel, onPanel }: Pr
     onQuote: quote,
     onForward: forward,
   }
+  const pagePublishing = usePagePublishing(c, shown, !messages.hasNextPage)
   const chipLabels = labels.filter((l) => c.labels.includes(l.id))
   const assignee = c.assignee_id ? members.get(c.assignee_id) : undefined
 
@@ -285,6 +287,7 @@ function Loaded({ c, contact, channel, onBack, panel, inlinePanel, onPanel }: Pr
     [SHORTCUTS.find]: openFind,
     [SHORTCUTS.pin]: togglePin,
     [SHORTCUTS.unread]: markUnread,
+    [SHORTCUTS.publish]: pagePublishing.run,
   })
 
   const sep = <span aria-hidden>·</span>
@@ -398,9 +401,12 @@ function Loaded({ c, contact, channel, onBack, panel, inlinePanel, onPanel }: Pr
           />
         </div>
       </header>
-      {(chipLabels.length > 0 || (c.kind === "feedback" && c.feedback) || c.related_conversation_id || viewers.length > 0 || typingMate) && (
+      {(chipLabels.length > 0 || (c.kind === "feedback" && c.feedback) || pagePublishing.line || c.related_conversation_id || viewers.length > 0 || typingMate) && (
         <div className="flex shrink-0 flex-wrap items-center gap-x-1.5 gap-y-1 border-b bg-background px-4 py-1.5 text-caption text-faint" data-testid="header-details">
           {c.kind === "feedback" && c.feedback && <CategoryChip category={c.feedback.category} />}
+          {c.kind === "feedback" && c.feedback && pagePublishing.line && sep}
+          {pagePublishing.line}
+          {pagePublishing.line && chipLabels.length > 0 && sep}
           {chipLabels.map((l) => (
             <span key={l.id} className="inline-flex items-center gap-1 rounded-full border bg-card px-2 py-px text-caption text-muted-foreground">
               <Dot color={l.color} className="size-1.5" />
@@ -409,7 +415,7 @@ function Loaded({ c, contact, channel, onBack, panel, inlinePanel, onPanel }: Pr
           ))}
           {c.related_conversation_id && (
             <>
-              {(chipLabels.length > 0 || c.feedback) && sep}
+              {(chipLabels.length > 0 || c.feedback || pagePublishing.line) && sep}
               <RelatedLine id={c.related_conversation_id} hrefFor={(id) => `/conversations/${id}`} />
             </>
           )}
@@ -498,6 +504,7 @@ function Loaded({ c, contact, channel, onBack, panel, inlinePanel, onPanel }: Pr
           autoFocus={fine && revision === 0}
         />
       </Composer>
+      {pagePublishing.dialogs}
       {!inlinePanel && <ContactSheet contactId={c.contact_id} conversationId={c.id} open={sheet} onOpenChange={setSheet} />}
     </section>
   )

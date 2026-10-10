@@ -1246,6 +1246,37 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/conversations/{conversationId}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Publish a question and its answer to the page
+         * @description Publishes a `question` conversation to its documentation page as a question and an answer,
+         *     both as the member wrote them here (usually edited from the thread). The published answer
+         *     carries no name or address of the visitor; it is listed on the page by
+         *     `GET /client/v1/channels/{key}/page-answers`. The conversation must be a `question`
+         *     with at least one sent member reply and still be on a `chat` channel that allows the
+         *     page's origin (`409 not_publishable` otherwise); it publishes once
+         *     (`409 already_published`; edit the published answer instead).
+         *
+         *     A published answer is the member's text: retention and contact deletion leave it, and
+         *     deleting the conversation keeps it without `conversation_id`.
+         *
+         *     Member sessions only.
+         */
+        post: operations["publishConversation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/conversations/{conversationId}/messages": {
         parameters: {
             query?: never;
@@ -1672,6 +1703,145 @@ export interface paths {
          *     Scope: `canned_replies:write`.
          */
         patch: operations["updateCannedReply"];
+        trace?: never;
+    };
+    "/v1/page-answers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List published answers
+         * @description Published answers in the inboxes the caller can see, newest first.
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["listPageAnswers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/page-answers/{pageAnswerId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a published answer
+         * @description An answer in an inbox the caller cannot see answers `404`.
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["getPageAnswer"];
+        put?: never;
+        post?: never;
+        /**
+         * Unpublish an answer
+         * @description Removes it from the page. The conversation it came from stays and can be published again.
+         *     Members who can see the answer's inbox. Member sessions only.
+         */
+        delete: operations["deletePageAnswer"];
+        options?: never;
+        head?: never;
+        /**
+         * Edit a published answer
+         * @description Members who can see the answer's inbox. Member sessions only.
+         */
+        patch: operations["updatePageAnswer"];
+        trace?: never;
+    };
+    "/v1/docs/pages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Documentation pages with their ratings, feedback and questions
+         * @description The pages of the inboxes the caller can see that were rated in the window, have open
+         *     feedback or questions, or have published answers: `up` and `down` summed over the last
+         *     `days` days (today included, UTC), open (status `open`, not spam) feedback and question
+         *     conversations sent from the page, and published answers. A page is per inbox.
+         *
+         *     `sort` orders them; ties go to more ratings, then by page:
+         *     - `down` (default): most `down` first.
+         *     - `up`: most `up` first.
+         *     - `helpful`: highest share of `up` first, among pages with at least 5 ratings in the
+         *       window; pages with fewer follow, ordered the same way, so one `up` never tops the list.
+         *     - `activity`: most ratings plus open feedback and questions first.
+         *
+         *     `next_cursor` belongs to the `sort`, `days` and `inbox_id` it was returned for; a cursor of
+         *     another sort answers `400`.
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["listDocsPages"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/docs/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Documentation pages in total and per day
+         * @description Over the inboxes the caller can see (or `inbox_id`) and the last `days` days (today
+         *     included, UTC): ratings, feedback and questions sent from documentation pages (created in
+         *     the window, not spam, in any status) and answers published in the window, in total and
+         *     per day. Every day of the window is listed, oldest first, with zeros where nothing
+         *     happened. `rated_pages` counts pages (per inbox) with at least one rating in the window.
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["getDocsSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/docs/page": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * One documentation page
+         * @description A page's counts as in `GET /v1/docs/pages` (zero when nothing is known about it) and its
+         *     ratings per day over the window. Its feedback and questions are
+         *     `GET /v1/conversations?inbox_id=…&page=…` (with `kind=feedback` or `kind=question`), its
+         *     answers `GET /v1/page-answers?inbox_id=…&page=…`.
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["getDocsPage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/v1/usage": {
@@ -2238,6 +2408,65 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/client/v1/channels/{channel_key}/page-ratings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Rate a documentation page
+         * @description Counts one `up` or `down` for a documentation page on a `chat` channel's public key, without
+         *     a session. Nothing about the visitor is stored and no contact or conversation is created:
+         *     ratings are a per-page, per-day counter. The page is the URL without query and fragment;
+         *     its origin must be one of the channel's allowed origins (`400 page_origin`). `title` is
+         *     what the page shows as its title; the latest one is kept.
+         *
+         *     A visitor who changes their mind sends the new `rating` with the one they gave before as
+         *     `previous`: the previous count goes down by one (on the latest day that has one, within 90
+         *     days) and the new one up. The same `rating` as `previous` changes nothing.
+         *
+         *     Browsers must call from one of the channel's allowed origins (`403 origin_not_allowed`).
+         *     Requests are rate limited per IP address and per channel like session starts
+         *     (`429 rate_limited`). An `app` channel's key answers `404`.
+         */
+        post: operations["createPageRating"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/client/v1/channels/{channel_key}/page-answers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A documentation page's published answers
+         * @description The questions and answers members published to a page (`POST /v1/conversations/{id}/publish`)
+         *     in the channel's inbox, newest first, at most 100, without a session. They carry the
+         *     member's edited text only: never the visitor's name or address. The page is matched
+         *     without query and fragment, and its origin must be one of the channel's allowed origins
+         *     (`400 page_origin`). Answers may be cached for a minute (`Cache-Control`).
+         *
+         *     Browsers must call from one of the channel's allowed origins (`403 origin_not_allowed`).
+         *     Rate limited per IP address (`429 rate_limited`). An `app` channel's key answers `404`.
+         */
+        get: operations["listClientPageAnswers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/client/v1/conversations": {
         parameters: {
             query?: never;
@@ -2410,8 +2639,43 @@ export interface paths {
          *     10 `files` parts), with the same size and type rules as messages. `client_id` makes the
          *     request idempotent: the same `client_id` again answers `201` with the first conversation.
          *     Rate limited per IP address and per channel.
+         *
+         *     From a `chat` channel session (a documentation page's feedback form) it carries the page in
+         *     `page_url` and `page_title` and the visitor's rating of it in `rating`; `page_url`'s origin
+         *     must be one of the channel's allowed origins (`400 page_origin`), and replies are e-mailed
+         *     only with `allow_email`. `page_url` from an `app` channel session answers `400 page_origin`.
          */
         post: operations["createClientFeedback"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/client/v1/questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ask a question about a documentation page
+         * @description Starts a conversation of kind `question` on the session's `chat` channel with its first
+         *     message, for the page in `page_url` (without query and fragment; its origin must be one of
+         *     the channel's allowed origins, `400 page_origin`). Questions are private: nothing the
+         *     visitor writes is shown on the page unless a member publishes an edited answer. It is
+         *     answered like any other conversation and listed with the contact's conversations
+         *     (`kind: question`).
+         *
+         *     `email` is the address replies go to while the visitor is away, kept like
+         *     `PUT /client/v1/contact/email`. `client_id` makes the request idempotent: the same
+         *     `client_id` again answers `201` with the first conversation. `app` channel sessions get
+         *     `403 forbidden`. Rate limited per IP address and per channel.
+         */
+        post: operations["createClientQuestion"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4019,6 +4283,8 @@ export interface components {
             kind: components["schemas"]["ConversationKind"];
             /** @description `feedback` conversations only: category and what the app sent with it. */
             feedback?: components["schemas"]["Feedback"];
+            /** @description `question` conversations only: the page it was asked on. */
+            question?: components["schemas"]["PageQuestion"];
             /**
              * Format: uuid
              * @description The channel it started on; absent when unknown or removed.
@@ -5085,10 +5351,11 @@ export interface components {
             platforms?: components["schemas"]["AppPlatform"][];
         };
         /**
-         * @description `feedback` conversations carry `feedback` metadata; everything else is `conversation`.
+         * @description `feedback` conversations carry `feedback` metadata; `question` conversations were asked on a
+         *     documentation page and carry `question`; everything else is `conversation`.
          * @enum {string}
          */
-        ConversationKind: "conversation" | "feedback";
+        ConversationKind: "conversation" | "feedback" | "question";
         /** @enum {string} */
         FeedbackCategory: "bug" | "idea" | "praise" | "other";
         /** @description What a `feedback` conversation was sent with. Absent fields were not sent. */
@@ -5111,6 +5378,11 @@ export interface components {
             screen?: string;
             /** @description The app's own id for this installation. */
             installation_id?: string;
+            /** @description Feedback sent from a documentation page; the URL without query and fragment. */
+            page_url?: string;
+            page_title?: string;
+            /** @description The visitor's rating of the page the feedback follows. */
+            rating?: components["schemas"]["PageRating"];
         };
         FeedbackFields: {
             app_version?: string;
@@ -5123,7 +5395,17 @@ export interface components {
             installation_id?: string;
         };
         ClientFeedbackCreate: components["schemas"]["FeedbackFields"] & {
-            category: components["schemas"]["FeedbackCategory"];
+            /** @description `other` when absent. */
+            category?: components["schemas"]["FeedbackCategory"];
+            /**
+             * @description `chat` channels only: the documentation page the feedback is about, an absolute URL
+             *     whose origin is one of the channel's allowed origins (`400 page_origin`); query and
+             *     fragment are dropped.
+             */
+            page_url?: string;
+            page_title?: string;
+            /** @description The visitor's rating of the page, with `page_url`. */
+            rating?: components["schemas"]["PageRating"];
             subject?: string;
             /** @description The feedback text. Required unless files are attached. */
             body?: string;
@@ -5135,6 +5417,164 @@ export interface components {
         };
         ClientFeedbackCreateMultipart: components["schemas"]["ClientFeedbackCreate"] & {
             files?: string[];
+        };
+        /** @enum {string} */
+        PageRating: "up" | "down";
+        PageRatingCreate: {
+            /** @description The page's absolute `http` or `https` URL; query and fragment are dropped. */
+            page: string;
+            title?: string;
+            rating: components["schemas"]["PageRating"];
+            /** @description The visitor's earlier rating of this page, which this one replaces. */
+            previous?: components["schemas"]["PageRating"];
+        };
+        /** @description The documentation page a `question` conversation was asked on. */
+        PageQuestion: {
+            /** @description Without query and fragment. */
+            page_url: string;
+            page_title?: string;
+        };
+        ClientQuestionCreate: {
+            /** @description The page's absolute URL; query and fragment are dropped. */
+            page_url: string;
+            page_title?: string;
+            subject?: string;
+            /** @description The question. */
+            body: string;
+            /** @description The first message's `client_id`. */
+            client_id?: string;
+            email?: components["schemas"]["Email"];
+        };
+        /** @description A published question and answer, as the member wrote them. */
+        ClientPageAnswer: {
+            /** Format: uuid */
+            id: string;
+            question: string;
+            answer: string;
+            /** Format: date-time */
+            published_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        ClientPageAnswerList: {
+            items: components["schemas"]["ClientPageAnswer"][];
+        };
+        /** @description A question and answer published to a documentation page. */
+        PageAnswer: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /**
+             * Format: uuid
+             * @description The chat channel whose pages show it.
+             */
+            channel_id: string;
+            /** @description The page's URL without query and fragment. */
+            page: string;
+            /** @description The page's title when it was published; may be empty. */
+            title: string;
+            question: string;
+            answer: string;
+            /**
+             * Format: uuid
+             * @description The member who published it; absent once they are removed.
+             */
+            member_id?: string;
+            /**
+             * Format: uuid
+             * @description The question it was published from; absent once that conversation is deleted.
+             */
+            conversation_id?: string;
+            /** Format: date-time */
+            published_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        PageAnswerCreate: {
+            question: string;
+            answer: string;
+        };
+        PageAnswerUpdate: {
+            question?: string;
+            answer?: string;
+        };
+        PageAnswerPage: {
+            items: components["schemas"]["PageAnswer"][];
+            /** @description Absent on the last page. */
+            next_cursor?: string;
+        };
+        DocsPage: {
+            /** Format: uuid */
+            inbox_id: string;
+            /** @description The page's URL without query and fragment. */
+            page: string;
+            /** @description The latest title the page sent; empty when none. */
+            title: string;
+            /** Format: int64 */
+            up: number;
+            /** Format: int64 */
+            down: number;
+            /** Format: int64 */
+            open_feedback: number;
+            /** Format: int64 */
+            open_questions: number;
+            /** Format: int64 */
+            published_answers: number;
+        };
+        DocsPagePage: {
+            items: components["schemas"]["DocsPage"][];
+            /** @description Absent on the last page. */
+            next_cursor?: string;
+        };
+        /**
+         * @default down
+         * @enum {string}
+         */
+        DocsPageSort: "down" | "up" | "helpful" | "activity";
+        DocsSummary: {
+            totals: components["schemas"]["DocsTotals"];
+            /** @description Every day of the window, oldest first (UTC). */
+            days: components["schemas"]["DocsSummaryDay"][];
+        };
+        DocsTotals: {
+            /** Format: int64 */
+            up: number;
+            /** Format: int64 */
+            down: number;
+            /** Format: int64 */
+            rated_pages: number;
+            /** Format: int64 */
+            feedback: number;
+            /** Format: int64 */
+            questions: number;
+            /** Format: int64 */
+            published_answers: number;
+        };
+        DocsSummaryDay: {
+            /** Format: date */
+            day: string;
+            /** Format: int64 */
+            up: number;
+            /** Format: int64 */
+            down: number;
+            /** Format: int64 */
+            feedback: number;
+            /** Format: int64 */
+            questions: number;
+        };
+        DocsPageDay: {
+            /** Format: date */
+            day: string;
+            /** Format: int64 */
+            up: number;
+            /** Format: int64 */
+            down: number;
+        };
+        DocsPageDetail: {
+            page: components["schemas"]["DocsPage"];
+            /** @description Days of the window with ratings, oldest first (UTC). */
+            days: components["schemas"]["DocsPageDay"][];
         };
         TypingCreate: {
             /**
@@ -5293,6 +5733,8 @@ export interface components {
             kind: components["schemas"]["ConversationKind"];
             /** @description `feedback` conversations only. */
             feedback?: components["schemas"]["Feedback"];
+            /** @description `question` conversations only. */
+            question?: components["schemas"]["PageQuestion"];
             subject: string;
             status: components["schemas"]["ConversationStatus"];
             last_message?: components["schemas"]["ClientMessagePreview"];
@@ -5775,6 +6217,11 @@ export interface components {
         MessageId: string;
         LabelId: string;
         CannedReplyId: string;
+        PageAnswerId: string;
+        /** @description The chat channel's public key. */
+        ChannelKey: string;
+        /** @description The rating window in days, `7`, `30` or `90`; 30 by default. */
+        DocsDays: number;
         /** @description Full-text search (Postgres `simple` configuration, `websearch` syntax). */
         Search: string;
         /** @description The `next_cursor` of the previous page. */
@@ -7646,6 +8093,11 @@ export interface operations {
                 /** @description Only feedback of this category (implies `kind=feedback`). */
                 category?: components["schemas"]["FeedbackCategory"];
                 /**
+                 * @description Only feedback and questions sent from this documentation page (a URL; query and
+                 *     fragment are ignored).
+                 */
+                page?: string;
+                /**
                  * @description `true` lists only the conversations the calling member pinned, `false` only the others;
                  *     without it, both. Member sessions only (`400 validation_failed` for API keys).
                  */
@@ -7893,6 +8345,42 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Conversation"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    publishConversation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PageAnswerCreate"];
+            };
+        };
+        responses: {
+            /** @description The published answer. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PageAnswer"];
                 };
             };
             400: components["responses"]["Problem"];
@@ -8598,6 +9086,230 @@ export interface operations {
             409: components["responses"]["Problem"];
         };
     };
+    listPageAnswers: {
+        parameters: {
+            query?: {
+                inbox_id?: string;
+                /** @description Only this page's answers (a URL; query and fragment are ignored). */
+                page?: string;
+                /** @description Only the answer published from this conversation. */
+                conversation_id?: string;
+                /** @description The `next_cursor` of the previous page. */
+                cursor?: components["parameters"]["Cursor"];
+                /** @description Page size, 1 to 100; 25 by default. */
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of published answers. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PageAnswerPage"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    getPageAnswer: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                pageAnswerId: components["parameters"]["PageAnswerId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The published answer. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PageAnswer"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    deletePageAnswer: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                pageAnswerId: components["parameters"]["PageAnswerId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Unpublished. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    updatePageAnswer: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                pageAnswerId: components["parameters"]["PageAnswerId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PageAnswerUpdate"];
+            };
+        };
+        responses: {
+            /** @description The edited answer. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PageAnswer"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    listDocsPages: {
+        parameters: {
+            query?: {
+                inbox_id?: string;
+                /** @description The rating window in days, `7`, `30` or `90`; 30 by default. */
+                days?: components["parameters"]["DocsDays"];
+                sort?: components["schemas"]["DocsPageSort"];
+                /** @description The `next_cursor` of the previous page. */
+                cursor?: components["parameters"]["Cursor"];
+                /** @description Page size, 1 to 100; 25 by default. */
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of documentation pages. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocsPagePage"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    getDocsSummary: {
+        parameters: {
+            query?: {
+                inbox_id?: string;
+                /** @description The rating window in days, `7`, `30` or `90`; 30 by default. */
+                days?: components["parameters"]["DocsDays"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The totals and the days. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocsSummary"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    getDocsPage: {
+        parameters: {
+            query: {
+                inbox_id: string;
+                /** @description The page's URL; query and fragment are ignored. */
+                page: string;
+                /** @description The rating window in days, `7`, `30` or `90`; 30 by default. */
+                days?: components["parameters"]["DocsDays"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The page. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocsPageDetail"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     getUsage: {
         parameters: {
             query?: never;
@@ -9289,6 +10001,67 @@ export interface operations {
             429: components["responses"]["Problem"];
         };
     };
+    createPageRating: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The chat channel's public key. */
+                channel_key: components["parameters"]["ChannelKey"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PageRatingCreate"];
+            };
+        };
+        responses: {
+            /** @description Counted. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
+        };
+    };
+    listClientPageAnswers: {
+        parameters: {
+            query: {
+                /** @description The page's URL. */
+                page: string;
+            };
+            header?: never;
+            path: {
+                /** @description The chat channel's public key. */
+                channel_key: components["parameters"]["ChannelKey"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The page's published answers. */
+            200: {
+                headers: {
+                    /** @description `public, max-age=60`. */
+                    "Cache-Control"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientPageAnswerList"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
+        };
+    };
     listClientConversations: {
         parameters: {
             query?: {
@@ -9581,6 +10354,37 @@ export interface operations {
             403: components["responses"]["Problem"];
             413: components["responses"]["Problem"];
             415: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
+        };
+    };
+    createClientQuestion: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClientQuestionCreate"];
+            };
+        };
+        responses: {
+            /** @description The question conversation and its first message. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientConversationCreated"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
             429: components["responses"]["Problem"];
         };
     };

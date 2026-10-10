@@ -15,9 +15,9 @@ export function isChats(pathname: string) {
   return pathname === "/" || pathname.startsWith("/conversations/")
 }
 
-export type Section = "conversations" | "mentions" | "assistants" | "contacts" | "team" | "reports" | "settings"
+export type Section = "conversations" | "mentions" | "assistants" | "contacts" | "team" | "reports" | "docs" | "settings"
 
-const routed = ["mentions", "contacts", "team", "reports", "settings"] as const
+const routed = ["mentions", "contacts", "team", "reports", "docs", "settings"] as const
 
 export function sectionOf(pathname: string, view: Section): Section {
   const routedSection = routed.find((s) => pathname === `/${s}` || pathname.startsWith(`/${s}/`))

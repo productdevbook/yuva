@@ -103,6 +103,10 @@ msgstr "{actor} konuşmayı yeniden açtı"
 msgid "{actor} set the status to {status}"
 msgstr "{actor} durumu {status} olarak değiştirdi"
 
+#: src/features/docs/DocsColumn.tsx
+msgid "{answers} published answers"
+msgstr "{answers} yayımlanmış yanıt"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, gönderen: {by}"
@@ -131,9 +135,25 @@ msgstr "{count} olay"
 msgid "{count} settings"
 msgstr "{count} ayar"
 
+#: src/features/docs/DocsColumn.tsx
+msgid "{d, plural, one {# day} other {# days}}"
+msgstr "{d, plural, one {# gün} other {# gün}}"
+
+#: src/features/docs/DocsPages.tsx
+msgid "{days, plural, one {The last day, over the inboxes you can see.} other {The last # days, over the inboxes you can see.}}"
+msgstr "{days, plural, one {Görebildiğiniz gelen kutularında son bir gün.} other {Görebildiğiniz gelen kutularında son # gün.}}"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{days, plural, one {Waiting for # day} other {Waiting for # days}}"
 msgstr "{days, plural, one {# gündür bekliyor} other {# gündür bekliyor}}"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "{down} not helpful"
+msgstr "{down} yararlı değil"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "{feedback} open feedback"
+msgstr "{feedback} açık geri bildirim"
 
 #: src/features/conversation/actions.ts
 msgid "{first} comes back {when}"
@@ -234,6 +254,10 @@ msgstr "{open, plural, one {# açık} other {# açık}}"
 msgid "{pct} satisfied"
 msgstr "{pct} memnun"
 
+#: src/features/docs/DocsColumn.tsx
+msgid "{questions} open questions"
+msgstr "{questions} açık soru"
+
 #: src/app/TeamMenu.tsx
 msgid "{replies, plural, one {# reply} other {# replies}}"
 msgstr "{replies, plural, one {# yanıt} other {# yanıt}}"
@@ -241,6 +265,10 @@ msgstr "{replies, plural, one {# yanıt} other {# yanıt}}"
 #: src/app/TeamMenu.tsx
 msgid "{satisfied} satisfied"
 msgstr "{satisfied} memnun"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "{up} helpful"
+msgstr "{up} yararlı"
 
 #: src/features/inbox/SidePanels.tsx
 msgid "{who} in {contact}"
@@ -434,6 +462,10 @@ msgstr "Not ekle"
 msgid "Add the chat to your site"
 msgstr "Sohbeti sitenize ekleyin"
 
+#: src/features/docs/DocsColumn.tsx
+msgid "Add the page feedback and questions elements to your documentation site, on one of the inbox's chat channels. Ratings, feedback and questions then show up here per page."
+msgstr "Sayfa geri bildirimi ve soru öğelerini, gelen kutusunun sohbet kanallarından biriyle dokümantasyon sitenize ekleyin. Değerlendirmeler, geri bildirimler ve sorular burada sayfa sayfa görünür."
+
 #: src/features/setup/InstallStep.tsx
 msgid "Add the SDK and create one client"
 msgstr "SDK'yı ekleyin ve bir istemci oluşturun"
@@ -462,6 +494,10 @@ msgstr "{created} eklendi, son teslim {delivered}"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Added {created}, last used {used}"
 msgstr "Eklenme: {created}, son kullanım: {used}"
+
+#: src/features/conversation/Feedback.tsx
+msgid "Address"
+msgstr "Adres"
 
 #: src/components/common/text.ts
 msgid "Admin"
@@ -580,9 +616,17 @@ msgstr "başka bir konuşma"
 msgid "another inbox"
 msgstr "başka bir gelen kutusu"
 
+#: src/features/docs/AnswerDialog.tsx
+msgid "Answer"
+msgstr "Yanıt"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Answering"
 msgstr "Yanıtlarken"
+
+#: src/features/docs/DocsPages.tsx
+msgid "answers published"
+msgstr "yayımlanan yanıt"
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Any client that speaks MCP over HTTP"
@@ -595,6 +639,10 @@ msgstr "HTTP üzerinden MCP konuşan her istemci. Sizin adınıza, yalnızca izi
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
 msgstr "Sitenizdeki herkes yazabilir. Yalnızca oturum açmış kullanıcılar yazacaksa kapatın."
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "Anyone who opens the page can read this question and answer. Remove names, e-mail addresses, order numbers and anything else personal."
+msgstr "Sayfayı açan herkes bu soruyu ve yanıtı okuyabilir. Adları, e-posta adreslerini, sipariş numaralarını ve kişisel olan her şeyi çıkarın."
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Anything using this key stops working at once."
@@ -653,6 +701,10 @@ msgstr "Bitince değerlendirme iste"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Ask for an e-mail address when offline"
 msgstr "Çevrimdışıyken e-posta adresi iste"
+
+#: src/features/docs/PageContext.tsx
+msgid "Asked on <0/>"
+msgstr "<0/> sayfasında soruldu"
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "Assign (A)"
@@ -807,6 +859,10 @@ msgstr "Hata"
 msgid "Business hours"
 msgstr "Çalışma saatleri"
 
+#: src/features/conversation/Feedback.tsx
+msgid "By e-mail"
+msgstr "E-postayla"
+
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
@@ -820,6 +876,7 @@ msgstr "Her abone için ayrı bülten planlayabilir miyim?"
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/docs/AnswerDialog.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Cancel"
 msgstr "Vazgeç"
@@ -1073,6 +1130,10 @@ msgstr "Kişiler"
 #: src/features/setup/NameStep.tsx
 msgid "Continue"
 msgstr "Devam"
+
+#: src/features/docs/DocsPages.tsx
+msgid "Conversation"
+msgstr "Konuşma"
 
 #: src/features/conversation/actions.ts
 msgid "Conversation closed"
@@ -1360,6 +1421,19 @@ msgstr "İkiniz birden yazmayın."
 msgid "Do this later"
 msgstr "Sonra yaparım"
 
+#: src/app/Palette.tsx
+#: src/app/Rail.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/docs/DocsColumn.tsx
+#: src/features/docs/DocsPages.tsx
+msgid "Docs"
+msgstr "Dokümanlar"
+
+#: src/features/docs/DocsColumn.tsx
+#: src/features/docs/DocsPages.tsx
+msgid "Documentation pages"
+msgstr "Dokümantasyon sayfaları"
+
 #: src/features/contact/ConversationMedia.tsx
 msgid "Documents"
 msgstr "Belgeler"
@@ -1454,6 +1528,8 @@ msgid "Each new e-mail starts a conversation; replies continue it."
 msgstr "Her yeni e-posta bir konuşma başlatır; yanıtlar aynı konuşmada sürer."
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/docs/AnswerDialog.tsx
+#: src/features/docs/PageContext.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -1480,6 +1556,18 @@ msgstr "Uç noktayı düzenle"
 #: src/features/settings/labels/LabelDialog.tsx
 msgid "Edit label"
 msgstr "Etiketi düzenle"
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "Edit the published answer"
+msgstr "Yayımlanan yanıtı düzenle"
+
+#: src/features/docs/PageContext.tsx
+msgid "Edit the published answer ({key})"
+msgstr "Yayımlanan yanıtı düzenle ({key})"
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "Edited {edited}"
+msgstr "Düzenlendi: {edited}"
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Embed snippet"
@@ -1596,9 +1684,29 @@ msgstr "Başarısız"
 msgid "Failing"
 msgstr "Başarısız oluyor"
 
+#: src/features/docs/DocsPages.tsx
+msgid "feedback"
+msgstr "geri bildirim"
+
+#: src/features/docs/DocsPages.tsx
+msgid "Feedback"
+msgstr "Geri bildirim"
+
+#: src/features/docs/DocsPages.tsx
+msgid "Feedback and questions from your documentation"
+msgstr "Dokümantasyonunuzdan gelen geri bildirimler ve sorular"
+
+#: src/features/docs/DocsPages.tsx
+msgid "Feedback and questions per day"
+msgstr "Günlük geri bildirim ve sorular"
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "Geri bildirim geldi"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Feedback sent from a documentation page"
+msgstr "Bir dokümantasyon sayfasından gönderilen geri bildirim"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Feedback sent from the app"
@@ -1761,6 +1869,20 @@ msgstr "Yardım ve geri bildirim"
 msgid "Help and feedback inside your iOS or Android app"
 msgstr "iOS ya da Android uygulamanızın içinde yardım ve geri bildirim"
 
+#: src/features/docs/DocsPages.tsx
+msgid "helpful"
+msgstr "yararlı"
+
+#: src/features/conversation/Feedback.tsx
+#: src/features/docs/DocsPages.tsx
+#: src/features/docs/PageContext.tsx
+msgid "Helpful"
+msgstr "Yararlı"
+
+#: src/features/docs/DocsPages.tsx
+msgid "helpful share"
+msgstr "yararlı oranı"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Hi! Ask us anything."
 msgstr "Merhaba! Bize her şeyi sorabilirsiniz."
@@ -1786,9 +1908,17 @@ msgstr "Önizlemeyi gizle"
 msgid "High"
 msgstr "Yüksek"
 
+#: src/features/docs/DocsColumn.tsx
+msgid "Highest share of “helpful” first, among pages with at least 5 ratings"
+msgstr "En az 5 değerlendirmesi olan sayfalar arasında “yararlı” oranı en yüksek olanlar önce"
+
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "How HTML e-mails open. You can still switch each message."
 msgstr "HTML e-postaların nasıl açılacağı. Her iletiyi yine de ayrı ayrı değiştirebilirsiniz."
+
+#: src/features/docs/DocsColumn.tsx
+msgid "How to add them"
+msgstr "Nasıl eklenir"
 
 #: src/components/common/SecretDialog.tsx
 msgid "I saved it"
@@ -1920,6 +2050,10 @@ msgstr "Notlarımı dışa aktarmanın bir yolu var mı?"
 #: src/features/oauth/ConsentPage.tsx
 msgid "It also asked for access your role here cannot give:"
 msgstr "Rolünüzün burada veremeyeceği şu izinleri de istedi:"
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "It disappears from the page. The conversation stays and can be published again."
+msgstr "Sayfadan kalkar. Konuşma kalır ve yeniden yayımlanabilir."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It goes into <0>~/.codex/config.toml</0>, which the Codex CLI and IDE extension share."
@@ -2100,6 +2234,8 @@ msgstr "Görselleri yükle"
 #: src/features/contact/ContactPage.tsx
 #: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/docs/DocsColumn.tsx
+#: src/features/docs/DocsPages.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/team/MemberPage.tsx
 msgid "Load more"
@@ -2290,6 +2426,34 @@ msgstr "Diğer işlemler"
 #: src/features/contact/MergePreview.tsx
 msgid "More than {count} conversations"
 msgstr "{count} konuşmadan fazla"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "Most “helpful” ratings first"
+msgstr "En çok “yararlı” değerlendirmesi alanlar önce"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "Most “not helpful” ratings first"
+msgstr "En çok “yararlı değil” değerlendirmesi alanlar önce"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "Most active"
+msgstr "En hareketli"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "Most disliked"
+msgstr "En az beğenilen"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "Most helpful"
+msgstr "En yararlı"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "Most liked"
+msgstr "En çok beğenilen"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "Most ratings, open feedback and questions first"
+msgstr "En çok değerlendirme, açık geri bildirim ve soru alanlar önce"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the list"
@@ -2500,6 +2664,10 @@ msgstr "Henüz konuşma yok."
 msgid "No drafts are waiting. Replies an assistant, a bot or a teammate drafts show up here until someone sends or discards them."
 msgstr "Bekleyen taslak yok. Bir asistanın, botun ya da ekip arkadaşının yazdığı yanıt taslakları, biri gönderene ya da silene kadar burada görünür."
 
+#: src/features/conversation/Feedback.tsx
+msgid "No e-mail address given"
+msgstr "E-posta adresi verilmedi"
+
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "No emoji found."
 msgstr "Emoji bulunamadı."
@@ -2507,6 +2675,10 @@ msgstr "Emoji bulunamadı."
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "No endpoints yet."
 msgstr "Henüz uç nokta yok."
+
+#: src/features/docs/DocsPages.tsx
+msgid "No feedback from this page."
+msgstr "Bu sayfadan geri bildirim yok."
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "No labels yet"
@@ -2537,9 +2709,21 @@ msgstr "Henüz kimse bir notta sizden bahsetmedi. Bir ekip arkadaşı @ ve adın
 msgid "No other contact matches."
 msgstr "Eşleşen başka kişi yok."
 
+#: src/features/docs/DocsColumn.tsx
+msgid "No pages yet"
+msgstr "Henüz sayfa yok"
+
 #: src/features/settings/members/Invites.tsx
 msgid "No pending invites."
 msgstr "Bekleyen davet yok."
+
+#: src/features/docs/DocsPages.tsx
+msgid "No questions from this page."
+msgstr "Bu sayfadan soru yok."
+
+#: src/features/docs/DocsPages.tsx
+msgid "No ratings in this window."
+msgstr "Bu dönemde değerlendirme yok."
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "No ratings today"
@@ -2617,6 +2801,20 @@ msgstr "Henüz bağlı değil. Oturum açmayı bitirdiğinizde bu sayfa güncell
 msgid "Not delivered"
 msgstr "Teslim edilemedi"
 
+#: src/features/docs/DocsPages.tsx
+msgid "not helpful"
+msgstr "yararlı değil"
+
+#: src/features/conversation/Feedback.tsx
+#: src/features/docs/DocsPages.tsx
+#: src/features/docs/PageContext.tsx
+msgid "Not helpful"
+msgstr "Yararlı değil"
+
+#: src/features/docs/DocsPages.tsx
+msgid "not helpful share"
+msgstr "yararlı değil oranı"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Not shown"
 msgstr "Gösterilmez"
@@ -2665,6 +2863,10 @@ msgstr "Ertelenmiş bir şey yok."
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing matches your search here."
 msgstr "Burada aramana uyan bir şey yok."
+
+#: src/features/docs/DocsPages.tsx
+msgid "Nothing published yet. Open a question you answered and publish it to the page."
+msgstr "Henüz yayımlanan bir şey yok. Yanıtladığınız bir soruyu açıp sayfaya yayımlayın."
 
 #: src/app/Palette.tsx
 #: src/features/settings/notifications/NotificationsPage.tsx
@@ -2819,9 +3021,17 @@ msgstr "Açık konuşmalar"
 msgid "Open conversations assigned"
 msgstr "Atanmış açık konuşmalar"
 
+#: src/features/docs/DocsPages.tsx
+msgid "open feedback"
+msgstr "açık geri bildirim"
+
 #: src/features/contact/ContactSheet.tsx
 msgid "Open page"
 msgstr "Sayfayı aç"
+
+#: src/features/docs/DocsPages.tsx
+msgid "open questions"
+msgstr "açık soru"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/setup/WaitStep.tsx
@@ -2889,6 +3099,10 @@ msgstr "Başka bir MCP istemcisi"
 msgid "Outside them the inbox counts as closed"
 msgstr "Mesai dışında kapalı sayılır"
 
+#: src/features/docs/DocsColumn.tsx
+msgid "Overview"
+msgstr "Genel bakış"
+
 #: src/components/common/text.ts
 msgid "Owner"
 msgstr "Sahip"
@@ -2900,6 +3114,10 @@ msgstr "Sahipler ve yöneticiler tüm gelen kutularını görür; temsilciler ya
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Owners and admins see every inbox; members see the inboxes they are given."
 msgstr "Sahipler ve yöneticiler her gelen kutusunu görür; üyeler sadece kendilerine verilenleri."
+
+#: src/features/conversation/Feedback.tsx
+msgid "Page"
+msgstr "Sayfa"
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Pages that embed the old key can no longer start chats until you update the snippet. Visitors already chatting keep their session."
@@ -3088,6 +3306,50 @@ msgstr "Profil"
 msgid "Public key"
 msgstr "Genel anahtar"
 
+#: src/features/docs/AnswerDialog.tsx
+msgid "Publish"
+msgstr "Yayımla"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Publish a question to its page, or edit the published answer"
+msgstr "Bir soruyu sayfasında yayımla ya da yayımlanan yanıtı düzenle"
+
+#: src/features/docs/PageContext.tsx
+msgid "Publish to page"
+msgstr "Sayfada yayımla"
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "Publish to the page"
+msgstr "Sayfada yayımla"
+
+#: src/features/docs/PageContext.tsx
+msgid "Publish to the page ({key})"
+msgstr "Sayfada yayımla ({key})"
+
+#: src/features/docs/PageContext.tsx
+msgid "Published"
+msgstr "Yayımlandı"
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "Published {published}"
+msgstr "Yayımlandı: {published}"
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "Published answer saved"
+msgstr "Yayımlanan yanıt kaydedildi"
+
+#: src/features/docs/DocsPages.tsx
+msgid "published answers"
+msgstr "yayımlanmış yanıt"
+
+#: src/features/docs/DocsPages.tsx
+msgid "Published answers"
+msgstr "Yayımlanan yanıtlar"
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "Published to the page"
+msgstr "Sayfada yayımlandı"
+
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Push"
 msgstr "Anlık"
@@ -3113,6 +3375,18 @@ msgstr "Anlık bildirim: {label}"
 msgid "Put the SDK's conversations view behind a Help button in your app, then send a message from it."
 msgstr "SDK'nın konuşmalar ekranını uygulamanızda bir Yardım düğmesine bağlayın, sonra oradan bir mesaj gönderin."
 
+#: src/features/docs/AnswerDialog.tsx
+msgid "Question"
+msgstr "Soru"
+
+#: src/features/docs/DocsPages.tsx
+msgid "questions"
+msgstr "soru"
+
+#: src/features/docs/DocsPages.tsx
+msgid "Questions"
+msgstr "Sorular"
+
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "Queued. The new attempt shows up below in a moment."
 msgstr "Sıraya alındı. Yeni deneme birazdan aşağıda görünür."
@@ -3133,10 +3407,22 @@ msgstr "iyi puan"
 msgid "Rated good"
 msgstr "İyi değerlendirdi"
 
+#: src/features/conversation/Feedback.tsx
+msgid "Rating"
+msgstr "Değerlendirme"
+
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 msgid "Ratings"
 msgstr "Değerlendirmeler"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "Ratings over"
+msgstr "Değerlendirme dönemi"
+
+#: src/features/docs/DocsPages.tsx
+msgid "Ratings per day"
+msgstr "Günlük değerlendirmeler"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Read"
@@ -3290,6 +3576,10 @@ msgstr "bugün yanıt"
 msgid "Reply"
 msgstr "Yanıt"
 
+#: src/features/docs/PageContext.tsx
+msgid "reply first to publish it"
+msgstr "yayımlamak için önce yanıtlayın"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Reply time"
 msgstr "Yanıt süresi"
@@ -3401,6 +3691,7 @@ msgstr "memnun · 👍 {good} 👎 {bad}"
 msgid "Saturday"
 msgstr "Cumartesi"
 
+#: src/features/docs/AnswerDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ChannelDialog.tsx
@@ -3658,6 +3949,10 @@ msgstr "Kurulum kılavuzu"
 msgid "Setup steps"
 msgstr "Kurulum adımları"
 
+#: src/features/docs/DocsColumn.tsx
+msgid "Share of not helpful"
+msgstr "Yararlı değil oranı"
+
 #: src/features/settings/canned/CannedReplyDialog.tsx
 msgid "Shortcut"
 msgstr "Kısayol"
@@ -3721,6 +4016,10 @@ msgstr "Sohbet penceresinde görünür"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 msgid "Shown on its messages. The key's name when empty."
 msgstr "Mesajlarında görünür. Boşsa anahtarın adı kullanılır."
+
+#: src/features/docs/DocsPages.tsx
+msgid "Shown on the page by the questions element, newest first, without the visitor's name or address."
+msgstr "Sorular öğesi bunları sayfada en yeniden başlayarak, ziyaretçinin adı ve adresi olmadan gösterir."
 
 #: src/features/settings/profile/ProfileForm.tsx
 msgid "Shown to your team and to contacts"
@@ -3813,6 +4112,10 @@ msgstr "Ekibin bilmesi gereken bir şey…"
 #: src/components/common/text.ts
 msgid "Something went wrong on the server. Try again."
 msgstr "Sunucuda bir sorun oluştu. Yeniden deneyin."
+
+#: src/features/docs/DocsColumn.tsx
+msgid "Sort"
+msgstr "Sırala"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Sort conversations by topic. Each label also gets its own view in the sidebar."
@@ -4148,6 +4451,10 @@ msgstr "Bu kişi kendi değerini korur"
 msgid "This conversation"
 msgstr "Bu konuşma"
 
+#: src/components/common/text.ts
+msgid "This conversation is already published. Edit the published answer instead."
+msgstr "Bu konuşma zaten yayımlandı. Bunun yerine yayımlanan yanıtı düzenleyin."
+
 #: src/features/conversation/ChatView.tsx
 msgid "This conversation is not available"
 msgstr "Bu konuşmaya ulaşılamıyor"
@@ -4191,6 +4498,10 @@ msgstr "Bu üye artık çalışma alanında değil."
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
 msgstr "Bu ay"
+
+#: src/components/common/text.ts
+msgid "This question cannot be published. It needs a reply from a member, and its chat channel must still allow the page's site."
+msgstr "Bu soru yayımlanamaz. Bir ekip üyesinin yanıtı gerekir ve sohbet kanalı sayfanın sitesine hâlâ izin vermelidir."
 
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request expired or was already used. Start connecting again from the app."
@@ -4365,6 +4676,19 @@ msgstr "Sabitlemeyi kaldır"
 msgid "Unpinned"
 msgstr "Sabitleme kaldırıldı"
 
+#: src/features/docs/AnswerDialog.tsx
+#: src/features/docs/PageContext.tsx
+msgid "Unpublish"
+msgstr "Yayından kaldır"
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "Unpublish this answer?"
+msgstr "Bu yanıt yayından kaldırılsın mı?"
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "Unpublished"
+msgstr "Yayından kaldırıldı"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Unread"
 msgstr "Okunmamış"
@@ -4439,6 +4763,7 @@ msgid "Verify every request before trusting it: the <0>webhook-signature</0> hea
 msgstr "Her isteğe güvenmeden önce doğrulayın: <0>webhook-signature</0> başlığı <1>Standard Webhooks</1> belirtimine uyar, bu yüzden onun kütüphanelerinden herhangi biri uç noktanın anahtarıyla imzayı denetleyebilir. Go arka uçları Yuva deposundaki <2>sdk/go/webhook</2> paketini kullanabilir."
 
 #: src/features/contact/ContactsColumn.tsx
+#: src/features/docs/DocsPages.tsx
 msgid "Visitor"
 msgstr "Ziyaretçi"
 

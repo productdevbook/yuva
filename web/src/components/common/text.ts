@@ -131,6 +131,9 @@ export function useErrorText() {
       return t`The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first.`
     if (err.code === "email_no_sender")
       return t`The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings.`
+    if (err.code === "not_publishable")
+      return t`This question cannot be published. It needs a reply from a member, and its chat channel must still allow the page's site.`
+    if (err.code === "already_published") return t`This conversation is already published. Edit the published answer instead.`
     if (err.code === "attachment_type_mismatch") return t`A file's content does not match its type. Check the file and try again.`
     switch (err.status) {
       case 400:

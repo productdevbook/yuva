@@ -1,8 +1,12 @@
-import type { ConversationQuery, DraftAuthorKind } from "@/lib/api"
+import type { ConversationQuery, DocsPageSort, DraftAuthorKind } from "@/lib/api"
 
 export type ConversationFilters = Omit<ConversationQuery, "cursor" | "limit">
 
 export type DraftFilters = { inbox_id?: string; author?: DraftAuthorKind }
+
+export type DocsDays = 7 | 30 | 90
+
+export type PageAnswerFilters = { inbox_id?: string; page?: string; conversation_id?: string }
 
 export const keys = {
   workspace: (ws: string) => ["ws", ws, "workspace"] as const,
@@ -40,4 +44,9 @@ export const keys = {
   mentions: (ws: string) => ["ws", ws, "mentions"] as const,
   draftLists: (ws: string) => ["ws", ws, "drafts"] as const,
   drafts: (ws: string, f: DraftFilters) => ["ws", ws, "drafts", f] as const,
+  docs: (ws: string) => ["ws", ws, "docs"] as const,
+  docsPages: (ws: string, inbox: string, days: DocsDays, sort: DocsPageSort) => ["ws", ws, "docs", "pages", inbox, days, sort] as const,
+  docsSummary: (ws: string, inbox: string, days: DocsDays) => ["ws", ws, "docs", "summary", inbox, days] as const,
+  docsPage: (ws: string, inbox: string, page: string, days: DocsDays) => ["ws", ws, "docs", "page", inbox, page, days] as const,
+  pageAnswers: (ws: string, f: PageAnswerFilters) => ["ws", ws, "docs", "answers", f] as const,
 }

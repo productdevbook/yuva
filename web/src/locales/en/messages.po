@@ -103,6 +103,10 @@ msgstr "{actor} reopened the conversation"
 msgid "{actor} set the status to {status}"
 msgstr "{actor} set the status to {status}"
 
+#: src/features/docs/DocsColumn.tsx
+msgid "{answers} published answers"
+msgstr "{answers} published answers"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, sent by {by}"
@@ -131,9 +135,25 @@ msgstr "{count} events"
 msgid "{count} settings"
 msgstr "{count} settings"
 
+#: src/features/docs/DocsColumn.tsx
+msgid "{d, plural, one {# day} other {# days}}"
+msgstr "{d, plural, one {# day} other {# days}}"
+
+#: src/features/docs/DocsPages.tsx
+msgid "{days, plural, one {The last day, over the inboxes you can see.} other {The last # days, over the inboxes you can see.}}"
+msgstr "{days, plural, one {The last day, over the inboxes you can see.} other {The last # days, over the inboxes you can see.}}"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{days, plural, one {Waiting for # day} other {Waiting for # days}}"
 msgstr "{days, plural, one {Waiting for # day} other {Waiting for # days}}"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "{down} not helpful"
+msgstr "{down} not helpful"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "{feedback} open feedback"
+msgstr "{feedback} open feedback"
 
 #: src/features/conversation/actions.ts
 msgid "{first} comes back {when}"
@@ -234,6 +254,10 @@ msgstr "{open, plural, one {# open} other {# open}}"
 msgid "{pct} satisfied"
 msgstr "{pct} satisfied"
 
+#: src/features/docs/DocsColumn.tsx
+msgid "{questions} open questions"
+msgstr "{questions} open questions"
+
 #: src/app/TeamMenu.tsx
 msgid "{replies, plural, one {# reply} other {# replies}}"
 msgstr "{replies, plural, one {# reply} other {# replies}}"
@@ -241,6 +265,10 @@ msgstr "{replies, plural, one {# reply} other {# replies}}"
 #: src/app/TeamMenu.tsx
 msgid "{satisfied} satisfied"
 msgstr "{satisfied} satisfied"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "{up} helpful"
+msgstr "{up} helpful"
 
 #: src/features/inbox/SidePanels.tsx
 msgid "{who} in {contact}"
@@ -434,6 +462,10 @@ msgstr "Add note"
 msgid "Add the chat to your site"
 msgstr "Add the chat to your site"
 
+#: src/features/docs/DocsColumn.tsx
+msgid "Add the page feedback and questions elements to your documentation site, on one of the inbox's chat channels. Ratings, feedback and questions then show up here per page."
+msgstr "Add the page feedback and questions elements to your documentation site, on one of the inbox's chat channels. Ratings, feedback and questions then show up here per page."
+
 #: src/features/setup/InstallStep.tsx
 msgid "Add the SDK and create one client"
 msgstr "Add the SDK and create one client"
@@ -462,6 +494,10 @@ msgstr "Added {created}, last delivered {delivered}"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Added {created}, last used {used}"
 msgstr "Added {created}, last used {used}"
+
+#: src/features/conversation/Feedback.tsx
+msgid "Address"
+msgstr "Address"
 
 #: src/components/common/text.ts
 msgid "Admin"
@@ -580,9 +616,17 @@ msgstr "another conversation"
 msgid "another inbox"
 msgstr "another inbox"
 
+#: src/features/docs/AnswerDialog.tsx
+msgid "Answer"
+msgstr "Answer"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Answering"
 msgstr "Answering"
+
+#: src/features/docs/DocsPages.tsx
+msgid "answers published"
+msgstr "answers published"
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Any client that speaks MCP over HTTP"
@@ -595,6 +639,10 @@ msgstr "Any client that speaks MCP over HTTP. It acts as you, with the access yo
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
 msgstr "Anyone on your site can write. Turn it off when only signed-in users may chat."
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "Anyone who opens the page can read this question and answer. Remove names, e-mail addresses, order numbers and anything else personal."
+msgstr "Anyone who opens the page can read this question and answer. Remove names, e-mail addresses, order numbers and anything else personal."
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Anything using this key stops working at once."
@@ -653,6 +701,10 @@ msgstr "Ask for a rating after closing"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Ask for an e-mail address when offline"
 msgstr "Ask for an e-mail address when offline"
+
+#: src/features/docs/PageContext.tsx
+msgid "Asked on <0/>"
+msgstr "Asked on <0/>"
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "Assign (A)"
@@ -807,6 +859,10 @@ msgstr "Bug"
 msgid "Business hours"
 msgstr "Business hours"
 
+#: src/features/conversation/Feedback.tsx
+msgid "By e-mail"
+msgstr "By e-mail"
+
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
@@ -820,6 +876,7 @@ msgstr "Can I schedule a newsletter for each subscriber?"
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/docs/AnswerDialog.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Cancel"
 msgstr "Cancel"
@@ -1073,6 +1130,10 @@ msgstr "Contacts"
 #: src/features/setup/NameStep.tsx
 msgid "Continue"
 msgstr "Continue"
+
+#: src/features/docs/DocsPages.tsx
+msgid "Conversation"
+msgstr "Conversation"
 
 #: src/features/conversation/actions.ts
 msgid "Conversation closed"
@@ -1360,6 +1421,19 @@ msgstr "Do not both write."
 msgid "Do this later"
 msgstr "Do this later"
 
+#: src/app/Palette.tsx
+#: src/app/Rail.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/docs/DocsColumn.tsx
+#: src/features/docs/DocsPages.tsx
+msgid "Docs"
+msgstr "Docs"
+
+#: src/features/docs/DocsColumn.tsx
+#: src/features/docs/DocsPages.tsx
+msgid "Documentation pages"
+msgstr "Documentation pages"
+
 #: src/features/contact/ConversationMedia.tsx
 msgid "Documents"
 msgstr "Documents"
@@ -1454,6 +1528,8 @@ msgid "Each new e-mail starts a conversation; replies continue it."
 msgstr "Each new e-mail starts a conversation; replies continue it."
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/docs/AnswerDialog.tsx
+#: src/features/docs/PageContext.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -1480,6 +1556,18 @@ msgstr "Edit endpoint"
 #: src/features/settings/labels/LabelDialog.tsx
 msgid "Edit label"
 msgstr "Edit label"
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "Edit the published answer"
+msgstr "Edit the published answer"
+
+#: src/features/docs/PageContext.tsx
+msgid "Edit the published answer ({key})"
+msgstr "Edit the published answer ({key})"
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "Edited {edited}"
+msgstr "Edited {edited}"
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Embed snippet"
@@ -1596,9 +1684,29 @@ msgstr "Failed"
 msgid "Failing"
 msgstr "Failing"
 
+#: src/features/docs/DocsPages.tsx
+msgid "feedback"
+msgstr "feedback"
+
+#: src/features/docs/DocsPages.tsx
+msgid "Feedback"
+msgstr "Feedback"
+
+#: src/features/docs/DocsPages.tsx
+msgid "Feedback and questions from your documentation"
+msgstr "Feedback and questions from your documentation"
+
+#: src/features/docs/DocsPages.tsx
+msgid "Feedback and questions per day"
+msgstr "Feedback and questions per day"
+
 #: src/components/common/text.ts
 msgid "Feedback arrived"
 msgstr "Feedback arrived"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Feedback sent from a documentation page"
+msgstr "Feedback sent from a documentation page"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Feedback sent from the app"
@@ -1761,6 +1869,20 @@ msgstr "Help and feedback"
 msgid "Help and feedback inside your iOS or Android app"
 msgstr "Help and feedback inside your iOS or Android app"
 
+#: src/features/docs/DocsPages.tsx
+msgid "helpful"
+msgstr "helpful"
+
+#: src/features/conversation/Feedback.tsx
+#: src/features/docs/DocsPages.tsx
+#: src/features/docs/PageContext.tsx
+msgid "Helpful"
+msgstr "Helpful"
+
+#: src/features/docs/DocsPages.tsx
+msgid "helpful share"
+msgstr "helpful share"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Hi! Ask us anything."
 msgstr "Hi! Ask us anything."
@@ -1786,9 +1908,17 @@ msgstr "Hide the preview"
 msgid "High"
 msgstr "High"
 
+#: src/features/docs/DocsColumn.tsx
+msgid "Highest share of “helpful” first, among pages with at least 5 ratings"
+msgstr "Highest share of “helpful” first, among pages with at least 5 ratings"
+
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "How HTML e-mails open. You can still switch each message."
 msgstr "How HTML e-mails open. You can still switch each message."
+
+#: src/features/docs/DocsColumn.tsx
+msgid "How to add them"
+msgstr "How to add them"
 
 #: src/components/common/SecretDialog.tsx
 msgid "I saved it"
@@ -1920,6 +2050,10 @@ msgstr "Is there a way to export my notes?"
 #: src/features/oauth/ConsentPage.tsx
 msgid "It also asked for access your role here cannot give:"
 msgstr "It also asked for access your role here cannot give:"
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "It disappears from the page. The conversation stays and can be published again."
+msgstr "It disappears from the page. The conversation stays and can be published again."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It goes into <0>~/.codex/config.toml</0>, which the Codex CLI and IDE extension share."
@@ -2100,6 +2234,8 @@ msgstr "Load images"
 #: src/features/contact/ContactPage.tsx
 #: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/docs/DocsColumn.tsx
+#: src/features/docs/DocsPages.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/team/MemberPage.tsx
 msgid "Load more"
@@ -2290,6 +2426,34 @@ msgstr "More actions"
 #: src/features/contact/MergePreview.tsx
 msgid "More than {count} conversations"
 msgstr "More than {count} conversations"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "Most “helpful” ratings first"
+msgstr "Most “helpful” ratings first"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "Most “not helpful” ratings first"
+msgstr "Most “not helpful” ratings first"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "Most active"
+msgstr "Most active"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "Most disliked"
+msgstr "Most disliked"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "Most helpful"
+msgstr "Most helpful"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "Most liked"
+msgstr "Most liked"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "Most ratings, open feedback and questions first"
+msgstr "Most ratings, open feedback and questions first"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the list"
@@ -2500,6 +2664,10 @@ msgstr "No conversations yet."
 msgid "No drafts are waiting. Replies an assistant, a bot or a teammate drafts show up here until someone sends or discards them."
 msgstr "No drafts are waiting. Replies an assistant, a bot or a teammate drafts show up here until someone sends or discards them."
 
+#: src/features/conversation/Feedback.tsx
+msgid "No e-mail address given"
+msgstr "No e-mail address given"
+
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "No emoji found."
 msgstr "No emoji found."
@@ -2507,6 +2675,10 @@ msgstr "No emoji found."
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "No endpoints yet."
 msgstr "No endpoints yet."
+
+#: src/features/docs/DocsPages.tsx
+msgid "No feedback from this page."
+msgstr "No feedback from this page."
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "No labels yet"
@@ -2537,9 +2709,21 @@ msgstr "No one has mentioned you in a note yet. When a teammate writes @ and you
 msgid "No other contact matches."
 msgstr "No other contact matches."
 
+#: src/features/docs/DocsColumn.tsx
+msgid "No pages yet"
+msgstr "No pages yet"
+
 #: src/features/settings/members/Invites.tsx
 msgid "No pending invites."
 msgstr "No pending invites."
+
+#: src/features/docs/DocsPages.tsx
+msgid "No questions from this page."
+msgstr "No questions from this page."
+
+#: src/features/docs/DocsPages.tsx
+msgid "No ratings in this window."
+msgstr "No ratings in this window."
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "No ratings today"
@@ -2617,6 +2801,20 @@ msgstr "Not connected yet. This page updates when you finish signing in."
 msgid "Not delivered"
 msgstr "Not delivered"
 
+#: src/features/docs/DocsPages.tsx
+msgid "not helpful"
+msgstr "not helpful"
+
+#: src/features/conversation/Feedback.tsx
+#: src/features/docs/DocsPages.tsx
+#: src/features/docs/PageContext.tsx
+msgid "Not helpful"
+msgstr "Not helpful"
+
+#: src/features/docs/DocsPages.tsx
+msgid "not helpful share"
+msgstr "not helpful share"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Not shown"
 msgstr "Not shown"
@@ -2665,6 +2863,10 @@ msgstr "Nothing is snoozed."
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing matches your search here."
 msgstr "Nothing matches your search here."
+
+#: src/features/docs/DocsPages.tsx
+msgid "Nothing published yet. Open a question you answered and publish it to the page."
+msgstr "Nothing published yet. Open a question you answered and publish it to the page."
 
 #: src/app/Palette.tsx
 #: src/features/settings/notifications/NotificationsPage.tsx
@@ -2819,9 +3021,17 @@ msgstr "Open conversations"
 msgid "Open conversations assigned"
 msgstr "Open conversations assigned"
 
+#: src/features/docs/DocsPages.tsx
+msgid "open feedback"
+msgstr "open feedback"
+
 #: src/features/contact/ContactSheet.tsx
 msgid "Open page"
 msgstr "Open page"
+
+#: src/features/docs/DocsPages.tsx
+msgid "open questions"
+msgstr "open questions"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/setup/WaitStep.tsx
@@ -2889,6 +3099,10 @@ msgstr "Other MCP client"
 msgid "Outside them the inbox counts as closed"
 msgstr "Outside them the inbox counts as closed"
 
+#: src/features/docs/DocsColumn.tsx
+msgid "Overview"
+msgstr "Overview"
+
 #: src/components/common/text.ts
 msgid "Owner"
 msgstr "Owner"
@@ -2900,6 +3114,10 @@ msgstr "Owners and admins see every inbox; agents see the inboxes they were give
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Owners and admins see every inbox; members see the inboxes they are given."
 msgstr "Owners and admins see every inbox; members see the inboxes they are given."
+
+#: src/features/conversation/Feedback.tsx
+msgid "Page"
+msgstr "Page"
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Pages that embed the old key can no longer start chats until you update the snippet. Visitors already chatting keep their session."
@@ -3088,6 +3306,50 @@ msgstr "Profile"
 msgid "Public key"
 msgstr "Public key"
 
+#: src/features/docs/AnswerDialog.tsx
+msgid "Publish"
+msgstr "Publish"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Publish a question to its page, or edit the published answer"
+msgstr "Publish a question to its page, or edit the published answer"
+
+#: src/features/docs/PageContext.tsx
+msgid "Publish to page"
+msgstr "Publish to page"
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "Publish to the page"
+msgstr "Publish to the page"
+
+#: src/features/docs/PageContext.tsx
+msgid "Publish to the page ({key})"
+msgstr "Publish to the page ({key})"
+
+#: src/features/docs/PageContext.tsx
+msgid "Published"
+msgstr "Published"
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "Published {published}"
+msgstr "Published {published}"
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "Published answer saved"
+msgstr "Published answer saved"
+
+#: src/features/docs/DocsPages.tsx
+msgid "published answers"
+msgstr "published answers"
+
+#: src/features/docs/DocsPages.tsx
+msgid "Published answers"
+msgstr "Published answers"
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "Published to the page"
+msgstr "Published to the page"
+
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Push"
 msgstr "Push"
@@ -3113,6 +3375,18 @@ msgstr "Push: {label}"
 msgid "Put the SDK's conversations view behind a Help button in your app, then send a message from it."
 msgstr "Put the SDK's conversations view behind a Help button in your app, then send a message from it."
 
+#: src/features/docs/AnswerDialog.tsx
+msgid "Question"
+msgstr "Question"
+
+#: src/features/docs/DocsPages.tsx
+msgid "questions"
+msgstr "questions"
+
+#: src/features/docs/DocsPages.tsx
+msgid "Questions"
+msgstr "Questions"
+
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "Queued. The new attempt shows up below in a moment."
 msgstr "Queued. The new attempt shows up below in a moment."
@@ -3133,10 +3407,22 @@ msgstr "rated good"
 msgid "Rated good"
 msgstr "Rated good"
 
+#: src/features/conversation/Feedback.tsx
+msgid "Rating"
+msgstr "Rating"
+
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 msgid "Ratings"
 msgstr "Ratings"
+
+#: src/features/docs/DocsColumn.tsx
+msgid "Ratings over"
+msgstr "Ratings over"
+
+#: src/features/docs/DocsPages.tsx
+msgid "Ratings per day"
+msgstr "Ratings per day"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Read"
@@ -3290,6 +3576,10 @@ msgstr "replies today"
 msgid "Reply"
 msgstr "Reply"
 
+#: src/features/docs/PageContext.tsx
+msgid "reply first to publish it"
+msgstr "reply first to publish it"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Reply time"
 msgstr "Reply time"
@@ -3401,6 +3691,7 @@ msgstr "satisfied · 👍 {good} 👎 {bad}"
 msgid "Saturday"
 msgstr "Saturday"
 
+#: src/features/docs/AnswerDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ChannelDialog.tsx
@@ -3658,6 +3949,10 @@ msgstr "Setup guide"
 msgid "Setup steps"
 msgstr "Setup steps"
 
+#: src/features/docs/DocsColumn.tsx
+msgid "Share of not helpful"
+msgstr "Share of not helpful"
+
 #: src/features/settings/canned/CannedReplyDialog.tsx
 msgid "Shortcut"
 msgstr "Shortcut"
@@ -3721,6 +4016,10 @@ msgstr "Shown in the chat window"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 msgid "Shown on its messages. The key's name when empty."
 msgstr "Shown on its messages. The key's name when empty."
+
+#: src/features/docs/DocsPages.tsx
+msgid "Shown on the page by the questions element, newest first, without the visitor's name or address."
+msgstr "Shown on the page by the questions element, newest first, without the visitor's name or address."
 
 #: src/features/settings/profile/ProfileForm.tsx
 msgid "Shown to your team and to contacts"
@@ -3813,6 +4112,10 @@ msgstr "Something the team should know…"
 #: src/components/common/text.ts
 msgid "Something went wrong on the server. Try again."
 msgstr "Something went wrong on the server. Try again."
+
+#: src/features/docs/DocsColumn.tsx
+msgid "Sort"
+msgstr "Sort"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Sort conversations by topic. Each label also gets its own view in the sidebar."
@@ -4148,6 +4451,10 @@ msgstr "This contact keeps its own value"
 msgid "This conversation"
 msgstr "This conversation"
 
+#: src/components/common/text.ts
+msgid "This conversation is already published. Edit the published answer instead."
+msgstr "This conversation is already published. Edit the published answer instead."
+
 #: src/features/conversation/ChatView.tsx
 msgid "This conversation is not available"
 msgstr "This conversation is not available"
@@ -4191,6 +4498,10 @@ msgstr "This member is not in the workspace any more."
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "This month"
 msgstr "This month"
+
+#: src/components/common/text.ts
+msgid "This question cannot be published. It needs a reply from a member, and its chat channel must still allow the page's site."
+msgstr "This question cannot be published. It needs a reply from a member, and its chat channel must still allow the page's site."
 
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request expired or was already used. Start connecting again from the app."
@@ -4365,6 +4676,19 @@ msgstr "Unpin"
 msgid "Unpinned"
 msgstr "Unpinned"
 
+#: src/features/docs/AnswerDialog.tsx
+#: src/features/docs/PageContext.tsx
+msgid "Unpublish"
+msgstr "Unpublish"
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "Unpublish this answer?"
+msgstr "Unpublish this answer?"
+
+#: src/features/docs/AnswerDialog.tsx
+msgid "Unpublished"
+msgstr "Unpublished"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Unread"
 msgstr "Unread"
@@ -4439,6 +4763,7 @@ msgid "Verify every request before trusting it: the <0>webhook-signature</0> hea
 msgstr "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
 
 #: src/features/contact/ContactsColumn.tsx
+#: src/features/docs/DocsPages.tsx
 msgid "Visitor"
 msgstr "Visitor"
 

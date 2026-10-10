@@ -49,7 +49,14 @@ function useRows(f: Feedback): [string, string, boolean?][] {
   if (f.locale) rows.push([t`Locale`, f.locale])
   if (f.screen) rows.push([t`Screen`, f.screen, true])
   if (f.installation_id) rows.push([t`Installation`, f.installation_id, true])
-  rows.push([t`Replies`, f.allow_email ? t`In the app and by e-mail` : t`Only in the app`])
+  if (f.page_url) {
+    if (f.page_title) rows.push([t`Page`, f.page_title])
+    rows.push([t`Address`, f.page_url, true])
+    if (f.rating) rows.push([t`Rating`, f.rating === "up" ? t`Helpful` : t`Not helpful`])
+    rows.push([t`Replies`, f.allow_email ? t`By e-mail` : t`No e-mail address given`])
+  } else {
+    rows.push([t`Replies`, f.allow_email ? t`In the app and by e-mail` : t`Only in the app`])
+  }
   return rows
 }
 

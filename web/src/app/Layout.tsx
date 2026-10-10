@@ -4,6 +4,7 @@ import { Outlet, useLocation, useMatch, useNavigate } from "react-router"
 import { Rail, TabBar, useSection } from "@/app/Rail"
 import { isSectionHome } from "@/app/shell"
 import { ContactsColumn } from "@/features/contact/ContactsColumn"
+import { DocsColumn } from "@/features/docs/DocsColumn"
 import { ChatList } from "@/features/inbox/ChatList"
 import { setRailView, useRailView } from "@/features/inbox/railView"
 import { AssistantsPanel, MentionsPanel } from "@/features/inbox/SidePanels"
@@ -31,6 +32,7 @@ function LeftColumn({ keepList }: { keepList: boolean }) {
       {section === "contacts" && <ContactsColumn />}
       {section === "team" && <TeamColumn />}
       {section === "reports" && <ReportsColumn />}
+      {section === "docs" && <DocsColumn />}
       {section === "settings" && <SettingsColumn />}
     </>
   )

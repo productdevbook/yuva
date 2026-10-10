@@ -38,6 +38,7 @@ function matches(c: Conversation & { pinned_at?: string }, f: ConversationFilter
   if (f.status && c.status !== f.status) return false
   if ((f.kind || f.category) && c.kind !== (f.kind ?? "feedback")) return false
   if (f.category && c.feedback?.category !== f.category) return false
+  if (f.page && (c.question?.page_url ?? c.feedback?.page_url) !== f.page) return false
   if (f.inbox_id && c.inbox_id !== f.inbox_id) return false
   if (f.contact_id && c.contact_id !== f.contact_id) return false
   if (f.label_id && !c.labels.includes(f.label_id)) return false
@@ -119,6 +120,7 @@ function refreshCounts(qc: QueryClient, ws: string) {
       countTimers.delete(ws)
       void qc.invalidateQueries({ queryKey: keys.counts(ws) })
       void qc.invalidateQueries({ queryKey: keys.stats(ws) })
+      void qc.invalidateQueries({ queryKey: keys.docs(ws) })
     }, 400),
   )
 }

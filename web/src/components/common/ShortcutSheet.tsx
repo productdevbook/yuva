@@ -32,6 +32,8 @@ export const SHORTCUTS = {
   find: "F",
   pin: "p",
   unread: "u",
+  publish: "P",
+  docs: "g d",
 } as const
 
 export function keyLabel(k: string): string[] {
@@ -76,6 +78,7 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
         [k(SHORTCUTS.find), t`Search in this conversation`],
         [k(SHORTCUTS.pin), t`Pin to the top of your list, or unpin`],
         [k(SHORTCUTS.unread), t`Mark as unread and go back to the list`],
+        [k(SHORTCUTS.publish), t`Publish a question to its page, or edit the published answer`],
       ],
     },
     {
@@ -95,6 +98,7 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
         [k(SHORTCUTS.contacts), t`Contacts`],
         [k(SHORTCUTS.team), t`Team`],
         [k(SHORTCUTS.reports), t`Reports`],
+        [k(SHORTCUTS.docs), t`Docs`],
         [k(SHORTCUTS.assistants), t`Assistants`],
         [[mod, "K"], t`Everything`],
         [[mod, ","], t`Settings`],
