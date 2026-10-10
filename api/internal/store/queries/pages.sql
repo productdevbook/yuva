@@ -94,6 +94,7 @@ WITH visible AS (
     UNION SELECT opened.inbox_id, opened.page FROM opened
     UNION SELECT answered.inbox_id, answered.page FROM answered
 )
+SELECT d.inbox_id, d.page, d.title, d.up, d.down, d.open_feedback, d.open_questions, d.published_answers FROM (
 SELECT p.inbox_id::uuid AS inbox_id, p.page::text AS page,
     coalesce(
         (SELECT t.title FROM page_ratings t
@@ -115,7 +116,16 @@ FROM pages p
 LEFT JOIN rated ON rated.inbox_id = p.inbox_id AND rated.page = p.page
 LEFT JOIN opened ON opened.inbox_id = p.inbox_id AND opened.page = p.page
 LEFT JOIN answered ON answered.inbox_id = p.inbox_id AND answered.page = p.page
-ORDER BY coalesce(rated.down, 0) DESC, coalesce(rated.up, 0) + coalesce(rated.down, 0) DESC, p.page, p.inbox_id
+) d
+ORDER BY
+    CASE @sort::text
+        WHEN 'up' THEN d.up
+        WHEN 'activity' THEN d.up + d.down + d.open_feedback + d.open_questions
+        WHEN 'helpful' THEN CASE WHEN d.up + d.down >= @helpful_min::bigint THEN 1 ELSE 0 END
+        ELSE d.down
+    END DESC,
+    CASE WHEN @sort::text = 'helpful' THEN d.up::float8 / nullif(d.up + d.down, 0) END DESC NULLS LAST,
+    d.up + d.down DESC, d.page, d.inbox_id
 LIMIT @lim OFFSET @off;
 
 -- name: ListPageRatingDays :many
@@ -124,3 +134,55 @@ FROM page_ratings
 WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id AND page = @page AND day >= @since::date
 GROUP BY day
 ORDER BY day;
+
+-- name: ListDocsSummaryDays :many
+WITH visible AS (
+    SELECT i.id FROM inboxes i
+    WHERE i.workspace_id = @workspace_id
+      AND (sqlc.narg(inbox_id)::uuid IS NULL OR i.id = sqlc.narg(inbox_id)::uuid)
+      AND (@all_inboxes::bool OR EXISTS (
+          SELECT 1 FROM inbox_viewers iv
+          WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = @viewer_id::uuid))
+), days AS (
+    SELECT generate_series(@since::date, @until::date, interval '1 day')::date AS day
+), rated AS (
+    SELECT r.day, sum(r.up)::bigint AS up, sum(r.down)::bigint AS down
+    FROM page_ratings r
+    WHERE r.workspace_id = @workspace_id AND r.inbox_id IN (SELECT id FROM visible) AND r.day >= @since::date
+    GROUP BY r.day
+), sent AS (
+    SELECT (c.created_at AT TIME ZONE 'UTC')::date AS day,
+           count(*) FILTER (WHERE c.kind = 'feedback')::bigint AS feedback,
+           count(*) FILTER (WHERE c.kind = 'question')::bigint AS questions
+    FROM conversations c
+    WHERE c.workspace_id = @workspace_id AND c.inbox_id IN (SELECT id FROM visible)
+      AND c.page_url IS NOT NULL AND NOT c.spam AND c.created_at >= @since_at::timestamptz
+    GROUP BY 1
+)
+SELECT days.day::date AS day,
+    coalesce(rated.up, 0)::bigint AS up,
+    coalesce(rated.down, 0)::bigint AS down,
+    coalesce(sent.feedback, 0)::bigint AS feedback,
+    coalesce(sent.questions, 0)::bigint AS questions
+FROM days
+LEFT JOIN rated ON rated.day = days.day
+LEFT JOIN sent ON sent.day = days.day
+ORDER BY days.day;
+
+-- name: GetDocsSummaryCounts :one
+WITH visible AS (
+    SELECT i.id FROM inboxes i
+    WHERE i.workspace_id = @workspace_id
+      AND (sqlc.narg(inbox_id)::uuid IS NULL OR i.id = sqlc.narg(inbox_id)::uuid)
+      AND (@all_inboxes::bool OR EXISTS (
+          SELECT 1 FROM inbox_viewers iv
+          WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = @viewer_id::uuid))
+)
+SELECT
+    (SELECT count(*) FROM (
+        SELECT DISTINCT r.inbox_id, r.page FROM page_ratings r
+        WHERE r.workspace_id = @workspace_id AND r.inbox_id IN (SELECT id FROM visible) AND r.day >= @since::date
+          AND r.up + r.down > 0) rp)::bigint AS rated_pages,
+    (SELECT count(*) FROM page_answers a
+     WHERE a.workspace_id = @workspace_id AND a.inbox_id IN (SELECT id FROM visible)
+       AND a.published_at >= @since_at::timestamptz)::bigint AS published_answers;

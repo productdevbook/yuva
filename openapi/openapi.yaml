@@ -3126,8 +3126,17 @@ paths:
         The pages of the inboxes the caller can see that were rated in the window, have open
         feedback or questions, or have published answers: `up` and `down` summed over the last
         `days` days (today included, UTC), open (status `open`, not spam) feedback and question
-        conversations sent from the page, and published answers. Most `down` first, then most
-        ratings, then by page. A page is per inbox.
+        conversations sent from the page, and published answers. A page is per inbox.
+
+        `sort` orders them; ties go to more ratings, then by page:
+        - `down` (default): most `down` first.
+        - `up`: most `up` first.
+        - `helpful`: highest share of `up` first, among pages with at least 5 ratings in the
+          window; pages with fewer follow, ordered the same way, so one `up` never tops the list.
+        - `activity`: most ratings plus open feedback and questions first.
+
+        `next_cursor` belongs to the `sort`, `days` and `inbox_id` it was returned for; a cursor of
+        another sort answers `400`.
 
         Scope: `conversations:read`.
       tags: [docs]
@@ -3139,6 +3148,10 @@ paths:
             type: string
             format: uuid
         - $ref: "#/components/parameters/DocsDays"
+        - name: sort
+          in: query
+          schema:
+            $ref: "#/components/schemas/DocsPageSort"
         - $ref: "#/components/parameters/Cursor"
         - $ref: "#/components/parameters/Limit"
       responses:
@@ -3148,6 +3161,42 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DocsPagePage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/docs/summary:
+    get:
+      operationId: getDocsSummary
+      summary: Documentation pages in total and per day
+      description: |
+        Over the inboxes the caller can see (or `inbox_id`) and the last `days` days (today
+        included, UTC): ratings, feedback and questions sent from documentation pages (created in
+        the window, not spam, in any status) and answers published in the window, in total and
+        per day. Every day of the window is listed, oldest first, with zeros where nothing
+        happened. `rated_pages` counts pages (per inbox) with at least one rating in the window.
+
+        Scope: `conversations:read`.
+      tags: [docs]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - name: inbox_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - $ref: "#/components/parameters/DocsDays"
+      responses:
+        "200":
+          description: The totals and the days.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocsSummary"
         "400":
           $ref: "#/components/responses/Problem"
         "401":
@@ -9113,6 +9162,62 @@ components:
         next_cursor:
           type: string
           description: Absent on the last page.
+    DocsPageSort:
+      type: string
+      enum: [down, up, helpful, activity]
+      default: down
+    DocsSummary:
+      type: object
+      required: [totals, days]
+      properties:
+        totals:
+          $ref: "#/components/schemas/DocsTotals"
+        days:
+          type: array
+          description: Every day of the window, oldest first (UTC).
+          items:
+            $ref: "#/components/schemas/DocsSummaryDay"
+    DocsTotals:
+      type: object
+      required: [up, down, rated_pages, feedback, questions, published_answers]
+      properties:
+        up:
+          type: integer
+          format: int64
+        down:
+          type: integer
+          format: int64
+        rated_pages:
+          type: integer
+          format: int64
+        feedback:
+          type: integer
+          format: int64
+        questions:
+          type: integer
+          format: int64
+        published_answers:
+          type: integer
+          format: int64
+    DocsSummaryDay:
+      type: object
+      required: [day, up, down, feedback, questions]
+      properties:
+        day:
+          type: string
+          format: date
+        up:
+          type: integer
+          format: int64
+        down:
+          type: integer
+          format: int64
+        feedback:
+          type: integer
+          format: int64
+        questions:
+          type: integer
+          format: int64
     DocsPageDay:
       type: object
       required: [day, up, down]

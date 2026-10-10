@@ -471,6 +471,30 @@ func (e Direction) Valid() bool {
 	}
 }
 
+// Defines values for DocsPageSort.
+const (
+	DocsPageSortActivity DocsPageSort = "activity"
+	DocsPageSortDown     DocsPageSort = "down"
+	DocsPageSortHelpful  DocsPageSort = "helpful"
+	DocsPageSortUp       DocsPageSort = "up"
+)
+
+// Valid indicates whether the value is a known member of the DocsPageSort enum.
+func (e DocsPageSort) Valid() bool {
+	switch e {
+	case DocsPageSortActivity:
+		return true
+	case DocsPageSortDown:
+		return true
+	case DocsPageSortHelpful:
+		return true
+	case DocsPageSortUp:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for DraftAuthorKind.
 const (
 	DraftAuthorKindAssistant DraftAuthorKind = "assistant"
@@ -1022,16 +1046,16 @@ func (e OAuthTokenResponseTokenType) Valid() bool {
 
 // Defines values for PageRating.
 const (
-	Down PageRating = "down"
-	Up   PageRating = "up"
+	PageRatingDown PageRating = "down"
+	PageRatingUp   PageRating = "up"
 )
 
 // Valid indicates whether the value is a known member of the PageRating enum.
 func (e PageRating) Valid() bool {
 	switch e {
-	case Down:
+	case PageRatingDown:
 		return true
-	case Up:
+	case PageRatingUp:
 		return true
 	default:
 		return false
@@ -2865,6 +2889,35 @@ type DocsPagePage struct {
 
 	// NextCursor Absent on the last page.
 	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// DocsPageSort defines model for DocsPageSort.
+type DocsPageSort string
+
+// DocsSummary defines model for DocsSummary.
+type DocsSummary struct {
+	// Days Every day of the window, oldest first (UTC).
+	Days   []DocsSummaryDay `json:"days"`
+	Totals DocsTotals       `json:"totals"`
+}
+
+// DocsSummaryDay defines model for DocsSummaryDay.
+type DocsSummaryDay struct {
+	Day       openapi_types.Date `json:"day"`
+	Down      int64              `json:"down"`
+	Feedback  int64              `json:"feedback"`
+	Questions int64              `json:"questions"`
+	Up        int64              `json:"up"`
+}
+
+// DocsTotals defines model for DocsTotals.
+type DocsTotals struct {
+	Down             int64 `json:"down"`
+	Feedback         int64 `json:"feedback"`
+	PublishedAnswers int64 `json:"published_answers"`
+	Questions        int64 `json:"questions"`
+	RatedPages       int64 `json:"rated_pages"`
+	Up               int64 `json:"up"`
 }
 
 // DraftAuthorKind `bot`: written with an API key. `assistant`: written by a member through an OAuth client.
@@ -5329,13 +5382,25 @@ type ListDocsPagesParams struct {
 	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
 
 	// Days The rating window in days, `7`, `30` or `90`; 30 by default.
-	Days *DocsDays `form:"days,omitempty" json:"days,omitempty"`
+	Days *DocsDays     `form:"days,omitempty" json:"days,omitempty"`
+	Sort *DocsPageSort `form:"sort,omitempty" json:"sort,omitempty"`
 
 	// Cursor The `next_cursor` of the previous page.
 	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
 
 	// Limit Page size, 1 to 100; 25 by default.
 	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetDocsSummaryParams defines parameters for GetDocsSummary.
+type GetDocsSummaryParams struct {
+	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+
+	// Days The rating window in days, `7`, `30` or `90`; 30 by default.
+	Days *DocsDays `form:"days,omitempty" json:"days,omitempty"`
 
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
@@ -8758,13 +8823,35 @@ type ClientInterface interface {
 	// The pages of the inboxes the caller can see that were rated in the window, have open
 	// feedback or questions, or have published answers: `up` and `down` summed over the last
 	// `days` days (today included, UTC), open (status `open`, not spam) feedback and question
-	// conversations sent from the page, and published answers. Most `down` first, then most
-	// ratings, then by page. A page is per inbox.
+	// conversations sent from the page, and published answers. A page is per inbox.
+	//
+	// `sort` orders them; ties go to more ratings, then by page:
+	// - `down` (default): most `down` first.
+	// - `up`: most `up` first.
+	// - `helpful`: highest share of `up` first, among pages with at least 5 ratings in the
+	//   window; pages with fewer follow, ordered the same way, so one `up` never tops the list.
+	// - `activity`: most ratings plus open feedback and questions first.
+	//
+	// `next_cursor` belongs to the `sort`, `days` and `inbox_id` it was returned for; a cursor of
+	// another sort answers `400`.
 	//
 	// Scope: `conversations:read`.
 	//
 	// Corresponds with GET /v1/docs/pages (the `ListDocsPages` operationId).
 	ListDocsPages(ctx context.Context, params *ListDocsPagesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetDocsSummary Documentation pages in total and per day
+	//
+	// Over the inboxes the caller can see (or `inbox_id`) and the last `days` days (today
+	// included, UTC): ratings, feedback and questions sent from documentation pages (created in
+	// the window, not spam, in any status) and answers published in the window, in total and
+	// per day. Every day of the window is listed, oldest first, with zeros where nothing
+	// happened. `rated_pages` counts pages (per inbox) with at least one rating in the window.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Corresponds with GET /v1/docs/summary (the `GetDocsSummary` operationId).
+	GetDocsSummary(ctx context.Context, params *GetDocsSummaryParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListDrafts List pending drafts
 	//
@@ -12013,14 +12100,46 @@ func (c *Client) GetDocsPage(ctx context.Context, params *GetDocsPageParams, req
 // The pages of the inboxes the caller can see that were rated in the window, have open
 // feedback or questions, or have published answers: `up` and `down` summed over the last
 // `days` days (today included, UTC), open (status `open`, not spam) feedback and question
-// conversations sent from the page, and published answers. Most `down` first, then most
-// ratings, then by page. A page is per inbox.
+// conversations sent from the page, and published answers. A page is per inbox.
+//
+// `sort` orders them; ties go to more ratings, then by page:
+//   - `down` (default): most `down` first.
+//   - `up`: most `up` first.
+//   - `helpful`: highest share of `up` first, among pages with at least 5 ratings in the
+//     window; pages with fewer follow, ordered the same way, so one `up` never tops the list.
+//   - `activity`: most ratings plus open feedback and questions first.
+//
+// `next_cursor` belongs to the `sort`, `days` and `inbox_id` it was returned for; a cursor of
+// another sort answers `400`.
 //
 // Scope: `conversations:read`.
 //
 // Corresponds with GET /v1/docs/pages (the `ListDocsPages` operationId).
 func (c *Client) ListDocsPages(ctx context.Context, params *ListDocsPagesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListDocsPagesRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetDocsSummary Documentation pages in total and per day
+//
+// Over the inboxes the caller can see (or `inbox_id`) and the last `days` days (today
+// included, UTC): ratings, feedback and questions sent from documentation pages (created in
+// the window, not spam, in any status) and answers published in the window, in total and
+// per day. Every day of the window is listed, oldest first, with zeros where nothing
+// happened. `rated_pages` counts pages (per inbox) with at least one rating in the window.
+//
+// Scope: `conversations:read`.
+//
+// Corresponds with GET /v1/docs/summary (the `GetDocsSummary` operationId).
+func (c *Client) GetDocsSummary(ctx context.Context, params *GetDocsSummaryParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetDocsSummaryRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -17961,6 +18080,18 @@ func NewListDocsPagesRequest(server string, params *ListDocsPagesParams) (*http.
 
 		}
 
+		if params.Sort != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "sort", *params.Sort, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
 		if params.Cursor != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
@@ -17976,6 +18107,87 @@ func NewListDocsPagesRequest(server string, params *ListDocsPagesParams) (*http.
 		if params.Limit != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: "int32"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewGetDocsSummaryRequest constructs an http.Request for the GetDocsSummary method
+func NewGetDocsSummaryRequest(server string, params *GetDocsSummaryParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/docs/summary")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.InboxId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "inbox_id", *params.InboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Days != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "days", *params.Days, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: "int32"}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -23306,8 +23518,17 @@ type ClientWithResponsesInterface interface {
 	// The pages of the inboxes the caller can see that were rated in the window, have open
 	// feedback or questions, or have published answers: `up` and `down` summed over the last
 	// `days` days (today included, UTC), open (status `open`, not spam) feedback and question
-	// conversations sent from the page, and published answers. Most `down` first, then most
-	// ratings, then by page. A page is per inbox.
+	// conversations sent from the page, and published answers. A page is per inbox.
+	//
+	// `sort` orders them; ties go to more ratings, then by page:
+	// - `down` (default): most `down` first.
+	// - `up`: most `up` first.
+	// - `helpful`: highest share of `up` first, among pages with at least 5 ratings in the
+	//   window; pages with fewer follow, ordered the same way, so one `up` never tops the list.
+	// - `activity`: most ratings plus open feedback and questions first.
+	//
+	// `next_cursor` belongs to the `sort`, `days` and `inbox_id` it was returned for; a cursor of
+	// another sort answers `400`.
 	//
 	// Scope: `conversations:read`.
 	//
@@ -23315,6 +23536,21 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /v1/docs/pages (the `ListDocsPages` operationId).
 	ListDocsPagesWithResponse(ctx context.Context, params *ListDocsPagesParams, reqEditors ...RequestEditorFn) (*ListDocsPagesResponse, error)
+
+	// GetDocsSummaryWithResponse Documentation pages in total and per day
+	//
+	// Over the inboxes the caller can see (or `inbox_id`) and the last `days` days (today
+	// included, UTC): ratings, feedback and questions sent from documentation pages (created in
+	// the window, not spam, in any status) and answers published in the window, in total and
+	// per day. Every day of the window is listed, oldest first, with zeros where nothing
+	// happened. `rated_pages` counts pages (per inbox) with at least one rating in the window.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/docs/summary (the `GetDocsSummary` operationId).
+	GetDocsSummaryWithResponse(ctx context.Context, params *GetDocsSummaryParams, reqEditors ...RequestEditorFn) (*GetDocsSummaryResponse, error)
 
 	// ListDraftsWithResponse List pending drafts
 	//
@@ -28839,6 +29075,75 @@ func (r ListDocsPagesResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r ListDocsPagesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetDocsSummaryResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *DocsSummary
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetDocsSummaryResponse) GetJSON200() *DocsSummary {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r GetDocsSummaryResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetDocsSummaryResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetDocsSummaryResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r GetDocsSummaryResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r GetDocsSummaryResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetDocsSummaryResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetDocsSummaryResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetDocsSummaryResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -35245,8 +35550,17 @@ func (c *ClientWithResponses) GetDocsPageWithResponse(ctx context.Context, param
 // The pages of the inboxes the caller can see that were rated in the window, have open
 // feedback or questions, or have published answers: `up` and `down` summed over the last
 // `days` days (today included, UTC), open (status `open`, not spam) feedback and question
-// conversations sent from the page, and published answers. Most `down` first, then most
-// ratings, then by page. A page is per inbox.
+// conversations sent from the page, and published answers. A page is per inbox.
+//
+// `sort` orders them; ties go to more ratings, then by page:
+//   - `down` (default): most `down` first.
+//   - `up`: most `up` first.
+//   - `helpful`: highest share of `up` first, among pages with at least 5 ratings in the
+//     window; pages with fewer follow, ordered the same way, so one `up` never tops the list.
+//   - `activity`: most ratings plus open feedback and questions first.
+//
+// `next_cursor` belongs to the `sort`, `days` and `inbox_id` it was returned for; a cursor of
+// another sort answers `400`.
 //
 // Scope: `conversations:read`.
 //
@@ -35259,6 +35573,27 @@ func (c *ClientWithResponses) ListDocsPagesWithResponse(ctx context.Context, par
 		return nil, err
 	}
 	return ParseListDocsPagesResponse(rsp)
+}
+
+// GetDocsSummaryWithResponse Documentation pages in total and per day
+//
+// Over the inboxes the caller can see (or `inbox_id`) and the last `days` days (today
+// included, UTC): ratings, feedback and questions sent from documentation pages (created in
+// the window, not spam, in any status) and answers published in the window, in total and
+// per day. Every day of the window is listed, oldest first, with zeros where nothing
+// happened. `rated_pages` counts pages (per inbox) with at least one rating in the window.
+//
+// Scope: `conversations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/docs/summary (the `GetDocsSummary` operationId).
+func (c *ClientWithResponses) GetDocsSummaryWithResponse(ctx context.Context, params *GetDocsSummaryParams, reqEditors ...RequestEditorFn) (*GetDocsSummaryResponse, error) {
+	rsp, err := c.GetDocsSummary(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetDocsSummaryResponse(rsp)
 }
 
 // ListDraftsWithResponse List pending drafts
@@ -40379,6 +40714,60 @@ func ParseListDocsPagesResponse(rsp *http.Response) (*ListDocsPagesResponse, err
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest DocsPagePage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetDocsSummaryResponse parses an HTTP response from a GetDocsSummaryWithResponse call
+func ParseGetDocsSummaryResponse(rsp *http.Response) (*GetDocsSummaryResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetDocsSummaryResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DocsSummary
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

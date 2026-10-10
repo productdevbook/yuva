@@ -473,6 +473,30 @@ func (e Direction) Valid() bool {
 	}
 }
 
+// Defines values for DocsPageSort.
+const (
+	DocsPageSortActivity DocsPageSort = "activity"
+	DocsPageSortDown     DocsPageSort = "down"
+	DocsPageSortHelpful  DocsPageSort = "helpful"
+	DocsPageSortUp       DocsPageSort = "up"
+)
+
+// Valid indicates whether the value is a known member of the DocsPageSort enum.
+func (e DocsPageSort) Valid() bool {
+	switch e {
+	case DocsPageSortActivity:
+		return true
+	case DocsPageSortDown:
+		return true
+	case DocsPageSortHelpful:
+		return true
+	case DocsPageSortUp:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for DraftAuthorKind.
 const (
 	DraftAuthorKindAssistant DraftAuthorKind = "assistant"
@@ -1024,16 +1048,16 @@ func (e OAuthTokenResponseTokenType) Valid() bool {
 
 // Defines values for PageRating.
 const (
-	Down PageRating = "down"
-	Up   PageRating = "up"
+	PageRatingDown PageRating = "down"
+	PageRatingUp   PageRating = "up"
 )
 
 // Valid indicates whether the value is a known member of the PageRating enum.
 func (e PageRating) Valid() bool {
 	switch e {
-	case Down:
+	case PageRatingDown:
 		return true
-	case Up:
+	case PageRatingUp:
 		return true
 	default:
 		return false
@@ -2867,6 +2891,35 @@ type DocsPagePage struct {
 
 	// NextCursor Absent on the last page.
 	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// DocsPageSort defines model for DocsPageSort.
+type DocsPageSort string
+
+// DocsSummary defines model for DocsSummary.
+type DocsSummary struct {
+	// Days Every day of the window, oldest first (UTC).
+	Days   []DocsSummaryDay `json:"days"`
+	Totals DocsTotals       `json:"totals"`
+}
+
+// DocsSummaryDay defines model for DocsSummaryDay.
+type DocsSummaryDay struct {
+	Day       openapi_types.Date `json:"day"`
+	Down      int64              `json:"down"`
+	Feedback  int64              `json:"feedback"`
+	Questions int64              `json:"questions"`
+	Up        int64              `json:"up"`
+}
+
+// DocsTotals defines model for DocsTotals.
+type DocsTotals struct {
+	Down             int64 `json:"down"`
+	Feedback         int64 `json:"feedback"`
+	PublishedAnswers int64 `json:"published_answers"`
+	Questions        int64 `json:"questions"`
+	RatedPages       int64 `json:"rated_pages"`
+	Up               int64 `json:"up"`
 }
 
 // DraftAuthorKind `bot`: written with an API key. `assistant`: written by a member through an OAuth client.
@@ -5331,13 +5384,25 @@ type ListDocsPagesParams struct {
 	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
 
 	// Days The rating window in days, `7`, `30` or `90`; 30 by default.
-	Days *DocsDays `form:"days,omitempty" json:"days,omitempty"`
+	Days *DocsDays     `form:"days,omitempty" json:"days,omitempty"`
+	Sort *DocsPageSort `form:"sort,omitempty" json:"sort,omitempty"`
 
 	// Cursor The `next_cursor` of the previous page.
 	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
 
 	// Limit Page size, 1 to 100; 25 by default.
 	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetDocsSummaryParams defines parameters for GetDocsSummary.
+type GetDocsSummaryParams struct {
+	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+
+	// Days The rating window in days, `7`, `30` or `90`; 30 by default.
+	Days *DocsDays `form:"days,omitempty" json:"days,omitempty"`
 
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
@@ -7619,6 +7684,9 @@ type ServerInterface interface {
 	// ListDocsPages Documentation pages with their ratings, feedback and questions
 	// (GET /v1/docs/pages)
 	ListDocsPages(w http.ResponseWriter, r *http.Request, params ListDocsPagesParams)
+	// GetDocsSummary Documentation pages in total and per day
+	// (GET /v1/docs/summary)
+	GetDocsSummary(w http.ResponseWriter, r *http.Request, params GetDocsSummaryParams)
 	// ListDrafts List pending drafts
 	// (GET /v1/drafts)
 	ListDrafts(w http.ResponseWriter, r *http.Request, params ListDraftsParams)
@@ -11252,6 +11320,19 @@ func (siw *ServerInterfaceWrapper) ListDocsPages(w http.ResponseWriter, r *http.
 		return
 	}
 
+	// ------------- Optional query parameter "sort" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "sort", r.URL.Query(), &params.Sort, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "sort"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sort", Err: err})
+		}
+		return
+	}
+
 	// ------------- Optional query parameter "cursor" -------------
 
 	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
@@ -11301,6 +11382,73 @@ func (siw *ServerInterfaceWrapper) ListDocsPages(w http.ResponseWriter, r *http.
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListDocsPages(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetDocsSummary operation middleware
+func (siw *ServerInterfaceWrapper) GetDocsSummary(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetDocsSummaryParams
+
+	// ------------- Optional query parameter "inbox_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "inbox_id", r.URL.Query(), &params.InboxId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "inbox_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inbox_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "days" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "days", r.URL.Query(), &params.Days, runtime.BindQueryParameterOptions{Type: "integer", Format: "int32"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "days"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "days", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetDocsSummary(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -14965,6 +15113,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/page-answers/{pageAnswerId}", wrapper.GetPageAnswer)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/page-answers/{pageAnswerId}", wrapper.UpdatePageAnswer)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/docs/pages", wrapper.ListDocsPages)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/docs/summary", wrapper.GetDocsSummary)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/docs/page", wrapper.GetDocsPage)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/usage", wrapper.GetUsage)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/feedback", wrapper.CreateFeedback)
@@ -21030,6 +21179,86 @@ func (response ListDocsPages404ApplicationProblemPlusJSONResponse) VisitListDocs
 	return err
 }
 
+type GetDocsSummaryRequestObject struct {
+	Params GetDocsSummaryParams
+}
+
+type GetDocsSummaryResponseObject interface {
+	VisitGetDocsSummaryResponse(w http.ResponseWriter) error
+}
+
+type GetDocsSummary200JSONResponse DocsSummary
+
+func (response GetDocsSummary200JSONResponse) VisitGetDocsSummaryResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetDocsSummary400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetDocsSummary400ApplicationProblemPlusJSONResponse) VisitGetDocsSummaryResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetDocsSummary401ApplicationProblemPlusJSONResponse Problem
+
+func (response GetDocsSummary401ApplicationProblemPlusJSONResponse) VisitGetDocsSummaryResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetDocsSummary403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetDocsSummary403ApplicationProblemPlusJSONResponse) VisitGetDocsSummaryResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetDocsSummary404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetDocsSummary404ApplicationProblemPlusJSONResponse) VisitGetDocsSummaryResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type ListDraftsRequestObject struct {
 	Params ListDraftsParams
 }
@@ -26121,6 +26350,9 @@ type StrictServerInterface interface {
 	// ListDocsPages Documentation pages with their ratings, feedback and questions
 	// (GET /v1/docs/pages)
 	ListDocsPages(ctx context.Context, request ListDocsPagesRequestObject) (ListDocsPagesResponseObject, error)
+	// GetDocsSummary Documentation pages in total and per day
+	// (GET /v1/docs/summary)
+	GetDocsSummary(ctx context.Context, request GetDocsSummaryRequestObject) (GetDocsSummaryResponseObject, error)
 	// ListDrafts List pending drafts
 	// (GET /v1/drafts)
 	ListDrafts(ctx context.Context, request ListDraftsRequestObject) (ListDraftsResponseObject, error)
@@ -28421,6 +28653,32 @@ func (sh *strictHandler) ListDocsPages(w http.ResponseWriter, r *http.Request, p
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(ListDocsPagesResponseObject); ok {
 		if err := validResponse.VisitListDocsPagesResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetDocsSummary operation middleware
+func (sh *strictHandler) GetDocsSummary(w http.ResponseWriter, r *http.Request, params GetDocsSummaryParams) {
+	var request GetDocsSummaryRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetDocsSummary(ctx, request.(GetDocsSummaryRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetDocsSummary")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetDocsSummaryResponseObject); ok {
+		if err := validResponse.VisitGetDocsSummaryResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

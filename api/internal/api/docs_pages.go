@@ -26,6 +26,7 @@ const (
 	pageAnswersMaxAge   = "public, max-age=60"
 	defaultDocsDays     = 30
 	maxPublishedAnswers = 20000
+	helpfulMinRatings   = 5
 )
 
 var (
@@ -170,14 +171,14 @@ func (s *Server) CreatePageRating(ctx context.Context, req oas.CreatePageRatingR
 	err = s.inTx(ctx, ch.WorkspaceID, func(q *store.Queries, _ *eventBatch) error {
 		if b.Previous != nil {
 			if err := q.TakeBackPageRating(ctx, store.TakeBackPageRatingParams{
-				WorkspaceID: ch.WorkspaceID, ChannelID: ch.ChannelID, Page: page, Up: *b.Previous == oas.Up,
+				WorkspaceID: ch.WorkspaceID, ChannelID: ch.ChannelID, Page: page, Up: *b.Previous == oas.PageRatingUp,
 				Since: today.AddDate(0, 0, -(pageRatingTakeBack - 1)),
 			}); err != nil {
 				return err
 			}
 		}
 		arg := store.AddPageRatingParams{WorkspaceID: ch.WorkspaceID, InboxID: ch.InboxID, ChannelID: ch.ChannelID, Page: page, Title: title, Day: today}
-		if b.Rating == oas.Up {
+		if b.Rating == oas.PageRatingUp {
 			arg.Up = 1
 		} else {
 			arg.Down = 1
@@ -529,19 +530,24 @@ func docsSince(s *Server, days *int32) (time.Time, error) {
 	return utcDay(s.now()).AddDate(0, 0, -int(d-1)), nil
 }
 
-func encodeOffset(n int32) string {
-	return base64.RawURLEncoding.EncodeToString([]byte("o" + strconv.Itoa(int(n))))
+// The pages list is an aggregate without a stable key, so its cursor is a position within one sort.
+func encodeOffset(sort oas.DocsPageSort, n int32) string {
+	return base64.RawURLEncoding.EncodeToString([]byte(string(sort) + "." + strconv.Itoa(int(n))))
 }
 
-func decodeOffset(s *string) (int32, error) {
+func decodeOffset(sort oas.DocsPageSort, s *string) (int32, error) {
 	if s == nil || *s == "" {
 		return 0, nil
 	}
 	raw, err := base64.RawURLEncoding.DecodeString(*s)
-	if err != nil || len(raw) < 2 || raw[0] != 'o' {
+	if err != nil {
 		return 0, errInvalidCursor
 	}
-	n, err := strconv.ParseInt(string(raw[1:]), 10, 32)
+	got, num, ok := strings.Cut(string(raw), ".")
+	if !ok || got != string(sort) {
+		return 0, errInvalidCursor
+	}
+	n, err := strconv.ParseInt(num, 10, 32)
 	if err != nil || n < 0 {
 		return 0, errInvalidCursor
 	}
@@ -562,7 +568,14 @@ func (s *Server) ListDocsPages(ctx context.Context, req oas.ListDocsPagesRequest
 	if err != nil {
 		return nil, err
 	}
-	off, err := decodeOffset(prm.Cursor)
+	sort := oas.DocsPageSortDown
+	if prm.Sort != nil {
+		if !prm.Sort.Valid() {
+			return nil, errValidation("sort must be down, up, helpful or activity")
+		}
+		sort = *prm.Sort
+	}
+	off, err := decodeOffset(sort, prm.Cursor)
 	if err != nil {
 		return nil, err
 	}
@@ -577,7 +590,7 @@ func (s *Server) ListDocsPages(ctx context.Context, req oas.ListDocsPagesRequest
 	}
 	rows, err := s.st.ListDocsPages(ctx, store.ListDocsPagesParams{
 		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), InboxID: prm.InboxId,
-		Since: since, Lim: lim + 1, Off: off,
+		Since: since, Lim: lim + 1, Off: off, Sort: string(sort), HelpfulMin: helpfulMinRatings,
 	})
 	if err != nil {
 		return nil, err
@@ -585,7 +598,7 @@ func (s *Server) ListDocsPages(ctx context.Context, req oas.ListDocsPagesRequest
 	var next *string
 	if len(rows) > int(lim) {
 		rows = rows[:lim]
-		c := encodeOffset(off + lim)
+		c := encodeOffset(sort, off+lim)
 		next = &c
 	}
 	items := make([]oas.DocsPage, len(rows))
@@ -612,7 +625,7 @@ func (s *Server) GetDocsPage(ctx context.Context, req oas.GetDocsPageRequestObje
 	inboxID := prm.InboxId
 	rows, err := s.st.ListDocsPages(ctx, store.ListDocsPagesParams{
 		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), InboxID: &inboxID,
-		Page: &page, Since: since, Lim: 1,
+		Page: &page, Since: since, Lim: 1, Sort: string(oas.DocsPageSortDown), HelpfulMin: helpfulMinRatings,
 	})
 	if err != nil {
 		return nil, err
@@ -629,4 +642,44 @@ func (s *Server) GetDocsPage(ctx context.Context, req oas.GetDocsPageRequestObje
 		out.Days = append(out.Days, oas.DocsPageDay{Day: openapi_types.Date{Time: d.Day}, Up: d.Up, Down: d.Down})
 	}
 	return oas.GetDocsPage200JSONResponse(out), nil
+}
+
+func (s *Server) GetDocsSummary(ctx context.Context, req oas.GetDocsSummaryRequestObject) (oas.GetDocsSummaryResponseObject, error) {
+	p := principalFrom(ctx)
+	prm := req.Params
+	since, err := docsSince(s, prm.Days)
+	if err != nil {
+		return nil, err
+	}
+	if prm.InboxId != nil {
+		if _, err := visibleInbox(ctx, s.st.Queries, p, *prm.InboxId); err != nil {
+			return nil, err
+		}
+	}
+	days, err := s.st.ListDocsSummaryDays(ctx, store.ListDocsSummaryDaysParams{
+		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), InboxID: prm.InboxId,
+		Since: since, Until: utcDay(s.now()), SinceAt: since,
+	})
+	if err != nil {
+		return nil, err
+	}
+	counts, err := s.st.GetDocsSummaryCounts(ctx, store.GetDocsSummaryCountsParams{
+		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), InboxID: prm.InboxId,
+		Since: since, SinceAt: since,
+	})
+	if err != nil {
+		return nil, err
+	}
+	out := oas.DocsSummary{
+		Totals: oas.DocsTotals{RatedPages: counts.RatedPages, PublishedAnswers: counts.PublishedAnswers},
+		Days:   make([]oas.DocsSummaryDay, len(days)),
+	}
+	for i, d := range days {
+		out.Days[i] = oas.DocsSummaryDay{Day: openapi_types.Date{Time: d.Day}, Up: d.Up, Down: d.Down, Feedback: d.Feedback, Questions: d.Questions}
+		out.Totals.Up += d.Up
+		out.Totals.Down += d.Down
+		out.Totals.Feedback += d.Feedback
+		out.Totals.Questions += d.Questions
+	}
+	return oas.GetDocsSummary200JSONResponse(out), nil
 }

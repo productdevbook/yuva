@@ -915,7 +915,12 @@ serve both.
   keeps it without the link.
 - **Panel.** A Docs view lists pages of the inboxes the member can see with their up and down
   counts over a window (7, 30 or 90 days), the share of `down`, open feedback and questions and
-  the number of published answers (`GET /v1/docs/pages`); a page shows its ratings per day
+  the number of published answers (`GET /v1/docs/pages`), sorted by most `down` (default), most
+  `up`, most helpful (share of `up`, first among pages with at least 5 ratings in the window, so
+  a single `up` never leads) or most activity (ratings plus open feedback and questions). The list
+  is an aggregate, so its cursor is a position within one sort and window. Above it, totals over
+  the window and a zero-filled series per day of ratings, page feedback and questions
+  (`GET /v1/docs/summary`) feed the charts. A page shows its ratings per day
   (`GET /v1/docs/page`), its feedback and questions (`GET /v1/conversations?page=`) and its
   published answers (`GET /v1/page-answers?page=`). A `question` conversation offers "Publish to
   page" once it has a member reply.

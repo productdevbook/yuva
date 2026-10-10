@@ -90,6 +90,14 @@ func TestDocumentationPages(t *testing.T) {
 	other.owner.expectProblem(http.StatusNotFound, "not_found", "PATCH", answer, map[string]any{"answer": "no"})
 	other.owner.expectProblem(http.StatusNotFound, "not_found", "DELETE", answer, nil)
 	other.owner.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/docs/page?inbox_id="+ct.chatInbox+"&page="+url.QueryEscape(page), nil)
+	other.owner.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/docs/summary?inbox_id="+ct.chatInbox, nil)
+	sum := ct.agent.expect(http.StatusOK, "GET", "/v1/docs/summary?days=7", nil).body
+	if tot := sum["totals"].(map[string]any); len(sum["days"].([]any)) != 7 || tot["down"] != 2.0 || tot["feedback"] != 1.0 || tot["questions"] != 1.0 || tot["published_answers"] != 1.0 || tot["rated_pages"] != 1.0 {
+		t.Fatalf("summary %v", sum)
+	}
+	if tot := other.owner.expect(http.StatusOK, "GET", "/v1/docs/summary", nil).body["totals"].(map[string]any); tot["down"] != 0.0 || tot["feedback"] != 0.0 {
+		t.Fatalf("another workspace's summary %v", tot)
+	}
 
 	ct.owner.expect(http.StatusNoContent, "DELETE", "/v1/inboxes/"+ct.chatInbox+"/members/"+ct.agentID, nil)
 	ct.agent.expectProblem(http.StatusNotFound, "not_found", "GET", answer, nil)
@@ -97,6 +105,9 @@ func TestDocumentationPages(t *testing.T) {
 	ct.agent.expectProblem(http.StatusNotFound, "not_found", "DELETE", answer, nil)
 	if got := ct.agent.expect(http.StatusOK, "GET", "/v1/docs/pages", nil).body["items"].([]any); len(got) != 0 {
 		t.Fatalf("an agent without the inbox sees %v", got)
+	}
+	if tot := ct.agent.expect(http.StatusOK, "GET", "/v1/docs/summary", nil).body["totals"].(map[string]any); tot["down"] != 0.0 || tot["questions"] != 0.0 {
+		t.Fatalf("an agent without the inbox counts %v", tot)
 	}
 	if got := ct.agent.expect(http.StatusOK, "GET", "/v1/page-answers", nil).body["items"].([]any); len(got) != 0 {
 		t.Fatalf("an agent without the inbox lists %v", got)
