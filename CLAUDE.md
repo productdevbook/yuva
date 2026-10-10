@@ -68,7 +68,10 @@ Keep this table current when a command changes.
 
 ## Rules
 
-- Code, identifiers, commits, docs and strings in English; Turkish only in the `tr` catalogs.
+- Code, identifiers, commits and strings in English; Turkish and German only in the `tr` and `de`
+  catalogs. User guides are written in English in `docs/` and translated in `docs/tr/` and
+  `docs/de/`; a change to an English guide updates both translations in the same commit.
+  `architecture.md` and `roadmap.md` stay English only.
   No comments except what the code cannot say.
 - Nothing internal goes into this repository: no hostnames, IPs or filesystem paths of our own
   servers, no secrets, no customer data. Our own deployment lives outside the repo.

@@ -11,6 +11,10 @@ Read the root CLAUDE.md first.
   against `openapi/openapi.yaml` and the code before writing it down; run it when in doubt.
 - Keep the pre-alpha warning in README until the owner says it goes.
 - Nothing internal: no hostnames or paths of our own servers.
+- Write for people: the shortest page that gets a reader to a working setup. What it is in two
+  sentences, then the steps, then reference tables. No internals; `architecture.md` explains why.
+- English is the source; `docs/tr/` and `docs/de/` hold the same pages in Turkish and German and
+  change in the same commit.
 
 When done:
 1. Every link resolves and every documented endpoint exists in the spec.
