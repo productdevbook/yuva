@@ -1,10 +1,11 @@
 -- name: CreateConversation :one
 INSERT INTO conversations (id, workspace_id, inbox_id, contact_id, channel_id, subject, priority,
                            assignee_id, spam, email_token, related_conversation_id, kind, feedback,
-                           email_address, last_activity_at, created_at, updated_at)
+                           email_address, page_url, page_title, last_activity_at, created_at, updated_at)
 VALUES (@id, @workspace_id, @inbox_id, @contact_id, @channel_id, @subject, @priority,
         @assignee_id, @spam, sqlc.narg(email_token), sqlc.narg(related_conversation_id),
-        coalesce(sqlc.narg(kind)::text, 'conversation'), sqlc.narg(feedback), sqlc.narg(email_address), @now, @now, @now)
+        coalesce(sqlc.narg(kind)::text, 'conversation'), sqlc.narg(feedback), sqlc.narg(email_address),
+        sqlc.narg(page_url), sqlc.narg(page_title), @now, @now, @now)
 RETURNING *;
 
 -- name: GetConversation :one
@@ -38,6 +39,7 @@ WHERE c.workspace_id = @workspace_id
   AND c.spam = @spam::bool
   AND (sqlc.narg(kind)::text IS NULL OR c.kind = sqlc.narg(kind)::text)
   AND (sqlc.narg(category)::text IS NULL OR c.feedback->>'category' = sqlc.narg(category)::text)
+  AND (sqlc.narg(page)::text IS NULL OR c.page_url = sqlc.narg(page)::text)
   AND (sqlc.narg(status)::text IS NULL OR c.status = sqlc.narg(status)::text)
   AND (NOT @unassigned::bool OR c.assignee_id IS NULL)
   AND (sqlc.narg(assignee_id)::uuid IS NULL OR c.assignee_id = sqlc.narg(assignee_id)::uuid)

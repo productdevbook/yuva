@@ -382,7 +382,7 @@ func (f *clientFilter) transform(ctx context.Context, e realtime.Event) ([]any, 
 		f.convs[c.Id] = string(c.Status)
 		if !known || e.Type == realtime.ConversationCreated {
 			return frameAs(realtime.ConversationCreated, oas.ClientConversation{
-				Id: c.Id, Subject: c.Subject, Status: c.Status, LastMessageAt: c.LastMessageAt, CreatedAt: c.CreatedAt,
+				Id: c.Id, Kind: c.Kind, Feedback: c.Feedback, Question: c.Question, Subject: c.Subject, Status: c.Status, LastMessageAt: c.LastMessageAt, CreatedAt: c.CreatedAt,
 			}), nil
 		}
 		if prev != statusUnsent && prev == string(c.Status) {

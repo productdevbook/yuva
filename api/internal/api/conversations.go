@@ -163,7 +163,7 @@ func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conver
 	for i, r := range rows {
 		c := conversationBody(r, labels[r.ID])
 		out[i] = oas.ConversationListItem{
-			Id: c.Id, InboxId: c.InboxId, ContactId: c.ContactId, ChannelId: c.ChannelId, Kind: c.Kind, Feedback: c.Feedback, Subject: c.Subject,
+			Id: c.Id, InboxId: c.InboxId, ContactId: c.ContactId, ChannelId: c.ChannelId, Kind: c.Kind, Feedback: c.Feedback, Question: c.Question, Subject: c.Subject,
 			Status: c.Status, SnoozeUntil: c.SnoozeUntil, Priority: c.Priority, Spam: c.Spam, AssigneeId: c.AssigneeId, Labels: c.Labels,
 			LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt, CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt,
 			RelatedConversationId: c.RelatedConversationId, ClosedAt: c.ClosedAt, Rating: c.Rating, LastReadByContactAt: c.LastReadByContactAt,
@@ -179,7 +179,7 @@ func conversationBody(c store.Conversation, labels []uuid.UUID) oas.Conversation
 	}
 	return oas.Conversation{
 		Id: c.ID, InboxId: c.InboxID, ContactId: c.ContactID, ChannelId: c.ChannelID, Subject: c.Subject,
-		Kind: oas.ConversationKind(c.Kind), Feedback: conversationFeedback(c), Status: oas.ConversationStatus(c.Status), SnoozeUntil: c.SnoozeUntil, Priority: oas.Priority(c.Priority), Spam: c.Spam,
+		Kind: oas.ConversationKind(c.Kind), Feedback: conversationFeedback(c), Question: conversationQuestion(c), Status: oas.ConversationStatus(c.Status), SnoozeUntil: c.SnoozeUntil, Priority: oas.Priority(c.Priority), Spam: c.Spam,
 		AssigneeId: c.AssigneeID, Labels: labels, LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt,
 		CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt, RelatedConversationId: c.RelatedConversationID,
 		ClosedAt: c.ClosedAt, Rating: conversationRating(c), LastReadByContactAt: c.LastReadByContactAt,
@@ -322,7 +322,7 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 	}
 	if prm.Kind != nil {
 		if !prm.Kind.Valid() {
-			return nil, errValidation("kind must be conversation or feedback")
+			return nil, errValidation("kind must be conversation, feedback or question")
 		}
 		k := string(*prm.Kind)
 		arg.Kind = &k
@@ -341,6 +341,13 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 		if _, err := visibleInbox(ctx, s.st.Queries, p, *prm.InboxId); err != nil {
 			return nil, err
 		}
+	}
+	if prm.Page != nil {
+		page, _, err := pageURL(*prm.Page)
+		if err != nil {
+			return nil, err
+		}
+		arg.Page = &page
 	}
 	if prm.ContactId != nil {
 		found, err := s.st.ContactExists(ctx, store.ContactExistsParams{WorkspaceID: p.workspaceID, ID: *prm.ContactId})

@@ -177,6 +177,8 @@ type Conversation struct {
 	RatedAt               *time.Time
 	RatingRequestedAt     *time.Time
 	LastReadByContactAt   *time.Time
+	PageUrl               *string
+	PageTitle             *string
 }
 
 type ConversationLabel struct {
@@ -472,6 +474,32 @@ type OauthToken struct {
 	CreatedAt   time.Time
 	ExpiresAt   time.Time
 	UsedAt      *time.Time
+}
+
+type PageAnswer struct {
+	ID             uuid.UUID
+	WorkspaceID    uuid.UUID
+	InboxID        uuid.UUID
+	ChannelID      uuid.UUID
+	Page           string
+	Title          string
+	Question       string
+	Answer         string
+	MemberID       *uuid.UUID
+	ConversationID *uuid.UUID
+	PublishedAt    time.Time
+	UpdatedAt      time.Time
+}
+
+type PageRating struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	ChannelID   uuid.UUID
+	Page        string
+	Title       string
+	Day         time.Time
+	Up          int32
+	Down        int32
 }
 
 type Passkey struct {

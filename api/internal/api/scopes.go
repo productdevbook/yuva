@@ -69,6 +69,10 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"ListCannedReplies":     {oas.ConversationsRead},
 	"ListEvents":            {oas.ConversationsRead},
 	"GetLatestEvent":        {oas.ConversationsRead},
+	"ListPageAnswers":       {oas.ConversationsRead},
+	"GetPageAnswer":         {oas.ConversationsRead},
+	"ListDocsPages":         {oas.ConversationsRead},
+	"GetDocsPage":           {oas.ConversationsRead},
 
 	"CreateConversation":      {oas.ConversationsWrite},
 	"UpdateConversation":      {oas.ConversationsWrite},

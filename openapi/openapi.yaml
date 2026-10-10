@@ -99,6 +99,10 @@ tags:
     description: Workspace labels for conversations.
   - name: canned-replies
     description: Saved answers members insert into replies.
+  - name: docs
+    description: |
+      Documentation pages on a product's own site: ratings per page, feedback and questions sent
+      from a page, and answers members publish to it.
   - name: realtime
     description: Live workspace events over WebSocket, and the same events as a feed to poll.
   - name: client
@@ -1949,6 +1953,14 @@ paths:
           description: Only feedback of this category (implies `kind=feedback`).
           schema:
             $ref: "#/components/schemas/FeedbackCategory"
+        - name: page
+          in: query
+          description: |
+            Only feedback and questions sent from this documentation page (a URL; query and
+            fragment are ignored).
+          schema:
+            type: string
+            maxLength: 2000
         - name: pinned
           in: query
           description: |
@@ -2207,6 +2219,51 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Conversation"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /v1/conversations/{conversationId}/publish:
+    post:
+      operationId: publishConversation
+      summary: Publish a question and its answer to the page
+      description: |
+        Publishes a `question` conversation to its documentation page as a question and an answer,
+        both as the member wrote them here (usually edited from the thread). The published answer
+        carries no name or address of the visitor; it is listed on the page by
+        `GET /client/v1/channels/{key}/page-answers`. The conversation must be a `question`
+        with at least one sent member reply and still be on a `chat` channel that allows the
+        page's origin (`409 not_publishable` otherwise); it publishes once
+        (`409 already_published`; edit the published answer instead).
+
+        A published answer is the member's text: retention and contact deletion leave it, and
+        deleting the conversation keeps it without `conversation_id`.
+
+        Member sessions only.
+      tags: [docs]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PageAnswerCreate"
+      responses:
+        "201":
+          description: The published answer.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageAnswer"
         "400":
           $ref: "#/components/responses/Problem"
         "401":
@@ -2937,6 +2994,205 @@ paths:
       responses:
         "204":
           description: Deleted.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/page-answers:
+    get:
+      operationId: listPageAnswers
+      summary: List published answers
+      description: |
+        Published answers in the inboxes the caller can see, newest first.
+
+        Scope: `conversations:read`.
+      tags: [docs]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - name: inbox_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: page
+          in: query
+          description: Only this page's answers (a URL; query and fragment are ignored).
+          schema:
+            type: string
+            maxLength: 2000
+        - name: conversation_id
+          in: query
+          description: Only the answer published from this conversation.
+          schema:
+            type: string
+            format: uuid
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: A page of published answers.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageAnswerPage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/page-answers/{pageAnswerId}:
+    get:
+      operationId: getPageAnswer
+      summary: Get a published answer
+      description: |
+        An answer in an inbox the caller cannot see answers `404`.
+
+        Scope: `conversations:read`.
+      tags: [docs]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/PageAnswerId"
+      responses:
+        "200":
+          description: The published answer.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageAnswer"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    patch:
+      operationId: updatePageAnswer
+      summary: Edit a published answer
+      description: Members who can see the answer's inbox. Member sessions only.
+      tags: [docs]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/PageAnswerId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PageAnswerUpdate"
+      responses:
+        "200":
+          description: The edited answer.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageAnswer"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deletePageAnswer
+      summary: Unpublish an answer
+      description: |
+        Removes it from the page. The conversation it came from stays and can be published again.
+        Members who can see the answer's inbox. Member sessions only.
+      tags: [docs]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/PageAnswerId"
+      responses:
+        "204":
+          description: Unpublished.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/docs/pages:
+    get:
+      operationId: listDocsPages
+      summary: Documentation pages with their ratings, feedback and questions
+      description: |
+        The pages of the inboxes the caller can see that were rated in the window, have open
+        feedback or questions, or have published answers: `up` and `down` summed over the last
+        `days` days (today included, UTC), open (status `open`, not spam) feedback and question
+        conversations sent from the page, and published answers. Most `down` first, then most
+        ratings, then by page. A page is per inbox.
+
+        Scope: `conversations:read`.
+      tags: [docs]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - name: inbox_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - $ref: "#/components/parameters/DocsDays"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: A page of documentation pages.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocsPagePage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/docs/page:
+    get:
+      operationId: getDocsPage
+      summary: One documentation page
+      description: |
+        A page's counts as in `GET /v1/docs/pages` (zero when nothing is known about it) and its
+        ratings per day over the window. Its feedback and questions are
+        `GET /v1/conversations?inbox_id=…&page=…` (with `kind=feedback` or `kind=question`), its
+        answers `GET /v1/page-answers?inbox_id=…&page=…`.
+
+        Scope: `conversations:read`.
+      tags: [docs]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - name: inbox_id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: page
+          in: query
+          required: true
+          description: The page's URL; query and fragment are ignored.
+          schema:
+            type: string
+            maxLength: 2000
+        - $ref: "#/components/parameters/DocsDays"
+      responses:
+        "200":
+          description: The page.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocsPageDetail"
+        "400":
+          $ref: "#/components/responses/Problem"
         "401":
           $ref: "#/components/responses/Problem"
         "403":
@@ -3737,6 +3993,89 @@ paths:
           $ref: "#/components/responses/Problem"
         "429":
           $ref: "#/components/responses/Problem"
+  /client/v1/channels/{channel_key}/page-ratings:
+    post:
+      operationId: createPageRating
+      summary: Rate a documentation page
+      description: |
+        Counts one `up` or `down` for a documentation page on a `chat` channel's public key, without
+        a session. Nothing about the visitor is stored and no contact or conversation is created:
+        ratings are a per-page, per-day counter. The page is the URL without query and fragment;
+        its origin must be one of the channel's allowed origins (`400 page_origin`). `title` is
+        what the page shows as its title; the latest one is kept.
+
+        A visitor who changes their mind sends the new `rating` with the one they gave before as
+        `previous`: the previous count goes down by one (on the latest day that has one, within 90
+        days) and the new one up. The same `rating` as `previous` changes nothing.
+
+        Browsers must call from one of the channel's allowed origins (`403 origin_not_allowed`).
+        Requests are rate limited per IP address and per channel like session starts
+        (`429 rate_limited`). An `app` channel's key answers `404`.
+      tags: [client]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/ChannelKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PageRatingCreate"
+      responses:
+        "204":
+          description: Counted.
+        "400":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "429":
+          $ref: "#/components/responses/Problem"
+  /client/v1/channels/{channel_key}/page-answers:
+    get:
+      operationId: listClientPageAnswers
+      summary: A documentation page's published answers
+      description: |
+        The questions and answers members published to a page (`POST /v1/conversations/{id}/publish`)
+        in the channel's inbox, newest first, at most 100, without a session. They carry the
+        member's edited text only: never the visitor's name or address. The page is matched
+        without query and fragment, and its origin must be one of the channel's allowed origins
+        (`400 page_origin`). Answers may be cached for a minute (`Cache-Control`).
+
+        Browsers must call from one of the channel's allowed origins (`403 origin_not_allowed`).
+        Rate limited per IP address (`429 rate_limited`). An `app` channel's key answers `404`.
+      tags: [client]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/ChannelKey"
+        - name: page
+          in: query
+          required: true
+          description: The page's URL.
+          schema:
+            type: string
+            maxLength: 2000
+      responses:
+        "200":
+          description: The page's published answers.
+          headers:
+            Cache-Control:
+              description: "`public, max-age=60`."
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientPageAnswerList"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "429":
+          $ref: "#/components/responses/Problem"
   /client/v1/conversations:
     get:
       operationId: listClientConversations
@@ -4040,6 +4379,11 @@ paths:
         10 `files` parts), with the same size and type rules as messages. `client_id` makes the
         request idempotent: the same `client_id` again answers `201` with the first conversation.
         Rate limited per IP address and per channel.
+
+        From a `chat` channel session (a documentation page's feedback form) it carries the page in
+        `page_url` and `page_title` and the visitor's rating of it in `rating`; `page_url`'s origin
+        must be one of the channel's allowed origins (`400 page_origin`), and replies are e-mailed
+        only with `allow_email`. `page_url` from an `app` channel session answers `400 page_origin`.
       tags: [client]
       security:
         - contactSession: []
@@ -4070,6 +4414,48 @@ paths:
         "413":
           $ref: "#/components/responses/Problem"
         "415":
+          $ref: "#/components/responses/Problem"
+        "429":
+          $ref: "#/components/responses/Problem"
+  /client/v1/questions:
+    post:
+      operationId: createClientQuestion
+      summary: Ask a question about a documentation page
+      description: |
+        Starts a conversation of kind `question` on the session's `chat` channel with its first
+        message, for the page in `page_url` (without query and fragment; its origin must be one of
+        the channel's allowed origins, `400 page_origin`). Questions are private: nothing the
+        visitor writes is shown on the page unless a member publishes an edited answer. It is
+        answered like any other conversation and listed with the contact's conversations
+        (`kind: question`).
+
+        `email` is the address replies go to while the visitor is away, kept like
+        `PUT /client/v1/contact/email`. `client_id` makes the request idempotent: the same
+        `client_id` again answers `201` with the first conversation. `app` channel sessions get
+        `403 forbidden`. Rate limited per IP address and per channel.
+      tags: [client]
+      security:
+        - contactSession: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientQuestionCreate"
+      responses:
+        "201":
+          description: The question conversation and its first message.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientConversationCreated"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
           $ref: "#/components/responses/Problem"
         "429":
           $ref: "#/components/responses/Problem"
@@ -4930,6 +5316,29 @@ components:
       schema:
         type: string
         format: uuid
+    PageAnswerId:
+      name: pageAnswerId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ChannelKey:
+      name: channel_key
+      in: path
+      required: true
+      description: The chat channel's public key.
+      schema:
+        type: string
+        maxLength: 200
+    DocsDays:
+      name: days
+      in: query
+      description: The rating window in days, `7`, `30` or `90`; 30 by default.
+      schema:
+        type: integer
+        format: int32
+        default: 30
     Search:
       name: q
       in: query
@@ -6745,6 +7154,9 @@ components:
         feedback:
           $ref: "#/components/schemas/Feedback"
           description: "`feedback` conversations only: category and what the app sent with it."
+        question:
+          $ref: "#/components/schemas/PageQuestion"
+          description: "`question` conversations only: the page it was asked on."
         channel_id:
           type: string
           format: uuid
@@ -8387,8 +8799,10 @@ components:
             $ref: "#/components/schemas/AppPlatform"
     ConversationKind:
       type: string
-      description: "`feedback` conversations carry `feedback` metadata; everything else is `conversation`."
-      enum: [conversation, feedback]
+      description: |
+        `feedback` conversations carry `feedback` metadata; `question` conversations were asked on a
+        documentation page and carry `question`; everything else is `conversation`.
+      enum: [conversation, feedback, question]
     FeedbackCategory:
       type: string
       enum: [bug, idea, praise, other]
@@ -8422,6 +8836,14 @@ components:
         installation_id:
           type: string
           description: The app's own id for this installation.
+        page_url:
+          type: string
+          description: Feedback sent from a documentation page; the URL without query and fragment.
+        page_title:
+          type: string
+        rating:
+          $ref: "#/components/schemas/PageRating"
+          description: The visitor's rating of the page the feedback follows.
     FeedbackFields:
       type: object
       properties:
@@ -8453,10 +8875,23 @@ components:
       allOf:
         - $ref: "#/components/schemas/FeedbackFields"
         - type: object
-          required: [category]
           properties:
             category:
               $ref: "#/components/schemas/FeedbackCategory"
+              description: "`other` when absent."
+            page_url:
+              type: string
+              maxLength: 2000
+              description: |
+                `chat` channels only: the documentation page the feedback is about, an absolute URL
+                whose origin is one of the channel's allowed origins (`400 page_origin`); query and
+                fragment are dropped.
+            page_title:
+              type: string
+              maxLength: 300
+            rating:
+              $ref: "#/components/schemas/PageRating"
+              description: The visitor's rating of the page, with `page_url`.
             subject:
               type: string
               maxLength: 500
@@ -8485,6 +8920,223 @@ components:
               items:
                 type: string
                 format: binary
+    PageRating:
+      type: string
+      enum: [up, down]
+    PageRatingCreate:
+      type: object
+      required: [page, rating]
+      properties:
+        page:
+          type: string
+          maxLength: 2000
+          description: The page's absolute `http` or `https` URL; query and fragment are dropped.
+        title:
+          type: string
+          maxLength: 300
+        rating:
+          $ref: "#/components/schemas/PageRating"
+        previous:
+          $ref: "#/components/schemas/PageRating"
+          description: The visitor's earlier rating of this page, which this one replaces.
+    PageQuestion:
+      type: object
+      description: The documentation page a `question` conversation was asked on.
+      required: [page_url]
+      properties:
+        page_url:
+          type: string
+          description: Without query and fragment.
+        page_title:
+          type: string
+    ClientQuestionCreate:
+      type: object
+      required: [page_url, body]
+      properties:
+        page_url:
+          type: string
+          maxLength: 2000
+          description: The page's absolute URL; query and fragment are dropped.
+        page_title:
+          type: string
+          maxLength: 300
+        subject:
+          type: string
+          maxLength: 500
+        body:
+          type: string
+          minLength: 1
+          maxLength: 65536
+          description: The question.
+        client_id:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: The first message's `client_id`.
+        email:
+          $ref: "#/components/schemas/Email"
+    ClientPageAnswer:
+      type: object
+      description: A published question and answer, as the member wrote them.
+      required: [id, question, answer, published_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        question:
+          type: string
+        answer:
+          type: string
+        published_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ClientPageAnswerList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ClientPageAnswer"
+    PageAnswer:
+      type: object
+      description: A question and answer published to a documentation page.
+      required: [id, inbox_id, channel_id, page, title, question, answer, published_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        channel_id:
+          type: string
+          format: uuid
+          description: The chat channel whose pages show it.
+        page:
+          type: string
+          description: The page's URL without query and fragment.
+        title:
+          type: string
+          description: The page's title when it was published; may be empty.
+        question:
+          type: string
+        answer:
+          type: string
+        member_id:
+          type: string
+          format: uuid
+          description: The member who published it; absent once they are removed.
+        conversation_id:
+          type: string
+          format: uuid
+          description: The question it was published from; absent once that conversation is deleted.
+        published_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    PageAnswerCreate:
+      type: object
+      required: [question, answer]
+      properties:
+        question:
+          type: string
+          minLength: 1
+          maxLength: 2000
+        answer:
+          type: string
+          minLength: 1
+          maxLength: 20000
+    PageAnswerUpdate:
+      type: object
+      properties:
+        question:
+          type: string
+          minLength: 1
+          maxLength: 2000
+        answer:
+          type: string
+          minLength: 1
+          maxLength: 20000
+    PageAnswerPage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/PageAnswer"
+        next_cursor:
+          type: string
+          description: Absent on the last page.
+    DocsPage:
+      type: object
+      required: [inbox_id, page, title, up, down, open_feedback, open_questions, published_answers]
+      properties:
+        inbox_id:
+          type: string
+          format: uuid
+        page:
+          type: string
+          description: The page's URL without query and fragment.
+        title:
+          type: string
+          description: The latest title the page sent; empty when none.
+        up:
+          type: integer
+          format: int64
+        down:
+          type: integer
+          format: int64
+        open_feedback:
+          type: integer
+          format: int64
+        open_questions:
+          type: integer
+          format: int64
+        published_answers:
+          type: integer
+          format: int64
+    DocsPagePage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocsPage"
+        next_cursor:
+          type: string
+          description: Absent on the last page.
+    DocsPageDay:
+      type: object
+      required: [day, up, down]
+      properties:
+        day:
+          type: string
+          format: date
+        up:
+          type: integer
+          format: int64
+        down:
+          type: integer
+          format: int64
+    DocsPageDetail:
+      type: object
+      required: [page, days]
+      properties:
+        page:
+          $ref: "#/components/schemas/DocsPage"
+        days:
+          type: array
+          description: Days of the window with ratings, oldest first (UTC).
+          items:
+            $ref: "#/components/schemas/DocsPageDay"
     TypingCreate:
       type: object
       properties:
@@ -8731,6 +9383,9 @@ components:
         feedback:
           $ref: "#/components/schemas/Feedback"
           description: "`feedback` conversations only."
+        question:
+          $ref: "#/components/schemas/PageQuestion"
+          description: "`question` conversations only."
         subject:
           type: string
         status:

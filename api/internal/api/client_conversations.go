@@ -80,7 +80,7 @@ func memberNames(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, i
 
 func clientConversationBody(c store.Conversation) oas.ClientConversation {
 	return oas.ClientConversation{
-		Id: c.ID, Kind: oas.ConversationKind(c.Kind), Feedback: conversationFeedback(c), Subject: c.Subject, Status: oas.ConversationStatus(c.Status), LastMessageAt: c.LastMessageAt, CreatedAt: c.CreatedAt,
+		Id: c.ID, Kind: oas.ConversationKind(c.Kind), Feedback: conversationFeedback(c), Question: conversationQuestion(c), Subject: c.Subject, Status: oas.ConversationStatus(c.Status), LastMessageAt: c.LastMessageAt, CreatedAt: c.CreatedAt,
 	}
 }
 

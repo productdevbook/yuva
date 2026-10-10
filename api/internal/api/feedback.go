@@ -17,9 +17,9 @@ import (
 var feedbackCategories = []oas.FeedbackCategory{oas.Bug, oas.Idea, oas.Praise, oas.Other}
 
 var (
-	errFeedbackChannel     = problem(http.StatusForbidden, "forbidden", "feedback is sent from app channels")
+	errFeedbackChannel     = problem(http.StatusForbidden, "forbidden", "feedback is sent from app and chat channels")
 	errFeedbackNeedsKey    = problem(http.StatusForbidden, "forbidden", "only an API key can post feedback for a contact")
-	clientFeedbackFields   = []string{"category", "subject", "body", "client_id", "allow_email", "email", "app_version", "build", "os", "os_version", "device_model", "locale", "screen", "installation_id"}
+	clientFeedbackFields   = []string{"category", "subject", "body", "client_id", "allow_email", "email", "app_version", "build", "os", "os_version", "device_model", "locale", "screen", "installation_id", "page_url", "page_title", "rating"}
 	feedbackFieldMaxLength = map[string]int{
 		"app_version": 50, "build": 50, "os": 50, "os_version": 50, "device_model": 100, "locale": 35, "screen": 200, "installation_id": 200,
 	}
@@ -71,7 +71,8 @@ func conversationFeedback(c store.Conversation) *oas.Feedback {
 func emailsReplies(c store.Conversation, channelKind string) bool {
 	switch channelKind {
 	case string(oas.ChannelKindChat):
-		return true
+		f := conversationFeedback(c)
+		return f == nil || f.AllowEmail
 	case string(oas.ChannelKindApp), string(oas.ChannelKindApi):
 		f := conversationFeedback(c)
 		return f != nil && f.AllowEmail
@@ -81,7 +82,7 @@ func emailsReplies(c store.Conversation, channelKind string) bool {
 
 func (s *Server) CreateClientFeedback(ctx context.Context, req oas.CreateClientFeedbackRequestObject) (oas.CreateClientFeedbackResponseObject, error) {
 	cp := contactFrom(ctx)
-	if cp.kind != string(oas.ChannelKindApp) {
+	if cp.kind != string(oas.ChannelKindApp) && cp.kind != string(oas.ChannelKindChat) {
 		return nil, errFeedbackChannel
 	}
 	if err := s.rateLimit(s.writeChecks(ctx, cp)...); err != nil {
@@ -93,6 +94,7 @@ func (s *Server) CreateClientFeedback(ctx context.Context, req oas.CreateClientF
 		allowEmail bool
 		email      *oas.Email
 		fields     map[string]*string
+		page       pageInput
 	)
 	switch {
 	case req.JSONBody != nil:
@@ -101,8 +103,12 @@ func (s *Server) CreateClientFeedback(ctx context.Context, req oas.CreateClientF
 		if b.Body != nil {
 			in.body = *b.Body
 		}
-		category, email = b.Category, b.Email
+		email = b.Email
+		if b.Category != nil {
+			category = *b.Category
+		}
 		allowEmail = b.AllowEmail != nil && *b.AllowEmail
+		page = pageInput{url: b.PageUrl, title: b.PageTitle, rating: b.Rating}
 		fields = feedbackFieldsOf(oas.FeedbackFields{
 			AppVersion: b.AppVersion, Build: b.Build, Os: b.Os, OsVersion: b.OsVersion, DeviceModel: b.DeviceModel,
 			Locale: b.Locale, Screen: b.Screen, InstallationId: b.InstallationId,
@@ -113,6 +119,15 @@ func (s *Server) CreateClientFeedback(ctx context.Context, req oas.CreateClientF
 			return nil, err
 		}
 		category = oas.FeedbackCategory(in.extra["category"])
+		for name, dst := range map[string]**string{"page_url": &page.url, "page_title": &page.title} {
+			if v, ok := in.extra[name]; ok {
+				*dst = &v
+			}
+		}
+		if v, ok := in.extra["rating"]; ok && v != "" {
+			r := oas.PageRating(v)
+			page.rating = &r
+		}
 		if v, ok := in.extra["allow_email"]; ok {
 			if allowEmail, err = strconv.ParseBool(v); err != nil {
 				in.close()
@@ -136,8 +151,14 @@ func (s *Server) CreateClientFeedback(ctx context.Context, req oas.CreateClientF
 	if err := s.validateClientInput(in); err != nil {
 		return nil, err
 	}
+	if category == "" {
+		category = oas.Other
+	}
 	fb, err := feedbackOf(category, allowEmail, fields)
 	if err != nil {
+		return nil, err
+	}
+	if err := page.apply(cp, &fb); err != nil {
 		return nil, err
 	}
 	var addr *string
@@ -216,7 +237,7 @@ func (s *Server) createFeedbackConversation(ctx context.Context, q *store.Querie
 	kind := string(oas.ConversationKindFeedback)
 	c, err := q.CreateConversation(ctx, store.CreateConversationParams{
 		ID: newID(), WorkspaceID: ws, InboxID: inboxID, ContactID: contactID, ChannelID: &channelID,
-		Subject: subj, Priority: string(oas.Normal), Kind: &kind, Feedback: mustJSON(fb), Now: s.now(),
+		Subject: subj, Priority: string(oas.Normal), Kind: &kind, Feedback: mustJSON(fb), PageUrl: fb.PageUrl, PageTitle: fb.PageTitle, Now: s.now(),
 	})
 	if err != nil {
 		return c, err

@@ -369,6 +369,7 @@ func (e ConversationEventType) Valid() bool {
 const (
 	ConversationKindConversation ConversationKind = "conversation"
 	ConversationKindFeedback     ConversationKind = "feedback"
+	ConversationKindQuestion     ConversationKind = "question"
 )
 
 // Valid indicates whether the value is a known member of the ConversationKind enum.
@@ -377,6 +378,8 @@ func (e ConversationKind) Valid() bool {
 	case ConversationKindConversation:
 		return true
 	case ConversationKindFeedback:
+		return true
+	case ConversationKindQuestion:
 		return true
 	default:
 		return false
@@ -1013,6 +1016,24 @@ const (
 func (e OAuthTokenResponseTokenType) Valid() bool {
 	switch e {
 	case Bearer:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PageRating.
+const (
+	Down PageRating = "down"
+	Up   PageRating = "up"
+)
+
+// Valid indicates whether the value is a known member of the PageRating enum.
+func (e PageRating) Valid() bool {
+	switch e {
+	case Down:
+		return true
+	case Up:
 		return true
 	default:
 		return false
@@ -1769,7 +1790,8 @@ type ClientConversation struct {
 	Feedback *Feedback `json:"feedback,omitempty"`
 	Id       uuid.UUID `json:"id"`
 
-	// Kind `feedback` conversations carry `feedback` metadata; everything else is `conversation`.
+	// Kind `feedback` conversations carry `feedback` metadata; `question` conversations were asked on a
+	// documentation page and carry `question`; everything else is `conversation`.
 	Kind          ConversationKind      `json:"kind"`
 	LastMessage   *ClientMessagePreview `json:"last_message,omitempty"`
 	LastMessageAt *time.Time            `json:"last_message_at,omitempty"`
@@ -1778,6 +1800,9 @@ type ClientConversation struct {
 	// (the latest read position of any member, as in the `read` realtime frame). Absent
 	// when no member has read the conversation, and in `async` inboxes.
 	LastReadByMemberAt *time.Time `json:"last_read_by_member_at,omitempty"`
+
+	// Question `question` conversations only.
+	Question *PageQuestion `json:"question,omitempty"`
 
 	// Rating The contact's rating since the last close; absent when they have not rated it.
 	Rating  *Rating            `json:"rating,omitempty"`
@@ -1866,9 +1891,11 @@ type ClientFeedbackCreate struct {
 	AppVersion *string `json:"app_version,omitempty"`
 
 	// Body The feedback text. Required unless files are attached.
-	Body     *string          `json:"body,omitempty"`
-	Build    *string          `json:"build,omitempty"`
-	Category FeedbackCategory `json:"category"`
+	Body  *string `json:"body,omitempty"`
+	Build *string `json:"build,omitempty"`
+
+	// Category `other` when absent.
+	Category *FeedbackCategory `json:"category,omitempty"`
 
 	// ClientId The first message's `client_id`.
 	ClientId    *string `json:"client_id,omitempty"`
@@ -1880,8 +1907,17 @@ type ClientFeedbackCreate struct {
 	Locale         *string `json:"locale,omitempty"`
 	Os             *string `json:"os,omitempty"`
 	OsVersion      *string `json:"os_version,omitempty"`
-	Screen         *string `json:"screen,omitempty"`
-	Subject        *string `json:"subject,omitempty"`
+	PageTitle      *string `json:"page_title,omitempty"`
+
+	// PageUrl `chat` channels only: the documentation page the feedback is about, an absolute URL
+	// whose origin is one of the channel's allowed origins (`400 page_origin`); query and
+	// fragment are dropped.
+	PageUrl *string `json:"page_url,omitempty"`
+
+	// Rating The visitor's rating of the page, with `page_url`.
+	Rating  *PageRating `json:"rating,omitempty"`
+	Screen  *string     `json:"screen,omitempty"`
+	Subject *string     `json:"subject,omitempty"`
 }
 
 // ClientFeedbackCreateMultipart defines model for ClientFeedbackCreateMultipart.
@@ -1890,9 +1926,11 @@ type ClientFeedbackCreateMultipart struct {
 	AppVersion *string `json:"app_version,omitempty"`
 
 	// Body The feedback text. Required unless files are attached.
-	Body     *string          `json:"body,omitempty"`
-	Build    *string          `json:"build,omitempty"`
-	Category FeedbackCategory `json:"category"`
+	Body  *string `json:"body,omitempty"`
+	Build *string `json:"build,omitempty"`
+
+	// Category `other` when absent.
+	Category *FeedbackCategory `json:"category,omitempty"`
 
 	// ClientId The first message's `client_id`.
 	ClientId    *string `json:"client_id,omitempty"`
@@ -1905,8 +1943,17 @@ type ClientFeedbackCreateMultipart struct {
 	Locale         *string               `json:"locale,omitempty"`
 	Os             *string               `json:"os,omitempty"`
 	OsVersion      *string               `json:"os_version,omitempty"`
-	Screen         *string               `json:"screen,omitempty"`
-	Subject        *string               `json:"subject,omitempty"`
+	PageTitle      *string               `json:"page_title,omitempty"`
+
+	// PageUrl `chat` channels only: the documentation page the feedback is about, an absolute URL
+	// whose origin is one of the channel's allowed origins (`400 page_origin`); query and
+	// fragment are dropped.
+	PageUrl *string `json:"page_url,omitempty"`
+
+	// Rating The visitor's rating of the page, with `page_url`.
+	Rating  *PageRating `json:"rating,omitempty"`
+	Screen  *string     `json:"screen,omitempty"`
+	Subject *string     `json:"subject,omitempty"`
 }
 
 // ClientInbox The inbox's public settings. `live` inboxes carry `presence`; `async` inboxes never do and
@@ -2047,6 +2094,20 @@ type ClientMessagePreview struct {
 	Text string `json:"text"`
 }
 
+// ClientPageAnswer A published question and answer, as the member wrote them.
+type ClientPageAnswer struct {
+	Answer      string    `json:"answer"`
+	Id          uuid.UUID `json:"id"`
+	PublishedAt time.Time `json:"published_at"`
+	Question    string    `json:"question"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+// ClientPageAnswerList defines model for ClientPageAnswerList.
+type ClientPageAnswerList struct {
+	Items []ClientPageAnswer `json:"items"`
+}
+
 // ClientPresence Who can answer now, in a `live` inbox.
 type ClientPresence struct {
 	// Available Someone with access is connected, not set to away, and the inbox is within its business
@@ -2066,6 +2127,23 @@ type ClientPresenceEvent struct {
 
 // ClientPresenceEventType defines model for ClientPresenceEvent.Type.
 type ClientPresenceEventType string
+
+// ClientQuestionCreate defines model for ClientQuestionCreate.
+type ClientQuestionCreate struct {
+	// Body The question.
+	Body string `json:"body"`
+
+	// ClientId The first message's `client_id`.
+	ClientId *string `json:"client_id,omitempty"`
+
+	// Email Examples: owner@example.com
+	Email     *Email  `json:"email,omitempty"`
+	PageTitle *string `json:"page_title,omitempty"`
+
+	// PageUrl The page's absolute URL; query and fragment are dropped.
+	PageUrl string  `json:"page_url"`
+	Subject *string `json:"subject,omitempty"`
+}
 
 // ClientRatingCreate defines model for ClientRatingCreate.
 type ClientRatingCreate struct {
@@ -2393,7 +2471,8 @@ type Conversation struct {
 	Id       uuid.UUID `json:"id"`
 	InboxId  uuid.UUID `json:"inbox_id"`
 
-	// Kind `feedback` conversations carry `feedback` metadata; everything else is `conversation`.
+	// Kind `feedback` conversations carry `feedback` metadata; `question` conversations were asked on a
+	// documentation page and carry `question`; everything else is `conversation`.
 	Kind ConversationKind `json:"kind"`
 
 	// Labels Label ids.
@@ -2411,6 +2490,9 @@ type Conversation struct {
 	// event tells when it moves.
 	LastReadByContactAt *time.Time `json:"last_read_by_contact_at,omitempty"`
 	Priority            Priority   `json:"priority"`
+
+	// Question `question` conversations only: the page it was asked on.
+	Question *PageQuestion `json:"question,omitempty"`
 
 	// Rating The contact's latest rating. A conversation can be rated once each time it is closed, so
 	// this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
@@ -2528,7 +2610,8 @@ type ConversationEvent struct {
 // ConversationEventType defines model for ConversationEvent.Type.
 type ConversationEventType string
 
-// ConversationKind `feedback` conversations carry `feedback` metadata; everything else is `conversation`.
+// ConversationKind `feedback` conversations carry `feedback` metadata; `question` conversations were asked on a
+// documentation page and carry `question`; everything else is `conversation`.
 type ConversationKind string
 
 // ConversationListItem A conversation with what a list row shows.
@@ -2552,7 +2635,8 @@ type ConversationListItem struct {
 	Id       uuid.UUID `json:"id"`
 	InboxId  uuid.UUID `json:"inbox_id"`
 
-	// Kind `feedback` conversations carry `feedback` metadata; everything else is `conversation`.
+	// Kind `feedback` conversations carry `feedback` metadata; `question` conversations were asked on a
+	// documentation page and carry `question`; everything else is `conversation`.
 	Kind ConversationKind `json:"kind"`
 
 	// Labels Label ids.
@@ -2576,6 +2660,9 @@ type ConversationListItem struct {
 	// PinnedAt When the calling member pinned it; absent when they did not, and for API keys.
 	PinnedAt *time.Time `json:"pinned_at,omitempty"`
 	Priority Priority   `json:"priority"`
+
+	// Question `question` conversations only: the page it was asked on.
+	Question *PageQuestion `json:"question,omitempty"`
 
 	// Rating The contact's latest rating. A conversation can be rated once each time it is closed, so
 	// this may belong to an earlier close (compare `rated_at` with `closed_at`). The thread also
@@ -2744,6 +2831,44 @@ type CountByID struct {
 // Direction defines model for Direction.
 type Direction string
 
+// DocsPage defines model for DocsPage.
+type DocsPage struct {
+	Down          int64     `json:"down"`
+	InboxId       uuid.UUID `json:"inbox_id"`
+	OpenFeedback  int64     `json:"open_feedback"`
+	OpenQuestions int64     `json:"open_questions"`
+
+	// Page The page's URL without query and fragment.
+	Page             string `json:"page"`
+	PublishedAnswers int64  `json:"published_answers"`
+
+	// Title The latest title the page sent; empty when none.
+	Title string `json:"title"`
+	Up    int64  `json:"up"`
+}
+
+// DocsPageDay defines model for DocsPageDay.
+type DocsPageDay struct {
+	Day  openapi_types.Date `json:"day"`
+	Down int64              `json:"down"`
+	Up   int64              `json:"up"`
+}
+
+// DocsPageDetail defines model for DocsPageDetail.
+type DocsPageDetail struct {
+	// Days Days of the window with ratings, oldest first (UTC).
+	Days []DocsPageDay `json:"days"`
+	Page DocsPage      `json:"page"`
+}
+
+// DocsPagePage defines model for DocsPagePage.
+type DocsPagePage struct {
+	Items []DocsPage `json:"items"`
+
+	// NextCursor Absent on the last page.
+	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
 // DraftAuthorKind `bot`: written with an API key. `assistant`: written by a member through an OAuth client.
 // `member`: written by a member in the panel.
 type DraftAuthorKind string
@@ -2895,6 +3020,13 @@ type Feedback struct {
 	// Os Examples: iOS, Android
 	Os        *string `json:"os,omitempty"`
 	OsVersion *string `json:"os_version,omitempty"`
+	PageTitle *string `json:"page_title,omitempty"`
+
+	// PageUrl Feedback sent from a documentation page; the URL without query and fragment.
+	PageUrl *string `json:"page_url,omitempty"`
+
+	// Rating The visitor's rating of the page the feedback follows.
+	Rating *PageRating `json:"rating,omitempty"`
 
 	// Screen The app screen or route the feedback was sent from.
 	Screen *string `json:"screen,omitempty"`
@@ -3902,6 +4034,73 @@ type OAuthWorkspaceChoice struct {
 // Examples: https://www.example.com
 type Origin = string
 
+// PageAnswer A question and answer published to a documentation page.
+type PageAnswer struct {
+	Answer string `json:"answer"`
+
+	// ChannelId The chat channel whose pages show it.
+	ChannelId uuid.UUID `json:"channel_id"`
+
+	// ConversationId The question it was published from; absent once that conversation is deleted.
+	ConversationId *uuid.UUID `json:"conversation_id,omitempty"`
+	Id             uuid.UUID  `json:"id"`
+	InboxId        uuid.UUID  `json:"inbox_id"`
+
+	// MemberId The member who published it; absent once they are removed.
+	MemberId *uuid.UUID `json:"member_id,omitempty"`
+
+	// Page The page's URL without query and fragment.
+	Page        string    `json:"page"`
+	PublishedAt time.Time `json:"published_at"`
+	Question    string    `json:"question"`
+
+	// Title The page's title when it was published; may be empty.
+	Title     string    `json:"title"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// PageAnswerCreate defines model for PageAnswerCreate.
+type PageAnswerCreate struct {
+	Answer   string `json:"answer"`
+	Question string `json:"question"`
+}
+
+// PageAnswerPage defines model for PageAnswerPage.
+type PageAnswerPage struct {
+	Items []PageAnswer `json:"items"`
+
+	// NextCursor Absent on the last page.
+	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// PageAnswerUpdate defines model for PageAnswerUpdate.
+type PageAnswerUpdate struct {
+	Answer   *string `json:"answer,omitempty"`
+	Question *string `json:"question,omitempty"`
+}
+
+// PageQuestion The documentation page a `question` conversation was asked on.
+type PageQuestion struct {
+	PageTitle *string `json:"page_title,omitempty"`
+
+	// PageUrl Without query and fragment.
+	PageUrl string `json:"page_url"`
+}
+
+// PageRating defines model for PageRating.
+type PageRating string
+
+// PageRatingCreate defines model for PageRatingCreate.
+type PageRatingCreate struct {
+	// Page The page's absolute `http` or `https` URL; query and fragment are dropped.
+	Page string `json:"page"`
+
+	// Previous The visitor's earlier rating of this page, which this one replaces.
+	Previous *PageRating `json:"previous,omitempty"`
+	Rating   PageRating  `json:"rating"`
+	Title    *string     `json:"title,omitempty"`
+}
+
 // Passkey defines model for Passkey.
 type Passkey struct {
 	CreatedAt  time.Time  `json:"created_at"`
@@ -4602,6 +4801,9 @@ type CannedReplyId = uuid.UUID
 // ChannelId defines model for ChannelId.
 type ChannelId = uuid.UUID
 
+// ChannelKey defines model for ChannelKey.
+type ChannelKey = string
+
 // ContactId defines model for ContactId.
 type ContactId = uuid.UUID
 
@@ -4613,6 +4815,9 @@ type Cursor = string
 
 // DeliveryId defines model for DeliveryId.
 type DeliveryId = uuid.UUID
+
+// DocsDays defines model for DocsDays.
+type DocsDays = int32
 
 // IdempotencyKey defines model for IdempotencyKey.
 type IdempotencyKey = string
@@ -4641,6 +4846,9 @@ type OAuthGrantId = uuid.UUID
 // OAuthRequestId defines model for OAuthRequestId.
 type OAuthRequestId = uuid.UUID
 
+// PageAnswerId defines model for PageAnswerId.
+type PageAnswerId = uuid.UUID
+
 // PasskeyId defines model for PasskeyId.
 type PasskeyId = uuid.UUID
 
@@ -4667,6 +4875,12 @@ type WorkspaceHeader = uuid.UUID
 
 // SignedIn defines model for SignedIn.
 type SignedIn = Me
+
+// ListClientPageAnswersParams defines parameters for ListClientPageAnswers.
+type ListClientPageAnswersParams struct {
+	// Page The page's URL.
+	Page string `form:"page" json:"page"`
+}
 
 // ListClientConversationsParams defines parameters for ListClientConversations.
 type ListClientConversationsParams struct {
@@ -4717,6 +4931,12 @@ type SetClientTypingParams struct {
 
 // CreateClientFeedbackParams defines parameters for CreateClientFeedback.
 type CreateClientFeedbackParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// CreateClientQuestionParams defines parameters for CreateClientQuestion.
+type CreateClientQuestionParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
@@ -4952,6 +5172,10 @@ type ListConversationsParams struct {
 	// Category Only feedback of this category (implies `kind=feedback`).
 	Category *FeedbackCategory `form:"category,omitempty" json:"category,omitempty"`
 
+	// Page Only feedback and questions sent from this documentation page (a URL; query and
+	// fragment are ignored).
+	Page *string `form:"page,omitempty" json:"page,omitempty"`
+
 	// Pinned `true` lists only the conversations the calling member pinned, `false` only the others;
 	// without it, both. Member sessions only (`400 validation_failed` for API keys).
 	Pinned *bool `form:"pinned,omitempty" json:"pinned,omitempty"`
@@ -5052,6 +5276,15 @@ type PinConversationParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// PublishConversationParams defines parameters for PublishConversation.
+type PublishConversationParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // MarkConversationReadParams defines parameters for MarkConversationRead.
 type MarkConversationReadParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
@@ -5074,6 +5307,37 @@ type SetMemberTypingParams struct {
 type MarkConversationUnreadParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetDocsPageParams defines parameters for GetDocsPage.
+type GetDocsPageParams struct {
+	InboxId uuid.UUID `form:"inbox_id" json:"inbox_id"`
+
+	// Page The page's URL; query and fragment are ignored.
+	Page string `form:"page" json:"page"`
+
+	// Days The rating window in days, `7`, `30` or `90`; 30 by default.
+	Days *DocsDays `form:"days,omitempty" json:"days,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListDocsPagesParams defines parameters for ListDocsPages.
+type ListDocsPagesParams struct {
+	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+
+	// Days The rating window in days, `7`, `30` or `90`; 30 by default.
+	Days *DocsDays `form:"days,omitempty" json:"days,omitempty"`
+
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
 
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
@@ -5350,6 +5614,44 @@ type RevokeOAuthGrantParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListPageAnswersParams defines parameters for ListPageAnswers.
+type ListPageAnswersParams struct {
+	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+
+	// Page Only this page's answers (a URL; query and fragment are ignored).
+	Page *string `form:"page,omitempty" json:"page,omitempty"`
+
+	// ConversationId Only the answer published from this conversation.
+	ConversationId *uuid.UUID `form:"conversation_id,omitempty" json:"conversation_id,omitempty"`
+
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeletePageAnswerParams defines parameters for DeletePageAnswer.
+type DeletePageAnswerParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetPageAnswerParams defines parameters for GetPageAnswer.
+type GetPageAnswerParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdatePageAnswerParams defines parameters for UpdatePageAnswer.
+type UpdatePageAnswerParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetStatsParams defines parameters for GetStats.
 type GetStatsParams struct {
 	// InboxId Only this inbox (`404` when the caller cannot see it).
@@ -5611,6 +5913,9 @@ type WebhookMessageCreatedParams struct {
 	WebhookSignature WebhookSignatureHeader `json:"webhook-signature"`
 }
 
+// CreatePageRatingJSONRequestBody defines body for CreatePageRating for application/json ContentType.
+type CreatePageRatingJSONRequestBody = PageRatingCreate
+
 // SetClientContactEmailJSONRequestBody defines body for SetClientContactEmail for application/json ContentType.
 type SetClientContactEmailJSONRequestBody = ClientEmailUpdate
 
@@ -5640,6 +5945,9 @@ type CreateClientFeedbackJSONRequestBody = ClientFeedbackCreate
 
 // CreateClientFeedbackMultipartRequestBody defines body for CreateClientFeedback for multipart/form-data ContentType.
 type CreateClientFeedbackMultipartRequestBody = ClientFeedbackCreateMultipart
+
+// CreateClientQuestionJSONRequestBody defines body for CreateClientQuestion for application/json ContentType.
+type CreateClientQuestionJSONRequestBody = ClientQuestionCreate
 
 // CreateClientSessionJSONRequestBody defines body for CreateClientSession for application/json ContentType.
 type CreateClientSessionJSONRequestBody = ClientSessionCreate
@@ -5698,6 +6006,9 @@ type CreateMessageMultipartRequestBody = MessageCreateMultipart
 // MoveConversationJSONRequestBody defines body for MoveConversation for application/json ContentType.
 type MoveConversationJSONRequestBody = ConversationMove
 
+// PublishConversationJSONRequestBody defines body for PublishConversation for application/json ContentType.
+type PublishConversationJSONRequestBody = PageAnswerCreate
+
 // MarkConversationReadJSONRequestBody defines body for MarkConversationRead for application/json ContentType.
 type MarkConversationReadJSONRequestBody = ConversationReadCreate
 
@@ -5751,6 +6062,9 @@ type UpdateMessageJSONRequestBody = MessageUpdate
 
 // ApproveOAuthRequestJSONRequestBody defines body for ApproveOAuthRequest for application/json ContentType.
 type ApproveOAuthRequestJSONRequestBody = OAuthApproval
+
+// UpdatePageAnswerJSONRequestBody defines body for UpdatePageAnswer for application/json ContentType.
+type UpdatePageAnswerJSONRequestBody = PageAnswerUpdate
 
 // CreateWebhookJSONRequestBody defines body for CreateWebhook for application/json ContentType.
 type CreateWebhookJSONRequestBody = WebhookEndpointCreate
@@ -7107,6 +7421,12 @@ type ServerInterface interface {
 	// GetClientChannel A chat or app channel's public settings
 	// (GET /client/v1/channels/{channel_key})
 	GetClientChannel(w http.ResponseWriter, r *http.Request, channelKey string)
+	// ListClientPageAnswers A documentation page's published answers
+	// (GET /client/v1/channels/{channel_key}/page-answers)
+	ListClientPageAnswers(w http.ResponseWriter, r *http.Request, channelKey ChannelKey, params ListClientPageAnswersParams)
+	// CreatePageRating Rate a documentation page
+	// (POST /client/v1/channels/{channel_key}/page-ratings)
+	CreatePageRating(w http.ResponseWriter, r *http.Request, channelKey ChannelKey)
 	// SetClientContactEmail Leave an e-mail address for replies
 	// (PUT /client/v1/contact/email)
 	SetClientContactEmail(w http.ResponseWriter, r *http.Request)
@@ -7137,6 +7457,9 @@ type ServerInterface interface {
 	// CreateClientFeedback Send feedback
 	// (POST /client/v1/feedback)
 	CreateClientFeedback(w http.ResponseWriter, r *http.Request, params CreateClientFeedbackParams)
+	// CreateClientQuestion Ask a question about a documentation page
+	// (POST /client/v1/questions)
+	CreateClientQuestion(w http.ResponseWriter, r *http.Request, params CreateClientQuestionParams)
 	// DeleteClientSession End the contact session
 	// (DELETE /client/v1/session)
 	DeleteClientSession(w http.ResponseWriter, r *http.Request)
@@ -7278,6 +7601,9 @@ type ServerInterface interface {
 	// PinConversation Pin a conversation
 	// (PUT /v1/conversations/{conversationId}/pin)
 	PinConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params PinConversationParams)
+	// PublishConversation Publish a question and its answer to the page
+	// (POST /v1/conversations/{conversationId}/publish)
+	PublishConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params PublishConversationParams)
 	// MarkConversationRead Mark a conversation read
 	// (POST /v1/conversations/{conversationId}/read)
 	MarkConversationRead(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params MarkConversationReadParams)
@@ -7287,6 +7613,12 @@ type ServerInterface interface {
 	// MarkConversationUnread Mark a conversation unread
 	// (POST /v1/conversations/{conversationId}/unread)
 	MarkConversationUnread(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params MarkConversationUnreadParams)
+	// GetDocsPage One documentation page
+	// (GET /v1/docs/page)
+	GetDocsPage(w http.ResponseWriter, r *http.Request, params GetDocsPageParams)
+	// ListDocsPages Documentation pages with their ratings, feedback and questions
+	// (GET /v1/docs/pages)
+	ListDocsPages(w http.ResponseWriter, r *http.Request, params ListDocsPagesParams)
 	// ListDrafts List pending drafts
 	// (GET /v1/drafts)
 	ListDrafts(w http.ResponseWriter, r *http.Request, params ListDraftsParams)
@@ -7443,6 +7775,18 @@ type ServerInterface interface {
 	// DenyOAuthRequest Deny an authorization request
 	// (POST /v1/oauth/requests/{oauthRequestId}/deny)
 	DenyOAuthRequest(w http.ResponseWriter, r *http.Request, oauthRequestId OAuthRequestId)
+	// ListPageAnswers List published answers
+	// (GET /v1/page-answers)
+	ListPageAnswers(w http.ResponseWriter, r *http.Request, params ListPageAnswersParams)
+	// DeletePageAnswer Unpublish an answer
+	// (DELETE /v1/page-answers/{pageAnswerId})
+	DeletePageAnswer(w http.ResponseWriter, r *http.Request, pageAnswerId PageAnswerId, params DeletePageAnswerParams)
+	// GetPageAnswer Get a published answer
+	// (GET /v1/page-answers/{pageAnswerId})
+	GetPageAnswer(w http.ResponseWriter, r *http.Request, pageAnswerId PageAnswerId, params GetPageAnswerParams)
+	// UpdatePageAnswer Edit a published answer
+	// (PATCH /v1/page-answers/{pageAnswerId})
+	UpdatePageAnswer(w http.ResponseWriter, r *http.Request, pageAnswerId PageAnswerId, params UpdatePageAnswerParams)
 	// GetVapidPublicKey The server's Web Push key
 	// (GET /v1/push/vapid-public-key)
 	GetVapidPublicKey(w http.ResponseWriter, r *http.Request)
@@ -7548,6 +7892,74 @@ func (siw *ServerInterfaceWrapper) GetClientChannel(w http.ResponseWriter, r *ht
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetClientChannel(w, r, channelKey)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListClientPageAnswers operation middleware
+func (siw *ServerInterfaceWrapper) ListClientPageAnswers(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "channel_key" -------------
+	var channelKey ChannelKey
+
+	err = runtime.BindStyledParameterWithOptions("simple", "channel_key", r.PathValue("channel_key"), &channelKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "channel_key", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListClientPageAnswersParams
+
+	// ------------- Required query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListClientPageAnswers(w, r, channelKey, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreatePageRating operation middleware
+func (siw *ServerInterfaceWrapper) CreatePageRating(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "channel_key" -------------
+	var channelKey ChannelKey
+
+	err = runtime.BindStyledParameterWithOptions("simple", "channel_key", r.PathValue("channel_key"), &channelKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "channel_key", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreatePageRating(w, r, channelKey)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -7960,6 +8372,47 @@ func (siw *ServerInterfaceWrapper) CreateClientFeedback(w http.ResponseWriter, r
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.CreateClientFeedback(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateClientQuestion operation middleware
+func (siw *ServerInterfaceWrapper) CreateClientQuestion(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateClientQuestionParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateClientQuestion(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -9723,6 +10176,19 @@ func (siw *ServerInterfaceWrapper) ListConversations(w http.ResponseWriter, r *h
 		return
 	}
 
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
 	// ------------- Optional query parameter "pinned" -------------
 
 	err = runtime.BindQueryParameterWithOptions("form", true, false, "pinned", r.URL.Query(), &params.Pinned, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
@@ -10395,6 +10861,75 @@ func (siw *ServerInterfaceWrapper) PinConversation(w http.ResponseWriter, r *htt
 	handler.ServeHTTP(w, r)
 }
 
+// PublishConversation operation middleware
+func (siw *ServerInterfaceWrapper) PublishConversation(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PublishConversationParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PublishConversation(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // MarkConversationRead operation middleware
 func (siw *ServerInterfaceWrapper) MarkConversationRead(w http.ResponseWriter, r *http.Request) {
 
@@ -10593,6 +11128,179 @@ func (siw *ServerInterfaceWrapper) MarkConversationUnread(w http.ResponseWriter,
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.MarkConversationUnread(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetDocsPage operation middleware
+func (siw *ServerInterfaceWrapper) GetDocsPage(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetDocsPageParams
+
+	// ------------- Required query parameter "inbox_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "inbox_id", r.URL.Query(), &params.InboxId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "inbox_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inbox_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Required query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "days" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "days", r.URL.Query(), &params.Days, runtime.BindQueryParameterOptions{Type: "integer", Format: "int32"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "days"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "days", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetDocsPage(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListDocsPages operation middleware
+func (siw *ServerInterfaceWrapper) ListDocsPages(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListDocsPagesParams
+
+	// ------------- Optional query parameter "inbox_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "inbox_id", r.URL.Query(), &params.InboxId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "inbox_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inbox_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "days" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "days", r.URL.Query(), &params.Days, runtime.BindQueryParameterOptions{Type: "integer", Format: "int32"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "days"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "days", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int32"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListDocsPages(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -12884,6 +13592,262 @@ func (siw *ServerInterfaceWrapper) DenyOAuthRequest(w http.ResponseWriter, r *ht
 	handler.ServeHTTP(w, r)
 }
 
+// ListPageAnswers operation middleware
+func (siw *ServerInterfaceWrapper) ListPageAnswers(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListPageAnswersParams
+
+	// ------------- Optional query parameter "inbox_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "inbox_id", r.URL.Query(), &params.InboxId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "inbox_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inbox_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "conversation_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "conversation_id", r.URL.Query(), &params.ConversationId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "conversation_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversation_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int32"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListPageAnswers(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeletePageAnswer operation middleware
+func (siw *ServerInterfaceWrapper) DeletePageAnswer(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "pageAnswerId" -------------
+	var pageAnswerId PageAnswerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "pageAnswerId", r.PathValue("pageAnswerId"), &pageAnswerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "pageAnswerId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeletePageAnswerParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeletePageAnswer(w, r, pageAnswerId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPageAnswer operation middleware
+func (siw *ServerInterfaceWrapper) GetPageAnswer(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "pageAnswerId" -------------
+	var pageAnswerId PageAnswerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "pageAnswerId", r.PathValue("pageAnswerId"), &pageAnswerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "pageAnswerId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetPageAnswerParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPageAnswer(w, r, pageAnswerId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdatePageAnswer operation middleware
+func (siw *ServerInterfaceWrapper) UpdatePageAnswer(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "pageAnswerId" -------------
+	var pageAnswerId PageAnswerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "pageAnswerId", r.PathValue("pageAnswerId"), &pageAnswerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "pageAnswerId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdatePageAnswerParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdatePageAnswer(w, r, pageAnswerId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetVapidPublicKey operation middleware
 func (siw *ServerInterfaceWrapper) GetVapidPublicKey(w http.ResponseWriter, r *http.Request) {
 
@@ -13973,6 +14937,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}", wrapper.GetConversation)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/conversations/{conversationId}", wrapper.UpdateConversation)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/move", wrapper.MoveConversation)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/publish", wrapper.PublishConversation)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}/messages", wrapper.ListMessages)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/messages", wrapper.CreateMessage)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/read", wrapper.MarkConversationRead)
@@ -13995,6 +14960,12 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/canned-replies", wrapper.CreateCannedReply)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/canned-replies/{cannedReplyId}", wrapper.DeleteCannedReply)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/canned-replies/{cannedReplyId}", wrapper.UpdateCannedReply)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/page-answers", wrapper.ListPageAnswers)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/page-answers/{pageAnswerId}", wrapper.DeletePageAnswer)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/page-answers/{pageAnswerId}", wrapper.GetPageAnswer)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/page-answers/{pageAnswerId}", wrapper.UpdatePageAnswer)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/docs/pages", wrapper.ListDocsPages)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/docs/page", wrapper.GetDocsPage)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/usage", wrapper.GetUsage)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/feedback", wrapper.CreateFeedback)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/webhooks", wrapper.ListWebhooks)
@@ -14018,6 +14989,8 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/session", wrapper.GetClientSession)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/session", wrapper.CreateClientSession)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/channels/{channel_key}", wrapper.GetClientChannel)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/channels/{channel_key}/page-ratings", wrapper.CreatePageRating)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/channels/{channel_key}/page-answers", wrapper.ListClientPageAnswers)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/conversations", wrapper.ListClientConversations)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/conversations", wrapper.CreateClientConversation)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/conversations/{conversationId}", wrapper.GetClientConversation)
@@ -14027,6 +15000,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/conversations/{conversationId}/rating", wrapper.RateClientConversation)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/conversations/{conversationId}/typing", wrapper.SetClientTyping)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/feedback", wrapper.CreateClientFeedback)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/client/v1/questions", wrapper.CreateClientQuestion)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/client/v1/contact/email", wrapper.SetClientContactEmail)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/client/v1/attachments/{attachmentId}", wrapper.DownloadClientAttachment)
 
@@ -15159,6 +16133,172 @@ func (response GetClientChannel429ApplicationProblemPlusJSONResponse) VisitGetCl
 	return err
 }
 
+type ListClientPageAnswersRequestObject struct {
+	ChannelKey ChannelKey `json:"channel_key"`
+	Params     ListClientPageAnswersParams
+}
+
+type ListClientPageAnswersResponseObject interface {
+	VisitListClientPageAnswersResponse(w http.ResponseWriter) error
+}
+
+type ListClientPageAnswers200ResponseHeaders struct {
+	CacheControl *string
+}
+
+type ListClientPageAnswers200JSONResponse struct {
+	Body    ClientPageAnswerList
+	Headers ListClientPageAnswers200ResponseHeaders
+}
+
+func (response ListClientPageAnswers200JSONResponse) VisitListClientPageAnswersResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	if response.Headers.CacheControl != nil {
+		w.Header().Set("Cache-Control", fmt.Sprint(*response.Headers.CacheControl))
+	}
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListClientPageAnswers400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListClientPageAnswers400ApplicationProblemPlusJSONResponse) VisitListClientPageAnswersResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListClientPageAnswers403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListClientPageAnswers403ApplicationProblemPlusJSONResponse) VisitListClientPageAnswersResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListClientPageAnswers404ApplicationProblemPlusJSONResponse Problem
+
+func (response ListClientPageAnswers404ApplicationProblemPlusJSONResponse) VisitListClientPageAnswersResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListClientPageAnswers429ApplicationProblemPlusJSONResponse Problem
+
+func (response ListClientPageAnswers429ApplicationProblemPlusJSONResponse) VisitListClientPageAnswersResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreatePageRatingRequestObject struct {
+	ChannelKey ChannelKey `json:"channel_key"`
+	Body       *CreatePageRatingJSONRequestBody
+}
+
+type CreatePageRatingResponseObject interface {
+	VisitCreatePageRatingResponse(w http.ResponseWriter) error
+}
+
+type CreatePageRating204Response struct {
+}
+
+func (response CreatePageRating204Response) VisitCreatePageRatingResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type CreatePageRating400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response CreatePageRating400ApplicationProblemPlusJSONResponse) VisitCreatePageRatingResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreatePageRating403ApplicationProblemPlusJSONResponse Problem
+
+func (response CreatePageRating403ApplicationProblemPlusJSONResponse) VisitCreatePageRatingResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreatePageRating404ApplicationProblemPlusJSONResponse Problem
+
+func (response CreatePageRating404ApplicationProblemPlusJSONResponse) VisitCreatePageRatingResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreatePageRating429ApplicationProblemPlusJSONResponse Problem
+
+func (response CreatePageRating429ApplicationProblemPlusJSONResponse) VisitCreatePageRatingResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type SetClientContactEmailRequestObject struct {
 	Body *SetClientContactEmailJSONRequestBody
 }
@@ -16067,6 +17207,87 @@ func (response CreateClientFeedback415ApplicationProblemPlusJSONResponse) VisitC
 type CreateClientFeedback429ApplicationProblemPlusJSONResponse Problem
 
 func (response CreateClientFeedback429ApplicationProblemPlusJSONResponse) VisitCreateClientFeedbackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientQuestionRequestObject struct {
+	Params CreateClientQuestionParams
+	Body   *CreateClientQuestionJSONRequestBody
+}
+
+type CreateClientQuestionResponseObject interface {
+	VisitCreateClientQuestionResponse(w http.ResponseWriter) error
+}
+
+type CreateClientQuestion201JSONResponse ClientConversationCreated
+
+func (response CreateClientQuestion201JSONResponse) VisitCreateClientQuestionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientQuestion400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response CreateClientQuestion400ApplicationProblemPlusJSONResponse) VisitCreateClientQuestionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientQuestion401ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientQuestion401ApplicationProblemPlusJSONResponse) VisitCreateClientQuestionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientQuestion403ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientQuestion403ApplicationProblemPlusJSONResponse) VisitCreateClientQuestionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateClientQuestion429ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateClientQuestion429ApplicationProblemPlusJSONResponse) VisitCreateClientQuestionResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -19328,6 +20549,102 @@ func (response PinConversation404ApplicationProblemPlusJSONResponse) VisitPinCon
 	return err
 }
 
+type PublishConversationRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Params         PublishConversationParams
+	Body           *PublishConversationJSONRequestBody
+}
+
+type PublishConversationResponseObject interface {
+	VisitPublishConversationResponse(w http.ResponseWriter) error
+}
+
+type PublishConversation201JSONResponse PageAnswer
+
+func (response PublishConversation201JSONResponse) VisitPublishConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PublishConversation400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response PublishConversation400ApplicationProblemPlusJSONResponse) VisitPublishConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PublishConversation401ApplicationProblemPlusJSONResponse Problem
+
+func (response PublishConversation401ApplicationProblemPlusJSONResponse) VisitPublishConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PublishConversation403ApplicationProblemPlusJSONResponse Problem
+
+func (response PublishConversation403ApplicationProblemPlusJSONResponse) VisitPublishConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PublishConversation404ApplicationProblemPlusJSONResponse Problem
+
+func (response PublishConversation404ApplicationProblemPlusJSONResponse) VisitPublishConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PublishConversation409ApplicationProblemPlusJSONResponse Problem
+
+func (response PublishConversation409ApplicationProblemPlusJSONResponse) VisitPublishConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type MarkConversationReadRequestObject struct {
 	ConversationId ConversationId `json:"conversationId"`
 	Params         MarkConversationReadParams
@@ -19542,6 +20859,166 @@ func (response MarkConversationUnread403ApplicationProblemPlusJSONResponse) Visi
 type MarkConversationUnread404ApplicationProblemPlusJSONResponse Problem
 
 func (response MarkConversationUnread404ApplicationProblemPlusJSONResponse) VisitMarkConversationUnreadResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetDocsPageRequestObject struct {
+	Params GetDocsPageParams
+}
+
+type GetDocsPageResponseObject interface {
+	VisitGetDocsPageResponse(w http.ResponseWriter) error
+}
+
+type GetDocsPage200JSONResponse DocsPageDetail
+
+func (response GetDocsPage200JSONResponse) VisitGetDocsPageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetDocsPage400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetDocsPage400ApplicationProblemPlusJSONResponse) VisitGetDocsPageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetDocsPage401ApplicationProblemPlusJSONResponse Problem
+
+func (response GetDocsPage401ApplicationProblemPlusJSONResponse) VisitGetDocsPageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetDocsPage403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetDocsPage403ApplicationProblemPlusJSONResponse) VisitGetDocsPageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetDocsPage404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetDocsPage404ApplicationProblemPlusJSONResponse) VisitGetDocsPageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListDocsPagesRequestObject struct {
+	Params ListDocsPagesParams
+}
+
+type ListDocsPagesResponseObject interface {
+	VisitListDocsPagesResponse(w http.ResponseWriter) error
+}
+
+type ListDocsPages200JSONResponse DocsPagePage
+
+func (response ListDocsPages200JSONResponse) VisitListDocsPagesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListDocsPages400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListDocsPages400ApplicationProblemPlusJSONResponse) VisitListDocsPagesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListDocsPages401ApplicationProblemPlusJSONResponse Problem
+
+func (response ListDocsPages401ApplicationProblemPlusJSONResponse) VisitListDocsPagesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListDocsPages403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListDocsPages403ApplicationProblemPlusJSONResponse) VisitListDocsPagesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListDocsPages404ApplicationProblemPlusJSONResponse Problem
+
+func (response ListDocsPages404ApplicationProblemPlusJSONResponse) VisitListDocsPagesResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -23028,6 +24505,296 @@ func (response DenyOAuthRequest404ApplicationProblemPlusJSONResponse) VisitDenyO
 	return err
 }
 
+type ListPageAnswersRequestObject struct {
+	Params ListPageAnswersParams
+}
+
+type ListPageAnswersResponseObject interface {
+	VisitListPageAnswersResponse(w http.ResponseWriter) error
+}
+
+type ListPageAnswers200JSONResponse PageAnswerPage
+
+func (response ListPageAnswers200JSONResponse) VisitListPageAnswersResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListPageAnswers400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListPageAnswers400ApplicationProblemPlusJSONResponse) VisitListPageAnswersResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListPageAnswers401ApplicationProblemPlusJSONResponse Problem
+
+func (response ListPageAnswers401ApplicationProblemPlusJSONResponse) VisitListPageAnswersResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListPageAnswers403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListPageAnswers403ApplicationProblemPlusJSONResponse) VisitListPageAnswersResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListPageAnswers404ApplicationProblemPlusJSONResponse Problem
+
+func (response ListPageAnswers404ApplicationProblemPlusJSONResponse) VisitListPageAnswersResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeletePageAnswerRequestObject struct {
+	PageAnswerId PageAnswerId `json:"pageAnswerId"`
+	Params       DeletePageAnswerParams
+}
+
+type DeletePageAnswerResponseObject interface {
+	VisitDeletePageAnswerResponse(w http.ResponseWriter) error
+}
+
+type DeletePageAnswer204Response struct {
+}
+
+func (response DeletePageAnswer204Response) VisitDeletePageAnswerResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeletePageAnswer401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeletePageAnswer401ApplicationProblemPlusJSONResponse) VisitDeletePageAnswerResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeletePageAnswer403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeletePageAnswer403ApplicationProblemPlusJSONResponse) VisitDeletePageAnswerResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeletePageAnswer404ApplicationProblemPlusJSONResponse Problem
+
+func (response DeletePageAnswer404ApplicationProblemPlusJSONResponse) VisitDeletePageAnswerResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetPageAnswerRequestObject struct {
+	PageAnswerId PageAnswerId `json:"pageAnswerId"`
+	Params       GetPageAnswerParams
+}
+
+type GetPageAnswerResponseObject interface {
+	VisitGetPageAnswerResponse(w http.ResponseWriter) error
+}
+
+type GetPageAnswer200JSONResponse PageAnswer
+
+func (response GetPageAnswer200JSONResponse) VisitGetPageAnswerResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetPageAnswer401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetPageAnswer401ApplicationProblemPlusJSONResponse) VisitGetPageAnswerResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetPageAnswer403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetPageAnswer403ApplicationProblemPlusJSONResponse) VisitGetPageAnswerResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetPageAnswer404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetPageAnswer404ApplicationProblemPlusJSONResponse) VisitGetPageAnswerResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdatePageAnswerRequestObject struct {
+	PageAnswerId PageAnswerId `json:"pageAnswerId"`
+	Params       UpdatePageAnswerParams
+	Body         *UpdatePageAnswerJSONRequestBody
+}
+
+type UpdatePageAnswerResponseObject interface {
+	VisitUpdatePageAnswerResponse(w http.ResponseWriter) error
+}
+
+type UpdatePageAnswer200JSONResponse PageAnswer
+
+func (response UpdatePageAnswer200JSONResponse) VisitUpdatePageAnswerResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdatePageAnswer400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UpdatePageAnswer400ApplicationProblemPlusJSONResponse) VisitUpdatePageAnswerResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdatePageAnswer401ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdatePageAnswer401ApplicationProblemPlusJSONResponse) VisitUpdatePageAnswerResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdatePageAnswer403ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdatePageAnswer403ApplicationProblemPlusJSONResponse) VisitUpdatePageAnswerResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdatePageAnswer404ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdatePageAnswer404ApplicationProblemPlusJSONResponse) VisitUpdatePageAnswerResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type GetVapidPublicKeyRequestObject struct {
 }
 
@@ -24156,6 +25923,12 @@ type StrictServerInterface interface {
 	// GetClientChannel A chat or app channel's public settings
 	// (GET /client/v1/channels/{channel_key})
 	GetClientChannel(ctx context.Context, request GetClientChannelRequestObject) (GetClientChannelResponseObject, error)
+	// ListClientPageAnswers A documentation page's published answers
+	// (GET /client/v1/channels/{channel_key}/page-answers)
+	ListClientPageAnswers(ctx context.Context, request ListClientPageAnswersRequestObject) (ListClientPageAnswersResponseObject, error)
+	// CreatePageRating Rate a documentation page
+	// (POST /client/v1/channels/{channel_key}/page-ratings)
+	CreatePageRating(ctx context.Context, request CreatePageRatingRequestObject) (CreatePageRatingResponseObject, error)
 	// SetClientContactEmail Leave an e-mail address for replies
 	// (PUT /client/v1/contact/email)
 	SetClientContactEmail(ctx context.Context, request SetClientContactEmailRequestObject) (SetClientContactEmailResponseObject, error)
@@ -24186,6 +25959,9 @@ type StrictServerInterface interface {
 	// CreateClientFeedback Send feedback
 	// (POST /client/v1/feedback)
 	CreateClientFeedback(ctx context.Context, request CreateClientFeedbackRequestObject) (CreateClientFeedbackResponseObject, error)
+	// CreateClientQuestion Ask a question about a documentation page
+	// (POST /client/v1/questions)
+	CreateClientQuestion(ctx context.Context, request CreateClientQuestionRequestObject) (CreateClientQuestionResponseObject, error)
 	// DeleteClientSession End the contact session
 	// (DELETE /client/v1/session)
 	DeleteClientSession(ctx context.Context, request DeleteClientSessionRequestObject) (DeleteClientSessionResponseObject, error)
@@ -24327,6 +26103,9 @@ type StrictServerInterface interface {
 	// PinConversation Pin a conversation
 	// (PUT /v1/conversations/{conversationId}/pin)
 	PinConversation(ctx context.Context, request PinConversationRequestObject) (PinConversationResponseObject, error)
+	// PublishConversation Publish a question and its answer to the page
+	// (POST /v1/conversations/{conversationId}/publish)
+	PublishConversation(ctx context.Context, request PublishConversationRequestObject) (PublishConversationResponseObject, error)
 	// MarkConversationRead Mark a conversation read
 	// (POST /v1/conversations/{conversationId}/read)
 	MarkConversationRead(ctx context.Context, request MarkConversationReadRequestObject) (MarkConversationReadResponseObject, error)
@@ -24336,6 +26115,12 @@ type StrictServerInterface interface {
 	// MarkConversationUnread Mark a conversation unread
 	// (POST /v1/conversations/{conversationId}/unread)
 	MarkConversationUnread(ctx context.Context, request MarkConversationUnreadRequestObject) (MarkConversationUnreadResponseObject, error)
+	// GetDocsPage One documentation page
+	// (GET /v1/docs/page)
+	GetDocsPage(ctx context.Context, request GetDocsPageRequestObject) (GetDocsPageResponseObject, error)
+	// ListDocsPages Documentation pages with their ratings, feedback and questions
+	// (GET /v1/docs/pages)
+	ListDocsPages(ctx context.Context, request ListDocsPagesRequestObject) (ListDocsPagesResponseObject, error)
 	// ListDrafts List pending drafts
 	// (GET /v1/drafts)
 	ListDrafts(ctx context.Context, request ListDraftsRequestObject) (ListDraftsResponseObject, error)
@@ -24492,6 +26277,18 @@ type StrictServerInterface interface {
 	// DenyOAuthRequest Deny an authorization request
 	// (POST /v1/oauth/requests/{oauthRequestId}/deny)
 	DenyOAuthRequest(ctx context.Context, request DenyOAuthRequestRequestObject) (DenyOAuthRequestResponseObject, error)
+	// ListPageAnswers List published answers
+	// (GET /v1/page-answers)
+	ListPageAnswers(ctx context.Context, request ListPageAnswersRequestObject) (ListPageAnswersResponseObject, error)
+	// DeletePageAnswer Unpublish an answer
+	// (DELETE /v1/page-answers/{pageAnswerId})
+	DeletePageAnswer(ctx context.Context, request DeletePageAnswerRequestObject) (DeletePageAnswerResponseObject, error)
+	// GetPageAnswer Get a published answer
+	// (GET /v1/page-answers/{pageAnswerId})
+	GetPageAnswer(ctx context.Context, request GetPageAnswerRequestObject) (GetPageAnswerResponseObject, error)
+	// UpdatePageAnswer Edit a published answer
+	// (PATCH /v1/page-answers/{pageAnswerId})
+	UpdatePageAnswer(ctx context.Context, request UpdatePageAnswerRequestObject) (UpdatePageAnswerResponseObject, error)
 	// GetVapidPublicKey The server's Web Push key
 	// (GET /v1/push/vapid-public-key)
 	GetVapidPublicKey(ctx context.Context, request GetVapidPublicKeyRequestObject) (GetVapidPublicKeyResponseObject, error)
@@ -24629,6 +26426,66 @@ func (sh *strictHandler) GetClientChannel(w http.ResponseWriter, r *http.Request
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(GetClientChannelResponseObject); ok {
 		if err := validResponse.VisitGetClientChannelResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListClientPageAnswers operation middleware
+func (sh *strictHandler) ListClientPageAnswers(w http.ResponseWriter, r *http.Request, channelKey ChannelKey, params ListClientPageAnswersParams) {
+	var request ListClientPageAnswersRequestObject
+
+	request.ChannelKey = channelKey
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListClientPageAnswers(ctx, request.(ListClientPageAnswersRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListClientPageAnswers")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListClientPageAnswersResponseObject); ok {
+		if err := validResponse.VisitListClientPageAnswersResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreatePageRating operation middleware
+func (sh *strictHandler) CreatePageRating(w http.ResponseWriter, r *http.Request, channelKey ChannelKey) {
+	var request CreatePageRatingRequestObject
+
+	request.ChannelKey = channelKey
+
+	var body CreatePageRatingJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.CreatePageRating(ctx, request.(CreatePageRatingRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreatePageRating")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(CreatePageRatingResponseObject); ok {
+		if err := validResponse.VisitCreatePageRatingResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -24979,6 +26836,39 @@ func (sh *strictHandler) CreateClientFeedback(w http.ResponseWriter, r *http.Req
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(CreateClientFeedbackResponseObject); ok {
 		if err := validResponse.VisitCreateClientFeedbackResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreateClientQuestion operation middleware
+func (sh *strictHandler) CreateClientQuestion(w http.ResponseWriter, r *http.Request, params CreateClientQuestionParams) {
+	var request CreateClientQuestionRequestObject
+
+	request.Params = params
+
+	var body CreateClientQuestionJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateClientQuestion(ctx, request.(CreateClientQuestionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateClientQuestion")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(CreateClientQuestionResponseObject); ok {
+		if err := validResponse.VisitCreateClientQuestionResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -26351,6 +28241,40 @@ func (sh *strictHandler) PinConversation(w http.ResponseWriter, r *http.Request,
 	}
 }
 
+// PublishConversation operation middleware
+func (sh *strictHandler) PublishConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params PublishConversationParams) {
+	var request PublishConversationRequestObject
+
+	request.ConversationId = conversationId
+	request.Params = params
+
+	var body PublishConversationJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.PublishConversation(ctx, request.(PublishConversationRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "PublishConversation")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(PublishConversationResponseObject); ok {
+		if err := validResponse.VisitPublishConversationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // MarkConversationRead operation middleware
 func (sh *strictHandler) MarkConversationRead(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params MarkConversationReadParams) {
 	var request MarkConversationReadRequestObject
@@ -26445,6 +28369,58 @@ func (sh *strictHandler) MarkConversationUnread(w http.ResponseWriter, r *http.R
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(MarkConversationUnreadResponseObject); ok {
 		if err := validResponse.VisitMarkConversationUnreadResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetDocsPage operation middleware
+func (sh *strictHandler) GetDocsPage(w http.ResponseWriter, r *http.Request, params GetDocsPageParams) {
+	var request GetDocsPageRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetDocsPage(ctx, request.(GetDocsPageRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetDocsPage")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetDocsPageResponseObject); ok {
+		if err := validResponse.VisitGetDocsPageResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListDocsPages operation middleware
+func (sh *strictHandler) ListDocsPages(w http.ResponseWriter, r *http.Request, params ListDocsPagesParams) {
+	var request ListDocsPagesRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListDocsPages(ctx, request.(ListDocsPagesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListDocsPages")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListDocsPagesResponseObject); ok {
+		if err := validResponse.VisitListDocsPagesResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -27918,6 +29894,120 @@ func (sh *strictHandler) DenyOAuthRequest(w http.ResponseWriter, r *http.Request
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(DenyOAuthRequestResponseObject); ok {
 		if err := validResponse.VisitDenyOAuthRequestResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListPageAnswers operation middleware
+func (sh *strictHandler) ListPageAnswers(w http.ResponseWriter, r *http.Request, params ListPageAnswersParams) {
+	var request ListPageAnswersRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListPageAnswers(ctx, request.(ListPageAnswersRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListPageAnswers")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListPageAnswersResponseObject); ok {
+		if err := validResponse.VisitListPageAnswersResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeletePageAnswer operation middleware
+func (sh *strictHandler) DeletePageAnswer(w http.ResponseWriter, r *http.Request, pageAnswerId PageAnswerId, params DeletePageAnswerParams) {
+	var request DeletePageAnswerRequestObject
+
+	request.PageAnswerId = pageAnswerId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeletePageAnswer(ctx, request.(DeletePageAnswerRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeletePageAnswer")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeletePageAnswerResponseObject); ok {
+		if err := validResponse.VisitDeletePageAnswerResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetPageAnswer operation middleware
+func (sh *strictHandler) GetPageAnswer(w http.ResponseWriter, r *http.Request, pageAnswerId PageAnswerId, params GetPageAnswerParams) {
+	var request GetPageAnswerRequestObject
+
+	request.PageAnswerId = pageAnswerId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetPageAnswer(ctx, request.(GetPageAnswerRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetPageAnswer")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetPageAnswerResponseObject); ok {
+		if err := validResponse.VisitGetPageAnswerResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UpdatePageAnswer operation middleware
+func (sh *strictHandler) UpdatePageAnswer(w http.ResponseWriter, r *http.Request, pageAnswerId PageAnswerId, params UpdatePageAnswerParams) {
+	var request UpdatePageAnswerRequestObject
+
+	request.PageAnswerId = pageAnswerId
+	request.Params = params
+
+	var body UpdatePageAnswerJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdatePageAnswer(ctx, request.(UpdatePageAnswerRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdatePageAnswer")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UpdatePageAnswerResponseObject); ok {
+		if err := validResponse.VisitUpdatePageAnswerResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

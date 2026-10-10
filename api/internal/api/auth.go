@@ -64,6 +64,9 @@ var operationAccess = map[string]access{
 	"UnpinConversation":      accessMember,
 	"SetMemberTyping":        accessMember,
 	"ListMentions":           accessMember,
+	"PublishConversation":    accessMember,
+	"UpdatePageAnswer":       accessMember,
+	"DeletePageAnswer":       accessMember,
 
 	"GetVapidPublicKey":          accessPerson,
 	"ListPushSubscriptions":      accessPerson,
@@ -77,6 +80,9 @@ var operationAccess = map[string]access{
 
 	"CreateClientSession":        accessPublic,
 	"GetClientChannel":           accessPublic,
+	"CreatePageRating":           accessPublic,
+	"ListClientPageAnswers":      accessPublic,
+	"CreateClientQuestion":       accessContact,
 	"GetClientSession":           accessContact,
 	"DeleteClientSession":        accessContact,
 	"ListClientConversations":    accessContact,

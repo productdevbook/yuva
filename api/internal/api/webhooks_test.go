@@ -235,7 +235,7 @@ func TestAppChannelNeedsNoOrigin(t *testing.T) {
 		t.Fatalf("chat socket without Origin: %d %v", status, err)
 	}
 	chatSession.origin = ct.origin
-	chatSession.expectProblem(http.StatusForbidden, "forbidden", "POST", "/client/v1/feedback", map[string]any{"category": "bug", "body": "x"})
+	chatSession.expect(http.StatusCreated, "POST", "/client/v1/feedback", map[string]any{"category": "bug", "body": "x"})
 }
 
 func TestClientFeedback(t *testing.T) {

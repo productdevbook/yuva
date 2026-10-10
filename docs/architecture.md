@@ -887,9 +887,10 @@ serve both.
 - **Page ratings.** `<yuva-page-feedback>` asks whether the page helped: `up` or `down`. A rating
   alone creates no contact and no conversation: `POST /client/v1/channels/{key}/page-ratings`
   needs no session and adds one to a per-page, per-day counter (`page_ratings`: workspace, inbox,
-  channel, page, day, up, down). Nothing about the visitor is stored; the element remembers the
-  visitor's rating in the browser and a changed mind moves the count, and the endpoint is rate
-  limited per IP address and channel like session starts.
+  channel, page, title, day, up, down). Nothing about the visitor is stored; the element
+  remembers the visitor's rating in the browser and a changed mind moves the count (one off the
+  latest day that has it), and the endpoint is rate limited per IP address and channel like
+  session starts.
 - **Page feedback.** After a rating the element offers a text field and, optionally, an e-mail
   address. Sending it is `POST /client/v1/feedback` from a visitor session on the chat channel, a
   `feedback` conversation like the app's, with `page_url`, `page_title` and `rating` in its
@@ -897,12 +898,16 @@ serve both.
   feedback; replies reach the visitor by e-mail when they allowed it.
 - **Page questions.** `<yuva-page-questions>` lists the answers published on the page and lets a
   visitor ask a question, which starts a conversation of kind `question` with `page_url` and
-  `page_title`, from a visitor session, with an optional e-mail address for the answer. Questions
-  are private conversations: nothing a visitor writes is ever shown on the page by itself.
+  `page_title` (`POST /client/v1/questions`), from a visitor session, with an optional e-mail
+  address for the answer. Conversations keep `page_url` and `page_title` as columns for both page
+  feedback and questions, so the panel filters and counts them per page. Questions are private
+  conversations: nothing a visitor writes is ever shown on the page by itself.
 - **Published answers.** A member who answered a question publishes it to the page
   (`POST /v1/conversations/{id}/publish`): the question and the answer as the member edits them,
-  stored as a `page_answers` row (workspace, inbox, channel, page, question, answer, the member,
-  the source conversation, published and updated times), with no name or address of the visitor.
+  stored as a `page_answers` row (workspace, inbox, channel, page, page title, question, answer,
+  the member, the source conversation, published and updated times), with no name or address of
+  the visitor. A conversation publishes once, while it is still on a chat channel that allows the
+  page's origin; deleting that channel removes its ratings and answers.
   Members edit, unpublish (delete) and list them per page under the same inbox access as the
   conversation. `GET /client/v1/channels/{key}/page-answers?page=` returns a page's published
   answers newest first without a session and is cacheable for a minute. A published answer is the
@@ -910,8 +915,10 @@ serve both.
   keeps it without the link.
 - **Panel.** A Docs view lists pages of the inboxes the member can see with their up and down
   counts over a window (7, 30 or 90 days), the share of `down`, open feedback and questions and
-  the number of published answers; a page shows its feedback, its questions and its published
-  answers. A `question` conversation offers "Publish to page" once it has a member reply.
+  the number of published answers (`GET /v1/docs/pages`); a page shows its ratings per day
+  (`GET /v1/docs/page`), its feedback and questions (`GET /v1/conversations?page=`) and its
+  published answers (`GET /v1/page-answers?page=`). A `question` conversation offers "Publish to
+  page" once it has a member reply.
 - Ratings are counters, so they send no events or webhooks; page feedback and questions are
   conversations and send the same ones as any conversation and feedback.
 
