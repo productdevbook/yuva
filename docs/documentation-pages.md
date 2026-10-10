@@ -119,7 +119,8 @@ article. The same page may also load `/yuva.js` and `<yuva-chat>` on the same ch
 
 ### Nuxt Content
 
-Checked with Nuxt 4.6 and Nuxt Content 3.16.
+Checked with Nuxt 4.6 and Nuxt Content 3.16. A runnable site set up this way is
+[`examples/nuxt-content`](../examples/nuxt-content) ([how to run it](../examples/README.md#nuxt-content)).
 
 Register the elements in a client-only plugin:
 
@@ -178,7 +179,9 @@ browser. Without `isCustomElement` Vue warns that it cannot resolve the componen
 
 ### Fumadocs
 
-Checked with Fumadocs UI 16.17 on Next.js (the `create-fumadocs-app` template).
+Checked with Fumadocs UI 16.17 on Next.js (the `create-fumadocs-app` template). A runnable site
+set up this way is [`examples/fumadocs`](../examples/fumadocs)
+([how to run it](../examples/README.md#fumadocs)).
 
 The React wrappers `YuvaPageFeedback` and `YuvaPageQuestions` use hooks, and the docs page
 (`app/docs/[[...slug]]/page.tsx`) is a server component, so wrap them in a client component:

@@ -1,0 +1,19 @@
+{
+  "name": "yuva-example-nuxt-content",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nuxt dev --port 3101",
+    "build": "nuxt build",
+    "start": "nuxt preview --port 3101",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/content": "^3.16.1",
+    "nuxt": "^4.6.1",
+    "useyuva": "file:../../sdk/js",
+    "vue": "^3.5.43",
+    "vue-router": "^5.4.0"
+  }
+}
