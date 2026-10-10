@@ -1,128 +1,47 @@
 # Operations
 
-Running Yuva after the [install](install.md): upgrades, backups, monitoring and the commands an
-operator runs on the server. The examples use the Compose setup from the install guide, run from
-its directory; the Compose project is `yuva`, so the volumes are `yuva_db` and `yuva_attachments`.
-
-## In short
-
-- Every operator task is a [`yuva` command](#operator-commands) run from the same image.
-- [Upgrade](#upgrades) by changing the image tag; migrations run on start.
-- [Back up](#backups) the database, the attachments and the master key, and watch
-  [`/readyz` and the metrics](#monitoring).
-
-## Operator commands
-
-The image's entrypoint is the `yuva` binary. Run commands next to the server with
-`docker compose exec yuva /yuva <command>` (add `-T` when you pipe into it). They read the same
-environment as the server.
-
-| Command | What it does |
-|---|---|
-| `serve [--migrate=false]` | Runs the server (the image's default command). Applies migrations first unless `--migrate=false`. |
-| `migrate up\|down\|status` | Applies all pending migrations, rolls back the most recent one, or lists them with the time each was applied. |
-| `bootstrap --email <address> --workspace <name> [--name <name>] [--locale en\|tr] [--allow-existing]` | Creates a workspace and its first owner. Refuses when a workspace exists, unless `--allow-existing`. |
-| `api-key create --workspace <id\|name> --name <name> [--scope <scope>]... [--inbox <id>]...` | Creates a workspace API key and prints the secret once on stdout. Without `--scope` it holds every scope; `--inbox` limits it to those inboxes. |
-| `api-key list --workspace <id\|name>` | Lists keys: id, prefix, name, created, last used, revoked, expiry, inbox limit, scopes. Never a secret. |
-| `api-key revoke <id>` | Revokes a key. |
-| `inbox create --workspace <id\|name> --name <name> [--slug <slug>] [--locale <tag>] [--timezone <zone>] [--mode live\|async] [--expected-reply-minutes <n>]` | Creates an inbox and prints its id. The slug is made from the name when omitted; defaults are `en`, `UTC`, `async`. |
-| `inbox list --workspace <id\|name>` | Lists inboxes. |
-| `channel create-email --workspace <id\|name> --inbox <id\|slug> --name <name> --address <address> [--display-name <name>] [--from-address <address>] [--smtp-host <host> [--smtp-port <n>] [--tls starttls\|tls\|none] [--smtp-username <name>] [--smtp-password-file <path\|->]]` | Creates an e-mail channel and prints its id. The password is read from a file, or from stdin with `-`, never from the command line. |
-| `channel list --workspace <id\|name> --inbox <id\|slug>` | Lists an inbox's channels with their SMTP settings; says only whether a password is set. |
-| `workspace delete --workspace <id\|name> --yes` | Closes a workspace at once and queues the deletion of everything in it (see [Deleting a workspace or an account](#deleting-a-workspace-or-an-account)). Without `--yes` it only says what it would delete. |
-| `person delete --email <address> --yes` | Deletes a person's account with their memberships, sessions, passkeys and push subscriptions. Refused while they are the only owner of a workspace. |
-| `ingest-email --to <address> [--from <address>]` | Delivers a raw message from stdin, for MTAs (see [E-mail](email.md#any-mta-yuva-ingest-email)). |
-| `vapid-keys` | Prints a new Web Push key pair. Needs no database. |
-
-`--workspace` takes the workspace id or its exact name; a name several workspaces share is refused
-with their ids. Commands that print an id or a secret write only that to stdout and the rest to
-stderr, so they work in scripts:
-
-```sh
-KEY=$(docker compose exec -T yuva /yuva api-key create --workspace Example --name provisioning)
-INBOX=$(docker compose exec -T yuva /yuva inbox create --workspace Example --name "Example App" --mode live)
-printf '%s' "$SMTP_PASSWORD" | docker compose exec -T yuva /yuva channel create-email \
-  --workspace Example --inbox example-app --name Support --address support@example.com \
-  --smtp-host smtp.example.com --smtp-username support@example.com --smtp-password-file -
-```
-
-An inbox created on the command line does not print its identity secret; rotate it in the panel
-when an app needs one. Chat and app channels, members, webhooks and everything else are managed in
-the panel or through `/v1`.
+How to upgrade, back up, restore and watch a Yuva server. The examples use the Compose setup from
+the [install guide](install.md) and run from its directory.
 
 ## Upgrades
 
 1. Read the release notes of every version between yours and the new one.
 2. [Back up](#backups) the database and the attachments.
-3. Build or pull the new image and change the tag in `compose.yaml`.
-4. `docker compose up -d`.
+3. Change the image tag in `compose.yaml` and start the new version:
 
-The server applies pending database migrations when it starts, before it serves requests, so the
-new version is ready once `/readyz` answers `200`. Migrations only go forward on start; run one
-server process while upgrading so an old process does not work against the new schema.
+   ```sh
+   docker compose up -d
+   ```
 
-To run migrations as a separate step (for example from a deploy job), start the server with
-`serve --migrate=false` and run `yuva migrate up` first. `yuva migrate status` shows what is
-applied. `yuva migrate down` rolls back one migration at a time; going back to an older version
-is safer by restoring the backup from step 2.
+Migrations run on start; the server is ready when `/readyz` answers `200`. Run one server process
+while upgrading. To go back, restore the backup from step 2.
 
 ## Backups
 
-A complete backup has three parts:
+A full backup has three parts: the database, the attachments and the master key.
 
-1. **The database.** Everything except files: workspaces, conversations, messages, contacts,
-   settings, the job queue.
-2. **The attachments storage.** Attachments and the original of every inbound e-mail.
-3. **The master key**, `YUVA_MASTER_KEY`. Kept apart from the other two (see
-   [Master key](install.md#master-key)); without it the stored SMTP passwords, identity secrets and
-   webhook secrets cannot be read.
+1. Dump the database. `pg_dump` takes a consistent snapshot while Yuva runs:
 
-### Database with pg_dump
+   ```sh
+   docker compose exec -T db pg_dump -U yuva -d yuva -Fc > yuva-$(date +%F).dump
+   ```
 
-```sh
-docker compose exec -T db pg_dump -U yuva -d yuva -Fc > yuva-$(date +%F).dump
-```
+2. Then archive the attachments. With `YUVA_STORAGE=local`:
 
-Run it from cron and copy the files off the host. `pg_dump` takes a consistent snapshot while Yuva
-keeps running.
+   ```sh
+   docker run --rm -v yuva_attachments:/data:ro -v "$PWD":/backup alpine \
+     tar czf /backup/yuva-attachments-$(date +%F).tgz -C /data .
+   ```
 
-### Database on Kubernetes with CloudNativePG
+   With S3, use the provider's versioning or replication, or copy the bucket with `rclone sync`.
 
-With a CloudNativePG cluster that has a backup method configured (for example the Barman Cloud
-plugin writing to object storage), schedule base backups; WAL archiving then gives point-in-time
-recovery:
+3. Keep `YUVA_MASTER_KEY` apart from both ([Master key](install.md#master-key)).
 
-```yaml
-apiVersion: postgresql.cnpg.io/v1
-kind: ScheduledBackup
-metadata:
-  name: yuva-daily
-spec:
-  schedule: "0 0 3 * * *"
-  backupOwnerReference: self
-  cluster:
-    name: yuva-db
-  method: plugin
-  pluginConfiguration:
-    name: barman-cloud.cloudnative-pg.io
-```
-
-### Attachments
-
-With `YUVA_STORAGE=local`, archive the volume:
-
-```sh
-docker run --rm -v yuva_attachments:/data:ro -v "$PWD":/backup alpine \
-  tar czf /backup/yuva-attachments-$(date +%F).tgz -C /data .
-```
-
-With `YUVA_STORAGE=s3`, use the provider's own protection (versioning, replication) or copy the
-bucket with a tool such as `rclone sync`.
-
-Take the database backup first and the attachments after it, so every file the database refers to
-is in the copy.
+Run steps 1 and 2 from cron, in that order, and copy the files off the host.
 
 ## Restore
+
+Use the same `YUVA_MASTER_KEY` the backup was made with:
 
 ```sh
 docker compose stop yuva
@@ -133,70 +52,82 @@ docker run --rm -v yuva_attachments:/data -v "$PWD":/backup alpine \
 docker compose start yuva
 ```
 
-Start the server with the same `YUVA_MASTER_KEY` the backup was made with. Restore into an empty
-database; a restore of an older version's backup is migrated forward when the server starts.
+A backup from an older version is migrated forward when the server starts.
+
+## Operator commands
+
+Run them with `docker compose exec yuva /yuva <command>` (`-T` when piping). `<ws>` is a workspace id
+or exact name.
+
+```sh
+docker compose exec -T yuva /yuva api-key create --workspace Example --name provisioning
+```
+
+Commands that print an id or a secret write only that to stdout.
+
+| Command | What it does |
+|---|---|
+| `serve [--migrate=false]` | Runs the server (the default), after migrations unless `--migrate=false`. |
+| `migrate up\|down\|status` | Applies pending migrations, rolls back the latest one, or lists them. |
+| `bootstrap --email <address> --workspace <name> [--name <name>] [--locale en\|tr] [--allow-existing]` | Creates a workspace and its first owner. `--allow-existing` adds another workspace. |
+| `api-key create --workspace <ws> --name <name> [--scope <scope>]... [--inbox <id>]...` | Creates an API key and prints the secret once. Default: every scope, every inbox. |
+| `api-key list --workspace <ws>` | Lists keys, never their secrets. |
+| `api-key revoke <id>` | Revokes a key. |
+| `inbox create --workspace <ws> --name <name> [--slug <slug>] [--locale <tag>] [--timezone <zone>] [--mode live\|async] [--expected-reply-minutes <n>]` | Creates an inbox and prints its id. Defaults: slug from the name, `en`, `UTC`, `async`. |
+| `inbox list --workspace <ws>` | Lists inboxes. |
+| `channel create-email --workspace <ws> --inbox <id\|slug> --name <name> --address <address> [--display-name <name>] [--from-address <address>] [--smtp-host <host> [--smtp-port <n>] [--tls starttls\|tls\|none] [--smtp-username <name>] [--smtp-password-file <path\|->]]` | Creates an e-mail channel and prints its id. Password from a file, or stdin with `-`. |
+| `channel list --workspace <ws> --inbox <id\|slug>` | Lists an inbox's channels. |
+| `workspace delete --workspace <ws> --yes` | Deletes a workspace ([below](#deleting-a-workspace-or-an-account)). Without `--yes`, a dry run. |
+| `person delete --email <address> --yes` | Deletes a person's account. Refused while they are a workspace's only owner. |
+| `ingest-email --to <address> [--from <address>]` | Delivers a raw message from stdin ([E-mail](email.md#any-mta-yuva-ingest-email)). |
+| `vapid-keys` | Prints a new Web Push key pair. Needs no database. |
+
+Everything else (chat and app channels, members, webhooks, identity secrets) is managed in the
+panel or through `/v1`.
+
+## Deleting a workspace or an account
+
+**A workspace** is deleted by an owner under **Settings → Workspace → Danger zone**, with
+`DELETE /v1/workspace` and `{"name": "<exact name>"}`, or with `yuva workspace delete`. It stops
+working at once; a background job then deletes its data and logs `workspace deletion` lines. People
+keep their accounts.
+
+**An account** is deleted by its person under **Settings → My profile**, with `DELETE /v1/me` and
+`{"email": "<their address>"}`, or with `yuva person delete`. Their messages stay without an
+author. A workspace's only owner must hand over ownership or delete the workspace first.
 
 ## Retention
 
-What Yuva deletes by itself, once an hour:
+Conversations, messages and files stay until their contact is deleted (in the panel,
+`DELETE /v1/contacts/{contactId}` or `DELETE /v1/contacts/by-external-id`). An owner can set a
+retention period under **Settings → Workspace**, or with `PATCH /v1/workspace` and
+`{"retention_days": 90}`; `null` keeps everything (the default).
+
+Yuva cleans up once an hour:
 
 | Data | Kept |
 |---|---|
 | Events (realtime replay and `GET /v1/events`) | 7 days |
-| Expired contact sessions | until they expire, 7 days after their last use |
-| Finished webhook deliveries | 7 days; the newest 100 attempts per endpoint stay in the log |
+| Contact sessions | until they expire, 7 days after last use |
+| Finished webhook deliveries | 7 days; the newest 100 per endpoint stay |
 | Stale realtime connection records | 1 hour |
-
-Conversations, messages, attachments and raw e-mails are kept until their contact is deleted (in
-the panel, with `DELETE /v1/contacts/{contactId}`, or with `DELETE /v1/contacts/by-external-id`
-from your backend), which removes the contact's conversations and files with it.
-
-A workspace owner can set a retention period in days under **Settings → Workspace** or with
-`PATCH /v1/workspace` and `{"retention_days": 90}` (`null` keeps everything, the default). Once
-an hour Yuva then deletes, in that workspace:
-
-- closed conversations that have not changed for that many days, with their messages, notes,
-  events and attachments, including the stored files;
-- raw e-mails older than that many days, in every conversation. The message, its text and its
-  attachments stay; only the original `.eml` download goes.
-
-Deleted data cannot be restored except from a backup.
-
-## Deleting a workspace or an account
-
-An owner deletes a workspace under **Settings → Workspace → Danger zone** (typing its name), with
-`DELETE /v1/workspace` and `{"name": "<exact name>"}`, or an operator with
-`yuva workspace delete --workspace <id|name> --yes`. The workspace stops working at once: its
-members, API keys, widgets, apps and e-mail addresses are refused (mail to its addresses is
-answered as an unknown recipient), its webhook endpoints are removed and nothing more is sent to
-them, and members left with no other workspace lose their push subscriptions. A background job
-then deletes its conversations, messages, attachments and raw e-mails (with the stored files),
-contacts, inboxes, channels, members, invites and settings in batches. Each run logs a
-`workspace deletion` line with `conversations_deleted`, `conversations_left`, `files_deleted` and
-`done`; a large workspace takes several runs. If the server stops in between, the job continues
-after the restart, and the hourly retention job queues it again should it have been lost. People
-keep their accounts; someone without a workspace can still sign in and delete their account.
-
-A person deletes their account under **Settings → My profile** (or on the page shown when they
-belong to no workspace), with `DELETE /v1/me` and `{"email": "<their address>"}`, or an operator
-with `yuva person delete --email <address> --yes`. It is refused while they are the only owner of
-a workspace: make someone else an owner, or delete that workspace, first. Their messages stay in
-their conversations without an author.
+| Closed conversations, with messages and files (when `retention_days` is set) | that many days since their last change |
+| Original `.eml` of inbound mail (when `retention_days` is set) | that many days; the message itself stays |
 
 ## Monitoring
 
 | Endpoint | Port | Answers |
 |---|---|---|
-| `GET /healthz` | 8080 | `200 {"status":"ok"}` while the process runs. Does not touch the database. Use it as the liveness check. |
-| `GET /readyz` | 8080 | `200` when the database is reachable, `503` otherwise. Use it as the readiness check and for uptime monitoring. |
+| `GET /healthz` | 8080 | `200` while the process runs. Liveness check. |
+| `GET /readyz` | 8080 | `200` when the database is reachable, else `503`. Readiness and uptime check. |
 | `GET /v1/version` | 8080 | The running version. |
-| `GET /metrics` | 9090 (`YUVA_METRICS_ADDR`) | Prometheus metrics: `yuva_http_requests_total` (by method and status), `yuva_http_request_seconds`, and the Go runtime and process metrics. |
+| `GET /metrics` | 9090 | Prometheus: `yuva_http_requests_total`, `yuva_http_request_seconds`, Go and process metrics. |
 
-Logs are JSON lines on stderr, one per request plus warnings and errors. Watch for:
+Logs are JSON lines on stderr. Lines worth an alert:
 
-- `mail not sent` — the server's SMTP account fails (sign-in codes do not arrive).
-- `email send failed, retrying` — a channel's SMTP account fails; the message shows `failed` in the
-  panel once the retries are used up.
-- `YUVA_SMTP_HOST is not set`, `YUVA_INGRESS_SECRET is not set`, `YUVA_VAPID_PUBLIC_KEY is not set`
-  at start — a feature is off by configuration.
-- `not ready` — the database is unreachable.
+| Log message | Meaning |
+|---|---|
+| `mail not sent` | The server's SMTP account fails; sign-in codes do not arrive. |
+| `email send failed, retrying` | A channel's SMTP account fails. |
+| `YUVA_SMTP_HOST is not set` (and the same for `YUVA_INGRESS_SECRET`, `YUVA_VAPID_PUBLIC_KEY`) | A feature is off by configuration. |
+| `not ready` | The database is unreachable. |
