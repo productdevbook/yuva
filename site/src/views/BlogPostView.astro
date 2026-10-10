@@ -5,6 +5,7 @@ import { blogCopy } from "@/copy/pages"
 import { i18nFor } from "@/i18n"
 import Base from "@/layouts/Base.astro"
 import { isoDay, minutes, posts, type Post } from "@/lib/blog"
+import { quickStart } from "@/lib/docs"
 import { absolute, blog, post } from "@/lib/routes"
 import Logo from "@/ui/Logo.astro"
 import PostCover from "@/ui/PostCover.astro"
@@ -17,7 +18,7 @@ interface Props {
 const { entry } = Astro.props
 const i18n = i18nFor("en")
 const t = blogCopy(i18n)
-const hero = homeCopy(i18n).hero
+const hero = homeCopy(i18n, await quickStart("en")).hero
 const { Content, headings } = await render(entry)
 const toc = headings.filter((h) => h.depth === 2)
 const others = (await posts()).filter((p) => p.id !== entry.id).slice(0, 3)

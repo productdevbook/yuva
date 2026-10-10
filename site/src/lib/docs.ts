@@ -92,6 +92,13 @@ export async function translatedCount(locale: Locale) {
   return [...(await docs(locale)).values()].filter((d) => localeOf(d) === locale).length
 }
 
+export async function quickStart(locale: Locale) {
+  const install = (await docs(locale)).get("install")
+  const headings = (install?.rendered?.metadata?.headings ?? []) as { depth: number; slug: string }[]
+  const slug = headings.find((h) => h.depth === 2)?.slug ?? "quick-start-with-compose"
+  return `${docRel("install")}#${slug}`
+}
+
 export async function nav(locale: Locale): Promise<NavGroup[]> {
   const t = docsCopy(i18nFor(locale))
   const all = await docs(locale)

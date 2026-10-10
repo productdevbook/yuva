@@ -3,7 +3,7 @@ import { docsCopy } from "@/copy/docs"
 import { i18nFor } from "@/i18n"
 import Base from "@/layouts/Base.astro"
 import DocsHeader from "@/layouts/DocsHeader.astro"
-import { docRel, href, nav, translatedCount, type NavItem } from "@/lib/docs"
+import { href, nav, quickStart, translatedCount, type NavItem } from "@/lib/docs"
 import { docsPath, type Locale } from "@/lib/routes"
 import ChannelIcon from "@/ui/ChannelIcon.astro"
 import DocsSearch from "@/ui/DocsSearch.astro"
@@ -20,7 +20,7 @@ const steps = groups.filter((g) => t.home.steps[g.key])
 const others = groups.filter((g) => !t.home.steps[g.key])
 const find = (slug: string) => groups.flatMap((g) => g.items).find((i) => i.slug === slug)
 const popular = [
-  { label: t.home.quickStart, rel: `${docRel("install")}#quick-start-with-compose` },
+  { label: t.home.quickStart, rel: await quickStart(locale) },
   ...["configuration", "webhooks", "api"].map((slug) => find(slug)).filter((i): i is NavItem => !!i).map((i) => ({ label: i.title, rel: i.rel })),
 ]
 const icons: Record<string, "mail" | "chat" | "app" | "api"> = { email: "mail", widget: "chat", mobile: "app", api: "api" }

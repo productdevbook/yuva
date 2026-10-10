@@ -15,7 +15,7 @@ function* walk(dir: string): Generator<string> {
 }
 
 function resolves(path: string) {
-  const clean = decodeURIComponent(path)
+  const clean = path
   const candidates = clean.endsWith("/") ? [`${clean}index.html`] : [clean, `${clean}.html`, `${clean}/index.html`]
   return candidates.some((c) => existsSync(join(dist, c)) && statSync(join(dist, c)).isFile())
 }
@@ -34,6 +34,19 @@ function repoAnchor(file: string, hash: string) {
   return headings.includes(hash)
 }
 
+function decode(s: string) {
+  try {
+    return decodeURIComponent(s)
+  } catch {
+    return s
+  }
+}
+
+function split(raw: string) {
+  const i = raw.indexOf("#")
+  return (i < 0 ? [decode(raw), undefined] : [decode(raw.slice(0, i)), decode(raw.slice(i + 1))]) as [string, string | undefined]
+}
+
 let checked = 0
 const broken: string[] = []
 for (const file of walk(dist)) {
@@ -41,7 +54,7 @@ for (const file of walk(dist)) {
   const page = file.slice(dist.length)
   for (const m of html.matchAll(/\s(?:href|src|srcset)="([^"]+)"/g)) {
     for (const raw of m[1]!.split(",").map((s) => s.trim().split(/\s+/)[0]!)) {
-      const [target, hash] = raw.split("#") as [string, string | undefined]
+      const [target, hash] = split(raw)
       if (raw.startsWith(REPO)) {
         checked++
         const local = join(repo, target.slice(REPO.length))
@@ -51,7 +64,7 @@ for (const file of walk(dist)) {
       }
       if (raw.startsWith("#")) {
         checked++
-        if (!idsOf(file).has(raw.slice(1))) broken.push(`${page} -> ${raw}`)
+        if (!idsOf(file).has(hash!)) broken.push(`${page} -> ${raw}`)
         continue
       }
       if (!raw.startsWith("/") || raw.startsWith("//")) continue
@@ -74,7 +87,7 @@ for (const name of ["llms.txt", "llms-full.txt"]) {
   }
   for (const m of readFileSync(file, "utf8").matchAll(/\]\(([^)\s]+)\)|(?:Source: )(\S+)/g)) {
     const raw = (m[1] ?? m[2])!
-    const [target, hash] = raw.split("#") as [string, string | undefined]
+    const [target, hash] = split(raw)
     if (raw.startsWith(REPO)) {
       checked++
       if (!existsSync(join(repo, target.slice(REPO.length)))) broken.push(`/${name} -> ${raw} (not in the repository)`)
@@ -104,7 +117,7 @@ for (const locale of locales) {
     continue
   }
   for (const entry of JSON.parse(readFileSync(index, "utf8")) as { href: string }[]) {
-    const [rel, hash] = entry.href.split("#") as [string, string | undefined]
+    const [rel, hash] = split(entry.href)
     const path = `${root}${rel}`
     checked++
     if (!resolves(path)) broken.push(`${root}search.json -> ${entry.href}`)

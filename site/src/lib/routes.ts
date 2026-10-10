@@ -30,7 +30,6 @@ export const links = {
   docs: "/docs/",
   api: "/docs/api/",
   install: "/docs/install/",
-  quickStart: "/docs/install/#quick-start-with-compose",
   architecture: "/docs/architecture/",
   roadmap: "/docs/roadmap/",
   configuration: "/docs/configuration/",

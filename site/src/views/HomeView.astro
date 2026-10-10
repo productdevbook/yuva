@@ -2,6 +2,7 @@
 import { homeCopy } from "@/copy/home"
 import { i18nFor } from "@/i18n"
 import Base from "@/layouts/Base.astro"
+import { quickStart } from "@/lib/docs"
 import { absolute, home, links, VERSION, type Locale } from "@/lib/routes"
 import Channels from "@/sections/Channels.astro"
 import Close from "@/sections/Close.astro"
@@ -19,7 +20,7 @@ interface Props {
 }
 
 const { locale } = Astro.props
-const c = homeCopy(i18nFor(locale))
+const c = homeCopy(i18nFor(locale), await quickStart(locale))
 
 const jsonLd = [
   {

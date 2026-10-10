@@ -5,10 +5,10 @@ import type { IconName } from "@/lib/icons"
 
 export type Item = { title: string; body: string; icon?: IconName }
 
-export function homeCopy(i18n: I18n) {
+export function homeCopy(i18n: I18n, quickStartRel: string) {
   const version = VERSION
   const docs = (rel: string) => `${docsRoot(i18n.locale as Locale)}${rel}`
-  const quickStart = docs("install/#quick-start-with-compose")
+  const quickStart = docs(quickStartRel)
   const image = `ghcr.io/productdevbook/yuva:${VERSION}`
 
   return {
