@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { CategoryChip } from "@/features/conversation/Feedback"
 import { AnswerCard, pageLabel, useAnswerActions } from "@/features/docs/AnswerDialog"
 import { DailyChart, zeroFill } from "@/features/docs/DailyChart"
-import { DocsGuide, DocsWindow, downShare } from "@/features/docs/DocsColumn"
+import { DocsGuide, DocsWindow, helpfulShare } from "@/features/docs/DocsColumn"
 import { PageRatingMark } from "@/features/docs/PageContext"
 import { useDocsDays, useDocsPage, useDocsPages, useDocsSort, useDocsSummary, usePageAnswers } from "@/features/docs/queries"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
@@ -61,9 +61,7 @@ export function DocsOverview() {
     questions: { label: t`Questions`, theme: { light: "#0891b2", dark: "#0891b2" } },
   }
   const fmt = new Intl.NumberFormat(i18n.locale)
-  const pct = new Intl.NumberFormat(i18n.locale, { style: "percent" })
   const s = summary.data
-  const rated = s ? s.totals.up + s.totals.down : 0
   return (
     <Pane testId="docs-overview">
       <header className="flex flex-col">
@@ -85,7 +83,7 @@ export function DocsOverview() {
             tiles={[
               [fmt.format(s.totals.up), t`helpful`, "text-success"],
               [fmt.format(s.totals.down), t`not helpful`, "text-destructive"],
-              [rated ? pct.format(s.totals.up / rated) : "–", t`helpful share`],
+              [helpfulShare(s.totals, i18n.locale), t`helpful share`],
               [fmt.format(s.totals.feedback), t`feedback`],
               [fmt.format(s.totals.questions), t`questions`],
               [fmt.format(s.totals.published_answers), t`answers published`],
@@ -252,7 +250,7 @@ export function DocsPagePane() {
     ? [
         [fmt.format(d.up), t`helpful`, "text-success"],
         [fmt.format(d.down), t`not helpful`, "text-destructive"],
-        [downShare(d, i18n.locale), t`not helpful share`],
+        [helpfulShare(d, i18n.locale), t`helpful share`],
         [fmt.format(d.open_feedback), t`open feedback`],
         [fmt.format(d.open_questions), t`open questions`],
         [fmt.format(d.published_answers), t`published answers`],

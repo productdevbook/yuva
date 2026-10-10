@@ -48,9 +48,9 @@ export function ShareBar({ up, down, className }: { up: number; down: number; cl
   )
 }
 
-export function downShare(p: { up: number; down: number }, locale: string) {
+export function helpfulShare(p: { up: number; down: number }, locale: string) {
   const rated = p.up + p.down
-  return rated ? new Intl.NumberFormat(locale, { style: "percent" }).format(p.down / rated) : "–"
+  return rated ? new Intl.NumberFormat(locale, { style: "percent" }).format(p.up / rated) : "–"
 }
 
 function Count({ n, icon: Icon, label, className }: { n: number; icon: React.ComponentType<{ className?: string }>; label: string; className?: string }) {
@@ -66,7 +66,7 @@ function Count({ n, icon: Icon, label, className }: { n: number; icon: React.Com
 function Row({ p, current, cursor, inboxColor }: { p: DocsPage; current: boolean; cursor: boolean; inboxColor?: string }) {
   const { t, i18n } = useLingui()
   const fmt = new Intl.NumberFormat(i18n.locale)
-  const share = downShare(p, i18n.locale)
+  const share = helpfulShare(p, i18n.locale)
   const [up, down, feedback, questions, answers] = [p.up, p.down, p.open_feedback, p.open_questions, p.published_answers].map((n) => fmt.format(n))
   return (
     <li>
@@ -86,8 +86,9 @@ function Row({ p, current, cursor, inboxColor }: { p: DocsPage; current: boolean
           <span className="flex shrink-0 items-center gap-2.5 text-small">
             <Count n={p.up} icon={ThumbsUpIcon} label={t`${up} helpful`} className="text-success" />
             <Count n={p.down} icon={ThumbsDownIcon} label={t`${down} not helpful`} className="text-destructive" />
-            <span className="w-10 text-end text-muted-foreground tabular-nums" title={t`Share of not helpful`}>
-              {share}
+            <span className={cn("w-10 text-end tabular-nums", p.up + p.down ? "text-success" : "text-faint")} title={t`${share} helpful`} data-testid="helpful-share">
+              <span className="sr-only">{t`${share} helpful`}</span>
+              <span aria-hidden>{share}</span>
             </span>
           </span>
         </span>
