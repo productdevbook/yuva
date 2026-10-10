@@ -96,6 +96,7 @@ export function useRealtime(ws: string, memberId: string) {
           viewingSocket = s
           viewingSent = null
           void qc.invalidateQueries({ queryKey: keys.members(ws) })
+          void qc.invalidateQueries({ queryKey: ["ws", ws, "contact-presence"] })
           reportViewing()
           return
         }
@@ -109,6 +110,10 @@ export function useRealtime(ws: string, memberId: string) {
         }
         if (msg.type === "member.presence") {
           applyPresence(qc, ws, msg.data)
+          return
+        }
+        if (msg.type === "contact.presence") {
+          qc.setQueryData(keys.contactPresence(ws, msg.data.contact_id), msg.data)
           return
         }
         if (msg.type === "viewing") {

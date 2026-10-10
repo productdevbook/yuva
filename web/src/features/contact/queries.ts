@@ -16,14 +16,18 @@ export function useContact(id: string | undefined) {
   })
 }
 
-export function useContactPresence(id: string | undefined) {
-  const { workspaceId: ws } = useSession()
-  return useQuery({
+export function contactPresenceQuery(ws: string, id: string | undefined) {
+  return {
     queryKey: keys.contactPresence(ws, id ?? ""),
     queryFn: () => unwrap(api.GET("/v1/contacts/{contactId}/presence", { params: { path: { contactId: id! } } })),
     enabled: !!id,
-    refetchOnWindowFocus: "always",
-  })
+    refetchOnWindowFocus: "always" as const,
+  }
+}
+
+export function useContactPresence(id: string | undefined) {
+  const { workspaceId: ws } = useSession()
+  return useQuery(contactPresenceQuery(ws, id))
 }
 
 export function useContactSearch(q: string, enabled: boolean) {

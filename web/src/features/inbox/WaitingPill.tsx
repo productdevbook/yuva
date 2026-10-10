@@ -22,7 +22,7 @@ export function useShownId() {
 
 export function WaitingPill() {
   const { t } = useLingui()
-  const { waiting, show } = useQueue()
+  const { waiting, show, live } = useQueue()
   const inboxes = useInboxes().data ?? []
   const shown = useShownId()
   const phone = useIsPhone()
@@ -61,6 +61,9 @@ export function WaitingPill() {
               )}
             >
               <ContactAvatar id={c.contact.id} name={name} className="size-8" />
+              {live.has(c.id) && (
+                <span className="absolute -end-0.5 -bottom-0.5 size-2.5 rounded-full border-2 border-card bg-success" data-testid="pill-live" />
+              )}
               {viewers.get(c.id)?.slice(0, 1).map((id) => {
                 const m = members.get(id)
                 return (

@@ -1033,7 +1033,7 @@ export interface paths {
          * @description Whether the contact has a live `/client/v1/realtime` connection (widget or app in the
          *     foreground), and when one was last seen. A host backend that sends its own push
          *     notifications can skip the push while the contact is online; webhooks carry the same
-         *     `contact.online`.
+         *     `contact.online`, and `contact.presence` events on `/v1/realtime` report changes.
          *
          *     Scope: `contacts:read`.
          */
@@ -2002,7 +2002,9 @@ export interface paths {
          *     `id`, is not stored and is not replayed. `member.presence` (a member of the workspace opened
          *     or closed the panel or changed `availability`) reaches member sessions only, also has no
          *     `id` and is not replayed; so does `viewing` (another member opened or left a conversation),
-         *     which follows inbox access like conversation events.
+         *     which follows inbox access like conversation events. `contact.presence` (a contact
+         *     connected to or disconnected from `/client/v1/realtime`) follows contact events, also has no
+         *     `id` and is not replayed.
          *
          *     A member session's open connection also makes the member available to contacts of `live`
          *     inboxes they can access (see `availability` on `/v1/me`).
@@ -2983,6 +2985,25 @@ export interface components {
             /** Format: date-time */
             created_at: string;
             data: components["schemas"]["MemberPresence"];
+        };
+        /**
+         * @description One of a contact's `/client/v1/realtime` connections opened or closed. Carries the
+         *     contact's current presence, so it may repeat the previous one.
+         *     Not stored: it has no `id` and is not replayed; read `/v1/contacts/{contactId}/presence`
+         *     after a reconnect. A connection that ends without closing (a server process that died) is
+         *     announced within about two minutes.
+         */
+        ContactPresenceEvent: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "contact.presence";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["ContactPresence"];
         };
         MemberList: {
             items: components["schemas"]["Member"][];
@@ -4749,7 +4770,7 @@ export interface components {
             id: number;
         };
         /** @description One server message on `/v1/realtime`, told apart by `type`. */
-        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ContactPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
         /**
          * @description `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
          *     hours. `away`: never shown as available.

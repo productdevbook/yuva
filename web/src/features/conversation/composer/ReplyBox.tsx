@@ -180,7 +180,11 @@ export const ReplyBox = forwardRef<
     if (!hasContent || note) return
     typing.stop()
     const linkedDraft = suggestion && linked === suggestion.id ? suggestion : undefined
-    actions.send({ body, files, close, suggestion: linkedDraft })
+    const saved = { body, files }
+    actions.send({ body, files, close, suggestion: linkedDraft })?.catch(() => {
+      setBody((b) => b || saved.body)
+      setFiles((f) => (f.length ? f : saved.files))
+    })
     reset()
   }
   const addNote = () => {
@@ -243,6 +247,11 @@ export const ReplyBox = forwardRef<
       e.preventDefault()
       if (note) addNote()
       else send(!e.shiftKey)
+      return
+    }
+    if (e.key === "Enter" && actions.live && !note && !e.shiftKey && !e.altKey && !e.nativeEvent.isComposing) {
+      e.preventDefault()
+      send(false)
       return
     }
     if (e.key === "Escape") {
@@ -389,11 +398,11 @@ export const ReplyBox = forwardRef<
           </Button>
         ) : (
           <>
-            <span className="me-1.5 text-caption text-faint phone:hidden">{mod}↵</span>
-            <Button variant="outline" onClick={() => send(false)} disabled={!hasContent} data-testid="composer-send">
+            <span className="me-1.5 text-caption text-faint phone:hidden">{actions.live ? "↵" : `${mod}↵`}</span>
+            <Button variant={actions.live ? "default" : "outline"} onClick={() => send(false)} disabled={!hasContent} data-testid="composer-send">
               <Trans>Send</Trans>
             </Button>
-            <Button onClick={() => send(true)} disabled={!hasContent} data-testid="composer-send-close">
+            <Button variant={actions.live ? "outline" : "default"} onClick={() => send(true)} disabled={!hasContent} data-testid="composer-send-close">
               <Trans>Send and close</Trans>
             </Button>
           </>

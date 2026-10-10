@@ -45,6 +45,7 @@ export function ShortcutSheet({ open, onOpenChange }: { open: boolean; onOpenCha
         [k(SHORTCUTS.note), t`Write a note for the team`],
         [[mod, "↵"], t`Send and close`],
         [["⇧", mod, "↵"], t`Send only`],
+        [["↵"], t`Send, in a live chat (⇧↵ for a new line)`],
         [["Tab"], t`Use the suggested reply`],
         [k(SHORTCUTS.discardSuggestion), t`Discard the suggested reply`],
         [k(SHORTCUTS.attach), t`Attach files`],

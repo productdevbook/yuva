@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, useSyncExternalStore } from "react"
 import { useLocation, useNavigate } from "react-router"
 
+import { useLiveIds } from "@/features/conversation/liveness"
 import { useConversations } from "@/features/inbox/queries"
 import type { ConversationListItem } from "@/lib/api"
 import { useSession } from "@/lib/session"
@@ -64,6 +65,7 @@ type Queue = {
   team: ConversationListItem[]
   open: ReturnType<typeof useConversations>
   inboxId: string
+  live: Set<string>
   currentId: string | null
   setCurrent: (id: string | null) => void
   leaving: Set<string>
@@ -100,17 +102,21 @@ export function QueueProvider({ children }: { children: React.ReactNode }) {
     if (hasNextPage && !isFetchingNextPage && pages < MAX_PAGES) void fetchNextPage()
   }, [hasNextPage, isFetchingNextPage, fetchNextPage, pages])
 
+  const all = useMemo(
+    () => (open.data?.pages.flatMap((p) => p.items) ?? []).filter((c) => !inboxId || c.inbox_id === inboxId),
+    [open.data, inboxId],
+  )
+  const live = useLiveIds(all)
   const { waiting, team } = useMemo(() => {
-    const all = (open.data?.pages.flatMap((p) => p.items) ?? []).filter((c) => !inboxId || c.inbox_id === inboxId)
     const mine = all.filter((c) => (!c.assignee_id || c.assignee_id === me) && !leaving.has(c.id)).sort(byWait)
     const rank = (c: ConversationListItem) => deferred.indexOf(c.id)
     const fresh = mine.filter((c) => rank(c) < 0)
     const later = mine.filter((c) => rank(c) >= 0).sort((a, b) => rank(a) - rank(b))
     return {
-      waiting: [...fresh, ...later],
+      waiting: [...fresh.filter((c) => live.has(c.id)), ...fresh.filter((c) => !live.has(c.id)), ...later],
       team: all.filter((c) => c.assignee_id && c.assignee_id !== me).sort(byWait),
     }
-  }, [open.data, inboxId, me, leaving, deferred])
+  }, [all, me, leaving, deferred, live])
 
   const leave = useCallback((id: string) => setLeaving((s) => new Set(s).add(id)), [])
   const unleave = useCallback(
@@ -127,11 +133,13 @@ export function QueueProvider({ children }: { children: React.ReactNode }) {
   const nextAfter = useCallback(
     (id: string | null) => {
       const rest = waiting.filter((c) => c.id !== id)
+      const talking = rest.find((c) => live.has(c.id) && !deferred.includes(c.id))
+      if (talking) return talking
       const i = waiting.findIndex((c) => c.id === id)
       if (i < 0) return rest[0]
       return waiting.slice(i + 1).find((c) => c.id !== id) ?? rest[0]
     },
-    [waiting],
+    [waiting, live, deferred],
   )
 
   const show = useCallback(
@@ -152,8 +160,8 @@ export function QueueProvider({ children }: { children: React.ReactNode }) {
   )
 
   const value = useMemo<Queue>(
-    () => ({ waiting, team, open, inboxId, currentId, setCurrent, leaving, leave, unleave, defer, nextAfter, advance, show }),
-    [waiting, team, open, inboxId, currentId, leaving, leave, unleave, defer, nextAfter, advance, show],
+    () => ({ waiting, team, open, inboxId, live, currentId, setCurrent, leaving, leave, unleave, defer, nextAfter, advance, show }),
+    [waiting, team, open, inboxId, live, currentId, leaving, leave, unleave, defer, nextAfter, advance, show],
   )
   return <QueueContext.Provider value={value}>{children}</QueueContext.Provider>
 }

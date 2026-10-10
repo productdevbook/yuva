@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query"
 
 import { toast } from "@/components/common"
 import { useErrorText } from "@/components/common/text"
+import { useIsLive } from "@/features/conversation/liveness"
 import { patchConversation, postMessage } from "@/features/conversation/queries"
 import { useQueue } from "@/features/inbox/queue"
 import { api, unwrap, type Conversation, type ConversationUpdate, type Member, type Message } from "@/lib/api"
@@ -24,6 +25,14 @@ export function writeDraft(id: string, d: ReplyDraft) {
 }
 
 export const UNDO_MS = 6000
+
+const lines = new Map<string, Promise<unknown>>()
+
+function inLine(id: string, run: () => Promise<void>) {
+  const next = (lines.get(id) ?? Promise.resolve()).catch(() => undefined).then(run)
+  lines.set(id, next)
+  return next
+}
 
 const outbox = new Map<string, ReturnType<typeof setTimeout>>()
 const runners = new Map<string, () => void>()
@@ -80,15 +89,16 @@ export type Flow = { advance: (fromId: string) => void; show: (id: string) => vo
 export function useQueueActions(c: Conversation, contactName: string, flow?: Flow) {
   const { t } = useLingui()
   const qc = useQueryClient()
-  const live = useLiveContext()
+  const ctx = useLiveContext()
   const queue = useQueue()
   const errorText = useErrorText()
   const { membership } = useSession()
   const first = firstName(contactName)
+  const live = useIsLive(c)
   const advance = flow?.advance ?? queue.advance
   const show = flow?.show ?? queue.show
 
-  const apply = (data: Conversation) => applyEvent(qc, live, { type: "conversation.updated", data })
+  const apply = (data: Conversation) => applyEvent(qc, ctx, { type: "conversation.updated", data })
   const patch = (body: ConversationUpdate) => patchConversation(c.id, body).then(apply)
   const back = () => {
     queue.unleave(c.id)
@@ -107,9 +117,27 @@ export function useQueueActions(c: Conversation, contactName: string, flow?: Flo
     )
   }
 
-  const addMessage = (m: Message) => applyEvent(qc, live, { type: "message.created", data: m })
+  const addMessage = (m: Message) => applyEvent(qc, ctx, { type: "message.created", data: m })
+
+  const deliver = async ({ body, files, suggestion }: SendRequest) => {
+    let sent: Message
+    if (suggestion && files.length === 0) {
+      const path = { params: { path: { messageId: suggestion.id } } }
+      if (body.trim() !== suggestion.body.trim()) await unwrap(api.PATCH("/v1/messages/{messageId}", { ...path, body: suggestion.html ? { body, html: null } : { body } }))
+      sent = await unwrap(api.POST("/v1/messages/{messageId}/send", path))
+    } else {
+      sent = await postMessage(c.id, { kind: "message", body: body.trim() || undefined, client_id: crypto.randomUUID(), files })
+      if (suggestion) await api.DELETE("/v1/messages/{messageId}", { params: { path: { messageId: suggestion.id } } }).catch(() => undefined)
+    }
+    addMessage(sent)
+  }
+  const restoreDraft = ({ body, files }: SendRequest) => {
+    const now = readDraft(c.id)
+    writeDraft(c.id, { mode: "message", body: now.body || body, files: now.files.length ? now.files : files })
+  }
 
   return {
+    live,
     close: () => finish({ status: "closed" }, t`Closed without a reply`),
     snooze: (at: Date, when: string) => finish({ status: "snoozed", snooze_until: at.toISOString() }, t`${first} comes back ${when}`),
     untilReply: () => finish({ status: "pending" }, t`${first} comes back after writing again`),
@@ -145,44 +173,53 @@ export function useQueueActions(c: Conversation, contactName: string, flow?: Flo
         files,
         mentions: mentions.length ? mentions : undefined,
       }).then(addMessage),
-    send: ({ body, files, close, suggestion }: SendRequest) => {
+    send: (req: SendRequest): Promise<void> | undefined => {
+      const { close } = req
+      const notSent = (err: unknown) => {
+        restoreDraft(req)
+        toast(t`Your reply to ${first} was not sent. ${errorText(err)}`)
+      }
+      writeDraft(c.id, { body: "", mode: "message", files: [] })
+      if (live && !close) {
+        return inLine(c.id, () => deliver(req)).catch((err) => {
+          toast(t`Your reply to ${first} was not sent. ${errorText(err)}`)
+          throw err
+        })
+      }
+      if (live) {
+        queue.leave(c.id)
+        advance(c.id)
+        inLine(c.id, () => deliver(req))
+          .then(
+            () => patch({ status: "closed" }).then(() => toast(t`Sent to ${first} and closed`, () => patch(revertOf(c)).then(back, failed)), failed),
+            (err) => {
+              queue.unleave(c.id)
+              notSent(err)
+            },
+          )
+        return undefined
+      }
       const key = `${c.id}:${crypto.randomUUID()}`
       const status = close ? "closed" : "pending"
-      const restore = () => {
-        const now = readDraft(c.id)
-        writeDraft(c.id, { mode: "message", body: now.body || body, files: now.files.length ? now.files : files })
-      }
       queue.leave(c.id)
       advance(c.id)
-      writeDraft(c.id, { body: "", mode: "message", files: [] })
       hold(key, () => {
-        const deliver = async () => {
-          let sent: Message
-          if (suggestion && files.length === 0) {
-            const path = { params: { path: { messageId: suggestion.id } } }
-            if (body.trim() !== suggestion.body.trim()) await unwrap(api.PATCH("/v1/messages/{messageId}", { ...path, body: suggestion.html ? { body, html: null } : { body } }))
-            sent = await unwrap(api.POST("/v1/messages/{messageId}/send", path))
-          } else {
-            sent = await postMessage(c.id, { kind: "message", body: body.trim() || undefined, client_id: crypto.randomUUID(), files })
-            if (suggestion) await api.DELETE("/v1/messages/{messageId}", { params: { path: { messageId: suggestion.id } } }).catch(() => undefined)
-          }
-          addMessage(sent)
-          if (c.status !== status) await patch({ status })
-        }
-        deliver().catch((err) => {
-          restore()
-          queue.unleave(c.id)
-          toast(t`Your reply to ${first} was not sent. ${errorText(err)}`)
-        })
+        deliver(req)
+          .then(() => (c.status !== status ? patch({ status }) : undefined))
+          .catch((err) => {
+            queue.unleave(c.id)
+            notSent(err)
+          })
       })
       toast(close ? t`Sent to ${first} and closed` : t`Sent to ${first}`, () => {
         if (cancel(key)) {
-          restore()
+          restoreDraft(req)
           back()
         } else {
           patch(revertOf(c)).then(back, failed)
         }
       })
+      return undefined
     },
   }
 }
