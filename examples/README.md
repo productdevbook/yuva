@@ -13,9 +13,10 @@ your own code. The walkthroughs are the [Headless guide](../docs/headless.md) an
 | [nuxt-content](nuxt-content) | A Nuxt Content documentation site with `<yuva-page-feedback>` and `<yuva-page-questions>` on every page | Node 22.5+, Nuxt 4, Nuxt Content 3 |
 | [fumadocs](fumadocs) | A Fumadocs site (from `create-fumadocs-app`) with `YuvaPageFeedback` and `YuvaPageQuestions` on every docs page | Node 20.9+, Next.js 16, Fumadocs 16 |
 
-The JS examples point at the SDK in this repository (`file:../../sdk/js`), since `useyuva` is
-not on npm yet; build it once with `bun install && bun run build` in `sdk/js`. In your own project,
-depend on `useyuva` instead. The Go example uses `sdk/go` through a `replace` directive in its
+The JS examples point at the SDK in this repository (`file:../../sdk/js`); build it once with
+`bun install && bun run build` in `sdk/js`. In your own project, depend on `useyuva` from npm
+instead (`useyuva/docs` and the docs components in `useyuva/react` arrive in the release after
+0.0.6). The Go example uses `sdk/go` through a `replace` directive in its
 `go.mod`; drop that line in your own module.
 
 ## headless-chat
@@ -66,44 +67,31 @@ With `BOT_SEND=true` it also sends the draft, which works only when the workspac
 
 ## nuxt-content
 
-A four-page documentation site set up as the [Nuxt Content](../docs/documentation-pages.md#nuxt-content)
-part of the documentation pages guide describes: `useyuva/docs` in the client-only plugin
-`app/plugins/yuva.client.ts`, `isCustomElement` for `yuva-*` tags in `nuxt.config.ts`, and both
-elements in `app/pages/[...slug].vue`.
-
-Needs a chat channel with `http://localhost:3101` among its allowed origins. With anonymous
-visitors off, ratings still work but feedback and questions need an identity token.
+A four-page Nuxt Content site with both elements on every page, set up as in
+[Documentation pages](../docs/documentation-pages.md#nuxt-content). Needs a chat channel with
+`http://localhost:3101` among its allowed origins.
 
 ```sh
 cd examples/nuxt-content
 npm install
 cp .env.example .env   # set NUXT_PUBLIC_YUVA_SERVER and NUXT_PUBLIC_YUVA_CHANNEL
 npm run dev            # http://localhost:3101
-npm run build && npm start
 ```
-
-The values are public runtime config, read when the server starts, so one build serves any
-channel.
 
 ## fumadocs
 
-The `create-fumadocs-app` template (Next.js, Fumadocs MDX) with four pages, set up as the
-[Fumadocs](../docs/documentation-pages.md#fumadocs) part of the guide describes: the client
-component `components/yuva.tsx` wraps `YuvaPageQuestions` and `YuvaPageFeedback` from
-`useyuva/react`, and `app/docs/[[...slug]]/page.tsx` places them after `DocsBody`. The template
-has no Fumadocs `Feedback` component, so there is nothing to replace. `app/global.css` gives the
-elements Fumadocs' colours.
-
-Needs a chat channel with `http://localhost:3102` among its allowed origins.
+The `create-fumadocs-app` template with four pages and both components on every docs page, set up
+as in [Documentation pages](../docs/documentation-pages.md#fumadocs). `app/global.css` gives the
+elements Fumadocs' colours. Needs a chat channel with `http://localhost:3102` among its allowed
+origins.
 
 ```sh
 cd examples/fumadocs
 npm install
 cp .env.example .env.local   # set NEXT_PUBLIC_YUVA_SERVER and NEXT_PUBLIC_YUVA_CHANNEL
 npm run dev                  # http://localhost:3102/docs
-npm run build && npm start
 ```
 
-Next.js writes `NEXT_PUBLIC_` values into the client bundle at build time, so build again after
-changing them. `turbopack.root` in `next.config.mjs` points at the repository root only because
-`useyuva` is linked from `sdk/js`; with `useyuva` from npm, drop it.
+`NEXT_PUBLIC_` values are built into the client bundle, so build again after changing them.
+`turbopack.root` in `next.config.mjs` is there only because `useyuva` is linked from `sdk/js`;
+drop it when you use `useyuva` from npm.
