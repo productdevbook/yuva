@@ -1,9 +1,12 @@
 import { msg } from "@lingui/core/macro";
-import type { ClientPageAnswer } from "../client/api";
+import type { ClientPageAnswer, ClientPageAnswerList } from "../client/api";
 import { richText } from "../panel/text";
 import { YuvaDocsElement, el } from "./base";
 
 type Phase = "ask" | "sending" | "sent";
+
+const cacheFor = 60_000;
+const loads = new Map<string, { at: number; request: Promise<ClientPageAnswerList> }>();
 
 export interface PageQuestionDetail {
   page: string;
@@ -68,8 +71,15 @@ export class YuvaPageQuestionsElement extends YuvaDocsElement {
     const key = `${this.server} ${this.channel} ${page}`;
     if (!this.channel || !page || this.refused || (!force && this.#loadedFor === key)) return;
     this.#loadedFor = key;
+    let load = loads.get(key);
+    if (force || !load || Date.now() - load.at > cacheFor) {
+      load = { at: Date.now(), request: this.client().pageAnswers(page) };
+      loads.set(key, load);
+      const current = load;
+      load.request.catch(() => loads.get(key) === current && loads.delete(key));
+    }
     try {
-      const { items } = await this.client().pageAnswers(page);
+      const { items } = await load.request;
       if (this.#loadedFor !== key) return;
       this.#answers = items;
       this.render();
