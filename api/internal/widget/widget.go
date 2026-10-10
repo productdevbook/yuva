@@ -9,10 +9,10 @@ import (
 	"time"
 )
 
-//go:embed dist/yuva.js dist/yuva-chat.js
+//go:embed dist/yuva.js dist/yuva-chat.js dist/yuva-docs.js
 var embedded embed.FS
 
-var Files = []string{"yuva.js", "yuva-chat.js"}
+var Files = []string{"yuva.js", "yuva-chat.js", "yuva-docs.js"}
 
 func Handler(name string) http.Handler {
 	body, err := embedded.ReadFile("dist/" + name)

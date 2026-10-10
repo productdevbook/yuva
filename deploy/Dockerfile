@@ -21,8 +21,8 @@ COPY --from=widget /src/sdk/js/dist /tmp/widget-dist
 RUN if [ -f /tmp/web-dist/index.html ]; then \
       find internal/ui/dist -mindepth 1 -delete && cp -R /tmp/web-dist/. internal/ui/dist/; \
     fi; \
-    if [ -f /tmp/widget-dist/yuva.js ] && [ -f /tmp/widget-dist/yuva-chat.js ]; then \
-      cp /tmp/widget-dist/yuva.js /tmp/widget-dist/yuva-chat.js internal/widget/dist/; \
+    if [ -f /tmp/widget-dist/yuva.js ] && [ -f /tmp/widget-dist/yuva-chat.js ] && [ -f /tmp/widget-dist/yuva-docs.js ]; then \
+      cp /tmp/widget-dist/yuva.js /tmp/widget-dist/yuva-chat.js /tmp/widget-dist/yuva-docs.js internal/widget/dist/; \
     fi
 ARG VERSION=dev
 ARG TARGETOS TARGETARCH
