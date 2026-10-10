@@ -674,7 +674,11 @@ remote images, http(s)):
   them or to nobody, oldest first) are a queue; after a reply, close, snooze or hand-off the next
   one opens, with an undo. A reply is held for a few seconds before it is posted so it can be
   undone; "send" also sets `pending`, "send and close" sets `closed`. A bot's draft is offered as
-  the suggested reply. The hand-off menu shows each teammate's presence and open load
+  the suggested reply. Live conversations are different: a conversation from a chat or app
+  channel whose contact is online right now is talked through, not processed. Its replies are sent
+  at once (no hold), leave the status `open` and keep the member in it; only close, snooze or
+  hand-off moves on, and Enter sends there. Such live conversations come first in the queue (the
+  longest-waiting first among them), ahead of the oldest e-mail. The hand-off menu shows each teammate's presence and open load
   (`assignees` in `/v1/conversations/counts`, over the inboxes the member can see). An empty queue
   shows what the team did today from `GET /v1/stats`: replies sent by members, conversations
   closed and the median time to the first reply, per member too, over the inboxes the caller can
