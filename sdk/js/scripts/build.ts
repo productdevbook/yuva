@@ -16,13 +16,14 @@ function check(result: Bun.BuildOutput): void {
 const scripts = [
   { entry: "src/yuva.ts", format: "iife" },
   { entry: "src/yuva-chat.ts", format: "esm" },
+  { entry: "src/yuva-docs.ts", format: "iife" },
 ] as const;
 
 for (const { entry, format } of scripts) {
   check(await Bun.build({ entrypoints: [entry], outdir: "dist", format, target: "browser", minify: true, define, plugins: [linguiMacro] }));
 }
 
-const entries = ["src/index.ts", "src/chat.ts", "src/react.ts", "src/api.ts"];
+const entries = ["src/index.ts", "src/chat.ts", "src/docs.ts", "src/react.ts", "src/api.ts"];
 check(
   await Bun.build({
     entrypoints: entries,
@@ -48,7 +49,7 @@ for await (const path of new Bun.Glob("dist/types/**/*.d.ts").scan()) {
   await Bun.write(path, text.replace(/((?:from|import\()\s*")(\.\.?\/[^"]+?)(?<!\.js)"/g, '$1$2.js"'));
 }
 
-for (const name of ["yuva.js", "yuva-chat.js", "esm/index.js", "esm/chat.js", "esm/react.js", "esm/api.js"]) {
+for (const name of ["yuva.js", "yuva-chat.js", "yuva-docs.js", "esm/index.js", "esm/chat.js", "esm/docs.js", "esm/react.js", "esm/api.js"]) {
   const bytes = await Bun.file(`dist/${name}`).bytes();
   const gzip = Bun.gzipSync(bytes, { level: 9 }).length;
   console.log(`dist/${name}  ${bytes.length} B  gzip ${gzip} B`);

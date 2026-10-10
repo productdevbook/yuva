@@ -6,6 +6,7 @@ JavaScript SDK for [Yuva](https://github.com/productdevbook/yuva), open-source c
 |---|---|
 | `useyuva` | `createYuvaClient()`: the contact side (`/client/v1`) without DOM. Browsers, Node 22+, Bun, Deno, workers. |
 | `useyuva/chat` | The `<yuva-chat>` web component, built on that client. Browser only. |
+| `useyuva/docs` | `<yuva-page-feedback>` and `<yuva-page-questions>` for documentation pages. Registers in the browser only, so it is safe to import during SSR. |
 | `useyuva/react` | `YuvaProvider`, `useConversations`, `useMessages`. React 18+ is an optional peer. |
 | `useyuva/api` | A typed `/v1` client for backends (API key), generated from the OpenAPI contract. |
 
@@ -13,7 +14,8 @@ JavaScript SDK for [Yuva](https://github.com/productdevbook/yuva), open-source c
 npm install useyuva
 ```
 
-Without a bundler, the server hosts the widget itself: `<script src="https://<your-yuva>/yuva.js" defer></script>`.
+Without a bundler, the server hosts the widget itself: `<script src="https://<your-yuva>/yuva.js" defer></script>`,
+and the documentation page elements without the chat: `<script src="https://<your-yuva>/yuva-docs.js" defer></script>`.
 
 ## Client
 
@@ -76,6 +78,23 @@ import "useyuva/chat";
 ```
 
 Attributes, methods and events are in [docs/widget.md](https://github.com/productdevbook/yuva/blob/main/docs/widget.md).
+
+## Documentation pages
+
+```ts
+import "useyuva/docs";
+```
+
+```html
+<yuva-page-feedback channel="yuva_pk_…" server="https://support.example.com"></yuva-page-feedback>
+<yuva-page-questions channel="yuva_pk_…" server="https://support.example.com"></yuva-page-questions>
+```
+
+Both take `channel`, `server`, `locale`, `dir` and `identity-token` like `<yuva-chat>`, plus `page`
+and `page-title`, which default to the URL without query and fragment and `document.title`. They
+follow client-side navigation. Events: `yuva-rating` (`{ page, rating, previous }`),
+`yuva-feedback` (`{ page, rating, conversation_id }`) and `yuva-question` (`{ page, conversation_id }`).
+In React use `YuvaPageFeedback` and `YuvaPageQuestions` from `useyuva/react`.
 
 ## React
 

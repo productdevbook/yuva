@@ -1,6 +1,18 @@
-import { createContext, createElement, useCallback, useContext, useEffect, useRef, useState, type ReactElement, type ReactNode } from "react";
+import {
+  createContext,
+  createElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import type { ClientConversation, ClientMessage } from "./client/api";
-import type { MessageInput, YuvaClient } from "./client/client";
+import type { IdentityTokenSource, MessageInput, YuvaClient } from "./client/client";
+import type { PageFeedbackDetail, PageQuestionDetail, PageRatingDetail } from "./docs";
 
 const YuvaContext = createContext<YuvaClient | null>(null);
 
@@ -192,4 +204,90 @@ export function useMessages(conversationId: string | null | undefined): Messages
       if (conversationId) await client.markRead(conversationId);
     },
   };
+}
+
+export interface YuvaDocsProps {
+  channel: string;
+  server?: string;
+  locale?: string;
+  dir?: "ltr" | "rtl";
+  page?: string;
+  pageTitle?: string;
+  identityToken?: string | IdentityTokenSource | null;
+  className?: string;
+  style?: CSSProperties;
+}
+
+export interface YuvaPageFeedbackProps extends YuvaDocsProps {
+  onRating?: (detail: PageRatingDetail) => void;
+  onFeedback?: (detail: PageFeedbackDetail) => void;
+}
+
+export interface YuvaPageQuestionsProps extends YuvaDocsProps {
+  onQuestion?: (detail: PageQuestionDetail) => void;
+}
+
+type Handlers = Record<string, ((detail: never) => void) | undefined>;
+
+function useDocsElement(tag: string, props: YuvaDocsProps, handlers: Handlers): ReactElement {
+  const ref = useRef<HTMLElement | null>(null);
+  const latest = useRef(handlers);
+  latest.current = handlers;
+  const { channel, server, locale, dir, page, pageTitle, identityToken, className, style } = props;
+
+  useEffect(() => {
+    void import("./docs");
+  }, []);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    const attributes: Record<string, string | undefined> = {
+      server,
+      locale,
+      dir,
+      page,
+      "page-title": pageTitle,
+      "identity-token": typeof identityToken === "string" ? identityToken : undefined,
+      channel,
+    };
+    for (const [name, value] of Object.entries(attributes)) {
+      if (value) element.setAttribute(name, value);
+      else element.removeAttribute(name);
+    }
+  }, [channel, server, locale, dir, page, pageTitle, identityToken]);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element || typeof identityToken !== "function") return;
+    let current = true;
+    void customElements.whenDefined(tag).then(() => {
+      if (current) (element as HTMLElement & { setIdentityToken(source: IdentityTokenSource | null): void }).setIdentityToken(identityToken);
+    });
+    return () => {
+      current = false;
+    };
+  }, [tag, identityToken]);
+
+  const events = Object.keys(handlers).join(" ");
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    const listeners = events.split(" ").map((type) => {
+      const listener = (event: Event) => latest.current[type]?.((event as CustomEvent).detail as never);
+      element.addEventListener(type, listener);
+      return () => element.removeEventListener(type, listener);
+    });
+    return () => listeners.forEach((off) => off());
+  }, [events]);
+
+  return createElement(tag, { ref, className, style });
+}
+
+export function YuvaPageFeedback({ onRating, onFeedback, ...props }: YuvaPageFeedbackProps): ReactElement {
+  return useDocsElement("yuva-page-feedback", props, { "yuva-rating": onRating, "yuva-feedback": onFeedback });
+}
+
+export function YuvaPageQuestions({ onQuestion, ...props }: YuvaPageQuestionsProps): ReactElement {
+  return useDocsElement("yuva-page-questions", props, { "yuva-question": onQuestion });
 }

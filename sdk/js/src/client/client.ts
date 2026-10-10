@@ -6,14 +6,18 @@ import {
   type ClientConversation,
   type ClientConversationCreated,
   type ClientConversationPage,
+  type ClientFeedbackCreate,
   type ClientInbox,
   type ClientMessage,
   type ClientMessagePage,
+  type ClientPageAnswerList,
+  type ClientQuestionCreate,
   type ClientRatingCreate,
   type ClientReadState,
   type ClientRealtimeMessage,
   type ClientSession,
   type ClientSessionInfo,
+  type PageRatingCreate,
   type Rating,
   type Request,
 } from "./api";
@@ -192,6 +196,14 @@ export class YuvaClient {
     return this.#call<ClientInbox>(`/client/v1/channels/${encodeURIComponent(this.channel)}`);
   }
 
+  ratePage(input: PageRatingCreate): Promise<void> {
+    return this.#call(`/client/v1/channels/${encodeURIComponent(this.channel)}/page-ratings`, { method: "POST", json: input });
+  }
+
+  pageAnswers(page: string): Promise<ClientPageAnswerList> {
+    return this.#call(`/client/v1/channels/${encodeURIComponent(this.channel)}/page-answers${query({ page })}`);
+  }
+
   setIdentityToken(source: IdentityTokenSource | null): void {
     this.#identity = source;
     this.reset();
@@ -307,8 +319,22 @@ export class YuvaClient {
     return this.#authed(`/client/v1/attachments/${encodeURIComponent(id)}`, { blob: true });
   }
 
+  sendFeedback(input: ClientFeedbackCreate): Promise<ClientConversationCreated> {
+    const client_id = input.client_id ?? randomId();
+    return this.#authed("/client/v1/feedback", { method: "POST", headers: this.#idempotency(client_id), json: { ...input, client_id } });
+  }
+
+  askQuestion(input: ClientQuestionCreate): Promise<ClientConversationCreated> {
+    const client_id = input.client_id ?? randomId();
+    return this.#authed("/client/v1/questions", { method: "POST", headers: this.#idempotency(client_id), json: { ...input, client_id } });
+  }
+
+  #idempotency(client_id: string): Record<string, string> {
+    return this.#idempotencyKeys && /^[\x20-\x7e]{1,255}$/.test(client_id) ? { "Idempotency-Key": client_id } : {};
+  }
+
   #messageRequest({ body, subject, files = [], client_id = randomId() }: ConversationInput): Request {
-    const headers: Record<string, string> = this.#idempotencyKeys && /^[\x20-\x7e]{1,255}$/.test(client_id) ? { "Idempotency-Key": client_id } : {};
+    const headers = this.#idempotency(client_id);
     if (files.length === 0) return { method: "POST", headers, json: { body, subject, client_id } };
     const fields: [string, string][] = [];
     if (subject) fields.push(["subject", subject]);

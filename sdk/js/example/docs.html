@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Getting started</title>
+    <style>
+      :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+      body { margin: 0; padding: 24px 16px; background: Canvas; color: CanvasText; }
+      main { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+      nav { display: flex; gap: 12px; flex-wrap: wrap; }
+      hr { inline-size: 100%; border: 0; border-block-start: 1px solid GrayText; opacity: 0.4; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <nav>
+        <a href="/docs/getting-started" data-title="Getting started">Getting started</a>
+        <a href="/docs/install" data-title="Install">Install</a>
+        <a href="/docs/faq?tab=1#top" data-title="FAQ">FAQ (query and fragment)</a>
+        <button type="button" id="back">Back</button>
+      </nav>
+      <h1 id="heading">Getting started</h1>
+      <p>
+        A documentation page with both elements. The links change the URL with <code>history.pushState</code>, as a
+        documentation site's router does, without reloading; the elements follow the URL.
+      </p>
+      <hr />
+      <div id="slot"></div>
+    </main>
+    <script src="../dist/yuva-docs.js"></script>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const slot = document.getElementById("slot");
+      for (const tag of ["yuva-page-questions", "yuva-page-feedback"]) {
+        const element = document.createElement(tag);
+        for (const name of ["server", "channel", "locale", "dir", "identity-token"]) {
+          if (params.get(name)) element.setAttribute(name, params.get(name));
+        }
+        for (const type of ["yuva-rating", "yuva-feedback", "yuva-question"]) {
+          element.addEventListener(type, (event) => console.log(type, event.detail));
+        }
+        slot.append(element);
+      }
+      document.querySelector("nav").addEventListener("click", (event) => {
+        const link = event.target.closest("a");
+        if (!link) return;
+        event.preventDefault();
+        const url = new URL(link.getAttribute("href"), location.href);
+        const query = new URLSearchParams(url.search);
+        for (const [name, value] of params) query.set(name, value);
+        history.pushState(null, "", `/example/docs.html${url.pathname.replace("/docs", "")}?${query}${url.hash}`);
+        document.title = link.dataset.title;
+        document.getElementById("heading").textContent = link.dataset.title;
+      });
+      document.getElementById("back").addEventListener("click", () => history.back());
+    </script>
+  </body>
+</html>

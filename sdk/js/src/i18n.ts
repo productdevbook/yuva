@@ -27,8 +27,8 @@ export function catalogFor(locale: string): Messages {
 }
 
 // Keeps @lingui/core out of the loader; only plain messages and simple placeholders (no plurals) belong here.
-export function translatePlain(messages: Messages, descriptor: MessageDescriptor): string {
-  const entry = messages[descriptor.id] ?? en[descriptor.id];
+export function translatePlain(messages: Messages, descriptor: MessageDescriptor, fallback: Messages = en): string {
+  const entry = messages[descriptor.id] ?? fallback[descriptor.id];
   const values = (descriptor.values ?? {}) as Record<string, unknown>;
   if (typeof entry === "string") return entry;
   if (Array.isArray(entry)) {

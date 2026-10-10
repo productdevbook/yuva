@@ -3,6 +3,7 @@ import { msg } from "@lingui/core/macro";
 import { catalogFor, directionOf, resolveLocale, translatePlain } from "./i18n";
 import type { components } from "./schema.gen";
 import {
+  contrastOn,
   launcherOf,
   readStored,
   writeStored,
@@ -130,15 +131,6 @@ const chatIcon = `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" st
 const closeIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>`;
 
 const scriptSrc = document.currentScript instanceof HTMLScriptElement ? document.currentScript.src : "";
-
-export function contrastOn(color: string): string {
-  const n = Number.parseInt(color.slice(1), 16);
-  const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((c) => {
-    const s = c / 255;
-    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
-  }) as [number, number, number];
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.4 ? "#111827" : "#ffffff";
-}
 
 export class YuvaChatElement extends HTMLElement {
   static observedAttributes = ["channel", "server", "layout", "locale", "dir", "identity-token", "open"];
