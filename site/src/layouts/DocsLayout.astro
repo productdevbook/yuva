@@ -19,9 +19,10 @@ interface Props {
   edit?: string
   image?: string
   wideContent?: boolean
+  english?: boolean
 }
 
-const { locale, title, description, slug, rel, headings = [], meta = [], edit, image, wideContent = false } = Astro.props
+const { locale, title, description, slug, rel, headings = [], meta = [], edit, image, wideContent = false, english = locale !== "en" } = Astro.props
 const t = docsCopy(i18nFor(locale))
 const groups = await nav(locale)
 const { prev, next } = await neighbours(slug, locale)
@@ -85,7 +86,7 @@ const link =
       <div class:list={["mx-auto grid gap-12 px-5 py-10 sm:px-8 lg:px-12 lg:py-14", wideContent ? "max-w-[90rem]" : "max-w-6xl xl:grid-cols-[minmax(0,1fr)_14rem]"]}>
         <main class="min-w-0">
           <h1 class="text-[clamp(2.25rem,1.6rem+2vw,3rem)] leading-[1.06] font-semibold tracking-[-0.035em]">{title}</h1>
-          <p class="mt-3 text-sm text-ink-faint">{[...meta.slice(0, 1), ...(locale !== "en" ? [t.english] : [])].join(" · ")}</p>
+          <p class="mt-3 text-sm text-ink-faint">{[...meta.slice(0, 1), ...(english ? [t.english] : [])].join(" · ")}</p>
           <article class="docs-content mt-10" data-copy={t.copy} data-copied={t.copied}>
             <slot />
           </article>

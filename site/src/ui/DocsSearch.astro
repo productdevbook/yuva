@@ -137,7 +137,7 @@ const t = docsCopy(i18nFor(locale))
     const input = dialog!.querySelector("input")!
     input.select()
     if (!index) {
-      index = await (await fetch("/docs/search.json")).json()
+      index = await (await fetch(`${labels.base ?? "/docs/"}search.json`)).json()
       input.dispatchEvent(new Event("input"))
     }
   }

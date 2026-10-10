@@ -3,7 +3,7 @@ import { docsCopy } from "@/copy/docs"
 import { i18nFor } from "@/i18n"
 import Base from "@/layouts/Base.astro"
 import DocsHeader from "@/layouts/DocsHeader.astro"
-import { docRel, href, nav, type NavItem } from "@/lib/docs"
+import { docRel, href, nav, translatedCount, type NavItem } from "@/lib/docs"
 import { docsPath, type Locale } from "@/lib/routes"
 import ChannelIcon from "@/ui/ChannelIcon.astro"
 import DocsSearch from "@/ui/DocsSearch.astro"
@@ -15,6 +15,7 @@ interface Props {
 const { locale } = Astro.props
 const t = docsCopy(i18nFor(locale))
 const groups = await nav(locale)
+const englishOnly = locale !== "en" && (await translatedCount(locale)) === 0
 const steps = groups.filter((g) => t.home.steps[g.key])
 const others = groups.filter((g) => !t.home.steps[g.key])
 const find = (slug: string) => groups.flatMap((g) => g.items).find((i) => i.slug === slug)
@@ -46,7 +47,7 @@ const links = (item: NavItem) => [item]
           ))
         }
       </p>
-      {locale !== "en" && <p class="mt-6 text-sm text-ink-faint">{t.english}</p>}
+      {englishOnly && <p class="mt-6 text-sm text-ink-faint">{t.english}</p>}
     </section>
 
     <section class="rounded-3xl bg-paper-deep p-3 sm:p-5" aria-label={t.documentation}>

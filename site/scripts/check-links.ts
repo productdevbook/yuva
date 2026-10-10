@@ -1,6 +1,6 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs"
 import { join } from "node:path"
-import { SITE } from "../src/lib/routes"
+import { docsRoot, locales, SITE } from "../src/lib/routes"
 
 const dist = join(import.meta.dirname, "../dist")
 const repo = join(import.meta.dirname, "../..")
@@ -87,6 +87,29 @@ for (const name of ["llms.txt", "llms-full.txt"]) {
     else if (hash) {
       const t = path.endsWith("/") ? join(dist, path, "index.html") : join(dist, path)
       if (!idsOf(t).has(hash)) broken.push(`/${name} -> ${raw} (no #${hash})`)
+    }
+  }
+}
+
+const guides = readdirSync(join(repo, "docs")).filter((n) => n.endsWith(".md")).map((n) => n.slice(0, -3))
+for (const locale of locales) {
+  const root = docsRoot(locale)
+  for (const slug of guides) {
+    checked++
+    if (!resolves(`${root}${slug}/`)) broken.push(`${root}${slug}/ (missing, docs/${slug}.md has no page in this locale)`)
+  }
+  const index = join(dist, root, "search.json")
+  if (!existsSync(index)) {
+    broken.push(`${root}search.json (missing)`)
+    continue
+  }
+  for (const entry of JSON.parse(readFileSync(index, "utf8")) as { href: string }[]) {
+    const [rel, hash] = entry.href.split("#") as [string, string | undefined]
+    const path = `${root}${rel}`
+    checked++
+    if (!resolves(path)) broken.push(`${root}search.json -> ${entry.href}`)
+    else if (hash && !rel.startsWith("api/")) {
+      if (!idsOf(join(dist, path, "index.html")).has(hash)) broken.push(`${root}search.json -> ${entry.href} (no #${hash})`)
     }
   }
 }

@@ -1,9 +1,9 @@
 ---
-import { ordered, type Doc } from "@/lib/docs"
+import { ordered, slugOf, type Doc } from "@/lib/docs"
 import DocPageView from "@/views/docs/DocPageView.astro"
 
 export async function getStaticPaths() {
-  return (await ordered()).map((entry) => ({ params: { slug: entry.id }, props: { entry } }))
+  return (await ordered("de")).map((entry) => ({ params: { slug: slugOf(entry) }, props: { entry } }))
 }
 
 const { entry } = Astro.props as { entry: Doc }

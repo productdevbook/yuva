@@ -2,7 +2,7 @@
 import { docsCopy } from "@/copy/docs"
 import { i18nFor } from "@/i18n"
 import DocsLayout from "@/layouts/DocsLayout.astro"
-import { description, docRel, editHref, minutes, proseClass, title, updated, type Doc } from "@/lib/docs"
+import { description, docRel, editHref, localeOf, minutes, proseClass, slugOf, title, translation, updated, type Doc } from "@/lib/docs"
 import { bcp47, docsRoot, type Locale } from "@/lib/routes"
 
 interface Props {
@@ -18,7 +18,11 @@ const html = (entry.rendered?.html ?? "")
   .replace(/<h3 id="([^"]+)">(\d+)\.\s*/g, '<h3 id="$1" class="step" data-step="$2">')
 const headings = (entry.rendered?.metadata?.headings ?? []) as { depth: number; slug: string; text: string }[]
 const sections = headings.filter((h) => h.depth === 2).length
-const day = updated(entry.id)
+const slug = slugOf(entry)
+const state = await translation(entry, locale)
+const note =
+  state.status === "missing" ? t.notTranslated : state.status === "english-only" ? t.englishOnly : state.newer ? t.englishNewer : undefined
+const day = updated(entry)
 const date = day ? new Intl.DateTimeFormat(bcp47[locale], { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${day}T00:00:00Z`)) : undefined
 const meta = [t.readTime(minutes(entry)), sections > 1 ? t.sectionCount(sections) : undefined, date ? t.lastUpdated(date) : undefined].filter(Boolean)
 ---
@@ -27,11 +31,27 @@ const meta = [t.readTime(minutes(entry)), sections > 1 ? t.sectionCount(sections
   locale={locale}
   title={title(entry)}
   description={description(entry)}
-  slug={entry.id}
-  rel={docRel(entry.id)}
+  slug={slug}
+  rel={docRel(slug)}
   headings={headings}
   meta={meta as string[]}
-  edit={editHref(entry.id)}
+  edit={editHref(entry)}
+  english={false}
 >
-  <div class:list={[proseClass, "docs-body"]} lang="en" set:html={html} />
+  {
+    note && (
+      <p class="mb-8 rounded-xl border border-rule bg-paper-deep px-4 py-3 text-sm text-ink-soft" data-translation={state.status}>
+        {note}
+        {state.newer && (
+          <>
+            {" "}
+            <a class="font-medium text-brand hover:underline" href={`${docsRoot("en")}${docRel(slug)}`} hreflang="en">
+              {t.readEnglish} →
+            </a>
+          </>
+        )}
+      </p>
+    )
+  }
+  <div class:list={[proseClass, "docs-body"]} lang={localeOf(entry)} set:html={html} />
 </DocsLayout>
