@@ -62,6 +62,7 @@ docker pull ghcr.io/productdevbook/yuva:0.0.6
 | [Install](docs/install.md) | [E-mail](docs/email.md) | [Identity tokens](docs/identity.md) | [Headless](docs/headless.md) |
 | [Configuration](docs/configuration.md) | [Web widget](docs/widget.md) | [Webhooks](docs/webhooks.md) | [AI assistants (MCP)](docs/mcp.md) |
 | [Operations](docs/operations.md) | [Mobile SDKs](docs/mobile.md) | [API contract](openapi/openapi.yaml) | [Examples](examples) |
+| | [Documentation pages](docs/documentation-pages.md) | | |
 
 How it is built: [architecture](docs/architecture.md). What is next: [roadmap](docs/roadmap.md).
 What changed: [changelog](CHANGELOG.md).
