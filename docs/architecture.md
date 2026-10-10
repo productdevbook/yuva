@@ -17,7 +17,9 @@ database.
 - Ready to be hosted for others: every row belongs to a workspace and usage is counted from day one.
 
 Not goals: a CRM, a marketing e-mail tool, a public knowledge base, social-media channels
-(WhatsApp, Instagram, …). They may come later; the model must not block them.
+(WhatsApp, Instagram, …). They may come later; the model must not block them. Yuva does not host
+documentation, but it collects feedback and questions on the documentation sites products already
+have (see "Documentation pages").
 
 ## Concepts
 
@@ -869,6 +871,49 @@ turning it on never offers old conversations. Ratings are not stored for spam.
   name and branding colour, English, Turkish or German by the inbox's language. Opening it stores
   nothing, since mail scanners open links: it shows the chosen rating preselected and a comment
   field, and only its POST rates.
+
+### Documentation pages
+
+Products keep their documentation on their own sites (Nuxt Content, Fumadocs, Starlight,
+VitePress, plain HTML). Yuva adds two elements to those pages and stores nothing of the
+documentation itself. Both use an existing `chat` channel: its public key, its origins and its
+rate limits, so a docs site is set up like a site with the chat widget, and the same channel may
+serve both.
+
+- **A page** is the page's URL without query and fragment, and its origin must be one of the
+  channel's origins (`400 page_origin` otherwise). The title is what the page sent last. The
+  elements follow the URL themselves, since documentation sites navigate without reloading;
+  a `page` attribute overrides it.
+- **Page ratings.** `<yuva-page-feedback>` asks whether the page helped: `up` or `down`. A rating
+  alone creates no contact and no conversation: `POST /client/v1/channels/{key}/page-ratings`
+  needs no session and adds one to a per-page, per-day counter (`page_ratings`: workspace, inbox,
+  channel, page, day, up, down). Nothing about the visitor is stored; the element remembers the
+  visitor's rating in the browser and a changed mind moves the count, and the endpoint is rate
+  limited per IP address and channel like session starts.
+- **Page feedback.** After a rating the element offers a text field and, optionally, an e-mail
+  address. Sending it is `POST /client/v1/feedback` from a visitor session on the chat channel, a
+  `feedback` conversation like the app's, with `page_url`, `page_title` and `rating` in its
+  feedback metadata and category `other` unless the visitor picked one. It is answered like any
+  feedback; replies reach the visitor by e-mail when they allowed it.
+- **Page questions.** `<yuva-page-questions>` lists the answers published on the page and lets a
+  visitor ask a question, which starts a conversation of kind `question` with `page_url` and
+  `page_title`, from a visitor session, with an optional e-mail address for the answer. Questions
+  are private conversations: nothing a visitor writes is ever shown on the page by itself.
+- **Published answers.** A member who answered a question publishes it to the page
+  (`POST /v1/conversations/{id}/publish`): the question and the answer as the member edits them,
+  stored as a `page_answers` row (workspace, inbox, channel, page, question, answer, the member,
+  the source conversation, published and updated times), with no name or address of the visitor.
+  Members edit, unpublish (delete) and list them per page under the same inbox access as the
+  conversation. `GET /client/v1/channels/{key}/page-answers?page=` returns a page's published
+  answers newest first without a session and is cacheable for a minute. A published answer is the
+  member's text, so retention and contact deletion leave it; deleting the source conversation
+  keeps it without the link.
+- **Panel.** A Docs view lists pages of the inboxes the member can see with their up and down
+  counts over a window (7, 30 or 90 days), the share of `down`, open feedback and questions and
+  the number of published answers; a page shows its feedback, its questions and its published
+  answers. A `question` conversation offers "Publish to page" once it has a member reply.
+- Ratings are counters, so they send no events or webhooks; page feedback and questions are
+  conversations and send the same ones as any conversation and feedback.
 
 ### Contacts directory
 

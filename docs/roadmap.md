@@ -141,3 +141,19 @@ Status: planned; iOS in issue #18, Android in issue #19.
 
 Accept: the same store build works against useyuva.com and a self-hosted server; a push reaches a
 real phone through the relay within seconds and the relay holds no message text.
+
+## M11 — Feedback and questions on documentation pages
+
+Status: in progress; plan in issue #23, decisions in `architecture.md` › Documentation pages.
+
+- `<yuva-page-feedback>` (was this page helpful, then optional text and e-mail) and
+  `<yuva-page-questions>` (published answers and a question form) for any documentation site,
+  on an existing chat channel; guides for Nuxt Content and Fumadocs.
+- Per-page rating counters, page feedback as feedback conversations, questions as `question`
+  conversations, answers members publish to the page.
+- A Docs view in the panel: pages by rating, their feedback, questions and published answers.
+
+Accept: on a Nuxt Content and a Fumadocs site, a visitor rates a page, sends feedback and asks a
+question; the panel shows the counts and both conversations; a member answers the question and
+publishes it, and the answer appears on that page without the visitor's name or address; an
+element on an origin the channel does not allow is refused.
