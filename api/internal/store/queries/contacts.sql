@@ -152,9 +152,12 @@ INSERT INTO contact_external_ids (workspace_id, inbox_id, external_id, contact_i
 SELECT contact_id FROM contact_external_ids WHERE workspace_id = $1 AND inbox_id = $2 AND external_id = $3;
 
 -- name: ListContactStorageKeys :many
+-- Files of the contact's conversations and of messages they wrote in anyone else's: both go when
+-- the contact does.
 SELECT a.storage_key FROM attachments a
 JOIN conversations c ON c.workspace_id = a.workspace_id AND c.id = a.conversation_id
-WHERE a.workspace_id = $1 AND c.contact_id = $2;
+JOIN messages m ON m.workspace_id = a.workspace_id AND m.id = a.message_id
+WHERE a.workspace_id = $1 AND (c.contact_id = $2 OR m.author_contact_id = $2);
 
 -- name: ListContactSummaries :many
 SELECT c.id, c.name,

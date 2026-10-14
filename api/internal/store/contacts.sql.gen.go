@@ -486,7 +486,8 @@ func (q *Queries) ListContactExternalIDs(ctx context.Context, arg ListContactExt
 const listContactStorageKeys = `-- name: ListContactStorageKeys :many
 SELECT a.storage_key FROM attachments a
 JOIN conversations c ON c.workspace_id = a.workspace_id AND c.id = a.conversation_id
-WHERE a.workspace_id = $1 AND c.contact_id = $2
+JOIN messages m ON m.workspace_id = a.workspace_id AND m.id = a.message_id
+WHERE a.workspace_id = $1 AND (c.contact_id = $2 OR m.author_contact_id = $2)
 `
 
 type ListContactStorageKeysParams struct {
@@ -494,6 +495,8 @@ type ListContactStorageKeysParams struct {
 	ContactID   uuid.UUID
 }
 
+// Files of the contact's conversations and of messages they wrote in anyone else's: both go when
+// the contact does.
 func (q *Queries) ListContactStorageKeys(ctx context.Context, arg ListContactStorageKeysParams) ([]string, error) {
 	rows, err := q.db.Query(ctx, listContactStorageKeys, arg.WorkspaceID, arg.ContactID)
 	if err != nil {

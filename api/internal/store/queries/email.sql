@@ -175,7 +175,8 @@ UPDATE conversations SET spam = @spam WHERE workspace_id = @workspace_id AND id 
 -- name: ListContactRawKeys :many
 SELECT e.raw_key::text FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
-WHERE e.workspace_id = $1 AND c.contact_id = $2 AND e.raw_key IS NOT NULL;
+JOIN messages m ON m.workspace_id = e.workspace_id AND m.id = e.message_id
+WHERE e.workspace_id = $1 AND (c.contact_id = $2 OR m.author_contact_id = $2) AND e.raw_key IS NOT NULL;
 
 -- name: ListInboxRawKeys :many
 SELECT e.raw_key::text FROM message_emails e
