@@ -176,6 +176,23 @@ func (w *pushWorker) Work(ctx context.Context, job *river.Job[PushArgs]) error {
 
 func (w *pushWorker) Timeout(*river.Job[PushArgs]) time.Duration { return pushAttemptTimeout }
 
+// pushStillAllowed says whether the person may still see the inbox a push is about: the payload
+// was built when the job was queued, and access can be lost before an attempt or a retry.
+func (s *Server) pushStillAllowed(ctx context.Context, a PushArgs, person uuid.UUID) (bool, error) {
+	var n oas.PushNotification
+	if a.WorkspaceID == nil || json.Unmarshal(a.Payload, &n) != nil || n.InboxId == nil {
+		return true, nil
+	}
+	m, err := s.st.GetMemberByPerson(ctx, store.GetMemberByPersonParams{WorkspaceID: *a.WorkspaceID, PersonID: person})
+	if store.IsNotFound(err) {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	return memberHasInbox(ctx, s.st.Queries, *a.WorkspaceID, *n.InboxId, m.ID)
+}
+
 // SendPush makes one attempt to deliver a push. A subscription the push service reports gone
 // (404, 410), or whose endpoint is not allowed, is deleted. It reports whether to try again.
 func (s *Server) SendPush(ctx context.Context, a PushArgs) (bool, error) {
@@ -192,6 +209,9 @@ func (s *Server) SendPush(ctx context.Context, a PushArgs) (bool, error) {
 		return false, nil
 	}
 	if err != nil {
+		return false, err
+	}
+	if ok, err := s.pushStillAllowed(ctx, a, sub.PersonID); err != nil || !ok {
 		return false, err
 	}
 	drop := func(reason error) (bool, error) {
