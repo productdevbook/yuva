@@ -220,7 +220,11 @@ func (s *Server) DeleteCannedReply(ctx context.Context, req oas.DeleteCannedRepl
 }
 
 func (s *Server) GetUsage(ctx context.Context, _ oas.GetUsageRequestObject) (oas.GetUsageResponseObject, error) {
-	rows, err := s.st.ListUsage(ctx, principalFrom(ctx).workspaceID)
+	p := principalFrom(ctx)
+	if err := requireManagerOrKey(p); err != nil {
+		return nil, err
+	}
+	rows, err := s.st.ListUsage(ctx, p.workspaceID)
 	if err != nil {
 		return nil, err
 	}
