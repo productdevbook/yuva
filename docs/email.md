@@ -66,7 +66,7 @@ It needs the server's `YUVA_DATABASE_URL`, `YUVA_MASTER_KEY` and storage setting
 mail host, use S3 storage so both write to the same place. Copy the binary out of the image:
 
 ```sh
-docker create --name yuva-bin ghcr.io/productdevbook/yuva:0.0.12
+docker create --name yuva-bin ghcr.io/productdevbook/yuva:0.0.13
 docker cp yuva-bin:/yuva /usr/local/bin/yuva && docker rm yuva-bin
 ```
 
