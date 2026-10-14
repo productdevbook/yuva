@@ -526,6 +526,9 @@ func (s *Server) NotifyBroadcastReplies(ctx context.Context, a BroadcastRepliesA
 	if err != nil || n == 0 {
 		return err
 	}
+	if ok, err := memberHasInbox(ctx, s.st.Queries, ws, b.InboxID, a.MemberID); err != nil || !ok {
+		return err
+	}
 	m, err := s.st.GetMember(ctx, store.GetMemberParams{WorkspaceID: ws, ID: a.MemberID})
 	if store.IsNotFound(err) {
 		return nil
