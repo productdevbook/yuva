@@ -261,6 +261,9 @@ func (s *Server) FinishPasskeySignIn(ctx context.Context, req oas.FinishPasskeyS
 	if err != nil {
 		return nil, errPasskey(err)
 	}
+	if cred.Authenticator.CloneWarning {
+		return nil, errPasskey(errors.New("the authenticator's signature counter went backwards, a sign of a cloned key"))
+	}
 	user := validated.(*passkeyUser)
 	var row *store.Passkey
 	for i := range user.rows {
