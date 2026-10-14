@@ -1,0 +1,257 @@
+---
+import { aiCopy, SERVER_TOKEN } from "@/copy/ai"
+import { i18nFor } from "@/i18n"
+import Base from "@/layouts/Base.astro"
+import { ai, APP_URL, docsPath, type Locale } from "@/lib/routes"
+import Lucide from "@/ui/Lucide.astro"
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const t = aiCopy(i18nFor(locale))
+const fill = (s: string) => s.replaceAll(SERVER_TOKEN, APP_URL)
+const first = t.assistants[0]!
+const card = "min-w-0 rounded-3xl border border-night-rule bg-night-sheet p-5 sm:p-8"
+const step =
+  "flex size-8 shrink-0 items-center justify-center rounded-full bg-glow font-mono text-sm font-semibold text-night"
+const pill =
+  "inline-flex cursor-pointer select-none items-center gap-2 rounded-full border border-night-rule px-4 py-2 text-sm text-night-soft transition-colors hover:text-night-ink has-checked:border-glow has-checked:bg-glow/10 has-checked:text-night-ink has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-glow"
+const copyBtn =
+  "shrink-0 rounded-full border border-night-rule px-3 py-1 text-xs font-medium text-night-soft transition-colors hover:border-glow hover:text-night-ink"
+---
+
+<Base locale={locale} title={t.meta.title} description={t.meta.description} paths={ai}>
+  <div class="relative isolate overflow-hidden bg-night text-night-ink">
+    <div
+      class="pointer-events-none absolute inset-x-0 -top-40 -z-10 h-[34rem] bg-[radial-gradient(60%_60%_at_50%_0%,rgb(255_176_143/0.28),transparent_70%)]"
+      aria-hidden="true"
+    ></div>
+    <div class="mx-auto max-w-5xl px-5 pt-20 pb-24 sm:px-8 sm:pt-28">
+      <header class="max-w-3xl">
+        <p class="inline-flex items-center gap-2 rounded-full border border-night-rule px-3 py-1 text-sm text-night-soft">
+          <Lucide name="sparkles" class="size-4 text-glow" />
+          {t.kicker}
+        </p>
+        <h1 class="mt-6 text-[clamp(2.4rem,1.3rem+3.6vw,4.2rem)] leading-[1.04] font-semibold tracking-[-0.035em]">
+          {t.title}
+          <span class="block text-glow">{t.titleAccent}</span>
+        </h1>
+        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-pretty text-night-soft">{t.lead}</p>
+      </header>
+
+      <form class="mt-14 grid grid-cols-1 gap-6" data-ai onsubmit="return false">
+        <section class={card} aria-labelledby="ai-server">
+          <h2 id="ai-server" class="text-sm font-medium text-night-soft">
+            {t.server.label}
+          </h2>
+          <div class="mt-4 flex flex-wrap gap-2" role="radiogroup" aria-labelledby="ai-server">
+            <label class={pill}>
+              <input type="radio" name="server" value="hosted" class="sr-only" checked />
+              {t.server.hosted} <span class="font-mono text-xs opacity-70">app.useyuva.com</span>
+            </label>
+            <label class={pill}>
+              <input type="radio" name="server" value="own" class="sr-only" />
+              {t.server.own}
+            </label>
+          </div>
+          <div class="mt-4 hidden" data-own>
+            <input
+              type="url"
+              inputmode="url"
+              autocomplete="url"
+              spellcheck="false"
+              placeholder={t.server.placeholder}
+              aria-label={t.server.own}
+              class="w-full rounded-xl border border-night-rule bg-night px-4 py-3 font-mono text-sm text-night-ink outline-none placeholder:text-night-soft/60 focus:border-glow"
+              data-server
+            />
+            <p class="mt-2 text-xs text-night-soft">{t.server.hint}</p>
+          </div>
+        </section>
+
+        <section class={card} aria-labelledby="ai-pick">
+          <div class="flex items-center gap-3">
+            <span class={step}>1</span>
+            <h2 id="ai-pick" class="text-xl font-semibold">
+              {t.pick}
+            </h2>
+          </div>
+          <div class="mt-5 flex flex-wrap gap-2" role="radiogroup" aria-labelledby="ai-pick">
+            {t.assistants.map((a) => (
+              <label class={pill}>
+                <input type="radio" name="assistant" value={a.id} class="sr-only" checked={a.id === first.id} />
+                {a.name}
+              </label>
+            ))}
+          </div>
+        </section>
+
+        <section class={card} aria-labelledby="ai-connect">
+          <div class="flex items-center gap-3">
+            <span class={step}>2</span>
+            <h2 id="ai-connect" class="text-xl font-semibold">
+              {t.connect}
+            </h2>
+          </div>
+          {t.assistants.map((a) => (
+            <ol class:list={["mt-5 grid grid-cols-1 gap-4", a.id !== first.id && "hidden"]} data-panel={a.id}>
+              {a.steps.map((s) => (
+                <li class="grid min-w-0 grid-cols-1 gap-2">
+                  <p class="text-night-soft">{s.text}</p>
+                  {s.code && (
+                    <div class="flex min-w-0 items-start gap-3 rounded-2xl border border-night-rule bg-night p-4">
+                      <pre
+                        class="m-0 min-w-0 flex-1 overflow-x-auto font-mono text-[0.85rem] leading-relaxed text-night-ink"
+                        data-template={s.code}
+                      >{fill(s.code)}</pre>
+                      <button type="button" class={copyBtn} data-copy-from data-done={t.copied}>
+                        {t.copy}
+                      </button>
+                    </div>
+                  )}
+                </li>
+              ))}
+              {a.note && <li class="text-sm text-night-soft">{a.note}</li>}
+            </ol>
+          ))}
+        </section>
+
+        <section class={card} aria-labelledby="ai-say">
+          <div class="flex items-center gap-3">
+            <span class={step}>3</span>
+            <h2 id="ai-say" class="text-xl font-semibold">
+              {t.say}
+            </h2>
+          </div>
+          <p class="mt-3 text-night-soft">{t.sayLead}</p>
+          {t.assistants.map(
+            (a) =>
+              a.say && (
+                <div class:list={["mt-5", a.id !== first.id && "hidden"]} data-panel={a.id}>
+                  <div class="flex min-w-0 items-center gap-3 rounded-2xl border border-glow/40 bg-night p-4">
+                    <pre class="m-0 min-w-0 flex-1 overflow-x-auto font-mono text-base text-glow">{a.say}</pre>
+                    <button type="button" class={copyBtn} data-copy-from data-done={t.copied}>
+                      {t.copy}
+                    </button>
+                  </div>
+                  <p class="mt-4 text-sm text-night-soft">{t.orSentence}</p>
+                </div>
+              )
+          )}
+          <div class="mt-4 flex items-start gap-3 rounded-2xl border border-night-rule bg-night p-5">
+            <p class="min-w-0 flex-1 text-lg leading-relaxed text-pretty" data-sentence>
+              {t.sentence}
+            </p>
+            <button type="button" class={copyBtn} data-copy-from="[data-sentence]" data-done={t.copied}>
+              {t.copy}
+            </button>
+          </div>
+          <h3 class="mt-8 text-sm font-medium text-night-soft">{t.moreTitle}</h3>
+          <ul class="mt-3 flex flex-wrap gap-2">
+            {t.more.map((m) => (
+              <li>
+                <button
+                  type="button"
+                  class="rounded-full border border-night-rule px-4 py-2 text-start text-sm text-night-ink transition-colors hover:border-glow"
+                  data-copy={m}
+                  data-done={t.copied}
+                >
+                  {m}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </form>
+
+      <div class="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2">
+        <section aria-labelledby="ai-flow">
+          <h2 id="ai-flow" class="text-xl font-semibold">
+            {t.flowTitle}
+          </h2>
+          <ol class="mt-5 grid gap-4">
+            {t.flow.map((f, i) => (
+              <li class="flex gap-3">
+                <span class="mt-0.5 font-mono text-sm text-glow">{String(i + 1).padStart(2, "0")}</span>
+                <span class="text-night-soft">{f}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
+        <section aria-labelledby="ai-safety">
+          <h2 id="ai-safety" class="text-xl font-semibold">
+            {t.safetyTitle}
+          </h2>
+          <ul class="mt-5 grid gap-4">
+            {t.safety.map((s) => (
+              <li class="flex gap-3">
+                <span class="mt-2 size-1.5 shrink-0 rounded-full bg-glow" aria-hidden="true"></span>
+                <span class="text-night-soft">{s}</span>
+              </li>
+            ))}
+          </ul>
+          <a
+            href={docsPath("mcp/")[locale]}
+            class="mt-6 inline-flex items-center gap-2 font-medium text-night-ink underline decoration-night-rule underline-offset-4 hover:decoration-glow"
+          >
+            {t.guide} →
+          </a>
+        </section>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("[data-ai]")
+  const own = form?.querySelector<HTMLElement>("[data-own]")
+  const input = form?.querySelector<HTMLInputElement>("[data-server]")
+  const hosted = "https://app.useyuva.com"
+
+  function server() {
+    const mode = form?.querySelector<HTMLInputElement>('input[name="server"]:checked')?.value
+    if (mode !== "own") return hosted
+    const raw = (input?.value ?? "")
+      .trim()
+      .replace(/\/+$/, "")
+      .replace(/\/mcp$/, "")
+    if (!raw) return "https://support.example.com"
+    return /^https?:\/\//.test(raw) ? raw : `https://${raw}`
+  }
+
+  function render() {
+    const mode = form?.querySelector<HTMLInputElement>('input[name="server"]:checked')?.value
+    own?.classList.toggle("hidden", mode !== "own")
+    const url = server()
+    form?.querySelectorAll<HTMLElement>("[data-template]").forEach((el) => {
+      el.textContent = el.dataset.template!.replaceAll("{server}", url)
+    })
+    const picked = form?.querySelector<HTMLInputElement>('input[name="assistant"]:checked')?.value
+    form?.querySelectorAll<HTMLElement>("[data-panel]").forEach((el) => {
+      el.classList.toggle("hidden", el.dataset.panel !== picked)
+    })
+  }
+
+  form?.addEventListener("change", render)
+  input?.addEventListener("input", render)
+  render()
+
+  async function copy(el: HTMLElement, text: string) {
+    await navigator.clipboard.writeText(text)
+    const before = el.textContent
+    el.textContent = el.dataset.done ?? ""
+    setTimeout(() => (el.textContent = before), 1400)
+  }
+  document.querySelectorAll<HTMLElement>("[data-copy-from]").forEach((el) => {
+    el.addEventListener("click", () => {
+      const sel = el.dataset.copyFrom
+      const src = sel ? document.querySelector<HTMLElement>(sel) : el.parentElement?.querySelector<HTMLElement>("pre")
+      if (src) void copy(el, src.textContent ?? "")
+    })
+  })
+  document.querySelectorAll<HTMLElement>("[data-copy]").forEach((el) => {
+    el.addEventListener("click", () => void copy(el, el.dataset.copy!))
+  })
+</script>
