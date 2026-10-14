@@ -2645,6 +2645,30 @@ func (q *Queries) ListStaleMigrations(ctx context.Context, now *time.Time) ([]Li
 	return items, nil
 }
 
+const listWorkspaceMigrationUploadKeys = `-- name: ListWorkspaceMigrationUploadKeys :many
+SELECT storage_key FROM migration_upload_parts WHERE workspace_id = $1
+`
+
+func (q *Queries) ListWorkspaceMigrationUploadKeys(ctx context.Context, workspaceID uuid.UUID) ([]string, error) {
+	rows, err := q.db.Query(ctx, listWorkspaceMigrationUploadKeys, workspaceID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var storage_key string
+		if err := rows.Scan(&storage_key); err != nil {
+			return nil, err
+		}
+		items = append(items, storage_key)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const lockMigration = `-- name: LockMigration :one
 SELECT id, workspace_id, source, preset, source_address, inbox_id, channel_id, state, state_reason, waiting_until, options, estimate, counts, throttle, checkpoint, live_from, verified_at, verified_route, forwarding_confirmation, lease_until, lease_job_id, created_by_member_id, created_by_api_key_id, created_via, created_at, updated_at, started_at, finished_at, credentials_deleted_at, synced_at, quiet_since, probe_sent_at, probe_synced_at, upload, follows_migration_id, source_state FROM migrations WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `

@@ -607,6 +607,9 @@ GROUP BY migration_id;
 -- name: DeleteMigrationUploadParts :exec
 DELETE FROM migration_upload_parts WHERE workspace_id = @workspace_id AND migration_id = @migration_id;
 
+-- name: ListWorkspaceMigrationUploadKeys :many
+SELECT storage_key FROM migration_upload_parts WHERE workspace_id = @workspace_id;
+
 -- name: ListEndedMigrationUploads :many
 SELECT DISTINCT m.workspace_id, m.id FROM migrations m
 JOIN migration_upload_parts p ON p.workspace_id = m.workspace_id AND p.migration_id = m.id
