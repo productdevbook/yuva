@@ -16,6 +16,7 @@ import { messages as en } from "../locales/en/subscribe"
 import { messages as de } from "../locales/de/subscribe"
 import { messages as tr } from "../locales/tr/subscribe"
 import { directionOf, localeIn, translate } from "../translate"
+import { setStyles } from "../styles"
 import { contrastOn } from "../types"
 
 export interface SubscribeDetail {
@@ -590,9 +591,8 @@ export class YuvaSubscribeElement extends Base {
       focused = this.#root.activeElement
     } catch {}
     if (focused instanceof HTMLInputElement) focusedKey = focused.dataset.key
-    const style = el("style")
-    style.textContent = styles
-    this.#root.replaceChildren(style, wrapper)
+    const fallback = setStyles(this.#root, styles)
+    this.#root.replaceChildren(...(fallback ? [fallback] : []), wrapper)
     const again = focusedKey ? this.#root.querySelector<HTMLElement>(`[data-key="${focusedKey}"]`) : focused
     if (again instanceof HTMLElement && again.isConnected) again.focus({ preventScroll: true })
   }

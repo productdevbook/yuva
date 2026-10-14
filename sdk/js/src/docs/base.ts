@@ -7,6 +7,7 @@ import { messages as en } from "../locales/en/docs"
 import { messages as de } from "../locales/de/docs"
 import { messages as tr } from "../locales/tr/docs"
 import { contrastOn, launcherOf, readStored, writeStored } from "../types"
+import { setStyles } from "../styles"
 import { el } from "./dom"
 import { followPage, pageOf } from "./page"
 
@@ -233,8 +234,7 @@ export abstract class YuvaDocsElement extends Base {
   }
 
   protected frame(css: string, ...children: Node[]): void {
-    const style = el("style")
-    style.textContent = baseStyles + css
+    const fallback = setStyles(this.root, baseStyles + css)
     const wrapper = el("div", "frame")
     wrapper.dir = this.direction
     wrapper.lang = this.locale
@@ -247,7 +247,7 @@ export abstract class YuvaDocsElement extends Base {
     try {
       focused = this.root.activeElement
     } catch {}
-    this.root.replaceChildren(style, wrapper)
+    this.root.replaceChildren(...(fallback ? [fallback] : []), wrapper)
     if (focused instanceof HTMLElement && focused.isConnected) focused.focus({ preventScroll: true })
   }
 
