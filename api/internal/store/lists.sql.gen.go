@@ -115,6 +115,24 @@ func (q *Queries) ContactObjectionEmails(ctx context.Context, arg ContactObjecti
 	return items, nil
 }
 
+const contactUnidentified = `-- name: ContactUnidentified :one
+SELECT (c.person_id IS NULL AND NOT EXISTS (
+    SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id))::bool
+FROM contacts c WHERE c.workspace_id = $1 AND c.id = $2
+`
+
+type ContactUnidentifiedParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) ContactUnidentified(ctx context.Context, arg ContactUnidentifiedParams) (bool, error) {
+	row := q.db.QueryRow(ctx, contactUnidentified, arg.WorkspaceID, arg.ID)
+	var column_1 bool
+	err := row.Scan(&column_1)
+	return column_1, err
+}
+
 const countSubscriptions = `-- name: CountSubscriptions :many
 SELECT list_id,
        count(*) FILTER (WHERE state = 'subscribed')::bigint AS subscribed,

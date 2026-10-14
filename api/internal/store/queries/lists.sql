@@ -130,6 +130,11 @@ SELECT * FROM list_subscriptions WHERE workspace_id = @workspace_id AND email = 
 -- name: SubscriptionContactByEmail :one
 SELECT contact_id FROM list_subscriptions WHERE workspace_id = @workspace_id AND email = @email ORDER BY created_at, id LIMIT 1;
 
+-- name: ContactUnidentified :one
+SELECT (c.person_id IS NULL AND NOT EXISTS (
+    SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id))::bool
+FROM contacts c WHERE c.workspace_id = @workspace_id AND c.id = @id;
+
 -- name: MoveContactSubscriptions :exec
 UPDATE list_subscriptions SET contact_id = @to_contact WHERE workspace_id = @workspace_id AND contact_id = @from_contact;
 

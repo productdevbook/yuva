@@ -307,7 +307,9 @@ func (s *Server) markSubscribed(ctx context.Context, q *store.Queries, events *e
 }
 
 // confirmListSubscription is the person confirming by mail: the subscription becomes `subscribed`,
-// an objection they made before is lifted and the address joins their contact when nobody has it.
+// an objection they made before is lifted and the address joins their contact when nobody has it
+// and that contact is nobody's identity. Clicking the link proves the address receives mail, not
+// who it belongs to, so an identified contact earns an address only through confirmTypedEmail.
 func (s *Server) confirmListSubscription(ctx context.Context, q *store.Queries, events *eventBatch, list store.MailingList, sub store.ListSubscription, pr consentProof) (store.ListSubscription, error) {
 	now := s.now()
 	prev := sub.State
@@ -323,12 +325,18 @@ func (s *Server) confirmListSubscription(ctx context.Context, q *store.Queries, 
 		return out, err
 	}
 	if _, err := q.GetContactIDByEmail(ctx, store.GetContactIDByEmailParams{WorkspaceID: sub.WorkspaceID, Email: sub.Email}); store.IsNotFound(err) {
-		n, err := q.CountContactEmails(ctx, store.CountContactEmailsParams{WorkspaceID: sub.WorkspaceID, ContactID: sub.ContactID})
+		own, err := q.ContactUnidentified(ctx, store.ContactUnidentifiedParams{WorkspaceID: sub.WorkspaceID, ID: sub.ContactID})
 		if err != nil {
 			return out, err
 		}
-		if err := q.AddContactEmail(ctx, store.AddContactEmailParams{WorkspaceID: sub.WorkspaceID, ContactID: sub.ContactID, Email: sub.Email, Position: int32(n)}); err != nil {
-			return out, err
+		if own {
+			n, err := q.CountContactEmails(ctx, store.CountContactEmailsParams{WorkspaceID: sub.WorkspaceID, ContactID: sub.ContactID})
+			if err != nil {
+				return out, err
+			}
+			if err := q.AddContactEmail(ctx, store.AddContactEmailParams{WorkspaceID: sub.WorkspaceID, ContactID: sub.ContactID, Email: sub.Email, Position: int32(n)}); err != nil {
+				return out, err
+			}
 		}
 	} else if err != nil {
 		return out, err
