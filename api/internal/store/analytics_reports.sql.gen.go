@@ -306,11 +306,13 @@ func (q *Queries) ListAnalyticsAlerts(ctx context.Context, arg ListAnalyticsAler
 }
 
 const listAnalyticsReportWorkspaceIDs = `-- name: ListAnalyticsReportWorkspaceIDs :many
-SELECT DISTINCT workspace_id FROM analytics_subscriptions ORDER BY workspace_id
+SELECT DISTINCT s.workspace_id FROM analytics_subscriptions s
+JOIN workspaces w ON w.id = s.workspace_id AND w.deleted_at IS NULL
+ORDER BY s.workspace_id
 `
 
-// The report and alert jobs find the workspaces that have subscriptions; everything after it is
-// scoped by workspace.
+// The report and alert jobs find the live workspaces that have subscriptions; everything after it
+// is scoped by workspace.
 func (q *Queries) ListAnalyticsReportWorkspaceIDs(ctx context.Context) ([]uuid.UUID, error) {
 	rows, err := q.db.Query(ctx, listAnalyticsReportWorkspaceIDs)
 	if err != nil {

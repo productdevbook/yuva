@@ -9,9 +9,11 @@ ON CONFLICT (property_id, member_id) DO UPDATE SET report = excluded.report, ale
 RETURNING *;
 
 -- name: ListAnalyticsReportWorkspaceIDs :many
--- The report and alert jobs find the workspaces that have subscriptions; everything after it is
--- scoped by workspace.
-SELECT DISTINCT workspace_id FROM analytics_subscriptions ORDER BY workspace_id;
+-- The report and alert jobs find the live workspaces that have subscriptions; everything after it
+-- is scoped by workspace.
+SELECT DISTINCT s.workspace_id FROM analytics_subscriptions s
+JOIN workspaces w ON w.id = s.workspace_id AND w.deleted_at IS NULL
+ORDER BY s.workspace_id;
 
 -- name: ListAnalyticsReportsDue :many
 SELECT s.property_id, s.member_id, s.report, s.last_period, p.timezone
