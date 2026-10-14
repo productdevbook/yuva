@@ -354,6 +354,7 @@ func TestUsageCounters(t *testing.T) {
 		[]file{{"a.txt", "text/plain", []byte("12345")}, {"b.txt", "text/plain", []byte("678")}})
 	tm.owner.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"status": "closed"})
 
+	tm.agent.expectProblem(http.StatusForbidden, "forbidden", "GET", "/v1/usage", nil)
 	r := tm.owner.expect(http.StatusOK, "GET", "/v1/usage", nil)
 	items := r.body["items"].([]any)
 	if len(items) != 1 {

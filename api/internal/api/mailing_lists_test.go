@@ -176,6 +176,9 @@ func TestSubscribeFormConfirmAndOneClick(t *testing.T) {
 	if sub["state"] != "subscribed" || sub["consent_at"] == nil || sub["confirmed_at"] == nil {
 		t.Fatalf("confirmed: %v", sub)
 	}
+	if n := contactEmailOwners(t, h, lt.ws, addr); n != 1 {
+		t.Fatalf("confirming did not give the form's contact its address: %d owners", n)
+	}
 	if got := strings.Join(eventKinds(sub), ","); got != "requested,confirmation_sent,confirmed" {
 		t.Fatalf("consent events %s", got)
 	}
@@ -404,6 +407,43 @@ func TestIdentitySubscriptions(t *testing.T) {
 	oc := lt.session(h, map[string]any{"identity_token": lt.token(h, map[string]any{"sub": unique("u"), "email": optedOut, "email_verified": true})})
 	if r := oc.expect(http.StatusOK, "PUT", "/client/v1/subscriptions/"+lt.list, map[string]any{"consent_text": "Yes"}); r.str("state") != "pending" {
 		t.Fatalf("opted-out address through an identity token: %s", r.raw)
+	}
+}
+
+func contactEmailOwners(t *testing.T, h *harness, ws, addr string) int {
+	t.Helper()
+	var n int
+	if err := h.st.Pool.QueryRow(context.Background(), "SELECT count(*) FROM contact_emails WHERE workspace_id = $1 AND email = $2", ws, addr).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	return n
+}
+
+func TestConfirmingAListDoesNotGiveAnIdentifiedContactTheAddress(t *testing.T) {
+	h := newHarness(t)
+	lt := newListTeam(t, h)
+	victim := unique("victim") + "@example.org"
+	cs := lt.session(h, map[string]any{"identity_token": lt.token(h, map[string]any{"sub": unique("u"), "email": victim})})
+	if r := cs.expect(http.StatusOK, "PUT", "/client/v1/subscriptions/"+lt.list, map[string]any{"consent_text": "Yes"}); r.str("state") != "pending" {
+		t.Fatalf("an unverified address: %s", r.raw)
+	}
+	var confirm string
+	for _, env := range h.runListMail(lt.ws) {
+		if strings.Contains(env.GetHeader("To"), victim) {
+			confirm = linkIn(t, env, "s")
+		}
+	}
+	if confirm == "" {
+		t.Fatal("no confirmation mail to the address")
+	}
+	if status, page := pageAt(t, h, "POST", confirm, url.Values{"action": {"confirm"}}); status != http.StatusOK || !strings.Contains(page, "You are subscribed") {
+		t.Fatalf("POST /s/: %d %s", status, page)
+	}
+	if sub := lt.subscription(t, victim); sub["state"] != "subscribed" {
+		t.Fatalf("confirmed: %v", sub)
+	}
+	if n := contactEmailOwners(t, h, lt.ws, victim); n != 0 {
+		t.Fatalf("a list confirmation gave the identified contact an address it never proved: %d owners", n)
 	}
 }
 
