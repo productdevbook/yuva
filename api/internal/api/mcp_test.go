@@ -316,7 +316,7 @@ func TestMCPScopesAndInboxAccess(t *testing.T) {
 		map[string]any{"kind": "message", "body": "hi", "draft": true})
 	cs := h.mcpSession(reader.bearer)
 	tools := toolNames(t, cs)
-	want := []string{"get_conversation", "get_counts", "list_canned_replies", "list_feedback", "list_labels", "search_conversations"}
+	want := []string{"get_conversation", "get_counts", "get_setup_state", "list_canned_replies", "list_feedback", "list_labels", "report_yuva_issue", "search_conversations"}
 	slices.Sort(tools)
 	if !slices.Equal(tools, want) {
 		t.Fatalf("conversations:read key lists %v", tools)

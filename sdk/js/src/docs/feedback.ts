@@ -19,7 +19,7 @@ export interface PageFeedbackDetail {
 const maxRemembered = 500
 
 const thumb = (down: boolean) =>
-  `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"${down ? ' style="transform:scaleY(-1)"' : ""}><path d="M7 10v11H3V10zM7 10l4-8a3 3 0 013 3v4h6a2 2 0 012 2.3l-1.4 8A2 2 0 0118.6 21H7"/></svg>`
+  `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path${down ? ' transform="matrix(1 0 0 -1 0 24)"' : ""} d="M7 10v11H3V10zM7 10l4-8a3 3 0 013 3v4h6a2 2 0 012 2.3l-1.4 8A2 2 0 0118.6 21H7"/></svg>`
 
 const styles = `
 .frame { display: flex; flex-direction: column; gap: 12px; }

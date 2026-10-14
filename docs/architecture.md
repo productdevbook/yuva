@@ -452,6 +452,19 @@ re-checks its token every 30 seconds and ends when the token stops working. The 
   channel for the site's origin, get the snippet, add it to the code or show it; without
   `inboxes:manage` it says which scope to reconnect with); they only arrange tool calls and text,
   Yuva runs no model.
+- `init` is the entry prompt for adding Yuva to a project: the assistant reads the project locally
+  and sends none of it to Yuva, calls `get_setup_state` (what the workspace has, the parts it cannot
+  read with the scope to grant, and a fixed catalog of integrations with the signals that suggest
+  each and the prompt or tools that set it up), then proposes a plan and changes nothing until the
+  person picks steps. `get_setup_state` and `report_yuva_issue` need no scope and are listed to
+  every connection.
+- `report_yuva_issue` prepares a GitHub issue about Yuva itself for `productdevbook/yuva` and files
+  nothing: the server removes the workspace's own names (workspace, inboxes, channels, properties,
+  lists, their origins, domains and addresses), e-mail addresses, URLs and host names other than
+  `github.com` and `useyuva.com`, IP addresses, keys, tokens, UUIDs and home-directory paths, and
+  returns the title, body, a prefilled new-issue URL and a `gh issue create` command. The person
+  reviews it and opens it under their own GitHub account, so the server holds no GitHub credential
+  and cannot be used to post to the repository.
 - Rate limit per token or key (600 requests a minute, `429` with `Retry-After`), counted per grant
   for Connected apps.
 

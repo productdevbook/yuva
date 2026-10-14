@@ -2,6 +2,7 @@ import type { Messages } from "@lingui/core"
 import { msg } from "@lingui/core/macro"
 import { catalogFor, directionOf, resolveLocale, translatePlain } from "./i18n"
 import type { components } from "./schema.gen"
+import { addStyles } from "./styles"
 import {
   contrastOn,
   launcherOf,
@@ -126,21 +127,6 @@ const styles = `
   min-block-size: 320px;
 }
 `
-
-let styleSheet: CSSStyleSheet | null = null
-
-// Constructed sheets are not inline styles, so a strict style-src CSP accepts them.
-function adoptStyles(root: ShadowRoot): HTMLStyleElement | null {
-  if (!("replaceSync" in CSSStyleSheet.prototype)) {
-    const style = document.createElement("style")
-    style.textContent = styles
-    return style
-  }
-  styleSheet ??= new CSSStyleSheet()
-  styleSheet.replaceSync(styles)
-  root.adoptedStyleSheets = [styleSheet]
-  return null
-}
 
 const chatIcon = `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>`
 const closeIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>`
@@ -344,7 +330,7 @@ export class YuvaChatElement extends HTMLElement {
     const locale = this.locale
     this.#messages = catalogFor(locale)
     this.setAttribute("lang", locale)
-    const fallbackStyle = adoptStyles(this.#root)
+    const fallbackStyle = addStyles(this.#root, styles)
     const head = fallbackStyle ? [fallbackStyle] : []
     this.#panel.dir = this.getAttribute("dir") ?? directionOf(locale)
     this.#panel.setAttribute("aria-modal", "false")

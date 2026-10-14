@@ -33,6 +33,7 @@ func inboxScope(args map[string]string) string {
 }
 
 func addMCPPrompts(srv *mcp.Server, c *mcpCall) {
+	addInitPrompt(srv)
 	if keyMayCall(c.p, "ListInboxes") == nil && keyMayCall(c.p, "ListChannels") == nil && keyMayCall(c.p, "GetChannel") == nil {
 		srv.AddPrompt(&mcp.Prompt{
 			Name: "setup_live_chat", Title: "Set up live chat",

@@ -8,8 +8,9 @@ import { CheckItem, CheckList, ErrorLine, Notice } from "@/components/common"
 import { API_KEY_SCOPES, OPT_IN_SCOPES, useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { AuthLayout } from "@/features/auth/AuthLayout"
+import { CreateWorkspace } from "@/features/auth/CreateWorkspace"
 import { activate, i18n } from "@/i18n"
-import { api, ApiError, unwrap, type ApiKeyScope, type OAuthRequest } from "@/lib/api"
+import { api, ApiError, unwrap, useSignup, type ApiKeyScope, type OAuthRequest } from "@/lib/api"
 import { signInPath } from "@/lib/next"
 import { useMe, useSignOut } from "@/lib/session"
 import { Label } from "@/components/ui/label"
@@ -260,6 +261,7 @@ export function ConsentPage() {
   const [params] = useSearchParams()
   const id = params.get("request") ?? ""
   const me = useMe()
+  const signup = useSignup()
   const signedIn = !!me.data
   const request = useQuery({
     queryKey: ["oauth-request", id],
@@ -289,5 +291,16 @@ export function ConsentPage() {
     )
   }
   if (!request.data || !me.data) return <div className="min-h-svh bg-background" />
+  if (request.data.workspaces.length === 0 && signup === "open") {
+    return (
+      <CreateWorkspace
+        me={me.data}
+        onCreated={() => {
+          void me.refetch()
+          void request.refetch()
+        }}
+      />
+    )
+  }
   return <Consent key={request.data.id} req={request.data} email={me.data.person.email} />
 }

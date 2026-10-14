@@ -15,6 +15,7 @@ import {
   type Rating,
 } from "../client/api"
 import { createYuvaClient, randomId, type YuvaClient } from "../client/client"
+import { addStyles } from "../styles"
 import { styles } from "./styles"
 import { richText } from "./text"
 
@@ -756,9 +757,8 @@ export class Chat implements PanelController {
   #render(): void {
     const panel = this.#host.panel
     if (panel.childElementCount === 0) {
-      const style = el("style")
-      style.textContent = styles
-      panel.append(style, this.#header, this.#banner, this.#body, this.#live)
+      const fallback = addStyles(panel.getRootNode(), styles)
+      panel.append(...(fallback ? [fallback] : []), this.#header, this.#banner, this.#body, this.#live)
       this.#header.id = "yuva-title"
       panel.setAttribute("aria-labelledby", "yuva-title")
     }
