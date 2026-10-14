@@ -11,7 +11,7 @@ COPY . .
 RUN --mount=type=cache,target=/root/.bun/install/cache \
     mkdir -p sdk/js/dist && if [ -f sdk/js/package.json ]; then cd sdk/js && bun install --frozen-lockfile && bun run build; fi
 
-FROM --platform=$BUILDPLATFORM golang:1.27.1-trixie AS build
+FROM --platform=$BUILDPLATFORM golang:1.27.2-trixie AS build
 WORKDIR /src/api
 COPY api/go.mod api/go.sum ./
 RUN --mount=type=cache,target=/go/pkg/mod go mod download

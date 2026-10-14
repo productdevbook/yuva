@@ -1,6 +1,6 @@
 module github.com/productdevbook/yuva/api
 
-go 1.27.1
+go 1.27.2
 
 tool (
 	github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen
@@ -35,7 +35,7 @@ require (
 	github.com/yuin/goldmark v1.8.6
 	golang.org/x/crypto v0.57.0
 	golang.org/x/image v0.46.0
-	golang.org/x/net v0.59.0
+	golang.org/x/net v0.60.0
 	golang.org/x/text v0.42.0
 	golang.org/x/tools v0.50.0
 )
