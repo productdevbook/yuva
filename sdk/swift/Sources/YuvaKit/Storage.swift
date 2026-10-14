@@ -44,11 +44,14 @@ struct SessionStore: SessionStorage {
 
     func save(_ stored: StoredSession) {
         guard let data = try? JSONEncoder().encode(stored) else { return }
-        let update = [kSecValueData as String: data]
+        let update: [String: Any] = [
+            kSecValueData as String: data,
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly,
+        ]
         if SecItemUpdate(query as CFDictionary, update as CFDictionary) == errSecItemNotFound {
             var item = query
             item[kSecValueData as String] = data
-            item[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
+            item[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
             SecItemAdd(item as CFDictionary, nil)
         }
     }
