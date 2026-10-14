@@ -99,6 +99,7 @@ func TestAnalyticsSharePasswordViewsRevokeAndExpiry(t *testing.T) {
 		shareQuery("time:day", "browser"),
 		{"metrics": []string{"visitors"}, "range": map[string]any{"period": "today"}, "filters": []map[string]any{{"dimension": "country", "op": "is", "values": []string{"TR"}}}},
 		{"metrics": []string{"events"}, "range": map[string]any{"period": "today"}},
+		{"metrics": []string{"visitors"}, "dimensions": []string{"page"}, "range": map[string]any{"period": "today"}, "order_by": []map[string]any{{"metric": "events"}}},
 		{"metrics": []string{"conversions"}, "range": map[string]any{"period": "today"}, "goal_id": foreignGoal},
 	} {
 		viewer.expectProblem(http.StatusForbidden, "view_not_shared", "POST", base+"/query", q)

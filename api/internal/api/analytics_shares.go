@@ -576,15 +576,27 @@ func shareAllows(sh store.AnalyticsShare, b oas.AnalyticsQuery) error {
 			}
 		}
 	}
+	metricAllowed := func(m oas.AnalyticsMetric) bool {
+		switch {
+		case slices.Contains(goalMetrics, m):
+			return shareHas(sh, oas.AnalyticsShareGoals)
+		case m == oas.AnalyticsMetricEvents:
+			return shareHas(sh, oas.AnalyticsShareEvents)
+		case m == oas.AnalyticsMetricRevenue:
+			return shareHas(sh, oas.AnalyticsShareGoals) || shareHas(sh, oas.AnalyticsShareEvents)
+		}
+		return true
+	}
 	for _, m := range b.Metrics {
-		if slices.Contains(goalMetrics, m) && !shareHas(sh, oas.AnalyticsShareGoals) {
+		if !metricAllowed(m) {
 			return errViewNotShared
 		}
-		if m == oas.AnalyticsMetricEvents && !shareHas(sh, oas.AnalyticsShareEvents) {
-			return errViewNotShared
-		}
-		if m == oas.AnalyticsMetricRevenue && !shareHas(sh, oas.AnalyticsShareGoals) && !shareHas(sh, oas.AnalyticsShareEvents) {
-			return errViewNotShared
+	}
+	if b.OrderBy != nil {
+		for _, o := range *b.OrderBy {
+			if !metricAllowed(o.Metric) {
+				return errViewNotShared
+			}
 		}
 	}
 	if b.GoalId != nil && !shareHas(sh, oas.AnalyticsShareGoals) {
