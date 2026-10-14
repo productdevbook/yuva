@@ -45,6 +45,32 @@ Yanıtlar taslaktır. Çalışma alanı botların göndermesine izin vermedikçe
 gönderir, düzenler ya da atar. Asistanın OAuth ile yazdıkları "Ayşe via Claude" olarak, API
 anahtarıyla yazdıkları anahtarın botu olarak görünür.
 
+## init ile Yuva'yı bir projeye ekleyin
+
+Asistanınızı projenin klasöründe açın ve `init` prompt'unu çalıştırın (Claude Code'da
+`/mcp__yuva__init`) ya da şöyle sorun: "Bu projeye bak ve Yuva'yı nasıl ekleyeceğimi söyle."
+Asistan projeyi kendi makinenizde okur (framework, oturum açma, dokümantasyon sitesi, mobil
+uygulamalar, bugün kullandığınız destek ve analitik araçları), çalışma alanınızda neyin zaten
+olduğunu görmek için `get_setup_state` aracını çağırır ve kısa bir planla yanıt verir: her adımın
+projeye ne kattığı, koddaki dayanağı ve onu yapan prompt ya da araçlar. Siz adımları seçene kadar
+hiçbir şey değişmez.
+
+Kodunuz ve dosyalarınız asistanda kalır: `init` projeden Yuva'ya hiçbir şey göndermez. Gelen kutusu,
+kanal ya da analitik mülkü oluşturan adımlar adını verdikleri yetkiye ihtiyaç duyar;
+`get_setup_state` bağlantının okuyamadığı kısımları ve verilmesi gereken yetkiyi listeler.
+
+## Yuva ile ilgili bir sorunu bildirin
+
+Bir asistan Yuva ile çalışırken Yuva'nın kendisi hatalı davranırsa (bir sunucu hatası, rehberinde
+yazdığı gibi çalışmayan bir SDK, yanlış bir rehber), asistan `report_yuva_issue` aracını
+çağırabilir. Sunucu [productdevbook/yuva](https://github.com/productdevbook/yuva/issues) için bir
+GitHub issue'su yazar; çalışma alanınızın adlarını, sitelerini ve adreslerini, e-posta adreslerini,
+diğer URL ve sunucu adlarını, IP adreslerini, anahtarları, token'ları, kimlikleri ve ev dizini
+yollarını çıkarır ve metni, önceden doldurulmuş bir bağlantı ve bir `gh issue create` komutuyla
+döndürür. Kendisi hiçbir şey açmaz: asistan raporu size gösterir, siz de kendi GitHub hesabınızla
+açarsınız. Güvenlik sorunları bunun yerine
+[özel bildirime](https://github.com/productdevbook/yuva/security/advisories/new) gider.
+
 ## Canlı sohbeti bir asistanla kurun
 
 Sahipler ve yöneticiler kurulumu bir asistana bırakabilir. Bağlanırken `inboxes:manage` yetkisini
@@ -129,6 +155,7 @@ Araçlar `/v1` ile aynı kontrollerden geçer. Kullanamayacağınız araçlar li
 
 | Araçlar | Yetki |
 |---|---|
+| `get_setup_state`, `report_yuva_issue` | yok; her bağlantı |
 | `search_conversations`, `get_conversation`, `list_labels`, `list_canned_replies`, `get_counts`, `list_feedback` | `conversations:read` |
 | `list_inboxes` | `inboxes:read` |
 | `get_contact`, `lookup_contact` | `contacts:read` |
@@ -160,7 +187,7 @@ Hiçbir taşıma aracı şifre almaz: `create_migration`, uygulama şifresini gi
 | Tür | Öğeler |
 |---|---|
 | Kaynaklar | `yuva://inbox/{id}` (gelen kutusu ve en son açık konuşmaları), `yuva://conversation/{id}`, `yuva://contact/{id}`, `yuva://broadcast/{id}`, `yuva://migration/{id}` (`migrations:manage` ile), `yuva://property/{id}` (bir web sitesi, ayarları, son yedi günü ve hedefleriyle; `analytics:read` ile); abonelikler değişiklikleri izler. |
-| Prompt'lar | `triage_inbox`, `draft_reply`, `summarize_conversation`, `weekly_report`, `setup_live_chat`, `draft_newsletter`, `broadcast_report`, `move_to_yuva` (adres, isteğe bağlı gelen kutusu; `migrations:manage` ile), `analytics_review` (isteğe bağlı web sitesi ve aralık; `analytics:read` ile), `setup_analytics` (site adresi, isteğe bağlı framework; `analytics:manage` ile). |
+| Prompt'lar | `init` (isteğe bağlı hedef; her bağlantı), `triage_inbox`, `draft_reply`, `summarize_conversation`, `weekly_report`, `setup_live_chat`, `draft_newsletter`, `broadcast_report`, `move_to_yuva` (adres, isteğe bağlı gelen kutusu; `migrations:manage` ile), `analytics_review` (isteğe bağlı web sitesi ve aralık; `analytics:read` ile), `setup_analytics` (site adresi, isteğe bağlı framework; `analytics:manage` ile). |
 
 ### Güvenlik ve sınırlar
 

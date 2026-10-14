@@ -45,6 +45,33 @@ verwirft ihn, außer der Workspace lässt Bots senden ([Bots may send](headless.
 Was ein Assistent über OAuth schreibt, erscheint als „Ayşe via Claude“; mit einem API-Schlüssel als
 der Bot des Schlüssels.
 
+## Yuva mit init zu einem Projekt hinzufügen
+
+Öffnen Sie Ihren Assistenten im Ordner des Projekts und starten Sie den Prompt `init` (in Claude
+Code `/mcp__yuva__init`), oder fragen Sie: „Sieh dir dieses Projekt an und sag mir, wie ich Yuva
+hinzufüge.“ Der Assistent liest das Projekt auf Ihrem Rechner (Framework, Anmeldung,
+Dokumentationsseite, Mobile Apps, die Support- und Analyse-Tools, die Sie heute nutzen), ruft
+`get_setup_state` auf, um zu sehen, was Ihr Workspace schon hat, und antwortet mit einem kurzen
+Plan: was jeder Schritt dem Projekt bringt, woran er das im Code erkennt und welcher Prompt oder
+welche Tools ihn umsetzen. Nichts ändert sich, bevor Sie Schritte auswählen.
+
+Ihr Code und Ihre Dateien bleiben beim Assistenten: `init` sendet nichts aus dem Projekt an Yuva.
+Schritte, die Posteingänge, Kanäle oder Analytics-Properties anlegen, brauchen den Scope, den sie
+nennen; `get_setup_state` listet, was die Verbindung nicht lesen kann, und welchen Scope Sie erteilen
+müssen.
+
+## Ein Problem mit Yuva melden
+
+Verhält sich Yuva selbst falsch, während ein Assistent damit arbeitet (ein Serverfehler, ein SDK,
+das nicht tut, was seine Anleitung sagt, eine falsche Anleitung), kann der Assistent
+`report_yuva_issue` aufrufen. Der Server schreibt ein GitHub-Issue für
+[productdevbook/yuva](https://github.com/productdevbook/yuva/issues), entfernt dabei die Namen Ihres
+Workspace, seine Websites und Adressen, E-Mail-Adressen, andere URLs und Hostnamen, IP-Adressen,
+Schlüssel, Tokens, IDs und Pfade im Home-Verzeichnis, und gibt den Text mit einem vorausgefüllten
+Link und einem `gh issue create`-Befehl zurück. Selbst legt er nichts an: Der Assistent zeigt Ihnen
+den Bericht, und Sie öffnen ihn mit Ihrem eigenen GitHub-Konto. Sicherheitsprobleme gehen stattdessen
+an die [private Meldung](https://github.com/productdevbook/yuva/security/advisories/new).
+
 ## Live-Chat von einem Assistenten einrichten lassen
 
 Inhaber und Admins können die Einrichtung einem Assistenten überlassen. Erteilen Sie beim Verbinden
@@ -130,6 +157,7 @@ aufgelistet; ein Aufruf dennoch antwortet mit `insufficient_scope` und dem zu er
 
 | Tools | Scope |
 |---|---|
+| `get_setup_state`, `report_yuva_issue` | keiner; jede Verbindung |
 | `search_conversations`, `get_conversation`, `list_labels`, `list_canned_replies`, `get_counts`, `list_feedback` | `conversations:read` |
 | `list_inboxes` | `inboxes:read` |
 | `get_contact`, `lookup_contact` | `contacts:read` |
@@ -161,7 +189,7 @@ Mit `inbox_id` und ohne `channel_id` verwendet `create_migration` den E-Mail-Kan
 | Art | Einträge |
 |---|---|
 | Ressourcen | `yuva://inbox/{id}` (der Posteingang und seine neuesten offenen Unterhaltungen), `yuva://conversation/{id}`, `yuva://contact/{id}`, `yuva://broadcast/{id}`, `yuva://migration/{id}` (mit `migrations:manage`), `yuva://property/{id}` (eine Website mit ihren Einstellungen, den letzten sieben Tagen und ihren Goals; mit `analytics:read`); Abonnements folgen Änderungen. |
-| Prompts | `triage_inbox`, `draft_reply`, `summarize_conversation`, `weekly_report`, `setup_live_chat`, `draft_newsletter`, `broadcast_report`, `move_to_yuva` (Adresse, optional Posteingang; mit `migrations:manage`), `analytics_review` (optional Website und Zeitraum; mit `analytics:read`), `setup_analytics` (Site-Adresse, optional Framework; mit `analytics:manage`). |
+| Prompts | `init` (optionales Ziel; jede Verbindung), `triage_inbox`, `draft_reply`, `summarize_conversation`, `weekly_report`, `setup_live_chat`, `draft_newsletter`, `broadcast_report`, `move_to_yuva` (Adresse, optional Posteingang; mit `migrations:manage`), `analytics_review` (optional Website und Zeitraum; mit `analytics:read`), `setup_analytics` (Site-Adresse, optional Framework; mit `analytics:manage`). |
 
 ### Sicherheit und Grenzen
 

@@ -43,6 +43,30 @@ Replies are drafts. A member reviews each one in the conversation and sends, edi
 unless the workspace lets bots send ([Bots may send](headless.md#bots-may-send)). What an assistant
 writes over OAuth shows as "Ayşe via Claude"; with an API key, as the key's bot.
 
+## Add Yuva to a project with init
+
+Open your assistant in the project's folder and run the `init` prompt (in Claude Code
+`/mcp__yuva__init`), or ask: "Look at this project and tell me how to add Yuva." The assistant reads
+the project on your machine (framework, sign-in, documentation site, mobile apps, the support and
+analytics tools you use today), calls `get_setup_state` to see what your workspace already has, and
+answers with a short plan: what each step gives the project, the evidence from the code and the
+prompt or tools that do it. Nothing changes until you pick steps.
+
+Your code and files stay with the assistant: `init` sends nothing from the project to Yuva. Steps
+that create inboxes, channels or analytics properties need the scope they name; `get_setup_state`
+lists what the connection cannot read and the scope to grant.
+
+## Report a problem with Yuva
+
+When Yuva itself misbehaves while an assistant works with it (a server error, an SDK that does not
+do what its guide says, a wrong guide), the assistant can call `report_yuva_issue`. The server
+writes a GitHub issue for [productdevbook/yuva](https://github.com/productdevbook/yuva/issues) with
+your workspace's names, its sites and addresses, e-mail addresses, other URLs and host names, IP
+addresses, keys, tokens, ids and home-directory paths removed, and returns the text with a
+prefilled link and a `gh issue create` command. It files nothing itself: the assistant shows you
+the report, and you open it under your own GitHub account. Security problems go to
+[private reporting](https://github.com/productdevbook/yuva/security/advisories/new) instead.
+
 ## Set up live chat from an assistant
 
 Owners and admins can let an assistant do the setup. Grant `inboxes:manage` when you connect
@@ -126,6 +150,7 @@ answers `insufficient_scope` with the scope to grant.
 
 | Tools | Scope |
 |---|---|
+| `get_setup_state`, `report_yuva_issue` | none; every connection |
 | `search_conversations`, `get_conversation`, `list_labels`, `list_canned_replies`, `get_counts`, `list_feedback` | `conversations:read` |
 | `list_inboxes` | `inboxes:read` |
 | `get_contact`, `lookup_contact` | `contacts:read` |
@@ -157,7 +182,7 @@ With `inbox_id` and no `channel_id`, `create_migration` uses the inbox's e-mail 
 | Kind | Items |
 |---|---|
 | Resources | `yuva://inbox/{id}` (the inbox and its latest open conversations), `yuva://conversation/{id}`, `yuva://contact/{id}`, `yuva://broadcast/{id}`, `yuva://migration/{id}` (with `migrations:manage`), `yuva://property/{id}` (a website with its settings, the last seven days and its goals; with `analytics:read`); subscriptions follow changes. |
-| Prompts | `triage_inbox`, `draft_reply`, `summarize_conversation`, `weekly_report`, `setup_live_chat`, `draft_newsletter`, `broadcast_report`, `move_to_yuva` (address, optional inbox; with `migrations:manage`), `analytics_review` (optional website and period; with `analytics:read`), `setup_analytics` (site address, optional framework; with `analytics:manage`). |
+| Prompts | `init` (optional goal; every connection), `triage_inbox`, `draft_reply`, `summarize_conversation`, `weekly_report`, `setup_live_chat`, `draft_newsletter`, `broadcast_report`, `move_to_yuva` (address, optional inbox; with `migrations:manage`), `analytics_review` (optional website and period; with `analytics:read`), `setup_analytics` (site address, optional framework; with `analytics:manage`). |
 
 ### Safety and limits
 
