@@ -65,6 +65,7 @@ YUVA_PUBLIC_URL=https://support.example.com
 YUVA_MASTER_KEY=<openssl rand -base64 32>
 YUVA_INGRESS_SECRET=<openssl rand -hex 32>
 YUVA_CLIENT_IP_HEADER=X-Real-IP
+YUVA_TRUSTED_PROXIES=172.16.0.0/12
 
 YUVA_SMTP_HOST=smtp.example.com
 YUVA_SMTP_USERNAME=yuva@example.com
@@ -138,6 +139,7 @@ secrets:
   existingSecret: yuva
 env:
   YUVA_CLIENT_IP_HEADER: X-Real-IP
+  YUVA_TRUSTED_PROXIES: 10.0.0.0/8
   YUVA_SMTP_HOST: smtp.example.com
   YUVA_SMTP_FROM: Yuva <yuva@example.com>
 ingress:
@@ -188,6 +190,9 @@ Yuva 8080 portunda düz HTTP konuşur ve her şeyi tek bir alan adının kökün
 - en az 26 MiB'lık istek gövdelerini kabul etmeli;
 - `YUVA_CLIENT_IP_HEADER` ile adı verilen başlığın üzerine istemci adresini yazmalı;
 - `Host` ve `Origin` başlıklarını korumalı.
+
+Vekil sunucunuzun adreslerini `YUVA_TRUSTED_PROXIES` içinde de listeleyin. Bu olmadan başlık,
+gönderen herkesten okunur; sunucuya doğrudan ulaşan biri kendi hız sınırı kimliğini kendi seçer.
 
 Yukarıdaki Caddy yapılandırması bunların hepsini yapar. Cloudflare proxy'si arkasında
 `YUVA_CLIENT_IP_HEADER=CF-Connecting-IP` kullanın. nginx:

@@ -65,6 +65,7 @@ YUVA_PUBLIC_URL=https://support.example.com
 YUVA_MASTER_KEY=<openssl rand -base64 32>
 YUVA_INGRESS_SECRET=<openssl rand -hex 32>
 YUVA_CLIENT_IP_HEADER=X-Real-IP
+YUVA_TRUSTED_PROXIES=172.16.0.0/12
 
 YUVA_SMTP_HOST=smtp.example.com
 YUVA_SMTP_USERNAME=yuva@example.com
@@ -136,6 +137,7 @@ secrets:
   existingSecret: yuva
 env:
   YUVA_CLIENT_IP_HEADER: X-Real-IP
+  YUVA_TRUSTED_PROXIES: 10.0.0.0/8
   YUVA_SMTP_HOST: smtp.example.com
   YUVA_SMTP_FROM: Yuva <yuva@example.com>
 ingress:
@@ -186,6 +188,9 @@ expose the metrics port 9090. The proxy must:
 - accept request bodies of at least 26 MiB;
 - overwrite the header named in `YUVA_CLIENT_IP_HEADER` with the client address;
 - keep the `Host` and `Origin` headers.
+
+List your proxy's addresses in `YUVA_TRUSTED_PROXIES` as well. Without it the header is read from
+whoever sends it, so anyone who reaches the server directly picks their own rate-limit identity.
 
 Caddy does all of this with the configuration above. Behind Cloudflare's proxy, use
 `YUVA_CLIENT_IP_HEADER=CF-Connecting-IP`. nginx:
