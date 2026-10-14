@@ -1682,8 +1682,10 @@ now; per-channel limits can narrow them later.
 
 ## Privacy and data
 
-- Retention per workspace: `workspaces.retention_days`, set by an owner (`PATCH /v1/workspace`);
-  `null` keeps everything. An hourly River job deletes closed conversations whose last change and
+- Retention per workspace: `workspaces.retention_days`, set by an owner or an API key with
+  `workspace:manage` (`PATCH /v1/workspace`). Admins can create such a key; that adds no destructive
+  power they lack, since they can already delete inboxes with their conversations. `null` keeps
+  everything. An hourly River job deletes closed conversations whose last change and
   last activity are older than that, with their messages, attachments and stored files, and
   removes raw e-mails older than that from storage (the parsed message stays).
 - Imported history (see "Moving to Yuva") is the workspace's data like any conversation: contact
