@@ -34,7 +34,7 @@ services:
     restart: unless-stopped
 
   yuva:
-    image: ghcr.io/productdevbook/yuva:0.0.15
+    image: ghcr.io/productdevbook/yuva:0.0.16
     env_file: .env
     environment:
       YUVA_DATABASE_URL: postgres://yuva:${POSTGRES_PASSWORD}@db:5432/yuva?sslmode=disable
@@ -78,7 +78,7 @@ YUVA_SMTP_FROM=Yuva <yuva@example.com>
 ### 3. Başlatın
 
 ```sh
-docker run --rm ghcr.io/productdevbook/yuva:0.0.15 vapid-keys >> .env
+docker run --rm ghcr.io/productdevbook/yuva:0.0.16 vapid-keys >> .env
 docker compose up -d
 curl -s http://127.0.0.1:8080/readyz     # {"status":"ok"}
 ```
@@ -178,7 +178,7 @@ ingress:
 ### 3. Kurun
 
 ```sh
-helm install yuva oci://ghcr.io/productdevbook/charts/yuva --version 0.0.15 -n yuva -f values.yaml
+helm install yuva oci://ghcr.io/productdevbook/charts/yuva --version 0.0.16 -n yuva -f values.yaml
 ```
 
 ### 4. Sahip hesabını oluşturun
@@ -277,7 +277,7 @@ programıdır; [operatör komutlarını](operations.md#operatör-komutları) da 
 derlemek için sürüm etiketini checkout edip şunu çalıştırın:
 
 ```sh
-docker build -f deploy/Dockerfile --build-arg VERSION=0.0.15 -t ghcr.io/productdevbook/yuva:0.0.15 .
+docker build -f deploy/Dockerfile --build-arg VERSION=0.0.16 -t ghcr.io/productdevbook/yuva:0.0.16 .
 ```
 
 Depodaki `deploy/compose.yaml` yalnızca geliştirme içindir. Production'da çalıştırmayın.

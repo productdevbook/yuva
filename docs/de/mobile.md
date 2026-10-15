@@ -33,7 +33,7 @@ und nehmen Sie den Release-Tag als Version (JitPack braucht für einen neuen Tag
 Bauen):
 
 ```kotlin
-implementation("com.github.productdevbook:yuva:v0.0.15")
+implementation("com.github.productdevbook:yuva:v0.0.16")
 ```
 
 ```kotlin
