@@ -34,7 +34,7 @@ services:
     restart: unless-stopped
 
   yuva:
-    image: ghcr.io/productdevbook/yuva:0.0.16
+    image: ghcr.io/productdevbook/yuva:0.0.17
     env_file: .env
     environment:
       YUVA_DATABASE_URL: postgres://yuva:${POSTGRES_PASSWORD}@db:5432/yuva?sslmode=disable
@@ -78,7 +78,7 @@ Keep a copy of `YUVA_MASTER_KEY` outside the server ([Master key](#master-key)).
 ### 3. Start
 
 ```sh
-docker run --rm ghcr.io/productdevbook/yuva:0.0.16 vapid-keys >> .env
+docker run --rm ghcr.io/productdevbook/yuva:0.0.17 vapid-keys >> .env
 docker compose up -d
 curl -s http://127.0.0.1:8080/readyz     # {"status":"ok"}
 ```
@@ -177,7 +177,7 @@ ingress:
 ### 3. Install
 
 ```sh
-helm install yuva oci://ghcr.io/productdevbook/charts/yuva --version 0.0.16 -n yuva -f values.yaml
+helm install yuva oci://ghcr.io/productdevbook/charts/yuva --version 0.0.17 -n yuva -f values.yaml
 ```
 
 ### 4. Create the first owner
@@ -275,7 +275,7 @@ the [operator commands](operations.md#operator-commands). To build it, check out
 and run:
 
 ```sh
-docker build -f deploy/Dockerfile --build-arg VERSION=0.0.16 -t ghcr.io/productdevbook/yuva:0.0.16 .
+docker build -f deploy/Dockerfile --build-arg VERSION=0.0.17 -t ghcr.io/productdevbook/yuva:0.0.17 .
 ```
 
 `deploy/compose.yaml` in the repository is for development only. Do not run it in production.
