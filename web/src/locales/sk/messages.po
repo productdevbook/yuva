@@ -1890,6 +1890,10 @@ msgstr "Povoliť mu"
 msgid "Allowed"
 msgstr "Povolené"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Allowed file types"
+msgstr "Povolené typy súborov"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "Povolené originy"
@@ -2549,6 +2553,7 @@ msgid "Attach files"
 msgstr "Pripájať súbory"
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
 msgstr "Prílohy"
 
@@ -5218,6 +5223,10 @@ msgstr "Zadajte názov hostiteľa alebo IP adresu."
 msgid "Enter a host name or IP address."
 msgstr "Zadajte názov hostiteľa alebo adresu IP."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Enter a size in MB, such as 10."
+msgstr "Zadajte veľkosť v MB, napríklad 10."
+
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Enter a token again only to change it."
 msgstr "Token zadajte znova, len ak ho chcete zmeniť."
@@ -6639,6 +6648,14 @@ msgstr "V Claude otvorte <0>Customize › Connectors</0> a vyberte <1>Add custom
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "V nastaveniach MCP v Cursore sa prihláste k <0>yuva</0>, keď sa opýta."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect:"
+msgstr "Platí:"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect: {effectiveSize}. Leave empty to follow the server."
+msgstr "Platí: {effectiveSize}. Nechajte prázdne, aby sa použil limit servera."
+
 #: src/features/migrations/text.ts
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "Vo Fastmaile otvorte Settings › Privacy & Security › Manage app passwords."
@@ -7150,6 +7167,10 @@ msgstr "Väčšie než limit tohto servera"
 msgid "Larger than this server's limit for one message"
 msgstr "Väčšie než limit tohto servera pre jednu správu"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Largest file (MB)"
+msgstr "Najväčší súbor (MB)"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "Posledných 14 dní"
@@ -7420,6 +7441,10 @@ msgstr "Zoznam"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "List archived"
 msgstr "Zoznam archivovaný"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "List at most 100 types."
+msgstr "Uveďte najviac 100 typov."
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/setup/AddChannelStep.tsx
@@ -8338,6 +8363,10 @@ msgstr "Názov, napr. Pracovný notebook"
 msgid "name@example.com"
 msgstr "meno@example.com"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
+msgstr "Zúžte, čo možno v tomto kanáli priložiť. Limity servera zostávajú stropom: kanál ich môže znížiť, nikdy zvýšiť."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Potrebné pre hromadné správy"
@@ -8940,6 +8969,10 @@ msgstr "Nezaznamenané žiadne udalosti."
 msgid "No feedback from this page."
 msgstr "Žiadna spätná väzba z tejto stránky."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "No file is accepted."
+msgstr "Neprijíma sa žiadny súbor."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -9278,6 +9311,10 @@ msgstr "Normálna"
 #: src/features/account/ConnectPage.tsx
 msgid "Not {email}?"
 msgstr "Nie ste {email}?"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "Not a content type: {badList}. Use forms such as application/pdf or image/*."
+msgstr "Nie je typ obsahu: {badList}. Použite tvary ako application/pdf alebo image/*."
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
@@ -9755,6 +9792,10 @@ msgstr "Jedna správa každých {every}"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Jeden na riadok, 1 až 20. Widget môžu používať len stránky z týchto originov."
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
+msgstr "Jeden na riadok, napríklad application/pdf alebo image/*. Nechajte prázdne, aby sa použilo nastavenie servera."
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "One per line, up to 20."

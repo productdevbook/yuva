@@ -1890,6 +1890,10 @@ msgstr "దీన్ని అనుమతించండి"
 msgid "Allowed"
 msgstr "అనుమతించబడింది"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Allowed file types"
+msgstr "అనుమతించిన ఫైల్ రకాలు"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "అనుమతించిన ఆరిజిన్‌లు"
@@ -2549,6 +2553,7 @@ msgid "Attach files"
 msgstr "ఫైల్‌లను జోడించండి"
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
 msgstr "అటాచ్‌మెంట్‌లు"
 
@@ -5218,6 +5223,10 @@ msgstr "హోస్ట్ పేరు లేదా IP చిరునామా
 msgid "Enter a host name or IP address."
 msgstr "హోస్ట్ పేరు లేదా IP చిరునామాను నమోదు చేయండి."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Enter a size in MB, such as 10."
+msgstr "MBలో పరిమాణాన్ని నమోదు చేయండి, ఉదా. 10."
+
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Enter a token again only to change it."
 msgstr "టోకెన్‌ను మార్చడానికి మాత్రమే మళ్లీ నమోదు చేయండి."
@@ -6639,6 +6648,14 @@ msgstr "Claude లో <0>Customize › Connectors</0> తెరిచి <1>Add 
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "Cursor MCP సెట్టింగ్‌లలో, అడిగినప్పుడు <0>yuva</0> లో సైన్ ఇన్ చేయండి."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect:"
+msgstr "అమలులో ఉంది:"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect: {effectiveSize}. Leave empty to follow the server."
+msgstr "అమలులో ఉంది: {effectiveSize}. సర్వర్‌ను అనుసరించడానికి ఖాళీగా ఉంచండి."
+
 #: src/features/migrations/text.ts
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "Fastmail లో Settings › Privacy & Security › Manage app passwords తెరవండి."
@@ -7150,6 +7167,10 @@ msgstr "ఈ సర్వర్ పరిమితి కంటే పెద్�
 msgid "Larger than this server's limit for one message"
 msgstr "ఒక సందేశానికి ఈ సర్వర్ పరిమితి కంటే పెద్దది"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Largest file (MB)"
+msgstr "అతిపెద్ద ఫైల్ (MB)"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "గత 14 రోజులు"
@@ -7420,6 +7441,10 @@ msgstr "లిస్ట్"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "List archived"
 msgstr "లిస్ట్ ఆర్కైవ్ చేయబడింది"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "List at most 100 types."
+msgstr "గరిష్టంగా 100 రకాలను మాత్రమే జాబితా చేయండి."
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/setup/AddChannelStep.tsx
@@ -8338,6 +8363,10 @@ msgstr "పేరు, ఉదా. ఆఫీస్ ల్యాప్‌టాప�
 msgid "name@example.com"
 msgstr "name@example.com"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
+msgstr "ఈ ఛానెల్‌లో ఏమి జతచేయవచ్చో పరిమితం చేయండి. సర్వర్ సొంత పరిమితులే గరిష్ఠ పరిమితి: ఛానెల్ వాటిని తగ్గించవచ్చు, ఎప్పటికీ పెంచలేదు."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "బ్రాడ్‌కాస్ట్‌ల కోసం అవసరం"
@@ -8940,6 +8969,10 @@ msgstr "ఈవెంట్‌లు నమోదు కాలేదు."
 msgid "No feedback from this page."
 msgstr "ఈ పేజీ నుండి అభిప్రాయాలు లేవు."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "No file is accepted."
+msgstr "ఏ ఫైల్ అంగీకరించబడదు."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -9278,6 +9311,10 @@ msgstr "సాధారణం"
 #: src/features/account/ConnectPage.tsx
 msgid "Not {email}?"
 msgstr "{email} కాదా?"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "Not a content type: {badList}. Use forms such as application/pdf or image/*."
+msgstr "ఇది కంటెంట్ రకం కాదు: {badList}. application/pdf లేదా image/* వంటి రూపాలను ఉపయోగించండి."
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
@@ -9755,6 +9792,10 @@ msgstr "ప్రతి {every} కు ఒక మెయిల్"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "ఒక్కో లైన్‌కు ఒకటి, 1 నుండి 20. ఈ ఆరిజిన్‌లలోని పేజీలు మాత్రమే విడ్జెట్‌ను ఉపయోగించగలవు."
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
+msgstr "ప్రతి వరుసకు ఒకటి, ఉదా. application/pdf లేదా image/*. సర్వర్‌ను అనుసరించడానికి ఖాళీగా ఉంచండి."
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "One per line, up to 20."

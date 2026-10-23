@@ -1890,6 +1890,10 @@ msgstr "Cho phép nó"
 msgid "Allowed"
 msgstr "Được phép"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Allowed file types"
+msgstr "Loại tệp được phép"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "Origin được phép"
@@ -2549,6 +2553,7 @@ msgid "Attach files"
 msgstr "Đính kèm tệp"
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
 msgstr "Tệp đính kèm"
 
@@ -5218,6 +5223,10 @@ msgstr "Nhập tên máy chủ hoặc địa chỉ IP."
 msgid "Enter a host name or IP address."
 msgstr "Hãy nhập tên máy chủ hoặc địa chỉ IP."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Enter a size in MB, such as 10."
+msgstr "Nhập kích thước theo MB, ví dụ 10."
+
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Enter a token again only to change it."
 msgstr "Chỉ nhập lại token khi muốn thay đổi."
@@ -6639,6 +6648,14 @@ msgstr "Trong Claude, mở <0>Customize › Connectors</0> và chọn <1>Add cus
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "Trong cài đặt MCP của Cursor, đăng nhập vào <0>yuva</0> khi được hỏi."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect:"
+msgstr "Đang áp dụng:"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect: {effectiveSize}. Leave empty to follow the server."
+msgstr "Đang áp dụng: {effectiveSize}. Để trống để theo máy chủ."
+
 #: src/features/migrations/text.ts
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "Trong Fastmail, mở Settings › Privacy & Security › Manage app passwords."
@@ -7150,6 +7167,10 @@ msgstr "Lớn hơn giới hạn của máy chủ này"
 msgid "Larger than this server's limit for one message"
 msgstr "Lớn hơn giới hạn của máy chủ này cho một tin nhắn"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Largest file (MB)"
+msgstr "Tệp lớn nhất (MB)"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "14 ngày qua"
@@ -7420,6 +7441,10 @@ msgstr "Danh sách"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "List archived"
 msgstr "Đã lưu trữ danh sách"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "List at most 100 types."
+msgstr "Liệt kê tối đa 100 loại."
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/setup/AddChannelStep.tsx
@@ -8338,6 +8363,10 @@ msgstr "Tên, ví dụ Laptop công ty"
 msgid "name@example.com"
 msgstr "name@example.com"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
+msgstr "Thu hẹp những gì có thể đính kèm trong kênh này. Giới hạn của máy chủ vẫn là mức trần: kênh có thể hạ thấp, không bao giờ nâng cao hơn."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Cần cho thư hàng loạt"
@@ -8940,6 +8969,10 @@ msgstr "Không có sự kiện nào được ghi lại."
 msgid "No feedback from this page."
 msgstr "Không có phản hồi từ trang này."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "No file is accepted."
+msgstr "Không chấp nhận tệp nào."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -9278,6 +9311,10 @@ msgstr "Bình thường"
 #: src/features/account/ConnectPage.tsx
 msgid "Not {email}?"
 msgstr "Không phải {email}?"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "Not a content type: {badList}. Use forms such as application/pdf or image/*."
+msgstr "Không phải loại nội dung: {badList}. Dùng dạng như application/pdf hoặc image/*."
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
@@ -9755,6 +9792,10 @@ msgstr "Cứ {every} một thư"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Mỗi dòng một cái, từ 1 đến 20. Chỉ các trang thuộc những origin này mới dùng được widget."
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
+msgstr "Mỗi dòng một loại, ví dụ application/pdf hoặc image/*. Để trống để theo máy chủ."
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "One per line, up to 20."

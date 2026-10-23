@@ -13,6 +13,7 @@ import {
   unwrap,
   type AppChannelInput,
   type Channel,
+  type ChannelAttachmentsInput,
   type ChatChannelInput,
   type EmailChannelInput,
 } from "@/lib/api"
@@ -21,6 +22,7 @@ import { useSession } from "@/lib/session"
 
 export type ChannelPatch = {
   name?: string
+  attachments?: ChannelAttachmentsInput
   settings?: Record<string, unknown>
   email?: EmailChannelInput
   chat?: ChatChannelInput

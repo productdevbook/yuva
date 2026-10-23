@@ -1890,6 +1890,10 @@ msgstr "Разрешить ему"
 msgid "Allowed"
 msgstr "Разрешено"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Allowed file types"
+msgstr "Разрешённые типы файлов"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "Разрешённые источники"
@@ -2549,6 +2553,7 @@ msgid "Attach files"
 msgstr "Прикрепить файлы"
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
 msgstr "Вложения"
 
@@ -5218,6 +5223,10 @@ msgstr "Введите имя хоста или IP-адрес."
 msgid "Enter a host name or IP address."
 msgstr "Введите имя хоста или IP-адрес."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Enter a size in MB, such as 10."
+msgstr "Введите размер в МБ, например 10."
+
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Enter a token again only to change it."
 msgstr "Вводите токен заново, только чтобы изменить его."
@@ -6639,6 +6648,14 @@ msgstr "В Claude откройте <0>Customize › Connectors</0> и выбер
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "В настройках MCP в Cursor войдите в <0>yuva</0>, когда он попросит."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect:"
+msgstr "Действует:"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect: {effectiveSize}. Leave empty to follow the server."
+msgstr "Действует: {effectiveSize}. Оставьте пустым, чтобы использовать ограничение сервера."
+
 #: src/features/migrations/text.ts
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "В Fastmail откройте «Настройки › Конфиденциальность и безопасность › Управление паролями приложений»."
@@ -7150,6 +7167,10 @@ msgstr "Больше лимита этого сервера"
 msgid "Larger than this server's limit for one message"
 msgstr "Больше лимита этого сервера для одного сообщения"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Largest file (MB)"
+msgstr "Самый большой файл (МБ)"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "Последние 14 дней"
@@ -7420,6 +7441,10 @@ msgstr "Список"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "List archived"
 msgstr "Список архивирован"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "List at most 100 types."
+msgstr "Укажите не более 100 типов."
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/setup/AddChannelStep.tsx
@@ -8338,6 +8363,10 @@ msgstr "Имя, например Рабочий ноутбук"
 msgid "name@example.com"
 msgstr "name@example.com"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
+msgstr "Ограничьте то, что можно прикреплять в этом канале. Пределы сервера остаются потолком: канал может их понизить, но не повысить."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Нужно для рассылок"
@@ -8940,6 +8969,10 @@ msgstr "События не записаны."
 msgid "No feedback from this page."
 msgstr "С этой страницы нет отзывов."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "No file is accepted."
+msgstr "Файлы не принимаются."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -9278,6 +9311,10 @@ msgstr "Обычный"
 #: src/features/account/ConnectPage.tsx
 msgid "Not {email}?"
 msgstr "Не {email}?"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "Not a content type: {badList}. Use forms such as application/pdf or image/*."
+msgstr "Это не тип содержимого: {badList}. Используйте формы вроде application/pdf или image/*."
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
@@ -9755,6 +9792,10 @@ msgstr "Одно письмо каждые {every}"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "По одному в строке, от 1 до 20. Виджет могут использовать только страницы с этих источников."
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
+msgstr "По одному в строке, например application/pdf или image/*. Оставьте пустым, чтобы использовались настройки сервера."
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "One per line, up to 20."

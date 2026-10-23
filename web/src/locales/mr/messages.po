@@ -1890,6 +1890,10 @@ msgstr "याला परवानगी द्या"
 msgid "Allowed"
 msgstr "परवानगी असलेले"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Allowed file types"
+msgstr "परवानगी असलेले फाइल प्रकार"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "परवानगी असलेले ओरिजिन"
@@ -2549,6 +2553,7 @@ msgid "Attach files"
 msgstr "फाइल्स जोडा"
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
 msgstr "अटॅचमेंट"
 
@@ -5218,6 +5223,10 @@ msgstr "होस्टचे नाव किंवा IP पत्ता ट�
 msgid "Enter a host name or IP address."
 msgstr "होस्ट नाव किंवा IP पत्ता टाका."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Enter a size in MB, such as 10."
+msgstr "MB मध्ये आकार लिहा, उदा. 10."
+
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Enter a token again only to change it."
 msgstr "टोकन फक्त बदलण्यासाठीच पुन्हा टाका."
@@ -6639,6 +6648,14 @@ msgstr "Claude मध्ये <0>Customize › Connectors</0> उघडा आ�
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "Cursor च्या MCP सेटिंग्जमध्ये, विचारल्यावर <0>yuva</0> मध्ये साइन इन करा."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect:"
+msgstr "लागू:"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect: {effectiveSize}. Leave empty to follow the server."
+msgstr "लागू: {effectiveSize}. सर्व्हरचे पालन करण्यासाठी रिकामे ठेवा."
+
 #: src/features/migrations/text.ts
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "Fastmail मध्ये Settings › Privacy & Security › Manage app passwords उघडा."
@@ -7150,6 +7167,10 @@ msgstr "या सर्व्हरच्या मर्यादेपेक�
 msgid "Larger than this server's limit for one message"
 msgstr "एका संदेशासाठी या सर्व्हरच्या मर्यादेपेक्षा मोठे"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Largest file (MB)"
+msgstr "सर्वात मोठी फाइल (MB)"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "मागील 14 दिवस"
@@ -7420,6 +7441,10 @@ msgstr "लिस्ट"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "List archived"
 msgstr "लिस्ट आर्काइव्ह केली"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "List at most 100 types."
+msgstr "जास्तीत जास्त 100 प्रकार लिहा."
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/setup/AddChannelStep.tsx
@@ -8338,6 +8363,10 @@ msgstr "नाव, उदा. ऑफिस लॅपटॉप"
 msgid "name@example.com"
 msgstr "name@example.com"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
+msgstr "या चॅनेलमध्ये काय जोडता येईल ते मर्यादित करा. सर्व्हरच्या स्वतःच्या मर्यादा कमाल मर्यादा राहतात: चॅनेल त्या कमी करू शकते, वाढवू शकत नाही."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "ब्रॉडकास्टसाठी आवश्यक"
@@ -8940,6 +8969,10 @@ msgstr "कोणतेही इव्हेंट नोंदवले ना
 msgid "No feedback from this page."
 msgstr "या पेजवरून फीडबॅक नाही."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "No file is accepted."
+msgstr "कोणतीही फाइल स्वीकारली जात नाही."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -9278,6 +9311,10 @@ msgstr "सामान्य"
 #: src/features/account/ConnectPage.tsx
 msgid "Not {email}?"
 msgstr "{email} नाही?"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "Not a content type: {badList}. Use forms such as application/pdf or image/*."
+msgstr "हा सामग्री प्रकार नाही: {badList}. application/pdf किंवा image/* सारखे रूप वापरा."
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
@@ -9755,6 +9792,10 @@ msgstr "दर {every} ला एक मेल"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "प्रत्येक ओळीत एक, 1 ते 20. फक्त या ओरिजिनवरील पेज विजेट वापरू शकतात."
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
+msgstr "प्रत्येक ओळीत एक, उदा. application/pdf किंवा image/*. सर्व्हरचे पालन करण्यासाठी रिकामे ठेवा."
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "One per line, up to 20."

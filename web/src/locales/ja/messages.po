@@ -1890,6 +1890,10 @@ msgstr "許可する操作"
 msgid "Allowed"
 msgstr "許可済み"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Allowed file types"
+msgstr "許可するファイル形式"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "許可するオリジン"
@@ -2549,6 +2553,7 @@ msgid "Attach files"
 msgstr "ファイルを添付"
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
 msgstr "添付ファイル"
 
@@ -5218,6 +5223,10 @@ msgstr "ホスト名または IP アドレスを入力してください。"
 msgid "Enter a host name or IP address."
 msgstr "ホスト名または IP アドレスを入力してください。"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Enter a size in MB, such as 10."
+msgstr "MB 単位でサイズを入力してください（例: 10）。"
+
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Enter a token again only to change it."
 msgstr "変更する場合にのみトークンを入力し直してください。"
@@ -6639,6 +6648,14 @@ msgstr "Claude で <0>カスタマイズ › コネクタ</0> を開き、<1>カ
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "Cursor の MCP 設定で、求められたら <0>yuva</0> にサインインします。"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect:"
+msgstr "適用中:"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect: {effectiveSize}. Leave empty to follow the server."
+msgstr "適用中: {effectiveSize}。サーバーに従う場合は空のままにします。"
+
 #: src/features/migrations/text.ts
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "Fastmail で、設定 › プライバシーとセキュリティ › アプリパスワードの管理 を開きます。"
@@ -7150,6 +7167,10 @@ msgstr "このサーバーの上限を超えています"
 msgid "Larger than this server's limit for one message"
 msgstr "このサーバーの 1 通あたりの上限を超えています"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Largest file (MB)"
+msgstr "最大ファイルサイズ (MB)"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "過去 14 日間"
@@ -7420,6 +7441,10 @@ msgstr "リスト"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "List archived"
 msgstr "リストをアーカイブしました"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "List at most 100 types."
+msgstr "形式は最大 100 件まで指定できます。"
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/setup/AddChannelStep.tsx
@@ -8338,6 +8363,10 @@ msgstr "名前(例: 仕事用ノートPC)"
 msgid "name@example.com"
 msgstr "name@example.com"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
+msgstr "このチャネルで添付できるものを絞り込みます。サーバー自身の上限が最大値のままで、チャネルは下げることはできても上げることはできません。"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "一斉配信に必要"
@@ -8940,6 +8969,10 @@ msgstr "記録されたイベントはありません。"
 msgid "No feedback from this page."
 msgstr "このページからのフィードバックはありません。"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "No file is accepted."
+msgstr "どのファイルも受け付けません。"
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -9278,6 +9311,10 @@ msgstr "通常"
 #: src/features/account/ConnectPage.tsx
 msgid "Not {email}?"
 msgstr "{email} ではありませんか?"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "Not a content type: {badList}. Use forms such as application/pdf or image/*."
+msgstr "コンテンツタイプではありません: {badList}。application/pdf や image/* の形式で指定してください。"
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
@@ -9755,6 +9792,10 @@ msgstr "{every} ごとに 1 通"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "1 行に 1 件、1 〜 20 件。これらのオリジンのページだけがウィジェットを使えます。"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
+msgstr "1 行に 1 つ（例: application/pdf、image/*）。サーバーに従う場合は空のままにします。"
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "One per line, up to 20."

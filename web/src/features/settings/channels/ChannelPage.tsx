@@ -33,6 +33,7 @@ import {
   RepliesSection,
   SesSection,
 } from "@/features/settings/channels/email/EmailSections"
+import { AttachmentsSection } from "@/features/settings/channels/Attachments"
 import { ApiSettingsSection, NameSection, RemoveSection } from "@/features/settings/channels/sections"
 import { InboxProvider } from "@/features/settings/inboxes/InboxPage"
 import { Card, Chip, EmptyRow, PageHeader, PageTabs, Pill, Row, Rows, Section } from "@/features/settings/ui"
@@ -169,6 +170,7 @@ function Body({ ch, tab }: { ch: Channel; tab: ChannelTab }) {
         <ReceivingSection channel={ch} />
         <RepliesSection channel={ch} />
         <AutoReplySection channel={ch} />
+        <AttachmentsSection channel={ch} />
         <RemoveSection channel={ch} />
       </>
     ) : (
@@ -188,6 +190,7 @@ function Body({ ch, tab }: { ch: Channel; tab: ChannelTab }) {
         <LookSection channel={ch} />
         <DiscussionsSection channel={ch} />
         <UpdatesSection channel={ch} />
+        <AttachmentsSection channel={ch} />
         <RemoveSection channel={ch} />
       </>
     ) : (
@@ -201,6 +204,7 @@ function Body({ ch, tab }: { ch: Channel; tab: ChannelTab }) {
       <>
         <NameSection key={`name:${ch.id}`} channel={ch} />
         <AppAccessSection channel={ch} />
+        <AttachmentsSection channel={ch} />
         <RemoveSection channel={ch} />
       </>
     ) : (
@@ -213,6 +217,7 @@ function Body({ ch, tab }: { ch: Channel; tab: ChannelTab }) {
     <>
       <NameSection key={`name:${ch.id}`} channel={ch} />
       <ApiSettingsSection channel={ch} />
+      <AttachmentsSection channel={ch} />
       <RemoveSection channel={ch} />
     </>
   ) : (

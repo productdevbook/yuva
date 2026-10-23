@@ -1890,6 +1890,10 @@ msgstr "อนุญาตให้"
 msgid "Allowed"
 msgstr "อนุญาตแล้ว"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Allowed file types"
+msgstr "ประเภทไฟล์ที่อนุญาต"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "origin ที่อนุญาต"
@@ -2549,6 +2553,7 @@ msgid "Attach files"
 msgstr "แนบไฟล์"
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
 msgstr "ไฟล์แนบ"
 
@@ -5218,6 +5223,10 @@ msgstr "ใส่ชื่อโฮสต์หรือที่อยู่ IP
 msgid "Enter a host name or IP address."
 msgstr "ใส่ชื่อโฮสต์หรือที่อยู่ IP"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Enter a size in MB, such as 10."
+msgstr "ใส่ขนาดเป็น MB เช่น 10"
+
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Enter a token again only to change it."
 msgstr "ป้อนโทเค็นอีกครั้งเฉพาะเมื่อต้องการเปลี่ยน"
@@ -6639,6 +6648,14 @@ msgstr "ใน Claude เปิด <0>Customize › Connectors</0> แล้ว�
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "ในการตั้งค่า MCP ของ Cursor ลงชื่อเข้าใช้ <0>yuva</0> เมื่อถูกถาม"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect:"
+msgstr "ที่ใช้อยู่:"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect: {effectiveSize}. Leave empty to follow the server."
+msgstr "ที่ใช้อยู่: {effectiveSize} เว้นว่างไว้เพื่อใช้ตามเซิร์ฟเวอร์"
+
 #: src/features/migrations/text.ts
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "ใน Fastmail เปิด Settings › Privacy & Security › Manage app passwords"
@@ -7150,6 +7167,10 @@ msgstr "ใหญ่กว่าขีดจำกัดของเซิร์
 msgid "Larger than this server's limit for one message"
 msgstr "ใหญ่กว่าขีดจำกัดของเซิร์ฟเวอร์นี้ต่อหนึ่งข้อความ"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Largest file (MB)"
+msgstr "ไฟล์ที่ใหญ่ที่สุด (MB)"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "14 วันที่ผ่านมา"
@@ -7420,6 +7441,10 @@ msgstr "รายชื่อ"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "List archived"
 msgstr "เก็บถาวรรายชื่อแล้ว"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "List at most 100 types."
+msgstr "ระบุได้ไม่เกิน 100 ประเภท"
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/setup/AddChannelStep.tsx
@@ -8338,6 +8363,10 @@ msgstr "ชื่อ เช่น แล็ปท็อปที่ทำงา�
 msgid "name@example.com"
 msgstr "name@example.com"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
+msgstr "จำกัดสิ่งที่แนบได้ในช่องทางนี้ ขีดจำกัดของเซิร์ฟเวอร์ยังเป็นเพดาน ช่องทางลดได้แต่เพิ่มไม่ได้"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "จำเป็นสำหรับบรอดคาสต์"
@@ -8940,6 +8969,10 @@ msgstr "ไม่มีเหตุการณ์ที่บันทึกไ
 msgid "No feedback from this page."
 msgstr "ไม่มีความคิดเห็นจากหน้านี้"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "No file is accepted."
+msgstr "ไม่รับไฟล์ใดเลย"
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -9278,6 +9311,10 @@ msgstr "ปกติ"
 #: src/features/account/ConnectPage.tsx
 msgid "Not {email}?"
 msgstr "ไม่ใช่ {email} ใช่ไหม"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "Not a content type: {badList}. Use forms such as application/pdf or image/*."
+msgstr "ไม่ใช่ประเภทเนื้อหา: {badList} ใช้รูปแบบเช่น application/pdf หรือ image/*"
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
@@ -9755,6 +9792,10 @@ msgstr "หนึ่งอีเมลทุก {every}"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "หนึ่งรายการต่อบรรทัด 1 ถึง 20 เฉพาะหน้าบน origin เหล่านี้เท่านั้นที่ใช้วิดเจ็ตได้"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
+msgstr "บรรทัดละหนึ่งรายการ เช่น application/pdf หรือ image/* เว้นว่างไว้เพื่อใช้ตามเซิร์ฟเวอร์"
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "One per line, up to 20."

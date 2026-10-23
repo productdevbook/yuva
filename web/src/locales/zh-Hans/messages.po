@@ -1890,6 +1890,10 @@ msgstr "允许其执行"
 msgid "Allowed"
 msgstr "已允许"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Allowed file types"
+msgstr "允许的文件类型"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "允许的来源"
@@ -2549,6 +2553,7 @@ msgid "Attach files"
 msgstr "附加文件"
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
 msgstr "附件"
 
@@ -5218,6 +5223,10 @@ msgstr "请输入主机名或 IP 地址。"
 msgid "Enter a host name or IP address."
 msgstr "请输入主机名或 IP 地址。"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Enter a size in MB, such as 10."
+msgstr "请输入以 MB 为单位的大小，例如 10。"
+
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Enter a token again only to change it."
 msgstr "仅在要更改时再次输入令牌。"
@@ -6639,6 +6648,14 @@ msgstr "在 Claude 中,打开<0>自定义 › 连接器</0>并选择<1>添加自
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "在 Cursor 的 MCP 设置中,按提示登录 <0>yuva</0>。"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect:"
+msgstr "当前生效："
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect: {effectiveSize}. Leave empty to follow the server."
+msgstr "当前生效：{effectiveSize}。留空则沿用服务器的设置。"
+
 #: src/features/migrations/text.ts
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "在 Fastmail 中,打开“设置 › 隐私与安全 › 管理应用专用密码”。"
@@ -7150,6 +7167,10 @@ msgstr "超过此服务器的限制"
 msgid "Larger than this server's limit for one message"
 msgstr "超过此服务器对单封邮件的限制"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Largest file (MB)"
+msgstr "最大文件 (MB)"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "最近 14 天"
@@ -7420,6 +7441,10 @@ msgstr "列表"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "List archived"
 msgstr "列表已归档"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "List at most 100 types."
+msgstr "最多列出 100 种类型。"
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/setup/AddChannelStep.tsx
@@ -8338,6 +8363,10 @@ msgstr "名称,例如 工作笔记本"
 msgid "name@example.com"
 msgstr "name@example.com"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
+msgstr "限制此渠道可附加的内容。服务器自身的限制仍是上限：渠道只能调低，不能调高。"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "群发所需"
@@ -8940,6 +8969,10 @@ msgstr "没有记录到事件。"
 msgid "No feedback from this page."
 msgstr "此页面没有反馈。"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "No file is accepted."
+msgstr "不接受任何文件。"
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -9278,6 +9311,10 @@ msgstr "普通"
 #: src/features/account/ConnectPage.tsx
 msgid "Not {email}?"
 msgstr "不是 {email}?"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "Not a content type: {badList}. Use forms such as application/pdf or image/*."
+msgstr "不是内容类型：{badList}。请使用 application/pdf 或 image/* 这样的形式。"
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
@@ -9755,6 +9792,10 @@ msgstr "每 {every} 一封邮件"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "每行一个,1 到 20 个。只有这些来源上的页面才能使用小部件。"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
+msgstr "每行一个，例如 application/pdf 或 image/*。留空则沿用服务器的设置。"
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "One per line, up to 20."

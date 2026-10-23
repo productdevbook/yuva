@@ -1890,6 +1890,10 @@ msgstr "السماح له بـ"
 msgid "Allowed"
 msgstr "مسموح"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Allowed file types"
+msgstr "أنواع الملفات المسموحة"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "الأصول المسموح بها"
@@ -2549,6 +2553,7 @@ msgid "Attach files"
 msgstr "إرفاق ملفات"
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
 msgstr "المرفقات"
 
@@ -5218,6 +5223,10 @@ msgstr "أدخل اسم مضيف أو عنوان IP."
 msgid "Enter a host name or IP address."
 msgstr "أدخل اسم مضيف أو عنوان IP."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Enter a size in MB, such as 10."
+msgstr "أدخل حجمًا بالميغابايت، مثل 10."
+
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Enter a token again only to change it."
 msgstr "لا تُدخل رمزًا مرة أخرى إلا لتغييره."
@@ -6639,6 +6648,14 @@ msgstr "في Claude، افتح <0>Customize › Connectors</0> واختر <1>Add
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "في إعدادات MCP في Cursor، سجّل الدخول إلى <0>yuva</0> عندما يطلب ذلك."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect:"
+msgstr "السارية:"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect: {effectiveSize}. Leave empty to follow the server."
+msgstr "السارية: {effectiveSize}. اتركه فارغًا لاتباع الخادم."
+
 #: src/features/migrations/text.ts
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "في Fastmail، افتح Settings › Privacy & Security › Manage app passwords."
@@ -7150,6 +7167,10 @@ msgstr "أكبر من حد هذا الخادم"
 msgid "Larger than this server's limit for one message"
 msgstr "أكبر من حد هذا الخادم لرسالة واحدة"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Largest file (MB)"
+msgstr "أكبر ملف (ميغابايت)"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "آخر 14 يومًا"
@@ -7420,6 +7441,10 @@ msgstr "القائمة"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "List archived"
 msgstr "أُرشفت القائمة"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "List at most 100 types."
+msgstr "اذكر 100 نوع كحد أقصى."
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/setup/AddChannelStep.tsx
@@ -8338,6 +8363,10 @@ msgstr "الاسم، مثل حاسوب العمل"
 msgid "name@example.com"
 msgstr "name@example.com"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
+msgstr "ضيّق ما يمكن إرفاقه في هذه القناة. تبقى حدود الخادم هي السقف: يمكن للقناة خفضها ولا يمكنها رفعها."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "مطلوب للرسائل الجماعية"
@@ -8940,6 +8969,10 @@ msgstr "لا أحداث مسجّلة."
 msgid "No feedback from this page."
 msgstr "لا ملاحظات من هذه الصفحة."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "No file is accepted."
+msgstr "لا يُقبل أي ملف."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -9278,6 +9311,10 @@ msgstr "عادي"
 #: src/features/account/ConnectPage.tsx
 msgid "Not {email}?"
 msgstr "لست {email}؟"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "Not a content type: {badList}. Use forms such as application/pdf or image/*."
+msgstr "ليس نوع محتوى: {badList}. استخدم صيغًا مثل application/pdf أو image/*."
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
@@ -9755,6 +9792,10 @@ msgstr "رسالة واحدة كل {every}"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "واحد في كل سطر، من 1 إلى 20. الصفحات على هذه الأصول فقط يمكنها استخدام الأداة."
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
+msgstr "واحد في كل سطر، مثل application/pdf أو image/*. اتركه فارغًا لاتباع الخادم."
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "One per line, up to 20."

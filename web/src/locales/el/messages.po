@@ -1890,6 +1890,10 @@ msgstr "Να του επιτρέπεται να"
 msgid "Allowed"
 msgstr "Επιτρέπεται"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Allowed file types"
+msgstr "Επιτρεπόμενοι τύποι αρχείων"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "Επιτρεπόμενες προελεύσεις"
@@ -2549,6 +2553,7 @@ msgid "Attach files"
 msgstr "Επισύναψη αρχείων"
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
 msgstr "Συνημμένα"
 
@@ -5218,6 +5223,10 @@ msgstr "Εισαγάγετε όνομα κεντρικού υπολογιστή 
 msgid "Enter a host name or IP address."
 msgstr "Εισαγάγετε όνομα υπολογιστή ή διεύθυνση IP."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Enter a size in MB, such as 10."
+msgstr "Εισαγάγετε μέγεθος σε MB, για παράδειγμα 10."
+
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Enter a token again only to change it."
 msgstr "Εισαγάγετε ξανά διακριτικό μόνο για να το αλλάξετε."
@@ -6639,6 +6648,14 @@ msgstr "Στο Claude, ανοίξτε <0>Customize › Connectors</0> και ε�
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "Στις ρυθμίσεις MCP του Cursor, συνδεθείτε στο <0>yuva</0> όταν σας ζητηθεί."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect:"
+msgstr "Ισχύει:"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect: {effectiveSize}. Leave empty to follow the server."
+msgstr "Ισχύει: {effectiveSize}. Αφήστε κενό για να ακολουθείται ο διακομιστής."
+
 #: src/features/migrations/text.ts
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "Στο Fastmail, ανοίξτε Ρυθμίσεις › Απόρρητο και ασφάλεια › Διαχείριση κωδικών εφαρμογών."
@@ -7150,6 +7167,10 @@ msgstr "Μεγαλύτερο από το όριο αυτού του διακομ
 msgid "Larger than this server's limit for one message"
 msgstr "Μεγαλύτερο από το όριο αυτού του διακομιστή για ένα μήνυμα"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Largest file (MB)"
+msgstr "Μεγαλύτερο αρχείο (MB)"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "Τελευταίες 14 ημέρες"
@@ -7420,6 +7441,10 @@ msgstr "Λίστα"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "List archived"
 msgstr "Η λίστα αρχειοθετήθηκε"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "List at most 100 types."
+msgstr "Αναφέρετε το πολύ 100 τύπους."
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/setup/AddChannelStep.tsx
@@ -8338,6 +8363,10 @@ msgstr "Όνομα, π.χ. Φορητός εργασίας"
 msgid "name@example.com"
 msgstr "name@example.com"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
+msgstr "Περιορίστε τι μπορεί να επισυναφθεί σε αυτό το κανάλι. Τα όρια του διακομιστή παραμένουν το ανώτατο όριο: ένα κανάλι μπορεί να τα μειώσει, ποτέ να τα αυξήσει."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Απαραίτητο για μαζικές αποστολές"
@@ -8940,6 +8969,10 @@ msgstr "Δεν καταγράφηκαν συμβάντα."
 msgid "No feedback from this page."
 msgstr "Δεν υπάρχουν σχόλια από αυτή τη σελίδα."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "No file is accepted."
+msgstr "Δεν γίνεται δεκτό κανένα αρχείο."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -9278,6 +9311,10 @@ msgstr "Κανονική"
 #: src/features/account/ConnectPage.tsx
 msgid "Not {email}?"
 msgstr "Δεν είστε {email};"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "Not a content type: {badList}. Use forms such as application/pdf or image/*."
+msgstr "Δεν είναι τύπος περιεχομένου: {badList}. Χρησιμοποιήστε μορφές όπως application/pdf ή image/*."
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
@@ -9755,6 +9792,10 @@ msgstr "Ένα e-mail κάθε {every}"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Ένα ανά γραμμή, από 1 έως 20. Μόνο σελίδες σε αυτές τις προελεύσεις μπορούν να χρησιμοποιήσουν το widget."
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
+msgstr "Ένας ανά γραμμή, για παράδειγμα application/pdf ή image/*. Αφήστε κενό για να ακολουθείται ο διακομιστής."
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "One per line, up to 20."

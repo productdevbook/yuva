@@ -1890,6 +1890,10 @@ msgstr "La den"
 msgid "Allowed"
 msgstr "Tillatt"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Allowed file types"
+msgstr "Tillatte filtyper"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "Tillatte origins"
@@ -2549,6 +2553,7 @@ msgid "Attach files"
 msgstr "Legg ved filer"
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
 msgstr "Vedlegg"
 
@@ -5218,6 +5223,10 @@ msgstr "Skriv inn et vertsnavn eller en IP-adresse."
 msgid "Enter a host name or IP address."
 msgstr "Skriv inn et vertsnavn eller en IP-adresse."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Enter a size in MB, such as 10."
+msgstr "Oppgi en størrelse i MB, for eksempel 10."
+
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Enter a token again only to change it."
 msgstr "Skriv inn et token på nytt bare for å endre det."
@@ -6639,6 +6648,14 @@ msgstr "I Claude, åpne <0>Customize › Connectors</0> og velg <1>Add custom co
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "I MCP-innstillingene i Cursor, logg inn på <0>yuva</0> når den spør."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect:"
+msgstr "Gjelder:"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect: {effectiveSize}. Leave empty to follow the server."
+msgstr "Gjelder: {effectiveSize}. La feltet stå tomt for å følge serveren."
+
 #: src/features/migrations/text.ts
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "I Fastmail, åpne Innstillinger › Personvern og sikkerhet › Administrer app-passord."
@@ -7150,6 +7167,10 @@ msgstr "Større enn denne serverens grense"
 msgid "Larger than this server's limit for one message"
 msgstr "Større enn denne serverens grense for én melding"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Largest file (MB)"
+msgstr "Største fil (MB)"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "Siste 14 dager"
@@ -7420,6 +7441,10 @@ msgstr "Liste"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "List archived"
 msgstr "Liste arkivert"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "List at most 100 types."
+msgstr "Oppgi høyst 100 typer."
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/setup/AddChannelStep.tsx
@@ -8338,6 +8363,10 @@ msgstr "Navn, f.eks. Jobblaptop"
 msgid "name@example.com"
 msgstr "navn@example.com"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
+msgstr "Begrens hva som kan legges ved i denne kanalen. Serverens egne grenser er fortsatt taket: en kanal kan senke dem, aldri heve dem."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Nødvendig for utsendelser"
@@ -8940,6 +8969,10 @@ msgstr "Ingen hendelser registrert."
 msgid "No feedback from this page."
 msgstr "Ingen tilbakemeldinger fra denne siden."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "No file is accepted."
+msgstr "Ingen filer godtas."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -9278,6 +9311,10 @@ msgstr "Normal"
 #: src/features/account/ConnectPage.tsx
 msgid "Not {email}?"
 msgstr "Ikke {email}?"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "Not a content type: {badList}. Use forms such as application/pdf or image/*."
+msgstr "Ikke en innholdstype: {badList}. Bruk former som application/pdf eller image/*."
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
@@ -9755,6 +9792,10 @@ msgstr "Én e-post hver {every}"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Én per linje, 1 til 20. Bare sider på disse origins kan bruke widgeten."
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
+msgstr "Én per linje, for eksempel application/pdf eller image/*. La feltet stå tomt for å følge serveren."
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "One per line, up to 20."

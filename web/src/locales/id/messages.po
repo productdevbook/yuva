@@ -1890,6 +1890,10 @@ msgstr "Izinkan untuk"
 msgid "Allowed"
 msgstr "Diizinkan"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Allowed file types"
+msgstr "Jenis file yang diizinkan"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "Origin yang diizinkan"
@@ -2549,6 +2553,7 @@ msgid "Attach files"
 msgstr "Lampirkan file"
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
 msgstr "Lampiran"
 
@@ -5218,6 +5223,10 @@ msgstr "Masukkan nama host atau alamat IP."
 msgid "Enter a host name or IP address."
 msgstr "Masukkan nama host atau alamat IP."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Enter a size in MB, such as 10."
+msgstr "Masukkan ukuran dalam MB, misalnya 10."
+
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Enter a token again only to change it."
 msgstr "Masukkan token lagi hanya untuk mengubahnya."
@@ -6639,6 +6648,14 @@ msgstr "Di Claude, buka <0>Customize › Connectors</0> dan pilih <1>Add custom 
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "Di pengaturan MCP Cursor, masuk ke <0>yuva</0> saat diminta."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect:"
+msgstr "Berlaku:"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect: {effectiveSize}. Leave empty to follow the server."
+msgstr "Berlaku: {effectiveSize}. Kosongkan untuk mengikuti server."
+
 #: src/features/migrations/text.ts
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "Di Fastmail, buka Pengaturan › Privasi & Keamanan › Kelola kata sandi aplikasi."
@@ -7150,6 +7167,10 @@ msgstr "Lebih besar dari batas server ini"
 msgid "Larger than this server's limit for one message"
 msgstr "Lebih besar dari batas server ini untuk satu pesan"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Largest file (MB)"
+msgstr "File terbesar (MB)"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "14 hari terakhir"
@@ -7420,6 +7441,10 @@ msgstr "Milis"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "List archived"
 msgstr "Milis diarsipkan"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "List at most 100 types."
+msgstr "Cantumkan paling banyak 100 jenis."
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/setup/AddChannelStep.tsx
@@ -8338,6 +8363,10 @@ msgstr "Nama, mis. Laptop kerja"
 msgid "name@example.com"
 msgstr "name@example.com"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
+msgstr "Persempit apa yang bisa dilampirkan di kanal ini. Batas server sendiri tetap menjadi batas atas: kanal bisa menurunkannya, tidak pernah menaikkannya."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Diperlukan untuk siaran massal"
@@ -8940,6 +8969,10 @@ msgstr "Tidak ada peristiwa tercatat."
 msgid "No feedback from this page."
 msgstr "Tidak ada masukan dari halaman ini."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "No file is accepted."
+msgstr "Tidak ada file yang diterima."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -9278,6 +9311,10 @@ msgstr "Normal"
 #: src/features/account/ConnectPage.tsx
 msgid "Not {email}?"
 msgstr "Bukan {email}?"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "Not a content type: {badList}. Use forms such as application/pdf or image/*."
+msgstr "Bukan jenis konten: {badList}. Gunakan bentuk seperti application/pdf atau image/*."
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
@@ -9755,6 +9792,10 @@ msgstr "Satu email setiap {every}"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Satu per baris, 1 sampai 20. Hanya halaman di origin ini yang dapat memakai widget."
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
+msgstr "Satu per baris, misalnya application/pdf atau image/*. Kosongkan untuk mengikuti server."
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "One per line, up to 20."

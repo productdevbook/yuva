@@ -1890,6 +1890,10 @@ msgstr "Salli sen"
 msgid "Allowed"
 msgstr "Sallittu"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Allowed file types"
+msgstr "Sallitut tiedostotyypit"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "Sallitut originit"
@@ -2549,6 +2553,7 @@ msgid "Attach files"
 msgstr "Liitä tiedostoja"
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
 msgstr "Liitteet"
 
@@ -5218,6 +5223,10 @@ msgstr "Anna isäntänimi tai IP-osoite."
 msgid "Enter a host name or IP address."
 msgstr "Anna isäntänimi tai IP-osoite."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Enter a size in MB, such as 10."
+msgstr "Anna koko megatavuina, esimerkiksi 10."
+
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Enter a token again only to change it."
 msgstr "Anna token uudelleen vain, jos haluat vaihtaa sen."
@@ -6639,6 +6648,14 @@ msgstr "Avaa Claudessa <0>Customize › Connectors</0> ja valitse <1>Add custom 
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "Kirjaudu Cursorin MCP-asetuksissa palveluun <0>yuva</0>, kun sitä pyydetään."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect:"
+msgstr "Voimassa:"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect: {effectiveSize}. Leave empty to follow the server."
+msgstr "Voimassa: {effectiveSize}. Jätä tyhjäksi, jos haluat noudattaa palvelinta."
+
 #: src/features/migrations/text.ts
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "Avaa Fastmailissa Settings › Privacy & Security › Manage app passwords."
@@ -7150,6 +7167,10 @@ msgstr "Suurempi kuin tämän palvelimen raja"
 msgid "Larger than this server's limit for one message"
 msgstr "Suurempi kuin tämän palvelimen raja yhdelle viestille"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Largest file (MB)"
+msgstr "Suurin tiedosto (Mt)"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "Viimeiset 14 päivää"
@@ -7420,6 +7441,10 @@ msgstr "Lista"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "List archived"
 msgstr "Lista arkistoitu"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "List at most 100 types."
+msgstr "Luettele enintään 100 tyyppiä."
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/setup/AddChannelStep.tsx
@@ -8338,6 +8363,10 @@ msgstr "Nimi, esim. Työkannettava"
 msgid "name@example.com"
 msgstr "nimi@example.com"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
+msgstr "Rajaa, mitä tähän kanavaan voi liittää. Palvelimen omat rajat pysyvät katona: kanava voi laskea niitä mutta ei nostaa."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Tarvitaan joukkolähetyksiin"
@@ -8940,6 +8969,10 @@ msgstr "Ei tallennettuja tapahtumia."
 msgid "No feedback from this page."
 msgstr "Ei palautetta tältä sivulta."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "No file is accepted."
+msgstr "Tiedostoja ei hyväksytä."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -9278,6 +9311,10 @@ msgstr "Normaali"
 #: src/features/account/ConnectPage.tsx
 msgid "Not {email}?"
 msgstr "Etkö ole {email}?"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "Not a content type: {badList}. Use forms such as application/pdf or image/*."
+msgstr "Ei ole sisältötyyppi: {badList}. Käytä muotoja kuten application/pdf tai image/*."
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
@@ -9755,6 +9792,10 @@ msgstr "Yksi viesti {every} välein"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Yksi per rivi, 1–20. Vain näiden originien sivut voivat käyttää widgetiä."
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
+msgstr "Yksi per rivi, esimerkiksi application/pdf tai image/*. Jätä tyhjäksi, jos haluat noudattaa palvelinta."
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "One per line, up to 20."

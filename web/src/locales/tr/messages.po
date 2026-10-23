@@ -1890,6 +1890,10 @@ msgstr "İzin verilenler"
 msgid "Allowed"
 msgstr "İzinli"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Allowed file types"
+msgstr "İzin verilen dosya türleri"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "İzin verilen kaynaklar"
@@ -2549,6 +2553,7 @@ msgid "Attach files"
 msgstr "Dosya ekle"
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
 msgstr "Ekler"
 
@@ -5218,6 +5223,10 @@ msgstr "Bir ana makine adı veya IP adresi girin."
 msgid "Enter a host name or IP address."
 msgstr "Bir sunucu adı ya da IP adresi girin."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Enter a size in MB, such as 10."
+msgstr "MB cinsinden bir boyut girin, örneğin 10."
+
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Enter a token again only to change it."
 msgstr "Belirteci yalnızca değiştirmek için yeniden girin."
@@ -6639,6 +6648,14 @@ msgstr "Claude'da <0>Customize › Connectors</0> bölümünü açıp <1>Add cus
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "Cursor'ın MCP ayarlarında istendiğinde <0>yuva</0> için oturum açın."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect:"
+msgstr "Geçerli:"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect: {effectiveSize}. Leave empty to follow the server."
+msgstr "Geçerli: {effectiveSize}. Sunucuyu izlemek için boş bırakın."
+
 #: src/features/migrations/text.ts
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "Fastmail'de Ayarlar › Gizlilik ve Güvenlik › Uygulama şifrelerini yönet'i açın."
@@ -7150,6 +7167,10 @@ msgstr "Bu sunucunun sınırından büyük"
 msgid "Larger than this server's limit for one message"
 msgstr "Bu sunucunun tek mesaj sınırından büyük"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Largest file (MB)"
+msgstr "En büyük dosya (MB)"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "Son 14 gün"
@@ -7420,6 +7441,10 @@ msgstr "Liste"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "List archived"
 msgstr "Liste arşivlendi"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "List at most 100 types."
+msgstr "En fazla 100 tür listeleyin."
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/setup/AddChannelStep.tsx
@@ -8338,6 +8363,10 @@ msgstr "Ad, ör. İş bilgisayarı"
 msgid "name@example.com"
 msgstr "ad@ornek.com"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
+msgstr "Bu kanalda nelerin eklenebileceğini daraltın. Sunucunun kendi sınırları üst sınır olarak kalır: bir kanal onları düşürebilir, yükseltemez."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Bültenler için gerekli"
@@ -8940,6 +8969,10 @@ msgstr "Kayıtlı olay yok."
 msgid "No feedback from this page."
 msgstr "Bu sayfadan geri bildirim yok."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "No file is accepted."
+msgstr "Hiçbir dosya kabul edilmiyor."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -9278,6 +9311,10 @@ msgstr "Normal"
 #: src/features/account/ConnectPage.tsx
 msgid "Not {email}?"
 msgstr "{email} değil misiniz?"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "Not a content type: {badList}. Use forms such as application/pdf or image/*."
+msgstr "İçerik türü değil: {badList}. application/pdf veya image/* gibi biçimler kullanın."
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
@@ -9755,6 +9792,10 @@ msgstr "{every} arayla bir posta"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Her satıra bir tane, 1 ile 20 arası. Sohbet penceresini yalnızca bu kaynaklardaki sayfalar kullanabilir."
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
+msgstr "Satır başına bir tane, örneğin application/pdf veya image/*. Sunucuyu izlemek için boş bırakın."
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "One per line, up to 20."

@@ -1890,6 +1890,10 @@ msgstr "Engedélyezd neki"
 msgid "Allowed"
 msgstr "Engedélyezve"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Allowed file types"
+msgstr "Engedélyezett fájltípusok"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "Engedélyezett originek"
@@ -2549,6 +2553,7 @@ msgid "Attach files"
 msgstr "Fájlok csatolása"
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
 msgstr "Mellékletek"
 
@@ -5218,6 +5223,10 @@ msgstr "Adjon meg egy gépnevet vagy IP-címet."
 msgid "Enter a host name or IP address."
 msgstr "Adj meg egy gépnevet vagy IP-címet."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Enter a size in MB, such as 10."
+msgstr "Adj meg méretet MB-ban, például 10."
+
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Enter a token again only to change it."
 msgstr "Tokent csak akkor adjon meg újra, ha módosítani szeretné."
@@ -6639,6 +6648,14 @@ msgstr "A Claude-ban nyisd meg a <0>Customize › Connectors</0> részt, és vá
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "A Cursor MCP-beállításaiban jelentkezz be a <0>yuva</0> szolgáltatásba, amikor kéri."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect:"
+msgstr "Érvényben:"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect: {effectiveSize}. Leave empty to follow the server."
+msgstr "Érvényben: {effectiveSize}. Hagyd üresen, hogy a kiszolgáló korlátja érvényes legyen."
+
 #: src/features/migrations/text.ts
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "A Fastmailben nyisd meg a Settings › Privacy & Security › Manage app passwords részt."
@@ -7150,6 +7167,10 @@ msgstr "Nagyobb a szerver korlátjánál"
 msgid "Larger than this server's limit for one message"
 msgstr "Nagyobb a szerver egy üzenetre vonatkozó korlátjánál"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Largest file (MB)"
+msgstr "Legnagyobb fájl (MB)"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "Az elmúlt 14 nap"
@@ -7420,6 +7441,10 @@ msgstr "Lista"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "List archived"
 msgstr "Lista archiválva"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "List at most 100 types."
+msgstr "Legfeljebb 100 típust adj meg."
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/setup/AddChannelStep.tsx
@@ -8338,6 +8363,10 @@ msgstr "Név, pl. Munkahelyi laptop"
 msgid "name@example.com"
 msgstr "nev@example.com"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
+msgstr "Szűkítsd, mit lehet csatolni ebben a csatornában. A kiszolgáló saját korlátai maradnak a plafon: a csatorna csökkentheti őket, de sosem növelheti."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Tömeges levelekhez szükséges"
@@ -8940,6 +8969,10 @@ msgstr "Nincs rögzített esemény."
 msgid "No feedback from this page."
 msgstr "Nincs visszajelzés erről az oldalról."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "No file is accepted."
+msgstr "Egyetlen fájl sem fogadható el."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -9278,6 +9311,10 @@ msgstr "Normál"
 #: src/features/account/ConnectPage.tsx
 msgid "Not {email}?"
 msgstr "Nem te vagy {email}?"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "Not a content type: {badList}. Use forms such as application/pdf or image/*."
+msgstr "Nem tartalomtípus: {badList}. Használj olyan alakokat, mint az application/pdf vagy az image/*."
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
@@ -9755,6 +9792,10 @@ msgstr "Egy levél {every} alatt"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Soronként egy, 1–20. Csak az ezekről az originekről származó oldalak használhatják a widgetet."
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
+msgstr "Soronként egy, például application/pdf vagy image/*. Hagyd üresen, hogy a kiszolgáló beállítása érvényes legyen."
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "One per line, up to 20."

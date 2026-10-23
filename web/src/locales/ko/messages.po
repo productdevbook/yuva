@@ -1890,6 +1890,10 @@ msgstr "허용할 작업"
 msgid "Allowed"
 msgstr "허용됨"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Allowed file types"
+msgstr "허용하는 파일 형식"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "허용된 오리진"
@@ -2549,6 +2553,7 @@ msgid "Attach files"
 msgstr "파일 첨부"
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
 msgstr "첨부 파일"
 
@@ -5218,6 +5223,10 @@ msgstr "호스트 이름 또는 IP 주소를 입력하세요."
 msgid "Enter a host name or IP address."
 msgstr "호스트 이름 또는 IP 주소를 입력하세요."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Enter a size in MB, such as 10."
+msgstr "MB 단위로 크기를 입력하세요. 예: 10"
+
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Enter a token again only to change it."
 msgstr "토큰을 바꿀 때만 다시 입력하세요."
@@ -6639,6 +6648,14 @@ msgstr "Claude에서 <0>맞춤 설정 › 커넥터</0>를 열고 <1>커스텀 �
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "Cursor의 MCP 설정에서 요청이 오면 <0>yuva</0>에 로그인하세요."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect:"
+msgstr "적용 중:"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect: {effectiveSize}. Leave empty to follow the server."
+msgstr "적용 중: {effectiveSize}. 서버를 따르려면 비워 두세요."
+
 #: src/features/migrations/text.ts
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "Fastmail에서 설정 › 개인정보 및 보안 › 앱 비밀번호 관리를 여세요."
@@ -7150,6 +7167,10 @@ msgstr "이 서버의 제한보다 큼"
 msgid "Larger than this server's limit for one message"
 msgstr "이 서버의 메시지 하나당 제한보다 큼"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Largest file (MB)"
+msgstr "최대 파일 크기 (MB)"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "최근 14일"
@@ -7420,6 +7441,10 @@ msgstr "리스트"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "List archived"
 msgstr "리스트를 보관했습니다"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "List at most 100 types."
+msgstr "형식은 최대 100개까지 나열할 수 있습니다."
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/setup/AddChannelStep.tsx
@@ -8338,6 +8363,10 @@ msgstr "이름(예: 업무용 노트북)"
 msgid "name@example.com"
 msgstr "name@example.com"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
+msgstr "이 채널에서 첨부할 수 있는 항목을 좁힙니다. 서버 자체 한도가 상한으로 유지되며, 채널은 낮출 수만 있고 높일 수는 없습니다."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "일괄 발송에 필요"
@@ -8940,6 +8969,10 @@ msgstr "기록된 이벤트가 없습니다."
 msgid "No feedback from this page."
 msgstr "이 페이지의 의견이 없습니다."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "No file is accepted."
+msgstr "어떤 파일도 허용되지 않습니다."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -9278,6 +9311,10 @@ msgstr "보통"
 #: src/features/account/ConnectPage.tsx
 msgid "Not {email}?"
 msgstr "{email}이(가) 아닌가요?"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "Not a content type: {badList}. Use forms such as application/pdf or image/*."
+msgstr "콘텐츠 형식이 아닙니다: {badList}. application/pdf 또는 image/* 같은 형태를 사용하세요."
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
@@ -9755,6 +9792,10 @@ msgstr "{every}마다 메일 1통"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "한 줄에 하나씩, 1~20개. 이 오리진의 페이지만 위젯을 사용할 수 있습니다."
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
+msgstr "한 줄에 하나씩, 예: application/pdf 또는 image/*. 서버를 따르려면 비워 두세요."
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "One per line, up to 20."

@@ -1890,6 +1890,10 @@ msgstr "இதை அனுமதி"
 msgid "Allowed"
 msgstr "அனுமதிக்கப்பட்டது"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Allowed file types"
+msgstr "அனுமதிக்கப்பட்ட கோப்பு வகைகள்"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Allowed origins"
 msgstr "அனுமதிக்கப்பட்ட மூலங்கள்"
@@ -2549,6 +2553,7 @@ msgid "Attach files"
 msgstr "கோப்புகளை இணை"
 
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/channels/Attachments.tsx
 msgid "Attachments"
 msgstr "இணைப்புகள்"
 
@@ -5218,6 +5223,10 @@ msgstr "ஹோஸ்ட் பெயர் அல்லது IP முகவர
 msgid "Enter a host name or IP address."
 msgstr "ஹோஸ்ட் பெயர் அல்லது IP முகவரியை உள்ளிடுங்கள்."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Enter a size in MB, such as 10."
+msgstr "MB இல் அளவை உள்ளிடவும், எ.கா. 10."
+
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Enter a token again only to change it."
 msgstr "டோக்கனை மாற்ற மட்டுமே மீண்டும் உள்ளிடவும்."
@@ -6639,6 +6648,14 @@ msgstr "Claude-இல் <0>Customize › Connectors</0> திறந்து <
 msgid "In Cursor's MCP settings, sign in to <0>yuva</0> when it asks."
 msgstr "Cursor-இன் MCP அமைப்புகளில், கேட்கும்போது <0>yuva</0>-வில் உள்நுழையுங்கள்."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect:"
+msgstr "நடைமுறையில்:"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "In effect: {effectiveSize}. Leave empty to follow the server."
+msgstr "நடைமுறையில்: {effectiveSize}. சேவையகத்தைப் பின்பற்ற காலியாக விடவும்."
+
 #: src/features/migrations/text.ts
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "Fastmail-இல் Settings › Privacy & Security › Manage app passwords திறவுங்கள்."
@@ -7150,6 +7167,10 @@ msgstr "இந்தச் சேவையகத்தின் வரம்ப�
 msgid "Larger than this server's limit for one message"
 msgstr "ஒரு செய்திக்கான இந்தச் சேவையகத்தின் வரம்பைவிடப் பெரியது"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Largest file (MB)"
+msgstr "மிகப்பெரிய கோப்பு (MB)"
+
 #: src/features/home/HomePage.tsx
 msgid "Last 14 days"
 msgstr "கடந்த 14 நாட்கள்"
@@ -7420,6 +7441,10 @@ msgstr "பட்டியல்"
 #: src/features/broadcasts/ListSettings.tsx
 msgid "List archived"
 msgstr "பட்டியல் காப்பகப்படுத்தப்பட்டது"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "List at most 100 types."
+msgstr "அதிகபட்சம் 100 வகைகளை மட்டும் குறிப்பிடவும்."
 
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/setup/AddChannelStep.tsx
@@ -8338,6 +8363,10 @@ msgstr "பெயர், எ.கா. அலுவலக மடிக்கணி
 msgid "name@example.com"
 msgstr "name@example.com"
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
+msgstr "இந்தச் சேனலில் எதை இணைக்கலாம் என்பதைக் குறுக்கவும். சேவையகத்தின் சொந்த வரம்புகளே உச்சவரம்பு: சேனல் அவற்றைக் குறைக்கலாம், ஒருபோதும் உயர்த்த முடியாது."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "ஒளிபரப்புகளுக்குத் தேவை"
@@ -8940,6 +8969,10 @@ msgstr "நிகழ்வுகள் பதிவாகவில்லை."
 msgid "No feedback from this page."
 msgstr "இந்தப் பக்கத்திலிருந்து கருத்துகள் இல்லை."
 
+#: src/features/settings/channels/Attachments.tsx
+msgid "No file is accepted."
+msgstr "எந்தக் கோப்பும் ஏற்கப்படவில்லை."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -9278,6 +9311,10 @@ msgstr "இயல்பு"
 #: src/features/account/ConnectPage.tsx
 msgid "Not {email}?"
 msgstr "{email} அல்லவா?"
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "Not a content type: {badList}. Use forms such as application/pdf or image/*."
+msgstr "உள்ளடக்க வகை அல்ல: {badList}. application/pdf அல்லது image/* போன்ற வடிவங்களைப் பயன்படுத்தவும்."
 
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Not a secret: it is part of your web pages. Rotate it to stop old embeds from starting new chats."
@@ -9755,6 +9792,10 @@ msgstr "ஒவ்வொரு {every}-க்கும் ஓர் அஞ்ச�
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "ஒரு வரிக்கு ஒன்று, 1 முதல் 20 வரை. இந்த மூலங்களில் உள்ள பக்கங்கள் மட்டுமே விட்ஜெட்டைப் பயன்படுத்தலாம்."
+
+#: src/features/settings/channels/Attachments.tsx
+msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
+msgstr "ஒரு வரிக்கு ஒன்று, எ.கா. application/pdf அல்லது image/*. சேவையகத்தைப் பின்பற்ற காலியாக விடவும்."
 
 #: src/features/setup/AddChannelStep.tsx
 msgid "One per line, up to 20."
