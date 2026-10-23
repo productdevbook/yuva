@@ -912,7 +912,9 @@ export interface paths {
          *     `EntityDescriptor` with an `IDPSSODescriptor` that has a `SingleSignOnService` with the
          *     HTTP-Redirect binding and at least one signing certificate valid now; DTDs are refused.
          *     `400 sso_metadata_failed` with the reason otherwise. Expired certificates are left out
-         *     and named in `warnings`. Leave both out to keep the stored
+         *     and named in `warnings`. `400 saml_requires_https` when the server's public URL is plain
+         *     http on a host other than localhost: browsers drop the Secure cookie the sign-in needs
+         *     there. Leave both out to keep the stored
          *     metadata (fetched again when it came from a URL); one is required the first time. A
          *     workspace has one provider: saving SAML replaces an OpenID Connect provider (and the
          *     other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
@@ -3055,6 +3057,111 @@ export interface paths {
          *     macro instead.
          */
         patch: operations["updateMacro"];
+        trace?: never;
+    };
+    "/v1/views": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List saved views
+         * @description The rail: the caller's own personal views, the workspace's views and the views of the
+         *     teams the caller is a member of, all of them. Personal first, then team, then workspace,
+         *     each by `position` and name. API keys have no personal views and belong to no team.
+         *
+         *     With `team_id`, only that team's views instead: for its members, owners, admins and API
+         *     keys not limited to inboxes (others `404`), so owners can manage the views of teams they
+         *     are not in without every team's views in their rail.
+         *
+         *     Each view carries `count`: its open conversations, counted with the view's filters under
+         *     the caller's own inbox access, so a shared view never counts what the caller cannot see.
+         *     `count` stops at 1000 (`count_capped`). It is absent when the filters do not apply to the
+         *     caller, for example `assignee=me` for an API key or an inbox the caller cannot see, and
+         *     when counting took longer than a second (`count_unavailable`).
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["listViews"];
+        put?: never;
+        /**
+         * Save a view
+         * @description A `personal` view belongs to the calling member: any member with a session, or an OAuth
+         *     token with `views:write`; API keys are refused with `403 member_session_required`.
+         *     `workspace` and `team` views are created by owners and admins (with `views:write` on an
+         *     OAuth token) and API keys with `views:write`; agents get `403 forbidden`, and keys limited
+         *     to inboxes get it for `team` views. A `team` view names its `team_id` and is seen by that
+         *     team's members, owners, admins and keys not limited to inboxes; deleting the team deletes
+         *     its views. Writing a view of any kind also needs `conversations:read`, since the answer
+         *     carries its count.
+         *
+         *     `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
+         *     caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
+         *     `400 validation_failed` with `field` naming the parameter. A member keeps at most 50
+         *     personal views, a workspace 50 workspace views and each team 50 team views
+         *     (`403 view_limit`).
+         */
+        post: operations["createView"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/views/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Reorder saved views
+         * @description Sets each named view's `position` to its index in `ids`. Every view must be one the caller
+         *     sees and may change (same permissions as updating it); otherwise `404` or `403` and
+         *     nothing moves. Views not named keep their position.
+         */
+        put: operations["reorderViews"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/views/{viewId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a saved view
+         * @description A view the caller sees, with its `count` as in the list; any other is `404`.
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["getView"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete a saved view
+         * @description Same permissions as creating one of its visibility.
+         */
+        delete: operations["deleteView"];
+        options?: never;
+        head?: never;
+        /**
+         * Update a saved view
+         * @description Same permissions as creating one of its visibility; members of a team see its views but
+         *     do not change them. `filters` replaces the filters as a whole and is checked as on create.
+         *     The visibility and team do not change; save a new view instead.
+         */
+        patch: operations["updateView"];
         trace?: never;
     };
     "/v1/custom-fields": {
@@ -12129,15 +12236,19 @@ export interface components {
          *     - `issues:write`: create, link and unlink GitHub and Linear issues on feedback and ideas,
          *       together with `conversations:read`.
          *
+         *     - `views:write`: save, change, reorder and delete saved views, together with
+         *       `conversations:read`: personal ones for OAuth tokens, workspace and team ones for owners'
+         *       and admins' tokens and for API keys (team ones only without an inbox limit).
+         *
          *     - `fields:manage`: create, change and delete custom field definitions. Owners and admins
          *       only; never offered to agents' tokens, refused for keys limited to inboxes. Never
          *       implied: a key made without naming its scopes does not hold it. Writing values needs
          *       `conversations:write` or `contacts:write`.
          *
-         *     `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write` and `fields:manage` are never added to keys made before they existed.
+         *     `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage` and `views:write` are never added to keys made before they existed.
          * @enum {string}
          */
-        ApiKeyScope: "conversations:read" | "conversations:write" | "conversations:delete" | "messages:write" | "messages:redact" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish" | "audit:read" | "integrations:read" | "integrations:manage" | "issues:write" | "fields:manage";
+        ApiKeyScope: "conversations:read" | "conversations:write" | "conversations:delete" | "messages:write" | "messages:redact" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish" | "audit:read" | "integrations:read" | "integrations:manage" | "issues:write" | "fields:manage" | "views:write";
         /**
          * Format: uri
          * @description An `https` image URL.
@@ -14619,6 +14730,79 @@ export interface components {
             id: string;
             /** @description The macro's name when it was applied. */
             name: string;
+        };
+        /**
+         * @description `personal`: only its owner sees it. `workspace`: every member. `team`: the team's members,
+         *     owners and admins.
+         * @enum {string}
+         */
+        SavedViewVisibility: "personal" | "workspace" | "team";
+        /**
+         * @description Query parameters of `GET /v1/conversations`, by name, each with its value as it would
+         *     appear in the query string (lists comma-separated), e.g.
+         *     `{"status": "open,pending", "label_id": "…", "field.plan": "pro"}`. `cursor` and `limit`
+         *     are not filters. Ids are kept, so a renamed label, team or field changes nothing; a
+         *     deleted label, team or conversation field drops out of every view's filters.
+         */
+        SavedViewFilters: {
+            [key: string]: string;
+        };
+        SavedView: {
+            /** Format: uuid */
+            id: string;
+            visibility: components["schemas"]["SavedViewVisibility"];
+            /**
+             * Format: uuid
+             * @description The member a `personal` view belongs to.
+             */
+            owner_member_id?: string;
+            /**
+             * Format: uuid
+             * @description The team a `team` view is shared with.
+             */
+            team_id?: string;
+            name: string;
+            filters: components["schemas"]["SavedViewFilters"];
+            /** Format: int32 */
+            position: number;
+            /**
+             * Format: int32
+             * @description Open conversations under the filters that the caller sees, at most 1000. Absent when
+             *     the filters do not apply to the caller.
+             */
+            count?: number;
+            /** @description `true` when more than 1000 conversations match; `count` is then 1000. */
+            count_capped?: boolean;
+            /** @description `true` when counting took longer than a second; `count` is then absent. */
+            count_unavailable?: boolean;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        SavedViewCreate: {
+            visibility: components["schemas"]["SavedViewVisibility"];
+            /**
+             * Format: uuid
+             * @description Required for a `team` view, refused for the others.
+             */
+            team_id?: string;
+            name: string;
+            filters: components["schemas"]["SavedViewFilters"];
+            /** Format: int32 */
+            position?: number;
+        };
+        SavedViewUpdate: {
+            name?: string;
+            filters?: components["schemas"]["SavedViewFilters"];
+            /** Format: int32 */
+            position?: number;
+        };
+        SavedViewList: {
+            items: components["schemas"]["SavedView"][];
+        };
+        SavedViewOrder: {
+            ids: string[];
         };
         UsageMonth: {
             /** @example 2026-10 */
@@ -24464,7 +24648,8 @@ export interface components {
              */
             scope?: string;
             /**
-             * @description `field_invalid` and `field_required` only: the key of the custom field.
+             * @description `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
+             *     on saved views: the filter parameter refused.
              * @example order_id
              */
             field?: string;
@@ -24693,6 +24878,7 @@ export interface components {
         LabelId: string;
         CannedReplyId: string;
         MacroId: string;
+        ViewId: string;
         CustomFieldId: string;
         /** @description The chat channel's public key. */
         ChannelKey: string;
@@ -24970,8 +25156,8 @@ export interface operations {
                 headers: {
                     /**
                      * @description When `sso` is true: `yuva_sso` (OpenID Connect; HttpOnly, SameSite=Lax, path
-                     *     `/auth/sso`) or `yuva_saml` (SAML; HttpOnly, path `/auth/saml`, SameSite=None and
-                     *     Secure on https so the provider's cross-site POST carries it).
+                     *     `/auth/sso`) or `yuva_saml` (SAML; HttpOnly, Secure, SameSite=None, path `/auth/saml/acs`,
+                     *     10 minutes, so the provider's cross-site POST carries it).
                      */
                     "Set-Cookie"?: string;
                     [name: string]: unknown;
@@ -29452,6 +29638,182 @@ export interface operations {
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
             409: components["responses"]["Problem"];
+        };
+    };
+    listViews: {
+        parameters: {
+            query?: {
+                /** @description Only this team's views. */
+                team_id?: string;
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The views. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SavedViewList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    createView: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SavedViewCreate"];
+            };
+        };
+        responses: {
+            /** @description The view, with its count for the caller. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SavedView"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    reorderViews: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SavedViewOrder"];
+            };
+        };
+        responses: {
+            /** @description Reordered. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    getView: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                viewId: components["parameters"]["ViewId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The view. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SavedView"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    deleteView: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                viewId: components["parameters"]["ViewId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    updateView: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                viewId: components["parameters"]["ViewId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SavedViewUpdate"];
+            };
+        };
+        responses: {
+            /** @description The updated view, with its count for the caller. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SavedView"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
         };
     };
     listCustomFields: {

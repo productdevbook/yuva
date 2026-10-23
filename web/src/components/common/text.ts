@@ -118,6 +118,7 @@ export const API_KEY_SCOPES: ApiKeyScope[] = [
   "integrations:manage",
   "issues:write",
   "fields:manage",
+  "views:write",
   "audit:read",
 ]
 export const OPT_IN_SCOPES: ApiKeyScope[] = [
@@ -294,6 +295,7 @@ export function useEnumText() {
       "integrations:manage": t`Connect, change and disconnect GitHub and Linear trackers`,
       "issues:write": t`Create and link GitHub and Linear issues for feedback and ideas`,
       "fields:manage": t`Create, change and delete custom fields`,
+      "views:write": t`Create and change saved views of the conversation list`,
       "audit:read": t`Read the audit log (owners only)`,
     } satisfies Record<ApiKeyScope, string>,
     delivery: { pending: t`Pending`, succeeded: t`Succeeded`, failed: t`Failed` } satisfies Record<
