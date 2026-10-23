@@ -3347,6 +3347,10 @@ msgstr "Chọn một mục trong danh sách, hoặc di chuyển bằng ↑ ↓ v
 msgid "Choose the account that sends your answers. You can change it later in the channel settings."
 msgstr "Chọn tài khoản gửi các câu trả lời của bạn. Bạn có thể đổi sau trong cài đặt kênh."
 
+#: src/features/migrations/text.ts
+msgid "Choose the feature Access resources, the namespaces Global resources and Shared resources (add Private resources only if personal inboxes should move), and the permission Read only."
+msgstr "Chọn tính năng Access resources, các không gian tên Global resources và Shared resources (chỉ thêm Private resources nếu cần chuyển hộp thư cá nhân) và quyền Read only."
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose the region of your Amazon SES account."
 msgstr "Chọn khu vực của tài khoản Amazon SES của bạn."
@@ -4134,6 +4138,10 @@ msgstr "Tạo bản nháp"
 msgid "Create it, then copy its App ID and App Secret and paste them below."
 msgstr "Hãy tạo nó, rồi sao chép App ID và App Secret của nó và dán bên dưới."
 
+#: src/features/migrations/text.ts
+msgid "Create it, then copy the token, which Front shows only once, and paste it below."
+msgstr "Tạo token, sau đó sao chép token mà Front chỉ hiển thị một lần và dán vào bên dưới."
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -4404,6 +4412,10 @@ msgstr "Xóa sản phẩm"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete subscription"
 msgstr "Xóa đăng ký"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Delete the API token you created for Yuva"
+msgstr "Xóa token API bạn đã tạo cho Yuva"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the app you created for Yuva"
@@ -6664,6 +6676,10 @@ msgstr "Đang áp dụng: {effectiveSize}. Để trống để theo máy chủ."
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "Trong Fastmail, mở Settings › Privacy & Security › Manage app passwords."
 
+#: src/features/migrations/text.ts
+msgid "In Front, open Settings › Developers › API tokens and choose Create API token. Name it “Yuva”."
+msgstr "Trong Front, mở Settings › Developers › API tokens và chọn Create API token. Đặt tên là “Yuva”."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "In Gmail, open Settings › See all settings › Forwarding and POP/IMAP."
 msgstr "Trong Gmail, mở Cài đặt › Xem tất cả cài đặt › Chuyển tiếp và POP/IMAP."
@@ -6744,6 +6760,9 @@ msgid "Inbox for {name}"
 msgstr "Hộp thư cho {name}"
 
 #: src/features/contact/ContactSheet.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Inboxes"
 msgstr "Hộp thư"
@@ -17209,6 +17228,10 @@ msgid "Yuva counts clicks and replies. It does not track opens."
 msgstr "Yuva đếm lượt nhấp và trả lời. Không theo dõi lượt mở."
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete the token in Settings › Developers › API tokens; Yuva does not need it any more."
+msgstr "Yuva đã xóa bản sao token của mình nhưng không thể thu hồi nó trong Front. Hãy xóa token tại Settings › Developers › API tokens; Yuva không còn cần đến nó."
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva đã xóa token {deletedAt} và không còn đọc được {provider}."
 
@@ -17354,5 +17377,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Không thể thay đổi ghi chú của chính Yuva."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout"
-msgstr "Zendesk, Help Scout"
+msgid "Zendesk, Help Scout, Front"
+msgstr "Zendesk, Help Scout, Front"

@@ -1808,7 +1808,15 @@ losing a message and without changing anything at the source. Decisions:
   `read`, Help Scout, Chatwoot (an administrator's access token, the install's HTTPS base URL and the account
   number; conversations by last activity, messages backwards with `before`, 60 requests a minute); each team creates the OAuth client in its own help desk with Yuva's redirect URL
   and enters its id and secret on the panel's connect page (there is no operator-wide client), and a
-  help-desk migration goes through the same cutover as a mailbox. Every help desk is one entry of a
+  help-desk migration goes through the same cutover as a mailbox. Front connects with an API token a
+  Front admin creates (feature Access resources, namespaces Global and Shared, permission Read only),
+  sent as Bearer to `api2.frontapp.com` only; Front does not let a caller read a token's permissions
+  (`GET /me` answers the company alone), so read-only rests on the GET-only transport and the guide.
+  Front's copy lists each inbox's conversations (`GET /inboxes/{id}/conversations`, page token kept
+  in the cursor, so a killed copy resumes where it stopped) and its sync searches each inbox
+  (`GET /conversations/search/inbox:… after:…`, a `GET`, capped at 40% of `x-ratelimit-limit` next to
+  the half of it the whole budget uses; `retry-after` is honoured on 429); attachments are fetched
+  by id from `/download/{id}` on the API host, never from the company subdomain URL a message names. Every help desk is one entry of a
   registry (`internal/migrate/helpdesk`): its API hosts, attachment hosts, auth kind (`oauth` or
   `token`) and how the token is sent (Bearer, Basic or a named header), its limits with their windows
   (a minute, ten seconds or a day), limit and retry headers and default budgets, its contacts'

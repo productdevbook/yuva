@@ -1,4 +1,4 @@
-// Package helpdesktest serves recorded Zendesk, Help Scout and Chatwoot answers from a local TLS server for
+// Package helpdesktest serves recorded Zendesk, Help Scout, Chatwoot and Front answers from a local TLS server for
 // tests: every request is recorded, the API refuses a missing or stale token, and the rate-limit
 // headers are the ones the providers document.
 package helpdesktest
@@ -40,6 +40,9 @@ const (
 	HelpScoutCode    = "hs-code"
 	ZendeskLimit     = 20
 	HelpScoutLimit   = 40
+	FrontToken       = "front-api-token-8f3a21"
+	FrontLimit       = 30
+	FrontRetryAfter  = 7
 	OutsideHost      = "files.example.org"
 	ChatwootHost     = "chatwoot.acme.example"
 	ChatwootToken    = "cw-admin-token-1"
@@ -63,6 +66,8 @@ type Server struct {
 	ZendeskScope string
 	// ZendeskExpires is the access tokens' lifetime in seconds; 0 sends null.
 	ZendeskExpires int
+	// FrontThrottle is how many of the next Front data requests are answered 429 with Retry-After.
+	FrontThrottle int
 
 	t        testing.TB
 	srv      *httptest.Server
@@ -87,7 +92,7 @@ func New(t testing.TB, now func() time.Time) *Server {
 	}
 	tmpl := &x509.Certificate{
 		SerialNumber: big.NewInt(1), Subject: pkix.Name{CommonName: "helpdesk fixtures"},
-		DNSNames:  []string{"*.zendesk.com", "*.zdusercontent.com", "api.helpscout.net", "secure.helpscout.net", OutsideHost, ChatwootHost},
+		DNSNames:  []string{"*.zendesk.com", "*.zdusercontent.com", "api.helpscout.net", "secure.helpscout.net", "api2.frontapp.com", OutsideHost, ChatwootHost},
 		NotBefore: time.Now().Add(-time.Hour), NotAfter: time.Now().Add(24 * time.Hour), KeyUsage: x509.KeyUsageDigitalSignature,
 		ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth}, IsCA: true, BasicConstraintsValid: true,
 	}
@@ -163,6 +168,9 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	case host == "api.helpscout.net":
 		w.Header().Set("X-RateLimit-Limit-Minute", fmt.Sprint(HelpScoutLimit))
 		s.helpscout(w, r, body)
+	case host == "api2.frontapp.com":
+		w.Header().Set("X-Ratelimit-Limit", fmt.Sprint(FrontLimit))
+		s.front(w, r)
 	default:
 		http.NotFound(w, r)
 	}
@@ -501,6 +509,94 @@ func (s *Server) chatwootAccount(w http.ResponseWriter, r *http.Request, parts [
 	default:
 		http.NotFound(w, r)
 	}
+}
+
+func (s *Server) front(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+	if r.Header.Get("Authorization") != "Bearer "+FrontToken {
+		w.WriteHeader(http.StatusUnauthorized)
+		_, _ = w.Write([]byte(`{"_error":{"status":401,"title":"Unauthorized","message":"Invalid token"}}`))
+		return
+	}
+	s.mu.Lock()
+	throttled := s.FrontThrottle > 0
+	if throttled {
+		s.FrontThrottle--
+	}
+	s.mu.Unlock()
+	if throttled {
+		w.Header().Set("Retry-After", fmt.Sprint(FrontRetryAfter))
+		w.Header().Set("X-Front-Tier", "2")
+		w.WriteHeader(http.StatusTooManyRequests)
+		return
+	}
+	q := r.URL.Query()
+	parts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
+	switch {
+	case r.URL.Path == "/me":
+		s.json(w, r, "front/me.json")
+	case r.URL.Path == "/inboxes":
+		s.json(w, r, "front/inboxes.json")
+	case r.URL.Path == "/teammates":
+		s.json(w, r, "front/teammates.json")
+	case len(parts) == 3 && parts[0] == "inboxes" && parts[2] == "channels":
+		s.json(w, r, "front/channels_"+parts[1]+".json")
+	case len(parts) == 3 && parts[0] == "inboxes" && parts[2] == "conversations":
+		name := "front/conversations_" + parts[1]
+		if t := q.Get("page_token"); t != "" {
+			name += "_" + t
+		}
+		s.json(w, r, name+".json")
+	case len(parts) == 3 && parts[0] == "conversations" && parts[1] == "search":
+		s.frontSearch(w, parts[2])
+	case len(parts) == 3 && parts[0] == "conversations" && parts[2] == "messages":
+		name := "front/messages_" + parts[1]
+		if t := q.Get("page_token"); t != "" {
+			name += "_" + t
+		}
+		s.json(w, r, name+".json")
+	case len(parts) == 3 && parts[0] == "conversations" && parts[2] == "comments":
+		s.json(w, r, "front/comments_"+parts[1]+".json")
+	case len(parts) == 2 && parts[0] == "contacts" && strings.HasPrefix(parts[1], "alt:email:"):
+		s.json(w, r, "front/contact_"+strings.NewReplacer("@", "_", ".", "_").Replace(strings.TrimPrefix(parts[1], "alt:email:"))+".json")
+	case len(parts) == 2 && parts[0] == "download":
+		s.attachment(w, r.URL.Path)
+	default:
+		http.NotFound(w, r)
+	}
+}
+
+// frontSearch answers the conversations of front/search.json in the inbox and with activity after
+// the time the query names, as Front's search filters them.
+func (s *Server) frontSearch(w http.ResponseWriter, query string) {
+	var inbox string
+	var after float64
+	for _, f := range strings.Fields(query) {
+		switch k, v, _ := strings.Cut(f, ":"); k {
+		case "inbox":
+			inbox = v
+		case "after":
+			_, _ = fmt.Sscan(v, &after)
+		}
+	}
+	b, _ := s.file("front/search.json")
+	var all struct {
+		Results []map[string]any `json:"_results"`
+	}
+	_ = json.Unmarshal(b, &all)
+	byInbox := map[string]string{"cnv_1a": "inb_a1", "cnv_1b": "inb_a1", "cnv_1c": "inb_a1", "cnv_2a": "inb_b2", "cnv_2b": "inb_b2"}
+	kept := []map[string]any{}
+	for _, c := range all.Results {
+		updated, _ := c["updated_at"].(float64)
+		if byInbox[fmt.Sprint(c["id"])] == inbox && updated > after && c["status"] != "deleted" {
+			kept = append(kept, c)
+		}
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(map[string]any{"_total": len(kept), "_pagination": map[string]any{"next": nil}, "_results": kept})
 }
 
 // Fixture is a fixture file as recorded, for a test that answers a changed copy.

@@ -197,6 +197,8 @@ function Folders({ m }: { m: Migration }) {
           <Trans>Brands</Trans>
         ) : m.source === "helpscout" ? (
           <Trans>Mailboxes</Trans>
+        ) : m.source === "front" ? (
+          <Trans>Inboxes</Trans>
         ) : (
           <Trans>Folders</Trans>
         )}

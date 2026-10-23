@@ -18,3 +18,8 @@ ids and content.
   on another host. Shaped after developers.chatwoot.com (Profile, Conversations, Messages) and the
   open-source Chatwoot code (25 conversations a page, 20 messages a page); no data from a real
   account.
+- front/: me (the company), inboxes with their channels, teammates, two inboxes' conversations (one
+  paged with a page token) and a search answer, each conversation's messages (one paged) and comments,
+  one contact, shaped after dev.frontapp.com's Core API reference (field names, `_results` and
+  `_pagination.next`, the `x-ratelimit-limit` header, `retry-after` on 429), with example.com,
+  example.org and example.net addresses and invented names, ids and content.

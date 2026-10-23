@@ -40,9 +40,12 @@ type Budget struct {
 	Default        int           `json:"-"`
 	Window         time.Duration `json:"-"`
 	IncrementalMax int           `json:"-"`
-	LimitHeaders   []string      `json:"-"`
-	DayDefault     int           `json:"-"`
-	DayHeaders     []string      `json:"-"`
+	// IncrementalShare, when set, makes the cap on incremental requests that share of the reported
+	// limit, IncrementalMax until the help desk reports one.
+	IncrementalShare float64  `json:"-"`
+	LimitHeaders     []string `json:"-"`
+	DayDefault       int      `json:"-"`
+	DayHeaders       []string `json:"-"`
 }
 
 func (b *Budget) window() time.Duration {
@@ -94,7 +97,7 @@ func (b *Budget) Take(class Class, now time.Time) error {
 		b.At = now
 	}
 	b.Tokens = min(b.Tokens, b.capacity())
-	if class == ClassIncremental && b.IncrementalMax > 0 {
+	if class == ClassIncremental && b.incrementalMax() > 0 {
 		kept := b.Incremental[:0]
 		for _, t := range b.Incremental {
 			if now.Before(t.Add(minute)) {
@@ -102,7 +105,7 @@ func (b *Budget) Take(class Class, now time.Time) error {
 			}
 		}
 		b.Incremental = kept
-		if len(kept) >= b.IncrementalMax {
+		if len(kept) >= b.incrementalMax() {
 			return &WaitError{Until: kept[0].Add(minute), Incremental: true}
 		}
 	}
@@ -111,13 +114,21 @@ func (b *Budget) Take(class Class, now time.Time) error {
 		return &WaitError{Until: now.Add(max(wait, time.Millisecond))}
 	}
 	b.Tokens--
-	if class == ClassIncremental && b.IncrementalMax > 0 {
+	if class == ClassIncremental && b.incrementalMax() > 0 {
 		b.Incremental = append(b.Incremental, now)
 	}
 	if perDay > 0 {
 		b.DayUsed++
 	}
 	return nil
+}
+
+// incrementalMax is the most incremental requests a minute may see.
+func (b *Budget) incrementalMax() int {
+	if b.IncrementalShare > 0 && b.Limit > 0 {
+		return max(1, int(float64(b.Limit)*b.IncrementalShare))
+	}
+	return b.IncrementalMax
 }
 
 // Saw learns the window's and the day's limits from an answer's headers.

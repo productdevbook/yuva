@@ -3347,6 +3347,10 @@ msgstr "લિસ્ટમાંથી એક પસંદ કરો, અથવ�
 msgid "Choose the account that sends your answers. You can change it later in the channel settings."
 msgstr "તમારા જવાબો મોકલતું ખાતું પસંદ કરો. તમે તેને પછી ચૅનલ સેટિંગ્સમાં બદલી શકો છો."
 
+#: src/features/migrations/text.ts
+msgid "Choose the feature Access resources, the namespaces Global resources and Shared resources (add Private resources only if personal inboxes should move), and the permission Read only."
+msgstr "સુવિધા Access resources, નેમસ્પેસ Global resources અને Shared resources (વ્યક્તિગત ઇનબોક્સ ખસેડવાના હોય તો જ Private resources ઉમેરો) અને પરવાનગી Read only પસંદ કરો."
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose the region of your Amazon SES account."
 msgstr "તમારા Amazon SES ખાતાનો પ્રદેશ પસંદ કરો."
@@ -4134,6 +4138,10 @@ msgstr "ડ્રાફ્ટ બનાવો"
 msgid "Create it, then copy its App ID and App Secret and paste them below."
 msgstr "તેને બનાવો, પછી તેનું ઍપ ID અને ઍપ સિક્રેટ કૉપિ કરી નીચે પેસ્ટ કરો."
 
+#: src/features/migrations/text.ts
+msgid "Create it, then copy the token, which Front shows only once, and paste it below."
+msgstr "તેને બનાવો, પછી ટોકન કૉપિ કરો, જે Front ફક્ત એક જ વાર બતાવે છે, અને નીચે પેસ્ટ કરો."
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -4404,6 +4412,10 @@ msgstr "પ્રોડક્ટ કાઢી નાખો"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete subscription"
 msgstr "સબ્સ્ક્રિપ્શન કાઢી નાખો"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Delete the API token you created for Yuva"
+msgstr "Yuva માટે બનાવેલ API ટોકન કાઢી નાખો"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the app you created for Yuva"
@@ -6664,6 +6676,10 @@ msgstr "લાગુ: {effectiveSize}. સર્વરને અનુસરવ�
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "Fastmail માં Settings › Privacy & Security › Manage app passwords ખોલો."
 
+#: src/features/migrations/text.ts
+msgid "In Front, open Settings › Developers › API tokens and choose Create API token. Name it “Yuva”."
+msgstr "Front માં Settings › Developers › API tokens ખોલો અને Create API token પસંદ કરો. તેનું નામ “Yuva” રાખો."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "In Gmail, open Settings › See all settings › Forwarding and POP/IMAP."
 msgstr "Gmail માં Settings › See all settings › Forwarding and POP/IMAP ખોલો."
@@ -6744,6 +6760,9 @@ msgid "Inbox for {name}"
 msgstr "{name} માટે ઇનબૉક્સ"
 
 #: src/features/contact/ContactSheet.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Inboxes"
 msgstr "ઇનબૉક્સ"
@@ -17209,6 +17228,10 @@ msgid "Yuva counts clicks and replies. It does not track opens."
 msgstr "Yuva ક્લિક અને જવાબો ગણે છે. તે ઓપન ટ્રૅક કરતું નથી."
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete the token in Settings › Developers › API tokens; Yuva does not need it any more."
+msgstr "Yuva એ ટોકનની પોતાની નકલ કાઢી નાખી છે, પણ Front માં તેને રદ કરી શકતું નથી. Settings › Developers › API tokens માં ટોકન કાઢી નાખો; Yuva ને હવે તેની જરૂર નથી."
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva એ {deletedAt} તેનું ટોકન કાઢી નાખ્યું અને હવે {provider} વાંચી શકતું નથી."
 
@@ -17354,5 +17377,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Yuva ની પોતાની નોંધો બદલી શકાતી નથી."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout"
-msgstr "Zendesk, Help Scout"
+msgid "Zendesk, Help Scout, Front"
+msgstr "Zendesk, Help Scout, Front"

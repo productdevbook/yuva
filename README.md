@@ -41,7 +41,7 @@ You host it yourself: one Docker image and Postgres.
 | **Reach** | [Mailing lists](docs/lists.md) with consent records and [imports](docs/importing.md), [e-mail designs](docs/designs.md) from templates, [broadcasts](docs/broadcasts.md) with approval and reports, and a [deliverability check](docs/deliverability.md). |
 | **Publish** | [Help center](docs/help-center.md), [documentation pages](docs/documentation-pages.md), [status pages](docs/status-pages.md) on your own domain, a [roadmap board](docs/roadmap-board.md) and [What's new](docs/whats-new.md). |
 | **Insights** | [Cookieless analytics](docs/analytics.md) for websites and apps, and a [support report](docs/analytics-support.md) that ranks pages by the conversations they cause. |
-| **Move in** | [Migrations](docs/migrate.md) of history and live mail from Gmail, Microsoft 365, Yandex, iCloud, Zoho, any IMAP server, Zendesk and Help Scout. The old mailbox is only read. |
+| **Move in** | [Migrations](docs/migrate.md) of history and live mail from Gmail, Microsoft 365, Yandex, iCloud, Zoho, any IMAP server, Zendesk, Help Scout and Front. The old mailbox is only read. |
 | **Build on it** | A REST [API](openapi/openapi.yaml) with scoped keys, signed [webhooks](docs/webhooks.md), [identity tokens](docs/identity.md), [headless](docs/headless.md) mode, and an [MCP server](docs/mcp.md) with OAuth for Claude, Cursor, VS Code and other assistants. |
 
 Built with Go, Postgres and a React panel, shipped as one Docker image.

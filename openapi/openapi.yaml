@@ -234,8 +234,8 @@ tags:
       or from an export file uploaded in parts (Google Takeout, mbox, `.eml` or Maildir in a zip),
       which needs no access to the account and is the fast way for a very large Gmail mailbox.
       Outlook.com and Microsoft 365 accept no passwords: "Sign in with Microsoft" obtains only a
-      token for IMAP, sent with `AUTHENTICATE XOAUTH2`. Help desks (Zendesk and Help Scout) are
-      read over their APIs with the team's own OAuth client. Yuva only reads the source: it opens folders with `EXAMINE`, fetches with
+      token for IMAP, sent with `AUTHENTICATE XOAUTH2`. Help desks (Zendesk, Help Scout and Front) are
+      read over their APIs, Front with an API token a Front admin creates and the others with the team's own OAuth client. Yuva only reads the source: it opens folders with `EXAMINE`, fetches with
       `BODY.PEEK`, and its connection refuses every command that could delete, move or mark
       anything; a help desk's connection sends only `GET` requests, besides the token exchange.
 
@@ -21159,10 +21159,10 @@ components:
       type: string
       description: |
         Where the history comes from: `imap`, a mailbox read over IMAP; `file`, export files;
-        `zendesk`, `helpscout` and `chatwoot`, help desks. A server offers the sources its operator allows
-        (`YUVA_MIGRATION_SOURCES`) among those built.
-      enum: [imap, file, zendesk, helpscout, chatwoot]
-      x-enum-varnames: [MigrationSourceImap, MigrationSourceFile, MigrationSourceZendesk, MigrationSourceHelpscout, MigrationSourceChatwoot]
+        `zendesk`, `helpscout`, `chatwoot` and `front`, help desks. A server offers the sources its operator allows
+        (`YUVA_MIGRATION_SOURCES`) among those built: all of them.
+      enum: [imap, file, zendesk, helpscout, chatwoot, front]
+      x-enum-varnames: [MigrationSourceImap, MigrationSourceFile, MigrationSourceZendesk, MigrationSourceHelpscout, MigrationSourceChatwoot, MigrationSourceFront]
     MigrationPresetId:
       type: string
       description: |
@@ -21171,9 +21171,9 @@ components:
         `fastmail`, `gmx`, or `imap` for any other server. For a `file` migration: `takeout`, a
         Google Takeout file, or `file`, any other export file; both read every format the server
         knows, which `upload.format` names once the upload is complete. A help desk has the preset
-        of its source: `zendesk`, `helpscout` or `chatwoot`.
-      enum: [gmail, google_workspace, microsoft, yandex, icloud, zoho, yahoo, fastmail, gmx, imap, takeout, file, zendesk, helpscout, chatwoot]
-      x-enum-varnames: [PresetGmail, PresetGoogleWorkspace, PresetMicrosoft, PresetYandex, PresetIcloud, PresetZoho, PresetYahoo, PresetFastmail, PresetGmx, PresetImap, PresetTakeout, PresetFile, PresetZendesk, PresetHelpscout, PresetChatwoot]
+        of its source: `zendesk`, `helpscout`, `chatwoot` or `front`.
+      enum: [gmail, google_workspace, microsoft, yandex, icloud, zoho, yahoo, fastmail, gmx, imap, takeout, file, zendesk, helpscout, chatwoot, front]
+      x-enum-varnames: [PresetGmail, PresetGoogleWorkspace, PresetMicrosoft, PresetYandex, PresetIcloud, PresetZoho, PresetYahoo, PresetFastmail, PresetGmx, PresetImap, PresetTakeout, PresetFile, PresetZendesk, PresetHelpscout, PresetChatwoot, PresetFront]
     MigrationState:
       type: string
       description: |
@@ -21241,7 +21241,7 @@ components:
       description: |
         The stored credentials, without the secret. A help desk's are `oauth` or `token`, as its
         preset's `auth`, with the account's API host as `server` (`<subdomain>.zendesk.com`,
-        `api.helpscout.net`, or the host of a `base_url`); a `token` is never answered and has no
+        `api.helpscout.net`, `api2.frontapp.com`, or the host of a `base_url`); a `token` is never answered and has no
         `scopes` or `expires_at`. A Microsoft
         sign-in's are `oauth` too, with `outlook.office365.com:993` as `server`, the granted
         `scopes` and when the access token expires; the token is refreshed before a connection

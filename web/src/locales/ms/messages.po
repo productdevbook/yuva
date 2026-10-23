@@ -3347,6 +3347,10 @@ msgstr "Pilih satu daripada senarai, atau bergerak dengan ↑ ↓ dan buka denga
 msgid "Choose the account that sends your answers. You can change it later in the channel settings."
 msgstr "Pilih akaun yang menghantar jawapan anda. Anda boleh menukarnya kemudian dalam tetapan saluran."
 
+#: src/features/migrations/text.ts
+msgid "Choose the feature Access resources, the namespaces Global resources and Shared resources (add Private resources only if personal inboxes should move), and the permission Read only."
+msgstr "Pilih ciri Access resources, ruang nama Global resources dan Shared resources (tambah Private resources hanya jika peti masuk peribadi perlu dipindahkan) dan kebenaran Read only."
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose the region of your Amazon SES account."
 msgstr "Pilih wilayah akaun Amazon SES anda."
@@ -4134,6 +4138,10 @@ msgstr "Cipta draf"
 msgid "Create it, then copy its App ID and App Secret and paste them below."
 msgstr "Cipta, kemudian salin App ID dan App Secret dan tampal di bawah."
 
+#: src/features/migrations/text.ts
+msgid "Create it, then copy the token, which Front shows only once, and paste it below."
+msgstr "Cipta token itu, kemudian salin token yang hanya dipaparkan sekali oleh Front dan tampal di bawah."
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -4404,6 +4412,10 @@ msgstr "Padam produk"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete subscription"
 msgstr "Padam langganan"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Delete the API token you created for Yuva"
+msgstr "Padamkan token API yang anda cipta untuk Yuva"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the app you created for Yuva"
@@ -6664,6 +6676,10 @@ msgstr "Berkuat kuasa: {effectiveSize}. Biarkan kosong untuk mengikuti pelayan."
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "Dalam Fastmail, buka Settings › Privacy & Security › Manage app passwords."
 
+#: src/features/migrations/text.ts
+msgid "In Front, open Settings › Developers › API tokens and choose Create API token. Name it “Yuva”."
+msgstr "Di Front, buka Settings › Developers › API tokens dan pilih Create API token. Namakan “Yuva”."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "In Gmail, open Settings › See all settings › Forwarding and POP/IMAP."
 msgstr "Dalam Gmail, buka Settings › See all settings › Forwarding and POP/IMAP."
@@ -6744,6 +6760,9 @@ msgid "Inbox for {name}"
 msgstr "Peti masuk untuk {name}"
 
 #: src/features/contact/ContactSheet.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Inboxes"
 msgstr "Peti masuk"
@@ -17209,6 +17228,10 @@ msgid "Yuva counts clicks and replies. It does not track opens."
 msgstr "Yuva mengira klik dan balasan. Ia tidak menjejaki bukaan."
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete the token in Settings › Developers › API tokens; Yuva does not need it any more."
+msgstr "Yuva telah memadamkan salinan tokennya tetapi tidak boleh membatalkannya di Front. Padamkan token di Settings › Developers › API tokens; Yuva tidak lagi memerlukannya."
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva memadam tokennya {deletedAt} dan tidak lagi boleh membaca {provider}."
 
@@ -17354,5 +17377,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Nota Yuva sendiri tidak boleh diubah."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout"
-msgstr "Zendesk, Help Scout"
+msgid "Zendesk, Help Scout, Front"
+msgstr "Zendesk, Help Scout, Front"

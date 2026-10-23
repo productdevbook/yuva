@@ -3347,6 +3347,10 @@ msgstr "목록에서 고르거나 ↑ ↓로 이동해 Enter로 여세요."
 msgid "Choose the account that sends your answers. You can change it later in the channel settings."
 msgstr "답변을 보낼 계정을 선택하세요. 나중에 채널 설정에서 바꿀 수 있습니다."
 
+#: src/features/migrations/text.ts
+msgid "Choose the feature Access resources, the namespaces Global resources and Shared resources (add Private resources only if personal inboxes should move), and the permission Read only."
+msgstr "기능은 Access resources, 네임스페이스는 Global resources와 Shared resources(개인 받은편지함도 옮길 때만 Private resources 추가), 권한은 Read only를 선택하세요."
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose the region of your Amazon SES account."
 msgstr "Amazon SES 계정의 리전을 선택하세요."
@@ -4134,6 +4138,10 @@ msgstr "초안 만들기"
 msgid "Create it, then copy its App ID and App Secret and paste them below."
 msgstr "만든 다음 앱 ID와 앱 시크릿을 복사해 아래에 붙여 넣으세요."
 
+#: src/features/migrations/text.ts
+msgid "Create it, then copy the token, which Front shows only once, and paste it below."
+msgstr "토큰을 만든 뒤, Front가 한 번만 보여 주는 토큰을 복사해 아래에 붙여 넣으세요."
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -4404,6 +4412,10 @@ msgstr "제품 삭제"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete subscription"
 msgstr "구독 삭제"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Delete the API token you created for Yuva"
+msgstr "Yuva용으로 만든 API 토큰 삭제"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the app you created for Yuva"
@@ -6664,6 +6676,10 @@ msgstr "적용 중: {effectiveSize}. 서버를 따르려면 비워 두세요."
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "Fastmail에서 설정 › 개인정보 및 보안 › 앱 비밀번호 관리를 여세요."
 
+#: src/features/migrations/text.ts
+msgid "In Front, open Settings › Developers › API tokens and choose Create API token. Name it “Yuva”."
+msgstr "Front에서 Settings › Developers › API tokens를 열고 Create API token을 선택하세요. 이름은 “Yuva”로 지정합니다."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "In Gmail, open Settings › See all settings › Forwarding and POP/IMAP."
 msgstr "Gmail에서 설정 › 모든 설정 보기 › 전달 및 POP/IMAP을 여세요."
@@ -6744,6 +6760,9 @@ msgid "Inbox for {name}"
 msgstr "{name}의 받은 편지함"
 
 #: src/features/contact/ContactSheet.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Inboxes"
 msgstr "받은 편지함"
@@ -17209,6 +17228,10 @@ msgid "Yuva counts clicks and replies. It does not track opens."
 msgstr "Yuva는 클릭과 답장을 집계합니다. 열람은 추적하지 않습니다."
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete the token in Settings › Developers › API tokens; Yuva does not need it any more."
+msgstr "Yuva는 토큰의 자체 사본을 삭제했지만 Front에서 해지할 수는 없습니다. Settings › Developers › API tokens에서 토큰을 삭제하세요. Yuva는 더 이상 필요하지 않습니다."
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva가 {deletedAt}에 토큰을 삭제했으며 더 이상 {provider}을(를) 읽을 수 없습니다."
 
@@ -17354,5 +17377,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Yuva 자체의 메모는 변경할 수 없습니다."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout"
-msgstr "Zendesk, Help Scout"
+msgid "Zendesk, Help Scout, Front"
+msgstr "Zendesk, Help Scout, Front"

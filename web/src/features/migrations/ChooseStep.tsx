@@ -116,6 +116,8 @@ export function ChooseStep({ m, preset }: { m: Migration; preset: MigrationPrese
                 <Trans>Brands</Trans>
               ) : m.source === "helpscout" ? (
                 <Trans>Mailboxes</Trans>
+              ) : m.source === "front" ? (
+                <Trans>Inboxes</Trans>
               ) : (
                 <Trans>Folders</Trans>
               )

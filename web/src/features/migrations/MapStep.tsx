@@ -344,7 +344,13 @@ export function MapStep({ m, preset }: { m: Migration; preset: MigrationPreset }
         {desk && deskFolders.length > 0 && (
           <fieldset className="flex min-w-0 flex-col gap-4" disabled={!canEdit} data-testid="migration-desk-inboxes">
             <legend className="mb-1 text-title">
-              {m.source === "zendesk" ? <Trans>Brands</Trans> : <Trans>Mailboxes</Trans>}
+              {m.source === "zendesk" ? (
+                <Trans>Brands</Trans>
+              ) : m.source === "front" ? (
+                <Trans>Inboxes</Trans>
+              ) : (
+                <Trans>Mailboxes</Trans>
+              )}
             </legend>
             <p className="text-small text-faint">
               <Trans>
@@ -607,7 +613,7 @@ export function MapStep({ m, preset }: { m: Migration; preset: MigrationPreset }
           </fieldset>
         )}
 
-        {m.source !== "zendesk" && (
+        {m.source !== "zendesk" && m.source !== "front" && (
           <Label className="items-start justify-between gap-4 font-normal">
             <span className="flex flex-col gap-0.5">
               <span className="font-medium">

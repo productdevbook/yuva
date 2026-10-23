@@ -70,6 +70,7 @@ type Cursor struct {
 	Start         int64     `json:"start,omitempty"`
 	After         string    `json:"after,omitempty"`
 	Page          int       `json:"page,omitempty"`
+	Inbox         string    `json:"inbox,omitempty"`
 	ModifiedSince time.Time `json:"modified_since,omitzero"`
 	StartedAt     time.Time `json:"started_at,omitzero"`
 }

@@ -128,7 +128,7 @@ Einstellung nennt.
 | Variable | Standard | Bedeutung |
 |---|---|---|
 | `YUVA_FORWARDING_DOMAIN` | nicht gesetzt | Ein Domainname wie `forward.example.com`, dessen E-Mails Sie wie die Domains der Kanäle auf Yuva ausrichten (siehe [Eingehende E-Mails](email.md#eingehende-e-mails)). Dann hat jeder E-Mail-Kanal eine [Weiterleitungsadresse](email.md#weiterleitungsadresse) `<Token>@` dieser Domain. Nicht gesetzt, gibt es keine Weiterleitungsadressen, und der Umzug eines Postfachs stellt E-Mails nur per MX um. |
-| `YUVA_MIGRATION_SOURCES` | alle gebauten | Kommagetrennte Quellen, von denen Teams umziehen dürfen: `imap`, `file`, `zendesk`, `helpscout`, `chatwoot`. Bisher gebaut sind Postfächer über IMAP und Exportdateien. Leer schaltet den Umzug aus. |
+| `YUVA_MIGRATION_SOURCES` | alle gebauten | Kommagetrennte Quellen, von denen Teams umziehen dürfen: `imap`, `file`, `zendesk`, `helpscout`, `chatwoot`, `front`. Bisher gebaut sind Postfächer über IMAP und Exportdateien. Leer schaltet den Umzug aus. |
 | `YUVA_MIGRATION_WORKERS` | `2` | Umzüge, die pro Prozess gleichzeitig kopiert werden; `0` führt in diesem Prozess keine aus. |
 | `YUVA_MIGRATION_MAX_ACTIVE` | `0` | Höchstzahl der Umzüge eines Workspace, die gleichzeitig scannen, kopieren oder synchronisieren; `0` heißt unbegrenzt. |
 | `YUVA_MIGRATION_MAX_BYTES` | `0` | Höchstzahl Bytes, die ein Workspace pro Monat importieren darf; `0` heißt unbegrenzt. |

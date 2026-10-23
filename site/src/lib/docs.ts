@@ -60,6 +60,7 @@ const groups = [
       "migrate-zendesk",
       "migrate-helpscout",
       "migrate-chatwoot",
+      "migrate-front",
       "migrate-imap",
       "migrate-files",
       "migrate-operators",

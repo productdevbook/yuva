@@ -3347,6 +3347,10 @@ msgstr "Vyberte ze seznamu, nebo se pohybujte šipkami ↑ ↓ a otevřete Enter
 msgid "Choose the account that sends your answers. You can change it later in the channel settings."
 msgstr "Vyberte účet, který odesílá vaše odpovědi. Můžete to později změnit v nastavení kanálu."
 
+#: src/features/migrations/text.ts
+msgid "Choose the feature Access resources, the namespaces Global resources and Shared resources (add Private resources only if personal inboxes should move), and the permission Read only."
+msgstr "Zvolte funkci Access resources, jmenné prostory Global resources a Shared resources (Private resources přidejte jen tehdy, mají-li se přenést osobní schránky) a oprávnění Read only."
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose the region of your Amazon SES account."
 msgstr "Vyberte oblast svého účtu Amazon SES."
@@ -4134,6 +4138,10 @@ msgstr "Vytvořit koncept"
 msgid "Create it, then copy its App ID and App Secret and paste them below."
 msgstr "Vytvořte ji, pak zkopírujte její App ID a App Secret a vložte je níže."
 
+#: src/features/migrations/text.ts
+msgid "Create it, then copy the token, which Front shows only once, and paste it below."
+msgstr "Vytvořte ho, pak zkopírujte token, který Front zobrazí jen jednou, a vložte ho níže."
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -4404,6 +4412,10 @@ msgstr "Smazat produkt"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete subscription"
 msgstr "Smazat odběr"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Delete the API token you created for Yuva"
+msgstr "Smažte token API, který jste vytvořili pro Yuvu"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the app you created for Yuva"
@@ -6664,6 +6676,10 @@ msgstr "Platí: {effectiveSize}. Nechte prázdné, aby se použil limit serveru.
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "Ve Fastmailu otevřete Settings › Privacy & Security › Manage app passwords."
 
+#: src/features/migrations/text.ts
+msgid "In Front, open Settings › Developers › API tokens and choose Create API token. Name it “Yuva”."
+msgstr "Ve Frontu otevřete Settings › Developers › API tokens a zvolte Create API token. Pojmenujte ho „Yuva“."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "In Gmail, open Settings › See all settings › Forwarding and POP/IMAP."
 msgstr "V Gmailu otevřete Nastavení › Zobrazit všechna nastavení › Přeposílání a POP/IMAP."
@@ -6744,6 +6760,9 @@ msgid "Inbox for {name}"
 msgstr "Schránka pro {name}"
 
 #: src/features/contact/ContactSheet.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Inboxes"
 msgstr "Schránky"
@@ -17209,6 +17228,10 @@ msgid "Yuva counts clicks and replies. It does not track opens."
 msgstr "Yuva počítá kliknutí a odpovědi. Otevření nesleduje."
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete the token in Settings › Developers › API tokens; Yuva does not need it any more."
+msgstr "Yuva smazala svou kopii tokenu, ale nemůže ho ve Frontu zneplatnit. Smažte token v Settings › Developers › API tokens; Yuva ho už nepotřebuje."
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva smazala svůj token {deletedAt} a už nemůže číst {provider}."
 
@@ -17354,5 +17377,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Vlastní poznámky Yuvy nelze měnit."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout"
-msgstr "Zendesk, Help Scout"
+msgid "Zendesk, Help Scout, Front"
+msgstr "Zendesk, Help Scout, Front"

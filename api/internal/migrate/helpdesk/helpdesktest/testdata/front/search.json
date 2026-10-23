@@ -1,0 +1,117 @@
+{
+ "_total": 5,
+ "_pagination": {
+  "next": null
+ },
+ "_results": [
+  {
+   "id": "cnv_1a",
+   "subject": "Cannot log in",
+   "status": "assigned",
+   "status_category": "open",
+   "is_closed": false,
+   "created_at": 1760000000.5,
+   "updated_at": 1760003600.25,
+   "assignee": {
+    "id": "tea_ece",
+    "email": "Ece@front.example.com",
+    "first_name": "Ece",
+    "last_name": "Demir",
+    "is_admin": true,
+    "type": "user"
+   },
+   "recipient": {
+    "name": "Ayse Kaya",
+    "handle": "ayse@example.org",
+    "role": "from"
+   },
+   "tags": [
+    {
+     "id": "tag_vip",
+     "name": "vip"
+    },
+    {
+     "id": "tag_login",
+     "name": "login"
+    }
+   ]
+  },
+  {
+   "id": "cnv_1b",
+   "subject": "Invoice question",
+   "status": "archived",
+   "status_category": "resolved",
+   "is_closed": false,
+   "created_at": 1760100000,
+   "updated_at": 1760107200,
+   "assignee": null,
+   "recipient": {
+    "name": null,
+    "handle": "bob@example.net",
+    "role": "from"
+   },
+   "tags": []
+  },
+  {
+   "id": "cnv_1c",
+   "subject": "Waiting on a reply",
+   "status": "unassigned",
+   "status_category": "waiting",
+   "is_closed": false,
+   "created_at": 1760200000,
+   "updated_at": 1760200900,
+   "waiting_since": 1760201000,
+   "assignee": null,
+   "recipient": {
+    "name": "Carol Ng",
+    "handle": "carol@example.com",
+    "role": "from"
+   },
+   "tags": [
+    {
+     "id": "tag_late",
+     "name": "late"
+    }
+   ]
+  },
+  {
+   "id": "cnv_2a",
+   "subject": "Refund",
+   "status": "archived",
+   "status_category": "resolved",
+   "is_closed": false,
+   "created_at": 1760300000,
+   "updated_at": 1760303000,
+   "assignee": {
+    "id": "tea_can",
+    "email": "can@front.example.com",
+    "first_name": "Can",
+    "last_name": "Aksoy",
+    "is_admin": false,
+    "type": "user"
+   },
+   "recipient": {
+    "name": "Dan Roe",
+    "handle": "+905550100100",
+    "role": "from"
+   },
+   "tags": []
+  },
+  {
+   "id": "cnv_2b",
+   "subject": "Gone",
+   "status": "deleted",
+   "status_category": "resolved",
+   "is_closed": false,
+   "created_at": 1760310000,
+   "updated_at": 1760311000,
+   "assignee": null,
+   "recipient": {
+    "name": "Eve",
+    "handle": "eve@example.org",
+    "role": "from"
+   },
+   "tags": []
+  }
+ ]
+}

@@ -3347,6 +3347,10 @@ msgstr "Choisissez-en un dans la liste, ou déplacez-vous avec ↑ ↓ et ouvrez
 msgid "Choose the account that sends your answers. You can change it later in the channel settings."
 msgstr "Choisissez le compte qui envoie vos réponses. Vous pourrez le changer plus tard dans les paramètres du canal."
 
+#: src/features/migrations/text.ts
+msgid "Choose the feature Access resources, the namespaces Global resources and Shared resources (add Private resources only if personal inboxes should move), and the permission Read only."
+msgstr "Choisissez la fonctionnalité Access resources, les espaces de noms Global resources et Shared resources (ajoutez Private resources seulement si les boîtes personnelles doivent être déplacées) et l'autorisation Read only."
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose the region of your Amazon SES account."
 msgstr "Choisissez la région de votre compte Amazon SES."
@@ -4134,6 +4138,10 @@ msgstr "Créer un brouillon"
 msgid "Create it, then copy its App ID and App Secret and paste them below."
 msgstr "Créez-la, puis copiez son App ID et son App Secret et collez-les ci-dessous."
 
+#: src/features/migrations/text.ts
+msgid "Create it, then copy the token, which Front shows only once, and paste it below."
+msgstr "Créez-le, puis copiez le jeton, que Front n'affiche qu'une seule fois, et collez-le ci-dessous."
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -4404,6 +4412,10 @@ msgstr "Supprimer le produit"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete subscription"
 msgstr "Supprimer l’abonnement"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Delete the API token you created for Yuva"
+msgstr "Supprimez le jeton d'API que vous avez créé pour Yuva"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the app you created for Yuva"
@@ -6664,6 +6676,10 @@ msgstr "En vigueur : {effectiveSize}. Laissez vide pour suivre le serveur."
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "Dans Fastmail, ouvrez Paramètres › Confidentialité et sécurité › Gérer les mots de passe d’application."
 
+#: src/features/migrations/text.ts
+msgid "In Front, open Settings › Developers › API tokens and choose Create API token. Name it “Yuva”."
+msgstr "Dans Front, ouvrez Settings › Developers › API tokens et choisissez Create API token. Nommez-le « Yuva »."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "In Gmail, open Settings › See all settings › Forwarding and POP/IMAP."
 msgstr "Dans Gmail, ouvrez Paramètres › Voir tous les paramètres › Transfert et POP/IMAP."
@@ -6744,6 +6760,9 @@ msgid "Inbox for {name}"
 msgstr "Boîte pour {name}"
 
 #: src/features/contact/ContactSheet.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Inboxes"
 msgstr "Boîtes"
@@ -17209,6 +17228,10 @@ msgid "Yuva counts clicks and replies. It does not track opens."
 msgstr "Yuva compte les clics et les réponses. Il ne suit pas les ouvertures."
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete the token in Settings › Developers › API tokens; Yuva does not need it any more."
+msgstr "Yuva a supprimé sa copie du jeton mais ne peut pas le révoquer dans Front. Supprimez le jeton dans Settings › Developers › API tokens ; Yuva n'en a plus besoin."
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva a supprimé son jeton {deletedAt} et ne peut plus lire {provider}."
 
@@ -17354,5 +17377,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Les notes propres à Yuva ne peuvent pas être modifiées."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout"
-msgstr "Zendesk, Help Scout"
+msgid "Zendesk, Help Scout, Front"
+msgstr "Zendesk, Help Scout, Front"

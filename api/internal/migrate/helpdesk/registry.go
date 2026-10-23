@@ -119,7 +119,9 @@ type Desk struct {
 	Limits       []Limit
 	// IncrementalMax caps ClassIncremental requests a minute.
 	IncrementalMax int
-	RetryHeaders   []string
+	// IncrementalShare: the cap is this share of the reported limit instead (Front's search guard).
+	IncrementalShare float64
+	RetryHeaders     []string
 	// AttributePrefix names a contact's attributes from this help desk (zendesk_id).
 	AttributePrefix string
 	Sync            SyncCursor
@@ -130,7 +132,7 @@ type Desk struct {
 
 var (
 	registryMu sync.RWMutex
-	registry   = []Desk{zendeskDesk, helpScoutDesk, chatwootDesk}
+	registry   = []Desk{zendeskDesk, helpScoutDesk, chatwootDesk, frontDesk}
 )
 
 // Desks are the help desks in the order the panel shows them.
@@ -206,7 +208,7 @@ func (d Desk) Budget(b *Budget) *Budget {
 	if b == nil {
 		b = &Budget{}
 	}
-	b.IncrementalMax = d.IncrementalMax
+	b.IncrementalMax, b.IncrementalShare = d.IncrementalMax, d.IncrementalShare
 	for _, l := range d.Limits {
 		if l.Window >= Day {
 			b.DayDefault, b.DayHeaders = l.Default, l.Headers
@@ -338,4 +340,14 @@ var chatwootDesk = Desk{
 	Limits:       []Limit{{Window: time.Minute, Default: 60}},
 	RetryHeaders: []string{"Retry-After"}, AttributePrefix: "chatwoot", Sync: SyncModifiedSince,
 	read: func(c *client, a Account) Source { return &Chatwoot{c: c, base: a.BaseURL, account: a.ID} },
+}
+
+var frontDesk = Desk{
+	Source: "front", Name: "Front", Guide: "migrate-front", Auth: AuthToken, Account: AccountNone,
+	APIHosts: func(Account) Hosts { return Hosts{Exact: []string{FrontAPIHost}} },
+	Send:     Send{Scheme: SendBearer},
+	Limits:   []Limit{{Window: time.Minute, Default: 25, Headers: []string{"X-Ratelimit-Limit"}}},
+	// The search guard is 40% of the company's limit; 20 is that of the smallest plan.
+	IncrementalMax: 20, IncrementalShare: 0.4, RetryHeaders: []string{"Retry-After"}, AttributePrefix: "front", Sync: SyncModifiedSince,
+	read: func(c *client, _ Account) Source { return &Front{c: c} },
 }

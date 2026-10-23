@@ -12674,21 +12674,21 @@ export interface components {
         };
         /**
          * @description Where the history comes from: `imap`, a mailbox read over IMAP; `file`, export files;
-         *     `zendesk`, `helpscout` and `chatwoot`, help desks. A server offers the sources its operator allows
-         *     (`YUVA_MIGRATION_SOURCES`) among those built.
+         *     `zendesk`, `helpscout`, `chatwoot` and `front`, help desks. A server offers the sources its operator allows
+         *     (`YUVA_MIGRATION_SOURCES`) among those built: all of them.
          * @enum {string}
          */
-        MigrationSource: "imap" | "file" | "zendesk" | "helpscout" | "chatwoot";
+        MigrationSource: "imap" | "file" | "zendesk" | "helpscout" | "chatwoot" | "front";
         /**
          * @description The provider of an `imap` mailbox: `gmail`, `google_workspace`, `microsoft` (Outlook.com
          *     and Microsoft 365, through "Sign in with Microsoft"), `yandex`, `icloud`, `zoho`, `yahoo`,
          *     `fastmail`, `gmx`, or `imap` for any other server. For a `file` migration: `takeout`, a
          *     Google Takeout file, or `file`, any other export file; both read every format the server
          *     knows, which `upload.format` names once the upload is complete. A help desk has the preset
-         *     of its source: `zendesk`, `helpscout` or `chatwoot`.
+         *     of its source: `zendesk`, `helpscout`, `chatwoot` or `front`.
          * @enum {string}
          */
-        MigrationPresetId: "gmail" | "google_workspace" | "microsoft" | "yandex" | "icloud" | "zoho" | "yahoo" | "fastmail" | "gmx" | "imap" | "takeout" | "file" | "zendesk" | "helpscout" | "chatwoot";
+        MigrationPresetId: "gmail" | "google_workspace" | "microsoft" | "yandex" | "icloud" | "zoho" | "yahoo" | "fastmail" | "gmx" | "imap" | "takeout" | "file" | "zendesk" | "helpscout" | "chatwoot" | "front";
         /**
          * @description - `draft`: created; not connected yet.
          *     - `connected`: the connection test passed; choose what to read.
@@ -12742,7 +12742,7 @@ export interface components {
         /**
          * @description The stored credentials, without the secret. A help desk's are `oauth` or `token`, as its
          *     preset's `auth`, with the account's API host as `server` (`<subdomain>.zendesk.com`,
-         *     `api.helpscout.net`, or the host of a `base_url`); a `token` is never answered and has no
+         *     `api.helpscout.net`, `api2.frontapp.com`, or the host of a `base_url`); a `token` is never answered and has no
          *     `scopes` or `expires_at`. A Microsoft
          *     sign-in's are `oauth` too, with `outlook.office365.com:993` as `server`, the granted
          *     `scopes` and when the access token expires; the token is refreshed before a connection

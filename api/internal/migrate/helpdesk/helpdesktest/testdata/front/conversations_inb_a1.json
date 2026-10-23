@@ -1,0 +1,55 @@
+{
+ "_pagination": {
+  "next": "https://api2.frontapp.com/inboxes/inb_a1/conversations?limit=100&page_token=pg2"
+ },
+ "_results": [
+  {
+   "id": "cnv_1a",
+   "subject": "Cannot log in",
+   "status": "assigned",
+   "status_category": "open",
+   "is_closed": false,
+   "created_at": 1760000000.5,
+   "updated_at": 1760003600.25,
+   "assignee": {
+    "id": "tea_ece",
+    "email": "Ece@front.example.com",
+    "first_name": "Ece",
+    "last_name": "Demir",
+    "is_admin": true,
+    "type": "user"
+   },
+   "recipient": {
+    "name": "Ayse Kaya",
+    "handle": "ayse@example.org",
+    "role": "from"
+   },
+   "tags": [
+    {
+     "id": "tag_vip",
+     "name": "vip"
+    },
+    {
+     "id": "tag_login",
+     "name": "login"
+    }
+   ]
+  },
+  {
+   "id": "cnv_1b",
+   "subject": "Invoice question",
+   "status": "archived",
+   "status_category": "resolved",
+   "is_closed": false,
+   "created_at": 1760100000,
+   "updated_at": 1760107200,
+   "assignee": null,
+   "recipient": {
+    "name": null,
+    "handle": "bob@example.net",
+    "role": "from"
+   },
+   "tags": []
+  }
+ ]
+}

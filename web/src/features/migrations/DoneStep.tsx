@@ -136,6 +136,8 @@ export function DoneStep({ m, preset }: { m: Migration; preset: MigrationPreset 
               <p className="font-medium text-foreground">
                 {m.source === "zendesk" ? (
                   <Trans>Delete the OAuth client you created for Yuva</Trans>
+                ) : m.source === "front" ? (
+                  <Trans>Delete the API token you created for Yuva</Trans>
                 ) : (
                   <Trans>Delete the app you created for Yuva</Trans>
                 )}
@@ -145,6 +147,11 @@ export function DoneStep({ m, preset }: { m: Migration; preset: MigrationPreset 
                   <Trans>
                     Yuva deleted its token but cannot revoke it in Zendesk. Delete the client in Admin Center › Apps and
                     integrations › APIs › OAuth clients; Yuva does not need it any more.
+                  </Trans>
+                ) : m.source === "front" ? (
+                  <Trans>
+                    Yuva deleted its copy of the token but cannot revoke it in Front. Delete the token in Settings ›
+                    Developers › API tokens; Yuva does not need it any more.
                   </Trans>
                 ) : (
                   <Trans>

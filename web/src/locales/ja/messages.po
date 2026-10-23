@@ -3347,6 +3347,10 @@ msgstr "リストから選ぶか、↑ ↓ で移動して Enter で開きます
 msgid "Choose the account that sends your answers. You can change it later in the channel settings."
 msgstr "回答を送信するアカウントを選択してください。後からチャネル設定で変更できます。"
 
+#: src/features/migrations/text.ts
+msgid "Choose the feature Access resources, the namespaces Global resources and Shared resources (add Private resources only if personal inboxes should move), and the permission Read only."
+msgstr "機能は Access resources、名前空間は Global resources と Shared resources (個人の受信トレイも移す場合のみ Private resources を追加)、権限は Read only を選びます。"
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose the region of your Amazon SES account."
 msgstr "Amazon SES アカウントのリージョンを選択してください。"
@@ -4134,6 +4138,10 @@ msgstr "ドラフトを作成"
 msgid "Create it, then copy its App ID and App Secret and paste them below."
 msgstr "作成したら、アプリ ID とアプリシークレットをコピーして下に貼り付けてください。"
 
+#: src/features/migrations/text.ts
+msgid "Create it, then copy the token, which Front shows only once, and paste it below."
+msgstr "作成したら、Front が一度しか表示しないトークンをコピーして、下に貼り付けます。"
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -4404,6 +4412,10 @@ msgstr "製品を削除"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete subscription"
 msgstr "登録を削除"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Delete the API token you created for Yuva"
+msgstr "Yuva 用に作成した API トークンを削除"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the app you created for Yuva"
@@ -6664,6 +6676,10 @@ msgstr "適用中: {effectiveSize}。サーバーに従う場合は空のまま�
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "Fastmail で、設定 › プライバシーとセキュリティ › アプリパスワードの管理 を開きます。"
 
+#: src/features/migrations/text.ts
+msgid "In Front, open Settings › Developers › API tokens and choose Create API token. Name it “Yuva”."
+msgstr "Front で Settings › Developers › API tokens を開き、Create API token を選びます。名前は「Yuva」にします。"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "In Gmail, open Settings › See all settings › Forwarding and POP/IMAP."
 msgstr "Gmail で、設定 › すべての設定を表示 › メール転送と POP/IMAP を開きます。"
@@ -6744,6 +6760,9 @@ msgid "Inbox for {name}"
 msgstr "{name} の受信トレイ"
 
 #: src/features/contact/ContactSheet.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Inboxes"
 msgstr "受信トレイ"
@@ -17209,6 +17228,10 @@ msgid "Yuva counts clicks and replies. It does not track opens."
 msgstr "Yuva はクリックと返信を数えます。開封は計測しません。"
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete the token in Settings › Developers › API tokens; Yuva does not need it any more."
+msgstr "Yuva はトークンの自分のコピーを削除しましたが、Front 側で失効させることはできません。Settings › Developers › API tokens でトークンを削除してください。Yuva にはもう必要ありません。"
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva は {deletedAt} にトークンを削除し、{provider} を読み取れなくなりました。"
 
@@ -17354,5 +17377,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Yuva 自身のメモは変更できません。"
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout"
-msgstr "Zendesk、Help Scout"
+msgid "Zendesk, Help Scout, Front"
+msgstr "Zendesk、Help Scout、Front"

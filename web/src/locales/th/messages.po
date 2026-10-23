@@ -3347,6 +3347,10 @@ msgstr "เลือกจากรายการ หรือเลื่อ�
 msgid "Choose the account that sends your answers. You can change it later in the channel settings."
 msgstr "เลือกบัญชีที่ส่งคำตอบของคุณ คุณเปลี่ยนภายหลังได้ในการตั้งค่าช่องทาง"
 
+#: src/features/migrations/text.ts
+msgid "Choose the feature Access resources, the namespaces Global resources and Shared resources (add Private resources only if personal inboxes should move), and the permission Read only."
+msgstr "เลือกฟีเจอร์ Access resources เนมสเปซ Global resources และ Shared resources (เพิ่ม Private resources เฉพาะเมื่อต้องย้ายกล่องจดหมายส่วนตัว) และสิทธิ์ Read only"
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose the region of your Amazon SES account."
 msgstr "เลือกภูมิภาคของบัญชี Amazon SES ของคุณ"
@@ -4134,6 +4138,10 @@ msgstr "สร้างฉบับร่าง"
 msgid "Create it, then copy its App ID and App Secret and paste them below."
 msgstr "สร้างแล้วคัดลอก App ID และ App Secret ของแอปนั้นไปวางด้านล่าง"
 
+#: src/features/migrations/text.ts
+msgid "Create it, then copy the token, which Front shows only once, and paste it below."
+msgstr "สร้างโทเค็น จากนั้นคัดลอกโทเค็นซึ่ง Front แสดงเพียงครั้งเดียว แล้ววางด้านล่าง"
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -4404,6 +4412,10 @@ msgstr "ลบผลิตภัณฑ์"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete subscription"
 msgstr "ลบการสมัครรับ"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Delete the API token you created for Yuva"
+msgstr "ลบโทเค็น API ที่คุณสร้างไว้สำหรับ Yuva"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the app you created for Yuva"
@@ -6664,6 +6676,10 @@ msgstr "ที่ใช้อยู่: {effectiveSize} เว้นว่าง
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "ใน Fastmail เปิด Settings › Privacy & Security › Manage app passwords"
 
+#: src/features/migrations/text.ts
+msgid "In Front, open Settings › Developers › API tokens and choose Create API token. Name it “Yuva”."
+msgstr "ใน Front เปิด Settings › Developers › API tokens แล้วเลือก Create API token ตั้งชื่อว่า “Yuva”"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "In Gmail, open Settings › See all settings › Forwarding and POP/IMAP."
 msgstr "ใน Gmail เปิด การตั้งค่า › ดูการตั้งค่าทั้งหมด › การส่งต่อและ POP/IMAP"
@@ -6744,6 +6760,9 @@ msgid "Inbox for {name}"
 msgstr "กล่องข้อความสำหรับ {name}"
 
 #: src/features/contact/ContactSheet.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Inboxes"
 msgstr "กล่องข้อความ"
@@ -17209,6 +17228,10 @@ msgid "Yuva counts clicks and replies. It does not track opens."
 msgstr "Yuva นับการคลิกและการตอบกลับ ไม่ติดตามการเปิดอ่าน"
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete the token in Settings › Developers › API tokens; Yuva does not need it any more."
+msgstr "Yuva ลบสำเนาโทเค็นของตนแล้ว แต่เพิกถอนใน Front ไม่ได้ โปรดลบโทเค็นที่ Settings › Developers › API tokens เพราะ Yuva ไม่ต้องใช้อีกแล้ว"
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva ลบโทเค็นเมื่อ {deletedAt} และอ่าน {provider} ไม่ได้อีกต่อไป"
 
@@ -17354,5 +17377,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "เปลี่ยนบันทึกของ Yuva เองไม่ได้"
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout"
-msgstr "Zendesk, Help Scout"
+msgid "Zendesk, Help Scout, Front"
+msgstr "Zendesk, Help Scout, Front"

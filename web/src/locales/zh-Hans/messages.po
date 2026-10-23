@@ -3347,6 +3347,10 @@ msgstr "从列表中选择,或用 ↑ ↓ 移动并按 Enter 打开。"
 msgid "Choose the account that sends your answers. You can change it later in the channel settings."
 msgstr "选择用来发送回复的账号。之后可在渠道设置中更改。"
 
+#: src/features/migrations/text.ts
+msgid "Choose the feature Access resources, the namespaces Global resources and Shared resources (add Private resources only if personal inboxes should move), and the permission Read only."
+msgstr "选择功能 Access resources、命名空间 Global resources 和 Shared resources（仅当个人收件箱也要迁移时才添加 Private resources），以及权限 Read only。"
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose the region of your Amazon SES account."
 msgstr "选择你的 Amazon SES 账号所在的区域。"
@@ -4134,6 +4138,10 @@ msgstr "创建草稿"
 msgid "Create it, then copy its App ID and App Secret and paste them below."
 msgstr "创建后,复制其应用 ID 和应用密钥,粘贴到下面。"
 
+#: src/features/migrations/text.ts
+msgid "Create it, then copy the token, which Front shows only once, and paste it below."
+msgstr "创建后，复制 Front 只显示一次的令牌，并粘贴到下方。"
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -4404,6 +4412,10 @@ msgstr "删除产品"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete subscription"
 msgstr "删除订阅"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Delete the API token you created for Yuva"
+msgstr "删除你为 Yuva 创建的 API 令牌"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the app you created for Yuva"
@@ -6664,6 +6676,10 @@ msgstr "当前生效：{effectiveSize}。留空则沿用服务器的设置。"
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "在 Fastmail 中,打开“设置 › 隐私与安全 › 管理应用专用密码”。"
 
+#: src/features/migrations/text.ts
+msgid "In Front, open Settings › Developers › API tokens and choose Create API token. Name it “Yuva”."
+msgstr "在 Front 中打开 Settings › Developers › API tokens，选择 Create API token，并命名为“Yuva”。"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "In Gmail, open Settings › See all settings › Forwarding and POP/IMAP."
 msgstr "在 Gmail 中,打开“设置 › 查看所有设置 › 转发和 POP/IMAP”。"
@@ -6744,6 +6760,9 @@ msgid "Inbox for {name}"
 msgstr "{name} 的收件箱"
 
 #: src/features/contact/ContactSheet.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Inboxes"
 msgstr "收件箱"
@@ -17209,6 +17228,10 @@ msgid "Yuva counts clicks and replies. It does not track opens."
 msgstr "Yuva 统计点击和回复，不追踪打开。"
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete the token in Settings › Developers › API tokens; Yuva does not need it any more."
+msgstr "Yuva 已删除它保存的令牌副本，但无法在 Front 中吊销。请在 Settings › Developers › API tokens 中删除该令牌；Yuva 不再需要它。"
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva 已于 {deletedAt} 删除其令牌,无法再读取 {provider}。"
 
@@ -17354,5 +17377,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Yuva 自带的备注无法更改。"
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout"
-msgstr "Zendesk、Help Scout"
+msgid "Zendesk, Help Scout, Front"
+msgstr "Zendesk、Help Scout、Front"

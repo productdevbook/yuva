@@ -3347,6 +3347,10 @@ msgstr "Wählen Sie einen aus der Liste oder navigieren Sie mit ↑ ↓ und öff
 msgid "Choose the account that sends your answers. You can change it later in the channel settings."
 msgstr "Wählen Sie das Konto, das Ihre Antworten sendet. Sie können es später in den Kanaleinstellungen ändern."
 
+#: src/features/migrations/text.ts
+msgid "Choose the feature Access resources, the namespaces Global resources and Shared resources (add Private resources only if personal inboxes should move), and the permission Read only."
+msgstr "Wählen Sie die Funktion Access resources, die Namespaces Global resources und Shared resources (Private resources nur, wenn persönliche Postfächer mit umziehen sollen) und die Berechtigung Read only."
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose the region of your Amazon SES account."
 msgstr "Wählen Sie die Region Ihres Amazon-SES-Kontos."
@@ -4134,6 +4138,10 @@ msgstr "Entwurf erstellen"
 msgid "Create it, then copy its App ID and App Secret and paste them below."
 msgstr "Erstellen Sie sie, kopieren Sie dann ihre App-ID und ihr App Secret und fügen Sie beides unten ein."
 
+#: src/features/migrations/text.ts
+msgid "Create it, then copy the token, which Front shows only once, and paste it below."
+msgstr "Erstellen Sie ihn, kopieren Sie dann den Token, den Front nur einmal anzeigt, und fügen Sie ihn unten ein."
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create key"
@@ -4404,6 +4412,10 @@ msgstr "Produkt löschen"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Delete subscription"
 msgstr "Abonnement löschen"
+
+#: src/features/migrations/DoneStep.tsx
+msgid "Delete the API token you created for Yuva"
+msgstr "Löschen Sie den API-Token, den Sie für Yuva erstellt haben"
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the app you created for Yuva"
@@ -6664,6 +6676,10 @@ msgstr "Es gilt: {effectiveSize}. Leer lassen, um dem Server zu folgen."
 msgid "In Fastmail, open Settings › Privacy & Security › Manage app passwords."
 msgstr "Öffnen Sie in Fastmail Einstellungen › Datenschutz & Sicherheit › App-Passwörter verwalten."
 
+#: src/features/migrations/text.ts
+msgid "In Front, open Settings › Developers › API tokens and choose Create API token. Name it “Yuva”."
+msgstr "Öffnen Sie in Front Settings › Developers › API tokens und wählen Sie Create API token. Nennen Sie ihn „Yuva“."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "In Gmail, open Settings › See all settings › Forwarding and POP/IMAP."
 msgstr "Öffnen Sie in Gmail Einstellungen › Alle Einstellungen aufrufen › Weiterleitung und POP/IMAP."
@@ -6744,6 +6760,9 @@ msgid "Inbox for {name}"
 msgstr "Postfach für {name}"
 
 #: src/features/contact/ContactSheet.tsx
+#: src/features/migrations/ChooseStep.tsx
+#: src/features/migrations/CopyStep.tsx
+#: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Inboxes"
 msgstr "Postfächer"
@@ -17209,6 +17228,10 @@ msgid "Yuva counts clicks and replies. It does not track opens."
 msgstr "Yuva zählt Klicks und Antworten. Öffnungen werden nicht erfasst."
 
 #: src/features/migrations/DoneStep.tsx
+msgid "Yuva deleted its copy of the token but cannot revoke it in Front. Delete the token in Settings › Developers › API tokens; Yuva does not need it any more."
+msgstr "Yuva hat seine Kopie des Tokens gelöscht, kann ihn in Front aber nicht widerrufen. Löschen Sie den Token unter Settings › Developers › API tokens; Yuva braucht ihn nicht mehr."
+
+#: src/features/migrations/DoneStep.tsx
 msgid "Yuva deleted its token {deletedAt} and can no longer read {provider}."
 msgstr "Yuva hat sein Token gelöscht {deletedAt} und kann {provider} nicht mehr lesen."
 
@@ -17354,5 +17377,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Die eigenen Notizen von Yuva können nicht geändert werden."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout"
-msgstr "Zendesk, Help Scout"
+msgid "Zendesk, Help Scout, Front"
+msgstr "Zendesk, Help Scout, Front"

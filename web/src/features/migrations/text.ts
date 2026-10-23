@@ -258,6 +258,15 @@ export function useGuides() {
       link: guideUrl("migrate-chatwoot"),
       linkLabel: t`Read the guide`,
     },
+    front: {
+      steps: [
+        t`In Front, open Settings › Developers › API tokens and choose Create API token. Name it “Yuva”.`,
+        t`Choose the feature Access resources, the namespaces Global resources and Shared resources (add Private resources only if personal inboxes should move), and the permission Read only.`,
+        t`Create it, then copy the token, which Front shows only once, and paste it below.`,
+      ],
+      link: guideUrl("migrate-front"),
+      linkLabel: t`Read the guide`,
+    },
     file: {
       steps: [
         t`Thunderbird, Apple Mail and most mail apps export a folder as an .mbox file: upload that file.`,

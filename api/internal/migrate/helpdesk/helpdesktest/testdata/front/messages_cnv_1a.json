@@ -1,0 +1,90 @@
+{
+ "_pagination": {
+  "next": null
+ },
+ "_results": [
+  {
+   "id": "msg_1",
+   "type": "email",
+   "is_inbound": true,
+   "created_at": 1760000000.5,
+   "draft_mode": null,
+   "author": null,
+   "recipients": [
+    {
+     "name": "Ayse Kaya",
+     "handle": "ayse@example.org",
+     "role": "from"
+    },
+    {
+     "name": null,
+     "handle": "support@front.example.com",
+     "role": "to"
+    }
+   ],
+   "body": "<p>I cannot log in since this morning.</p>",
+   "text": "I cannot log in since this morning.",
+   "attachments": [
+    {
+     "id": "fil_notes1",
+     "url": "https://acme.api.frontapp.com/download/fil_notes1",
+     "filename": "notes.txt",
+     "content_type": "text/plain",
+     "size": 40,
+     "metadata": {
+      "is_inline": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "msg_2",
+   "type": "email",
+   "is_inbound": false,
+   "created_at": 1760003000,
+   "draft_mode": null,
+   "author": {
+    "id": "tea_ece",
+    "email": "Ece@front.example.com",
+    "first_name": "Ece",
+    "last_name": "Demir",
+    "is_admin": true,
+    "type": "user"
+   },
+   "recipients": [
+    {
+     "name": null,
+     "handle": "support@front.example.com",
+     "role": "from"
+    },
+    {
+     "name": "Ayse Kaya",
+     "handle": "ayse@example.org",
+     "role": "to"
+    }
+   ],
+   "body": "<p>Please reset your password with the link.</p>",
+   "text": "",
+   "attachments": []
+  },
+  {
+   "id": "msg_3",
+   "type": "email",
+   "is_inbound": false,
+   "created_at": 1760003500,
+   "draft_mode": "shared",
+   "author": {
+    "id": "tea_can",
+    "email": "can@front.example.com",
+    "first_name": "Can",
+    "last_name": "Aksoy",
+    "is_admin": false,
+    "type": "user"
+   },
+   "recipients": [],
+   "body": "<p>draft</p>",
+   "text": "draft",
+   "attachments": []
+  }
+ ]
+}
