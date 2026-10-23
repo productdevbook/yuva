@@ -3065,6 +3065,30 @@ func (e HomeSetupItemId) Valid() bool {
 	}
 }
 
+// Defines values for HomeUpcomingKind.
+const (
+	HomeUpcomingBroadcast   HomeUpcomingKind = "broadcast"
+	HomeUpcomingIncident    HomeUpcomingKind = "incident"
+	HomeUpcomingMaintenance HomeUpcomingKind = "maintenance"
+	HomeUpcomingWhatsNew    HomeUpcomingKind = "whats_new"
+)
+
+// Valid indicates whether the value is a known member of the HomeUpcomingKind enum.
+func (e HomeUpcomingKind) Valid() bool {
+	switch e {
+	case HomeUpcomingBroadcast:
+		return true
+	case HomeUpcomingIncident:
+		return true
+	case HomeUpcomingMaintenance:
+		return true
+	case HomeUpcomingWhatsNew:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for HostedLimit.
 const (
 	LimitChangelogMaxEntries     HostedLimit = "YUVA_CHANGELOG_MAX_ENTRIES"
@@ -6260,6 +6284,27 @@ func (e PreviewHelpCenterParamsView) Valid() bool {
 	case PreviewHelpCenterParamsViewCollection:
 		return true
 	case PreviewHelpCenterParamsViewHome:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetHomeParamsDays.
+const (
+	HomeDays14 GetHomeParamsDays = 14
+	HomeDays30 GetHomeParamsDays = 30
+	HomeDays7  GetHomeParamsDays = 7
+)
+
+// Valid indicates whether the value is a known member of the GetHomeParamsDays enum.
+func (e GetHomeParamsDays) Valid() bool {
+	switch e {
+	case HomeDays14:
+		return true
+	case HomeDays30:
+		return true
+	case HomeDays7:
 		return true
 	default:
 		return false
@@ -13606,10 +13651,60 @@ type HelpTranslationState string
 
 // Home The Home blocks; a block the member may not see is absent.
 type Home struct {
-	Analytics  *HomeAnalytics  `json:"analytics,omitempty"`
-	Broadcasts *HomeBroadcasts `json:"broadcasts,omitempty"`
-	Inbox      HomeInbox       `json:"inbox"`
-	Setup      *HomeSetup      `json:"setup,omitempty"`
+	Activity    HomeActivity     `json:"activity"`
+	Analytics   *HomeAnalytics   `json:"analytics,omitempty"`
+	Broadcasts  *HomeBroadcasts  `json:"broadcasts,omitempty"`
+	Ideas       *[]HomeIdea      `json:"ideas,omitempty"`
+	Inbox       HomeInbox        `json:"inbox"`
+	Period      HomePeriod       `json:"period"`
+	Products    []HomeProduct    `json:"products"`
+	Setup       *HomeSetup       `json:"setup,omitempty"`
+	StatusPages []HomeStatusPage `json:"status_pages"`
+	Team        HomeTeam         `json:"team"`
+	Upcoming    []HomeUpcoming   `json:"upcoming"`
+}
+
+// HomeActivity defines model for HomeActivity.
+type HomeActivity struct {
+	Bad int64 `json:"bad"`
+
+	// Conversations Conversations started in the period, spam left out.
+	Conversations int64 `json:"conversations"`
+
+	// Days Each day of the period, oldest first; the last one is today.
+	Days                    []HomeActivityDay  `json:"days"`
+	FirstReplies            int64              `json:"first_replies"`
+	Good                    int64              `json:"good"`
+	MedianFirstReplySeconds *int64             `json:"median_first_reply_seconds,omitempty"`
+	Previous                HomeActivityTotals `json:"previous"`
+}
+
+// HomeActivityDay defines model for HomeActivityDay.
+type HomeActivityDay struct {
+	Bad           int64              `json:"bad"`
+	Conversations int64              `json:"conversations"`
+	Day           openapi_types.Date `json:"day"`
+	FirstReplies  int64              `json:"first_replies"`
+	Good          int64              `json:"good"`
+
+	// Inboxes Conversations started that day per inbox; inboxes without any are left out.
+	Inboxes                 []HomeInboxConversations `json:"inboxes"`
+	MedianFirstReplySeconds *int64                   `json:"median_first_reply_seconds,omitempty"`
+}
+
+// HomeActivityTotals defines model for HomeActivityTotals.
+type HomeActivityTotals struct {
+	Bad int64 `json:"bad"`
+
+	// Conversations Conversations started, spam left out.
+	Conversations int64 `json:"conversations"`
+
+	// FirstReplies Conversations whose first member reply falls in the span.
+	FirstReplies int64 `json:"first_replies"`
+	Good         int64 `json:"good"`
+
+	// MedianFirstReplySeconds Median time from the contact's first message to that reply; absent without first replies.
+	MedianFirstReplySeconds *int64 `json:"median_first_reply_seconds,omitempty"`
 }
 
 // HomeAnalytics defines model for HomeAnalytics.
@@ -13656,8 +13751,25 @@ type HomeDay struct {
 	Visitors int64              `json:"visitors"`
 }
 
+// HomeIdea defines model for HomeIdea.
+type HomeIdea struct {
+	Id      uuid.UUID `json:"id"`
+	InboxId uuid.UUID `json:"inbox_id"`
+
+	// Stage Where an idea stands. `ideas`: suggested or under consideration. `planned`, `in_progress`
+	// and `shipped`: on the roadmap. `closed`: will not be done. Moving an idea sets the progress
+	// of its linked feedback: `planned` to `planned`, `in_progress` to `in_progress`, `shipped` to
+	// `done` and `closed` to `wont_do`; a move back to `ideas` sets none.
+	Stage IdeaStage `json:"stage"`
+	Title string    `json:"title"`
+	Votes int64     `json:"votes"`
+}
+
 // HomeInbox defines model for HomeInbox.
 type HomeInbox struct {
+	// Feedback Open feedback, spam left out (`feedback` in the conversation counts).
+	Feedback int64 `json:"feedback"`
+
 	// OldestWaiting The open conversation that has waited longest; absent when none waits.
 	OldestWaiting *HomeWaitingConversation `json:"oldest_waiting,omitempty"`
 
@@ -13667,6 +13779,53 @@ type HomeInbox struct {
 
 	// Waiting Open conversations whose contact waits for a reply.
 	Waiting int64 `json:"waiting"`
+
+	// WaitingConversations The five conversations that have waited longest, oldest first.
+	WaitingConversations []HomeWaitingConversation `json:"waiting_conversations"`
+}
+
+// HomeInboxConversations defines model for HomeInboxConversations.
+type HomeInboxConversations struct {
+	Conversations int64     `json:"conversations"`
+	InboxId       uuid.UUID `json:"inbox_id"`
+}
+
+// HomeMemberLoad defines model for HomeMemberLoad.
+type HomeMemberLoad struct {
+	MemberId uuid.UUID `json:"member_id"`
+
+	// Open Open conversations assigned to the member, spam left out.
+	Open int64 `json:"open"`
+}
+
+// HomePeriod defines model for HomePeriod.
+type HomePeriod struct {
+	Days int `json:"days"`
+
+	// PreviousSince Start of the previous period, which ends at `since`.
+	PreviousSince time.Time `json:"previous_since"`
+
+	// Since Start of the period, the start of its first day.
+	Since    time.Time `json:"since"`
+	Timezone string    `json:"timezone"`
+
+	// Until End of the period, now.
+	Until time.Time `json:"until"`
+}
+
+// HomeProduct defines model for HomeProduct.
+type HomeProduct struct {
+	Bad int64 `json:"bad"`
+
+	// Conversations Conversations started in the period.
+	Conversations int64 `json:"conversations"`
+
+	// Good Good ratings in the period.
+	Good    int64     `json:"good"`
+	InboxId uuid.UUID `json:"inbox_id"`
+
+	// Open Open conversations, spam left out.
+	Open int64 `json:"open"`
 }
 
 // HomeProperty defines model for HomeProperty.
@@ -13709,11 +13868,78 @@ type HomeSetupItem struct {
 // HomeSetupItemId defines model for HomeSetupItem.Id.
 type HomeSetupItemId string
 
+// HomeStatusComponent defines model for HomeStatusComponent.
+type HomeStatusComponent struct {
+	// Days The days of the period as the status page shows them; days without any state are left out.
+	Days []PublicStatusDay `json:"days"`
+	Id   uuid.UUID         `json:"id"`
+	Name string            `json:"name"`
+
+	// State Worst to best: `major_outage`, `partial_outage`, `degraded`, `maintenance`, `operational`.
+	State StatusComponentStateValue `json:"state"`
+}
+
+// HomeStatusPage defines model for HomeStatusPage.
+type HomeStatusPage struct {
+	Components []HomeStatusComponent `json:"components"`
+
+	// Days The days of the period in the page's time zone, oldest first, each with the worst state of
+	// any component and the uptime over all of them; days without any state are left out.
+	Days      []PublicStatusDay `json:"days"`
+	Id        uuid.UUID         `json:"id"`
+	InboxId   uuid.UUID         `json:"inbox_id"`
+	Name      string            `json:"name"`
+	Published bool              `json:"published"`
+
+	// State The worst state of the page's visible components.
+	State StatusComponentStateValue `json:"state"`
+}
+
+// HomeTeam defines model for HomeTeam.
+type HomeTeam struct {
+	Members []HomeMemberLoad `json:"members"`
+}
+
+// HomeUpcoming defines model for HomeUpcoming.
+type HomeUpcoming struct {
+	// At When it happens: a broadcast's `scheduled_at`, a maintenance's `scheduled_start`, an
+	// incident's start (or when it was published or created), an entry's `publish_at`.
+	At time.Time `json:"at"`
+
+	// ChangelogId What's new entries.
+	ChangelogId *uuid.UUID `json:"changelog_id,omitempty"`
+
+	// Id The broadcast, incident or what's new entry.
+	Id      uuid.UUID        `json:"id"`
+	InboxId uuid.UUID        `json:"inbox_id"`
+	Kind    HomeUpcomingKind `json:"kind"`
+
+	// Locale What's new entries, the changelog's default locale.
+	Locale *string `json:"locale,omitempty"`
+
+	// Recipients Broadcasts: `counts.recipients` as `GET /v1/broadcasts` lists it.
+	Recipients *int64 `json:"recipients,omitempty"`
+
+	// StatusPageId Incidents and maintenance.
+	StatusPageId *uuid.UUID `json:"status_page_id,omitempty"`
+
+	// Title A broadcast's name, an incident's title, an entry's title in its changelog's default locale.
+	Title string `json:"title"`
+}
+
+// HomeUpcomingKind defines model for HomeUpcoming.Kind.
+type HomeUpcomingKind string
+
 // HomeWaitingConversation The open conversation that has waited longest; absent when none waits.
 type HomeWaitingConversation struct {
-	Contact HomeContact `json:"contact"`
-	Id      uuid.UUID   `json:"id"`
-	InboxId uuid.UUID   `json:"inbox_id"`
+	// ChannelKind `email`, `chat` (web widget), `app` (mobile SDKs) or `api` (server to server).
+	ChannelKind *ChannelKind `json:"channel_kind,omitempty"`
+	Contact     HomeContact  `json:"contact"`
+	Id          uuid.UUID    `json:"id"`
+	InboxId     uuid.UUID    `json:"inbox_id"`
+
+	// Preview The contact's last message, shortened.
+	Preview string `json:"preview"`
 
 	// Since The contact's first message after the last reply.
 	Since   time.Time `json:"since"`
@@ -21316,9 +21542,21 @@ type SearchHelpArticlesParams struct {
 
 // GetHomeParams defines parameters for GetHome.
 type GetHomeParams struct {
+	// Days Length of the period in days, today included.
+	Days *GetHomeParamsDays `form:"days,omitempty" json:"days,omitempty"`
+
+	// InboxId Only this inbox (`404` when the caller cannot see it).
+	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+
+	// Timezone IANA time zone that defines the days of the period.
+	Timezone *string `form:"timezone,omitempty" json:"timezone,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
+
+// GetHomeParamsDays defines parameters for GetHome.
+type GetHomeParamsDays int
 
 // ListInboxesParams defines parameters for ListInboxes.
 type ListInboxesParams struct {
@@ -43196,6 +43434,45 @@ func (siw *ServerInterfaceWrapper) GetHome(w http.ResponseWriter, r *http.Reques
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetHomeParams
+
+	// ------------- Optional query parameter "days" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "days", r.URL.Query(), &params.Days, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "days"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "days", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "inbox_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "inbox_id", r.URL.Query(), &params.InboxId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "inbox_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inbox_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "timezone" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "timezone", r.URL.Query(), &params.Timezone, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "timezone"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "timezone", Err: err})
+		}
+		return
+	}
 
 	headers := r.Header
 
@@ -76474,9 +76751,23 @@ func (response GetHome200JSONResponse) VisitGetHomeResponse(w http.ResponseWrite
 	return err
 }
 
-type GetHome401ApplicationProblemPlusJSONResponse struct {
+type GetHome400ApplicationProblemPlusJSONResponse struct {
 	ProblemApplicationProblemPlusJSONResponse
 }
+
+func (response GetHome400ApplicationProblemPlusJSONResponse) VisitGetHomeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetHome401ApplicationProblemPlusJSONResponse Problem
 
 func (response GetHome401ApplicationProblemPlusJSONResponse) VisitGetHomeResponse(w http.ResponseWriter) error {
 
@@ -76500,6 +76791,20 @@ func (response GetHome403ApplicationProblemPlusJSONResponse) VisitGetHomeRespons
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetHome404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetHome404ApplicationProblemPlusJSONResponse) VisitGetHomeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
 	_, err := buf.WriteTo(w)
 	return err
 }

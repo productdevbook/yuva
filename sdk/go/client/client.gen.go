@@ -3063,6 +3063,30 @@ func (e HomeSetupItemId) Valid() bool {
 	}
 }
 
+// Defines values for HomeUpcomingKind.
+const (
+	HomeUpcomingBroadcast   HomeUpcomingKind = "broadcast"
+	HomeUpcomingIncident    HomeUpcomingKind = "incident"
+	HomeUpcomingMaintenance HomeUpcomingKind = "maintenance"
+	HomeUpcomingWhatsNew    HomeUpcomingKind = "whats_new"
+)
+
+// Valid indicates whether the value is a known member of the HomeUpcomingKind enum.
+func (e HomeUpcomingKind) Valid() bool {
+	switch e {
+	case HomeUpcomingBroadcast:
+		return true
+	case HomeUpcomingIncident:
+		return true
+	case HomeUpcomingMaintenance:
+		return true
+	case HomeUpcomingWhatsNew:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for HostedLimit.
 const (
 	LimitChangelogMaxEntries     HostedLimit = "YUVA_CHANGELOG_MAX_ENTRIES"
@@ -6306,6 +6330,27 @@ func (e PreviewHelpCenterParamsView) Valid() bool {
 	case PreviewHelpCenterParamsViewCollection:
 		return true
 	case PreviewHelpCenterParamsViewHome:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetHomeParamsDays.
+const (
+	HomeDays14 GetHomeParamsDays = 14
+	HomeDays30 GetHomeParamsDays = 30
+	HomeDays7  GetHomeParamsDays = 7
+)
+
+// Valid indicates whether the value is a known member of the GetHomeParamsDays enum.
+func (e GetHomeParamsDays) Valid() bool {
+	switch e {
+	case HomeDays14:
+		return true
+	case HomeDays30:
+		return true
+	case HomeDays7:
 		return true
 	default:
 		return false
@@ -13652,10 +13697,60 @@ type HelpTranslationState string
 
 // Home The Home blocks; a block the member may not see is absent.
 type Home struct {
-	Analytics  *HomeAnalytics  `json:"analytics,omitempty"`
-	Broadcasts *HomeBroadcasts `json:"broadcasts,omitempty"`
-	Inbox      HomeInbox       `json:"inbox"`
-	Setup      *HomeSetup      `json:"setup,omitempty"`
+	Activity    HomeActivity     `json:"activity"`
+	Analytics   *HomeAnalytics   `json:"analytics,omitempty"`
+	Broadcasts  *HomeBroadcasts  `json:"broadcasts,omitempty"`
+	Ideas       *[]HomeIdea      `json:"ideas,omitempty"`
+	Inbox       HomeInbox        `json:"inbox"`
+	Period      HomePeriod       `json:"period"`
+	Products    []HomeProduct    `json:"products"`
+	Setup       *HomeSetup       `json:"setup,omitempty"`
+	StatusPages []HomeStatusPage `json:"status_pages"`
+	Team        HomeTeam         `json:"team"`
+	Upcoming    []HomeUpcoming   `json:"upcoming"`
+}
+
+// HomeActivity defines model for HomeActivity.
+type HomeActivity struct {
+	Bad int64 `json:"bad"`
+
+	// Conversations Conversations started in the period, spam left out.
+	Conversations int64 `json:"conversations"`
+
+	// Days Each day of the period, oldest first; the last one is today.
+	Days                    []HomeActivityDay  `json:"days"`
+	FirstReplies            int64              `json:"first_replies"`
+	Good                    int64              `json:"good"`
+	MedianFirstReplySeconds *int64             `json:"median_first_reply_seconds,omitempty"`
+	Previous                HomeActivityTotals `json:"previous"`
+}
+
+// HomeActivityDay defines model for HomeActivityDay.
+type HomeActivityDay struct {
+	Bad           int64              `json:"bad"`
+	Conversations int64              `json:"conversations"`
+	Day           openapi_types.Date `json:"day"`
+	FirstReplies  int64              `json:"first_replies"`
+	Good          int64              `json:"good"`
+
+	// Inboxes Conversations started that day per inbox; inboxes without any are left out.
+	Inboxes                 []HomeInboxConversations `json:"inboxes"`
+	MedianFirstReplySeconds *int64                   `json:"median_first_reply_seconds,omitempty"`
+}
+
+// HomeActivityTotals defines model for HomeActivityTotals.
+type HomeActivityTotals struct {
+	Bad int64 `json:"bad"`
+
+	// Conversations Conversations started, spam left out.
+	Conversations int64 `json:"conversations"`
+
+	// FirstReplies Conversations whose first member reply falls in the span.
+	FirstReplies int64 `json:"first_replies"`
+	Good         int64 `json:"good"`
+
+	// MedianFirstReplySeconds Median time from the contact's first message to that reply; absent without first replies.
+	MedianFirstReplySeconds *int64 `json:"median_first_reply_seconds,omitempty"`
 }
 
 // HomeAnalytics defines model for HomeAnalytics.
@@ -13702,8 +13797,25 @@ type HomeDay struct {
 	Visitors int64              `json:"visitors"`
 }
 
+// HomeIdea defines model for HomeIdea.
+type HomeIdea struct {
+	Id      uuid.UUID `json:"id"`
+	InboxId uuid.UUID `json:"inbox_id"`
+
+	// Stage Where an idea stands. `ideas`: suggested or under consideration. `planned`, `in_progress`
+	// and `shipped`: on the roadmap. `closed`: will not be done. Moving an idea sets the progress
+	// of its linked feedback: `planned` to `planned`, `in_progress` to `in_progress`, `shipped` to
+	// `done` and `closed` to `wont_do`; a move back to `ideas` sets none.
+	Stage IdeaStage `json:"stage"`
+	Title string    `json:"title"`
+	Votes int64     `json:"votes"`
+}
+
 // HomeInbox defines model for HomeInbox.
 type HomeInbox struct {
+	// Feedback Open feedback, spam left out (`feedback` in the conversation counts).
+	Feedback int64 `json:"feedback"`
+
 	// OldestWaiting The open conversation that has waited longest; absent when none waits.
 	OldestWaiting *HomeWaitingConversation `json:"oldest_waiting,omitempty"`
 
@@ -13713,6 +13825,53 @@ type HomeInbox struct {
 
 	// Waiting Open conversations whose contact waits for a reply.
 	Waiting int64 `json:"waiting"`
+
+	// WaitingConversations The five conversations that have waited longest, oldest first.
+	WaitingConversations []HomeWaitingConversation `json:"waiting_conversations"`
+}
+
+// HomeInboxConversations defines model for HomeInboxConversations.
+type HomeInboxConversations struct {
+	Conversations int64     `json:"conversations"`
+	InboxId       uuid.UUID `json:"inbox_id"`
+}
+
+// HomeMemberLoad defines model for HomeMemberLoad.
+type HomeMemberLoad struct {
+	MemberId uuid.UUID `json:"member_id"`
+
+	// Open Open conversations assigned to the member, spam left out.
+	Open int64 `json:"open"`
+}
+
+// HomePeriod defines model for HomePeriod.
+type HomePeriod struct {
+	Days int `json:"days"`
+
+	// PreviousSince Start of the previous period, which ends at `since`.
+	PreviousSince time.Time `json:"previous_since"`
+
+	// Since Start of the period, the start of its first day.
+	Since    time.Time `json:"since"`
+	Timezone string    `json:"timezone"`
+
+	// Until End of the period, now.
+	Until time.Time `json:"until"`
+}
+
+// HomeProduct defines model for HomeProduct.
+type HomeProduct struct {
+	Bad int64 `json:"bad"`
+
+	// Conversations Conversations started in the period.
+	Conversations int64 `json:"conversations"`
+
+	// Good Good ratings in the period.
+	Good    int64     `json:"good"`
+	InboxId uuid.UUID `json:"inbox_id"`
+
+	// Open Open conversations, spam left out.
+	Open int64 `json:"open"`
 }
 
 // HomeProperty defines model for HomeProperty.
@@ -13755,11 +13914,78 @@ type HomeSetupItem struct {
 // HomeSetupItemId defines model for HomeSetupItem.Id.
 type HomeSetupItemId string
 
+// HomeStatusComponent defines model for HomeStatusComponent.
+type HomeStatusComponent struct {
+	// Days The days of the period as the status page shows them; days without any state are left out.
+	Days []PublicStatusDay `json:"days"`
+	Id   uuid.UUID         `json:"id"`
+	Name string            `json:"name"`
+
+	// State Worst to best: `major_outage`, `partial_outage`, `degraded`, `maintenance`, `operational`.
+	State StatusComponentStateValue `json:"state"`
+}
+
+// HomeStatusPage defines model for HomeStatusPage.
+type HomeStatusPage struct {
+	Components []HomeStatusComponent `json:"components"`
+
+	// Days The days of the period in the page's time zone, oldest first, each with the worst state of
+	// any component and the uptime over all of them; days without any state are left out.
+	Days      []PublicStatusDay `json:"days"`
+	Id        uuid.UUID         `json:"id"`
+	InboxId   uuid.UUID         `json:"inbox_id"`
+	Name      string            `json:"name"`
+	Published bool              `json:"published"`
+
+	// State The worst state of the page's visible components.
+	State StatusComponentStateValue `json:"state"`
+}
+
+// HomeTeam defines model for HomeTeam.
+type HomeTeam struct {
+	Members []HomeMemberLoad `json:"members"`
+}
+
+// HomeUpcoming defines model for HomeUpcoming.
+type HomeUpcoming struct {
+	// At When it happens: a broadcast's `scheduled_at`, a maintenance's `scheduled_start`, an
+	// incident's start (or when it was published or created), an entry's `publish_at`.
+	At time.Time `json:"at"`
+
+	// ChangelogId What's new entries.
+	ChangelogId *uuid.UUID `json:"changelog_id,omitempty"`
+
+	// Id The broadcast, incident or what's new entry.
+	Id      uuid.UUID        `json:"id"`
+	InboxId uuid.UUID        `json:"inbox_id"`
+	Kind    HomeUpcomingKind `json:"kind"`
+
+	// Locale What's new entries, the changelog's default locale.
+	Locale *string `json:"locale,omitempty"`
+
+	// Recipients Broadcasts: `counts.recipients` as `GET /v1/broadcasts` lists it.
+	Recipients *int64 `json:"recipients,omitempty"`
+
+	// StatusPageId Incidents and maintenance.
+	StatusPageId *uuid.UUID `json:"status_page_id,omitempty"`
+
+	// Title A broadcast's name, an incident's title, an entry's title in its changelog's default locale.
+	Title string `json:"title"`
+}
+
+// HomeUpcomingKind defines model for HomeUpcoming.Kind.
+type HomeUpcomingKind string
+
 // HomeWaitingConversation The open conversation that has waited longest; absent when none waits.
 type HomeWaitingConversation struct {
-	Contact HomeContact `json:"contact"`
-	Id      uuid.UUID   `json:"id"`
-	InboxId uuid.UUID   `json:"inbox_id"`
+	// ChannelKind `email`, `chat` (web widget), `app` (mobile SDKs) or `api` (server to server).
+	ChannelKind *ChannelKind `json:"channel_kind,omitempty"`
+	Contact     HomeContact  `json:"contact"`
+	Id          uuid.UUID    `json:"id"`
+	InboxId     uuid.UUID    `json:"inbox_id"`
+
+	// Preview The contact's last message, shortened.
+	Preview string `json:"preview"`
 
 	// Since The contact's first message after the last reply.
 	Since   time.Time `json:"since"`
@@ -21385,9 +21611,21 @@ type SearchHelpArticlesParams struct {
 
 // GetHomeParams defines parameters for GetHome.
 type GetHomeParams struct {
+	// Days Length of the period in days, today included.
+	Days *GetHomeParamsDays `form:"days,omitempty" json:"days,omitempty"`
+
+	// InboxId Only this inbox (`404` when the caller cannot see it).
+	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+
+	// Timezone IANA time zone that defines the days of the period.
+	Timezone *string `form:"timezone,omitempty" json:"timezone,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
+
+// GetHomeParamsDays defines parameters for GetHome.
+type GetHomeParamsDays int
 
 // ListInboxesParams defines parameters for ListInboxes.
 type ListInboxesParams struct {
@@ -32481,14 +32719,38 @@ type ClientInterface interface {
 	//
 	// The panel's Home page in one request, for the calling member and only what they may see.
 	// Member sessions only (API keys and OAuth tokens answer `403 member_session_required`).
-	// Every block is read from the counters and rollups the server keeps; none of it spends the
-	// workspace's analytics query slots.
+	// Every block is read from the counters, rollups and indexed tables the server keeps, in a
+	// fixed number of queries whatever the workspace's size; none of it spends the workspace's
+	// analytics query slots.
 	//
+	// `days` (7, 14 or 30) sets the period: today and the days before it in `timezone`, and the
+	// same number of days before that as the previous period. `inbox_id` narrows every block
+	// except `setup` to one inbox (`404` when the caller cannot see it).
+	//
+	// - `period`: the period and the previous one.
 	// - `inbox` (every member): open, unassigned and waiting conversations in the inboxes the
 	//   member can see, counted as `GET /v1/conversations/counts` counts them (spam left out),
-	//   and the conversation that has waited longest. A conversation waits while the contact's
-	//   last message has no reply from a member or bot after it; `since` is the contact's first
-	//   message after the last reply.
+	//   open feedback (`feedback` in the counts) and the five conversations that have waited
+	//   longest, oldest first (`oldest_waiting` is the first). A conversation waits while the
+	//   contact's last message has no reply from a member or bot after it; `since` is the
+	//   contact's first message after the last reply.
+	// - `activity` (every member): conversations started, first replies with their median time,
+	//   and ratings, for the period, the previous period and each day of the period, with the
+	//   conversations of each day per inbox. Counted as `GET /v1/stats` counts first replies and
+	//   ratings.
+	// - `products` (every member): each inbox the member can see, by name, with its open
+	//   conversations and the conversations and ratings of the period.
+	// - `team` (every member): open conversations per assignee in those inboxes; members with
+	//   none are left out. Names and presence are `GET /v1/members`.
+	// - `status_pages` (every member): the status page of each inbox the member can see, with
+	//   its state and its components' worst state and uptime per day of the period, in the
+	//   page's time zone. Hidden components are left out.
+	// - `ideas` (when the server has roadmaps): the five published ideas with the most votes
+	//   that are not shipped or closed.
+	// - `upcoming`: the next five of scheduled broadcasts (when the server sends broadcasts),
+	//   open incidents and maintenance that is not completed, and scheduled what's new entries
+	//   (when the server has what's new), soonest first; an incident that has started sorts by
+	//   its start.
 	// - `analytics` (when the server collects analytics): the properties the member can see, as
 	//   `GET /v1/analytics/properties` lists them, each with visitors today, visitors in the last
 	//   30 minutes (as `GET /v1/analytics/properties/{id}/realtime` counts them) and visitors per
@@ -32496,7 +32758,7 @@ type ClientInterface interface {
 	// - `broadcasts` (when the server sends broadcasts): the last sent broadcast of the inboxes
 	//   the member can see. There is no open tracking, so there are no opens.
 	// - `setup` (owners and admins): the setup checklist, built from the same state as the MCP
-	//   `get_setup_state` tool.
+	//   `get_setup_state` tool. Not narrowed by `inbox_id`.
 	//
 	// Corresponds with GET /v1/home (the `GetHome` operationId).
 	GetHome(ctx context.Context, params *GetHomeParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -44191,14 +44453,38 @@ func (c *Client) SearchHelpArticles(ctx context.Context, centerId HelpCenterId, 
 //
 // The panel's Home page in one request, for the calling member and only what they may see.
 // Member sessions only (API keys and OAuth tokens answer `403 member_session_required`).
-// Every block is read from the counters and rollups the server keeps; none of it spends the
-// workspace's analytics query slots.
+// Every block is read from the counters, rollups and indexed tables the server keeps, in a
+// fixed number of queries whatever the workspace's size; none of it spends the workspace's
+// analytics query slots.
 //
+// `days` (7, 14 or 30) sets the period: today and the days before it in `timezone`, and the
+// same number of days before that as the previous period. `inbox_id` narrows every block
+// except `setup` to one inbox (`404` when the caller cannot see it).
+//
+//   - `period`: the period and the previous one.
 //   - `inbox` (every member): open, unassigned and waiting conversations in the inboxes the
 //     member can see, counted as `GET /v1/conversations/counts` counts them (spam left out),
-//     and the conversation that has waited longest. A conversation waits while the contact's
-//     last message has no reply from a member or bot after it; `since` is the contact's first
-//     message after the last reply.
+//     open feedback (`feedback` in the counts) and the five conversations that have waited
+//     longest, oldest first (`oldest_waiting` is the first). A conversation waits while the
+//     contact's last message has no reply from a member or bot after it; `since` is the
+//     contact's first message after the last reply.
+//   - `activity` (every member): conversations started, first replies with their median time,
+//     and ratings, for the period, the previous period and each day of the period, with the
+//     conversations of each day per inbox. Counted as `GET /v1/stats` counts first replies and
+//     ratings.
+//   - `products` (every member): each inbox the member can see, by name, with its open
+//     conversations and the conversations and ratings of the period.
+//   - `team` (every member): open conversations per assignee in those inboxes; members with
+//     none are left out. Names and presence are `GET /v1/members`.
+//   - `status_pages` (every member): the status page of each inbox the member can see, with
+//     its state and its components' worst state and uptime per day of the period, in the
+//     page's time zone. Hidden components are left out.
+//   - `ideas` (when the server has roadmaps): the five published ideas with the most votes
+//     that are not shipped or closed.
+//   - `upcoming`: the next five of scheduled broadcasts (when the server sends broadcasts),
+//     open incidents and maintenance that is not completed, and scheduled what's new entries
+//     (when the server has what's new), soonest first; an incident that has started sorts by
+//     its start.
 //   - `analytics` (when the server collects analytics): the properties the member can see, as
 //     `GET /v1/analytics/properties` lists them, each with visitors today, visitors in the last
 //     30 minutes (as `GET /v1/analytics/properties/{id}/realtime` counts them) and visitors per
@@ -44206,7 +44492,7 @@ func (c *Client) SearchHelpArticles(ctx context.Context, centerId HelpCenterId, 
 //   - `broadcasts` (when the server sends broadcasts): the last sent broadcast of the inboxes
 //     the member can see. There is no open tracking, so there are no opens.
 //   - `setup` (owners and admins): the setup checklist, built from the same state as the MCP
-//     `get_setup_state` tool.
+//     `get_setup_state` tool. Not narrowed by `inbox_id`.
 //
 // Corresponds with GET /v1/home (the `GetHome` operationId).
 func (c *Client) GetHome(ctx context.Context, params *GetHomeParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -66078,6 +66364,57 @@ func NewGetHomeRequest(server string, params *GetHomeParams) (*http.Request, err
 		return nil, err
 	}
 
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Days != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "days", *params.Days, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.InboxId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "inbox_id", *params.InboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Timezone != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "timezone", *params.Timezone, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
 	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
 	if err != nil {
 		return nil, err
@@ -81342,14 +81679,38 @@ type ClientWithResponsesInterface interface {
 	//
 	// The panel's Home page in one request, for the calling member and only what they may see.
 	// Member sessions only (API keys and OAuth tokens answer `403 member_session_required`).
-	// Every block is read from the counters and rollups the server keeps; none of it spends the
-	// workspace's analytics query slots.
+	// Every block is read from the counters, rollups and indexed tables the server keeps, in a
+	// fixed number of queries whatever the workspace's size; none of it spends the workspace's
+	// analytics query slots.
 	//
+	// `days` (7, 14 or 30) sets the period: today and the days before it in `timezone`, and the
+	// same number of days before that as the previous period. `inbox_id` narrows every block
+	// except `setup` to one inbox (`404` when the caller cannot see it).
+	//
+	// - `period`: the period and the previous one.
 	// - `inbox` (every member): open, unassigned and waiting conversations in the inboxes the
 	//   member can see, counted as `GET /v1/conversations/counts` counts them (spam left out),
-	//   and the conversation that has waited longest. A conversation waits while the contact's
-	//   last message has no reply from a member or bot after it; `since` is the contact's first
-	//   message after the last reply.
+	//   open feedback (`feedback` in the counts) and the five conversations that have waited
+	//   longest, oldest first (`oldest_waiting` is the first). A conversation waits while the
+	//   contact's last message has no reply from a member or bot after it; `since` is the
+	//   contact's first message after the last reply.
+	// - `activity` (every member): conversations started, first replies with their median time,
+	//   and ratings, for the period, the previous period and each day of the period, with the
+	//   conversations of each day per inbox. Counted as `GET /v1/stats` counts first replies and
+	//   ratings.
+	// - `products` (every member): each inbox the member can see, by name, with its open
+	//   conversations and the conversations and ratings of the period.
+	// - `team` (every member): open conversations per assignee in those inboxes; members with
+	//   none are left out. Names and presence are `GET /v1/members`.
+	// - `status_pages` (every member): the status page of each inbox the member can see, with
+	//   its state and its components' worst state and uptime per day of the period, in the
+	//   page's time zone. Hidden components are left out.
+	// - `ideas` (when the server has roadmaps): the five published ideas with the most votes
+	//   that are not shipped or closed.
+	// - `upcoming`: the next five of scheduled broadcasts (when the server sends broadcasts),
+	//   open incidents and maintenance that is not completed, and scheduled what's new entries
+	//   (when the server has what's new), soonest first; an incident that has started sorts by
+	//   its start.
 	// - `analytics` (when the server collects analytics): the properties the member can see, as
 	//   `GET /v1/analytics/properties` lists them, each with visitors today, visitors in the last
 	//   30 minutes (as `GET /v1/analytics/properties/{id}/realtime` counts them) and visitors per
@@ -81357,7 +81718,7 @@ type ClientWithResponsesInterface interface {
 	// - `broadcasts` (when the server sends broadcasts): the last sent broadcast of the inboxes
 	//   the member can see. There is no open tracking, so there are no opens.
 	// - `setup` (owners and admins): the setup checklist, built from the same state as the MCP
-	//   `get_setup_state` tool.
+	//   `get_setup_state` tool. Not narrowed by `inbox_id`.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -102306,15 +102667,24 @@ type GetHomeResponse struct {
 	HTTPResponse *http.Response
 	// JSON200 the response for an HTTP 200 `application/json` response
 	JSON200 *Home
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
 	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
 	ApplicationproblemJSON401 *Problem
 	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
 	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
 func (r GetHomeResponse) GetJSON200() *Home {
 	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r GetHomeResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
 }
 
 // GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
@@ -102325,6 +102695,11 @@ func (r GetHomeResponse) GetApplicationproblemJSON401() *Problem {
 // GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
 func (r GetHomeResponse) GetApplicationproblemJSON403() *Problem {
 	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r GetHomeResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
 }
 
 // GetBody returns the raw response body bytes
@@ -120577,14 +120952,38 @@ func (c *ClientWithResponses) SearchHelpArticlesWithResponse(ctx context.Context
 //
 // The panel's Home page in one request, for the calling member and only what they may see.
 // Member sessions only (API keys and OAuth tokens answer `403 member_session_required`).
-// Every block is read from the counters and rollups the server keeps; none of it spends the
-// workspace's analytics query slots.
+// Every block is read from the counters, rollups and indexed tables the server keeps, in a
+// fixed number of queries whatever the workspace's size; none of it spends the workspace's
+// analytics query slots.
 //
+// `days` (7, 14 or 30) sets the period: today and the days before it in `timezone`, and the
+// same number of days before that as the previous period. `inbox_id` narrows every block
+// except `setup` to one inbox (`404` when the caller cannot see it).
+//
+//   - `period`: the period and the previous one.
 //   - `inbox` (every member): open, unassigned and waiting conversations in the inboxes the
 //     member can see, counted as `GET /v1/conversations/counts` counts them (spam left out),
-//     and the conversation that has waited longest. A conversation waits while the contact's
-//     last message has no reply from a member or bot after it; `since` is the contact's first
-//     message after the last reply.
+//     open feedback (`feedback` in the counts) and the five conversations that have waited
+//     longest, oldest first (`oldest_waiting` is the first). A conversation waits while the
+//     contact's last message has no reply from a member or bot after it; `since` is the
+//     contact's first message after the last reply.
+//   - `activity` (every member): conversations started, first replies with their median time,
+//     and ratings, for the period, the previous period and each day of the period, with the
+//     conversations of each day per inbox. Counted as `GET /v1/stats` counts first replies and
+//     ratings.
+//   - `products` (every member): each inbox the member can see, by name, with its open
+//     conversations and the conversations and ratings of the period.
+//   - `team` (every member): open conversations per assignee in those inboxes; members with
+//     none are left out. Names and presence are `GET /v1/members`.
+//   - `status_pages` (every member): the status page of each inbox the member can see, with
+//     its state and its components' worst state and uptime per day of the period, in the
+//     page's time zone. Hidden components are left out.
+//   - `ideas` (when the server has roadmaps): the five published ideas with the most votes
+//     that are not shipped or closed.
+//   - `upcoming`: the next five of scheduled broadcasts (when the server sends broadcasts),
+//     open incidents and maintenance that is not completed, and scheduled what's new entries
+//     (when the server has what's new), soonest first; an incident that has started sorts by
+//     its start.
 //   - `analytics` (when the server collects analytics): the properties the member can see, as
 //     `GET /v1/analytics/properties` lists them, each with visitors today, visitors in the last
 //     30 minutes (as `GET /v1/analytics/properties/{id}/realtime` counts them) and visitors per
@@ -120592,7 +120991,7 @@ func (c *ClientWithResponses) SearchHelpArticlesWithResponse(ctx context.Context
 //   - `broadcasts` (when the server sends broadcasts): the last sent broadcast of the inboxes
 //     the member can see. There is no open tracking, so there are no opens.
 //   - `setup` (owners and admins): the setup checklist, built from the same state as the MCP
-//     `get_setup_state` tool.
+//     `get_setup_state` tool. Not narrowed by `inbox_id`.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -139102,6 +139501,13 @@ func ParseGetHomeResponse(rsp *http.Response) (*GetHomeResponse, error) {
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Problem
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -139115,6 +139521,13 @@ func ParseGetHomeResponse(rsp *http.Response) (*GetHomeResponse, error) {
 			return nil, err
 		}
 		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
 
 	}
 

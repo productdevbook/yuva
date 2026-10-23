@@ -3104,14 +3104,38 @@ paths:
       description: |
         The panel's Home page in one request, for the calling member and only what they may see.
         Member sessions only (API keys and OAuth tokens answer `403 member_session_required`).
-        Every block is read from the counters and rollups the server keeps; none of it spends the
-        workspace's analytics query slots.
+        Every block is read from the counters, rollups and indexed tables the server keeps, in a
+        fixed number of queries whatever the workspace's size; none of it spends the workspace's
+        analytics query slots.
 
+        `days` (7, 14 or 30) sets the period: today and the days before it in `timezone`, and the
+        same number of days before that as the previous period. `inbox_id` narrows every block
+        except `setup` to one inbox (`404` when the caller cannot see it).
+
+        - `period`: the period and the previous one.
         - `inbox` (every member): open, unassigned and waiting conversations in the inboxes the
           member can see, counted as `GET /v1/conversations/counts` counts them (spam left out),
-          and the conversation that has waited longest. A conversation waits while the contact's
-          last message has no reply from a member or bot after it; `since` is the contact's first
-          message after the last reply.
+          open feedback (`feedback` in the counts) and the five conversations that have waited
+          longest, oldest first (`oldest_waiting` is the first). A conversation waits while the
+          contact's last message has no reply from a member or bot after it; `since` is the
+          contact's first message after the last reply.
+        - `activity` (every member): conversations started, first replies with their median time,
+          and ratings, for the period, the previous period and each day of the period, with the
+          conversations of each day per inbox. Counted as `GET /v1/stats` counts first replies and
+          ratings.
+        - `products` (every member): each inbox the member can see, by name, with its open
+          conversations and the conversations and ratings of the period.
+        - `team` (every member): open conversations per assignee in those inboxes; members with
+          none are left out. Names and presence are `GET /v1/members`.
+        - `status_pages` (every member): the status page of each inbox the member can see, with
+          its state and its components' worst state and uptime per day of the period, in the
+          page's time zone. Hidden components are left out.
+        - `ideas` (when the server has roadmaps): the five published ideas with the most votes
+          that are not shipped or closed.
+        - `upcoming`: the next five of scheduled broadcasts (when the server sends broadcasts),
+          open incidents and maintenance that is not completed, and scheduled what's new entries
+          (when the server has what's new), soonest first; an incident that has started sorts by
+          its start.
         - `analytics` (when the server collects analytics): the properties the member can see, as
           `GET /v1/analytics/properties` lists them, each with visitors today, visitors in the last
           30 minutes (as `GET /v1/analytics/properties/{id}/realtime` counts them) and visitors per
@@ -3119,10 +3143,32 @@ paths:
         - `broadcasts` (when the server sends broadcasts): the last sent broadcast of the inboxes
           the member can see. There is no open tracking, so there are no opens.
         - `setup` (owners and admins): the setup checklist, built from the same state as the MCP
-          `get_setup_state` tool.
+          `get_setup_state` tool. Not narrowed by `inbox_id`.
       tags: [workspace]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
+        - name: days
+          in: query
+          description: Length of the period in days, today included.
+          schema:
+            type: integer
+            enum: [7, 14, 30]
+            default: 14
+            x-enum-varnames: [HomeDays7, HomeDays14, HomeDays30]
+        - name: inbox_id
+          in: query
+          description: Only this inbox (`404` when the caller cannot see it).
+          schema:
+            type: string
+            format: uuid
+        - name: timezone
+          in: query
+          description: IANA time zone that defines the days of the period.
+          schema:
+            type: string
+            maxLength: 64
+            default: UTC
+            examples: ["Europe/Istanbul"]
       responses:
         "200":
           description: The Home blocks the member may see.
@@ -3130,9 +3176,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Home"
+        "400":
+          $ref: "#/components/responses/Problem"
         "401":
           $ref: "#/components/responses/Problem"
         "403":
+          $ref: "#/components/responses/Problem"
+        "404":
           $ref: "#/components/responses/Problem"
   /v1/stats:
     get:
@@ -19497,19 +19547,61 @@ components:
     Home:
       type: object
       description: The Home blocks; a block the member may not see is absent.
-      required: [inbox]
+      required: [period, inbox, activity, products, team, status_pages, upcoming]
       properties:
+        period:
+          $ref: "#/components/schemas/HomePeriod"
         inbox:
           $ref: "#/components/schemas/HomeInbox"
+        activity:
+          $ref: "#/components/schemas/HomeActivity"
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/HomeProduct"
+        team:
+          $ref: "#/components/schemas/HomeTeam"
+        status_pages:
+          type: array
+          items:
+            $ref: "#/components/schemas/HomeStatusPage"
+        ideas:
+          type: array
+          items:
+            $ref: "#/components/schemas/HomeIdea"
+        upcoming:
+          type: array
+          items:
+            $ref: "#/components/schemas/HomeUpcoming"
         analytics:
           $ref: "#/components/schemas/HomeAnalytics"
         broadcasts:
           $ref: "#/components/schemas/HomeBroadcasts"
         setup:
           $ref: "#/components/schemas/HomeSetup"
+    HomePeriod:
+      type: object
+      required: [days, timezone, since, until, previous_since]
+      properties:
+        days:
+          type: integer
+        timezone:
+          type: string
+        since:
+          type: string
+          format: date-time
+          description: Start of the period, the start of its first day.
+        until:
+          type: string
+          format: date-time
+          description: End of the period, now.
+        previous_since:
+          type: string
+          format: date-time
+          description: Start of the previous period, which ends at `since`.
     HomeInbox:
       type: object
-      required: [open, unassigned, waiting]
+      required: [open, unassigned, waiting, feedback, waiting_conversations]
       properties:
         open:
           type: integer
@@ -19522,12 +19614,21 @@ components:
           type: integer
           format: int64
           description: Open conversations whose contact waits for a reply.
+        feedback:
+          type: integer
+          format: int64
+          description: Open feedback, spam left out (`feedback` in the conversation counts).
         oldest_waiting:
           $ref: "#/components/schemas/HomeWaitingConversation"
+        waiting_conversations:
+          type: array
+          description: The five conversations that have waited longest, oldest first.
+          items:
+            $ref: "#/components/schemas/HomeWaitingConversation"
     HomeWaitingConversation:
       type: object
       description: The open conversation that has waited longest; absent when none waits.
-      required: [id, inbox_id, subject, contact, since]
+      required: [id, inbox_id, subject, preview, contact, since]
       properties:
         id:
           type: string
@@ -19537,6 +19638,11 @@ components:
           format: uuid
         subject:
           type: string
+        channel_kind:
+          $ref: "#/components/schemas/ChannelKind"
+        preview:
+          type: string
+          description: The contact's last message, shortened.
         contact:
           $ref: "#/components/schemas/HomeContact"
         since:
@@ -19557,6 +19663,233 @@ components:
           type: string
           format: email
           description: The contact's first address, when it has one.
+    HomeActivityTotals:
+      type: object
+      required: [conversations, first_replies, good, bad]
+      properties:
+        conversations:
+          type: integer
+          format: int64
+          description: Conversations started, spam left out.
+        first_replies:
+          type: integer
+          format: int64
+          description: Conversations whose first member reply falls in the span.
+        median_first_reply_seconds:
+          type: integer
+          format: int64
+          description: Median time from the contact's first message to that reply; absent without first replies.
+        good:
+          type: integer
+          format: int64
+        bad:
+          type: integer
+          format: int64
+    HomeActivity:
+      type: object
+      required: [conversations, first_replies, good, bad, previous, days]
+      properties:
+        conversations:
+          type: integer
+          format: int64
+          description: Conversations started in the period, spam left out.
+        first_replies:
+          type: integer
+          format: int64
+        median_first_reply_seconds:
+          type: integer
+          format: int64
+        good:
+          type: integer
+          format: int64
+        bad:
+          type: integer
+          format: int64
+        previous:
+          $ref: "#/components/schemas/HomeActivityTotals"
+        days:
+          type: array
+          description: Each day of the period, oldest first; the last one is today.
+          items:
+            $ref: "#/components/schemas/HomeActivityDay"
+    HomeActivityDay:
+      type: object
+      required: [day, conversations, first_replies, good, bad, inboxes]
+      properties:
+        day:
+          type: string
+          format: date
+        conversations:
+          type: integer
+          format: int64
+        first_replies:
+          type: integer
+          format: int64
+        median_first_reply_seconds:
+          type: integer
+          format: int64
+        good:
+          type: integer
+          format: int64
+        bad:
+          type: integer
+          format: int64
+        inboxes:
+          type: array
+          description: Conversations started that day per inbox; inboxes without any are left out.
+          items:
+            $ref: "#/components/schemas/HomeInboxConversations"
+    HomeInboxConversations:
+      type: object
+      required: [inbox_id, conversations]
+      properties:
+        inbox_id:
+          type: string
+          format: uuid
+        conversations:
+          type: integer
+          format: int64
+    HomeProduct:
+      type: object
+      required: [inbox_id, open, conversations, good, bad]
+      properties:
+        inbox_id:
+          type: string
+          format: uuid
+        open:
+          type: integer
+          format: int64
+          description: Open conversations, spam left out.
+        conversations:
+          type: integer
+          format: int64
+          description: Conversations started in the period.
+        good:
+          type: integer
+          format: int64
+          description: Good ratings in the period.
+        bad:
+          type: integer
+          format: int64
+    HomeTeam:
+      type: object
+      required: [members]
+      properties:
+        members:
+          type: array
+          items:
+            $ref: "#/components/schemas/HomeMemberLoad"
+    HomeMemberLoad:
+      type: object
+      required: [member_id, open]
+      properties:
+        member_id:
+          type: string
+          format: uuid
+        open:
+          type: integer
+          format: int64
+          description: Open conversations assigned to the member, spam left out.
+    HomeStatusPage:
+      type: object
+      required: [id, inbox_id, name, published, state, days, components]
+      properties:
+        id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        published:
+          type: boolean
+        state:
+          $ref: "#/components/schemas/StatusComponentStateValue"
+          description: The worst state of the page's visible components.
+        days:
+          type: array
+          description: |
+            The days of the period in the page's time zone, oldest first, each with the worst state of
+            any component and the uptime over all of them; days without any state are left out.
+          items:
+            $ref: "#/components/schemas/PublicStatusDay"
+        components:
+          type: array
+          items:
+            $ref: "#/components/schemas/HomeStatusComponent"
+    HomeStatusComponent:
+      type: object
+      required: [id, name, state, days]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        state:
+          $ref: "#/components/schemas/StatusComponentStateValue"
+        days:
+          type: array
+          description: The days of the period as the status page shows them; days without any state are left out.
+          items:
+            $ref: "#/components/schemas/PublicStatusDay"
+    HomeIdea:
+      type: object
+      required: [id, inbox_id, title, votes, stage]
+      properties:
+        id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        votes:
+          type: integer
+          format: int64
+        stage:
+          $ref: "#/components/schemas/IdeaStage"
+    HomeUpcoming:
+      type: object
+      required: [kind, id, inbox_id, at, title]
+      properties:
+        kind:
+          type: string
+          enum: [broadcast, incident, maintenance, whats_new]
+          x-enum-varnames: [HomeUpcomingBroadcast, HomeUpcomingIncident, HomeUpcomingMaintenance, HomeUpcomingWhatsNew]
+        id:
+          type: string
+          format: uuid
+          description: The broadcast, incident or what's new entry.
+        inbox_id:
+          type: string
+          format: uuid
+        at:
+          type: string
+          format: date-time
+          description: |
+            When it happens: a broadcast's `scheduled_at`, a maintenance's `scheduled_start`, an
+            incident's start (or when it was published or created), an entry's `publish_at`.
+        title:
+          type: string
+          description: A broadcast's name, an incident's title, an entry's title in its changelog's default locale.
+        status_page_id:
+          type: string
+          format: uuid
+          description: Incidents and maintenance.
+        changelog_id:
+          type: string
+          format: uuid
+          description: What's new entries.
+        locale:
+          type: string
+          description: What's new entries, the changelog's default locale.
+        recipients:
+          type: integer
+          format: int64
+          description: "Broadcasts: `counts.recipients` as `GET /v1/broadcasts` lists it."
     HomeAnalytics:
       type: object
       required: [properties]

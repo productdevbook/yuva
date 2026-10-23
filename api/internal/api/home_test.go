@@ -233,11 +233,11 @@ func TestHomeAnalytics(t *testing.T) {
 }
 
 func TestHomeWithoutAnalyticsOrBroadcasts(t *testing.T) {
-	h := newHarnessWith(t, func(d *api.Deps) { d.Analytics.Off, d.Broadcasts.Mode = true, "off" })
+	h := newHarnessWith(t, func(d *api.Deps) { d.Analytics.Off, d.Broadcasts.Mode, d.Roadmap.Off = true, "off", true })
 	tm := newTeam(t, h)
 	r := homeOf(tm.owner)
-	if r.body["analytics"] != nil || r.body["broadcasts"] != nil {
-		t.Fatalf("a server without analytics and broadcasts: %s", r.raw)
+	if r.body["analytics"] != nil || r.body["broadcasts"] != nil || r.body["ideas"] != nil {
+		t.Fatalf("a server without analytics, broadcasts and roadmaps: %s", r.raw)
 	}
 	if got := checklist(t, r); got["order"][0] != "[chat email app docs newsletter]" {
 		t.Fatalf("checklist without analytics: %v", got["order"][0])
@@ -372,5 +372,237 @@ func TestHomeSetupChecklistAgreesWithMCP(t *testing.T) {
 		if string(a) != string(b) {
 			t.Fatalf("get_setup_state %s differs from the list endpoints:\n%s\n%s", name, a, b)
 		}
+	}
+}
+
+func homeWith(c *client, query string) response {
+	c.h.t.Helper()
+	return c.expect(http.StatusOK, "GET", "/v1/home"+query, nil)
+}
+
+func setRated(t *testing.T, h *harness, conv, rating string, at time.Time) {
+	t.Helper()
+	if _, err := h.st.Pool.Exec(context.Background(), `UPDATE conversations SET rating = $2, rated_at = $3 WHERE id = $1`, conv, rating, at); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func ids(items any, key string) []string {
+	var out []string
+	for _, it := range items.([]any) {
+		out = append(out, it.(map[string]any)[key].(string))
+	}
+	return out
+}
+
+func TestHomePeriodActivityAndInboxFilter(t *testing.T) {
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	other := newTeam(t, h)
+	key := tm.apiKey(h)
+	tm.owner.expect(http.StatusNoContent, "PUT", "/v1/inboxes/"+tm.inbox+"/members/"+tm.agentID, nil)
+	billing := tm.owner.expect(http.StatusCreated, "POST", "/v1/inboxes", map[string]any{"name": "Billing", "slug": "billing"}).body["inbox"].(map[string]any)["id"].(string)
+	now := time.Date(2026, 10, 12, 10, 0, 0, 0, time.UTC)
+	conv := func(inbox string, at time.Time) string {
+		h.clock.Set(at)
+		return tm.owner.expect(http.StatusCreated, "POST", "/v1/conversations", map[string]any{"inbox_id": inbox, "contact_id": tm.contact, "subject": "Help"}).str("id")
+	}
+	old := conv(tm.inbox, now.AddDate(0, 0, -10))
+	mid := conv(tm.inbox, now.AddDate(0, 0, -3))
+	asked := conv(tm.inbox, now.Add(-2*time.Hour))
+	post(key, asked, map[string]any{"kind": "message", "direction": "in", "body": "help"})
+	h.clock.Set(now.Add(-time.Hour))
+	post(tm.owner, asked, map[string]any{"kind": "message", "body": "on it"})
+	invoice := conv(billing, now.Add(-time.Hour))
+	post(key, invoice, map[string]any{"kind": "message", "direction": "in", "body": "where   is my invoice?"})
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/conversations/"+mid, map[string]any{"assignee_id": tm.agentID})
+	setRated(t, h, asked, "good", now.Add(-30*time.Minute))
+	setRated(t, h, invoice, "bad", now.Add(-20*time.Minute))
+	setRated(t, h, old, "good", now.AddDate(0, 0, -9))
+	h.clock.Set(now)
+
+	r := homeWith(tm.owner, "?days=7")
+	period := homeBlock(r, "period")
+	since, _ := time.Parse(time.RFC3339, period["since"].(string))
+	prev, _ := time.Parse(time.RFC3339, period["previous_since"].(string))
+	if period["days"] != float64(7) || period["timezone"] != "UTC" || !since.Equal(time.Date(2026, 10, 6, 0, 0, 0, 0, time.UTC)) || !prev.Equal(time.Date(2026, 9, 29, 0, 0, 0, 0, time.UTC)) {
+		t.Fatalf("period: %v", period)
+	}
+	a := homeBlock(r, "activity")
+	previous := a["previous"].(map[string]any)
+	if a["conversations"] != float64(3) || a["good"] != float64(1) || a["bad"] != float64(1) || a["first_replies"] != float64(1) || a["median_first_reply_seconds"] != float64(3600) ||
+		previous["conversations"] != float64(1) || previous["good"] != float64(1) || previous["first_replies"] != float64(0) || previous["median_first_reply_seconds"] != nil {
+		t.Fatalf("owner's activity: %s", r.raw)
+	}
+	days := a["days"].([]any)
+	today, before := days[6].(map[string]any), days[3].(map[string]any)
+	perInbox := map[string]any{}
+	for _, in := range today["inboxes"].([]any) {
+		m := in.(map[string]any)
+		perInbox[m["inbox_id"].(string)] = m["conversations"]
+	}
+	if len(days) != 7 || today["day"] != "2026-10-12" || today["conversations"] != float64(2) || today["first_replies"] != float64(1) || today["median_first_reply_seconds"] != float64(3600) ||
+		today["good"] != float64(1) || today["bad"] != float64(1) || perInbox[tm.inbox] != float64(1) || perInbox[billing] != float64(1) ||
+		before["day"] != "2026-10-09" || before["conversations"] != float64(1) || days[0].(map[string]any)["day"] != "2026-10-06" {
+		t.Fatalf("owner's days: %v", days)
+	}
+	products := r.body["products"].([]any)
+	if got := ids(products, "inbox_id"); !slices.Equal(got, []string{billing, tm.inbox}) {
+		t.Fatalf("products by name: %v", got)
+	}
+	b, s := products[0].(map[string]any), products[1].(map[string]any)
+	if b["open"] != float64(1) || b["conversations"] != float64(1) || b["bad"] != float64(1) || b["good"] != float64(0) ||
+		s["open"] != float64(3) || s["conversations"] != float64(2) || s["good"] != float64(1) || s["bad"] != float64(0) {
+		t.Fatalf("products: %v", products)
+	}
+	if team := homeBlock(r, "team")["members"].([]any); len(team) != 1 || team[0].(map[string]any)["member_id"] != tm.agentID || team[0].(map[string]any)["open"] != float64(1) {
+		t.Fatalf("team: %v", team)
+	}
+	inbox := homeBlock(r, "inbox")
+	waiting := inbox["waiting_conversations"].([]any)
+	if inbox["waiting"] != float64(1) || inbox["feedback"] != float64(0) || len(waiting) != 1 {
+		t.Fatalf("owner's inbox: %v", inbox)
+	}
+	if w := waiting[0].(map[string]any); w["id"] != invoice || w["preview"] != "where is my invoice?" || w["inbox_id"] != billing || inbox["oldest_waiting"].(map[string]any)["id"] != invoice {
+		t.Fatalf("waiting: %v", waiting)
+	}
+
+	if a := homeBlock(homeWith(tm.owner, "?days=14"), "activity"); a["conversations"] != float64(4) || a["good"] != float64(2) || a["previous"].(map[string]any)["conversations"] != float64(0) {
+		t.Fatalf("fourteen days: %v", a)
+	}
+	if a := homeBlock(homeWith(tm.owner, ""), "activity"); len(a["days"].([]any)) != 14 {
+		t.Fatalf("the default period is not fourteen days: %v", a)
+	}
+
+	r = homeWith(tm.owner, "?days=7&inbox_id="+billing)
+	a = homeBlock(r, "activity")
+	if got := ids(r.body["products"], "inbox_id"); !slices.Equal(got, []string{billing}) || a["conversations"] != float64(1) || a["good"] != float64(0) || a["bad"] != float64(1) ||
+		a["first_replies"] != float64(0) || homeBlock(r, "inbox")["open"] != float64(1) || len(homeBlock(r, "team")["members"].([]any)) != 0 {
+		t.Fatalf("one inbox: %s", r.raw)
+	}
+
+	r = homeWith(tm.agent, "?days=7")
+	a = homeBlock(r, "activity")
+	if got := ids(r.body["products"], "inbox_id"); !slices.Equal(got, []string{tm.inbox}) || a["conversations"] != float64(2) || a["bad"] != float64(0) ||
+		homeBlock(r, "inbox")["waiting"] != float64(0) || len(homeBlock(r, "inbox")["waiting_conversations"].([]any)) != 0 {
+		t.Fatalf("agent's home: %s", r.raw)
+	}
+	for _, d := range a["days"].([]any) {
+		for _, in := range d.(map[string]any)["inboxes"].([]any) {
+			if in.(map[string]any)["inbox_id"] != tm.inbox {
+				t.Fatalf("agent sees another inbox's conversations: %v", d)
+			}
+		}
+	}
+	tm.agent.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/home?inbox_id="+billing, nil)
+	tm.owner.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/home?inbox_id="+other.inbox, nil)
+	for _, q := range []string{"?days=10", "?days=abc", "?days=0", "?timezone=Mars/Base"} {
+		tm.owner.expectProblem(http.StatusBadRequest, "validation_failed", "GET", "/v1/home"+q, nil)
+	}
+
+	ny := homeBlock(homeWith(tm.owner, "?days=7&timezone=America/New_York"), "period")
+	since, _ = time.Parse(time.RFC3339, ny["since"].(string))
+	if !since.Equal(time.Date(2026, 10, 6, 4, 0, 0, 0, time.UTC)) || ny["timezone"] != "America/New_York" {
+		t.Fatalf("period in New York: %v", ny)
+	}
+	if r := homeWith(other.owner, "?days=30"); len(r.body["products"].([]any)) != 1 || homeBlock(r, "activity")["conversations"] != float64(0) {
+		t.Fatalf("another workspace sees %s", r.raw)
+	}
+}
+
+func TestHomeStatusIdeasAndUpcoming(t *testing.T) {
+	h := newHarness(t)
+	ct := newChangelogTeam(t, h)
+	o := ct.owner
+	now := h.clock.Now()
+	page := func(inbox string) (string, string) {
+		pg := o.expect(http.StatusCreated, "POST", "/v1/status-pages", map[string]any{"inbox_id": inbox, "name": "Status", "slug": unique("st")}).str("id")
+		c := o.expect(http.StatusCreated, "POST", "/v1/status-pages/"+pg+"/components", map[string]any{"name": "API"}).str("id")
+		return pg, c
+	}
+	shared, _ := page(ct.chatInbox)
+	hidden, db := page(ct.inbox)
+	o.expect(http.StatusCreated, "POST", "/v1/status-pages/"+hidden+"/components", map[string]any{"name": "Internal", "hidden": true})
+	incident := o.expect(http.StatusCreated, "POST", "/v1/status-pages/"+hidden+"/incidents", map[string]any{
+		"title": "Database down", "message": "Looking.", "impact": "major", "publish": true,
+		"components": []map[string]any{{"component_id": db, "state": "major_outage"}},
+	}).str("id")
+	start := now.Add(2 * time.Hour)
+	maintenance := o.expect(http.StatusCreated, "POST", "/v1/status-pages/"+shared+"/incidents", map[string]any{
+		"kind": "maintenance", "title": "Upgrade", "message": "Planned.", "publish": true,
+		"scheduled_start": start.Format(time.RFC3339), "scheduled_end": start.Add(time.Hour).Format(time.RFC3339),
+	}).str("id")
+	broadcast := o.expect(http.StatusCreated, "POST", "/v1/broadcasts", map[string]any{"inbox_id": ct.chatInbox, "name": "November news"}).str("id")
+	if _, err := h.st.Pool.Exec(context.Background(), `UPDATE broadcasts SET state = 'scheduled', scheduled_at = $2, counts = '{"recipients": 42}' WHERE id = $1`, broadcast, now.Add(time.Hour)); err != nil {
+		t.Fatal(err)
+	}
+	entry := ct.entry(o, "en", "Dark mode", "Text.")
+	o.expect(http.StatusOK, "POST", ct.path("/entries/"+entry+"/schedule"), map[string]any{"publish_at": now.Add(3 * time.Hour).UTC().Format(time.RFC3339Nano)})
+
+	board := func(inbox, channel string) string {
+		return o.expect(http.StatusCreated, "POST", "/v1/roadmap-boards", map[string]any{"inbox_id": inbox, "channel_id": channel, "name": "Roadmap", "slug": unique("rm")}).str("id")
+	}
+	supportChat := o.expect(http.StatusCreated, "POST", "/v1/inboxes/"+ct.inbox+"/channels", map[string]any{
+		"kind": "chat", "name": "Support site", "chat": map[string]any{"allowed_origins": []string{"https://support.example.com"}},
+	}).str("id")
+	idea := func(board, title string, votes int, stage string) string {
+		id := o.expect(http.StatusCreated, "POST", "/v1/discussions", map[string]any{"kind": "idea", "board_id": board, "title": title, "body": "Details of " + title}).str("id")
+		if _, err := h.st.Pool.Exec(context.Background(), `UPDATE discussions SET vote_count = $2, stage = $3 WHERE id = $1`, id, votes, stage); err != nil {
+			t.Fatal(err)
+		}
+		return id
+	}
+	chatBoard, supportBoard := board(ct.chatInbox, ct.channel), board(ct.inbox, supportChat)
+	exports := idea(chatBoard, "Exports", 9, "planned")
+	themes := idea(chatBoard, "Themes", 3, "ideas")
+	idea(chatBoard, "Shipped thing", 50, "shipped")
+	secret := idea(supportBoard, "Audit log", 20, "in_progress")
+
+	r := homeOf(o)
+	pages := r.body["status_pages"].([]any)
+	if got := ids(pages, "id"); !slices.Equal(got, []string{shared, hidden}) {
+		t.Fatalf("owner's status pages: %v", got)
+	}
+	down := pages[1].(map[string]any)
+	comps := down["components"].([]any)
+	last := func(days any) string {
+		d := days.([]any)
+		return d[len(d)-1].(map[string]any)["state"].(string)
+	}
+	if down["state"] != "major_outage" || len(comps) != 1 || comps[0].(map[string]any)["id"] != db || comps[0].(map[string]any)["state"] != "major_outage" ||
+		last(comps[0].(map[string]any)["days"]) != "major_outage" || last(down["days"]) != "major_outage" || pages[0].(map[string]any)["state"] != "operational" {
+		t.Fatalf("status pages: %v", pages)
+	}
+	up := r.body["upcoming"].([]any)
+	var kinds []string
+	for _, u := range up {
+		kinds = append(kinds, u.(map[string]any)["kind"].(string))
+	}
+	if !slices.Equal(ids(up, "id"), []string{incident, broadcast, maintenance, entry}) || !slices.Equal(kinds, []string{"incident", "broadcast", "maintenance", "whats_new"}) {
+		t.Fatalf("owner's upcoming: %v", up)
+	}
+	if b, m, e := up[1].(map[string]any), up[2].(map[string]any), up[3].(map[string]any); b["recipients"] != float64(42) || b["title"] != "November news" ||
+		m["status_page_id"] != shared || e["changelog_id"] != ct.changelog || e["locale"] != "en" || e["title"] != "Dark mode" || up[0].(map[string]any)["status_page_id"] != hidden {
+		t.Fatalf("upcoming items: %v", up)
+	}
+	ideas := r.body["ideas"].([]any)
+	if !slices.Equal(ids(ideas, "id"), []string{secret, exports, themes}) || ideas[0].(map[string]any)["votes"] != float64(20) || ideas[0].(map[string]any)["stage"] != "in_progress" {
+		t.Fatalf("owner's ideas: %v", ideas)
+	}
+
+	r = homeOf(ct.agent)
+	if got := ids(r.body["status_pages"], "id"); !slices.Equal(got, []string{shared}) {
+		t.Fatalf("agent's status pages: %v", got)
+	}
+	if got := ids(r.body["upcoming"], "id"); !slices.Equal(got, []string{broadcast, maintenance, entry}) {
+		t.Fatalf("agent's upcoming: %v", got)
+	}
+	if got := ids(r.body["ideas"], "id"); !slices.Equal(got, []string{exports, themes}) {
+		t.Fatalf("agent's ideas: %v", got)
+	}
+
+	r = homeWith(o, "?inbox_id="+ct.inbox)
+	if !slices.Equal(ids(r.body["status_pages"], "id"), []string{hidden}) || !slices.Equal(ids(r.body["upcoming"], "id"), []string{incident}) || !slices.Equal(ids(r.body["ideas"], "id"), []string{secret}) {
+		t.Fatalf("owner's home for one inbox: %s", r.raw)
 	}
 }

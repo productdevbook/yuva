@@ -12,16 +12,133 @@ import (
 	"uuid"
 )
 
-const homeInbox = `-- name: HomeInbox :one
+const homeConversationsByDay = `-- name: HomeConversationsByDay :many
+SELECT c.inbox_id, (c.created_at AT TIME ZONE $1::text)::date AS day, count(*) AS n
+FROM conversations c
+WHERE c.workspace_id = $2 AND c.last_activity_at >= $3::timestamptz
+  AND c.created_at >= $3::timestamptz AND c.created_at <= $4::timestamptz AND NOT c.spam
+  AND ($5::uuid IS NULL OR c.inbox_id = $5::uuid)
+  AND ($6::bool OR EXISTS (
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $7::uuid))
+GROUP BY 1, 2
+`
+
+type HomeConversationsByDayParams struct {
+	Timezone    string
+	WorkspaceID uuid.UUID
+	Since       time.Time
+	Until       time.Time
+	InboxID     *uuid.UUID
+	AllInboxes  bool
+	ViewerID    uuid.UUID
+}
+
+type HomeConversationsByDayRow struct {
+	InboxID uuid.UUID
+	Day     time.Time
+	N       int64
+}
+
+func (q *Queries) HomeConversationsByDay(ctx context.Context, arg HomeConversationsByDayParams) ([]HomeConversationsByDayRow, error) {
+	rows, err := q.db.Query(ctx, homeConversationsByDay,
+		arg.Timezone,
+		arg.WorkspaceID,
+		arg.Since,
+		arg.Until,
+		arg.InboxID,
+		arg.AllInboxes,
+		arg.ViewerID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []HomeConversationsByDayRow
+	for rows.Next() {
+		var i HomeConversationsByDayRow
+		if err := rows.Scan(&i.InboxID, &i.Day, &i.N); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const homeIdeas = `-- name: HomeIdeas :many
+SELECT d.id, d.inbox_id, d.title, d.vote_count, d.stage::text AS stage
+FROM discussions d
+WHERE d.workspace_id = $1 AND d.kind = 'idea' AND d.state = 'published' AND d.stage NOT IN ('shipped', 'closed')
+  AND ($2::uuid IS NULL OR d.inbox_id = $2::uuid)
+  AND ($3::bool OR EXISTS (
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = d.workspace_id AND iv.inbox_id = d.inbox_id AND iv.viewer_id = $4::uuid))
+ORDER BY d.vote_count DESC, d.last_activity_at DESC, d.id DESC
+LIMIT $5
+`
+
+type HomeIdeasParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     *uuid.UUID
+	AllInboxes  bool
+	ViewerID    uuid.UUID
+	Lim         int32
+}
+
+type HomeIdeasRow struct {
+	ID        uuid.UUID
+	InboxID   uuid.UUID
+	Title     string
+	VoteCount int32
+	Stage     string
+}
+
+func (q *Queries) HomeIdeas(ctx context.Context, arg HomeIdeasParams) ([]HomeIdeasRow, error) {
+	rows, err := q.db.Query(ctx, homeIdeas,
+		arg.WorkspaceID,
+		arg.InboxID,
+		arg.AllInboxes,
+		arg.ViewerID,
+		arg.Lim,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []HomeIdeasRow
+	for rows.Next() {
+		var i HomeIdeasRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.InboxID,
+			&i.Title,
+			&i.VoteCount,
+			&i.Stage,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const homeInbox = `-- name: HomeInbox :many
 WITH open AS (
-    SELECT c.id, c.inbox_id, c.subject, c.contact_id, c.assignee_id
+    SELECT c.id, c.inbox_id, c.subject, c.contact_id, c.assignee_id, c.channel_kind
     FROM conversations c
     WHERE c.workspace_id = $1 AND c.status = 'open' AND NOT c.spam
-      AND ($2::bool OR EXISTS (
+      AND ($2::uuid IS NULL OR c.inbox_id = $2::uuid)
+      AND ($3::bool OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
-          WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3::uuid))
+          WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $4::uuid))
 ), waiting AS (
-    SELECT o.id, o.inbox_id, o.subject, o.contact_id, w.since
+    SELECT o.id, o.inbox_id, o.subject, o.contact_id, o.channel_kind, w.since
     FROM open o
     CROSS JOIN LATERAL (
         SELECT min(m.created_at)::timestamptz AS since FROM messages m
@@ -33,23 +150,33 @@ WITH open AS (
     ) w
     WHERE w.since IS NOT NULL
 ), oldest AS (
-    SELECT id, inbox_id, subject, contact_id, since FROM waiting ORDER BY since, id LIMIT 1
+    SELECT id, inbox_id, subject, contact_id, channel_kind, since FROM waiting ORDER BY since, id LIMIT $5
 )
 SELECT n.open, n.unassigned, n.waiting, o.id AS oldest_id, o.inbox_id AS oldest_inbox_id, o.subject AS oldest_subject,
-    o.since AS oldest_since, ct.id AS oldest_contact_id, ct.name AS oldest_contact_name, ce.email AS oldest_contact_email
+    o.channel_kind AS oldest_channel_kind, o.since AS oldest_since, coalesce(pv.body, '')::text AS oldest_preview,
+    ct.id AS oldest_contact_id, ct.name AS oldest_contact_name, ce.email AS oldest_contact_email
 FROM (SELECT (SELECT count(*) FROM open)::bigint AS open,
              (SELECT count(*) FROM open WHERE assignee_id IS NULL)::bigint AS unassigned,
              (SELECT count(*) FROM waiting)::bigint AS waiting) n
 LEFT JOIN oldest o ON true
+LEFT JOIN LATERAL (
+    SELECT left(m.body, 2000)::text AS body FROM messages m
+    WHERE m.workspace_id = $1 AND m.conversation_id = o.id AND m.kind = 'message' AND m.direction = 'in' AND NOT m.draft
+    ORDER BY m.created_at DESC, m.id DESC
+    LIMIT 1
+) pv ON true
 LEFT JOIN contacts ct ON ct.workspace_id = $1 AND ct.id = o.contact_id
 LEFT JOIN contact_emails ce ON ce.workspace_id = $1 AND ce.contact_id = o.contact_id
     AND ce.position = (SELECT min(e.position) FROM contact_emails e WHERE e.workspace_id = $1 AND e.contact_id = o.contact_id)
+ORDER BY o.since, o.id
 `
 
 type HomeInboxParams struct {
-	WorkspaceID uuid.UUID
-	AllInboxes  bool
-	ViewerID    uuid.UUID
+	WorkspaceID  uuid.UUID
+	InboxID      *uuid.UUID
+	AllInboxes   bool
+	ViewerID     uuid.UUID
+	WaitingLimit int32
 }
 
 type HomeInboxRow struct {
@@ -59,48 +186,78 @@ type HomeInboxRow struct {
 	OldestID           *uuid.UUID
 	OldestInboxID      *uuid.UUID
 	OldestSubject      *string
+	OldestChannelKind  *string
 	OldestSince        *time.Time
+	OldestPreview      string
 	OldestContactID    *uuid.UUID
 	OldestContactName  *string
 	OldestContactEmail *string
 }
 
-func (q *Queries) HomeInbox(ctx context.Context, arg HomeInboxParams) (HomeInboxRow, error) {
-	row := q.db.QueryRow(ctx, homeInbox, arg.WorkspaceID, arg.AllInboxes, arg.ViewerID)
-	var i HomeInboxRow
-	err := row.Scan(
-		&i.Open,
-		&i.Unassigned,
-		&i.Waiting,
-		&i.OldestID,
-		&i.OldestInboxID,
-		&i.OldestSubject,
-		&i.OldestSince,
-		&i.OldestContactID,
-		&i.OldestContactName,
-		&i.OldestContactEmail,
+func (q *Queries) HomeInbox(ctx context.Context, arg HomeInboxParams) ([]HomeInboxRow, error) {
+	rows, err := q.db.Query(ctx, homeInbox,
+		arg.WorkspaceID,
+		arg.InboxID,
+		arg.AllInboxes,
+		arg.ViewerID,
+		arg.WaitingLimit,
 	)
-	return i, err
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []HomeInboxRow
+	for rows.Next() {
+		var i HomeInboxRow
+		if err := rows.Scan(
+			&i.Open,
+			&i.Unassigned,
+			&i.Waiting,
+			&i.OldestID,
+			&i.OldestInboxID,
+			&i.OldestSubject,
+			&i.OldestChannelKind,
+			&i.OldestSince,
+			&i.OldestPreview,
+			&i.OldestContactID,
+			&i.OldestContactName,
+			&i.OldestContactEmail,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const homeLastBroadcast = `-- name: HomeLastBroadcast :one
 SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id FROM broadcasts b
 WHERE b.workspace_id = $1 AND b.state = 'sent'
-  AND ($2::bool OR EXISTS (
+  AND ($2::uuid IS NULL OR b.inbox_id = $2::uuid)
+  AND ($3::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
-      WHERE iv.workspace_id = b.workspace_id AND iv.inbox_id = b.inbox_id AND iv.viewer_id = $3::uuid))
+      WHERE iv.workspace_id = b.workspace_id AND iv.inbox_id = b.inbox_id AND iv.viewer_id = $4::uuid))
 ORDER BY b.finished_at DESC NULLS LAST, b.id DESC
 LIMIT 1
 `
 
 type HomeLastBroadcastParams struct {
 	WorkspaceID uuid.UUID
+	InboxID     *uuid.UUID
 	AllInboxes  bool
 	ViewerID    uuid.UUID
 }
 
 func (q *Queries) HomeLastBroadcast(ctx context.Context, arg HomeLastBroadcastParams) (Broadcast, error) {
-	row := q.db.QueryRow(ctx, homeLastBroadcast, arg.WorkspaceID, arg.AllInboxes, arg.ViewerID)
+	row := q.db.QueryRow(ctx, homeLastBroadcast,
+		arg.WorkspaceID,
+		arg.InboxID,
+		arg.AllInboxes,
+		arg.ViewerID,
+	)
 	var i Broadcast
 	err := row.Scan(
 		&i.ID,
@@ -142,6 +299,287 @@ func (q *Queries) HomeLastBroadcast(ctx context.Context, arg HomeLastBroadcastPa
 		&i.ChangelogEntryID,
 	)
 	return i, err
+}
+
+const homeOpenLoad = `-- name: HomeOpenLoad :many
+SELECT i.id AS inbox_id, c.assignee_id, coalesce(c.kind = 'feedback', false)::bool AS feedback, count(c.id) AS n
+FROM inboxes i
+LEFT JOIN conversations c ON c.workspace_id = i.workspace_id AND c.inbox_id = i.id AND c.status = 'open' AND NOT c.spam
+WHERE i.workspace_id = $1
+  AND ($2::uuid IS NULL OR i.id = $2::uuid)
+  AND ($3::bool OR EXISTS (
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = $4::uuid))
+GROUP BY i.id, c.assignee_id, 3
+ORDER BY i.name, i.id
+`
+
+type HomeOpenLoadParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     *uuid.UUID
+	AllInboxes  bool
+	ViewerID    uuid.UUID
+}
+
+type HomeOpenLoadRow struct {
+	InboxID    uuid.UUID
+	AssigneeID *uuid.UUID
+	Feedback   bool
+	N          int64
+}
+
+func (q *Queries) HomeOpenLoad(ctx context.Context, arg HomeOpenLoadParams) ([]HomeOpenLoadRow, error) {
+	rows, err := q.db.Query(ctx, homeOpenLoad,
+		arg.WorkspaceID,
+		arg.InboxID,
+		arg.AllInboxes,
+		arg.ViewerID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []HomeOpenLoadRow
+	for rows.Next() {
+		var i HomeOpenLoadRow
+		if err := rows.Scan(
+			&i.InboxID,
+			&i.AssigneeID,
+			&i.Feedback,
+			&i.N,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const homeRatingsByDay = `-- name: HomeRatingsByDay :many
+SELECT c.inbox_id, (c.rated_at AT TIME ZONE $1::text)::date AS day, c.rating::text AS rating, count(*) AS n
+FROM conversations c
+WHERE c.workspace_id = $2 AND c.rated_at >= $3::timestamptz AND c.rated_at <= $4::timestamptz
+  AND NOT c.spam AND c.kind <> 'feedback'
+  AND ($5::uuid IS NULL OR c.inbox_id = $5::uuid)
+  AND ($6::bool OR EXISTS (
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $7::uuid))
+GROUP BY 1, 2, 3
+`
+
+type HomeRatingsByDayParams struct {
+	Timezone    string
+	WorkspaceID uuid.UUID
+	Since       time.Time
+	Until       time.Time
+	InboxID     *uuid.UUID
+	AllInboxes  bool
+	ViewerID    uuid.UUID
+}
+
+type HomeRatingsByDayRow struct {
+	InboxID uuid.UUID
+	Day     time.Time
+	Rating  string
+	N       int64
+}
+
+func (q *Queries) HomeRatingsByDay(ctx context.Context, arg HomeRatingsByDayParams) ([]HomeRatingsByDayRow, error) {
+	rows, err := q.db.Query(ctx, homeRatingsByDay,
+		arg.Timezone,
+		arg.WorkspaceID,
+		arg.Since,
+		arg.Until,
+		arg.InboxID,
+		arg.AllInboxes,
+		arg.ViewerID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []HomeRatingsByDayRow
+	for rows.Next() {
+		var i HomeRatingsByDayRow
+		if err := rows.Scan(
+			&i.InboxID,
+			&i.Day,
+			&i.Rating,
+			&i.N,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const homeStatusComponents = `-- name: HomeStatusComponents :many
+SELECT p.id AS page_id, p.inbox_id, p.name AS page_name, p.timezone, p.published,
+    c.id AS component_id, c.name AS component_name, c.state AS component_state
+FROM status_pages p
+LEFT JOIN status_components c ON c.workspace_id = p.workspace_id AND c.page_id = p.id AND NOT c.hidden
+LEFT JOIN status_component_groups g ON g.workspace_id = c.workspace_id AND g.id = c.group_id
+WHERE p.workspace_id = $1
+  AND ($2::uuid IS NULL OR p.inbox_id = $2::uuid)
+  AND ($3::bool OR EXISTS (
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = p.workspace_id AND iv.inbox_id = p.inbox_id AND iv.viewer_id = $4::uuid))
+ORDER BY p.created_at, p.id, g.position NULLS FIRST, g.name NULLS FIRST, g.id NULLS FIRST, c.position, c.name, c.id
+`
+
+type HomeStatusComponentsParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     *uuid.UUID
+	AllInboxes  bool
+	ViewerID    uuid.UUID
+}
+
+type HomeStatusComponentsRow struct {
+	PageID         uuid.UUID
+	InboxID        uuid.UUID
+	PageName       string
+	Timezone       string
+	Published      bool
+	ComponentID    *uuid.UUID
+	ComponentName  *string
+	ComponentState *string
+}
+
+func (q *Queries) HomeStatusComponents(ctx context.Context, arg HomeStatusComponentsParams) ([]HomeStatusComponentsRow, error) {
+	rows, err := q.db.Query(ctx, homeStatusComponents,
+		arg.WorkspaceID,
+		arg.InboxID,
+		arg.AllInboxes,
+		arg.ViewerID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []HomeStatusComponentsRow
+	for rows.Next() {
+		var i HomeStatusComponentsRow
+		if err := rows.Scan(
+			&i.PageID,
+			&i.InboxID,
+			&i.PageName,
+			&i.Timezone,
+			&i.Published,
+			&i.ComponentID,
+			&i.ComponentName,
+			&i.ComponentState,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const homeUpcoming = `-- name: HomeUpcoming :many
+WITH visible AS (
+    SELECT i.id FROM inboxes i
+    WHERE i.workspace_id = $2
+      AND ($3::uuid IS NULL OR i.id = $3::uuid)
+      AND ($4::bool OR EXISTS (
+          SELECT 1 FROM inbox_viewers iv
+          WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = $5::uuid))
+)
+SELECT 'broadcast'::text AS kind, b.id, b.inbox_id, b.scheduled_at::timestamptz AS at, b.name AS title, NULL::uuid AS parent_id,
+    ''::text AS locale, coalesce((b.counts->>'recipients')::bigint, 0)::bigint AS recipients
+FROM broadcasts b
+WHERE $6::bool AND b.workspace_id = $2 AND b.state = 'scheduled' AND b.scheduled_at IS NOT NULL
+  AND b.inbox_id IN (SELECT id FROM visible)
+UNION ALL
+SELECT si.kind, si.id, p.inbox_id,
+    CASE WHEN si.kind = 'maintenance' THEN si.scheduled_start ELSE coalesce(si.started_at, si.published_at, si.created_at) END,
+    si.title, p.id, '', 0
+FROM status_incidents si
+JOIN status_pages p ON p.workspace_id = si.workspace_id AND p.id = si.page_id
+WHERE si.workspace_id = $2 AND si.resolved_at IS NULL AND si.state NOT IN ('resolved', 'completed')
+  AND p.inbox_id IN (SELECT id FROM visible)
+UNION ALL
+SELECT 'whats_new', e.id, cl.inbox_id, e.publish_at, coalesce(t.title, ''), cl.id, cl.default_locale, 0
+FROM changelog_entries e
+JOIN changelogs cl ON cl.workspace_id = e.workspace_id AND cl.id = e.changelog_id
+LEFT JOIN LATERAL (
+    SELECT tr.title FROM changelog_entry_translations tr
+    WHERE tr.workspace_id = e.workspace_id AND tr.entry_id = e.id
+    ORDER BY tr.locale = cl.default_locale DESC, tr.locale
+    LIMIT 1
+) t ON true
+WHERE $7::bool AND e.workspace_id = $2 AND e.state = 'scheduled'
+  AND cl.inbox_id IN (SELECT id FROM visible)
+ORDER BY 4, 2
+LIMIT $1
+`
+
+type HomeUpcomingParams struct {
+	Lim            int32
+	WorkspaceID    uuid.UUID
+	InboxID        *uuid.UUID
+	AllInboxes     bool
+	ViewerID       uuid.UUID
+	WithBroadcasts bool
+	WithWhatsNew   bool
+}
+
+type HomeUpcomingRow struct {
+	Kind       string
+	ID         uuid.UUID
+	InboxID    uuid.UUID
+	At         time.Time
+	Title      string
+	ParentID   *uuid.UUID
+	Locale     string
+	Recipients int64
+}
+
+func (q *Queries) HomeUpcoming(ctx context.Context, arg HomeUpcomingParams) ([]HomeUpcomingRow, error) {
+	rows, err := q.db.Query(ctx, homeUpcoming,
+		arg.Lim,
+		arg.WorkspaceID,
+		arg.InboxID,
+		arg.AllInboxes,
+		arg.ViewerID,
+		arg.WithBroadcasts,
+		arg.WithWhatsNew,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []HomeUpcomingRow
+	for rows.Next() {
+		var i HomeUpcomingRow
+		if err := rows.Scan(
+			&i.Kind,
+			&i.ID,
+			&i.InboxID,
+			&i.At,
+			&i.Title,
+			&i.ParentID,
+			&i.Locale,
+			&i.Recipients,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const listSetupParts = `-- name: ListSetupParts :many
