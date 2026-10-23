@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"slices"
 	"time"
 	"uuid"
 
@@ -392,10 +393,20 @@ func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObje
 			releaseCloudflareHostname(events, p.workspaceID, o.CfHostnameID, o.CustomDomain)
 			pages = append(pages, o.ID)
 		}
+		driven, err := slaConversationsOf(ctx, q, p.workspaceID, func(sp store.SlaPolicy) bool { return slices.Contains(sp.InboxIds, req.InboxId) })
+		if err != nil {
+			return err
+		}
+		if err := lockSLAConversations(ctx, q, p.workspaceID, driven); err != nil {
+			return err
+		}
 		if _, err = q.DeleteInbox(ctx, store.DeleteInboxParams{WorkspaceID: p.workspaceID, ID: req.InboxId}); err != nil {
 			return err
 		}
 		if err := q.StripInboxFromSLAPolicies(ctx, store.StripInboxFromSLAPoliciesParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId, Now: s.now()}); err != nil {
+			return err
+		}
+		if err := s.syncSLAConversations(ctx, q, events, p.workspaceID, driven); err != nil {
 			return err
 		}
 		if err := s.audit(ctx, q, p, oas.AuditInboxDeleted, oas.AuditTargetInbox, in.ID, auditDetails{"name": in.Name}); err != nil {

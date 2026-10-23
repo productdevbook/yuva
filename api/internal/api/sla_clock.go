@@ -76,17 +76,35 @@ func inboxClock(in store.Inbox) businessClock {
 	return c
 }
 
-// spans calls fn with each open span of the local days from the one holding from onwards, as
-// absolute instants, until fn returns false.
+// wallTime is the instant the wall clock in loc shows y-m-d plus mins; a wall time that does not
+// exist (skipped by a clock change) moves forward to the instant the clock jumps.
+func wallTime(y int, m time.Month, d, mins int, loc *time.Location) time.Time {
+	t := time.Date(y, m, d, 0, mins, 0, 0, loc)
+	want := time.Date(y, m, d, 0, mins, 0, 0, time.UTC)
+	got := time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), time.UTC)
+	switch {
+	case got.After(want):
+		start, _ := t.ZoneBounds()
+		return start
+	case got.Before(want):
+		_, end := t.ZoneBounds()
+		return end
+	}
+	return t
+}
+
+// spans calls fn with each open span of the civil days from the one holding from onwards, as
+// absolute instants, until fn returns false. Days are counted on the calendar, not by adding
+// hours, so a day whose midnight does not exist is neither skipped nor counted twice.
 func (c businessClock) spans(from time.Time, fn func(s, e time.Time) bool) bool {
-	t := from.In(c.loc)
-	y, m, d := t.Date()
+	y, m, d := from.In(c.loc).Date()
+	first := time.Date(y, m, d, 0, 0, 0, 0, time.UTC)
 	for i := 0; i < maxClockDays; i++ {
-		day := time.Date(y, m, d+i, 0, 0, 0, 0, c.loc)
+		day := first.AddDate(0, 0, i)
+		dy, dm, dd := day.Date()
 		for _, sp := range c.days[day.Weekday()] {
-			dy, dm, dd := day.Date()
-			s := time.Date(dy, dm, dd, 0, sp.start, 0, 0, c.loc)
-			e := time.Date(dy, dm, dd, 0, sp.end, 0, 0, c.loc)
+			s := wallTime(dy, dm, dd, sp.start, c.loc)
+			e := wallTime(dy, dm, dd, sp.end, c.loc)
 			if !e.After(s) {
 				continue
 			}

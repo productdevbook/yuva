@@ -129,3 +129,36 @@ func TestBusinessClockRoundTrip(t *testing.T) {
 		}
 	}
 }
+
+// Chile moves to summer time when Saturday 2026-09-05 ends, Cuba on Sunday 2026-03-08: on those
+// Sundays local midnight does not exist.
+func TestBusinessClockMissingMidnight(t *testing.T) {
+	const santiago, havana = "America/Santiago", "America/Havana"
+	sat := hoursInbox(t, santiago, true, oas.BusinessHoursInterval{Day: oas.Sat, Start: "09:00", End: "17:00"})
+	if got := businessSecondsBetween(sat, localAt(t, santiago, "2026-09-05 08:00"), localAt(t, santiago, "2026-09-07 08:00")); got != 28800 {
+		t.Fatalf("Santiago Saturday counted %d seconds, want 28800", got)
+	}
+	sun := hoursInbox(t, santiago, true, oas.BusinessHoursInterval{Day: oas.Sun, Start: "10:00", End: "12:00"})
+	if got, want := addBusinessSeconds(sun, localAt(t, santiago, "2026-09-05 12:00"), 3600), localAt(t, santiago, "2026-09-06 11:00"); !got.Equal(want) {
+		t.Fatalf("Santiago Saturday noon + 1h is %s, want %s", got, want)
+	}
+	from := localAt(t, santiago, "2026-09-05 12:00")
+	for secs := int64(0); secs <= 2*3600; secs += 600 {
+		if back := businessSecondsBetween(sun, from, addBusinessSeconds(sun, from, secs)); back != secs {
+			t.Fatalf("Santiago %d seconds count back %d", secs, back)
+		}
+	}
+	weekend := hoursInbox(t, havana, true,
+		oas.BusinessHoursInterval{Day: oas.Sat, Start: "00:00", End: "24:00"},
+		oas.BusinessHoursInterval{Day: oas.Sun, Start: "00:00", End: "24:00"})
+	if got := businessSecondsBetween(weekend, localAt(t, havana, "2026-03-07 00:00"), localAt(t, havana, "2026-03-09 00:00")); got != 47*3600 {
+		t.Fatalf("Havana weekend counted %d seconds, want 47h", got)
+	}
+	if got, want := addBusinessSeconds(weekend, localAt(t, havana, "2026-03-07 23:00"), 2*3600), localAt(t, havana, "2026-03-08 02:00"); !got.Equal(want) {
+		t.Fatalf("Havana Saturday 23:00 + 2h is %s, want %s", got, want)
+	}
+	sunday := hoursInbox(t, havana, true, oas.BusinessHoursInterval{Day: oas.Sun, Start: "00:00", End: "02:00"})
+	if got := businessSecondsBetween(sunday, localAt(t, havana, "2026-03-07 12:00"), localAt(t, havana, "2026-03-09 12:00")); got != 3600 {
+		t.Fatalf("Havana Sunday 00:00-02:00 counted %d seconds, want 3600", got)
+	}
+}

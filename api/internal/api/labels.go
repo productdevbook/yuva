@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"net/http"
+	"slices"
 	"strings"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
@@ -104,7 +105,14 @@ func (s *Server) DeleteLabel(ctx context.Context, req oas.DeleteLabelRequestObje
 	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
-	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, _ *eventBatch) error {
+	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, ev *eventBatch) error {
+		driven, err := slaConversationsOf(ctx, q, p.workspaceID, func(sp store.SlaPolicy) bool { return slices.Contains(sp.LabelIds, req.LabelId) })
+		if err != nil {
+			return err
+		}
+		if err := lockSLAConversations(ctx, q, p.workspaceID, driven); err != nil {
+			return err
+		}
 		n, err := q.DeleteLabel(ctx, store.DeleteLabelParams{WorkspaceID: p.workspaceID, ID: req.LabelId})
 		if err != nil {
 			return err
@@ -113,6 +121,9 @@ func (s *Server) DeleteLabel(ctx context.Context, req oas.DeleteLabelRequestObje
 			return errLabelGone
 		}
 		if err := q.StripLabelFromSLAPolicies(ctx, store.StripLabelFromSLAPoliciesParams{WorkspaceID: p.workspaceID, LabelID: req.LabelId, Now: s.now()}); err != nil {
+			return err
+		}
+		if err := s.syncSLAConversations(ctx, q, ev, p.workspaceID, driven); err != nil {
 			return err
 		}
 		return q.StripLabelFromMacros(ctx, store.StripLabelFromMacrosParams{WorkspaceID: p.workspaceID, LabelID: req.LabelId.String()})

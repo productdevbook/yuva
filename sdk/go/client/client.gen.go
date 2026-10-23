@@ -40025,7 +40025,9 @@ type ClientInterface interface {
 
 	// ListSlaPolicies List SLA policies
 	//
-	// In `position` order. `inbox_ids` lists only the inboxes the caller sees.
+	// In `position` order. Callers limited to some inboxes (agents, inbox-limited keys) see the
+	// policies without `inbox_ids` and those naming one of their inboxes; `inbox_ids` lists only
+	// the inboxes the caller sees.
 	//
 	// Scope: `inboxes:read`.
 	//
@@ -40086,8 +40088,9 @@ type ClientInterface interface {
 
 	// DeleteSlaPolicy Delete an SLA policy
 	//
-	// Owners, admins and API keys not limited to inboxes. Conversations it applies to lose their
-	// SLA (`sla` absent) without an event; the outcomes they reached stay in `/v1/stats`.
+	// Owners, admins and API keys not limited to inboxes. The conversations it drives are
+	// evaluated again at once, as when a policy stops applying (see `PATCH`); the outcomes they
+	// reached stay in `/v1/stats`.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -40095,6 +40098,8 @@ type ClientInterface interface {
 	DeleteSlaPolicy(ctx context.Context, slaPolicyId SlaPolicyId, params *DeleteSlaPolicyParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetSlaPolicy Get an SLA policy
+	//
+	// A policy the caller does not see (see `GET /v1/sla-policies`) answers `404`.
 	//
 	// Scope: `inboxes:read`.
 	//
@@ -40104,7 +40109,11 @@ type ClientInterface interface {
 	// UpdateSlaPolicyWithBody Update an SLA policy
 	//
 	// Owners, admins and API keys not limited to inboxes. New minutes apply to targets that
-	// start afterwards; running targets keep their due times. Conditions apply as for a new
+	// start afterwards; running targets keep their due times. The conversations it drives are
+	// evaluated again at once: when it no longer applies to one (turned off, conditions no
+	// longer met), another matching policy takes over with the business time already used, or the
+	// conversation loses its SLA (`conversation.updated`); the time while no policy applies does
+	// not count if one applies again. Conversations it newly matches pick it up as for a new
 	// policy.
 	//
 	// Scope: `inboxes:manage`.
@@ -40117,7 +40126,11 @@ type ClientInterface interface {
 	// UpdateSlaPolicy Update an SLA policy
 	//
 	// Owners, admins and API keys not limited to inboxes. New minutes apply to targets that
-	// start afterwards; running targets keep their due times. Conditions apply as for a new
+	// start afterwards; running targets keep their due times. The conversations it drives are
+	// evaluated again at once: when it no longer applies to one (turned off, conditions no
+	// longer met), another matching policy takes over with the business time already used, or the
+	// conversation loses its SLA (`conversation.updated`); the time while no policy applies does
+	// not count if one applies again. Conversations it newly matches pick it up as for a new
 	// policy.
 	//
 	// Scope: `inboxes:manage`.
@@ -55242,7 +55255,9 @@ func (c *Client) PreviewRoadmapBoard(ctx context.Context, boardId RoadmapBoardId
 
 // ListSlaPolicies List SLA policies
 //
-// In `position` order. `inbox_ids` lists only the inboxes the caller sees.
+// In `position` order. Callers limited to some inboxes (agents, inbox-limited keys) see the
+// policies without `inbox_ids` and those naming one of their inboxes; `inbox_ids` lists only
+// the inboxes the caller sees.
 //
 // Scope: `inboxes:read`.
 //
@@ -55353,8 +55368,9 @@ func (c *Client) OrderSlaPolicies(ctx context.Context, params *OrderSlaPoliciesP
 
 // DeleteSlaPolicy Delete an SLA policy
 //
-// Owners, admins and API keys not limited to inboxes. Conversations it applies to lose their
-// SLA (`sla` absent) without an event; the outcomes they reached stay in `/v1/stats`.
+// Owners, admins and API keys not limited to inboxes. The conversations it drives are
+// evaluated again at once, as when a policy stops applying (see `PATCH`); the outcomes they
+// reached stay in `/v1/stats`.
 //
 // Scope: `inboxes:manage`.
 //
@@ -55372,6 +55388,8 @@ func (c *Client) DeleteSlaPolicy(ctx context.Context, slaPolicyId SlaPolicyId, p
 }
 
 // GetSlaPolicy Get an SLA policy
+//
+// A policy the caller does not see (see `GET /v1/sla-policies`) answers `404`.
 //
 // Scope: `inboxes:read`.
 //
@@ -55391,7 +55409,11 @@ func (c *Client) GetSlaPolicy(ctx context.Context, slaPolicyId SlaPolicyId, para
 // UpdateSlaPolicyWithBody Update an SLA policy
 //
 // Owners, admins and API keys not limited to inboxes. New minutes apply to targets that
-// start afterwards; running targets keep their due times. Conditions apply as for a new
+// start afterwards; running targets keep their due times. The conversations it drives are
+// evaluated again at once: when it no longer applies to one (turned off, conditions no
+// longer met), another matching policy takes over with the business time already used, or the
+// conversation loses its SLA (`conversation.updated`); the time while no policy applies does
+// not count if one applies again. Conversations it newly matches pick it up as for a new
 // policy.
 //
 // Scope: `inboxes:manage`.
@@ -55414,7 +55436,11 @@ func (c *Client) UpdateSlaPolicyWithBody(ctx context.Context, slaPolicyId SlaPol
 // UpdateSlaPolicy Update an SLA policy
 //
 // Owners, admins and API keys not limited to inboxes. New minutes apply to targets that
-// start afterwards; running targets keep their due times. Conditions apply as for a new
+// start afterwards; running targets keep their due times. The conversations it drives are
+// evaluated again at once: when it no longer applies to one (turned off, conditions no
+// longer met), another matching policy takes over with the business time already used, or the
+// conversation loses its SLA (`conversation.updated`); the time while no policy applies does
+// not count if one applies again. Conversations it newly matches pick it up as for a new
 // policy.
 //
 // Scope: `inboxes:manage`.
@@ -97405,7 +97431,9 @@ type ClientWithResponsesInterface interface {
 
 	// ListSlaPoliciesWithResponse List SLA policies
 	//
-	// In `position` order. `inbox_ids` lists only the inboxes the caller sees.
+	// In `position` order. Callers limited to some inboxes (agents, inbox-limited keys) see the
+	// policies without `inbox_ids` and those naming one of their inboxes; `inbox_ids` lists only
+	// the inboxes the caller sees.
 	//
 	// Scope: `inboxes:read`.
 	//
@@ -97468,8 +97496,9 @@ type ClientWithResponsesInterface interface {
 
 	// DeleteSlaPolicyWithResponse Delete an SLA policy
 	//
-	// Owners, admins and API keys not limited to inboxes. Conversations it applies to lose their
-	// SLA (`sla` absent) without an event; the outcomes they reached stay in `/v1/stats`.
+	// Owners, admins and API keys not limited to inboxes. The conversations it drives are
+	// evaluated again at once, as when a policy stops applying (see `PATCH`); the outcomes they
+	// reached stay in `/v1/stats`.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -97479,6 +97508,8 @@ type ClientWithResponsesInterface interface {
 	DeleteSlaPolicyWithResponse(ctx context.Context, slaPolicyId SlaPolicyId, params *DeleteSlaPolicyParams, reqEditors ...RequestEditorFn) (*DeleteSlaPolicyResponse, error)
 
 	// GetSlaPolicyWithResponse Get an SLA policy
+	//
+	// A policy the caller does not see (see `GET /v1/sla-policies`) answers `404`.
 	//
 	// Scope: `inboxes:read`.
 	//
@@ -97490,7 +97521,11 @@ type ClientWithResponsesInterface interface {
 	// UpdateSlaPolicyWithBodyWithResponse Update an SLA policy
 	//
 	// Owners, admins and API keys not limited to inboxes. New minutes apply to targets that
-	// start afterwards; running targets keep their due times. Conditions apply as for a new
+	// start afterwards; running targets keep their due times. The conversations it drives are
+	// evaluated again at once: when it no longer applies to one (turned off, conditions no
+	// longer met), another matching policy takes over with the business time already used, or the
+	// conversation loses its SLA (`conversation.updated`); the time while no policy applies does
+	// not count if one applies again. Conversations it newly matches pick it up as for a new
 	// policy.
 	//
 	// Scope: `inboxes:manage`.
@@ -97503,7 +97538,11 @@ type ClientWithResponsesInterface interface {
 	// UpdateSlaPolicyWithResponse Update an SLA policy
 	//
 	// Owners, admins and API keys not limited to inboxes. New minutes apply to targets that
-	// start afterwards; running targets keep their due times. Conditions apply as for a new
+	// start afterwards; running targets keep their due times. The conversations it drives are
+	// evaluated again at once: when it no longer applies to one (turned off, conditions no
+	// longer met), another matching policy takes over with the business time already used, or the
+	// conversation loses its SLA (`conversation.updated`); the time while no policy applies does
+	// not count if one applies again. Conversations it newly matches pick it up as for a new
 	// policy.
 	//
 	// Scope: `inboxes:manage`.
@@ -144113,7 +144152,9 @@ func (c *ClientWithResponses) PreviewRoadmapBoardWithResponse(ctx context.Contex
 
 // ListSlaPoliciesWithResponse List SLA policies
 //
-// In `position` order. `inbox_ids` lists only the inboxes the caller sees.
+// In `position` order. Callers limited to some inboxes (agents, inbox-limited keys) see the
+// policies without `inbox_ids` and those naming one of their inboxes; `inbox_ids` lists only
+// the inboxes the caller sees.
 //
 // Scope: `inboxes:read`.
 //
@@ -144206,8 +144247,9 @@ func (c *ClientWithResponses) OrderSlaPoliciesWithResponse(ctx context.Context, 
 
 // DeleteSlaPolicyWithResponse Delete an SLA policy
 //
-// Owners, admins and API keys not limited to inboxes. Conversations it applies to lose their
-// SLA (`sla` absent) without an event; the outcomes they reached stay in `/v1/stats`.
+// Owners, admins and API keys not limited to inboxes. The conversations it drives are
+// evaluated again at once, as when a policy stops applying (see `PATCH`); the outcomes they
+// reached stay in `/v1/stats`.
 //
 // Scope: `inboxes:manage`.
 //
@@ -144223,6 +144265,8 @@ func (c *ClientWithResponses) DeleteSlaPolicyWithResponse(ctx context.Context, s
 }
 
 // GetSlaPolicyWithResponse Get an SLA policy
+//
+// A policy the caller does not see (see `GET /v1/sla-policies`) answers `404`.
 //
 // Scope: `inboxes:read`.
 //
@@ -144240,7 +144284,11 @@ func (c *ClientWithResponses) GetSlaPolicyWithResponse(ctx context.Context, slaP
 // UpdateSlaPolicyWithBodyWithResponse Update an SLA policy
 //
 // Owners, admins and API keys not limited to inboxes. New minutes apply to targets that
-// start afterwards; running targets keep their due times. Conditions apply as for a new
+// start afterwards; running targets keep their due times. The conversations it drives are
+// evaluated again at once: when it no longer applies to one (turned off, conditions no
+// longer met), another matching policy takes over with the business time already used, or the
+// conversation loses its SLA (`conversation.updated`); the time while no policy applies does
+// not count if one applies again. Conversations it newly matches pick it up as for a new
 // policy.
 //
 // Scope: `inboxes:manage`.
@@ -144259,7 +144307,11 @@ func (c *ClientWithResponses) UpdateSlaPolicyWithBodyWithResponse(ctx context.Co
 // UpdateSlaPolicyWithResponse Update an SLA policy
 //
 // Owners, admins and API keys not limited to inboxes. New minutes apply to targets that
-// start afterwards; running targets keep their due times. Conditions apply as for a new
+// start afterwards; running targets keep their due times. The conversations it drives are
+// evaluated again at once: when it no longer applies to one (turned off, conditions no
+// longer met), another matching policy takes over with the business time already used, or the
+// conversation loses its SLA (`conversation.updated`); the time while no policy applies does
+// not count if one applies again. Conversations it newly matches pick it up as for a new
 // policy.
 //
 // Scope: `inboxes:manage`.

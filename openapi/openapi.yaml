@@ -103,10 +103,13 @@ tags:
         notes, drafts and automatic replies do not. The first close meets the resolution target; a
         reopened conversation gets no new resolution target, only next-reply ones.
       - `pending` and `snoozed` pause every running target and `open` resumes it with the time
-        that was left. A snoozed conversation reopens by itself at `snooze_until`.
+        that was left. A snoozed conversation reopens by itself at `snooze_until` (not while it is spam).
       - A change of priority, labels or inbox picks the policy again; targets already met or
-        breached keep their outcome. Spam and the trash drop the SLA.
-      - `warn_minutes` before a due time `conversation.sla_warning` is sent, and at the due time
+        breached keep their outcome. Spam, the trash and a policy that stops applying drop the SLA;
+        the time while it is dropped does not count when a policy applies again, and no target
+        gets a second outcome.
+      - `warn_minutes` before a due time `conversation.sla_warning` is sent (not when that moment
+        has already passed when the target starts or resumes), and at the due time
         `conversation.sla_breached`, each once per target; both notify the assignee, or the
         members of the conversation's team when it has no assignee.
   - name: channels
@@ -2763,7 +2766,9 @@ paths:
       operationId: listSlaPolicies
       summary: List SLA policies
       description: |
-        In `position` order. `inbox_ids` lists only the inboxes the caller sees.
+        In `position` order. Callers limited to some inboxes (agents, inbox-limited keys) see the
+        policies without `inbox_ids` and those naming one of their inboxes; `inbox_ids` lists only
+        the inboxes the caller sees.
 
         Scope: `inboxes:read`.
       tags: [sla]
@@ -2848,7 +2853,10 @@ paths:
     get:
       operationId: getSlaPolicy
       summary: Get an SLA policy
-      description: "Scope: `inboxes:read`."
+      description: |
+        A policy the caller does not see (see `GET /v1/sla-policies`) answers `404`.
+
+        Scope: `inboxes:read`.
       tags: [sla]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
@@ -2871,7 +2879,11 @@ paths:
       summary: Update an SLA policy
       description: |
         Owners, admins and API keys not limited to inboxes. New minutes apply to targets that
-        start afterwards; running targets keep their due times. Conditions apply as for a new
+        start afterwards; running targets keep their due times. The conversations it drives are
+        evaluated again at once: when it no longer applies to one (turned off, conditions no
+        longer met), another matching policy takes over with the business time already used, or the
+        conversation loses its SLA (`conversation.updated`); the time while no policy applies does
+        not count if one applies again. Conversations it newly matches pick it up as for a new
         policy.
 
         Scope: `inboxes:manage`.
@@ -2904,8 +2916,9 @@ paths:
       operationId: deleteSlaPolicy
       summary: Delete an SLA policy
       description: |
-        Owners, admins and API keys not limited to inboxes. Conversations it applies to lose their
-        SLA (`sla` absent) without an event; the outcomes they reached stay in `/v1/stats`.
+        Owners, admins and API keys not limited to inboxes. The conversations it drives are
+        evaluated again at once, as when a policy stops applying (see `PATCH`); the outcomes they
+        reached stay in `/v1/stats`.
 
         Scope: `inboxes:manage`.
       tags: [sla]

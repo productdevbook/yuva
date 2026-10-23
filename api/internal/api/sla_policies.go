@@ -131,6 +131,22 @@ func (f *slaPolicyFields) check(ctx context.Context, q *store.Queries, ws uuid.U
 	return nil
 }
 
+// slaPolicyVisible: a caller limited to some inboxes sees the policies that can apply to one of
+// them, those without inbox_ids included.
+func slaPolicyVisible(p store.SlaPolicy, seen map[uuid.UUID]bool) bool {
+	return seen == nil || len(p.InboxIds) == 0 || slices.ContainsFunc(p.InboxIds, func(id uuid.UUID) bool { return seen[id] })
+}
+
+func slaPolicyBodies(rows []store.SlaPolicy, seen map[uuid.UUID]bool) []oas.SlaPolicy {
+	out := []oas.SlaPolicy{}
+	for _, r := range rows {
+		if slaPolicyVisible(r, seen) {
+			out = append(out, slaPolicyBody(r, seen))
+		}
+	}
+	return out
+}
+
 func (s *Server) ListSlaPolicies(ctx context.Context, _ oas.ListSlaPoliciesRequestObject) (oas.ListSlaPoliciesResponseObject, error) {
 	p := principalFrom(ctx)
 	rows, err := s.st.ListSLAPolicies(ctx, p.workspaceID)
@@ -141,11 +157,7 @@ func (s *Server) ListSlaPolicies(ctx context.Context, _ oas.ListSlaPoliciesReque
 	if err != nil {
 		return nil, err
 	}
-	out := oas.ListSlaPolicies200JSONResponse{Items: make([]oas.SlaPolicy, len(rows))}
-	for i, r := range rows {
-		out.Items[i] = slaPolicyBody(r, seen)
-	}
-	return out, nil
+	return oas.ListSlaPolicies200JSONResponse{Items: slaPolicyBodies(rows, seen)}, nil
 }
 
 func (s *Server) GetSlaPolicy(ctx context.Context, req oas.GetSlaPolicyRequestObject) (oas.GetSlaPolicyResponseObject, error) {
@@ -161,12 +173,15 @@ func (s *Server) GetSlaPolicy(ctx context.Context, req oas.GetSlaPolicyRequestOb
 	if err != nil {
 		return nil, err
 	}
+	if !slaPolicyVisible(r, seen) {
+		return nil, errSLAPolicyGone
+	}
 	return oas.GetSlaPolicy200JSONResponse(slaPolicyBody(r, seen)), nil
 }
 
 func (s *Server) CreateSlaPolicy(ctx context.Context, req oas.CreateSlaPolicyRequestObject) (oas.CreateSlaPolicyResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	if err := requireManagerOrFullKey(p); err != nil {
 		return nil, err
 	}
 	b := req.Body
@@ -215,7 +230,11 @@ func (s *Server) CreateSlaPolicy(ctx context.Context, req oas.CreateSlaPolicyReq
 	if err != nil {
 		return nil, err
 	}
-	return oas.CreateSlaPolicy201JSONResponse(slaPolicyBody(out, nil)), nil
+	seen, err := seenInboxes(ctx, s.st.Queries, p)
+	if err != nil {
+		return nil, err
+	}
+	return oas.CreateSlaPolicy201JSONResponse(slaPolicyBody(out, seen)), nil
 }
 
 func listOf[T any](v *[]T) []T {
@@ -227,12 +246,15 @@ func listOf[T any](v *[]T) []T {
 
 func (s *Server) UpdateSlaPolicy(ctx context.Context, req oas.UpdateSlaPolicyRequestObject) (oas.UpdateSlaPolicyResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	if err := requireManagerOrFullKey(p); err != nil {
 		return nil, err
 	}
 	b := req.Body
 	var out store.SlaPolicy
-	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, _ *eventBatch) error {
+	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, ev *eventBatch) error {
+		if err := q.LockSLAPolicies(ctx, p.workspaceID); err != nil {
+			return err
+		}
 		cur, err := q.LockSLAPolicy(ctx, store.LockSLAPolicyParams{WorkspaceID: p.workspaceID, ID: req.SlaPolicyId})
 		if store.IsNotFound(err) {
 			return errSLAPolicyGone
@@ -275,17 +297,31 @@ func (s *Server) UpdateSlaPolicy(ctx context.Context, req oas.UpdateSlaPolicyReq
 		if err := f.check(ctx, q, p.workspaceID); err != nil {
 			return err
 		}
+		driven, err := slaConversationsOf(ctx, q, p.workspaceID, func(sp store.SlaPolicy) bool { return sp.ID == cur.ID })
+		if err != nil {
+			return err
+		}
+		if err := lockSLAConversations(ctx, q, p.workspaceID, driven); err != nil {
+			return err
+		}
 		out, err = q.UpdateSLAPolicy(ctx, store.UpdateSLAPolicyParams{
 			WorkspaceID: p.workspaceID, ID: cur.ID, Name: f.name, Enabled: f.enabled, InboxIds: f.inboxes, ChannelKinds: f.kinds,
 			LabelIds: f.labels, Priorities: f.priorities, FirstReplyMinutes: f.firstReply, NextReplyMinutes: f.nextReply,
 			ResolutionMinutes: f.solve, WarnMinutes: f.warn, Now: s.now(),
 		})
-		return err
+		if err != nil {
+			return err
+		}
+		return s.syncSLAConversations(ctx, q, ev, p.workspaceID, driven)
 	})
 	if err != nil {
 		return nil, err
 	}
-	return oas.UpdateSlaPolicy200JSONResponse(slaPolicyBody(out, nil)), nil
+	seen, err := seenInboxes(ctx, s.st.Queries, p)
+	if err != nil {
+		return nil, err
+	}
+	return oas.UpdateSlaPolicy200JSONResponse(slaPolicyBody(out, seen)), nil
 }
 
 func nullableMinutes(specified, null bool, get func() int32, cur *int32) *int32 {
@@ -301,10 +337,10 @@ func nullableMinutes(specified, null bool, get func() int32, cur *int32) *int32 
 
 func (s *Server) DeleteSlaPolicy(ctx context.Context, req oas.DeleteSlaPolicyRequestObject) (oas.DeleteSlaPolicyResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	if err := requireManagerOrFullKey(p); err != nil {
 		return nil, err
 	}
-	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, _ *eventBatch) error {
+	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, ev *eventBatch) error {
 		if err := q.LockSLAPolicies(ctx, p.workspaceID); err != nil {
 			return err
 		}
@@ -313,11 +349,17 @@ func (s *Server) DeleteSlaPolicy(ctx context.Context, req oas.DeleteSlaPolicyReq
 		} else if err != nil {
 			return err
 		}
-		if err := q.ClearSLADueOfPolicy(ctx, store.ClearSLADueOfPolicyParams{WorkspaceID: p.workspaceID, PolicyID: req.SlaPolicyId}); err != nil {
+		driven, err := slaConversationsOf(ctx, q, p.workspaceID, func(sp store.SlaPolicy) bool { return sp.ID == req.SlaPolicyId })
+		if err != nil {
 			return err
 		}
-		_, err := q.DeleteSLAPolicy(ctx, store.DeleteSLAPolicyParams{WorkspaceID: p.workspaceID, ID: req.SlaPolicyId})
-		return err
+		if err := lockSLAConversations(ctx, q, p.workspaceID, driven); err != nil {
+			return err
+		}
+		if _, err := q.DeleteSLAPolicy(ctx, store.DeleteSLAPolicyParams{WorkspaceID: p.workspaceID, ID: req.SlaPolicyId}); err != nil {
+			return err
+		}
+		return s.syncSLAConversations(ctx, q, ev, p.workspaceID, driven)
 	})
 	if err != nil {
 		return nil, err
@@ -327,7 +369,7 @@ func (s *Server) DeleteSlaPolicy(ctx context.Context, req oas.DeleteSlaPolicyReq
 
 func (s *Server) OrderSlaPolicies(ctx context.Context, req oas.OrderSlaPoliciesRequestObject) (oas.OrderSlaPoliciesResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	if err := requireManagerOrFullKey(p); err != nil {
 		return nil, err
 	}
 	var rows []store.SlaPolicy
@@ -359,9 +401,9 @@ func (s *Server) OrderSlaPolicies(ctx context.Context, req oas.OrderSlaPoliciesR
 	if err != nil {
 		return nil, err
 	}
-	out := oas.OrderSlaPolicies200JSONResponse{Items: make([]oas.SlaPolicy, len(rows))}
-	for i, r := range rows {
-		out.Items[i] = slaPolicyBody(r, nil)
+	seen, err := seenInboxes(ctx, s.st.Queries, p)
+	if err != nil {
+		return nil, err
 	}
-	return out, nil
+	return oas.OrderSlaPolicies200JSONResponse{Items: slaPolicyBodies(rows, seen)}, nil
 }

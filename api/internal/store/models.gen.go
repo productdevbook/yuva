@@ -869,8 +869,9 @@ type ConversationRead struct {
 type ConversationSla struct {
 	WorkspaceID          uuid.UUID
 	ConversationID       uuid.UUID
-	PolicyID             uuid.UUID
+	PolicyID             *uuid.UUID
 	MatchKey             string
+	DroppedAt            *time.Time
 	WarnMinutes          int32
 	AwaitingReply        bool
 	PausedAt             *time.Time
@@ -2151,6 +2152,7 @@ type SlaOutcome struct {
 	InboxID        uuid.UUID
 	PolicyID       *uuid.UUID
 	Target         string
+	StartedAt      time.Time
 	Outcome        string
 	At             time.Time
 	AssigneeID     *uuid.UUID

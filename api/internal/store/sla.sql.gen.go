@@ -14,7 +14,7 @@ import (
 
 const claimDueSnoozed = `-- name: ClaimDueSnoozed :many
 SELECT id FROM conversations
-WHERE workspace_id = $1 AND status = 'snoozed' AND snooze_until <= $2::timestamptz AND trashed_at IS NULL
+WHERE workspace_id = $1 AND status = 'snoozed' AND snooze_until <= $2::timestamptz AND trashed_at IS NULL AND NOT spam
 ORDER BY snooze_until, id
 LIMIT $3
 FOR UPDATE SKIP LOCKED
@@ -44,23 +44,6 @@ func (q *Queries) ClaimDueSnoozed(ctx context.Context, arg ClaimDueSnoozedParams
 		return nil, err
 	}
 	return items, nil
-}
-
-const clearSLADueOfPolicy = `-- name: ClearSLADueOfPolicy :exec
-UPDATE conversations c SET sla_due_at = NULL
-FROM conversation_sla s
-WHERE s.workspace_id = $1 AND s.policy_id = $2
-  AND c.workspace_id = s.workspace_id AND c.id = s.conversation_id AND c.sla_due_at IS NOT NULL
-`
-
-type ClearSLADueOfPolicyParams struct {
-	WorkspaceID uuid.UUID
-	PolicyID    uuid.UUID
-}
-
-func (q *Queries) ClearSLADueOfPolicy(ctx context.Context, arg ClearSLADueOfPolicyParams) error {
-	_, err := q.db.Exec(ctx, clearSLADueOfPolicy, arg.WorkspaceID, arg.PolicyID)
-	return err
 }
 
 const countSLAPolicies = `-- name: CountSLAPolicies :one
@@ -137,23 +120,6 @@ func (q *Queries) CreateSLAPolicy(ctx context.Context, arg CreateSLAPolicyParams
 	return i, err
 }
 
-const deleteConversationSLA = `-- name: DeleteConversationSLA :execrows
-DELETE FROM conversation_sla WHERE workspace_id = $1 AND conversation_id = $2
-`
-
-type DeleteConversationSLAParams struct {
-	WorkspaceID    uuid.UUID
-	ConversationID uuid.UUID
-}
-
-func (q *Queries) DeleteConversationSLA(ctx context.Context, arg DeleteConversationSLAParams) (int64, error) {
-	result, err := q.db.Exec(ctx, deleteConversationSLA, arg.WorkspaceID, arg.ConversationID)
-	if err != nil {
-		return 0, err
-	}
-	return result.RowsAffected(), nil
-}
-
 const deleteSLAPolicy = `-- name: DeleteSLAPolicy :execrows
 DELETE FROM sla_policies WHERE workspace_id = $1 AND id = $2
 `
@@ -203,9 +169,10 @@ func (q *Queries) GetSLAPolicy(ctx context.Context, arg GetSLAPolicyParams) (Sla
 	return i, err
 }
 
-const insertSLAOutcome = `-- name: InsertSLAOutcome :exec
-INSERT INTO sla_outcomes (id, workspace_id, conversation_id, inbox_id, policy_id, target, outcome, at, assignee_id, team_id)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+const insertSLAOutcome = `-- name: InsertSLAOutcome :execrows
+INSERT INTO sla_outcomes (id, workspace_id, conversation_id, inbox_id, policy_id, target, started_at, outcome, at, assignee_id, team_id)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+ON CONFLICT (workspace_id, conversation_id, target, started_at) DO NOTHING
 `
 
 type InsertSLAOutcomeParams struct {
@@ -215,30 +182,36 @@ type InsertSLAOutcomeParams struct {
 	InboxID        uuid.UUID
 	PolicyID       *uuid.UUID
 	Target         string
+	StartedAt      time.Time
 	Outcome        string
 	At             time.Time
 	AssigneeID     *uuid.UUID
 	TeamID         *uuid.UUID
 }
 
-func (q *Queries) InsertSLAOutcome(ctx context.Context, arg InsertSLAOutcomeParams) error {
-	_, err := q.db.Exec(ctx, insertSLAOutcome,
+// A target started at one instant has one outcome, however often its row is rebuilt or checked.
+func (q *Queries) InsertSLAOutcome(ctx context.Context, arg InsertSLAOutcomeParams) (int64, error) {
+	result, err := q.db.Exec(ctx, insertSLAOutcome,
 		arg.ID,
 		arg.WorkspaceID,
 		arg.ConversationID,
 		arg.InboxID,
 		arg.PolicyID,
 		arg.Target,
+		arg.StartedAt,
 		arg.Outcome,
 		arg.At,
 		arg.AssigneeID,
 		arg.TeamID,
 	)
-	return err
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
 }
 
 const listConversationSLAs = `-- name: ListConversationSLAs :many
-SELECT workspace_id, conversation_id, policy_id, match_key, warn_minutes, awaiting_reply, paused_at, check_at, first_reply_target_s, first_reply_started_at, first_reply_due_at, first_reply_remaining_s, first_reply_met_at, first_reply_breached_at, first_reply_warned_at, next_reply_target_s, next_reply_started_at, next_reply_due_at, next_reply_remaining_s, next_reply_met_at, next_reply_breached_at, next_reply_warned_at, resolution_target_s, resolution_started_at, resolution_due_at, resolution_remaining_s, resolution_met_at, resolution_breached_at, resolution_warned_at, created_at, updated_at FROM conversation_sla WHERE workspace_id = $1 AND conversation_id = ANY ($2::uuid[])
+SELECT workspace_id, conversation_id, policy_id, match_key, dropped_at, warn_minutes, awaiting_reply, paused_at, check_at, first_reply_target_s, first_reply_started_at, first_reply_due_at, first_reply_remaining_s, first_reply_met_at, first_reply_breached_at, first_reply_warned_at, next_reply_target_s, next_reply_started_at, next_reply_due_at, next_reply_remaining_s, next_reply_met_at, next_reply_breached_at, next_reply_warned_at, resolution_target_s, resolution_started_at, resolution_due_at, resolution_remaining_s, resolution_met_at, resolution_breached_at, resolution_warned_at, created_at, updated_at FROM conversation_sla WHERE workspace_id = $1 AND conversation_id = ANY ($2::uuid[])
 `
 
 type ListConversationSLAsParams struct {
@@ -260,6 +233,7 @@ func (q *Queries) ListConversationSLAs(ctx context.Context, arg ListConversation
 			&i.ConversationID,
 			&i.PolicyID,
 			&i.MatchKey,
+			&i.DroppedAt,
 			&i.WarnMinutes,
 			&i.AwaitingReply,
 			&i.PausedAt,
@@ -299,8 +273,8 @@ func (q *Queries) ListConversationSLAs(ctx context.Context, arg ListConversation
 }
 
 const listSLAChecksDue = `-- name: ListSLAChecksDue :many
-SELECT workspace_id, conversation_id, policy_id, match_key, warn_minutes, awaiting_reply, paused_at, check_at, first_reply_target_s, first_reply_started_at, first_reply_due_at, first_reply_remaining_s, first_reply_met_at, first_reply_breached_at, first_reply_warned_at, next_reply_target_s, next_reply_started_at, next_reply_due_at, next_reply_remaining_s, next_reply_met_at, next_reply_breached_at, next_reply_warned_at, resolution_target_s, resolution_started_at, resolution_due_at, resolution_remaining_s, resolution_met_at, resolution_breached_at, resolution_warned_at, created_at, updated_at FROM conversation_sla
-WHERE workspace_id = $1 AND check_at IS NOT NULL AND check_at <= $2::timestamptz
+SELECT workspace_id, conversation_id, policy_id, match_key, dropped_at, warn_minutes, awaiting_reply, paused_at, check_at, first_reply_target_s, first_reply_started_at, first_reply_due_at, first_reply_remaining_s, first_reply_met_at, first_reply_breached_at, first_reply_warned_at, next_reply_target_s, next_reply_started_at, next_reply_due_at, next_reply_remaining_s, next_reply_met_at, next_reply_breached_at, next_reply_warned_at, resolution_target_s, resolution_started_at, resolution_due_at, resolution_remaining_s, resolution_met_at, resolution_breached_at, resolution_warned_at, created_at, updated_at FROM conversation_sla
+WHERE workspace_id = $1 AND check_at IS NOT NULL AND check_at <= $2::timestamptz AND dropped_at IS NULL
 ORDER BY check_at
 LIMIT $3
 `
@@ -325,6 +299,7 @@ func (q *Queries) ListSLAChecksDue(ctx context.Context, arg ListSLAChecksDuePara
 			&i.ConversationID,
 			&i.PolicyID,
 			&i.MatchKey,
+			&i.DroppedAt,
 			&i.WarnMinutes,
 			&i.AwaitingReply,
 			&i.PausedAt,
@@ -356,6 +331,37 @@ func (q *Queries) ListSLAChecksDue(ctx context.Context, arg ListSLAChecksDuePara
 			return nil, err
 		}
 		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listSLAConversationsOfPolicy = `-- name: ListSLAConversationsOfPolicy :many
+SELECT conversation_id FROM conversation_sla
+WHERE workspace_id = $1 AND policy_id = $2 AND dropped_at IS NULL
+ORDER BY conversation_id
+`
+
+type ListSLAConversationsOfPolicyParams struct {
+	WorkspaceID uuid.UUID
+	PolicyID    *uuid.UUID
+}
+
+func (q *Queries) ListSLAConversationsOfPolicy(ctx context.Context, arg ListSLAConversationsOfPolicyParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listSLAConversationsOfPolicy, arg.WorkspaceID, arg.PolicyID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var conversation_id uuid.UUID
+		if err := rows.Scan(&conversation_id); err != nil {
+			return nil, err
+		}
+		items = append(items, conversation_id)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -444,7 +450,7 @@ func (q *Queries) ListSLAPolicies(ctx context.Context, workspaceID uuid.UUID) ([
 }
 
 const lockConversationSLA = `-- name: LockConversationSLA :one
-SELECT workspace_id, conversation_id, policy_id, match_key, warn_minutes, awaiting_reply, paused_at, check_at, first_reply_target_s, first_reply_started_at, first_reply_due_at, first_reply_remaining_s, first_reply_met_at, first_reply_breached_at, first_reply_warned_at, next_reply_target_s, next_reply_started_at, next_reply_due_at, next_reply_remaining_s, next_reply_met_at, next_reply_breached_at, next_reply_warned_at, resolution_target_s, resolution_started_at, resolution_due_at, resolution_remaining_s, resolution_met_at, resolution_breached_at, resolution_warned_at, created_at, updated_at FROM conversation_sla WHERE workspace_id = $1 AND conversation_id = $2 FOR UPDATE
+SELECT workspace_id, conversation_id, policy_id, match_key, dropped_at, warn_minutes, awaiting_reply, paused_at, check_at, first_reply_target_s, first_reply_started_at, first_reply_due_at, first_reply_remaining_s, first_reply_met_at, first_reply_breached_at, first_reply_warned_at, next_reply_target_s, next_reply_started_at, next_reply_due_at, next_reply_remaining_s, next_reply_met_at, next_reply_breached_at, next_reply_warned_at, resolution_target_s, resolution_started_at, resolution_due_at, resolution_remaining_s, resolution_met_at, resolution_breached_at, resolution_warned_at, created_at, updated_at FROM conversation_sla WHERE workspace_id = $1 AND conversation_id = $2 FOR UPDATE
 `
 
 type LockConversationSLAParams struct {
@@ -460,6 +466,7 @@ func (q *Queries) LockConversationSLA(ctx context.Context, arg LockConversationS
 		&i.ConversationID,
 		&i.PolicyID,
 		&i.MatchKey,
+		&i.DroppedAt,
 		&i.WarnMinutes,
 		&i.AwaitingReply,
 		&i.PausedAt,
@@ -567,12 +574,12 @@ UPDATE conversation_sla SET
     next_reply_breached_at = CASE WHEN $1::text = 'next_reply' THEN $2 ELSE next_reply_breached_at END,
     resolution_breached_at = CASE WHEN $1::text = 'resolution' THEN $2 ELSE resolution_breached_at END,
     updated_at = $2
-WHERE workspace_id = $3 AND conversation_id = $4 AND CASE $1::text
+WHERE workspace_id = $3 AND conversation_id = $4 AND dropped_at IS NULL AND CASE $1::text
     WHEN 'first_reply' THEN first_reply_due_at = $5::timestamptz AND first_reply_breached_at IS NULL AND first_reply_met_at IS NULL
     WHEN 'next_reply' THEN next_reply_due_at = $5::timestamptz AND next_reply_breached_at IS NULL AND next_reply_met_at IS NULL
     WHEN 'resolution' THEN resolution_due_at = $5::timestamptz AND resolution_breached_at IS NULL AND resolution_met_at IS NULL
     ELSE false END
-RETURNING workspace_id, conversation_id, policy_id, match_key, warn_minutes, awaiting_reply, paused_at, check_at, first_reply_target_s, first_reply_started_at, first_reply_due_at, first_reply_remaining_s, first_reply_met_at, first_reply_breached_at, first_reply_warned_at, next_reply_target_s, next_reply_started_at, next_reply_due_at, next_reply_remaining_s, next_reply_met_at, next_reply_breached_at, next_reply_warned_at, resolution_target_s, resolution_started_at, resolution_due_at, resolution_remaining_s, resolution_met_at, resolution_breached_at, resolution_warned_at, created_at, updated_at
+RETURNING workspace_id, conversation_id, policy_id, match_key, dropped_at, warn_minutes, awaiting_reply, paused_at, check_at, first_reply_target_s, first_reply_started_at, first_reply_due_at, first_reply_remaining_s, first_reply_met_at, first_reply_breached_at, first_reply_warned_at, next_reply_target_s, next_reply_started_at, next_reply_due_at, next_reply_remaining_s, next_reply_met_at, next_reply_breached_at, next_reply_warned_at, resolution_target_s, resolution_started_at, resolution_due_at, resolution_remaining_s, resolution_met_at, resolution_breached_at, resolution_warned_at, created_at, updated_at
 `
 
 type MarkSLABreachedParams struct {
@@ -599,6 +606,7 @@ func (q *Queries) MarkSLABreached(ctx context.Context, arg MarkSLABreachedParams
 		&i.ConversationID,
 		&i.PolicyID,
 		&i.MatchKey,
+		&i.DroppedAt,
 		&i.WarnMinutes,
 		&i.AwaitingReply,
 		&i.PausedAt,
@@ -636,12 +644,12 @@ UPDATE conversation_sla SET
     next_reply_warned_at = CASE WHEN $1::text = 'next_reply' THEN $2 ELSE next_reply_warned_at END,
     resolution_warned_at = CASE WHEN $1::text = 'resolution' THEN $2 ELSE resolution_warned_at END,
     updated_at = $2
-WHERE workspace_id = $3 AND conversation_id = $4 AND CASE $1::text
+WHERE workspace_id = $3 AND conversation_id = $4 AND dropped_at IS NULL AND CASE $1::text
     WHEN 'first_reply' THEN first_reply_due_at = $5::timestamptz AND first_reply_warned_at IS NULL AND first_reply_breached_at IS NULL AND first_reply_met_at IS NULL
     WHEN 'next_reply' THEN next_reply_due_at = $5::timestamptz AND next_reply_warned_at IS NULL AND next_reply_breached_at IS NULL AND next_reply_met_at IS NULL
     WHEN 'resolution' THEN resolution_due_at = $5::timestamptz AND resolution_warned_at IS NULL AND resolution_breached_at IS NULL AND resolution_met_at IS NULL
     ELSE false END
-RETURNING workspace_id, conversation_id, policy_id, match_key, warn_minutes, awaiting_reply, paused_at, check_at, first_reply_target_s, first_reply_started_at, first_reply_due_at, first_reply_remaining_s, first_reply_met_at, first_reply_breached_at, first_reply_warned_at, next_reply_target_s, next_reply_started_at, next_reply_due_at, next_reply_remaining_s, next_reply_met_at, next_reply_breached_at, next_reply_warned_at, resolution_target_s, resolution_started_at, resolution_due_at, resolution_remaining_s, resolution_met_at, resolution_breached_at, resolution_warned_at, created_at, updated_at
+RETURNING workspace_id, conversation_id, policy_id, match_key, dropped_at, warn_minutes, awaiting_reply, paused_at, check_at, first_reply_target_s, first_reply_started_at, first_reply_due_at, first_reply_remaining_s, first_reply_met_at, first_reply_breached_at, first_reply_warned_at, next_reply_target_s, next_reply_started_at, next_reply_due_at, next_reply_remaining_s, next_reply_met_at, next_reply_breached_at, next_reply_warned_at, resolution_target_s, resolution_started_at, resolution_due_at, resolution_remaining_s, resolution_met_at, resolution_breached_at, resolution_warned_at, created_at, updated_at
 `
 
 type MarkSLAWarnedParams struct {
@@ -666,6 +674,7 @@ func (q *Queries) MarkSLAWarned(ctx context.Context, arg MarkSLAWarnedParams) (C
 		&i.ConversationID,
 		&i.PolicyID,
 		&i.MatchKey,
+		&i.DroppedAt,
 		&i.WarnMinutes,
 		&i.AwaitingReply,
 		&i.PausedAt,
@@ -698,21 +707,21 @@ func (q *Queries) MarkSLAWarned(ctx context.Context, arg MarkSLAWarnedParams) (C
 }
 
 const saveConversationSLA = `-- name: SaveConversationSLA :exec
-INSERT INTO conversation_sla (workspace_id, conversation_id, policy_id, match_key, warn_minutes, awaiting_reply, paused_at, check_at,
+INSERT INTO conversation_sla (workspace_id, conversation_id, policy_id, match_key, dropped_at, warn_minutes, awaiting_reply, paused_at, check_at,
     first_reply_target_s, first_reply_started_at, first_reply_due_at, first_reply_remaining_s, first_reply_met_at, first_reply_breached_at, first_reply_warned_at,
     next_reply_target_s, next_reply_started_at, next_reply_due_at, next_reply_remaining_s, next_reply_met_at, next_reply_breached_at, next_reply_warned_at,
     resolution_target_s, resolution_started_at, resolution_due_at, resolution_remaining_s, resolution_met_at, resolution_breached_at, resolution_warned_at,
     created_at, updated_at)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8,
-    $9, $10, $11, $12,
-    $13, $14, $15,
-    $16, $17, $18, $19,
-    $20, $21, $22,
-    $23, $24, $25, $26,
-    $27, $28, $29,
-    $30, $30)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
+    $10, $11, $12, $13,
+    $14, $15, $16,
+    $17, $18, $19, $20,
+    $21, $22, $23,
+    $24, $25, $26, $27,
+    $28, $29, $30,
+    $31, $31)
 ON CONFLICT (workspace_id, conversation_id) DO UPDATE SET
-    policy_id = excluded.policy_id, match_key = excluded.match_key, warn_minutes = excluded.warn_minutes,
+    policy_id = excluded.policy_id, match_key = excluded.match_key, dropped_at = excluded.dropped_at, warn_minutes = excluded.warn_minutes,
     awaiting_reply = excluded.awaiting_reply, paused_at = excluded.paused_at, check_at = excluded.check_at,
     first_reply_target_s = excluded.first_reply_target_s, first_reply_started_at = excluded.first_reply_started_at,
     first_reply_due_at = excluded.first_reply_due_at, first_reply_remaining_s = excluded.first_reply_remaining_s,
@@ -732,8 +741,9 @@ ON CONFLICT (workspace_id, conversation_id) DO UPDATE SET
 type SaveConversationSLAParams struct {
 	WorkspaceID          uuid.UUID
 	ConversationID       uuid.UUID
-	PolicyID             uuid.UUID
+	PolicyID             *uuid.UUID
 	MatchKey             string
+	DroppedAt            *time.Time
 	WarnMinutes          int32
 	AwaitingReply        bool
 	PausedAt             *time.Time
@@ -768,6 +778,7 @@ func (q *Queries) SaveConversationSLA(ctx context.Context, arg SaveConversationS
 		arg.ConversationID,
 		arg.PolicyID,
 		arg.MatchKey,
+		arg.DroppedAt,
 		arg.WarnMinutes,
 		arg.AwaitingReply,
 		arg.PausedAt,

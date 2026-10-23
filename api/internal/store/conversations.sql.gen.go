@@ -591,7 +591,7 @@ WHERE c.workspace_id = $1
             AND ct.search @@ websearch_to_tsquery('simple', translate($26::text, 'İı', 'ii')))))
   AND ($27::text[] IS NULL OR EXISTS (
       SELECT 1 FROM conversation_sla s
-      WHERE s.workspace_id = c.workspace_id AND s.conversation_id = c.id
+      WHERE s.workspace_id = c.workspace_id AND s.conversation_id = c.id AND s.dropped_at IS NULL
         AND (CASE
             WHEN c.sla_due_at IS NOT NULL AND c.sla_due_at <= $28::timestamptz THEN 'breached'
             WHEN c.sla_due_at IS NOT NULL AND s.warn_minutes > 0

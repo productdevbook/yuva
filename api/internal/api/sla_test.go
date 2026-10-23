@@ -195,9 +195,10 @@ func TestSLAPolicyEndpoints(t *testing.T) {
 
 	tm.agent.expectProblem(http.StatusForbidden, "forbidden", "POST", "/v1/sla-policies", map[string]any{"name": "x", "first_reply_minutes": 5})
 	tm.agent.expectProblem(http.StatusForbidden, "forbidden", "PATCH", "/v1/sla-policies/"+id, map[string]any{"name": "y"})
-	if got := itemIDs(tm.agent.expect(http.StatusOK, "GET", "/v1/sla-policies", nil)); len(got) != 2 {
-		t.Fatalf("agent reads %v", got)
+	if got := itemIDs(tm.agent.expect(http.StatusOK, "GET", "/v1/sla-policies", nil)); !slices.Equal(got, []string{id}) {
+		t.Fatalf("an agent without the inbox reads %v", got)
 	}
+	tm.agent.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/sla-policies/"+second, nil)
 	reader := h.client()
 	reader.bearer = apiKey(tm.owner, "reader", "inboxes:read")
 	reader.expect(http.StatusOK, "GET", "/v1/sla-policies/"+id, nil)
@@ -570,8 +571,8 @@ func TestSLAReevaluation(t *testing.T) {
 	}
 	near(t, "first reply rebuilt from the first message", slaTarget(t, sla, "first_reply")["due_at"], t0.Add(10*time.Minute))
 	ct.owner.expect(http.StatusOK, "DELETE", "/v1/conversations/"+conv, nil)
-	if n := h.count("SELECT count(*) FROM conversation_sla WHERE conversation_id = $1", conv); n != 0 {
-		t.Fatalf("trash keeps %d rows", n)
+	if n := h.count("SELECT count(*) FROM conversation_sla WHERE conversation_id = $1 AND dropped_at IS NULL", conv); n != 0 {
+		t.Fatalf("trash keeps %d live rows", n)
 	}
 
 	conv2 := cs.start("Second")
@@ -765,5 +766,209 @@ func TestSLAWebhooks(t *testing.T) {
 	}
 	if n := len(other.take()); n != 0 {
 		t.Fatalf("an endpoint of another inbox got %d hooks", n)
+	}
+}
+
+func TestSLADropKeepsTheClock(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	ct := newChatTeam(t, h, "live", true)
+	ct.policy(map[string]any{"name": "Urgent", "priorities": []string{"urgent"}, "first_reply_minutes": 10, "warn_minutes": 0})
+	cs := ct.session(h, map[string]any{})
+	after := lastEvent(ct.owner)
+
+	conv := cs.start("Down")
+	ct.agent.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"priority": "urgent"})
+	h.clock.Advance(4 * time.Minute)
+	ct.agent.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"priority": "normal"})
+	if sla := slaOf(t, ct.owner, conv); sla != nil {
+		t.Fatalf("normal priority keeps %v", sla)
+	}
+	h.clock.Advance(2 * time.Hour)
+	h.runSLAChecks(ct.ws)
+	if err := h.srv.SweepSLAIn(context.Background(), uuid.MustParse(ct.ws)); err != nil {
+		t.Fatal(err)
+	}
+	ct.agent.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"priority": "urgent"})
+	sla := slaOf(t, ct.owner, conv)
+	if sla["state"] != "on_track" {
+		t.Fatalf("urgent again %v", sla)
+	}
+	near(t, "first reply keeps the 6 minutes left at the drop", slaTarget(t, sla, "first_reply")["due_at"], h.clock.Now().Add(6*time.Minute))
+	h.runSLAChecks(ct.ws)
+	if got := h.slaOutcomes(conv); len(got) != 0 {
+		t.Fatalf("outcomes while the priority was normal: %v", got)
+	}
+	h.clock.Advance(7 * time.Minute)
+	h.runSLAChecks(ct.ws)
+	ct.agent.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"priority": "normal"})
+	ct.agent.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"priority": "urgent"})
+	h.runSLAChecks(ct.ws)
+	if err := h.srv.SweepSLAIn(context.Background(), uuid.MustParse(ct.ws)); err != nil {
+		t.Fatal(err)
+	}
+	if got := h.slaOutcomes(conv); !slices.Equal(got, []string{"first_reply:breached"}) {
+		t.Fatalf("outcomes %v", got)
+	}
+
+	spam := cs.start("Wait")
+	ct.agent.expect(http.StatusOK, "PATCH", "/v1/conversations/"+spam, map[string]any{"priority": "urgent"})
+	h.clock.Advance(2 * time.Minute)
+	ct.agent.expect(http.StatusOK, "PATCH", "/v1/conversations/"+spam, map[string]any{"status": "pending"})
+	ct.agent.expect(http.StatusOK, "PATCH", "/v1/conversations/"+spam, map[string]any{"spam": true})
+	h.clock.Advance(72 * time.Hour)
+	h.runSLAChecks(ct.ws)
+	if err := h.srv.SweepSLAIn(context.Background(), uuid.MustParse(ct.ws)); err != nil {
+		t.Fatal(err)
+	}
+	ct.agent.expect(http.StatusOK, "PATCH", "/v1/conversations/"+spam, map[string]any{"spam": false})
+	fr := slaTarget(t, slaOf(t, ct.owner, spam), "first_reply")
+	if fr["state"] != "paused" || fr["remaining_seconds"].(float64) != 8*60 {
+		t.Fatalf("unflagged after days pending %v", fr)
+	}
+	ct.agent.expect(http.StatusOK, "PATCH", "/v1/conversations/"+spam, map[string]any{"status": "open"})
+	near(t, "resumed after spam", slaTarget(t, slaOf(t, ct.owner, spam), "first_reply")["due_at"], h.clock.Now().Add(8*time.Minute))
+	h.runSLAChecks(ct.ws)
+	if got := h.slaOutcomes(spam); len(got) != 0 {
+		t.Fatalf("outcomes of the spam one %v", got)
+	}
+	breaches := eventsOf(ct.owner, after, "conversation.sla_breached")
+	if len(breaches) != 1 || breaches[0]["conversation_id"] != conv {
+		t.Fatalf("breach events %v", breaches)
+	}
+}
+
+func TestSLAPolicyThatStopsApplying(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	ct := newChatTeam(t, h, "live", true)
+	vip := ct.owner.expect(http.StatusCreated, "POST", "/v1/labels", map[string]any{"name": "VIP"}).str("id")
+	other := ct.owner.expect(http.StatusCreated, "POST", "/v1/labels", map[string]any{"name": "Other"}).str("id")
+	policy := ct.policy(map[string]any{"name": "VIP", "label_ids": []string{vip}, "first_reply_minutes": 30, "warn_minutes": 0})
+	cs := ct.session(h, map[string]any{})
+	conv := cs.start("Hello")
+	ct.agent.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"labels": []string{vip}})
+	if slaOf(t, ct.owner, conv) == nil {
+		t.Fatal("no SLA with the label")
+	}
+
+	h.clock.Advance(10 * time.Minute)
+	after := lastEvent(ct.owner)
+	ct.owner.expect(http.StatusOK, "PATCH", "/v1/sla-policies/"+policy, map[string]any{"enabled": false})
+	if sla := slaOf(t, ct.owner, conv); sla != nil {
+		t.Fatalf("a disabled policy still drives %v", sla)
+	}
+	if ev := eventsOf(ct.owner, after, "conversation.updated"); len(ev) != 1 || ev[0]["data"].(map[string]any)["sla"] != nil {
+		t.Fatalf("conversation.updated for the disabled policy %v", ev)
+	}
+	h.clock.Advance(time.Hour)
+	h.runSLAChecks(ct.ws)
+	if err := h.srv.SweepSLAIn(context.Background(), uuid.MustParse(ct.ws)); err != nil {
+		t.Fatal(err)
+	}
+	if got := h.slaOutcomes(conv); len(got) != 0 {
+		t.Fatalf("a disabled policy breached %v", got)
+	}
+
+	ct.owner.expect(http.StatusOK, "PATCH", "/v1/sla-policies/"+policy, map[string]any{"enabled": true})
+	reply(ct.agent, conv, map[string]any{"kind": "note"})
+	near(t, "re-enabled keeps the 20 minutes left", slaTarget(t, slaOf(t, ct.owner, conv), "first_reply")["due_at"], h.clock.Now().Add(20*time.Minute))
+
+	ct.owner.expect(http.StatusOK, "PATCH", "/v1/sla-policies/"+policy, map[string]any{"label_ids": []string{other}})
+	if sla := slaOf(t, ct.owner, conv); sla != nil {
+		t.Fatalf("a narrowed policy still drives %v", sla)
+	}
+	ct.owner.expect(http.StatusOK, "PATCH", "/v1/sla-policies/"+policy, map[string]any{"label_ids": []string{vip}})
+	reply(ct.agent, conv, map[string]any{"kind": "note"})
+	if slaOf(t, ct.owner, conv) == nil {
+		t.Fatal("no SLA once the policy matches again")
+	}
+	ct.owner.expect(http.StatusNoContent, "DELETE", "/v1/labels/"+vip, nil)
+	if sla := slaOf(t, ct.owner, conv); sla != nil {
+		t.Fatalf("the policy turned off by the label's deletion still drives %v", sla)
+	}
+
+	if _, err := h.st.Pool.Exec(context.Background(), "UPDATE sla_policies SET enabled = true, label_ids = '{}' WHERE id = $1", policy); err != nil {
+		t.Fatal(err)
+	}
+	reply(ct.agent, conv, map[string]any{"kind": "note"})
+	sla := slaOf(t, ct.owner, conv)
+	due := slaTime(t, slaTarget(t, sla, "first_reply")["due_at"])
+	if _, err := h.st.Pool.Exec(context.Background(), "UPDATE sla_policies SET enabled = false WHERE id = $1", policy); err != nil {
+		t.Fatal(err)
+	}
+	h.clock.Advance(time.Hour)
+	if err := h.srv.CheckSLA(context.Background(), api.SLACheckArgs{WorkspaceID: uuid.MustParse(ct.ws), ConversationID: uuid.MustParse(conv), Target: "first_reply", DueAt: due}); err != nil {
+		t.Fatal(err)
+	}
+	if got := h.slaOutcomes(conv); len(got) != 0 || slaOf(t, ct.owner, conv) != nil {
+		t.Fatalf("a check of a policy turned off without a resync breached: %v", got)
+	}
+}
+
+func TestSLAPoliciesAndInboxLimitedKeys(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	other := tm.newInbox("Billing")
+	everywhere := tm.owner.expect(http.StatusCreated, "POST", "/v1/sla-policies", map[string]any{"name": "All", "first_reply_minutes": 60}).str("id")
+	both := tm.owner.expect(http.StatusCreated, "POST", "/v1/sla-policies", map[string]any{"name": "Both", "inbox_ids": []string{tm.inbox, other}, "first_reply_minutes": 60}).str("id")
+	billing := tm.owner.expect(http.StatusCreated, "POST", "/v1/sla-policies", map[string]any{"name": "Billing", "inbox_ids": []string{other}, "first_reply_minutes": 60}).str("id")
+
+	limited := h.client()
+	r := tm.owner.expect(http.StatusCreated, "POST", "/v1/api-keys", map[string]any{"name": "limited", "inbox_ids": []string{tm.inbox}, "scopes": []string{"inboxes:read"}})
+	limited.bearer = r.str("secret")
+	if _, err := h.st.Pool.Exec(context.Background(), "UPDATE api_keys SET scopes = scopes || '{inboxes:manage}' WHERE id = $1", r.body["api_key"].(map[string]any)["id"]); err != nil {
+		t.Fatal(err)
+	}
+	limited.expectProblem(http.StatusForbidden, "forbidden", "POST", "/v1/sla-policies", map[string]any{"name": "x", "first_reply_minutes": 5})
+	limited.expectProblem(http.StatusForbidden, "forbidden", "PATCH", "/v1/sla-policies/"+both, map[string]any{"name": "x"})
+	limited.expectProblem(http.StatusForbidden, "forbidden", "DELETE", "/v1/sla-policies/"+both, nil)
+	limited.expectProblem(http.StatusForbidden, "forbidden", "PUT", "/v1/sla-policies/order", map[string]any{"ids": []string{billing, both, everywhere}})
+
+	list := limited.expect(http.StatusOK, "GET", "/v1/sla-policies", nil)
+	if got := itemIDs(list); !slices.Equal(got, sorted(everywhere, both)) {
+		t.Fatalf("limited key lists %v", got)
+	}
+	for _, it := range list.body["items"].([]any) {
+		if ids := fmt.Sprint(it.(map[string]any)["inbox_ids"]); ids != "[]" && ids != "["+tm.inbox+"]" {
+			t.Fatalf("limited key sees inboxes %s", ids)
+		}
+	}
+	limited.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/sla-policies/"+billing, nil)
+	if got := fmt.Sprint(limited.expect(http.StatusOK, "GET", "/v1/sla-policies/"+both, nil).body["inbox_ids"]); got != "["+tm.inbox+"]" {
+		t.Fatalf("limited key reads inbox_ids %s", got)
+	}
+}
+
+func TestSLAWarningOnlyAhead(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	ct := newChatTeam(t, h, "live", true)
+	ct.policy(map[string]any{"name": "Short", "first_reply_minutes": 10, "warn_minutes": 15})
+	conv := ct.session(h, map[string]any{}).start("Hello")
+	for _, j := range h.slaChecks(ct.ws) {
+		if j.args.Warn {
+			t.Fatalf("a warning queued at %s though its time had passed", j.at)
+		}
+	}
+	h.clock.Advance(11 * time.Minute)
+	after := lastEvent(ct.owner)
+	h.runSLAChecks(ct.ws)
+	if n := len(eventsOf(ct.owner, after, "conversation.sla_warning")); n != 0 {
+		t.Fatalf("%d warnings", n)
+	}
+	if n := len(eventsOf(ct.owner, after, "conversation.sla_breached")); n != 1 {
+		t.Fatalf("%d breaches", n)
+	}
+
+	ct.agent.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"status": "snoozed", "snooze_until": h.clock.Now().Add(time.Hour).Format(time.RFC3339Nano)})
+	ct.agent.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"spam": true})
+	h.clock.Advance(2 * time.Hour)
+	if err := h.srv.WakeSnoozedIn(context.Background(), uuid.MustParse(ct.ws)); err != nil {
+		t.Fatal(err)
+	}
+	if got := ct.owner.expect(http.StatusOK, "GET", "/v1/conversations/"+conv, nil).str("status"); got != "snoozed" {
+		t.Fatalf("spam woke up: %s", got)
 	}
 }

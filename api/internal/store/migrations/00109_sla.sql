@@ -23,12 +23,15 @@ CREATE INDEX sla_policies_order_idx ON sla_policies (workspace_id, position);
 -- One row per conversation a policy applies to. For each target: target_s is the business seconds in
 -- force (NULL when the policy does not track it); started_at and met_at are kept even when it is
 -- not tracked, so the reply and close history stays known; due_at is set while it runs and
--- remaining_s while it is paused.
+-- remaining_s while it is paused. dropped_at marks a row whose policy stopped applying (spam, trash,
+-- no match, policy deleted): it keeps the targets, and the time from dropped_at on does not count
+-- when a policy applies again.
 CREATE TABLE conversation_sla (
     workspace_id             uuid NOT NULL REFERENCES workspaces (id) ON DELETE CASCADE,
     conversation_id          uuid NOT NULL,
-    policy_id                uuid NOT NULL,
+    policy_id                uuid,
     match_key                text NOT NULL,
+    dropped_at               timestamptz,
     warn_minutes             integer NOT NULL,
     awaiting_reply           boolean NOT NULL DEFAULT false,
     paused_at                timestamptz,
@@ -58,7 +61,7 @@ CREATE TABLE conversation_sla (
     updated_at               timestamptz NOT NULL,
     PRIMARY KEY (workspace_id, conversation_id),
     FOREIGN KEY (workspace_id, conversation_id) REFERENCES conversations (workspace_id, id) ON DELETE CASCADE,
-    FOREIGN KEY (workspace_id, policy_id) REFERENCES sla_policies (workspace_id, id) ON DELETE CASCADE
+    FOREIGN KEY (workspace_id, policy_id) REFERENCES sla_policies (workspace_id, id) ON DELETE SET NULL (policy_id)
 );
 CREATE INDEX conversation_sla_check_idx ON conversation_sla (workspace_id, check_at) WHERE check_at IS NOT NULL;
 CREATE INDEX conversation_sla_policy_idx ON conversation_sla (workspace_id, policy_id);
@@ -72,6 +75,7 @@ CREATE TABLE sla_outcomes (
     inbox_id        uuid NOT NULL,
     policy_id       uuid,
     target          text NOT NULL CHECK (target IN ('first_reply', 'next_reply', 'resolution')),
+    started_at      timestamptz NOT NULL,
     outcome         text NOT NULL CHECK (outcome IN ('met', 'breached')),
     at              timestamptz NOT NULL,
     assignee_id     uuid,
@@ -83,7 +87,7 @@ CREATE TABLE sla_outcomes (
     FOREIGN KEY (workspace_id, team_id) REFERENCES teams (workspace_id, id) ON DELETE SET NULL (team_id)
 );
 CREATE INDEX sla_outcomes_at_idx ON sla_outcomes (workspace_id, at);
-CREATE INDEX sla_outcomes_conversation_idx ON sla_outcomes (workspace_id, conversation_id);
+CREATE UNIQUE INDEX sla_outcomes_target_key ON sla_outcomes (workspace_id, conversation_id, target, started_at);
 
 -- Indexed by 00110 outside a transaction.
 ALTER TABLE conversations ADD COLUMN sla_due_at timestamptz;

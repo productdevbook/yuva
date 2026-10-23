@@ -44,6 +44,15 @@ func slaTargets(r *store.ConversationSla) [3]slaTarget {
 	}
 }
 
+func slaTargetNamed(r *store.ConversationSla, name oas.SlaTargetName) (slaTarget, bool) {
+	for _, t := range slaTargets(r) {
+		if t.name == name {
+			return t, true
+		}
+	}
+	return slaTarget{}, false
+}
+
 func policyMinutes(p store.SlaPolicy, name oas.SlaTargetName) *int32 {
 	switch name {
 	case oas.SlaFirstReply:
@@ -111,7 +120,10 @@ func slaTargetState(t slaTarget, warn time.Duration, now time.Time) oas.SlaTarge
 
 // slaBody mirrors the state the conversation list filters on (ListConversations, sla_states).
 func slaBody(r store.ConversationSla, now time.Time) *oas.ConversationSla {
-	out := &oas.ConversationSla{PolicyId: r.PolicyID, Targets: []oas.ConversationSlaTarget{}}
+	out := &oas.ConversationSla{Targets: []oas.ConversationSlaTarget{}}
+	if r.PolicyID != nil {
+		out.PolicyId = *r.PolicyID
+	}
 	warn := time.Duration(r.WarnMinutes) * time.Minute
 	var due *time.Time
 	var breached, met bool
@@ -167,7 +179,7 @@ func (s *Server) fillSLA(ctx context.Context, q *store.Queries, workspaceID uuid
 	for _, c := range convs {
 		c.Sla = nil
 		for _, r := range rows {
-			if r.ConversationID == c.Id {
+			if r.ConversationID == c.Id && r.DroppedAt == nil {
 				c.Sla = slaBody(r, now)
 			}
 		}
@@ -177,6 +189,7 @@ func (s *Server) fillSLA(ctx context.Context, q *store.Queries, workspaceID uuid
 
 type slaOutcome struct {
 	target  oas.SlaTargetName
+	started time.Time
 	outcome string
 	at      time.Time
 }
@@ -223,7 +236,7 @@ func (e *slaRun) finish(t slaTarget, at time.Time) {
 			if late {
 				outcome = "breached"
 			}
-			e.outcomes = append(e.outcomes, slaOutcome{t.name, outcome, at})
+			e.outcomes = append(e.outcomes, slaOutcome{t.name, **t.started, outcome, at})
 		}
 	}
 	*t.due, *t.remain = nil, nil
@@ -299,6 +312,41 @@ func (e *slaRun) retarget(p store.SlaPolicy) {
 	}
 }
 
+// revive brings back a row whose policy stopped applying at dropped: the time from then on does
+// not count, so a target that ran keeps the business time it had left at the drop.
+func (e *slaRun) revive(dropped time.Time) {
+	for _, t := range slaTargets(e.row) {
+		if *t.due == nil {
+			continue
+		}
+		left := int32(e.clock.between(dropped, **t.due).Round(time.Second) / time.Second)
+		if *t.targetS != nil {
+			left = min(left, **t.targetS)
+		}
+		*t.remain, *t.due = &left, nil
+	}
+	e.row.DroppedAt = nil
+}
+
+// catchUp aligns a revived row with the messages written while it was dropped: a contact still
+// waiting starts a target now, a reply given meanwhile ends the one that waited, without an
+// outcome.
+func (e *slaRun) catchUp(hist []store.ListSLAMessagesRow) {
+	if len(hist) == 0 {
+		return
+	}
+	last := hist[len(hist)-1]
+	in := last.Direction != nil && *last.Direction == string(oas.In)
+	e.historical = true
+	switch {
+	case in && !e.row.AwaitingReply:
+		e.contactMessage(e.now)
+	case !in && e.row.AwaitingReply:
+		e.reply(last.CreatedAt)
+	}
+	e.historical = false
+}
+
 func (e *slaRun) settle(status string) {
 	switch status {
 	case string(oas.ConversationStatusOpen):
@@ -365,7 +413,7 @@ func sameInt(a, b *int32) bool {
 
 // slaShown tells whether what Conversation.sla shows differs between a and b.
 func slaShown(a, b store.ConversationSla) bool {
-	if a.PolicyID != b.PolicyID || a.WarnMinutes != b.WarnMinutes || !sameTime(a.PausedAt, b.PausedAt) {
+	if !sameID(a.PolicyID, b.PolicyID) || a.WarnMinutes != b.WarnMinutes || !sameTime(a.PausedAt, b.PausedAt) || !sameTime(a.DroppedAt, b.DroppedAt) {
 		return true
 	}
 	ta, tb := slaTargets(&a), slaTargets(&b)
@@ -381,7 +429,7 @@ func slaShown(a, b store.ConversationSla) bool {
 
 func saveSLAParams(r store.ConversationSla, now time.Time) store.SaveConversationSLAParams {
 	return store.SaveConversationSLAParams{
-		WorkspaceID: r.WorkspaceID, ConversationID: r.ConversationID, PolicyID: r.PolicyID, MatchKey: r.MatchKey, WarnMinutes: r.WarnMinutes,
+		WorkspaceID: r.WorkspaceID, ConversationID: r.ConversationID, PolicyID: r.PolicyID, MatchKey: r.MatchKey, DroppedAt: r.DroppedAt, WarnMinutes: r.WarnMinutes,
 		AwaitingReply: r.AwaitingReply, PausedAt: r.PausedAt, CheckAt: r.CheckAt,
 		FirstReplyTargetS: r.FirstReplyTargetS, FirstReplyStartedAt: r.FirstReplyStartedAt, FirstReplyDueAt: r.FirstReplyDueAt,
 		FirstReplyRemainingS: r.FirstReplyRemainingS, FirstReplyMetAt: r.FirstReplyMetAt, FirstReplyBreachedAt: r.FirstReplyBreachedAt,
@@ -479,11 +527,46 @@ func (s *Server) syncConversationSLA(ctx context.Context, q *store.Queries, ws, 
 	if err != nil && !store.IsNotFound(err) {
 		return err
 	}
-	drop := func() error {
-		if !exists {
+	now := s.now()
+	dropped := exists && row.DroppedAt != nil
+	var policy store.SlaPolicy
+	found := false
+	key := ""
+	if !c.Spam && c.TrashedAt == nil {
+		labelMap, err := conversationLabels(ctx, q, ws, []uuid.UUID{id})
+		if err != nil {
+			return err
+		}
+		labels := labelMap[id]
+		key = slaMatchKey(c, labels)
+		if exists && !dropped && row.MatchKey == key && row.PolicyID != nil {
+			p, err := q.GetSLAPolicy(ctx, store.GetSLAPolicyParams{WorkspaceID: ws, ID: *row.PolicyID})
+			if err != nil && !store.IsNotFound(err) {
+				return err
+			}
+			if err == nil && slaPolicyMatches(p, c, labels) {
+				policy, found = p, true
+			}
+		}
+		if !found {
+			policies, err := q.ListSLAPolicies(ctx, ws)
+			if err != nil {
+				return err
+			}
+			for _, p := range policies {
+				if slaPolicyMatches(p, c, labels) {
+					policy, found = p, true
+					break
+				}
+			}
+		}
+	}
+	if !found {
+		if !exists || dropped {
 			return nil
 		}
-		if _, err := q.DeleteConversationSLA(ctx, store.DeleteConversationSLAParams{WorkspaceID: ws, ConversationID: id}); err != nil {
+		row.DroppedAt, row.CheckAt = &now, nil
+		if err := q.SaveConversationSLA(ctx, saveSLAParams(row, now)); err != nil {
 			return err
 		}
 		if err := q.SetConversationSLADue(ctx, store.SetConversationSLADueParams{WorkspaceID: ws, ID: id}); err != nil {
@@ -491,45 +574,30 @@ func (s *Server) syncConversationSLA(ctx context.Context, q *store.Queries, ws, 
 		}
 		return s.showSLA(ctx, q, ev, c, nil)
 	}
-	if c.Spam || c.TrashedAt != nil {
-		return drop()
-	}
-	labelMap, err := conversationLabels(ctx, q, ws, []uuid.UUID{id})
-	if err != nil {
-		return err
-	}
-	key := slaMatchKey(c, labelMap[id])
-	var policy store.SlaPolicy
-	found := false
-	if exists && row.MatchKey == key {
-		if policy, err = q.GetSLAPolicy(ctx, store.GetSLAPolicyParams{WorkspaceID: ws, ID: row.PolicyID}); err != nil {
-			return err
-		}
-		found = true
-	} else {
-		policies, err := q.ListSLAPolicies(ctx, ws)
-		if err != nil {
-			return err
-		}
-		for _, p := range policies {
-			if slaPolicyMatches(p, c, labelMap[id]) {
-				policy, found = p, true
-				break
-			}
-		}
-	}
-	if !found {
-		return drop()
-	}
 	in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: ws, ID: c.InboxID})
 	if err != nil {
 		return err
 	}
-	now := s.now()
 	before := row
 	run := &slaRun{row: &row, policy: policy, clock: inboxClock(in), now: now}
-	if exists {
-		if row.PolicyID != policy.ID {
+	switch {
+	case !exists:
+		row = store.ConversationSla{WorkspaceID: ws, ConversationID: id}
+		if err := s.buildSLA(ctx, q, run, c); err != nil {
+			return err
+		}
+	case dropped:
+		run.revive(*row.DroppedAt)
+		if row.PolicyID == nil || *row.PolicyID != policy.ID {
+			run.retarget(policy)
+		}
+		hist, err := q.ListSLAMessages(ctx, store.ListSLAMessagesParams{WorkspaceID: ws, ConversationID: id})
+		if err != nil {
+			return err
+		}
+		run.catchUp(hist)
+	default:
+		if row.PolicyID == nil || *row.PolicyID != policy.ID {
 			run.retarget(policy)
 		}
 		for _, m := range msgs {
@@ -539,13 +607,8 @@ func (s *Server) syncConversationSLA(ctx context.Context, q *store.Queries, ws, 
 				run.reply(m.at)
 			}
 		}
-	} else {
-		row = store.ConversationSla{WorkspaceID: ws, ConversationID: id}
-		if err := s.buildSLA(ctx, q, run, c); err != nil {
-			return err
-		}
 	}
-	row.PolicyID, row.MatchKey, row.WarnMinutes = policy.ID, key, policy.WarnMinutes
+	row.PolicyID, row.MatchKey, row.WarnMinutes = &policy.ID, key, policy.WarnMinutes
 	run.settle(c.Status)
 	if exists && !slaShown(before, row) && before.MatchKey == row.MatchKey && sameTime(before.CheckAt, row.CheckAt) && before.AwaitingReply == row.AwaitingReply {
 		return nil
@@ -556,14 +619,60 @@ func (s *Server) syncConversationSLA(ctx context.Context, q *store.Queries, ws, 
 	if err := q.SetConversationSLADue(ctx, store.SetConversationSLADueParams{WorkspaceID: ws, ID: id, DueAt: slaDue(&row)}); err != nil {
 		return err
 	}
-	if err := s.recordSLAOutcomes(ctx, q, c, policy.ID, run.outcomes); err != nil {
-		return err
+	for _, o := range run.outcomes {
+		if _, err := s.recordSLAOutcome(ctx, q, c, &policy.ID, o); err != nil {
+			return err
+		}
 	}
-	queueSLAChecks(ev, before, row, exists, now)
+	queueSLAChecks(ev, before, row, exists && !dropped, now)
 	if exists && !slaShown(before, row) {
 		return nil
 	}
 	return s.showSLA(ctx, q, ev, c, slaBody(row, now))
+}
+
+// slaConversationsOf lists, sorted, the conversations the given policies drive, or every policy
+// for which keep returns true.
+func slaConversationsOf(ctx context.Context, q *store.Queries, ws uuid.UUID, keep func(store.SlaPolicy) bool) ([]uuid.UUID, error) {
+	policies, err := q.ListSLAPolicies(ctx, ws)
+	if err != nil {
+		return nil, err
+	}
+	var ids []uuid.UUID
+	for _, p := range policies {
+		if !keep(p) {
+			continue
+		}
+		got, err := q.ListSLAConversationsOfPolicy(ctx, store.ListSLAConversationsOfPolicyParams{WorkspaceID: ws, PolicyID: &p.ID})
+		if err != nil {
+			return nil, err
+		}
+		ids = append(ids, got...)
+	}
+	slices.SortFunc(ids, func(a, b uuid.UUID) int { return a.Compare(b) })
+	return ids, nil
+}
+
+// lockSLAConversations locks conversations in id order before a policy, label or inbox change
+// that alters which policy drives them, so that change waits for their writers and never the
+// other way round.
+func lockSLAConversations(ctx context.Context, q *store.Queries, ws uuid.UUID, ids []uuid.UUID) error {
+	for _, id := range ids {
+		if _, err := q.LockConversation(ctx, store.LockConversationParams{WorkspaceID: ws, ID: id}); err != nil && !store.IsNotFound(err) {
+			return err
+		}
+	}
+	return nil
+}
+
+// syncSLAConversations evaluates the SLA of conversations locked by lockSLAConversations again.
+func (s *Server) syncSLAConversations(ctx context.Context, q *store.Queries, ev *eventBatch, ws uuid.UUID, ids []uuid.UUID) error {
+	for _, id := range ids {
+		if err := s.syncConversationSLA(ctx, q, ws, id, nil, ev); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // buildSLA starts a conversation's targets from its past: the resolution target at its creation
@@ -594,16 +703,13 @@ func (s *Server) buildSLA(ctx context.Context, q *store.Queries, run *slaRun, c 
 	return nil
 }
 
-func (s *Server) recordSLAOutcomes(ctx context.Context, q *store.Queries, c store.Conversation, policyID uuid.UUID, outs []slaOutcome) error {
-	for _, o := range outs {
-		if err := q.InsertSLAOutcome(ctx, store.InsertSLAOutcomeParams{
-			ID: newID(), WorkspaceID: c.WorkspaceID, ConversationID: c.ID, InboxID: c.InboxID, PolicyID: &policyID,
-			Target: string(o.target), Outcome: o.outcome, At: o.at, AssigneeID: c.AssigneeID, TeamID: c.TeamID,
-		}); err != nil {
-			return err
-		}
-	}
-	return nil
+// recordSLAOutcome reports false when the target already has its outcome.
+func (s *Server) recordSLAOutcome(ctx context.Context, q *store.Queries, c store.Conversation, policyID *uuid.UUID, o slaOutcome) (bool, error) {
+	n, err := q.InsertSLAOutcome(ctx, store.InsertSLAOutcomeParams{
+		ID: newID(), WorkspaceID: c.WorkspaceID, ConversationID: c.ID, InboxID: c.InboxID, PolicyID: policyID,
+		Target: string(o.target), StartedAt: o.started, Outcome: o.outcome, At: o.at, AssigneeID: c.AssigneeID, TeamID: c.TeamID,
+	})
+	return n > 0, err
 }
 
 // showSLA puts sla on the batch's conversation events of c, or sends conversation.updated when
@@ -644,7 +750,8 @@ func slaCheckOpts(at time.Time) *river.InsertOpts {
 	}}}
 }
 
-// queueSLAChecks queues the breach check of every target whose due time was set, and its warning.
+// queueSLAChecks queues the breach check of every target whose due time was set, and its warning
+// while the warning time is still ahead.
 func queueSLAChecks(ev *eventBatch, before, after store.ConversationSla, existed bool, now time.Time) {
 	tb, ta := slaTargets(&before), slaTargets(&after)
 	warn := time.Duration(after.WarnMinutes) * time.Minute
@@ -654,11 +761,7 @@ func queueSLAChecks(ev *eventBatch, before, after store.ConversationSla, existed
 		}
 		due := **t.due
 		ev.jobOnce(SLACheckArgs{WorkspaceID: after.WorkspaceID, ConversationID: after.ConversationID, Target: string(t.name), DueAt: due}, slaCheckOpts(due))
-		if warn > 0 && *t.warned == nil {
-			at := due.Add(-warn)
-			if at.Before(now) {
-				at = now
-			}
+		if at := due.Add(-warn); warn > 0 && *t.warned == nil && at.After(now) {
 			ev.jobOnce(SLACheckArgs{WorkspaceID: after.WorkspaceID, ConversationID: after.ConversationID, Target: string(t.name), DueAt: due, Warn: true}, slaCheckOpts(at))
 		}
 	}
@@ -706,6 +809,9 @@ func (s *Server) CheckSLA(ctx context.Context, a SLACheckArgs) error {
 		if !a.Warn && a.DueAt.After(now) {
 			return nil
 		}
+		if err := s.syncConversationSLA(ctx, q, a.WorkspaceID, a.ConversationID, nil, ev); err != nil {
+			return err
+		}
 		arg := store.MarkSLABreachedParams{WorkspaceID: a.WorkspaceID, ConversationID: a.ConversationID, Target: a.Target, DueAt: a.DueAt.UTC(), Now: now}
 		var row store.ConversationSla
 		if a.Warn {
@@ -732,7 +838,9 @@ func (s *Server) CheckSLA(ctx context.Context, a SLACheckArgs) error {
 			if err := q.SaveConversationSLA(ctx, saveSLAParams(row, now)); err != nil {
 				return err
 			}
-			if err := s.recordSLAOutcomes(ctx, q, c, row.PolicyID, []slaOutcome{{name, "breached", now}}); err != nil {
+			t, _ := slaTargetNamed(&row, name)
+			first, err := s.recordSLAOutcome(ctx, q, c, row.PolicyID, slaOutcome{name, **t.started, "breached", now})
+			if err != nil || !first {
 				return err
 			}
 		}
