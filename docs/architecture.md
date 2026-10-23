@@ -988,15 +988,33 @@ shells use logical Tailwind utilities (`ms`, `pe`, `start`, `end`, `rtl:`). Date
 relative times format with the active locale.
 
 Home and setup (M17): owners and admins open `/` on Home, agents on the inbox; the managers' inbox
-lives at `/conversations`. Home is one request, `GET /v1/home` (member sessions only): inbox counts
-and the oldest waiting conversation (open, not spam, with a contact message after the last reply from
-a member or bot; notes and automatic replies are not replies), visitors today, in the last 30 minutes
-and per day for seven days for each property the member may see, the last sent broadcast's
-recipients, sent, clicked and replied (there is no open tracking), and, for owners and admins, the
-setup checklist. Five queries whatever the workspace's size. It is
-read from the counters and rollups the server already keeps, so it spends none of the workspace's
-analytics query slots; blocks the member may not see are left out. The checklist is the same setup
-state the MCP `get_setup_state` tool returns. `/setup` is one hub of cards (live chat, e-mail, mobile
+lives at `/conversations`. Home's own content is one request, `GET /v1/home` (member sessions
+only), for a period of `days` (7, 14 or 30, by default 14) ending today in `timezone`, optionally
+narrowed to one inbox with `inbox_id` (`404` for an inbox the member cannot see). It answers the
+period and the previous one of the same length; inbox counts, open feedback and the five
+conversations that have waited longest (open, not spam, with a contact message after the last reply
+from a member or bot; notes and automatic replies are not replies), with their contact, channel kind
+and last contact message; the period's activity (conversations started, first replies with their
+median time and ratings, counted as `GET /v1/stats` counts them) in total, for the previous period
+and per day, each day's conversations split per inbox; per inbox its open conversations and the
+period's conversations and ratings; open conversations per assignee; each status page with its
+state and its visible components' worst state and uptime per day of the period; the five published
+ideas with the most votes that are not shipped or closed; the next five of scheduled broadcasts,
+open incidents, maintenance not completed and scheduled what's new entries; visitors today, in the
+last 30 minutes and per day for seven days for each property the member may see; the last sent
+broadcast's recipients, sent, clicked and replied (there is no open tracking); and, for owners and
+admins, the setup checklist, which `inbox_id` does not narrow. Every block is gated like the
+endpoint it mirrors: only the inboxes the member can see, and ideas, broadcasts, what's new and
+analytics only when the server has them. At most fourteen queries whatever the workspace's size,
+each bounded by the open backlog, the period or the workspace's configuration, never by its
+history: conversations started are found through the activity index, ratings through the rated
+index, first replies through the messages' time index, uptime from the status component spans. It
+is read from the counters, rollups and indexed tables the server already keeps, so it spends none
+of the workspace's analytics query slots; blocks the member may not see are left out. What the
+shell already loads on every page stays out of it and Home reads it from there: inbox names and
+colours (`GET /v1/inboxes`), members and their live presence (`GET /v1/members` and realtime), and
+mentions (`GET /v1/me/mentions`, whose seen state changes live). The checklist is the same setup state
+the MCP `get_setup_state` tool returns. `/setup` is one hub of cards (live chat, e-mail, mobile
 app, documentation pages, analytics, newsletter); a card that is set up links to its place, one that
 is not runs its flow inside the setup layout, and `/analytics/new` opens the same analytics flow. The
 panel no longer jumps to `/setup` on its own; Home shows what is left.
