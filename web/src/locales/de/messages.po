@@ -2420,6 +2420,10 @@ msgstr "Weitere Team-Adresse"
 msgid "Another team already has this name."
 msgstr "Ein anderes Team hat bereits diesen Namen."
 
+#: src/app/ViewsGroup.tsx
+msgid "Another team’s views"
+msgstr "Ansichten eines anderen Teams"
+
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Ein anderer Arbeitsbereich auf diesem Server hat diese Domain bereits verifiziert."
@@ -4798,6 +4802,7 @@ msgstr "Eingeschränkte Leistung"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -4938,6 +4943,10 @@ msgstr "Ausgewählten Block löschen"
 msgid "Delete the team {name}?"
 msgstr "Team {name} löschen?"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete the view {name}?"
+msgstr "Ansicht {name} löschen?"
+
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
 msgstr "Diesen Textbaustein löschen?"
@@ -4973,6 +4982,10 @@ msgstr "Dieses Abonnement löschen?"
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete this workspace"
 msgstr "Diesen Workspace löschen"
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete view"
+msgstr "Ansicht löschen"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete workspace"
@@ -5741,6 +5754,11 @@ msgstr "Titel bearbeiten"
 msgid "Edit this update"
 msgstr "Dieses Update bearbeiten"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Edit view"
+msgstr "Ansicht bearbeiten"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit, or preview on a desktop, a phone or in dark mode"
 msgstr "Bearbeiten oder Vorschau am Desktop, Smartphone oder im Dunkelmodus"
@@ -5968,6 +5986,7 @@ msgstr "Jeder Typ"
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Jede Website und App zeigt ihre Besucher unter Start und in Analytics."
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
@@ -9229,12 +9248,17 @@ msgstr "Mein Profil"
 msgid "My teams"
 msgstr "Meine Teams"
 
+#: src/app/ViewsGroup.tsx
+msgid "My views"
+msgstr "Meine Ansichten"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -10984,6 +11008,7 @@ msgstr "Nur in der App"
 msgid "Only mail since {date}"
 msgstr "Nur Mail seit {date}"
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Only me"
 msgstr "Nur ich"
@@ -13047,6 +13072,14 @@ msgstr "Gruppe umbenennen"
 msgid "Reopen"
 msgstr "Wieder öffnen"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reorder the selected view in the sidebar"
+msgstr "Die ausgewählte Ansicht in der Seitenleiste verschieben"
+
+#: src/app/ViewsGroup.tsx
+msgid "Reorder with Alt ↑ ↓ or by dragging"
+msgstr "Mit Alt ↑ ↓ oder per Ziehen neu anordnen"
+
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
@@ -13062,6 +13095,10 @@ msgstr "API-Schlüssel ersetzen"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Replace the token"
 msgstr "Token ersetzen"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Replace the view’s filters, search and order with the ones on screen."
+msgstr "Filter, Suche und Sortierung der Ansicht durch die aktuellen ersetzen."
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -13637,6 +13674,7 @@ msgstr "Samstag"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -13673,6 +13711,11 @@ msgstr "Speichern und testen"
 msgid "Save as draft"
 msgstr "Als Entwurf speichern"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Save as view"
+msgstr "Als Ansicht speichern"
+
 #: src/components/common/SaveBar.tsx
 msgid "Save changes"
 msgstr "Änderungen speichern"
@@ -13697,6 +13740,10 @@ msgstr "Speichere Antworten, die du oft schreibst, und füge sie per Kürzel im 
 msgid "Save the draft now"
 msgstr "Den Entwurf jetzt speichern"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Save the list as a view"
+msgstr "Liste als Ansicht speichern"
+
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -13712,6 +13759,15 @@ msgstr "Den Entwurf jetzt speichern"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "Gespeichert"
+
+#: src/app/ViewsGroup.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Saved views"
+msgstr "Gespeicherte Ansichten"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Saves the list as it is now: its tab, filters, search and order."
+msgstr "Speichert die Liste, wie sie jetzt ist: Tab, Filter, Suche und Sortierung."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
@@ -15594,6 +15650,7 @@ msgstr "TCP-Prüfung"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
@@ -15718,6 +15775,10 @@ msgstr "Das war die sechste Prüfung in dieser Stunde. Sie können um {retry} er
 msgid "The .mbox file from Takeout › Mail, unzipped."
 msgstr "Die .mbox-Datei aus Takeout › Mail, entpackt."
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "The {field} filter was refused. {detail}"
+msgstr "Der Filter {field} wurde abgelehnt. {detail}"
+
 #: src/features/migrations/text.ts
 msgid "The {provider} user you signed in with is not an admin, and only admins can read every ticket. Sign in again as an admin."
 msgstr "Der Benutzer von {provider}, mit dem Sie sich angemeldet haben, ist kein Admin, und nur Admins können jedes Ticket lesen. Melden Sie sich erneut als Admin an."
@@ -15835,6 +15896,10 @@ msgstr "Der Kontakt wurde gelöscht"
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "Die Unterhaltungen bleiben offen. Kunden erhalten die Antwort sofort, und sie lässt sich nicht zurückholen."
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "The conversations stay where they are. Only the saved view goes."
+msgstr "Die Unterhaltungen bleiben, wo sie sind. Nur die gespeicherte Ansicht verschwindet."
 
 #: src/features/status/MonitorsPage.tsx
 msgid "The current address stops working at once. Update whatever calls it."
@@ -17032,6 +17097,10 @@ msgid "This person unsubscribed from everything, reported a mail as spam or had 
 msgstr "Diese Person hat sich von allem abgemeldet, eine Mail als Spam gemeldet oder ihre Daten löschen lassen, daher kann das Team sie nicht erneut hinzufügen."
 
 #: src/components/common/text.ts
+msgid "This place holds as many views as allowed (50). Delete one first."
+msgstr "Hier sind höchstens 50 Ansichten erlaubt. Lösche zuerst eine."
+
+#: src/components/common/text.ts
 msgid "This property already has a funnel with this name."
 msgstr "Diese Property hat bereits einen Trichter mit diesem Namen."
 
@@ -17727,6 +17796,10 @@ msgstr "Bis zu {max} und 100.000 Zeilen, mit Kopfzeile. Excel-Dateien in türkis
 msgid "Update text"
 msgstr "Update-Text"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Update the view from this list"
+msgstr "Ansicht aus dieser Liste aktualisieren"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Updates"
 msgstr "Updates"
@@ -17888,6 +17961,10 @@ msgstr "Verwenden Sie Origins wie https://www.example.com, ohne Pfad."
 msgid "Use sample values"
 msgstr "Beispielwerte verwenden"
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Use the current list"
+msgstr "Aktuelle Liste verwenden"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "Verwenden Sie Benutzername und Passwort des Postfachs oder ein App-Passwort, wenn Ihr Anbieter welche anbietet."
@@ -18034,6 +18111,10 @@ msgstr "Aufrufe"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "Aufrufe"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Visible to"
+msgstr "Sichtbar für"
 
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -18688,6 +18769,7 @@ msgstr "Wird bearbeitet …"
 
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
+#: src/app/ViewsGroup.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx

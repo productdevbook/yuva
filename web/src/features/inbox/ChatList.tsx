@@ -43,6 +43,7 @@ import {
 } from "@/components/common"
 import { keyLabel, mod, SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { formatDuration, formatShort, useErrorText, usePreviewText } from "@/components/common/text"
+import { useLatest } from "@/hooks/use-latest"
 import { useNow } from "@/hooks/use-now"
 import { useConfirm } from "@/components/common/ConfirmDialog"
 import { Alert } from "@/components/ui/alert"
@@ -75,6 +76,8 @@ import { useHotkeys } from "@/hooks/use-hotkeys"
 import { ImportBanner } from "@/features/migrations/ImportBanner"
 import { InboxChip } from "@/features/inbox/InboxPicker"
 import { UnderlineTabs } from "@/features/inbox/ListHead"
+import { useActiveView } from "@/features/inbox/views/useActiveView"
+import { ViewsMenu } from "@/features/inbox/views/ViewsMenu"
 import { ProductTag } from "@/features/inbox/ProductTag"
 import { LabelTag, look } from "@/features/inbox/PageFrame"
 import { useListActions } from "@/features/inbox/memberState"
@@ -729,7 +732,8 @@ export function ChatList({
   const [selecting, setSelecting] = useState(false)
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [linking, setLinking] = useState(false)
-  const sort: Order = order ?? (chip === "waiting" ? "oldest" : "newest")
+  const view = useActiveView()
+  const sort: Order = order ?? (view.id ? (view.sla ? "sla_due" : "newest") : chip === "waiting" ? "oldest" : "newest")
 
   const [source, setSource] = useSourceFilter()
   const narrowed =
@@ -741,21 +745,39 @@ export function ChatList({
     !!labelId ||
     !!teamId ||
     !!chipInbox
-  const filters = {
-    kind: ["conversation" as const],
-    ...chipFilters[chip],
-    ...sourceFilters(source),
-    inbox_id: inboxId || undefined,
-    label_id: labelId || undefined,
-    team_id: teamId || undefined,
-    sort: sort === "sla_due" ? ("sla_due" as const) : undefined,
-    q: q || undefined,
-  }
+  const own = sourceFilters(source)
+  const filters: ConversationFilters = view.base
+    ? {
+        kind: ["conversation"],
+        ...view.base,
+        ...Object.fromEntries(
+          Object.entries({
+            ...own,
+            inbox_id: inboxId || undefined,
+            label_id: labelId || undefined,
+            team_id: teamId || undefined,
+          }).filter(([, v]) => v !== undefined)
+        ),
+        fields: view.base.fields || own.fields ? { ...view.base.fields, ...own.fields } : undefined,
+        sort: sort === "sla_due" ? "sla_due" : undefined,
+        q: q || undefined,
+      }
+    : {
+        kind: ["conversation"],
+        ...chipFilters[chip],
+        ...own,
+        inbox_id: inboxId || undefined,
+        label_id: labelId || undefined,
+        team_id: teamId || undefined,
+        sort: sort === "sla_due" ? "sla_due" : undefined,
+        q: q || undefined,
+      }
   const list = useConversations(filters)
   const pinnedList = useConversations({ ...filters, pinned: true })
   const loaded = useMemo(() => list.data?.pages.flatMap((p) => p.items) ?? [], [list.data])
   const pinnedLoaded = useMemo(() => pinnedList.data?.pages.flatMap((p) => p.items) ?? [], [pinnedList.data])
-  const keep = (c: ConversationListItem) => (!unreadOnly || c.unread) && (chip !== "waiting" || isWaiting(c))
+  const keep = (c: ConversationListItem) =>
+    (!unreadOnly || c.unread) && (view.id !== null || chip !== "waiting" || isWaiting(c))
   const byTime = (a: ConversationListItem, b: ConversationListItem) =>
     (a.last_activity_at < b.last_activity_at ? 1 : -1) * (sort === "oldest" ? -1 : 1)
   const pinnedRows = [...pinnedLoaded, ...loaded.filter((c) => c.pinned_at && !pinnedLoaded.some((x) => x.id === c.id))]
@@ -769,6 +791,7 @@ export function ChatList({
 
   const scope = [
     chip,
+    view.id,
     q,
     inboxId,
     labelId,
@@ -859,7 +882,25 @@ export function ChatList({
     setCursorId(null)
     scroller.current?.scrollTo({ top: 0 })
   }
+  const seenView = useRef(view.id)
+  const changeView = useLatest(() => {
+    setSource({})
+    if (view.id) setListQuery(view.q)
+    setCursorId(null)
+  })
+  useEffect(() => {
+    const was = seenView.current
+    seenView.current = view.id
+    if (!view.id && !was) return
+    setOrder(null)
+    setLabelId("")
+    setTeamId("")
+    setUnreadOnly(false)
+    changeView.current()
+    scroller.current?.scrollTo({ top: 0 })
+  }, [view.id, changeView])
   const setChip = (c: Chip) => {
+    view.clear()
     rememberChip(c)
     setOwnChip(c)
     onChip?.(c)
@@ -898,6 +939,7 @@ export function ChatList({
     setSource({})
     setUnreadOnly(false)
     setInbox("")
+    view.clear()
   }
 
   const bulk = useBulkUpdateConversations()
@@ -973,7 +1015,7 @@ export function ChatList({
         onError: failed,
       }
     )
-  const inTrash = chip === "trash"
+  const inTrash = view.base ? !!view.base.trashed : chip === "trash"
   const setTrashed = async (ids: string[], trashed: boolean) => {
     const done: string[] = []
     try {
@@ -1242,6 +1284,7 @@ export function ChatList({
           reset()
         }}
       />
+      <ViewsMenu filters={filters} active={active} />
     </div>
   )
 
@@ -1266,7 +1309,7 @@ export function ChatList({
       {!embedded && (
         <PhoneHeader>
           <UnderlineTabs
-            value={chip}
+            value={view.id ? null : chip}
             onChange={setChip}
             label={t`Filter`}
             items={tabs.map((k) => ({
@@ -1290,7 +1333,7 @@ export function ChatList({
       {searchRow}
       {selecting ? selection : chips}
       <AwayBanner />
-      {chip === "waiting" && <CleanupBanner inboxId={inboxId} />}
+      {!view.id && chip === "waiting" && <CleanupBanner inboxId={inboxId} />}
       <ImportBanner />
       <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto border-t" data-testid="list">
         {list.isPending ? (
@@ -1313,7 +1356,7 @@ export function ChatList({
               ) : narrowed || unreadOnly ? (
                 <Trans>Nothing matches these filters.</Trans>
               ) : (
-                empty[chip]
+                empty[view.id ? "all" : chip]
               )}
             </p>
             {filtered && (

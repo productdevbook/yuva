@@ -1,9 +1,10 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { CheckIcon, ChevronDownIcon, ChevronRightIcon, PlusIcon, SettingsIcon, XIcon } from "lucide-react"
-import { useState } from "react"
+import { Fragment, useState } from "react"
 import { Link, useLocation, useMatch, useNavigate } from "react-router"
 
 import { moveFocus, useEntries, useGo, useSection } from "@/app/Rail"
+import { ViewsGroup } from "@/app/ViewsGroup"
 import type { Section } from "@/app/shell"
 import { keyLabel, mod } from "@/components/common/ShortcutSheet"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
@@ -429,30 +430,28 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent className="overflow-visible in-data-[mobile=true]:overflow-y-auto in-data-[mobile=true]:pb-[max(1rem,env(safe-area-inset-bottom))]">
         <nav aria-label={t`Sections`} onKeyDown={moveFocus} className="flex flex-col" data-testid="rail">
-          {groups.map((g) => (
-            <SidebarGroup
-              key={g.title ?? "main"}
-              className="px-3 py-1 group-data-[collapsible=icon]:px-2"
-              role="group"
-              aria-label={g.title}
-            >
-              {g.title && (
-                <SidebarGroupLabel className="h-7 px-2.5 text-[11px] tracking-[0.06em] text-sidebar-muted uppercase">
-                  {g.title}
-                </SidebarGroupLabel>
-              )}
-              <SidebarMenu className="gap-px">
-                {g.rows.map((r) => (
-                  <Row
-                    key={r.key}
-                    row={r}
-                    active={section === r.key}
-                    open={open[r.key] ?? section === r.key}
-                    onOpen={(v) => setOpen(r.key, v)}
-                  />
-                ))}
-              </SidebarMenu>
-            </SidebarGroup>
+          {groups.map((g, at) => (
+            <Fragment key={g.title ?? "main"}>
+              <SidebarGroup className="px-3 py-1 group-data-[collapsible=icon]:px-2" role="group" aria-label={g.title}>
+                {g.title && (
+                  <SidebarGroupLabel className="h-7 px-2.5 text-[11px] tracking-[0.06em] text-sidebar-muted uppercase">
+                    {g.title}
+                  </SidebarGroupLabel>
+                )}
+                <SidebarMenu className="gap-px">
+                  {g.rows.map((r) => (
+                    <Row
+                      key={r.key}
+                      row={r}
+                      active={section === r.key}
+                      open={open[r.key] ?? section === r.key}
+                      onOpen={(v) => setOpen(r.key, v)}
+                    />
+                  ))}
+                </SidebarMenu>
+              </SidebarGroup>
+              {at === 0 && <ViewsGroup />}
+            </Fragment>
           ))}
         </nav>
       </SidebarContent>

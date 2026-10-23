@@ -2420,6 +2420,10 @@ msgstr "Druga adresa tima"
 msgid "Another team already has this name."
 msgstr "Drugi tim već ima taj naziv."
 
+#: src/app/ViewsGroup.tsx
+msgid "Another team’s views"
+msgstr "Prikazi drugog tima"
+
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
@@ -4798,6 +4802,7 @@ msgstr "Smanjena učinkovitost"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -4938,6 +4943,10 @@ msgstr "Izbriši odabrani blok"
 msgid "Delete the team {name}?"
 msgstr "Izbrisati tim {name}?"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete the view {name}?"
+msgstr "Izbrisati prikaz {name}?"
+
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
 msgstr "Izbrisati ovaj pripremljeni odgovor?"
@@ -4973,6 +4982,10 @@ msgstr "Izbrisati ovu pretplatu?"
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete this workspace"
 msgstr "Izbriši ovaj radni prostor"
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete view"
+msgstr "Izbriši prikaz"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete workspace"
@@ -5741,6 +5754,11 @@ msgstr "Uredi naslov"
 msgid "Edit this update"
 msgstr "Uredi ovo ažuriranje"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Edit view"
+msgstr "Uredi prikaz"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit, or preview on a desktop, a phone or in dark mode"
 msgstr "Uredite ili pogledajte pregled na računalu, telefonu ili u tamnom načinu"
@@ -5968,6 +5986,7 @@ msgstr "Svaka vrsta"
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Svako web-mjesto i aplikacija prikazuje svoje posjetitelje na Početnoj i u Analitici."
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
@@ -9229,12 +9248,17 @@ msgstr "Moj profil"
 msgid "My teams"
 msgstr "Moji timovi"
 
+#: src/app/ViewsGroup.tsx
+msgid "My views"
+msgstr "Moji prikazi"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -10984,6 +11008,7 @@ msgstr "Samo u aplikaciji"
 msgid "Only mail since {date}"
 msgstr "Samo pošta od {date}"
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Only me"
 msgstr "Samo ja"
@@ -13047,6 +13072,14 @@ msgstr "Preimenuj grupu"
 msgid "Reopen"
 msgstr "Ponovno otvori"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reorder the selected view in the sidebar"
+msgstr "Promijeni redoslijed odabranog prikaza na bočnoj traci"
+
+#: src/app/ViewsGroup.tsx
+msgid "Reorder with Alt ↑ ↓ or by dragging"
+msgstr "Promijenite redoslijed s Alt ↑ ↓ ili povlačenjem"
+
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
@@ -13062,6 +13095,10 @@ msgstr "Replace the API key"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Replace the token"
 msgstr "Replace the token"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Replace the view’s filters, search and order with the ones on screen."
+msgstr "Zamjenjuje filtre, pretraživanje i redoslijed prikaza onima na zaslonu."
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -13637,6 +13674,7 @@ msgstr "Subota"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -13673,6 +13711,11 @@ msgstr "Save and test"
 msgid "Save as draft"
 msgstr "Spremi kao skicu"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Save as view"
+msgstr "Spremi kao prikaz"
+
 #: src/components/common/SaveBar.tsx
 msgid "Save changes"
 msgstr "Spremi promjene"
@@ -13697,6 +13740,10 @@ msgstr "Spremite odgovore koje često pišete, a zatim ih umećite u uređivač 
 msgid "Save the draft now"
 msgstr "Spremi skicu sada"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Save the list as a view"
+msgstr "Spremi popis kao prikaz"
+
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -13712,6 +13759,15 @@ msgstr "Spremi skicu sada"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "Spremljeno"
+
+#: src/app/ViewsGroup.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Saved views"
+msgstr "Spremljeni prikazi"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Saves the list as it is now: its tab, filters, search and order."
+msgstr "Sprema popis kakav je sada: karticu, filtre, pretraživanje i redoslijed."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
@@ -15594,6 +15650,7 @@ msgstr "TCP provjera"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
@@ -15718,6 +15775,10 @@ msgstr "To je bila šesta provjera u ovom satu. Ponovno možete provjeriti {retr
 msgid "The .mbox file from Takeout › Mail, unzipped."
 msgstr ".mbox datoteka iz Takeout › Mail, raspakirana."
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "The {field} filter was refused. {detail}"
+msgstr "Filtar {field} je odbijen. {detail}"
+
 #: src/features/migrations/text.ts
 msgid "The {provider} user you signed in with is not an admin, and only admins can read every ticket. Sign in again as an admin."
 msgstr "Korisnik {provider} kojim ste se prijavili nije administrator, a samo administratori mogu čitati svaki tiket. Prijavite se ponovno kao administrator."
@@ -15835,6 +15896,10 @@ msgstr "Kontakt je izbrisan"
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "Razgovori ostaju otvoreni. Klijenti odgovor dobivaju odmah i ne može se povući."
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "The conversations stay where they are. Only the saved view goes."
+msgstr "Razgovori ostaju gdje jesu. Briše se samo spremljeni prikaz."
 
 #: src/features/status/MonitorsPage.tsx
 msgid "The current address stops working at once. Update whatever calls it."
@@ -17032,6 +17097,10 @@ msgid "This person unsubscribed from everything, reported a mail as spam or had 
 msgstr "Ova se osoba odjavila od svega, prijavila poruku kao neželjenu poštu ili su joj podaci izbrisani pa je tim ne može ponovno dodati."
 
 #: src/components/common/text.ts
+msgid "This place holds as many views as allowed (50). Delete one first."
+msgstr "Ovdje je dosegnut najveći dopušteni broj prikaza (50). Prvo izbrišite jedan."
+
+#: src/components/common/text.ts
 msgid "This property already has a funnel with this name."
 msgstr "Ovo svojstvo već ima lijevak s ovim nazivom."
 
@@ -17727,6 +17796,10 @@ msgstr "Do {max} i 100.000 redaka, s retkom zaglavlja. Excel datoteke u turskom 
 msgid "Update text"
 msgstr "Tekst ažuriranja"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Update the view from this list"
+msgstr "Ažuriraj prikaz iz ovog popisa"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Updates"
 msgstr "Ažuriranja"
@@ -17888,6 +17961,10 @@ msgstr "Koristite originove kao https://www.example.com, bez putanje."
 msgid "Use sample values"
 msgstr "Koristi uzorke vrijednosti"
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Use the current list"
+msgstr "Upotrijebi trenutni popis"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "Koristite korisničko ime i lozinku pretinca ili lozinku aplikacije ako ih vaš pružatelj nudi."
@@ -18034,6 +18111,10 @@ msgstr "prikazi"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "Prikazi"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Visible to"
+msgstr "Vidljivo za"
 
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -18688,6 +18769,7 @@ msgstr "Radi…"
 
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
+#: src/app/ViewsGroup.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx

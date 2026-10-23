@@ -2420,6 +2420,10 @@ msgstr "Altă adresă de echipă"
 msgid "Another team already has this name."
 msgstr "Altă echipă are deja acest nume."
 
+#: src/app/ViewsGroup.tsx
+msgid "Another team’s views"
+msgstr "Vizualizările altei echipe"
+
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
@@ -4798,6 +4802,7 @@ msgstr "Performanță redusă"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -4938,6 +4943,10 @@ msgstr "Șterge blocul selectat"
 msgid "Delete the team {name}?"
 msgstr "Ștergi echipa {name}?"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete the view {name}?"
+msgstr "Ștergi vizualizarea {name}?"
+
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
 msgstr "Ștergi acest răspuns gata făcut?"
@@ -4973,6 +4982,10 @@ msgstr "Ștergi această abonare?"
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete this workspace"
 msgstr "Șterge acest spațiu de lucru"
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete view"
+msgstr "Șterge vizualizarea"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete workspace"
@@ -5741,6 +5754,11 @@ msgstr "Editează titlul"
 msgid "Edit this update"
 msgstr "Editează această actualizare"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Edit view"
+msgstr "Editează vizualizarea"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit, or preview on a desktop, a phone or in dark mode"
 msgstr "Editează sau previzualizează pe desktop, pe telefon sau în mod întunecat"
@@ -5968,6 +5986,7 @@ msgstr "Fiecare tip"
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Fiecare site și aplicație își arată vizitatorii în Acasă și în Analiză."
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
@@ -9229,12 +9248,17 @@ msgstr "Profilul meu"
 msgid "My teams"
 msgstr "Echipele mele"
 
+#: src/app/ViewsGroup.tsx
+msgid "My views"
+msgstr "Vizualizările mele"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -10984,6 +11008,7 @@ msgstr "Doar în aplicație"
 msgid "Only mail since {date}"
 msgstr "Doar e-mailul din {date}"
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Only me"
 msgstr "Doar eu"
@@ -13047,6 +13072,14 @@ msgstr "Redenumește grupul"
 msgid "Reopen"
 msgstr "Redeschide"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reorder the selected view in the sidebar"
+msgstr "Reordonează vizualizarea selectată în bara laterală"
+
+#: src/app/ViewsGroup.tsx
+msgid "Reorder with Alt ↑ ↓ or by dragging"
+msgstr "Reordonează cu Alt ↑ ↓ sau prin tragere"
+
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
@@ -13062,6 +13095,10 @@ msgstr "Replace the API key"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Replace the token"
 msgstr "Replace the token"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Replace the view’s filters, search and order with the ones on screen."
+msgstr "Înlocuiește filtrele, căutarea și ordinea vizualizării cu cele de pe ecran."
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -13637,6 +13674,7 @@ msgstr "Sâmbătă"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -13673,6 +13711,11 @@ msgstr "Save and test"
 msgid "Save as draft"
 msgstr "Salvează ca ciornă"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Save as view"
+msgstr "Salvează ca vizualizare"
+
 #: src/components/common/SaveBar.tsx
 msgid "Save changes"
 msgstr "Salvează modificările"
@@ -13697,6 +13740,10 @@ msgstr "Salvează răspunsurile pe care le scrii des, apoi inserează-le în edi
 msgid "Save the draft now"
 msgstr "Salvează ciorna acum"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Save the list as a view"
+msgstr "Salvează lista ca vizualizare"
+
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -13712,6 +13759,15 @@ msgstr "Salvează ciorna acum"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "Salvat"
+
+#: src/app/ViewsGroup.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Saved views"
+msgstr "Vizualizări salvate"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Saves the list as it is now: its tab, filters, search and order."
+msgstr "Salvează lista așa cum este acum: fila, filtrele, căutarea și ordinea."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
@@ -15594,6 +15650,7 @@ msgstr "Verificare TCP"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
@@ -15718,6 +15775,10 @@ msgstr "Aceasta a fost a șasea verificare în această oră. Poți verifica din
 msgid "The .mbox file from Takeout › Mail, unzipped."
 msgstr "Fișierul .mbox din Takeout › Mail, despachetat."
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "The {field} filter was refused. {detail}"
+msgstr "Filtrul {field} a fost respins. {detail}"
+
 #: src/features/migrations/text.ts
 msgid "The {provider} user you signed in with is not an admin, and only admins can read every ticket. Sign in again as an admin."
 msgstr "Utilizatorul {provider} cu care te-ai conectat nu este admin, iar doar adminii pot citi fiecare tichet. Conectează-te din nou ca admin."
@@ -15835,6 +15896,10 @@ msgstr "Contactul a fost șters"
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "Conversațiile rămân deschise. Clienții primesc răspunsul imediat și nu poate fi retras."
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "The conversations stay where they are. Only the saved view goes."
+msgstr "Conversațiile rămân unde sunt. Se șterge doar vizualizarea salvată."
 
 #: src/features/status/MonitorsPage.tsx
 msgid "The current address stops working at once. Update whatever calls it."
@@ -17032,6 +17097,10 @@ msgid "This person unsubscribed from everything, reported a mail as spam or had 
 msgstr "Această persoană s-a dezabonat de la tot, a raportat un e-mail ca spam sau i-au fost șterse datele, deci echipa nu o poate adăuga din nou."
 
 #: src/components/common/text.ts
+msgid "This place holds as many views as allowed (50). Delete one first."
+msgstr "Aici s-a atins numărul maxim de vizualizări (50). Șterge mai întâi una."
+
+#: src/components/common/text.ts
 msgid "This property already has a funnel with this name."
 msgstr "Această proprietate are deja o pâlnie cu acest nume."
 
@@ -17727,6 +17796,10 @@ msgstr "Până la {max} și 100.000 de rânduri, cu un rând de antet. Fișierel
 msgid "Update text"
 msgstr "Textul actualizării"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Update the view from this list"
+msgstr "Actualizează vizualizarea din această listă"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Updates"
 msgstr "Actualizări"
@@ -17888,6 +17961,10 @@ msgstr "Folosește originuri precum https://www.example.com, fără cale."
 msgid "Use sample values"
 msgstr "Folosește valori de exemplu"
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Use the current list"
+msgstr "Folosește lista curentă"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "Folosește numele de utilizator și parola căsuței sau o parolă de aplicație dacă furnizorul tău le oferă."
@@ -18034,6 +18111,10 @@ msgstr "vizualizări"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "Vizualizări"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Visible to"
+msgstr "Vizibilă pentru"
 
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -18688,6 +18769,7 @@ msgstr "Se lucrează…"
 
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
+#: src/app/ViewsGroup.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx

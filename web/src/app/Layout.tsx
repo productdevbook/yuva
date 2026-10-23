@@ -23,8 +23,9 @@ const AnalyticsColumn = lazy(() => import("@/features/analytics/AnalyticsColumn"
 function LeftColumn() {
   const section = useSection()
   const navigate = useNavigate()
+  const { search } = useLocation()
   const currentId = useMatch("/conversations/:conversationId")?.params.conversationId ?? null
-  const open = useCallback((id: string) => navigate(`/conversations/${id}`), [navigate])
+  const open = useCallback((id: string) => navigate(`/conversations/${id}${search}`), [navigate, search])
   const chats = section === "conversations"
   return (
     <>

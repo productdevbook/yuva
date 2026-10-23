@@ -441,6 +441,7 @@ export function useErrorText() {
     if (err.code === "team_limit") return t`A team holds at most 500 members and 100 inboxes.`
     if (err.code === "team_access") return t`This team does not cover the conversation's inbox.`
     if (err.code === "sla_policy_limit") return t`A workspace holds at most 100 SLA policies. Delete one first.`
+    if (err.code === "view_limit") return t`This place holds as many views as allowed (50). Delete one first.`
     if (err.code === "field_taken") return t`Another field of this kind already uses this key.`
     if (err.code === "field_limit") return t`A kind of field holds at most 50 fields. Delete one first.`
     if (err.code === "field_clearing")

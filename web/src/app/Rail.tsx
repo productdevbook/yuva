@@ -104,7 +104,7 @@ export function useSection() {
 
 export function useGo() {
   const navigate = useNavigate()
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
   const section = useSection()
   const { canManage } = useSession()
   return (key: Section) => {
@@ -115,7 +115,7 @@ export function useGo() {
       if (pathname !== "/mentions") navigate("/mentions")
     } else if (key === "conversations" || key === "assistants") {
       setRailView(key)
-      if (!isChats(pathname, canManage)) navigate(inboxRoot(canManage))
+      if (!isChats(pathname, canManage) || search) navigate(inboxRoot(canManage))
     } else if (section !== key || (isFullPage(key) && pathname !== `/${key}`)) {
       navigate(`/${key}`)
     }

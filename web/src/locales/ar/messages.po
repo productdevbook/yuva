@@ -2420,6 +2420,10 @@ msgstr "عنوان فريق آخر"
 msgid "Another team already has this name."
 msgstr "يوجد فريق آخر بهذا الاسم."
 
+#: src/app/ViewsGroup.tsx
+msgid "Another team’s views"
+msgstr "عروض فريق آخر"
+
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
@@ -4798,6 +4802,7 @@ msgstr "أداء متدهور"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -4938,6 +4943,10 @@ msgstr "حذف الكتلة المحددة"
 msgid "Delete the team {name}?"
 msgstr "حذف الفريق {name}؟"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete the view {name}?"
+msgstr "حذف العرض {name}؟"
+
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
 msgstr "حذف هذا الرد الجاهز؟"
@@ -4973,6 +4982,10 @@ msgstr "حذف هذا الاشتراك؟"
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete this workspace"
 msgstr "حذف مساحة العمل هذه"
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete view"
+msgstr "حذف العرض"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete workspace"
@@ -5741,6 +5754,11 @@ msgstr "تعديل العنوان"
 msgid "Edit this update"
 msgstr "تعديل هذا التحديث"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Edit view"
+msgstr "تعديل العرض"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit, or preview on a desktop, a phone or in dark mode"
 msgstr "عدّل أو عاين على سطح المكتب أو الهاتف أو في الوضع الداكن"
@@ -5968,6 +5986,7 @@ msgstr "كل نوع"
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "يعرض كل موقع وتطبيق زواره في الرئيسية والتحليلات."
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
@@ -9229,12 +9248,17 @@ msgstr "ملفي الشخصي"
 msgid "My teams"
 msgstr "فرقي"
 
+#: src/app/ViewsGroup.tsx
+msgid "My views"
+msgstr "عروضي"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -10984,6 +11008,7 @@ msgstr "في التطبيق فقط"
 msgid "Only mail since {date}"
 msgstr "البريد منذ {date} فقط"
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Only me"
 msgstr "أنا فقط"
@@ -13047,6 +13072,14 @@ msgstr "إعادة تسمية المجموعة"
 msgid "Reopen"
 msgstr "إعادة الفتح"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reorder the selected view in the sidebar"
+msgstr "إعادة ترتيب العرض المحدد في الشريط الجانبي"
+
+#: src/app/ViewsGroup.tsx
+msgid "Reorder with Alt ↑ ↓ or by dragging"
+msgstr "أعد الترتيب بـ Alt ↑ ↓ أو بالسحب"
+
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
@@ -13062,6 +13095,10 @@ msgstr "Replace the API key"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Replace the token"
 msgstr "Replace the token"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Replace the view’s filters, search and order with the ones on screen."
+msgstr "استبدل مرشحات العرض وبحثه وترتيبه بما على الشاشة."
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -13637,6 +13674,7 @@ msgstr "السبت"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -13673,6 +13711,11 @@ msgstr "Save and test"
 msgid "Save as draft"
 msgstr "حفظ كمسودة"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Save as view"
+msgstr "حفظ كعرض"
+
 #: src/components/common/SaveBar.tsx
 msgid "Save changes"
 msgstr "حفظ التغييرات"
@@ -13697,6 +13740,10 @@ msgstr "احفظ الردود التي تكتبها كثيرًا ثم أدرجه
 msgid "Save the draft now"
 msgstr "حفظ المسودة الآن"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Save the list as a view"
+msgstr "حفظ القائمة كعرض"
+
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -13712,6 +13759,15 @@ msgstr "حفظ المسودة الآن"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "تم الحفظ"
+
+#: src/app/ViewsGroup.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Saved views"
+msgstr "العروض المحفوظة"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Saves the list as it is now: its tab, filters, search and order."
+msgstr "يحفظ القائمة كما هي الآن: تبويبها ومرشحاتها وبحثها وترتيبها."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
@@ -15594,6 +15650,7 @@ msgstr "فحص TCP"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
@@ -15718,6 +15775,10 @@ msgstr "كانت تلك عملية الفحص السادسة هذه الساعة
 msgid "The .mbox file from Takeout › Mail, unzipped."
 msgstr "ملف .mbox من Takeout › Mail، بعد فك ضغطه."
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "The {field} filter was refused. {detail}"
+msgstr "تم رفض المرشح {field}. {detail}"
+
 #: src/features/migrations/text.ts
 msgid "The {provider} user you signed in with is not an admin, and only admins can read every ticket. Sign in again as an admin."
 msgstr "مستخدم {provider} الذي سجّلت الدخول به ليس مسؤولًا، والمسؤولون وحدهم يستطيعون قراءة كل التذاكر. سجّل الدخول مجددًا كمسؤول."
@@ -15835,6 +15896,10 @@ msgstr "حُذفت جهة الاتصال"
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "تبقى المحادثات مفتوحة. يصل الرد إلى العملاء فورًا ولا يمكن سحبه."
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "The conversations stay where they are. Only the saved view goes."
+msgstr "تبقى المحادثات في مكانها. يُحذف العرض المحفوظ فقط."
 
 #: src/features/status/MonitorsPage.tsx
 msgid "The current address stops working at once. Update whatever calls it."
@@ -17032,6 +17097,10 @@ msgid "This person unsubscribed from everything, reported a mail as spam or had 
 msgstr "ألغى هذا الشخص الاشتراك في كل شيء، أو أبلغ عن رسالة كغير مرغوبة، أو مُحيت بياناته، لذا لا يستطيع الفريق إضافته مجددًا."
 
 #: src/components/common/text.ts
+msgid "This place holds as many views as allowed (50). Delete one first."
+msgstr "وصل هذا المكان إلى الحد الأقصى من العروض (50). احذف عرضًا أولًا."
+
+#: src/components/common/text.ts
 msgid "This property already has a funnel with this name."
 msgstr "لدى هذا الموقع مسار تحويل بهذا الاسم بالفعل."
 
@@ -17727,6 +17796,10 @@ msgstr "حتى {max} و100,000 صف، مع صف عناوين. تُقرأ كما 
 msgid "Update text"
 msgstr "نص التحديث"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Update the view from this list"
+msgstr "تحديث العرض من هذه القائمة"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Updates"
 msgstr "التحديثات"
@@ -17888,6 +17961,10 @@ msgstr "استخدم أصولًا مثل https://www.example.com، بلا مسا
 msgid "Use sample values"
 msgstr "استخدام قيم نموذجية"
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Use the current list"
+msgstr "استخدام القائمة الحالية"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "استخدم اسم مستخدم صندوق البريد وكلمة مروره، أو كلمة مرور تطبيق إن وفّرها مزوّدك."
@@ -18034,6 +18111,10 @@ msgstr "مشاهدات"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "المشاهدات"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Visible to"
+msgstr "مرئي لـ"
 
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -18688,6 +18769,7 @@ msgstr "جارٍ العمل…"
 
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
+#: src/app/ViewsGroup.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx

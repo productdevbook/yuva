@@ -2420,6 +2420,10 @@ msgstr "Másik csapatcím"
 msgid "Another team already has this name."
 msgstr "Egy másik csapat már ezt a nevet viseli."
 
+#: src/app/ViewsGroup.tsx
+msgid "Another team’s views"
+msgstr "Másik csapat nézetei"
+
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
@@ -4798,6 +4802,7 @@ msgstr "Csökkent teljesítmény"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -4938,6 +4943,10 @@ msgstr "A kijelölt blokk törlése"
 msgid "Delete the team {name}?"
 msgstr "Törlöd a(z) {name} csapatot?"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete the view {name}?"
+msgstr "Törlöd a(z) {name} nézetet?"
+
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
 msgstr "Törlöd ezt a gyorsválaszt?"
@@ -4973,6 +4982,10 @@ msgstr "Törlöd ezt a feliratkozást?"
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete this workspace"
 msgstr "Munkaterület törlése"
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete view"
+msgstr "Nézet törlése"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete workspace"
@@ -5741,6 +5754,11 @@ msgstr "Cím szerkesztése"
 msgid "Edit this update"
 msgstr "A frissítés szerkesztése"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Edit view"
+msgstr "Nézet szerkesztése"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit, or preview on a desktop, a phone or in dark mode"
 msgstr "Szerkesztés, vagy előnézet asztali gépen, telefonon vagy sötét módban"
@@ -5968,6 +5986,7 @@ msgstr "Minden típus"
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Minden webhely és alkalmazás a látogatóit a Főoldalon és az Analitikában mutatja."
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
@@ -9229,12 +9248,17 @@ msgstr "Profilom"
 msgid "My teams"
 msgstr "Csapataim"
 
+#: src/app/ViewsGroup.tsx
+msgid "My views"
+msgstr "Saját nézeteim"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -10984,6 +11008,7 @@ msgstr "Csak az alkalmazásban"
 msgid "Only mail since {date}"
 msgstr "Csak a(z) {date} óta érkezett levelek"
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Only me"
 msgstr "Csak én"
@@ -13047,6 +13072,14 @@ msgstr "Csoport átnevezése"
 msgid "Reopen"
 msgstr "Újranyitás"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reorder the selected view in the sidebar"
+msgstr "A kijelölt nézet átrendezése az oldalsávban"
+
+#: src/app/ViewsGroup.tsx
+msgid "Reorder with Alt ↑ ↓ or by dragging"
+msgstr "Átrendezés Alt ↑ ↓ billentyűkkel vagy húzással"
+
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
@@ -13062,6 +13095,10 @@ msgstr "Replace the API key"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Replace the token"
 msgstr "Replace the token"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Replace the view’s filters, search and order with the ones on screen."
+msgstr "A nézet szűrőit, keresését és sorrendjét a képernyőn lévőkre cseréli."
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -13637,6 +13674,7 @@ msgstr "Szombat"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -13673,6 +13711,11 @@ msgstr "Save and test"
 msgid "Save as draft"
 msgstr "Mentés piszkozatként"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Save as view"
+msgstr "Mentés nézetként"
+
 #: src/components/common/SaveBar.tsx
 msgid "Save changes"
 msgstr "Módosítások mentése"
@@ -13697,6 +13740,10 @@ msgstr "Mentsd el a gyakran írt válaszokat, majd billentyűparanccsal illeszd 
 msgid "Save the draft now"
 msgstr "A piszkozat mentése most"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Save the list as a view"
+msgstr "A lista mentése nézetként"
+
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -13712,6 +13759,15 @@ msgstr "A piszkozat mentése most"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "Mentve"
+
+#: src/app/ViewsGroup.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Saved views"
+msgstr "Mentett nézetek"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Saves the list as it is now: its tab, filters, search and order."
+msgstr "Úgy menti a listát, ahogy most van: lap, szűrők, keresés és sorrend."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
@@ -15594,6 +15650,7 @@ msgstr "TCP-ellenőrzés"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
@@ -15718,6 +15775,10 @@ msgstr "Ez volt a hatodik ellenőrzés ebben az órában. Újra ellenőrizhetsz:
 msgid "The .mbox file from Takeout › Mail, unzipped."
 msgstr "A .mbox fájl a Takeout › Mail mappából, kicsomagolva."
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "The {field} filter was refused. {detail}"
+msgstr "A(z) {field} szűrőt elutasítottuk. {detail}"
+
 #: src/features/migrations/text.ts
 msgid "The {provider} user you signed in with is not an admin, and only admins can read every ticket. Sign in again as an admin."
 msgstr "A(z) {provider} felhasználó, amellyel bejelentkeztél, nem admin, és csak adminok olvashatják az összes jegyet. Jelentkezz be újra adminként."
@@ -15835,6 +15896,10 @@ msgstr "A kontaktot törölték"
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "A beszélgetések nyitva maradnak. Az ügyfelek azonnal megkapják a választ, és nem vonható vissza."
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "The conversations stay where they are. Only the saved view goes."
+msgstr "A beszélgetések a helyükön maradnak. Csak a mentett nézet törlődik."
 
 #: src/features/status/MonitorsPage.tsx
 msgid "The current address stops working at once. Update whatever calls it."
@@ -17032,6 +17097,10 @@ msgid "This person unsubscribed from everything, reported a mail as spam or had 
 msgstr "Ez a személy mindenről leiratkozott, spamnek jelentett egy levelet, vagy törölték az adatait, ezért a csapat nem tudja újra hozzáadni."
 
 #: src/components/common/text.ts
+msgid "This place holds as many views as allowed (50). Delete one first."
+msgstr "Itt elérted a megengedett nézetek maximális számát (50). Előbb törölj egyet."
+
+#: src/components/common/text.ts
 msgid "This property already has a funnel with this name."
 msgstr "Ennek a tulajdonságnak már van ilyen nevű tölcsére."
 
@@ -17727,6 +17796,10 @@ msgstr "Legfeljebb {max} és 100 000 sor, fejlécsorral. A török vagy nyugati 
 msgid "Update text"
 msgstr "A frissítés szövege"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Update the view from this list"
+msgstr "Nézet frissítése ebből a listából"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Updates"
 msgstr "Frissítések"
@@ -17888,6 +17961,10 @@ msgstr "Használj olyan originöket, mint a https://www.example.com, útvonal n�
 msgid "Use sample values"
 msgstr "Mintaértékek használata"
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Use the current list"
+msgstr "A jelenlegi lista használata"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "Használd a postafiók felhasználónevét és jelszavát, vagy alkalmazásjelszót, ha a szolgáltatód kínál ilyet."
@@ -18034,6 +18111,10 @@ msgstr "megtekintés"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "Megtekintések"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Visible to"
+msgstr "Ki láthatja"
 
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -18688,6 +18769,7 @@ msgstr "Dolgozik…"
 
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
+#: src/app/ViewsGroup.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx

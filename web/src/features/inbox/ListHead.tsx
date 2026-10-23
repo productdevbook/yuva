@@ -47,7 +47,7 @@ export function UnderlineTabs<T extends string>({
   label,
   className,
 }: {
-  value: T
+  value: T | null
   onChange: (value: T) => void
   items: readonly TabItem<T>[]
   label: string

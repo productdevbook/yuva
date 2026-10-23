@@ -26,6 +26,7 @@ import { FrameTabs, look, PageTop } from "@/features/inbox/PageFrame"
 import { AssistantsPage } from "@/features/inbox/AssistantsPage"
 import { MentionsPage } from "@/features/inbox/SidePanels"
 import { useCounts, useLoadedCount, useStats } from "@/features/inbox/queries"
+import { useActiveView } from "@/features/inbox/views/useActiveView"
 import { useRailView } from "@/features/inbox/railView"
 import { useIsPhone, useMediaQuery } from "@/hooks/use-media-query"
 import { useViewing } from "@/lib/realtime"
@@ -143,6 +144,7 @@ function InboxPage({ id }: { id: string | null }) {
   const navigate = useNavigate()
   const roomy = useMediaQuery("(min-width: 1200px)")
   const [panel, setPanel] = usePanel()
+  const view = useActiveView()
   const initialChip = useRememberedChip()
   const [chip, setChip] = useState<Chip>(initialChip)
   const [starting, setStarting] = useState(false)
@@ -157,7 +159,8 @@ function InboxPage({ id }: { id: string | null }) {
   const labels = useChipLabels()
   const tabs = useChips()
   const contactId = useConversation(id ?? undefined).data?.contact_id
-  const open = useCallback((next: string) => navigate(`/conversations/${next}`), [navigate])
+  const { search } = useLocation()
+  const open = useCallback((next: string) => navigate(`/conversations/${next}${search}`), [navigate, search])
   const count = (k: Chip) =>
     k === "waiting"
       ? waiting
@@ -191,8 +194,9 @@ function InboxPage({ id }: { id: string | null }) {
         tabs={
           <FrameTabs
             label={t`Filter`}
-            value={chip}
+            value={view.id ? null : chip}
             onChange={(k) => {
+              view.clear()
               rememberChip(k)
               setChip(k)
             }}
@@ -255,7 +259,7 @@ function InboxPage({ id }: { id: string | null }) {
 export function ChatsPage({ section = "conversations" }: { section?: "conversations" | "feedback" }) {
   const { conversationId } = useParams()
   const navigate = useNavigate()
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
   const phone = useIsPhone()
   const [panel, setPanel] = usePanel()
   const { canManage } = useSession()
@@ -273,7 +277,14 @@ export function ChatsPage({ section = "conversations" }: { section?: "conversati
   if (!id) return section === "feedback" ? <EmptyFeedback /> : <EmptyChat />
   return (
     <main className="flex min-h-0 flex-1 flex-col" data-testid="chats">
-      <ChatView key={id} id={id} onBack={() => navigate(back)} panel={panel} inlinePanel={false} onPanel={setPanel} />
+      <ChatView
+        key={id}
+        id={id}
+        onBack={() => navigate(`${back}${search}`)}
+        panel={panel}
+        inlinePanel={false}
+        onPanel={setPanel}
+      />
     </main>
   )
 }

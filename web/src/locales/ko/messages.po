@@ -2420,6 +2420,10 @@ msgstr "다른 팀 주소"
 msgid "Another team already has this name."
 msgstr "같은 이름의 다른 팀이 있습니다."
 
+#: src/app/ViewsGroup.tsx
+msgid "Another team’s views"
+msgstr "다른 팀의 보기"
+
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
@@ -4798,6 +4802,7 @@ msgstr "성능 저하"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -4938,6 +4943,10 @@ msgstr "선택한 블록 삭제"
 msgid "Delete the team {name}?"
 msgstr "{name} 팀을 삭제할까요?"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete the view {name}?"
+msgstr "{name} 보기를 삭제할까요?"
+
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
 msgstr "이 자주 쓰는 답장을 삭제할까요?"
@@ -4973,6 +4982,10 @@ msgstr "이 구독을 삭제할까요?"
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete this workspace"
 msgstr "이 워크스페이스 삭제"
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete view"
+msgstr "보기 삭제"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete workspace"
@@ -5741,6 +5754,11 @@ msgstr "제목 편집"
 msgid "Edit this update"
 msgstr "이 업데이트 편집"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Edit view"
+msgstr "보기 편집"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit, or preview on a desktop, a phone or in dark mode"
 msgstr "편집하거나 데스크톱, 휴대폰, 다크 모드로 미리 보기"
@@ -5968,6 +5986,7 @@ msgstr "모든 유형"
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "모든 웹사이트와 앱의 방문자가 홈과 분석에 표시됩니다."
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
@@ -9229,12 +9248,17 @@ msgstr "내 프로필"
 msgid "My teams"
 msgstr "내 팀"
 
+#: src/app/ViewsGroup.tsx
+msgid "My views"
+msgstr "내 보기"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -10984,6 +11008,7 @@ msgstr "앱에서만"
 msgid "Only mail since {date}"
 msgstr "{date} 이후 메일만"
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Only me"
 msgstr "나만"
@@ -13047,6 +13072,14 @@ msgstr "그룹 이름 바꾸기"
 msgid "Reopen"
 msgstr "다시 열기"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reorder the selected view in the sidebar"
+msgstr "사이드바에서 선택한 보기 순서 바꾸기"
+
+#: src/app/ViewsGroup.tsx
+msgid "Reorder with Alt ↑ ↓ or by dragging"
+msgstr "Alt ↑ ↓ 또는 드래그로 순서 바꾸기"
+
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
@@ -13062,6 +13095,10 @@ msgstr "Replace the API key"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Replace the token"
 msgstr "Replace the token"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Replace the view’s filters, search and order with the ones on screen."
+msgstr "보기의 필터, 검색, 정렬을 화면에 있는 것으로 바꿉니다."
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -13637,6 +13674,7 @@ msgstr "토요일"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -13673,6 +13711,11 @@ msgstr "Save and test"
 msgid "Save as draft"
 msgstr "초안으로 저장"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Save as view"
+msgstr "보기로 저장"
+
 #: src/components/common/SaveBar.tsx
 msgid "Save changes"
 msgstr "변경 사항 저장"
@@ -13697,6 +13740,10 @@ msgstr "자주 쓰는 답장을 저장해 두고 단축키로 입력창에 넣�
 msgid "Save the draft now"
 msgstr "초안 지금 저장"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Save the list as a view"
+msgstr "목록을 보기로 저장"
+
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -13712,6 +13759,15 @@ msgstr "초안 지금 저장"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "저장됨"
+
+#: src/app/ViewsGroup.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Saved views"
+msgstr "저장된 보기"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Saves the list as it is now: its tab, filters, search and order."
+msgstr "목록을 지금 상태 그대로 저장합니다: 탭, 필터, 검색, 정렬."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
@@ -15594,6 +15650,7 @@ msgstr "TCP 확인"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
@@ -15718,6 +15775,10 @@ msgstr "이번이 이 시간의 여섯 번째 확인이었습니다. {retry}에 
 msgid "The .mbox file from Takeout › Mail, unzipped."
 msgstr "Takeout › Mail의 .mbox 파일, 압축을 푼 것."
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "The {field} filter was refused. {detail}"
+msgstr "{field} 필터가 거부되었습니다. {detail}"
+
 #: src/features/migrations/text.ts
 msgid "The {provider} user you signed in with is not an admin, and only admins can read every ticket. Sign in again as an admin."
 msgstr "로그인한 {provider} 사용자가 관리자가 아닙니다. 모든 티켓은 관리자만 읽을 수 있습니다. 관리자로 다시 로그인하세요."
@@ -15835,6 +15896,10 @@ msgstr "연락처가 삭제되었습니다"
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "대화는 열린 채로 유지됩니다. 고객은 답장을 바로 받으며 회수할 수 없습니다."
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "The conversations stay where they are. Only the saved view goes."
+msgstr "대화는 그대로 남습니다. 저장된 보기만 삭제됩니다."
 
 #: src/features/status/MonitorsPage.tsx
 msgid "The current address stops working at once. Update whatever calls it."
@@ -17032,6 +17097,10 @@ msgid "This person unsubscribed from everything, reported a mail as spam or had 
 msgstr "이 사람은 모든 구독을 취소했거나, 메일을 스팸으로 신고했거나, 데이터가 삭제되어 팀이 다시 추가할 수 없습니다."
 
 #: src/components/common/text.ts
+msgid "This place holds as many views as allowed (50). Delete one first."
+msgstr "여기에는 허용된 최대 보기 수(50개)가 있습니다. 먼저 하나를 삭제하세요."
+
+#: src/components/common/text.ts
 msgid "This property already has a funnel with this name."
 msgstr "이 속성에는 같은 이름의 퍼널이 이미 있습니다."
 
@@ -17727,6 +17796,10 @@ msgstr "최대 {max}, 100,000행, 헤더 행 포함. 터키어 또는 서유럽 
 msgid "Update text"
 msgstr "업데이트 내용"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Update the view from this list"
+msgstr "이 목록으로 보기 업데이트"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Updates"
 msgstr "업데이트"
@@ -17888,6 +17961,10 @@ msgstr "https://www.example.com 같은 오리진을 경로 없이 쓰세요."
 msgid "Use sample values"
 msgstr "샘플 값 사용"
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Use the current list"
+msgstr "현재 목록 사용"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "메일함의 사용자 이름과 비밀번호를 사용하세요. 제공업체가 앱 비밀번호를 제공하면 그것을 쓰세요."
@@ -18034,6 +18111,10 @@ msgstr "조회"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "조회"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Visible to"
+msgstr "공개 대상"
 
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -18688,6 +18769,7 @@ msgstr "처리 중…"
 
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
+#: src/app/ViewsGroup.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx

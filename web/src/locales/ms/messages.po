@@ -2420,6 +2420,10 @@ msgstr "Alamat pasukan lain"
 msgid "Another team already has this name."
 msgstr "Pasukan lain sudah menggunakan nama ini."
 
+#: src/app/ViewsGroup.tsx
+msgid "Another team’s views"
+msgstr "Paparan pasukan lain"
+
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
@@ -4798,6 +4802,7 @@ msgstr "Prestasi merosot"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -4938,6 +4943,10 @@ msgstr "Padam blok yang dipilih"
 msgid "Delete the team {name}?"
 msgstr "Padam pasukan {name}?"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete the view {name}?"
+msgstr "Padam paparan {name}?"
+
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
 msgstr "Padam balasan siap sedia ini?"
@@ -4973,6 +4982,10 @@ msgstr "Padam langganan ini?"
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete this workspace"
 msgstr "Padam ruang kerja ini"
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete view"
+msgstr "Padam paparan"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete workspace"
@@ -5741,6 +5754,11 @@ msgstr "Sunting tajuk"
 msgid "Edit this update"
 msgstr "Edit kemas kini ini"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Edit view"
+msgstr "Sunting paparan"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit, or preview on a desktop, a phone or in dark mode"
 msgstr "Sunting, atau pratonton pada desktop, telefon atau dalam mod gelap"
@@ -5968,6 +5986,7 @@ msgstr "Setiap jenis"
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Setiap tapak web dan apl menunjukkan pelawatnya di Laman Utama dan Analitik."
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
@@ -9229,12 +9248,17 @@ msgstr "Profil saya"
 msgid "My teams"
 msgstr "Pasukan saya"
 
+#: src/app/ViewsGroup.tsx
+msgid "My views"
+msgstr "Paparan saya"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -10984,6 +11008,7 @@ msgstr "Dalam apl sahaja"
 msgid "Only mail since {date}"
 msgstr "Hanya mel sejak {date}"
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Only me"
 msgstr "Saya sahaja"
@@ -13047,6 +13072,14 @@ msgstr "Namakan semula kumpulan"
 msgid "Reopen"
 msgstr "Buka semula"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reorder the selected view in the sidebar"
+msgstr "Susun semula paparan yang dipilih dalam bar sisi"
+
+#: src/app/ViewsGroup.tsx
+msgid "Reorder with Alt ↑ ↓ or by dragging"
+msgstr "Susun semula dengan Alt ↑ ↓ atau dengan menyeret"
+
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
@@ -13062,6 +13095,10 @@ msgstr "Replace the API key"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Replace the token"
 msgstr "Replace the token"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Replace the view’s filters, search and order with the ones on screen."
+msgstr "Gantikan penapis, carian dan susunan paparan dengan yang ada di skrin."
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -13637,6 +13674,7 @@ msgstr "Sabtu"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -13673,6 +13711,11 @@ msgstr "Save and test"
 msgid "Save as draft"
 msgstr "Simpan sebagai draf"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Save as view"
+msgstr "Simpan sebagai paparan"
+
 #: src/components/common/SaveBar.tsx
 msgid "Save changes"
 msgstr "Simpan perubahan"
@@ -13697,6 +13740,10 @@ msgstr "Simpan balasan yang sering anda tulis, kemudian sisipkannya ke kotak bal
 msgid "Save the draft now"
 msgstr "Simpan draf sekarang"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Save the list as a view"
+msgstr "Simpan senarai sebagai paparan"
+
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -13712,6 +13759,15 @@ msgstr "Simpan draf sekarang"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "Disimpan"
+
+#: src/app/ViewsGroup.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Saved views"
+msgstr "Paparan tersimpan"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Saves the list as it is now: its tab, filters, search and order."
+msgstr "Menyimpan senarai seperti sekarang: tab, penapis, carian dan susunan."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
@@ -15594,6 +15650,7 @@ msgstr "Semakan TCP"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
@@ -15718,6 +15775,10 @@ msgstr "Itu semakan keenam jam ini. Anda boleh menyemak lagi pada {retry}."
 msgid "The .mbox file from Takeout › Mail, unzipped."
 msgstr "Fail .mbox daripada Takeout › Mail, dinyahzip."
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "The {field} filter was refused. {detail}"
+msgstr "Penapis {field} ditolak. {detail}"
+
 #: src/features/migrations/text.ts
 msgid "The {provider} user you signed in with is not an admin, and only admins can read every ticket. Sign in again as an admin."
 msgstr "Pengguna {provider} yang anda log masuk bukan pentadbir, dan hanya pentadbir boleh membaca setiap tiket. Log masuk semula sebagai pentadbir."
@@ -15835,6 +15896,10 @@ msgstr "Kenalan dipadam"
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "Perbualan kekal terbuka. Pelanggan menerima balasan serta-merta dan ia tidak boleh ditarik balik."
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "The conversations stay where they are. Only the saved view goes."
+msgstr "Perbualan kekal di tempatnya. Hanya paparan tersimpan yang dipadam."
 
 #: src/features/status/MonitorsPage.tsx
 msgid "The current address stops working at once. Update whatever calls it."
@@ -17032,6 +17097,10 @@ msgid "This person unsubscribed from everything, reported a mail as spam or had 
 msgstr "Orang ini menyahlanggan semuanya, melaporkan mel sebagai spam atau datanya dipadam, jadi pasukan tidak boleh menambahnya semula."
 
 #: src/components/common/text.ts
+msgid "This place holds as many views as allowed (50). Delete one first."
+msgstr "Bilangan paparan maksimum (50) di sini sudah dicapai. Padam satu dahulu."
+
+#: src/components/common/text.ts
 msgid "This property already has a funnel with this name."
 msgstr "Properti ini sudah mempunyai corong dengan nama ini."
 
@@ -17727,6 +17796,10 @@ msgstr "Sehingga {max} dan 100,000 baris, dengan baris pengepala. Fail Excel dal
 msgid "Update text"
 msgstr "Teks kemas kini"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Update the view from this list"
+msgstr "Kemas kini paparan daripada senarai ini"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Updates"
 msgstr "Kemas kini"
@@ -17888,6 +17961,10 @@ msgstr "Gunakan origin seperti https://www.example.com, tanpa laluan."
 msgid "Use sample values"
 msgstr "Gunakan nilai contoh"
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Use the current list"
+msgstr "Guna senarai semasa"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "Gunakan nama pengguna dan kata laluan peti mel, atau kata laluan apl jika penyedia anda menawarkannya."
@@ -18034,6 +18111,10 @@ msgstr "paparan"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "Paparan"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Visible to"
+msgstr "Kelihatan kepada"
 
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -18688,6 +18769,7 @@ msgstr "Bekerja…"
 
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
+#: src/app/ViewsGroup.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx

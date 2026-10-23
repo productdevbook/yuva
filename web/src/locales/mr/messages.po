@@ -2420,6 +2420,10 @@ msgstr "दुसरा टीम पत्ता"
 msgid "Another team already has this name."
 msgstr "दुसऱ्या टीमचे हेच नाव आधीच आहे."
 
+#: src/app/ViewsGroup.tsx
+msgid "Another team’s views"
+msgstr "दुसऱ्या टीमचे व्ह्यू"
+
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
@@ -4798,6 +4802,7 @@ msgstr "कमी झालेली कामगिरी"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -4938,6 +4943,10 @@ msgstr "निवडलेला ब्लॉक हटवा"
 msgid "Delete the team {name}?"
 msgstr "टीम {name} हटवायची?"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete the view {name}?"
+msgstr "व्ह्यू {name} हटवायचा?"
+
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
 msgstr "हा कॅन्ड रिप्लाय हटवायचा?"
@@ -4973,6 +4982,10 @@ msgstr "हे सबस्क्रिप्शन हटवायचे?"
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete this workspace"
 msgstr "हे वर्कस्पेस हटवा"
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete view"
+msgstr "व्ह्यू हटवा"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete workspace"
@@ -5741,6 +5754,11 @@ msgstr "शीर्षक संपादित करा"
 msgid "Edit this update"
 msgstr "हे अपडेट संपादित करा"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Edit view"
+msgstr "व्ह्यू संपादित करा"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit, or preview on a desktop, a phone or in dark mode"
 msgstr "संपादित करा, किंवा डेस्कटॉप, फोन किंवा डार्क मोडमध्ये प्रीव्ह्यू पाहा"
@@ -5968,6 +5986,7 @@ msgstr "प्रत्येक प्रकार"
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "प्रत्येक वेबसाइट आणि ॲप त्याचे व्हिझिटर्स होम आणि ॲनालिटिक्समध्ये दाखवते."
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
@@ -9229,12 +9248,17 @@ msgstr "माझी प्रोफाइल"
 msgid "My teams"
 msgstr "माझ्या टीम"
 
+#: src/app/ViewsGroup.tsx
+msgid "My views"
+msgstr "माझे व्ह्यू"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -10984,6 +11008,7 @@ msgstr "फक्त ॲपमध्ये"
 msgid "Only mail since {date}"
 msgstr "फक्त {date} पासूनचा मेल"
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Only me"
 msgstr "फक्त मी"
@@ -13047,6 +13072,14 @@ msgstr "गटाचे नाव बदला"
 msgid "Reopen"
 msgstr "पुन्हा उघडा"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reorder the selected view in the sidebar"
+msgstr "साइडबारमध्ये निवडलेल्या व्ह्यूचा क्रम बदला"
+
+#: src/app/ViewsGroup.tsx
+msgid "Reorder with Alt ↑ ↓ or by dragging"
+msgstr "Alt ↑ ↓ ने किंवा ओढून क्रम बदला"
+
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
@@ -13062,6 +13095,10 @@ msgstr "Replace the API key"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Replace the token"
 msgstr "Replace the token"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Replace the view’s filters, search and order with the ones on screen."
+msgstr "व्ह्यूचे फिल्टर, शोध आणि क्रम स्क्रीनवरील फिल्टर, शोध आणि क्रमाने बदला."
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -13637,6 +13674,7 @@ msgstr "शनिवार"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -13673,6 +13711,11 @@ msgstr "Save and test"
 msgid "Save as draft"
 msgstr "मसुदा म्हणून जतन करा"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Save as view"
+msgstr "व्ह्यू म्हणून जतन करा"
+
 #: src/components/common/SaveBar.tsx
 msgid "Save changes"
 msgstr "बदल सेव्ह करा"
@@ -13697,6 +13740,10 @@ msgstr "तुम्ही वारंवार लिहिता ती उ�
 msgid "Save the draft now"
 msgstr "मसुदा आता जतन करा"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Save the list as a view"
+msgstr "यादी व्ह्यू म्हणून जतन करा"
+
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -13712,6 +13759,15 @@ msgstr "मसुदा आता जतन करा"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "सेव्ह केले"
+
+#: src/app/ViewsGroup.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Saved views"
+msgstr "जतन केलेले व्ह्यू"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Saves the list as it is now: its tab, filters, search and order."
+msgstr "यादी आत्ता आहे तशी जतन करते: टॅब, फिल्टर, शोध आणि क्रम."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
@@ -15594,6 +15650,7 @@ msgstr "TCP तपासणी"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
@@ -15718,6 +15775,10 @@ msgstr "ही या तासातील सहावी तपासणी �
 msgid "The .mbox file from Takeout › Mail, unzipped."
 msgstr "Takeout › Mail मधील .mbox फाइल, अनझिप केलेली."
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "The {field} filter was refused. {detail}"
+msgstr "{field} फिल्टर नाकारला गेला. {detail}"
+
 #: src/features/migrations/text.ts
 msgid "The {provider} user you signed in with is not an admin, and only admins can read every ticket. Sign in again as an admin."
 msgstr "तुम्ही ज्या {provider} युजरने साइन इन केले तो ॲडमिन नाही, आणि फक्त ॲडमिन प्रत्येक तिकीट वाचू शकतात. ॲडमिन म्हणून पुन्हा साइन इन करा."
@@ -15835,6 +15896,10 @@ msgstr "कॉन्टॅक्ट हटवला गेला"
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "संभाषणे खुली राहतात. ग्राहकांना उत्तर लगेच मिळते आणि परत घेता येत नाही."
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "The conversations stay where they are. Only the saved view goes."
+msgstr "संभाषणे आहेत तिथेच राहतात. फक्त जतन केलेला व्ह्यू जातो."
 
 #: src/features/status/MonitorsPage.tsx
 msgid "The current address stops working at once. Update whatever calls it."
@@ -17032,6 +17097,10 @@ msgid "This person unsubscribed from everything, reported a mail as spam or had 
 msgstr "या व्यक्तीने सर्व काही अनसबस्क्राइब केले, मेल स्पॅम म्हणून रिपोर्ट केला किंवा त्यांचा डेटा पुसला गेला, म्हणून टीम त्यांना पुन्हा जोडू शकत नाही."
 
 #: src/components/common/text.ts
+msgid "This place holds as many views as allowed (50). Delete one first."
+msgstr "येथे परवानगी असलेली कमाल व्ह्यू संख्या (50) झाली आहे. आधी एक हटवा."
+
+#: src/components/common/text.ts
 msgid "This property already has a funnel with this name."
 msgstr "या प्रॉपर्टीमध्ये या नावाचा फनेल आधीच आहे."
 
@@ -17727,6 +17796,10 @@ msgstr "{max} आणि 100,000 पंक्तींपर्यंत, हे�
 msgid "Update text"
 msgstr "अपडेटचा मजकूर"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Update the view from this list"
+msgstr "या यादीतून व्ह्यू अपडेट करा"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Updates"
 msgstr "अपडेट्स"
@@ -17888,6 +17961,10 @@ msgstr "https://www.example.com सारखे ओरिजिन वापर�
 msgid "Use sample values"
 msgstr "नमुना व्हॅल्यूज वापरा"
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Use the current list"
+msgstr "सध्याची यादी वापरा"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "मेलबॉक्सचे युजरनेम आणि पासवर्ड वापरा, किंवा तुमचा प्रदाता देत असेल तर ॲप पासवर्ड."
@@ -18034,6 +18111,10 @@ msgstr "व्ह्यू"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "व्ह्यू"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Visible to"
+msgstr "कोणाला दिसेल"
 
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -18688,6 +18769,7 @@ msgstr "काम होत आहे…"
 
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
+#: src/app/ViewsGroup.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx

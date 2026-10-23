@@ -2420,6 +2420,10 @@ msgstr "Iná adresa tímu"
 msgid "Another team already has this name."
 msgstr "Iný tím už má tento názov."
 
+#: src/app/ViewsGroup.tsx
+msgid "Another team’s views"
+msgstr "Pohľady iného tímu"
+
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
@@ -4798,6 +4802,7 @@ msgstr "Znížený výkon"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -4938,6 +4943,10 @@ msgstr "Odstrániť vybraný blok"
 msgid "Delete the team {name}?"
 msgstr "Odstrániť tím {name}?"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete the view {name}?"
+msgstr "Odstrániť pohľad {name}?"
+
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
 msgstr "Odstrániť túto pripravenú odpoveď?"
@@ -4973,6 +4982,10 @@ msgstr "Odstrániť tento odber?"
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete this workspace"
 msgstr "Odstrániť tento pracovný priestor"
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete view"
+msgstr "Odstrániť pohľad"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete workspace"
@@ -5741,6 +5754,11 @@ msgstr "Upraviť názov"
 msgid "Edit this update"
 msgstr "Upraviť túto aktualizáciu"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Edit view"
+msgstr "Upraviť pohľad"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit, or preview on a desktop, a phone or in dark mode"
 msgstr "Upraviť, alebo zobraziť náhľad na počítači, telefóne či v tmavom režime"
@@ -5968,6 +5986,7 @@ msgstr "Každý typ"
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Každý web a aplikácia zobrazuje svojich návštevníkov na Domov a v Analytike."
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
@@ -9229,12 +9248,17 @@ msgstr "Môj profil"
 msgid "My teams"
 msgstr "Moje tímy"
 
+#: src/app/ViewsGroup.tsx
+msgid "My views"
+msgstr "Moje pohľady"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -10984,6 +11008,7 @@ msgstr "Iba v aplikácii"
 msgid "Only mail since {date}"
 msgstr "Iba pošta od {date}"
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Only me"
 msgstr "Len ja"
@@ -13047,6 +13072,14 @@ msgstr "Premenovať skupinu"
 msgid "Reopen"
 msgstr "Znova otvoriť"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reorder the selected view in the sidebar"
+msgstr "Zmeniť poradie vybraného pohľadu v bočnom paneli"
+
+#: src/app/ViewsGroup.tsx
+msgid "Reorder with Alt ↑ ↓ or by dragging"
+msgstr "Zmeňte poradie klávesmi Alt ↑ ↓ alebo presunutím"
+
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
@@ -13062,6 +13095,10 @@ msgstr "Replace the API key"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Replace the token"
 msgstr "Replace the token"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Replace the view’s filters, search and order with the ones on screen."
+msgstr "Nahradí filtre, vyhľadávanie a zoradenie pohľadu tými, ktoré sú na obrazovke."
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -13637,6 +13674,7 @@ msgstr "Sobota"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -13673,6 +13711,11 @@ msgstr "Save and test"
 msgid "Save as draft"
 msgstr "Uložiť ako koncept"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Save as view"
+msgstr "Uložiť ako pohľad"
+
 #: src/components/common/SaveBar.tsx
 msgid "Save changes"
 msgstr "Uložiť zmeny"
@@ -13697,6 +13740,10 @@ msgstr "Uložte si odpovede, ktoré píšete často, a vkladajte ich do editora 
 msgid "Save the draft now"
 msgstr "Uložiť koncept teraz"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Save the list as a view"
+msgstr "Uložiť zoznam ako pohľad"
+
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -13712,6 +13759,15 @@ msgstr "Uložiť koncept teraz"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "Uložené"
+
+#: src/app/ViewsGroup.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Saved views"
+msgstr "Uložené pohľady"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Saves the list as it is now: its tab, filters, search and order."
+msgstr "Uloží zoznam tak, ako je teraz: kartu, filtre, vyhľadávanie a zoradenie."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
@@ -15594,6 +15650,7 @@ msgstr "Kontrola TCP"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
@@ -15718,6 +15775,10 @@ msgstr "To bola šiesta kontrola v tejto hodine. Znova môžete kontrolovať {re
 msgid "The .mbox file from Takeout › Mail, unzipped."
 msgstr "Súbor .mbox z Takeout › Mail, rozbalený."
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "The {field} filter was refused. {detail}"
+msgstr "Filter {field} bol zamietnutý. {detail}"
+
 #: src/features/migrations/text.ts
 msgid "The {provider} user you signed in with is not an admin, and only admins can read every ticket. Sign in again as an admin."
 msgstr "Používateľ {provider}, ktorým ste sa prihlásili, nie je správca a len správcovia môžu čítať každý tiket. Prihláste sa znova ako správca."
@@ -15835,6 +15896,10 @@ msgstr "Kontakt bol odstránený"
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "Konverzácie zostanú otvorené. Zákazníci odpoveď dostanú hneď a nedá sa vziať späť."
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "The conversations stay where they are. Only the saved view goes."
+msgstr "Konverzácie zostanú, kde sú. Odstráni sa len uložený pohľad."
 
 #: src/features/status/MonitorsPage.tsx
 msgid "The current address stops working at once. Update whatever calls it."
@@ -17032,6 +17097,10 @@ msgid "This person unsubscribed from everything, reported a mail as spam or had 
 msgstr "Táto osoba sa odhlásila zo všetkého, nahlásila správu ako spam, alebo boli jej údaje vymazané, takže ju tím nemôže pridať znova."
 
 #: src/components/common/text.ts
+msgid "This place holds as many views as allowed (50). Delete one first."
+msgstr "Tu je dosiahnutý maximálny počet pohľadov (50). Najprv jeden odstráňte."
+
+#: src/components/common/text.ts
 msgid "This property already has a funnel with this name."
 msgstr "Táto vlastnosť už má lievik s týmto názvom."
 
@@ -17727,6 +17796,10 @@ msgstr "Až {max} a 100 000 riadkov, s riadkom hlavičky. Súbory Excelu v turec
 msgid "Update text"
 msgstr "Text aktualizácie"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Update the view from this list"
+msgstr "Aktualizovať pohľad z tohto zoznamu"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Updates"
 msgstr "Aktualizácie"
@@ -17888,6 +17961,10 @@ msgstr "Použite originy ako https://www.example.com, bez cesty."
 msgid "Use sample values"
 msgstr "Použiť ukážkové hodnoty"
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Use the current list"
+msgstr "Použiť aktuálny zoznam"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "Použite používateľské meno a heslo schránky, alebo heslo aplikácie, ak ich váš poskytovateľ ponúka."
@@ -18034,6 +18111,10 @@ msgstr "zobrazenia"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "Zobrazenia"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Visible to"
+msgstr "Viditeľné pre"
 
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -18688,6 +18769,7 @@ msgstr "Pracuje sa…"
 
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
+#: src/app/ViewsGroup.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx

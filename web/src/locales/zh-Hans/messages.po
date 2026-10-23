@@ -2420,6 +2420,10 @@ msgstr "另一个团队地址"
 msgid "Another team already has this name."
 msgstr "已有另一个团队使用这个名称。"
 
+#: src/app/ViewsGroup.tsx
+msgid "Another team’s views"
+msgstr "其他团队的视图"
+
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
@@ -4798,6 +4802,7 @@ msgstr "性能下降"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -4938,6 +4943,10 @@ msgstr "删除所选区块"
 msgid "Delete the team {name}?"
 msgstr "删除团队“{name}”？"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete the view {name}?"
+msgstr "删除视图“{name}”吗?"
+
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
 msgstr "删除此快捷回复?"
@@ -4973,6 +4982,10 @@ msgstr "删除此订阅?"
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete this workspace"
 msgstr "删除此工作区"
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete view"
+msgstr "删除视图"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete workspace"
@@ -5741,6 +5754,11 @@ msgstr "编辑标题"
 msgid "Edit this update"
 msgstr "编辑此更新"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Edit view"
+msgstr "编辑视图"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit, or preview on a desktop, a phone or in dark mode"
 msgstr "编辑,或在桌面、手机和深色模式下预览"
@@ -5968,6 +5986,7 @@ msgstr "所有类型"
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "每个网站和应用的访客都显示在首页和分析中。"
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
@@ -9229,12 +9248,17 @@ msgstr "我的个人资料"
 msgid "My teams"
 msgstr "我的团队"
 
+#: src/app/ViewsGroup.tsx
+msgid "My views"
+msgstr "我的视图"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -10984,6 +11008,7 @@ msgstr "仅在应用中"
 msgid "Only mail since {date}"
 msgstr "仅 {date} 以来的邮件"
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Only me"
 msgstr "仅自己"
@@ -13047,6 +13072,14 @@ msgstr "重命名分组"
 msgid "Reopen"
 msgstr "重新打开"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reorder the selected view in the sidebar"
+msgstr "在侧边栏中调整所选视图的顺序"
+
+#: src/app/ViewsGroup.tsx
+msgid "Reorder with Alt ↑ ↓ or by dragging"
+msgstr "用 Alt ↑ ↓ 或拖动来调整顺序"
+
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
@@ -13062,6 +13095,10 @@ msgstr "Replace the API key"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Replace the token"
 msgstr "Replace the token"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Replace the view’s filters, search and order with the ones on screen."
+msgstr "用屏幕上的筛选、搜索和排序替换该视图的设置。"
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -13637,6 +13674,7 @@ msgstr "星期六"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -13673,6 +13711,11 @@ msgstr "Save and test"
 msgid "Save as draft"
 msgstr "保存为草稿"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Save as view"
+msgstr "保存为视图"
+
 #: src/components/common/SaveBar.tsx
 msgid "Save changes"
 msgstr "保存更改"
@@ -13697,6 +13740,10 @@ msgstr "保存你常写的回复，然后用快捷键把它们插入输入框。
 msgid "Save the draft now"
 msgstr "立即保存草稿"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Save the list as a view"
+msgstr "将列表保存为视图"
+
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -13712,6 +13759,15 @@ msgstr "立即保存草稿"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "已保存"
+
+#: src/app/ViewsGroup.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Saved views"
+msgstr "已保存的视图"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Saves the list as it is now: its tab, filters, search and order."
+msgstr "按当前状态保存列表:标签页、筛选、搜索和排序。"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
@@ -15594,6 +15650,7 @@ msgstr "TCP 检查"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
@@ -15718,6 +15775,10 @@ msgstr "这已是本小时第六次检查。你可以在 {retry} 再次检查。
 msgid "The .mbox file from Takeout › Mail, unzipped."
 msgstr "Takeout › Mail 中的 .mbox 文件,已解压。"
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "The {field} filter was refused. {detail}"
+msgstr "筛选 {field} 被拒绝。{detail}"
+
 #: src/features/migrations/text.ts
 msgid "The {provider} user you signed in with is not an admin, and only admins can read every ticket. Sign in again as an admin."
 msgstr "你登录的 {provider} 用户不是管理员,只有管理员才能读取所有工单。请以管理员身份重新登录。"
@@ -15835,6 +15896,10 @@ msgstr "联系人已被删除"
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "对话保持打开。客户会立即收到回复，且无法撤回。"
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "The conversations stay where they are. Only the saved view goes."
+msgstr "会话保持原样,只会删除已保存的视图。"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "The current address stops working at once. Update whatever calls it."
@@ -17032,6 +17097,10 @@ msgid "This person unsubscribed from everything, reported a mail as spam or had 
 msgstr "此人已退订所有内容、把邮件举报为垃圾邮件或其数据已被清除,因此团队无法再次添加他们。"
 
 #: src/components/common/text.ts
+msgid "This place holds as many views as allowed (50). Delete one first."
+msgstr "这里的视图数量已达上限(50 个)。请先删除一个。"
+
+#: src/components/common/text.ts
 msgid "This property already has a funnel with this name."
 msgstr "此属性已有同名漏斗。"
 
@@ -17727,6 +17796,10 @@ msgstr "最多 {max} 和 100,000 行,带标题行。土耳其语或西欧编码�
 msgid "Update text"
 msgstr "更新文字"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Update the view from this list"
+msgstr "用此列表更新视图"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Updates"
 msgstr "更新"
@@ -17888,6 +17961,10 @@ msgstr "使用类似 https://www.example.com 的来源,不含路径。"
 msgid "Use sample values"
 msgstr "使用示例值"
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Use the current list"
+msgstr "使用当前列表"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "使用邮箱的用户名和密码;如果你的服务商提供应用专用密码,则使用它。"
@@ -18034,6 +18111,10 @@ msgstr "浏览量"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "浏览"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Visible to"
+msgstr "可见范围"
 
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -18688,6 +18769,7 @@ msgstr "处理中…"
 
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
+#: src/app/ViewsGroup.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx

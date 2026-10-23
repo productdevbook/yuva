@@ -40,7 +40,7 @@ export function FrameTabs<T extends string>({
   label,
 }: {
   items: readonly FrameTab<T>[]
-  value: T
+  value: T | null
   onChange?: (key: T) => void
   label: string
 }) {

@@ -2420,6 +2420,10 @@ msgstr "Una altra adreça de l'equip"
 msgid "Another team already has this name."
 msgstr "Un altre equip ja té aquest nom."
 
+#: src/app/ViewsGroup.tsx
+msgid "Another team’s views"
+msgstr "Vistes d’un altre equip"
+
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
@@ -4798,6 +4802,7 @@ msgstr "Rendiment degradat"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -4938,6 +4943,10 @@ msgstr "Elimina el bloc seleccionat"
 msgid "Delete the team {name}?"
 msgstr "Vols eliminar l'equip {name}?"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete the view {name}?"
+msgstr "Vols suprimir la vista {name}?"
+
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
 msgstr "Elimines aquesta resposta predefinida?"
@@ -4973,6 +4982,10 @@ msgstr "Elimines aquesta subscripció?"
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete this workspace"
 msgstr "Elimina aquest espai de treball"
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete view"
+msgstr "Suprimeix la vista"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete workspace"
@@ -5741,6 +5754,11 @@ msgstr "Edita el títol"
 msgid "Edit this update"
 msgstr "Edita aquesta actualització"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Edit view"
+msgstr "Edita la vista"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit, or preview on a desktop, a phone or in dark mode"
 msgstr "Edita o previsualitza en un escriptori, un telèfon o en mode fosc"
@@ -5968,6 +5986,7 @@ msgstr "Tots els tipus"
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Cada lloc web i aplicació mostra els seus visitants a Inici i a Analítica."
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
@@ -9229,12 +9248,17 @@ msgstr "El meu perfil"
 msgid "My teams"
 msgstr "Els meus equips"
 
+#: src/app/ViewsGroup.tsx
+msgid "My views"
+msgstr "Les meves vistes"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -10984,6 +11008,7 @@ msgstr "Només a l'aplicació"
 msgid "Only mail since {date}"
 msgstr "Només el correu des del {date}"
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Only me"
 msgstr "Només jo"
@@ -13047,6 +13072,14 @@ msgstr "Canvia el nom del grup"
 msgid "Reopen"
 msgstr "Reobre"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reorder the selected view in the sidebar"
+msgstr "Reordena la vista seleccionada a la barra lateral"
+
+#: src/app/ViewsGroup.tsx
+msgid "Reorder with Alt ↑ ↓ or by dragging"
+msgstr "Reordena amb Alt ↑ ↓ o arrossegant"
+
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
@@ -13062,6 +13095,10 @@ msgstr "Replace the API key"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Replace the token"
 msgstr "Replace the token"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Replace the view’s filters, search and order with the ones on screen."
+msgstr "Substitueix els filtres, la cerca i l’ordre de la vista pels de la pantalla."
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -13637,6 +13674,7 @@ msgstr "Dissabte"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -13673,6 +13711,11 @@ msgstr "Save and test"
 msgid "Save as draft"
 msgstr "Desa com a esborrany"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Save as view"
+msgstr "Desa com a vista"
+
 #: src/components/common/SaveBar.tsx
 msgid "Save changes"
 msgstr "Desa els canvis"
@@ -13697,6 +13740,10 @@ msgstr "Desa les respostes que escrius sovint i insereix-les a l’editor amb un
 msgid "Save the draft now"
 msgstr "Desa l’esborrany ara"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Save the list as a view"
+msgstr "Desa la llista com a vista"
+
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -13712,6 +13759,15 @@ msgstr "Desa l’esborrany ara"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "Desat"
+
+#: src/app/ViewsGroup.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Saved views"
+msgstr "Vistes desades"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Saves the list as it is now: its tab, filters, search and order."
+msgstr "Desa la llista tal com és ara: pestanya, filtres, cerca i ordre."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
@@ -15594,6 +15650,7 @@ msgstr "Comprovació TCP"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
@@ -15718,6 +15775,10 @@ msgstr "Aquesta ha estat la sisena comprovació d'aquesta hora. Pots tornar a co
 msgid "The .mbox file from Takeout › Mail, unzipped."
 msgstr "El fitxer .mbox de Takeout › Mail, descomprimit."
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "The {field} filter was refused. {detail}"
+msgstr "S’ha rebutjat el filtre {field}. {detail}"
+
 #: src/features/migrations/text.ts
 msgid "The {provider} user you signed in with is not an admin, and only admins can read every ticket. Sign in again as an admin."
 msgstr "L'usuari de {provider} amb què has iniciat la sessió no és administrador, i només els administradors poden llegir tots els tiquets. Inicia la sessió de nou com a administrador."
@@ -15835,6 +15896,10 @@ msgstr "S'ha eliminat el contacte"
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "Les converses continuen obertes. Els clients reben la resposta a l’instant i no es pot retirar."
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "The conversations stay where they are. Only the saved view goes."
+msgstr "Les converses es queden on són. Només se suprimeix la vista desada."
 
 #: src/features/status/MonitorsPage.tsx
 msgid "The current address stops working at once. Update whatever calls it."
@@ -17032,6 +17097,10 @@ msgid "This person unsubscribed from everything, reported a mail as spam or had 
 msgstr "Aquesta persona s'ha donat de baixa de tot, ha denunciat un correu com a brossa o li han esborrat les dades, de manera que l'equip no la pot tornar a afegir."
 
 #: src/components/common/text.ts
+msgid "This place holds as many views as allowed (50). Delete one first."
+msgstr "Aquí hi ha el màxim de vistes permeses (50). Suprimeix-ne una primer."
+
+#: src/components/common/text.ts
 msgid "This property already has a funnel with this name."
 msgstr "Aquesta propietat ja té un embut amb aquest nom."
 
@@ -17727,6 +17796,10 @@ msgstr "Fins a {max} i 100.000 files, amb una fila de capçalera. Els fitxers d'
 msgid "Update text"
 msgstr "Text de l’actualització"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Update the view from this list"
+msgstr "Actualitza la vista des d’aquesta llista"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Updates"
 msgstr "Actualitzacions"
@@ -17888,6 +17961,10 @@ msgstr "Fes servir orígens com https://www.example.com, sense camí."
 msgid "Use sample values"
 msgstr "Fes servir valors d'exemple"
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Use the current list"
+msgstr "Utilitza la llista actual"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "Fes servir el nom d'usuari i la contrasenya de la bústia, o una contrasenya d'aplicació si el teu proveïdor n'ofereix."
@@ -18034,6 +18111,10 @@ msgstr "visualitzacions"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "Visualitzacions"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Visible to"
+msgstr "Visible per a"
 
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -18688,6 +18769,7 @@ msgstr "Treballant…"
 
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
+#: src/app/ViewsGroup.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx

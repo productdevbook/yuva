@@ -55,6 +55,7 @@ export const SHORTCUTS = {
   linkSelected: "I",
   trash: "#",
   restore: "Z",
+  saveView: "V",
 } as const
 
 export const DISCUSSION_KEYS = {
@@ -307,6 +308,8 @@ export function ShortcutSheet({
         [k(SHORTCUTS.linkSelected), t`Link the selected conversations to an incident`],
         [k(SHORTCUTS.trash), t`Move the selected conversations to the Trash`],
         [k(SHORTCUTS.restore), t`Restore the selected conversations, in the Trash`],
+        [k(SHORTCUTS.saveView), t`Save the list as a view`],
+        [["Alt", "↑", "↓"], t`Reorder the selected view in the sidebar`],
         [["Esc"], t`Clear the selection`],
       ],
     },

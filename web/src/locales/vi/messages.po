@@ -2420,6 +2420,10 @@ msgstr "Địa chỉ khác của nhóm"
 msgid "Another team already has this name."
 msgstr "Một nhóm khác đã dùng tên này."
 
+#: src/app/ViewsGroup.tsx
+msgid "Another team’s views"
+msgstr "Chế độ xem của nhóm khác"
+
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
@@ -4798,6 +4802,7 @@ msgstr "Hiệu năng giảm"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -4938,6 +4943,10 @@ msgstr "Xóa khối đã chọn"
 msgid "Delete the team {name}?"
 msgstr "Xóa nhóm {name}?"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete the view {name}?"
+msgstr "Xóa chế độ xem {name}?"
+
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
 msgstr "Xóa phản hồi mẫu này?"
@@ -4973,6 +4982,10 @@ msgstr "Xóa đăng ký này?"
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete this workspace"
 msgstr "Xóa không gian làm việc này"
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete view"
+msgstr "Xóa chế độ xem"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete workspace"
@@ -5741,6 +5754,11 @@ msgstr "Sửa tiêu đề"
 msgid "Edit this update"
 msgstr "Sửa cập nhật này"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Edit view"
+msgstr "Sửa chế độ xem"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit, or preview on a desktop, a phone or in dark mode"
 msgstr "Chỉnh sửa, hoặc xem trước trên máy tính, điện thoại hay chế độ tối"
@@ -5968,6 +5986,7 @@ msgstr "Mọi loại"
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Mọi trang web và ứng dụng hiện khách truy cập của chúng trong Trang chủ và Phân tích."
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
@@ -9229,12 +9248,17 @@ msgstr "Hồ sơ của tôi"
 msgid "My teams"
 msgstr "Nhóm của tôi"
 
+#: src/app/ViewsGroup.tsx
+msgid "My views"
+msgstr "Chế độ xem của tôi"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -10984,6 +11008,7 @@ msgstr "Chỉ trong ứng dụng"
 msgid "Only mail since {date}"
 msgstr "Chỉ thư từ {date}"
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Only me"
 msgstr "Chỉ mình tôi"
@@ -13047,6 +13072,14 @@ msgstr "Đổi tên nhóm"
 msgid "Reopen"
 msgstr "Mở lại"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reorder the selected view in the sidebar"
+msgstr "Sắp xếp lại chế độ xem đã chọn trong thanh bên"
+
+#: src/app/ViewsGroup.tsx
+msgid "Reorder with Alt ↑ ↓ or by dragging"
+msgstr "Sắp xếp lại bằng Alt ↑ ↓ hoặc bằng cách kéo"
+
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
@@ -13062,6 +13095,10 @@ msgstr "Replace the API key"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Replace the token"
 msgstr "Replace the token"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Replace the view’s filters, search and order with the ones on screen."
+msgstr "Thay bộ lọc, tìm kiếm và thứ tự của chế độ xem bằng những gì đang hiển thị."
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -13637,6 +13674,7 @@ msgstr "Thứ Bảy"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -13673,6 +13711,11 @@ msgstr "Save and test"
 msgid "Save as draft"
 msgstr "Lưu làm bản nháp"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Save as view"
+msgstr "Lưu thành chế độ xem"
+
 #: src/components/common/SaveBar.tsx
 msgid "Save changes"
 msgstr "Lưu thay đổi"
@@ -13697,6 +13740,10 @@ msgstr "Lưu những câu trả lời bạn hay viết, rồi chèn vào ô so�
 msgid "Save the draft now"
 msgstr "Lưu bản nháp ngay"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Save the list as a view"
+msgstr "Lưu danh sách thành chế độ xem"
+
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -13712,6 +13759,15 @@ msgstr "Lưu bản nháp ngay"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "Đã lưu"
+
+#: src/app/ViewsGroup.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Saved views"
+msgstr "Chế độ xem đã lưu"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Saves the list as it is now: its tab, filters, search and order."
+msgstr "Lưu danh sách đúng như hiện tại: thẻ, bộ lọc, tìm kiếm và thứ tự."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
@@ -15594,6 +15650,7 @@ msgstr "Kiểm tra TCP"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
@@ -15718,6 +15775,10 @@ msgstr "Đó là lần kiểm tra thứ sáu trong giờ này. Bạn có thể k
 msgid "The .mbox file from Takeout › Mail, unzipped."
 msgstr "Tệp .mbox từ Takeout › Mail, đã giải nén."
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "The {field} filter was refused. {detail}"
+msgstr "Bộ lọc {field} bị từ chối. {detail}"
+
 #: src/features/migrations/text.ts
 msgid "The {provider} user you signed in with is not an admin, and only admins can read every ticket. Sign in again as an admin."
 msgstr "Người dùng {provider} bạn đã đăng nhập không phải quản trị viên, và chỉ quản trị viên mới đọc được mọi phiếu. Hãy đăng nhập lại bằng quản trị viên."
@@ -15835,6 +15896,10 @@ msgstr "Liên hệ đã bị xóa"
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "Các cuộc trò chuyện vẫn mở. Khách hàng nhận câu trả lời ngay và không thể thu hồi."
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "The conversations stay where they are. Only the saved view goes."
+msgstr "Các cuộc trò chuyện vẫn ở nguyên chỗ. Chỉ chế độ xem đã lưu bị xóa."
 
 #: src/features/status/MonitorsPage.tsx
 msgid "The current address stops working at once. Update whatever calls it."
@@ -17032,6 +17097,10 @@ msgid "This person unsubscribed from everything, reported a mail as spam or had 
 msgstr "Người này đã hủy đăng ký mọi thứ, báo thư là thư rác hoặc đã bị xóa dữ liệu, nên nhóm không thể thêm lại họ."
 
 #: src/components/common/text.ts
+msgid "This place holds as many views as allowed (50). Delete one first."
+msgstr "Ở đây đã đạt số chế độ xem tối đa (50). Hãy xóa một chế độ xem trước."
+
+#: src/components/common/text.ts
 msgid "This property already has a funnel with this name."
 msgstr "Thuộc tính này đã có một phễu với tên này."
 
@@ -17727,6 +17796,10 @@ msgstr "Tối đa {max} và 100.000 dòng, có dòng tiêu đề. Tệp Excel m�
 msgid "Update text"
 msgstr "Nội dung cập nhật"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Update the view from this list"
+msgstr "Cập nhật chế độ xem từ danh sách này"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Updates"
 msgstr "Cập nhật"
@@ -17888,6 +17961,10 @@ msgstr "Dùng origin như https://www.example.com, không có đường dẫn."
 msgid "Use sample values"
 msgstr "Dùng giá trị mẫu"
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Use the current list"
+msgstr "Dùng danh sách hiện tại"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "Dùng tên người dùng và mật khẩu của hộp thư, hoặc mật khẩu ứng dụng nếu nhà cung cấp có."
@@ -18034,6 +18111,10 @@ msgstr "lượt xem"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "Lượt xem"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Visible to"
+msgstr "Hiển thị cho"
 
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -18688,6 +18769,7 @@ msgstr "Đang xử lý…"
 
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
+#: src/app/ViewsGroup.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx

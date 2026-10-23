@@ -2420,6 +2420,10 @@ msgstr "Een ander teamadres"
 msgid "Another team already has this name."
 msgstr "Een ander team heeft al deze naam."
 
+#: src/app/ViewsGroup.tsx
+msgid "Another team’s views"
+msgstr "Weergaven van een ander team"
+
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
@@ -4798,6 +4802,7 @@ msgstr "Verminderde prestaties"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -4938,6 +4943,10 @@ msgstr "Het geselecteerde blok verwijderen"
 msgid "Delete the team {name}?"
 msgstr "Team {name} verwijderen?"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete the view {name}?"
+msgstr "Weergave {name} verwijderen?"
+
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
 msgstr "Dit standaardantwoord verwijderen?"
@@ -4973,6 +4982,10 @@ msgstr "Dit abonnement verwijderen?"
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete this workspace"
 msgstr "Deze werkruimte verwijderen"
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete view"
+msgstr "Weergave verwijderen"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete workspace"
@@ -5741,6 +5754,11 @@ msgstr "De titel bewerken"
 msgid "Edit this update"
 msgstr "Deze update bewerken"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Edit view"
+msgstr "Weergave bewerken"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit, or preview on a desktop, a phone or in dark mode"
 msgstr "Bewerk, of bekijk een voorbeeld op een desktop, een telefoon of in de donkere modus"
@@ -5968,6 +5986,7 @@ msgstr "Elk type"
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Elke website en app toont zijn bezoekers op Home en in Analytics."
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
@@ -9229,12 +9248,17 @@ msgstr "Mijn profiel"
 msgid "My teams"
 msgstr "Mijn teams"
 
+#: src/app/ViewsGroup.tsx
+msgid "My views"
+msgstr "Mijn weergaven"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -10984,6 +11008,7 @@ msgstr "Alleen in de app"
 msgid "Only mail since {date}"
 msgstr "Alleen mail sinds {date}"
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Only me"
 msgstr "Alleen ik"
@@ -13047,6 +13072,14 @@ msgstr "Groep hernoemen"
 msgid "Reopen"
 msgstr "Heropenen"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reorder the selected view in the sidebar"
+msgstr "De geselecteerde weergave in de zijbalk herschikken"
+
+#: src/app/ViewsGroup.tsx
+msgid "Reorder with Alt ↑ ↓ or by dragging"
+msgstr "Herschik met Alt ↑ ↓ of door te slepen"
+
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
@@ -13062,6 +13095,10 @@ msgstr "Replace the API key"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Replace the token"
 msgstr "Replace the token"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Replace the view’s filters, search and order with the ones on screen."
+msgstr "Vervangt de filters, zoekopdracht en volgorde van de weergave door die op het scherm."
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -13637,6 +13674,7 @@ msgstr "Zaterdag"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -13673,6 +13711,11 @@ msgstr "Save and test"
 msgid "Save as draft"
 msgstr "Opslaan als concept"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Save as view"
+msgstr "Opslaan als weergave"
+
 #: src/components/common/SaveBar.tsx
 msgid "Save changes"
 msgstr "Wijzigingen opslaan"
@@ -13697,6 +13740,10 @@ msgstr "Bewaar de antwoorden die je vaak schrijft en voeg ze daarna met een snel
 msgid "Save the draft now"
 msgstr "Het concept nu opslaan"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Save the list as a view"
+msgstr "Lijst opslaan als weergave"
+
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -13712,6 +13759,15 @@ msgstr "Het concept nu opslaan"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "Opgeslagen"
+
+#: src/app/ViewsGroup.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Saved views"
+msgstr "Opgeslagen weergaven"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Saves the list as it is now: its tab, filters, search and order."
+msgstr "Slaat de lijst op zoals die nu is: tabblad, filters, zoekopdracht en volgorde."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
@@ -15594,6 +15650,7 @@ msgstr "TCP-controle"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
@@ -15718,6 +15775,10 @@ msgstr "Dat was de zesde controle van dit uur. Je kunt om {retry} opnieuw contro
 msgid "The .mbox file from Takeout › Mail, unzipped."
 msgstr "Het .mbox-bestand uit Takeout › Mail, uitgepakt."
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "The {field} filter was refused. {detail}"
+msgstr "Het filter {field} is geweigerd. {detail}"
+
 #: src/features/migrations/text.ts
 msgid "The {provider} user you signed in with is not an admin, and only admins can read every ticket. Sign in again as an admin."
 msgstr "De {provider}-gebruiker waarmee je inlogde, is geen beheerder, en alleen beheerders kunnen elk ticket lezen. Log opnieuw in als beheerder."
@@ -15835,6 +15896,10 @@ msgstr "Het contact is verwijderd"
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "De gesprekken blijven open. Klanten krijgen het antwoord meteen en het kan niet worden teruggehaald."
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "The conversations stay where they are. Only the saved view goes."
+msgstr "De gesprekken blijven waar ze zijn. Alleen de opgeslagen weergave verdwijnt."
 
 #: src/features/status/MonitorsPage.tsx
 msgid "The current address stops working at once. Update whatever calls it."
@@ -17032,6 +17097,10 @@ msgid "This person unsubscribed from everything, reported a mail as spam or had 
 msgstr "Deze persoon heeft zich van alles afgemeld, een mail als spam gemeld of zijn gegevens laten wissen, dus het team kan hem niet opnieuw toevoegen."
 
 #: src/components/common/text.ts
+msgid "This place holds as many views as allowed (50). Delete one first."
+msgstr "Hier is het maximale aantal weergaven (50) bereikt. Verwijder er eerst een."
+
+#: src/components/common/text.ts
 msgid "This property already has a funnel with this name."
 msgstr "Deze property heeft al een funnel met deze naam."
 
@@ -17727,6 +17796,10 @@ msgstr "Tot {max} en 100.000 rijen, met een koprij. Excelbestanden in Turkse of 
 msgid "Update text"
 msgstr "Tekst van de update"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Update the view from this list"
+msgstr "Weergave bijwerken met deze lijst"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Updates"
 msgstr "Updates"
@@ -17888,6 +17961,10 @@ msgstr "Gebruik origins zoals https://www.example.com, zonder pad."
 msgid "Use sample values"
 msgstr "Voorbeeldwaarden gebruiken"
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Use the current list"
+msgstr "De huidige lijst gebruiken"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "Gebruik de gebruikersnaam en het wachtwoord van de mailbox, of een app-wachtwoord als je provider die aanbiedt."
@@ -18034,6 +18111,10 @@ msgstr "weergaven"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "Weergaven"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Visible to"
+msgstr "Zichtbaar voor"
 
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -18688,6 +18769,7 @@ msgstr "Bezig…"
 
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
+#: src/app/ViewsGroup.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx

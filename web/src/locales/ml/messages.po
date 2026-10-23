@@ -2420,6 +2420,10 @@ msgstr "ടീമിന്റെ മറ്റൊരു വിലാസം"
 msgid "Another team already has this name."
 msgstr "മറ്റൊരു ടീമിന് ഇതിനകം ഈ പേരുണ്ട്."
 
+#: src/app/ViewsGroup.tsx
+msgid "Another team’s views"
+msgstr "മറ്റൊരു ടീമിന്റെ കാഴ്ചകൾ"
+
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
@@ -4798,6 +4802,7 @@ msgstr "പ്രകടനം കുറഞ്ഞു"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -4938,6 +4943,10 @@ msgstr "തിരഞ്ഞെടുത്ത ബ്ലോക്ക് ഇല്�
 msgid "Delete the team {name}?"
 msgstr "{name} ടീം ഇല്ലാതാക്കണോ?"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete the view {name}?"
+msgstr "{name} കാഴ്ച ഇല്ലാതാക്കണോ?"
+
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
 msgstr "ഈ തയ്യാറാക്കിയ മറുപടി ഇല്ലാതാക്കണോ?"
@@ -4973,6 +4982,10 @@ msgstr "ഈ സബ്സ്ക്രിപ്ഷൻ ഇല്ലാതാക്�
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete this workspace"
 msgstr "ഈ വർക്ക്സ്പേസ് ഇല്ലാതാക്കുക"
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete view"
+msgstr "കാഴ്ച ഇല്ലാതാക്കുക"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete workspace"
@@ -5741,6 +5754,11 @@ msgstr "ശീർഷകം എഡിറ്റ് ചെയ്യുക"
 msgid "Edit this update"
 msgstr "ഈ അപ്ഡേറ്റ് എഡിറ്റ് ചെയ്യുക"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Edit view"
+msgstr "കാഴ്ച എഡിറ്റ് ചെയ്യുക"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit, or preview on a desktop, a phone or in dark mode"
 msgstr "എഡിറ്റ് ചെയ്യുക, അല്ലെങ്കിൽ ഡെസ്ക്ടോപ്പിലോ ഫോണിലോ ഡാർക്ക് മോഡിലോ പ്രിവ്യൂ ചെയ്യുക"
@@ -5968,6 +5986,7 @@ msgstr "എല്ലാ തരവും"
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "ഓരോ വെബ്സൈറ്റും ആപ്പും അതിന്റെ സന്ദർശകരെ ഹോമിലും അനലിറ്റിക്സിലും കാണിക്കുന്നു."
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
@@ -9229,12 +9248,17 @@ msgstr "എന്റെ പ്രൊഫൈൽ"
 msgid "My teams"
 msgstr "എന്റെ ടീമുകൾ"
 
+#: src/app/ViewsGroup.tsx
+msgid "My views"
+msgstr "എന്റെ കാഴ്ചകൾ"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -10984,6 +11008,7 @@ msgstr "ആപ്പിൽ മാത്രം"
 msgid "Only mail since {date}"
 msgstr "{date} മുതലുള്ള മെയിൽ മാത്രം"
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Only me"
 msgstr "ഞാൻ മാത്രം"
@@ -13047,6 +13072,14 @@ msgstr "ഗ്രൂപ്പിന്റെ പേര് മാറ്റുക"
 msgid "Reopen"
 msgstr "വീണ്ടും തുറക്കുക"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reorder the selected view in the sidebar"
+msgstr "സൈഡ്‌ബാറിൽ തിരഞ്ഞെടുത്ത കാഴ്ചയുടെ ക്രമം മാറ്റുക"
+
+#: src/app/ViewsGroup.tsx
+msgid "Reorder with Alt ↑ ↓ or by dragging"
+msgstr "Alt ↑ ↓ ഉപയോഗിച്ചോ വലിച്ചിട്ടോ ക്രമം മാറ്റുക"
+
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
@@ -13062,6 +13095,10 @@ msgstr "Replace the API key"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Replace the token"
 msgstr "Replace the token"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Replace the view’s filters, search and order with the ones on screen."
+msgstr "കാഴ്ചയുടെ ഫിൽട്ടറുകൾ, തിരയൽ, ക്രമം എന്നിവ സ്ക്രീനിലുള്ളവ കൊണ്ട് മാറ്റുക."
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -13637,6 +13674,7 @@ msgstr "ശനിയാഴ്ച"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -13673,6 +13711,11 @@ msgstr "Save and test"
 msgid "Save as draft"
 msgstr "ഡ്രാഫ്റ്റായി സംരക്ഷിക്കുക"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Save as view"
+msgstr "കാഴ്ചയായി സേവ് ചെയ്യുക"
+
 #: src/components/common/SaveBar.tsx
 msgid "Save changes"
 msgstr "മാറ്റങ്ങൾ സേവ് ചെയ്യുക"
@@ -13697,6 +13740,10 @@ msgstr "നിങ്ങൾ പതിവായി എഴുതുന്ന മറ
 msgid "Save the draft now"
 msgstr "കരട് ഇപ്പോൾ സംരക്ഷിക്കുക"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Save the list as a view"
+msgstr "പട്ടിക കാഴ്ചയായി സേവ് ചെയ്യുക"
+
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -13712,6 +13759,15 @@ msgstr "കരട് ഇപ്പോൾ സംരക്ഷിക്കുക"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "സേവ് ചെയ്തു"
+
+#: src/app/ViewsGroup.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Saved views"
+msgstr "സേവ് ചെയ്ത കാഴ്ചകൾ"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Saves the list as it is now: its tab, filters, search and order."
+msgstr "പട്ടിക ഇപ്പോഴുള്ളതുപോലെ സേവ് ചെയ്യുന്നു: ടാബ്, ഫിൽട്ടറുകൾ, തിരയൽ, ക്രമം."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
@@ -15594,6 +15650,7 @@ msgstr "TCP പരിശോധന"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
@@ -15718,6 +15775,10 @@ msgstr "ഈ മണിക്കൂറിലെ ആറാമത്തെ പരി
 msgid "The .mbox file from Takeout › Mail, unzipped."
 msgstr "Takeout › Mail-ലെ .mbox ഫയൽ, അൺസിപ്പ് ചെയ്തത്."
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "The {field} filter was refused. {detail}"
+msgstr "{field} ഫിൽട്ടർ നിരസിച്ചു. {detail}"
+
 #: src/features/migrations/text.ts
 msgid "The {provider} user you signed in with is not an admin, and only admins can read every ticket. Sign in again as an admin."
 msgstr "നിങ്ങൾ സൈൻ ഇൻ ചെയ്ത {provider} ഉപയോക്താവ് അഡ്മിൻ അല്ല, അഡ്മിന് മാത്രമേ എല്ലാ ടിക്കറ്റുകളും വായിക്കാൻ കഴിയൂ. അഡ്മിനായി വീണ്ടും സൈൻ ഇൻ ചെയ്യുക."
@@ -15835,6 +15896,10 @@ msgstr "കോൺടാക്റ്റ് ഇല്ലാതാക്കി"
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "സംഭാഷണങ്ങൾ തുറന്നുതന്നെ നിൽക്കും. ഉപഭോക്താക്കൾക്ക് മറുപടി ഉടൻ ലഭിക്കും, തിരിച്ചെടുക്കാനാകില്ല."
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "The conversations stay where they are. Only the saved view goes."
+msgstr "സംഭാഷണങ്ങൾ ഉള്ളിടത്തുതന്നെ തുടരും. സേവ് ചെയ്ത കാഴ്ച മാത്രം പോകും."
 
 #: src/features/status/MonitorsPage.tsx
 msgid "The current address stops working at once. Update whatever calls it."
@@ -17032,6 +17097,10 @@ msgid "This person unsubscribed from everything, reported a mail as spam or had 
 msgstr "ഈ വ്യക്തി എല്ലാത്തിൽ നിന്നും അൺസബ്സ്ക്രൈബ് ചെയ്തു, ഒരു മെയിൽ സ്പാം ആയി റിപ്പോർട്ട് ചെയ്തു, അല്ലെങ്കിൽ അവരുടെ ഡാറ്റ മായ്ച്ചു, അതിനാൽ ടീമിന് അവരെ വീണ്ടും ചേർക്കാൻ കഴിയില്ല."
 
 #: src/components/common/text.ts
+msgid "This place holds as many views as allowed (50). Delete one first."
+msgstr "ഇവിടെ അനുവദിച്ച പരമാവധി കാഴ്ചകൾ (50) ഉണ്ട്. ആദ്യം ഒന്ന് ഇല്ലാതാക്കുക."
+
+#: src/components/common/text.ts
 msgid "This property already has a funnel with this name."
 msgstr "ഈ പ്രോപ്പർട്ടിക്ക് ഈ പേരുള്ള ഫണൽ ഇതിനകം ഉണ്ട്."
 
@@ -17727,6 +17796,10 @@ msgstr "{max} വരെയും 100,000 വരികൾ വരെയും, ഹ
 msgid "Update text"
 msgstr "അപ്ഡേറ്റ് വാചകം"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Update the view from this list"
+msgstr "ഈ പട്ടികയിൽ നിന്ന് കാഴ്ച അപ്ഡേറ്റ് ചെയ്യുക"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Updates"
 msgstr "അപ്ഡേറ്റുകൾ"
@@ -17888,6 +17961,10 @@ msgstr "പാത്ത് ഇല്ലാതെ https://www.example.com പോ�
 msgid "Use sample values"
 msgstr "സാമ്പിൾ മൂല്യങ്ങൾ ഉപയോഗിക്കുക"
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Use the current list"
+msgstr "നിലവിലെ പട്ടിക ഉപയോഗിക്കുക"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "മെയിൽബോക്സിന്റെ ഉപയോക്തൃനാമവും പാസ്‌വേഡും ഉപയോഗിക്കുക, അല്ലെങ്കിൽ നിങ്ങളുടെ ദാതാവ് നൽകുന്നുണ്ടെങ്കിൽ ആപ്പ് പാസ്‌വേഡ് ഉപയോഗിക്കുക."
@@ -18034,6 +18111,10 @@ msgstr "കാഴ്ചകൾ"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "കാഴ്ചകൾ"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Visible to"
+msgstr "ആർക്കൊക്കെ കാണാം"
 
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -18688,6 +18769,7 @@ msgstr "പ്രവർത്തിക്കുന്നു…"
 
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
+#: src/app/ViewsGroup.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx

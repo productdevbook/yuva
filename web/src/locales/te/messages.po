@@ -2420,6 +2420,10 @@ msgstr "మరో బృందం చిరునామా"
 msgid "Another team already has this name."
 msgstr "మరొక బృందానికి ఇప్పటికే ఈ పేరు ఉంది."
 
+#: src/app/ViewsGroup.tsx
+msgid "Another team’s views"
+msgstr "మరో బృందం వీక్షణలు"
+
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
@@ -4798,6 +4802,7 @@ msgstr "తగ్గిన పనితీరు"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -4938,6 +4943,10 @@ msgstr "ఎంచుకున్న బ్లాక్‌ను తొలగి�
 msgid "Delete the team {name}?"
 msgstr "{name} బృందాన్ని తొలగించాలా?"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete the view {name}?"
+msgstr "{name} వీక్షణను తొలగించాలా?"
+
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
 msgstr "ఈ రెడీమేడ్ జవాబును తొలగించాలా?"
@@ -4973,6 +4982,10 @@ msgstr "ఈ సబ్‌స్క్రిప్షన్‌ను తొలగ�
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete this workspace"
 msgstr "ఈ వర్క్‌స్పేస్‌ను తొలగించండి"
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete view"
+msgstr "వీక్షణను తొలగించు"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete workspace"
@@ -5741,6 +5754,11 @@ msgstr "శీర్షికను సవరించండి"
 msgid "Edit this update"
 msgstr "ఈ అప్‌డేట్‌ను సవరించండి"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Edit view"
+msgstr "వీక్షణను సవరించు"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit, or preview on a desktop, a phone or in dark mode"
 msgstr "సవరించండి, లేదా డెస్క్‌టాప్, ఫోన్ లేదా డార్క్ మోడ్‌లో ప్రివ్యూ చేయండి"
@@ -5968,6 +5986,7 @@ msgstr "ప్రతి రకం"
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "ప్రతి వెబ్‌సైట్ మరియు యాప్ తన సందర్శకులను హోమ్ మరియు అనలిటిక్స్‌లో చూపుతుంది."
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
@@ -9229,12 +9248,17 @@ msgstr "నా ప్రొఫైల్"
 msgid "My teams"
 msgstr "నా బృందాలు"
 
+#: src/app/ViewsGroup.tsx
+msgid "My views"
+msgstr "నా వీక్షణలు"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -10984,6 +11008,7 @@ msgstr "యాప్‌లో మాత్రమే"
 msgid "Only mail since {date}"
 msgstr "{date} నుండి మెయిల్ మాత్రమే"
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Only me"
 msgstr "నేను మాత్రమే"
@@ -13047,6 +13072,14 @@ msgstr "సమూహం పేరు మార్చండి"
 msgid "Reopen"
 msgstr "మళ్లీ తెరవండి"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reorder the selected view in the sidebar"
+msgstr "సైడ్‌బార్‌లో ఎంచుకున్న వీక్షణ క్రమాన్ని మార్చు"
+
+#: src/app/ViewsGroup.tsx
+msgid "Reorder with Alt ↑ ↓ or by dragging"
+msgstr "Alt ↑ ↓ తో లేదా లాగి క్రమాన్ని మార్చండి"
+
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
@@ -13062,6 +13095,10 @@ msgstr "Replace the API key"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Replace the token"
 msgstr "Replace the token"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Replace the view’s filters, search and order with the ones on screen."
+msgstr "వీక్షణ ఫిల్టర్లు, శోధన, క్రమాన్ని స్క్రీన్‌పై ఉన్నవాటితో మారుస్తుంది."
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -13637,6 +13674,7 @@ msgstr "శనివారం"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -13673,6 +13711,11 @@ msgstr "Save and test"
 msgid "Save as draft"
 msgstr "డ్రాఫ్ట్‌గా సేవ్ చేయండి"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Save as view"
+msgstr "వీక్షణగా సేవ్ చేయి"
+
 #: src/components/common/SaveBar.tsx
 msgid "Save changes"
 msgstr "మార్పులను సేవ్ చేయండి"
@@ -13697,6 +13740,10 @@ msgstr "మీరు తరచుగా రాసే సమాధానాలన
 msgid "Save the draft now"
 msgstr "చిత్తుప్రతిని ఇప్పుడే సేవ్ చేయి"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Save the list as a view"
+msgstr "జాబితాను వీక్షణగా సేవ్ చేయి"
+
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -13712,6 +13759,15 @@ msgstr "చిత్తుప్రతిని ఇప్పుడే సేవ�
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "సేవ్ అయింది"
+
+#: src/app/ViewsGroup.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Saved views"
+msgstr "సేవ్ చేసిన వీక్షణలు"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Saves the list as it is now: its tab, filters, search and order."
+msgstr "జాబితాను ఇప్పుడున్నట్లే సేవ్ చేస్తుంది: ట్యాబ్, ఫిల్టర్లు, శోధన, క్రమం."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
@@ -15594,6 +15650,7 @@ msgstr "TCP తనిఖీ"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
@@ -15718,6 +15775,10 @@ msgstr "ఈ గంటలో అది ఆరవ తనిఖీ. మీరు {r
 msgid "The .mbox file from Takeout › Mail, unzipped."
 msgstr "Takeout › Mail నుండి .mbox ఫైల్, అన్‌జిప్ చేసినది."
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "The {field} filter was refused. {detail}"
+msgstr "{field} ఫిల్టర్ తిరస్కరించబడింది. {detail}"
+
 #: src/features/migrations/text.ts
 msgid "The {provider} user you signed in with is not an admin, and only admins can read every ticket. Sign in again as an admin."
 msgstr "మీరు సైన్ ఇన్ చేసిన {provider} వినియోగదారు అడ్మిన్ కాదు, మరియు అడ్మిన్‌లు మాత్రమే ప్రతి టిక్కెట్‌ను చదవగలరు. అడ్మిన్‌గా మళ్లీ సైన్ ఇన్ చేయండి."
@@ -15835,6 +15896,10 @@ msgstr "కాంటాక్ట్ తొలగించబడింది"
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "సంభాషణలు తెరిచే ఉంటాయి. కస్టమర్లకు జవాబు వెంటనే చేరుతుంది, వెనక్కి తీసుకోలేరు."
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "The conversations stay where they are. Only the saved view goes."
+msgstr "సంభాషణలు ఉన్న చోటే ఉంటాయి. సేవ్ చేసిన వీక్షణ మాత్రమే పోతుంది."
 
 #: src/features/status/MonitorsPage.tsx
 msgid "The current address stops working at once. Update whatever calls it."
@@ -17032,6 +17097,10 @@ msgid "This person unsubscribed from everything, reported a mail as spam or had 
 msgstr "ఈ వ్యక్తి అన్నింటి నుండి అన్‌సబ్‌స్క్రైబ్ చేశారు, మెయిల్‌ను స్పామ్‌గా నివేదించారు లేదా వారి డేటా చెరిపివేయబడింది, కాబట్టి బృందం వారిని మళ్లీ జోడించలేదు."
 
 #: src/components/common/text.ts
+msgid "This place holds as many views as allowed (50). Delete one first."
+msgstr "ఇక్కడ అనుమతించిన గరిష్ట వీక్షణలు (50) ఉన్నాయి. ముందు ఒకదాన్ని తొలగించండి."
+
+#: src/components/common/text.ts
 msgid "This property already has a funnel with this name."
 msgstr "ఈ ప్రాపర్టీకి ఈ పేరుతో ఫన్నెల్ ఇప్పటికే ఉంది."
 
@@ -17727,6 +17796,10 @@ msgstr "{max} మరియు 100,000 అడ్డు వరుసల వరక�
 msgid "Update text"
 msgstr "అప్‌డేట్ వచనం"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Update the view from this list"
+msgstr "ఈ జాబితా నుండి వీక్షణను అప్‌డేట్ చేయి"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Updates"
 msgstr "అప్‌డేట్‌లు"
@@ -17888,6 +17961,10 @@ msgstr "https://www.example.com వంటి ఆరిజిన్‌లను �
 msgid "Use sample values"
 msgstr "నమూనా విలువలను ఉపయోగించండి"
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Use the current list"
+msgstr "ప్రస్తుత జాబితాను ఉపయోగించు"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "మెయిల్‌బాక్స్ వినియోగదారు పేరు మరియు పాస్‌వర్డ్‌ను ఉపయోగించండి, లేదా మీ ప్రొవైడర్ అందిస్తే యాప్ పాస్‌వర్డ్."
@@ -18034,6 +18111,10 @@ msgstr "వీక్షణలు"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "వీక్షణలు"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Visible to"
+msgstr "ఎవరికి కనిపించాలి"
 
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -18688,6 +18769,7 @@ msgstr "పని చేస్తోంది…"
 
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
+#: src/app/ViewsGroup.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx

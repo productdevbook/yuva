@@ -2420,6 +2420,10 @@ msgstr "மற்றொரு குழு முகவரி"
 msgid "Another team already has this name."
 msgstr "வேறொரு குழுவுக்கு ஏற்கனவே இந்தப் பெயர் உள்ளது."
 
+#: src/app/ViewsGroup.tsx
+msgid "Another team’s views"
+msgstr "மற்றொரு குழுவின் காட்சிகள்"
+
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Another workspace on this server has already verified this domain."
@@ -4798,6 +4802,7 @@ msgstr "குறைந்த செயல்திறன்"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -4938,6 +4943,10 @@ msgstr "தேர்ந்தெடுத்த தொகுதியை நீ�
 msgid "Delete the team {name}?"
 msgstr "{name} குழுவை நீக்கவா?"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete the view {name}?"
+msgstr "{name} காட்சியை நீக்கவா?"
+
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
 msgstr "இந்தத் தயார் பதிலை நீக்கவா?"
@@ -4973,6 +4982,10 @@ msgstr "இந்தச் சந்தாவை நீக்கவா?"
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete this workspace"
 msgstr "இந்தப் பணியிடத்தை நீக்கு"
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete view"
+msgstr "காட்சியை நீக்கு"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete workspace"
@@ -5741,6 +5754,11 @@ msgstr "தலைப்பைத் திருத்து"
 msgid "Edit this update"
 msgstr "இந்தப் புதுப்பிப்பைத் திருத்து"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Edit view"
+msgstr "காட்சியைத் திருத்து"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit, or preview on a desktop, a phone or in dark mode"
 msgstr "திருத்து, அல்லது டெஸ்க்டாப், தொலைபேசி அல்லது இருண்ட பயன்முறையில் முன்னோட்டம் பார்"
@@ -5968,6 +5986,7 @@ msgstr "ஒவ்வொரு வகையும்"
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "ஒவ்வொரு இணையதளமும் ஆப்பும் தன் பார்வையாளர்களை முகப்பிலும் பகுப்பாய்விலும் காட்டும்."
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
@@ -9229,12 +9248,17 @@ msgstr "என் சுயவிவரம்"
 msgid "My teams"
 msgstr "என் குழுக்கள்"
 
+#: src/app/ViewsGroup.tsx
+msgid "My views"
+msgstr "என் காட்சிகள்"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -10984,6 +11008,7 @@ msgstr "ஆப்பில் மட்டும்"
 msgid "Only mail since {date}"
 msgstr "{date}-க்குப் பிறகான அஞ்சல் மட்டும்"
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Only me"
 msgstr "நான் மட்டும்"
@@ -13047,6 +13072,14 @@ msgstr "குழுவின் பெயரை மாற்று"
 msgid "Reopen"
 msgstr "மீண்டும் திற"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reorder the selected view in the sidebar"
+msgstr "பக்கப்பட்டியில் தேர்ந்த காட்சியின் வரிசையை மாற்று"
+
+#: src/app/ViewsGroup.tsx
+msgid "Reorder with Alt ↑ ↓ or by dragging"
+msgstr "Alt ↑ ↓ மூலம் அல்லது இழுத்து வரிசையை மாற்றவும்"
+
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
@@ -13062,6 +13095,10 @@ msgstr "Replace the API key"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Replace the token"
 msgstr "Replace the token"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Replace the view’s filters, search and order with the ones on screen."
+msgstr "காட்சியின் வடிப்பான்கள், தேடல், வரிசையைத் திரையில் உள்ளவற்றால் மாற்றும்."
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -13637,6 +13674,7 @@ msgstr "சனிக்கிழமை"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -13673,6 +13711,11 @@ msgstr "Save and test"
 msgid "Save as draft"
 msgstr "வரைவாகச் சேமி"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Save as view"
+msgstr "காட்சியாகச் சேமி"
+
 #: src/components/common/SaveBar.tsx
 msgid "Save changes"
 msgstr "மாற்றங்களைச் சேமி"
@@ -13697,6 +13740,10 @@ msgstr "நீங்கள் அடிக்கடி எழுதும் ப
 msgid "Save the draft now"
 msgstr "வரைவை இப்போது சேமி"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Save the list as a view"
+msgstr "பட்டியலைக் காட்சியாகச் சேமி"
+
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -13712,6 +13759,15 @@ msgstr "வரைவை இப்போது சேமி"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "சேமிக்கப்பட்டது"
+
+#: src/app/ViewsGroup.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Saved views"
+msgstr "சேமித்த காட்சிகள்"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Saves the list as it is now: its tab, filters, search and order."
+msgstr "பட்டியலை இப்போது உள்ளபடியே சேமிக்கும்: தாவல், வடிப்பான்கள், தேடல், வரிசை."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
@@ -15594,6 +15650,7 @@ msgstr "TCP சோதனை"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
@@ -15718,6 +15775,10 @@ msgstr "இந்த மணி நேரத்தின் ஆறாவது �
 msgid "The .mbox file from Takeout › Mail, unzipped."
 msgstr "Takeout › Mail-இலிருந்து .mbox கோப்பு, அன்சிப் செய்தது."
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "The {field} filter was refused. {detail}"
+msgstr "{field} வடிப்பான் நிராகரிக்கப்பட்டது. {detail}"
+
 #: src/features/migrations/text.ts
 msgid "The {provider} user you signed in with is not an admin, and only admins can read every ticket. Sign in again as an admin."
 msgstr "நீங்கள் உள்நுழைந்த {provider} பயனர் நிர்வாகி அல்ல; நிர்வாகிகள் மட்டுமே ஒவ்வொரு டிக்கெட்டையும் படிக்க முடியும். நிர்வாகியாக மீண்டும் உள்நுழையுங்கள்."
@@ -15835,6 +15896,10 @@ msgstr "தொடர்பு நீக்கப்பட்டது"
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "உரையாடல்கள் திறந்தபடியே இருக்கும். வாடிக்கையாளர்களுக்குப் பதில் உடனே கிடைக்கும்; திரும்பப் பெற முடியாது."
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "The conversations stay where they are. Only the saved view goes."
+msgstr "உரையாடல்கள் இருக்கும் இடத்திலேயே இருக்கும். சேமித்த காட்சி மட்டும் நீங்கும்."
 
 #: src/features/status/MonitorsPage.tsx
 msgid "The current address stops working at once. Update whatever calls it."
@@ -17032,6 +17097,10 @@ msgid "This person unsubscribed from everything, reported a mail as spam or had 
 msgstr "இந்த நபர் அனைத்திலிருந்தும் சந்தாவை விலக்கினார், அஞ்சலை ஸ்பேம் எனப் புகாரளித்தார் அல்லது அவர் தரவு அழிக்கப்பட்டது; எனவே குழுவால் அவரை மீண்டும் சேர்க்க முடியாது."
 
 #: src/components/common/text.ts
+msgid "This place holds as many views as allowed (50). Delete one first."
+msgstr "இங்கு அனுமதிக்கப்பட்ட அதிகபட்ச காட்சிகள் (50) உள்ளன. முதலில் ஒன்றை நீக்கவும்."
+
+#: src/components/common/text.ts
 msgid "This property already has a funnel with this name."
 msgstr "இந்தச் சொத்தில் இந்தப் பெயரில் புனல் ஏற்கெனவே உள்ளது."
 
@@ -17727,6 +17796,10 @@ msgstr "{max} மற்றும் 100,000 வரிசைகள் வரை, 
 msgid "Update text"
 msgstr "புதுப்பிப்பு உரை"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Update the view from this list"
+msgstr "இந்தப் பட்டியலிலிருந்து காட்சியைப் புதுப்பி"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Updates"
 msgstr "புதுப்பிப்புகள்"
@@ -17888,6 +17961,10 @@ msgstr "https://www.example.com போன்ற மூலங்களைப் �
 msgid "Use sample values"
 msgstr "மாதிரி மதிப்புகளைப் பயன்படுத்து"
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Use the current list"
+msgstr "தற்போதைய பட்டியலைப் பயன்படுத்து"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "அஞ்சல்பெட்டியின் பயனர் பெயர், கடவுச்சொல்லைப் பயன்படுத்துங்கள், அல்லது உங்கள் வழங்குநர் வழங்கினால் ஆப் கடவுச்சொல்."
@@ -18034,6 +18111,10 @@ msgstr "பார்வைகள்"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "பார்வைகள்"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Visible to"
+msgstr "யாருக்குத் தெரியும்"
 
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -18688,6 +18769,7 @@ msgstr "செயல்படுகிறது…"
 
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
+#: src/app/ViewsGroup.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx

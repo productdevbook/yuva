@@ -2420,6 +2420,10 @@ msgstr "Başka bir ekip adresi"
 msgid "Another team already has this name."
 msgstr "Bu ada sahip başka bir ekip var."
 
+#: src/app/ViewsGroup.tsx
+msgid "Another team’s views"
+msgstr "Başka bir ekibin görünümleri"
+
 #: src/components/common/text.ts
 msgid "Another workspace on this server has already verified this domain."
 msgstr "Bu sunucudaki başka bir çalışma alanı bu alan adını zaten doğruladı."
@@ -4798,6 +4802,7 @@ msgstr "Düşük performans"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -4938,6 +4943,10 @@ msgstr "Seçili bloğu sil"
 msgid "Delete the team {name}?"
 msgstr "{name} ekibi silinsin mi?"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete the view {name}?"
+msgstr "{name} görünümü silinsin mi?"
+
 #: src/features/settings/canned/CannedRepliesPage.tsx
 msgid "Delete this canned reply?"
 msgstr "Bu hazır yanıt silinsin mi?"
@@ -4973,6 +4982,10 @@ msgstr "Bu abonelik silinsin mi?"
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete this workspace"
 msgstr "Bu çalışma alanını sil"
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Delete view"
+msgstr "Görünümü sil"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Delete workspace"
@@ -5741,6 +5754,11 @@ msgstr "Başlığı düzenle"
 msgid "Edit this update"
 msgstr "Bu güncellemeyi düzenle"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Edit view"
+msgstr "Görünümü düzenle"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit, or preview on a desktop, a phone or in dark mode"
 msgstr "Düzenle ya da masaüstünde, telefonda veya koyu modda önizle"
@@ -5968,6 +5986,7 @@ msgstr "Tüm türler"
 msgid "Every website and app shows its visitors on Home and in Analytics."
 msgstr "Her web sitesi ve uygulama, ziyaretçilerini Ana sayfa’da ve Analitik’te gösterir."
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Everyone"
@@ -9229,12 +9248,17 @@ msgstr "Profilim"
 msgid "My teams"
 msgstr "Ekiplerim"
 
+#: src/app/ViewsGroup.tsx
+msgid "My views"
+msgstr "Görünümlerim"
+
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -10984,6 +11008,7 @@ msgstr "Yalnızca uygulamada"
 msgid "Only mail since {date}"
 msgstr "Yalnızca {date} sonrasındaki e-postalar"
 
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Only me"
 msgstr "Yalnızca ben"
@@ -13047,6 +13072,14 @@ msgstr "Grubu yeniden adlandır"
 msgid "Reopen"
 msgstr "Yeniden aç"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reorder the selected view in the sidebar"
+msgstr "Kenar çubuğunda seçili görünümü yeniden sırala"
+
+#: src/app/ViewsGroup.tsx
+msgid "Reorder with Alt ↑ ↓ or by dragging"
+msgstr "Alt ↑ ↓ ile ya da sürükleyerek yeniden sırala"
+
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
@@ -13062,6 +13095,10 @@ msgstr "API anahtarını değiştir"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Replace the token"
 msgstr "Token'ı değiştir"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Replace the view’s filters, search and order with the ones on screen."
+msgstr "Görünümün filtrelerini, aramasını ve sırasını ekrandakilerle değiştir."
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -13637,6 +13674,7 @@ msgstr "Cumartesi"
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
@@ -13673,6 +13711,11 @@ msgstr "Kaydet ve dene"
 msgid "Save as draft"
 msgstr "Taslak olarak kaydet"
 
+#: src/features/inbox/views/ViewDialog.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Save as view"
+msgstr "Görünüm olarak kaydet"
+
 #: src/components/common/SaveBar.tsx
 msgid "Save changes"
 msgstr "Değişiklikleri kaydet"
@@ -13697,6 +13740,10 @@ msgstr "Sık yazdığınız yanıtları kaydedin, sonra bir kısayolla yazı ala
 msgid "Save the draft now"
 msgstr "Taslağı şimdi kaydet"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Save the list as a view"
+msgstr "Listeyi görünüm olarak kaydet"
+
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -13712,6 +13759,15 @@ msgstr "Taslağı şimdi kaydet"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "Kaydedildi"
+
+#: src/app/ViewsGroup.tsx
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Saved views"
+msgstr "Kayıtlı görünümler"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Saves the list as it is now: its tab, filters, search and order."
+msgstr "Listeyi şu anki haliyle kaydeder: sekmesi, filtreleri, araması ve sırası."
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
@@ -15594,6 +15650,7 @@ msgstr "TCP kontrolü"
 #: src/features/docs/discussions/parts.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
@@ -15718,6 +15775,10 @@ msgstr "Bu saatteki altıncı denetimdi. {retry} itibarıyla yeniden denetleyebi
 msgid "The .mbox file from Takeout › Mail, unzipped."
 msgstr "Takeout › Mail klasöründeki, zip'ten çıkarılmış .mbox dosyası."
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "The {field} filter was refused. {detail}"
+msgstr "{field} filtresi reddedildi. {detail}"
+
 #: src/features/migrations/text.ts
 msgid "The {provider} user you signed in with is not an admin, and only admins can read every ticket. Sign in again as an admin."
 msgstr "Oturum açtığınız {provider} kullanıcısı yönetici değil ve tüm talepleri yalnızca yöneticiler okuyabilir. Yönetici olarak yeniden oturum açın."
@@ -15835,6 +15896,10 @@ msgstr "Kişi silindi"
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
 msgstr "Konuşmalar açık kalır. Müşteriler yanıtı hemen alır ve geri çağrılamaz."
+
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "The conversations stay where they are. Only the saved view goes."
+msgstr "Konuşmalar yerinde kalır. Yalnızca kayıtlı görünüm silinir."
 
 #: src/features/status/MonitorsPage.tsx
 msgid "The current address stops working at once. Update whatever calls it."
@@ -17032,6 +17097,10 @@ msgid "This person unsubscribed from everything, reported a mail as spam or had 
 msgstr "Bu kişi tüm listelerden çıktı, bir e-postayı istenmeyen olarak bildirdi ya da verilerinin silinmesini istedi; bu yüzden ekip onu yeniden ekleyemez."
 
 #: src/components/common/text.ts
+msgid "This place holds as many views as allowed (50). Delete one first."
+msgstr "Burada izin verilen en fazla görünüm (50) var. Önce birini silin."
+
+#: src/components/common/text.ts
 msgid "This property already has a funnel with this name."
 msgstr "Bu mülkte bu adla bir huni zaten var."
 
@@ -17727,6 +17796,10 @@ msgstr "En fazla {max} ve 100.000 satır, bir başlık satırıyla. Türkçe ya 
 msgid "Update text"
 msgstr "Güncelleme metni"
 
+#: src/features/inbox/views/ViewsMenu.tsx
+msgid "Update the view from this list"
+msgstr "Görünümü bu listeden güncelle"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Updates"
 msgstr "Güncellemeler"
@@ -17888,6 +17961,10 @@ msgstr "https://www.example.com gibi, yol içermeyen kaynaklar kullanın."
 msgid "Use sample values"
 msgstr "Örnek değerleri kullan"
 
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Use the current list"
+msgstr "Şu anki listeyi kullan"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "Posta kutusunun kullanıcı adını ve şifresini, sağlayıcınız sunuyorsa bir uygulama şifresini kullanın."
@@ -18034,6 +18111,10 @@ msgstr "görüntüleme"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "Görüntüleme"
+
+#: src/features/inbox/views/ViewDialog.tsx
+msgid "Visible to"
+msgstr "Kimler görsün"
 
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -18688,6 +18769,7 @@ msgstr "Çalışılıyor…"
 
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
+#: src/app/ViewsGroup.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
