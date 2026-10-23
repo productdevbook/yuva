@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Thread } from "@/features/docs/discussions/ThreadPane"
 import { useDiscussion } from "@/features/docs/discussions/queries"
+import { IdeaIssues } from "@/features/issues/IdeaIssues"
 import { IdeaFeedback } from "@/features/roadmap/IdeaFeedback"
 import { MoveDialog } from "@/features/roadmap/MoveDialog"
 import { boardLink, useStageChanges } from "@/features/roadmap/queries"
@@ -126,7 +127,12 @@ export function IdeaPane({ board, ideaId, all }: { board: RoadmapBoard; ideaId: 
             )}
           </>
         )}
-        before={(d) => <IdeaFeedback idea={d} board={board} offer={offer} />}
+        before={(d) => (
+          <>
+            <IdeaIssues idea={d} hotkeys={!moving} />
+            <IdeaFeedback idea={d} board={board} offer={offer} />
+          </>
+        )}
         after={(d) => <History idea={d} />}
       />
       {moving && idea && (

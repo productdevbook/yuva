@@ -42,6 +42,9 @@ import { ConversationMenu, type MenuView } from "@/features/conversation/Convers
 import { TrashBanner } from "@/features/conversation/Trash"
 import { CategoryChip, ProgressStrip } from "@/features/conversation/Feedback"
 import { IdeaChip } from "@/features/conversation/IdeaChip"
+import { feedbackDraft } from "@/features/issues/draft"
+import { IssueChips } from "@/features/issues/IssueChips"
+import { IssueDialogs, IssueMenu, type IssueMode } from "@/features/issues/IssueMenu"
 import { IncidentChips } from "@/features/status/IncidentChips"
 import { LinkIncidentDialog } from "@/features/status/LinkIncidentDialog"
 import { useConversationIncidents } from "@/features/status/linked"
@@ -296,6 +299,8 @@ function Loaded({
   const [discussing, setDiscussing] = useState(false)
   const [linking, setLinking] = useState(false)
   const [ideaLinking, setIdeaLinking] = useState(false)
+  const [issueMode, setIssueMode] = useState<IssueMode | null>(null)
+  const issues = c.issues ?? []
   const incidents = useConversationIncidents(c.id).data ?? []
   const chipLabels = labels.filter((l) => c.labels.includes(l.id))
   const assignee = c.assignee_id ? members.get(c.assignee_id) : undefined
@@ -440,6 +445,8 @@ function Loaded({
     discussion: () => setDiscussing(true),
     incident: () => setLinking(true),
     idea: () => c.kind === "feedback" && setIdeaLinking(true),
+    createIssue: () => c.kind === "feedback" && setIssueMode("create"),
+    linkIssue: () => c.kind === "feedback" && setIssueMode("link"),
     article: () => reply.current?.article(),
     trash: () => canManage && trash(),
   }
@@ -477,6 +484,8 @@ function Loaded({
           [SHORTCUTS.discussion]: handlers.discussion,
           [SHORTCUTS.incident]: handlers.incident,
           [SHORTCUTS.idea]: handlers.idea,
+          [SHORTCUTS.createIssue]: handlers.createIssue,
+          [SHORTCUTS.linkIssue]: handlers.linkIssue,
           [SHORTCUTS.article]: handlers.article,
           [SHORTCUTS.trash]: handlers.trash,
         }
@@ -629,6 +638,7 @@ function Loaded({
               {c.kind === "feedback" && (
                 <ProgressMenu c={c} update={update} open={menu === "progress"} onOpenChange={openMenu("progress")} />
               )}
+              {c.kind === "feedback" && <IssueMenu onPick={setIssueMode} count={issues.length} />}
             </>
           )}
           <div className="ms-auto flex items-center gap-1.5">
@@ -674,6 +684,7 @@ function Loaded({
         c.imported ||
         incidents.length > 0 ||
         !!c.idea ||
+        issues.length > 0 ||
         viewers.length > 0 ||
         typingMate) && (
         <div
@@ -704,6 +715,7 @@ function Loaded({
           )}
           <IncidentChips conversationId={c.id} items={incidents} />
           {c.idea && <IdeaChip conversationId={c.id} idea={c.idea} />}
+          <IssueChips subject={{ kind: "conversation", id: c.id }} items={issues} />
           <Watchers conversationId={c.id} />
         </div>
       )}
@@ -847,6 +859,12 @@ function Loaded({
           <LinkIdeaDialog c={c} onClose={() => setIdeaLinking(false)} />
         </Suspense>
       )}
+      <IssueDialogs
+        subject={{ kind: "conversation", id: c.id }}
+        mode={issueMode}
+        draft={feedbackDraft(c)}
+        onClose={() => setIssueMode(null)}
+      />
       {discussing && <FromConversationDialog c={c} messages={shown} onClose={() => setDiscussing(false)} />}
       {!inlinePanel && (
         <ContactSheet contactId={c.contact_id} conversationId={c.id} open={sheet} onOpenChange={setSheet} />

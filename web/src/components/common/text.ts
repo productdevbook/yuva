@@ -70,6 +70,12 @@ export const WEBHOOK_EVENTS: WebhookEventType[] = [
   "changelog.entry.published",
   "changelog.entry.unpublished",
   "changelog.entry.deleted",
+  "issue_link.created",
+  "issue_link.updated",
+  "issue_link.deleted",
+  "team.created",
+  "team.updated",
+  "team.deleted",
 ]
 export const API_KEY_SCOPES: ApiKeyScope[] = [
   "conversations:read",
@@ -108,6 +114,9 @@ export const API_KEY_SCOPES: ApiKeyScope[] = [
   "changelog:read",
   "changelog:write",
   "changelog:publish",
+  "integrations:read",
+  "integrations:manage",
+  "issues:write",
   "audit:read",
 ]
 export const OPT_IN_SCOPES: ApiKeyScope[] = ["conversations:delete", "messages:redact", "broadcasts:send", "audit:read"]
@@ -143,6 +152,7 @@ export const WORKSPACE_WIDE_SCOPES: ApiKeyScope[] = [
   "workspace:manage",
   "migrations:manage",
   "analytics:manage",
+  "integrations:manage",
   "audit:read",
 ]
 export const DELIVERY_STATES: WebhookDeliveryState[] = ["pending", "succeeded", "failed"]
@@ -226,6 +236,12 @@ export function useEnumText() {
       "changelog.entry.published": t`A What's new entry was published`,
       "changelog.entry.unpublished": t`A What's new entry was unpublished`,
       "changelog.entry.deleted": t`A published What's new entry was deleted`,
+      "issue_link.created": t`A GitHub or Linear issue was linked`,
+      "issue_link.updated": t`A linked GitHub or Linear issue changed`,
+      "issue_link.deleted": t`A GitHub or Linear issue was unlinked`,
+      "team.created": t`A team was created`,
+      "team.updated": t`A team was changed`,
+      "team.deleted": t`A team was deleted`,
     } satisfies Record<WebhookEventType, string>,
     scope: {
       "conversations:read": t`Read conversations, messages, labels and canned replies`,
@@ -264,6 +280,9 @@ export function useEnumText() {
       "changelog:read": t`Read What's new changelogs and their entries`,
       "changelog:write": t`Write What's new entries and translations`,
       "changelog:publish": t`Publish, schedule and unpublish What's new entries`,
+      "integrations:read": t`Read the connected GitHub and Linear trackers`,
+      "integrations:manage": t`Connect, change and disconnect GitHub and Linear trackers`,
+      "issues:write": t`Create and link GitHub and Linear issues for feedback and ideas`,
       "audit:read": t`Read the audit log (owners only)`,
     } satisfies Record<ApiKeyScope, string>,
     delivery: { pending: t`Pending`, succeeded: t`Succeeded`, failed: t`Failed` } satisfies Record<
@@ -373,6 +392,13 @@ export function useErrorText() {
     if (err.code === "email_not_configured")
       return t`This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings.`
     if (err.code === "email_address_taken") return t`Another channel already receives mail at this address.`
+    if (err.code === "tracker_auth_failed")
+      return t`The tracker refused the token. Check that it is valid and has access to issues.`
+    if (err.code === "issue_not_found") return t`The tracker has no such issue, or the token cannot see it.`
+    if (err.code === "tracker_rejected")
+      return t`The tracker refused the request. Check the target and your permissions.`
+    if (err.code === "too_many_links") return t`This issue or this item has as many links as allowed.`
+    if (err.code === "tracker_unavailable") return t`The tracker could not be reached. Try again in a moment.`
     if (err.code === "webhook_disabled") return t`The endpoint is disabled. Enable it to send deliveries again.`
     if (err.code === "no_email_channel")
       return t`The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first.`

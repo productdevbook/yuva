@@ -41,6 +41,7 @@ export const keys = {
   changelogEntry: (ws: string, changelog: string, id: string) =>
     ["ws", ws, "changelog", "entry", changelog, id] as const,
   changelogBroadcasts: (ws: string, inbox: string) => ["ws", ws, "changelog", "broadcasts", inbox] as const,
+  issueIntegrations: (ws: string) => ["ws", ws, "issue-integrations"] as const,
   roadmap: (ws: string) => ["ws", ws, "roadmap"] as const,
   roadmapBoards: (ws: string) => ["ws", ws, "roadmap", "boards"] as const,
   roadmapIdeas: (ws: string, f: IdeaFilters) => ["ws", ws, "roadmap", "ideas", f] as const,

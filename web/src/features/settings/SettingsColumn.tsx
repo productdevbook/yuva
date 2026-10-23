@@ -5,6 +5,7 @@ import {
   ArrowUpRightIcon,
   BellIcon,
   BuildingIcon,
+  CircleDotIcon,
   KeyRoundIcon,
   PaletteIcon,
   PlugIcon,
@@ -18,6 +19,7 @@ import { Outlet, useLocation } from "react-router"
 
 import { Column, ColumnHeading, ColumnLink } from "@/components/common/Column"
 import { initials, useEnumText } from "@/components/common/text"
+import { useIssueIntegrations } from "@/features/issues/queries"
 import { ProductsHome } from "@/features/settings/ProductsPage"
 import { Page, RowIcon, RowText } from "@/features/settings/ui"
 import { api, unwrap } from "@/lib/api"
@@ -25,7 +27,7 @@ import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { useCannedReplies, useInboxes, useLabels, useMembers } from "@/lib/workspace"
 
-const WIDE = ["/settings/api-keys", "/settings/webhooks", "/settings/connected-apps"]
+const WIDE = ["/settings/api-keys", "/settings/issue-trackers", "/settings/webhooks", "/settings/connected-apps"]
 
 function isWide(pathname: string) {
   if (WIDE.includes(pathname)) return true
@@ -112,6 +114,7 @@ export function SettingsColumn() {
     queryFn: () => unwrap(api.GET("/v1/webhooks")).then((r) => r.items),
     enabled: canManage,
   })
+  const trackers = useIssueIntegrations(canManage)
   const name = me.person.name || me.person.email
   const list = (n?: number) => (n === undefined ? "" : n)
   return (
@@ -209,6 +212,19 @@ export function SettingsColumn() {
           />
         </NavRow>
       </Group>
+      {canManage && (
+        <Group title={<Trans>Integrations</Trans>}>
+          <NavRow to="/settings/issue-trackers" value={trackers.data ? trackers.data.length || t`None` : ""}>
+            <RowIcon>
+              <CircleDotIcon />
+            </RowIcon>
+            <RowText
+              title={<Trans>Issue trackers</Trans>}
+              detail={<Trans>Turn feedback into GitHub or Linear issues</Trans>}
+            />
+          </NavRow>
+        </Group>
+      )}
       <Group title={<Trans>Workspace</Trans>}>
         <NavRow to="/settings/workspace">
           <RowIcon>

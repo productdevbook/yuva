@@ -178,6 +178,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/auth/sso": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start a single sign-on
+         * @description The sign-in page asks for the e-mail address first and sends it here. When the address's
+         *     domain is claimed by a workspace that has an identity provider, the answer carries
+         *     `authorization_url`, the provider's sign-in page (authorization code with PKCE, `state`
+         *     and `nonce`, `login_hint` set to the address), and sets the `yuva_sso` cookie that binds
+         *     the sign-in to this browser for 10 minutes; the page sends the browser there. Otherwise
+         *     `sso` is `false` and the page goes on with a code or a passkey.
+         *
+         *     The provider sends the browser back to `GET /auth/sso/callback` (outside this contract),
+         *     which checks the cookie and `state`, exchanges the code, verifies the `id_token` (signature
+         *     against the provider's keys, `iss`, `aud`, `exp`, `nonce`) and requires a verified e-mail in a
+         *     domain the workspace has claimed. It then redirects to `return_to` (or `/`) with the
+         *     session cookie set, or to `/sign-in?sso_error=<code>` with `code` one of `expired`,
+         *     `denied`, `failed`, `invalid_token`, `email_unverified`, `domain_not_claimed`,
+         *     `group_not_allowed`, `not_member`.
+         *
+         *     A domain's claim is public (its DNS record is), so answering whether it has single
+         *     sign-on reveals nothing about people. 30 requests a minute per client IP address (`429`).
+         *     `502 sso_unavailable` when the provider's discovery document cannot be read.
+         */
+        post: operations["startSsoSignIn"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/auth/sign-out": {
         parameters: {
             query?: never;
@@ -776,6 +813,141 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/sso": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Single sign-on settings
+         * @description The workspace's identity provider, claimed domains and sign-in rules. Owners only, with a
+         *     member session.
+         */
+        get: operations["getSsoSettings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Change the sign-in rules
+         * @description `sso_required`: a member whose address is in one of the workspace's verified domains acts
+         *     in the workspace (`/v1` with a session, `/v1/realtime`, approving an OAuth request) only
+         *     with a session made through this workspace's provider; any other session gets `403
+         *     sso_required` with `sso_email`, to send to `POST /v1/auth/sso`. Sessions that exist when it
+         *     is turned on are refused at once. Signing in with a code or a passkey still works (for
+         *     other workspaces and as a reader). Owners are exempt, so a broken identity provider never
+         *     locks the workspace out. OAuth grants of covered members work only when they were approved
+         *     with such a session; API keys are not affected. Turning it on needs a provider and a
+         *     verified domain (`409 sso_not_ready`). `jit` lets a person of a claimed domain who signs
+         *     in through the provider and is not a member join with `jit_role` (`admin` or `agent`,
+         *     never `owner`). Owners only, with a member session; recorded as `sso.settings_changed`.
+         */
+        patch: operations["updateSsoSettings"];
+        trace?: never;
+    };
+    "/v1/sso/oidc": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set the OpenID Connect provider
+         * @description Saves the provider after reading its discovery document
+         *     (`<issuer>/.well-known/openid-configuration`, whose `issuer` must equal the one given):
+         *     `400 sso_discovery_failed` with the reason otherwise. The issuer is `https` and on a public
+         *     address unless the server allows private addresses (`YUVA_WEBHOOK_ALLOW_PRIVATE`). The
+         *     client secret is stored encrypted and never returned; leave it out to keep the stored
+         *     one (required the first time). Register `redirect_uri` from `GET /v1/sso` at the
+         *     provider. Owners only, with a member session; recorded as `sso.provider_created` or
+         *     `sso.provider_updated`.
+         */
+        put: operations["setSsoOidcProvider"];
+        post?: never;
+        /**
+         * Remove the OpenID Connect provider
+         * @description Removes the provider and turns `sso_required` off; claimed domains stay. Owners only,
+         *     with a member session; recorded as `sso.provider_deleted`.
+         */
+        delete: operations["deleteSsoOidcProvider"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/sso/domains": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Claim an e-mail domain
+         * @description Starts a claim: publish the TXT record `txt_name` with `txt_value`, then verify. A domain
+         *     verified by another workspace on this server answers `409 domain_taken`, the same domain
+         *     twice in this workspace `409 domain_exists`; at most 50 domains (`409 sso_domain_limit`).
+         *     Owners only, with a member session; recorded as `sso_domain.added`.
+         */
+        post: operations["addSsoDomain"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/sso/domains/{ssoDomainId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Give up a claimed domain
+         * @description People of the domain sign in with codes and passkeys again; removing the last verified
+         *     domain turns `sso_required` off. Owners only, with a member session; recorded as
+         *     `sso_domain.deleted`.
+         */
+        delete: operations["deleteSsoDomain"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/sso/domains/{ssoDomainId}/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Check a domain's TXT record
+         * @description Looks the TXT record up now. When it holds `txt_value` the domain becomes `verified`
+         *     (recorded as `sso_domain.verified`) and stays so; the record may stay in place. Otherwise
+         *     the claim stays `pending` with `problem` saying what was found. `409 domain_taken` when
+         *     another workspace verified the domain first. Owners only, with a member session.
+         */
+        post: operations["verifySsoDomain"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/workspaces": {
         parameters: {
             query?: never;
@@ -1045,8 +1217,8 @@ export interface paths {
         };
         /**
          * List members with access
-         * @description Members granted access to this inbox. Owners and admins see every inbox without a grant and
-         *     are not listed unless granted.
+         * @description Members with access to this inbox, granted directly or through a team (`via`, `team_ids`).
+         *     Owners and admins see every inbox without a grant and are not listed unless granted.
          *
          *     Scope: `inboxes:read`.
          */
@@ -1069,7 +1241,8 @@ export interface paths {
         get?: never;
         /**
          * Give a member access
-         * @description Owners, admins and API keys. Granting twice is a no-op.
+         * @description Owners, admins and API keys. Granting twice is a no-op. Sends `inbox_access.changed` when
+         *     the member's access flips (not when a team already gave it).
          *
          *     Scope: `inboxes:manage`.
          */
@@ -1077,11 +1250,144 @@ export interface paths {
         post?: never;
         /**
          * Take a member's access away
-         * @description Owners, admins and API keys.
+         * @description Owners, admins and API keys. Removes the direct grant only: access through a team stays.
+         *     Sends `inbox_access.changed` when the member's access flips.
          *
          *     Scope: `inboxes:manage`.
          */
         delete: operations["revokeInboxAccess"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/teams": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List teams
+         * @description Owners, admins and API keys not limited to inboxes see every team. Agents see the teams
+         *     they belong to and the teams granted an inbox they see; keys limited to inboxes the teams
+         *     granted one of their inboxes. By name.
+         *
+         *     Scope: `inboxes:read`.
+         */
+        get: operations["listTeams"];
+        put?: never;
+        /**
+         * Create a team
+         * @description Owners, admins and API keys not limited to inboxes. Sends `team.created`.
+         *
+         *     Scope: `inboxes:manage`.
+         */
+        post: operations["createTeam"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/teams/{teamId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a team
+         * @description A team the caller does not see (see `GET /v1/teams`) answers `404`.
+         *
+         *     Scope: `inboxes:read`.
+         */
+        get: operations["getTeam"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete a team
+         * @description Owners, admins and API keys not limited to inboxes. Its members lose the access it gave
+         *     them at once (`inbox_access.changed` for each member and inbox whose access flips), and
+         *     conversations assigned to it keep their member but lose the team (one
+         *     `conversation.updated` each, no timeline entry). Sends `team.deleted`.
+         *
+         *     Scope: `inboxes:manage`.
+         */
+        delete: operations["deleteTeam"];
+        options?: never;
+        head?: never;
+        /**
+         * Update a team
+         * @description Owners, admins and API keys not limited to inboxes. Sends `team.updated`.
+         *
+         *     Scope: `inboxes:manage`.
+         */
+        patch: operations["updateTeam"];
+        trace?: never;
+    };
+    "/v1/teams/{teamId}/members/{memberId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Add a member to a team
+         * @description Owners, admins and API keys not limited to inboxes. Adding twice is a no-op. The member
+         *     gains the team's inboxes at once (`inbox_access.changed` for each inbox whose access flips)
+         *     and `team.updated` is sent. A team holds at most 500 members (`403 team_limit`).
+         *
+         *     Scope: `inboxes:manage`.
+         */
+        put: operations["addTeamMember"];
+        post?: never;
+        /**
+         * Remove a member from a team
+         * @description Owners, admins and API keys not limited to inboxes. The member loses the inboxes only the
+         *     team gave them at once (`inbox_access.changed`), and `team.updated` is sent, to the removed
+         *     member too (`removed_member_ids`). Removing a member who is not in the team is a no-op.
+         *
+         *     Scope: `inboxes:manage`.
+         */
+        delete: operations["removeTeamMember"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/teams/{teamId}/inboxes/{inboxId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Give a team access to an inbox
+         * @description Owners, admins and API keys not limited to inboxes. Every member of the team gains the
+         *     inbox at once (`inbox_access.changed` for each whose access flips) and `team.updated` is
+         *     sent. Granting twice is a no-op. A team holds at most 100 inboxes (`403 team_limit`).
+         *
+         *     Scope: `inboxes:manage`.
+         */
+        put: operations["grantTeamInboxAccess"];
+        post?: never;
+        /**
+         * Take a team's access to an inbox away
+         * @description Owners, admins and API keys not limited to inboxes. Members who had the inbox only through
+         *     this team lose it at once (`inbox_access.changed`); conversations of the inbox assigned to
+         *     the team lose the team (one `conversation.updated` each, no timeline entry). Sends
+         *     `team.updated`.
+         *
+         *     Scope: `inboxes:manage`.
+         */
+        delete: operations["revokeTeamInboxAccess"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1658,8 +1964,8 @@ export interface paths {
         /**
          * Count open conversations
          * @description Open conversations in the inboxes the caller can see: all of them, those assigned to the
-         *     calling member (`0` for API keys), unassigned ones, and per inbox, per assignee and per
-         *     label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
+         *     calling member (`0` for API keys), unassigned ones, those assigned to a team of the
+         *     calling member, and per inbox, per assignee, per team and per label. Inboxes, assignees and labels without open conversations are left out of their lists. Conversations flagged as
          *     spam are counted only in `spam`.
          *
          *     `kind` limits every count to conversations of those kinds, as on `GET /v1/conversations`:
@@ -2006,6 +2312,17 @@ export interface paths {
          *     SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
          *     address the contact wrote to; when the conversation has none and the channel has no
          *     `from_address`, the reply is refused with `409 email_no_sender`.
+         *
+         *     `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
+         *     transaction as the message: when either is refused (an assignee of `then` without access
+         *     to the inbox, a snooze without a future time) nothing is written, and when the message is
+         *     refused no action is applied. A macro's assignee who can no longer take the conversation
+         *     is skipped rather than refusing the reply, and the event lists it in `skipped`. With both, the macro's actions come first and the fields of
+         *     `then` take their place (`then.labels` replaces the labels, the macro's label changes
+         *     included). They need `conversations:write` for API keys and OAuth tokens, are refused on a
+         *     draft (`400 validation_failed`) and are not applied again when a `client_id` repeats. A
+         *     macro of another workspace, or another member's personal macro, is `404`. Applying a
+         *     macro writes a `macro_applied` event naming it before the events of the changes.
          */
         post: operations["createMessage"];
         delete?: never;
@@ -2107,6 +2424,70 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/conversations/{conversationId}/issues": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List the issues a feedback is linked to
+         * @description The GitHub and Linear issues linked to the conversation, oldest link first, as `issues` on
+         *     the conversation carries them.
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["listConversationIssues"];
+        put?: never;
+        /**
+         * Create or link an issue for a feedback
+         * @description With `url`, links the existing issue it names; with `title`, creates an issue in `target`
+         *     (or the integration's `default_target`) and links it. The issue's body is `body`, then a
+         *     line with the conversation's address in the panel; nothing else of the conversation, and
+         *     no customer's name or address, goes to the tracker.
+         *
+         *     Only `feedback` conversations link (`409 not_feedback`). A conversation takes at most 10
+         *     issues and an issue at most 1,000 links (`422 too_many_links`). Linking an issue the
+         *     conversation is already linked to changes nothing and answers `200`. The new link sets the
+         *     feedback's progress from the issue's state at once. `422 issue_not_found` when the tracker
+         *     does not know the issue or the token cannot see it, `422 tracker_auth_failed` when the
+         *     tracker refuses the token, `422 tracker_rejected` when it refuses the request (a pull request,
+         *     a target it does not take), `503 tracker_unavailable` when it cannot be reached.
+         *
+         *     Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+         *     `conversations:read`.
+         */
+        post: operations["linkConversationIssue"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/conversations/{conversationId}/issues/{issueLinkId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Unlink an issue from a feedback
+         * @description The progress the issue set stays; the issue itself is not changed.
+         *
+         *     Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+         *     `conversations:read`.
+         */
+        delete: operations["unlinkConversationIssue"];
         options?: never;
         head?: never;
         patch?: never;
@@ -2445,6 +2826,72 @@ export interface paths {
          *     Scope: `canned_replies:write`.
          */
         patch: operations["updateCannedReply"];
+        trace?: never;
+    };
+    "/v1/macros": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List macros
+         * @description The workspace's shared macros and the caller's own personal ones: personal first, then
+         *     shared, each by `position` and name. API keys see the shared ones only.
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["listMacros"];
+        put?: never;
+        /**
+         * Create a macro
+         * @description A `personal` macro belongs to the calling member: any member with a session, or an OAuth
+         *     token with `conversations:write`; API keys are refused with `403 member_session_required`.
+         *     A `shared` macro is created by owners, admins and API keys with `canned_replies:write`.
+         *
+         *     Labels must exist and the assignee must be a member (`400 validation_failed`). The
+         *     shortcut is unique among the shared macros, and among each member's personal ones
+         *     (`409 shortcut_taken`).
+         */
+        post: operations["createMacro"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/macros/{macroId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a macro
+         * @description A shared macro, or one of the caller's own personal macros; another member's personal
+         *     macro is `404`.
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["getMacro"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete a macro
+         * @description Same permissions as creating one of its visibility.
+         */
+        delete: operations["deleteMacro"];
+        options?: never;
+        head?: never;
+        /**
+         * Update a macro
+         * @description Same permissions as creating one of its visibility. Only the fields sent are checked;
+         *     `actions` replaces the actions as a whole. The visibility does not change; create a new
+         *     macro instead.
+         */
+        patch: operations["updateMacro"];
         trace?: never;
     };
     "/v1/docs/sites": {
@@ -3004,6 +3451,62 @@ export interface paths {
          *     `conversations:read`.
          */
         delete: operations["unlinkIdeaConversation"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/discussions/{discussionId}/issues": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List the issues an idea is linked to
+         * @description The GitHub and Linear issues linked to the roadmap idea, oldest link first. A discussion
+         *     that is not an idea answers `404`.
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["listIdeaIssues"];
+        put?: never;
+        /**
+         * Create or link an issue for an idea
+         * @description As for a feedback, with the idea's address in the panel at the end of a created issue's
+         *     body. The idea shows the issue and its state; neither linking nor a change of the issue's
+         *     state moves the idea's stage or touches its linked feedback. A discussion that is not an
+         *     idea answers `409 not_an_idea`; a server with `YUVA_ROADMAP=off` answers `404`.
+         *
+         *     Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+         *     `conversations:read`.
+         */
+        post: operations["linkIdeaIssue"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/discussions/{discussionId}/issues/{issueLinkId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Unlink an issue from an idea
+         * @description The issue itself is not changed.
+         *
+         *     Agents with access to the inbox, owners, admins and API keys. Scopes: `issues:write` and
+         *     `conversations:read`.
+         */
+        delete: operations["unlinkIdeaIssue"];
         options?: never;
         head?: never;
         patch?: never;
@@ -4868,6 +5371,110 @@ export interface paths {
          *     `category` must be a key of the inbox's `feedback_categories` (`400` otherwise).
          */
         post: operations["createFeedback"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/issue-integrations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List issue tracker integrations
+         * @description The GitHub and Linear connections of the workspace, oldest first. Every member reads them;
+         *     tokens and webhook secrets are never answered.
+         *
+         *     Scope: `integrations:read`.
+         */
+        get: operations["listIssueIntegrations"];
+        put?: never;
+        /**
+         * Connect GitHub or Linear
+         * @description Owners, admins and API keys without an inbox limit. The token is checked with the tracker
+         *     before it is stored (`422 tracker_auth_failed` when the tracker refuses it,
+         *     `503 tracker_unavailable` when it cannot be reached) and sealed under the master key; it is
+         *     never answered. `account` is the GitHub login or the Linear organization the token belongs
+         *     to.
+         *
+         *     GitHub: a fine-grained personal access token limited to the repositories issues go to,
+         *     with read and write access to Issues. `api_url` names a GitHub Enterprise Server's API
+         *     (`https://<host>/api/v3`); without it Yuva calls `api.github.com`. The URL must be `https`
+         *     and is refused when it points to a private, loopback or link-local address, as webhook URLs
+         *     are, checked again on every call. Linear: a personal API key; Yuva calls `api.linear.app`.
+         *
+         *     Without `webhook_secret` Yuva makes one and answers it once; paste it, with `webhook_url`,
+         *     into the tracker's webhook settings (GitHub: content type `application/json`, the Issues
+         *     event). Linear makes its own signing secret: send it as `webhook_secret` here or later.
+         *     At most 20 integrations per workspace (`422 too_many_integrations`).
+         *
+         *     Scope: `integrations:manage`.
+         */
+        post: operations["createIssueIntegration"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/issue-integrations/{integrationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get an issue tracker integration
+         * @description Scope: `integrations:read`.
+         */
+        get: operations["getIssueIntegration"];
+        put?: never;
+        post?: never;
+        /**
+         * Disconnect an issue tracker
+         * @description Owners, admins and API keys without an inbox limit. The token and secret are deleted, and
+         *     with them every link to the integration's issues (`issue_link.deleted` for each); the
+         *     progress those links set stays. Nothing changes in the tracker.
+         *
+         *     Scope: `integrations:manage`.
+         */
+        delete: operations["deleteIssueIntegration"];
+        options?: never;
+        head?: never;
+        /**
+         * Change an issue tracker integration
+         * @description Owners, admins and API keys without an inbox limit. A new `token` is checked with the
+         *     tracker before it replaces the old one, as on connect. `webhook_secret` replaces the secret
+         *     incoming webhooks are checked with (Linear's signing secret); `default_target: null`
+         *     clears the default.
+         *
+         *     Scope: `integrations:manage`.
+         */
+        patch: operations["updateIssueIntegration"];
+        trace?: never;
+    };
+    "/v1/issue-integrations/{integrationId}/webhook-secret": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Make a new webhook secret
+         * @description Owners, admins and API keys without an inbox limit. Yuva makes a new secret, answers it
+         *     once and checks incoming webhooks with it alone from now on; paste it into the tracker.
+         *
+         *     Scope: `integrations:manage`.
+         */
+        post: operations["rotateIssueWebhookSecret"];
         delete?: never;
         options?: never;
         head?: never;
@@ -9600,6 +10207,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/ingress/issues/{integrationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Receive an issue tracker webhook
+         * @description Where GitHub and Linear report changes to issues; the address is the integration's
+         *     `webhook_url`. GitHub requests are checked with `X-Hub-Signature-256`
+         *     (`sha256=` and the hex HMAC-SHA256 of the raw body under the integration's webhook
+         *     secret), Linear requests with `Linear-Signature` (the hex HMAC-SHA256 of the raw body)
+         *     and a `webhookTimestamp` within a minute of the server's clock. A request without a valid
+         *     signature is refused with `401 invalid_signature` and changes nothing.
+         *
+         *     The body is only a hint: for an issue event that may change its state (GitHub `issues`
+         *     `opened`, `closed`, `reopened`, `edited`, `deleted`, `transferred`; Linear `Issue` events)
+         *     on an issue linked in Yuva, Yuva reads the issue again with the integration's token and
+         *     applies what the tracker answers, so a replayed or out-of-order delivery changes nothing.
+         *     GitHub's `ping` and every other event are accepted and ignored. At most 1 MiB and 600
+         *     calls a minute per integration (`429`). An unknown integration answers `404`.
+         */
+        post: operations["ingestIssueWebhook"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/.well-known/oauth-authorization-server": {
         parameters: {
             query?: never;
@@ -10154,6 +10793,69 @@ export interface webhooks {
         patch?: never;
         trace?: never;
     };
+    "issue_link.created": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * An issue was linked
+         * @description A GitHub or Linear issue was created or linked for a feedback conversation or a roadmap
+         *     idea. The progress or stage it sets sends the usual `conversation.updated` or
+         *     `discussion.stage_changed`.
+         */
+        post: operations["webhookIssueLinkCreated"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "issue_link.updated": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A linked issue changed
+         * @description A linked issue's state, title or address changed in the tracker; `previous_progress` is
+         *     set when the change moved its progress.
+         */
+        post: operations["webhookIssueLinkUpdated"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "issue_link.deleted": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * An issue was unlinked
+         * @description An issue was unlinked, or its integration was disconnected.
+         */
+        post: operations["webhookIssueLinkDeleted"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "subscription.created": {
         parameters: {
             query?: never;
@@ -10489,6 +11191,63 @@ export interface webhooks {
         patch?: never;
         trace?: never;
     };
+    "team.created": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** A team was created */
+        post: operations["webhookTeamCreated"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "team.updated": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A team changed
+         * @description Its name or description, its members or its inboxes.
+         */
+        post: operations["webhookTeamUpdated"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "team.deleted": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A team was deleted
+         * @description Its members lost the access it gave them; conversations assigned to it lost the team.
+         */
+        post: operations["webhookTeamDeleted"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export interface components {
     schemas: {
@@ -10614,6 +11373,9 @@ export interface components {
          *     - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
          *       none. `channel.dkim_key_created`: `selector`.
          *     - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+         *     - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
+         *       `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
+         *       `inbox_name`.
          *     - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
          *       `inbox_id`, by `system` (never the subject or content).
          *     - `message.redacted`: `conversation_id`, `inbox_id`, `kind` (`message` or `note`),
@@ -10630,6 +11392,23 @@ export interface components {
          *     - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
          *       `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
          *     - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
+         *     - `sso.provider_created`, `sso.provider_updated`: `protocol`, `issuer_host`, and for an update
+         *       `fields` among `issuer`, `client_id`, `client_secret`, `scopes`, `groups_claim` and
+         *       `allowed_groups` (never the secret). `sso.provider_deleted`: `protocol`.
+         *     - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
+         *       `sso_required`, `jit` and `jit_role`.
+         *     - `sso.signed_in`: `protocol`, `email`, and `joined` (`jit` or `invite`) when the sign-in
+         *       made the person a member; the actor is the member, or `system` when the person is not one.
+         *     - `sso.sign_in_refused`: `protocol`, `reason` (`failed` when the code exchange failed,
+         *       `invalid_token`, `email_unverified`, `domain_not_claimed`, `group_not_allowed`,
+         *       `not_member`), `email` when known, `detail` for `failed` and `invalid_token`; the actor
+         *       is the member when the person is one, else `system`. Requests refused with
+         *       `sso_required` are not recorded.
+         *     - `sso_domain.added`, `sso_domain.verified`, `sso_domain.deleted`: `domain`.
+         *     - `issue_integration.connected`, `issue_integration.disconnected`: `provider`, `name`,
+         *       `account`, and `host` for a GitHub Enterprise Server. `issue_integration.updated`:
+         *       `fields` among `name`, `token`, `default_target` and `webhook_secret`; never a token or
+         *       secret. `issue_integration.secret_rotated`: none.
          *
          *     Details never make an action fail: when they would be too long, lists are replaced by
          *     `<name>_count` and `truncated` is `true`.
@@ -10639,9 +11418,9 @@ export interface components {
          *     More actions are added over time; show an unknown one by its name.
          * @enum {string}
          */
-        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked";
+        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated";
         /** @enum {string} */
-        AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "message";
+        AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "message" | "team" | "sso" | "sso_domain" | "issue_integration";
         AuditTarget: {
             type: components["schemas"]["AuditTargetType"];
             /**
@@ -10667,6 +11446,101 @@ export interface components {
             items: components["schemas"]["AuditEntry"][];
             /** @description Absent on the last page. */
             next_cursor?: string;
+        };
+        SsoStartRequest: {
+            email: components["schemas"]["Email"];
+            /**
+             * @description A panel path starting with a single `/` to open after the sign-in; anything else is
+             *     ignored and `/` opens.
+             */
+            return_to?: string;
+        };
+        SsoStart: {
+            /** @description Whether the address signs in through an identity provider. */
+            sso: boolean;
+            /**
+             * Format: uri
+             * @description The provider's sign-in page to send the browser to, when `sso` is true.
+             */
+            authorization_url?: string;
+            /**
+             * @description When `sso` is true, whether the workspace requires single sign-on: only a session
+             *     made here lets the address act in it (owners excepted).
+             */
+            required?: boolean;
+        };
+        /** @enum {string} */
+        SsoProtocol: "oidc";
+        /** @enum {string} */
+        SsoJitRole: "admin" | "agent";
+        SsoOidcProvider: {
+            /** Format: uri */
+            issuer: string;
+            client_id: string;
+            /** @description Scopes asked for besides `openid email profile`. */
+            scopes: string[];
+            /** @description The `id_token` claim holding the person's groups. */
+            groups_claim: string;
+            /** @description When not empty, only people in one of these groups sign in. */
+            allowed_groups: string[];
+            /** Format: date-time */
+            updated_at: string;
+        };
+        SsoOidcInput: {
+            /**
+             * Format: uri
+             * @description The issuer URL exactly as the provider's discovery document names it.
+             */
+            issuer: string;
+            client_id: string;
+            /** @description Required the first time; left out, the stored secret stays. */
+            client_secret?: string;
+            /** @description Extra scopes, such as `groups` for Okta; no spaces or quotes. */
+            scopes?: string[];
+            /** @description Absent or empty, `groups`. */
+            groups_claim?: string;
+            allowed_groups?: string[];
+        };
+        /** @enum {string} */
+        SsoDomainState: "pending" | "verified";
+        SsoDomain: {
+            /** Format: uuid */
+            id: string;
+            domain: string;
+            state: components["schemas"]["SsoDomainState"];
+            /** @description The record's name, `_yuva-sso.<domain>`. */
+            txt_name: string;
+            txt_value: string;
+            /** @description What the last check found, while `pending`. */
+            problem?: string;
+            /** Format: date-time */
+            checked_at?: string;
+            /** Format: date-time */
+            verified_at?: string;
+            /** Format: date-time */
+            created_at: string;
+        };
+        SsoDomainInput: {
+            /** @description An e-mail domain such as `example.com`; only that exact domain, not its subdomains. */
+            domain: string;
+        };
+        SsoSettings: {
+            protocol?: components["schemas"]["SsoProtocol"];
+            oidc?: components["schemas"]["SsoOidcProvider"];
+            domains: components["schemas"]["SsoDomain"][];
+            sso_required: boolean;
+            jit: boolean;
+            jit_role: components["schemas"]["SsoJitRole"];
+            /**
+             * Format: uri
+             * @description The redirect URI to register at the identity provider.
+             */
+            redirect_uri: string;
+        };
+        SsoSettingsUpdate: {
+            sso_required?: boolean;
+            jit?: boolean;
+            jit_role?: components["schemas"]["SsoJitRole"];
         };
         WorkspaceDeletion: {
             /** @description The workspace's name, exactly; anything else is refused with `400 confirmation_mismatch`. */
@@ -10832,9 +11706,9 @@ export interface components {
          *     - `notes:write`: notes.
          *     - `contacts:read`: list, look up and get contacts, presence.
          *     - `contacts:write`: create, update, delete and merge contacts.
-         *     - `inboxes:read`: workspace, members, inboxes, inbox members, channels.
-         *     - `inboxes:manage`: create, update and delete inboxes and channels, inbox access, secret
-         *       and key rotation.
+         *     - `inboxes:read`: workspace, members, inboxes, inbox members, channels, teams.
+         *     - `inboxes:manage`: create, update and delete inboxes and channels, inbox access, teams,
+         *       their members and inboxes, secret and key rotation.
          *     - `labels:write`: create, update and delete labels.
          *     - `canned_replies:write`: create, update and delete canned replies.
          *     - `webhooks:manage`: webhooks, their deliveries and attempts.
@@ -10889,10 +11763,17 @@ export interface components {
          *       without an inbox limit; offered only to owners' OAuth tokens. Never implied: a key made
          *       without naming its scopes does not hold it.
          *
-         *     `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
+         *     - `integrations:read`: the workspace's GitHub and Linear integrations.
+         *     - `integrations:manage`: connect, change and disconnect GitHub and Linear, make webhook
+         *       secrets. Owners and admins only; never offered to agents' tokens, refused for keys
+         *       limited to inboxes.
+         *     - `issues:write`: create, link and unlink GitHub and Linear issues on feedback and ideas,
+         *       together with `conversations:read`.
+         *
+         *     `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*` and `issues:write` are never added to keys made before they existed.
          * @enum {string}
          */
-        ApiKeyScope: "conversations:read" | "conversations:write" | "conversations:delete" | "messages:write" | "messages:redact" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish" | "audit:read";
+        ApiKeyScope: "conversations:read" | "conversations:write" | "conversations:delete" | "messages:write" | "messages:redact" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish" | "audit:read" | "integrations:read" | "integrations:manage" | "issues:write";
         /**
          * Format: uri
          * @description An `https` image URL.
@@ -11805,7 +12686,7 @@ export interface components {
             count: number;
         };
         /** @enum {string} */
-        WebhookEventType: "conversation.created" | "conversation.updated" | "conversation.rated" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.created" | "message.redacted" | "feedback.created" | "contact.updated" | "contact.deleted" | "draft.created" | "draft.updated" | "draft.deleted" | "discussion.created" | "discussion.post_created" | "discussion.answered" | "discussion.updated" | "subscription.created" | "subscription.updated" | "broadcast.updated" | "analytics.alert" | "status.component.updated" | "status.incident.created" | "status.incident.updated" | "status.incident.resolved" | "status.monitor.down" | "status.monitor.up" | "help.article.published" | "help.article.unpublished" | "help.article.deleted" | "discussion.stage_changed" | "changelog.entry.published" | "changelog.entry.unpublished" | "changelog.entry.deleted";
+        WebhookEventType: "conversation.created" | "conversation.updated" | "conversation.rated" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.created" | "message.redacted" | "feedback.created" | "contact.updated" | "contact.deleted" | "draft.created" | "draft.updated" | "draft.deleted" | "discussion.created" | "discussion.post_created" | "discussion.answered" | "discussion.updated" | "subscription.created" | "subscription.updated" | "broadcast.updated" | "analytics.alert" | "status.component.updated" | "status.incident.created" | "status.incident.updated" | "status.incident.resolved" | "status.monitor.down" | "status.monitor.up" | "help.article.published" | "help.article.unpublished" | "help.article.deleted" | "discussion.stage_changed" | "changelog.entry.published" | "changelog.entry.unpublished" | "changelog.entry.deleted" | "team.created" | "team.updated" | "team.deleted" | "issue_link.created" | "issue_link.updated" | "issue_link.deleted";
         WebhookEndpoint: {
             /** Format: uuid */
             id: string;
@@ -12065,6 +12946,8 @@ export interface components {
             help_article_id?: string;
             /** @description The roadmap idea a `feedback` conversation is linked to; absent when it is not linked. */
             idea?: components["schemas"]["IdeaRef"];
+            /** @description The GitHub and Linear issues a `feedback` conversation is linked to, oldest link first; absent when there are none. */
+            issues?: components["schemas"]["IssueLink"][];
             /**
              * Format: uuid
              * @description The channel it started on; absent when unknown or removed.
@@ -12111,6 +12994,11 @@ export interface components {
              * @description The assigned member; absent when unassigned.
              */
             assignee_id?: string;
+            /**
+             * Format: uuid
+             * @description The assigned team; absent when none. Independent of `assignee_id`.
+             */
+            team_id?: string;
             /** @description Label ids. */
             labels: string[];
             /**
@@ -12219,6 +13107,12 @@ export interface components {
              * @description A member with access to the inbox; `null` unassigns.
              */
             assignee_id?: string | null;
+            /**
+             * Format: uuid
+             * @description A team granted the conversation's inbox (`422 team_access` otherwise); `null` removes the
+             *     team. The member assignee is not changed.
+             */
+            team_id?: string | null;
             /** @description Replaces the labels. */
             labels?: string[];
             /**
@@ -12475,6 +13369,13 @@ export interface components {
             assignees: components["schemas"]["CountByID"][];
             /** @description Per label id. */
             labels: components["schemas"]["CountByID"][];
+            /** @description Per assigned team id. */
+            teams: components["schemas"]["CountByID"][];
+            /**
+             * Format: int64
+             * @description Assigned to any team of the calling member (`0` for API keys).
+             */
+            mine_teams: number;
         };
         /** @description The Home blocks; a block the member may not see is absent. */
         Home: {
@@ -12874,7 +13775,7 @@ export interface components {
             via?: string;
         };
         /** @enum {string} */
-        EventType: "assigned" | "unassigned" | "status_changed" | "labels_changed" | "moved" | "rated" | "broadcast_reply" | "feedback_progress";
+        EventType: "assigned" | "unassigned" | "status_changed" | "labels_changed" | "moved" | "rated" | "broadcast_reply" | "feedback_progress" | "macro_applied";
         MessageEvent: {
             type: components["schemas"]["EventType"];
             /**
@@ -12910,10 +13811,23 @@ export interface components {
              * @description `feedback_progress` only: the roadmap idea whose stage move set the progress.
              */
             idea_id?: string;
+            /**
+             * Format: uuid
+             * @description `feedback_progress` only: the issue link whose issue's state set the progress.
+             */
+            issue_link_id?: string;
             /** @description `feedback_progress` only: the new progress, `null` when it was cleared. */
             feedback_progress?: components["schemas"]["FeedbackProgress"] | null;
             /** @description `feedback_progress` only: the progress before; absent when it was not set. */
             previous_feedback_progress?: components["schemas"]["FeedbackProgress"];
+            /** @description `macro_applied` only: the macro sent with the message just before. */
+            macro?: components["schemas"]["MacroRef"];
+            /**
+             * @description `macro_applied` only: actions of the macro left out. `assignee`: the member can no
+             *     longer take the conversation (removed, or without access to its inbox); the reply was
+             *     sent and the rest applied.
+             */
+            skipped?: components["schemas"]["MacroSkipped"][];
         };
         Attachment: {
             /**
@@ -13097,6 +14011,13 @@ export interface components {
              *     article's title and URL as its last lines.
              */
             article_ids?: string[];
+            /**
+             * Format: uuid
+             * @description A macro whose actions are applied with the message; see the operation.
+             */
+            macro_id?: string;
+            /** @description Changes to the conversation applied with the message; see the operation. */
+            then?: components["schemas"]["ConversationUpdate"];
         };
         MessageCreateMultipart: {
             /** @enum {string} */
@@ -13110,6 +14031,10 @@ export interface components {
             mentions?: string[];
             /** @description Outgoing messages only; repeat the field once per article id. */
             article_ids?: string[];
+            /** Format: uuid */
+            macro_id?: string;
+            /** @description A `ConversationUpdate` as JSON. */
+            then?: string;
             files?: string[];
         };
         /** @description Only the fields sent change. */
@@ -13166,6 +14091,81 @@ export interface components {
         };
         CannedReplyList: {
             items: components["schemas"]["CannedReply"][];
+        };
+        /**
+         * @description `personal`: only its owner sees and applies it. `shared`: the whole workspace.
+         * @enum {string}
+         */
+        MacroVisibility: "personal" | "shared";
+        /**
+         * @description What sending a message with the macro does to the conversation. Absent fields change
+         *     nothing. A deleted label drops out of `add_labels` and `remove_labels`, and a removed
+         *     member out of `assignee_id`.
+         */
+        MacroActions: {
+            add_labels?: string[];
+            remove_labels?: string[];
+            /**
+             * Format: uuid
+             * @description A member to assign; `null` unassigns.
+             */
+            assignee_id?: string | null;
+            /** @description `snoozed` needs `snooze_minutes`. */
+            status?: components["schemas"]["ConversationStatus"];
+            /** @description Snoozes for this long from the moment the message is sent; implies status `snoozed`. */
+            snooze_minutes?: number;
+            priority?: components["schemas"]["Priority"];
+        };
+        Macro: {
+            /** Format: uuid */
+            id: string;
+            visibility: components["schemas"]["MacroVisibility"];
+            /**
+             * Format: uuid
+             * @description The member a `personal` macro belongs to.
+             */
+            owner_member_id?: string;
+            name: string;
+            shortcut: components["schemas"]["Slug"];
+            /** @description The reply text that fills the composer; absent for a macro of actions only. */
+            body?: string;
+            actions: components["schemas"]["MacroActions"];
+            /** Format: int32 */
+            position: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        /** @description Needs a `body`, at least one action, or both. */
+        MacroCreate: {
+            visibility: components["schemas"]["MacroVisibility"];
+            name: string;
+            shortcut: components["schemas"]["Slug"];
+            body?: string;
+            actions?: components["schemas"]["MacroActions"];
+            /** Format: int32 */
+            position?: number;
+        };
+        MacroUpdate: {
+            name?: string;
+            shortcut?: components["schemas"]["Slug"];
+            /** @description `null` removes the reply text. */
+            body?: string | null;
+            actions?: components["schemas"]["MacroActions"];
+            /** Format: int32 */
+            position?: number;
+        };
+        MacroList: {
+            items: components["schemas"]["Macro"][];
+        };
+        /** @enum {string} */
+        MacroSkipped: "assignee";
+        MacroRef: {
+            /** Format: uuid */
+            id: string;
+            /** @description The macro's name when it was applied. */
+            name: string;
         };
         UsageMonth: {
             /** @example 2026-10 */
@@ -14693,7 +15693,86 @@ export interface components {
             created_at: string;
             data: components["schemas"]["ConversationPin"];
         };
-        /** @description A member was given or lost access to an inbox. Reload the inboxes and conversations when it is about you. */
+        Team: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            description: string;
+            /** @description The team's members, in the order they were added. */
+            member_ids: string[];
+            /**
+             * @description The inboxes the team is granted, in the order they were granted; for agents and keys
+             *     limited to inboxes, only those they see.
+             */
+            inbox_ids: string[];
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        TeamCreate: {
+            /** @description Unique in the workspace (`409 team_taken`). */
+            name: string;
+            description?: string;
+        };
+        TeamUpdate: {
+            /** @description Unique in the workspace (`409 team_taken`). */
+            name?: string;
+            description?: string;
+        };
+        TeamList: {
+            items: components["schemas"]["Team"][];
+        };
+        /**
+         * @description `team.created`, `team.updated`, `team.deleted`: a team was created, changed (name,
+         *     description, members, inboxes) or deleted; `data` is the team after the change, or as it
+         *     was for `team.deleted`. Delivered to callers with `inboxes:read` who see every inbox, who
+         *     are among its `member_ids` or `removed_member_ids`, or who see one of its `inbox_ids`;
+         *     `inbox_ids` lists only the inboxes the receiver sees.
+         */
+        TeamEvent: {
+            /** Format: int64 */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "team.created" | "team.updated" | "team.deleted";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["TeamEventData"];
+        };
+        TeamEventData: components["schemas"]["Team"] & {
+            /** @description `team.updated` only: members this change removed from the team. */
+            removed_member_ids?: string[];
+        };
+        /**
+         * @description Sent to endpoints of the whole workspace, and to endpoints limited to one of the team's
+         *     inboxes; for those, `inbox_ids` lists only that inbox.
+         */
+        WebhookTeamPayload: components["schemas"]["WebhookPayloadBase"] & {
+            data: components["schemas"]["TeamEventData"];
+        };
+        /**
+         * @description `direct`: the member has their own grant (and may have teams' too); `team`: only through teams.
+         * @enum {string}
+         */
+        InboxAccessVia: "direct" | "team";
+        InboxMember: components["schemas"]["Member"] & {
+            via: components["schemas"]["InboxAccessVia"];
+            /** @description The teams that give the member this inbox. */
+            team_ids: string[];
+        };
+        InboxMemberList: {
+            items: components["schemas"]["InboxMember"][];
+        };
+        /**
+         * @description A member's effective access to an inbox flipped: through their own grant, a team they joined
+         *     or left, or a team that was granted the inbox, lost it or was deleted. Reload the inboxes,
+         *     conversations and teams when it is about you.
+         */
         InboxAccessChangedEvent: {
             /** Format: int64 */
             id: number;
@@ -14749,7 +15828,7 @@ export interface components {
             type: "resync_required";
         };
         /** @description An event as `GET /v1/events` returns it, told apart by `type`; the same objects realtime and webhooks carry. */
-        StoredEvent: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["ChangelogEntryEvent"];
+        StoredEvent: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["TeamEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["IssueLinkEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["ChangelogEntryEvent"];
         EventPage: {
             events: components["schemas"]["StoredEvent"][];
             /**
@@ -14768,7 +15847,7 @@ export interface components {
             id: number;
         };
         /** @description One server message on `/v1/realtime`, told apart by `type`. */
-        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["MigrationProgressEvent"] | components["schemas"]["MigrationForwardingConfirmationEvent"] | components["schemas"]["BroadcastProgressEvent"] | components["schemas"]["StatusNoticeEvent"] | components["schemas"]["StatusPageEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["HelpArticleSignal"] | components["schemas"]["ChangelogEntryEvent"] | components["schemas"]["ChangelogEntrySignal"] | components["schemas"]["RoadmapBoardSignal"] | components["schemas"]["HelpImportEvent"] | components["schemas"]["HelpImportProgressEvent"] | components["schemas"]["HelpCenterSignal"] | components["schemas"]["ChangelogSignal"] | components["schemas"]["ListImportEvent"] | components["schemas"]["ListImportProgressEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ContactPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["TeamEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["IssueLinkEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["MigrationProgressEvent"] | components["schemas"]["MigrationForwardingConfirmationEvent"] | components["schemas"]["BroadcastProgressEvent"] | components["schemas"]["StatusNoticeEvent"] | components["schemas"]["StatusPageEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["HelpArticleSignal"] | components["schemas"]["ChangelogEntryEvent"] | components["schemas"]["ChangelogEntrySignal"] | components["schemas"]["RoadmapBoardSignal"] | components["schemas"]["HelpImportEvent"] | components["schemas"]["HelpImportProgressEvent"] | components["schemas"]["HelpCenterSignal"] | components["schemas"]["ChangelogSignal"] | components["schemas"]["ListImportEvent"] | components["schemas"]["ListImportProgressEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ContactPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
         /**
          * @description `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
          *     hours. `away`: never shown as available.
@@ -15294,6 +16373,8 @@ export interface components {
              * @description `idea` only, on `/v1`: feedback conversations linked to it.
              */
             linked_count?: number;
+            /** @description `idea` only, on `/v1` when reading one idea: the GitHub and Linear issues linked to it, oldest link first; absent when there are none. */
+            issues?: components["schemas"]["IssueLink"][];
             /** @description The page's URL without query and fragment; empty for an idea, which has no page. */
             page: string;
             page_title?: string;
@@ -19023,6 +20104,170 @@ export interface components {
             /** Format: date-time */
             linked_at: string;
         };
+        /** @enum {string} */
+        IssueProvider: "github" | "linear";
+        /** @description A connection to GitHub or Linear. The token and webhook secret are never answered. */
+        IssueIntegration: {
+            /** Format: uuid */
+            id: string;
+            provider: components["schemas"]["IssueProvider"];
+            name: string;
+            /** @description The GitHub login or the Linear organization the token belongs to, as the tracker named it when the token was checked. */
+            account: string;
+            /**
+             * Format: uri
+             * @description `github` only: the GitHub Enterprise Server API Yuva calls; absent for github.com.
+             */
+            api_url?: string;
+            /**
+             * @description Where issues are created when a request names no `target`: `owner/repo` for GitHub, a
+             *     team key (`ENG`) or id for Linear. Absent when there is none.
+             */
+            default_target?: string;
+            /**
+             * Format: uri
+             * @description The address to give the tracker's webhook settings.
+             */
+            webhook_url: string;
+            /** @description Incoming webhooks are checked with a secret; false until Linear's signing secret is sent. */
+            webhook_secret_set: boolean;
+            /** @description The last failure reading an issue (the tracker refused the token, could not be reached); absent after a success. */
+            last_error?: string;
+            /** Format: date-time */
+            last_error_at?: string;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        IssueIntegrationCreate: {
+            provider: components["schemas"]["IssueProvider"];
+            /** @description Defaults to the provider's name and the account. */
+            name?: string;
+            /** @description A GitHub fine-grained personal access token or a Linear personal API key. */
+            token: string;
+            /**
+             * Format: uri
+             * @description `github` only: a GitHub Enterprise Server's API, `https://<host>/api/v3`.
+             */
+            api_url?: string;
+            default_target?: string;
+            /** @description The secret webhooks are signed with; Yuva makes one when it is absent. */
+            webhook_secret?: string;
+        };
+        IssueIntegrationUpdate: {
+            name?: string;
+            token?: string;
+            default_target?: string | null;
+            webhook_secret?: string;
+        };
+        IssueIntegrationSecret: {
+            integration: components["schemas"]["IssueIntegration"];
+            /** @description The webhook secret Yuva made; shown only now. Absent when the request sent its own. */
+            webhook_secret?: string;
+        };
+        IssueIntegrationList: {
+            items: components["schemas"]["IssueIntegration"][];
+        };
+        /** @description A GitHub or Linear issue linked to a feedback conversation or a roadmap idea. */
+        IssueLink: {
+            /**
+             * Format: uuid
+             * @description The link's id.
+             */
+            id: string;
+            /** Format: uuid */
+            integration_id: string;
+            provider: components["schemas"]["IssueProvider"];
+            /** @description How the tracker names the issue, `owner/repo#12` or `ENG-123`. */
+            key: string;
+            /** Format: uri */
+            url: string;
+            title: string;
+            /** @description The issue's state as the tracker names it (`open`, `closed`, `In Review`). */
+            state: string;
+            /** @description What the state means for a feedback, which it sets; on an idea it is shown only. */
+            progress: components["schemas"]["FeedbackProgress"];
+            /**
+             * Format: uuid
+             * @description The feedback it is linked to; absent for an idea.
+             */
+            conversation_id?: string;
+            /**
+             * Format: uuid
+             * @description The roadmap idea it is linked to; absent for a feedback.
+             */
+            idea_id?: string;
+            /** Format: uuid */
+            inbox_id?: string;
+            linked_by?: components["schemas"]["IssueLinkAuthor"];
+            /** Format: date-time */
+            linked_at: string;
+            /**
+             * Format: date-time
+             * @description When Yuva last saw the progress change; absent until it has.
+             */
+            state_changed_at?: string;
+            /**
+             * Format: date-time
+             * @description When Yuva last read the issue from the tracker.
+             */
+            synced_at?: string;
+        };
+        /** @description Who linked it; the state changes are made as them. */
+        IssueLinkAuthor: {
+            /** Format: uuid */
+            member_id?: string;
+            /** Format: uuid */
+            api_key_id?: string;
+        };
+        /** @description `url` links an existing issue; `title` (and `body`, `target`) creates one. Send exactly one of `url` and `title`. */
+        IssueLinkCreate: {
+            /** Format: uuid */
+            integration_id: string;
+            /**
+             * @description The issue's address: `https://github.com/owner/repo/issues/12` (or the Enterprise
+             *     Server's), `owner/repo#12`, `https://linear.app/<team>/issue/ENG-123/...` or `ENG-123`.
+             */
+            url?: string;
+            title?: string;
+            /** @description Markdown; Yuva adds a line with the address of the conversation or idea in the panel. */
+            body?: string;
+            /** @description Where to create it, `owner/repo` or a Linear team key or id; defaults to the integration's `default_target`. */
+            target?: string;
+        };
+        IssueLinkList: {
+            items: components["schemas"]["IssueLink"][];
+        };
+        IssueLinkEventData: {
+            issue_link: components["schemas"]["IssueLink"];
+            /** @description `issue_link.updated` only: the progress before, when the change moved it. */
+            previous_progress?: components["schemas"]["FeedbackProgress"];
+        };
+        /**
+         * @description `issue_link.created`, `issue_link.updated` (the tracker changed the issue's state, title
+         *     or address) and `issue_link.deleted` (unlinked, or the integration was disconnected).
+         *     Delivered to callers who can see the inbox.
+         */
+        IssueLinkEvent: {
+            /** Format: int64 */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "issue_link.created" | "issue_link.updated" | "issue_link.deleted";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["IssueLinkEventData"];
+        };
+        WebhookIssueLinkPayload: components["schemas"]["WebhookPayloadBase"] & {
+            data: components["schemas"]["IssueLinkEventData"];
+        };
         ConversationIncidentList: {
             items: components["schemas"]["ConversationIncident"][];
         };
@@ -22548,6 +23793,11 @@ export interface components {
              */
             scope?: string;
             limit?: components["schemas"]["HostedLimit"];
+            /**
+             * @description `sso_required` only: the member's address; send it to `POST /v1/auth/sso` for the
+             *     identity provider's sign-in page.
+             */
+            sso_email?: string;
             detail?: string;
         };
         SlackConnection: {
@@ -22729,8 +23979,11 @@ export interface components {
         };
     };
     parameters: {
+        SsoDomainId: string;
         /** @description The workspace to act on; see "Workspace selection". */
         WorkspaceHeader: string;
+        IssueIntegrationId: string;
+        IssueLinkId: string;
         MemberId: string;
         InviteId: string;
         /** @description Makes a retried request return the first response; see "Idempotency". */
@@ -22759,8 +24012,10 @@ export interface components {
         ConversationId: string;
         AttachmentId: string;
         MessageId: string;
+        TeamId: string;
         LabelId: string;
         CannedReplyId: string;
+        MacroId: string;
         /** @description The chat channel's public key. */
         ChannelKey: string;
         AnalyticsPropertyId: string;
@@ -23017,6 +24272,35 @@ export interface operations {
         responses: {
             200: components["responses"]["SignedIn"];
             400: components["responses"]["Problem"];
+        };
+    };
+    startSsoSignIn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SsoStartRequest"];
+            };
+        };
+        responses: {
+            /** @description Whether the address signs in through its workspace's identity provider. */
+            200: {
+                headers: {
+                    /** @description `yuva_sso`, HttpOnly, SameSite=Lax, path `/auth/sso`, when `sso` is true. */
+                    "Set-Cookie"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SsoStart"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
+            502: components["responses"]["Problem"];
         };
     };
     signOut: {
@@ -23891,6 +25175,202 @@ export interface operations {
             403: components["responses"]["Problem"];
         };
     };
+    getSsoSettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The settings. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SsoSettings"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    updateSsoSettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SsoSettingsUpdate"];
+            };
+        };
+        responses: {
+            /** @description The settings. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SsoSettings"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    setSsoOidcProvider: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SsoOidcInput"];
+            };
+        };
+        responses: {
+            /** @description The settings. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SsoSettings"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    deleteSsoOidcProvider: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    addSsoDomain: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SsoDomainInput"];
+            };
+        };
+        responses: {
+            /** @description The pending claim. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SsoDomain"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    deleteSsoDomain: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                ssoDomainId: components["parameters"]["SsoDomainId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    verifySsoDomain: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                ssoDomainId: components["parameters"]["SsoDomainId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The claim after the check. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SsoDomain"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
     createWorkspace: {
         parameters: {
             query?: never;
@@ -24429,7 +25909,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["MemberList"];
+                    "application/json": components["schemas"]["InboxMemberList"];
                 };
             };
             401: components["responses"]["Problem"];
@@ -24480,6 +25960,260 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description The access is gone. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    listTeams: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The teams. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeamList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    createTeam: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TeamCreate"];
+            };
+        };
+        responses: {
+            /** @description The team. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Team"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    getTeam: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                teamId: components["parameters"]["TeamId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The team. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Team"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    deleteTeam: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                teamId: components["parameters"]["TeamId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    updateTeam: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                teamId: components["parameters"]["TeamId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TeamUpdate"];
+            };
+        };
+        responses: {
+            /** @description The updated team. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Team"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    addTeamMember: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                teamId: components["parameters"]["TeamId"];
+                memberId: components["parameters"]["MemberId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The member is in the team. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    removeTeamMember: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                teamId: components["parameters"]["TeamId"];
+                memberId: components["parameters"]["MemberId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The member is not in the team. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    grantTeamInboxAccess: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                teamId: components["parameters"]["TeamId"];
+                inboxId: components["parameters"]["InboxId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The team has access. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    revokeTeamInboxAccess: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                teamId: components["parameters"]["TeamId"];
+                inboxId: components["parameters"]["InboxId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The team has no access. */
             204: {
                 headers: {
                     [name: string]: unknown;
@@ -25347,8 +27081,12 @@ export interface operations {
                  *     listed, snoozed included.
                  */
                 status?: components["schemas"]["ConversationStatus"][];
-                /** @description A member id, `me` (member sessions only) or `unassigned`. */
+                /** @description A member id, `me` (member sessions only) or `unassigned` (no member, whatever the team). */
                 assignee?: string;
+                /** @description Only conversations assigned to this team. */
+                team_id?: string;
+                /** @description `mine` lists only conversations assigned to a team of the calling member (member sessions only). */
+                team?: "mine";
                 label_id?: string;
                 /**
                  * @description `true` lists only conversations flagged as spam (the spam view); `false` leaves spam
@@ -26023,6 +27761,108 @@ export interface operations {
             404: components["responses"]["Problem"];
         };
     };
+    listConversationIssues: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The links. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueLinkList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    linkConversationIssue: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IssueLinkCreate"];
+            };
+        };
+        responses: {
+            /** @description The conversation was already linked to this issue. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueLink"];
+                };
+            };
+            /** @description The link. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueLink"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+            422: components["responses"]["Problem"];
+            503: components["responses"]["Problem"];
+        };
+    };
+    unlinkConversationIssue: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+                issueLinkId: components["parameters"]["IssueLinkId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Unlinked. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     setMemberTyping: {
         parameters: {
             query?: never;
@@ -26537,6 +28377,152 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CannedReply"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    listMacros: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The macros. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MacroList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    createMacro: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MacroCreate"];
+            };
+        };
+        responses: {
+            /** @description The macro. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Macro"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    getMacro: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                macroId: components["parameters"]["MacroId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The macro. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Macro"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    deleteMacro: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                macroId: components["parameters"]["MacroId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    updateMacro: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                macroId: components["parameters"]["MacroId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MacroUpdate"];
+            };
+        };
+        responses: {
+            /** @description The updated macro. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Macro"];
                 };
             };
             400: components["responses"]["Problem"];
@@ -27434,6 +29420,108 @@ export interface operations {
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
             409: components["responses"]["Problem"];
+        };
+    };
+    listIdeaIssues: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                discussionId: components["parameters"]["DiscussionId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The links. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueLinkList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    linkIdeaIssue: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                discussionId: components["parameters"]["DiscussionId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IssueLinkCreate"];
+            };
+        };
+        responses: {
+            /** @description The idea was already linked to this issue. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueLink"];
+                };
+            };
+            /** @description The link. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueLink"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+            422: components["responses"]["Problem"];
+            503: components["responses"]["Problem"];
+        };
+    };
+    unlinkIdeaIssue: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                discussionId: components["parameters"]["DiscussionId"];
+                issueLinkId: components["parameters"]["IssueLinkId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Unlinked. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
         };
     };
     replyToIdeaConversations: {
@@ -30008,6 +32096,184 @@ export interface operations {
                 };
             };
             400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    listIssueIntegrations: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The integrations. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueIntegrationList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    createIssueIntegration: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IssueIntegrationCreate"];
+            };
+        };
+        responses: {
+            /** @description The integration, with the webhook secret when Yuva made it. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueIntegrationSecret"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            422: components["responses"]["Problem"];
+            503: components["responses"]["Problem"];
+        };
+    };
+    getIssueIntegration: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                integrationId: components["parameters"]["IssueIntegrationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The integration. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueIntegration"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    deleteIssueIntegration: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                integrationId: components["parameters"]["IssueIntegrationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Disconnected. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    updateIssueIntegration: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                integrationId: components["parameters"]["IssueIntegrationId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IssueIntegrationUpdate"];
+            };
+        };
+        responses: {
+            /** @description The integration. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueIntegration"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            422: components["responses"]["Problem"];
+            503: components["responses"]["Problem"];
+        };
+    };
+    rotateIssueWebhookSecret: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                integrationId: components["parameters"]["IssueIntegrationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The integration and its new secret. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueIntegrationSecret"];
+                };
+            };
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
@@ -37069,6 +39335,42 @@ export interface operations {
             429: components["responses"]["Problem"];
         };
     };
+    ingestIssueWebhook: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description GitHub's signature. */
+                "X-Hub-Signature-256"?: string;
+                "X-GitHub-Event"?: string;
+                /** @description Linear's signature. */
+                "Linear-Signature"?: string;
+            };
+            path: {
+                integrationId: components["parameters"]["IssueIntegrationId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Accepted; the linked issues it names are read again. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            413: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
+        };
+    };
     oauthAuthorizationServerMetadata: {
         parameters: {
             query?: never;
@@ -37906,6 +40208,105 @@ export interface operations {
             };
         };
     };
+    webhookIssueLinkCreated: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookIssueLinkPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookIssueLinkUpdated: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookIssueLinkPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookIssueLinkDeleted: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookIssueLinkPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     webhookSubscriptionCreated: {
         parameters: {
             query?: never;
@@ -38422,6 +40823,105 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["WebhookChangelogEntryPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookTeamCreated: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookTeamPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookTeamUpdated: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookTeamPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookTeamDeleted: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookTeamPayload"];
             };
         };
         responses: {

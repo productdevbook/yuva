@@ -1184,6 +1184,14 @@ msgid "A former teammate"
 msgstr "Bekas rakan sepasukan"
 
 #: src/components/common/text.ts
+msgid "A GitHub or Linear issue was linked"
+msgstr "A GitHub or Linear issue was linked"
+
+#: src/components/common/text.ts
+msgid "A GitHub or Linear issue was unlinked"
+msgstr "A GitHub or Linear issue was unlinked"
+
+#: src/components/common/text.ts
 msgid "A help center article was deleted"
 msgstr "Artikel pusat bantuan telah dipadam"
 
@@ -1210,6 +1218,10 @@ msgstr "Mesej kemudian daripada kenalan."
 #: src/features/broadcasts/Composer.tsx
 msgid "A line that makes people open it"
 msgstr "Satu baris yang membuat orang membukanya"
+
+#: src/components/common/text.ts
+msgid "A linked GitHub or Linear issue changed"
+msgstr "A linked GitHub or Linear issue changed"
 
 #: src/features/broadcasts/ListsHome.tsx
 msgid "A list is who agreed to hear from you. Every subscriber keeps a consent record you can export."
@@ -1279,6 +1291,10 @@ msgstr "Satu bahagian fail lebih besar daripada yang diterima pelayan. Muat semu
 msgid "A percentage next to each component."
 msgstr "Peratusan di sebelah setiap komponen."
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "A personal API key from Linear, under Settings, Account, Security and access."
+msgstr "A personal API key from Linear, under Settings, Account, Security and access."
+
 #: src/components/common/text.ts
 msgid "A property can have at most 1,000 notes. Delete old ones first."
 msgstr "Satu properti boleh mempunyai paling banyak 1,000 nota. Padam yang lama dahulu."
@@ -1327,6 +1343,10 @@ msgstr "Balasan ditulis dalam perbincangan"
 msgid "A roadmap idea moved to another stage"
 msgstr "Satu idea pelan hala tuju berpindah ke peringkat lain"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "A secret is set. Paste a new one to replace it."
+msgstr "A secret is set. Paste a new one to replace it."
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "A sign-in must come back within 10 minutes and works once. Open the migration and sign in again."
 msgstr "Log masuk mesti kembali dalam 10 minit dan hanya berfungsi sekali. Buka pemindahan dan log masuk semula."
@@ -1354,6 +1374,22 @@ msgstr "Monitor status turun"
 #: src/components/common/text.ts
 msgid "A subscription changed"
 msgstr "Langganan berubah"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "A team key such as ENG."
+msgstr "A team key such as ENG."
+
+#: src/components/common/text.ts
+msgid "A team was changed"
+msgstr "A team was changed"
+
+#: src/components/common/text.ts
+msgid "A team was created"
+msgstr "A team was created"
+
+#: src/components/common/text.ts
+msgid "A team was deleted"
+msgstr "A team was deleted"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -1698,6 +1734,7 @@ msgid "Added by the team"
 msgstr "Ditambah oleh pasukan"
 
 #: src/features/conversation/Feedback.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/status/CreatePageDialog.tsx
 #: src/features/status/MonitorHttpFields.tsx
@@ -2071,6 +2108,10 @@ msgstr "URL imej https."
 msgid "An https image."
 msgstr "Imej https."
 
+#: src/features/issues/IdeaIssues.tsx
+msgid "An idea only shows its issues and their state. Its stage stays your decision."
+msgstr "An idea only shows its issues and their state. Its stage stays your decision."
+
 #: src/features/setup/NameStep.tsx
 msgid "An inbox collects the conversations of one product or brand. Name it after the product your customers know."
 msgstr "Peti masuk mengumpul perbualan satu produk atau jenama. Namakan mengikut produk yang dikenali pelanggan anda."
@@ -2102,6 +2143,10 @@ msgstr "Insiden diselesaikan atau penyelenggaraan selesai"
 #: src/features/team/TeamPage.tsx
 msgid "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
 msgstr "Jemputan diterima apabila orang itu log masuk dengan kod yang dihantar ke alamat tersebut. Ia tamat tempoh selepas 7 hari."
+
+#: src/features/issues/IssueDialog.tsx
+msgid "An issue URL, owner/repo#12 or ENG-123."
+msgstr "An issue URL, owner/repo#12 or ENG-123."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "An mbox export of a mailbox"
@@ -2288,6 +2333,7 @@ msgid "API channel"
 msgstr "Saluran API"
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "Kunci API"
@@ -2429,6 +2475,10 @@ msgstr "Secepat yang dibenarkan"
 #: src/features/status/MonitorDialog.tsx
 msgid "As often as allowed"
 msgstr "Sekerap yang dibenarkan"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "As owner/repo."
+msgstr "As owner/repo."
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ask everyone to confirm again"
@@ -2982,11 +3032,13 @@ msgstr "Nama kempen"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/issues/IssueDialog.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/NewsletterStep.tsx
 #: src/features/status/AddSubscriberDialog.tsx
@@ -3289,6 +3341,10 @@ msgstr "Disemak {when}"
 #: src/features/broadcasts/Import.tsx
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "Disemak dan menunggu pemilik atau pentadbir memulakannya."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Checked with the tracker before it replaces the old one. The current one is never shown."
+msgstr "Checked with the tracker before it replaces the old one. The current one is never shown."
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
@@ -3705,6 +3761,7 @@ msgstr "mengesahkan alamat mereka dalam {days} hari lepas"
 #: src/features/migrations/text.ts
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Connect"
 msgstr "Sambung"
 
@@ -3723,6 +3780,10 @@ msgstr "Sambungkan {clientName} ke Yuva?"
 msgid "Connect {provider}"
 msgstr "Sambung {provider}"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Connect a tracker"
+msgstr "Connect a tracker"
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
@@ -3737,6 +3798,10 @@ msgstr "Sambung pembantu seperti Claude atau ChatGPT"
 msgid "Connect Claude, ChatGPT, Cursor or another MCP client to let it read conversations and draft replies for you to review."
 msgstr "Sambungkan Claude, ChatGPT, Cursor atau klien MCP lain supaya ia boleh membaca perbualan dan menulis draf balasan untuk anda semak."
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Connect GitHub or Linear to create and link issues from feedback and ideas."
+msgstr "Connect GitHub or Linear to create and link issues from feedback and ideas."
+
 #: src/features/account/ConnectPage.tsx
 msgid "Connect to {host}"
 msgstr "Sambung ke {host}"
@@ -3745,12 +3810,22 @@ msgstr "Sambung ke {host}"
 msgid "Connect your servers and bots to Yuva"
 msgstr "Sambungkan pelayan dan bot anda ke Yuva"
 
+#: src/components/common/text.ts
+msgid "Connect, change and disconnect GitHub and Linear trackers"
+msgstr "Connect, change and disconnect GitHub and Linear trackers"
+
 #: src/features/account/ConnectPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Connected"
 msgstr "Disambungkan"
+
+#. placeholder {0}: providerName(provider)
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Connected {0}"
+msgstr "Connected {0}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Connected {client}"
@@ -4120,6 +4195,11 @@ msgstr "Negara"
 msgid "Create"
 msgstr "Cipta"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Create a GitHub or Linear issue"
+msgstr "Create a GitHub or Linear issue"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create a key when your SMTP provider cannot sign with your domain or leaves the unsubscribe headers unsigned. Only the DNS record is shown; the private key never leaves the server."
 msgstr "Cipta kunci apabila penyedia SMTP anda tidak boleh menandatangani dengan domain anda atau membiarkan pengepala nyahlangganan tanpa tandatangan. Hanya rekod DNS ditunjukkan; kunci persendirian tidak pernah meninggalkan pelayan."
@@ -4140,6 +4220,10 @@ msgstr "Cipta token API dalam {provider}"
 msgid "Create an app in Help Scout"
 msgstr "Cipta apl dalam Help Scout"
 
+#: src/features/issues/IssueDialog.tsx
+msgid "Create an issue"
+msgstr "Create an issue"
+
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Create an OAuth client in Zendesk"
 msgstr "Cipta klien OAuth dalam Zendesk"
@@ -4147,6 +4231,10 @@ msgstr "Cipta klien OAuth dalam Zendesk"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Create and add a channel"
 msgstr "Cipta dan tambah saluran"
+
+#: src/components/common/text.ts
+msgid "Create and link GitHub and Linear issues for feedback and ideas"
+msgstr "Create and link GitHub and Linear issues for feedback and ideas"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Create another"
@@ -4159,6 +4247,18 @@ msgstr "Cipta saluran"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 msgid "Create draft"
 msgstr "Cipta draf"
+
+#: src/features/feedback/IssuesCard.tsx
+#: src/features/issues/IdeaIssues.tsx
+#: src/features/issues/IssueDialog.tsx
+#: src/features/issues/IssueMenu.tsx
+msgid "Create issue"
+msgstr "Create issue"
+
+#. placeholder {0}: SHORTCUTS.createIssue
+#: src/features/feedback/IssuesCard.tsx
+msgid "Create issue ({0})"
+msgstr "Create issue ({0})"
 
 #: src/features/migrations/text.ts
 msgid "Create it, then copy its App ID and App Secret and paste them below."
@@ -4219,6 +4319,10 @@ msgstr "Cipta akaun Yuva anda"
 msgid "Created"
 msgstr "Dicipta"
 
+#: src/features/issues/IssueDialog.tsx
+msgid "Created {key}"
+msgstr "Created {key}"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Created an analytics export"
 msgstr "Mencipta eksport analitik"
@@ -4230,6 +4334,14 @@ msgstr "Mencipta kunci API {name}"
 #: src/features/settings/audit/sentence.ts
 msgid "Created the DKIM key {selector}"
 msgstr "Mencipta kunci DKIM {selector}"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Creates an issue in your tracker and links it to this feedback. Only the text below is sent, with a link back to the conversation; the customer's name and address stay here."
+msgstr "Creates an issue in your tracker and links it to this feedback. Only the text below is sent, with a link back to the conversation; the customer's name and address stay here."
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Creates an issue in your tracker and links it to this idea. Only the text below is sent, with a link back to the idea."
+msgstr "Creates an issue in your tracker and links it to this idea. Only the text below is sent, with a link back to the idea."
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
@@ -4336,6 +4448,10 @@ msgstr "Tentukan siapa boleh menulis dalam perbincangan"
 #: src/features/settings/audit/sentence.ts
 msgid "Declined the request to send broadcasts"
 msgstr "Menolak permintaan untuk menghantar siaran"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Default target"
+msgstr "Default target"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4618,6 +4734,7 @@ msgstr "Butiran penghantaran"
 msgid "Deny"
 msgstr "Tolak"
 
+#: src/features/issues/IssueDialog.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -4695,9 +4812,21 @@ msgstr "Buang perubahan"
 msgid "Discard the suggested reply"
 msgstr "Buang balasan yang dicadangkan"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Disconnect"
+msgstr "Disconnect"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Disconnect {name}?"
+msgstr "Disconnect {name}?"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Disconnected {client}"
 msgstr "Memutuskan {client}"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Disconnected {name}"
+msgstr "Disconnected {name}"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5698,6 +5827,10 @@ msgstr "Cari penyedia"
 msgid "Find the server"
 msgstr "Cari pelayan"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Fine-grained token"
+msgstr "Fine-grained token"
+
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/parts.tsx
 msgid "Finish"
@@ -6076,6 +6209,10 @@ msgstr "Dapatkan coretan"
 #: src/features/setup/NewsletterStep.tsx
 msgid "Get the subscribe form"
 msgstr "Dapatkan borang langganan"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "GitHub Enterprise Server API"
+msgstr "GitHub Enterprise Server API"
 
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Give the channel a new forwarding address?"
@@ -6876,6 +7013,10 @@ msgstr "Pasang pelayan dalam VS Code; ia membuka halaman pelayan, tempat anda me
 msgid "Installation"
 msgstr "Pemasangan"
 
+#: src/features/settings/SettingsColumn.tsx
+msgid "Integrations"
+msgstr "Integrations"
+
 #: src/features/status/text.tsx
 msgid "Investigating"
 msgstr "Sedang disiasat"
@@ -6947,6 +7088,27 @@ msgstr "ditetapkan"
 #: src/features/setup/previews.tsx
 msgid "Is there a way to export my notes?"
 msgstr "Adakah ada cara untuk mengeksport nota saya?"
+
+#: src/features/issues/IssueMenu.tsx
+msgid "Issue"
+msgstr "Issue"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Issue address"
+msgstr "Issue address"
+
+#: src/app/Palette.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Issue trackers"
+msgstr "Issue trackers"
+
+#: src/features/feedback/IssuesCard.tsx
+#: src/features/issues/IdeaIssues.tsx
+#: src/features/issues/IssueMenu.tsx
+#: src/features/settings/webhooks/events.tsx
+msgid "Issues"
+msgstr "Issues"
 
 #: src/features/oauth/ConsentPage.tsx
 msgid "It also asked for access your role here cannot give:"
@@ -7364,6 +7526,15 @@ msgstr "Warna pelancar"
 msgid "Launcher position"
 msgstr "Kedudukan pelancar"
 
+#. placeholder {0}: integration.default_target
+#: src/features/issues/IssueDialog.tsx
+msgid "Leave empty for {0}."
+msgstr "Leave empty for {0}."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Leave empty for github.com. Otherwise the server's API, https://host/api/v3."
+msgstr "Leave empty for github.com. Otherwise the server's API, https://host/api/v3."
+
 #: src/features/conversation/Collision.tsx
 msgid "Leave it to {name}"
 msgstr "Serahkan kepada {name}"
@@ -7413,14 +7584,31 @@ msgstr "Cerah"
 msgid "Light appearance"
 msgstr "Penampilan cerah"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Limit it to the repositories issues go to, with read and write access to Issues."
+msgstr "Limit it to the repositories issues go to, with read and write access to Issues."
+
 #: src/features/broadcasts/Composer.tsx
 msgid "Limit the pace"
 msgstr "Hadkan kadar"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Linear signing secret"
+msgstr "Linear signing secret"
 
 #: src/components/common/Linked.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 msgid "Link"
 msgstr "Pautkan"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Link a GitHub or Linear issue"
+msgstr "Link a GitHub or Linear issue"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Link an issue"
+msgstr "Link an issue"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/LinkConversationsDialog.tsx
@@ -7442,6 +7630,18 @@ msgstr "Pautan untuk pentadbir Microsoft 365 anda"
 #: src/components/common/text.ts
 msgid "Link in a mail"
 msgstr "Pautan dalam mel"
+
+#: src/features/feedback/IssuesCard.tsx
+#: src/features/issues/IdeaIssues.tsx
+#: src/features/issues/IssueDialog.tsx
+#: src/features/issues/IssueMenu.tsx
+msgid "Link issue"
+msgstr "Link issue"
+
+#. placeholder {0}: SHORTCUTS.linkIssue
+#: src/features/feedback/IssuesCard.tsx
+msgid "Link issue ({0})"
+msgstr "Link issue ({0})"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Link the selected conversations to an incident"
@@ -7487,6 +7687,10 @@ msgstr "Pautkan ke insiden ({linkKey})"
 #: src/components/common/Linked.tsx
 msgid "Linked"
 msgstr "Dipautkan"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Linked {key}"
+msgstr "Linked {key}"
 
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
@@ -7799,6 +8003,18 @@ msgstr "Gangguan besar"
 msgid "Make a new address for {name}?"
 msgstr "Buat alamat baharu untuk {name}?"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Make a new secret"
+msgstr "Make a new secret"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Make a new webhook secret?"
+msgstr "Make a new webhook secret?"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Make a secret"
+msgstr "Make a secret"
+
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Make it public"
 msgstr "Jadikan awam"
@@ -7903,6 +8119,7 @@ msgid "Mark this post as spam?"
 msgstr "Tanda siaran ini sebagai spam?"
 
 #: src/features/docs/discussions/FromConversation.tsx
+#: src/features/issues/IssueDialog.tsx
 msgid "Markdown works."
 msgstr "Markdown berfungsi."
 
@@ -8412,6 +8629,7 @@ msgstr "Profil saya"
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -8479,6 +8697,7 @@ msgstr "Memerlukan penghantar"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Needs attention"
@@ -9108,6 +9327,10 @@ msgstr "Tiada insiden yang sepadan."
 msgid "No incident or maintenance is open on any status page."
 msgstr "Tiada insiden atau penyelenggaraan yang terbuka pada mana-mana halaman status."
 
+#: src/features/issues/IdeaIssues.tsx
+msgid "No issue is linked to this idea."
+msgstr "No issue is linked to this idea."
+
 #: src/features/migrations/MapStep.tsx
 msgid "No label"
 msgstr "Tiada label"
@@ -9238,6 +9461,10 @@ msgstr "Belum ada masa tindak balas dalam julat ini."
 msgid "No results"
 msgstr "Tiada hasil"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "No secret yet. Make one, then paste it into GitHub."
+msgstr "No secret yet. Make one, then paste it into GitHub."
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "No sender yet"
 msgstr "Belum ada penghantar"
@@ -9304,6 +9531,18 @@ msgstr "Belum ada mesej ujian sampai ke Yuva melalui laluan baharu. Jika anda se
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "No test went out since the last change."
 msgstr "Tiada ujian dihantar sejak perubahan terakhir."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "No tracker connected"
+msgstr "No tracker connected"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "No tracker is connected yet. Ask an owner or admin to connect GitHub or Linear."
+msgstr "No tracker is connected yet. Ask an owner or admin to connect GitHub or Linear."
+
+#: src/features/issues/IssueDialog.tsx
+msgid "No tracker is connected yet. Connect GitHub or Linear in <0>the settings</0>."
+msgstr "No tracker is connected yet. Connect GitHub or Linear in <0>the settings</0>."
 
 #: src/features/broadcasts/Report.tsx
 msgid "No visits from this campaign yet."
@@ -9525,6 +9764,10 @@ msgstr "belum ditetapkan"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Not set up"
 msgstr "Belum disediakan"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Not set yet, so Linear webhooks are refused."
+msgstr "Not set yet, so Linear webhooks are refused."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Not shown"
@@ -10639,6 +10882,18 @@ msgstr "Tampal sebelum teg body penutup pada setiap halaman yang patut menunjukk
 msgid "Paste it below with your subdomain, the acme of acme.freshdesk.com."
 msgstr "Tampalkannya di bawah bersama subdomain anda, iaitu acme daripada acme.freshdesk.com."
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Paste it into the webhook's settings at the tracker now. It is not shown again."
+msgstr "Paste it into the webhook's settings at the tracker now. It is not shown again."
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Paste the address of an existing issue to show it on this idea."
+msgstr "Paste the address of an existing issue to show it on this idea."
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Paste the address of an existing issue. Its state then sets the progress the customer sees."
+msgstr "Paste the address of an existing issue. Its state then sets the progress the customer sees."
+
 #: src/features/migrations/text.ts
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "Tampal di bawah bersama subdomain anda. Yuva hanya meminta skop read dan tidak menerima lebih."
@@ -11543,6 +11798,10 @@ msgstr "Baca halaman status, komponen dan insiden"
 msgid "Read the audit log (owners only)"
 msgstr "Membaca log audit (pemilik sahaja)"
 
+#: src/components/common/text.ts
+msgid "Read the connected GitHub and Linear trackers"
+msgstr "Read the connected GitHub and Linear trackers"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "Baca folder"
@@ -11921,9 +12180,18 @@ msgstr "Buka semula"
 
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
 msgstr "Ganti"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Replace the API key"
+msgstr "Replace the API key"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Replace the token"
+msgstr "Replace the token"
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -12364,6 +12632,7 @@ msgid "Rotate"
 msgstr "Putar"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate secret"
 msgstr "Putar rahsia"
@@ -12458,6 +12727,7 @@ msgstr "Sabtu"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -12503,6 +12773,7 @@ msgstr "Simpan draf sekarang"
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/sections.tsx
@@ -13446,6 +13717,10 @@ msgstr "Ditunjukkan kepada pasukan anda dan kenalan"
 msgid "Shown to your team and to customers you reply to"
 msgstr "Ditunjukkan kepada pasukan anda dan pelanggan yang anda balas"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Shown to your team. Optional."
+msgstr "Shown to your team. Optional."
+
 #: src/features/status/SettingsTab.tsx
 msgid "Shown under the name on the public page."
 msgstr "Dipaparkan di bawah nama pada halaman awam."
@@ -13711,6 +13986,14 @@ msgstr "Ditangguhkan"
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Snoozed until {until}"
 msgstr "Ditangguhkan sehingga {until}"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "So Yuva hears of a change at once. In Linear, open Settings, API, Webhooks, New webhook. Paste the address, select Issues, then paste the signing secret Linear shows below."
+msgstr "So Yuva hears of a change at once. In Linear, open Settings, API, Webhooks, New webhook. Paste the address, select Issues, then paste the signing secret Linear shows below."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "So Yuva hears of a change at once. In the repository or organization, open Settings, Webhooks, Add webhook. Paste the address, choose application/json, paste the secret, and select the Issues event."
+msgstr "So Yuva hears of a change at once. In the repository or organization, open Settings, Webhooks, Add webhook. Paste the address, choose application/json, paste the secret, and select the Issues event."
 
 #: src/features/contact/ContactDetail.tsx
 msgid "Some addresses are undeliverable. Clear them under Contact and identities once they work again."
@@ -14647,6 +14930,10 @@ msgstr "Insiden ditutup tanpa memberi notis kepada pelanggan"
 msgid "The interval must be {lo} to {hi} seconds."
 msgstr "Selang mesti {lo} hingga {hi} saat."
 
+#: src/features/feedback/IssuesCard.tsx
+msgid "The issue's state sets the progress the person sees."
+msgstr "The issue's state sets the progress the person sees."
+
 #: src/features/broadcasts/ListSettings.tsx
 msgid "The İYS file has one row per subscriber in İYS's columns, ONAY for subscribed and RET for unsubscribed, for Turkish senders to upload to İYS themselves. Pending subscriptions are left out."
 msgstr "Fail İYS mempunyai satu baris bagi setiap pelanggan dalam lajur İYS, ONAY untuk yang melanggan dan RET untuk yang menyahlanggan, untuk penghantar Turki memuat naik ke İYS sendiri. Langganan belum selesai ditinggalkan."
@@ -14981,6 +15268,7 @@ msgstr "Rahsia ditunjukkan sekali, pada halaman seterusnya."
 msgid "The secret is shown once, when a key is made."
 msgstr "Rahsia ditunjukkan sekali, apabila kunci dicipta."
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/webhooks/sections.tsx
 msgid "The secret is shown once, when it is made. Rotate it to get a new one."
 msgstr "Rahsia ditunjukkan sekali, semasa ia dicipta. Putar untuk mendapatkan yang baharu."
@@ -15101,6 +15389,26 @@ msgstr "Ujian berhenti pada satu langkah."
 #: src/features/status/monitorErrors.ts
 msgid "The timeout must be 1 to 30 seconds."
 msgstr "Had masa mesti 1 hingga 30 saat."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "The token is removed and every link to its issues is deleted. Progress already set on feedback stays."
+msgstr "The token is removed and every link to its issues is deleted. Progress already set on feedback stays."
+
+#: src/components/common/text.ts
+msgid "The tracker could not be reached. Try again in a moment."
+msgstr "The tracker could not be reached. Try again in a moment."
+
+#: src/components/common/text.ts
+msgid "The tracker has no such issue, or the token cannot see it."
+msgstr "The tracker has no such issue, or the token cannot see it."
+
+#: src/components/common/text.ts
+msgid "The tracker refused the request. Check the target and your permissions."
+msgstr "The tracker refused the request. Check the target and your permissions."
+
+#: src/components/common/text.ts
+msgid "The tracker refused the token. Check that it is valid and has access to issues."
+msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
 #: src/features/inbox/ChatList.tsx
 msgid "The Trash is empty."
@@ -15452,6 +15760,10 @@ msgstr "Ini sembang langsung, seperti rupanya pada tapak anda. Anda boleh mencub
 msgid "This is the name the app gives itself. Yuva has not verified it."
 msgstr "Ini nama yang diberikan apl kepada dirinya. Yuva tidak mengesahkannya."
 
+#: src/components/common/text.ts
+msgid "This issue or this item has as many links as allowed."
+msgstr "This issue or this item has as many links as allowed."
+
 #: src/features/account/ConnectPage.tsx
 msgid "This link is incomplete"
 msgstr "Pautan ini tidak lengkap"
@@ -15667,6 +15979,7 @@ msgstr "Had masa"
 
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/issues/IssueDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Title"
@@ -15740,6 +16053,11 @@ msgstr "Membatalkan akses {person} ke {inbox}"
 msgid "tr, en-GB"
 msgstr "tr, en-GB"
 
+#: src/features/issues/IssueDialog.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Tracker"
+msgstr "Tracker"
+
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
@@ -15787,6 +16105,14 @@ msgstr "Selasa"
 #: src/features/status/SettingsTab.tsx
 msgid "Türkçe"
 msgstr "Türkçe"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Turn feedback and roadmap ideas into GitHub or Linear issues. The issue's state then tells the customer where their feedback stands."
+msgstr "Turn feedback and roadmap ideas into GitHub or Linear issues. The issue's state then tells the customer where their feedback stands."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Turn feedback into GitHub or Linear issues"
+msgstr "Turn feedback into GitHub or Linear issues"
 
 #: src/app/Palette.tsx
 #: src/features/conversation/ConversationMenu.tsx
@@ -15953,6 +16279,12 @@ msgstr "Peranti tidak diketahui"
 #: src/features/feedback/RoadmapCard.tsx
 msgid "Unlink"
 msgstr "Nyahpaut"
+
+#: src/features/feedback/IssuesCard.tsx
+#: src/features/issues/IdeaIssues.tsx
+#: src/features/issues/IssueChips.tsx
+msgid "Unlink {key}"
+msgstr "Unlink {key}"
 
 #: src/components/common/Linked.tsx
 msgid "Unlink {name}"
@@ -16601,9 +16933,17 @@ msgstr "Sembang web"
 msgid "Web pages use the chat widget with the feedback form turned on. Apps call the feedback form from the SDK."
 msgstr "Halaman web menggunakan widget sembang dengan borang maklum balas dihidupkan. Apl memanggil borang daripada SDK."
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Webhook"
+msgstr "Webhook"
+
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Webhook endpoint"
 msgstr "Titik akhir webhook"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Webhook secret for {revealName}"
+msgstr "Webhook secret for {revealName}"
 
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -16837,6 +17177,10 @@ msgstr "Bila kami memberitahu anda"
 msgid "When your provider sends from another address. Replies still come to the support address."
 msgstr "Apabila penyedia anda menghantar daripada alamat lain. Balasan masih datang ke alamat sokongan."
 
+#: src/features/issues/IssueDialog.tsx
+msgid "Where"
+msgstr "Where"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Where and when did these people agree?"
 msgstr "Di mana dan bila orang ini bersetuju?"
@@ -16856,6 +17200,14 @@ msgstr "Dihantar dari mana?"
 #: src/features/migrations/SourceStep.tsx
 msgid "Where is your mail now?"
 msgstr "Di mana mel anda sekarang?"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Where new issues go when nobody picks a repository, as owner/repo."
+msgstr "Where new issues go when nobody picks a repository, as owner/repo."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Where new issues go when nobody picks a team, as a team key such as ENG."
+msgstr "Where new issues go when nobody picks a team, as a team key such as ENG."
 
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Where should Yuva send events?"
@@ -17192,6 +17544,10 @@ msgstr "Anda tidak mengikuti perbincangan. Anda mengikuti yang anda mulakan atau
 msgid "You get a new secret once. For 24 hours every delivery carries two signatures, one with the new and one with the old secret, so you can update your receiver without losing events."
 msgstr "Anda mendapat rahsia baharu sekali. Selama 24 jam setiap penghantaran membawa dua tandatangan, satu dengan rahsia baharu dan satu dengan yang lama, supaya anda boleh mengemas kini penerima tanpa kehilangan peristiwa."
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "You get a new secret once. Webhooks from GitHub are refused until you paste it into the webhook's settings there."
+msgstr "You get a new secret once. Webhooks from GitHub are refused until you paste it into the webhook's settings there."
+
 #: src/features/account/AccountPage.tsx
 msgid "You get a notification when someone replies in these"
 msgstr "Anda mendapat pemberitahuan apabila seseorang membalas dalam ini"
@@ -17418,6 +17774,10 @@ msgstr "Yuva meminta skop {scopes} dan menolak log masuk yang memberi lebih."
 #: src/features/migrations/text.ts
 msgid "Yuva can read the account now. Next, choose what to bring."
 msgstr "Yuva kini boleh membaca akaun. Seterusnya, pilih apa yang hendak dibawa."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Yuva checks the token with the tracker, stores it encrypted and never shows it again. It needs to read and write issues."
+msgstr "Yuva checks the token with the tracker, stores it encrypted and never shows it again. It needs to read and write issues."
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Yuva counts clicks and replies. It does not track opens."

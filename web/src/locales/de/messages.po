@@ -1184,6 +1184,14 @@ msgid "A former teammate"
 msgstr "Ein ehemaliges Teammitglied"
 
 #: src/components/common/text.ts
+msgid "A GitHub or Linear issue was linked"
+msgstr "Ein GitHub- oder Linear-Issue wurde verknüpft"
+
+#: src/components/common/text.ts
+msgid "A GitHub or Linear issue was unlinked"
+msgstr "Die Verknüpfung eines GitHub- oder Linear-Issues wurde aufgehoben"
+
+#: src/components/common/text.ts
 msgid "A help center article was deleted"
 msgstr "Ein Hilfecenter-Artikel wurde gelöscht"
 
@@ -1210,6 +1218,10 @@ msgstr "Eine spätere Nachricht des Kontakts."
 #: src/features/broadcasts/Composer.tsx
 msgid "A line that makes people open it"
 msgstr "Eine Zeile, die zum Öffnen anregt"
+
+#: src/components/common/text.ts
+msgid "A linked GitHub or Linear issue changed"
+msgstr "Ein verknüpftes GitHub- oder Linear-Issue hat sich geändert"
 
 #: src/features/broadcasts/ListsHome.tsx
 msgid "A list is who agreed to hear from you. Every subscriber keeps a consent record you can export."
@@ -1279,6 +1291,10 @@ msgstr "Ein Teil der Datei war größer, als der Server annimmt. Laden Sie die S
 msgid "A percentage next to each component."
 msgstr "Ein Prozentwert neben jeder Komponente."
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "A personal API key from Linear, under Settings, Account, Security and access."
+msgstr "Ein persönlicher API-Schlüssel von Linear, unter Settings, Account, Security and access."
+
 #: src/components/common/text.ts
 msgid "A property can have at most 1,000 notes. Delete old ones first."
 msgstr "Eine Property kann höchstens 1.000 Notizen haben. Löschen Sie zuerst alte."
@@ -1327,6 +1343,10 @@ msgstr "In einer Diskussion wurde eine Antwort geschrieben"
 msgid "A roadmap idea moved to another stage"
 msgstr "Eine Roadmap-Idee wechselte in eine andere Phase"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "A secret is set. Paste a new one to replace it."
+msgstr "Ein Secret ist gesetzt. Fügen Sie ein neues ein, um es zu ersetzen."
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "A sign-in must come back within 10 minutes and works once. Open the migration and sign in again."
 msgstr "Eine Anmeldung muss innerhalb von 10 Minuten zurückkommen und funktioniert nur einmal. Öffnen Sie die Migration und melden Sie sich erneut an."
@@ -1354,6 +1374,22 @@ msgstr "Ein Status-Monitor ist ausgefallen"
 #: src/components/common/text.ts
 msgid "A subscription changed"
 msgstr "Ein Abonnement wurde geändert"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "A team key such as ENG."
+msgstr "Ein Team-Kürzel wie ENG."
+
+#: src/components/common/text.ts
+msgid "A team was changed"
+msgstr "Ein Team wurde geändert"
+
+#: src/components/common/text.ts
+msgid "A team was created"
+msgstr "Ein Team wurde erstellt"
+
+#: src/components/common/text.ts
+msgid "A team was deleted"
+msgstr "Ein Team wurde gelöscht"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -1698,6 +1734,7 @@ msgid "Added by the team"
 msgstr "Vom Team hinzugefügt"
 
 #: src/features/conversation/Feedback.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/status/CreatePageDialog.tsx
 #: src/features/status/MonitorHttpFields.tsx
@@ -2071,6 +2108,10 @@ msgstr "Eine https-Bild-URL."
 msgid "An https image."
 msgstr "Ein https-Bild."
 
+#: src/features/issues/IdeaIssues.tsx
+msgid "An idea only shows its issues and their state. Its stage stays your decision."
+msgstr "Eine Idee zeigt ihre Issues und deren Status nur an. Ihre Phase bleibt Ihre Entscheidung."
+
 #: src/features/setup/NameStep.tsx
 msgid "An inbox collects the conversations of one product or brand. Name it after the product your customers know."
 msgstr "Ein Postfach sammelt die Unterhaltungen eines Produkts oder einer Marke. Benennen Sie es nach dem Produkt, das Ihre Kunden kennen."
@@ -2102,6 +2143,10 @@ msgstr "Ein Vorfall wurde behoben oder eine Wartung abgeschlossen"
 #: src/features/team/TeamPage.tsx
 msgid "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
 msgstr "Eine Einladung wird angenommen, wenn sich die Person mit einem an diese Adresse gesendeten Code anmeldet. Sie läuft nach 7 Tagen ab."
+
+#: src/features/issues/IssueDialog.tsx
+msgid "An issue URL, owner/repo#12 or ENG-123."
+msgstr "Eine Issue-URL, owner/repo#12 oder ENG-123."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "An mbox export of a mailbox"
@@ -2288,6 +2333,7 @@ msgid "API channel"
 msgstr "API-Kanal"
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "API-Schlüssel"
@@ -2429,6 +2475,10 @@ msgstr "So schnell wie erlaubt"
 #: src/features/status/MonitorDialog.tsx
 msgid "As often as allowed"
 msgstr "So oft wie erlaubt"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "As owner/repo."
+msgstr "Als owner/repo."
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ask everyone to confirm again"
@@ -2982,11 +3032,13 @@ msgstr "Kampagnenname"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/issues/IssueDialog.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/NewsletterStep.tsx
 #: src/features/status/AddSubscriberDialog.tsx
@@ -3289,6 +3341,10 @@ msgstr "Geprüft {when}"
 #: src/features/broadcasts/Import.tsx
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "Geprüft und wartet darauf, dass ein Eigentümer oder Admin es startet."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Checked with the tracker before it replaces the old one. The current one is never shown."
+msgstr "Wird beim Tracker geprüft, bevor es das alte ersetzt. Das aktuelle wird nie angezeigt."
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
@@ -3705,6 +3761,7 @@ msgstr "hat seine Adresse in den letzten {days} Tagen bestätigt"
 #: src/features/migrations/text.ts
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Connect"
 msgstr "Verbinden"
 
@@ -3723,6 +3780,10 @@ msgstr "{clientName} mit Yuva verbinden?"
 msgid "Connect {provider}"
 msgstr "{provider} verbinden"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Connect a tracker"
+msgstr "Tracker verbinden"
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
@@ -3737,6 +3798,10 @@ msgstr "Einen Assistenten wie Claude oder ChatGPT verbinden"
 msgid "Connect Claude, ChatGPT, Cursor or another MCP client to let it read conversations and draft replies for you to review."
 msgstr "Verbinde Claude, ChatGPT, Cursor oder einen anderen MCP-Client, damit er Unterhaltungen liest und Antworten zur Prüfung entwirft."
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Connect GitHub or Linear to create and link issues from feedback and ideas."
+msgstr "Verbinden Sie GitHub oder Linear, um aus Feedback und Ideen Issues zu erstellen und zu verknüpfen."
+
 #: src/features/account/ConnectPage.tsx
 msgid "Connect to {host}"
 msgstr "Mit {host} verbinden"
@@ -3745,12 +3810,22 @@ msgstr "Mit {host} verbinden"
 msgid "Connect your servers and bots to Yuva"
 msgstr "Verbinden Sie Ihre Server und Bots mit Yuva"
 
+#: src/components/common/text.ts
+msgid "Connect, change and disconnect GitHub and Linear trackers"
+msgstr "GitHub- und Linear-Tracker verbinden, ändern und trennen"
+
 #: src/features/account/ConnectPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Connected"
 msgstr "Verbunden"
+
+#. placeholder {0}: providerName(provider)
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Connected {0}"
+msgstr "{0} verbunden"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Connected {client}"
@@ -4120,6 +4195,11 @@ msgstr "Land"
 msgid "Create"
 msgstr "Erstellen"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Create a GitHub or Linear issue"
+msgstr "GitHub- oder Linear-Issue erstellen"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create a key when your SMTP provider cannot sign with your domain or leaves the unsubscribe headers unsigned. Only the DNS record is shown; the private key never leaves the server."
 msgstr "Erstellen Sie einen Schlüssel, wenn Ihr SMTP-Anbieter nicht mit Ihrer Domain signieren kann oder die Abmelde-Header unsigniert lässt. Es wird nur der DNS-Eintrag angezeigt; der private Schlüssel verlässt den Server nie."
@@ -4140,6 +4220,10 @@ msgstr "Erstelle ein API-Token in {provider}"
 msgid "Create an app in Help Scout"
 msgstr "App in Help Scout erstellen"
 
+#: src/features/issues/IssueDialog.tsx
+msgid "Create an issue"
+msgstr "Issue erstellen"
+
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Create an OAuth client in Zendesk"
 msgstr "OAuth-Client in Zendesk erstellen"
@@ -4147,6 +4231,10 @@ msgstr "OAuth-Client in Zendesk erstellen"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Create and add a channel"
 msgstr "Erstellen und Kanal hinzufügen"
+
+#: src/components/common/text.ts
+msgid "Create and link GitHub and Linear issues for feedback and ideas"
+msgstr "GitHub- und Linear-Issues für Feedback und Ideen erstellen und verknüpfen"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Create another"
@@ -4159,6 +4247,18 @@ msgstr "Kanal erstellen"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 msgid "Create draft"
 msgstr "Entwurf erstellen"
+
+#: src/features/feedback/IssuesCard.tsx
+#: src/features/issues/IdeaIssues.tsx
+#: src/features/issues/IssueDialog.tsx
+#: src/features/issues/IssueMenu.tsx
+msgid "Create issue"
+msgstr "Issue erstellen"
+
+#. placeholder {0}: SHORTCUTS.createIssue
+#: src/features/feedback/IssuesCard.tsx
+msgid "Create issue ({0})"
+msgstr "Issue erstellen ({0})"
 
 #: src/features/migrations/text.ts
 msgid "Create it, then copy its App ID and App Secret and paste them below."
@@ -4219,6 +4319,10 @@ msgstr "Erstellen Sie Ihr Yuva-Konto"
 msgid "Created"
 msgstr "Erstellt"
 
+#: src/features/issues/IssueDialog.tsx
+msgid "Created {key}"
+msgstr "{key} erstellt"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Created an analytics export"
 msgstr "Einen Analytics-Export erstellt"
@@ -4230,6 +4334,14 @@ msgstr "Den API-Schlüssel {name} erstellt"
 #: src/features/settings/audit/sentence.ts
 msgid "Created the DKIM key {selector}"
 msgstr "Den DKIM-Schlüssel {selector} erstellt"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Creates an issue in your tracker and links it to this feedback. Only the text below is sent, with a link back to the conversation; the customer's name and address stay here."
+msgstr "Erstellt ein Issue in Ihrem Tracker und verknüpft es mit diesem Feedback. Nur der Text unten wird gesendet, mit einem Link zurück zur Unterhaltung; Name und Adresse des Kunden bleiben hier."
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Creates an issue in your tracker and links it to this idea. Only the text below is sent, with a link back to the idea."
+msgstr "Erstellt ein Issue in Ihrem Tracker und verknüpft es mit dieser Idee. Nur der Text unten wird gesendet, mit einem Link zurück zur Idee."
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
@@ -4336,6 +4448,10 @@ msgstr "Festlegen, wer in Diskussionen schreiben darf"
 #: src/features/settings/audit/sentence.ts
 msgid "Declined the request to send broadcasts"
 msgstr "Die Anfrage für Broadcasts abgelehnt"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Default target"
+msgstr "Standardziel"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4618,6 +4734,7 @@ msgstr "Zustelldetails"
 msgid "Deny"
 msgstr "Ablehnen"
 
+#: src/features/issues/IssueDialog.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -4695,9 +4812,21 @@ msgstr "Änderungen verwerfen"
 msgid "Discard the suggested reply"
 msgstr "Vorgeschlagene Antwort verwerfen"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Disconnect"
+msgstr "Trennen"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Disconnect {name}?"
+msgstr "{name} trennen?"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Disconnected {client}"
 msgstr "{client} getrennt"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Disconnected {name}"
+msgstr "{name} getrennt"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5698,6 +5827,10 @@ msgstr "Anbieter finden"
 msgid "Find the server"
 msgstr "Server finden"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Fine-grained token"
+msgstr "Fine-grained Token"
+
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/parts.tsx
 msgid "Finish"
@@ -6076,6 +6209,10 @@ msgstr "Snippets holen"
 #: src/features/setup/NewsletterStep.tsx
 msgid "Get the subscribe form"
 msgstr "Anmeldeformular holen"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "GitHub Enterprise Server API"
+msgstr "GitHub-Enterprise-Server-API"
 
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Give the channel a new forwarding address?"
@@ -6876,6 +7013,10 @@ msgstr "Installieren Sie den Server in VS Code; er öffnet die Seite des Servers
 msgid "Installation"
 msgstr "Installation"
 
+#: src/features/settings/SettingsColumn.tsx
+msgid "Integrations"
+msgstr "Integrationen"
+
 #: src/features/status/text.tsx
 msgid "Investigating"
 msgstr "In Untersuchung"
@@ -6947,6 +7088,27 @@ msgstr "ist gesetzt"
 #: src/features/setup/previews.tsx
 msgid "Is there a way to export my notes?"
 msgstr "Gibt es eine Möglichkeit, meine Notizen zu exportieren?"
+
+#: src/features/issues/IssueMenu.tsx
+msgid "Issue"
+msgstr "Issue"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Issue address"
+msgstr "Issue-Adresse"
+
+#: src/app/Palette.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Issue trackers"
+msgstr "Issue-Tracker"
+
+#: src/features/feedback/IssuesCard.tsx
+#: src/features/issues/IdeaIssues.tsx
+#: src/features/issues/IssueMenu.tsx
+#: src/features/settings/webhooks/events.tsx
+msgid "Issues"
+msgstr "Issues"
 
 #: src/features/oauth/ConsentPage.tsx
 msgid "It also asked for access your role here cannot give:"
@@ -7364,6 +7526,15 @@ msgstr "Farbe des Launchers"
 msgid "Launcher position"
 msgstr "Position des Launchers"
 
+#. placeholder {0}: integration.default_target
+#: src/features/issues/IssueDialog.tsx
+msgid "Leave empty for {0}."
+msgstr "Leer lassen für {0}."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Leave empty for github.com. Otherwise the server's API, https://host/api/v3."
+msgstr "Für github.com leer lassen. Sonst die API des Servers, https://host/api/v3."
+
 #: src/features/conversation/Collision.tsx
 msgid "Leave it to {name}"
 msgstr "{name} überlassen"
@@ -7413,14 +7584,31 @@ msgstr "Hell"
 msgid "Light appearance"
 msgstr "Helle Darstellung"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Limit it to the repositories issues go to, with read and write access to Issues."
+msgstr "Beschränken Sie es auf die Repositories, in die Issues gehen, mit Lese- und Schreibzugriff auf Issues."
+
 #: src/features/broadcasts/Composer.tsx
 msgid "Limit the pace"
 msgstr "Tempo begrenzen"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Linear signing secret"
+msgstr "Linear-Signing-Secret"
 
 #: src/components/common/Linked.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 msgid "Link"
 msgstr "Verknüpfen"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Link a GitHub or Linear issue"
+msgstr "GitHub- oder Linear-Issue verknüpfen"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Link an issue"
+msgstr "Issue verknüpfen"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/LinkConversationsDialog.tsx
@@ -7442,6 +7630,18 @@ msgstr "Link für Ihren Microsoft-365-Admin"
 #: src/components/common/text.ts
 msgid "Link in a mail"
 msgstr "Link in einer Mail"
+
+#: src/features/feedback/IssuesCard.tsx
+#: src/features/issues/IdeaIssues.tsx
+#: src/features/issues/IssueDialog.tsx
+#: src/features/issues/IssueMenu.tsx
+msgid "Link issue"
+msgstr "Issue verknüpfen"
+
+#. placeholder {0}: SHORTCUTS.linkIssue
+#: src/features/feedback/IssuesCard.tsx
+msgid "Link issue ({0})"
+msgstr "Issue verknüpfen ({0})"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Link the selected conversations to an incident"
@@ -7487,6 +7687,10 @@ msgstr "Mit Vorfall verknüpfen ({linkKey})"
 #: src/components/common/Linked.tsx
 msgid "Linked"
 msgstr "Verknüpft"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Linked {key}"
+msgstr "{key} verknüpft"
 
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
@@ -7799,6 +8003,18 @@ msgstr "Großer Ausfall"
 msgid "Make a new address for {name}?"
 msgstr "Neue Adresse für {name} erzeugen?"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Make a new secret"
+msgstr "Neues Secret erstellen"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Make a new webhook secret?"
+msgstr "Ein neues Webhook-Secret erstellen?"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Make a secret"
+msgstr "Secret erstellen"
+
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Make it public"
 msgstr "Öffentlich machen"
@@ -7903,6 +8119,7 @@ msgid "Mark this post as spam?"
 msgstr "Diesen Beitrag als Spam markieren?"
 
 #: src/features/docs/discussions/FromConversation.tsx
+#: src/features/issues/IssueDialog.tsx
 msgid "Markdown works."
 msgstr "Markdown funktioniert."
 
@@ -8412,6 +8629,7 @@ msgstr "Mein Profil"
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -8479,6 +8697,7 @@ msgstr "Braucht einen Absender"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Needs attention"
@@ -9108,6 +9327,10 @@ msgstr "Kein Vorfall passt."
 msgid "No incident or maintenance is open on any status page."
 msgstr "Auf keiner Status-Seite ist ein Vorfall oder eine Wartung offen."
 
+#: src/features/issues/IdeaIssues.tsx
+msgid "No issue is linked to this idea."
+msgstr "Mit dieser Idee ist kein Issue verknüpft."
+
 #: src/features/migrations/MapStep.tsx
 msgid "No label"
 msgstr "Kein Label"
@@ -9238,6 +9461,10 @@ msgstr "In diesem Zeitraum gibt es noch keine Antwortzeiten."
 msgid "No results"
 msgstr "Keine Ergebnisse"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "No secret yet. Make one, then paste it into GitHub."
+msgstr "Noch kein Secret. Erstellen Sie eines und fügen Sie es in GitHub ein."
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "No sender yet"
 msgstr "Noch kein Absender"
@@ -9304,6 +9531,18 @@ msgstr "Noch keine Testnachricht ist über die neue Route bei Yuva angekommen. W
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "No test went out since the last change."
 msgstr "Seit der letzten Änderung wurde kein Test gesendet."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "No tracker connected"
+msgstr "Kein Tracker verbunden"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "No tracker is connected yet. Ask an owner or admin to connect GitHub or Linear."
+msgstr "Noch ist kein Tracker verbunden. Bitten Sie einen Inhaber oder Admin, GitHub oder Linear zu verbinden."
+
+#: src/features/issues/IssueDialog.tsx
+msgid "No tracker is connected yet. Connect GitHub or Linear in <0>the settings</0>."
+msgstr "Noch ist kein Tracker verbunden. Verbinden Sie GitHub oder Linear in den <0>Einstellungen</0>."
 
 #: src/features/broadcasts/Report.tsx
 msgid "No visits from this campaign yet."
@@ -9525,6 +9764,10 @@ msgstr "nicht festgelegt"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Not set up"
 msgstr "Nicht eingerichtet"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Not set yet, so Linear webhooks are refused."
+msgstr "Noch nicht gesetzt, daher werden Linear-Webhooks abgelehnt."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Not shown"
@@ -10639,6 +10882,18 @@ msgstr "Fügen Sie es vor dem schließenden Body-Tag jeder Seite ein, die den Ch
 msgid "Paste it below with your subdomain, the acme of acme.freshdesk.com."
 msgstr "Fügen Sie ihn unten zusammen mit Ihrer Subdomain ein, dem acme von acme.freshdesk.com."
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Paste it into the webhook's settings at the tracker now. It is not shown again."
+msgstr "Fügen Sie es jetzt in die Webhook-Einstellungen beim Tracker ein. Es wird nicht noch einmal angezeigt."
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Paste the address of an existing issue to show it on this idea."
+msgstr "Fügen Sie die Adresse eines bestehenden Issues ein, um es bei dieser Idee anzuzeigen."
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Paste the address of an existing issue. Its state then sets the progress the customer sees."
+msgstr "Fügen Sie die Adresse eines bestehenden Issues ein. Sein Status bestimmt dann den Fortschritt, den der Kunde sieht."
+
 #: src/features/migrations/text.ts
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "Fügen Sie sie unten mit Ihrer Subdomain ein. Yuva fragt nur die Berechtigung read an und akzeptiert nicht mehr."
@@ -11543,6 +11798,10 @@ msgstr "Statusseiten, Komponenten und Vorfälle lesen"
 msgid "Read the audit log (owners only)"
 msgstr "Das Audit-Log lesen (nur Eigentümer)"
 
+#: src/components/common/text.ts
+msgid "Read the connected GitHub and Linear trackers"
+msgstr "Die verbundenen GitHub- und Linear-Tracker lesen"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "Die Ordner lesen"
@@ -11921,9 +12180,18 @@ msgstr "Wieder öffnen"
 
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
 msgstr "Ersetzen"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Replace the API key"
+msgstr "API-Schlüssel ersetzen"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Replace the token"
+msgstr "Token ersetzen"
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -12364,6 +12632,7 @@ msgid "Rotate"
 msgstr "Rotieren"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate secret"
 msgstr "Secret rotieren"
@@ -12458,6 +12727,7 @@ msgstr "Samstag"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -12503,6 +12773,7 @@ msgstr "Den Entwurf jetzt speichern"
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/sections.tsx
@@ -13446,6 +13717,10 @@ msgstr "Ihrem Team und Kontakten angezeigt"
 msgid "Shown to your team and to customers you reply to"
 msgstr "Ihrem Team und den Kunden angezeigt, denen Sie antworten"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Shown to your team. Optional."
+msgstr "Wird Ihrem Team angezeigt. Optional."
+
 #: src/features/status/SettingsTab.tsx
 msgid "Shown under the name on the public page."
 msgstr "Wird auf der öffentlichen Seite unter dem Namen angezeigt."
@@ -13711,6 +13986,14 @@ msgstr "Zurückgestellt"
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Snoozed until {until}"
 msgstr "Zurückgestellt bis {until}"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "So Yuva hears of a change at once. In Linear, open Settings, API, Webhooks, New webhook. Paste the address, select Issues, then paste the signing secret Linear shows below."
+msgstr "So erfährt Yuva sofort von einer Änderung. Öffnen Sie in Linear Settings, API, Webhooks, New webhook. Fügen Sie die Adresse ein, wählen Sie Issues und fügen Sie dann das von Linear angezeigte Signing-Secret unten ein."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "So Yuva hears of a change at once. In the repository or organization, open Settings, Webhooks, Add webhook. Paste the address, choose application/json, paste the secret, and select the Issues event."
+msgstr "So erfährt Yuva sofort von einer Änderung. Öffnen Sie im Repository oder in der Organisation Settings, Webhooks, Add webhook. Fügen Sie die Adresse ein, wählen Sie application/json, fügen Sie das Secret ein und wählen Sie das Ereignis Issues."
 
 #: src/features/contact/ContactDetail.tsx
 msgid "Some addresses are undeliverable. Clear them under Contact and identities once they work again."
@@ -14647,6 +14930,10 @@ msgstr "Der Vorfall wurde geschlossen, ohne die Abonnenten zu benachrichtigen"
 msgid "The interval must be {lo} to {hi} seconds."
 msgstr "Das Intervall muss {lo} bis {hi} Sekunden betragen."
 
+#: src/features/feedback/IssuesCard.tsx
+msgid "The issue's state sets the progress the person sees."
+msgstr "Der Status des Issues bestimmt den Fortschritt, den die Person sieht."
+
 #: src/features/broadcasts/ListSettings.tsx
 msgid "The İYS file has one row per subscriber in İYS's columns, ONAY for subscribed and RET for unsubscribed, for Turkish senders to upload to İYS themselves. Pending subscriptions are left out."
 msgstr "Die İYS-Datei hat eine Zeile pro Abonnent in den Spalten von İYS, ONAY für angemeldet und RET für abgemeldet, damit türkische Absender sie selbst bei İYS hochladen können. Ausstehende Abonnements werden ausgelassen."
@@ -14981,6 +15268,7 @@ msgstr "Das Secret wird einmal angezeigt, auf der nächsten Seite."
 msgid "The secret is shown once, when a key is made."
 msgstr "Das Geheimnis wird einmal angezeigt, wenn ein Schlüssel erstellt wird."
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/webhooks/sections.tsx
 msgid "The secret is shown once, when it is made. Rotate it to get a new one."
 msgstr "Das Secret wird einmal angezeigt, wenn es erstellt wird. Rotieren Sie es, um ein neues zu erhalten."
@@ -15101,6 +15389,26 @@ msgstr "Der Test ist bei einem Schritt stehen geblieben."
 #: src/features/status/monitorErrors.ts
 msgid "The timeout must be 1 to 30 seconds."
 msgstr "Das Timeout muss 1 bis 30 Sekunden betragen."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "The token is removed and every link to its issues is deleted. Progress already set on feedback stays."
+msgstr "Das Token wird entfernt und jede Verknüpfung zu seinen Issues gelöscht. Bereits gesetzter Fortschritt bei Feedback bleibt."
+
+#: src/components/common/text.ts
+msgid "The tracker could not be reached. Try again in a moment."
+msgstr "Der Tracker war nicht erreichbar. Versuchen Sie es gleich noch einmal."
+
+#: src/components/common/text.ts
+msgid "The tracker has no such issue, or the token cannot see it."
+msgstr "Der Tracker kennt dieses Issue nicht, oder das Token kann es nicht sehen."
+
+#: src/components/common/text.ts
+msgid "The tracker refused the request. Check the target and your permissions."
+msgstr "Der Tracker hat die Anfrage abgelehnt. Prüfen Sie das Ziel und Ihre Berechtigungen."
+
+#: src/components/common/text.ts
+msgid "The tracker refused the token. Check that it is valid and has access to issues."
+msgstr "Der Tracker hat das Token abgelehnt. Prüfen Sie, ob es gültig ist und Zugriff auf Issues hat."
 
 #: src/features/inbox/ChatList.tsx
 msgid "The Trash is empty."
@@ -15452,6 +15760,10 @@ msgstr "Dies ist der Live-Chat, so wie er auf Ihrer Website aussieht. Sie könne
 msgid "This is the name the app gives itself. Yuva has not verified it."
 msgstr "Dies ist der Name, den sich die App selbst gibt. Yuva hat ihn nicht verifiziert."
 
+#: src/components/common/text.ts
+msgid "This issue or this item has as many links as allowed."
+msgstr "Dieses Issue oder dieser Eintrag hat so viele Verknüpfungen wie erlaubt."
+
 #: src/features/account/ConnectPage.tsx
 msgid "This link is incomplete"
 msgstr "Dieser Link ist unvollständig"
@@ -15667,6 +15979,7 @@ msgstr "Timeout"
 
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/issues/IssueDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Title"
@@ -15740,6 +16053,11 @@ msgstr "{person} den Zugriff auf {inbox} entzogen"
 msgid "tr, en-GB"
 msgstr "de, en-GB"
 
+#: src/features/issues/IssueDialog.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Tracker"
+msgstr "Tracker"
+
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
@@ -15787,6 +16105,14 @@ msgstr "Dienstag"
 #: src/features/status/SettingsTab.tsx
 msgid "Türkçe"
 msgstr "Türkçe"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Turn feedback and roadmap ideas into GitHub or Linear issues. The issue's state then tells the customer where their feedback stands."
+msgstr "Machen Sie aus Feedback und Roadmap-Ideen GitHub- oder Linear-Issues. Der Status des Issues zeigt dem Kunden dann, wo sein Feedback steht."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Turn feedback into GitHub or Linear issues"
+msgstr "Feedback in GitHub- oder Linear-Issues verwandeln"
 
 #: src/app/Palette.tsx
 #: src/features/conversation/ConversationMenu.tsx
@@ -15953,6 +16279,12 @@ msgstr "Unbekanntes Gerät"
 #: src/features/feedback/RoadmapCard.tsx
 msgid "Unlink"
 msgstr "Verknüpfung lösen"
+
+#: src/features/feedback/IssuesCard.tsx
+#: src/features/issues/IdeaIssues.tsx
+#: src/features/issues/IssueChips.tsx
+msgid "Unlink {key}"
+msgstr "Verknüpfung mit {key} aufheben"
 
 #: src/components/common/Linked.tsx
 msgid "Unlink {name}"
@@ -16601,9 +16933,17 @@ msgstr "Web-Chat"
 msgid "Web pages use the chat widget with the feedback form turned on. Apps call the feedback form from the SDK."
 msgstr "Webseiten nutzen das Chat-Widget mit aktiviertem Feedback-Formular. Apps rufen das Feedback-Formular über das SDK auf."
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Webhook"
+msgstr "Webhook"
+
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Webhook endpoint"
 msgstr "Webhook-Endpunkt"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Webhook secret for {revealName}"
+msgstr "Webhook-Secret für {revealName}"
 
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -16837,6 +17177,10 @@ msgstr "Wann wir Sie benachrichtigen"
 msgid "When your provider sends from another address. Replies still come to the support address."
 msgstr "Wenn Ihr Anbieter von einer anderen Adresse sendet. Antworten kommen weiterhin an der Support-Adresse an."
 
+#: src/features/issues/IssueDialog.tsx
+msgid "Where"
+msgstr "Wohin"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Where and when did these people agree?"
 msgstr "Wo und wann haben diese Personen zugestimmt?"
@@ -16856,6 +17200,14 @@ msgstr "Von wo wird gesendet?"
 #: src/features/migrations/SourceStep.tsx
 msgid "Where is your mail now?"
 msgstr "Wo ist Ihre Mail jetzt?"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Where new issues go when nobody picks a repository, as owner/repo."
+msgstr "Wohin neue Issues gehen, wenn niemand ein Repository wählt, als owner/repo."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Where new issues go when nobody picks a team, as a team key such as ENG."
+msgstr "Wohin neue Issues gehen, wenn niemand ein Team wählt, als Team-Kürzel wie ENG."
 
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Where should Yuva send events?"
@@ -17192,6 +17544,10 @@ msgstr "Sie folgen keinen Diskussionen. Sie folgen denen, die Sie starten oder i
 msgid "You get a new secret once. For 24 hours every delivery carries two signatures, one with the new and one with the old secret, so you can update your receiver without losing events."
 msgstr "Sie erhalten einmalig ein neues Secret. 24 Stunden lang trägt jede Zustellung zwei Signaturen, eine mit dem neuen und eine mit dem alten Secret, damit Sie Ihren Empfänger aktualisieren können, ohne Ereignisse zu verlieren."
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "You get a new secret once. Webhooks from GitHub are refused until you paste it into the webhook's settings there."
+msgstr "Sie sehen das neue Secret einmal. Webhooks von GitHub werden abgelehnt, bis Sie es dort in die Webhook-Einstellungen einfügen."
+
 #: src/features/account/AccountPage.tsx
 msgid "You get a notification when someone replies in these"
 msgstr "Sie werden benachrichtigt, wenn jemand in diesen antwortet"
@@ -17418,6 +17774,10 @@ msgstr "Yuva fragt die Berechtigung {scopes} an und lehnt eine Anmeldung ab, die
 #: src/features/migrations/text.ts
 msgid "Yuva can read the account now. Next, choose what to bring."
 msgstr "Yuva kann das Konto jetzt lesen. Wählen Sie als Nächstes, was übernommen wird."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Yuva checks the token with the tracker, stores it encrypted and never shows it again. It needs to read and write issues."
+msgstr "Yuva prüft das Token beim Tracker, speichert es verschlüsselt und zeigt es nie wieder an. Es muss Issues lesen und schreiben können."
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Yuva counts clicks and replies. It does not track opens."

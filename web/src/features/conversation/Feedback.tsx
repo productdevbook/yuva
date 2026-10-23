@@ -65,7 +65,7 @@ export const progressIcons: Record<FeedbackProgress, React.ComponentType<{ class
   wont_do: CircleSlashIcon,
 }
 
-const progressClass: Record<FeedbackProgress, string> = {
+export const progressClass: Record<FeedbackProgress, string> = {
   planned: "bg-muted text-muted-foreground",
   in_progress: "bg-brand-wash text-brand",
   done: "bg-success/10 text-success",

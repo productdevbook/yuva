@@ -722,6 +722,14 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
       void qc.invalidateQueries({ queryKey: keys.roadmap(ctx.ws) })
       refreshCounts(qc, ctx.ws)
       return
+    case "issue_link.created":
+    case "issue_link.updated":
+    case "issue_link.deleted": {
+      const link = event.data.issue_link
+      if (link.conversation_id) void qc.invalidateQueries({ queryKey: keys.conversation(ctx.ws, link.conversation_id) })
+      if (link.idea_id) void qc.invalidateQueries({ queryKey: keys.discussions(ctx.ws) })
+      return
+    }
     case "roadmap.board.updated":
       void qc.invalidateQueries({ queryKey: keys.roadmap(ctx.ws) })
       void qc.invalidateQueries({ queryKey: keys.discussions(ctx.ws) })

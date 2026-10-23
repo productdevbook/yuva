@@ -1184,6 +1184,14 @@ msgid "A former teammate"
 msgstr "이전 팀원"
 
 #: src/components/common/text.ts
+msgid "A GitHub or Linear issue was linked"
+msgstr "A GitHub or Linear issue was linked"
+
+#: src/components/common/text.ts
+msgid "A GitHub or Linear issue was unlinked"
+msgstr "A GitHub or Linear issue was unlinked"
+
+#: src/components/common/text.ts
 msgid "A help center article was deleted"
 msgstr "도움말 센터 문서가 삭제되었습니다"
 
@@ -1210,6 +1218,10 @@ msgstr "연락처가 보낸 이후 메시지."
 #: src/features/broadcasts/Composer.tsx
 msgid "A line that makes people open it"
 msgstr "열어 보고 싶게 만드는 한 줄"
+
+#: src/components/common/text.ts
+msgid "A linked GitHub or Linear issue changed"
+msgstr "A linked GitHub or Linear issue changed"
 
 #: src/features/broadcasts/ListsHome.tsx
 msgid "A list is who agreed to hear from you. Every subscriber keeps a consent record you can export."
@@ -1279,6 +1291,10 @@ msgstr "파일의 한 부분이 서버가 받는 크기보다 컸습니다. 페�
 msgid "A percentage next to each component."
 msgstr "각 구성 요소 옆의 백분율."
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "A personal API key from Linear, under Settings, Account, Security and access."
+msgstr "A personal API key from Linear, under Settings, Account, Security and access."
+
 #: src/components/common/text.ts
 msgid "A property can have at most 1,000 notes. Delete old ones first."
 msgstr "속성 하나에는 메모를 최대 1,000개까지 둘 수 있습니다. 오래된 메모를 먼저 삭제하세요."
@@ -1327,6 +1343,10 @@ msgstr "토론에 답글이 작성되었을 때"
 msgid "A roadmap idea moved to another stage"
 msgstr "로드맵 아이디어가 다른 단계로 이동했습니다"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "A secret is set. Paste a new one to replace it."
+msgstr "A secret is set. Paste a new one to replace it."
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "A sign-in must come back within 10 minutes and works once. Open the migration and sign in again."
 msgstr "로그인은 10분 안에 돌아와야 하며 한 번만 유효합니다. 이전을 열어 다시 로그인하세요."
@@ -1354,6 +1374,22 @@ msgstr "상태 모니터가 중단되었습니다"
 #: src/components/common/text.ts
 msgid "A subscription changed"
 msgstr "구독이 변경되었을 때"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "A team key such as ENG."
+msgstr "A team key such as ENG."
+
+#: src/components/common/text.ts
+msgid "A team was changed"
+msgstr "A team was changed"
+
+#: src/components/common/text.ts
+msgid "A team was created"
+msgstr "A team was created"
+
+#: src/components/common/text.ts
+msgid "A team was deleted"
+msgstr "A team was deleted"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -1698,6 +1734,7 @@ msgid "Added by the team"
 msgstr "팀이 추가함"
 
 #: src/features/conversation/Feedback.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/status/CreatePageDialog.tsx
 #: src/features/status/MonitorHttpFields.tsx
@@ -2071,6 +2108,10 @@ msgstr "https 이미지 URL."
 msgid "An https image."
 msgstr "https 이미지."
 
+#: src/features/issues/IdeaIssues.tsx
+msgid "An idea only shows its issues and their state. Its stage stays your decision."
+msgstr "An idea only shows its issues and their state. Its stage stays your decision."
+
 #: src/features/setup/NameStep.tsx
 msgid "An inbox collects the conversations of one product or brand. Name it after the product your customers know."
 msgstr "받은 편지함은 하나의 제품 또는 브랜드의 대화를 모읍니다. 고객이 아는 제품 이름으로 지으세요."
@@ -2102,6 +2143,10 @@ msgstr "인시던트가 해결되었거나 점검이 완료되었습니다"
 #: src/features/team/TeamPage.tsx
 msgid "An invite is accepted when the person signs in with a code sent to that address. It expires after 7 days."
 msgstr "초대는 그 주소로 받은 코드로 로그인하면 수락됩니다. 7일 후에 만료됩니다."
+
+#: src/features/issues/IssueDialog.tsx
+msgid "An issue URL, owner/repo#12 or ENG-123."
+msgstr "An issue URL, owner/repo#12 or ENG-123."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "An mbox export of a mailbox"
@@ -2288,6 +2333,7 @@ msgid "API channel"
 msgstr "API 채널"
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "API key"
 msgstr "API 키"
@@ -2429,6 +2475,10 @@ msgstr "허용되는 가장 빠르게"
 #: src/features/status/MonitorDialog.tsx
 msgid "As often as allowed"
 msgstr "허용되는 가장 짧은 간격"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "As owner/repo."
+msgstr "As owner/repo."
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ask everyone to confirm again"
@@ -2982,11 +3032,13 @@ msgstr "캠페인 이름"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/issues/IssueDialog.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 #: src/features/setup/NewsletterStep.tsx
 #: src/features/status/AddSubscriberDialog.tsx
@@ -3289,6 +3341,10 @@ msgstr "{when}에 확인됨"
 #: src/features/broadcasts/Import.tsx
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "확인되었으며 소유자 또는 관리자가 시작하기를 기다리고 있습니다."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Checked with the tracker before it replaces the old one. The current one is never shown."
+msgstr "Checked with the tracker before it replaces the old one. The current one is never shown."
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
@@ -3705,6 +3761,7 @@ msgstr "최근 {days}일 이내에 주소를 확인함"
 #: src/features/migrations/text.ts
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Connect"
 msgstr "연결"
 
@@ -3723,6 +3780,10 @@ msgstr "{clientName}을(를) Yuva에 연결할까요?"
 msgid "Connect {provider}"
 msgstr "{provider} 연결"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Connect a tracker"
+msgstr "Connect a tracker"
+
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
@@ -3737,6 +3798,10 @@ msgstr "Claude나 ChatGPT 같은 어시스턴트 연결"
 msgid "Connect Claude, ChatGPT, Cursor or another MCP client to let it read conversations and draft replies for you to review."
 msgstr "Claude, ChatGPT, Cursor 또는 다른 MCP 클라이언트를 연결하면 대화를 읽고 검토할 답장 초안을 작성합니다."
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Connect GitHub or Linear to create and link issues from feedback and ideas."
+msgstr "Connect GitHub or Linear to create and link issues from feedback and ideas."
+
 #: src/features/account/ConnectPage.tsx
 msgid "Connect to {host}"
 msgstr "{host}에 연결"
@@ -3745,12 +3810,22 @@ msgstr "{host}에 연결"
 msgid "Connect your servers and bots to Yuva"
 msgstr "서버와 봇을 Yuva에 연결하세요"
 
+#: src/components/common/text.ts
+msgid "Connect, change and disconnect GitHub and Linear trackers"
+msgstr "Connect, change and disconnect GitHub and Linear trackers"
+
 #: src/features/account/ConnectPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Connected"
 msgstr "연결됨"
+
+#. placeholder {0}: providerName(provider)
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Connected {0}"
+msgstr "Connected {0}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Connected {client}"
@@ -4120,6 +4195,11 @@ msgstr "국가"
 msgid "Create"
 msgstr "만들기"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Create a GitHub or Linear issue"
+msgstr "Create a GitHub or Linear issue"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Create a key when your SMTP provider cannot sign with your domain or leaves the unsubscribe headers unsigned. Only the DNS record is shown; the private key never leaves the server."
 msgstr "SMTP 제공업체가 내 도메인으로 서명할 수 없거나 구독 취소 헤더에 서명하지 않을 때 키를 만드세요. DNS 레코드만 표시되며 비공개 키는 서버를 떠나지 않습니다."
@@ -4140,6 +4220,10 @@ msgstr "{provider}에서 API 토큰 만들기"
 msgid "Create an app in Help Scout"
 msgstr "Help Scout에서 앱 만들기"
 
+#: src/features/issues/IssueDialog.tsx
+msgid "Create an issue"
+msgstr "Create an issue"
+
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Create an OAuth client in Zendesk"
 msgstr "Zendesk에서 OAuth 클라이언트 만들기"
@@ -4147,6 +4231,10 @@ msgstr "Zendesk에서 OAuth 클라이언트 만들기"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Create and add a channel"
 msgstr "만들고 채널 추가"
+
+#: src/components/common/text.ts
+msgid "Create and link GitHub and Linear issues for feedback and ideas"
+msgstr "Create and link GitHub and Linear issues for feedback and ideas"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Create another"
@@ -4159,6 +4247,18 @@ msgstr "채널 만들기"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 msgid "Create draft"
 msgstr "초안 만들기"
+
+#: src/features/feedback/IssuesCard.tsx
+#: src/features/issues/IdeaIssues.tsx
+#: src/features/issues/IssueDialog.tsx
+#: src/features/issues/IssueMenu.tsx
+msgid "Create issue"
+msgstr "Create issue"
+
+#. placeholder {0}: SHORTCUTS.createIssue
+#: src/features/feedback/IssuesCard.tsx
+msgid "Create issue ({0})"
+msgstr "Create issue ({0})"
 
 #: src/features/migrations/text.ts
 msgid "Create it, then copy its App ID and App Secret and paste them below."
@@ -4219,6 +4319,10 @@ msgstr "Yuva 계정 만들기"
 msgid "Created"
 msgstr "생성됨"
 
+#: src/features/issues/IssueDialog.tsx
+msgid "Created {key}"
+msgstr "Created {key}"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Created an analytics export"
 msgstr "분석 내보내기를 만들었습니다"
@@ -4230,6 +4334,14 @@ msgstr "API 키 {name}을(를) 만들었습니다"
 #: src/features/settings/audit/sentence.ts
 msgid "Created the DKIM key {selector}"
 msgstr "DKIM 키 {selector}을(를) 만들었습니다"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Creates an issue in your tracker and links it to this feedback. Only the text below is sent, with a link back to the conversation; the customer's name and address stay here."
+msgstr "Creates an issue in your tracker and links it to this feedback. Only the text below is sent, with a link back to the conversation; the customer's name and address stay here."
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Creates an issue in your tracker and links it to this idea. Only the text below is sent, with a link back to the idea."
+msgstr "Creates an issue in your tracker and links it to this idea. Only the text below is sent, with a link back to the idea."
 
 #: src/features/migrations/DoneStep.tsx
 msgid "Credentials deleted {deletedAt}. Yuva can no longer read {address}."
@@ -4336,6 +4448,10 @@ msgstr "토론에 글을 쓸 수 있는 사람 정하기"
 #: src/features/settings/audit/sentence.ts
 msgid "Declined the request to send broadcasts"
 msgstr "일괄 발송 요청을 거절했습니다"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Default target"
+msgstr "Default target"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Default: {fallback}"
@@ -4618,6 +4734,7 @@ msgstr "전송 상세"
 msgid "Deny"
 msgstr "거부"
 
+#: src/features/issues/IssueDialog.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Description"
@@ -4695,9 +4812,21 @@ msgstr "변경 사항 취소"
 msgid "Discard the suggested reply"
 msgstr "제안된 답장 버리기"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Disconnect"
+msgstr "Disconnect"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Disconnect {name}?"
+msgstr "Disconnect {name}?"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Disconnected {client}"
 msgstr "{client} 연결을 해제했습니다"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Disconnected {name}"
+msgstr "Disconnected {name}"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -5698,6 +5827,10 @@ msgstr "제공업체 찾기"
 msgid "Find the server"
 msgstr "서버 찾기"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Fine-grained token"
+msgstr "Fine-grained token"
+
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/parts.tsx
 msgid "Finish"
@@ -6076,6 +6209,10 @@ msgstr "스니펫 받기"
 #: src/features/setup/NewsletterStep.tsx
 msgid "Get the subscribe form"
 msgstr "구독 양식 받기"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "GitHub Enterprise Server API"
+msgstr "GitHub Enterprise Server API"
 
 #: src/features/settings/channels/email/ForwardingAddressField.tsx
 msgid "Give the channel a new forwarding address?"
@@ -6876,6 +7013,10 @@ msgstr "VS Code에 서버를 설치하세요. 서버 페이지가 열리면 설�
 msgid "Installation"
 msgstr "설치"
 
+#: src/features/settings/SettingsColumn.tsx
+msgid "Integrations"
+msgstr "Integrations"
+
 #: src/features/status/text.tsx
 msgid "Investigating"
 msgstr "조사 중"
@@ -6947,6 +7088,27 @@ msgstr "설정됨"
 #: src/features/setup/previews.tsx
 msgid "Is there a way to export my notes?"
 msgstr "메모를 내보낼 방법이 있나요?"
+
+#: src/features/issues/IssueMenu.tsx
+msgid "Issue"
+msgstr "Issue"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Issue address"
+msgstr "Issue address"
+
+#: src/app/Palette.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Issue trackers"
+msgstr "Issue trackers"
+
+#: src/features/feedback/IssuesCard.tsx
+#: src/features/issues/IdeaIssues.tsx
+#: src/features/issues/IssueMenu.tsx
+#: src/features/settings/webhooks/events.tsx
+msgid "Issues"
+msgstr "Issues"
 
 #: src/features/oauth/ConsentPage.tsx
 msgid "It also asked for access your role here cannot give:"
@@ -7364,6 +7526,15 @@ msgstr "런처 색상"
 msgid "Launcher position"
 msgstr "런처 위치"
 
+#. placeholder {0}: integration.default_target
+#: src/features/issues/IssueDialog.tsx
+msgid "Leave empty for {0}."
+msgstr "Leave empty for {0}."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Leave empty for github.com. Otherwise the server's API, https://host/api/v3."
+msgstr "Leave empty for github.com. Otherwise the server's API, https://host/api/v3."
+
 #: src/features/conversation/Collision.tsx
 msgid "Leave it to {name}"
 msgstr "{name}님에게 맡기기"
@@ -7413,14 +7584,31 @@ msgstr "밝게"
 msgid "Light appearance"
 msgstr "밝은 모양"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Limit it to the repositories issues go to, with read and write access to Issues."
+msgstr "Limit it to the repositories issues go to, with read and write access to Issues."
+
 #: src/features/broadcasts/Composer.tsx
 msgid "Limit the pace"
 msgstr "속도 제한"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Linear signing secret"
+msgstr "Linear signing secret"
 
 #: src/components/common/Linked.tsx
 #: src/features/status/LinkConversationsDialog.tsx
 msgid "Link"
 msgstr "연결"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Link a GitHub or Linear issue"
+msgstr "Link a GitHub or Linear issue"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Link an issue"
+msgstr "Link an issue"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/LinkConversationsDialog.tsx
@@ -7442,6 +7630,18 @@ msgstr "Microsoft 365 관리자용 링크"
 #: src/components/common/text.ts
 msgid "Link in a mail"
 msgstr "메일 안의 링크"
+
+#: src/features/feedback/IssuesCard.tsx
+#: src/features/issues/IdeaIssues.tsx
+#: src/features/issues/IssueDialog.tsx
+#: src/features/issues/IssueMenu.tsx
+msgid "Link issue"
+msgstr "Link issue"
+
+#. placeholder {0}: SHORTCUTS.linkIssue
+#: src/features/feedback/IssuesCard.tsx
+msgid "Link issue ({0})"
+msgstr "Link issue ({0})"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Link the selected conversations to an incident"
@@ -7487,6 +7687,10 @@ msgstr "인시던트에 연결 ({linkKey})"
 #: src/components/common/Linked.tsx
 msgid "Linked"
 msgstr "연결됨"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Linked {key}"
+msgstr "Linked {key}"
 
 #: src/features/status/LinkedSection.tsx
 msgid "Linked conversations"
@@ -7799,6 +8003,18 @@ msgstr "대규모 중단"
 msgid "Make a new address for {name}?"
 msgstr "{name}의 새 주소를 만들까요?"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Make a new secret"
+msgstr "Make a new secret"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Make a new webhook secret?"
+msgstr "Make a new webhook secret?"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Make a secret"
+msgstr "Make a secret"
+
 #: src/features/docs/discussions/FromConversation.tsx
 msgid "Make it public"
 msgstr "공개하기"
@@ -7903,6 +8119,7 @@ msgid "Mark this post as spam?"
 msgstr "이 게시물을 스팸으로 표시할까요?"
 
 #: src/features/docs/discussions/FromConversation.tsx
+#: src/features/issues/IssueDialog.tsx
 msgid "Markdown works."
 msgstr "Markdown을 사용할 수 있습니다."
 
@@ -8412,6 +8629,7 @@ msgstr "내 프로필"
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
@@ -8479,6 +8697,7 @@ msgstr "발신자 필요"
 
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Needs attention"
@@ -9108,6 +9327,10 @@ msgstr "일치하는 인시던트가 없습니다."
 msgid "No incident or maintenance is open on any status page."
 msgstr "어떤 상태 페이지에도 열려 있는 인시던트나 점검이 없습니다."
 
+#: src/features/issues/IdeaIssues.tsx
+msgid "No issue is linked to this idea."
+msgstr "No issue is linked to this idea."
+
 #: src/features/migrations/MapStep.tsx
 msgid "No label"
 msgstr "레이블 없음"
@@ -9238,6 +9461,10 @@ msgstr "이 기간에는 아직 응답 시간이 없습니다."
 msgid "No results"
 msgstr "결과 없음"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "No secret yet. Make one, then paste it into GitHub."
+msgstr "No secret yet. Make one, then paste it into GitHub."
+
 #: src/features/broadcasts/ListsHome.tsx
 msgid "No sender yet"
 msgstr "아직 발신자가 없습니다"
@@ -9304,6 +9531,18 @@ msgstr "새 경로로 Yuva에 도착한 테스트 메시지가 아직 없습니�
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "No test went out since the last change."
 msgstr "마지막 변경 이후 나간 테스트가 없습니다."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "No tracker connected"
+msgstr "No tracker connected"
+
+#: src/features/issues/IssueDialog.tsx
+msgid "No tracker is connected yet. Ask an owner or admin to connect GitHub or Linear."
+msgstr "No tracker is connected yet. Ask an owner or admin to connect GitHub or Linear."
+
+#: src/features/issues/IssueDialog.tsx
+msgid "No tracker is connected yet. Connect GitHub or Linear in <0>the settings</0>."
+msgstr "No tracker is connected yet. Connect GitHub or Linear in <0>the settings</0>."
 
 #: src/features/broadcasts/Report.tsx
 msgid "No visits from this campaign yet."
@@ -9525,6 +9764,10 @@ msgstr "설정되지 않음"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Not set up"
 msgstr "설정 안 됨"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Not set yet, so Linear webhooks are refused."
+msgstr "Not set yet, so Linear webhooks are refused."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Not shown"
@@ -10639,6 +10882,18 @@ msgstr "채팅을 표시할 모든 페이지의 body 닫는 태그 바로 앞에
 msgid "Paste it below with your subdomain, the acme of acme.freshdesk.com."
 msgstr "하위 도메인(acme.freshdesk.com의 acme)과 함께 아래에 붙여 넣으세요."
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Paste it into the webhook's settings at the tracker now. It is not shown again."
+msgstr "Paste it into the webhook's settings at the tracker now. It is not shown again."
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Paste the address of an existing issue to show it on this idea."
+msgstr "Paste the address of an existing issue to show it on this idea."
+
+#: src/features/issues/IssueDialog.tsx
+msgid "Paste the address of an existing issue. Its state then sets the progress the customer sees."
+msgstr "Paste the address of an existing issue. Its state then sets the progress the customer sees."
+
 #: src/features/migrations/text.ts
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "서브도메인과 함께 아래에 붙여 넣으세요. Yuva는 read 스코프만 요청하며 그 이상은 받지 않습니다."
@@ -11543,6 +11798,10 @@ msgstr "상태 페이지, 구성 요소, 인시던트 읽기"
 msgid "Read the audit log (owners only)"
 msgstr "감사 로그 읽기(소유자 전용)"
 
+#: src/components/common/text.ts
+msgid "Read the connected GitHub and Linear trackers"
+msgstr "Read the connected GitHub and Linear trackers"
+
 #: src/features/migrations/text.ts
 msgid "Read the folders"
 msgstr "폴더 읽기"
@@ -11921,9 +12180,18 @@ msgstr "다시 열기"
 
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Replace"
 msgstr "교체"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Replace the API key"
+msgstr "Replace the API key"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Replace the token"
+msgstr "Replace the token"
 
 #: src/features/broadcasts/Report.tsx
 #: src/features/home/HomePage.tsx
@@ -12364,6 +12632,7 @@ msgid "Rotate"
 msgstr "교체"
 
 #: src/features/settings/inboxes/InboxSecurity.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/webhooks/sections.tsx
 msgid "Rotate secret"
 msgstr "시크릿 교체"
@@ -12458,6 +12727,7 @@ msgstr "토요일"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -12503,6 +12773,7 @@ msgstr "초안 지금 저장"
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/sections.tsx
@@ -13446,6 +13717,10 @@ msgstr "팀과 연락처에게 표시"
 msgid "Shown to your team and to customers you reply to"
 msgstr "팀과 내가 답장하는 고객에게 표시"
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Shown to your team. Optional."
+msgstr "Shown to your team. Optional."
+
 #: src/features/status/SettingsTab.tsx
 msgid "Shown under the name on the public page."
 msgstr "공개 페이지의 이름 아래에 표시됩니다."
@@ -13711,6 +13986,14 @@ msgstr "다시 알림 설정됨"
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Snoozed until {until}"
 msgstr "{until}까지 다시 알림"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "So Yuva hears of a change at once. In Linear, open Settings, API, Webhooks, New webhook. Paste the address, select Issues, then paste the signing secret Linear shows below."
+msgstr "So Yuva hears of a change at once. In Linear, open Settings, API, Webhooks, New webhook. Paste the address, select Issues, then paste the signing secret Linear shows below."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "So Yuva hears of a change at once. In the repository or organization, open Settings, Webhooks, Add webhook. Paste the address, choose application/json, paste the secret, and select the Issues event."
+msgstr "So Yuva hears of a change at once. In the repository or organization, open Settings, Webhooks, Add webhook. Paste the address, choose application/json, paste the secret, and select the Issues event."
 
 #: src/features/contact/ContactDetail.tsx
 msgid "Some addresses are undeliverable. Clear them under Contact and identities once they work again."
@@ -14647,6 +14930,10 @@ msgstr "구독자에게 알리지 않고 인시던트를 종료했습니다"
 msgid "The interval must be {lo} to {hi} seconds."
 msgstr "간격은 {lo}초에서 {hi}초여야 합니다."
 
+#: src/features/feedback/IssuesCard.tsx
+msgid "The issue's state sets the progress the person sees."
+msgstr "The issue's state sets the progress the person sees."
+
 #: src/features/broadcasts/ListSettings.tsx
 msgid "The İYS file has one row per subscriber in İYS's columns, ONAY for subscribed and RET for unsubscribed, for Turkish senders to upload to İYS themselves. Pending subscriptions are left out."
 msgstr "İYS 파일에는 구독자마다 İYS의 열 형식으로 한 행이 있으며, 구독은 ONAY, 구독 취소는 RET입니다. 튀르키예 발송자가 직접 İYS에 업로드하기 위한 것입니다. 대기 중인 구독은 제외됩니다."
@@ -14981,6 +15268,7 @@ msgstr "시크릿은 다음 페이지에서 한 번만 표시됩니다."
 msgid "The secret is shown once, when a key is made."
 msgstr "시크릿은 키를 만들 때 한 번만 표시됩니다."
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/webhooks/sections.tsx
 msgid "The secret is shown once, when it is made. Rotate it to get a new one."
 msgstr "시크릿은 만들 때 한 번만 표시됩니다. 새로 받으려면 교체하세요."
@@ -15101,6 +15389,26 @@ msgstr "테스트가 한 단계에서 멈췄습니다."
 #: src/features/status/monitorErrors.ts
 msgid "The timeout must be 1 to 30 seconds."
 msgstr "제한 시간은 1초에서 30초여야 합니다."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "The token is removed and every link to its issues is deleted. Progress already set on feedback stays."
+msgstr "The token is removed and every link to its issues is deleted. Progress already set on feedback stays."
+
+#: src/components/common/text.ts
+msgid "The tracker could not be reached. Try again in a moment."
+msgstr "The tracker could not be reached. Try again in a moment."
+
+#: src/components/common/text.ts
+msgid "The tracker has no such issue, or the token cannot see it."
+msgstr "The tracker has no such issue, or the token cannot see it."
+
+#: src/components/common/text.ts
+msgid "The tracker refused the request. Check the target and your permissions."
+msgstr "The tracker refused the request. Check the target and your permissions."
+
+#: src/components/common/text.ts
+msgid "The tracker refused the token. Check that it is valid and has access to issues."
+msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
 #: src/features/inbox/ChatList.tsx
 msgid "The Trash is empty."
@@ -15452,6 +15760,10 @@ msgstr "사이트에서 보이는 모습의 실시간 채팅입니다. 여기서
 msgid "This is the name the app gives itself. Yuva has not verified it."
 msgstr "앱이 스스로 붙인 이름입니다. Yuva는 확인하지 않았습니다."
 
+#: src/components/common/text.ts
+msgid "This issue or this item has as many links as allowed."
+msgstr "This issue or this item has as many links as allowed."
+
 #: src/features/account/ConnectPage.tsx
 msgid "This link is incomplete"
 msgstr "이 링크가 불완전합니다"
@@ -15667,6 +15979,7 @@ msgstr "제한 시간"
 
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/issues/IssueDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Title"
@@ -15740,6 +16053,11 @@ msgstr "{person} 님의 {inbox} 접근 권한을 회수했습니다"
 msgid "tr, en-GB"
 msgstr "tr, en-GB"
 
+#: src/features/issues/IssueDialog.tsx
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Tracker"
+msgstr "Tracker"
+
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 msgid "Trash"
@@ -15787,6 +16105,14 @@ msgstr "화요일"
 #: src/features/status/SettingsTab.tsx
 msgid "Türkçe"
 msgstr "Türkçe"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Turn feedback and roadmap ideas into GitHub or Linear issues. The issue's state then tells the customer where their feedback stands."
+msgstr "Turn feedback and roadmap ideas into GitHub or Linear issues. The issue's state then tells the customer where their feedback stands."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Turn feedback into GitHub or Linear issues"
+msgstr "Turn feedback into GitHub or Linear issues"
 
 #: src/app/Palette.tsx
 #: src/features/conversation/ConversationMenu.tsx
@@ -15953,6 +16279,12 @@ msgstr "알 수 없는 기기"
 #: src/features/feedback/RoadmapCard.tsx
 msgid "Unlink"
 msgstr "연결 해제"
+
+#: src/features/feedback/IssuesCard.tsx
+#: src/features/issues/IdeaIssues.tsx
+#: src/features/issues/IssueChips.tsx
+msgid "Unlink {key}"
+msgstr "Unlink {key}"
 
 #: src/components/common/Linked.tsx
 msgid "Unlink {name}"
@@ -16601,9 +16933,17 @@ msgstr "웹 채팅"
 msgid "Web pages use the chat widget with the feedback form turned on. Apps call the feedback form from the SDK."
 msgstr "웹 페이지는 피드백 양식을 켠 채팅 위젯을 사용합니다. 앱은 SDK에서 양식을 호출합니다."
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Webhook"
+msgstr "Webhook"
+
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Webhook endpoint"
 msgstr "웹훅 엔드포인트"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Webhook secret for {revealName}"
+msgstr "Webhook secret for {revealName}"
 
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -16837,6 +17177,10 @@ msgstr "알려 드리는 시점"
 msgid "When your provider sends from another address. Replies still come to the support address."
 msgstr "제공업체가 다른 주소로 발송할 때 사용합니다. 답장은 계속 지원 주소로 옵니다."
 
+#: src/features/issues/IssueDialog.tsx
+msgid "Where"
+msgstr "Where"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Where and when did these people agree?"
 msgstr "이 사람들은 어디서 언제 동의했나요?"
@@ -16856,6 +17200,14 @@ msgstr "어디에서 발송하나요?"
 #: src/features/migrations/SourceStep.tsx
 msgid "Where is your mail now?"
 msgstr "지금 메일은 어디에 있나요?"
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Where new issues go when nobody picks a repository, as owner/repo."
+msgstr "Where new issues go when nobody picks a repository, as owner/repo."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Where new issues go when nobody picks a team, as a team key such as ENG."
+msgstr "Where new issues go when nobody picks a team, as a team key such as ENG."
 
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Where should Yuva send events?"
@@ -17192,6 +17544,10 @@ msgstr "팔로우하는 토론이 없습니다. 내가 시작했거나 답글을
 msgid "You get a new secret once. For 24 hours every delivery carries two signatures, one with the new and one with the old secret, so you can update your receiver without losing events."
 msgstr "새 시크릿은 한 번만 발급됩니다. 24시간 동안 모든 전송에는 새 시크릿과 이전 시크릿으로 만든 서명 두 개가 붙으므로, 이벤트를 잃지 않고 수신 측을 업데이트할 수 있습니다."
 
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "You get a new secret once. Webhooks from GitHub are refused until you paste it into the webhook's settings there."
+msgstr "You get a new secret once. Webhooks from GitHub are refused until you paste it into the webhook's settings there."
+
 #: src/features/account/AccountPage.tsx
 msgid "You get a notification when someone replies in these"
 msgstr "여기에 답글이 달리면 알림을 받습니다"
@@ -17418,6 +17774,10 @@ msgstr "Yuva는 {scopes} 스코프를 요청하며 그보다 많은 권한을 �
 #: src/features/migrations/text.ts
 msgid "Yuva can read the account now. Next, choose what to bring."
 msgstr "Yuva가 이제 계정을 읽을 수 있습니다. 다음으로 가져올 항목을 선택하세요."
+
+#: src/features/settings/issues/IssueTrackersPage.tsx
+msgid "Yuva checks the token with the tracker, stores it encrypted and never shows it again. It needs to read and write issues."
+msgstr "Yuva checks the token with the tracker, stores it encrypted and never shows it again. It needs to read and write issues."
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Yuva counts clicks and replies. It does not track opens."

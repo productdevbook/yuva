@@ -17,6 +17,8 @@ export type CommandName =
   | "incident"
   | "article"
   | "idea"
+  | "createIssue"
+  | "linkIssue"
   | "trash"
   | "restore"
 

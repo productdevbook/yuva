@@ -28,7 +28,10 @@ import { Ago, FrameTabs, look, Overline, PageTop } from "@/features/inbox/PageFr
 import { ProductTag } from "@/features/inbox/ProductTag"
 import { useCounts, useLoadedCount } from "@/features/inbox/queries"
 import { Lightbox } from "@/features/feedback/Lightbox"
+import { IssuesCard } from "@/features/feedback/IssuesCard"
 import { RoadmapCard } from "@/features/feedback/RoadmapCard"
+import { feedbackDraft } from "@/features/issues/draft"
+import { IssueDialogs, type IssueMode } from "@/features/issues/IssueMenu"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { attachmentUrl, type Conversation, type FeedbackProgress } from "@/lib/api"
 import { useSession } from "@/lib/session"
@@ -121,6 +124,7 @@ function Detail({ id, onReply }: { id: string; onReply: () => void }) {
   const c = conversation.data
   const contact = useContact(c?.contact_id).data
   const [ideaLinking, setIdeaLinking] = useState<"link" | "new" | null>(null)
+  const [issueMode, setIssueMode] = useState<IssueMode | null>(null)
   const progress = useRef<HTMLDivElement>(null)
   if (conversation.isPending) {
     return (
@@ -176,6 +180,7 @@ function Detail({ id, onReply }: { id: string; onReply: () => void }) {
         )}
       </section>
       <RoadmapCard c={c} onLink={() => setIdeaLinking("link")} onNew={() => setIdeaLinking("new")} />
+      <IssuesCard c={c} onCreate={() => setIssueMode("create")} onLink={() => setIssueMode("link")} />
       {f && <Meta c={c} />}
       <section ref={progress} className="flex flex-col gap-2.5 border-b px-5 py-4">
         <Overline>
@@ -190,7 +195,20 @@ function Detail({ id, onReply }: { id: string; onReply: () => void }) {
           </p>
         )}
       </section>
-      <Actions c={c} name={name} onReply={onReply} onIdea={() => setIdeaLinking("link")} progress={progress} />
+      <Actions
+        c={c}
+        name={name}
+        onReply={onReply}
+        onIdea={() => setIdeaLinking("link")}
+        onIssue={setIssueMode}
+        progress={progress}
+      />
+      <IssueDialogs
+        subject={{ kind: "conversation", id: c.id }}
+        mode={issueMode}
+        draft={feedbackDraft(c)}
+        onClose={() => setIssueMode(null)}
+      />
       {ideaLinking && (
         <Suspense fallback={null}>
           <LinkIdeaDialog c={c} startNew={ideaLinking === "new"} onClose={() => setIdeaLinking(null)} />
@@ -248,12 +266,14 @@ function Actions({
   name,
   onReply,
   onIdea,
+  onIssue,
   progress,
 }: {
   c: Conversation
   name: string
   onReply: () => void
   onIdea: () => void
+  onIssue: (mode: IssueMode) => void
   progress: React.RefObject<HTMLElement | null>
 }) {
   const { t } = useLingui()
@@ -275,6 +295,8 @@ function Actions({
     [SHORTCUTS.close]: toggle,
     [SHORTCUTS.progress]: () => progress.current?.querySelector<HTMLElement>("[aria-checked=true]")?.focus(),
     [SHORTCUTS.idea]: onIdea,
+    [SHORTCUTS.createIssue]: () => onIssue("create"),
+    [SHORTCUTS.linkIssue]: () => onIssue("link"),
   })
   return (
     <div className="flex flex-wrap gap-2 px-5 py-4">

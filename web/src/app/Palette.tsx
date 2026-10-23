@@ -83,6 +83,10 @@ function useItems(open: boolean): Item[] {
       act("incident", t`Link to a status incident`, SHORTCUTS.incident)
       act("article", t`Send a help article`, SHORTCUTS.article)
       act("idea", t`Link to a roadmap idea`, SHORTCUTS.idea)
+      if (pathname.startsWith("/feedback/")) {
+        act("createIssue", t`Create a GitHub or Linear issue`, SHORTCUTS.createIssue)
+        act("linkIssue", t`Link a GitHub or Linear issue`, SHORTCUTS.linkIssue)
+      }
       if (canManage && current) {
         if (current.trashed_at) act("restore", t`Restore from the Trash`, SHORTCUTS.restore)
         else act("trash", t`Move to the Trash`, SHORTCUTS.trash)
@@ -132,6 +136,7 @@ function useItems(open: boolean): Item[] {
       if (analytics) go(t`Add an analytics property`, "/setup/analytics")
       go(t`API keys`, "/settings/api-keys")
       go(t`Webhooks`, "/settings/webhooks")
+      go(t`Issue trackers`, "/settings/issue-trackers")
       go(t`Workspace`, "/settings/workspace")
     }
     if (isOwner) go(t`Audit log`, "/settings/audit-log")

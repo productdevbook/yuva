@@ -46,6 +46,8 @@ export const SHORTCUTS = {
   incident: "i",
   article: "H",
   idea: "b",
+  createIssue: "t",
+  linkIssue: "T",
   select: "x",
   linkSelected: "I",
   trash: "#",
@@ -186,6 +188,8 @@ export const ROADMAP_KEYS = {
   publicBoard: "P",
   replyLinked: "A",
   linkFeedback: "f",
+  createIssue: "n",
+  linkIssue: "N",
 } as const
 
 export const CHANGELOG_KEYS = {
@@ -282,6 +286,8 @@ export function ShortcutSheet({
         [k(SHORTCUTS.incident), t`Link to a status incident`],
         [k(SHORTCUTS.article), t`Send a help article`],
         [k(SHORTCUTS.idea), t`Link to a roadmap idea`],
+        [k(SHORTCUTS.createIssue), t`Create a GitHub or Linear issue`],
+        [k(SHORTCUTS.linkIssue), t`Link a GitHub or Linear issue`],
       ],
     },
     {
@@ -483,6 +489,8 @@ export function ShortcutSheet({
         [k(ROADMAP_KEYS.publicBoard), t`Make the board public or private`],
         [k(ROADMAP_KEYS.linkFeedback), t`Link feedback to the idea`],
         [k(ROADMAP_KEYS.replyLinked), t`Reply to linked feedback`],
+        [k(ROADMAP_KEYS.createIssue), t`Create a GitHub or Linear issue`],
+        [k(ROADMAP_KEYS.linkIssue), t`Link a GitHub or Linear issue`],
       ],
     },
     {

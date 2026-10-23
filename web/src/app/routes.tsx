@@ -20,6 +20,7 @@ import { ConsentPage } from "@/features/oauth/ConsentPage"
 import { ApiKeysPage } from "@/features/settings/api-keys/ApiKeysPage"
 import { AppearancePage } from "@/features/settings/appearance/AppearancePage"
 import { CannedRepliesPage } from "@/features/settings/canned/CannedRepliesPage"
+import { IssueTrackersPage } from "@/features/settings/issues/IssueTrackersPage"
 import { ConnectedAppsPage } from "@/features/settings/connected-apps/ConnectedAppsPage"
 import { InboxPage } from "@/features/settings/inboxes/InboxPage"
 import { ChannelPage } from "@/features/settings/channels/ChannelPage"
@@ -285,6 +286,7 @@ export function AppRoutes() {
               <Route path="api-keys" element={<ApiKeysPage />} />
               <Route path="connected-apps" element={<ConnectedAppsPage />} />
               <Route path="connected-apps/:assistant" element={<ConnectedAppsPage />} />
+              <Route path="issue-trackers" element={<IssueTrackersPage />} />
               <Route path="webhooks" element={<WebhooksPage />} />
               <Route path="webhooks/:webhookId" element={<WebhookPage />} />
               <Route path="migrations" element={<MigrationsPage />} />
