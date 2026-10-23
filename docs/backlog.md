@@ -144,7 +144,7 @@ a withdrawn item stays here marked withdrawn. Work before `Y-117` is tracked in 
 
 ### Y-130 · Version 0.1.0 everywhere
 
-- **Area** release · **Owner** orchestrator · **Priority** P0 · **Depends on** M24, M25, Y-129 · **Chapters** –
+- **Area** release · **Owner** orchestrator · **Priority** P0 · **Depends on** M24, M25, M27–M33, Y-129 · **Chapters** –
 - **Acceptance**
   - `0.1.0` in `openapi/openapi.yaml`, `sdk/js/package.json`, `sdk/swift/Sources/YuvaKit/Yuva.swift`,
     `sdk/kotlin/gradle.properties`, `deploy/helm/yuva/Chart.yaml` (version and appVersion),
@@ -169,3 +169,413 @@ a withdrawn item stays here marked withdrawn. Work before `Y-117` is tracked in 
   - The container image, npm `useyuva`, JitPack, SwiftPM and the MCP registry entry report `0.1.0`.
   - A fresh install from `docs/install.md` on a clean host serves `/healthz` and `/v1/version`
     with `0.1.0`.
+
+## M27 — Scale and safety
+
+### Y-134 · Rate limits shared across replicas
+
+- **Area** api · **Owner** yuva-api · **Priority** P0 · **Depends on** – · **Chapters** architecture › Server
+- **Acceptance**
+  - Every limit in `api/internal/api/ratelimit.go` and the per-feature limiters (sign-up, analytics
+    collect and query, list imports, monitors, migration tests) counts in Postgres, not in process
+    memory, so N replicas allow the same number of requests as one.
+  - The hot path stays one statement per check; expired windows are swept by a River job.
+  - A test runs two servers on one database and shows the 31st session request in a minute from one
+    address gets `429` whichever server answers.
+  - `deploy/helm/yuva/values.yaml` and `docs/operations.md` say limits hold across replicas.
+
+### Y-135 · Workspace audit log
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P1 · **Depends on** – · **Chapters** architecture › Privacy and data
+- **Acceptance**
+  - An `audit_log` table with `workspace_id`, actor (member, API key, OAuth grant, operator CLI),
+    action, target and time, written in the same transaction as: member invite, role and access
+    changes, member removal, API key and webhook create/revoke/secret rotation, channel credential
+    and identity secret changes, retention change, exports, deletes of inboxes, contacts and the
+    workspace, broadcast approval.
+  - No message content and no secret in a row.
+  - `GET /v1/audit-log` for owners and keys with a new `audit:read` scope, filtered by actor, action
+    and time; kept `YUVA_AUDIT_DAYS` (365).
+  - Panel: Settings › Audit log for owners. `migration_audit` stays as it is.
+
+### Y-136 · Attachment limits per channel
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P2 · **Depends on** – · **Chapters** architecture › Storage
+- **Acceptance**
+  - A channel can narrow `YUVA_ATTACHMENT_MAX_BYTES` and `YUVA_ATTACHMENT_TYPES`, never widen them.
+  - The widget and the SDKs read the channel's limits from `/client/v1` and refuse a file before upload.
+  - Inbound e-mail over the limit keeps the message and records the dropped attachment as now.
+  - The "per-channel limits can narrow them later" line in `architecture.md` is replaced.
+
+### Y-137 · OpenTelemetry tracing
+
+- **Area** api · **Owner** yuva-api · **Priority** P2 · **Depends on** – · **Chapters** architecture › Server
+- **Acceptance**
+  - OTLP traces for HTTP requests, River jobs, SMTP sends, webhook deliveries and Postgres queries,
+    off unless `OTEL_EXPORTER_OTLP_ENDPOINT` is set (standard `OTEL_*` variables).
+  - No message body, address or secret in span attributes; workspace and inbox ids only.
+  - Log lines carry the trace id when tracing is on.
+  - `docs/operations.md` and `docs/configuration.md` (with `tr`, `de`) document it.
+
+## M28 — Team workflow
+
+### Y-138 · Teams
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P0 · **Depends on** – · **Chapters** architecture › Concepts
+- **Acceptance**
+  - Owners and admins create teams of members; a team can be granted inbox access like a member, and a
+    member's access is the union of their own grants and their teams'.
+  - A conversation can be assigned to a team, a member or both; "Unassigned" and "Mine" filters gain
+    "My teams".
+  - `/v1/teams`, events, webhooks and MCP `list_teams`; agents see the teams they belong to.
+  - A removed member loses team access at once; an agent never sees a conversation of an inbox no
+    grant gives them.
+
+### Y-139 · Automatic assignment
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P0 · **Depends on** Y-138 · **Chapters** architecture › Concepts
+- **Acceptance**
+  - Per inbox (and per team): off, round robin or least open conversations, with a per-member cap.
+  - Only members who are online, not `away` and inside the inbox's business hours are chosen; a
+    conversation waits unassigned when nobody is, and is assigned when someone becomes available.
+  - Reopened conversations go back to their last assignee when that member is still eligible.
+  - The assignment is an event like a manual one, with webhooks; concurrent arrivals never exceed a cap
+    (test with parallel inserts).
+
+### Y-140 · SLA policies
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P0 · **Depends on** – · **Chapters** architecture › Concepts
+- **Acceptance**
+  - Policies with first-reply, next-reply and resolution targets, counted in the inbox's business hours,
+    applied by inbox, channel kind, label or priority.
+  - Each conversation shows its due time and state (on track, due soon, breached) in the list and the
+    thread; the list sorts by due time.
+  - A breach and an approaching breach notify the assignee (and team) and fire
+    `conversation.sla_breached`; snoozed and pending time pauses the clock.
+  - `/v1/stats` and the reports count met and breached per inbox and member.
+
+### Y-141 · Automation rules
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P0 · **Depends on** Y-138 · **Chapters** architecture › Concepts
+- **Acceptance**
+  - Rules per workspace or inbox: a trigger (conversation created, message received, status changed,
+    idle for a time), conditions (channel, kind, category, subject or body contains, contact attribute,
+    label, priority, business hours) and actions (label, assign, priority, status, snooze, note, reply
+    with a canned reply, webhook).
+  - Rules run in a River job after the change commits, in a set order, each at most once per trigger, and
+    a rule's own change never triggers a rule (no loops).
+  - Every action is an event naming the rule; a rule log shows the last runs and failures.
+  - A rule never sends a reply to an auto-reply or bounce (the existing loop protection holds).
+
+### Y-142 · Macros
+
+- **Area** web · **Owner** yuva-api, then yuva-panel · **Priority** P1 · **Depends on** – · **Chapters** architecture › Panel
+- **Acceptance**
+  - A macro is a canned reply plus actions (labels, assignee, status, priority, snooze), personal or
+    shared, chosen from the composer's `/` menu and the command palette.
+  - Applying it fills the composer and applies the actions only when the reply is sent, with the usual
+    undo.
+  - `/v1/macros` and MCP `list_macros`; canned replies keep working unchanged.
+
+### Y-143 · Saved views
+
+- **Area** web · **Owner** yuva-api, then yuva-panel · **Priority** P1 · **Depends on** – · **Chapters** architecture › Panel
+- **Acceptance**
+  - Any list filter and search can be saved as a view, personal or shared with the workspace or a team,
+    with its count in the rail.
+  - A shared view shows each member only conversations they may see.
+  - `/v1/views`; views survive a renamed or deleted label (the filter drops it).
+
+### Y-144 · Custom fields
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P1 · **Depends on** – · **Chapters** architecture › Concepts
+- **Acceptance**
+  - Owners define typed fields (text, number, date, select, checkbox) for conversations and contacts;
+    contact attributes that match a field are validated by it, others stay free-form.
+  - Fields show and edit in the thread sidebar, filter the conversation list and views, and appear in
+    the API, webhooks and MCP.
+  - A field marked required on close blocks closing without it (`409 field_required`).
+
+## M29 — E-mail and reports
+
+### Y-145 · Cc and Bcc on replies
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P0 · **Depends on** – · **Chapters** architecture › E-mail
+- **Acceptance**
+  - Inbound `Cc` addresses are kept on the conversation as participants; a reply goes to the contact
+    and, by default, to the participants, editable per reply with Cc and Bcc fields.
+  - A participant's reply joins the same conversation, not a new one; loop and spam protection hold.
+  - Bcc is never shown to the contact or stored in sent headers.
+  - The "no `Cc`" line in `architecture.md` › E-mail is replaced by the rule.
+
+### Y-146 · Forward a conversation by e-mail
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P1 · **Depends on** Y-145 · **Chapters** architecture › E-mail
+- **Acceptance**
+  - A member forwards a message or the whole conversation to any address, with a note and attachments,
+    from the inbox's e-mail channel.
+  - A reply from that address joins the conversation as a participant message.
+  - The forward is an event in the timeline; notes are never forwarded.
+
+### Y-147 · Reports
+
+- **Area** web · **Owner** yuva-api, then yuva-panel · **Priority** P0 · **Depends on** Y-140 · **Chapters** architecture › Panel
+- **Acceptance**
+  - A Reports section: conversations opened and closed, first-reply and resolution times (median, p90),
+    SLA met and breached, ratings, by day or week, broken down by inbox, channel, label, team and member,
+    over up to 13 months.
+  - Answers come from daily rollups, not from scanning `messages`, and agree with `/v1/stats` for today.
+  - CSV export of each report; agents see only their inboxes.
+
+## M30 — Own domains and content
+
+### Y-148 · Own domains for help centers, roadmaps and What's new
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P1 · **Depends on** – · **Chapters** architecture › Status pages, Help center
+- **Acceptance**
+  - The status page custom-domain machinery (CNAME and TXT checks, `YUVA_STATUS_DOMAINS=ask` and
+    `cloudflare`) serves help centers, roadmap boards and changelogs too.
+  - The domain check answers for any of them; one domain belongs to one page of one workspace.
+  - The "later" lines in M20, M21 and M22 of `architecture.md` are replaced.
+
+### Y-149 · Feedback categories per inbox
+
+- **Area** api · **Owner** yuva-api, then yuva-panel, yuva-mobile, yuva-widget · **Priority** P2 · **Depends on** – · **Chapters** architecture › Concepts
+- **Acceptance**
+  - An inbox lists its feedback categories (key, name per locale, icon); the default stays `bug`, `idea`,
+    `praise`, `other`.
+  - `/client/v1` returns them and the widget and SDKs render them without a release.
+  - A removed category keeps its feedback, shown under Other.
+
+### Y-150 · Help article import from Zendesk and Help Scout
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P2 · **Depends on** – · **Chapters** architecture › Help center
+- **Acceptance**
+  - Categories, sections and articles with translations and images import into a help center as drafts,
+    with redirects from the old URLs listed for the owner.
+  - Read-only access to the source; tests against recorded API answers.
+  - Guides in en, tr, de.
+
+## M31 — More help desks
+
+### Y-151 · Help-desk API tokens and a source registry
+
+- **Area** api · **Owner** yuva-api · **Priority** P1 · **Depends on** – · **Chapters** architecture › Moving to Yuva
+- **Acceptance**
+  - The two-way `if source == zendesk … else helpscout` switches (`helpdeskSource`, `helpdeskHost`,
+    `helpdeskScopes`, `syncStart`, `deskAttributes`, `presetSource`, `Helpdesk`) read one registry
+    entry per help desk: API hosts, file hosts, auth kind, limit and retry headers, the limit's
+    window (per minute, per 10 seconds, per day), default budget, contact attribute prefix and sync
+    cursor. Zendesk and Help Scout behave exactly as before (their recorded-answer tests unchanged).
+  - A help desk whose auth is `token` connects with `PUT /v1/migrations/{id}/credentials`
+    (`kind: token`, the token, and for a source that needs them a second secret, an account
+    subdomain or an HTTPS base URL); the secret is sealed like OAuth tokens, never answered, logged
+    or put in job arguments, and deleted when the migration completes or is cancelled. The
+    `set_credentials` action is listed for these sources; `sign_in` is not.
+  - The token goes only in the source's own auth header (Bearer, Basic or a named header) and only
+    to the source's API hosts; a team-entered base URL is dialled through `checkedDial` (private
+    addresses only with the operator's `AllowPrivate`). A transport test proves that a non-`GET`,
+    a non-HTTPS URL, another host, a redirect and an attachment host never receive the token.
+  - `Budget` keeps a per-day class next to per-minute, and reads a limit header whose window is
+    not a minute; `420` answers count as limit answers like `429`. The dry run's time estimate uses
+    the daily budget when there is one.
+  - Panel: the Connect step shows a token form (fields per source, the guide inline) in place of
+    "Sign in"; strings in the `en`, `tr`, `de` catalogs. MCP: `create_migration` for such a source
+    returns `connect_url` to that form; no tool takes the token.
+  - Spec first: `MigrationAuth` gains `token`, `MigrationCredentials` documents it; Redocly lint,
+    regenerate, and the generated-code diff is clean.
+
+### Y-152 · Front history import
+
+- **Area** api · **Owner** yuva-api · **Priority** P1 · **Depends on** Y-151 · **Chapters** architecture › Moving to Yuva
+- **Acceptance**
+  - Connects with an API token a Front admin creates (Settings › Developers › API tokens) with the
+    feature "Access resources", the Global and Shared namespaces (Private only if personal inboxes
+    move) and the permission Read only. Yuva sends it as Bearer to `api2.frontapp.com` only. Unsure:
+    whether Front lets a caller read the token's permissions; if the token's claims carry them, a
+    token with Write, Delete or Send is refused as `scope_too_broad`, else the guide asks for Read
+    and the GET-only transport enforces it.
+  - Maps shared inboxes to folders and inboxes, conversations to conversations, inbound messages
+    to messages in and teammates' messages to messages out, comments to notes, tags to labels,
+    teammates to members, the assignee to the assignee, contacts and their e-mail handles to
+    contacts, message attachments (on the API host, with the token) to files. Status: archived or
+    resolved to closed, waiting or snoozed to pending, others open; deleted and spam never read
+    (confirm Front's current status fields).
+  - Copy lists each inbox's conversations with Front's page token; sync reads changes through
+    `GET /conversations/search/{query}` with `after:` (a `GET`, under the search guard of 40% of
+    the limit) from the scan's start minus the overlap (confirm the filter).
+  - Budget: half of `x-ratelimit-limit` (Starter 50, Professional 100, Enterprise 200 a minute),
+    at most 2 a second per conversation for Front's per-resource guard, `retry-after` honoured
+    on 429; a killed copy resumes from the stored page token without duplicates.
+  - Tests against recorded answers in `helpdesktest/testdata/front` (invented data, listed in
+    `NOTICE`): two inboxes, paged conversations, messages, comments, an attachment, a 429 with
+    `retry-after`, and a request log showing only `GET`s to `api2.frontapp.com` with the token.
+  - Panel: Front on the Source step, its token form on Connect; guide `docs/migrate-front.md` with
+    `docs/tr/` and `docs/de/` (where to create and later delete the token, what is and is not
+    copied, limits, the cutover). MCP: `front` in `create_migration`'s providers and the
+    `move_to_yuva` prompt names where to delete the token.
+
+### Y-153 · Freshdesk history import
+
+- **Area** api · **Owner** yuva-api · **Priority** P1 · **Depends on** Y-151 · **Chapters** architecture › Moving to Yuva
+- **Acceptance**
+  - Connects with the API key of a Freshdesk admin (Profile settings › View API key) and the
+    account subdomain; sent as Basic `key:X` to `<subdomain>.freshdesk.com` only. Freshdesk has no
+    scopes or read-only key: the GET-only transport is the only guard, and the guide says so. The
+    connection test reads `GET /api/v2/agents/me` and refuses an agent who is not an admin, as
+    Zendesk does.
+  - Maps tickets to conversations (the description as the first message), incoming conversations
+    to messages in, replies to messages out, private and public notes to notes (public notes are
+    not mailed to the requester; confirm), tags to labels, agents to members, the responder to the
+    assignee, requesters to contacts, products to folders and inboxes (tickets without a product to
+    the default), attachments to files. Status 2 open, 3 pending, 4 and 5 closed, custom statuses
+    open. Spam and deleted tickets are not in Freshdesk's default listing and are never read.
+  - Lists `GET /api/v2/tickets?updated_since=…&order_by=updated_at&order_type=asc&per_page=100`;
+    Freshdesk stops a listing after 300 pages, so the reader starts a new listing at the last
+    ticket's `updated_at` and dedupes by ticket id. Attachments are pre-signed URLs on another host
+    that expire: fetched by the attachment client without the key, and a refused one refetches the
+    conversation once for a fresh URL.
+  - Budget: half of `X-RateLimit-Total` (the plan's per-minute limit; 50 a minute until the first
+    answer), `Retry-After` honoured on 429; invalid requests count against Freshdesk's limit, so a
+    4xx other than 404 on an item stops the slice. Resume and sync from the stored `updated_since`.
+  - Tests against recorded answers in `helpdesktest/testdata/freshdesk`: a listing that hits the
+    300-page cut (served small), conversations with notes, an expired attachment URL, a 429, and a
+    request log with only `GET`s and the key only on the account host.
+  - Panel and guide `docs/migrate-freshdesk.md` in en, tr, de (reset the API key after the move,
+    since Yuva cannot revoke it); MCP `freshdesk` provider as for Zendesk.
+
+### Y-154 · Intercom history import
+
+- **Area** api · **Owner** yuva-api · **Priority** P1 · **Depends on** Y-151 · **Chapters** architecture › Moving to Yuva
+- **Acceptance**
+  - Connects with the access token of a private app the team creates in its own workspace
+    (Developer Hub › Configure › Authentication) with only the read permissions: read
+    conversations, read and list users and companies, read admins, read tags. Sent as Bearer to the
+    workspace's region host (`api.intercom.io`, `api.eu.intercom.io` or `api.au.intercom.io`,
+    chosen on Connect) with a pinned `Intercom-Version` (2.17 is current in the docs; pin what the
+    recorded answers follow). Unsure: whether Intercom reports a token's permissions; the GET-only
+    transport is the guard either way. OAuth is not used: a team's own app needs none, and a public
+    app needs Intercom's review.
+  - Maps conversations to conversations, user comments to messages in, admin and bot comments to
+    messages out, `note` parts to notes, assignment and state parts to nothing, tags to labels,
+    admins to members, the admin assignee to the assignee, teams to folders and inboxes
+    (unassigned to the default), contacts (users and leads) to contacts, attachments
+    (Intercom's CDN, fetched without the token) to files. State: open open, snoozed pending,
+    closed closed.
+  - No search: Intercom's search endpoints are `POST`, which the transport refuses. Copy and sync
+    page through `GET /conversations` (cursor `starting_after`, `per_page` 150, newest change
+    first; confirm the order) and stop at the cursor's time; `GET /conversations/{id}` returns
+    the parts. Confirm whether a very long conversation's parts are capped; if so the cut is
+    recorded as a failed item, not skipped silently.
+  - Budget: half of the limit, read from `X-RateLimit-Limit`, which counts 10-second windows
+    (10,000 a minute per workspace's private apps, shared between them); 429 honoured with
+    `X-RateLimit-Reset` when `Retry-After` is missing.
+  - Tests against recorded answers in `helpdesktest/testdata/intercom`: paged conversations, parts
+    of every kind, a team, a contact without e-mail, a CDN attachment, a 429, and a request log
+    with only `GET`s and the token only on the region host.
+  - Panel and guide `docs/migrate-intercom.md` in en, tr, de (delete the app afterwards); MCP
+    `intercom` provider as for Zendesk.
+
+### Y-155 · Crisp history import
+
+- **Area** api · **Owner** yuva-api · **Priority** P1 · **Depends on** Y-151 · **Chapters** architecture › Moving to Yuva
+- **Acceptance**
+  - Connects with a website token the workspace owner generates (Settings › Workspace Settings ›
+    Advanced configuration › API Token) and the website id; sent as Basic `identifier:key` with
+    `X-Crisp-Tier: website` to `api.crisp.chat` only. Crisp documents no read-only scope for a
+    website token: the GET-only transport is the guard. Plugin tokens (Marketplace, scope review)
+    are not used. Unsure: which Crisp plans offer the website token.
+  - Maps the website to one folder and inbox, conversations (sessions) to conversations, user
+    messages to messages in, operator messages to messages out, `note` messages to notes, events
+    and pickers to nothing, segments to labels, operators to members, the assigned operator to the
+    assignee, the conversation's person (email, nickname, phone) to a contact, `file` and
+    `animation` messages to files fetched from Crisp's storage hosts without the token. State:
+    pending and unresolved open, resolved closed.
+  - Lists conversations page by page ordered by last update (confirm `order_date_updated` and the
+    date filters) and each conversation's messages backwards with `timestamp_before`; the cursor
+    is the page and the newest update seen, so a resume repeats at most one page.
+  - Budget: the website token's quota is 10,000 requests a day, so Yuva uses at most 5,000 a day
+    through the daily class, about 2 requests per conversation; the dry run states the days it
+    will take. Crisp sends no limit headers: a 429 or 420 waits a minute, then halves the pace.
+  - Tests against recorded answers in `helpdesktest/testdata/crisp`: two pages of conversations,
+    paged messages with a note and a file, an anonymous visitor, a 420, the daily budget running
+    out and resuming the next day on the test clock, and a request log with only `GET`s.
+  - Panel and guide `docs/migrate-crisp.md` in en, tr, de (roll the token afterwards); MCP `crisp`
+    provider as for Zendesk.
+
+### Y-156 · Chatwoot history import
+
+- **Area** api · **Owner** yuva-api · **Priority** P1 · **Depends on** Y-151 · **Chapters** architecture › Moving to Yuva
+- **Acceptance**
+  - Connects with the access token of a Chatwoot administrator (Profile Settings › Access Token),
+    the base URL (`https://app.chatwoot.com` or the team's own HTTPS host, dialled through the
+    address checks) and the account, picked from `GET /api/v1/profile`; sent in the
+    `api_access_token` header to that host only. Chatwoot has no read-only token: the GET-only
+    transport is the guard. The connection test refuses a user who is not an administrator of the
+    account, since agents see only their inboxes.
+  - Maps inboxes to folders and inboxes, conversations to conversations, incoming messages to
+    messages in, outgoing to messages out, private messages to notes, activity messages to
+    nothing, conversation labels to labels, agents to members, the assignee to the assignee,
+    contacts to contacts, attachments to files (the instance's storage URLs, fetched without the
+    token). Status: open open, pending and snoozed pending, resolved closed.
+  - Lists `GET /api/v1/accounts/{id}/conversations?status=all` by last activity and each
+    conversation's messages backwards with `before=<message id>` (confirm page sizes); sync reads
+    the listing until the cursor's time.
+  - Budget: Chatwoot sends no limit headers and throttles per IP (self-hosted default from
+    `RACK_ATTACK_LIMIT`; Chatwoot Cloud publishes no figure): a fixed 60 requests a minute,
+    `Retry-After` honoured on 429 when present, else a minute.
+  - Tests against recorded answers in `helpdesktest/testdata/chatwoot`: profile with two accounts,
+    inboxes, paged conversations and messages with a private note and an attachment on another
+    host, a 429 without `Retry-After`, a base URL resolving to a private address refused, and a
+    request log with only `GET`s and the token only on the base host.
+  - Panel and guide `docs/migrate-chatwoot.md` in en, tr, de (reset the access token afterwards);
+    MCP `chatwoot` provider as for Zendesk.
+
+## M32 — Integrations and push
+
+### Y-157 · Slack
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P1 · **Depends on** – · **Chapters** architecture › Webhooks
+- **Acceptance**
+  - A workspace connects Slack through OAuth; an inbox posts new conversations, mentions and SLA
+    breaches to a chosen channel.
+  - Replying in the Slack thread posts a note (or, with a command, a reply) as the Slack user's linked
+    member; unlinked users can do nothing.
+  - No message body leaves for Slack unless the inbox setting allows content; otherwise a link only.
+
+### Y-158 · Feedback to GitHub and Linear issues
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P1 · **Depends on** – · **Chapters** architecture › Feedback (M18)
+- **Acceptance**
+  - From a feedback or a roadmap idea a member creates or links a GitHub or Linear issue.
+  - The issue's state sets the feedback's progress (open → planned, in progress, closed → done) the way
+    roadmap stages do; a progress set by hand holds until the next change.
+  - Tokens stored encrypted under the master key; the link shows in the thread and the API.
+
+### Y-159 · Push sent by Yuva
+
+- **Area** api · **Owner** yuva-api, then yuva-mobile · **Priority** P2 · **Depends on** – · **Chapters** architecture › In-app messaging
+- **Acceptance**
+  - An `app` channel can hold APNs (token key) and FCM (service account) credentials, encrypted; Yuva
+    then sends the reply push itself when the contact is not connected, with `yuva_conversation_id`.
+  - Hosts that send their own push keep working with the setting off.
+  - Swift and Kotlin register the device token with `/client/v1`; invalid tokens are removed.
+  - The "later, optional channel setting" line in `architecture.md` is replaced.
+
+## M33 — Single sign-on for members
+
+### Y-160 · Sign in with OpenID Connect
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P1 · **Depends on** Y-135 · **Chapters** architecture › Panel
+- **Acceptance**
+  - A workspace configures an OIDC provider (Google Workspace, Microsoft Entra, Okta, Keycloak) and
+    claims its e-mail domains after a DNS TXT check.
+  - People of a claimed domain sign in through it; optionally codes and passkeys are refused for them.
+  - Just-in-time membership with a default role, off by default; sign-ins in the audit log.
+
+### Y-161 · Sign in with SAML
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P2 · **Depends on** Y-160 · **Chapters** architecture › Panel
+- **Acceptance**
+  - SAML 2.0 SP-initiated sign-in on the same domain claim and membership rules as OIDC.
+  - Signed assertions only; replay and clock-skew tests.

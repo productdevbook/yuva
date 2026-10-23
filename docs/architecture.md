@@ -39,8 +39,8 @@ articles of a product next to the documentation on its own site (see "Help cente
 
 Feedback is a conversation that starts on the `app` or `api` channel with a `feedback` kind and
 metadata (category, app version, build, OS, OS version, device model, locale, screen, installation
-id). The categories are fixed for now (`bug`, `idea`, `praise`, `other`; a per-inbox list can come
-later) and `/client/v1` returns them with the inbox so the SDKs never hard-code them. Apps send it
+id). The categories are fixed for now (`bug`, `idea`, `praise`, `other`; a per-inbox list is planned
+in #149) and `/client/v1` returns them with the inbox so the SDKs never hard-code them. Apps send it
 with `POST /client/v1/feedback` (JSON, or multipart with screenshots); host backends whose forms
 are server-rendered send it with an API key to `POST /v1/feedback`, naming the user by their
 external id, into any inbox of the key's workspace. The conversation starts on the inbox's `api`
@@ -922,7 +922,7 @@ inline thread inside a product's own panel.
   `yuva_conversation_id` (APNs: a top-level key next to `aps`; FCM: a `data` entry);
   `Yuva.handleNotification` in both SDKs reads it and returns the conversation to open.
   `GET /v1/contacts/{id}/presence` answers the same question on demand. Yuva sending push itself
-  is a later, optional channel setting.
+  is a later, optional channel setting (#159).
 
 ### Webhooks
 
@@ -2577,7 +2577,7 @@ and the searches that found nothing say which article to write next.
   `chat_channel_id` the page embeds `<yuva-chat>` under "Still need help?", and a conversation started
   there carries the article.
   Own domains (`help.example.com`) are not part of M20: generalising the status custom-domain machinery
-  (CNAME and TXT checks, the on-demand certificate check, Cloudflare custom hostnames) is a later step.
+  (CNAME and TXT checks, the on-demand certificate check, Cloudflare custom hostnames) is a later step (#148).
 - **Rendering.** One goldmark instance for members' content: GFM tables, strikethrough, autolinks,
   heading ids (anchors and a table of contents from h2 and h3), fenced code without highlighting; raw
   HTML is dropped. Images stay only when their URL is this server's `/i/{token}` of the same
@@ -2792,7 +2792,7 @@ posts, votes, follows, moderation, reader accounts, rendering and notifications 
     Without JavaScript the page reads complete and the buttons are absent.
   - **Analytics.** With an `analytics_property_id` the page sends cookieless page views as status pages
     do.
-  - **Later.** Own domains and a separate origin come later, with M20's.
+  - **Later.** Own domains and a separate origin come later, with M20's (#148).
 - **Rendering.** Idea bodies and replies are discussion posts: Markdown rendered by M12's goldmark and
   sanitized by bluemonday's UGC policy into `body_html`. There is no second renderer. Titles are 3 to 200
   characters and bodies up to 20,000, as for discussions.
@@ -3073,7 +3073,7 @@ appear in help search. Writing, rendering and translating are M20's.
     plain `404` text of status pages.
   - **Analytics.** With an `analytics_property_id` the pages send cookieless page views as status and
     help pages do.
-  - **Later.** Own domains come with M20's.
+  - **Later.** Own domains come with M20's (#148).
 - **Rendering.** M20's one goldmark instance for members' content and its bluemonday policy: images only
   from this server's `/i/{token}` of the same workspace, raw HTML dropped, rendered once at publish and
   stored. The entry image is served from `/i/{token}` with its immutable cache.
@@ -3258,7 +3258,7 @@ members and API
 keys download them through `/v1/attachments/{id}`, which checks inbox access. The size limit
 (`YUVA_ATTACHMENT_MAX_BYTES`, 25 MiB by default) and the content-type allowlist
 (`YUVA_ATTACHMENT_TYPES`, comma-separated, `image/*` style wildcards allowed) are server-wide for
-now; per-channel limits can narrow them later.
+now; per-channel limits can narrow them later (#136).
 
 ## Privacy and data
 
