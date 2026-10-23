@@ -502,6 +502,10 @@ public actor YuvaClient {
         let feedbackProgress: String?
     }
 
+    private struct RemovedData: Decodable {
+        let id: String
+    }
+
     private struct ReadData: Decodable {
         let conversationId: String
         let readAt: Date
@@ -513,7 +517,7 @@ public actor YuvaClient {
         let author: YuvaMessageAuthor
     }
 
-    private func handle(_ data: Data) -> Bool {
+    func handle(_ data: Data) -> Bool {
         let decoder = YuvaJSON.decoder
         guard let envelope = try? decoder.decode(Envelope.self, from: data) else { return false }
         if let id = envelope.id { lastEventId = max(lastEventId, id) }
@@ -529,6 +533,10 @@ public actor YuvaClient {
             broadcast(.resyncRequired)
         case "conversation.created":
             if let conversation = payload(YuvaConversation.self) { broadcast(.conversationCreated(conversation)) }
+        case "conversation.removed":
+            if let id = payload(RemovedData.self)?.id ?? envelope.conversationId {
+                broadcast(.conversationRemoved(id: id))
+            }
         case "conversation.updated":
             if let status = payload(StatusData.self) {
                 broadcast(.conversationUpdated(

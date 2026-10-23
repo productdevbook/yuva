@@ -17,8 +17,14 @@ final class ConversationsModel {
     var session: YuvaSession?
     var loading = false
     var failed = false
+    var removal: Removal?
     private var messagesCursor: String?
     private var feedbackCursor: String?
+
+    struct Removal: Equatable {
+        let id: String
+        let token = UUID()
+    }
 
     init(client: YuvaClient) {
         self.client = client
@@ -71,6 +77,10 @@ final class ConversationsModel {
             switch event {
             case .conversationCreated(let conversation):
                 upsert(conversation)
+            case .conversationRemoved(let id):
+                messages.removeAll { $0.id == id }
+                feedback.removeAll { $0.id == id }
+                removal = Removal(id: id)
             case .conversationUpdated(let id, _, _, _, let progress):
                 await refresh(id, progress: .some(progress))
             case .read(let id, _):
@@ -124,6 +134,7 @@ public struct YuvaConversationsView: View {
     @State private var path: [ThreadRoute] = []
     @State private var tab: ConversationsTab
     @State private var sendingFeedback = false
+    @State private var notice: String?
     @Binding private var openConversationId: String?
     private let section: YuvaConversationsSection?
 
@@ -182,6 +193,28 @@ public struct YuvaConversationsView: View {
                     model.upsert(conversation)
                     path = [.conversation(conversation.id)]
                 })
+        }
+        .overlay(alignment: .bottom) {
+            if let notice {
+                Text(notice)
+                    .font(.footnote).multilineTextAlignment(.center)
+                    .padding(.horizontal, 16).padding(.vertical, 10)
+                    .background(.regularMaterial, in: Capsule())
+                    .padding(.horizontal, 24).padding(.bottom, 16)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .accessibilityIdentifier("yuva.conversations.removedNotice")
+            }
+        }
+        .animation(.snappy, value: notice)
+        .onChange(of: model.removal) { _, removal in
+            guard let removal, path.contains(where: { $0.id == removal.id }) else { return }
+            path.removeAll { $0.id == removal.id }
+            notice = L.t("conversation.removed")
+        }
+        .task(id: notice) {
+            guard notice != nil else { return }
+            try? await Task.sleep(for: .seconds(4))
+            if !Task.isCancelled { notice = nil }
         }
         .countsAsOpen()
         .task { await model.load() }

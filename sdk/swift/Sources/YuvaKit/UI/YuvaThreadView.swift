@@ -31,6 +31,7 @@ final class ThreadModel {
     var ratingChoice: YuvaRating?
     var ratingSending = false
     var ratingError: String?
+    var removed = false
     private var olderCursor: String?
     private var loadingOlder = false
     private var typingClear: Task<Void, Never>?
@@ -88,6 +89,17 @@ final class ThreadModel {
                     typingName = nil
                     await markRead()
                 }
+            case .conversationRemoved(let id):
+                guard id == conversationId else { continue }
+                stopTyping()
+                conversationId = nil
+                conversation = nil
+                olderCursor = nil
+                memberReadAt = nil
+                typingName = nil
+                ratingChoice = nil
+                items = items.filter { $0.message == nil }
+                removed = true
             case .conversationUpdated(let id, _, _, _, let progress):
                 if id == conversationId, let updated = try? await client.conversation(id: id) {
                     conversation = updated.settingFeedbackProgress(progress)
@@ -185,6 +197,7 @@ final class ThreadModel {
                 conversation = started.conversation
                 message = started.message
             }
+            removed = false
             upsert(message)
         } catch {
             if let index = items.firstIndex(where: { $0.id == clientId }) { items[index].state = .failed }
@@ -306,6 +319,12 @@ public struct YuvaThreadView: View {
                 LazyVStack(spacing: 0) {
                     if model.canLoadOlder {
                         ProgressView().padding().onAppear { Task { await model.loadOlder() } }
+                    }
+                    if model.removed {
+                        Text(L.t("conversation.removed"))
+                            .font(.footnote).foregroundStyle(.secondary).multilineTextAlignment(.center)
+                            .frame(maxWidth: .infinity).padding(.horizontal, 24).padding(.top, 24)
+                            .accessibilityIdentifier("yuva.thread.removedNote")
                     }
                     if model.items.isEmpty && !model.loading && !model.failed {
                         greeting

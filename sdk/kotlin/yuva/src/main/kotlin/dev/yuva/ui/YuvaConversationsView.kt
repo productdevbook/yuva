@@ -53,6 +53,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
@@ -116,8 +118,12 @@ internal class ConversationsState(private val client: YuvaClient) {
     var session by mutableStateOf<YuvaSession?>(null)
     var loading by mutableStateOf(true)
     var failed by mutableStateOf(false)
+    var removal by mutableStateOf<Removal?>(null)
+    var notice by mutableStateOf(false)
     private var messagesCursor: String? = null
     private var feedbackCursor: String? = null
+
+    class Removal(val id: String)
 
     val hasFeedback: Boolean get() = feedback.isNotEmpty()
 
@@ -163,6 +169,11 @@ internal class ConversationsState(private val client: YuvaClient) {
         client.events().collect { event ->
             when (event) {
                 is YuvaEvent.ConversationCreated -> upsert(event.conversation)
+                is YuvaEvent.ConversationRemoved -> {
+                    messages.removeAll { it.id == event.id }
+                    feedback.removeAll { it.id == event.id }
+                    removal = Removal(event.id)
+                }
                 is YuvaEvent.ConversationUpdated -> refresh(event.conversationId) { it.withFeedbackProgress(event.feedbackProgress) }
                 is YuvaEvent.Read -> refresh(event.conversationId)
                 is YuvaEvent.MessageCreated -> refresh(event.message.conversationId)
@@ -210,6 +221,13 @@ fun YuvaConversationsView(
     val scope = rememberCoroutineScope()
     LaunchedEffect(client) { state.load() }
     LaunchedEffect(client) { state.listen() }
+    LaunchedEffect(state.removal) {
+        val removed = state.removal ?: return@LaunchedEffect
+        if ((route as? Route.Thread)?.id == removed.id) {
+            route = null
+            state.notice = true
+        }
+    }
     LaunchedEffect(openConversationId) { if (openConversationId != null) route = Route.Thread(openConversationId) }
 
     AnimatedContent(
@@ -269,6 +287,14 @@ private fun ConversationsList(
     modifier: Modifier,
 ) {
     val scope = rememberCoroutineScope()
+    val snackbars = remember { SnackbarHostState() }
+    val removedNotice = stringResource(R.string.yuva_conversation_removed)
+    LaunchedEffect(state.notice) {
+        if (state.notice) {
+            state.notice = false
+            snackbars.showSnackbar(removedNotice)
+        }
+    }
     val listState = rememberLazyListState()
     val expanded by remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
     val dark = isDarkSurface()
@@ -284,6 +310,7 @@ private fun ConversationsList(
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = background,
+        snackbarHost = { SnackbarHost(snackbars) },
         topBar = {
             LargeTopAppBar(
                 scrollBehavior = scrollBehavior,

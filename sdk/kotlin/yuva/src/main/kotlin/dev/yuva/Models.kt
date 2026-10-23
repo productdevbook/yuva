@@ -345,6 +345,7 @@ class YuvaUpload(val filename: String, val contentType: String, val data: ByteAr
 
 sealed interface YuvaEvent {
     data class ConversationCreated(val conversation: YuvaConversation) : YuvaEvent
+    data class ConversationRemoved(val id: String) : YuvaEvent
     data class ConversationUpdated(
         val conversationId: String,
         val status: YuvaConversationStatus,

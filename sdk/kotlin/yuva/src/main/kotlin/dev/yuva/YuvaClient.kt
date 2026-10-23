@@ -500,7 +500,7 @@ class YuvaClient internal constructor(
         shared.tryEmit(YuvaEvent.InboxUpdated(info.inbox))
     }
 
-    private fun handle(text: String): Boolean {
+    internal fun handle(text: String): Boolean {
         val message = runCatching { json.parseToJsonElement(text).jsonObject }.getOrNull() ?: return false
         message["id"]?.jsonPrimitive?.longOrNull?.let { lastEventId = maxOf(lastEventId, it) }
         val data = message["data"]
@@ -513,6 +513,10 @@ class YuvaClient internal constructor(
             }
             "resync_required" -> YuvaEvent.ResyncRequired
             "conversation.created" -> payload { YuvaEvent.ConversationCreated(json.decodeFromJsonElement(it)) }
+            "conversation.removed" -> (
+                payload { json.decodeFromJsonElement<RemovedData>(it).id }
+                    ?: message["conversation_id"]?.jsonPrimitive?.contentOrNull
+                )?.let { YuvaEvent.ConversationRemoved(it) }
             "conversation.updated" -> payload {
                 val status = json.decodeFromJsonElement<StatusData>(it)
                 YuvaEvent.ConversationUpdated(status.id, status.status, status.canRate, status.rating, status.feedbackProgress)
@@ -538,6 +542,9 @@ class YuvaClient internal constructor(
         event?.let(shared::tryEmit)
         return false
     }
+
+    @kotlinx.serialization.Serializable
+    private data class RemovedData(val id: String)
 
     @kotlinx.serialization.Serializable
     private data class StatusData(

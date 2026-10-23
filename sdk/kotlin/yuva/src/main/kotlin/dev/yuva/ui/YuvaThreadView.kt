@@ -150,6 +150,7 @@ internal class ThreadState(val client: YuvaClient, conversationId: String?, priv
     var ratingChoice by mutableStateOf<YuvaRating?>(null)
     var ratingSending by mutableStateOf(false)
     var ratingError by mutableStateOf<Int?>(null)
+    var removed by mutableStateOf(false)
     var visible = false
     private var loadingOlder = false
     private var typingClear: Job? = null
@@ -199,6 +200,17 @@ internal class ThreadState(val client: YuvaClient, conversationId: String?, priv
             when (event) {
                 is YuvaEvent.MessageCreated -> onMessage(event.message)
                 is YuvaEvent.MessageUpdated -> onMessage(event.message)
+                is YuvaEvent.ConversationRemoved -> if (event.id == conversationId) {
+                    stopTyping()
+                    conversationId = null
+                    conversation = null
+                    olderCursor = null
+                    memberReadAt = null
+                    typingName = null
+                    ratingChoice = null
+                    items.removeAll { it.message != null }
+                    removed = true
+                }
                 is YuvaEvent.ConversationUpdated -> if (event.conversationId == conversationId) {
                     conversation = runCatching { client.conversation(event.conversationId) }.getOrNull()
                         ?.withFeedbackProgress(event.feedbackProgress) ?: conversation
@@ -308,6 +320,7 @@ internal class ThreadState(val client: YuvaClient, conversationId: String?, priv
                 conversation = started.conversation
                 started.message
             }
+            removed = false
             upsert(message)
         } catch (_: Exception) {
             val index = items.indexOfFirst { it.id == clientId }
@@ -497,6 +510,18 @@ fun YuvaThreadView(
                             Box(Modifier.fillMaxWidth().padding(8.dp), contentAlignment = Alignment.Center) {
                                 CircularProgressIndicator(Modifier.size(20.dp))
                             }
+                        }
+                    }
+                    if (state.removed) {
+                        item(key = "removed") {
+                            Text(
+                                stringResource(R.string.yuva_conversation_removed),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 24.dp)
+                                    .testTag("yuva.thread.removedNote"),
+                            )
                         }
                     }
                     if (state.items.isEmpty() && !state.loading && !state.failed) {
