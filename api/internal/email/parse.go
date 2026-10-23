@@ -182,25 +182,104 @@ func trustedAuthResults(authResults []string, authservID string) ([]string, bool
 
 // AuthservID is the authserv-id that starts an Authentication-Results value (RFC 8601).
 func AuthservID(authResults string) string {
-	head, _, _ := strings.Cut(authResults, ";")
-	if f := strings.Fields(head); len(f) > 0 {
+	parts, _ := authResInfo(authResults)
+	if f := strings.Fields(parts[0]); len(f) > 0 {
 		return f[0]
 	}
 	return ""
 }
 
-var dmarcResult = regexp.MustCompile(`(?i)\bdmarc\s*=\s*([a-z]+)`)
+// authResInfo splits an Authentication-Results value at the semicolons between its resinfo, drops
+// comments and turns each quoted string into a lone '"', so nothing written inside one can read as a
+// method or a result. ok is false when a comment or a quoted string is left open.
+func authResInfo(v string) (parts []string, ok bool) {
+	var b strings.Builder
+	depth, quoted := 0, false
+	for i := 0; i < len(v); i++ {
+		c := v[i]
+		switch {
+		case quoted:
+			if c == '\\' {
+				i++
+			} else if c == '"' {
+				quoted = false
+			}
+		case depth > 0:
+			switch c {
+			case '\\':
+				i++
+			case '(':
+				depth++
+			case ')':
+				depth--
+			}
+		case c == '"':
+			quoted = true
+			b.WriteString(` " `)
+		case c == '(':
+			depth = 1
+			b.WriteByte(' ')
+		case c == ';':
+			parts = append(parts, b.String())
+			b.Reset()
+		default:
+			b.WriteByte(c)
+		}
+	}
+	return append(parts, b.String()), !quoted && depth == 0
+}
 
+type authResult struct{ method, result string }
+
+var methodSpec = regexp.MustCompile(`^\s*([A-Za-z0-9][A-Za-z0-9-]*)\s*(?:/\s*[0-9]+\s*)?=\s*([A-Za-z0-9][A-Za-z0-9-]*)(?:\s|$)`)
+
+// parseAuthResults reads the method=result that starts each resinfo (RFC 8601 §2.2). Reasons and
+// properties such as smtp.mailfrom or header.i carry values the sender chose and are never read.
+func parseAuthResults(v string) ([]authResult, bool) {
+	parts, ok := authResInfo(v)
+	if !ok || len(strings.Fields(parts[0])) == 0 {
+		return nil, false
+	}
+	var out []authResult
+	for _, p := range parts[1:] {
+		switch strings.ToLower(strings.TrimSpace(p)) {
+		case "", "none":
+			continue
+		}
+		m := methodSpec.FindStringSubmatch(p)
+		if m == nil {
+			return nil, false
+		}
+		out = append(out, authResult{strings.ToLower(m[1]), strings.ToLower(m[2])})
+	}
+	return out, true
+}
+
+// DMARCResult is the dmarc result of one Authentication-Results value. A value that does not parse
+// is unknown; when it carries several dmarc results, a fail among them wins and any disagreement
+// otherwise is unknown.
 func DMARCResult(authResults string) string {
-	m := dmarcResult.FindStringSubmatch(authResults)
-	if m == nil {
+	results, ok := parseAuthResults(authResults)
+	if !ok {
 		return DMARCUnknown
 	}
-	switch strings.ToLower(m[1]) {
+	verdict := ""
+	for _, r := range results {
+		if r.method != "dmarc" {
+			continue
+		}
+		switch {
+		case r.result == "fail":
+			return DMARCFail
+		case verdict == "":
+			verdict = r.result
+		case verdict != r.result:
+			verdict = "mixed"
+		}
+	}
+	switch verdict {
 	case "pass":
 		return DMARCPass
-	case "fail":
-		return DMARCFail
 	case "none":
 		return DMARCNone
 	}
