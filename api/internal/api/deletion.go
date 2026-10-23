@@ -192,6 +192,9 @@ func (s *Server) PurgeWorkspace(ctx context.Context, workspaceID uuid.UUID, budg
 		return out, err
 	}
 	deadline := time.Now().Add(budget)
+	if err := s.scrubWorkspaceSlack(ctx, workspaceID); err != nil {
+		return out, err
+	}
 	for {
 		n, files, err := s.deleteConversationBatch(ctx, workspaceID, func(q *store.Queries, _ *eventBatch) ([]uuid.UUID, error) {
 			return q.ListWorkspaceConversationIDs(ctx, store.ListWorkspaceConversationIDsParams{WorkspaceID: workspaceID, MaxRows: purgeConversationBatch})
@@ -310,6 +313,9 @@ func (s *Server) deleteConversationBatch(ctx context.Context, workspaceID uuid.U
 			return err
 		}
 		n = len(ids)
+		if err := s.scrubSlackConversations(ctx, q, events, workspaceID, slackScrubDeleted, ids); err != nil {
+			return err
+		}
 		if keys, err = q.ListConversationsStorageKeys(ctx, store.ListConversationsStorageKeysParams{WorkspaceID: workspaceID, Ids: ids}); err != nil {
 			return err
 		}

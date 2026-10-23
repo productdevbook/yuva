@@ -124,6 +124,23 @@ Für einen Slack-Benutzer, der kein Mitglied verknüpft hat oder dessen Mitglied
 Unterhaltung nicht sehen kann, ändert sich nichts: Er erhält eine Nachricht, die nur er sieht und
 die den Grund nennt. Bearbeitungen und Löschungen in Slack werden nicht übernommen.
 
+## Schwärzen, Papierkorb und Löschen
+
+Slack behält, was Yuva gepostet hat; deshalb bearbeitet Yuva den Beitrag nachträglich:
+
+- Wird eine Nachricht geschwärzt (Redaction), ersetzt Yuva die Beiträge, die ihren Text
+  enthielten, durch "Message removed.";
+- wird eine Unterhaltung in den Papierkorb verschoben, ersetzt Yuva alle ihre Beiträge durch "This
+  conversation is in the trash."; Wiederherstellen bringt den Text nicht zurück;
+- wird eine Unterhaltung endgültig gelöscht oder ihr Kontakt gelöscht, ersetzt Yuva ihre Beiträge
+  durch "This conversation was deleted."
+
+Der Ersatz enthält weder Namen noch Betreff noch Text; die ersten beiden behalten den Link zur
+Unterhaltung. Antworten, die Personen in Slack geschrieben haben, bleiben unverändert, ebenso ein
+Beitrag, den Slack den Bot nicht mehr bearbeiten lässt (gelöscht, nach den Bearbeitungsregeln des
+Workspace zu alt oder in einem archivierten Kanal). Solange Slack getrennt ist, wird nichts
+bearbeitet.
+
 ## Trennen
 
 Einstellungen › Slack › **Disconnect** widerruft das Bot-Token bei Slack und entfernt die Kanäle

@@ -416,6 +416,9 @@ func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObje
 		if err := lockSLAConversations(ctx, q, p.workspaceID, driven); err != nil {
 			return err
 		}
+		if err := s.scrubSlackInbox(ctx, q, events, p.workspaceID, req.InboxId); err != nil {
+			return err
+		}
 		if _, err = q.DeleteInbox(ctx, store.DeleteInboxParams{WorkspaceID: p.workspaceID, ID: req.InboxId}); err != nil {
 			return err
 		}

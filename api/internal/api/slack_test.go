@@ -40,7 +40,9 @@ type fakeSlack struct {
 	calls []slackCall
 	ts    int
 	team  string
-	users map[string]string
+
+	updateRetryAfter int
+	users            map[string]string
 }
 
 func newFakeSlack(t *testing.T) *fakeSlack {
@@ -97,6 +99,16 @@ func newFakeSlack(t *testing.T) *fakeSlack {
 			ts := fmt.Sprintf("1700000000.%06d", f.ts)
 			f.mu.Unlock()
 			answer(map[string]any{"ts": ts, "channel": r.PostForm.Get("channel")})
+		case "chat.update":
+			f.mu.Lock()
+			limit := f.updateRetryAfter
+			f.mu.Unlock()
+			if limit > 0 {
+				w.Header().Set("Retry-After", strconv.Itoa(limit))
+				w.WriteHeader(http.StatusTooManyRequests)
+				return
+			}
+			answer(map[string]any{"ts": r.PostForm.Get("ts"), "channel": r.PostForm.Get("channel")})
 		case "chat.postEphemeral":
 			answer(map[string]any{"message_ts": "1"})
 		default:

@@ -124,7 +124,7 @@ func (s *Server) PostSLAToSlack(ctx context.Context, a SlackSLAArgs) (time.Durat
 	case !store.IsNotFound(err):
 		return 0, err
 	}
-	return s.sendSlackPost(ctx, inst, c.ID, msg)
+	return s.sendSlackPost(ctx, inst, c.ID, nil, set.IncludeContent, msg)
 }
 
 func (s *Server) slackSLAText(ctx context.Context, inst store.SlackInstallation, set store.SlackInboxSetting, c store.Conversation, a SlackSLAArgs) (string, error) {

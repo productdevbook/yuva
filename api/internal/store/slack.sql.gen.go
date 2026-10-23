@@ -47,6 +47,41 @@ func (q *Queries) AddSlackMemberLink(ctx context.Context, arg AddSlackMemberLink
 	return i, err
 }
 
+const addSlackPost = `-- name: AddSlackPost :execrows
+INSERT INTO slack_posts (workspace_id, channel_id, ts, conversation_id, message_id, with_content, created_at)
+SELECT $1, $2, $3, c.id, $4, $5, $6 FROM conversations c
+WHERE c.workspace_id = $1 AND c.id = $7 AND c.trashed_at IS NULL
+  AND ($4::uuid IS NULL OR EXISTS (
+      SELECT 1 FROM messages m WHERE m.workspace_id = $1 AND m.id = $4::uuid AND m.redacted_at IS NULL))
+ON CONFLICT DO NOTHING
+`
+
+type AddSlackPostParams struct {
+	WorkspaceID    uuid.UUID
+	ChannelID      string
+	Ts             string
+	MessageID      *uuid.UUID
+	WithContent    bool
+	Now            time.Time
+	ConversationID uuid.UUID
+}
+
+func (q *Queries) AddSlackPost(ctx context.Context, arg AddSlackPostParams) (int64, error) {
+	result, err := q.db.Exec(ctx, addSlackPost,
+		arg.WorkspaceID,
+		arg.ChannelID,
+		arg.Ts,
+		arg.MessageID,
+		arg.WithContent,
+		arg.Now,
+		arg.ConversationID,
+	)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
 const addSlackThread = `-- name: AddSlackThread :exec
 INSERT INTO slack_threads (workspace_id, channel_id, thread_ts, conversation_id, created_at)
 VALUES ($1, $2, $3, $4, $5)
@@ -190,6 +225,30 @@ DELETE FROM slack_member_links WHERE workspace_id = $1
 
 func (q *Queries) DeleteSlackMemberLinks(ctx context.Context, workspaceID uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteSlackMemberLinks, workspaceID)
+	return err
+}
+
+const deleteSlackPost = `-- name: DeleteSlackPost :exec
+DELETE FROM slack_posts WHERE workspace_id = $1 AND channel_id = $2 AND ts = $3
+`
+
+type DeleteSlackPostParams struct {
+	WorkspaceID uuid.UUID
+	ChannelID   string
+	Ts          string
+}
+
+func (q *Queries) DeleteSlackPost(ctx context.Context, arg DeleteSlackPostParams) error {
+	_, err := q.db.Exec(ctx, deleteSlackPost, arg.WorkspaceID, arg.ChannelID, arg.Ts)
+	return err
+}
+
+const deleteSlackPosts = `-- name: DeleteSlackPosts :exec
+DELETE FROM slack_posts WHERE workspace_id = $1
+`
+
+func (q *Queries) DeleteSlackPosts(ctx context.Context, workspaceID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteSlackPosts, workspaceID)
 	return err
 }
 
@@ -408,6 +467,41 @@ func (q *Queries) ListSlackMemberLinks(ctx context.Context, arg ListSlackMemberL
 			&i.SlackUserName,
 			&i.LinkedAt,
 		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listSlackPostsBatch = `-- name: ListSlackPostsBatch :many
+SELECT channel_id, ts, conversation_id FROM slack_posts WHERE workspace_id = $1 ORDER BY created_at, ts LIMIT $2
+`
+
+type ListSlackPostsBatchParams struct {
+	WorkspaceID uuid.UUID
+	MaxRows     int32
+}
+
+type ListSlackPostsBatchRow struct {
+	ChannelID      string
+	Ts             string
+	ConversationID uuid.UUID
+}
+
+func (q *Queries) ListSlackPostsBatch(ctx context.Context, arg ListSlackPostsBatchParams) ([]ListSlackPostsBatchRow, error) {
+	rows, err := q.db.Query(ctx, listSlackPostsBatch, arg.WorkspaceID, arg.MaxRows)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListSlackPostsBatchRow
+	for rows.Next() {
+		var i ListSlackPostsBatchRow
+		if err := rows.Scan(&i.ChannelID, &i.Ts, &i.ConversationID); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -710,4 +804,153 @@ func (q *Queries) TakeSlackConnectState(ctx context.Context, arg TakeSlackConnec
 	var member_id uuid.UUID
 	err := row.Scan(&member_id)
 	return member_id, err
+}
+
+const takeSlackPostsOfContact = `-- name: TakeSlackPostsOfContact :many
+DELETE FROM slack_posts p USING conversations c
+WHERE p.workspace_id = $1 AND c.workspace_id = p.workspace_id AND c.id = p.conversation_id AND c.contact_id = $2
+RETURNING p.channel_id, p.ts, p.conversation_id
+`
+
+type TakeSlackPostsOfContactParams struct {
+	WorkspaceID uuid.UUID
+	ContactID   uuid.UUID
+}
+
+type TakeSlackPostsOfContactRow struct {
+	ChannelID      string
+	Ts             string
+	ConversationID uuid.UUID
+}
+
+func (q *Queries) TakeSlackPostsOfContact(ctx context.Context, arg TakeSlackPostsOfContactParams) ([]TakeSlackPostsOfContactRow, error) {
+	rows, err := q.db.Query(ctx, takeSlackPostsOfContact, arg.WorkspaceID, arg.ContactID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []TakeSlackPostsOfContactRow
+	for rows.Next() {
+		var i TakeSlackPostsOfContactRow
+		if err := rows.Scan(&i.ChannelID, &i.Ts, &i.ConversationID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const takeSlackPostsOfConversations = `-- name: TakeSlackPostsOfConversations :many
+DELETE FROM slack_posts WHERE workspace_id = $1 AND conversation_id = ANY($2::uuid[])
+RETURNING channel_id, ts, conversation_id
+`
+
+type TakeSlackPostsOfConversationsParams struct {
+	WorkspaceID     uuid.UUID
+	ConversationIds []uuid.UUID
+}
+
+type TakeSlackPostsOfConversationsRow struct {
+	ChannelID      string
+	Ts             string
+	ConversationID uuid.UUID
+}
+
+func (q *Queries) TakeSlackPostsOfConversations(ctx context.Context, arg TakeSlackPostsOfConversationsParams) ([]TakeSlackPostsOfConversationsRow, error) {
+	rows, err := q.db.Query(ctx, takeSlackPostsOfConversations, arg.WorkspaceID, arg.ConversationIds)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []TakeSlackPostsOfConversationsRow
+	for rows.Next() {
+		var i TakeSlackPostsOfConversationsRow
+		if err := rows.Scan(&i.ChannelID, &i.Ts, &i.ConversationID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const takeSlackPostsOfInbox = `-- name: TakeSlackPostsOfInbox :many
+DELETE FROM slack_posts p USING conversations c
+WHERE p.workspace_id = $1 AND c.workspace_id = p.workspace_id AND c.id = p.conversation_id AND c.inbox_id = $2
+RETURNING p.channel_id, p.ts, p.conversation_id
+`
+
+type TakeSlackPostsOfInboxParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+}
+
+type TakeSlackPostsOfInboxRow struct {
+	ChannelID      string
+	Ts             string
+	ConversationID uuid.UUID
+}
+
+func (q *Queries) TakeSlackPostsOfInbox(ctx context.Context, arg TakeSlackPostsOfInboxParams) ([]TakeSlackPostsOfInboxRow, error) {
+	rows, err := q.db.Query(ctx, takeSlackPostsOfInbox, arg.WorkspaceID, arg.InboxID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []TakeSlackPostsOfInboxRow
+	for rows.Next() {
+		var i TakeSlackPostsOfInboxRow
+		if err := rows.Scan(&i.ChannelID, &i.Ts, &i.ConversationID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const takeSlackPostsOfMessage = `-- name: TakeSlackPostsOfMessage :many
+DELETE FROM slack_posts
+WHERE workspace_id = $1 AND conversation_id = $2 AND with_content
+  AND (message_id = $3 OR message_id IS NULL)
+RETURNING channel_id, ts, conversation_id
+`
+
+type TakeSlackPostsOfMessageParams struct {
+	WorkspaceID    uuid.UUID
+	ConversationID uuid.UUID
+	MessageID      *uuid.UUID
+}
+
+type TakeSlackPostsOfMessageRow struct {
+	ChannelID      string
+	Ts             string
+	ConversationID uuid.UUID
+}
+
+func (q *Queries) TakeSlackPostsOfMessage(ctx context.Context, arg TakeSlackPostsOfMessageParams) ([]TakeSlackPostsOfMessageRow, error) {
+	rows, err := q.db.Query(ctx, takeSlackPostsOfMessage, arg.WorkspaceID, arg.ConversationID, arg.MessageID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []TakeSlackPostsOfMessageRow
+	for rows.Next() {
+		var i TakeSlackPostsOfMessageRow
+		if err := rows.Scan(&i.ChannelID, &i.Ts, &i.ConversationID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

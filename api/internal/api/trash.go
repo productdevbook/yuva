@@ -97,6 +97,9 @@ func (s *Server) setTrashed(ctx context.Context, q *store.Queries, events *event
 			return oas.Conversation{}, err
 		}
 		err = q.DeleteConversationEvents(ctx, store.DeleteConversationEventsParams{WorkspaceID: p.workspaceID, ConversationIds: []uuid.UUID{cur.ID}, KeepTrash: true})
+		if err == nil {
+			err = s.scrubSlackConversations(ctx, q, events, p.workspaceID, slackScrubTrashed, []uuid.UUID{cur.ID})
+		}
 	case !trash && cur.TrashedAt != nil:
 		typ, action = realtime.ConversationRestored, oas.AuditConversationRestored
 		next, err = q.RestoreConversation(ctx, store.RestoreConversationParams{WorkspaceID: p.workspaceID, ID: cur.ID, Now: now, At: s.dbAt()})

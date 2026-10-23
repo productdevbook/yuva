@@ -150,6 +150,14 @@ func (s *Server) RedactMessage(ctx context.Context, req oas.RedactMessageRequest
 		if len(keys) > 0 {
 			events.job(StorageDeleteArgs{WorkspaceID: p.workspaceID, Keys: keys}, nil)
 		}
+		if err := s.scrubSlackMessage(ctx, q, events, p.workspaceID, c.ID, m.ID); err != nil {
+			return err
+		}
+		if red.subject != "" {
+			if err := s.scrubSlackConversations(ctx, q, events, p.workspaceID, slackScrubRedacted, []uuid.UUID{c.ID}); err != nil {
+				return err
+			}
+		}
 		events.conversation(realtime.MessageRedacted, c, out)
 		if red.feedback || red.subject != "" {
 			conv, err := oneConversation(ctx, q, next)

@@ -198,6 +198,9 @@ func clearSlack(ctx context.Context, q *store.Queries, ws uuid.UUID) error {
 	if err := q.DeleteSlackThreads(ctx, ws); err != nil {
 		return err
 	}
+	if err := q.DeleteSlackPosts(ctx, ws); err != nil {
+		return err
+	}
 	if err := q.DeleteSlackMemberLinks(ctx, ws); err != nil {
 		return err
 	}
@@ -1097,11 +1100,13 @@ func (s *Server) PostToSlack(ctx context.Context, a SlackPostArgs) (time.Duratio
 			return 0, err
 		}
 	}
-	return s.sendSlackPost(ctx, inst, c.ID, msg)
+	return s.sendSlackPost(ctx, inst, c.ID, &m.ID, set.IncludeContent, msg)
 }
 
-// sendSlackPost posts msg and records a top-level post as the conversation's thread.
-func (s *Server) sendSlackPost(ctx context.Context, inst store.SlackInstallation, conversationID uuid.UUID, msg slack.Message) (time.Duration, error) {
+// sendSlackPost posts msg and records a top-level post as the conversation's thread. Every post is
+// recorded with its message and whether it carries text, so redaction, trash and deletion can
+// rewrite it.
+func (s *Server) sendSlackPost(ctx context.Context, inst store.SlackInstallation, conversationID uuid.UUID, messageID *uuid.UUID, withContent bool, msg slack.Message) (time.Duration, error) {
 	ws := inst.WorkspaceID
 	token, err := s.slackToken(inst)
 	if err != nil {
@@ -1118,6 +1123,18 @@ func (s *Server) sendSlackPost(ctx context.Context, inst store.SlackInstallation
 		return 0, s.slackError(ctx, ws, se.Code)
 	case err != nil:
 		return 0, err
+	}
+	if ts != "" {
+		n, err := s.st.AddSlackPost(ctx, store.AddSlackPostParams{WorkspaceID: ws, ChannelID: msg.Channel, Ts: ts, ConversationID: conversationID, MessageID: messageID, WithContent: withContent, Now: s.now()})
+		if err != nil && !store.IsForeignKeyViolation(err) {
+			return 0, err
+		}
+		if err != nil || n == 0 {
+			gone, err := s.scrubLatePost(ctx, ws, msg.Channel, ts, conversationID, messageID)
+			if err != nil || gone {
+				return 0, err
+			}
+		}
 	}
 	if msg.ThreadTS == "" && ts != "" {
 		if err := s.st.AddSlackThread(ctx, store.AddSlackThreadParams{WorkspaceID: ws, ChannelID: msg.Channel, ThreadTs: ts, ConversationID: conversationID, Now: s.now()}); err != nil {

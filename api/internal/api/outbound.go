@@ -290,6 +290,7 @@ func (s *Server) AddWorkers(workers *river.Workers) {
 	river.AddWorker(workers, &appPushSendWorker{s: s})
 	river.AddWorker(workers, &slackEventWorker{s: s})
 	river.AddWorker(workers, &slackPostWorker{s: s})
+	river.AddWorker(workers, &slackScrubWorker{s: s})
 	river.AddWorker(workers, &slackSLAWorker{s: s})
 	river.AddWorker(workers, &notificationEmailWorker{s: s})
 	river.AddWorker(workers, &retentionWorker{s: s})

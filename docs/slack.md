@@ -121,6 +121,21 @@ Nothing happens for a Slack user who has not linked a member, or whose member ca
 conversation's inbox: they get a message only they can see that says why. Edits and deletions in
 Slack are not carried over.
 
+## Redaction, trash and deletion
+
+Slack keeps what Yuva posted, so Yuva edits the post afterwards:
+
+- redacting a message replaces the posts that carried its text with "Message removed.";
+- moving a conversation to the trash replaces all its posts with "This conversation is in the
+  trash."; restoring it does not bring the text back;
+- deleting a conversation for good, or deleting its contact, replaces its posts with "This
+  conversation was deleted."
+
+The replacement has no name, subject or text; the first two keep the link to the conversation.
+Replies people wrote in Slack are not changed, and a post Slack no longer allows the bot to edit
+(deleted, too old for the workspace's edit rules, or in an archived channel) stays as it is.
+Nothing is edited while Slack is disconnected.
+
 ## Disconnect
 
 Settings › Slack › **Disconnect** revokes the bot token at Slack and removes the inboxes' channels,

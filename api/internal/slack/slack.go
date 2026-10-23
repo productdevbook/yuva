@@ -264,6 +264,11 @@ func (c *Client) Post(ctx context.Context, token string, m Message) (string, err
 	return a.TS, nil
 }
 
+// Update replaces the text of a message the bot posted, with chat.update.
+func (c *Client) Update(ctx context.Context, token, channel, ts, text string) error {
+	return c.call(ctx, "chat.update", token, url.Values{"channel": {channel}, "ts": {ts}, "text": {text}}, [2]string{}, nil)
+}
+
 // PostEphemeral shows a message to one user in a channel (and thread) only.
 func (c *Client) PostEphemeral(ctx context.Context, token string, m Message, user string) error {
 	form := url.Values{"channel": {m.Channel}, "text": {m.Text}, "user": {user}}

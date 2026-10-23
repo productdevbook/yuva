@@ -119,6 +119,21 @@ Bir üyeye bağlanmamış ya da üyesi konuşmanın gelen kutusunu göremeyen bi
 hiçbir şey değişmez: nedenini söyleyen, yalnızca kendisinin gördüğü bir mesaj alır. Slack'teki
 düzenlemeler ve silmeler aktarılmaz.
 
+## Düzeltme, çöp kutusu ve silme
+
+Slack, Yuva'nın gönderdiğini saklar; bu yüzden Yuva gönderiyi sonradan düzenler:
+
+- bir mesajı düzeltmek (redact), metnini taşıyan gönderileri "Message removed." ile değiştirir;
+- bir görüşmeyi çöp kutusuna taşımak, görüşmenin tüm gönderilerini "This conversation is in the
+  trash." ile değiştirir; geri yüklemek metni geri getirmez;
+- bir görüşmeyi kalıcı olarak silmek ya da kişisini silmek, gönderilerini "This conversation was
+  deleted." ile değiştirir.
+
+Yerine konan satırda ad, konu ya da metin yoktur; ilk ikisi görüşmeye giden bağlantıyı korur.
+İnsanların Slack'te yazdığı yanıtlar değişmez; Slack'in artık botun düzenlemesine izin vermediği
+bir gönderi (silinmiş, çalışma alanının düzenleme kurallarına göre çok eski ya da arşivlenmiş bir
+kanalda) olduğu gibi kalır. Slack bağlı değilken hiçbir şey düzenlenmez.
+
 ## Bağlantıyı kesin
 
 Ayarlar › Slack › **Disconnect**, bot jetonunu Slack'te iptal eder ve gelen kutularının

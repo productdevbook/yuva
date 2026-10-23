@@ -120,3 +120,40 @@ ON CONFLICT DO NOTHING;
 
 -- name: PruneSlackEvents :exec
 DELETE FROM slack_events WHERE workspace_id = @workspace_id AND received_at < @before;
+
+-- name: AddSlackPost :execrows
+INSERT INTO slack_posts (workspace_id, channel_id, ts, conversation_id, message_id, with_content, created_at)
+SELECT @workspace_id, @channel_id, @ts, c.id, sqlc.narg(message_id), @with_content, @now FROM conversations c
+WHERE c.workspace_id = @workspace_id AND c.id = @conversation_id AND c.trashed_at IS NULL
+  AND (sqlc.narg(message_id)::uuid IS NULL OR EXISTS (
+      SELECT 1 FROM messages m WHERE m.workspace_id = @workspace_id AND m.id = sqlc.narg(message_id)::uuid AND m.redacted_at IS NULL))
+ON CONFLICT DO NOTHING;
+
+-- name: ListSlackPostsBatch :many
+SELECT channel_id, ts, conversation_id FROM slack_posts WHERE workspace_id = @workspace_id ORDER BY created_at, ts LIMIT @max_rows;
+
+-- name: DeleteSlackPost :exec
+DELETE FROM slack_posts WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND ts = @ts;
+
+-- name: TakeSlackPostsOfConversations :many
+DELETE FROM slack_posts WHERE workspace_id = @workspace_id AND conversation_id = ANY(@conversation_ids::uuid[])
+RETURNING channel_id, ts, conversation_id;
+
+-- name: TakeSlackPostsOfContact :many
+DELETE FROM slack_posts p USING conversations c
+WHERE p.workspace_id = @workspace_id AND c.workspace_id = p.workspace_id AND c.id = p.conversation_id AND c.contact_id = @contact_id
+RETURNING p.channel_id, p.ts, p.conversation_id;
+
+-- name: TakeSlackPostsOfInbox :many
+DELETE FROM slack_posts p USING conversations c
+WHERE p.workspace_id = @workspace_id AND c.workspace_id = p.workspace_id AND c.id = p.conversation_id AND c.inbox_id = @inbox_id
+RETURNING p.channel_id, p.ts, p.conversation_id;
+
+-- name: TakeSlackPostsOfMessage :many
+DELETE FROM slack_posts
+WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id AND with_content
+  AND (message_id = @message_id OR message_id IS NULL)
+RETURNING channel_id, ts, conversation_id;
+
+-- name: DeleteSlackPosts :exec
+DELETE FROM slack_posts WHERE workspace_id = @workspace_id;

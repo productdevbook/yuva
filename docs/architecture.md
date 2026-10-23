@@ -1775,7 +1775,22 @@ its own).
   escaped (`&`, `<`, `>`), so customer text cannot become a Slack link, mention or `@channel`. A
   mentioned member with a linked Slack user is mentioned as `<@U…>`. A mention goes into the
   conversation's existing thread in that channel, else starts one; every top-level post is recorded
-  in `slack_threads`.
+  in `slack_threads`, and every post (migration 00119 `slack_posts`: channel, `ts`, conversation,
+  message, whether it carries text) so it can be rewritten later.
+- **Posts follow redaction, trash and deletion.** Slack keeps what was posted, so Yuva rewrites it
+  with `chat.update` (decision: update, not `chat.delete`, so a thread keeps its replies): in the
+  transaction of the change, the post rows are taken out of `slack_posts` and one `slack_scrub` job
+  per post is queued on the `outbound` queue (5 attempts; a rate limit snoozes it; the job carries
+  the post's address and a reason, never text). Redacting a message rewrites the posts that carried
+  text for it, and SLA posts of that conversation that carried text, to "Message removed." with
+  the link to the conversation; trashing a conversation rewrites all its posts to "This
+  conversation is in the trash." with the link (restoring does not bring the text back); deleting
+  a conversation for good (trash purge, retention, migration cut-over) or deleting its contact
+  rewrites them to "This conversation was deleted." without a link. None of the placeholders holds a
+  name, subject or text. A post Slack no longer lets the bot edit (`message_not_found`,
+  `cant_update_message`, `edit_window_closed`, `channel_not_found`, `is_archived`, `not_in_channel`)
+  is left; nothing is queued, and a job that finds Slack disconnected does nothing. Replies written
+  in Slack are Slack's own and stay.
 - **SLA posts.** `slack_inbox_settings.sla_channel` and `sla_warnings` (migration 00111). The
   `sla_check` transaction that marks a target breached (or warned, only with `sla_warnings`) also
   queues one `slack_sla_post` job, unique by its arguments, when the inbox has an SLA channel; the
@@ -4193,7 +4208,7 @@ they belong to no channel. (#136, migration 00095)
   others go; an e-mail already on its way when the redaction comes is recorded as `sent`. A River
   job `storage_delete` deletes the files after the commit, retried on failure. Pushes the message
   caused are deleted from the job table after the commit (one being sent at that moment cannot be
-  stopped); `notify`, the e-mail digest and chat continuity skip redacted messages. Search forgets
+  stopped); app pushes carry no text and re-read the message when they run; `notify`, the e-mail digest and chat continuity skip redacted messages. Search forgets
   it at once (the vector is generated from `body`); list previews keep the line with
   `redacted: true` and empty text, the Home waiting preview is empty. Who: owners and admins any
   message they can see, other members their own (`author_member_id`, also through an OAuth
@@ -4201,7 +4216,8 @@ they belong to no channel. (#136, migration 00095)
   offered to agents' tokens). Drafts and timeline events answer `409 not_redactable`, a trashed
   conversation `404`; redacting again answers the message unchanged without an event or audit
   row. Emits `message.redacted` (realtime, `/v1/events`, webhooks with the `include_notes` rule for
-  notes, the `/client/v1` stream for messages); the audit log records `message.redacted` on target
+  notes, the `/client/v1` stream for messages); the Slack posts that carried its text are rewritten
+  to a "removed" line (see Slack, M32); the audit log records `message.redacted` on target
   type `message` with `conversation_id`, `inbox_id`, `kind` and `files`, never content. A sent
   e-mail cannot be taken back from the recipient's mailbox, and notification e-mails already sent
   to members keep what they quoted.

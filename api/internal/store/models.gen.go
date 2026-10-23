@@ -2332,6 +2332,16 @@ type SlackMemberLink struct {
 	LinkedAt      time.Time
 }
 
+type SlackPost struct {
+	WorkspaceID    uuid.UUID
+	ChannelID      string
+	Ts             string
+	ConversationID uuid.UUID
+	MessageID      *uuid.UUID
+	WithContent    bool
+	CreatedAt      time.Time
+}
+
 type SlackThread struct {
 	WorkspaceID    uuid.UUID
 	ChannelID      string
