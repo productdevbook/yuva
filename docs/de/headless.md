@@ -104,6 +104,10 @@ Ist sie an, antwortet ein Schlüssel mit `messages:write` direkt und sendet mit 
 Entwürfe. Ändern kann sie nur ein im Panel angemeldeter Inhaber oder Admin (`bots_may_send` bei
 `PATCH /v1/workspace`), nie ein Schlüssel.
 
+[Automatisierungsregeln](automation.md) antworten Kunden mit einer Textvorlage. Eine Textvorlage hat `saved_by`: wer
+ihren Text zuletzt gesetzt hat. Solange **Bots may send** aus ist, sendet eine Regel sie nur, wenn ein Inhaber oder
+Admin sie gespeichert hat.
+
 ## Teams
 
 Ein Team ist eine benannte Gruppe von Mitgliedern, der Posteingänge zugewiesen werden. Ein Mitglied
@@ -179,6 +183,11 @@ bedeutet weiterhin „kein Mitglied“, egal welches Team. Die Sammelaktualisier
 
 [MCP](mcp.md)-Assistenten nutzen `list_teams`, `assign` mit `team_id` oder `remove_team` und
 `search_conversations` mit `team_id`.
+
+## Automatisierungsregeln
+
+Auslöser, Bedingungen, Aktionen und ein Protokoll jedes Laufs: [Automatisierungsregeln](automation.md). Verwalten Sie sie
+mit `/v1/automation-rules` (`automations:read` zum Lesen, `automations:manage` zum Schreiben).
 
 ## SLA-Richtlinien
 
@@ -377,6 +386,8 @@ Ein Aufruf ohne den nötigen Scope antwortet mit `403 insufficient_scope`.
 | `audit:read` | `GET /v1/audit-log`, das [Audit-Log](operations.md#audit-log). In keinem anderen Scope enthalten: nennen Sie ihn. Nur ein Inhaber kann ihn einem Schlüssel geben, und ein auf Postfächer begrenzter Schlüssel kann ihn nicht halten. Er gilt nur, solange das Mitglied, das den Schlüssel erstellt hat, noch Inhaber ist. `yuva api-key create` lässt ihn weg, wenn Sie ihn nicht nennen. |
 | `fields:manage` | Definitionen von [benutzerdefinierten Feldern](custom-fields.md) anlegen, ändern und löschen. Nur Inhaber und Admins; ein auf Posteingänge beschränkter Schlüssel kann es nicht besitzen. In keinem anderen Scope enthalten: nennen Sie ihn ausdrücklich. Werte schreiben braucht `conversations:write` oder `contacts:write`. |
 | `views:write` | [Gespeicherte Ansichten](#gespeicherte-ansichten) speichern, ändern, sortieren und löschen. Jeder Ansichten-Endpunkt, auch zum Lesen, braucht zusätzlich `conversations:read`. |
+| `automations:read` | [Automatisierungsregeln](automation.md) und ihre Protokolle lesen |
+| `automations:manage` | Automatisierungsregeln anlegen, ändern, sortieren und löschen. Nur Inhaber und Admins; ein auf Posteingänge beschränkter Schlüssel kann es nicht besitzen. In keinem anderen Scope enthalten: nennen Sie ihn ausdrücklich. |
 | `integrations:read` | `GET /v1/issue-integrations` und eine einzelne Integration: die Verbindungen zu [GitHub und Linear](issue-trackers.md), nie ein Token. |
 | `integrations:manage` | GitHub und Linear verbinden, ändern und trennen, ein neues Webhook-Geheimnis erzeugen. Ein auf Postfächer begrenzter Schlüssel kann ihn nicht halten. |
 | `issues:write` | GitHub- und Linear-Issues an Feedback und Ideen erstellen, verknüpfen und lösen (`/v1/conversations/{id}/issues`, `/v1/discussions/{id}/issues`), zusammen mit `conversations:read`. |

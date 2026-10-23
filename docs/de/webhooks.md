@@ -67,6 +67,7 @@ eine `webhook-id`, die Sie schon verarbeitet haben, und sortieren Sie nach `time
 | `discussion.stage_changed` | Eine Idee der [Roadmap](roadmap-board.md) wurde in eine andere Phase verschoben | `discussion`, `from`, `to`, `linked` (mit der Idee verknüpftes Feedback) |
 | `conversation.sla_warning`, `conversation.sla_breached` | Ein Ziel einer [SLA-Richtlinie](sla.md#7-warnungen-und-verstöße) ist bald fällig oder wurde verfehlt; einmal je Ziel | `target`, `due_at`, `conversation`, `contact` |
 | `team.created`, `team.updated`, `team.deleted` | Ein Team wurde angelegt, geändert (Name, Beschreibung, Mitglieder, Posteingänge) oder gelöscht; siehe [Teams](headless.md#teams) | das Team (`id`, `name`, `description`, `member_ids`, `inbox_ids`) und bei `team.updated` `removed_member_ids` |
+| `automation.triggered` | Die `send_webhook`-Aktion einer [Automatisierungsregel](automation.md#8-webhook-aktion) ist gelaufen. Geht nur an den Endpunkt, den die Aktion nennt; lässt sich nicht in `events` eintragen | `rule` (`id`, `name`), `trigger`, `conversation`, `contact` |
 
 Jeder Body hat `type`, `timestamp` (wann es passiert ist), `workspace_id`, `inbox_id` (nicht bei
 Kontaktereignissen) und `data`. `data.contact.online` ist `false`, wenn der Kontakt keine

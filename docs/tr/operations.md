@@ -281,6 +281,9 @@ bunu bildirir.
 Ekip değişiklikleri `team.created`, `team.deleted`, `team.member_added`, `team.member_removed`,
 `team.inbox_access_granted` ve `team.inbox_access_revoked` olarak kaydedilir.
 
+Otomasyon kuralı değişiklikleri `automation_rule.created`, `automation_rule.updated` ve
+`automation_rule.deleted` olarak kaydedilir ([Otomasyon kuralları](automation.md#10-erişim)).
+
 Yalnızca sahipler okuyabilir: panelde **Ayarlar → Denetim günlüğü** altında veya `GET /v1/audit-log` ile
 (yöneticiler ve temsilciler `403 forbidden` alır). Bir API anahtarı, onu oluşturan üye hâlâ sahip olduğu
 sürece `audit:read` [kapsamıyla](headless.md#yetkiler) okur.

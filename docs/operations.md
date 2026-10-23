@@ -280,6 +280,9 @@ operator's digest names it when [`YUVA_OPERATOR_EMAIL`](configuration.md) is set
 Team changes are recorded as `team.created`, `team.deleted`, `team.member_added`, `team.member_removed`,
 `team.inbox_access_granted` and `team.inbox_access_revoked`.
 
+Automation rule changes are recorded as `automation_rule.created`, `automation_rule.updated` and
+`automation_rule.deleted` ([Automation rules](automation.md#10-access)).
+
 Only owners read it: in the panel under **Settings → Audit log**, or with `GET /v1/audit-log`
 (admins and agents get `403 forbidden`). An API key reads it with the `audit:read`
 [scope](headless.md#scopes), as long as the member who made the key is still an owner.

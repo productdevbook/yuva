@@ -67,6 +67,7 @@ göre sıralayın.
 | `discussion.stage_changed` | Bir [yol haritası](roadmap-board.md) fikri başka bir aşamaya taşındı | `discussion`, `from`, `to`, `linked` (fikre bağlı geri bildirim sayısı) |
 | `conversation.sla_warning`, `conversation.sla_breached` | Bir [SLA politikası](sla.md#7-uyarılar-ve-ihlaller) hedefinin süresi dolmak üzere ya da hedef kaçırıldı; hedef başına bir kez | `target`, `due_at`, `conversation`, `contact` |
 | `team.created`, `team.updated`, `team.deleted` | Bir ekip oluşturuldu, değişti (ad, açıklama, üyeler, gelen kutuları) ya da silindi; bkz. [Ekipler](headless.md#ekipler) | ekip (`id`, `name`, `description`, `member_ids`, `inbox_ids`) ve `team.updated` için `removed_member_ids` |
+| `automation.triggered` | Bir [otomasyon kuralının](automation.md#8-webhook-eylemi) `send_webhook` eylemi çalıştı. Yalnızca eylemin adını verdiği uç noktaya gider; `events` içinde listelenemez | `rule` (`id`, `name`), `trigger`, `conversation`, `contact` |
 
 Her gövdede `type`, `timestamp` (olayın zamanı), `workspace_id`, `inbox_id` (kişi olaylarında yok)
 ve `data` bulunur. Kişinin canlı bağlantısı yoksa `data.contact.online` `false` olur:

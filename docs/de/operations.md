@@ -289,6 +289,9 @@ gesetzt ist.
 Team-Änderungen werden als `team.created`, `team.deleted`, `team.member_added`, `team.member_removed`,
 `team.inbox_access_granted` und `team.inbox_access_revoked` erfasst.
 
+Änderungen an Automatisierungsregeln werden als `automation_rule.created`, `automation_rule.updated` und
+`automation_rule.deleted` erfasst ([Automatisierungsregeln](automation.md#10-zugriff)).
+
 Nur Inhaber lesen es: im Panel unter **Settings → Audit log** oder mit `GET /v1/audit-log` (Admins und
 Agents erhalten `403 forbidden`). Ein API-Schlüssel liest es mit dem [Scope](headless.md#scopes)
 `audit:read`, solange das Mitglied, das den Schlüssel erstellt hat, noch Inhaber ist.

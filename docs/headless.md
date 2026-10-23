@@ -99,6 +99,9 @@ message must then be a draft (`403 bot_sending_disabled` otherwise). When on, a 
 `messages:write` replies directly, and with `drafts:send` also sends drafts. Only an owner or admin
 signed in to the panel can change it (`bots_may_send` on `PATCH /v1/workspace`), never a key.
 
+[Automation rules](automation.md) reply to customers with a canned reply. A canned reply has `saved_by`: who
+last set its text. While **Bots may send** is off, a rule sends it only when an owner or admin saved it.
+
 ## Teams
 
 A team is a named group of members that is granted inboxes. A member reaches an inbox through their
@@ -170,6 +173,11 @@ field, and `assignee=unassigned` still means "no member" whatever the team. Bulk
 
 [MCP](mcp.md) assistants use `list_teams`, `assign` with `team_id` or `remove_team`, and
 `search_conversations` with `team_id`.
+
+## Automation rules
+
+Triggers, conditions, actions and a log of every run: see [Automation rules](automation.md). Manage them with
+`/v1/automation-rules` (`automations:read` to read, `automations:manage` to write).
 
 ## SLA policies
 
@@ -361,6 +369,8 @@ A call without the needed scope answers `403 insufficient_scope`.
 | `audit:read` | `GET /v1/audit-log`, the [audit log](operations.md#audit-log). Not included in any other scope: name it. Only an owner can give it to a key, and a key limited to inboxes cannot hold it. It works only while the member who made the key is still an owner. `yuva api-key create` leaves it out unless you name it. |
 | `fields:manage` | Create, change and delete [custom field](custom-fields.md) definitions. Owners and admins only; a key limited to inboxes cannot hold it. Not included in any other scope: name it. Writing values needs `conversations:write` or `contacts:write`. |
 | `views:write` | Save, change, reorder and delete [saved views](#saved-views). Every views endpoint, reads included, also needs `conversations:read`. |
+| `automations:read` | [Automation rules](automation.md) and their logs |
+| `automations:manage` | Create, change, reorder and delete automation rules. Owners and admins only; a key limited to inboxes cannot hold it. Not included in any other scope: name it. |
 | `integrations:read` | `GET /v1/issue-integrations` and one integration: the [GitHub and Linear](issue-trackers.md) connections, never a token. |
 | `integrations:manage` | Connect, change and disconnect GitHub and Linear, make a new webhook secret. A key limited to inboxes cannot hold it. |
 | `issues:write` | Create, link and unlink GitHub and Linear issues on feedback and ideas (`/v1/conversations/{id}/issues`, `/v1/discussions/{id}/issues`), together with `conversations:read`. |

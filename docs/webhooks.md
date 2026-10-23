@@ -65,6 +65,7 @@ or out of order: skip a `webhook-id` you have handled and order by `timestamp`.
 | `discussion.stage_changed` | A [roadmap](roadmap-board.md) idea was moved to another stage | `discussion`, `from`, `to`, `linked` (feedback linked to the idea) |
 | `conversation.sla_warning`, `conversation.sla_breached` | A target of an [SLA policy](sla.md#7-warnings-and-breaches) is due soon, or was breached; once per target | `target`, `due_at`, `conversation`, `contact` |
 | `team.created`, `team.updated`, `team.deleted` | A team was created, changed (name, description, members, inboxes) or deleted; see [Teams](headless.md#teams) | the team (`id`, `name`, `description`, `member_ids`, `inbox_ids`), and `removed_member_ids` on `team.updated` |
+| `automation.triggered` | An [automation rule](automation.md#8-webhook-action)'s `send_webhook` action ran. Sent only to the endpoint the action names; it cannot be listed in `events` | `rule` (`id`, `name`), `trigger`, `conversation`, `contact` |
 
 Every body has `type`, `timestamp` (when it happened), `workspace_id`, `inbox_id` (not on contact
 events) and `data`. `data.contact.online` is `false` when the contact has no live connection: the

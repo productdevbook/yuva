@@ -102,6 +102,10 @@ Açıkken `messages:write` yetkili bir anahtar doğrudan yanıt verir, `drafts:s
 gönderir. Bunu yalnızca panelde oturum açmış bir sahip ya da yönetici değiştirebilir
 (`PATCH /v1/workspace` üzerinde `bots_may_send`), anahtarlar asla.
 
+[Otomasyon kuralları](automation.md) müşterilere hazır yanıtla cevap verir. Bir hazır yanıtın `saved_by` alanı
+metnini en son kimin değiştirdiğini söyler. **Botlar gönderebilir** kapalıyken bir kural onu yalnızca bir sahip ya da
+yönetici kaydettiyse gönderir.
+
 ## Ekipler
 
 Ekip, gelen kutularına erişim verilen, adı olan bir üye grubudur. Bir üye bir gelen kutusuna kendi
@@ -173,6 +177,11 @@ hâlâ "üye yok" demektir. Toplu güncelleme ve `POST /v1/conversations` ekip a
 
 [MCP](mcp.md) asistanları `list_teams`, `team_id` veya `remove_team` ile `assign` ve `team_id` ile
 `search_conversations` kullanır.
+
+## Otomasyon kuralları
+
+Tetikleyiciler, koşullar, eylemler ve her çalıştırmanın günlüğü: [Otomasyon kuralları](automation.md). Bunları
+`/v1/automation-rules` ile yönetin (okumak için `automations:read`, yazmak için `automations:manage`).
 
 ## SLA politikaları
 
@@ -366,6 +375,8 @@ Gereken yetki olmadan yapılan çağrı `403 insufficient_scope` döner.
 | `audit:read` | `GET /v1/audit-log`, [denetim günlüğü](operations.md#denetim-günlüğü). Başka hiçbir kapsama dahil değildir: adıyla verin. Yalnızca bir sahip anahtara verebilir, gelen kutularına sınırlı bir anahtar bunu tutamaz. Yalnızca anahtarı oluşturan üye hâlâ sahip olduğu sürece çalışır. `yuva api-key create` adını vermezseniz bunu eklemez. |
 | `fields:manage` | [Özel alan](custom-fields.md) tanımlarını oluşturma, değiştirme ve silme. Yalnızca sahipler ve yöneticiler; gelen kutularıyla sınırlı bir anahtar bunu taşıyamaz. Başka hiçbir yetkiye dahil değildir: adıyla verin. Değer yazmak için `conversations:write` veya `contacts:write` gerekir. |
 | `views:write` | [Kayıtlı görünümleri](#kayıtlı-görünümler) kaydetme, değiştirme, sıralama ve silme. Okumalar dahil her görünüm uç noktası ayrıca `conversations:read` ister. |
+| `automations:read` | [Otomasyon kurallarını](automation.md) ve günlüklerini okuma |
+| `automations:manage` | Otomasyon kurallarını oluşturma, değiştirme, sıralama ve silme. Yalnızca sahipler ve yöneticiler; gelen kutularıyla sınırlı bir anahtar bunu taşıyamaz. Başka hiçbir yetkiye dahil değildir: adıyla verin. |
 | `integrations:read` | `GET /v1/issue-integrations` ve tek bir entegrasyon: [GitHub ve Linear](issue-trackers.md) bağlantıları, hiçbir zaman bir belirteç değil. |
 | `integrations:manage` | GitHub ve Linear bağlamak, değiştirmek, bağlantıyı kesmek, yeni webhook gizli değeri üretmek. Gelen kutularına sınırlı bir anahtar bunu tutamaz. |
 | `issues:write` | Geri bildirim ve fikirlerde GitHub ve Linear kayıtları oluşturmak, bağlamak ve bağlantıyı kaldırmak (`/v1/conversations/{id}/issues`, `/v1/discussions/{id}/issues`), `conversations:read` ile birlikte. |
