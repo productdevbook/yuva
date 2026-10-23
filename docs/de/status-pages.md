@@ -19,6 +19,7 @@ Admins an und ändern sie; Agents mit Zugriff auf den Posteingang arbeiten mit K
 | Beschreibung (`description`) | Bis zu 1.000 Zeichen, unter dem Namen angezeigt. |
 | Adresse (`slug`) | 3 bis 48 Zeichen: `a-z`, `0-9` und innere Bindestriche. Auf dem Server eindeutig; einige Wörter sind reserviert. |
 | Logo (`logo_url`), Akzentfarbe (`accent_color`) | Ein `https`-Bild und eine Farbe wie `#2563eb`. |
+| Logo für den dunklen Modus (`logo_dark_url`) | Optional. Ein `https`-Bild, das statt des Logos erscheint, wenn das System der Besucher im dunklen Modus ist, etwa eine helle Fassung eines dunklen Logos. Wird nur zusammen mit einem Logo verwendet. |
 | Website-Link (`site_url`), Support-Link (`support_url`) | Ihr Produkt und ein `http(s)`- oder `mailto:`-Link, unter dem Kunden Hilfe bekommen. |
 | Sprache (`locale`) | `en`, `tr` oder `de`; die Wörter der Seite folgen ihr. Andere Sprachen zeigen Englisch. |
 | Zeitzone (`timezone`) | Die Zone der Tagesbalken. Besucher sehen Zeiten in ihrer eigenen Zone. |

@@ -16515,8 +16515,11 @@ type PublicStatusPage struct {
 	Description string                  `json:"description"`
 	Groups      []PublicStatusGroup     `json:"groups"`
 	Locale      string                  `json:"locale"`
-	LogoUrl     *string                 `json:"logo_url,omitempty"`
-	Name        string                  `json:"name"`
+
+	// LogoDarkUrl The logo for dark mode, when the page has one.
+	LogoDarkUrl *string `json:"logo_dark_url,omitempty"`
+	LogoUrl     *string `json:"logo_url,omitempty"`
+	Name        string  `json:"name"`
 
 	// Open Open incidents, maintenance in progress and planned maintenance.
 	Open []PublicStatusIncident `json:"open"`
@@ -18169,9 +18172,13 @@ type StatusPage struct {
 	InboxId     uuid.UUID `json:"inbox_id"`
 
 	// Locale The language of the page's words (`en`, `tr`, `de`; others show English).
-	Locale  string  `json:"locale"`
-	LogoUrl *string `json:"logo_url,omitempty"`
-	Name    string  `json:"name"`
+	Locale string `json:"locale"`
+
+	// LogoDarkUrl The logo shown instead of `logo_url` when the visitor's system is in dark mode. Used only
+	// together with `logo_url`.
+	LogoDarkUrl *string `json:"logo_dark_url,omitempty"`
+	LogoUrl     *string `json:"logo_url,omitempty"`
+	Name        string  `json:"name"`
 
 	// OwnDomains Whether the server lets pages use their own domain (`YUVA_STATUS_DOMAINS`). Absent when it
 	// is `off`; setting `custom_domain` is then refused.
@@ -18227,6 +18234,9 @@ type StatusPageCreate struct {
 	//
 	// Examples: en, tr
 	Locale *LanguageTag `json:"locale,omitempty"`
+
+	// LogoDarkUrl An `https` image URL shown instead of `logo_url` in dark mode.
+	LogoDarkUrl *string `json:"logo_dark_url,omitempty"`
 
 	// LogoUrl An `https` image URL.
 	LogoUrl *string `json:"logo_url,omitempty"`
@@ -18320,6 +18330,7 @@ type StatusPageUpdate struct {
 	//
 	// Examples: en, tr
 	Locale            *LanguageTag              `json:"locale,omitempty"`
+	LogoDarkUrl       nullable.Nullable[string] `json:"logo_dark_url,omitempty"`
 	LogoUrl           nullable.Nullable[string] `json:"logo_url,omitempty"`
 	Name              *string                   `json:"name,omitempty"`
 	Published         *bool                     `json:"published,omitempty"`

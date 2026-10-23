@@ -20,6 +20,7 @@ yöneticiler oluşturur ve değiştirir; gelen kutusuna erişimi olan temsilcile
 | Açıklama (`description`) | En fazla 1.000 karakter, adın altında gösterilir. |
 | Adres (`slug`) | 3 ile 48 karakter: `a-z`, `0-9` ve araya giren tireler. Sunucuda benzersiz; bazı sözcükler ayrılmıştır. |
 | Logo (`logo_url`), vurgu rengi (`accent_color`) | Bir `https` görseli ve `#2563eb` gibi bir renk. |
+| Koyu mod logosu (`logo_dark_url`) | İsteğe bağlı. Ziyaretçinin sistemi koyu moddayken logonun yerine gösterilen bir `https` görseli, örneğin koyu bir logonun açık renkli sürümü. Yalnızca bir logoyla birlikte kullanılır. |
 | Site bağlantısı (`site_url`), destek bağlantısı (`support_url`) | Ürününüz ve müşterilerin yardım aldığı bir `http(s)` ya da `mailto:` bağlantısı. |
 | Dil (`locale`) | `en`, `tr` ya da `de`; sayfanın sözcükleri buna uyar. Diğer diller İngilizce gösterir. |
 | Saat dilimi (`timezone`) | Gün çubuklarının dilimi. Ziyaretçiler saatleri kendi dilimlerinde görür. |

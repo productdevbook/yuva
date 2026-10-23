@@ -439,7 +439,7 @@ func (snap *statusSnap) publicIncident(inc store.StatusIncident, parts incidentP
 func (snap *statusSnap) json() oas.PublicStatusPage {
 	pg := snap.page
 	out := oas.PublicStatusPage{Name: pg.Name, Description: pg.Description, Url: snap.url(""), LogoUrl: pg.LogoUrl, AccentColor: pg.AccentColor,
-		SiteUrl: pg.SiteUrl, SupportUrl: pg.SupportUrl, Locale: pg.Locale, Timezone: pg.Timezone, State: oas.StatusComponentStateValue(pageState(snap.comps)),
+		LogoDarkUrl: pg.LogoDarkUrl, SiteUrl: pg.SiteUrl, SupportUrl: pg.SupportUrl, Locale: pg.Locale, Timezone: pg.Timezone, State: oas.StatusComponentStateValue(pageState(snap.comps)),
 		Groups: []oas.PublicStatusGroup{}, Components: []oas.PublicStatusComponent{}, Open: []oas.PublicStatusIncident{}, Recent: []oas.PublicStatusIncident{},
 		UpdatedAt: pg.ChangedAt}
 	for _, g := range snap.groups {

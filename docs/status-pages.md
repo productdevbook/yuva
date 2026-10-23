@@ -19,6 +19,7 @@ and change pages; agents with access to the inbox work with components and incid
 | Description (`description`) | Up to 1,000 characters, shown under the name. |
 | Address (`slug`) | 3 to 48 characters: `a-z`, `0-9` and inner hyphens. Unique on the server; some words are reserved. |
 | Logo (`logo_url`), accent colour (`accent_color`) | An `https` image and a colour such as `#2563eb`. |
+| Dark mode logo (`logo_dark_url`) | Optional. An `https` image shown instead of the logo when the visitor's system is in dark mode, such as a light version of a dark logo. Used only together with a logo. |
 | Site link (`site_url`), support link (`support_url`) | Your product, and an `http(s)` or `mailto:` link where customers get help. |
 | Language (`locale`) | `en`, `tr` or `de`; the page's words follow it. Other languages show English. |
 | Time zone (`timezone`) | The zone of the day bars. Visitors see times in their own zone. |

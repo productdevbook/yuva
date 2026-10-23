@@ -157,7 +157,7 @@ func statusPageRef(pg store.StatusPage) oas.StatusPageRef {
 func (s *Server) statusPageBody(pg store.StatusPage, state string, email oas.StatusEmailSubscribers) oas.StatusPage {
 	out := oas.StatusPage{
 		Id: pg.ID, InboxId: pg.InboxID, Name: pg.Name, Description: pg.Description, Slug: oas.StatusPageSlug(pg.Slug),
-		Url: s.pageURL(pg, ""), LogoUrl: pg.LogoUrl, SiteUrl: pg.SiteUrl, SupportUrl: pg.SupportUrl, Locale: pg.Locale,
+		Url: s.pageURL(pg, ""), LogoUrl: pg.LogoUrl, LogoDarkUrl: pg.LogoDarkUrl, SiteUrl: pg.SiteUrl, SupportUrl: pg.SupportUrl, Locale: pg.Locale,
 		Timezone: pg.Timezone, HistoryDays: pg.HistoryDays, ShowUptime: pg.ShowUptime, ShowResponseTimes: pg.ShowResponseTimes,
 		ShowName: pg.ShowName, ShowFollow: pg.ShowFollow, Published: pg.Published, State: oas.StatusComponentStateValue(state), CreatedAt: pg.CreatedAt, UpdatedAt: pg.UpdatedAt,
 		EmailSubscribers: email, CustomDomain: s.customDomainBody(pg), OwnDomains: s.ownDomainsBody(),
@@ -208,7 +208,7 @@ func statusLink(raw *string, field string, schemes ...string) (*string, error) {
 
 type statusPageFields struct {
 	name, description, slug, locale, timezone          string
-	logo, color, site, support                         *string
+	logo, logoDark, color, site, support               *string
 	history                                            int32
 	uptime, responses, showName, showFollow, published bool
 }
@@ -237,6 +237,9 @@ func (f *statusPageFields) check() error {
 		return errValidation("accent_color must be #rrggbb")
 	}
 	if f.logo, err = statusLink(f.logo, "logo_url", "https"); err != nil {
+		return err
+	}
+	if f.logoDark, err = statusLink(f.logoDark, "logo_dark_url", "https"); err != nil {
 		return err
 	}
 	if f.site, err = statusLink(f.site, "site_url", "https", "http"); err != nil {
@@ -276,7 +279,7 @@ func (s *Server) CreateStatusPage(ctx context.Context, req oas.CreateStatusPageR
 	f := statusPageFields{
 		name: b.Name, slug: string(b.Slug), locale: in.DefaultLocale, timezone: in.Timezone, history: defaultStatusHistory, uptime: true,
 		showName: true, showFollow: true,
-		logo: b.LogoUrl, site: b.SiteUrl, support: b.SupportUrl,
+		logo: b.LogoUrl, logoDark: b.LogoDarkUrl, site: b.SiteUrl, support: b.SupportUrl,
 	}
 	if b.Description != nil {
 		f.description = *b.Description
@@ -327,7 +330,7 @@ func (s *Server) CreateStatusPage(ctx context.Context, req oas.CreateStatusPageR
 		}
 		pg, err = q.CreateStatusPage(ctx, store.CreateStatusPageParams{
 			ID: newID(), WorkspaceID: p.workspaceID, InboxID: in.ID, Name: f.name, Description: f.description, Slug: f.slug,
-			LogoUrl: f.logo, AccentColor: f.color, SiteUrl: f.site, SupportUrl: f.support, Locale: f.locale, Timezone: f.timezone,
+			LogoUrl: f.logo, LogoDarkUrl: f.logoDark, AccentColor: f.color, SiteUrl: f.site, SupportUrl: f.support, Locale: f.locale, Timezone: f.timezone,
 			HistoryDays: f.history, ShowUptime: f.uptime, ShowResponseTimes: f.responses, ShowName: f.showName, ShowFollow: f.showFollow,
 			Published: f.published, Now: s.now(),
 		})
@@ -391,7 +394,7 @@ func (s *Server) UpdateStatusPage(ctx context.Context, req oas.UpdateStatusPageR
 			logo: nullableLink(b.LogoUrl, cur.LogoUrl), color: nullableLink(b.AccentColor, cur.AccentColor),
 			site: nullableLink(b.SiteUrl, cur.SiteUrl), support: nullableLink(b.SupportUrl, cur.SupportUrl),
 			history: cur.HistoryDays, uptime: cur.ShowUptime, responses: cur.ShowResponseTimes, published: cur.Published,
-			showName: cur.ShowName, showFollow: cur.ShowFollow,
+			showName: cur.ShowName, showFollow: cur.ShowFollow, logoDark: nullableLink(b.LogoDarkUrl, cur.LogoDarkUrl),
 		}
 		if b.Name != nil {
 			f.name = *b.Name
@@ -448,7 +451,7 @@ func (s *Server) UpdateStatusPage(ctx context.Context, req oas.UpdateStatusPageR
 		}
 		pg, err := q.UpdateStatusPage(ctx, store.UpdateStatusPageParams{
 			WorkspaceID: p.workspaceID, ID: cur.ID, Name: f.name, Description: f.description, Slug: f.slug, LogoUrl: f.logo,
-			AccentColor: f.color, SiteUrl: f.site, SupportUrl: f.support, Locale: f.locale, Timezone: f.timezone,
+			LogoDarkUrl: f.logoDark, AccentColor: f.color, SiteUrl: f.site, SupportUrl: f.support, Locale: f.locale, Timezone: f.timezone,
 			HistoryDays: f.history, ShowUptime: f.uptime, ShowResponseTimes: f.responses, ShowName: f.showName, ShowFollow: f.showFollow,
 			Published: f.published, Now: now,
 		})

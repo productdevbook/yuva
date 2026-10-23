@@ -168,7 +168,7 @@ type affectedView struct{ Name, Text string }
 type statusPageView struct {
 	W                                         statusWords
 	Dir, View, Name, Description, Logo        string
-	Site, Support                             string
+	LogoDark, Site, Support                   string
 	Accent                                    template.CSS
 	FontSans, FontMono                        string
 	Home, Self, HistoryURL, FeedURL, BadgeURL string
@@ -549,6 +549,9 @@ func (s *Server) statusView(snap *statusSnap, view string) statusPageView {
 	}
 	if pg.LogoUrl != nil {
 		v.Logo = *pg.LogoUrl
+		if pg.LogoDarkUrl != nil {
+			v.LogoDark = *pg.LogoDarkUrl
+		}
 	}
 	v.ShowName = pg.ShowName || v.Logo == ""
 	if pg.SiteUrl != nil {

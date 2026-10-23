@@ -28121,6 +28121,11 @@ components:
             status URL.
         logo_url:
           type: string
+        logo_dark_url:
+          type: string
+          description: |
+            The logo shown instead of `logo_url` when the visitor's system is in dark mode. Used only
+            together with `logo_url`.
         accent_color:
           $ref: "#/components/schemas/StatusColor"
         site_url:
@@ -28348,6 +28353,11 @@ components:
           format: uri
           maxLength: 2000
           description: An `https` image URL.
+        logo_dark_url:
+          type: string
+          format: uri
+          maxLength: 2000
+          description: An `https` image URL shown instead of `logo_url` in dark mode.
         accent_color:
           $ref: "#/components/schemas/StatusColor"
         site_url:
@@ -28400,6 +28410,10 @@ components:
         slug:
           $ref: "#/components/schemas/StatusPageSlug"
         logo_url:
+          type: [string, "null"]
+          format: uri
+          maxLength: 2000
+        logo_dark_url:
           type: [string, "null"]
           format: uri
           maxLength: 2000
@@ -30056,6 +30070,9 @@ components:
           type: string
         logo_url:
           type: string
+        logo_dark_url:
+          type: string
+          description: The logo for dark mode, when the page has one.
         accent_color:
           type: string
         site_url:

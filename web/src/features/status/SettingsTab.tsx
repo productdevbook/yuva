@@ -153,6 +153,16 @@ function PageCard({ page, auto }: { page: StatusPage; auto: Autosave }) {
             onCommit={(v) => save({ logo_url: link(v) })}
             testId="status-setting-logo"
           />
+          <Commit
+            id="status-logo-dark"
+            label={<Trans>Dark mode logo URL</Trans>}
+            hint={<Trans>Shown instead of the logo in dark mode.</Trans>}
+            type="url"
+            placeholder="https://"
+            value={page.logo_dark_url ?? ""}
+            onCommit={(v) => save({ logo_dark_url: link(v) })}
+            testId="status-setting-logo-dark"
+          />
           <Accent page={page} onCommit={(v) => save({ accent_color: link(v) })} />
           <Commit
             id="status-site"

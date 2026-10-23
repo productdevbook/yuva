@@ -17181,6 +17181,11 @@ export interface components {
              */
             url: string;
             logo_url?: string;
+            /**
+             * @description The logo shown instead of `logo_url` when the visitor's system is in dark mode. Used only
+             *     together with `logo_url`.
+             */
+            logo_dark_url?: string;
             accent_color?: components["schemas"]["StatusColor"];
             site_url?: string;
             support_url?: string;
@@ -17349,6 +17354,11 @@ export interface components {
              * @description An `https` image URL.
              */
             logo_url?: string;
+            /**
+             * Format: uri
+             * @description An `https` image URL shown instead of `logo_url` in dark mode.
+             */
+            logo_dark_url?: string;
             accent_color?: components["schemas"]["StatusColor"];
             /**
              * Format: uri
@@ -17385,6 +17395,8 @@ export interface components {
             slug?: components["schemas"]["StatusPageSlug"];
             /** Format: uri */
             logo_url?: string | null;
+            /** Format: uri */
+            logo_dark_url?: string | null;
             accent_color?: string | null;
             /** Format: uri */
             site_url?: string | null;
@@ -18448,6 +18460,8 @@ export interface components {
             description: string;
             url: string;
             logo_url?: string;
+            /** @description The logo for dark mode, when the page has one. */
+            logo_dark_url?: string;
             accent_color?: string;
             site_url?: string;
             support_url?: string;

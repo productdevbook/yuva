@@ -2044,8 +2044,9 @@ the product's own servers. Being the support inbox is the point: the widget and 
 incident before a customer writes, and the conversations an outage brings are answered together.
 
 - **Pages.** `status_pages` belong to an inbox (one page per inbox at most): name, description, `slug`
-  (unique across the server, `a-z0-9-`, 3–48 characters, reserved words refused), logo (storage), accent
-  colour, site and support links, locale (`en`, `tr`, `de`, …; the page's words follow it), time zone,
+  (unique across the server, `a-z0-9-`, 3–48 characters, reserved words refused), logo (storage), a
+  dark mode logo (`logo_dark_url`, a `<picture>` source for `prefers-color-scheme: dark`, used only with a
+  logo), accent colour, site and support links, locale (`en`, `tr`, `de`, …; the page's words follow it), time zone,
   `history_days` (90), whether uptime is shown, whether response times are shown (`show_response_times`,
   off by default), whether the header shows the name next to a logo (`show_name`, on by default; off
   leaves only the logo, with the name as its alt text), whether the page shows the Follow and embed

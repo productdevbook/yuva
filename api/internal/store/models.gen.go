@@ -2101,6 +2101,7 @@ type StatusPage struct {
 	ShowResponseTimes  bool
 	ShowName           bool
 	ShowFollow         bool
+	LogoDarkUrl        *string
 }
 
 type StatusPageSlug struct {

@@ -234,3 +234,35 @@ func TestStatusPageShowNameAndFollow(t *testing.T) {
 		t.Fatalf("a page without a logo hides its name: %s", page)
 	}
 }
+
+func TestStatusPageDarkLogo(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	st := newStatusTeam(t, h)
+	st.owner.expectProblem(http.StatusBadRequest, "validation_failed", "PATCH", st.path(""), map[string]any{"logo_dark_url": "http://example.com/dark.svg"})
+	pg := st.owner.expect(http.StatusOK, "PATCH", st.path(""), map[string]any{
+		"published": true, "logo_url": "https://example.com/logo.svg", "logo_dark_url": "https://example.com/dark.svg",
+	})
+	if pg.body["logo_dark_url"] != "https://example.com/dark.svg" {
+		t.Fatalf("logo_dark_url not saved: %s", pg.raw)
+	}
+	page := string(publicStatus(t, h, "/status/"+st.slug).raw)
+	if !strings.Contains(page, `<picture><source media="(prefers-color-scheme: dark)" srcset="https://example.com/dark.svg"><img src="https://example.com/logo.svg"`) {
+		t.Fatalf("the header lacks the dark logo: %s", page)
+	}
+	if out := publicStatus(t, h, "/client/v1/status/"+st.slug); !strings.Contains(string(out.raw), `"logo_dark_url":"https://example.com/dark.svg"`) {
+		t.Fatalf("the public JSON lacks logo_dark_url: %s", out.raw)
+	}
+
+	st.owner.expect(http.StatusOK, "PATCH", st.path(""), map[string]any{"logo_url": nil})
+	if page = string(publicStatus(t, h, "/status/"+st.slug).raw); strings.Contains(page, "dark.svg") {
+		t.Fatalf("a page without a logo shows the dark logo: %s", page)
+	}
+	pg = st.owner.expect(http.StatusOK, "PATCH", st.path(""), map[string]any{"logo_url": "https://example.com/logo.svg", "logo_dark_url": nil})
+	if _, ok := pg.body["logo_dark_url"]; ok {
+		t.Fatalf("logo_dark_url not cleared: %s", pg.raw)
+	}
+	if page = string(publicStatus(t, h, "/status/"+st.slug).raw); strings.Contains(page, "<picture>") {
+		t.Fatalf("a page without a dark logo still wraps the logo: %s", page)
+	}
+}

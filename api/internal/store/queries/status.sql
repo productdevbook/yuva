@@ -1,7 +1,7 @@
 -- name: CreateStatusPage :one
-INSERT INTO status_pages (id, workspace_id, inbox_id, name, description, slug, logo_url, accent_color, site_url, support_url,
+INSERT INTO status_pages (id, workspace_id, inbox_id, name, description, slug, logo_url, logo_dark_url, accent_color, site_url, support_url,
     locale, timezone, history_days, show_uptime, show_response_times, show_name, show_follow, published, changed_at, created_at, updated_at)
-VALUES (@id, @workspace_id, @inbox_id, @name, @description, @slug, sqlc.narg(logo_url), sqlc.narg(accent_color), sqlc.narg(site_url),
+VALUES (@id, @workspace_id, @inbox_id, @name, @description, @slug, sqlc.narg(logo_url), sqlc.narg(logo_dark_url), sqlc.narg(accent_color), sqlc.narg(site_url),
     sqlc.narg(support_url), @locale, @timezone, @history_days, @show_uptime, @show_response_times, @show_name, @show_follow, @published, @now, @now, @now)
 RETURNING *;
 
@@ -37,6 +37,7 @@ SELECT * FROM status_pages WHERE slug = $1;
 
 -- name: UpdateStatusPage :one
 UPDATE status_pages SET name = @name, description = @description, slug = @slug, logo_url = sqlc.narg(logo_url),
+    logo_dark_url = sqlc.narg(logo_dark_url),
     accent_color = sqlc.narg(accent_color), site_url = sqlc.narg(site_url), support_url = sqlc.narg(support_url),
     locale = @locale, timezone = @timezone, history_days = @history_days, show_uptime = @show_uptime,
     show_response_times = @show_response_times, show_name = @show_name, show_follow = @show_follow, published = @published,
