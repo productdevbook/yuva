@@ -3523,9 +3523,8 @@ func (e EmailThemeDirection) Valid() bool {
 
 // Defines values for EmailVerificationMethod.
 const (
-	EmailVerifiedByCode     EmailVerificationMethod = "code"
-	EmailVerifiedByDns      EmailVerificationMethod = "dns"
-	EmailVerifiedByReceived EmailVerificationMethod = "received"
+	EmailVerifiedByCode EmailVerificationMethod = "code"
+	EmailVerifiedByDns  EmailVerificationMethod = "dns"
 )
 
 // Valid indicates whether the value is a known member of the EmailVerificationMethod enum.
@@ -3534,8 +3533,6 @@ func (e EmailVerificationMethod) Valid() bool {
 	case EmailVerifiedByCode:
 		return true
 	case EmailVerifiedByDns:
-		return true
-	case EmailVerifiedByReceived:
 		return true
 	default:
 		return false
@@ -9940,7 +9937,9 @@ type Attributes map[string]interface{}
 //     none. `channel.dkim_key_created`: `selector`.
 //   - `channel.address_verified`: `address`, `method` (`code` or `dns`); by `system` when the
 //     code came back through the forwarding address. `channel.address_lost`: `address`, by
-//     `system`, when another channel proved the address later.
+//     `system`, when a channel of another workspace proved the address later, or proved an
+//     exact address that this catch-all or `local@` channel received until then (`via`, the
+//     channel's address); the workspace's owners are e-mailed too.
 //   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
 //   - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 //     `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
@@ -10059,7 +10058,9 @@ type AuditEntry struct {
 	//   none. `channel.dkim_key_created`: `selector`.
 	// - `channel.address_verified`: `address`, `method` (`code` or `dns`); by `system` when the
 	//   code came back through the forwarding address. `channel.address_lost`: `address`, by
-	//   `system`, when another channel proved the address later.
+	//   `system`, when a channel of another workspace proved the address later, or proved an
+	//   exact address that this catch-all or `local@` channel received until then (`via`, the
+	//   channel's address); the workspace's owners are e-mailed too.
 	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
 	// - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 	//   `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
@@ -14812,9 +14813,10 @@ type EmailChannel struct {
 	Smtp *SmtpSettings `json:"smtp,omitempty"`
 
 	// Verification Whether the channel's address is proven. Only a proven address routes mail to the channel
-	// and counts as this workspace's own (dropped as a sender, never copied or kept as a
-	// participant); an unproven channel still receives at its forwarding address and sends through
-	// its SMTP account. Prove an exact address with a code mailed to it
+	// and holds the address against other workspaces; an unproven channel still receives at its
+	// forwarding address and sends through its SMTP account. Within this workspace every
+	// channel's address counts as its own, proven or not (dropped as a sender, never copied or
+	// kept as a participant). Prove an exact address with a code mailed to it
 	// (`POST /v1/channels/{id}/verification-code`, then `POST /v1/channels/{id}/verify` with
 	// `code`; when the code mail comes back through the channel's forwarding address the channel
 	// is verified by itself), or any address and every catch-all with the TXT record `txt_name`
@@ -15756,9 +15758,10 @@ type EmailThemeDarkColors struct {
 type EmailUrl = string
 
 // EmailVerification Whether the channel's address is proven. Only a proven address routes mail to the channel
-// and counts as this workspace's own (dropped as a sender, never copied or kept as a
-// participant); an unproven channel still receives at its forwarding address and sends through
-// its SMTP account. Prove an exact address with a code mailed to it
+// and holds the address against other workspaces; an unproven channel still receives at its
+// forwarding address and sends through its SMTP account. Within this workspace every
+// channel's address counts as its own, proven or not (dropped as a sender, never copied or
+// kept as a participant). Prove an exact address with a code mailed to it
 // (`POST /v1/channels/{id}/verification-code`, then `POST /v1/channels/{id}/verify` with
 // `code`; when the code mail comes back through the channel's forwarding address the channel
 // is verified by itself), or any address and every catch-all with the TXT record `txt_name`
@@ -15777,8 +15780,8 @@ type EmailVerification struct {
 	// CodeSentAt When the last code was mailed; absent when no code is open.
 	CodeSentAt *time.Time `json:"code_sent_at,omitempty"`
 
-	// Method How the address was proven: `code` (the code mailed to it), `dns` (the TXT record) or
-	// `received` (the channel had received mail before proofs existed). Absent while unverified.
+	// Method How the address was proven: `code` (the code mailed to it) or `dns` (the TXT record).
+	// Absent while unverified.
 	Method *EmailVerificationMethod `json:"method,omitempty"`
 
 	// Problem Why the last check did not verify it, or `taken` when another channel proved the
@@ -15794,8 +15797,8 @@ type EmailVerification struct {
 	VerifiedAt *time.Time `json:"verified_at,omitempty"`
 }
 
-// EmailVerificationMethod How the address was proven: `code` (the code mailed to it), `dns` (the TXT record) or
-// `received` (the channel had received mail before proofs existed). Absent while unverified.
+// EmailVerificationMethod How the address was proven: `code` (the code mailed to it) or `dns` (the TXT record).
+// Absent while unverified.
 type EmailVerificationMethod string
 
 // EmailVerificationState defines model for EmailVerification.State.

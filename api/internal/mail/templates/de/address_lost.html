@@ -1,0 +1,4 @@
+{{template "heading" "Eine Adresse ist zu einem anderen Workspace gewechselt"}}
+<p style="margin:0 0 16px 0;">Ein anderer Workspace auf diesem Server hat <strong>{{.Address}}</strong> bestätigt, deshalb erreichen Mails an diese Adresse den Kanal „{{.Channel}}“ von <strong>{{.Workspace}}</strong> nicht mehr.</p>
+<p style="margin:0 0 16px 0;">Wenn die Adresse Ihnen gehört, bestätigen Sie sie in den Einstellungen des Kanals erneut: Die Code-Mail oder der TXT-Eintrag holt sie zurück.</p>
+{{template "button" (button .URL "Kanal öffnen")}}

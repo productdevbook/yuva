@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -24,6 +25,9 @@ const (
 	noticeWorkspace    = "workspace"
 	// noticeWorkspaceDeleted is the only record of a workspace's deletion that outlives it.
 	noticeWorkspaceDeleted = "workspace_deleted"
+	// noticeEmailUnproven names an e-mail channel that receives by address only once proven; the
+	// upgrade that introduced proofs writes one per channel.
+	noticeEmailUnproven = "email_unproven"
 )
 
 var countryCode = regexp.MustCompile(`^[A-Z]{2}$`)
@@ -83,6 +87,7 @@ var broadcastNoticeTitles = map[string]string{
 	noticeAnalyticsDropped:   "Analytics events mostly dropped",
 	noticeSESTenantPaused:    "SES tenant paused",
 	noticeWorkspaceDeleted:   "Workspace deleted",
+	noticeEmailUnproven:      "E-mail address to prove",
 }
 
 func oneLine(s string) string {
@@ -93,7 +98,7 @@ func oneLine(s string) string {
 // digest, at most once per operatorDigestDelay.
 func (s *Server) SendOperatorDigest(ctx context.Context) error {
 	if len(s.operator) == 0 {
-		return nil
+		return s.logEmailNotices(ctx)
 	}
 	now := s.now()
 	var notices []store.OperatorNotice
@@ -124,7 +129,7 @@ func (s *Server) SendOperatorDigest(ctx context.Context) error {
 		return err
 	}
 	var items []operatorItem
-	signups, workspaces, broadcasts, analyticsNotices, deletions := 0, 0, 0, 0, 0
+	signups, workspaces, broadcasts, analyticsNotices, deletions, addresses := 0, 0, 0, 0, 0, 0
 	for _, n := range notices {
 		it := operatorItem{Time: n.CreatedAt.UTC().Format("2006-01-02 15:04 UTC"), Email: n.Email, Reader: n.Reader, From: n.Ip}
 		if n.Country != nil {
@@ -144,6 +149,8 @@ func (s *Server) SendOperatorDigest(ctx context.Context) error {
 				analyticsNotices++
 			case noticeWorkspaceDeleted:
 				deletions++
+			case noticeEmailUnproven:
+				addresses++
 			default:
 				broadcasts++
 			}
@@ -160,7 +167,7 @@ func (s *Server) SendOperatorDigest(ctx context.Context) error {
 		server = u.Host
 	}
 	msg, err := mail.Render("operator_digest", "en", map[string]any{
-		"Items": items, "Signups": signups, "Workspaces": workspaces, "Broadcasts": broadcasts, "Analytics": analyticsNotices, "Deletions": deletions, "Server": server, "URL": s.auth.PublicURL,
+		"Items": items, "Signups": signups, "Workspaces": workspaces, "Broadcasts": broadcasts, "Analytics": analyticsNotices, "Deletions": deletions, "Addresses": addresses, "Server": server, "URL": s.auth.PublicURL,
 	})
 	if err != nil {
 		return err
@@ -171,4 +178,34 @@ func (s *Server) SendOperatorDigest(ctx context.Context) error {
 		s.sendMail(ctx, m)
 	}
 	return nil
+}
+
+// logEmailNotices writes the e-mail address notices to the log once when the server has no
+// operator address to mail them to.
+func (s *Server) logEmailNotices(ctx context.Context) error {
+	return s.st.InTx(ctx, func(q *store.Queries) error {
+		if err := q.LockOperatorNotices(ctx); err != nil {
+			return err
+		}
+		notices, err := q.ListUnsentOperatorNotices(ctx)
+		if err != nil {
+			return err
+		}
+		var ids []uuid.UUID
+		for _, n := range notices {
+			if n.Kind != noticeEmailUnproven {
+				continue
+			}
+			s.log.WarnContext(ctx, "e-mail channel address must be proven", slog.String("workspace", deref(n.WorkspaceName)), slog.String("detail", deref(n.Detail)))
+			ids = append(ids, n.ID)
+		}
+		if len(ids) == 0 {
+			return nil
+		}
+		now := s.now()
+		if err := q.MarkOperatorNoticesSent(ctx, store.MarkOperatorNoticesSentParams{SentAt: now, Ids: ids}); err != nil {
+			return err
+		}
+		return q.DeleteSentOperatorNotices(ctx, now.Add(-operatorNoticeKeep))
+	})
 }

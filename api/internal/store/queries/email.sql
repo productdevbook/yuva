@@ -164,17 +164,18 @@ JOIN messages m ON m.workspace_id = e.workspace_id AND m.id = e.message_id
 WHERE e.workspace_id = @workspace_id AND coalesce(m.author_contact_id, c.contact_id) = @contact_id::uuid
   AND e.direction = 'in' AND (e.dmarc = 'pass') = @authenticated::bool AND e.created_at > @since;
 
+-- A workspace's own channels count whether proven or not: proof decides only routing and other
+-- workspaces.
 -- name: IsEmailChannelSender :one
 SELECT EXISTS (
   SELECT 1 FROM email_channels
-  WHERE workspace_id = @workspace_id AND verified_at IS NOT NULL AND (address = @address::text OR from_address = @address::text)
+  WHERE workspace_id = @workspace_id AND (address = @address::text OR from_address = @address::text)
 );
 
 -- name: IsWorkspaceEmailAddress :one
 SELECT EXISTS (
   SELECT 1 FROM email_channels
-  WHERE workspace_id = @workspace_id AND verified_at IS NOT NULL
-    AND (address = ANY(@addresses::text[]) OR from_address = @address::text)
+  WHERE workspace_id = @workspace_id AND (address = ANY(@addresses::text[]) OR from_address = @address::text)
 );
 
 -- name: LockEmailAddress :exec
@@ -183,15 +184,9 @@ SELECT pg_advisory_xact_lock(hashtextextended('yuva_email_address:' || @address:
 -- name: LockEmailChannel :one
 SELECT * FROM email_channels WHERE workspace_id = $1 AND channel_id = $2 FOR UPDATE;
 
--- name: CountWorkspaceVerificationSends :one
-SELECT coalesce(sum(verify_sends), 0)::bigint FROM email_channels
-WHERE workspace_id = @workspace_id AND verify_window_at > @since;
-
 -- name: StartEmailVerificationCode :one
 UPDATE email_channels SET verify_code_hash = @code_hash, verify_code_expires_at = @expires_at, verify_attempts = 0,
-    verify_message_id = @message_id, verify_relay_message_id = NULL, verify_sent_at = @now,
-    verify_sends = CASE WHEN verify_window_at > @window_since THEN verify_sends + 1 ELSE 1 END,
-    verify_window_at = CASE WHEN verify_window_at > @window_since THEN verify_window_at ELSE @now END
+    verify_message_id = @message_id, verify_relay_message_id = NULL, verify_sent_at = @now
 WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND address = @address AND verified_at IS NULL
 RETURNING *;
 

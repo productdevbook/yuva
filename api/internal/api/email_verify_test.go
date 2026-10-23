@@ -26,8 +26,8 @@ func channelOfConversation(t *testing.T, c *client, conv string) string {
 	return c.expect(http.StatusOK, "GET", "/v1/conversations/"+conv, nil).str("channel_id")
 }
 
-// legacyChannel stores address on a channel as proven by the upgrade rule, the way a row saved
-// before proofs existed looks, bypassing the checks a save does today.
+// legacyChannel stores address on a channel as proven, the way a row saved before today's checks
+// looks, bypassing them.
 func legacyChannel(t *testing.T, h *harness, tm team, address string) string {
 	t.Helper()
 	id := tm.owner.expect(http.StatusCreated, "POST", "/v1/inboxes/"+tm.inbox+"/channels", map[string]any{
@@ -38,7 +38,7 @@ func legacyChannel(t *testing.T, h *harness, tm team, address string) string {
 		t.Fatal(err)
 	}
 	if _, err := h.st.Pool.Exec(ctx,
-		"UPDATE email_channels SET address = $2, verified_at = now(), verified_by = 'received' WHERE channel_id = $1", id, address); err != nil {
+		"UPDATE email_channels SET address = $2, verified_at = now(), verified_by = 'dns' WHERE channel_id = $1", id, address); err != nil {
 		t.Fatal(err)
 	}
 	return id
@@ -279,25 +279,21 @@ func TestAddressProofByDNS(t *testing.T) {
 	}
 }
 
+// TestAddressProofUpgradeRule runs alone: the operator notices it writes and reads are server-wide.
 func TestAddressProofUpgradeRule(t *testing.T) {
-	t.Parallel()
 	fwd := unique("fwd") + ".example"
 	h := newHarnessWith(t, func(d *api.Deps) { d.Ingress.ForwardingDomain = fwd })
 	h.unproven = true
 	ctx := context.Background()
-	live := newEmailTeam(t, h, false)
-	imported := newEmailTeam(t, h, false)
-	silent := newEmailTeam(t, h, false)
-	for _, et := range []emailTeam{live, imported} {
-		to := et.owner.expect(http.StatusOK, "GET", "/v1/channels/"+et.channel, nil).str("forwarding_address")
-		r := h.ingest(to, buildMail(mailOpts{from: unique("c") + "@example.org", to: et.address, subject: "Hi", messageID: newMessageID(), body: "Hello"}), nil)
-		if r.status != http.StatusAccepted {
-			t.Fatalf("ingest: %d %v", r.status, r.body)
-		}
+	used := newEmailTeam(t, h, false)
+	to := used.owner.expect(http.StatusOK, "GET", "/v1/channels/"+used.channel, nil).str("forwarding_address")
+	if r := h.ingest(to, buildMail(mailOpts{from: unique("c") + "@example.org", to: used.address, subject: "Hi", messageID: newMessageID(), body: "Hello"}), nil); r.status != http.StatusAccepted {
+		t.Fatalf("ingest: %d %v", r.status, r.body)
 	}
-	if _, err := h.st.Pool.Exec(ctx, "UPDATE message_emails SET imported_at = now() WHERE workspace_id = $1", imported.ws); err != nil {
-		t.Fatal(err)
-	}
+	catchAll := used.owner.expect(http.StatusCreated, "POST", "/v1/inboxes/"+used.inbox+"/channels", map[string]any{
+		"kind": "email", "name": "All", "email": map[string]any{"address": "*@" + unique("shop") + ".example"},
+	}).str("id")
+
 	files, err := filepath.Glob("../store/migrations/*_email_address_proof.sql")
 	if err != nil || len(files) != 1 {
 		t.Fatalf("migration: %v %v", files, err)
@@ -306,22 +302,143 @@ func TestAddressProofUpgradeRule(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	start := strings.Index(string(src), "UPDATE email_channels e SET verified_at")
-	end := strings.Index(string(src)[start:], ";")
-	upgrade := string(src)[start:start+end] + " AND e.workspace_id = ANY($1::uuid[])"
-	if _, err := h.st.Pool.Exec(ctx, upgrade, []string{live.ws, imported.ws, silent.ws}); err != nil {
+	if strings.Contains(string(src), "UPDATE email_channels e SET verified_at") {
+		t.Fatal("the upgrade proves channels by the mail they received")
+	}
+	start := strings.Index(string(src), "INSERT INTO operator_notices")
+	end := strings.Index(string(src)[start:], "w.deleted_at IS NULL") + len("w.deleted_at IS NULL")
+	notices := string(src)[start:start+end] + " AND e.workspace_id = $1"
+	if _, err := h.st.Pool.Exec(ctx, notices, used.ws); err != nil {
 		t.Fatal(err)
 	}
-	if v := verificationOf(t, live.owner, live.channel); v["state"] != "verified" || v["method"] != "received" {
-		t.Fatalf("a channel that received mail: %v", v)
-	}
-	for _, et := range []emailTeam{imported, silent} {
-		if v := verificationOf(t, et.owner, et.channel); v["state"] != "unverified" {
-			t.Fatalf("a channel without live mail: %v", v)
+	for _, id := range []string{used.channel, catchAll} {
+		if v := verificationOf(t, used.owner, id); v["state"] != "unverified" {
+			t.Fatalf("an upgraded channel is proven: %v", v)
+		}
+		var n int
+		if err := h.st.Pool.QueryRow(ctx, "SELECT count(*) FROM operator_notices WHERE kind = 'email_unproven' AND sent_at IS NULL AND detail LIKE '%' || $1 || '%'", id).Scan(&n); err != nil || n != 1 {
+			t.Fatalf("operator notices for %s: %d %v", id, n, err)
 		}
 	}
-	r := h.ingest(live.address, buildMail(mailOpts{from: unique("c") + "@example.org", to: live.address, subject: "Hi", messageID: newMessageID(), body: "Hello"}), nil)
+	if r := h.ingest(used.address, buildMail(mailOpts{from: unique("c") + "@example.org", to: used.address, subject: "Hi", messageID: newMessageID(), body: "Hello"}), nil); r.status != http.StatusNotFound {
+		t.Fatalf("mail by address to an upgraded, unproven channel: %d %v", r.status, r.body)
+	}
+	if err := h.srv.SendOperatorDigest(ctx); err != nil {
+		t.Fatal(err)
+	}
+	var left int
+	if err := h.st.Pool.QueryRow(ctx, "SELECT count(*) FROM operator_notices WHERE kind = 'email_unproven' AND sent_at IS NULL").Scan(&left); err != nil || left != 0 {
+		t.Fatalf("notices left after the log: %d %v", left, err)
+	}
+}
+
+func TestOwnUnprovenAddressesStayOurs(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	et := newEmailTeam(t, h, false)
+	h.unproven = true
+	sibling := unique("sales") + "@example.com"
+	et.owner.expect(http.StatusCreated, "POST", "/v1/inboxes/"+et.inbox+"/channels", map[string]any{
+		"kind": "email", "name": "Sales", "email": map[string]any{"address": sibling, "from_address": "noreply-" + sibling},
+	})
+	h.unproven = false
+	d := unique("cust") + ".example.org"
+	cust := "cust@" + d
+	r := h.ingest(et.address, buildMail(mailOpts{
+		from: cust, to: et.address, subject: "Quote", messageID: newMessageID(), body: "Copying your sales team.",
+		headers: map[string]string{"Cc": sibling + ", col@" + d, "Authentication-Results": dmarcPass(d)},
+	}), nil)
 	if r.status != http.StatusAccepted {
-		t.Fatalf("mail to an upgraded address: %d %v", r.status, r.body)
+		t.Fatalf("ingest: %d %v", r.status, r.body)
+	}
+	conv := r.str("conversation_id")
+	if got := participantEmails(t, et.owner, conv); !slices.Equal(got, []string{"col@" + d}) {
+		t.Fatalf("participants %v", got)
+	}
+	reply := et.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "body": "Here you go."})
+	h.sendQueued(t, et.ws, reply.str("id"))
+	if sent, _ := h.smtp.last(t); slices.Contains(sent.to, sibling) {
+		t.Fatalf("a reply copied the team's own mailbox: %v", sent.to)
+	}
+	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "body": "x", "cc": []string{sibling}})
+	for _, from := range []string{sibling, "noreply-" + sibling} {
+		loop := h.ingest(et.address, buildMail(mailOpts{from: from, to: et.address, subject: "Auto", messageID: newMessageID(), body: "Looping."}), nil)
+		if loop.status != http.StatusAccepted || loop.str("status") != "dropped" {
+			t.Fatalf("mail from the workspace's unproven channel %s: %d %v", from, loop.status, loop.body)
+		}
+	}
+}
+
+func ownerEmail(t *testing.T, h *harness, ws string) string {
+	t.Helper()
+	var out string
+	if err := h.st.Pool.QueryRow(context.Background(),
+		"SELECT p.email FROM members m JOIN people p ON p.id = m.person_id WHERE m.workspace_id = $1 AND m.role = 'owner' LIMIT 1", ws).Scan(&out); err != nil {
+		t.Fatal(err)
+	}
+	return out
+}
+
+func TestAddressMovesAreReported(t *testing.T) {
+	t.Parallel()
+	dns := &ssoDNS{txt: map[string][]string{}}
+	h := newHarnessWith(t, func(d *api.Deps) { d.Status.Resolver = dns })
+	holder := newTeam(t, h)
+	domain := unique("corp") + ".example"
+	all := holder.owner.expect(http.StatusCreated, "POST", "/v1/inboxes/"+holder.inbox+"/channels", map[string]any{
+		"kind": "email", "name": "All", "email": map[string]any{"address": "*@" + domain},
+	}).str("id")
+	h.unproven = true
+	mover := newTeam(t, h)
+	exact := "jobs@" + domain
+	ch := mover.owner.expect(http.StatusCreated, "POST", "/v1/inboxes/"+mover.inbox+"/channels", map[string]any{
+		"kind": "email", "name": "Jobs", "email": map[string]any{"address": exact},
+	}).str("id")
+	h.unproven = false
+	mover.owner.expect(http.StatusAccepted, "POST", "/v1/channels/"+ch+"/verification-code", nil)
+	code := addressCodePattern.FindString(h.mail.wait(t, exact, 1)[0].Text)
+	mover.owner.expect(http.StatusOK, "POST", "/v1/channels/"+ch+"/verify", map[string]any{"code": code})
+	var via string
+	if err := h.st.Pool.QueryRow(context.Background(),
+		"SELECT details->>'via' FROM audit_log WHERE workspace_id = $1 AND action = 'channel.address_lost' AND target_id = $2 AND details->>'address' = $3",
+		holder.ws, all, exact).Scan(&via); err != nil || via != "*@"+domain {
+		t.Fatalf("address_lost for mail moving off the catch-all: %q %v", via, err)
+	}
+	notice := h.mail.wait(t, ownerEmail(t, h, holder.ws), 1)
+	if m := notice[len(notice)-1]; !strings.Contains(m.Subject, exact) || !strings.Contains(m.Text, "/channels/"+all) {
+		t.Fatalf("owner notice: %q %q", m.Subject, m.Text)
+	}
+}
+
+func TestAddressCodeCapsOutliveChannels(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	h.unproven = true
+	tm := newTeam(t, h)
+	target := unique("victim") + "@example.org"
+	send := func(c *client, inbox, address string) response {
+		id := c.expect(http.StatusCreated, "POST", "/v1/inboxes/"+inbox+"/channels", map[string]any{
+			"kind": "email", "name": "x", "email": map[string]any{"address": address},
+		}).str("id")
+		r := c.do("POST", "/v1/channels/"+id+"/verification-code", nil)
+		c.expect(http.StatusNoContent, "DELETE", "/v1/channels/"+id, nil)
+		return r
+	}
+	for i := range 5 {
+		if r := send(tm.owner, tm.inbox, target); r.status != http.StatusAccepted {
+			t.Fatalf("code %d to a re-created channel: %d %s", i+1, r.status, r.raw)
+		}
+	}
+	other := newTeam(t, h)
+	if r := send(other.owner, other.inbox, target); r.status != http.StatusTooManyRequests {
+		t.Fatalf("a sixth code to one address from another workspace: %d %s", r.status, r.raw)
+	}
+	for i := 5; i < 20; i++ {
+		if r := send(tm.owner, tm.inbox, unique("x")+"@example.org"); r.status != http.StatusAccepted {
+			t.Fatalf("code %d of the workspace: %d %s", i+1, r.status, r.raw)
+		}
+	}
+	if r := send(tm.owner, tm.inbox, unique("x")+"@example.org"); r.status != http.StatusTooManyRequests {
+		t.Fatalf("a 21st code in a day from one workspace: %d %s", r.status, r.raw)
 	}
 }

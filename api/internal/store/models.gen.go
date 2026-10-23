@@ -1110,8 +1110,6 @@ type EmailChannel struct {
 	VerifyMessageID         *string
 	VerifyRelayMessageID    *string
 	VerifySentAt            *time.Time
-	VerifySends             int32
-	VerifyWindowAt          *time.Time
 }
 
 type EmailConfirmation struct {

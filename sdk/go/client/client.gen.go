@@ -3521,9 +3521,8 @@ func (e EmailThemeDirection) Valid() bool {
 
 // Defines values for EmailVerificationMethod.
 const (
-	EmailVerifiedByCode     EmailVerificationMethod = "code"
-	EmailVerifiedByDns      EmailVerificationMethod = "dns"
-	EmailVerifiedByReceived EmailVerificationMethod = "received"
+	EmailVerifiedByCode EmailVerificationMethod = "code"
+	EmailVerifiedByDns  EmailVerificationMethod = "dns"
 )
 
 // Valid indicates whether the value is a known member of the EmailVerificationMethod enum.
@@ -3532,8 +3531,6 @@ func (e EmailVerificationMethod) Valid() bool {
 	case EmailVerifiedByCode:
 		return true
 	case EmailVerifiedByDns:
-		return true
-	case EmailVerifiedByReceived:
 		return true
 	default:
 		return false
@@ -9986,7 +9983,9 @@ type Attributes map[string]interface{}
 //     none. `channel.dkim_key_created`: `selector`.
 //   - `channel.address_verified`: `address`, `method` (`code` or `dns`); by `system` when the
 //     code came back through the forwarding address. `channel.address_lost`: `address`, by
-//     `system`, when another channel proved the address later.
+//     `system`, when a channel of another workspace proved the address later, or proved an
+//     exact address that this catch-all or `local@` channel received until then (`via`, the
+//     channel's address); the workspace's owners are e-mailed too.
 //   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
 //   - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 //     `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
@@ -10105,7 +10104,9 @@ type AuditEntry struct {
 	//   none. `channel.dkim_key_created`: `selector`.
 	// - `channel.address_verified`: `address`, `method` (`code` or `dns`); by `system` when the
 	//   code came back through the forwarding address. `channel.address_lost`: `address`, by
-	//   `system`, when another channel proved the address later.
+	//   `system`, when a channel of another workspace proved the address later, or proved an
+	//   exact address that this catch-all or `local@` channel received until then (`via`, the
+	//   channel's address); the workspace's owners are e-mailed too.
 	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
 	// - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 	//   `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
@@ -14858,9 +14859,10 @@ type EmailChannel struct {
 	Smtp *SmtpSettings `json:"smtp,omitempty"`
 
 	// Verification Whether the channel's address is proven. Only a proven address routes mail to the channel
-	// and counts as this workspace's own (dropped as a sender, never copied or kept as a
-	// participant); an unproven channel still receives at its forwarding address and sends through
-	// its SMTP account. Prove an exact address with a code mailed to it
+	// and holds the address against other workspaces; an unproven channel still receives at its
+	// forwarding address and sends through its SMTP account. Within this workspace every
+	// channel's address counts as its own, proven or not (dropped as a sender, never copied or
+	// kept as a participant). Prove an exact address with a code mailed to it
 	// (`POST /v1/channels/{id}/verification-code`, then `POST /v1/channels/{id}/verify` with
 	// `code`; when the code mail comes back through the channel's forwarding address the channel
 	// is verified by itself), or any address and every catch-all with the TXT record `txt_name`
@@ -15802,9 +15804,10 @@ type EmailThemeDarkColors struct {
 type EmailUrl = string
 
 // EmailVerification Whether the channel's address is proven. Only a proven address routes mail to the channel
-// and counts as this workspace's own (dropped as a sender, never copied or kept as a
-// participant); an unproven channel still receives at its forwarding address and sends through
-// its SMTP account. Prove an exact address with a code mailed to it
+// and holds the address against other workspaces; an unproven channel still receives at its
+// forwarding address and sends through its SMTP account. Within this workspace every
+// channel's address counts as its own, proven or not (dropped as a sender, never copied or
+// kept as a participant). Prove an exact address with a code mailed to it
 // (`POST /v1/channels/{id}/verification-code`, then `POST /v1/channels/{id}/verify` with
 // `code`; when the code mail comes back through the channel's forwarding address the channel
 // is verified by itself), or any address and every catch-all with the TXT record `txt_name`
@@ -15823,8 +15826,8 @@ type EmailVerification struct {
 	// CodeSentAt When the last code was mailed; absent when no code is open.
 	CodeSentAt *time.Time `json:"code_sent_at,omitempty"`
 
-	// Method How the address was proven: `code` (the code mailed to it), `dns` (the TXT record) or
-	// `received` (the channel had received mail before proofs existed). Absent while unverified.
+	// Method How the address was proven: `code` (the code mailed to it) or `dns` (the TXT record).
+	// Absent while unverified.
 	Method *EmailVerificationMethod `json:"method,omitempty"`
 
 	// Problem Why the last check did not verify it, or `taken` when another channel proved the
@@ -15840,8 +15843,8 @@ type EmailVerification struct {
 	VerifiedAt *time.Time `json:"verified_at,omitempty"`
 }
 
-// EmailVerificationMethod How the address was proven: `code` (the code mailed to it), `dns` (the TXT record) or
-// `received` (the channel had received mail before proofs existed). Absent while unverified.
+// EmailVerificationMethod How the address was proven: `code` (the code mailed to it) or `dns` (the TXT record).
+// Absent while unverified.
 type EmailVerificationMethod string
 
 // EmailVerificationState defines model for EmailVerification.State.
@@ -37599,8 +37602,8 @@ type ClientInterface interface {
 	// channel's address; it is valid for an hour and for 5 tries, and a new one replaces it. The
 	// mail names neither the workspace nor the inbox. Enter it with
 	// `POST /v1/channels/{id}/verify`; a code mail that comes back through the channel's
-	// forwarding address verifies the channel by itself. At most one a minute and 5 a day per
-	// channel, 20 a day per workspace (`429 rate_limited`).
+	// forwarding address verifies the channel by itself. At most one a minute per channel, 20 a
+	// day per workspace and 5 a day to one address across the server (`429 rate_limited`).
 	//
 	// `400 validation_failed` for other kinds, a catch-all and an address on the forwarding
 	// domain (prove those with the TXT record); `409 email_verified` when the address is already proven
@@ -38338,7 +38341,7 @@ type ClientInterface interface {
 	// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
 	// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
 	// address must be a valid address that this workspace neither receives nor sends mail for
-	// (a proven channel address, its catch-all domain or sending address, a forwarding address or
+	// (a channel address of this workspace, its catch-all domain or sending address, a forwarding address or
 	// the server's own sender; `400 validation_failed`, the same answer for both); one that bounced or complained is refused with
 	// `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
 	// contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
@@ -38408,7 +38411,7 @@ type ClientInterface interface {
 	// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
 	// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
 	// address must be a valid address that this workspace neither receives nor sends mail for
-	// (a proven channel address, its catch-all domain or sending address, a forwarding address or
+	// (a channel address of this workspace, its catch-all domain or sending address, a forwarding address or
 	// the server's own sender; `400 validation_failed`, the same answer for both); one that bounced or complained is refused with
 	// `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
 	// contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
@@ -38475,7 +38478,7 @@ type ClientInterface interface {
 	//
 	// The people copied on the conversation's e-mail besides its contact, oldest first, at most
 	// 20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
-	// this workspace (a proven channel's address, catch-all domain or sending address, a
+	// this workspace (a channel's address, catch-all domain or sending address, a
 	// forwarding address, the server's own sender) are `active`
 	// when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
 	// can be forged; automatic mail and mail that failed DMARC add no one. Addresses a member
@@ -50452,8 +50455,8 @@ func (c *Client) RotateChannelPublicKey(ctx context.Context, channelId ChannelId
 // channel's address; it is valid for an hour and for 5 tries, and a new one replaces it. The
 // mail names neither the workspace nor the inbox. Enter it with
 // `POST /v1/channels/{id}/verify`; a code mail that comes back through the channel's
-// forwarding address verifies the channel by itself. At most one a minute and 5 a day per
-// channel, 20 a day per workspace (`429 rate_limited`).
+// forwarding address verifies the channel by itself. At most one a minute per channel, 20 a
+// day per workspace and 5 a day to one address across the server (`429 rate_limited`).
 //
 // `400 validation_failed` for other kinds, a catch-all and an address on the forwarding
 // domain (prove those with the TXT record); `409 email_verified` when the address is already proven
@@ -51631,7 +51634,7 @@ func (c *Client) ListMessages(ctx context.Context, conversationId ConversationId
 // recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
 // never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
 // address must be a valid address that this workspace neither receives nor sends mail for
-// (a proven channel address, its catch-all domain or sending address, a forwarding address or
+// (a channel address of this workspace, its catch-all domain or sending address, a forwarding address or
 // the server's own sender; `400 validation_failed`, the same answer for both); one that bounced or complained is refused with
 // `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
 // contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
@@ -51711,7 +51714,7 @@ func (c *Client) CreateMessageWithBody(ctx context.Context, conversationId Conve
 // recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
 // never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
 // address must be a valid address that this workspace neither receives nor sends mail for
-// (a proven channel address, its catch-all domain or sending address, a forwarding address or
+// (a channel address of this workspace, its catch-all domain or sending address, a forwarding address or
 // the server's own sender; `400 validation_failed`, the same answer for both); one that bounced or complained is refused with
 // `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
 // contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
@@ -51808,7 +51811,7 @@ func (c *Client) MoveConversation(ctx context.Context, conversationId Conversati
 //
 // The people copied on the conversation's e-mail besides its contact, oldest first, at most
 // 20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
-// this workspace (a proven channel's address, catch-all domain or sending address, a
+// this workspace (a channel's address, catch-all domain or sending address, a
 // forwarding address, the server's own sender) are `active`
 // when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
 // can be forged; automatic mail and mail that failed DMARC add no one. Addresses a member
@@ -98095,8 +98098,8 @@ type ClientWithResponsesInterface interface {
 	// channel's address; it is valid for an hour and for 5 tries, and a new one replaces it. The
 	// mail names neither the workspace nor the inbox. Enter it with
 	// `POST /v1/channels/{id}/verify`; a code mail that comes back through the channel's
-	// forwarding address verifies the channel by itself. At most one a minute and 5 a day per
-	// channel, 20 a day per workspace (`429 rate_limited`).
+	// forwarding address verifies the channel by itself. At most one a minute per channel, 20 a
+	// day per workspace and 5 a day to one address across the server (`429 rate_limited`).
 	//
 	// `400 validation_failed` for other kinds, a catch-all and an address on the forwarding
 	// domain (prove those with the TXT record); `409 email_verified` when the address is already proven
@@ -98878,7 +98881,7 @@ type ClientWithResponsesInterface interface {
 	// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
 	// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
 	// address must be a valid address that this workspace neither receives nor sends mail for
-	// (a proven channel address, its catch-all domain or sending address, a forwarding address or
+	// (a channel address of this workspace, its catch-all domain or sending address, a forwarding address or
 	// the server's own sender; `400 validation_failed`, the same answer for both); one that bounced or complained is refused with
 	// `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
 	// contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
@@ -98948,7 +98951,7 @@ type ClientWithResponsesInterface interface {
 	// recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
 	// never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
 	// address must be a valid address that this workspace neither receives nor sends mail for
-	// (a proven channel address, its catch-all domain or sending address, a forwarding address or
+	// (a channel address of this workspace, its catch-all domain or sending address, a forwarding address or
 	// the server's own sender; `400 validation_failed`, the same answer for both); one that bounced or complained is refused with
 	// `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
 	// contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
@@ -99015,7 +99018,7 @@ type ClientWithResponsesInterface interface {
 	//
 	// The people copied on the conversation's e-mail besides its contact, oldest first, at most
 	// 20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
-	// this workspace (a proven channel's address, catch-all domain or sending address, a
+	// this workspace (a channel's address, catch-all domain or sending address, a
 	// forwarding address, the server's own sender) are `active`
 	// when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
 	// can be forged; automatic mail and mail that failed DMARC add no one. Addresses a member
@@ -145327,8 +145330,8 @@ func (c *ClientWithResponses) RotateChannelPublicKeyWithResponse(ctx context.Con
 // channel's address; it is valid for an hour and for 5 tries, and a new one replaces it. The
 // mail names neither the workspace nor the inbox. Enter it with
 // `POST /v1/channels/{id}/verify`; a code mail that comes back through the channel's
-// forwarding address verifies the channel by itself. At most one a minute and 5 a day per
-// channel, 20 a day per workspace (`429 rate_limited`).
+// forwarding address verifies the channel by itself. At most one a minute per channel, 20 a
+// day per workspace and 5 a day to one address across the server (`429 rate_limited`).
 //
 // `400 validation_failed` for other kinds, a catch-all and an address on the forwarding
 // domain (prove those with the TXT record); `409 email_verified` when the address is already proven
@@ -146374,7 +146377,7 @@ func (c *ClientWithResponses) ListMessagesWithResponse(ctx context.Context, conv
 // recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
 // never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
 // address must be a valid address that this workspace neither receives nor sends mail for
-// (a proven channel address, its catch-all domain or sending address, a forwarding address or
+// (a channel address of this workspace, its catch-all domain or sending address, a forwarding address or
 // the server's own sender; `400 validation_failed`, the same answer for both); one that bounced or complained is refused with
 // `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
 // contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
@@ -146450,7 +146453,7 @@ func (c *ClientWithResponses) CreateMessageWithBodyWithResponse(ctx context.Cont
 // recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
 // never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
 // address must be a valid address that this workspace neither receives nor sends mail for
-// (a proven channel address, its catch-all domain or sending address, a forwarding address or
+// (a channel address of this workspace, its catch-all domain or sending address, a forwarding address or
 // the server's own sender; `400 validation_failed`, the same answer for both); one that bounced or complained is refused with
 // `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
 // contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
@@ -146535,7 +146538,7 @@ func (c *ClientWithResponses) MoveConversationWithResponse(ctx context.Context, 
 //
 // The people copied on the conversation's e-mail besides its contact, oldest first, at most
 // 20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
-// this workspace (a proven channel's address, catch-all domain or sending address, a
+// this workspace (a channel's address, catch-all domain or sending address, a
 // forwarding address, the server's own sender) are `active`
 // when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
 // can be forged; automatic mail and mail that failed DMARC add no one. Addresses a member

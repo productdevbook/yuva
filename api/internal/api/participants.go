@@ -30,10 +30,9 @@ var (
 	errParticipantGone  = problem(http.StatusNotFound, "not_found", "no such participant")
 )
 
-// serverAddress reports an address the workspace receives mail for (a proven channel's address,
-// tag or catch-all domain, any forwarding address) or sends from (a proven channel's
-// from_address, the server's own sender). Other workspaces' addresses never count, and neither
-// do unproven ones.
+// serverAddress reports an address the workspace receives mail for (any of its channels'
+// addresses, tags or catch-all domains, proven or not, and any forwarding address) or sends from
+// (a channel's from_address, the server's own sender). Other workspaces' addresses never count.
 func (s *Server) serverAddress(ctx context.Context, ws uuid.UUID, addr string) (bool, error) {
 	local, domain, _ := strings.Cut(addr, "@")
 	if s.ingress.ForwardingDomain != "" && domain == s.ingress.ForwardingDomain {

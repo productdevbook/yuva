@@ -28,10 +28,6 @@ const (
 	verifyCodeTTL         = time.Hour
 	verifyCodeMaxAttempts = 5
 	verifyCodeGap         = time.Minute
-	verifyWindow          = 24 * time.Hour
-	verifyChannelSends    = 5
-	verifyWorkspaceSends  = 20
-	verifyProblemTaken    = "taken"
 	verifiedByCode        = string(oas.EmailVerifiedByCode)
 	verifiedByDNS         = string(oas.EmailVerifiedByDns)
 )
@@ -40,7 +36,10 @@ var (
 	errVerifyCodeInvalid = problem(http.StatusBadRequest, "verification_code_invalid", "the code is wrong, used or expired; request a new one")
 	errAlreadyVerified   = problem(http.StatusConflict, "email_verified", "this channel's address is already proven")
 	errVerifyRateLimited = problem(http.StatusTooManyRequests, "rate_limited", "too many address codes requested; try again later")
-	errNoAddressToProve  = errValidation("only e-mail channels have an address to prove")
+
+	limitCodesPerWorkspace = limit{20, 24 * time.Hour}
+	limitCodesPerAddress   = limit{5, 24 * time.Hour}
+	errNoAddressToProve    = errValidation("only e-mail channels have an address to prove")
 )
 
 // sharedMailDomain reports a domain whose addresses belong to many unrelated people: the
@@ -163,24 +162,20 @@ func (s *Server) SendEmailVerificationCode(ctx context.Context, req oas.SendEmai
 			return errValidation("a catch-all or an address on the forwarding domain is proven by its domain's TXT record")
 		}
 		addr = cur.Address
-		windowSince := now.Add(-verifyWindow)
 		if cur.VerifySentAt != nil && cur.VerifySentAt.After(now.Add(-verifyCodeGap)) {
 			return errVerifyRateLimited
 		}
-		if cur.VerifyWindowAt != nil && cur.VerifyWindowAt.After(windowSince) && cur.VerifySends >= verifyChannelSends {
-			return errVerifyRateLimited
-		}
-		n, err := q.CountWorkspaceVerificationSends(ctx, store.CountWorkspaceVerificationSendsParams{WorkspaceID: p.workspaceID, Since: &windowSince})
-		if err != nil {
-			return err
-		}
-		if n >= verifyWorkspaceSends {
-			return errVerifyRateLimited
+		for _, g := range s.limits.take(ctx, q,
+			rateTake{"address_code:workspace:" + p.workspaceID.String(), limitCodesPerWorkspace, 1},
+			rateTake{"address_code:to:" + cur.Address, limitCodesPerAddress, 1}) {
+			if g.n == 0 {
+				return rateLimited(g.wait)
+			}
 		}
 		expires := now.Add(verifyCodeTTL)
 		saved, err := q.StartEmailVerificationCode(ctx, store.StartEmailVerificationCodeParams{
 			WorkspaceID: p.workspaceID, ChannelID: c.ID, Address: cur.Address, CodeHash: s.verifyCodeHash(c.ID, code),
-			ExpiresAt: &expires, MessageID: &msgID, Now: &now, WindowSince: &windowSince,
+			ExpiresAt: &expires, MessageID: &msgID, Now: &now,
 		})
 		if err != nil {
 			return err
@@ -234,11 +229,12 @@ func (s *Server) VerifyEmailChannel(ctx context.Context, req oas.VerifyEmailChan
 	seen, problemText := s.lookupEmailProof(ctx, domain, s.emailProofValue(p.workspaceID, domain))
 	now := s.now()
 	var out oas.Channel
+	var losses []addressLoss
 	err = s.st.InTx(ctx, func(q *store.Queries) error {
 		var saved store.EmailChannel
 		var err error
 		if seen {
-			saved, err = s.proveAddress(ctx, q, &p, e, verifiedByDNS, now)
+			saved, err = s.proveAddress(ctx, q, &p, e, verifiedByDNS, now, &losses)
 		} else {
 			saved, err = q.SetEmailVerifyProblem(ctx, store.SetEmailVerifyProblemParams{WorkspaceID: p.workspaceID, ChannelID: c.ID, Problem: &problemText, Now: &now})
 			if store.IsNotFound(err) {
@@ -257,6 +253,7 @@ func (s *Server) VerifyEmailChannel(ctx context.Context, req oas.VerifyEmailChan
 	if err != nil {
 		return nil, err
 	}
+	s.notifyAddressLost(ctx, losses)
 	return oas.VerifyEmailChannel200JSONResponse(out), nil
 }
 
@@ -264,6 +261,7 @@ func (s *Server) verifyByCode(ctx context.Context, p principal, c store.Channel,
 	now := s.now()
 	wrong := false
 	var out oas.Channel
+	var losses []addressLoss
 	err := s.st.InTx(ctx, func(q *store.Queries) error {
 		cur, err := q.LockEmailChannel(ctx, store.LockEmailChannelParams{WorkspaceID: p.workspaceID, ChannelID: c.ID})
 		if store.IsNotFound(err) {
@@ -278,7 +276,7 @@ func (s *Server) verifyByCode(ctx context.Context, p principal, c store.Channel,
 				wrong = true
 				return q.FailEmailVerificationCode(ctx, store.FailEmailVerificationCodeParams{WorkspaceID: p.workspaceID, ChannelID: c.ID, MaxAttempts: verifyCodeMaxAttempts})
 			}
-			if cur, err = s.proveAddress(ctx, q, &p, cur, verifiedByCode, now); err != nil {
+			if cur, err = s.proveAddress(ctx, q, &p, cur, verifiedByCode, now, &losses); err != nil {
 				return err
 			}
 		}
@@ -291,12 +289,21 @@ func (s *Server) verifyByCode(ctx context.Context, p principal, c store.Channel,
 	if wrong {
 		return nil, errVerifyCodeInvalid
 	}
+	s.notifyAddressLost(ctx, losses)
 	return oas.VerifyEmailChannel200JSONResponse(out), nil
 }
 
+// addressLoss is a channel of another workspace whose mail to address goes elsewhere from now on.
+type addressLoss struct {
+	workspaceID, channelID uuid.UUID
+	address                string
+}
+
 // proveAddress verifies e's address for its workspace and takes it from whichever channel held
-// it, in any workspace; p is nil when Yuva verified it by itself.
-func (s *Server) proveAddress(ctx context.Context, q *store.Queries, p *principal, e store.EmailChannel, method string, now time.Time) (store.EmailChannel, error) {
+// it, in any workspace; p is nil when Yuva verified it by itself. Channels of other workspaces
+// that lose mail, the holder or the catch-all or local@ channel that received it until now, are
+// added to losses.
+func (s *Server) proveAddress(ctx context.Context, q *store.Queries, p *principal, e store.EmailChannel, method string, now time.Time, losses *[]addressLoss) (store.EmailChannel, error) {
 	if err := q.LockEmailAddress(ctx, e.Address); err != nil {
 		return e, err
 	}
@@ -307,6 +314,20 @@ func (s *Server) proveAddress(ctx context.Context, q *store.Queries, p *principa
 	for _, l := range lost {
 		if err := writeSystemAudit(ctx, q, l.WorkspaceID, now, oas.AuditChannelAddressLost, oas.AuditTargetChannel, l.ChannelID, auditDetails{"address": e.Address}); err != nil {
 			return e, err
+		}
+		*losses = append(*losses, addressLoss{workspaceID: l.WorkspaceID, channelID: l.ChannelID, address: e.Address})
+	}
+	if len(lost) == 0 {
+		prev, err := s.previousRoute(ctx, q, e.Address)
+		if err != nil {
+			return e, err
+		}
+		if prev != nil && prev.WorkspaceID != e.WorkspaceID {
+			if err := writeSystemAudit(ctx, q, prev.WorkspaceID, now, oas.AuditChannelAddressLost, oas.AuditTargetChannel, prev.ChannelID,
+				auditDetails{"address": e.Address, "via": prev.Address}); err != nil {
+				return e, err
+			}
+			*losses = append(*losses, addressLoss{workspaceID: prev.WorkspaceID, channelID: prev.ChannelID, address: e.Address})
 		}
 	}
 	saved, err := q.MarkEmailChannelVerified(ctx, store.MarkEmailChannelVerifiedParams{
@@ -322,6 +343,67 @@ func (s *Server) proveAddress(ctx context.Context, q *store.Queries, p *principa
 		err = s.audit(ctx, q, *p, oas.AuditChannelAddressVerified, oas.AuditTargetChannel, e.ChannelID, details)
 	}
 	return saved, err
+}
+
+// previousRoute is the proven channel that received mail to an exact address no channel held: the
+// one at local@ for local+tag@, else the domain's catch-all.
+func (s *Server) previousRoute(ctx context.Context, q *store.Queries, address string) (*store.FindEmailChannelByAddressRow, error) {
+	local, domain, ok := strings.Cut(address, "@")
+	if !ok || local == catchAllLocal {
+		return nil, nil
+	}
+	var candidates []string
+	if base, _, tagged := strings.Cut(local, "+"); tagged {
+		candidates = append(candidates, base+"@"+domain)
+	}
+	if !s.sharedMailDomain(domain) {
+		candidates = append(candidates, catchAllLocal+"@"+domain)
+	}
+	for _, c := range candidates {
+		row, err := q.FindEmailChannelByAddress(ctx, c)
+		if store.IsNotFound(err) {
+			continue
+		}
+		if err != nil {
+			return nil, err
+		}
+		return &row, nil
+	}
+	return nil, nil
+}
+
+// notifyAddressLost mails the owners of each workspace whose channel lost mail to an address.
+func (s *Server) notifyAddressLost(ctx context.Context, losses []addressLoss) {
+	for _, l := range losses {
+		if err := s.mailAddressLost(ctx, l); err != nil {
+			s.log.ErrorContext(ctx, "address lost notice", slog.Any("error", err))
+		}
+	}
+}
+
+func (s *Server) mailAddressLost(ctx context.Context, l addressLoss) error {
+	w, err := s.st.GetWorkspace(ctx, l.workspaceID)
+	if err != nil {
+		return err
+	}
+	c, err := s.st.GetChannel(ctx, store.GetChannelParams{WorkspaceID: l.workspaceID, ID: l.channelID})
+	if err != nil {
+		return err
+	}
+	owners, err := s.st.ListOwnerAddresses(ctx, l.workspaceID)
+	if err != nil {
+		return err
+	}
+	link := s.auth.PublicURL + "/settings/inboxes/" + c.InboxID.String() + "/channels/" + c.ID.String() + "?workspace=" + l.workspaceID.String()
+	for _, o := range owners {
+		msg, err := mail.Render("address_lost", o.Locale, map[string]any{"Workspace": w.Name, "Channel": c.Name, "Address": l.address, "URL": link})
+		if err != nil {
+			return err
+		}
+		msg.To = o.Email
+		s.sendMail(ctx, msg)
+	}
+	return nil
 }
 
 func (s *Server) lookupEmailProof(ctx context.Context, domain, value string) (bool, string) {
@@ -358,6 +440,7 @@ func (s *Server) takeAddressCode(ctx context.Context, ch store.FindEmailChannelB
 	if ch.VerifiedAt != nil || ch.VerifyCodeExpiresAt == nil || !ch.VerifyCodeExpiresAt.After(now) {
 		return true, nil
 	}
+	var losses []addressLoss
 	err := s.st.InTx(ctx, func(q *store.Queries) error {
 		cur, err := q.LockEmailChannel(ctx, store.LockEmailChannelParams{WorkspaceID: ch.WorkspaceID, ChannelID: ch.ChannelID})
 		if store.IsNotFound(err) {
@@ -369,8 +452,11 @@ func (s *Server) takeAddressCode(ctx context.Context, ch store.FindEmailChannelB
 		if cur.VerifiedAt != nil || cur.VerifyMessageID == nil || *cur.VerifyMessageID != *ch.VerifyMessageID {
 			return nil
 		}
-		_, err = s.proveAddress(ctx, q, nil, cur, verifiedByCode, now)
+		_, err = s.proveAddress(ctx, q, nil, cur, verifiedByCode, now, &losses)
 		return err
 	})
+	if err == nil {
+		s.notifyAddressLost(ctx, losses)
+	}
 	return true, err
 }
