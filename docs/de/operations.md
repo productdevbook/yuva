@@ -199,10 +199,110 @@ Befehle, die eine ID oder ein Secret ausgeben, schreiben nur das auf stdout.
 | `analytics property create\|list`, `analytics geoip-update`, `workspace analytics-limit` | Websites für [Analytics](analytics.md), seine Standortdatenbank und das monatliche Event-Limit eines Workspaces ([Konfiguration](configuration.md#analytics)). |
 | `person delete --email <address> --yes` | Löscht das Konto einer Person. Abgelehnt, solange sie einziger Inhaber eines Workspaces ist. |
 | `ingest-email --to <address> [--from <address>]` | Stellt eine Rohnachricht von stdin zu ([E-Mail](email.md#beliebiger-mta-yuva-ingest-email)). |
+| `master-key rotate\|check [--batch <n>]` | Versiegelt gespeicherte Geheimnisse unter dem neuen Master-Key neu oder meldet, was noch nicht darunter liegt ([Master-Key rotieren](#master-key-rotieren)). |
 | `vapid-keys` | Gibt ein neues Web-Push-Schlüsselpaar aus. Braucht keine Datenbank. |
 
 Alles andere (Chat- und App-Kanäle, Mitglieder, Webhooks, Identitäts-Secrets) verwalten Sie im Panel
 oder über `/v1`.
+
+## Master-Key rotieren
+
+`YUVA_MASTER_KEY` versiegelt die Geheimnisse, die Yuva speichert (SMTP-Passwörter, DKIM-Schlüssel,
+Webhook- und Integrations-Secrets, Slack-, GitHub- und Linear-Tokens, Client-Secrets für Single
+Sign-on, Push-Zugangsdaten, Import- und Migrations-Zugangsdaten, Identitäts-Secrets, Analytics-
+Besucherschlüssel) und die Links in den versendeten E-Mails (Abmelde-, Einstellungs-, Bestätigungs-,
+Bewertungs- und Klick-Links). Rotieren Sie ihn in dem Rhythmus, den Ihre Richtlinie vorgibt. Währenddessen
+läuft die E-Mail weiter und niemand wird abgemeldet. Wenn der Schlüssel durchgesickert sein könnte,
+gehen Sie stattdessen nach [Wenn der Master-Key durchgesickert ist](#wenn-der-master-key-durchgesickert-ist) vor.
+
+1. Starten Sie den Server einmal mit dieser Version nur mit dem aktuellen Schlüssel (jedes normale
+   Update tut das). Er merkt sich den Opt-out-Schlüssel jedes Workspaces (siehe unten). Solange
+   `YUVA_MASTER_KEY_PREVIOUS` gesetzt ist, verweigern der Server und `yuva master-key rotate` den
+   Start, wenn ein Workspace Opt-outs, aber keinen gemerkten Schlüssel hat, und sagen das.
+2. Erzeugen Sie einen neuen Schlüssel: `openssl rand -base64 32`.
+3. Setzen Sie in jedem Prozess, der den Schlüssel hat (der Server, `yuva ingest-email` auf einem
+   Mailhost, der Rechner, von dem Sie `yuva`-Befehle ausführen), den neuen Schlüssel als
+   `YUVA_MASTER_KEY` und den alten als `YUVA_MASTER_KEY_PREVIOUS` und starten Sie neu. Neue Geheimnisse
+   werden mit dem neuen Schlüssel versiegelt, alles unter dem alten bleibt lesbar. Solange
+   `YUVA_MASTER_KEY_PREVIOUS` gesetzt ist, schreibt der Server beim Start eine Warnung.
+4. Versiegeln Sie das Gespeicherte neu:
+
+   ```sh
+   docker compose exec yuva /yuva master-key rotate
+   ```
+
+   Der Befehl geht Spalte für Spalte und Workspace für Workspace in Stapeln vor (`--batch`, Standard
+   500), schreibt pro Spalte eine Zeile (neu versiegelt, schon unter dem neuen Schlüssel, nicht
+   lesbar) und kann jederzeit gestoppt und neu gestartet werden: Ein zweiter Lauf berührt nur den
+   Rest. Ein Geheimnis, das jemand zwischenzeitlich im Panel ändert, wird nicht überschrieben. Am
+   Ende prüft er alles noch einmal und endet mit einem Fehler samt Zeilenliste, wenn noch etwas unter
+   dem alten Schlüssel liegt (etwa weil ein Prozess mit dem alten Schlüssel als `YUVA_MASTER_KEY`
+   geschrieben hat): Beheben Sie diesen Prozess und führen Sie den Befehl erneut aus.
+5. Bestätigen Sie:
+
+   ```sh
+   docker compose exec yuva /yuva master-key check
+   ```
+
+   Er schreibt nichts und endet mit einem Fehler, solange ein gespeicherter Wert noch unter dem alten
+   Schlüssel liegt (er listet die Zeilen; führen Sie `rotate` erneut aus) oder mit keinem der beiden
+   Schlüssel lesbar ist.
+6. Behalten Sie `YUVA_MASTER_KEY_PREVIOUS`, solange Links in vor dem Wechsel versendeten E-Mails
+   weiter funktionieren sollen: mindestens 60 Tage für Abmelde-Links in Broadcasts, für
+   Bewertungs- und Klick-Links so lange, wie sie zählen sollen. Entfernen Sie ihn dann, starten Sie
+   neu und führen Sie `master-key check` ein letztes Mal aus.
+
+Was sich ändert und was nicht:
+
+- Opt-outs bleiben erhalten. Adressen, die sich abgemeldet oder beschwert haben, werden nur als
+  geschlüsselter Hash gespeichert, der sich unter einem neuen Schlüssel nicht neu bilden lässt. Der
+  Hash-Schlüssel jedes Workspaces wird deshalb versiegelt gespeichert und wie die anderen Geheimnisse
+  neu versiegelt; die Widerspruchsliste übersteht jede Rotation. Wird der alte Schlüssel entfernt,
+  bevor `rotate` gelaufen ist, verweigert der Server den Start, statt Menschen anzuschreiben, die
+  widersprochen haben: Setzen Sie `YUVA_MASTER_KEY_PREVIOUS` wieder ein. Ein Zurückrollen (alter
+  Schlüssel als `YUVA_MASTER_KEY`, neuer als `YUVA_MASTER_KEY_PREVIOUS`) funktioniert in jedem
+  Stadium.
+- Der Verifizierungs-TXT-Wert für E-Mail-Adressen (`_yuva-mail.<domain>`) ändert sich: Das Panel
+  zeigt sofort den neuen Wert. Eine bereits nachgewiesene Adresse bleibt nachgewiesen, und ein
+  Eintrag mit dem alten Wert weist eine Adresse weiter nach, solange `YUVA_MASTER_KEY_PREVIOUS`
+  gesetzt ist.
+- Rate Limits beginnen von vorn: Ihre Schlüssel werden aus dem Master-Key abgeleitet.
+- Bereits versendete Codes (Adress-Codes, Slack-Link-Codes), bereits eingegebene
+  Analytics-Freigabepasswörter und laufende Migrations-Testnachrichten funktionieren weiter, solange
+  der alte Schlüssel gesetzt ist.
+- Ein Wert, der mit keinem der beiden Schlüssel lesbar ist, wird mit Tabelle, Workspace und Zeile
+  aufgeführt. Nichts kann ihn lesen: Tragen Sie das Geheimnis im Panel neu ein oder löschen Sie die
+  Integration.
+- Ein Backup von vor dem Wechsel braucht den alten Schlüssel. Bewahren Sie ihn so lange auf wie
+  diese Backups ([Backups](#backups)).
+- Es wird nur ein alter Schlüssel akzeptiert. Beenden Sie eine Rotation (`check` besteht, alter
+  Schlüssel entfernt), bevor Sie die nächste beginnen.
+
+## Wenn der Master-Key durchgesickert ist
+
+Wer den Schlüssel und eine Kopie der Datenbank hat, kann jedes gespeicherte Geheimnis lesen und die
+Links in Ihren E-Mails fälschen. Gehen Sie der Reihe nach vor.
+
+1. Rotieren Sie: Schritte 1 bis 5 unter [Master-Key rotieren](#master-key-rotieren). Führen Sie
+   `master-key check` aus, bis er besteht.
+2. Entfernen Sie `YUVA_MASTER_KEY_PREVIOUS` sofort und starten Sie neu. Abmelde-, Einstellungs-,
+   Bestätigungs-, Bewertungs- und Klick-Links in vor dem Wechsel versendeten E-Mails funktionieren
+   dann nicht mehr, weil jeder mit dem alten Schlüssel sie hätte fälschen können. Abmelden können
+   sich Menschen weiterhin über die nächste E-Mail.
+3. Ändern Sie die Geheimnisse selbst an ihrer Quelle, denn der durchgesickerte Schlüssel konnte sie
+   öffnen: SMTP-Passwörter (auch das des Broadcast-SMTP-Kontos), Slack-, GitHub- und Linear-Tokens,
+   Zugangsdaten für Help-Desk- und Postfach-Migrationen, Client-Secrets für Single Sign-on,
+   APNs-Schlüssel und FCM-Dienstkonten. Rotieren Sie Webhook-Signatur-Secrets und
+   Identitäts-Secrets der Posteingänge in Yuva und informieren Sie die Empfänger und die Apps, die
+   damit signieren. Erzeugen Sie für jede Absenderdomain einen neuen DKIM-Schlüssel und
+   veröffentlichen Sie seinen Eintrag.
+4. Opt-out-Hashes behalten ihren Schlüssel über eine Rotation hinweg (so gewollt), der alte
+   Schlüssel leitet ihn also weiterhin ab: Wer den alten Schlüssel und die Datenbank hat, kann
+   prüfen, ob eine bestimmte Adresse den E-Mails eines Workspaces widersprochen hat. Die Adressen
+   auflisten kann er nicht. Betrachten Sie das zusammen mit der Datenbank als offengelegt.
+5. Sitzungen, API-Schlüssel und Kontakt-Sitzungen werden als ungeschlüsselte Hashes gespeichert und
+   hängen nicht vom Master-Key ab. Widerrufen Sie sie nur dann gesondert, wenn die Datenbank selbst
+   durchgesickert ist.
 
 ## Broadcasts auf einem gehosteten Server
 

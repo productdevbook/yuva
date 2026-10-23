@@ -29,6 +29,7 @@ virgülle ayrılır. Boolean değerler `true`/`false`, `1`/`0` ve `t`/`f` kabul 
 |---|---|
 | `YUVA_DATABASE_URL` | Postgres 16+ adresi, ör. `postgres://yuva:secret@db:5432/yuva?sslmode=disable`. |
 | `YUVA_MASTER_KEY` | base64 ile 32 rastgele bayt (`openssl rand -base64 32`). Saklanan gizli bilgileri şifreler. Bkz. [Ana anahtar](install.md#ana-anahtar). |
+| `YUVA_MASTER_KEY_PREVIOUS` | Ana anahtar döndürme sırasında emekli edilen anahtar: onunla mühürlenmiş değerler açılmaya devam eder. `yuva master-key check` geçip eski bağlantıların çalışmaz olması sorun olmadığında kaldırın ([Ana anahtarı döndürme](operations.md#ana-anahtarı-döndürme)). base64 ile 32 bayt değilse, `YUVA_MASTER_KEY` ile aynıysa ya da (yerel olmayan bir adreste) herkese açık geliştirme değeriyse başlangıçta reddedilir. |
 | `YUVA_PUBLIC_URL` | Kişilerin ve uygulamaların kullandığı adres, ör. `https://support.example.com`, alan adının kökünde. Varsayılan `http://localhost:8080`, yalnızca yerel denemeler için. |
 
 ## Sunucu

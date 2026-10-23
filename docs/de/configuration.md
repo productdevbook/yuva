@@ -30,6 +30,7 @@ und `t`/`f`.
 |---|---|
 | `YUVA_DATABASE_URL` | Postgres-16+-URL, z. B. `postgres://yuva:secret@db:5432/yuva?sslmode=disable`. |
 | `YUVA_MASTER_KEY` | 32 Zufallsbytes, Base64 (`openssl rand -base64 32`). Verschlüsselt gespeicherte Geheimnisse. Siehe [Master-Key](install.md#master-key). |
+| `YUVA_MASTER_KEY_PREVIOUS` | Während einer Master-Key-Rotation der auslaufende Schlüssel: Werte, die damit versiegelt wurden, bleiben lesbar. Entfernen Sie ihn, sobald `yuva master-key check` besteht und alte Links ungültig werden dürfen ([Master-Key rotieren](operations.md#master-key-rotieren)). Wird beim Start abgelehnt, wenn er keine 32 Bytes Base64 sind, `YUVA_MASTER_KEY` entspricht oder (auf einer nicht lokalen Adresse) der öffentliche Entwicklungswert ist. |
 | `YUVA_PUBLIC_URL` | Die URL, die Menschen und Apps verwenden, z. B. `https://support.example.com`, im Wurzelpfad ihres Hosts. Standard `http://localhost:8080`, nur zum lokalen Ausprobieren. |
 
 ## Server

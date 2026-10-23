@@ -263,8 +263,8 @@ Beispiel in einem Passwortmanager.
 
 Ohne den Schlüssel verliert eine wiederhergestellte Datenbank diese Geheimnisse: E-Mail funktioniert
 nicht mehr, Apps können keine Nutzer anmelden und Webhooks bleiben unsigniert, bis jedes Geheimnis
-neu eingetragen ist. Ein geänderter Schlüssel hat dieselbe Wirkung; eine Schlüsselrotation gibt es
-noch nicht.
+neu eingetragen ist. Ein geänderter Schlüssel hat dieselbe Wirkung, wenn Sie ihn nicht wie unter
+[Master-Key rotieren](operations.md#master-key-rotieren) beschrieben rotieren.
 
 ### VAPID-Schlüssel
 

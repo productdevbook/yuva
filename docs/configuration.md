@@ -29,6 +29,7 @@ An empty variable means unset and takes the default, except for `YUVA_METRICS_AD
 |---|---|
 | `YUVA_DATABASE_URL` | Postgres 16+ URL, e.g. `postgres://yuva:secret@db:5432/yuva?sslmode=disable`. |
 | `YUVA_MASTER_KEY` | 32 random bytes, base64 (`openssl rand -base64 32`). Encrypts stored secrets. See [Master key](install.md#master-key). |
+| `YUVA_MASTER_KEY_PREVIOUS` | During a master key rotation, the key being retired: values sealed under it still open. Remove it once `yuva master-key check` passes and old links may stop working ([Rotating the master key](operations.md#rotating-the-master-key)). Refused at start when it is not 32 bytes of base64, equals `YUVA_MASTER_KEY`, or (on a non-local address) is the public development value. |
 | `YUVA_PUBLIC_URL` | The URL people and apps use, e.g. `https://support.example.com`, at the root of its host. Default `http://localhost:8080`, for local tries only. |
 
 ## Server

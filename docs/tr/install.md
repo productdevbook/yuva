@@ -261,7 +261,8 @@ yöneticisinde.
 
 Anahtar olmadan geri yüklenen bir veritabanı bu bilgileri kaybeder: e-posta durur, uygulamalar
 kullanıcıları giriş yaptıramaz ve webhook'lar her biri yeniden girilene kadar imzasız gider.
-Anahtarı değiştirmek de aynı sonucu doğurur; henüz anahtar değiştirme (rotation) desteği yok.
+Anahtarı değiştirmek de aynı sonucu doğurur; [Ana anahtarı döndürme](operations.md#ana-anahtarı-döndürme)
+bölümündeki gibi döndürmediğiniz sürece.
 
 ### VAPID anahtarları
 

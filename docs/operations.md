@@ -189,10 +189,97 @@ Commands that print an id or a secret write only that to stdout.
 | `analytics property create\|list`, `analytics geoip-update`, `workspace analytics-limit` | Websites for [Analytics](analytics.md), its location database and a workspace's monthly event limit ([Configuration](configuration.md#analytics)). |
 | `person delete --email <address> --yes` | Deletes a person's account. Refused while they are a workspace's only owner. |
 | `ingest-email --to <address> [--from <address>]` | Delivers a raw message from stdin ([E-mail](email.md#any-mta-yuva-ingest-email)). |
+| `master-key rotate\|check [--batch <n>]` | Re-seals stored secrets under the new master key, or reports what is not under it yet ([Rotating the master key](#rotating-the-master-key)). |
 | `vapid-keys` | Prints a new Web Push key pair. Needs no database. |
 
 Everything else (chat and app channels, members, webhooks, identity secrets) is managed in the
 panel or through `/v1`.
+
+## Rotating the master key
+
+`YUVA_MASTER_KEY` seals the secrets Yuva stores (SMTP passwords, DKIM keys, webhook and integration
+secrets, Slack, GitHub and Linear tokens, single sign-on client secrets, push credentials, import
+and migration credentials, identity secrets, analytics visitor keys) and the links in the mail it
+sends (unsubscribe, preferences, confirmation, rating and click links). Rotate it on a schedule your
+policy sets. Mail keeps flowing and nobody is signed out while you do. If the key may have leaked,
+use [If the master key leaked](#if-the-master-key-leaked) instead.
+
+1. Start the server once on this version with the current key alone (any normal upgrade does this).
+   It keeps each workspace's opt-out key (see below). While `YUVA_MASTER_KEY_PREVIOUS` is set, the
+   server and `yuva master-key rotate` refuse to start if a workspace has opt-outs but no kept key,
+   and say so.
+2. Make a new key: `openssl rand -base64 32`.
+3. On every process that has the key (the server, `yuva ingest-email` on a mail host, the machine
+   you run `yuva` commands from), set the new key as `YUVA_MASTER_KEY` and the old one as
+   `YUVA_MASTER_KEY_PREVIOUS`, then restart. New secrets are sealed under the new key and
+   everything sealed under the old one still opens. The server logs a warning at start while
+   `YUVA_MASTER_KEY_PREVIOUS` is set.
+4. Re-seal what is stored:
+
+   ```sh
+   docker compose exec yuva /yuva master-key rotate
+   ```
+
+   It goes column by column and workspace by workspace in batches (`--batch`, default 500), prints a
+   line per column (re-sealed, already under the new key, unreadable) and can be stopped and run
+   again at any time: a second run only touches what is left. A secret someone changes in the panel
+   meanwhile is not overwritten. It ends by checking everything again and exits with an error,
+   listing the rows, if anything is still under the old key (for example a process that still runs
+   with the old key as `YUVA_MASTER_KEY` wrote it): fix that process and run it again.
+5. Confirm:
+
+   ```sh
+   docker compose exec yuva /yuva master-key check
+   ```
+
+   It writes nothing and exits with an error while any stored value is still under the old key (it
+   lists the rows; run `rotate` again) or opens with neither key.
+6. Keep `YUVA_MASTER_KEY_PREVIOUS` while links in mail sent before the switch must keep working:
+   at least 60 days for unsubscribe links in broadcasts, and for rating and click links as long as
+   you want them to count. Then remove it, restart and run `master-key check` once more.
+
+What changes and what does not:
+
+- Opt-outs stay. Addresses that unsubscribed or complained are kept only as a keyed hash, which
+  cannot be made again under a new key. Each workspace's hashing key is therefore stored sealed and
+  re-sealed like the other secrets, so the list of objections survives every rotation. If the
+  previous key is removed before `rotate` has run, the server refuses to start rather than mail
+  people who objected: put `YUVA_MASTER_KEY_PREVIOUS` back. Rolling back (old key as
+  `YUVA_MASTER_KEY`, new one as `YUVA_MASTER_KEY_PREVIOUS`) works at any point.
+- The verification TXT value for e-mail addresses (`_yuva-mail.<domain>`) changes: the panel shows
+  the new value at once. An address already proven stays proven, and a record with the old value
+  still proves an address while `YUVA_MASTER_KEY_PREVIOUS` is set.
+- Rate limits start over: their keys are derived from the master key.
+- Codes already sent (address codes, Slack link codes), analytics share passwords already entered
+  and migration test messages in flight keep working while the previous key is set.
+- A value that opens with neither key is listed with its table, workspace and row. Nothing can read
+  it: set that secret again in the panel, or delete the integration.
+- A backup taken before the switch needs the old key. Keep it as long as you keep those backups
+  ([Backups](#backups)).
+- Only one previous key is accepted. Finish a rotation (`check` passes, previous key removed) before
+  starting the next.
+
+## If the master key leaked
+
+Whoever has the key and a copy of the database can read every stored secret and forge the links in
+your mail. Work through these in order.
+
+1. Rotate: steps 1 to 5 of [Rotating the master key](#rotating-the-master-key). Run
+   `master-key check` until it passes.
+2. Remove `YUVA_MASTER_KEY_PREVIOUS` at once and restart. Unsubscribe, preferences, confirmation,
+   rating and click links in mail sent before the switch stop working, because anyone holding the
+   old key could forge them. People can still unsubscribe from the next mail.
+3. Change the secrets themselves at their source, since the leaked key could open them: SMTP
+   passwords (the broadcast SMTP account too), Slack, GitHub and Linear tokens, help-desk and
+   mailbox migration credentials, single sign-on client secrets, APNs keys and FCM service
+   accounts. Rotate webhook signing secrets and inbox identity secrets in Yuva and tell the
+   receivers and the apps that sign with them. Make a new DKIM key for each sending domain and
+   publish its record.
+4. Opt-out hashes keep their key across a rotation by design, so the old key still derives it:
+   someone with the old key and the database can test whether a given address objected to mail from
+   a workspace. They cannot list the addresses. Treat that as exposed together with the database.
+5. Sessions, API keys and contact sessions are stored as unkeyed hashes and do not depend on the
+   master key. Revoke them separately only if the database itself leaked.
 
 ## Broadcasts on a hosted server
 

@@ -258,8 +258,8 @@ identity secrets and webhook signing secrets. Generate it once with `openssl ran
 back it up apart from the database, for example in a password manager.
 
 Without the key, a restored database loses those secrets: e-mail stops, apps cannot sign users in
-and webhooks are unsigned until each one is entered again. Changing the key does the same; there
-is no key rotation yet.
+and webhooks are unsigned until each one is entered again. Changing the key does the same unless you
+rotate it as described in [Rotating the master key](operations.md#rotating-the-master-key).
 
 ### VAPID keys
 

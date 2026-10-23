@@ -192,10 +192,102 @@ Bir id ya da gizli anahtar yazdıran komutlar stdout'a yalnızca onu yazar.
 | `analytics property create\|list`, `analytics geoip-update`, `workspace analytics-limit` | [Analitik](analytics.md) için web siteleri, konum veritabanı ve bir çalışma alanının aylık olay sınırı ([Yapılandırma](configuration.md#analitik)). |
 | `person delete --email <address> --yes` | Bir kullanıcının hesabını siler. Bir çalışma alanının tek sahibiyse reddedilir. |
 | `ingest-email --to <address> [--from <address>]` | stdin'den gelen ham bir mesajı teslim eder ([E-posta](email.md#herhangi-bir-mta-yuva-ingest-email)). |
+| `master-key rotate\|check [--batch <n>]` | Saklanan gizli bilgileri yeni ana anahtarla yeniden mühürler ya da henüz onda olmayanları bildirir ([Ana anahtarı döndürme](#ana-anahtarı-döndürme)). |
 | `vapid-keys` | Yeni bir Web Push anahtar çifti yazdırır. Veritabanı gerektirmez. |
 
 Geri kalan her şey (sohbet ve uygulama kanalları, üyeler, webhook'lar, kimlik anahtarları) panelden
 ya da `/v1` üzerinden yönetilir.
+
+## Ana anahtarı döndürme
+
+`YUVA_MASTER_KEY`, Yuva'nın sakladığı gizli bilgileri (SMTP parolaları, DKIM anahtarları, webhook ve
+entegrasyon gizli bilgileri, Slack, GitHub ve Linear belirteçleri, çoklu oturum açma istemci
+gizli bilgileri, push kimlik bilgileri, içe aktarma ve taşıma kimlik bilgileri, kimlik anahtarları,
+analitik ziyaretçi anahtarları) ve gönderdiği e-postalardaki bağlantıları (abonelikten çıkma,
+tercihler, onay, puanlama ve tıklama bağlantıları) mühürler. İlkenizin belirlediği aralıklarla
+döndürün. Bu sırada e-posta akmaya devam eder ve kimsenin oturumu kapanmaz. Anahtar sızmış olabilirse
+bunun yerine [Ana anahtar sızdıysa](#ana-anahtar-sızdıysa) bölümüne bakın.
+
+1. Sunucuyu bu sürümde yalnızca mevcut anahtarla bir kez başlatın (olağan her yükseltme bunu yapar).
+   Her çalışma alanının çıkış (opt-out) anahtarını saklar (aşağıya bakın). `YUVA_MASTER_KEY_PREVIOUS`
+   ayarlıyken, bir çalışma alanında çıkış kayıtları var ama saklanmış anahtar yoksa sunucu ve
+   `yuva master-key rotate` başlamayı reddeder ve nedenini söyler.
+2. Yeni bir anahtar üretin: `openssl rand -base64 32`.
+3. Anahtarı taşıyan her süreçte (sunucu, posta sunucusundaki `yuva ingest-email`, `yuva`
+   komutlarını çalıştırdığınız makine) yeni anahtarı `YUVA_MASTER_KEY`, eskisini
+   `YUVA_MASTER_KEY_PREVIOUS` olarak ayarlayıp yeniden başlatın. Yeni gizli bilgiler yeni anahtarla
+   mühürlenir, eskisiyle mühürlenmiş olanlar açılmaya devam eder. `YUVA_MASTER_KEY_PREVIOUS`
+   ayarlıyken sunucu başlarken bir uyarı yazar.
+4. Saklananları yeniden mühürleyin:
+
+   ```sh
+   docker compose exec yuva /yuva master-key rotate
+   ```
+
+   Sütun sütun ve çalışma alanı çalışma alanı, gruplar halinde ilerler (`--batch`, varsayılan 500),
+   her sütun için bir satır yazar (yeniden mühürlenen, zaten yeni anahtarda olan, okunamayan) ve
+   istediğiniz an durdurulup yeniden çalıştırılabilir: ikinci çalıştırma yalnızca kalanlara dokunur.
+   Bu arada panelden değiştirilen bir gizli bilginin üzerine yazılmaz. Sonunda her şeyi yeniden
+   denetler; hâlâ eski anahtarda bir şey varsa (örneğin eski anahtarı hâlâ `YUVA_MASTER_KEY` olarak
+   kullanan bir süreç yazmışsa) satırları listeleyip hata ile biter: o süreci düzeltip yeniden
+   çalıştırın.
+5. Doğrulayın:
+
+   ```sh
+   docker compose exec yuva /yuva master-key check
+   ```
+
+   Hiçbir şey yazmaz; saklanan bir değer hâlâ eski anahtardaysa (satırları listeler; `rotate`'i
+   yeniden çalıştırın) ya da iki anahtarla da açılmıyorsa hata ile biter.
+6. Geçişten önce gönderilen e-postalardaki bağlantılar çalışmaya devam etmeli olduğu sürece
+   `YUVA_MASTER_KEY_PREVIOUS` kalsın: bültenlerdeki abonelikten çıkma bağlantıları için en az 60
+   gün, puanlama ve tıklama bağlantıları için sayılmasını istediğiniz sürece. Sonra kaldırın,
+   yeniden başlatın ve `master-key check`'i bir kez daha çalıştırın.
+
+Neler değişir, neler değişmez:
+
+- Çıkış kayıtları korunur. Abonelikten çıkan ya da şikâyet eden adresler yalnızca anahtarlı bir
+  özet olarak saklanır ve yeni bir anahtarla yeniden üretilemez. Bu yüzden her çalışma alanının
+  özet anahtarı mühürlü saklanır ve diğer gizli bilgiler gibi yeniden mühürlenir; itiraz listesi her
+  döndürmeden sağ çıkar. Önceki anahtar `rotate` çalışmadan kaldırılırsa sunucu, itiraz etmiş
+  kişilere e-posta atmak yerine başlamayı reddeder: `YUVA_MASTER_KEY_PREVIOUS`'u geri koyun. Geri
+  almak (eski anahtar `YUVA_MASTER_KEY`, yenisi `YUVA_MASTER_KEY_PREVIOUS`) her aşamada çalışır.
+- E-posta adreslerinin doğrulama TXT değeri (`_yuva-mail.<domain>`) değişir: panel yeni değeri hemen
+  gösterir. Kanıtlanmış bir adres kanıtlı kalır; eski değerli bir kayıt, `YUVA_MASTER_KEY_PREVIOUS`
+  ayarlıyken adresi yine kanıtlar.
+- Hız sınırları sıfırdan başlar: anahtarları ana anahtardan türetilir.
+- Önceden gönderilmiş kodlar (adres kodları, Slack bağlantı kodları), girilmiş analitik paylaşım
+  parolaları ve sürmekte olan taşıma test iletileri önceki anahtar ayarlıyken çalışmaya devam eder.
+- İki anahtarla da açılmayan değer tablosu, çalışma alanı ve satırıyla listelenir. Hiçbir şey onu
+  okuyamaz: o gizli bilgiyi panelden yeniden girin ya da entegrasyonu silin.
+- Geçişten önce alınmış bir yedek eski anahtarı gerektirir. O yedekleri sakladığınız sürece eski
+  anahtarı da saklayın ([Yedekleme](#yedekleme)).
+- Yalnızca bir önceki anahtar kabul edilir. Sonrakine başlamadan önce döndürmeyi bitirin (`check`
+  geçer, önceki anahtar kaldırılır).
+
+## Ana anahtar sızdıysa
+
+Anahtara ve veritabanının bir kopyasına sahip olan herkes saklanan her gizli bilgiyi okuyabilir ve
+e-postalarınızdaki bağlantıları sahteleyebilir. Sırayla ilerleyin.
+
+1. Döndürün: [Ana anahtarı döndürme](#ana-anahtarı-döndürme) bölümünün 1-5. adımları.
+   `master-key check` geçene kadar çalıştırın.
+2. `YUVA_MASTER_KEY_PREVIOUS`'u hemen kaldırıp yeniden başlatın. Geçişten önce gönderilen
+   e-postalardaki abonelikten çıkma, tercih, onay, puanlama ve tıklama bağlantıları çalışmaz olur;
+   çünkü eski anahtara sahip biri bunları sahteleyebilirdi. İnsanlar bir sonraki e-postadan yine
+   abonelikten çıkabilir.
+3. Gizli bilgilerin kendisini kaynağında değiştirin, çünkü sızan anahtar onları açabilirdi: SMTP
+   parolaları (bülten SMTP hesabı dahil), Slack, GitHub ve Linear belirteçleri, destek masası ve
+   posta kutusu taşıma kimlik bilgileri, çoklu oturum açma istemci gizli bilgileri, APNs anahtarları
+   ve FCM servis hesapları. Webhook imza gizli bilgilerini ve gelen kutusu kimlik gizli bilgilerini
+   Yuva'da döndürün; alıcılara ve bunlarla imzalayan uygulamalara haber verin. Her gönderim alan
+   adı için yeni bir DKIM anahtarı üretip kaydını yayımlayın.
+4. Çıkış özetleri anahtarlarını bir döndürmeden geçirir (tasarım gereği), yani eski anahtar onu hâlâ
+   türetir: eski anahtara ve veritabanına sahip biri, verilen bir adresin bir çalışma alanının
+   e-postasına itiraz edip etmediğini sınayabilir. Adresleri listeleyemez. Bunu veritabanıyla
+   birlikte ifşa olmuş sayın.
+5. Oturumlar, API anahtarları ve kişi oturumları anahtarsız özet olarak saklanır ve ana anahtara
+   bağlı değildir. Yalnızca veritabanının kendisi sızdıysa ayrıca iptal edin.
 
 ## Barındırılan sunucuda bültenler
 
