@@ -586,7 +586,8 @@ writes that only owners and admins may make through `/v1` are listed only to the
   exports and analytics data deletion, migration file uploads, typing and read markers, raw message and
   attachment downloads, SMTP and other passwords, and every publish a milestone keeps for members
   (help articles, What's new entries, incidents under the draft rule). Unsubscribing is a state
-  change, not a delete.
+  change, not a delete. Moving conversations to the trash and restoring them (#178) are left out
+  too.
 - **Sender identity (#109).** `update_inbox_sender` (`UpdateInbox` with `sender` only: legal name,
   postal address, registration, contact; owners, admins and keys with `inboxes:manage`). Its
   description says every value comes from the person and is never invented. `list_inboxes` returns
@@ -3364,10 +3365,24 @@ single-node install: `YUVA_STORAGE=local|s3`, with `YUVA_STORAGE_DIR` for local 
 `YUVA_S3_ENDPOINT`, `YUVA_S3_REGION`, `YUVA_S3_BUCKET`, `YUVA_S3_ACCESS_KEY_ID`,
 `YUVA_S3_SECRET_ACCESS_KEY`, `YUVA_S3_PATH_STYLE` for S3. Objects are never public (the exception is e-mail images, served at `/i/{token}`, see Broadcasts);
 members and API
-keys download them through `/v1/attachments/{id}`, which checks inbox access. The size limit
-(`YUVA_ATTACHMENT_MAX_BYTES`, 25 MiB by default) and the content-type allowlist
-(`YUVA_ATTACHMENT_TYPES`, comma-separated, `image/*` style wildcards allowed) are server-wide for
-now; per-channel limits can narrow them later (#136).
+keys download them through `/v1/attachments/{id}`, which checks inbox access. The size limit (`YUVA_ATTACHMENT_MAX_BYTES`, 25 MiB by default) and the content-type allowlist
+(`YUVA_ATTACHMENT_TYPES`, comma-separated, `image/*` style wildcards allowed) are the server's; a
+channel can narrow both (`channels.attachment_max_bytes`, `channels.attachment_types`, set with
+`attachments` on `POST /v1/inboxes/{id}/channels` and `PATCH /v1/channels/{id}`), never widen them:
+a size above the server's or a type that allows nothing the server allows is refused with `400
+validation_failed` naming the field (a channel's `image/*` is accepted under a server that lists
+`image/png` and allows just that), and `null` makes the channel follow the server again. The
+effective limits are computed on every use, never stored: the smaller size and the types both lists
+allow (a channel's `image/*` under a server's `image/png` allows `image/png`), so a server limit
+lowered after a channel was narrowed still wins. Every upload is held to the effective limits of its
+channel: members' and API keys' files on a conversation (the conversation's channel; the server's
+limits when it has none; no file at all when its channel row cannot be read), contacts' files on
+`/client/v1` conversations and messages and feedback screenshots (the session's channel), and
+inbound e-mail (the receiving channel), where a part over the limit is skipped like one over the
+server's: the message is kept and the part stays in the raw e-mail. `/client/v1` returns the
+effective limits as `attachments` on the inbox's public settings so the widget and the SDKs refuse a
+file before uploading it. Imports through Moving to Yuva keep the server's limits by design, since
+they belong to no channel. (#136, migration 00095)
 
 ## Privacy and data
 
@@ -3377,12 +3392,64 @@ now; per-channel limits can narrow them later (#136).
   everything. An hourly River job deletes closed conversations whose last change and
   last activity are older than that, with their messages, attachments and stored files, and
   removes raw e-mails older than that from storage (the parsed message stays).
-- Deleting one conversation or one message (planned, #178 and #179): a conversation goes to a trash
-  for 30 days, restorable, then the retention job deletes it with its files; in a support inbox only
-  owners, admins and keys with `conversations:delete` may do it, never agents, so a mistake cannot be
-  hidden. A single message is redacted, not deleted: its text, attachments and raw e-mail go, and a
-  "Removed by" line keeps the thread readable. A sent e-mail cannot be taken back from the recipient.
-  Every step is in the audit log, without the removed content.
+- Deleting a conversation (#178): `DELETE /v1/conversations/{id}` moves it to the trash
+  (`conversations.trashed_at`, `trashed_by_member_id` or `trashed_by_api_key_id`);
+  `POST /v1/conversations/{id}/restore` brings it back with its status, assignee and labels
+  until `deletes_at`, 30 days after `trashed_at` (afterwards `409 trash_expired`). `trashed_at`,
+  the restore window and the purge use the database's clock, as rate limits do. Owners,
+  admins, and keys and OAuth tokens with `conversations:delete` (never implied, offered only to
+  owners' and admins' tokens, allowed for inbox-limited keys in their inboxes); agents get
+  `403 forbidden` in every inbox, so a mistake cannot be hidden. `/v1/conversations/bulk` takes
+  `trashed: true|false` alone for up to 100, per-item results as for the other bulk changes;
+  a `trashed` change needs `conversations:delete` only, every other bulk change
+  `conversations:write`.
+  Trashing or restoring twice answers the conversation unchanged, without an event or entry.
+- A trashed conversation is read-only and left out of every list, count, search, stat, Home
+  figure, contact summary, docs and analytics support figure, linked replies and roadmap link
+  counts, drafts, mentions, rating links, chat continuity mail, MCP and all of `/client/v1`.
+  The Trash view is `GET /v1/conversations?trashed=true` (owners, admins, `conversations:delete`);
+  those callers can also `GET` the conversation, its messages, attachments, e-mail and raw
+  source; everyone else gets `404`.
+- A new message from the contact never joins a trashed conversation: e-mail threading
+  (In-Reply-To, References, the conversation token, broadcast and status notice replies, the
+  per-sender hourly cap) skips it and starts a new conversation without `related_conversation_id`;
+  a widget or SDK message posted to its id starts a new conversation with the trashed one's
+  kind, subject, page, help article and feedback context (not the feedback text)
+  (`conversation_id` in the answer, `conversation.created` on the stream). Same `client_id`,
+  same message: a `client_id` already used in the trashed conversation answers that message
+  (`200`, nothing new is started); one used in the replacement answers it there; starting a
+  conversation again with a `client_id` from a trashed one answers `404`. The per-sender limit
+  of 20 new e-mail conversations an hour still counts trashed ones; over it, with only trashed
+  ones to join, the mail is refused `429 rate_limited`.
+- The hourly retention job (before the per-workspace retention) deletes conversations trashed
+  30 days ago, 200 per transaction per workspace through the same batch delete as retention and
+  workspace deletion (workspace row locked first, then the trash rows `FOR UPDATE`, so a restore
+  either wins or finds the conversation gone), with messages, attachments, raw e-mails, stored
+  files and remaining events, for at most 30 seconds a run; an error is logged and the job goes
+  on, as for the audit log sweep. The per-workspace retention of closed conversations skips
+  trashed ones: the trash purge owns them.
+- Events and webhooks: `conversation.trashed` and `conversation.restored` carry the conversation
+  (webhooks: with the contact); `conversation.deleted` carries only `{id, inbox_id, contact_id}`.
+  The contact's realtime stream sends `conversation.removed` (`{id}`) when its conversation is
+  trashed (or deleted, if the stream still knew it) and announces a restored one as
+  `conversation.created`. Trashing deletes the conversation's earlier events (all but its
+  `conversation.trashed` and `conversation.restored`), so `/v1/events`, member and contact
+  replays never show it again; restore does not need them, since `conversation.restored` carries
+  the conversation. A webhook of a deleted event not yet fanned out is dropped. The purge deletes
+  the rest. Index `events (workspace_id, conversation_id)` makes this cheap.
+- Audit log: `conversation.trashed`, `conversation.restored` (the member, key or grant) and
+  `conversation.deleted` (actor kind `system`, no id or name), target type `conversation`, details
+  `inbox_id` only, never the subject or content.
+- MCP has no delete or restore tool (deletes are left out on purpose, see MCP coverage);
+  `get_conversation` and the conversation resource answer "no such conversation" for a trashed
+  one even to an owner's token with `conversations:delete`.
+- Schema: migration 00094 (`trashed_at`, `trashed_by_member_id`, `trashed_by_api_key_id`, the
+  partial index `(workspace_id, trashed_at)`, `events_conversation_idx`, `member_mentions`
+  without trashed conversations, audit actor kind `system`).
+- Redacting one message (planned, #179): a single message is redacted, not deleted: its text,
+  attachments and raw e-mail go, and a "Removed by" line keeps the thread readable. A sent e-mail
+  cannot be taken back from the recipient. Every redaction is in the audit log, without the removed
+  content.
 - Audit log (#135): `audit_log` (migration 00089) records who changed access, credentials and data
   of a workspace, in the same transaction as the change: a failed change leaves no row, and a row is
   kept small enough never to fail one (details under 1500 bytes of JSON; longer lists become
