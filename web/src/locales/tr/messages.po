@@ -277,6 +277,10 @@ msgstr "{count, plural, =0 {Konuşma yok} one {# konuşma} other {# konuşma}}"
 msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, one {# marka} other {# marka}}"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "{count, plural, one {# condition} other {# conditions}}"
+msgstr "{count, plural, one {# koşul} other {# koşul}}"
+
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
@@ -466,6 +470,10 @@ msgstr "{inboxName} gelen kutusunda henüz {address} için bir e-posta kanalı y
 msgid "{incoming} received, {outgoing} sent"
 msgstr "{incoming} gelen, {outgoing} giden"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "{left} left when it resumes"
+msgstr "Devam ettiğinde {left} kalır"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "{listName} is ready"
 msgstr "{listName} hazır"
@@ -473,6 +481,10 @@ msgstr "{listName} hazır"
 #: src/features/home/PropertyCard.tsx
 msgid "{liveText} in the last 30 minutes"
 msgstr "son 30 dakikada {liveText}"
+
+#: src/features/reports/ReportPages.tsx
+msgid "{met} met, {breached} breached"
+msgstr "{met} karşılandı, {breached} aşıldı"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
@@ -1131,6 +1143,10 @@ msgstr "Bir konuşma bana atandığında"
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "Son güncellemesi aralıkta olan bir konuşma bütünüyle alınır."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
+msgstr "Doldurduğunuz her satırla eşleşmesi gerekir. Boş bıraktığınız satır her şeyle eşleşir."
+
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "Bir konuşma başladı"
@@ -1332,6 +1348,10 @@ msgstr "Her bileşenin yanında bir yüzde."
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "Linear'dan kişisel bir API anahtarı: Settings, Account, Security and access altında."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A policy that is off applies to nothing."
+msgstr "Kapalı bir politika hiçbir şeye uygulanmaz."
+
 #: src/components/common/text.ts
 msgid "A property can have at most 1,000 notes. Delete old ones first."
 msgstr "Bir mülkte en fazla 1.000 not olabilir. Önce eskilerini silin."
@@ -1476,6 +1496,10 @@ msgstr "Bir Yenilikler girdisinin yayını kaldırıldı"
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "1 ile 10.000.000 arasında bir tam sayı"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 SLA policies. Delete one first."
+msgstr "Bir çalışma alanında en fazla 100 SLA politikası olabilir. Önce birini silin."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "A workspace holds your team, inboxes and conversations. You are its owner and can invite others later."
@@ -2268,6 +2292,16 @@ msgstr "Bir sahip ya da yönetici, Botlar gönderebilir ayarıyla asistanların 
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "Kayıt yayımlanınca imzalamayı bir sahip ya da yönetici açar."
 
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target is due soon"
+msgstr "Bir SLA hedefinin süresi dolmak üzere"
+
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target was breached"
+msgstr "Bir SLA hedefi aşıldı"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
 msgstr "Bir yükleme yarıda kaldı: {count} parça ({size}) zaten sunucuda."
@@ -2431,6 +2465,14 @@ msgstr "Herhangi bir alan"
 msgid "Any label"
 msgstr "Herhangi bir etiket"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Any of the labels you pick."
+msgstr "Seçtiğiniz etiketlerden herhangi biri."
+
+#: src/features/inbox/SourceFilter.tsx
+msgid "Any state"
+msgstr "Her durum"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "Herhangi bir ekip"
@@ -2527,6 +2569,10 @@ msgstr "Görünüm"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Application (client) ID"
 msgstr "Application (client) ID"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Applies to"
+msgstr "Uygulandığı yer"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "Applies to the next mail."
@@ -3066,6 +3112,14 @@ msgstr "Geri dönen: {0}"
 msgid "Brands"
 msgstr "Markalar"
 
+#: src/components/common/SlaBadge.tsx
+msgid "Breached"
+msgstr "Aşıldı"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Breached, met late at {at}"
+msgstr "Aşıldı, {at} geç karşılandı"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
 msgstr "Gmail, Yandex ya da herhangi bir IMAP sunucusundaki posta kutusunun geçmişini getirin"
@@ -3416,6 +3470,7 @@ msgstr "Kanal ayarları"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Channels"
 msgstr "Kanallar"
 
@@ -3759,6 +3814,10 @@ msgstr "Aramayı kapat (Esc)"
 #: src/features/reports/ReportPages.tsx
 msgid "Closed"
 msgstr "Kapalı"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Closed before a reply"
+msgstr "Yanıttan önce kapatıldı"
 
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Leave empty to keep everything."
@@ -4280,6 +4339,10 @@ msgstr "Aktarımdan sonra kimsenin yazmadığı konuşmalar silindi. {provider} 
 msgid "conversations started"
 msgstr "başlatılan konuşma"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Conversations that follow it lose their SLA unless another policy matches. This cannot be undone."
+msgstr "Bu politikayı izleyen görüşmeler, başka bir politika eşleşmedikçe SLA'sını kaybeder. Bu işlem geri alınamaz."
+
 #: src/features/settings/channels/sections.tsx
 msgid "Conversations that started on it keep their messages."
 msgstr "Bu kanalda başlayan konuşmaların mesajları korunur."
@@ -4498,6 +4561,10 @@ msgstr "Anahtar oluştur"
 #: src/features/setup/NewsletterStep.tsx
 msgid "Create list"
 msgstr "Listeyi oluştur"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Create policy"
+msgstr "Politika oluştur"
 
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
@@ -4720,6 +4787,7 @@ msgstr "Düşük performans"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4841,6 +4909,10 @@ msgstr "Monitörü sil"
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the OAuth client you created for Yuva"
 msgstr "Yuva için oluşturduğunuz OAuth istemcisini silin"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Delete the policy {name}?"
+msgstr "{name} politikası silinsin mi?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
@@ -5392,6 +5464,18 @@ msgstr "Yanıtınıza eklemek için dosyaları bırakın"
 msgid "Dry run"
 msgstr "Deneme sonucu"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "Due {at}"
+msgstr "Süre: {at}"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Due first"
+msgstr "Önce süresi dolacaklar"
+
+#: src/components/common/SlaBadge.tsx
+msgid "Due soon"
+msgstr "Süresi dolmak üzere"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Duplicate the selected block"
 msgstr "Seçili bloğu çoğalt"
@@ -5543,6 +5627,7 @@ msgstr "Her biri tüm mesajları ve notlarıyla"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5602,6 +5687,10 @@ msgstr "Makroyu düzenle"
 msgid "Edit monitor"
 msgstr "Monitörü düzenle"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Edit policy"
+msgstr "Politikayı düzenle"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Ekibi düzenle"
@@ -5660,6 +5749,10 @@ msgstr "Emoji"
 #: src/features/broadcasts/Import.tsx
 msgid "Empty in the first rows"
 msgstr "İlk satırlarda boş"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Enabled"
+msgstr "Açık"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5798,6 +5891,10 @@ msgstr "Son 30 günün tüm sinyalleri, kaçan sinyalleri ve gönderilen durumla
 #: src/features/status/MonitorChecks.tsx
 msgid "Every check of the last 30 days, newest first."
 msgstr "Son 30 günün her kontrolü, en yeni en üstte."
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Every conversation"
+msgstr "Her görüşme"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -6145,8 +6242,8 @@ msgid "Filter by team"
 msgstr "Ekibe göre süz"
 
 #: src/features/inbox/SourceFilter.tsx
-msgid "Filter by type, site and broadcast"
-msgstr "Türe, siteye ve bültene göre süz"
+msgid "Filter by type, site, broadcast and SLA"
+msgstr "Türe, siteye, yayına ve SLA'ya göre süz"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -6218,10 +6315,16 @@ msgstr "Ad"
 msgid "first reply"
 msgstr "ilk yanıt"
 
+#: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "İlk yanıt"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "First reply {first}"
+msgstr "İlk yanıt {first}"
 
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
@@ -6303,6 +6406,10 @@ msgstr "Otomatik mesajlar için"
 #: src/features/setup/NameStep.tsx
 msgid "For business hours"
 msgstr "Çalışma saatleri için"
+
+#: src/features/settings/notifications/events.ts
+msgid "For conversations assigned to me, or to my team when nobody is assigned."
+msgstr "Bana atanan görüşmeler için; kimse atanmadıysa ekibime."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "For developers"
@@ -6461,6 +6568,18 @@ msgstr "Gönderen adresi (isteğe bağlı)"
 #: src/features/migrations/parts.tsx
 msgid "From blocked contacts"
 msgstr "Engellenmiş kişilerden"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From each later contact message to the reply."
+msgstr "Kişinin sonraki her mesajından yanıta kadar."
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the contact's first message to the first public reply."
+msgstr "Kişinin ilk mesajından ilk herkese açık yanıta kadar."
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the start of the conversation to its first close."
+msgstr "Görüşmenin başlangıcından ilk kapanışına kadar."
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "From the terminal"
@@ -6891,6 +7010,10 @@ msgstr "Ana makine adı"
 msgid "Hostname and certificate"
 msgstr "Ana makine adı ve sertifika"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "hours"
+msgstr "saat"
+
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "Çalışma saatleri"
@@ -7308,6 +7431,7 @@ msgstr "{name} için gelen kutusu"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
@@ -7763,6 +7887,7 @@ msgstr "Yalnızca etiket: e-postaları Tüm postalar'dan gelir, konuşmaları bu
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Labels"
 msgstr "Etiketler"
 
@@ -8740,6 +8865,14 @@ msgstr "gönderilen mesaj"
 msgid "Messages the key sends show its bot name and picture."
 msgstr "Anahtarın gönderdiği mesajlarda bot adı ve görseli görünür."
 
+#: src/components/common/SlaBadge.tsx
+msgid "Met"
+msgstr "Karşılandı"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Met {at}"
+msgstr "{at} karşılandı"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Metadata"
 msgstr "Meta veri"
@@ -8803,6 +8936,14 @@ msgstr "Bana atanan"
 #: src/features/status/text.tsx
 msgid "Minor"
 msgstr "Küçük"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "minutes"
+msgstr "dakika"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Minutes before a due time. 0 sends no warning."
+msgstr "Bitiş zamanından kaç dakika önce uyarılacağı. 0 uyarı göndermez."
 
 #: src/features/status/text.tsx
 msgid "Missed beat"
@@ -8913,12 +9054,17 @@ msgstr "En çok oy"
 msgid "Move {0} to the Trash?"
 msgstr "{0} konuşma Çöp kutusuna taşınsın mı?"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Move {name}. Drag, or press Alt with the arrow keys."
+msgstr "{name} öğesini taşı. Sürükleyin veya Alt ile ok tuşlarına basın."
+
 #: src/components/common/text.ts
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Konuşmaları Çöp kutusuna taşı, geri al ve Çöp kutusunu oku"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "Aşağı taşı"
@@ -9018,6 +9164,7 @@ msgstr "Yuva'ya taşı"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "Yukarı taşı"
@@ -9084,6 +9231,7 @@ msgstr "Ekiplerim"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -9389,6 +9537,11 @@ msgstr "Yeni sayfa"
 msgid "New password"
 msgstr "Yeni parola"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/SlaPage.tsx
+msgid "New policy"
+msgstr "Yeni politika"
+
 #: src/features/account/AccountPage.tsx
 msgid "New reply in <0>{title}</0>"
 msgstr "<0>{title}</0> tartışmasında yeni yanıt"
@@ -9481,6 +9634,15 @@ msgstr "Sonraki kontrol: {next}."
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Sonraki posta {local} ({utc} UTC), bu bültenin hızına göre."
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Next reply"
+msgstr "Sonraki yanıt"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Next reply {next}"
+msgstr "Sonraki yanıt {next}"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
@@ -9917,6 +10079,10 @@ msgstr "Henüz sayfa yok"
 msgid "No pending invites."
 msgstr "Bekleyen davet yok."
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "No policies yet."
+msgstr "Henüz politika yok."
+
 #: src/features/settings/ProductsPage.tsx
 msgid "No products yet"
 msgstr "Henüz ürün yok"
@@ -10009,6 +10175,10 @@ msgstr "Henüz abone yok. Ziyaretçiler durum sayfasından abone olur; buradan d
 #: src/features/migrations/ChooseStep.tsx
 msgid "No support address"
 msgstr "Destek adresi yok"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "No target has started yet."
+msgstr "Henüz başlayan bir hedef yok."
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "No team"
@@ -10306,6 +10476,10 @@ msgstr "Aynı değil"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "Bir dakika içinde gelmediyse spam ya da gereksiz klasörünüze bakın veya aşağıdan yeni kod isteyin."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Not tracked"
+msgstr "İzlenmiyor"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Not uploaded yet"
 msgstr "Henüz yüklenmedi"
@@ -10533,6 +10707,7 @@ msgstr "kapalı"
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "Off"
 msgstr "Kapalı"
@@ -10645,6 +10820,10 @@ msgstr "Team ve Enterprise planlarında bir sahip bunu <0>Organization settings 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "On the web"
 msgstr "Web'de"
+
+#: src/components/common/SlaBadge.tsx
+msgid "On track"
+msgstr "Zamanında"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Once a test message arrives, Yuva waits {hours} hours. If nothing reaches only {provider} in that time, the migration finishes on its own. You can also finish it yourself."
@@ -11485,6 +11664,7 @@ msgid "Pause or resume the monitor"
 msgstr "Monitörü duraklat veya sürdür"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
 #: src/features/migrations/text.ts
 #: src/features/settings/channels/ChannelState.tsx
@@ -12021,8 +12201,13 @@ msgstr "Önceki ekran görüntüsü"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
 msgstr "Öncelik"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Priority customers"
+msgstr "Öncelikli müşteriler"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Priority set to {level}"
@@ -12971,6 +13156,14 @@ msgstr "Yanıtla (R)"
 msgid "Reply account"
 msgstr "Yanıt hesabı"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
+msgstr "Bir politikanın eşleştiği görüşmeler için yanıt ve çözüm hedefleri. Bir görüşmeye eşleşen ilk etkin politika uygulanır; bu yüzden en özel olanları üstte tutun. Hedefler her gelen kutusunun çalışma saatlerine göre sayılır."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Reply and resolution targets with due times"
+msgstr "Süreli yanıt ve çözüm hedefleri"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Reply and resolve"
 msgstr "Yanıtla ve çözüldü say"
@@ -13103,6 +13296,15 @@ msgstr "Yuva'ya verdiğiniz API anahtarını sıfırlayın"
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
 msgstr "Varsayılanlara dön"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Resolution"
+msgstr "Çözüm"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Resolution {resolution}"
+msgstr "Çözüm {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13426,6 +13628,7 @@ msgstr "Cumartesi"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
@@ -14392,6 +14595,11 @@ msgstr "Önizlemeyi göster"
 msgid "Show the reply time"
 msgstr "Yanıt süresini göster"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Show the SLA targets"
+msgstr "SLA hedeflerini göster"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "Bu sayfayı bu sunucunun adresi yerine kendi adresinizde gösterin."
@@ -14737,6 +14945,32 @@ msgstr "Atlanan ya da başarısız"
 #: src/features/status/Notices.tsx
 msgid "Skipped: {0}"
 msgstr "Atlanan: {0}"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/inbox/SourceFilter.tsx
+msgid "SLA"
+msgstr "SLA"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA · {policyName}"
+msgstr "SLA · {policyName}"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met"
+msgstr "SLA karşılanan"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met / breached"
+msgstr "SLA karşılanan / aşılan"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "SLA policies"
+msgstr "SLA politikaları"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA targets (W)"
+msgstr "SLA hedefleri (W)"
 
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -15116,6 +15350,10 @@ msgstr "İmzalamayı durdur"
 msgid "Stop taking new subscribers. Records and past reports stay, and you can restore it."
 msgstr "Yeni aboneleri almayı durdurun. Kayıtlar ve geçmiş raporlar kalır, listeyi geri yükleyebilirsiniz."
 
+#: src/components/common/SlaBadge.tsx
+msgid "Stopped"
+msgstr "Durduruldu"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "Depolama"
@@ -15310,6 +15548,14 @@ msgstr "Yeniden kayıt almaya başlar ve listeyi yayın kitlesi seçicisine geri
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Taking the recipients: {prepared} so far"
 msgstr "Alıcılar belirleniyor: şimdiye kadar {prepared}"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets"
+msgstr "Hedefler"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
+msgstr "Hedefler, görüşmenin gelen kutusunun çalışma saatlerine ve saat dilimine göre sayılır. İzlememek için birini boş bırakın; en az biri gerekli."
 
 #: src/features/status/text.tsx
 msgid "TCP"
@@ -17266,6 +17512,10 @@ msgstr "Takibi bırak"
 msgid "Unfollowed"
 msgstr "Takip bırakıldı"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Unit"
+msgstr "Birim"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
 msgstr "Bilinmeyen cihaz"
@@ -17929,6 +18179,14 @@ msgstr "{at} tarihinden beri bekliyor"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Warn about the certificate"
 msgstr "Sertifika için uyar"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Warn before it is due"
+msgstr "Süre dolmadan önce uyar"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Was due {at}"
+msgstr "Süresi {at} doluyordu"
 
 #: src/features/setup/previews.tsx
 msgid "Was this page helpful?"

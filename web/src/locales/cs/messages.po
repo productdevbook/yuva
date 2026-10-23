@@ -277,6 +277,10 @@ msgstr "{count, plural, =0 {Žádné konverzace} one {# konverzace} few {# konve
 msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, one {# značka} few {# značky} many {# značky} other {# značek}}"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "{count, plural, one {# condition} other {# conditions}}"
+msgstr "{count, plural, one {# podmínka} few {# podmínky} many {# podmínky} other {# podmínek}}"
+
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
@@ -466,6 +470,10 @@ msgstr "Schránka {inboxName} ještě nemá e-mailový kanál pro {address}. His
 msgid "{incoming} received, {outgoing} sent"
 msgstr "Přijato: {incoming}, odesláno: {outgoing}"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "{left} left when it resumes"
+msgstr "Po obnovení zbývá {left}"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "{listName} is ready"
 msgstr "{listName} je připraven"
@@ -473,6 +481,10 @@ msgstr "{listName} je připraven"
 #: src/features/home/PropertyCard.tsx
 msgid "{liveText} in the last 30 minutes"
 msgstr "{liveText} za posledních 30 minut"
+
+#: src/features/reports/ReportPages.tsx
+msgid "{met} met, {breached} breached"
+msgstr "{met} splněno, {breached} porušeno"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
@@ -1131,6 +1143,10 @@ msgstr "Konverzace je přiřazena mně"
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "Konverzace se bere celá, pokud byla naposledy aktualizována v rozsahu."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
+msgstr "Konverzace musí odpovídat každému vyplněnému řádku. Prázdný řádek odpovídá všemu."
+
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "Konverzace začala"
@@ -1332,6 +1348,10 @@ msgstr "Procento vedle každé komponenty."
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A policy that is off applies to nothing."
+msgstr "Vypnutá politika se nevztahuje na nic."
+
 #: src/components/common/text.ts
 msgid "A property can have at most 1,000 notes. Delete old ones first."
 msgstr "Vlastnost může mít nejvýše 1 000 poznámek. Nejprve smažte staré."
@@ -1476,6 +1496,10 @@ msgstr "Byl stažen záznam z Novinek"
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "Celé číslo od 1 do 10 000 000"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 SLA policies. Delete one first."
+msgstr "Pracovní prostor má nejvýše 100 politik SLA. Nejdřív jednu smažte."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "A workspace holds your team, inboxes and conversations. You are its owner and can invite others later."
@@ -2268,6 +2292,16 @@ msgstr "Vlastník nebo správce může asistentům dovolit odesílat samostatně
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "Vlastník nebo správce zapne podepisování po zveřejnění záznamu."
 
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target is due soon"
+msgstr "Cíl SLA brzy vyprší"
+
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target was breached"
+msgstr "Cíl SLA byl porušen"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
 msgstr "Nahrávání bylo přerušeno: {count} částí, {size}, už je na serveru."
@@ -2431,6 +2465,14 @@ msgstr "Libovolné pole"
 msgid "Any label"
 msgstr "Libovolný štítek"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Any of the labels you pick."
+msgstr "Kterýkoli z vybraných štítků."
+
+#: src/features/inbox/SourceFilter.tsx
+msgid "Any state"
+msgstr "Jakýkoli stav"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "Libovolný tým"
@@ -2527,6 +2569,10 @@ msgstr "Vzhled"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Application (client) ID"
 msgstr "ID aplikace (klienta)"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Applies to"
+msgstr "Platí pro"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "Applies to the next mail."
@@ -3066,6 +3112,14 @@ msgstr "Nedoručeno: {0}"
 msgid "Brands"
 msgstr "Značky"
 
+#: src/components/common/SlaBadge.tsx
+msgid "Breached"
+msgstr "Porušeno"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Breached, met late at {at}"
+msgstr "Porušeno, splněno se zpožděním v {at}"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
 msgstr "Přeneste historii schránky z Gmailu, Yandexu nebo jakéhokoli serveru IMAP"
@@ -3416,6 +3470,7 @@ msgstr "Nastavení kanálu"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Channels"
 msgstr "Kanály"
 
@@ -3759,6 +3814,10 @@ msgstr "Zavřít hledání (Esc)"
 #: src/features/reports/ReportPages.tsx
 msgid "Closed"
 msgstr "Uzavřeno"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Closed before a reply"
+msgstr "Uzavřeno před odpovědí"
 
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Leave empty to keep everything."
@@ -4280,6 +4339,10 @@ msgstr "Konverzace, do kterých po importu nikdo nepsal, se smažou. V {provider
 msgid "conversations started"
 msgstr "zahájených konverzací"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Conversations that follow it lose their SLA unless another policy matches. This cannot be undone."
+msgstr "Konverzace, které se jí řídí, ztratí SLA, pokud nevyhovuje jiná politika. Nelze to vrátit zpět."
+
 #: src/features/settings/channels/sections.tsx
 msgid "Conversations that started on it keep their messages."
 msgstr "Konverzace, které na něm začaly, si zachovají své zprávy."
@@ -4498,6 +4561,10 @@ msgstr "Vytvořit klíč"
 #: src/features/setup/NewsletterStep.tsx
 msgid "Create list"
 msgstr "Vytvořit skupinu"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Create policy"
+msgstr "Vytvořit politiku"
 
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
@@ -4720,6 +4787,7 @@ msgstr "Snížený výkon"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4841,6 +4909,10 @@ msgstr "Smazat monitor"
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the OAuth client you created for Yuva"
 msgstr "Smažte klienta OAuth, kterého jste pro Yuvu vytvořili"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Delete the policy {name}?"
+msgstr "Smazat politiku {name}?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
@@ -5392,6 +5464,18 @@ msgstr "Přetáhněte soubory a připojte je k odpovědi"
 msgid "Dry run"
 msgstr "Zkušební běh"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "Due {at}"
+msgstr "Termín {at}"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Due first"
+msgstr "Nejdřív nejbližší termín"
+
+#: src/components/common/SlaBadge.tsx
+msgid "Due soon"
+msgstr "Brzy vyprší"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Duplicate the selected block"
 msgstr "Duplikovat vybraný blok"
@@ -5543,6 +5627,7 @@ msgstr "Každá se všemi svými zprávami a poznámkami"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5602,6 +5687,10 @@ msgstr "Upravit makro"
 msgid "Edit monitor"
 msgstr "Upravit monitor"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Edit policy"
+msgstr "Upravit politiku"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Upravit tým"
@@ -5660,6 +5749,10 @@ msgstr "Emoji"
 #: src/features/broadcasts/Import.tsx
 msgid "Empty in the first rows"
 msgstr "Prázdné v prvních řádcích"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Enabled"
+msgstr "Zapnuto"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5798,6 +5891,10 @@ msgstr "Každý signál, zmeškaný signál a odeslaný stav za posledních 30 d
 #: src/features/status/MonitorChecks.tsx
 msgid "Every check of the last 30 days, newest first."
 msgstr "Každá kontrola za posledních 30 dní, nejnovější první."
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Every conversation"
+msgstr "Každá konverzace"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -6145,8 +6242,8 @@ msgid "Filter by team"
 msgstr "Filtrovat podle týmu"
 
 #: src/features/inbox/SourceFilter.tsx
-msgid "Filter by type, site and broadcast"
-msgstr "Filtrovat podle typu, webu a hromadné zprávy"
+msgid "Filter by type, site, broadcast and SLA"
+msgstr "Filtrovat podle typu, webu, rozesílky a SLA"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -6218,10 +6315,16 @@ msgstr "Jméno"
 msgid "first reply"
 msgstr "první odpověď"
 
+#: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "První odpověď"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "First reply {first}"
+msgstr "První odpověď {first}"
 
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
@@ -6303,6 +6406,10 @@ msgstr "Pro automatické zprávy"
 #: src/features/setup/NameStep.tsx
 msgid "For business hours"
 msgstr "Pro pracovní dobu"
+
+#: src/features/settings/notifications/events.ts
+msgid "For conversations assigned to me, or to my team when nobody is assigned."
+msgstr "Pro konverzace přiřazené mně nebo mému týmu, když není přiřazen nikdo."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "For developers"
@@ -6461,6 +6568,18 @@ msgstr "Adresa odesílatele (volitelné)"
 #: src/features/migrations/parts.tsx
 msgid "From blocked contacts"
 msgstr "Od zablokovaných kontaktů"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From each later contact message to the reply."
+msgstr "Od každé další zprávy kontaktu do odpovědi."
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the contact's first message to the first public reply."
+msgstr "Od první zprávy kontaktu do první veřejné odpovědi."
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the start of the conversation to its first close."
+msgstr "Od začátku konverzace do jejího prvního uzavření."
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "From the terminal"
@@ -6891,6 +7010,10 @@ msgstr "Název hostitele"
 msgid "Hostname and certificate"
 msgstr "Název hostitele a certifikát"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "hours"
+msgstr "hodiny"
+
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "Provozní doba"
@@ -7308,6 +7431,7 @@ msgstr "Schránka pro {name}"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
@@ -7763,6 +7887,7 @@ msgstr "Jen štítek: jeho pošta pochází z Veškeré pošty a jeho konverzace
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Labels"
 msgstr "Štítky"
 
@@ -8740,6 +8865,14 @@ msgstr "odeslaných zpráv"
 msgid "Messages the key sends show its bot name and picture."
 msgstr "Zprávy, které klíč posílá, zobrazují jméno a obrázek jeho bota."
 
+#: src/components/common/SlaBadge.tsx
+msgid "Met"
+msgstr "Splněno"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Met {at}"
+msgstr "Splněno {at}"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Metadata"
 msgstr "Metadata"
@@ -8803,6 +8936,14 @@ msgstr "Moje"
 #: src/features/status/text.tsx
 msgid "Minor"
 msgstr "Malý"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "minutes"
+msgstr "minuty"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Minutes before a due time. 0 sends no warning."
+msgstr "Minuty před termínem. 0 neposílá upozornění."
 
 #: src/features/status/text.tsx
 msgid "Missed beat"
@@ -8913,12 +9054,17 @@ msgstr "Nejvíce hlasů"
 msgid "Move {0} to the Trash?"
 msgstr "Přesunout {0} do koše?"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Move {name}. Drag, or press Alt with the arrow keys."
+msgstr "Přesunout {name}. Přetáhněte, nebo stiskněte Alt se šipkami."
+
 #: src/components/common/text.ts
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Přesouvat konverzace do koše, obnovovat je a číst koš"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "Posunout dolů"
@@ -9018,6 +9164,7 @@ msgstr "Přejít na Yuvu"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "Posunout nahoru"
@@ -9084,6 +9231,7 @@ msgstr "Moje týmy"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -9389,6 +9537,11 @@ msgstr "Nová stránka"
 msgid "New password"
 msgstr "Nové heslo"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/SlaPage.tsx
+msgid "New policy"
+msgstr "Nová politika"
+
 #: src/features/account/AccountPage.tsx
 msgid "New reply in <0>{title}</0>"
 msgstr "Nová odpověď v <0>{title}</0>"
@@ -9481,6 +9634,15 @@ msgstr "Další kontrola {next}."
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Další zpráva {local} ({utc} UTC), tempem této hromadné zprávy."
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Next reply"
+msgstr "Další odpověď"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Next reply {next}"
+msgstr "Další odpověď {next}"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
@@ -9917,6 +10079,10 @@ msgstr "Zatím žádné stránky"
 msgid "No pending invites."
 msgstr "Žádné čekající pozvánky."
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "No policies yet."
+msgstr "Zatím žádné politiky."
+
 #: src/features/settings/ProductsPage.tsx
 msgid "No products yet"
 msgstr "Zatím žádné produkty"
@@ -10009,6 +10175,10 @@ msgstr "Zatím žádní odběratelé. Návštěvníci se přihlašují na stavov
 #: src/features/migrations/ChooseStep.tsx
 msgid "No support address"
 msgstr "Žádná adresa podpory"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "No target has started yet."
+msgstr "Žádný cíl ještě nezačal."
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "No team"
@@ -10306,6 +10476,10 @@ msgstr "Nejde o totéž"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "Po minutě nedorazilo? Podívejte se do složky se spamem nebo si níže vyžádejte nový kód."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Not tracked"
+msgstr "Nesleduje se"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Not uploaded yet"
 msgstr "Zatím nenahráno"
@@ -10533,6 +10707,7 @@ msgstr "vypnuto"
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "Off"
 msgstr "Vyp."
@@ -10645,6 +10820,10 @@ msgstr "V tarifech Team a Enterprise ho vlastník přidá jednou v <0>Organizati
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "On the web"
 msgstr "Na webu"
+
+#: src/components/common/SlaBadge.tsx
+msgid "On track"
+msgstr "V termínu"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Once a test message arrives, Yuva waits {hours} hours. If nothing reaches only {provider} in that time, the migration finishes on its own. You can also finish it yourself."
@@ -11485,6 +11664,7 @@ msgid "Pause or resume the monitor"
 msgstr "Pozastavit nebo obnovit monitor"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
 #: src/features/migrations/text.ts
 #: src/features/settings/channels/ChannelState.tsx
@@ -12021,8 +12201,13 @@ msgstr "Předchozí snímek obrazovky"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
 msgstr "Priorita"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Priority customers"
+msgstr "Prioritní zákazníci"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Priority set to {level}"
@@ -12971,6 +13156,14 @@ msgstr "Odpovědět (R)"
 msgid "Reply account"
 msgstr "Účet pro odpovědi"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
+msgstr "Cíle odpovědi a vyřešení pro konverzace, kterým politika odpovídá. Platí první zapnutá politika, která konverzaci odpovídá, proto nejkonkrétnější držte nahoře. Cíle se počítají v pracovní době každé schránky."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Reply and resolution targets with due times"
+msgstr "Cíle odpovědi a vyřešení s termíny"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Reply and resolve"
 msgstr "Odpovědět a vyřešit"
@@ -13103,6 +13296,15 @@ msgstr "Obnovte klíč API, který jste dali Yuvě"
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
 msgstr "Obnovit výchozí"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Resolution"
+msgstr "Vyřešení"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Resolution {resolution}"
+msgstr "Vyřešení {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13426,6 +13628,7 @@ msgstr "Sobota"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
@@ -14392,6 +14595,11 @@ msgstr "Zobrazit náhled"
 msgid "Show the reply time"
 msgstr "Zobrazovat dobu odpovědi"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Show the SLA targets"
+msgstr "Zobrazit cíle SLA"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "Zobrazte tuto stránku na vlastní adrese místo adresy tohoto serveru."
@@ -14737,6 +14945,32 @@ msgstr "Přeskočeno nebo selhalo"
 #: src/features/status/Notices.tsx
 msgid "Skipped: {0}"
 msgstr "Přeskočeno: {0}"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/inbox/SourceFilter.tsx
+msgid "SLA"
+msgstr "SLA"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA · {policyName}"
+msgstr "SLA · {policyName}"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met"
+msgstr "SLA splněno"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met / breached"
+msgstr "SLA splněno / porušeno"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "SLA policies"
+msgstr "Politiky SLA"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA targets (W)"
+msgstr "Cíle SLA (W)"
 
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -15116,6 +15350,10 @@ msgstr "Přestat podepisovat"
 msgid "Stop taking new subscribers. Records and past reports stay, and you can restore it."
 msgstr "Přestat přijímat nové odběratele. Záznamy a dřívější přehledy zůstanou a seznam můžete obnovit."
 
+#: src/components/common/SlaBadge.tsx
+msgid "Stopped"
+msgstr "Zastaveno"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "Úložiště"
@@ -15310,6 +15548,14 @@ msgstr "Znovu přijímá přihlášky a vrací seznam do výběru publika rozesl
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Taking the recipients: {prepared} so far"
 msgstr "Určují se příjemci: zatím {prepared}"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets"
+msgstr "Cíle"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
+msgstr "Cíle se počítají v pracovní době a časovém pásmu schránky konverzace. Jeden nechte prázdný, aby se nesledoval; alespoň jeden je povinný."
 
 #: src/features/status/text.tsx
 msgid "TCP"
@@ -17266,6 +17512,10 @@ msgstr "Přestat sledovat"
 msgid "Unfollowed"
 msgstr "Sledování ukončeno"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Unit"
+msgstr "Jednotka"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
 msgstr "Neznámé zařízení"
@@ -17929,6 +18179,14 @@ msgstr "čeká od {at}"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Warn about the certificate"
 msgstr "Upozornit na certifikát"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Warn before it is due"
+msgstr "Upozornit před termínem"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Was due {at}"
+msgstr "Termín byl {at}"
 
 #: src/features/setup/previews.tsx
 msgid "Was this page helpful?"

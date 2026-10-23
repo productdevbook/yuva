@@ -277,6 +277,10 @@ msgstr "{count, plural, =0 {ಸಂಭಾಷಣೆಗಳಿಲ್ಲ} one {# ಸ�
 msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, one {# ಬ್ರ್ಯಾಂಡ್} other {# ಬ್ರ್ಯಾಂಡ್‌ಗಳು}}"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "{count, plural, one {# condition} other {# conditions}}"
+msgstr "{count, plural, one {# ಷರತ್ತು} other {# ಷರತ್ತುಗಳು}}"
+
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
@@ -466,6 +470,10 @@ msgstr "{inboxName} ಗೆ {address} ಗಾಗಿ ಇನ್ನೂ ಇಮೇಲ�
 msgid "{incoming} received, {outgoing} sent"
 msgstr "{incoming} ಸ್ವೀಕರಿಸಲಾಗಿದೆ, {outgoing} ಕಳುಹಿಸಲಾಗಿದೆ"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "{left} left when it resumes"
+msgstr "ಪುನರಾರಂಭವಾದಾಗ {left} ಉಳಿಯುತ್ತದೆ"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "{listName} is ready"
 msgstr "{listName} ಸಿದ್ಧವಾಗಿದೆ"
@@ -473,6 +481,10 @@ msgstr "{listName} ಸಿದ್ಧವಾಗಿದೆ"
 #: src/features/home/PropertyCard.tsx
 msgid "{liveText} in the last 30 minutes"
 msgstr "ಕಳೆದ 30 ನಿಮಿಷಗಳಲ್ಲಿ {liveText}"
+
+#: src/features/reports/ReportPages.tsx
+msgid "{met} met, {breached} breached"
+msgstr "{met} ಪೂರೈಸಲಾಗಿದೆ, {breached} ಉಲ್ಲಂಘಿಸಲಾಗಿದೆ"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
@@ -1131,6 +1143,10 @@ msgstr "ಒಂದು ಸಂಭಾಷಣೆಯನ್ನು ನನಗೆ ನಿಯ
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "ಕೊನೆಯ ಬಾರಿ ಅವಧಿಯೊಳಗೆ ನವೀಕರಿಸಿದಾಗ ಸಂಭಾಷಣೆಯನ್ನು ಪೂರ್ಣವಾಗಿ ತೆಗೆದುಕೊಳ್ಳಲಾಗುತ್ತದೆ."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
+msgstr "ಸಂಭಾಷಣೆಯು ನೀವು ತುಂಬಿದ ಪ್ರತಿ ಸಾಲಿಗೂ ಹೊಂದಿಕೆಯಾಗಬೇಕು. ಖಾಲಿ ಸಾಲು ಎಲ್ಲದಕ್ಕೂ ಹೊಂದಿಕೆಯಾಗುತ್ತದೆ."
+
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "ಒಂದು ಸಂಭಾಷಣೆ ಆರಂಭವಾಯಿತು"
@@ -1332,6 +1348,10 @@ msgstr "ಪ್ರತಿ ಘಟಕದ ಪಕ್ಕದಲ್ಲಿ ಶೇಕಡಾ
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A policy that is off applies to nothing."
+msgstr "ಆಫ್ ಮಾಡಿದ ನೀತಿ ಯಾವುದಕ್ಕೂ ಅನ್ವಯಿಸುವುದಿಲ್ಲ."
+
 #: src/components/common/text.ts
 msgid "A property can have at most 1,000 notes. Delete old ones first."
 msgstr "ಒಂದು ಪ್ರಾಪರ್ಟಿಗೆ ಗರಿಷ್ಠ 1,000 ಟಿಪ್ಪಣಿಗಳಿರಬಹುದು. ಮೊದಲು ಹಳೆಯವನ್ನು ಅಳಿಸಿ."
@@ -1476,6 +1496,10 @@ msgstr "\"ಹೊಸದೇನಿದೆ\" ನಮೂದಿನ ಪ್ರಕಟಣೆ
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "1 ರಿಂದ 10,000,000 ರವರೆಗಿನ ಪೂರ್ಣಾಂಕ"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 SLA policies. Delete one first."
+msgstr "ಒಂದು ಕಾರ್ಯಕ್ಷೇತ್ರದಲ್ಲಿ ಗರಿಷ್ಠ 100 SLA ನೀತಿಗಳಿರಬಹುದು. ಮೊದಲು ಒಂದನ್ನು ಅಳಿಸಿ."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "A workspace holds your team, inboxes and conversations. You are its owner and can invite others later."
@@ -2268,6 +2292,16 @@ msgstr "ಮಾಲೀಕರು ಅಥವಾ ನಿರ್ವಾಹಕರು ಬಾ
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "ರೆಕಾರ್ಡ್ ಪ್ರಕಟವಾದ ನಂತರ ಮಾಲೀಕರು ಅಥವಾ ನಿರ್ವಾಹಕರು ಸೈನಿಂಗ್ ಅನ್ನು ಆನ್ ಮಾಡುತ್ತಾರೆ."
 
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target is due soon"
+msgstr "ಒಂದು SLA ಗುರಿಯ ಗಡುವು ಶೀಘ್ರದಲ್ಲೇ ಮುಗಿಯಲಿದೆ"
+
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target was breached"
+msgstr "ಒಂದು SLA ಗುರಿಯನ್ನು ಉಲ್ಲಂಘಿಸಲಾಗಿದೆ"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
 msgstr "ಒಂದು ಅಪ್‌ಲೋಡ್ ಮಧ್ಯದಲ್ಲಿ ನಿಂತುಹೋಯಿತು: {count} ಭಾಗಗಳು, {size}, ಈಗಾಗಲೇ ಸರ್ವರ್‌ನಲ್ಲಿವೆ."
@@ -2431,6 +2465,14 @@ msgstr "ಯಾವುದೇ ಕ್ಷೇತ್ರ"
 msgid "Any label"
 msgstr "ಯಾವುದೇ ಲೇಬಲ್"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Any of the labels you pick."
+msgstr "ನೀವು ಆಯ್ಕೆ ಮಾಡಿದ ಲೇಬಲ್‌ಗಳಲ್ಲಿ ಯಾವುದಾದರೂ."
+
+#: src/features/inbox/SourceFilter.tsx
+msgid "Any state"
+msgstr "ಯಾವುದೇ ಸ್ಥಿತಿ"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "ಯಾವುದೇ ತಂಡ"
@@ -2527,6 +2569,10 @@ msgstr "ಗೋಚರತೆ"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Application (client) ID"
 msgstr "ಅಪ್ಲಿಕೇಶನ್ (ಕ್ಲೈಂಟ್) ID"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Applies to"
+msgstr "ಇವುಗಳಿಗೆ ಅನ್ವಯಿಸುತ್ತದೆ"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "Applies to the next mail."
@@ -3066,6 +3112,14 @@ msgstr "ಬೌನ್ಸ್ ಆಗಿದೆ: {0}"
 msgid "Brands"
 msgstr "ಬ್ರ್ಯಾಂಡ್‌ಗಳು"
 
+#: src/components/common/SlaBadge.tsx
+msgid "Breached"
+msgstr "ಉಲ್ಲಂಘಿಸಲಾಗಿದೆ"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Breached, met late at {at}"
+msgstr "ಉಲ್ಲಂಘಿಸಲಾಗಿದೆ, {at} ಕ್ಕೆ ತಡವಾಗಿ ಪೂರೈಸಲಾಗಿದೆ"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
 msgstr "Gmail, Yandex ಅಥವಾ ಯಾವುದೇ IMAP ಸರ್ವರ್‌ನಿಂದ ಮೇಲ್‌ಬಾಕ್ಸ್‌ನ ಇತಿಹಾಸವನ್ನು ತನ್ನಿ"
@@ -3416,6 +3470,7 @@ msgstr "ಚಾನಲ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Channels"
 msgstr "ಚಾನಲ್‌ಗಳು"
 
@@ -3759,6 +3814,10 @@ msgstr "ಹುಡುಕಾಟ ಮುಚ್ಚಿ (Esc)"
 #: src/features/reports/ReportPages.tsx
 msgid "Closed"
 msgstr "ಮುಚ್ಚಲಾಗಿದೆ"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Closed before a reply"
+msgstr "ಉತ್ತರಕ್ಕೂ ಮೊದಲು ಮುಚ್ಚಲಾಗಿದೆ"
 
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Leave empty to keep everything."
@@ -4280,6 +4339,10 @@ msgstr "ಆಮದಿನ ನಂತರ ಯಾರೂ ಬರೆಯದ ಸಂಭಾ�
 msgid "conversations started"
 msgstr "ಪ್ರಾರಂಭವಾದ ಸಂಭಾಷಣೆಗಳು"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Conversations that follow it lose their SLA unless another policy matches. This cannot be undone."
+msgstr "ಇದನ್ನು ಅನುಸರಿಸುವ ಸಂಭಾಷಣೆಗಳು, ಬೇರೆ ನೀತಿ ಹೊಂದಿಕೆಯಾಗದಿದ್ದರೆ ತಮ್ಮ SLA ಅನ್ನು ಕಳೆದುಕೊಳ್ಳುತ್ತವೆ. ಇದನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗದು."
+
 #: src/features/settings/channels/sections.tsx
 msgid "Conversations that started on it keep their messages."
 msgstr "ಅದರಲ್ಲಿ ಆರಂಭವಾದ ಸಂಭಾಷಣೆಗಳು ತಮ್ಮ ಸಂದೇಶಗಳನ್ನು ಉಳಿಸಿಕೊಳ್ಳುತ್ತವೆ."
@@ -4498,6 +4561,10 @@ msgstr "ಕೀಲಿ ರಚಿಸಿ"
 #: src/features/setup/NewsletterStep.tsx
 msgid "Create list"
 msgstr "ಪಟ್ಟಿ ರಚಿಸಿ"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Create policy"
+msgstr "ನೀತಿ ರಚಿಸಿ"
 
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
@@ -4720,6 +4787,7 @@ msgstr "ಕಡಿಮೆಯಾದ ಕಾರ್ಯಕ್ಷಮತೆ"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4841,6 +4909,10 @@ msgstr "ಮಾನಿಟರ್ ಅಳಿಸಿ"
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the OAuth client you created for Yuva"
 msgstr "ನೀವು Yuva ಗಾಗಿ ರಚಿಸಿದ OAuth ಕ್ಲೈಂಟ್ ಅನ್ನು ಅಳಿಸಿ"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Delete the policy {name}?"
+msgstr "ನೀತಿ {name} ಅಳಿಸಬೇಕೇ?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
@@ -5392,6 +5464,18 @@ msgstr "ನಿಮ್ಮ ಉತ್ತರಕ್ಕೆ ಲಗತ್ತಿಸಲು 
 msgid "Dry run"
 msgstr "ಪ್ರಯೋಗ ಚಾಲನೆ"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "Due {at}"
+msgstr "ಗಡುವು {at}"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Due first"
+msgstr "ಮೊದಲು ಹತ್ತಿರದ ಗಡುವು"
+
+#: src/components/common/SlaBadge.tsx
+msgid "Due soon"
+msgstr "ಶೀಘ್ರದಲ್ಲೇ ಗಡುವು"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Duplicate the selected block"
 msgstr "ಆಯ್ದ ಬ್ಲಾಕ್ ಅನ್ನು ನಕಲು ಮಾಡಿ"
@@ -5543,6 +5627,7 @@ msgstr "ಪ್ರತಿಯೊಂದೂ ಅದರ ಎಲ್ಲಾ ಸಂದೇಶ
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5602,6 +5687,10 @@ msgstr "ಮ್ಯಾಕ್ರೋ ಸಂಪಾದಿಸಿ"
 msgid "Edit monitor"
 msgstr "ಮಾನಿಟರ್ ಸಂಪಾದಿಸಿ"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Edit policy"
+msgstr "ನೀತಿ ಸಂಪಾದಿಸಿ"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "ತಂಡವನ್ನು ಸಂಪಾದಿಸಿ"
@@ -5660,6 +5749,10 @@ msgstr "ಎಮೋಜಿ"
 #: src/features/broadcasts/Import.tsx
 msgid "Empty in the first rows"
 msgstr "ಮೊದಲ ಸಾಲುಗಳಲ್ಲಿ ಖಾಲಿ"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Enabled"
+msgstr "ಸಕ್ರಿಯ"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5798,6 +5891,10 @@ msgstr "ಕಳೆದ 30 ದಿನಗಳ ಪ್ರತಿಯೊಂದು ಸಂಕ
 #: src/features/status/MonitorChecks.tsx
 msgid "Every check of the last 30 days, newest first."
 msgstr "ಕಳೆದ 30 ದಿನಗಳ ಪ್ರತಿ ಪರಿಶೀಲನೆ, ಹೊಸದು ಮೊದಲು."
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Every conversation"
+msgstr "ಪ್ರತಿ ಸಂಭಾಷಣೆ"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -6145,8 +6242,8 @@ msgid "Filter by team"
 msgstr "ತಂಡದ ಪ್ರಕಾರ ಫಿಲ್ಟರ್ ಮಾಡಿ"
 
 #: src/features/inbox/SourceFilter.tsx
-msgid "Filter by type, site and broadcast"
-msgstr "ಪ್ರಕಾರ, ಸೈಟ್ ಮತ್ತು ಬ್ರಾಡ್‌ಕಾಸ್ಟ್ ಮೂಲಕ ಫಿಲ್ಟರ್ ಮಾಡಿ"
+msgid "Filter by type, site, broadcast and SLA"
+msgstr "ಪ್ರಕಾರ, ಸೈಟ್, ಪ್ರಸಾರ ಮತ್ತು SLA ಪ್ರಕಾರ ಫಿಲ್ಟರ್ ಮಾಡಿ"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -6218,10 +6315,16 @@ msgstr "ಮೊದಲ ಹೆಸರು"
 msgid "first reply"
 msgstr "ಮೊದಲ ಉತ್ತರ"
 
+#: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "ಮೊದಲ ಉತ್ತರ"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "First reply {first}"
+msgstr "ಮೊದಲ ಉತ್ತರ {first}"
 
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
@@ -6303,6 +6406,10 @@ msgstr "ಸ್ವಯಂಚಾಲಿತ ಸಂದೇಶಗಳಿಗೆ"
 #: src/features/setup/NameStep.tsx
 msgid "For business hours"
 msgstr "ಕೆಲಸದ ಸಮಯಕ್ಕೆ"
+
+#: src/features/settings/notifications/events.ts
+msgid "For conversations assigned to me, or to my team when nobody is assigned."
+msgstr "ನನಗೆ ನಿಯೋಜಿಸಿದ ಸಂಭಾಷಣೆಗಳಿಗೆ, ಅಥವಾ ಯಾರಿಗೂ ನಿಯೋಜಿಸದಿದ್ದಾಗ ನನ್ನ ತಂಡಕ್ಕೆ."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "For developers"
@@ -6461,6 +6568,18 @@ msgstr "From ವಿಳಾಸ (ಐಚ್ಛಿಕ)"
 #: src/features/migrations/parts.tsx
 msgid "From blocked contacts"
 msgstr "ನಿರ್ಬಂಧಿತ ಸಂಪರ್ಕಗಳಿಂದ"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From each later contact message to the reply."
+msgstr "ಸಂಪರ್ಕದ ಪ್ರತಿ ನಂತರದ ಸಂದೇಶದಿಂದ ಉತ್ತರದವರೆಗೆ."
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the contact's first message to the first public reply."
+msgstr "ಸಂಪರ್ಕದ ಮೊದಲ ಸಂದೇಶದಿಂದ ಮೊದಲ ಸಾರ್ವಜನಿಕ ಉತ್ತರದವರೆಗೆ."
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the start of the conversation to its first close."
+msgstr "ಸಂಭಾಷಣೆಯ ಆರಂಭದಿಂದ ಅದರ ಮೊದಲ ಮುಚ್ಚುವಿಕೆಯವರೆಗೆ."
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "From the terminal"
@@ -6891,6 +7010,10 @@ msgstr "ಹೋಸ್ಟ್‌ನೇಮ್"
 msgid "Hostname and certificate"
 msgstr "ಹೋಸ್ಟ್‌ನೇಮ್ ಮತ್ತು ಪ್ರಮಾಣಪತ್ರ"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "hours"
+msgstr "ಗಂಟೆಗಳು"
+
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "ಸಮಯ"
@@ -7308,6 +7431,7 @@ msgstr "{name} ಗಾಗಿ ಇನ್‌ಬಾಕ್ಸ್"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
@@ -7763,6 +7887,7 @@ msgstr "ಲೇಬಲ್ ಮಾತ್ರ: ಅದರ ಮೇಲ್ ಎಲ್ಲಾ 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Labels"
 msgstr "ಲೇಬಲ್‌ಗಳು"
 
@@ -8740,6 +8865,14 @@ msgstr "ಕಳುಹಿಸಿದ ಸಂದೇಶಗಳು"
 msgid "Messages the key sends show its bot name and picture."
 msgstr "ಕೀಲಿ ಕಳುಹಿಸುವ ಸಂದೇಶಗಳು ಅದರ ಬಾಟ್ ಹೆಸರು ಮತ್ತು ಚಿತ್ರ ತೋರಿಸುತ್ತವೆ."
 
+#: src/components/common/SlaBadge.tsx
+msgid "Met"
+msgstr "ಪೂರೈಸಲಾಗಿದೆ"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Met {at}"
+msgstr "{at} ಕ್ಕೆ ಪೂರೈಸಲಾಗಿದೆ"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Metadata"
 msgstr "Metadata"
@@ -8803,6 +8936,14 @@ msgstr "ನನ್ನದು"
 #: src/features/status/text.tsx
 msgid "Minor"
 msgstr "ಸಣ್ಣ"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "minutes"
+msgstr "ನಿಮಿಷಗಳು"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Minutes before a due time. 0 sends no warning."
+msgstr "ಗಡುವಿಗೆ ಎಷ್ಟು ನಿಮಿಷ ಮೊದಲು. 0 ಎಚ್ಚರಿಕೆ ಕಳುಹಿಸುವುದಿಲ್ಲ."
 
 #: src/features/status/text.tsx
 msgid "Missed beat"
@@ -8913,12 +9054,17 @@ msgstr "ಅತಿ ಹೆಚ್ಚು ಮತಗಳು"
 msgid "Move {0} to the Trash?"
 msgstr "{0} ಅನ್ನು ಟ್ರ್ಯಾಶ್‌ಗೆ ಸರಿಸಬೇಕೇ?"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Move {name}. Drag, or press Alt with the arrow keys."
+msgstr "{name} ಸರಿಸಿ. ಎಳೆಯಿರಿ, ಅಥವಾ ಬಾಣದ ಕೀಗಳೊಂದಿಗೆ Alt ಒತ್ತಿ."
+
 #: src/components/common/text.ts
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "ಸಂಭಾಷಣೆಗಳನ್ನು ಟ್ರ್ಯಾಶ್‌ಗೆ ಸರಿಸಿ, ಮರುಸ್ಥಾಪಿಸಿ ಮತ್ತು ಟ್ರ್ಯಾಶ್ ಓದಿ"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "ಕೆಳಗೆ ಸರಿಸಿ"
@@ -9018,6 +9164,7 @@ msgstr "Yuva ಗೆ ಸರಿಸಿ"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "ಮೇಲೆ ಸರಿಸಿ"
@@ -9084,6 +9231,7 @@ msgstr "ನನ್ನ ತಂಡಗಳು"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -9389,6 +9537,11 @@ msgstr "ಹೊಸ ಪುಟ"
 msgid "New password"
 msgstr "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/SlaPage.tsx
+msgid "New policy"
+msgstr "ಹೊಸ ನೀತಿ"
+
 #: src/features/account/AccountPage.tsx
 msgid "New reply in <0>{title}</0>"
 msgstr "<0>{title}</0> ನಲ್ಲಿ ಹೊಸ ಉತ್ತರ"
@@ -9481,6 +9634,15 @@ msgstr "ಮುಂದಿನ ಪರಿಶೀಲನೆ {next}."
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "ಈ ಬ್ರಾಡ್‌ಕಾಸ್ಟ್‌ನ ವೇಗದಲ್ಲಿ, ಮುಂದಿನ ಮೇಲ್ {local} ({utc} UTC) ಕ್ಕೆ."
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Next reply"
+msgstr "ಮುಂದಿನ ಉತ್ತರ"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Next reply {next}"
+msgstr "ಮುಂದಿನ ಉತ್ತರ {next}"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
@@ -9917,6 +10079,10 @@ msgstr "ಇನ್ನೂ ಪುಟಗಳಿಲ್ಲ"
 msgid "No pending invites."
 msgstr "ಬಾಕಿ ಇರುವ ಆಹ್ವಾನಗಳಿಲ್ಲ."
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "No policies yet."
+msgstr "ಇನ್ನೂ ನೀತಿಗಳಿಲ್ಲ."
+
 #: src/features/settings/ProductsPage.tsx
 msgid "No products yet"
 msgstr "ಇನ್ನೂ ಉತ್ಪನ್ನಗಳಿಲ್ಲ"
@@ -10009,6 +10175,10 @@ msgstr "ಇನ್ನೂ ಚಂದಾದಾರರಿಲ್ಲ. ಸಂದರ್ಶ
 #: src/features/migrations/ChooseStep.tsx
 msgid "No support address"
 msgstr "ಬೆಂಬಲ ವಿಳಾಸವಿಲ್ಲ"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "No target has started yet."
+msgstr "ಇನ್ನೂ ಯಾವ ಗುರಿಯೂ ಪ್ರಾರಂಭವಾಗಿಲ್ಲ."
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "No team"
@@ -10306,6 +10476,10 @@ msgstr "ಒಬ್ಬರೇ ಅಲ್ಲ"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "ಒಂದು ನಿಮಿಷದ ನಂತರವೂ ಇಲ್ಲವೇ? ನಿಮ್ಮ ಸ್ಪ್ಯಾಮ್ ಅಥವಾ ಜಂಕ್ ಫೋಲ್ಡರ್ ನೋಡಿ, ಅಥವಾ ಕೆಳಗೆ ಹೊಸ ಕೋಡ್ ಕಳುಹಿಸಿ."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Not tracked"
+msgstr "ಟ್ರ್ಯಾಕ್ ಮಾಡಲಾಗುವುದಿಲ್ಲ"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Not uploaded yet"
 msgstr "ಇನ್ನೂ ಅಪ್‌ಲೋಡ್ ಮಾಡಿಲ್ಲ"
@@ -10533,6 +10707,7 @@ msgstr "ಆಫ್"
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "Off"
 msgstr "ಆಫ್"
@@ -10645,6 +10820,10 @@ msgstr "Team ಮತ್ತು Enterprise ಯೋಜನೆಗಳಲ್ಲಿ ಮಾ
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "On the web"
 msgstr "ವೆಬ್‌ನಲ್ಲಿ"
+
+#: src/components/common/SlaBadge.tsx
+msgid "On track"
+msgstr "ಸಮಯಕ್ಕೆ"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Once a test message arrives, Yuva waits {hours} hours. If nothing reaches only {provider} in that time, the migration finishes on its own. You can also finish it yourself."
@@ -11485,6 +11664,7 @@ msgid "Pause or resume the monitor"
 msgstr "ಮಾನಿಟರ್ ವಿರಾಮಗೊಳಿಸಿ ಅಥವಾ ಮುಂದುವರಿಸಿ"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
 #: src/features/migrations/text.ts
 #: src/features/settings/channels/ChannelState.tsx
@@ -12021,8 +12201,13 @@ msgstr "ಹಿಂದಿನ ಸ್ಕ್ರೀನ್‌ಶಾಟ್"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
 msgstr "ಆದ್ಯತೆ"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Priority customers"
+msgstr "ಆದ್ಯತೆಯ ಗ್ರಾಹಕರು"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Priority set to {level}"
@@ -12971,6 +13156,14 @@ msgstr "ಉತ್ತರಿಸಿ (R)"
 msgid "Reply account"
 msgstr "ಉತ್ತರ ಖಾತೆ"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
+msgstr "ನೀತಿ ಹೊಂದಿಕೆಯಾಗುವ ಸಂಭಾಷಣೆಗಳಿಗೆ ಉತ್ತರ ಮತ್ತು ಪರಿಹಾರದ ಗುರಿಗಳು. ಸಂಭಾಷಣೆಗೆ ಹೊಂದಿಕೆಯಾಗುವ ಮೊದಲ ಸಕ್ರಿಯ ನೀತಿ ಅನ್ವಯಿಸುತ್ತದೆ, ಆದ್ದರಿಂದ ಅತ್ಯಂತ ನಿರ್ದಿಷ್ಟವಾದವುಗಳನ್ನು ಮೇಲೆ ಇರಿಸಿ. ಗುರಿಗಳು ಪ್ರತಿ ಇನ್‌ಬಾಕ್ಸ್‌ನ ಕೆಲಸದ ಸಮಯದಲ್ಲಿ ಲೆಕ್ಕಹಾಕಲ್ಪಡುತ್ತವೆ."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Reply and resolution targets with due times"
+msgstr "ಗಡುವುಗಳೊಂದಿಗೆ ಉತ್ತರ ಮತ್ತು ಪರಿಹಾರದ ಗುರಿಗಳು"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Reply and resolve"
 msgstr "Reply and resolve"
@@ -13103,6 +13296,15 @@ msgstr "Yuva ಗೆ ನೀಡಿದ API ಕೀಲಿಯನ್ನು ಮರುಹ
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
 msgstr "ಡೀಫಾಲ್ಟ್‌ಗಳಿಗೆ ಮರುಹೊಂದಿಸಿ"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Resolution"
+msgstr "ಪರಿಹಾರ"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Resolution {resolution}"
+msgstr "ಪರಿಹಾರ {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13426,6 +13628,7 @@ msgstr "ಶನಿವಾರ"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
@@ -14392,6 +14595,11 @@ msgstr "ಪೂರ್ವವೀಕ್ಷಣೆಯನ್ನು ತೋರಿಸಿ"
 msgid "Show the reply time"
 msgstr "ಉತ್ತರ ಸಮಯವನ್ನು ತೋರಿಸಿ"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Show the SLA targets"
+msgstr "SLA ಗುರಿಗಳನ್ನು ತೋರಿಸಿ"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "ಈ ಪುಟವನ್ನು ಈ ಸರ್ವರ್‌ನ ವಿಳಾಸದ ಬದಲಿಗೆ ನಿಮ್ಮ ಸ್ವಂತ ವಿಳಾಸದಲ್ಲಿ ತೋರಿಸಿ."
@@ -14737,6 +14945,32 @@ msgstr "ಬಿಟ್ಟಿದ್ದು ಅಥವಾ ವಿಫಲವಾದದ್�
 #: src/features/status/Notices.tsx
 msgid "Skipped: {0}"
 msgstr "ಬಿಡಲಾಗಿದೆ: {0}"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/inbox/SourceFilter.tsx
+msgid "SLA"
+msgstr "SLA"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA · {policyName}"
+msgstr "SLA · {policyName}"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met"
+msgstr "SLA ಪೂರೈಸಲಾಗಿದೆ"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met / breached"
+msgstr "SLA ಪೂರೈಸಿದ / ಉಲ್ಲಂಘಿಸಿದ"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "SLA policies"
+msgstr "SLA ನೀತಿಗಳು"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA targets (W)"
+msgstr "SLA ಗುರಿಗಳು (W)"
 
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -15116,6 +15350,10 @@ msgstr "ಸೈನ್ ಮಾಡುವುದನ್ನು ನಿಲ್ಲಿಸಿ"
 msgid "Stop taking new subscribers. Records and past reports stay, and you can restore it."
 msgstr "ಹೊಸ ಚಂದಾದಾರರನ್ನು ಸ್ವೀಕರಿಸುವುದನ್ನು ನಿಲ್ಲಿಸಿ. ದಾಖಲೆಗಳು ಮತ್ತು ಹಿಂದಿನ ವರದಿಗಳು ಉಳಿಯುತ್ತವೆ, ಪಟ್ಟಿಯನ್ನು ಮರುಸ್ಥಾಪಿಸಬಹುದು."
 
+#: src/components/common/SlaBadge.tsx
+msgid "Stopped"
+msgstr "ನಿಲ್ಲಿಸಲಾಗಿದೆ"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "ಸಂಗ್ರಹಣೆ"
@@ -15310,6 +15548,14 @@ msgstr "ಮತ್ತೆ ಸೈನ್-ಅಪ್ ಸ್ವೀಕರಿಸಿ ಪ�
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Taking the recipients: {prepared} so far"
 msgstr "ಸ್ವೀಕರಿಸುವವರನ್ನು ತೆಗೆದುಕೊಳ್ಳಲಾಗುತ್ತಿದೆ: ಇದುವರೆಗೆ {prepared}"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets"
+msgstr "ಗುರಿಗಳು"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
+msgstr "ಗುರಿಗಳು ಸಂಭಾಷಣೆಯ ಇನ್‌ಬಾಕ್ಸ್‌ನ ಕೆಲಸದ ಸಮಯ ಮತ್ತು ಸಮಯ ವಲಯದಲ್ಲಿ ಲೆಕ್ಕಹಾಕಲ್ಪಡುತ್ತವೆ. ಟ್ರ್ಯಾಕ್ ಮಾಡದಿರಲು ಒಂದನ್ನು ಖಾಲಿ ಬಿಡಿ; ಕನಿಷ್ಠ ಒಂದು ಅಗತ್ಯ."
 
 #: src/features/status/text.tsx
 msgid "TCP"
@@ -17266,6 +17512,10 @@ msgstr "ಅನುಸರಿಸುವುದನ್ನು ನಿಲ್ಲಿಸಿ"
 msgid "Unfollowed"
 msgstr "ಅನುಸರಿಸುವುದನ್ನು ನಿಲ್ಲಿಸಲಾಗಿದೆ"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Unit"
+msgstr "ಘಟಕ"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
 msgstr "ಅಪರಿಚಿತ ಸಾಧನ"
@@ -17929,6 +18179,14 @@ msgstr "{at} ರಿಂದ ಕಾಯುತ್ತಿದೆ"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Warn about the certificate"
 msgstr "ಪ್ರಮಾಣಪತ್ರದ ಬಗ್ಗೆ ಎಚ್ಚರಿಸಿ"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Warn before it is due"
+msgstr "ಗಡುವಿಗೆ ಮೊದಲು ಎಚ್ಚರಿಸಿ"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Was due {at}"
+msgstr "ಗಡುವು {at} ಆಗಿತ್ತು"
 
 #: src/features/setup/previews.tsx
 msgid "Was this page helpful?"

@@ -34,6 +34,7 @@ import {
   Kbd,
   MemberAvatar,
   placeOf,
+  SlaBadge,
   sourceOf,
   toast,
   useContactName,
@@ -338,6 +339,7 @@ function Row({
             <LabelTag key={l.id} name={l.name} />
           ))}
           <span className="flex-1" />
+          {c.sla && <SlaBadge sla={c.sla} />}
           {rating && <RatingMark rating={rating.rating} comment={rating.comment} />}
           {assignee && (
             <span title={t`Assigned to ${assignee.name || assignee.email}`} data-testid="row-assignee">
@@ -550,7 +552,7 @@ function PhoneHeader({ children }: { children: React.ReactNode }) {
   )
 }
 
-type Order = "newest" | "oldest"
+type Order = "newest" | "oldest" | "sla_due"
 
 function OrderChip({
   order,
@@ -564,7 +566,7 @@ function OrderChip({
   onUnread: (on: boolean) => void
 }) {
   const { t } = useLingui()
-  const names: Record<Order, string> = { newest: t`Newest first`, oldest: t`Waiting longest` }
+  const names: Record<Order, string> = { newest: t`Newest first`, oldest: t`Waiting longest`, sla_due: t`Due first` }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -582,6 +584,9 @@ function OrderChip({
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="oldest" data-testid="list-order-oldest">
             {names.oldest}
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="sla_due" data-testid="list-order-sla-due">
+            {names.sla_due}
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
         <DropdownMenuSeparator />
@@ -728,7 +733,14 @@ export function ChatList({
 
   const [source, setSource] = useSourceFilter()
   const narrowed =
-    !!source.source || !!source.site || !!source.broadcast || !!source.field || !!labelId || !!teamId || !!chipInbox
+    !!source.source ||
+    !!source.site ||
+    !!source.broadcast ||
+    !!source.field ||
+    !!source.sla ||
+    !!labelId ||
+    !!teamId ||
+    !!chipInbox
   const filters = {
     kind: ["conversation" as const],
     ...chipFilters[chip],
@@ -736,6 +748,7 @@ export function ChatList({
     inbox_id: inboxId || undefined,
     label_id: labelId || undefined,
     team_id: teamId || undefined,
+    sort: sort === "sla_due" ? ("sla_due" as const) : undefined,
     q: q || undefined,
   }
   const list = useConversations(filters)
@@ -747,7 +760,7 @@ export function ChatList({
     (a.last_activity_at < b.last_activity_at ? 1 : -1) * (sort === "oldest" ? -1 : 1)
   const pinnedRows = [...pinnedLoaded, ...loaded.filter((c) => c.pinned_at && !pinnedLoaded.some((x) => x.id === c.id))]
     .filter((c) => c.pinned_at && keep(c))
-    .sort(byTime)
+    .sort(sort === "sla_due" ? () => 0 : byTime)
   const mainRows = loaded.filter((c) => !c.pinned_at && keep(c))
   if (sort === "oldest") mainRows.sort(byTime)
   const rows = [...pinnedRows, ...mainRows]
@@ -766,6 +779,8 @@ export function ChatList({
     source.broadcast?.id,
     source.field?.key,
     source.field?.value,
+    source.sla,
+    sort,
   ].join("|")
   const shown = useRef({ scope, ids: [] as string[] })
   useEffect(() => {

@@ -277,6 +277,10 @@ msgstr "{count, plural, =0 {沒有對話} other {# 個對話}}"
 msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, other {# 個品牌}}"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "{count, plural, one {# condition} other {# conditions}}"
+msgstr "{count, plural, other {# 個條件}}"
+
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
@@ -466,6 +470,10 @@ msgstr "{inboxName} 還沒有 {address} 的郵件頻道。歷史記錄儲存在�
 msgid "{incoming} received, {outgoing} sent"
 msgstr "收到 {incoming} 封,傳送 {outgoing} 封"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "{left} left when it resumes"
+msgstr "恢復後還剩 {left}"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "{listName} is ready"
 msgstr "{listName} 已就緒"
@@ -473,6 +481,10 @@ msgstr "{listName} 已就緒"
 #: src/features/home/PropertyCard.tsx
 msgid "{liveText} in the last 30 minutes"
 msgstr "最近 30 分鐘內 {liveText}"
+
+#: src/features/reports/ReportPages.tsx
+msgid "{met} met, {breached} breached"
+msgstr "已達成 {met}，已違反 {breached}"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
@@ -1131,6 +1143,10 @@ msgstr "指派給我的對話"
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "最後更新在範圍內的對話會被整體匯入。"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
+msgstr "對話必須符合你填寫的每一列。留空的列符合所有內容。"
+
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "對話開始時"
@@ -1332,6 +1348,10 @@ msgstr "每個元件旁的百分比。"
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A policy that is off applies to nothing."
+msgstr "已關閉的政策不適用於任何內容。"
+
 #: src/components/common/text.ts
 msgid "A property can have at most 1,000 notes. Delete old ones first."
 msgstr "每個屬性最多可有 1,000 條備註。請先刪除舊的。"
@@ -1476,6 +1496,10 @@ msgstr "「最新動態」項目已取消發佈"
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "1 到 10,000,000 之間的整數"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 SLA policies. Delete one first."
+msgstr "一個工作區最多有 100 條 SLA 政策。請先刪除一條。"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "A workspace holds your team, inboxes and conversations. You are its owner and can invite others later."
@@ -2268,6 +2292,16 @@ msgstr "所有者或管理員可以透過「允許機器人傳送」讓助手自
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "記錄釋出後,由所有者或管理員開啟簽名。"
 
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target is due soon"
+msgstr "某個 SLA 目標即將到期"
+
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target was breached"
+msgstr "某個 SLA 目標已被違反"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
 msgstr "上傳被中斷:已有 {count} 個部分、{size} 在伺服器上。"
@@ -2431,6 +2465,14 @@ msgstr "任意欄位"
 msgid "Any label"
 msgstr "任何標籤"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Any of the labels you pick."
+msgstr "所選標籤中的任意一個。"
+
+#: src/features/inbox/SourceFilter.tsx
+msgid "Any state"
+msgstr "任何狀態"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "任何團隊"
@@ -2527,6 +2569,10 @@ msgstr "外觀"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Application (client) ID"
 msgstr "應用程式(用戶端)ID"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Applies to"
+msgstr "適用於"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "Applies to the next mail."
@@ -3066,6 +3112,14 @@ msgstr "退信:{0}"
 msgid "Brands"
 msgstr "品牌"
 
+#: src/components/common/SlaBadge.tsx
+msgid "Breached"
+msgstr "已違反"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Breached, met late at {at}"
+msgstr "已違反，於 {at} 延遲達成"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
 msgstr "從 Gmail、Yandex 或任何 IMAP 伺服器匯入信箱的歷史記錄"
@@ -3416,6 +3470,7 @@ msgstr "頻道設定"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Channels"
 msgstr "管道"
 
@@ -3759,6 +3814,10 @@ msgstr "關閉搜尋(Esc)"
 #: src/features/reports/ReportPages.tsx
 msgid "Closed"
 msgstr "已關閉"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Closed before a reply"
+msgstr "在回覆前已關閉"
 
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Leave empty to keep everything."
@@ -4280,6 +4339,10 @@ msgstr "匯入後無人回覆的對話會被刪除。{provider} 不會有任何�
 msgid "conversations started"
 msgstr "已發起的對話"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Conversations that follow it lose their SLA unless another policy matches. This cannot be undone."
+msgstr "遵循它的對話將失去 SLA，除非有其他政策符合。此操作無法復原。"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Conversations that started on it keep their messages."
 msgstr "在其上開始的對話會保留其訊息。"
@@ -4498,6 +4561,10 @@ msgstr "建立金鑰"
 #: src/features/setup/NewsletterStep.tsx
 msgid "Create list"
 msgstr "建立列表"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Create policy"
+msgstr "建立政策"
 
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
@@ -4720,6 +4787,7 @@ msgstr "效能降低"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4841,6 +4909,10 @@ msgstr "刪除監控"
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the OAuth client you created for Yuva"
 msgstr "刪除你為 Yuva 建立的 OAuth 用戶端"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Delete the policy {name}?"
+msgstr "刪除政策 {name}？"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
@@ -5392,6 +5464,18 @@ msgstr "拖入檔案即可附加到你的回覆"
 msgid "Dry run"
 msgstr "試執行"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "Due {at}"
+msgstr "到期 {at}"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Due first"
+msgstr "最先到期優先"
+
+#: src/components/common/SlaBadge.tsx
+msgid "Due soon"
+msgstr "即將到期"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Duplicate the selected block"
 msgstr "複製所選區塊"
@@ -5543,6 +5627,7 @@ msgstr "每個都包含其所有訊息和備註"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5602,6 +5687,10 @@ msgstr "編輯巨集"
 msgid "Edit monitor"
 msgstr "編輯監控"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Edit policy"
+msgstr "編輯政策"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "編輯團隊"
@@ -5660,6 +5749,10 @@ msgstr "表情符號"
 #: src/features/broadcasts/Import.tsx
 msgid "Empty in the first rows"
 msgstr "前幾行為空"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Enabled"
+msgstr "已啟用"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5798,6 +5891,10 @@ msgstr "最近 30 天的每個心跳訊號、漏掉的訊號和推送狀態，�
 #: src/features/status/MonitorChecks.tsx
 msgid "Every check of the last 30 days, newest first."
 msgstr "最近 30 天的每次檢查,最新的在前。"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Every conversation"
+msgstr "所有對話"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -6145,8 +6242,8 @@ msgid "Filter by team"
 msgstr "依團隊篩選"
 
 #: src/features/inbox/SourceFilter.tsx
-msgid "Filter by type, site and broadcast"
-msgstr "按類型、站點和群發篩選"
+msgid "Filter by type, site, broadcast and SLA"
+msgstr "依類型、網站、群發和 SLA 篩選"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -6218,10 +6315,16 @@ msgstr "名"
 msgid "first reply"
 msgstr "首次回覆"
 
+#: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "首次回覆"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "First reply {first}"
+msgstr "首次回覆 {first}"
 
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
@@ -6303,6 +6406,10 @@ msgstr "用於自動訊息"
 #: src/features/setup/NameStep.tsx
 msgid "For business hours"
 msgstr "用於營業時間"
+
+#: src/features/settings/notifications/events.ts
+msgid "For conversations assigned to me, or to my team when nobody is assigned."
+msgstr "適用於指派給我的對話，無人指派時適用於我的團隊。"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "For developers"
@@ -6461,6 +6568,18 @@ msgstr "發件地址(可選)"
 #: src/features/migrations/parts.tsx
 msgid "From blocked contacts"
 msgstr "來自已遮蔽的聯絡人"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From each later contact message to the reply."
+msgstr "從聯絡人的每則後續訊息到回覆。"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the contact's first message to the first public reply."
+msgstr "從聯絡人的第一則訊息到第一次公開回覆。"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the start of the conversation to its first close."
+msgstr "從對話開始到第一次關閉。"
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "From the terminal"
@@ -6891,6 +7010,10 @@ msgstr "主機名稱"
 msgid "Hostname and certificate"
 msgstr "主機名稱和憑證"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "hours"
+msgstr "小時"
+
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "營業時間"
@@ -7308,6 +7431,7 @@ msgstr "{name} 的收件匣"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
@@ -7763,6 +7887,7 @@ msgstr "僅標籤:其郵件來自「所有郵件」,其對話會帶上該標籤�
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Labels"
 msgstr "標籤"
 
@@ -8740,6 +8865,14 @@ msgstr "已寄出訊息"
 msgid "Messages the key sends show its bot name and picture."
 msgstr "金鑰傳送的訊息會顯示其機器人名稱和頭像。"
 
+#: src/components/common/SlaBadge.tsx
+msgid "Met"
+msgstr "已達成"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Met {at}"
+msgstr "{at} 達成"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Metadata"
 msgstr "Metadata"
@@ -8803,6 +8936,14 @@ msgstr "我的"
 #: src/features/status/text.tsx
 msgid "Minor"
 msgstr "輕微"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "minutes"
+msgstr "分鐘"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Minutes before a due time. 0 sends no warning."
+msgstr "到期前多少分鐘。0 表示不發送提醒。"
 
 #: src/features/status/text.tsx
 msgid "Missed beat"
@@ -8913,12 +9054,17 @@ msgstr "票數最多"
 msgid "Move {0} to the Trash?"
 msgstr "將 {0} 項移到垃圾箱？"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Move {name}. Drag, or press Alt with the arrow keys."
+msgstr "移動 {name}。拖曳，或按 Alt 加方向鍵。"
+
 #: src/components/common/text.ts
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "將對話移到垃圾箱、恢復對話並讀取垃圾箱"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "下移"
@@ -9018,6 +9164,7 @@ msgstr "遷移到 Yuva"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "上移"
@@ -9084,6 +9231,7 @@ msgstr "我的團隊"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -9389,6 +9537,11 @@ msgstr "新頁面"
 msgid "New password"
 msgstr "新密碼"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/SlaPage.tsx
+msgid "New policy"
+msgstr "新增政策"
+
 #: src/features/account/AccountPage.tsx
 msgid "New reply in <0>{title}</0>"
 msgstr "<0>{title}</0> 中有新回覆"
@@ -9481,6 +9634,15 @@ msgstr "下次檢查：{next}。"
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "下一封郵件將在 {local}({utc} UTC)按此群發的速度發出。"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Next reply"
+msgstr "後續回覆"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Next reply {next}"
+msgstr "後續回覆 {next}"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
@@ -9917,6 +10079,10 @@ msgstr "還沒有頁面"
 msgid "No pending invites."
 msgstr "沒有待處理的邀請。"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "No policies yet."
+msgstr "還沒有政策。"
+
 #: src/features/settings/ProductsPage.tsx
 msgid "No products yet"
 msgstr "還沒有產品"
@@ -10009,6 +10175,10 @@ msgstr "尚無訂閱者。訪客可在狀態頁面訂閱,你也可以在此新�
 #: src/features/migrations/ChooseStep.tsx
 msgid "No support address"
 msgstr "無支援地址"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "No target has started yet."
+msgstr "還沒有目標開始。"
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "No team"
@@ -10306,6 +10476,10 @@ msgstr "不是同一人"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "一分鐘後還沒收到?請檢視垃圾郵件資料夾,或在下面重新傳送驗證碼。"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Not tracked"
+msgstr "不追蹤"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Not uploaded yet"
 msgstr "尚未上傳"
@@ -10533,6 +10707,7 @@ msgstr "關閉"
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "Off"
 msgstr "關"
@@ -10645,6 +10820,10 @@ msgstr "在 Team 和 Enterprise 套餐中,由所有者在<0>組織設定 › 聯
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "On the web"
 msgstr "在網頁上"
+
+#: src/components/common/SlaBadge.tsx
+msgid "On track"
+msgstr "正常"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Once a test message arrives, Yuva waits {hours} hours. If nothing reaches only {provider} in that time, the migration finishes on its own. You can also finish it yourself."
@@ -11485,6 +11664,7 @@ msgid "Pause or resume the monitor"
 msgstr "暫停或繼續監控"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
 #: src/features/migrations/text.ts
 #: src/features/settings/channels/ChannelState.tsx
@@ -12021,8 +12201,13 @@ msgstr "上一張截圖"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
 msgstr "優先順序"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Priority customers"
+msgstr "重點客戶"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Priority set to {level}"
@@ -12971,6 +13156,14 @@ msgstr "回覆 (R)"
 msgid "Reply account"
 msgstr "回覆帳號"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
+msgstr "政策所符合對話的回覆和解決目標。適用於對話的是第一條符合且已啟用的政策，因此請把最具體的放在上面。目標依各收件匣的工作時間計算。"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Reply and resolution targets with due times"
+msgstr "帶到期時間的回覆和解決目標"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Reply and resolve"
 msgstr "回覆並標示為已解決"
@@ -13103,6 +13296,15 @@ msgstr "重設你提供給 Yuva 的 API 金鑰"
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
 msgstr "恢復預設設定"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Resolution"
+msgstr "解決"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Resolution {resolution}"
+msgstr "解決 {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13426,6 +13628,7 @@ msgstr "星期六"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
@@ -14392,6 +14595,11 @@ msgstr "顯示預覽"
 msgid "Show the reply time"
 msgstr "顯示回覆時間"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Show the SLA targets"
+msgstr "顯示 SLA 目標"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "用你自己的位址而不是此伺服器的位址來顯示此頁面。"
@@ -14737,6 +14945,32 @@ msgstr "已跳過或失敗"
 #: src/features/status/Notices.tsx
 msgid "Skipped: {0}"
 msgstr "已跳過:{0}"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/inbox/SourceFilter.tsx
+msgid "SLA"
+msgstr "SLA"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA · {policyName}"
+msgstr "SLA · {policyName}"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met"
+msgstr "SLA 已達成"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met / breached"
+msgstr "SLA 已達成 / 已違反"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "SLA policies"
+msgstr "SLA 政策"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA targets (W)"
+msgstr "SLA 目標 (W)"
 
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -15116,6 +15350,10 @@ msgstr "停止簽名"
 msgid "Stop taking new subscribers. Records and past reports stay, and you can restore it."
 msgstr "停止接受新訂閱者。記錄與過往報告會保留，你可以還原該清單。"
 
+#: src/components/common/SlaBadge.tsx
+msgid "Stopped"
+msgstr "已停止"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "儲存"
@@ -15310,6 +15548,14 @@ msgstr "重新接受訂閱，並讓清單回到群發的對象選擇中。"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Taking the recipients: {prepared} so far"
 msgstr "正在確定收件人:目前 {prepared} 位"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets"
+msgstr "目標"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
+msgstr "目標依對話所在收件匣的工作時間和時區計算。留空表示不追蹤該目標；至少需要一個。"
 
 #: src/features/status/text.tsx
 msgid "TCP"
@@ -17266,6 +17512,10 @@ msgstr "取消關注"
 msgid "Unfollowed"
 msgstr "已取消關注"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Unit"
+msgstr "單位"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
 msgstr "未知裝置"
@@ -17929,6 +18179,14 @@ msgstr "自 {at} 起等待"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Warn about the certificate"
 msgstr "憑證提醒"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Warn before it is due"
+msgstr "到期前提醒"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Was due {at}"
+msgstr "到期時間是 {at}"
 
 #: src/features/setup/previews.tsx
 msgid "Was this page helpful?"

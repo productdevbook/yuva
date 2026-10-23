@@ -27,7 +27,16 @@ type GroupId =
   | "issues"
 
 const GROUPS: [GroupId, WebhookEventType[]][] = [
-  ["conversations", ["conversation.created", "conversation.updated", "conversation.rated"]],
+  [
+    "conversations",
+    [
+      "conversation.created",
+      "conversation.updated",
+      "conversation.rated",
+      "conversation.sla_warning",
+      "conversation.sla_breached",
+    ],
+  ],
   ["messages", ["message.created"]],
   ["feedback", ["feedback.created"]],
   ["contacts", ["contact.updated", "contact.deleted"]],

@@ -277,6 +277,10 @@ msgstr "{count, plural, =0 {대화 없음} other {대화 #개}}"
 msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, other {브랜드 #개}}"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "{count, plural, one {# condition} other {# conditions}}"
+msgstr "{count, plural, other {조건 #개}}"
+
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
@@ -466,6 +470,10 @@ msgstr "{inboxName}에는 {address}용 이메일 채널이 아직 없습니다. 
 msgid "{incoming} received, {outgoing} sent"
 msgstr "받은 메일 {incoming}개, 보낸 메일 {outgoing}개"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "{left} left when it resumes"
+msgstr "재개하면 {left} 남음"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "{listName} is ready"
 msgstr "{listName}이(가) 준비되었습니다"
@@ -473,6 +481,10 @@ msgstr "{listName}이(가) 준비되었습니다"
 #: src/features/home/PropertyCard.tsx
 msgid "{liveText} in the last 30 minutes"
 msgstr "최근 30분간 {liveText}"
+
+#: src/features/reports/ReportPages.tsx
+msgid "{met} met, {breached} breached"
+msgstr "충족 {met}건, 위반 {breached}건"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
@@ -1131,6 +1143,10 @@ msgstr "나에게 배정된 대화"
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "마지막 업데이트가 범위 안에 있는 대화는 통째로 가져옵니다."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
+msgstr "입력한 모든 행과 일치하는 대화가 대상입니다. 빈 행은 모든 것과 일치합니다."
+
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "대화가 시작되었을 때"
@@ -1332,6 +1348,10 @@ msgstr "각 구성 요소 옆의 백분율."
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A policy that is off applies to nothing."
+msgstr "꺼진 정책은 아무것에도 적용되지 않습니다."
+
 #: src/components/common/text.ts
 msgid "A property can have at most 1,000 notes. Delete old ones first."
 msgstr "속성 하나에는 메모를 최대 1,000개까지 둘 수 있습니다. 오래된 메모를 먼저 삭제하세요."
@@ -1476,6 +1496,10 @@ msgstr "'새 소식' 항목의 게시가 취소되었습니다"
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "1에서 10,000,000 사이의 정수"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 SLA policies. Delete one first."
+msgstr "워크스페이스에는 SLA 정책을 최대 100개까지 만들 수 있습니다. 먼저 하나를 삭제하세요."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "A workspace holds your team, inboxes and conversations. You are its owner and can invite others later."
@@ -2268,6 +2292,16 @@ msgstr "소유자 또는 관리자는 봇 발송 허용으로 어시스턴트가
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "레코드를 게시하면 소유자 또는 관리자가 서명을 켭니다."
 
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target is due soon"
+msgstr "SLA 목표가 곧 기한입니다"
+
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target was breached"
+msgstr "SLA 목표를 위반했습니다"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
 msgstr "업로드가 중간에 끊겼습니다. {count}개 부분, {size}이(가) 이미 서버에 있습니다."
@@ -2431,6 +2465,14 @@ msgstr "모든 필드"
 msgid "Any label"
 msgstr "모든 레이블"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Any of the labels you pick."
+msgstr "선택한 라벨 중 하나."
+
+#: src/features/inbox/SourceFilter.tsx
+msgid "Any state"
+msgstr "모든 상태"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "모든 팀"
@@ -2527,6 +2569,10 @@ msgstr "모양"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Application (client) ID"
 msgstr "애플리케이션(클라이언트) ID"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Applies to"
+msgstr "적용 대상"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "Applies to the next mail."
@@ -3066,6 +3112,14 @@ msgstr "반송됨: {0}"
 msgid "Brands"
 msgstr "브랜드"
 
+#: src/components/common/SlaBadge.tsx
+msgid "Breached"
+msgstr "위반"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Breached, met late at {at}"
+msgstr "위반, {at}에 늦게 충족"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
 msgstr "Gmail, Yandex 또는 모든 IMAP 서버에서 메일함 기록 가져오기"
@@ -3416,6 +3470,7 @@ msgstr "채널 설정"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Channels"
 msgstr "채널"
 
@@ -3759,6 +3814,10 @@ msgstr "검색 닫기(Esc)"
 #: src/features/reports/ReportPages.tsx
 msgid "Closed"
 msgstr "종료됨"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Closed before a reply"
+msgstr "답변 전에 종료됨"
 
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Leave empty to keep everything."
@@ -4280,6 +4339,10 @@ msgstr "가져온 뒤 아무도 답하지 않은 대화는 삭제됩니다. {pro
 msgid "conversations started"
 msgstr "시작된 대화"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Conversations that follow it lose their SLA unless another policy matches. This cannot be undone."
+msgstr "이 정책을 따르던 대화는 다른 정책이 일치하지 않으면 SLA를 잃습니다. 이 작업은 되돌릴 수 없습니다."
+
 #: src/features/settings/channels/sections.tsx
 msgid "Conversations that started on it keep their messages."
 msgstr "이 채널에서 시작된 대화는 메시지가 유지됩니다."
@@ -4498,6 +4561,10 @@ msgstr "키 만들기"
 #: src/features/setup/NewsletterStep.tsx
 msgid "Create list"
 msgstr "리스트 만들기"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Create policy"
+msgstr "정책 만들기"
 
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
@@ -4720,6 +4787,7 @@ msgstr "성능 저하"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4841,6 +4909,10 @@ msgstr "모니터 삭제"
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the OAuth client you created for Yuva"
 msgstr "Yuva용으로 만든 OAuth 클라이언트 삭제"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Delete the policy {name}?"
+msgstr "{name} 정책을 삭제할까요?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
@@ -5392,6 +5464,18 @@ msgstr "파일을 놓아 답장에 첨부하세요"
 msgid "Dry run"
 msgstr "테스트 실행"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "Due {at}"
+msgstr "기한 {at}"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Due first"
+msgstr "기한이 빠른 순"
+
+#: src/components/common/SlaBadge.tsx
+msgid "Due soon"
+msgstr "곧 기한"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Duplicate the selected block"
 msgstr "선택한 블록 복제"
@@ -5543,6 +5627,7 @@ msgstr "각각 모든 메시지와 메모 포함"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5602,6 +5687,10 @@ msgstr "매크로 편집"
 msgid "Edit monitor"
 msgstr "모니터 편집"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Edit policy"
+msgstr "정책 편집"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "팀 편집"
@@ -5660,6 +5749,10 @@ msgstr "이모지"
 #: src/features/broadcasts/Import.tsx
 msgid "Empty in the first rows"
 msgstr "첫 행이 비어 있음"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Enabled"
+msgstr "사용"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5798,6 +5891,10 @@ msgstr "최근 30일의 모든 비트, 누락된 비트, 보낸 상태를 최신
 #: src/features/status/MonitorChecks.tsx
 msgid "Every check of the last 30 days, newest first."
 msgstr "최근 30일의 모든 확인, 최신순입니다."
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Every conversation"
+msgstr "모든 대화"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -6145,8 +6242,8 @@ msgid "Filter by team"
 msgstr "팀으로 필터"
 
 #: src/features/inbox/SourceFilter.tsx
-msgid "Filter by type, site and broadcast"
-msgstr "유형, 사이트, 일괄 발송별로 필터"
+msgid "Filter by type, site, broadcast and SLA"
+msgstr "유형, 사이트, 발송, SLA로 필터링"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -6218,10 +6315,16 @@ msgstr "이름"
 msgid "first reply"
 msgstr "첫 답장"
 
+#: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "첫 답장"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "First reply {first}"
+msgstr "첫 답변 {first}"
 
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
@@ -6303,6 +6406,10 @@ msgstr "자동 메시지용"
 #: src/features/setup/NameStep.tsx
 msgid "For business hours"
 msgstr "영업 시간용"
+
+#: src/features/settings/notifications/events.ts
+msgid "For conversations assigned to me, or to my team when nobody is assigned."
+msgstr "나에게 배정된 대화, 또는 아무도 배정되지 않은 경우 내 팀의 대화에 해당합니다."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "For developers"
@@ -6461,6 +6568,18 @@ msgstr "보낸 주소(선택)"
 #: src/features/migrations/parts.tsx
 msgid "From blocked contacts"
 msgstr "차단된 연락처에서"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From each later contact message to the reply."
+msgstr "연락처의 이후 메시지마다 답변까지."
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the contact's first message to the first public reply."
+msgstr "연락처의 첫 메시지부터 첫 공개 답변까지."
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the start of the conversation to its first close."
+msgstr "대화 시작부터 첫 종료까지."
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "From the terminal"
@@ -6891,6 +7010,10 @@ msgstr "호스트 이름"
 msgid "Hostname and certificate"
 msgstr "호스트 이름 및 인증서"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "hours"
+msgstr "시간"
+
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "운영 시간"
@@ -7308,6 +7431,7 @@ msgstr "{name}의 받은 편지함"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
@@ -7763,6 +7887,7 @@ msgstr "레이블만: 메일은 전체 메일에서 가져오고 대화에 레�
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Labels"
 msgstr "레이블"
 
@@ -8740,6 +8865,14 @@ msgstr "보낸 메시지"
 msgid "Messages the key sends show its bot name and picture."
 msgstr "키가 보내는 메시지에는 봇 이름과 사진이 표시됩니다."
 
+#: src/components/common/SlaBadge.tsx
+msgid "Met"
+msgstr "충족"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Met {at}"
+msgstr "{at}에 충족"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Metadata"
 msgstr "Metadata"
@@ -8803,6 +8936,14 @@ msgstr "내 것"
 #: src/features/status/text.tsx
 msgid "Minor"
 msgstr "작음"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "minutes"
+msgstr "분"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Minutes before a due time. 0 sends no warning."
+msgstr "기한 몇 분 전에 알릴지 정합니다. 0이면 경고를 보내지 않습니다."
 
 #: src/features/status/text.tsx
 msgid "Missed beat"
@@ -8913,12 +9054,17 @@ msgstr "투표가 많은 순"
 msgid "Move {0} to the Trash?"
 msgstr "{0}개를 휴지통으로 이동할까요?"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Move {name}. Drag, or press Alt with the arrow keys."
+msgstr "{name} 이동. 드래그하거나 Alt 키와 화살표 키를 누르세요."
+
 #: src/components/common/text.ts
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "대화를 휴지통으로 이동하고, 복원하고, 휴지통 읽기"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "아래로 이동"
@@ -9018,6 +9164,7 @@ msgstr "Yuva로 옮기기"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "위로 이동"
@@ -9084,6 +9231,7 @@ msgstr "내 팀"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -9389,6 +9537,11 @@ msgstr "새 페이지"
 msgid "New password"
 msgstr "새 비밀번호"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/SlaPage.tsx
+msgid "New policy"
+msgstr "새 정책"
+
 #: src/features/account/AccountPage.tsx
 msgid "New reply in <0>{title}</0>"
 msgstr "<0>{title}</0>에 새 답글"
@@ -9481,6 +9634,15 @@ msgstr "다음 확인: {next}."
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "다음 메일은 {local}({utc} UTC)에 이 일괄 발송의 속도로 나갑니다."
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Next reply"
+msgstr "다음 답변"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Next reply {next}"
+msgstr "다음 답변 {next}"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
@@ -9917,6 +10079,10 @@ msgstr "아직 페이지가 없습니다"
 msgid "No pending invites."
 msgstr "대기 중인 초대가 없습니다."
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "No policies yet."
+msgstr "아직 정책이 없습니다."
+
 #: src/features/settings/ProductsPage.tsx
 msgid "No products yet"
 msgstr "아직 제품이 없습니다"
@@ -10009,6 +10175,10 @@ msgstr "아직 구독자가 없습니다. 방문자가 상태 페이지에서 �
 #: src/features/migrations/ChooseStep.tsx
 msgid "No support address"
 msgstr "지원 주소 없음"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "No target has started yet."
+msgstr "시작된 목표가 아직 없습니다."
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "No team"
@@ -10306,6 +10476,10 @@ msgstr "다른 사람"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "1분이 지나도 오지 않나요? 스팸 또는 정크 폴더를 확인하거나 아래에서 새 코드를 보내세요."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Not tracked"
+msgstr "추적 안 함"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Not uploaded yet"
 msgstr "아직 업로드하지 않음"
@@ -10533,6 +10707,7 @@ msgstr "꺼짐"
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "Off"
 msgstr "끔"
@@ -10645,6 +10820,10 @@ msgstr "Team 및 Enterprise 요금제에서는 소유자가 <0>조직 설정 ›
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "On the web"
 msgstr "웹에서"
+
+#: src/components/common/SlaBadge.tsx
+msgid "On track"
+msgstr "순조로움"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Once a test message arrives, Yuva waits {hours} hours. If nothing reaches only {provider} in that time, the migration finishes on its own. You can also finish it yourself."
@@ -11485,6 +11664,7 @@ msgid "Pause or resume the monitor"
 msgstr "모니터 일시 중지 또는 재개"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
 #: src/features/migrations/text.ts
 #: src/features/settings/channels/ChannelState.tsx
@@ -12021,8 +12201,13 @@ msgstr "이전 스크린샷"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
 msgstr "우선순위"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Priority customers"
+msgstr "우선 고객"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Priority set to {level}"
@@ -12971,6 +13156,14 @@ msgstr "답장 (R)"
 msgid "Reply account"
 msgstr "답장 계정"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
+msgstr "정책이 일치하는 대화의 답변 및 해결 목표입니다. 대화에 일치하는 첫 번째 사용 중인 정책이 적용되므로 가장 구체적인 정책을 위에 두세요. 목표는 각 받은편지함의 업무 시간으로 계산됩니다."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Reply and resolution targets with due times"
+msgstr "기한이 있는 답변 및 해결 목표"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Reply and resolve"
 msgstr "답장하고 해결"
@@ -13103,6 +13296,15 @@ msgstr "Yuva에 준 API 키 재설정"
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
 msgstr "기본값으로 재설정"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Resolution"
+msgstr "해결"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Resolution {resolution}"
+msgstr "해결 {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13426,6 +13628,7 @@ msgstr "토요일"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
@@ -14392,6 +14595,11 @@ msgstr "미리 보기 표시"
 msgid "Show the reply time"
 msgstr "답장 시간 표시"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Show the SLA targets"
+msgstr "SLA 목표 표시"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "이 페이지를 이 서버의 주소 대신 직접 보유한 주소로 표시합니다."
@@ -14737,6 +14945,32 @@ msgstr "건너뜀 또는 실패"
 #: src/features/status/Notices.tsx
 msgid "Skipped: {0}"
 msgstr "건너뜀: {0}"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/inbox/SourceFilter.tsx
+msgid "SLA"
+msgstr "SLA"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA · {policyName}"
+msgstr "SLA · {policyName}"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met"
+msgstr "SLA 충족"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met / breached"
+msgstr "SLA 충족 / 위반"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "SLA policies"
+msgstr "SLA 정책"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA targets (W)"
+msgstr "SLA 목표 (W)"
 
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -15116,6 +15350,10 @@ msgstr "서명 중지"
 msgid "Stop taking new subscribers. Records and past reports stay, and you can restore it."
 msgstr "새 구독자 받기를 중단합니다. 기록과 지난 보고서는 남고 목록은 복원할 수 있습니다."
 
+#: src/components/common/SlaBadge.tsx
+msgid "Stopped"
+msgstr "중지됨"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "저장소"
@@ -15310,6 +15548,14 @@ msgstr "다시 가입을 받고 목록을 발송 대상 선택에 되돌립니�
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Taking the recipients: {prepared} so far"
 msgstr "수신자를 확정하는 중: 지금까지 {prepared}명"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets"
+msgstr "목표"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
+msgstr "목표는 대화의 받은편지함 업무 시간과 시간대로 계산됩니다. 추적하지 않을 목표는 비워 두세요. 최소 하나는 필요합니다."
 
 #: src/features/status/text.tsx
 msgid "TCP"
@@ -17266,6 +17512,10 @@ msgstr "팔로우 취소"
 msgid "Unfollowed"
 msgstr "팔로우를 취소했습니다"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Unit"
+msgstr "단위"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
 msgstr "알 수 없는 기기"
@@ -17929,6 +18179,14 @@ msgstr "{at}부터 대기 중"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Warn about the certificate"
 msgstr "인증서에 대해 경고"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Warn before it is due"
+msgstr "기한 전에 경고"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Was due {at}"
+msgstr "기한은 {at}였습니다"
 
 #: src/features/setup/previews.tsx
 msgid "Was this page helpful?"

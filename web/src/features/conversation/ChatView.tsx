@@ -64,6 +64,7 @@ import type { ThreadContext } from "@/features/conversation/messages/context"
 import { foldText, quoteOf } from "@/features/conversation/messages/MessageActions"
 import { Thread } from "@/features/conversation/messages/Thread"
 import { Status, Watchers } from "@/features/conversation/ConversationStatus"
+import { SlaPopover } from "@/features/conversation/SlaPopover"
 import {
   useConversation,
   useMarkRead,
@@ -456,6 +457,7 @@ function Loaded({
       )
     },
     progress: () => c.kind === "feedback" && setMenu("progress"),
+    sla: () => c.sla && setMenu("sla"),
     close: () => (c.status === "closed" ? actions.reopen() : actions.close()),
     contact: togglePanel,
     more: () => setMoreOpen(true),
@@ -491,6 +493,7 @@ function Loaded({
           [SHORTCUTS.labels]: handlers.labels,
           [SHORTCUTS.fields]: handlers.fields,
           [SHORTCUTS.progress]: handlers.progress,
+          [SHORTCUTS.sla]: handlers.sla,
           [SHORTCUTS.close]: handlers.close,
           [SHORTCUTS.leave]: () => showCollision && leaveTo(),
           [SHORTCUTS.history]: handlers.history,
@@ -657,6 +660,7 @@ function Loaded({
                 </Button>
               )}
               <SnoozeMenu name={name} actions={actions} open={menu === "snooze"} onOpenChange={openMenu("snooze")} />
+              <SlaPopover c={c} open={menu === "sla"} onOpenChange={openMenu("sla")} />
               {c.kind === "feedback" && (
                 <ProgressMenu c={c} update={update} open={menu === "progress"} onOpenChange={openMenu("progress")} />
               )}

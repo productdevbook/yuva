@@ -4,9 +4,18 @@ import { SettingsStrip } from "@/components/common/SettingsStrip"
 import { useMigrations } from "@/features/migrations/queries"
 import { PageHeader, PageTabs } from "@/features/settings/ui"
 import { useSession } from "@/lib/session"
-import { useCannedReplies, useCustomFields, useLabels, useMacros, useTeams } from "@/lib/workspace"
+import { useCannedReplies, useCustomFields, useLabels, useMacros, useSlaPolicies, useTeams } from "@/lib/workspace"
 
-type Tab = "workspace" | "labels" | "canned-replies" | "macros" | "teams" | "fields" | "migrations" | "audit-log"
+type Tab =
+  | "workspace"
+  | "labels"
+  | "canned-replies"
+  | "macros"
+  | "teams"
+  | "fields"
+  | "sla"
+  | "migrations"
+  | "audit-log"
 
 export function GeneralTabs({ current }: { current: Tab }) {
   const { t } = useLingui()
@@ -16,6 +25,7 @@ export function GeneralTabs({ current }: { current: Tab }) {
   const macros = useMacros().data
   const teams = useTeams().data
   const fields = useCustomFields().data
+  const sla = useSlaPolicies().data
   const moves = useMigrations().data?.pages[0]?.items
   return (
     <PageTabs
@@ -59,6 +69,13 @@ export function GeneralTabs({ current }: { current: Tab }) {
                 label: t`Custom fields`,
                 count: fields?.length,
                 testId: "general-tab-fields",
+              },
+              {
+                key: "sla",
+                to: "/settings/sla",
+                label: t`SLA policies`,
+                count: sla?.length,
+                testId: "general-tab-sla",
               },
               {
                 key: "migrations",

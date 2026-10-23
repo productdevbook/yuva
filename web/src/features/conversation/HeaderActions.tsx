@@ -29,7 +29,7 @@ import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useAssignableMembers, useTeams } from "@/lib/workspace"
 
-export type HeaderMenu = "snooze" | "hand" | "team" | "progress" | null
+export type HeaderMenu = "snooze" | "hand" | "team" | "progress" | "sla" | null
 
 function useSnoozeTimes() {
   const { t, i18n } = useLingui()

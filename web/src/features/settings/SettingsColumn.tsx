@@ -13,6 +13,7 @@ import {
   PlusIcon,
   QuoteIcon,
   TextCursorInputIcon,
+  TimerIcon,
   UsersRoundIcon,
   ZapIcon,
   ScrollTextIcon,
@@ -38,6 +39,7 @@ import {
   useLabels,
   useMacros,
   useMembers,
+  useSlaPolicies,
   useTeams,
 } from "@/lib/workspace"
 
@@ -127,6 +129,7 @@ export function SettingsColumn() {
   const macros = useMacros().data
   const teams = useTeams().data
   const fields = useCustomFields().data
+  const sla = useSlaPolicies().data
   const apiKeys = useQuery({
     queryKey: keys.apiKeys(ws),
     queryFn: () => unwrap(api.GET("/v1/api-keys")).then((r) => r.items),
@@ -227,6 +230,17 @@ export function SettingsColumn() {
             <RowText
               title={<Trans>Custom fields</Trans>}
               detail={<Trans>Typed values on conversations and contacts</Trans>}
+            />
+          </NavRow>
+        )}
+        {canManage && (
+          <NavRow to="/settings/sla" value={list(sla?.length)}>
+            <RowIcon>
+              <TimerIcon />
+            </RowIcon>
+            <RowText
+              title={<Trans>SLA policies</Trans>}
+              detail={<Trans>Reply and resolution targets with due times</Trans>}
             />
           </NavRow>
         )}

@@ -277,6 +277,10 @@ msgstr "{count, plural, =0 {Nema razgovora} one {# razgovor} few {# razgovora} o
 msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, one {# marka} few {# marke} other {# marki}}"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "{count, plural, one {# condition} other {# conditions}}"
+msgstr "{count, plural, one {# uvjet} few {# uvjeta} other {# uvjeta}}"
+
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
@@ -466,6 +470,10 @@ msgstr "Pretinac {inboxName} još nema e-poštni kanal za {address}. Povijest se
 msgid "{incoming} received, {outgoing} sent"
 msgstr "Primljeno: {incoming}, poslano: {outgoing}"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "{left} left when it resumes"
+msgstr "Preostaje {left} nakon nastavka"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "{listName} is ready"
 msgstr "{listName} je spreman"
@@ -473,6 +481,10 @@ msgstr "{listName} je spreman"
 #: src/features/home/PropertyCard.tsx
 msgid "{liveText} in the last 30 minutes"
 msgstr "{liveText} u zadnjih 30 minuta"
+
+#: src/features/reports/ReportPages.tsx
+msgid "{met} met, {breached} breached"
+msgstr "{met} ispunjeno, {breached} prekršeno"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
@@ -1131,6 +1143,10 @@ msgstr "Razgovor je dodijeljen meni"
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "Razgovor se uzima cijeli kad je zadnji put ažuriran u rasponu."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
+msgstr "Razgovor mora odgovarati svakom ispunjenom retku. Prazan redak odgovara svemu."
+
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "Razgovor je započeo"
@@ -1332,6 +1348,10 @@ msgstr "Postotak pored svake komponente."
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A policy that is off applies to nothing."
+msgstr "Isključeno pravilo ne vrijedi ni za što."
+
 #: src/components/common/text.ts
 msgid "A property can have at most 1,000 notes. Delete old ones first."
 msgstr "Svojstvo može imati najviše 1000 bilješki. Prvo izbrišite stare."
@@ -1476,6 +1496,10 @@ msgstr "Povučen je unos iz Što je novo"
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "Cijeli broj od 1 do 10.000.000"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 SLA policies. Delete one first."
+msgstr "Radni prostor ima najviše 100 SLA pravila. Najprije izbrišite jedno."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "A workspace holds your team, inboxes and conversations. You are its owner and can invite others later."
@@ -2268,6 +2292,16 @@ msgstr "Vlasnik ili administrator može dopustiti asistentima da šalju sami opc
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "Vlasnik ili administrator uključuje potpisivanje nakon što je zapis objavljen."
 
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target is due soon"
+msgstr "Cilj SLA uskoro istječe"
+
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target was breached"
+msgstr "Cilj SLA je prekršen"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
 msgstr "Prijenos je prekinut: {count} dijelova, {size}, već je na poslužitelju."
@@ -2431,6 +2465,14 @@ msgstr "Bilo koje polje"
 msgid "Any label"
 msgstr "Bilo koja oznaka"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Any of the labels you pick."
+msgstr "Bilo koja od odabranih oznaka."
+
+#: src/features/inbox/SourceFilter.tsx
+msgid "Any state"
+msgstr "Bilo koje stanje"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "Bilo koji tim"
@@ -2527,6 +2569,10 @@ msgstr "Izgled"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Application (client) ID"
 msgstr "ID aplikacije (klijenta)"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Applies to"
+msgstr "Vrijedi za"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "Applies to the next mail."
@@ -3066,6 +3112,14 @@ msgstr "Vraćeno: {0}"
 msgid "Brands"
 msgstr "Marke"
 
+#: src/components/common/SlaBadge.tsx
+msgid "Breached"
+msgstr "Prekršeno"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Breached, met late at {at}"
+msgstr "Prekršeno, kasno ispunjeno u {at}"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
 msgstr "Prenesite povijest pretinca iz Gmaila, Yandexa ili bilo kojeg IMAP poslužitelja"
@@ -3416,6 +3470,7 @@ msgstr "Postavke kanala"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Channels"
 msgstr "Kanali"
 
@@ -3759,6 +3814,10 @@ msgstr "Zatvori pretragu (Esc)"
 #: src/features/reports/ReportPages.tsx
 msgid "Closed"
 msgstr "Zatvoreno"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Closed before a reply"
+msgstr "Zatvoreno prije odgovora"
 
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Leave empty to keep everything."
@@ -4280,6 +4339,10 @@ msgstr "Razgovori u koje nitko nije pisao nakon uvoza bit će izbrisani. U {prov
 msgid "conversations started"
 msgstr "započeti razgovori"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Conversations that follow it lose their SLA unless another policy matches. This cannot be undone."
+msgstr "Razgovori koji ga slijede gube SLA ako ne odgovara neko drugo pravilo. To se ne može poništiti."
+
 #: src/features/settings/channels/sections.tsx
 msgid "Conversations that started on it keep their messages."
 msgstr "Razgovori koji su na njemu započeli zadržavaju svoje poruke."
@@ -4498,6 +4561,10 @@ msgstr "Izradi ključ"
 #: src/features/setup/NewsletterStep.tsx
 msgid "Create list"
 msgstr "Izradi popis"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Create policy"
+msgstr "Izradi pravilo"
 
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
@@ -4720,6 +4787,7 @@ msgstr "Smanjena učinkovitost"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4841,6 +4909,10 @@ msgstr "Izbriši monitor"
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the OAuth client you created for Yuva"
 msgstr "Izbrišite OAuth klijenta kojeg ste izradili za Yuvu"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Delete the policy {name}?"
+msgstr "Izbrisati pravilo {name}?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
@@ -5392,6 +5464,18 @@ msgstr "Ispustite datoteke da ih priložite odgovoru"
 msgid "Dry run"
 msgstr "Probno pokretanje"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "Due {at}"
+msgstr "Rok {at}"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Due first"
+msgstr "Najprije najbliži rok"
+
+#: src/components/common/SlaBadge.tsx
+msgid "Due soon"
+msgstr "Uskoro istječe"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Duplicate the selected block"
 msgstr "Dupliciraj odabrani blok"
@@ -5543,6 +5627,7 @@ msgstr "Svaki sa svim svojim porukama i bilješkama"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5602,6 +5687,10 @@ msgstr "Uredi makro"
 msgid "Edit monitor"
 msgstr "Uredi monitor"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Edit policy"
+msgstr "Uredi pravilo"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Uredi tim"
@@ -5660,6 +5749,10 @@ msgstr "Emoji"
 #: src/features/broadcasts/Import.tsx
 msgid "Empty in the first rows"
 msgstr "Prazno u prvim recima"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Enabled"
+msgstr "Uključeno"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5798,6 +5891,10 @@ msgstr "Svaki signal, propušteni signal i poslano stanje u zadnjih 30 dana, naj
 #: src/features/status/MonitorChecks.tsx
 msgid "Every check of the last 30 days, newest first."
 msgstr "Svaka provjera u posljednjih 30 dana, najnovija prva."
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Every conversation"
+msgstr "Svaki razgovor"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -6145,8 +6242,8 @@ msgid "Filter by team"
 msgstr "Filtriraj po timu"
 
 #: src/features/inbox/SourceFilter.tsx
-msgid "Filter by type, site and broadcast"
-msgstr "Filtriraj po vrsti, web-mjestu i masovnoj poruci"
+msgid "Filter by type, site, broadcast and SLA"
+msgstr "Filtriraj po vrsti, web-mjestu, slanju i SLA"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -6218,10 +6315,16 @@ msgstr "Ime"
 msgid "first reply"
 msgstr "prvi odgovor"
 
+#: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "Prvi odgovor"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "First reply {first}"
+msgstr "Prvi odgovor {first}"
 
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
@@ -6303,6 +6406,10 @@ msgstr "Za automatske poruke"
 #: src/features/setup/NameStep.tsx
 msgid "For business hours"
 msgstr "Za radno vrijeme"
+
+#: src/features/settings/notifications/events.ts
+msgid "For conversations assigned to me, or to my team when nobody is assigned."
+msgstr "Za razgovore dodijeljene meni ili mojem timu kad nitko nije dodijeljen."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "For developers"
@@ -6461,6 +6568,18 @@ msgstr "Adresa pošiljatelja (neobavezno)"
 #: src/features/migrations/parts.tsx
 msgid "From blocked contacts"
 msgstr "Od blokiranih kontakata"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From each later contact message to the reply."
+msgstr "Od svake kasnije poruke kontakta do odgovora."
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the contact's first message to the first public reply."
+msgstr "Od prve poruke kontakta do prvog javnog odgovora."
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the start of the conversation to its first close."
+msgstr "Od početka razgovora do njegova prvog zatvaranja."
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "From the terminal"
@@ -6891,6 +7010,10 @@ msgstr "Naziv hosta"
 msgid "Hostname and certificate"
 msgstr "Naziv hosta i certifikat"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "hours"
+msgstr "sati"
+
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "Radno vrijeme"
@@ -7308,6 +7431,7 @@ msgstr "Pretinac za {name}"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
@@ -7763,6 +7887,7 @@ msgstr "Samo oznaka: njegova pošta dolazi iz Sve pošte, a njegovi razgovori do
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Labels"
 msgstr "Oznake"
 
@@ -8740,6 +8865,14 @@ msgstr "poslanih poruka"
 msgid "Messages the key sends show its bot name and picture."
 msgstr "Poruke koje ključ šalje prikazuju ime i sliku njegova bota."
 
+#: src/components/common/SlaBadge.tsx
+msgid "Met"
+msgstr "Ispunjeno"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Met {at}"
+msgstr "Ispunjeno {at}"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Metadata"
 msgstr "Metadata"
@@ -8803,6 +8936,14 @@ msgstr "Moji"
 #: src/features/status/text.tsx
 msgid "Minor"
 msgstr "Malen"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "minutes"
+msgstr "minute"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Minutes before a due time. 0 sends no warning."
+msgstr "Minute prije roka. 0 ne šalje upozorenje."
 
 #: src/features/status/text.tsx
 msgid "Missed beat"
@@ -8913,12 +9054,17 @@ msgstr "Najviše glasova"
 msgid "Move {0} to the Trash?"
 msgstr "Premjestiti u smeće: {0}?"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Move {name}. Drag, or press Alt with the arrow keys."
+msgstr "Premjesti {name}. Povucite ili pritisnite Alt sa strelicama."
+
 #: src/components/common/text.ts
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Premještanje razgovora u smeće, njihovo vraćanje i čitanje smeća"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "Pomakni dolje"
@@ -9018,6 +9164,7 @@ msgstr "Prijeđite na Yuvu"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "Pomakni gore"
@@ -9084,6 +9231,7 @@ msgstr "Moji timovi"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -9389,6 +9537,11 @@ msgstr "Nova stranica"
 msgid "New password"
 msgstr "Nova lozinka"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/SlaPage.tsx
+msgid "New policy"
+msgstr "Novo pravilo"
+
 #: src/features/account/AccountPage.tsx
 msgid "New reply in <0>{title}</0>"
 msgstr "Novi odgovor u <0>{title}</0>"
@@ -9481,6 +9634,15 @@ msgstr "Sljedeća provjera {next}."
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Sljedeća poruka {local} ({utc} UTC), tempom ove masovne poruke."
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Next reply"
+msgstr "Sljedeći odgovor"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Next reply {next}"
+msgstr "Sljedeći odgovor {next}"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
@@ -9917,6 +10079,10 @@ msgstr "Još nema stranica"
 msgid "No pending invites."
 msgstr "Nema pozivnica na čekanju."
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "No policies yet."
+msgstr "Još nema pravila."
+
 #: src/features/settings/ProductsPage.tsx
 msgid "No products yet"
 msgstr "Još nema proizvoda"
@@ -10009,6 +10175,10 @@ msgstr "Još nema pretplatnika. Posjetitelji se pretplaćuju na stranici statusa
 #: src/features/migrations/ChooseStep.tsx
 msgid "No support address"
 msgstr "Nema adrese podrške"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "No target has started yet."
+msgstr "Nijedan cilj još nije počeo."
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "No team"
@@ -10306,6 +10476,10 @@ msgstr "Nije isto"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "Nije stiglo nakon minute? Pogledajte u mapi neželjene pošte ili ispod zatražite novi kôd."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Not tracked"
+msgstr "Ne prati se"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Not uploaded yet"
 msgstr "Još nije učitano"
@@ -10533,6 +10707,7 @@ msgstr "isključeno"
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "Off"
 msgstr "Isključeno"
@@ -10645,6 +10820,10 @@ msgstr "U paketima Team i Enterprise vlasnik je dodaje jednom u <0>Organization 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "On the web"
 msgstr "Na webu"
+
+#: src/components/common/SlaBadge.tsx
+msgid "On track"
+msgstr "Na vrijeme"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Once a test message arrives, Yuva waits {hours} hours. If nothing reaches only {provider} in that time, the migration finishes on its own. You can also finish it yourself."
@@ -11485,6 +11664,7 @@ msgid "Pause or resume the monitor"
 msgstr "Pauziraj ili nastavi monitor"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
 #: src/features/migrations/text.ts
 #: src/features/settings/channels/ChannelState.tsx
@@ -12021,8 +12201,13 @@ msgstr "Prethodna snimka zaslona"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
 msgstr "Prioritet"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Priority customers"
+msgstr "Prioritetni korisnici"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Priority set to {level}"
@@ -12971,6 +13156,14 @@ msgstr "Odgovori (R)"
 msgid "Reply account"
 msgstr "Račun za odgovore"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
+msgstr "Ciljevi odgovora i rješavanja za razgovore kojima odgovara pravilo. Vrijedi prvo uključeno pravilo koje odgovara razgovoru, pa najspecifičnija držite na vrhu. Ciljevi se broje u radnom vremenu svakog sandučića."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Reply and resolution targets with due times"
+msgstr "Ciljevi odgovora i rješavanja s rokovima"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Reply and resolve"
 msgstr "Odgovori i riješi"
@@ -13103,6 +13296,15 @@ msgstr "Poništite API ključ koji ste dali Yuvi"
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
 msgstr "Vrati na zadano"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Resolution"
+msgstr "Rješenje"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Resolution {resolution}"
+msgstr "Rješenje {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13426,6 +13628,7 @@ msgstr "Subota"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
@@ -14392,6 +14595,11 @@ msgstr "Prikaži pregled"
 msgid "Show the reply time"
 msgstr "Prikaži vrijeme odgovora"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Show the SLA targets"
+msgstr "Prikaži SLA ciljeve"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "Prikažite ovu stranicu na vlastitoj adresi umjesto na adresi ovog poslužitelja."
@@ -14737,6 +14945,32 @@ msgstr "Preskočeno ili neuspjelo"
 #: src/features/status/Notices.tsx
 msgid "Skipped: {0}"
 msgstr "Preskočeno: {0}"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/inbox/SourceFilter.tsx
+msgid "SLA"
+msgstr "SLA"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA · {policyName}"
+msgstr "SLA · {policyName}"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met"
+msgstr "SLA ispunjen"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met / breached"
+msgstr "SLA ispunjen / prekršen"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "SLA policies"
+msgstr "SLA pravila"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA targets (W)"
+msgstr "SLA ciljevi (W)"
 
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -15116,6 +15350,10 @@ msgstr "Prestani potpisivati"
 msgid "Stop taking new subscribers. Records and past reports stay, and you can restore it."
 msgstr "Prestani primati nove pretplatnike. Zapisi i prošla izvješća ostaju, a popis možete vratiti."
 
+#: src/components/common/SlaBadge.tsx
+msgid "Stopped"
+msgstr "Zaustavljeno"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "Pohrana"
@@ -15310,6 +15548,14 @@ msgstr "Opet prima prijave i vraća popis u odabir publike slanja."
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Taking the recipients: {prepared} so far"
 msgstr "Određivanje primatelja: dosad {prepared}"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets"
+msgstr "Ciljevi"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
+msgstr "Ciljevi se broje u radnom vremenu i vremenskoj zoni sandučića razgovora. Jedan ostavite praznim da se ne prati; potreban je barem jedan."
 
 #: src/features/status/text.tsx
 msgid "TCP"
@@ -17266,6 +17512,10 @@ msgstr "Prestani pratiti"
 msgid "Unfollowed"
 msgstr "Praćenje prekinuto"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Unit"
+msgstr "Jedinica"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
 msgstr "Nepoznat uređaj"
@@ -17929,6 +18179,14 @@ msgstr "čeka od {at}"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Warn about the certificate"
 msgstr "Upozori na certifikat"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Warn before it is due"
+msgstr "Upozori prije roka"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Was due {at}"
+msgstr "Rok je istekao {at}"
 
 #: src/features/setup/previews.tsx
 msgid "Was this page helpful?"

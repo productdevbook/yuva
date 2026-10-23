@@ -79,6 +79,7 @@ function useItems(open: boolean): Item[] {
       act("labels", t`Labels`, SHORTCUTS.labels)
       act("fields", t`Edit the custom fields`, SHORTCUTS.fields)
       if (pathname.startsWith("/feedback/")) act("progress", t`Set the feedback progress`, SHORTCUTS.progress)
+      act("sla", t`Show the SLA targets`, SHORTCUTS.sla)
       act("close", t`Close or reopen`, SHORTCUTS.close)
       act("history", t`Other conversations`, SHORTCUTS.history)
       act("contact", t`Contact details`, SHORTCUTS.contact)

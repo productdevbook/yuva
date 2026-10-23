@@ -12,6 +12,7 @@ export type CommandName =
   | "labels"
   | "fields"
   | "progress"
+  | "sla"
   | "close"
   | "contact"
   | "more"

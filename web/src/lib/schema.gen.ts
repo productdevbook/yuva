@@ -1447,6 +1447,104 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/sla-policies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List SLA policies
+         * @description In `position` order. Callers limited to some inboxes (agents, inbox-limited keys) see the
+         *     policies without `inbox_ids` and those naming one of their inboxes; `inbox_ids` lists only
+         *     the inboxes the caller sees.
+         *
+         *     Scope: `inboxes:read`.
+         */
+        get: operations["listSlaPolicies"];
+        put?: never;
+        /**
+         * Create an SLA policy
+         * @description Owners, admins and API keys not limited to inboxes. The policy goes last in the order. A
+         *     workspace holds at most 100 policies (`403 sla_policy_limit`). It applies to a conversation
+         *     without an SLA the next time it changes or gets a message, and to one with an SLA when its
+         *     priority, labels or inbox change.
+         *
+         *     Scope: `inboxes:manage`.
+         */
+        post: operations["createSlaPolicy"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/sla-policies/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Reorder SLA policies
+         * @description Owners, admins and API keys not limited to inboxes. `ids` names every policy of the
+         *     workspace once, in the new order (`400 validation_failed` otherwise).
+         *
+         *     Scope: `inboxes:manage`.
+         */
+        put: operations["orderSlaPolicies"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/sla-policies/{slaPolicyId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get an SLA policy
+         * @description A policy the caller does not see (see `GET /v1/sla-policies`) answers `404`.
+         *
+         *     Scope: `inboxes:read`.
+         */
+        get: operations["getSlaPolicy"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete an SLA policy
+         * @description Owners, admins and API keys not limited to inboxes. The conversations it drives are
+         *     evaluated again at once, as when a policy stops applying (see `PATCH`); the outcomes they
+         *     reached stay in `/v1/stats`.
+         *
+         *     Scope: `inboxes:manage`.
+         */
+        delete: operations["deleteSlaPolicy"];
+        options?: never;
+        head?: never;
+        /**
+         * Update an SLA policy
+         * @description Owners, admins and API keys not limited to inboxes. New minutes apply to targets that
+         *     start afterwards; running targets keep their due times. The conversations it drives are
+         *     evaluated again at once: when it no longer applies to one (turned off, conditions no
+         *     longer met), another matching policy takes over with the business time already used, or the
+         *     conversation loses its SLA (`conversation.updated`); the time while no policy applies does
+         *     not count if one applies again. Conversations it newly matches pick it up as for a new
+         *     policy.
+         *
+         *     Scope: `inboxes:manage`.
+         */
+        patch: operations["updateSlaPolicy"];
+        trace?: never;
+    };
     "/v1/inboxes/{inboxId}/channels": {
         parameters: {
             query?: never;
@@ -1984,7 +2082,7 @@ export interface paths {
         };
         /**
          * List conversations
-         * @description Most recent activity (message or note) first, in the inboxes the caller can see. `q` is a
+         * @description Most recent activity (message or note) first, or by SLA due time (`sort`), in the inboxes the caller can see. `q` is a
          *     full-text search over the subject, the messages and notes, and the contact; a negated term
          *     (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
          *     Conversations in the trash are listed only with `trashed=true`.
@@ -11379,6 +11477,46 @@ export interface webhooks {
         patch?: never;
         trace?: never;
     };
+    "conversation.sla_warning": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * An SLA target is due soon
+         * @description Sent once per target, `warn_minutes` before its due time.
+         */
+        post: operations["webhookConversationSlaWarning"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "conversation.sla_breached": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * An SLA target was breached
+         * @description Sent once per target, when it passes its due time unmet.
+         */
+        post: operations["webhookConversationSlaBreached"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export interface components {
     schemas: {
@@ -12134,6 +12272,8 @@ export interface components {
             message_in_unassigned_conversation: components["schemas"]["NotificationChannels"];
             assigned_to_me: components["schemas"]["NotificationChannels"];
             mentioned: components["schemas"]["NotificationChannels"];
+            sla_warning: components["schemas"]["NotificationChannels"];
+            sla_breached: components["schemas"]["NotificationChannels"];
         };
         /** @description Some events and their channels. */
         NotificationEventsUpdate: {
@@ -12143,6 +12283,8 @@ export interface components {
             message_in_unassigned_conversation?: components["schemas"]["NotificationChannels"];
             assigned_to_me?: components["schemas"]["NotificationChannels"];
             mentioned?: components["schemas"]["NotificationChannels"];
+            sla_warning?: components["schemas"]["NotificationChannels"];
+            sla_breached?: components["schemas"]["NotificationChannels"];
         };
         NotificationSettings: {
             events: components["schemas"]["NotificationEvents"];
@@ -12177,7 +12319,7 @@ export interface components {
              * @description What caused it (see the `notifications` tag), or `test`.
              * @enum {string}
              */
-            event: "new_live_conversation" | "new_async_conversation" | "message_in_my_conversation" | "message_in_unassigned_conversation" | "assigned_to_me" | "mentioned" | "test";
+            event: "new_live_conversation" | "new_async_conversation" | "message_in_my_conversation" | "message_in_unassigned_conversation" | "assigned_to_me" | "mentioned" | "sla_warning" | "sla_breached" | "test";
             /**
              * @description The inbox name and the contact's name.
              * @example Support · Ayşe Yılmaz
@@ -12916,7 +13058,7 @@ export interface components {
             count: number;
         };
         /** @enum {string} */
-        WebhookEventType: "conversation.created" | "conversation.updated" | "conversation.rated" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.created" | "message.redacted" | "feedback.created" | "contact.updated" | "contact.deleted" | "draft.created" | "draft.updated" | "draft.deleted" | "discussion.created" | "discussion.post_created" | "discussion.answered" | "discussion.updated" | "subscription.created" | "subscription.updated" | "broadcast.updated" | "analytics.alert" | "status.component.updated" | "status.incident.created" | "status.incident.updated" | "status.incident.resolved" | "status.monitor.down" | "status.monitor.up" | "help.article.published" | "help.article.unpublished" | "help.article.deleted" | "discussion.stage_changed" | "changelog.entry.published" | "changelog.entry.unpublished" | "changelog.entry.deleted" | "team.created" | "team.updated" | "team.deleted" | "issue_link.created" | "issue_link.updated" | "issue_link.deleted";
+        WebhookEventType: "conversation.created" | "conversation.updated" | "conversation.rated" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.created" | "message.redacted" | "feedback.created" | "contact.updated" | "contact.deleted" | "draft.created" | "draft.updated" | "draft.deleted" | "discussion.created" | "discussion.post_created" | "discussion.answered" | "discussion.updated" | "subscription.created" | "subscription.updated" | "broadcast.updated" | "analytics.alert" | "status.component.updated" | "status.incident.created" | "status.incident.updated" | "status.incident.resolved" | "status.monitor.down" | "status.monitor.up" | "help.article.published" | "help.article.unpublished" | "help.article.deleted" | "discussion.stage_changed" | "changelog.entry.published" | "changelog.entry.unpublished" | "changelog.entry.deleted" | "team.created" | "team.updated" | "team.deleted" | "issue_link.created" | "issue_link.updated" | "issue_link.deleted" | "conversation.sla_warning" | "conversation.sla_breached";
         WebhookEndpoint: {
             /** Format: uuid */
             id: string;
@@ -13229,6 +13371,8 @@ export interface components {
              * @description The assigned team; absent when none. Independent of `assignee_id`.
              */
             team_id?: string;
+            /** @description The SLA policy that applies and its targets; absent when none does. */
+            sla?: components["schemas"]["ConversationSla"];
             /** @description Label ids. */
             labels: string[];
             fields: components["schemas"]["CustomFieldValues"];
@@ -13550,6 +13694,7 @@ export interface components {
             ratings: components["schemas"]["RatingStats"];
             /** @description Per member, by member id. */
             members: components["schemas"]["MemberStats"][];
+            sla: components["schemas"]["SlaStats"];
         };
         /** @description Ratings contacts gave in the window, in total and per inbox (inboxes without any are left out). */
         RatingStats: {
@@ -15713,8 +15858,8 @@ export interface components {
             address: string;
         };
         /**
-         * @description A conversation was created, or its status, snooze, assignee, priority, labels or subject
-         *     changed. `conversation.trashed`: it went to the trash, so drop it from every list but the
+         * @description A conversation was created, or its status, snooze, assignee, priority, labels, subject or
+         *     SLA (`sla`, for example when a target starts, is met or is breached) changed. `conversation.trashed`: it went to the trash, so drop it from every list but the
          *     Trash view; `conversation.restored`: it came back.
          */
         ConversationEvent: {
@@ -16064,6 +16209,224 @@ export interface components {
             data: components["schemas"]["TeamEventData"];
         };
         /**
+         * @description `first_reply`: from the contact's first message to the first public reply of a member or
+         *     bot. `next_reply`: from a contact message that follows a reply to the next reply.
+         *     `resolution`: from the conversation's creation to its first close.
+         * @enum {string}
+         */
+        SlaTargetName: "first_reply" | "next_reply" | "resolution";
+        /**
+         * @description A conversation's SLA at a glance. `breached`: a running target is past its due time (it
+         *     stays `breached` until that target is met, the conversation waits on the contact or
+         *     closes). `due_soon`: the earliest running target is due within the policy's
+         *     `warn_minutes`. `on_track`: it is due later, or no target has started. `paused`: nothing
+         *     runs and a target waits for the conversation to be `open` again. Otherwise `breached` when
+         *     any target was breached, else `met`.
+         * @enum {string}
+         */
+        SlaState: "on_track" | "due_soon" | "breached" | "met" | "paused";
+        /**
+         * @description One target: `on_track`, `due_soon` or `breached` while it runs, `paused` while the
+         *     conversation is `pending` or `snoozed`, `met` when it was met in time, `breached` when it
+         *     was not (then `met_at` is when it was met late, if it was), `stopped` when the conversation
+         *     closed before a reply.
+         * @enum {string}
+         */
+        SlaTargetState: "on_track" | "due_soon" | "breached" | "met" | "paused" | "stopped";
+        /**
+         * @description Conditions are all-of; an empty list matches anything, and within a list any entry
+         *     matches. A target without minutes is not tracked.
+         */
+        SlaPolicy: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            /**
+             * Format: int32
+             * @description Its place in the order, from 0.
+             */
+            position: number;
+            enabled: boolean;
+            inbox_ids: string[];
+            /** @description Conversations without a `channel_kind` never match a non-empty list. */
+            channel_kinds: components["schemas"]["ChannelKind"][];
+            /** @description Matches a conversation with any of these labels. */
+            label_ids: string[];
+            priorities: components["schemas"]["Priority"][];
+            /**
+             * Format: int32
+             * @description Business minutes for the first reply; absent when not tracked.
+             */
+            first_reply_minutes?: number;
+            /**
+             * Format: int32
+             * @description Business minutes for each next reply; absent when not tracked.
+             */
+            next_reply_minutes?: number;
+            /**
+             * Format: int32
+             * @description Business minutes from creation to the first close; absent when not tracked.
+             */
+            resolution_minutes?: number;
+            /**
+             * Format: int32
+             * @description How long before a due time `conversation.sla_warning` is sent; `0` sends none.
+             */
+            warn_minutes: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        /** @description At least one of the three targets is required (`400 validation_failed`). */
+        SlaPolicyCreate: {
+            name: string;
+            /** @default true */
+            enabled: boolean;
+            /** @description Inboxes of the workspace (`400 validation_failed` otherwise). */
+            inbox_ids?: string[];
+            channel_kinds?: components["schemas"]["ChannelKind"][];
+            /** @description Labels of the workspace (`400 validation_failed` otherwise). */
+            label_ids?: string[];
+            priorities?: components["schemas"]["Priority"][];
+            /** Format: int32 */
+            first_reply_minutes?: number;
+            /** Format: int32 */
+            next_reply_minutes?: number;
+            /** Format: int32 */
+            resolution_minutes?: number;
+            /**
+             * Format: int32
+             * @default 15
+             */
+            warn_minutes: number;
+        };
+        /** @description Only what is sent changes; `null` stops tracking a target. At least one target must remain. */
+        SlaPolicyUpdate: {
+            name?: string;
+            enabled?: boolean;
+            inbox_ids?: string[];
+            channel_kinds?: components["schemas"]["ChannelKind"][];
+            label_ids?: string[];
+            priorities?: components["schemas"]["Priority"][];
+            /** Format: int32 */
+            first_reply_minutes?: number | null;
+            /** Format: int32 */
+            next_reply_minutes?: number | null;
+            /** Format: int32 */
+            resolution_minutes?: number | null;
+            /** Format: int32 */
+            warn_minutes?: number;
+        };
+        SlaPolicyList: {
+            items: components["schemas"]["SlaPolicy"][];
+        };
+        SlaPolicyOrder: {
+            ids: string[];
+        };
+        ConversationSla: {
+            /** Format: uuid */
+            policy_id: string;
+            /**
+             * Format: date-time
+             * @description The earliest due time of a running target; absent when none runs. `sort=sla_due` orders by it.
+             */
+            due_at?: string;
+            state: components["schemas"]["SlaState"];
+            /** @description The targets that started, in the order first reply, next reply, resolution. Only the latest next-reply target is kept. */
+            targets: components["schemas"]["ConversationSlaTarget"][];
+        };
+        ConversationSlaTarget: {
+            target: components["schemas"]["SlaTargetName"];
+            state: components["schemas"]["SlaTargetState"];
+            /** Format: date-time */
+            started_at: string;
+            /**
+             * Format: date-time
+             * @description While it runs.
+             */
+            due_at?: string;
+            /**
+             * Format: int64
+             * @description While it is paused, the business seconds that were left.
+             */
+            remaining_seconds?: number;
+            /** Format: date-time */
+            met_at?: string;
+            /** Format: date-time */
+            breached_at?: string;
+            /** Format: date-time */
+            warned_at?: string;
+        };
+        /**
+         * @description SLA targets met and breached in the window, in total, per inbox and per member (the
+         *     conversation's assignee when the outcome happened; unassigned outcomes count only in the
+         *     totals and per inbox).
+         */
+        SlaStats: {
+            /** Format: int64 */
+            met: number;
+            /** Format: int64 */
+            breached: number;
+            inboxes: components["schemas"]["InboxSlaStats"][];
+            members: components["schemas"]["MemberSlaStats"][];
+        };
+        InboxSlaStats: {
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: int64 */
+            met: number;
+            /** Format: int64 */
+            breached: number;
+        };
+        MemberSlaStats: {
+            /** Format: uuid */
+            member_id: string;
+            /** Format: int64 */
+            met: number;
+            /** Format: int64 */
+            breached: number;
+        };
+        /**
+         * @description `conversation.sla_warning`: a target of the conversation is due within the policy's
+         *     `warn_minutes`. `conversation.sla_breached`: it passed its due time unmet. Each is sent
+         *     once per target; `conversation.updated` follows a breach with the new `sla`.
+         */
+        ConversationSlaEvent: {
+            /** Format: int64 */
+            id: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "conversation.sla_warning" | "conversation.sla_breached";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["ConversationSlaEventData"];
+        };
+        ConversationSlaEventData: {
+            target: components["schemas"]["SlaTargetName"];
+            /** Format: date-time */
+            due_at: string;
+            conversation: components["schemas"]["Conversation"];
+        };
+        WebhookConversationSlaData: {
+            target: components["schemas"]["SlaTargetName"];
+            /** Format: date-time */
+            due_at: string;
+            conversation: components["schemas"]["Conversation"];
+            contact: components["schemas"]["WebhookContact"];
+        };
+        WebhookConversationSlaPayload: components["schemas"]["WebhookPayloadBase"] & {
+            data: components["schemas"]["WebhookConversationSlaData"];
+        };
+        /**
          * @description `direct`: the member has their own grant (and may have teams' too); `team`: only through teams.
          * @enum {string}
          */
@@ -16136,7 +16499,7 @@ export interface components {
             type: "resync_required";
         };
         /** @description An event as `GET /v1/events` returns it, told apart by `type`; the same objects realtime and webhooks carry. */
-        StoredEvent: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["TeamEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["IssueLinkEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["ChangelogEntryEvent"];
+        StoredEvent: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["TeamEvent"] | components["schemas"]["ConversationSlaEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["IssueLinkEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["ChangelogEntryEvent"];
         EventPage: {
             events: components["schemas"]["StoredEvent"][];
             /**
@@ -16155,7 +16518,7 @@ export interface components {
             id: number;
         };
         /** @description One server message on `/v1/realtime`, told apart by `type`. */
-        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["TeamEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["IssueLinkEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["MigrationProgressEvent"] | components["schemas"]["MigrationForwardingConfirmationEvent"] | components["schemas"]["BroadcastProgressEvent"] | components["schemas"]["StatusNoticeEvent"] | components["schemas"]["StatusPageEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["HelpArticleSignal"] | components["schemas"]["ChangelogEntryEvent"] | components["schemas"]["ChangelogEntrySignal"] | components["schemas"]["RoadmapBoardSignal"] | components["schemas"]["HelpImportEvent"] | components["schemas"]["HelpImportProgressEvent"] | components["schemas"]["HelpCenterSignal"] | components["schemas"]["ChangelogSignal"] | components["schemas"]["ListImportEvent"] | components["schemas"]["ListImportProgressEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ContactPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["TeamEvent"] | components["schemas"]["ConversationSlaEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["IssueLinkEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["MigrationProgressEvent"] | components["schemas"]["MigrationForwardingConfirmationEvent"] | components["schemas"]["BroadcastProgressEvent"] | components["schemas"]["StatusNoticeEvent"] | components["schemas"]["StatusPageEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["HelpArticleSignal"] | components["schemas"]["ChangelogEntryEvent"] | components["schemas"]["ChangelogEntrySignal"] | components["schemas"]["RoadmapBoardSignal"] | components["schemas"]["HelpImportEvent"] | components["schemas"]["HelpImportProgressEvent"] | components["schemas"]["HelpCenterSignal"] | components["schemas"]["ChangelogSignal"] | components["schemas"]["ListImportEvent"] | components["schemas"]["ListImportProgressEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ContactPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
         /**
          * @description `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
          *     hours. `away`: never shown as available.
@@ -24326,6 +24689,7 @@ export interface components {
         AttachmentId: string;
         MessageId: string;
         TeamId: string;
+        SlaPolicyId: string;
         LabelId: string;
         CannedReplyId: string;
         MacroId: string;
@@ -26597,6 +26961,180 @@ export interface operations {
             404: components["responses"]["Problem"];
         };
     };
+    listSlaPolicies: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The policies. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SlaPolicyList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    createSlaPolicy: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SlaPolicyCreate"];
+            };
+        };
+        responses: {
+            /** @description The policy. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SlaPolicy"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    orderSlaPolicies: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SlaPolicyOrder"];
+            };
+        };
+        responses: {
+            /** @description The policies in their new order. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SlaPolicyList"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    getSlaPolicy: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                slaPolicyId: components["parameters"]["SlaPolicyId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The policy. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SlaPolicy"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    deleteSlaPolicy: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                slaPolicyId: components["parameters"]["SlaPolicyId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    updateSlaPolicy: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                slaPolicyId: components["parameters"]["SlaPolicyId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SlaPolicyUpdate"];
+            };
+        };
+        responses: {
+            /** @description The updated policy. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SlaPolicy"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     listChannels: {
         parameters: {
             query?: never;
@@ -27513,6 +28051,18 @@ export interface operations {
                  *     without it, both. Member sessions only (`400 validation_failed` for API keys).
                  */
                 pinned?: boolean;
+                /**
+                 * @description `last_activity` (the default): most recent activity first. `sla_due`: conversations
+                 *     with a running SLA target first, the earliest `sla.due_at` first (so breached ones
+                 *     lead), then the others by most recent activity. A cursor continues only the order it
+                 *     came from (`400 validation_failed` otherwise).
+                 */
+                sort?: "last_activity" | "sla_due";
+                /**
+                 * @description Only conversations whose `sla.state` is one of these. Repeat the parameter or give a
+                 *     comma-separated list. Conversations without an SLA never match.
+                 */
+                sla_state?: components["schemas"]["SlaState"][];
                 /** @description Full-text search (Postgres `simple` configuration, `websearch` syntax). */
                 q?: components["parameters"]["Search"];
                 /** @description The `next_cursor` of the previous page. */
@@ -41442,6 +41992,72 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["WebhookTeamPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookConversationSlaWarning: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookConversationSlaPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookConversationSlaBreached: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookConversationSlaPayload"];
             };
         };
         responses: {

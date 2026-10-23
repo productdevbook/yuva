@@ -277,6 +277,10 @@ msgstr "{count, plural, =0 {Nincs beszélgetés} one {# beszélgetés} other {# 
 msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, one {# márka} other {# márka}}"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "{count, plural, one {# condition} other {# conditions}}"
+msgstr "{count, plural, one {# feltétel} other {# feltétel}}"
+
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
@@ -466,6 +470,10 @@ msgstr "A(z) {inboxName} postafióknak még nincs e-mail-csatornája a(z) {addre
 msgid "{incoming} received, {outgoing} sent"
 msgstr "{incoming} érkezett, {outgoing} elküldve"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "{left} left when it resumes"
+msgstr "Folytatáskor {left} marad"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "{listName} is ready"
 msgstr "{listName} kész"
@@ -473,6 +481,10 @@ msgstr "{listName} kész"
 #: src/features/home/PropertyCard.tsx
 msgid "{liveText} in the last 30 minutes"
 msgstr "{liveText} az elmúlt 30 percben"
+
+#: src/features/reports/ReportPages.tsx
+msgid "{met} met, {breached} breached"
+msgstr "{met} teljesült, {breached} sérült"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
@@ -1131,6 +1143,10 @@ msgstr "Egy beszélgetést hozzám rendeltek"
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "A beszélgetést egészében veszi, ha utoljára a tartományon belül frissült."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
+msgstr "A beszélgetésnek meg kell felelnie minden kitöltött sornak. Az üres sor mindennek megfelel."
+
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "Egy beszélgetés elindult"
@@ -1332,6 +1348,10 @@ msgstr "Százalék minden összetevő mellett."
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A policy that is off applies to nothing."
+msgstr "A kikapcsolt szabály semmire sem vonatkozik."
+
 #: src/components/common/text.ts
 msgid "A property can have at most 1,000 notes. Delete old ones first."
 msgstr "Egy tulajdonságnak legfeljebb 1000 jegyzete lehet. Előbb törölj régieket."
@@ -1476,6 +1496,10 @@ msgstr "Visszavontak egy bejegyzést az Újdonságokból"
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "Egész szám 1 és 10 000 000 között"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 SLA policies. Delete one first."
+msgstr "Egy munkaterület legfeljebb 100 SLA-szabályt tartalmazhat. Előbb töröljön egyet."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "A workspace holds your team, inboxes and conversations. You are its owner and can invite others later."
@@ -2268,6 +2292,16 @@ msgstr "Tulajdonos vagy admin engedélyezheti az asszisztenseknek, hogy maguk k�
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "Tulajdonos vagy admin kapcsolja be az aláírást, miután a rekord közzé lett téve."
 
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target is due soon"
+msgstr "Egy SLA-cél hamarosan lejár"
+
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target was breached"
+msgstr "Egy SLA-célt megsértettek"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
 msgstr "A feltöltés megszakadt: {count} rész, {size}, már a szerveren van."
@@ -2431,6 +2465,14 @@ msgstr "Bármely mező"
 msgid "Any label"
 msgstr "Bármely címke"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Any of the labels you pick."
+msgstr "A kiválasztott címkék bármelyike."
+
+#: src/features/inbox/SourceFilter.tsx
+msgid "Any state"
+msgstr "Bármely állapot"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "Bármelyik csapat"
@@ -2527,6 +2569,10 @@ msgstr "Megjelenés"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Application (client) ID"
 msgstr "Alkalmazás (kliens) azonosítója"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Applies to"
+msgstr "Hatálya"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "Applies to the next mail."
@@ -3066,6 +3112,14 @@ msgstr "Visszapattant: {0}"
 msgid "Brands"
 msgstr "Márkák"
 
+#: src/components/common/SlaBadge.tsx
+msgid "Breached"
+msgstr "Sérült"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Breached, met late at {at}"
+msgstr "Sérült, késve teljesült: {at}"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
 msgstr "Hozd át egy postafiók előzményeit a Gmailből, Yandexből vagy bármely IMAP-szerverről"
@@ -3416,6 +3470,7 @@ msgstr "Csatorna beállításai"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Channels"
 msgstr "Csatornák"
 
@@ -3759,6 +3814,10 @@ msgstr "Keresés bezárása (Esc)"
 #: src/features/reports/ReportPages.tsx
 msgid "Closed"
 msgstr "Lezárva"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Closed before a reply"
+msgstr "Válasz előtt lezárva"
 
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Leave empty to keep everything."
@@ -4280,6 +4339,10 @@ msgstr "Az importálás után senki által nem írt beszélgetések törlődnek.
 msgid "conversations started"
 msgstr "megkezdett beszélgetések"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Conversations that follow it lose their SLA unless another policy matches. This cannot be undone."
+msgstr "A szabályt követő beszélgetések elveszítik az SLA-jukat, ha nem illik rájuk másik szabály. Ez nem vonható vissza."
+
 #: src/features/settings/channels/sections.tsx
 msgid "Conversations that started on it keep their messages."
 msgstr "Az azon indult beszélgetések megtartják az üzeneteiket."
@@ -4498,6 +4561,10 @@ msgstr "Kulcs létrehozása"
 #: src/features/setup/NewsletterStep.tsx
 msgid "Create list"
 msgstr "Lista létrehozása"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Create policy"
+msgstr "Szabály létrehozása"
 
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
@@ -4720,6 +4787,7 @@ msgstr "Csökkent teljesítmény"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4841,6 +4909,10 @@ msgstr "Figyelő törlése"
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the OAuth client you created for Yuva"
 msgstr "Töröld a Yuvához létrehozott OAuth-klienst"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Delete the policy {name}?"
+msgstr "Törli a(z) {name} szabályt?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
@@ -5392,6 +5464,18 @@ msgstr "Ejtsd ide a fájlokat, hogy csatold őket a válaszodhoz"
 msgid "Dry run"
 msgstr "Próbafuttatás"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "Due {at}"
+msgstr "Határidő: {at}"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Due first"
+msgstr "Először a legközelebbi határidő"
+
+#: src/components/common/SlaBadge.tsx
+msgid "Due soon"
+msgstr "Hamarosan lejár"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Duplicate the selected block"
 msgstr "A kijelölt blokk megkettőzése"
@@ -5543,6 +5627,7 @@ msgstr "Mindegyik az összes üzenetével és jegyzetével"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5602,6 +5687,10 @@ msgstr "Makró szerkesztése"
 msgid "Edit monitor"
 msgstr "Figyelő szerkesztése"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Edit policy"
+msgstr "Szabály szerkesztése"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Csapat szerkesztése"
@@ -5660,6 +5749,10 @@ msgstr "Emoji"
 #: src/features/broadcasts/Import.tsx
 msgid "Empty in the first rows"
 msgstr "Üres az első sorokban"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Enabled"
+msgstr "Bekapcsolva"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5798,6 +5891,10 @@ msgstr "Minden jel, kihagyott jel és elküldött állapot az elmúlt 30 napból
 #: src/features/status/MonitorChecks.tsx
 msgid "Every check of the last 30 days, newest first."
 msgstr "Az elmúlt 30 nap minden ellenőrzése, a legújabb elöl."
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Every conversation"
+msgstr "Minden beszélgetés"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -6145,8 +6242,8 @@ msgid "Filter by team"
 msgstr "Szűrés csapat szerint"
 
 #: src/features/inbox/SourceFilter.tsx
-msgid "Filter by type, site and broadcast"
-msgstr "Szűrés típus, webhely és tömeges levél szerint"
+msgid "Filter by type, site, broadcast and SLA"
+msgstr "Szűrés típus, webhely, kiküldés és SLA szerint"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -6218,10 +6315,16 @@ msgstr "Keresztnév"
 msgid "first reply"
 msgstr "első válasz"
 
+#: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "Első válasz"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "First reply {first}"
+msgstr "Első válasz {first}"
 
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
@@ -6303,6 +6406,10 @@ msgstr "Automatikus üzenetekhez"
 #: src/features/setup/NameStep.tsx
 msgid "For business hours"
 msgstr "Munkaidőhöz"
+
+#: src/features/settings/notifications/events.ts
+msgid "For conversations assigned to me, or to my team when nobody is assigned."
+msgstr "A hozzám rendelt beszélgetésekhez, vagy a csapatomhoz, ha senki sincs hozzárendelve."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "For developers"
@@ -6461,6 +6568,18 @@ msgstr "Feladó cím (nem kötelező)"
 #: src/features/migrations/parts.tsx
 msgid "From blocked contacts"
 msgstr "Letiltott kontaktoktól"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From each later contact message to the reply."
+msgstr "A névjegy minden további üzenetétől a válaszig."
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the contact's first message to the first public reply."
+msgstr "A névjegy első üzenetétől az első nyilvános válaszig."
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the start of the conversation to its first close."
+msgstr "A beszélgetés kezdetétől az első lezárásáig."
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "From the terminal"
@@ -6891,6 +7010,10 @@ msgstr "Gazdagépnév"
 msgid "Hostname and certificate"
 msgstr "Gazdagépnév és tanúsítvány"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "hours"
+msgstr "óra"
+
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "Nyitvatartás"
@@ -7308,6 +7431,7 @@ msgstr "Postafiók: {name}"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
@@ -7763,6 +7887,7 @@ msgstr "Csak címke: a levelei az Összes levélből jönnek, és a beszélgeté
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Labels"
 msgstr "Címkék"
 
@@ -8740,6 +8865,14 @@ msgstr "elküldött üzenet"
 msgid "Messages the key sends show its bot name and picture."
 msgstr "A kulcs által küldött üzeneteken a bot neve és képe látszik."
 
+#: src/components/common/SlaBadge.tsx
+msgid "Met"
+msgstr "Teljesítve"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Met {at}"
+msgstr "Teljesítve: {at}"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Metadata"
 msgstr "Metadata"
@@ -8803,6 +8936,14 @@ msgstr "Az enyéim"
 #: src/features/status/text.tsx
 msgid "Minor"
 msgstr "Kisebb"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "minutes"
+msgstr "perc"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Minutes before a due time. 0 sends no warning."
+msgstr "Perccel a határidő előtt. A 0 nem küld figyelmeztetést."
 
 #: src/features/status/text.tsx
 msgid "Missed beat"
@@ -8913,12 +9054,17 @@ msgstr "Legtöbb szavazat"
 msgid "Move {0} to the Trash?"
 msgstr "A Kukába helyezed: {0}?"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Move {name}. Drag, or press Alt with the arrow keys."
+msgstr "{name} áthelyezése. Húzza, vagy nyomja meg az Alt billentyűt a nyilakkal."
+
 #: src/components/common/text.ts
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Beszélgetések Kukába helyezése, visszaállítása és a Kuka olvasása"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "Mozgatás lefelé"
@@ -9018,6 +9164,7 @@ msgstr "Költözés a Yuvába"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "Mozgatás felfelé"
@@ -9084,6 +9231,7 @@ msgstr "Csapataim"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -9389,6 +9537,11 @@ msgstr "Új oldal"
 msgid "New password"
 msgstr "Új jelszó"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/SlaPage.tsx
+msgid "New policy"
+msgstr "Új szabály"
+
 #: src/features/account/AccountPage.tsx
 msgid "New reply in <0>{title}</0>"
 msgstr "Új válasz itt: <0>{title}</0>"
@@ -9481,6 +9634,15 @@ msgstr "Következő ellenőrzés: {next}."
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Következő levél: {local} ({utc} UTC), ennek a tömeges levélnek a tempójában."
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Next reply"
+msgstr "Következő válasz"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Next reply {next}"
+msgstr "Következő válasz {next}"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
@@ -9917,6 +10079,10 @@ msgstr "Még nincsenek oldalak"
 msgid "No pending invites."
 msgstr "Nincsenek függő meghívók."
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "No policies yet."
+msgstr "Még nincs szabály."
+
 #: src/features/settings/ProductsPage.tsx
 msgid "No products yet"
 msgstr "Még nincs termék"
@@ -10009,6 +10175,10 @@ msgstr "Még nincsenek feliratkozók. A látogatók az állapotoldalon iratkozna
 #: src/features/migrations/ChooseStep.tsx
 msgid "No support address"
 msgstr "Nincs támogatási cím"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "No target has started yet."
+msgstr "Még egyetlen cél sem indult el."
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "No team"
@@ -10306,6 +10476,10 @@ msgstr "Nem ugyanaz"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "Egy perc után sincs ott? Nézd meg a spam- vagy levélszemét-mappát, vagy kérj alább új kódot."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Not tracked"
+msgstr "Nem követett"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Not uploaded yet"
 msgstr "Még nincs feltöltve"
@@ -10533,6 +10707,7 @@ msgstr "ki"
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "Off"
 msgstr "Ki"
@@ -10645,6 +10820,10 @@ msgstr "Team és Enterprise csomagoknál a tulajdonos egyszer adja hozzá az <0>
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "On the web"
 msgstr "A weben"
+
+#: src/components/common/SlaBadge.tsx
+msgid "On track"
+msgstr "Ütemben"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Once a test message arrives, Yuva waits {hours} hours. If nothing reaches only {provider} in that time, the migration finishes on its own. You can also finish it yourself."
@@ -11485,6 +11664,7 @@ msgid "Pause or resume the monitor"
 msgstr "Figyelő szüneteltetése vagy folytatása"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
 #: src/features/migrations/text.ts
 #: src/features/settings/channels/ChannelState.tsx
@@ -12021,8 +12201,13 @@ msgstr "Előző képernyőkép"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
 msgstr "Prioritás"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Priority customers"
+msgstr "Kiemelt ügyfelek"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Priority set to {level}"
@@ -12971,6 +13156,14 @@ msgstr "Válasz (R)"
 msgid "Reply account"
 msgstr "Válaszfiók"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
+msgstr "Válasz- és megoldási célok azokhoz a beszélgetésekhez, amelyekre egy szabály illik. Az első bekapcsolt, a beszélgetésre illő szabály érvényes, ezért a legpontosabbakat tartsa legfelül. A célok az egyes postafiókok munkaidejében telnek."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Reply and resolution targets with due times"
+msgstr "Válasz- és megoldási célok határidőkkel"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Reply and resolve"
 msgstr "Válasz és megoldás"
@@ -13103,6 +13296,15 @@ msgstr "Állítsd vissza a Yuvának adott API-kulcsot"
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
 msgstr "Alapértelmezések visszaállítása"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Resolution"
+msgstr "Megoldás"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Resolution {resolution}"
+msgstr "Megoldás {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13426,6 +13628,7 @@ msgstr "Szombat"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
@@ -14392,6 +14595,11 @@ msgstr "Előnézet megjelenítése"
 msgid "Show the reply time"
 msgstr "A válaszidő megjelenítése"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Show the SLA targets"
+msgstr "SLA-célok megjelenítése"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "Jelenítse meg az oldalt a saját címén a szerver címe helyett."
@@ -14737,6 +14945,32 @@ msgstr "Kihagyva vagy sikertelen"
 #: src/features/status/Notices.tsx
 msgid "Skipped: {0}"
 msgstr "Kihagyva: {0}"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/inbox/SourceFilter.tsx
+msgid "SLA"
+msgstr "SLA"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA · {policyName}"
+msgstr "SLA · {policyName}"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met"
+msgstr "SLA teljesítve"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met / breached"
+msgstr "SLA teljesítve / sérült"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "SLA policies"
+msgstr "SLA-szabályok"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA targets (W)"
+msgstr "SLA-célok (W)"
 
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -15116,6 +15350,10 @@ msgstr "Aláírás leállítása"
 msgid "Stop taking new subscribers. Records and past reports stay, and you can restore it."
 msgstr "Ne fogadjon több feliratkozót. A rekordok és a korábbi jelentések megmaradnak, a lista visszaállítható."
 
+#: src/components/common/SlaBadge.tsx
+msgid "Stopped"
+msgstr "Leállítva"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "Tárhely"
@@ -15310,6 +15548,14 @@ msgstr "Újra fogad feliratkozásokat, és visszahozza a listát a kiküldések 
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Taking the recipients: {prepared} so far"
 msgstr "A címzettek kiválasztása: eddig {prepared}"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets"
+msgstr "Célok"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
+msgstr "A célok a beszélgetés postafiókjának munkaidejében és időzónájában telnek. Hagyjon egyet üresen, hogy ne legyen követve; legalább egy kötelező."
 
 #: src/features/status/text.tsx
 msgid "TCP"
@@ -17266,6 +17512,10 @@ msgstr "Követés megszüntetése"
 msgid "Unfollowed"
 msgstr "Követés megszüntetve"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Unit"
+msgstr "Egység"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
 msgstr "Ismeretlen eszköz"
@@ -17929,6 +18179,14 @@ msgstr "{at} óta vár"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Warn about the certificate"
 msgstr "Figyelmeztetés a tanúsítványról"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Warn before it is due"
+msgstr "Figyelmeztetés a határidő előtt"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Was due {at}"
+msgstr "Határideje volt: {at}"
 
 #: src/features/setup/previews.tsx
 msgid "Was this page helpful?"

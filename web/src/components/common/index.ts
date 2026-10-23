@@ -19,6 +19,7 @@ export {
   VisitorAvatar,
 } from "@/components/common/Avatar"
 export { SecretDialog } from "@/components/common/SecretDialog"
+export { SlaBadge, useSlaNow, useSlaText } from "@/components/common/SlaBadge"
 export { Segmented } from "@/components/common/Segmented"
 export { Sparkline } from "@/components/common/Sparkline"
 export { TypeToConfirmDialog } from "@/components/common/TypeToConfirmDialog"

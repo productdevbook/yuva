@@ -359,7 +359,20 @@ function NewChart({ items, more }: { items: ConversationListItem[]; more: boolea
 }
 
 const PRODUCT_GRID =
-  "grid grid-cols-[minmax(0,1.4fr)_minmax(0,0.8fr)_minmax(0,1fr)_minmax(0,1fr)] items-center gap-3 px-4"
+  "grid grid-cols-[minmax(0,1.4fr)_minmax(0,0.8fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] items-center gap-3 px-4"
+
+function SlaCounts({ met, breached }: { met: number; breached: number }) {
+  const { i18n } = useLingui()
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  if (met + breached === 0) return <span className="text-muted-foreground">–</span>
+  return (
+    <>
+      <span className="text-success">{fmt.format(met)}</span>
+      <span className="text-faint"> / </span>
+      <span className={breached ? "text-destructive" : "text-muted-foreground"}>{fmt.format(breached)}</span>
+    </>
+  )
+}
 
 function ByProduct({ items }: { items: ConversationListItem[] }) {
   const { i18n } = useLingui()
@@ -376,7 +389,7 @@ function ByProduct({ items }: { items: ConversationListItem[] }) {
     .sort((a, b) => b.n - a.n)
   return (
     <section className="overflow-x-auto rounded-xl border bg-card" data-testid="report-inboxes">
-      <div className="min-w-[420px]">
+      <div className="min-w-[520px]">
         <div className={cn(PRODUCT_GRID, tableHeadClass, "py-2.5")}>
           <span>
             <Trans>Product</Trans>
@@ -389,6 +402,9 @@ function ByProduct({ items }: { items: ConversationListItem[] }) {
           </span>
           <span>
             <Trans>Resolved in</Trans>
+          </span>
+          <span>
+            <Trans>SLA met / breached</Trans>
           </span>
         </div>
         {rows.map(({ inbox, s, n }) => {
@@ -403,6 +419,9 @@ function ByProduct({ items }: { items: ConversationListItem[] }) {
               <span className="text-muted-foreground tabular-nums">{fmt.format(n)}</span>
               <span className="text-muted-foreground tabular-nums">{cell(s?.median_first_reply_seconds)}</span>
               <span className="text-muted-foreground tabular-nums">{cell(s?.median_resolution_seconds)}</span>
+              <span className="tabular-nums" data-testid="report-inbox-sla">
+                {s ? <SlaCounts met={s.sla.met} breached={s.sla.breached} /> : <Skeleton className="h-4 w-10" />}
+              </span>
             </div>
           )
         })}
@@ -419,48 +438,62 @@ export function TodayReport() {
   const fresh = createdSince(recent.data?.items ?? [], since)
   return (
     <Report>
-      {(s) => (
-        <>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(170px,1fr))] gap-4" data-testid="report-tiles">
-            <StatTile
-              label={t`New`}
-              value={recent.data ? `${fmt.format(fresh.length)}${recent.data.complete ? "" : "+"}` : "–"}
-              hint={t`conversations started`}
-              testId="report-new"
-            />
-            <StatTile label={t`Replied`} value={fmt.format(s.replies)} hint={t`messages sent`} />
-            <StatTile label={t`Closed`} value={fmt.format(s.closed)} hint={t`conversations`} />
-            <StatTile
-              label={t`First reply`}
-              value={
-                s.median_first_reply_seconds !== undefined
-                  ? formatDuration(s.median_first_reply_seconds, i18n.locale)
-                  : "–"
-              }
-              hint={range === "today" ? t`median today` : t`median`}
-            />
-            <StatTile
-              label={t`Resolved in`}
-              value={
-                s.median_resolution_seconds !== undefined
-                  ? formatDuration(s.median_resolution_seconds, i18n.locale)
-                  : "–"
-              }
-              hint={t`median, first message to closed`}
-              hintClassName="whitespace-normal"
-              testId="report-resolved"
-            />
-          </div>
-          <div className="grid grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] gap-4 max-lg:grid-cols-1">
-            {recent.isPending ? (
-              <Skeleton className="h-60 rounded-xl" />
-            ) : (
-              <NewChart items={fresh} more={!recent.data?.complete} />
-            )}
-            <ByProduct items={fresh} />
-          </div>
-        </>
-      )}
+      {(s) => {
+        const met = fmt.format(s.sla.met)
+        const breached = fmt.format(s.sla.breached)
+        return (
+          <>
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(170px,1fr))] gap-4" data-testid="report-tiles">
+              <StatTile
+                label={t`New`}
+                value={recent.data ? `${fmt.format(fresh.length)}${recent.data.complete ? "" : "+"}` : "–"}
+                hint={t`conversations started`}
+                testId="report-new"
+              />
+              {s.sla.met + s.sla.breached > 0 && (
+                <StatTile
+                  label={t`SLA met`}
+                  value={new Intl.NumberFormat(i18n.locale, { style: "percent" }).format(
+                    s.sla.met / (s.sla.met + s.sla.breached)
+                  )}
+                  hint={t`${met} met, ${breached} breached`}
+                  testId="report-sla"
+                />
+              )}
+              <StatTile label={t`Replied`} value={fmt.format(s.replies)} hint={t`messages sent`} />
+              <StatTile label={t`Closed`} value={fmt.format(s.closed)} hint={t`conversations`} />
+              <StatTile
+                label={t`First reply`}
+                value={
+                  s.median_first_reply_seconds !== undefined
+                    ? formatDuration(s.median_first_reply_seconds, i18n.locale)
+                    : "–"
+                }
+                hint={range === "today" ? t`median today` : t`median`}
+              />
+              <StatTile
+                label={t`Resolved in`}
+                value={
+                  s.median_resolution_seconds !== undefined
+                    ? formatDuration(s.median_resolution_seconds, i18n.locale)
+                    : "–"
+                }
+                hint={t`median, first message to closed`}
+                hintClassName="whitespace-normal"
+                testId="report-resolved"
+              />
+            </div>
+            <div className="grid grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] gap-4 max-lg:grid-cols-1">
+              {recent.isPending ? (
+                <Skeleton className="h-60 rounded-xl" />
+              ) : (
+                <NewChart items={fresh} more={!recent.data?.complete} />
+              )}
+              <ByProduct items={fresh} />
+            </div>
+          </>
+        )
+      }}
     </Report>
   )
 }
@@ -621,7 +654,7 @@ export function RatingsReport() {
 }
 
 const MEMBER_GRID =
-  "grid grid-cols-[minmax(0,1.4fr)_minmax(0,1.2fr)_minmax(0,0.8fr)_minmax(0,1.1fr)] items-center gap-4 px-4"
+  "grid grid-cols-[minmax(0,1.4fr)_minmax(0,1.2fr)_minmax(0,0.8fr)_minmax(0,1.1fr)_minmax(0,1fr)] items-center gap-4 px-4"
 
 type MemberSort = "replies" | "closed" | "rating"
 
@@ -676,7 +709,7 @@ export function MembersReport() {
         return (
           <>
             <section className="overflow-x-auto rounded-xl border bg-card" data-testid="report-members">
-              <div className="min-w-[560px]">
+              <div className="min-w-[680px]">
                 <div className={cn(MEMBER_GRID, tableHeadClass, "py-2.5")}>
                   <span>
                     <Trans>Member</Trans>
@@ -684,11 +717,15 @@ export function MembersReport() {
                   {head("replies", <Trans>Replies</Trans>)}
                   {head("closed", <Trans>Closed</Trans>)}
                   {head("rating", <Trans>Rating</Trans>)}
+                  <span>
+                    <Trans>SLA met / breached</Trans>
+                  </span>
                 </div>
                 {people.map((p) => {
                   const m = members.get(p.member_id)
                   const name = m ? m.name || m.email : t`Deleted member`
                   const ratedText = fmt.format(p.rated)
+                  const sla = s.sla.members.find((x) => x.member_id === p.member_id)
                   return (
                     <div key={p.member_id} className={cn(MEMBER_GRID, "border-t py-3")}>
                       <span className="flex min-w-0 items-center gap-2.5">
@@ -714,6 +751,9 @@ export function MembersReport() {
                         ) : (
                           "–"
                         )}
+                      </span>
+                      <span className="tabular-nums" data-testid="report-member-sla">
+                        <SlaCounts met={sla?.met ?? 0} breached={sla?.breached ?? 0} />
                       </span>
                     </div>
                   )

@@ -277,6 +277,10 @@ msgstr "{count, plural, =0 {ไม่มีการสนทนา} other {# �
 msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, other {# แบรนด์}}"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "{count, plural, one {# condition} other {# conditions}}"
+msgstr "{count, plural, other {# เงื่อนไข}}"
+
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
@@ -466,6 +470,10 @@ msgstr "{inboxName} ยังไม่มีช่องทางอีเมล
 msgid "{incoming} received, {outgoing} sent"
 msgstr "รับ {incoming} ส่ง {outgoing}"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "{left} left when it resumes"
+msgstr "เหลือ {left} เมื่อกลับมาดำเนินการต่อ"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "{listName} is ready"
 msgstr "{listName} พร้อมแล้ว"
@@ -473,6 +481,10 @@ msgstr "{listName} พร้อมแล้ว"
 #: src/features/home/PropertyCard.tsx
 msgid "{liveText} in the last 30 minutes"
 msgstr "{liveText} ใน 30 นาทีที่ผ่านมา"
+
+#: src/features/reports/ReportPages.tsx
+msgid "{met} met, {breached} breached"
+msgstr "บรรลุ {met} ละเมิด {breached}"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
@@ -1131,6 +1143,10 @@ msgstr "การสนทนาที่มอบหมายให้ฉัน
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "การสนทนาจะถูกเลือกทั้งหมดเมื่อมีการอัปเดตล่าสุดอยู่ในช่วงเวลา"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
+msgstr "การสนทนาต้องตรงกับทุกแถวที่คุณกรอก แถวที่ว่างจะตรงกับทุกอย่าง"
+
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "การสนทนาเริ่มต้นขึ้น"
@@ -1332,6 +1348,10 @@ msgstr "เปอร์เซ็นต์ข้างส่วนประกอ
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A policy that is off applies to nothing."
+msgstr "นโยบายที่ปิดอยู่จะไม่มีผลกับสิ่งใด"
+
 #: src/components/common/text.ts
 msgid "A property can have at most 1,000 notes. Delete old ones first."
 msgstr "พร็อพเพอร์ตีหนึ่งมีบันทึกได้สูงสุด 1,000 รายการ ลบรายการเก่าก่อน"
@@ -1476,6 +1496,10 @@ msgstr "ยกเลิกการเผยแพร่รายการใน
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "จำนวนเต็มตั้งแต่ 1 ถึง 10,000,000"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 SLA policies. Delete one first."
+msgstr "พื้นที่ทำงานมีนโยบาย SLA ได้สูงสุด 100 รายการ ลบหนึ่งรายการก่อน"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "A workspace holds your team, inboxes and conversations. You are its owner and can invite others later."
@@ -2268,6 +2292,16 @@ msgstr "เจ้าของหรือผู้ดูแลอนุญาต
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "เจ้าของหรือผู้ดูแลเปิดการลงนามเมื่อเผยแพร่ระเบียนแล้ว"
 
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target is due soon"
+msgstr "เป้าหมาย SLA ใกล้ครบกำหนด"
+
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target was breached"
+msgstr "เป้าหมาย SLA ถูกละเมิด"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
 msgstr "การอัปโหลดถูกตัดกลางคัน: {count} ส่วน {size} อยู่บนเซิร์ฟเวอร์แล้ว"
@@ -2431,6 +2465,14 @@ msgstr "ฟิลด์ใดก็ได้"
 msgid "Any label"
 msgstr "ป้ายกำกับใดก็ได้"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Any of the labels you pick."
+msgstr "ป้ายกำกับใดก็ได้ที่คุณเลือก"
+
+#: src/features/inbox/SourceFilter.tsx
+msgid "Any state"
+msgstr "ทุกสถานะ"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "ทีมใดก็ได้"
@@ -2527,6 +2569,10 @@ msgstr "รูปลักษณ์"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Application (client) ID"
 msgstr "Application (client) ID"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Applies to"
+msgstr "ใช้กับ"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "Applies to the next mail."
@@ -3066,6 +3112,14 @@ msgstr "ตีกลับ: {0}"
 msgid "Brands"
 msgstr "แบรนด์"
 
+#: src/components/common/SlaBadge.tsx
+msgid "Breached"
+msgstr "ละเมิด"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Breached, met late at {at}"
+msgstr "ละเมิด บรรลุล่าช้าเมื่อ {at}"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
 msgstr "นำประวัติของกล่องจดหมายจาก Gmail, Yandex หรือเซิร์ฟเวอร์ IMAP ใดก็ได้เข้ามา"
@@ -3416,6 +3470,7 @@ msgstr "การตั้งค่าช่อง"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Channels"
 msgstr "ช่องทาง"
 
@@ -3759,6 +3814,10 @@ msgstr "ปิดการค้นหา (Esc)"
 #: src/features/reports/ReportPages.tsx
 msgid "Closed"
 msgstr "ปิดแล้ว"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Closed before a reply"
+msgstr "ปิดก่อนมีการตอบกลับ"
 
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Leave empty to keep everything."
@@ -4280,6 +4339,10 @@ msgstr "การสนทนาที่ไม่มีใครเขียน
 msgid "conversations started"
 msgstr "การสนทนาที่เริ่มแล้ว"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Conversations that follow it lose their SLA unless another policy matches. This cannot be undone."
+msgstr "การสนทนาที่ใช้นโยบายนี้จะสูญเสีย SLA เว้นแต่จะตรงกับนโยบายอื่น การดำเนินการนี้ย้อนกลับไม่ได้"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Conversations that started on it keep their messages."
 msgstr "การสนทนาที่เริ่มจากสิ่งนั้นยังคงมีข้อความอยู่"
@@ -4498,6 +4561,10 @@ msgstr "สร้างคีย์"
 #: src/features/setup/NewsletterStep.tsx
 msgid "Create list"
 msgstr "สร้างรายชื่อ"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Create policy"
+msgstr "สร้างนโยบาย"
 
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
@@ -4720,6 +4787,7 @@ msgstr "ประสิทธิภาพลดลง"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4841,6 +4909,10 @@ msgstr "ลบมอนิเตอร์"
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the OAuth client you created for Yuva"
 msgstr "ลบไคลเอนต์ OAuth ที่คุณสร้างให้ Yuva"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Delete the policy {name}?"
+msgstr "ลบนโยบาย {name} ไหม"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
@@ -5392,6 +5464,18 @@ msgstr "ปล่อยไฟล์เพื่อแนบกับการต
 msgid "Dry run"
 msgstr "ทดลองรัน"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "Due {at}"
+msgstr "ครบกำหนด {at}"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Due first"
+msgstr "ครบกำหนดเร็วที่สุดก่อน"
+
+#: src/components/common/SlaBadge.tsx
+msgid "Due soon"
+msgstr "ใกล้ครบกำหนด"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Duplicate the selected block"
 msgstr "ทำสำเนาบล็อกที่เลือก"
@@ -5543,6 +5627,7 @@ msgstr "แต่ละรายการพร้อมข้อความแ
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5602,6 +5687,10 @@ msgstr "แก้ไขมาโคร"
 msgid "Edit monitor"
 msgstr "แก้ไขมอนิเตอร์"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Edit policy"
+msgstr "แก้ไขนโยบาย"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "แก้ไขทีม"
@@ -5660,6 +5749,10 @@ msgstr "อีโมจิ"
 #: src/features/broadcasts/Import.tsx
 msgid "Empty in the first rows"
 msgstr "ว่างในไม่กี่แถวแรก"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Enabled"
+msgstr "เปิดใช้งาน"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5798,6 +5891,10 @@ msgstr "ทุกสัญญาณ สัญญาณที่พลาด แ�
 #: src/features/status/MonitorChecks.tsx
 msgid "Every check of the last 30 days, newest first."
 msgstr "ทุกการตรวจสอบใน 30 วันที่ผ่านมา เรียงใหม่สุดก่อน"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Every conversation"
+msgstr "ทุกการสนทนา"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -6145,8 +6242,8 @@ msgid "Filter by team"
 msgstr "กรองตามทีม"
 
 #: src/features/inbox/SourceFilter.tsx
-msgid "Filter by type, site and broadcast"
-msgstr "กรองตามประเภท ไซต์ และบรอดคาสต์"
+msgid "Filter by type, site, broadcast and SLA"
+msgstr "กรองตามประเภท ไซต์ การส่ง และ SLA"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -6218,10 +6315,16 @@ msgstr "ชื่อ"
 msgid "first reply"
 msgstr "การตอบกลับครั้งแรก"
 
+#: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "การตอบครั้งแรก"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "First reply {first}"
+msgstr "การตอบกลับครั้งแรก {first}"
 
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
@@ -6303,6 +6406,10 @@ msgstr "สำหรับข้อความอัตโนมัติ"
 #: src/features/setup/NameStep.tsx
 msgid "For business hours"
 msgstr "สำหรับเวลาทำการ"
+
+#: src/features/settings/notifications/events.ts
+msgid "For conversations assigned to me, or to my team when nobody is assigned."
+msgstr "สำหรับการสนทนาที่มอบหมายให้ฉัน หรือทีมของฉันเมื่อไม่มีใครได้รับมอบหมาย"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "For developers"
@@ -6461,6 +6568,18 @@ msgstr "ที่อยู่ From (ไม่บังคับ)"
 #: src/features/migrations/parts.tsx
 msgid "From blocked contacts"
 msgstr "จากผู้ติดต่อที่ถูกบล็อก"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From each later contact message to the reply."
+msgstr "ตั้งแต่ข้อความถัดไปแต่ละข้อความจากผู้ติดต่อจนถึงการตอบกลับ"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the contact's first message to the first public reply."
+msgstr "ตั้งแต่ข้อความแรกของผู้ติดต่อจนถึงการตอบกลับสาธารณะครั้งแรก"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the start of the conversation to its first close."
+msgstr "ตั้งแต่เริ่มการสนทนาจนถึงการปิดครั้งแรก"
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "From the terminal"
@@ -6891,6 +7010,10 @@ msgstr "ชื่อโฮสต์"
 msgid "Hostname and certificate"
 msgstr "ชื่อโฮสต์และใบรับรอง"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "hours"
+msgstr "ชั่วโมง"
+
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "เวลาทำการ"
@@ -7308,6 +7431,7 @@ msgstr "กล่องข้อความสำหรับ {name}"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
@@ -7763,6 +7887,7 @@ msgstr "เป็นป้ายกำกับเท่านั้น อี�
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Labels"
 msgstr "ป้ายกำกับ"
 
@@ -8740,6 +8865,14 @@ msgstr "ข้อความที่ส่ง"
 msgid "Messages the key sends show its bot name and picture."
 msgstr "ข้อความที่คีย์ส่งแสดงชื่อและรูปของบอทของคีย์"
 
+#: src/components/common/SlaBadge.tsx
+msgid "Met"
+msgstr "บรรลุแล้ว"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Met {at}"
+msgstr "บรรลุ {at}"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Metadata"
 msgstr "Metadata"
@@ -8803,6 +8936,14 @@ msgstr "ของฉัน"
 #: src/features/status/text.tsx
 msgid "Minor"
 msgstr "ต่ำ"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "minutes"
+msgstr "นาที"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Minutes before a due time. 0 sends no warning."
+msgstr "กี่นาทีก่อนครบกำหนด ค่า 0 จะไม่ส่งคำเตือน"
 
 #: src/features/status/text.tsx
 msgid "Missed beat"
@@ -8913,12 +9054,17 @@ msgstr "โหวตมากที่สุด"
 msgid "Move {0} to the Trash?"
 msgstr "ย้าย {0} รายการไปที่ถังขยะไหม"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Move {name}. Drag, or press Alt with the arrow keys."
+msgstr "ย้าย {name} ลากหรือกด Alt พร้อมปุ่มลูกศร"
+
 #: src/components/common/text.ts
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "ย้ายการสนทนาไปที่ถังขยะ กู้คืน และอ่านถังขยะ"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "เลื่อนลง"
@@ -9018,6 +9164,7 @@ msgstr "ย้ายมา Yuva"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "เลื่อนขึ้น"
@@ -9084,6 +9231,7 @@ msgstr "ทีมของฉัน"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -9389,6 +9537,11 @@ msgstr "หน้าใหม่"
 msgid "New password"
 msgstr "รหัสผ่านใหม่"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/SlaPage.tsx
+msgid "New policy"
+msgstr "นโยบายใหม่"
+
 #: src/features/account/AccountPage.tsx
 msgid "New reply in <0>{title}</0>"
 msgstr "การตอบกลับใหม่ใน <0>{title}</0>"
@@ -9481,6 +9634,15 @@ msgstr "ตรวจสอบครั้งถัดไป {next}"
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "อีเมลถัดไปเมื่อ {local} ({utc} UTC) ตามความเร็วของบรอดคาสต์นี้"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Next reply"
+msgstr "การตอบกลับครั้งถัดไป"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Next reply {next}"
+msgstr "การตอบกลับครั้งถัดไป {next}"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
@@ -9917,6 +10079,10 @@ msgstr "ยังไม่มีหน้า"
 msgid "No pending invites."
 msgstr "ไม่มีคำเชิญที่รออยู่"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "No policies yet."
+msgstr "ยังไม่มีนโยบาย"
+
 #: src/features/settings/ProductsPage.tsx
 msgid "No products yet"
 msgstr "ยังไม่มีผลิตภัณฑ์"
@@ -10009,6 +10175,10 @@ msgstr "ยังไม่มีผู้สมัครรับ ผู้เ�
 #: src/features/migrations/ChooseStep.tsx
 msgid "No support address"
 msgstr "ไม่มีที่อยู่ฝ่ายสนับสนุน"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "No target has started yet."
+msgstr "ยังไม่มีเป้าหมายที่เริ่มต้น"
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "No team"
@@ -10306,6 +10476,10 @@ msgstr "ไม่ใช่คนเดียวกัน"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "ผ่านไปหนึ่งนาทียังไม่เห็นใช่ไหม ดูในโฟลเดอร์สแปมหรือจดหมายขยะ หรือส่งรหัสใหม่ด้านล่าง"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Not tracked"
+msgstr "ไม่ติดตาม"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Not uploaded yet"
 msgstr "ยังไม่ได้อัปโหลด"
@@ -10533,6 +10707,7 @@ msgstr "ปิด"
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "Off"
 msgstr "ปิด"
@@ -10645,6 +10820,10 @@ msgstr "ในแพ็กเกจ Team และ Enterprise เจ้าขอ
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "On the web"
 msgstr "บนเว็บ"
+
+#: src/components/common/SlaBadge.tsx
+msgid "On track"
+msgstr "เป็นไปตามแผน"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Once a test message arrives, Yuva waits {hours} hours. If nothing reaches only {provider} in that time, the migration finishes on its own. You can also finish it yourself."
@@ -11485,6 +11664,7 @@ msgid "Pause or resume the monitor"
 msgstr "หยุดชั่วคราวหรือดำเนินการต่อมอนิเตอร์"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
 #: src/features/migrations/text.ts
 #: src/features/settings/channels/ChannelState.tsx
@@ -12021,8 +12201,13 @@ msgstr "ภาพหน้าจอก่อนหน้า"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
 msgstr "ลำดับความสำคัญ"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Priority customers"
+msgstr "ลูกค้าสำคัญ"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Priority set to {level}"
@@ -12971,6 +13156,14 @@ msgstr "ตอบกลับ (R)"
 msgid "Reply account"
 msgstr "บัญชีตอบกลับ"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
+msgstr "เป้าหมายการตอบกลับและการแก้ไขสำหรับการสนทนาที่ตรงกับนโยบาย นโยบายที่เปิดใช้งานอันแรกที่ตรงกับการสนทนาจะมีผล ดังนั้นควรวางอันที่เจาะจงที่สุดไว้ด้านบน เป้าหมายนับตามเวลาทำการของแต่ละกล่องข้อความ"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Reply and resolution targets with due times"
+msgstr "เป้าหมายการตอบกลับและการแก้ไขพร้อมกำหนดเวลา"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Reply and resolve"
 msgstr "Reply and resolve"
@@ -13103,6 +13296,15 @@ msgstr "รีเซ็ตคีย์ API ที่คุณให้ Yuva"
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
 msgstr "รีเซ็ตเป็นค่าเริ่มต้น"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Resolution"
+msgstr "การแก้ไข"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Resolution {resolution}"
+msgstr "การแก้ไข {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13426,6 +13628,7 @@ msgstr "วันเสาร์"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
@@ -14392,6 +14595,11 @@ msgstr "แสดงตัวอย่าง"
 msgid "Show the reply time"
 msgstr "แสดงเวลาตอบกลับ"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Show the SLA targets"
+msgstr "แสดงเป้าหมาย SLA"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "แสดงหน้านี้บนที่อยู่ของคุณเองแทนที่อยู่ของเซิร์ฟเวอร์นี้"
@@ -14737,6 +14945,32 @@ msgstr "ข้ามหรือล้มเหลว"
 #: src/features/status/Notices.tsx
 msgid "Skipped: {0}"
 msgstr "ข้ามไป: {0}"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/inbox/SourceFilter.tsx
+msgid "SLA"
+msgstr "SLA"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA · {policyName}"
+msgstr "SLA · {policyName}"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met"
+msgstr "SLA บรรลุ"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met / breached"
+msgstr "SLA บรรลุ / ละเมิด"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "SLA policies"
+msgstr "นโยบาย SLA"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA targets (W)"
+msgstr "เป้าหมาย SLA (W)"
 
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -15116,6 +15350,10 @@ msgstr "หยุดลงนาม"
 msgid "Stop taking new subscribers. Records and past reports stay, and you can restore it."
 msgstr "หยุดรับผู้สมัครใหม่ บันทึกและรายงานที่ผ่านมายังอยู่ และคุณกู้คืนรายชื่อได้"
 
+#: src/components/common/SlaBadge.tsx
+msgid "Stopped"
+msgstr "หยุดแล้ว"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "พื้นที่เก็บข้อมูล"
@@ -15310,6 +15548,14 @@ msgstr "กลับมารับการสมัครอีกครั้
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Taking the recipients: {prepared} so far"
 msgstr "กำลังเลือกผู้รับ: ตอนนี้ได้ {prepared}"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets"
+msgstr "เป้าหมาย"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
+msgstr "เป้าหมายนับตามเวลาทำการและเขตเวลาของกล่องข้อความของการสนทนา เว้นว่างหนึ่งรายการเพื่อไม่ติดตาม ต้องมีอย่างน้อยหนึ่งรายการ"
 
 #: src/features/status/text.tsx
 msgid "TCP"
@@ -17266,6 +17512,10 @@ msgstr "เลิกติดตาม"
 msgid "Unfollowed"
 msgstr "เลิกติดตามแล้ว"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Unit"
+msgstr "หน่วย"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
 msgstr "อุปกรณ์ที่ไม่รู้จัก"
@@ -17929,6 +18179,14 @@ msgstr "รอตั้งแต่ {at}"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Warn about the certificate"
 msgstr "เตือนเรื่องใบรับรอง"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Warn before it is due"
+msgstr "เตือนก่อนครบกำหนด"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Was due {at}"
+msgstr "กำหนดเวลาคือ {at}"
 
 #: src/features/setup/previews.tsx
 msgid "Was this page helpful?"

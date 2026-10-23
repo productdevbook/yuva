@@ -250,6 +250,8 @@ export function useEnumText() {
       "team.created": t`A team was created`,
       "team.updated": t`A team was changed`,
       "team.deleted": t`A team was deleted`,
+      "conversation.sla_warning": t`An SLA target is due soon`,
+      "conversation.sla_breached": t`An SLA target was breached`,
     } satisfies Record<WebhookEventType, string>,
     scope: {
       "conversations:read": t`Read conversations, messages, labels and canned replies`,
@@ -436,6 +438,7 @@ export function useErrorText() {
     if (err.code === "team_taken") return t`Another team already has this name.`
     if (err.code === "team_limit") return t`A team holds at most 500 members and 100 inboxes.`
     if (err.code === "team_access") return t`This team does not cover the conversation's inbox.`
+    if (err.code === "sla_policy_limit") return t`A workspace holds at most 100 SLA policies. Delete one first.`
     if (err.code === "field_taken") return t`Another field of this kind already uses this key.`
     if (err.code === "field_limit") return t`A kind of field holds at most 50 fields. Delete one first.`
     if (err.code === "field_clearing")

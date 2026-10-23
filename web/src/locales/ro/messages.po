@@ -277,6 +277,10 @@ msgstr "{count, plural, =0 {Nicio conversație} one {# conversație} few {# conv
 msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, one {# marcă} few {# mărci} other {# de mărci}}"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "{count, plural, one {# condition} other {# conditions}}"
+msgstr "{count, plural, one {# condiție} few {# condiții} other {# de condiții}}"
+
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
@@ -466,6 +470,10 @@ msgstr "{inboxName} nu are încă un canal de e-mail pentru {address}. Istoricul
 msgid "{incoming} received, {outgoing} sent"
 msgstr "{incoming} primite, {outgoing} trimise"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "{left} left when it resumes"
+msgstr "Rămân {left} la reluare"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "{listName} is ready"
 msgstr "{listName} este gata"
@@ -473,6 +481,10 @@ msgstr "{listName} este gata"
 #: src/features/home/PropertyCard.tsx
 msgid "{liveText} in the last 30 minutes"
 msgstr "{liveText} în ultimele 30 de minute"
+
+#: src/features/reports/ReportPages.tsx
+msgid "{met} met, {breached} breached"
+msgstr "{met} respectate, {breached} încălcate"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
@@ -1131,6 +1143,10 @@ msgstr "O conversație îmi este atribuită"
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "O conversație este luată în întregime când a fost actualizată ultima oară în interval."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
+msgstr "O conversație trebuie să corespundă fiecărui rând completat. Un rând gol corespunde oricărei conversații."
+
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "O conversație a început"
@@ -1332,6 +1348,10 @@ msgstr "Un procent lângă fiecare componentă."
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A policy that is off applies to nothing."
+msgstr "O politică dezactivată nu se aplică nimic."
+
 #: src/components/common/text.ts
 msgid "A property can have at most 1,000 notes. Delete old ones first."
 msgstr "O proprietate poate avea cel mult 1.000 de note. Șterge mai întâi pe cele vechi."
@@ -1476,6 +1496,10 @@ msgstr "O intrare din Noutăți a fost retrasă"
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "Un număr întreg de la 1 la 10.000.000"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 SLA policies. Delete one first."
+msgstr "Un spațiu de lucru are cel mult 100 de politici SLA. Ștergeți mai întâi una."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "A workspace holds your team, inboxes and conversations. You are its owner and can invite others later."
@@ -2268,6 +2292,16 @@ msgstr "Un proprietar sau admin poate lăsa asistenții să trimită singuri cu 
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "Un proprietar sau admin activează semnarea odată ce înregistrarea este publicată."
 
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target is due soon"
+msgstr "Un obiectiv SLA expiră curând"
+
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target was breached"
+msgstr "Un obiectiv SLA a fost încălcat"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
 msgstr "O încărcare a fost întreruptă: {count} părți, {size}, sunt deja pe server."
@@ -2431,6 +2465,14 @@ msgstr "Orice câmp"
 msgid "Any label"
 msgstr "Orice etichetă"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Any of the labels you pick."
+msgstr "Oricare dintre etichetele alese."
+
+#: src/features/inbox/SourceFilter.tsx
+msgid "Any state"
+msgstr "Orice stare"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "Orice echipă"
@@ -2527,6 +2569,10 @@ msgstr "Aspect"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Application (client) ID"
 msgstr "ID aplicație (client)"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Applies to"
+msgstr "Se aplică la"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "Applies to the next mail."
@@ -3066,6 +3112,14 @@ msgstr "Respinse: {0}"
 msgid "Brands"
 msgstr "Mărci"
 
+#: src/components/common/SlaBadge.tsx
+msgid "Breached"
+msgstr "Încălcat"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Breached, met late at {at}"
+msgstr "Încălcat, respectat cu întârziere la {at}"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
 msgstr "Adu istoricul unei căsuțe din Gmail, Yandex sau orice server IMAP"
@@ -3416,6 +3470,7 @@ msgstr "Setările canalului"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Channels"
 msgstr "Canale"
 
@@ -3759,6 +3814,10 @@ msgstr "Închide căutarea (Esc)"
 #: src/features/reports/ReportPages.tsx
 msgid "Closed"
 msgstr "Închis"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Closed before a reply"
+msgstr "Închisă înainte de un răspuns"
 
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Leave empty to keep everything."
@@ -4280,6 +4339,10 @@ msgstr "Conversațiile în care nimeni nu a scris după import sunt șterse. Nim
 msgid "conversations started"
 msgstr "conversații începute"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Conversations that follow it lose their SLA unless another policy matches. This cannot be undone."
+msgstr "Conversațiile care o urmează pierd SLA-ul dacă nu se potrivește altă politică. Acțiunea nu poate fi anulată."
+
 #: src/features/settings/channels/sections.tsx
 msgid "Conversations that started on it keep their messages."
 msgstr "Conversațiile care au început pe el își păstrează mesajele."
@@ -4498,6 +4561,10 @@ msgstr "Creează cheie"
 #: src/features/setup/NewsletterStep.tsx
 msgid "Create list"
 msgstr "Creează listă"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Create policy"
+msgstr "Creează politica"
 
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
@@ -4720,6 +4787,7 @@ msgstr "Performanță redusă"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4841,6 +4909,10 @@ msgstr "Șterge monitorul"
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the OAuth client you created for Yuva"
 msgstr "Șterge clientul OAuth pe care l-ai creat pentru Yuva"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Delete the policy {name}?"
+msgstr "Ștergeți politica {name}?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
@@ -5392,6 +5464,18 @@ msgstr "Trage fișierele aici ca să le atașezi răspunsului"
 msgid "Dry run"
 msgstr "Rulare de probă"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "Due {at}"
+msgstr "Termen {at}"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Due first"
+msgstr "Mai întâi termenul cel mai apropiat"
+
+#: src/components/common/SlaBadge.tsx
+msgid "Due soon"
+msgstr "Expiră curând"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Duplicate the selected block"
 msgstr "Duplică blocul selectat"
@@ -5543,6 +5627,7 @@ msgstr "Fiecare cu toate mesajele și notele sale"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5602,6 +5687,10 @@ msgstr "Editează macroul"
 msgid "Edit monitor"
 msgstr "Editează monitorul"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Edit policy"
+msgstr "Editează politica"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Editează echipa"
@@ -5660,6 +5749,10 @@ msgstr "Emoji"
 #: src/features/broadcasts/Import.tsx
 msgid "Empty in the first rows"
 msgstr "Gol în primele rânduri"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Enabled"
+msgstr "Activată"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5798,6 +5891,10 @@ msgstr "Fiecare semnal, semnal ratat și stare trimisă din ultimele 30 de zile,
 #: src/features/status/MonitorChecks.tsx
 msgid "Every check of the last 30 days, newest first."
 msgstr "Fiecare verificare din ultimele 30 de zile, cele mai noi primele."
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Every conversation"
+msgstr "Orice conversație"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -6145,8 +6242,8 @@ msgid "Filter by team"
 msgstr "Filtrează după echipă"
 
 #: src/features/inbox/SourceFilter.tsx
-msgid "Filter by type, site and broadcast"
-msgstr "Filtrează după tip, site și mesaj în masă"
+msgid "Filter by type, site, broadcast and SLA"
+msgstr "Filtrează după tip, site, trimitere și SLA"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -6218,10 +6315,16 @@ msgstr "Prenume"
 msgid "first reply"
 msgstr "primul răspuns"
 
+#: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "Primul răspuns"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "First reply {first}"
+msgstr "Primul răspuns {first}"
 
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
@@ -6303,6 +6406,10 @@ msgstr "Pentru mesaje automate"
 #: src/features/setup/NameStep.tsx
 msgid "For business hours"
 msgstr "Pentru programul de lucru"
+
+#: src/features/settings/notifications/events.ts
+msgid "For conversations assigned to me, or to my team when nobody is assigned."
+msgstr "Pentru conversațiile atribuite mie sau echipei mele, când nu e atribuit nimeni."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "For developers"
@@ -6461,6 +6568,18 @@ msgstr "Adresă De la (opțional)"
 #: src/features/migrations/parts.tsx
 msgid "From blocked contacts"
 msgstr "De la contacte blocate"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From each later contact message to the reply."
+msgstr "De la fiecare mesaj ulterior al contactului până la răspuns."
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the contact's first message to the first public reply."
+msgstr "De la primul mesaj al contactului până la primul răspuns public."
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the start of the conversation to its first close."
+msgstr "De la începutul conversației până la prima închidere."
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "From the terminal"
@@ -6891,6 +7010,10 @@ msgstr "Nume de gazdă"
 msgid "Hostname and certificate"
 msgstr "Nume de gazdă și certificat"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "hours"
+msgstr "ore"
+
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "Program"
@@ -7308,6 +7431,7 @@ msgstr "Căsuță pentru {name}"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
@@ -7763,6 +7887,7 @@ msgstr "Doar etichetă: e-mailul ei vine din Tot e-mailul, iar conversațiile ei
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Labels"
 msgstr "Etichete"
 
@@ -8740,6 +8865,14 @@ msgstr "mesaje trimise"
 msgid "Messages the key sends show its bot name and picture."
 msgstr "Mesajele trimise de cheie arată numele și poza botului ei."
 
+#: src/components/common/SlaBadge.tsx
+msgid "Met"
+msgstr "Respectat"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Met {at}"
+msgstr "Respectat {at}"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Metadata"
 msgstr "Metadata"
@@ -8803,6 +8936,14 @@ msgstr "Ale mele"
 #: src/features/status/text.tsx
 msgid "Minor"
 msgstr "Mic"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "minutes"
+msgstr "minute"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Minutes before a due time. 0 sends no warning."
+msgstr "Minute înainte de termen. 0 nu trimite avertisment."
 
 #: src/features/status/text.tsx
 msgid "Missed beat"
@@ -8913,12 +9054,17 @@ msgstr "Cele mai multe voturi"
 msgid "Move {0} to the Trash?"
 msgstr "Muți {0} în coș?"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Move {name}. Drag, or press Alt with the arrow keys."
+msgstr "Mută {name}. Trageți sau apăsați Alt cu săgețile."
+
 #: src/components/common/text.ts
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Mută conversații în coș, restaurează-le și citește coșul"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "Mută în jos"
@@ -9018,6 +9164,7 @@ msgstr "Mută la Yuva"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "Mută în sus"
@@ -9084,6 +9231,7 @@ msgstr "Echipele mele"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -9389,6 +9537,11 @@ msgstr "Pagină nouă"
 msgid "New password"
 msgstr "Parolă nouă"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/SlaPage.tsx
+msgid "New policy"
+msgstr "Politică nouă"
+
 #: src/features/account/AccountPage.tsx
 msgid "New reply in <0>{title}</0>"
 msgstr "Răspuns nou în <0>{title}</0>"
@@ -9481,6 +9634,15 @@ msgstr "Următoarea verificare {next}."
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Următorul e-mail {local} ({utc} UTC), în ritmul acestui mesaj în masă."
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Next reply"
+msgstr "Răspunsul următor"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Next reply {next}"
+msgstr "Răspunsul următor {next}"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
@@ -9917,6 +10079,10 @@ msgstr "Încă nu există pagini"
 msgid "No pending invites."
 msgstr "Nicio invitație în așteptare."
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "No policies yet."
+msgstr "Încă nu există politici."
+
 #: src/features/settings/ProductsPage.tsx
 msgid "No products yet"
 msgstr "Încă nu există produse"
@@ -10009,6 +10175,10 @@ msgstr "Încă niciun abonat. Vizitatorii se abonează pe pagina de stare sau po
 #: src/features/migrations/ChooseStep.tsx
 msgid "No support address"
 msgstr "Fără adresă de suport"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "No target has started yet."
+msgstr "Niciun obiectiv nu a început încă."
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "No team"
@@ -10306,6 +10476,10 @@ msgstr "Nu sunt la fel"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "Nu a ajuns după un minut? Uită-te în dosarul de spam sau cere un cod nou mai jos."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Not tracked"
+msgstr "Nemonitorizat"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Not uploaded yet"
 msgstr "Încă neîncărcat"
@@ -10533,6 +10707,7 @@ msgstr "oprit"
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "Off"
 msgstr "Oprit"
@@ -10645,6 +10820,10 @@ msgstr "În planurile Team și Enterprise, un proprietar o adaugă o dată în <
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "On the web"
 msgstr "Pe web"
+
+#: src/components/common/SlaBadge.tsx
+msgid "On track"
+msgstr "La timp"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Once a test message arrives, Yuva waits {hours} hours. If nothing reaches only {provider} in that time, the migration finishes on its own. You can also finish it yourself."
@@ -11485,6 +11664,7 @@ msgid "Pause or resume the monitor"
 msgstr "Pune pe pauză sau reia monitorul"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
 #: src/features/migrations/text.ts
 #: src/features/settings/channels/ChannelState.tsx
@@ -12021,8 +12201,13 @@ msgstr "Captura anterioară"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
 msgstr "Prioritate"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Priority customers"
+msgstr "Clienți prioritari"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Priority set to {level}"
@@ -12971,6 +13156,14 @@ msgstr "Răspunde (R)"
 msgid "Reply account"
 msgstr "Cont de răspuns"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
+msgstr "Obiective de răspuns și rezolvare pentru conversațiile la care se potrivește o politică. Se aplică prima politică activată care se potrivește unei conversații, așa că păstrați-le pe cele mai specifice sus. Obiectivele se numără în programul de lucru al fiecărei căsuțe."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Reply and resolution targets with due times"
+msgstr "Obiective de răspuns și rezolvare cu termene"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Reply and resolve"
 msgstr "Răspunde și rezolvă"
@@ -13103,6 +13296,15 @@ msgstr "Resetează cheia API pe care i-ai dat-o lui Yuva"
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
 msgstr "Resetează la valorile implicite"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Resolution"
+msgstr "Rezolvare"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Resolution {resolution}"
+msgstr "Rezolvare {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13426,6 +13628,7 @@ msgstr "Sâmbătă"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
@@ -14392,6 +14595,11 @@ msgstr "Arată previzualizarea"
 msgid "Show the reply time"
 msgstr "Arată timpul de răspuns"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Show the SLA targets"
+msgstr "Arată obiectivele SLA"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "Afișează această pagină pe adresa ta în loc de adresa acestui server."
@@ -14737,6 +14945,32 @@ msgstr "Omise sau eșuate"
 #: src/features/status/Notices.tsx
 msgid "Skipped: {0}"
 msgstr "Omise: {0}"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/inbox/SourceFilter.tsx
+msgid "SLA"
+msgstr "SLA"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA · {policyName}"
+msgstr "SLA · {policyName}"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met"
+msgstr "SLA respectat"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met / breached"
+msgstr "SLA respectate / încălcate"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "SLA policies"
+msgstr "Politici SLA"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA targets (W)"
+msgstr "Obiective SLA (W)"
 
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -15116,6 +15350,10 @@ msgstr "Oprește semnarea"
 msgid "Stop taking new subscribers. Records and past reports stay, and you can restore it."
 msgstr "Nu mai primi abonați noi. Dovezile și rapoartele trecute rămân, iar lista poate fi restaurată."
 
+#: src/components/common/SlaBadge.tsx
+msgid "Stopped"
+msgstr "Oprit"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "Stocare"
@@ -15310,6 +15548,14 @@ msgstr "Primește din nou înscrieri și readuce lista în selectorul de public 
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Taking the recipients: {prepared} so far"
 msgstr "Se aleg destinatarii: {prepared} până acum"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets"
+msgstr "Obiective"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
+msgstr "Obiectivele se numără în programul de lucru și fusul orar al căsuței conversației. Lăsați unul gol pentru a nu fi monitorizat; este necesar cel puțin unul."
 
 #: src/features/status/text.tsx
 msgid "TCP"
@@ -17266,6 +17512,10 @@ msgstr "Nu mai urmări"
 msgid "Unfollowed"
 msgstr "Urmărire oprită"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Unit"
+msgstr "Unitate"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
 msgstr "Dispozitiv necunoscut"
@@ -17929,6 +18179,14 @@ msgstr "așteaptă din {at}"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Warn about the certificate"
 msgstr "Avertizează despre certificat"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Warn before it is due"
+msgstr "Avertizează înainte de termen"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Was due {at}"
+msgstr "Termenul era {at}"
 
 #: src/features/setup/previews.tsx
 msgid "Was this page helpful?"

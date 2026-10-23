@@ -12,6 +12,8 @@ export const EVENTS: EventName[] = [
   "message_in_unassigned_conversation",
   "assigned_to_me",
   "mentioned",
+  "sla_warning",
+  "sla_breached",
 ]
 
 export const DELAYS = [5, 15, 30, 60, 120, 240, 1440]
@@ -37,6 +39,14 @@ export function useEventText(): Record<EventName, { label: string; hint: string 
     },
     assigned_to_me: { label: t`A conversation is assigned to me`, hint: t`When someone else assigns it to you.` },
     mentioned: { label: t`Someone mentions me in a note`, hint: t`When a teammate adds you to a note with @.` },
+    sla_warning: {
+      label: t`An SLA target is due soon`,
+      hint: t`For conversations assigned to me, or to my team when nobody is assigned.`,
+    },
+    sla_breached: {
+      label: t`An SLA target was breached`,
+      hint: t`For conversations assigned to me, or to my team when nobody is assigned.`,
+    },
   }
 }
 

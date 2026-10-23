@@ -277,6 +277,10 @@ msgstr "{count, plural, =0 {کوئی گفتگو نہیں} one {# گفتگو} oth
 msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, one {# برانڈ} other {# برانڈز}}"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "{count, plural, one {# condition} other {# conditions}}"
+msgstr "{count, plural, one {# شرط} other {# شرائط}}"
+
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
@@ -466,6 +470,10 @@ msgstr "{inboxName} میں {address} کے لیے ابھی ای میل چینل �
 msgid "{incoming} received, {outgoing} sent"
 msgstr "{incoming} موصول، {outgoing} بھیجے گئے"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "{left} left when it resumes"
+msgstr "دوبارہ شروع ہونے پر {left} باقی ہوں گے"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "{listName} is ready"
 msgstr "{listName} تیار ہے"
@@ -473,6 +481,10 @@ msgstr "{listName} تیار ہے"
 #: src/features/home/PropertyCard.tsx
 msgid "{liveText} in the last 30 minutes"
 msgstr "پچھلے 30 منٹ میں {liveText}"
+
+#: src/features/reports/ReportPages.tsx
+msgid "{met} met, {breached} breached"
+msgstr "{met} پورے ہوئے، {breached} کی خلاف ورزی ہوئی"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
@@ -1131,6 +1143,10 @@ msgstr "گفتگو مجھے تفویض ہے"
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "جب گفتگو کی آخری تازہ کاری حد کے اندر ہو تو پوری گفتگو لی جاتی ہے۔"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
+msgstr "گفتگو کو آپ کی بھری ہوئی ہر قطار سے مطابقت رکھنی چاہیے۔ خالی قطار ہر چیز سے مطابقت رکھتی ہے۔"
+
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "گفتگو شروع ہوئی"
@@ -1332,6 +1348,10 @@ msgstr "ہر جزو کے ساتھ ایک فیصد۔"
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A policy that is off applies to nothing."
+msgstr "بند پالیسی کسی چیز پر لاگو نہیں ہوتی۔"
+
 #: src/components/common/text.ts
 msgid "A property can have at most 1,000 notes. Delete old ones first."
 msgstr "ایک پراپرٹی میں زیادہ سے زیادہ 1,000 نوٹس ہو سکتے ہیں۔ پہلے پرانے حذف کریں۔"
@@ -1476,6 +1496,10 @@ msgstr "\"نیا کیا ہے\" کی ایک اندراج کی اشاعت واپس
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "1 سے 10,000,000 تک پورا عدد"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 SLA policies. Delete one first."
+msgstr "ایک ورک اسپیس میں زیادہ سے زیادہ 100 SLA پالیسیاں ہو سکتی ہیں۔ پہلے ایک حذف کریں۔"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "A workspace holds your team, inboxes and conversations. You are its owner and can invite others later."
@@ -2268,6 +2292,16 @@ msgstr "مالک یا ایڈمن «بوٹس بھیج سکتے ہیں» سے اس
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "ریکارڈ شائع ہونے کے بعد مالک یا ایڈمن دستخط آن کرتا ہے۔"
 
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target is due soon"
+msgstr "ایک SLA ہدف کی مدت جلد ختم ہو رہی ہے"
+
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target was breached"
+msgstr "ایک SLA ہدف کی خلاف ورزی ہوئی"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
 msgstr "اپ لوڈ کٹ گیا: {count} حصے، {size}، پہلے ہی سرور پر ہیں۔"
@@ -2431,6 +2465,14 @@ msgstr "کوئی بھی فیلڈ"
 msgid "Any label"
 msgstr "کوئی بھی لیبل"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Any of the labels you pick."
+msgstr "آپ کے منتخب کردہ لیبلز میں سے کوئی بھی۔"
+
+#: src/features/inbox/SourceFilter.tsx
+msgid "Any state"
+msgstr "کوئی بھی حالت"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "کوئی بھی ٹیم"
@@ -2527,6 +2569,10 @@ msgstr "ظاہری شکل"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Application (client) ID"
 msgstr "ایپلیکیشن (کلائنٹ) ID"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Applies to"
+msgstr "لاگو ہوتی ہے"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "Applies to the next mail."
@@ -3066,6 +3112,14 @@ msgstr "باؤنس ہوئے: {0}"
 msgid "Brands"
 msgstr "برانڈز"
 
+#: src/components/common/SlaBadge.tsx
+msgid "Breached"
+msgstr "خلاف ورزی"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Breached, met late at {at}"
+msgstr "خلاف ورزی، {at} پر تاخیر سے پورا ہوا"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
 msgstr "Gmail، Yandex یا کسی بھی IMAP سرور سے میل باکس کی تاریخ لائیں"
@@ -3416,6 +3470,7 @@ msgstr "چینل کی ترتیبات"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Channels"
 msgstr "چینلز"
 
@@ -3759,6 +3814,10 @@ msgstr "تلاش بند کریں (Esc)"
 #: src/features/reports/ReportPages.tsx
 msgid "Closed"
 msgstr "بند"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Closed before a reply"
+msgstr "جواب سے پہلے بند ہوئی"
 
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Leave empty to keep everything."
@@ -4280,6 +4339,10 @@ msgstr "جن گفتگوؤں میں درآمد کے بعد کسی نے نہیں �
 msgid "conversations started"
 msgstr "شروع ہونے والی گفتگوئیں"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Conversations that follow it lose their SLA unless another policy matches. This cannot be undone."
+msgstr "اس کی پیروی کرنے والی گفتگو اپنا SLA کھو دیتی ہیں جب تک کوئی دوسری پالیسی مطابقت نہ رکھے۔ اسے واپس نہیں کیا جا سکتا۔"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Conversations that started on it keep their messages."
 msgstr "جو گفتگوئیں اس پر شروع ہوئیں ان کے پیغامات رہتے ہیں۔"
@@ -4498,6 +4561,10 @@ msgstr "کلید بنائیں"
 #: src/features/setup/NewsletterStep.tsx
 msgid "Create list"
 msgstr "لسٹ بنائیں"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Create policy"
+msgstr "پالیسی بنائیں"
 
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
@@ -4720,6 +4787,7 @@ msgstr "کارکردگی میں کمی"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4841,6 +4909,10 @@ msgstr "مانیٹر حذف کریں"
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the OAuth client you created for Yuva"
 msgstr "وہ OAuth کلائنٹ حذف کریں جو آپ نے Yuva کے لیے بنایا"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Delete the policy {name}?"
+msgstr "پالیسی {name} حذف کریں؟"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
@@ -5392,6 +5464,18 @@ msgstr "اپنے جواب کے ساتھ منسلک کرنے کے لیے فائل
 msgid "Dry run"
 msgstr "آزمائشی چلانا"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "Due {at}"
+msgstr "آخری وقت {at}"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Due first"
+msgstr "پہلے قریب ترین آخری وقت"
+
+#: src/components/common/SlaBadge.tsx
+msgid "Due soon"
+msgstr "جلد مدت ختم"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Duplicate the selected block"
 msgstr "منتخب بلاک کی نقل بنائیں"
@@ -5543,6 +5627,7 @@ msgstr "ہر ایک اپنے تمام پیغامات اور نوٹس کے سات
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5602,6 +5687,10 @@ msgstr "میکرو میں ترمیم کریں"
 msgid "Edit monitor"
 msgstr "مانیٹر میں ترمیم کریں"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Edit policy"
+msgstr "پالیسی میں ترمیم کریں"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "ٹیم میں ترمیم کریں"
@@ -5660,6 +5749,10 @@ msgstr "ایموجی"
 #: src/features/broadcasts/Import.tsx
 msgid "Empty in the first rows"
 msgstr "پہلی قطاروں میں خالی"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Enabled"
+msgstr "فعال"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5798,6 +5891,10 @@ msgstr "پچھلے 30 دنوں کا ہر سگنل، چھوٹا ہوا سگنل �
 #: src/features/status/MonitorChecks.tsx
 msgid "Every check of the last 30 days, newest first."
 msgstr "پچھلے 30 دنوں کی ہر جانچ، تازہ ترین پہلے۔"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Every conversation"
+msgstr "ہر گفتگو"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -6145,8 +6242,8 @@ msgid "Filter by team"
 msgstr "ٹیم کے مطابق فلٹر کریں"
 
 #: src/features/inbox/SourceFilter.tsx
-msgid "Filter by type, site and broadcast"
-msgstr "قسم، سائٹ اور براڈکاسٹ کے لحاظ سے فلٹر کریں"
+msgid "Filter by type, site, broadcast and SLA"
+msgstr "قسم، سائٹ، نشریہ اور SLA کے مطابق فلٹر کریں"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -6218,10 +6315,16 @@ msgstr "پہلا نام"
 msgid "first reply"
 msgstr "پہلا جواب"
 
+#: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "پہلا جواب"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "First reply {first}"
+msgstr "پہلا جواب {first}"
 
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
@@ -6303,6 +6406,10 @@ msgstr "خودکار پیغامات کے لیے"
 #: src/features/setup/NameStep.tsx
 msgid "For business hours"
 msgstr "کاروباری اوقات کے لیے"
+
+#: src/features/settings/notifications/events.ts
+msgid "For conversations assigned to me, or to my team when nobody is assigned."
+msgstr "مجھے تفویض کردہ گفتگو کے لیے، یا میری ٹیم کے لیے جب کوئی تفویض نہ ہو۔"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "For developers"
@@ -6461,6 +6568,18 @@ msgstr "From پتہ (اختیاری)"
 #: src/features/migrations/parts.tsx
 msgid "From blocked contacts"
 msgstr "بلاک شدہ رابطوں سے"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From each later contact message to the reply."
+msgstr "رابطے کے ہر بعد کے پیغام سے جواب تک۔"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the contact's first message to the first public reply."
+msgstr "رابطے کے پہلے پیغام سے پہلے عوامی جواب تک۔"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the start of the conversation to its first close."
+msgstr "گفتگو کے آغاز سے اس کی پہلی بندش تک۔"
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "From the terminal"
@@ -6891,6 +7010,10 @@ msgstr "ہوسٹ نیم"
 msgid "Hostname and certificate"
 msgstr "ہوسٹ نیم اور سرٹیفکیٹ"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "hours"
+msgstr "گھنٹے"
+
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "اوقات"
@@ -7308,6 +7431,7 @@ msgstr "{name} کا ان باکس"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
@@ -7763,6 +7887,7 @@ msgstr "صرف لیبل: اس کی میل All mail سے آتی ہے، اور ا�
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Labels"
 msgstr "لیبلز"
 
@@ -8740,6 +8865,14 @@ msgstr "بھیجے گئے پیغامات"
 msgid "Messages the key sends show its bot name and picture."
 msgstr "کلید کے بھیجے پیغامات اس کا بوٹ نام اور تصویر دکھاتے ہیں۔"
 
+#: src/components/common/SlaBadge.tsx
+msgid "Met"
+msgstr "پورا ہوا"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Met {at}"
+msgstr "{at} پر پورا ہوا"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Metadata"
 msgstr "Metadata"
@@ -8803,6 +8936,14 @@ msgstr "میرے"
 #: src/features/status/text.tsx
 msgid "Minor"
 msgstr "معمولی"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "minutes"
+msgstr "منٹ"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Minutes before a due time. 0 sends no warning."
+msgstr "آخری وقت سے کتنے منٹ پہلے۔ 0 کوئی انتباہ نہیں بھیجتا۔"
 
 #: src/features/status/text.tsx
 msgid "Missed beat"
@@ -8913,12 +9054,17 @@ msgstr "سب سے زیادہ ووٹ"
 msgid "Move {0} to the Trash?"
 msgstr "{0} کو ٹریش میں منتقل کریں؟"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Move {name}. Drag, or press Alt with the arrow keys."
+msgstr "{name} کو منتقل کریں۔ گھسیٹیں، یا تیر کی کلیدوں کے ساتھ Alt دبائیں۔"
+
 #: src/components/common/text.ts
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "گفتگو کو ٹریش میں منتقل کریں، بحال کریں اور ٹریش پڑھیں"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "نیچے لے جائیں"
@@ -9018,6 +9164,7 @@ msgstr "Yuva پر منتقل ہوں"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "اوپر لے جائیں"
@@ -9084,6 +9231,7 @@ msgstr "میری ٹیمیں"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -9389,6 +9537,11 @@ msgstr "نیا صفحہ"
 msgid "New password"
 msgstr "نیا پاس ورڈ"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/SlaPage.tsx
+msgid "New policy"
+msgstr "نئی پالیسی"
+
 #: src/features/account/AccountPage.tsx
 msgid "New reply in <0>{title}</0>"
 msgstr "<0>{title}</0> میں نیا جواب"
@@ -9481,6 +9634,15 @@ msgstr "اگلی جانچ {next}۔"
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "اگلی میل {local} ({utc} UTC) پر، اس براڈکاسٹ کی رفتار سے۔"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Next reply"
+msgstr "اگلا جواب"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Next reply {next}"
+msgstr "اگلا جواب {next}"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
@@ -9917,6 +10079,10 @@ msgstr "ابھی کوئی صفحہ نہیں"
 msgid "No pending invites."
 msgstr "کوئی زیر التوا دعوت نہیں۔"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "No policies yet."
+msgstr "ابھی کوئی پالیسی نہیں۔"
+
 #: src/features/settings/ProductsPage.tsx
 msgid "No products yet"
 msgstr "ابھی کوئی پروڈکٹ نہیں"
@@ -10009,6 +10175,10 @@ msgstr "ابھی کوئی سبسکرائبر نہیں۔ زائرین اسٹیٹ�
 #: src/features/migrations/ChooseStep.tsx
 msgid "No support address"
 msgstr "کوئی سپورٹ پتہ نہیں"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "No target has started yet."
+msgstr "ابھی کوئی ہدف شروع نہیں ہوا۔"
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "No team"
@@ -10306,6 +10476,10 @@ msgstr "ایک جیسے نہیں"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "ایک منٹ بعد بھی نہیں پہنچا؟ اپنا اسپام یا جنک فولڈر دیکھیں، یا نیچے نیا کوڈ بھیجیں۔"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Not tracked"
+msgstr "ٹریک نہیں کیا جاتا"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Not uploaded yet"
 msgstr "ابھی اپ لوڈ نہیں ہوا"
@@ -10533,6 +10707,7 @@ msgstr "بند"
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "Off"
 msgstr "بند"
@@ -10645,6 +10820,10 @@ msgstr "Team اور Enterprise پلانز میں مالک اسے <0>Organization
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "On the web"
 msgstr "ویب پر"
+
+#: src/components/common/SlaBadge.tsx
+msgid "On track"
+msgstr "وقت پر"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Once a test message arrives, Yuva waits {hours} hours. If nothing reaches only {provider} in that time, the migration finishes on its own. You can also finish it yourself."
@@ -11485,6 +11664,7 @@ msgid "Pause or resume the monitor"
 msgstr "مانیٹر روکیں یا جاری رکھیں"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
 #: src/features/migrations/text.ts
 #: src/features/settings/channels/ChannelState.tsx
@@ -12021,8 +12201,13 @@ msgstr "پچھلا اسکرین شاٹ"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
 msgstr "ترجیح"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Priority customers"
+msgstr "ترجیحی صارفین"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Priority set to {level}"
@@ -12971,6 +13156,14 @@ msgstr "جواب دیں (R)"
 msgid "Reply account"
 msgstr "جوابی اکاؤنٹ"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
+msgstr "ان گفتگو کے جواب اور حل کے اہداف جن سے کوئی پالیسی مطابقت رکھتی ہے۔ گفتگو سے مطابقت رکھنے والی پہلی فعال پالیسی لاگو ہوتی ہے، اس لیے سب سے مخصوص کو اوپر رکھیں۔ اہداف ہر ان باکس کے کاروباری اوقات میں گنے جاتے ہیں۔"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Reply and resolution targets with due times"
+msgstr "آخری وقت کے ساتھ جواب اور حل کے اہداف"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Reply and resolve"
 msgstr "Reply and resolve"
@@ -13103,6 +13296,15 @@ msgstr "Yuva کو دی گئی API کلید ری سیٹ کریں"
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
 msgstr "ڈیفالٹس پر بحال کریں"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Resolution"
+msgstr "حل"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Resolution {resolution}"
+msgstr "حل {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13426,6 +13628,7 @@ msgstr "ہفتہ"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
@@ -14392,6 +14595,11 @@ msgstr "پیش منظر دکھائیں"
 msgid "Show the reply time"
 msgstr "جواب کا وقت دکھائیں"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Show the SLA targets"
+msgstr "SLA اہداف دکھائیں"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "اس صفحے کو اس سرور کے پتے کی بجائے اپنے پتے پر دکھائیں۔"
@@ -14737,6 +14945,32 @@ msgstr "چھوڑا گیا یا ناکام"
 #: src/features/status/Notices.tsx
 msgid "Skipped: {0}"
 msgstr "چھوڑا گیا: {0}"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/inbox/SourceFilter.tsx
+msgid "SLA"
+msgstr "SLA"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA · {policyName}"
+msgstr "SLA · {policyName}"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met"
+msgstr "SLA پورا ہوا"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met / breached"
+msgstr "SLA پورے / خلاف ورزی"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "SLA policies"
+msgstr "SLA پالیسیاں"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA targets (W)"
+msgstr "SLA اہداف (W)"
 
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -15116,6 +15350,10 @@ msgstr "دستخط روکیں"
 msgid "Stop taking new subscribers. Records and past reports stay, and you can restore it."
 msgstr "نئے سبسکرائبرز لینا بند کریں۔ ریکارڈ اور پچھلی رپورٹیں رہتی ہیں، اور آپ فہرست بحال کر سکتے ہیں۔"
 
+#: src/components/common/SlaBadge.tsx
+msgid "Stopped"
+msgstr "روک دیا گیا"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "اسٹوریج"
@@ -15310,6 +15548,14 @@ msgstr "دوبارہ رکنیت لیتی ہے اور فہرست کو براڈک�
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Taking the recipients: {prepared} so far"
 msgstr "وصول کنندگان لیے جا رہے ہیں: اب تک {prepared}"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets"
+msgstr "اہداف"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
+msgstr "اہداف گفتگو کے ان باکس کے کاروباری اوقات اور ٹائم زون میں گنے جاتے ہیں۔ ٹریک نہ کرنے کے لیے ایک کو خالی چھوڑیں؛ کم از کم ایک ضروری ہے۔"
 
 #: src/features/status/text.tsx
 msgid "TCP"
@@ -17266,6 +17512,10 @@ msgstr "فالو ختم کریں"
 msgid "Unfollowed"
 msgstr "فالو ختم ہوا"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Unit"
+msgstr "اکائی"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
 msgstr "نامعلوم ڈیوائس"
@@ -17929,6 +18179,14 @@ msgstr "{at} سے انتظار میں"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Warn about the certificate"
 msgstr "سرٹیفکیٹ کے بارے میں خبردار کریں"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Warn before it is due"
+msgstr "آخری وقت سے پہلے خبردار کریں"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Was due {at}"
+msgstr "آخری وقت {at} تھا"
 
 #: src/features/setup/previews.tsx
 msgid "Was this page helpful?"

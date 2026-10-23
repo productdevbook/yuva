@@ -277,6 +277,10 @@ msgstr "{count, plural, =0 {సంభాషణలు లేవు} one {# సం
 msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, one {# బ్రాండ్} other {# బ్రాండ్‌లు}}"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "{count, plural, one {# condition} other {# conditions}}"
+msgstr "{count, plural, one {# షరతు} other {# షరతులు}}"
+
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
@@ -466,6 +470,10 @@ msgstr "{inboxName} కు {address} కోసం ఇమెయిల్ ఛా�
 msgid "{incoming} received, {outgoing} sent"
 msgstr "{incoming} స్వీకరించబడ్డాయి, {outgoing} పంపబడ్డాయి"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "{left} left when it resumes"
+msgstr "తిరిగి ప్రారంభమైనప్పుడు {left} మిగులుతుంది"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "{listName} is ready"
 msgstr "{listName} సిద్ధంగా ఉంది"
@@ -473,6 +481,10 @@ msgstr "{listName} సిద్ధంగా ఉంది"
 #: src/features/home/PropertyCard.tsx
 msgid "{liveText} in the last 30 minutes"
 msgstr "గత 30 నిమిషాల్లో {liveText}"
+
+#: src/features/reports/ReportPages.tsx
+msgid "{met} met, {breached} breached"
+msgstr "{met} నెరవేరాయి, {breached} ఉల్లంఘించబడ్డాయి"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
@@ -1131,6 +1143,10 @@ msgstr "సంభాషణ నాకు కేటాయించబడింద�
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "సంభాషణ చివరిగా పరిధిలో అప్‌డేట్ అయినప్పుడు పూర్తిగా తీసుకోబడుతుంది."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
+msgstr "సంభాషణ మీరు నింపిన ప్రతి వరుసతో సరిపోలాలి. ఖాళీ వరుస అన్నింటితో సరిపోలుతుంది."
+
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "సంభాషణ ప్రారంభమైంది"
@@ -1332,6 +1348,10 @@ msgstr "ప్రతి భాగం పక్కన శాతం."
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A policy that is off applies to nothing."
+msgstr "ఆఫ్ చేసిన విధానం దేనికీ వర్తించదు."
+
 #: src/components/common/text.ts
 msgid "A property can have at most 1,000 notes. Delete old ones first."
 msgstr "ఒక ప్రాపర్టీకి గరిష్టంగా 1,000 గమనికలు ఉండవచ్చు. ముందుగా పాతవాటిని తొలగించండి."
@@ -1476,6 +1496,10 @@ msgstr "\"కొత్తవి\" ఎంట్రీ ప్రచురణ ఉ�
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "1 నుండి 10,000,000 వరకు పూర్ణ సంఖ్య"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 SLA policies. Delete one first."
+msgstr "ఒక వర్క్‌స్పేస్‌లో గరిష్టంగా 100 SLA విధానాలు ఉండవచ్చు. ముందుగా ఒకటి తొలగించండి."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "A workspace holds your team, inboxes and conversations. You are its owner and can invite others later."
@@ -2268,6 +2292,16 @@ msgstr "యజమాని లేదా అడ్మిన్ “బాట్‌
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "రికార్డ్ ప్రచురించబడిన తర్వాత యజమాని లేదా అడ్మిన్ సైనింగ్‌ను ఆన్ చేస్తారు."
 
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target is due soon"
+msgstr "ఒక SLA లక్ష్యం గడువు త్వరలో ముగుస్తుంది"
+
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target was breached"
+msgstr "ఒక SLA లక్ష్యం ఉల్లంఘించబడింది"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
 msgstr "అప్‌లోడ్ మధ్యలో ఆగిపోయింది: {count} భాగాలు, {size}, ఇప్పటికే సర్వర్‌లో ఉన్నాయి."
@@ -2431,6 +2465,14 @@ msgstr "ఏదైనా ఫీల్డ్"
 msgid "Any label"
 msgstr "ఏదైనా లేబుల్"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Any of the labels you pick."
+msgstr "మీరు ఎంచుకున్న లేబుల్స్‌లో ఏదైనా ఒకటి."
+
+#: src/features/inbox/SourceFilter.tsx
+msgid "Any state"
+msgstr "ఏ స్థితి అయినా"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "ఏ బృందమైనా"
@@ -2527,6 +2569,10 @@ msgstr "రూపం"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Application (client) ID"
 msgstr "అప్లికేషన్ (క్లయింట్) ID"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Applies to"
+msgstr "వీటికి వర్తిస్తుంది"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "Applies to the next mail."
@@ -3066,6 +3112,14 @@ msgstr "బౌన్స్ అయినవి: {0}"
 msgid "Brands"
 msgstr "బ్రాండ్‌లు"
 
+#: src/components/common/SlaBadge.tsx
+msgid "Breached"
+msgstr "ఉల్లంఘించబడింది"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Breached, met late at {at}"
+msgstr "ఉల్లంఘించబడింది, {at}కి ఆలస్యంగా నెరవేరింది"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
 msgstr "Gmail, Yandex లేదా ఏదైనా IMAP సర్వర్ నుండి మెయిల్‌బాక్స్ చరిత్రను తీసుకురండి"
@@ -3416,6 +3470,7 @@ msgstr "ఛానెల్ సెట్టింగ్‌లు"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Channels"
 msgstr "ఛానెల్‌లు"
 
@@ -3759,6 +3814,10 @@ msgstr "శోధనను మూసివేయండి (Esc)"
 #: src/features/reports/ReportPages.tsx
 msgid "Closed"
 msgstr "మూసివేయబడ్డాయి"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Closed before a reply"
+msgstr "సమాధానానికి ముందే మూసివేయబడింది"
 
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Leave empty to keep everything."
@@ -4280,6 +4339,10 @@ msgstr "దిగుమతి తర్వాత ఎవరూ రాయని �
 msgid "conversations started"
 msgstr "ప్రారంభమైన సంభాషణలు"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Conversations that follow it lose their SLA unless another policy matches. This cannot be undone."
+msgstr "దీన్ని అనుసరించే సంభాషణలు, మరో విధానం సరిపోలకపోతే తమ SLAను కోల్పోతాయి. దీన్ని రద్దు చేయలేరు."
+
 #: src/features/settings/channels/sections.tsx
 msgid "Conversations that started on it keep their messages."
 msgstr "దానిపై ప్రారంభమైన సంభాషణలు తమ సందేశాలను ఉంచుకుంటాయి."
@@ -4498,6 +4561,10 @@ msgstr "కీని సృష్టించండి"
 #: src/features/setup/NewsletterStep.tsx
 msgid "Create list"
 msgstr "లిస్ట్‌ను సృష్టించండి"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Create policy"
+msgstr "విధానాన్ని సృష్టించండి"
 
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
@@ -4720,6 +4787,7 @@ msgstr "తగ్గిన పనితీరు"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4841,6 +4909,10 @@ msgstr "మానిటర్‌ను తొలగించండి"
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the OAuth client you created for Yuva"
 msgstr "మీరు Yuva కోసం సృష్టించిన OAuth క్లయింట్‌ను తొలగించండి"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Delete the policy {name}?"
+msgstr "{name} విధానాన్ని తొలగించాలా?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
@@ -5392,6 +5464,18 @@ msgstr "మీ జవాబుకు జోడించడానికి ఫై
 msgid "Dry run"
 msgstr "డ్రై రన్"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "Due {at}"
+msgstr "గడువు {at}"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Due first"
+msgstr "ముందుగా దగ్గరి గడువు"
+
+#: src/components/common/SlaBadge.tsx
+msgid "Due soon"
+msgstr "త్వరలో గడువు"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Duplicate the selected block"
 msgstr "ఎంచుకున్న బ్లాక్‌ను నకలు చేయండి"
@@ -5543,6 +5627,7 @@ msgstr "ప్రతిదీ దాని అన్ని సందేశాల
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5602,6 +5687,10 @@ msgstr "మాక్రోను సవరించండి"
 msgid "Edit monitor"
 msgstr "మానిటర్ సవరించండి"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Edit policy"
+msgstr "విధానాన్ని సవరించండి"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "బృందాన్ని సవరించండి"
@@ -5660,6 +5749,10 @@ msgstr "ఎమోజీ"
 #: src/features/broadcasts/Import.tsx
 msgid "Empty in the first rows"
 msgstr "మొదటి అడ్డు వరుసల్లో ఖాళీ"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Enabled"
+msgstr "ప్రారంభించబడింది"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5798,6 +5891,10 @@ msgstr "గత 30 రోజుల ప్రతి సంకేతం, తప్�
 #: src/features/status/MonitorChecks.tsx
 msgid "Every check of the last 30 days, newest first."
 msgstr "గత 30 రోజుల ప్రతి తనిఖీ, కొత్తది ముందు."
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Every conversation"
+msgstr "ప్రతి సంభాషణ"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -6145,8 +6242,8 @@ msgid "Filter by team"
 msgstr "బృందం ప్రకారం ఫిల్టర్ చేయండి"
 
 #: src/features/inbox/SourceFilter.tsx
-msgid "Filter by type, site and broadcast"
-msgstr "రకం, సైట్ మరియు బ్రాడ్‌కాస్ట్ వారీగా ఫిల్టర్ చేయండి"
+msgid "Filter by type, site, broadcast and SLA"
+msgstr "రకం, సైట్, ప్రసారం, SLA ప్రకారం ఫిల్టర్ చేయండి"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -6218,10 +6315,16 @@ msgstr "మొదటి పేరు"
 msgid "first reply"
 msgstr "మొదటి జవాబు"
 
+#: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "మొదటి జవాబు"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "First reply {first}"
+msgstr "మొదటి సమాధానం {first}"
 
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
@@ -6303,6 +6406,10 @@ msgstr "ఆటోమేటిక్ సందేశాల కోసం"
 #: src/features/setup/NameStep.tsx
 msgid "For business hours"
 msgstr "వ్యాపార వేళల కోసం"
+
+#: src/features/settings/notifications/events.ts
+msgid "For conversations assigned to me, or to my team when nobody is assigned."
+msgstr "నాకు కేటాయించిన సంభాషణలకు, లేదా ఎవరికీ కేటాయించనప్పుడు నా బృందానికి."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "For developers"
@@ -6461,6 +6568,18 @@ msgstr "From చిరునామా (ఐచ్ఛికం)"
 #: src/features/migrations/parts.tsx
 msgid "From blocked contacts"
 msgstr "బ్లాక్ చేసిన కాంటాక్ట్‌ల నుండి"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From each later contact message to the reply."
+msgstr "సంప్రదింపు ప్రతి తదుపరి సందేశం నుండి సమాధానం వరకు."
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the contact's first message to the first public reply."
+msgstr "సంప్రదింపు మొదటి సందేశం నుండి మొదటి బహిరంగ సమాధానం వరకు."
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the start of the conversation to its first close."
+msgstr "సంభాషణ ప్రారంభం నుండి దాని మొదటి మూసివేత వరకు."
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "From the terminal"
@@ -6891,6 +7010,10 @@ msgstr "హోస్ట్‌నేమ్"
 msgid "Hostname and certificate"
 msgstr "హోస్ట్‌నేమ్ మరియు సర్టిఫికేట్"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "hours"
+msgstr "గంటలు"
+
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "సమయాలు"
@@ -7308,6 +7431,7 @@ msgstr "{name} కోసం ఇన్‌బాక్స్"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
@@ -7763,6 +7887,7 @@ msgstr "లేబుల్ మాత్రమే: దాని మెయిల�
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Labels"
 msgstr "లేబుల్‌లు"
 
@@ -8740,6 +8865,14 @@ msgstr "పంపిన సందేశాలు"
 msgid "Messages the key sends show its bot name and picture."
 msgstr "కీ పంపే సందేశాలు దాని బాట్ పేరు మరియు చిత్రాన్ని చూపుతాయి."
 
+#: src/components/common/SlaBadge.tsx
+msgid "Met"
+msgstr "నెరవేరింది"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Met {at}"
+msgstr "{at}కి నెరవేరింది"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Metadata"
 msgstr "Metadata"
@@ -8803,6 +8936,14 @@ msgstr "నావి"
 #: src/features/status/text.tsx
 msgid "Minor"
 msgstr "చిన్నది"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "minutes"
+msgstr "నిమిషాలు"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Minutes before a due time. 0 sends no warning."
+msgstr "గడువుకు ఎన్ని నిమిషాల ముందు. 0 అయితే హెచ్చరిక పంపదు."
 
 #: src/features/status/text.tsx
 msgid "Missed beat"
@@ -8913,12 +9054,17 @@ msgstr "అత్యధిక ఓట్లు"
 msgid "Move {0} to the Trash?"
 msgstr "{0} ను ట్రాష్‌కు తరలించాలా?"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Move {name}. Drag, or press Alt with the arrow keys."
+msgstr "{name}ను తరలించండి. లాగండి, లేదా బాణం కీలతో Alt నొక్కండి."
+
 #: src/components/common/text.ts
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "సంభాషణలను ట్రాష్‌కు తరలించండి, పునరుద్ధరించండి, ట్రాష్ చదవండి"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "కిందికి జరపండి"
@@ -9018,6 +9164,7 @@ msgstr "Yuva కు తరలించండి"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "పైకి జరపండి"
@@ -9084,6 +9231,7 @@ msgstr "నా బృందాలు"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -9389,6 +9537,11 @@ msgstr "కొత్త పేజీ"
 msgid "New password"
 msgstr "కొత్త పాస్‌వర్డ్"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/SlaPage.tsx
+msgid "New policy"
+msgstr "కొత్త విధానం"
+
 #: src/features/account/AccountPage.tsx
 msgid "New reply in <0>{title}</0>"
 msgstr "<0>{title}</0> లో కొత్త జవాబు"
@@ -9481,6 +9634,15 @@ msgstr "తదుపరి తనిఖీ {next}."
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "తదుపరి మెయిల్ {local} ({utc} UTC) న, ఈ బ్రాడ్‌కాస్ట్ వేగంతో."
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Next reply"
+msgstr "తదుపరి సమాధానం"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Next reply {next}"
+msgstr "తదుపరి సమాధానం {next}"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
@@ -9917,6 +10079,10 @@ msgstr "ఇంకా పేజీలు లేవు"
 msgid "No pending invites."
 msgstr "పెండింగ్ ఆహ్వానాలు లేవు."
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "No policies yet."
+msgstr "ఇంకా విధానాలు లేవు."
+
 #: src/features/settings/ProductsPage.tsx
 msgid "No products yet"
 msgstr "ఇంకా ఉత్పత్తులు లేవు"
@@ -10009,6 +10175,10 @@ msgstr "ఇంకా సబ్‌స్క్రైబర్‌లు లేర�
 #: src/features/migrations/ChooseStep.tsx
 msgid "No support address"
 msgstr "సపోర్ట్ చిరునామా లేదు"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "No target has started yet."
+msgstr "ఇంకా ఏ లక్ష్యమూ ప్రారంభం కాలేదు."
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "No team"
@@ -10306,6 +10476,10 @@ msgstr "ఒకరు కాదు"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "ఒక నిమిషం తర్వాత కూడా రాలేదా? మీ స్పామ్ లేదా జంక్ ఫోల్డర్‌లో చూడండి, లేదా దిగువ కొత్త కోడ్‌ను పంపండి."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Not tracked"
+msgstr "ట్రాక్ చేయబడదు"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Not uploaded yet"
 msgstr "ఇంకా అప్‌లోడ్ కాలేదు"
@@ -10533,6 +10707,7 @@ msgstr "ఆఫ్"
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "Off"
 msgstr "ఆఫ్"
@@ -10645,6 +10820,10 @@ msgstr "Team మరియు Enterprise ప్లాన్‌లలో యజమ
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "On the web"
 msgstr "వెబ్‌లో"
+
+#: src/components/common/SlaBadge.tsx
+msgid "On track"
+msgstr "సమయానికి"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Once a test message arrives, Yuva waits {hours} hours. If nothing reaches only {provider} in that time, the migration finishes on its own. You can also finish it yourself."
@@ -11485,6 +11664,7 @@ msgid "Pause or resume the monitor"
 msgstr "మానిటర్‌ను పాజ్ చేయండి లేదా కొనసాగించండి"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
 #: src/features/migrations/text.ts
 #: src/features/settings/channels/ChannelState.tsx
@@ -12021,8 +12201,13 @@ msgstr "మునుపటి స్క్రీన్‌షాట్"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
 msgstr "ప్రాధాన్యత"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Priority customers"
+msgstr "ప్రాధాన్య వినియోగదారులు"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Priority set to {level}"
@@ -12971,6 +13156,14 @@ msgstr "జవాబివ్వండి (R)"
 msgid "Reply account"
 msgstr "జవాబు ఖాతా"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
+msgstr "ఒక విధానం సరిపోలే సంభాషణలకు సమాధానం, పరిష్కార లక్ష్యాలు. సంభాషణకు సరిపోలే మొదటి ప్రారంభించిన విధానం వర్తిస్తుంది, కాబట్టి అత్యంత నిర్దిష్టమైనవి పైన ఉంచండి. లక్ష్యాలు ప్రతి ఇన్‌బాక్స్ పని గంటల్లో లెక్కించబడతాయి."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Reply and resolution targets with due times"
+msgstr "గడువులతో సమాధానం, పరిష్కార లక్ష్యాలు"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Reply and resolve"
 msgstr "Reply and resolve"
@@ -13103,6 +13296,15 @@ msgstr "Yuva కి ఇచ్చిన API కీని రీసెట్ చ�
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
 msgstr "డిఫాల్ట్‌లకు రీసెట్ చేయండి"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Resolution"
+msgstr "పరిష్కారం"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Resolution {resolution}"
+msgstr "పరిష్కారం {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13426,6 +13628,7 @@ msgstr "శనివారం"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
@@ -14392,6 +14595,11 @@ msgstr "ప్రివ్యూను చూపండి"
 msgid "Show the reply time"
 msgstr "జవాబు సమయాన్ని చూపండి"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Show the SLA targets"
+msgstr "SLA లక్ష్యాలను చూపండి"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "ఈ పేజీని ఈ సర్వర్ చిరునామాకు బదులు మీ సొంత చిరునామాలో చూపించండి."
@@ -14737,6 +14945,32 @@ msgstr "దాటవేయబడింది లేదా విఫలమైం�
 #: src/features/status/Notices.tsx
 msgid "Skipped: {0}"
 msgstr "దాటవేయబడినవి: {0}"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/inbox/SourceFilter.tsx
+msgid "SLA"
+msgstr "SLA"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA · {policyName}"
+msgstr "SLA · {policyName}"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met"
+msgstr "SLA నెరవేరింది"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met / breached"
+msgstr "SLA నెరవేరినవి / ఉల్లంఘించినవి"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "SLA policies"
+msgstr "SLA విధానాలు"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA targets (W)"
+msgstr "SLA లక్ష్యాలు (W)"
 
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -15116,6 +15350,10 @@ msgstr "సైన్ చేయడం ఆపండి"
 msgid "Stop taking new subscribers. Records and past reports stay, and you can restore it."
 msgstr "కొత్త సబ్‌స్క్రైబర్లను తీసుకోవడం ఆపండి. రికార్డులు, గత నివేదికలు ఉంటాయి, జాబితాను పునరుద్ధరించవచ్చు."
 
+#: src/components/common/SlaBadge.tsx
+msgid "Stopped"
+msgstr "ఆపబడింది"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "స్టోరేజ్"
@@ -15310,6 +15548,14 @@ msgstr "మళ్లీ సైన్-అప్‌లు తీసుకుంట
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Taking the recipients: {prepared} so far"
 msgstr "గ్రహీతలను తీసుకుంటోంది: ఇప్పటివరకు {prepared}"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets"
+msgstr "లక్ష్యాలు"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
+msgstr "లక్ష్యాలు సంభాషణ ఇన్‌బాక్స్ పని గంటలు, టైమ్ జోన్‌లో లెక్కించబడతాయి. ట్రాక్ చేయకూడదంటే ఒకదాన్ని ఖాళీగా ఉంచండి; కనీసం ఒకటి అవసరం."
 
 #: src/features/status/text.tsx
 msgid "TCP"
@@ -17266,6 +17512,10 @@ msgstr "అనుసరించడం ఆపండి"
 msgid "Unfollowed"
 msgstr "అనుసరించడం ఆపబడింది"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Unit"
+msgstr "యూనిట్"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
 msgstr "తెలియని పరికరం"
@@ -17929,6 +18179,14 @@ msgstr "{at} నుండి వేచి ఉంది"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Warn about the certificate"
 msgstr "సర్టిఫికెట్ గురించి హెచ్చరించండి"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Warn before it is due"
+msgstr "గడువుకు ముందు హెచ్చరించండి"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Was due {at}"
+msgstr "గడువు {at} ఉండింది"
 
 #: src/features/setup/previews.tsx
 msgid "Was this page helpful?"

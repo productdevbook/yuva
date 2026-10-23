@@ -101,6 +101,15 @@ export function useCustomFields(object?: CustomFieldObject) {
   return { ...q, data }
 }
 
+export function useSlaPolicies() {
+  const { workspaceId: ws } = useSession()
+  return useQuery({
+    queryKey: keys.slaPolicies(ws),
+    queryFn: () => unwrap(api.GET("/v1/sla-policies")).then((r) => r.items),
+    staleTime: 60_000,
+  })
+}
+
 export function useMyTeams() {
   const { membership } = useSession()
   return (useTeams().data ?? []).filter((team) => team.member_ids.includes(membership.member_id))

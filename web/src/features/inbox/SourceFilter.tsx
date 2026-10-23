@@ -2,7 +2,7 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { CheckIcon, ChevronDownIcon, ListFilterIcon, MegaphoneIcon } from "lucide-react"
 import { useMemo, useSyncExternalStore } from "react"
 
-import { hostOf, SOURCE_FILTERS, SourceIcon, useSourceText } from "@/components/common"
+import { hostOf, SOURCE_FILTERS, SourceIcon, useSlaText, useSourceText } from "@/components/common"
 import { popupClass } from "@/components/ui/dropdown-menu"
 import { Item } from "@/components/ui/item"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -12,7 +12,7 @@ import { FieldFilterSection, fieldFilterText } from "@/features/fields/FieldFilt
 import { useConversationFieldList } from "@/features/fields/ConversationFields"
 import { useBroadcasts } from "@/features/broadcasts/broadcastQueries"
 import { useDocsSites } from "@/features/docs/queries"
-import type { ChannelKind } from "@/lib/api"
+import type { ChannelKind, SlaState } from "@/lib/api"
 import type { ConversationFilters } from "@/lib/keys"
 import { cn } from "@/lib/utils"
 import { useChannelMap } from "@/lib/workspace"
@@ -24,6 +24,7 @@ export type SourceFilterValue = {
   site?: string
   broadcast?: { id: string; name: string }
   field?: FieldFilterValue
+  sla?: SlaState
 }
 
 let value: SourceFilterValue = {}
@@ -53,6 +54,7 @@ export function sourceFilters(v: SourceFilterValue): ConversationFilters {
   if (v.site) f.site = v.site
   if (v.broadcast) f.broadcast_id = v.broadcast.id
   if (v.field) f.fields = { [v.field.key]: v.field.value }
+  if (v.sla) f.sla_state = [v.sla]
   return f
 }
 
@@ -100,6 +102,30 @@ function Choice({
       {children}
       <CheckIcon className={cn("ms-auto size-4 shrink-0 text-brand", !active && "invisible")} />
     </Item>
+  )
+}
+
+const SLA_STATES: SlaState[] = ["breached", "due_soon", "on_track", "paused", "met"]
+
+function SlaChoices({ v, update }: { v: SourceFilterValue; update: (next: SourceFilterValue) => void }) {
+  const text = useSlaText()
+  return (
+    <>
+      <Separator className="mx-1.5 my-1 w-auto" />
+      <p className="px-2.5 pt-1.5 pb-1 text-caption font-medium text-faint">
+        <Trans>SLA</Trans>
+      </p>
+      <Choice active={!v.sla} onClick={() => update({ ...v, sla: undefined })} testId="sla-any">
+        <span className="flex-1 text-start">
+          <Trans>Any state</Trans>
+        </span>
+      </Choice>
+      {SLA_STATES.map((s) => (
+        <Choice key={s} active={v.sla === s} onClick={() => update({ ...v, sla: s })} testId={`sla-${s}`}>
+          <span className="flex-1 text-start">{text[s]}</span>
+        </Choice>
+      ))}
+    </>
   )
 }
 
@@ -153,6 +179,7 @@ export function SourceFilter({
 }) {
   const { t } = useLingui()
   const text = useSourceText()
+  const slaText = useSlaText()
   const [v, set] = useSourceFilter()
   const sites = useSites(inboxId)
   const fields = useConversationFieldList()
@@ -160,13 +187,14 @@ export function SourceFilter({
     set(next)
     onChange()
   }
-  const active = !!v.source || !!v.site || !!v.broadcast || !!v.field
+  const active = !!v.source || !!v.site || !!v.broadcast || !!v.field || !!v.sla
   const picked = v.field && fields.find((f) => f.key === v.field?.key)
   const summary = [
     v.source && text[v.source],
     v.site && hostOf(v.site),
     v.broadcast?.name,
     picked && v.field && fieldFilterText(picked, v.field.value, t`Yes`, t`No`),
+    v.sla && slaText[v.sla],
   ]
     .filter(Boolean)
     .join(" · ")
@@ -188,8 +216,8 @@ export function SourceFilter({
             }
           />
         }
-        aria-label={t`Filter by type, site and broadcast`}
-        title={t`Filter by type, site and broadcast`}
+        aria-label={t`Filter by type, site, broadcast and SLA`}
+        title={t`Filter by type, site, broadcast and SLA`}
         data-testid="source-filter"
       >
         <ListFilterIcon className="size-3.5 shrink-0" />
@@ -249,6 +277,7 @@ export function SourceFilter({
           </>
         )}
         <BroadcastChoices inboxId={inboxId} v={v} update={update} />
+        <SlaChoices v={v} update={update} />
         <FieldFilterSection fields={fields} value={v.field} onChange={(field) => update({ ...v, field })} />
       </PopoverContent>
     </Popover>

@@ -73,6 +73,7 @@ function matches(c: Conversation & { pinned_at?: string }, f: ConversationFilter
   if (f.contact_id && c.contact_id !== f.contact_id) return false
   if (f.label_id && !c.labels.includes(f.label_id)) return false
   if (f.team_id && c.team_id !== f.team_id) return false
+  if (f.sla_state?.length && !(c.sla && f.sla_state.includes(c.sla.state))) return false
   if (f.assignee === "unassigned" && c.assignee_id) return false
   if (f.assignee === "me" && c.assignee_id !== memberId) return false
   if (f.assignee && f.assignee !== "me" && f.assignee !== "unassigned" && c.assignee_id !== f.assignee) return false
@@ -115,6 +116,10 @@ function findItem(qc: QueryClient, ws: string, id: string) {
   return undefined
 }
 
+function slaMark(c: Conversation) {
+  return c.sla ? `${c.sla.policy_id}|${c.sla.state}|${c.sla.due_at ?? ""}` : ""
+}
+
 function updateLists(qc: QueryClient, ctx: LiveContext, c: Conversation, patch: Partial<ConversationListItem> = {}) {
   const base = findItem(qc, ctx.ws, c.id)
   for (const [key, data] of listCaches(qc, ctx.ws)) {
@@ -130,6 +135,11 @@ function updateLists(qc: QueryClient, ctx: LiveContext, c: Conversation, patch: 
     }
     if (!base) continue
     const item: ConversationListItem = { ...base, ...c, ...patch }
+    if (!c.sla) delete item.sla
+    if ((f.sort === "sla_due" || f.sla_state?.length) && slaMark(base) !== slaMark(item)) {
+      void qc.invalidateQueries({ queryKey: key, exact: true })
+      continue
+    }
     if (!c.trashed_at) {
       delete item.trashed_at
       delete item.trashed_by
@@ -575,6 +585,10 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
       if (event.type === "conversation.created") {
         void qc.invalidateQueries({ queryKey: keys.contactPresence(ctx.ws, event.data.contact_id) })
       }
+      return
+    case "conversation.sla_warning":
+    case "conversation.sla_breached":
+      setConversation(qc, ctx, event.data.conversation)
       return
     case "conversation.moved": {
       const { id, inbox_id, previous_inbox_id } = event.data

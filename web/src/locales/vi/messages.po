@@ -277,6 +277,10 @@ msgstr "{count, plural, =0 {Không có cuộc trò chuyện} other {# cuộc tr�
 msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, other {# thương hiệu}}"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "{count, plural, one {# condition} other {# conditions}}"
+msgstr "{count, plural, other {# điều kiện}}"
+
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
@@ -466,6 +470,10 @@ msgstr "{inboxName} chưa có kênh email cho {address}. Lịch sử được l�
 msgid "{incoming} received, {outgoing} sent"
 msgstr "đã nhận {incoming}, đã gửi {outgoing}"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "{left} left when it resumes"
+msgstr "Còn {left} khi tiếp tục"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "{listName} is ready"
 msgstr "{listName} đã sẵn sàng"
@@ -473,6 +481,10 @@ msgstr "{listName} đã sẵn sàng"
 #: src/features/home/PropertyCard.tsx
 msgid "{liveText} in the last 30 minutes"
 msgstr "{liveText} trong 30 phút qua"
+
+#: src/features/reports/ReportPages.tsx
+msgid "{met} met, {breached} breached"
+msgstr "{met} đạt, {breached} vi phạm"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
@@ -1131,6 +1143,10 @@ msgstr "Một cuộc trò chuyện được giao cho tôi"
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "Một cuộc trò chuyện được lấy toàn bộ khi lần cập nhật cuối nằm trong khoảng thời gian đó."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A conversation must match every row you fill in. Leave a row empty to match anything."
+msgstr "Cuộc trò chuyện phải khớp với mọi hàng bạn điền. Hàng trống khớp với tất cả."
+
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "Một cuộc trò chuyện đã bắt đầu"
@@ -1332,6 +1348,10 @@ msgstr "Tỷ lệ phần trăm cạnh mỗi thành phần."
 msgid "A personal API key from Linear, under Settings, Account, Security and access."
 msgstr "A personal API key from Linear, under Settings, Account, Security and access."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "A policy that is off applies to nothing."
+msgstr "Chính sách đang tắt không áp dụng cho bất cứ gì."
+
 #: src/components/common/text.ts
 msgid "A property can have at most 1,000 notes. Delete old ones first."
 msgstr "Một thuộc tính có thể có tối đa 1.000 ghi chú. Hãy xóa các ghi chú cũ trước."
@@ -1476,6 +1496,10 @@ msgstr "Một mục trong Có gì mới đã bị gỡ xuất bản"
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "Một số nguyên từ 1 đến 10.000.000"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 SLA policies. Delete one first."
+msgstr "Một không gian làm việc có tối đa 100 chính sách SLA. Hãy xóa một chính sách trước."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "A workspace holds your team, inboxes and conversations. You are its owner and can invite others later."
@@ -2268,6 +2292,16 @@ msgstr "Chủ sở hữu hoặc quản trị viên có thể cho phép trợ lý
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "Chủ sở hữu hoặc quản trị viên bật ký sau khi bản ghi đã được đăng."
 
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target is due soon"
+msgstr "Một mục tiêu SLA sắp đến hạn"
+
+#: src/components/common/text.ts
+#: src/features/settings/notifications/events.ts
+msgid "An SLA target was breached"
+msgstr "Một mục tiêu SLA đã bị vi phạm"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
 msgstr "Một lần tải lên bị gián đoạn: {count} phần, {size}, đã có trên máy chủ."
@@ -2431,6 +2465,14 @@ msgstr "Bất kỳ trường nào"
 msgid "Any label"
 msgstr "Nhãn bất kỳ"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Any of the labels you pick."
+msgstr "Bất kỳ nhãn nào bạn chọn."
+
+#: src/features/inbox/SourceFilter.tsx
+msgid "Any state"
+msgstr "Mọi trạng thái"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Any team"
 msgstr "Nhóm bất kỳ"
@@ -2527,6 +2569,10 @@ msgstr "Giao diện"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Application (client) ID"
 msgstr "ID ứng dụng (client)"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Applies to"
+msgstr "Áp dụng cho"
 
 #: src/features/broadcasts/Pace.tsx
 msgid "Applies to the next mail."
@@ -3066,6 +3112,14 @@ msgstr "Bị trả lại: {0}"
 msgid "Brands"
 msgstr "Thương hiệu"
 
+#: src/components/common/SlaBadge.tsx
+msgid "Breached"
+msgstr "Vi phạm"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Breached, met late at {at}"
+msgstr "Vi phạm, đạt muộn lúc {at}"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
 msgstr "Đưa lịch sử hộp thư từ Gmail, Yandex hoặc bất kỳ máy chủ IMAP nào vào"
@@ -3416,6 +3470,7 @@ msgstr "Cài đặt kênh"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Channels"
 msgstr "Kênh"
 
@@ -3759,6 +3814,10 @@ msgstr "Đóng tìm kiếm (Esc)"
 #: src/features/reports/ReportPages.tsx
 msgid "Closed"
 msgstr "Đã đóng"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Closed before a reply"
+msgstr "Đã đóng trước khi có phản hồi"
 
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Leave empty to keep everything."
@@ -4280,6 +4339,10 @@ msgstr "Các cuộc trò chuyện chưa ai viết thêm sau khi nhập sẽ bị
 msgid "conversations started"
 msgstr "cuộc trò chuyện đã bắt đầu"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Conversations that follow it lose their SLA unless another policy matches. This cannot be undone."
+msgstr "Các cuộc trò chuyện theo chính sách này sẽ mất SLA trừ khi có chính sách khác khớp. Không thể hoàn tác."
+
 #: src/features/settings/channels/sections.tsx
 msgid "Conversations that started on it keep their messages."
 msgstr "Các cuộc trò chuyện bắt đầu từ đó vẫn giữ tin nhắn của chúng."
@@ -4498,6 +4561,10 @@ msgstr "Tạo khóa"
 #: src/features/setup/NewsletterStep.tsx
 msgid "Create list"
 msgstr "Tạo danh sách"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Create policy"
+msgstr "Tạo chính sách"
 
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
@@ -4720,6 +4787,7 @@ msgstr "Hiệu năng giảm"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -4841,6 +4909,10 @@ msgstr "Xóa trình giám sát"
 #: src/features/migrations/DoneStep.tsx
 msgid "Delete the OAuth client you created for Yuva"
 msgstr "Xóa ứng dụng khách OAuth bạn đã tạo cho Yuva"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Delete the policy {name}?"
+msgstr "Xóa chính sách {name}?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
@@ -5392,6 +5464,18 @@ msgstr "Thả tệp vào để đính kèm vào phản hồi của bạn"
 msgid "Dry run"
 msgstr "Chạy thử"
 
+#: src/features/conversation/SlaPopover.tsx
+msgid "Due {at}"
+msgstr "Hạn {at}"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Due first"
+msgstr "Hạn gần nhất trước"
+
+#: src/components/common/SlaBadge.tsx
+msgid "Due soon"
+msgstr "Sắp đến hạn"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Duplicate the selected block"
 msgstr "Nhân đôi khối đã chọn"
@@ -5543,6 +5627,7 @@ msgstr "Mỗi cái cùng toàn bộ tin nhắn và ghi chú"
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/status/ComponentsTab.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -5602,6 +5687,10 @@ msgstr "Sửa macro"
 msgid "Edit monitor"
 msgstr "Sửa trình giám sát"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Edit policy"
+msgstr "Sửa chính sách"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Sửa nhóm"
@@ -5660,6 +5749,10 @@ msgstr "Emoji"
 #: src/features/broadcasts/Import.tsx
 msgid "Empty in the first rows"
 msgstr "Trống ở các dòng đầu"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Enabled"
+msgstr "Bật"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5798,6 +5891,10 @@ msgstr "Mọi tín hiệu, tín hiệu bị lỡ và trạng thái được gử
 #: src/features/status/MonitorChecks.tsx
 msgid "Every check of the last 30 days, newest first."
 msgstr "Mọi lần kiểm tra trong 30 ngày qua, mới nhất trước."
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Every conversation"
+msgstr "Mọi cuộc trò chuyện"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Every imported conversation is closed."
@@ -6145,8 +6242,8 @@ msgid "Filter by team"
 msgstr "Lọc theo nhóm"
 
 #: src/features/inbox/SourceFilter.tsx
-msgid "Filter by type, site and broadcast"
-msgstr "Lọc theo loại, trang web và thư hàng loạt"
+msgid "Filter by type, site, broadcast and SLA"
+msgstr "Lọc theo loại, trang, chiến dịch gửi và SLA"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -6218,10 +6315,16 @@ msgstr "Tên"
 msgid "first reply"
 msgstr "phản hồi đầu tiên"
 
+#: src/features/conversation/SlaPopover.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "First reply"
 msgstr "Phản hồi đầu tiên"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "First reply {first}"
+msgstr "Phản hồi đầu tiên {first}"
 
 #: src/app/TeamMenu.tsx
 msgid "first reply in {first}"
@@ -6303,6 +6406,10 @@ msgstr "Cho thư tự động"
 #: src/features/setup/NameStep.tsx
 msgid "For business hours"
 msgstr "Cho giờ làm việc"
+
+#: src/features/settings/notifications/events.ts
+msgid "For conversations assigned to me, or to my team when nobody is assigned."
+msgstr "Cho các cuộc trò chuyện được giao cho tôi, hoặc nhóm của tôi khi chưa giao cho ai."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "For developers"
@@ -6461,6 +6568,18 @@ msgstr "Địa chỉ From (không bắt buộc)"
 #: src/features/migrations/parts.tsx
 msgid "From blocked contacts"
 msgstr "Từ các liên hệ bị chặn"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From each later contact message to the reply."
+msgstr "Từ mỗi tin nhắn sau đó của liên hệ đến khi phản hồi."
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the contact's first message to the first public reply."
+msgstr "Từ tin nhắn đầu tiên của liên hệ đến phản hồi công khai đầu tiên."
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "From the start of the conversation to its first close."
+msgstr "Từ khi cuộc trò chuyện bắt đầu đến lần đóng đầu tiên."
 
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "From the terminal"
@@ -6891,6 +7010,10 @@ msgstr "Tên máy chủ"
 msgid "Hostname and certificate"
 msgstr "Tên máy chủ và chứng chỉ"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "hours"
+msgstr "giờ"
+
 #: src/features/settings/ProductsPage.tsx
 msgid "Hours"
 msgstr "Giờ làm việc"
@@ -7308,6 +7431,7 @@ msgstr "Hộp thư cho {name}"
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Inboxes"
@@ -7763,6 +7887,7 @@ msgstr "Chỉ là nhãn: thư của nó đến từ Tất cả thư, và các cu
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Labels"
 msgstr "Nhãn"
 
@@ -8740,6 +8865,14 @@ msgstr "tin nhắn đã gửi"
 msgid "Messages the key sends show its bot name and picture."
 msgstr "Tin nhắn do khóa gửi hiện tên và ảnh bot của nó."
 
+#: src/components/common/SlaBadge.tsx
+msgid "Met"
+msgstr "Đạt"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Met {at}"
+msgstr "Đạt {at}"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Metadata"
 msgstr "Metadata"
@@ -8803,6 +8936,14 @@ msgstr "Của tôi"
 #: src/features/status/text.tsx
 msgid "Minor"
 msgstr "Nhỏ"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "minutes"
+msgstr "phút"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Minutes before a due time. 0 sends no warning."
+msgstr "Số phút trước hạn. 0 là không gửi cảnh báo."
 
 #: src/features/status/text.tsx
 msgid "Missed beat"
@@ -8913,12 +9054,17 @@ msgstr "Nhiều phiếu nhất"
 msgid "Move {0} to the Trash?"
 msgstr "Chuyển {0} vào Thùng rác?"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Move {name}. Drag, or press Alt with the arrow keys."
+msgstr "Di chuyển {name}. Kéo, hoặc nhấn Alt cùng các phím mũi tên."
+
 #: src/components/common/text.ts
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Chuyển cuộc trò chuyện vào Thùng rác, khôi phục chúng và đọc Thùng rác"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
 msgstr "Chuyển xuống"
@@ -9018,6 +9164,7 @@ msgstr "Chuyển sang Yuva"
 
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
 msgstr "Chuyển lên"
@@ -9084,6 +9231,7 @@ msgstr "Nhóm của tôi"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -9389,6 +9537,11 @@ msgstr "Trang mới"
 msgid "New password"
 msgstr "Mật khẩu mới"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/sla/SlaPage.tsx
+msgid "New policy"
+msgstr "Chính sách mới"
+
 #: src/features/account/AccountPage.tsx
 msgid "New reply in <0>{title}</0>"
 msgstr "Phản hồi mới trong <0>{title}</0>"
@@ -9481,6 +9634,15 @@ msgstr "Lần kiểm tra tiếp theo {next}."
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Thư tiếp theo lúc {local} ({utc} UTC), theo tốc độ của thư hàng loạt này."
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Next reply"
+msgstr "Phản hồi tiếp theo"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Next reply {next}"
+msgstr "Phản hồi tiếp theo {next}"
 
 #: src/features/feedback/Lightbox.tsx
 msgid "Next screenshot"
@@ -9917,6 +10079,10 @@ msgstr "Chưa có trang"
 msgid "No pending invites."
 msgstr "Không có lời mời đang chờ."
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "No policies yet."
+msgstr "Chưa có chính sách nào."
+
 #: src/features/settings/ProductsPage.tsx
 msgid "No products yet"
 msgstr "Chưa có sản phẩm"
@@ -10009,6 +10175,10 @@ msgstr "Chưa có người đăng ký. Khách truy cập đăng ký trên trang 
 #: src/features/migrations/ChooseStep.tsx
 msgid "No support address"
 msgstr "Không có địa chỉ hỗ trợ"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "No target has started yet."
+msgstr "Chưa có mục tiêu nào bắt đầu."
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "No team"
@@ -10306,6 +10476,10 @@ msgstr "Không phải cùng một người"
 msgid "Not there after a minute? Look in your spam or junk folder, or send a new code below."
 msgstr "Sau một phút vẫn chưa thấy? Hãy xem trong thư mục thư rác, hoặc gửi mã mới bên dưới."
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Not tracked"
+msgstr "Không theo dõi"
+
 #: src/features/migrations/Wizard.tsx
 msgid "Not uploaded yet"
 msgstr "Chưa tải lên"
@@ -10533,6 +10707,7 @@ msgstr "tắt"
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "Off"
 msgstr "Tắt"
@@ -10645,6 +10820,10 @@ msgstr "Với gói Team và Enterprise, chủ sở hữu thêm một lần trong
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "On the web"
 msgstr "Trên web"
+
+#: src/components/common/SlaBadge.tsx
+msgid "On track"
+msgstr "Đúng tiến độ"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Once a test message arrives, Yuva waits {hours} hours. If nothing reaches only {provider} in that time, the migration finishes on its own. You can also finish it yourself."
@@ -11485,6 +11664,7 @@ msgid "Pause or resume the monitor"
 msgstr "Tạm dừng hoặc tiếp tục trình giám sát"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
 #: src/features/migrations/text.ts
 #: src/features/settings/channels/ChannelState.tsx
@@ -12021,8 +12201,13 @@ msgstr "Ảnh chụp màn hình trước"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
 msgstr "Ưu tiên"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Priority customers"
+msgstr "Khách hàng ưu tiên"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Priority set to {level}"
@@ -12971,6 +13156,14 @@ msgstr "Trả lời (R)"
 msgid "Reply account"
 msgstr "Tài khoản phản hồi"
 
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
+msgstr "Mục tiêu phản hồi và giải quyết cho các cuộc trò chuyện khớp với một chính sách. Chính sách đang bật đầu tiên khớp với cuộc trò chuyện sẽ được áp dụng, nên hãy để chính sách cụ thể nhất ở trên cùng. Mục tiêu được tính theo giờ làm việc của từng hộp thư."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Reply and resolution targets with due times"
+msgstr "Mục tiêu phản hồi và giải quyết kèm thời hạn"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Reply and resolve"
 msgstr "Trả lời và giải quyết"
@@ -13103,6 +13296,15 @@ msgstr "Đặt lại khóa API bạn đã đưa cho Yuva"
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Reset to defaults"
 msgstr "Đặt lại mặc định"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Resolution"
+msgstr "Giải quyết"
+
+#: src/features/settings/sla/SlaPage.tsx
+msgid "Resolution {resolution}"
+msgstr "Giải quyết {resolution}"
 
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13426,6 +13628,7 @@ msgstr "Thứ Bảy"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
@@ -14392,6 +14595,11 @@ msgstr "Hiện bản xem trước"
 msgid "Show the reply time"
 msgstr "Hiện thời gian phản hồi"
 
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Show the SLA targets"
+msgstr "Hiện các mục tiêu SLA"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Show this page on your own address instead of this server’s."
 msgstr "Hiển thị trang này trên địa chỉ của riêng bạn thay vì địa chỉ của máy chủ này."
@@ -14737,6 +14945,32 @@ msgstr "Bỏ qua hoặc thất bại"
 #: src/features/status/Notices.tsx
 msgid "Skipped: {0}"
 msgstr "Đã bỏ qua: {0}"
+
+#: src/features/conversation/SlaPopover.tsx
+#: src/features/inbox/SourceFilter.tsx
+msgid "SLA"
+msgstr "SLA"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA · {policyName}"
+msgstr "SLA · {policyName}"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met"
+msgstr "SLA đạt"
+
+#: src/features/reports/ReportPages.tsx
+msgid "SLA met / breached"
+msgstr "SLA đạt / vi phạm"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "SLA policies"
+msgstr "Chính sách SLA"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "SLA targets (W)"
+msgstr "Mục tiêu SLA (W)"
 
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -15116,6 +15350,10 @@ msgstr "Ngừng ký"
 msgid "Stop taking new subscribers. Records and past reports stay, and you can restore it."
 msgstr "Ngừng nhận người đăng ký mới. Bản ghi và báo cáo cũ vẫn còn, và bạn có thể khôi phục danh sách."
 
+#: src/components/common/SlaBadge.tsx
+msgid "Stopped"
+msgstr "Đã dừng"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
 msgstr "Lưu trữ"
@@ -15310,6 +15548,14 @@ msgstr "Nhận đăng ký trở lại và đưa danh sách về bộ chọn đ�
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Taking the recipients: {prepared} so far"
 msgstr "Đang lấy người nhận: đến giờ được {prepared}"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets"
+msgstr "Mục tiêu"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Targets count in the business hours of the conversation's inbox, in its time zone. Leave one empty to not track it; at least one is required."
+msgstr "Mục tiêu được tính theo giờ làm việc và múi giờ của hộp thư của cuộc trò chuyện. Để trống một mục tiêu nếu không theo dõi; cần ít nhất một mục tiêu."
 
 #: src/features/status/text.tsx
 msgid "TCP"
@@ -17266,6 +17512,10 @@ msgstr "Bỏ theo dõi"
 msgid "Unfollowed"
 msgstr "Đã bỏ theo dõi"
 
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Unit"
+msgstr "Đơn vị"
+
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
 msgstr "Thiết bị không xác định"
@@ -17929,6 +18179,14 @@ msgstr "chờ từ {at}"
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Warn about the certificate"
 msgstr "Cảnh báo về chứng chỉ"
+
+#: src/features/settings/sla/PolicyDialog.tsx
+msgid "Warn before it is due"
+msgstr "Cảnh báo trước hạn"
+
+#: src/features/conversation/SlaPopover.tsx
+msgid "Was due {at}"
+msgstr "Hạn là {at}"
 
 #: src/features/setup/previews.tsx
 msgid "Was this page helpful?"
