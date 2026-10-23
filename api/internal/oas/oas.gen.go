@@ -97462,6 +97462,20 @@ func (response DeleteOtherSessions401ApplicationProblemPlusJSONResponse) VisitDe
 	return err
 }
 
+type DeleteOtherSessions403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteOtherSessions403ApplicationProblemPlusJSONResponse) VisitDeleteOtherSessionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type ListSessionsRequestObject struct {
 }
 
@@ -97495,6 +97509,20 @@ func (response ListSessions401ApplicationProblemPlusJSONResponse) VisitListSessi
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListSessions403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListSessions403ApplicationProblemPlusJSONResponse) VisitListSessionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
 	_, err := buf.WriteTo(w)
 	return err
 }

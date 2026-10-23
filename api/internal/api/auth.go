@@ -634,7 +634,7 @@ func (s *Server) startSession(ctx context.Context, q *store.Queries, personID uu
 		arg.SsoWorkspaceID, arg.SsoSettingsID = &sso.WorkspaceID, &sso.ID
 	}
 	if r := requestFrom(ctx); r != nil {
-		arg.UserAgent = optional(truncateRunes(strings.TrimSpace(r.UserAgent()), maxUserAgent))
+		arg.UserAgent = optional(truncateRunes(strings.TrimSpace(strings.ToValidUTF8(r.UserAgent(), "\uFFFD")), maxUserAgent))
 	}
 	if err := q.CreateSession(ctx, arg); err != nil {
 		return "", err

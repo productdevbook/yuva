@@ -204,7 +204,7 @@ func (s *Server) requestProof(r *http.Request, source string) consentProof {
 	}
 	ip := s.clientIP(r)
 	pr.ip = &ip
-	if ua := truncateRunes(r.UserAgent(), 300); ua != "" {
+	if ua := truncateRunes(strings.ToValidUTF8(r.UserAgent(), "\uFFFD"), 300); ua != "" {
 		pr.userAgent = &ua
 	}
 	return pr

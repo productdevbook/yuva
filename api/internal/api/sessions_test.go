@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"testing"
+	"time"
 )
 
 func TestSessionsListAndSignOutEverywhere(t *testing.T) {
@@ -93,5 +94,27 @@ func TestRealtimePresenceOnlyFromMembersAndMemberApps(t *testing.T) {
 	tm.agent.dial("").ready()
 	if n := connections(); n < 1 {
 		t.Fatalf("panel connections: %d", n)
+	}
+}
+
+func TestUserAgentsThatAreNotUTF8(t *testing.T) {
+	h := newHarness(t)
+	email := unique("owner") + "@example.com"
+	h.bootstrap(email, unique("ws"))
+	c := h.client()
+	c.userAgent = "Mozilla/5.0 (X11; Linux x86_64) Firefox/140.0 \xff"
+	c.signIn(email)
+	items := c.expect(http.StatusOK, "GET", "/v1/me/sessions", nil).body["items"].([]any)
+	if s := items[0].(map[string]any); s["user_agent"] != "Mozilla/5.0 (X11; Linux x86_64) Firefox/140.0 \uFFFD" || s["device"] != "Firefox on Linux" {
+		t.Fatalf("session %v", s)
+	}
+
+	lt := newListTeam(t, h)
+	reader, token := lt.form(h)
+	reader.userAgent = "Reader \xff"
+	h.clock.Advance(3 * time.Second)
+	reader.expect(http.StatusAccepted, "POST", "/client/v1/channels/"+lt.key+"/subscriptions", lt.subscribeBody(unique("reader")+"@example.org", token))
+	if n := h.count("SELECT count(*) FROM consent_events WHERE workspace_id = $1 AND user_agent = $2", lt.ws, "Reader \uFFFD"); n != 1 {
+		t.Fatalf("consent events with the cleaned user agent: %d", n)
 	}
 }

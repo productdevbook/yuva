@@ -41037,7 +41037,7 @@ type ClientInterface interface {
 	//
 	// Ends every session of the signed-in person except the one making this request, with their
 	// push subscriptions and reader tokens; their live updates close within a minute. Needs a member
-	// session. Removing a passkey does the same.
+	// session: keys and tokens get `403 member_session_required`. Removing a passkey does the same.
 	//
 	// Corresponds with DELETE /v1/me/sessions (the `DeleteOtherSessions` operationId).
 	DeleteOtherSessions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -41045,7 +41045,8 @@ type ClientInterface interface {
 	// ListSessions List sign-in sessions
 	//
 	// The signed-in person's live sessions in the panel and the member apps, most recently seen
-	// first. `current` marks the one making this request. Needs a member session.
+	// first. `current` marks the one making this request. Needs a member session: keys and tokens get
+	// `403 member_session_required`.
 	//
 	// Corresponds with GET /v1/me/sessions (the `ListSessions` operationId).
 	ListSessions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -56318,7 +56319,7 @@ func (c *Client) TestPushSubscription(ctx context.Context, pushSubscriptionId Pu
 //
 // Ends every session of the signed-in person except the one making this request, with their
 // push subscriptions and reader tokens; their live updates close within a minute. Needs a member
-// session. Removing a passkey does the same.
+// session: keys and tokens get `403 member_session_required`. Removing a passkey does the same.
 //
 // Corresponds with DELETE /v1/me/sessions (the `DeleteOtherSessions` operationId).
 func (c *Client) DeleteOtherSessions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -56336,7 +56337,8 @@ func (c *Client) DeleteOtherSessions(ctx context.Context, reqEditors ...RequestE
 // ListSessions List sign-in sessions
 //
 // The signed-in person's live sessions in the panel and the member apps, most recently seen
-// first. `current` marks the one making this request. Needs a member session.
+// first. `current` marks the one making this request. Needs a member session: keys and tokens get
+// `403 member_session_required`.
 //
 // Corresponds with GET /v1/me/sessions (the `ListSessions` operationId).
 func (c *Client) ListSessions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -101320,7 +101322,7 @@ type ClientWithResponsesInterface interface {
 	//
 	// Ends every session of the signed-in person except the one making this request, with their
 	// push subscriptions and reader tokens; their live updates close within a minute. Needs a member
-	// session. Removing a passkey does the same.
+	// session: keys and tokens get `403 member_session_required`. Removing a passkey does the same.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -101330,7 +101332,8 @@ type ClientWithResponsesInterface interface {
 	// ListSessionsWithResponse List sign-in sessions
 	//
 	// The signed-in person's live sessions in the panel and the member apps, most recently seen
-	// first. `current` marks the one making this request. Needs a member session.
+	// first. `current` marks the one making this request. Needs a member session: keys and tokens get
+	// `403 member_session_required`.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -129232,6 +129235,8 @@ type DeleteOtherSessionsResponse struct {
 	JSON200 *SessionsRevoked
 	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
 	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
@@ -129242,6 +129247,11 @@ func (r DeleteOtherSessionsResponse) GetJSON200() *SessionsRevoked {
 // GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
 func (r DeleteOtherSessionsResponse) GetApplicationproblemJSON401() *Problem {
 	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeleteOtherSessionsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
 }
 
 // GetBody returns the raw response body bytes
@@ -129280,6 +129290,8 @@ type ListSessionsResponse struct {
 	JSON200 *SessionList
 	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
 	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
@@ -129290,6 +129302,11 @@ func (r ListSessionsResponse) GetJSON200() *SessionList {
 // GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
 func (r ListSessionsResponse) GetApplicationproblemJSON401() *Problem {
 	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListSessionsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
 }
 
 // GetBody returns the raw response body bytes
@@ -149713,7 +149730,7 @@ func (c *ClientWithResponses) TestPushSubscriptionWithResponse(ctx context.Conte
 //
 // Ends every session of the signed-in person except the one making this request, with their
 // push subscriptions and reader tokens; their live updates close within a minute. Needs a member
-// session. Removing a passkey does the same.
+// session: keys and tokens get `403 member_session_required`. Removing a passkey does the same.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -149729,7 +149746,8 @@ func (c *ClientWithResponses) DeleteOtherSessionsWithResponse(ctx context.Contex
 // ListSessionsWithResponse List sign-in sessions
 //
 // The signed-in person's live sessions in the panel and the member apps, most recently seen
-// first. `current` marks the one making this request. Needs a member session.
+// first. `current` marks the one making this request. Needs a member session: keys and tokens get
+// `403 member_session_required`.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -173565,6 +173583,13 @@ func ParseDeleteOtherSessionsResponse(rsp *http.Response) (*DeleteOtherSessionsR
 		}
 		response.ApplicationproblemJSON401 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
 	}
 
 	return response, nil
@@ -173597,6 +173622,13 @@ func ParseListSessionsResponse(rsp *http.Response) (*ListSessionsResponse, error
 			return nil, err
 		}
 		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
 
 	}
 

@@ -281,6 +281,7 @@ type client struct {
 	workspace string
 	origin    string
 	language  string
+	userAgent string
 }
 
 func (h *harness) client() *client {
@@ -342,6 +343,9 @@ func (c *client) do(method, path string, body any) response {
 	}
 	if c.language != "" {
 		req.Header.Set("Accept-Language", c.language)
+	}
+	if c.userAgent != "" {
+		req.Header.Set("User-Agent", c.userAgent)
 	}
 	res, err := c.http.Do(req)
 	if err != nil {
