@@ -496,7 +496,7 @@ address get `429`.
 
 ## M23 — MCP coverage
 
-Status: released in `v0.0.32`, acceptance on a running instance pending (#128); issues #107, #108, #109,
+Status: released in `v0.0.32`; every Accept item verified on 2026-10-23 at `bafdcc9` (#128); issues #107, #108, #109,
 decisions in `architecture.md` › MCP coverage (M23).
 
 - Sender identity, e-mail channel and deliverability records, mailing lists, subscribers and CSV
@@ -539,9 +539,89 @@ Status: planned; items Y-126 to Y-128 in `backlog.md`.
 Accept: each run reports pass with evidence; each failure becomes its own backlog item and is fixed
 before M26.
 
+## M27 — Scale and safety
+
+Status: planned; items Y-134 to Y-137 in `backlog.md`. Part of 0.1.0.
+
+- Rate limits counted in Postgres so several replicas keep them; a workspace audit log; attachment
+  limits per channel; OpenTelemetry tracing.
+
+Accept: two replicas on one database refuse the same request the same way one does; an owner reads who
+created, revoked and deleted what in Settings › Audit log, with no content or secret in it; a chat
+channel with a 2 MB limit refuses a 3 MB file in the widget; a trace of a reply shows the request, the
+job and the SMTP send.
+
+## M28 — Team workflow
+
+Status: planned; items Y-138 to Y-144 in `backlog.md`. Part of 0.1.0.
+
+- Teams with inbox access and assignment, automatic assignment, SLA policies on business hours,
+  automation rules, macros, saved views and custom fields.
+
+Accept: a new chat conversation is assigned round robin to an online member of the inbox's team, never
+over their cap; its first-reply target shows in the list and its breach notifies the assignee and fires
+`conversation.sla_breached`; a rule labels and assigns a mail whose subject contains "invoice" without
+looping on its own change; a macro replies, labels and closes in one step with undo; a shared view
+shows each member only what they may see; a required custom field blocks closing without it.
+
+## M29 — E-mail and reports
+
+Status: planned; items Y-145 to Y-147 in `backlog.md`. Part of 0.1.0.
+
+- Cc and Bcc on replies with participants kept on the conversation; forwarding a conversation to an
+  outside address; a Reports section from daily rollups with CSV export.
+
+Accept: a mail with two Cc addresses becomes one conversation whose reply reaches all three, and a Cc'd
+person's answer joins it; a forwarded conversation's reply comes back into it; the Reports section shows
+first-reply and resolution times per inbox and member that match `/v1/stats` for today, and an agent
+sees only their inboxes.
+
+## M30 — Own domains and content
+
+Status: planned; items Y-148 to Y-150 in `backlog.md`. Part of 0.1.0.
+
+- Own domains for help centers, roadmap boards and What's new; feedback categories per inbox; help
+  articles imported from Zendesk and Help Scout.
+
+Accept: a help center answers on a verified domain behind Caddy and behind Cloudflare; an inbox's own
+feedback category appears in the widget and both sample apps without a release; a recorded Zendesk Guide
+imports as drafts with their images.
+
+## M31 — More help desks
+
+Status: planned; items Y-151 to Y-156 in `backlog.md`. Part of 0.1.0. Plan by `yuva-migration`.
+
+- History imports from Front, Freshdesk, Intercom, Crisp and Chatwoot on the M14 engine, read-only, with
+  the wizard, guides and MCP tools.
+
+Accept: each import passes against recorded API answers with no real account; killing the server
+mid-import loses and duplicates nothing; the inbox shows the history with original dates, nothing unread
+and no notification, webhook or push.
+
+## M32 — Integrations and push
+
+Status: planned; items Y-157 to Y-159 in `backlog.md`. Part of 0.1.0.
+
+- Slack notifications and replies, feedback linked to GitHub and Linear issues, push sent by Yuva itself
+  through APNs and FCM.
+
+Accept: a new conversation appears in Slack and a reply in its thread becomes a note by the linked
+member; closing the linked GitHub issue sets the feedback to Done; with APNs and FCM keys on the app
+channel, the Swift and Kotlin samples get the reply push while closed.
+
+## M33 — Single sign-on for members
+
+Status: planned; items Y-160 to Y-161 in `backlog.md`. Part of 0.1.0.
+
+- OpenID Connect and SAML sign-in for a workspace's verified e-mail domains, with optional just-in-time
+  membership.
+
+Accept: a member of a claimed domain signs in through Keycloak by OIDC and by SAML; with codes turned
+off for the domain an e-mailed code is refused; every sign-in is in the audit log.
+
 ## M26 — Release 0.1.0
 
-Status: planned; items Y-129 to Y-132 in `backlog.md`. Waits for M24 and M25.
+Status: planned; items Y-129 to Y-132 in `backlog.md`. Waits for M24, M25 and M27 to M33.
 
 - A security review of everything added since the 0.0.1 review (#15).
 - One version, `0.1.0`, in the server, the contract, every SDK, the chart, the MCP manifests and the
@@ -561,3 +641,10 @@ entry all report `0.1.0`; a fresh install from `docs/install.md` works on a clea
 | M24 Tidy | 9 (+1 withdrawn) | Y-117–Y-125, Y-133 | 1 | – | 2 | 6 | – | – |
 | M25 Acceptance | 3 | Y-126–Y-128 | – | – | – | – | 3 | – |
 | M26 Release | 4 | Y-129–Y-132 | 1 | – | – | 1 | – | 2 |
+| M27 Scale and safety | 4 | Y-134–Y-137 | 4 | – | – | – | – | – |
+| M28 Team workflow | 7 | Y-138–Y-144 | 5 | 2 | – | – | – | – |
+| M29 E-mail and reports | 3 | Y-145–Y-147 | 2 | 1 | – | – | – | – |
+| M30 Own domains and content | 3 | Y-148–Y-150 | 3 | – | – | – | – | – |
+| M31 More help desks | 6 | Y-151–Y-156 | 6 | – | – | – | – | – |
+| M32 Integrations and push | 3 | Y-157–Y-159 | 3 | – | – | – | – | – |
+| M33 Single sign-on | 2 | Y-160–Y-161 | 2 | – | – | – | – | – |
