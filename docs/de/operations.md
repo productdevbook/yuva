@@ -327,6 +327,29 @@ Yuva räumt einmal pro Stunde auf:
 | [Audit-Log](#audit-log)-Einträge | `YUVA_AUDIT_DAYS` Tage (standardmäßig 365) |
 | Original-`.eml` eingehender E-Mails (wenn `retention_days` gesetzt ist) | so viele Tage; die Nachricht selbst bleibt |
 
+## Mehrere Serverprozesse
+
+Beliebig viele Serverprozesse können sich eine Datenbank teilen (mehr `replicaCount` im Helm-Chart
+oder mehrere Container hinter einem Proxy). Sie koordinieren sich über Postgres:
+
+- **Rate Limits gelten über Prozesse hinweg.** Jedes Limit (Sitzungsstarts, Widget-Schreibzugriffe,
+  OAuth-Freigaben und MCP-Tokens, öffentliche Seiten, Aufrufe von Status-Monitoren, Analytics-Erfassung,
+  ...) zählt in der Tabelle `rate_limits`, zehn Prozesse erlauben also so viel wie einer, egal welchen
+  Prozess eine Anfrage erreicht. Die 4 Analytics-Abfragen, die ein Workspace gleichzeitig ausführen darf,
+  sind Leases in `rate_slots` und werden ebenso geteilt.
+- Beide Tabellen sind `UNLOGGED`: Ein Postgres-Absturz oder ein Failover auf einen Standby leert sie,
+  wodurch nur das Fenster jedes Limits neu beginnt. Backups müssen sie nicht enthalten
+  (`pg_dump --no-unlogged-table-data` lässt ihre Zeilen weg).
+- Schlüssel sind Hashes mit Schlüssel (HMAC unter dem Master-Key), nie Client- oder E-Mail-Adressen.
+- Der Job `rate_limit_sweep` löscht abgelaufene Fenster und Leases jede Minute.
+- Fenster und Leases werden mit der Uhr der Datenbank gemessen, die Uhren der Prozesse spielen für die
+  Limits keine Rolle.
+- Schlägt eine Prüfung in der Datenbank fehl (Verbindungsverlust, Timeout), lässt der Server die Anfrage
+  durch, statt sie abzulehnen; er protokolliert dann höchstens einmal pro Minute
+  `rate limit check failed; letting requests through`.
+- [`YUVA_CLIENT_IP_HEADER` und `YUVA_TRUSTED_PROXIES`](configuration.md) müssen in jedem Prozess gleich
+  sein, sonst zählen die Limits pro Adresse unterschiedliche Adressen.
+
 ## Überwachung
 
 | Endpunkt | Port | Antwortet |

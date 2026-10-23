@@ -13,8 +13,9 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-# Several replicas are supported: they share Postgres, jobs are coordinated through it, and the
-# realtime sockets fan out through Postgres too. Local attachment storage needs exactly one replica.
+# Several replicas are supported: they share Postgres, jobs are coordinated through it, the
+# realtime sockets fan out through Postgres too, and rate limits count in Postgres, so N replicas
+# allow what one does. Local attachment storage needs exactly one replica.
 replicaCount: 1
 
 # Defaults to Recreate with local attachment storage (a ReadWriteOnce volume) and RollingUpdate otherwise.

@@ -112,7 +112,7 @@ The root filesystem is read-only; uploads are buffered in an `emptyDir` at `/tmp
 ## Several replicas
 
 `replicaCount` above 1 is supported with `storage.driver: s3`: jobs, realtime events and presence
-go through Postgres. The chart then adds a PodDisruptionBudget (`podDisruptionBudget.minAvailable`,
+go through Postgres, and so do rate limits: N replicas allow what one does. The chart then adds a PodDisruptionBudget (`podDisruptionBudget.minAvailable`,
 1) and rolls updates one pod at a time; `topologySpread.enabled` spreads pods over nodes, and with
 `zoneSpread` over zones. Migrations run in each pod's init container under a Postgres lock, so
 pods starting together are safe.

@@ -319,6 +319,29 @@ Yuva saatte bir temizlik yapar:
 | [Denetim günlüğü](#denetim-günlüğü) kayıtları | `YUVA_AUDIT_DAYS` gün (varsayılan 365) |
 | Gelen e-postaların özgün `.eml` dosyası (`retention_days` atanmışsa) | o kadar gün; mesajın kendisi kalır |
 
+## Birden fazla sunucu süreci
+
+Her sayıda sunucu süreci tek bir veritabanını paylaşabilir (Helm chart'ında daha fazla `replicaCount`
+ya da tek bir proxy arkasında birden çok konteyner). Süreçler Postgres üzerinden eşgüdüm sağlar:
+
+- **Hız sınırları süreçler arasında geçerlidir.** Her sınır (oturum başlatma, widget yazmaları, OAuth
+  izinleri ve MCP token'ları, herkese açık sayfalar, durum izleyici çağrıları, analitik toplama, ...)
+  `rate_limits` tablosunda sayılır; on süreç, bir sürecin izin verdiğini verir, istek hangi sürece
+  ulaşırsa ulaşsın. Bir çalışma alanının aynı anda çalıştırabileceği 4 analitik sorgu, `rate_slots`
+  içindeki kiralardır ve aynı şekilde paylaşılır.
+- İki tablo da `UNLOGGED`'dır: Postgres çökmesi ya da bir yedek sunucuya geçiş onları boşaltır; bu
+  yalnızca her sınırın penceresini yeniden başlatır. Yedeklerin onları tutması gerekmez
+  (`pg_dump --no-unlogged-table-data` satırlarını dışarıda bırakır).
+- Anahtarlar anahtarlı özetlerdir (ana anahtar altında HMAC); istemci adresi ya da e-posta adresi asla
+  değildir.
+- `rate_limit_sweep` işi, süresi dolmuş pencereleri ve kiraları dakikada bir siler.
+- Pencereler ve kiralar veritabanının saatiyle ölçülür; süreçlerin saatleri sınırları etkilemez.
+- Veritabanında başarısız olan bir kontrol (bağlantı kaybı, zaman aşımı) isteği reddetmek yerine
+  geçirir; sunucu bu sürdüğü sürece en fazla dakikada bir
+  `rate limit check failed; letting requests through` kaydı yazar.
+- [`YUVA_CLIENT_IP_HEADER` ve `YUVA_TRUSTED_PROXIES`](configuration.md) her süreçte aynı olmalıdır;
+  yoksa adres başına sınırlar farklı adresleri sayar.
+
 ## Sağlık kontrolleri ve loglar
 
 | Uç nokta | Port | Yanıt |
