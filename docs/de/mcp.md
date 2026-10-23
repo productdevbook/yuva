@@ -235,6 +235,7 @@ aufgelistet; ein Aufruf dennoch antwortet mit `insufficient_scope` und dem zu er
 | `schedule_broadcast` (nur wenn der Workspace Keys und Assistenten das Senden von Broadcasts erlaubt) | `broadcasts:send` |
 | `list_members` | `inboxes:read` |
 | `list_teams` | `inboxes:read` |
+| `list_macros` | `conversations:read` |
 | `search_contacts`, `list_contact_notes` | `contacts:read` |
 | `list_contact_subscriptions` | `contacts:read` und `lists:read` |
 | `create_contact`, `update_contact`, `add_contact_note` | `contacts:write` |
@@ -267,6 +268,8 @@ Kein Umzugs-Tool nimmt ein Passwort entgegen: `create_migration` liefert eine Yu
 Mit `inbox_id` und ohne `channel_id` verwendet `create_migration` den E-Mail-Kanal des Posteingangs für die Postfachadresse oder legt einen an (zusätzlich `inboxes:manage`). Ein neuer Kanal hat kein SMTP-Konto; die Antwort enthält daher `channel_created`, `channel_setup` (was im Panel einzustellen ist, bevor Antworten gesendet werden können) und `channel_settings_url`; der Prompt `move_to_yuva` gibt sie an Sie weiter.
 
 `assign` nimmt `team_id` (ein Team aus `list_teams`, das den Posteingang der Unterhaltung hat) oder `remove_team: true`; wird eines davon gesendet und `assignee_id` weggelassen, bleibt das zuständige Mitglied unverändert. `search_conversations` nimmt `team_id`, und Unterhaltungen tragen `team_id`.
+
+`list_macros` liefert die geteilten Makros des Workspace und Ihre eigenen mit `id`, `name`, `shortcut`, `visibility`, `body` und `actions` (`add_labels`, `remove_labels`, `assignee_id`, `unassign`, `status`, `snooze_minutes`, `priority`). Die Aktionen dienen nur der Information; kein Tool wendet ein Makro an.
 
 ### Ressourcen und Prompts
 

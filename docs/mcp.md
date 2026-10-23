@@ -256,6 +256,7 @@ answers `insufficient_scope` with the scope to grant.
 | `schedule_broadcast` (only while the workspace allows keys and assistants to send broadcasts) | `broadcasts:send` |
 | `list_members` | `inboxes:read` |
 | `list_teams` | `inboxes:read` |
+| `list_macros` | `conversations:read` |
 | `search_contacts`, `list_contact_notes` | `contacts:read` |
 | `list_contact_subscriptions` | `contacts:read` and `lists:read` |
 | `create_contact`, `update_contact`, `add_contact_note` | `contacts:write` |
@@ -288,6 +289,8 @@ No migration tool takes a password: `create_migration` returns a Yuva page (`con
 With `inbox_id` and no `channel_id`, `create_migration` uses the inbox's e-mail channel for the mailbox address, or creates one (needs `inboxes:manage` too). A new channel has no SMTP account, so the answer carries `channel_created`, `channel_setup` (what to set in the panel before replies can be sent) and `channel_settings_url`; the `move_to_yuva` prompt passes these on to you.
 
 `assign` takes `team_id` (a team from `list_teams` that holds the conversation's inbox) or `remove_team: true`; when either is sent and `assignee_id` is left out, the member assignee stays as it is. `search_conversations` takes `team_id`, and conversations carry `team_id`.
+
+`list_macros` returns the workspace's shared macros and your own with `id`, `name`, `shortcut`, `visibility`, `body` and `actions` (`add_labels`, `remove_labels`, `assignee_id`, `unassign`, `status`, `snooze_minutes`, `priority`). The actions are for reference; no tool applies a macro.
 
 ### Resources and prompts
 

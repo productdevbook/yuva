@@ -171,6 +171,80 @@ field, and `assignee=unassigned` still means "no member" whatever the team. Bulk
 [MCP](mcp.md) assistants use `list_teams`, `assign` with `team_id` or `remove_team`, and
 `search_conversations` with `team_id`.
 
+## Macros
+
+A macro is a saved reply plus actions: labels to add or remove, an assignee, a status, a snooze or a
+priority. Sending a message with a macro writes the message and applies the actions in one step. A
+macro is `personal` (yours alone) or `shared` (the whole workspace).
+
+```sh
+curl -X POST https://support.example.com/v1/macros \
+  -H "Authorization: Bearer $YUVA_API_KEY" -H "Content-Type: application/json" \
+  -d '{"visibility": "shared", "name": "Refund done", "shortcut": "refund-done",
+       "body": "Your refund is on its way.",
+       "actions": {"add_labels": ["'$LABEL'"], "status": "closed"}}'
+
+curl -X POST https://support.example.com/v1/conversations/$CONVERSATION/messages \
+  -H "Authorization: Bearer $YUVA_API_KEY" -H "Content-Type: application/json" \
+  -d '{"kind": "message", "direction": "out", "body": "Your refund is on its way.", "macro_id": "'$MACRO'"}'
+```
+
+| Call | Does |
+|---|---|
+| `GET /v1/macros` | Your personal macros first, then the shared ones, each by `position` and name: `{"items": [...]}`. A key sees the shared ones only. |
+| `POST /v1/macros` | Creates one: `visibility`, `name`, `shortcut`, and a `body`, `actions` or both; optional `position` (0 to 10000). `201`. |
+| `GET`, `PATCH`, `DELETE /v1/macros/{macroId}` | Reads, changes or deletes a macro. `PATCH` takes `name`, `shortcut`, `body` (`null` removes the text), `actions` (replaces the whole set) and `position`; the visibility cannot change. |
+
+A macro has `id`, `visibility`, `owner_member_id` (personal only), `name`, `shortcut`, `body`, `actions`,
+`position`, `created_at` and `updated_at`. `actions` may hold:
+
+| Action | Effect |
+|---|---|
+| `add_labels`, `remove_labels` | Label ids, up to 50 each; a label cannot be in both. A deleted label drops out of the macro. |
+| `assignee_id` | A member to assign; `null` unassigns. A removed member drops out of the macro. |
+| `status` | `open`, `pending`, `snoozed` or `closed`. `snoozed` needs `snooze_minutes`. |
+| `snooze_minutes` | 1 to 525600; snoozes from the moment the message is sent and implies `status: snoozed`. |
+| `priority` | The conversation's priority. |
+
+A shortcut is unique among the shared macros and among each member's personal ones
+(`409 shortcut_taken`); it may equal a canned reply's. Unknown labels, an assignee who is not a member,
+the same label added and removed, `snoozed` without `snooze_minutes`, or a macro with neither body nor
+actions answer `400 validation_failed`.
+
+| Who | May |
+|---|---|
+| Any member, signed in | Read, create, change and delete their own personal macros and read the shared ones. |
+| Owners and admins | Also create, change and delete shared macros. Agents get `403 forbidden`. |
+| Connected apps (OAuth) | Personal macros with `conversations:write`; shared macros with `canned_replies:write`. |
+| API keys | Read shared macros with `conversations:read`; manage them with `canned_replies:write` (`403 insufficient_scope` without it). Personal macros: `403 member_session_required`. |
+
+Another member's personal macro, and a macro of another workspace, answer `404`.
+
+### Sending with a macro
+
+`POST /v1/conversations/{conversationId}/messages` takes two optional fields (as a JSON string
+`then` in a multipart request):
+
+| Field | Meaning |
+|---|---|
+| `macro_id` | Apply this macro's actions with the message. Shared macros work for keys. |
+| `then` | A `ConversationUpdate` applied after the macro, field by field: `then.status` replaces the macro's status and snooze, `then.labels` replaces the labels (the macro's additions and removals included). |
+
+The message and the changes are one transaction. If the message is refused (invalid mention, delivery
+refusal) nothing is applied; if an action is refused (an assignee in `then` without access to the inbox,
+a snooze in the past) the message is not written either. The exception is the macro's own assignee: when
+that member was removed or has lost access to the inbox, the reply and the other actions go through and
+the assignee is skipped. Both fields need `conversations:write` for keys and tokens, are refused on a
+draft (`400 validation_failed`), and are not applied again when a repeated `client_id` returns the
+stored message. A snooze counts from the server time of the send.
+
+The conversation's timeline gets a `macro_applied` event right after the message, with `macro` (`id`,
+`name`) and, when the assignee was skipped, `skipped: ["assignee"]`, then the usual `assigned`,
+`status_changed` and `labels_changed` events. Priority changes have no timeline event.
+
+[MCP](mcp.md) assistants read macros with `list_macros`; tools never apply them. Use a macro's `body`
+with `draft_reply`.
+
 ## Reference
 
 ### Scopes

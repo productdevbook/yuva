@@ -174,6 +174,80 @@ hâlâ "üye yok" demektir. Toplu güncelleme ve `POST /v1/conversations` ekip a
 [MCP](mcp.md) asistanları `list_teams`, `team_id` veya `remove_team` ile `assign` ve `team_id` ile
 `search_conversations` kullanır.
 
+## Makrolar
+
+Makro, kayıtlı bir yanıt ile eylemlerdir: eklenecek ya da kaldırılacak etiketler, atanan kişi, durum,
+erteleme veya öncelik. Bir mesajı makroyla göndermek, mesajı yazar ve eylemleri tek adımda uygular.
+Makro `personal` (yalnızca sizin) ya da `shared` (tüm çalışma alanı) olur.
+
+```sh
+curl -X POST https://support.example.com/v1/macros \
+  -H "Authorization: Bearer $YUVA_API_KEY" -H "Content-Type: application/json" \
+  -d '{"visibility": "shared", "name": "Refund done", "shortcut": "refund-done",
+       "body": "Your refund is on its way.",
+       "actions": {"add_labels": ["'$LABEL'"], "status": "closed"}}'
+
+curl -X POST https://support.example.com/v1/conversations/$CONVERSATION/messages \
+  -H "Authorization: Bearer $YUVA_API_KEY" -H "Content-Type: application/json" \
+  -d '{"kind": "message", "direction": "out", "body": "Your refund is on its way.", "macro_id": "'$MACRO'"}'
+```
+
+| Çağrı | Ne yapar |
+|---|---|
+| `GET /v1/macros` | Önce kişisel makrolarınız, sonra paylaşılanlar; her biri `position` ve ada göre: `{"items": [...]}`. Anahtar yalnızca paylaşılanları görür. |
+| `POST /v1/macros` | Makro oluşturur: `visibility`, `name`, `shortcut` ve bir `body`, `actions` ya da ikisi; isteğe bağlı `position` (0 ila 10000). `201`. |
+| `GET`, `PATCH`, `DELETE /v1/macros/{macroId}` | Makroyu okur, değiştirir veya siler. `PATCH` `name`, `shortcut`, `body` (`null` metni kaldırır), `actions` (tüm kümeyi değiştirir) ve `position` alır; görünürlük değişmez. |
+
+Bir makroda `id`, `visibility`, `owner_member_id` (yalnızca kişisel), `name`, `shortcut`, `body`, `actions`,
+`position`, `created_at` ve `updated_at` bulunur. `actions` şunları içerebilir:
+
+| Eylem | Etki |
+|---|---|
+| `add_labels`, `remove_labels` | Etiket kimlikleri, her biri en fazla 50; bir etiket ikisinde birden olamaz. Silinen etiket makrodan düşer. |
+| `assignee_id` | Atanacak üye; `null` atamayı kaldırır. Çıkarılan üye makrodan düşer. |
+| `status` | `open`, `pending`, `snoozed` veya `closed`. `snoozed` için `snooze_minutes` gerekir. |
+| `snooze_minutes` | 1 ila 525600; mesajın gönderildiği andan itibaren erteler ve `status: snoozed` anlamına gelir. |
+| `priority` | Konuşmanın önceliği. |
+
+Kısayol, paylaşılan makrolar arasında ve her üyenin kişisel makroları arasında benzersizdir
+(`409 shortcut_taken`); bir hazır yanıtın kısayoluyla aynı olabilir. Bilinmeyen etiketler, üye olmayan bir
+atanan, aynı etiketin hem eklenip hem kaldırılması, `snooze_minutes` olmadan `snoozed` ya da ne metni ne
+eylemi olan bir makro `400 validation_failed` verir.
+
+| Kim | Ne yapabilir |
+|---|---|
+| Oturum açmış her üye | Kendi kişisel makrolarını okur, oluşturur, değiştirir ve siler; paylaşılanları okur. |
+| Sahipler ve yöneticiler | Ayrıca paylaşılan makroları oluşturur, değiştirir ve siler. Temsilciler `403 forbidden` alır. |
+| Bağlı uygulamalar (OAuth) | Kişisel makrolar için `conversations:write`; paylaşılanlar için `canned_replies:write`. |
+| API anahtarları | Paylaşılanları `conversations:read` ile okur; `canned_replies:write` ile yönetir (olmadan `403 insufficient_scope`). Kişisel makrolar: `403 member_session_required`. |
+
+Başka bir üyenin kişisel makrosu ve başka bir çalışma alanının makrosu `404` verir.
+
+### Makroyla göndermek
+
+`POST /v1/conversations/{conversationId}/messages` iki isteğe bağlı alan alır (multipart isteğinde `then`
+bir JSON dizesi olarak):
+
+| Alan | Anlamı |
+|---|---|
+| `macro_id` | Bu makronun eylemlerini mesajla birlikte uygular. Paylaşılan makrolar anahtarlarla çalışır. |
+| `then` | Makrodan sonra alan alan uygulanan bir `ConversationUpdate`: `then.status` makronun durumunun ve ertelemesinin yerine geçer, `then.labels` etiketlerin yerine geçer (makronun eklemeleri ve kaldırmaları dahil). |
+
+Mesaj ve değişiklikler tek bir işlemdir. Mesaj reddedilirse (geçersiz anma, teslimat reddi) hiçbir şey
+uygulanmaz; bir eylem reddedilirse (`then` içinde gelen kutusuna erişimi olmayan bir atanan, geçmişte bir
+erteleme) mesaj da yazılmaz. İstisna, makronun kendi atananıdır: o üye çıkarılmışsa veya gelen kutusuna
+erişimini kaybetmişse yanıt ve diğer eylemler geçer, atanan atlanır. Her iki alan da anahtarlar ve
+token'lar için `conversations:write` gerektirir, taslakta reddedilir (`400 validation_failed`) ve tekrarlanan
+bir `client_id` kayıtlı mesajı döndürdüğünde yeniden uygulanmaz. Erteleme, gönderimin sunucu
+zamanından başlar.
+
+Konuşmanın zaman çizelgesinde mesajdan hemen sonra `macro` (`id`, `name`) taşıyan ve atanan atlandıysa
+`skipped: ["assignee"]` içeren bir `macro_applied` olayı, ardından olağan `assigned`, `status_changed` ve
+`labels_changed` olayları görünür. Öncelik değişikliklerinin zaman çizelgesi olayı yoktur.
+
+[MCP](mcp.md) asistanları makroları `list_macros` ile okur; araçlar hiçbir zaman makro uygulamaz. Bir makronun
+`body` metnini `draft_reply` ile kullanın.
+
 ## Başvuru
 
 ### Yetkiler

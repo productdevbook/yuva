@@ -180,6 +180,83 @@ bedeutet weiterhin „kein Mitglied“, egal welches Team. Die Sammelaktualisier
 [MCP](mcp.md)-Assistenten nutzen `list_teams`, `assign` mit `team_id` oder `remove_team` und
 `search_conversations` mit `team_id`.
 
+## Makros
+
+Ein Makro ist eine gespeicherte Antwort plus Aktionen: Labels zum Hinzufügen oder Entfernen, ein
+Zuständiger, ein Status, eine Zurückstellung oder eine Priorität. Wer eine Nachricht mit einem Makro
+sendet, schreibt die Nachricht und wendet die Aktionen in einem Schritt an. Ein Makro ist `personal`
+(nur Ihres) oder `shared` (für den ganzen Workspace).
+
+```sh
+curl -X POST https://support.example.com/v1/macros \
+  -H "Authorization: Bearer $YUVA_API_KEY" -H "Content-Type: application/json" \
+  -d '{"visibility": "shared", "name": "Refund done", "shortcut": "refund-done",
+       "body": "Your refund is on its way.",
+       "actions": {"add_labels": ["'$LABEL'"], "status": "closed"}}'
+
+curl -X POST https://support.example.com/v1/conversations/$CONVERSATION/messages \
+  -H "Authorization: Bearer $YUVA_API_KEY" -H "Content-Type: application/json" \
+  -d '{"kind": "message", "direction": "out", "body": "Your refund is on its way.", "macro_id": "'$MACRO'"}'
+```
+
+| Aufruf | Bewirkt |
+|---|---|
+| `GET /v1/macros` | Zuerst Ihre persönlichen Makros, dann die geteilten, jeweils nach `position` und Namen: `{"items": [...]}`. Ein Schlüssel sieht nur die geteilten. |
+| `POST /v1/macros` | Legt eines an: `visibility`, `name`, `shortcut` und einen `body`, `actions` oder beides; optional `position` (0 bis 10000). `201`. |
+| `GET`, `PATCH`, `DELETE /v1/macros/{macroId}` | Liest, ändert oder löscht ein Makro. `PATCH` nimmt `name`, `shortcut`, `body` (`null` entfernt den Text), `actions` (ersetzt die ganze Menge) und `position`; die Sichtbarkeit lässt sich nicht ändern. |
+
+Ein Makro hat `id`, `visibility`, `owner_member_id` (nur persönlich), `name`, `shortcut`, `body`, `actions`,
+`position`, `created_at` und `updated_at`. `actions` kann enthalten:
+
+| Aktion | Wirkung |
+|---|---|
+| `add_labels`, `remove_labels` | Label-IDs, je bis zu 50; ein Label darf nicht in beiden stehen. Ein gelöschtes Label fällt aus dem Makro. |
+| `assignee_id` | Ein zuzuweisendes Mitglied; `null` hebt die Zuweisung auf. Ein entferntes Mitglied fällt aus dem Makro. |
+| `status` | `open`, `pending`, `snoozed` oder `closed`. `snoozed` braucht `snooze_minutes`. |
+| `snooze_minutes` | 1 bis 525600; stellt ab dem Moment des Sendens zurück und bedeutet `status: snoozed`. |
+| `priority` | Die Priorität der Unterhaltung. |
+
+Ein Kürzel ist unter den geteilten Makros und unter den persönlichen jedes Mitglieds eindeutig
+(`409 shortcut_taken`); es darf dem Kürzel eines Textbausteins gleichen. Unbekannte Labels, ein
+Zuständiger, der kein Mitglied ist, dasselbe Label zum Hinzufügen und Entfernen, `snoozed` ohne
+`snooze_minutes` oder ein Makro ohne Text und ohne Aktionen ergeben `400 validation_failed`.
+
+| Wer | Darf |
+|---|---|
+| Jedes angemeldete Mitglied | Eigene persönliche Makros lesen, anlegen, ändern und löschen und die geteilten lesen. |
+| Inhaber und Admins | Zusätzlich geteilte Makros anlegen, ändern und löschen. Agents erhalten `403 forbidden`. |
+| Verbundene Apps (OAuth) | Persönliche Makros mit `conversations:write`; geteilte mit `canned_replies:write`. |
+| API-Keys | Geteilte mit `conversations:read` lesen; mit `canned_replies:write` verwalten (ohne: `403 insufficient_scope`). Persönliche Makros: `403 member_session_required`. |
+
+Das persönliche Makro eines anderen Mitglieds und ein Makro eines anderen Workspace ergeben `404`.
+
+### Mit einem Makro senden
+
+`POST /v1/conversations/{conversationId}/messages` nimmt zwei optionale Felder (in einer Multipart-Anfrage
+ist `then` ein JSON-String):
+
+| Feld | Bedeutung |
+|---|---|
+| `macro_id` | Wendet die Aktionen dieses Makros mit der Nachricht an. Geteilte Makros funktionieren für Schlüssel. |
+| `then` | Ein `ConversationUpdate`, das nach dem Makro feldweise angewendet wird: `then.status` ersetzt Status und Zurückstellung des Makros, `then.labels` ersetzt die Labels (die Hinzufügungen und Entfernungen des Makros eingeschlossen). |
+
+Nachricht und Änderungen sind eine Transaktion. Wird die Nachricht abgelehnt (ungültige Erwähnung,
+Zustellung abgelehnt), wird nichts angewendet; wird eine Aktion abgelehnt (ein Zuständiger in `then` ohne
+Zugriff auf den Posteingang, eine Zurückstellung in der Vergangenheit), wird auch die Nachricht nicht
+geschrieben. Ausnahme ist der Zuständige des Makros selbst: Wurde dieses Mitglied entfernt oder hat es den
+Zugriff auf den Posteingang verloren, gehen die Antwort und die übrigen Aktionen durch, und der Zuständige
+wird übersprungen. Beide Felder brauchen für Schlüssel und Tokens `conversations:write`, werden bei einem
+Entwurf abgelehnt (`400 validation_failed`) und nicht erneut angewendet, wenn eine wiederholte `client_id`
+die gespeicherte Nachricht zurückgibt. Eine Zurückstellung zählt ab der Serverzeit des Sendens.
+
+Die Timeline der Unterhaltung erhält direkt nach der Nachricht ein `macro_applied`-Ereignis mit `macro`
+(`id`, `name`) und, wenn der Zuständige übersprungen wurde, `skipped: ["assignee"]`, danach die üblichen
+Ereignisse `assigned`, `status_changed` und `labels_changed`. Prioritätsänderungen haben kein
+Timeline-Ereignis.
+
+[MCP](mcp.md)-Assistenten lesen Makros mit `list_macros`; Tools wenden sie nie an. Nutzen Sie den `body`
+eines Makros mit `draft_reply`.
+
 ## Referenz
 
 ### Scopes
