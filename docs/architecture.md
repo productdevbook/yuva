@@ -174,6 +174,27 @@ while it is on; a reopened conversation gets no new resolution target.
 - **Reopen.** If the assignee still has inbox access and is not `away`, they keep the conversation; otherwise it is unassigned and enters the pool.
 - **Events.** An automatic assignment writes the same `assigned` timeline event and `conversation.updated` as a manual one, with `auto: true`, and notifies like a manual assignment.
 
+- **As built (#139, migrations 00115 and 00116).** Settings are on inboxes and teams with the same
+  permission as their other fields; turning a pool on or widening its cap queues the waiting run.
+  Round robin picks the member with the oldest turn (never-turned first, ties by id); least open
+  picks the fewest open, then by turn; every automatic assignment writes a turn, strictly increasing
+  per pool. A team with no member uses only the team's pool (team off assigns nothing). Pool entries
+  are a non-imported `conversation.created` and a reopen written by `system`; when an automation run
+  is queued for the same conversation it carries the assignment and queues `auto_assign` after its
+  last rule, and a rule that assigned, unassigned or handed to the pool decides instead of the
+  reopen check. Each automatic assignment takes the per-workspace advisory lock, then the
+  conversation, then the event lock; the waiting run reads 50 ids per page to the end and decides
+  each conversation in its own short transaction, remembering an empty pool per (pool, inbox). The
+  load count reads a partial index on open, non-spam, untrashed conversations per assignee.
+  `assign_waiting_since` is set once and cleared when the conversation gets a member, leaves `open`,
+  is marked spam, moved with a member or trashed; a manual unassign doesn't put it in the pool. The
+  per-minute sweep queues the waiting run for every workspace with a waiting conversation and a member
+  online and available, not only when hours open, since River skips a trigger while the same run is
+  in progress. On reopen the assignee keeps it while they still have inbox access and aren't away
+  (online and cap not required); only when the conversation's pool is on. While the rules job is held
+  by the rate limit, its new conversation is marked waiting but held for the rules. Manual assignment
+  and contact reopens take no assignment lock: a race ends as if the automatic one ran first.
+
 **SLA policies (#140).**
 - **Policies.** `sla_policies (workspace_id, id, name, position, enabled, inbox_ids uuid[], channel_kinds text[], label_ids uuid[], priorities text[], first_reply_minutes, next_reply_minutes, resolution_minutes, warn_minutes default 15)`. An empty array matches anything; at least one target is required. The first enabled policy by `position` whose conditions match applies.
 - **Per-conversation state.** `conversation_sla (workspace_id, conversation_id PK, policy_id, assignee_id_at_outcome, team_id_at_outcome)`, plus for each target `t ∈ {first_reply, next_reply, resolution}`: `t_due_at`, `t_remaining_s` (business seconds left while paused), `t_met_at`, `t_breached_at`, `t_warned_at`, and `paused_at`. The list's `sla_due_at` is `least(open due times)`, stored on `conversations` (indexed `(workspace_id, sla_due_at) WHERE sla_due_at IS NOT NULL`) so the list sorts by `sort=sla_due`.
