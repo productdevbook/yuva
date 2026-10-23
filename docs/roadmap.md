@@ -581,7 +581,7 @@ sees only their inboxes.
 
 ## M30 — Own domains and content
 
-Status: planned; items Y-148 to Y-150 in `backlog.md`. Part of 0.1.0.
+Status: done on main (#148–#150), verified on 2026-10-23 on a running server; own domains with the domain marked verified in the database (real DNS behind Caddy and Cloudflare, and an import from a real Zendesk Guide, wait for the hosted server and the owner's accounts).
 
 - Own domains for help centers, roadmap boards and What's new; feedback categories per inbox; help
   articles imported from Zendesk and Help Scout.
@@ -603,7 +603,7 @@ and no notification, webhook or push.
 
 ## M32 — Integrations and push
 
-Status: planned; items Y-157 to Y-159 in `backlog.md`. Part of 0.1.0.
+Status: done on main (#157–#159), verified on 2026-10-23 on a running server: GitHub live against a fake GitHub Enterprise, Slack, Linear and APNs/FCM delivery through the end-to-end tests with fake providers; a real Slack app and pushes to real devices wait for the owner's keys.
 
 - Slack notifications and replies, feedback linked to GitHub and Linear issues, push sent by Yuva itself
   through APNs and FCM.
