@@ -2098,6 +2098,14 @@ msgstr "Yanıt URL'si olarak da geçer. HTTP-POST bağlaması."
 msgid "Also for sign-in and notification e-mails"
 msgstr "Giriş ve bildirim e-postaları da bu dilde gelir"
 
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Also post SLA warnings for {name}"
+msgstr "{name} için SLA uyarılarını da gönder"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Also post warnings"
+msgstr "Uyarıları da gönder"
+
 #: src/features/settings/webhooks/events.tsx
 msgid "Also send message.created for members' internal notes. Internal events are never sent."
 msgstr "Üyelerin iç notları için de message.created gönderilir. İç olaylar hiçbir zaman gönderilmez."
@@ -3457,6 +3465,10 @@ msgstr "{name} gelen kutusundaki bahsetmeler için kanal"
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Channel for new conversations in {name}"
 msgstr "{name} gelen kutusundaki yeni konuşmalar için kanal"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "Channel for SLA breaches in {name}"
+msgstr "{name} gelen kutusundaki SLA ihlalleri için kanal"
 
 #: src/features/settings/channels/sections.tsx
 msgid "Channel removed"
@@ -14958,6 +14970,10 @@ msgstr "SLA"
 #: src/features/conversation/SlaPopover.tsx
 msgid "SLA · {policyName}"
 msgstr "SLA · {policyName}"
+
+#: src/features/settings/slack/SlackPage.tsx
+msgid "SLA breaches"
+msgstr "SLA ihlalleri"
 
 #: src/features/reports/ReportPages.tsx
 msgid "SLA met"

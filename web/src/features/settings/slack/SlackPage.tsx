@@ -74,6 +74,8 @@ function InboxRow({ id, name, channels }: { id: string; name: string; channels: 
       new_conversations_channel_id: s.new_conversations_channel_id ?? null,
       mentions_channel_id: s.mentions_channel_id ?? null,
       include_content: s.include_content,
+      sla_channel_id: s.sla_channel_id ?? null,
+      sla_warnings: s.sla_warnings,
       ...body,
     })
   return (
@@ -105,6 +107,29 @@ function InboxRow({ id, name, channels }: { id: string; name: string; channels: 
               disabled={set.isPending}
             />
           </Field>
+          <Field label={<Trans>SLA breaches</Trans>} htmlFor={`slack-sla-${id}`}>
+            <ChoiceSelect
+              id={`slack-sla-${id}`}
+              value={s.sla_channel_id ?? ""}
+              onChange={(v) => save({ sla_channel_id: v || null })}
+              options={options}
+              className="w-full"
+              label={t`Channel for SLA breaches in ${name}`}
+              disabled={set.isPending}
+            />
+          </Field>
+          <label className="flex items-center gap-3 self-end pb-2">
+            <Switch
+              checked={s.sla_warnings}
+              onCheckedChange={(on) => save({ sla_warnings: on })}
+              disabled={set.isPending || !s.sla_channel_id}
+              aria-label={t`Also post SLA warnings for ${name}`}
+              data-testid="slack-sla-warnings"
+            />
+            <span className="text-body font-medium">
+              <Trans>Also post warnings</Trans>
+            </span>
+          </label>
           <label className="flex items-start gap-3 sm:col-span-2">
             <Switch
               checked={s.include_content}
