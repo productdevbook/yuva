@@ -409,6 +409,9 @@ func (s *Server) deletePerson(ctx context.Context, person store.Person, byOperat
 			if err := s.audit(ctx, q, by, oas.AuditMemberRemoved, oas.AuditTargetMember, m.MemberID, auditDetails{"role": m.Role, "reason": "account_deleted"}); err != nil {
 				return err
 			}
+			if err := q.ClearMacroAssignee(ctx, store.ClearMacroAssigneeParams{WorkspaceID: m.WorkspaceID, MemberID: m.MemberID.String()}); err != nil {
+				return err
+			}
 		}
 		_, err = q.DeletePerson(ctx, person.ID)
 		return err

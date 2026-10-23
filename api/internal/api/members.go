@@ -154,6 +154,9 @@ func (s *Server) RemoveMember(ctx context.Context, req oas.RemoveMemberRequestOb
 		if err := q.DeleteMember(ctx, store.DeleteMemberParams{WorkspaceID: p.workspaceID, ID: target.ID}); err != nil {
 			return err
 		}
+		if err := q.ClearMacroAssignee(ctx, store.ClearMacroAssigneeParams{WorkspaceID: p.workspaceID, MemberID: target.ID.String()}); err != nil {
+			return err
+		}
 		return s.audit(ctx, q, p, oas.AuditMemberRemoved, oas.AuditTargetMember, target.ID, auditDetails{"role": target.Role})
 	})
 	if err != nil {

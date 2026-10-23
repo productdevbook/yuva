@@ -9,6 +9,8 @@ import (
 	"time"
 	"uuid"
 
+	"github.com/oapi-codegen/nullable"
+
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
@@ -64,11 +66,33 @@ func mayWriteMacro(p principal, personal bool) error {
 	return requireManagerOrKey(p)
 }
 
+// lockedLabelSet checks the labels with their rows locked until the macro is written, so that a
+// label deleted meanwhile either fails the save or is stripped from it afterwards.
+func lockedLabelSet(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, in []uuid.UUID) ([]uuid.UUID, error) {
+	if len(in) > maxLabels {
+		return nil, errValidation("at most 50 labels")
+	}
+	out := slices.Clone(in)
+	slices.SortFunc(out, func(a, b uuid.UUID) int { return a.Compare(b) })
+	out = slices.Compact(out)
+	if len(out) == 0 {
+		return out, nil
+	}
+	found, err := q.LockLabels(ctx, store.LockLabelsParams{WorkspaceID: workspaceID, Ids: out})
+	if err != nil {
+		return nil, err
+	}
+	if len(found) != len(out) {
+		return nil, errValidation("actions names a label that does not exist")
+	}
+	return out, nil
+}
+
 func (s *Server) validMacroActions(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, a *oas.MacroActions) error {
 	var add, remove []uuid.UUID
 	var err error
 	if a.AddLabels != nil {
-		if add, err = labelSet(ctx, q, workspaceID, *a.AddLabels); err != nil {
+		if add, err = lockedLabelSet(ctx, q, workspaceID, *a.AddLabels); err != nil {
 			return err
 		}
 		a.AddLabels = nil
@@ -77,7 +101,7 @@ func (s *Server) validMacroActions(ctx context.Context, q *store.Queries, worksp
 		}
 	}
 	if a.RemoveLabels != nil {
-		if remove, err = labelSet(ctx, q, workspaceID, *a.RemoveLabels); err != nil {
+		if remove, err = lockedLabelSet(ctx, q, workspaceID, *a.RemoveLabels); err != nil {
 			return err
 		}
 		a.RemoveLabels = nil
@@ -89,10 +113,12 @@ func (s *Server) validMacroActions(ctx context.Context, q *store.Queries, worksp
 		return errValidation("a label cannot be both added and removed")
 	}
 	if a.AssigneeId.IsSpecified() && !a.AssigneeId.IsNull() {
-		if _, err := q.GetMember(ctx, store.GetMemberParams{WorkspaceID: workspaceID, ID: a.AssigneeId.MustGet()}); store.IsNotFound(err) {
-			return errValidation("actions.assignee_id must be a member of the workspace")
-		} else if err != nil {
+		found, err := q.LockMemberShared(ctx, store.LockMemberSharedParams{WorkspaceID: workspaceID, ID: a.AssigneeId.MustGet()})
+		if err != nil {
 			return err
+		}
+		if len(found) == 0 {
+			return errValidation("actions.assignee_id must be a member of the workspace")
 		}
 	}
 	if a.Priority != nil && !validPriority(*a.Priority) {
@@ -181,15 +207,20 @@ func (s *Server) CreateMacro(ctx context.Context, req oas.CreateMacroRequestObje
 	if b.Actions != nil {
 		actions = *b.Actions
 	}
-	if err := s.validMacroActions(ctx, s.st.Queries, p.workspaceID, &actions); err != nil {
-		return nil, err
-	}
 	if m.Body == nil && emptyActions(actions) {
 		return nil, errValidation("a macro needs a body, actions or both")
 	}
-	out, err := s.st.CreateMacro(ctx, store.CreateMacroParams{
-		ID: newID(), WorkspaceID: p.workspaceID, OwnerMemberID: m.OwnerMemberID, Name: m.Name, Shortcut: m.Shortcut,
-		Body: m.Body, Actions: mustJSON(actions), Position: m.Position, Now: s.now(),
+	var out store.Macro
+	err := s.st.InTx(ctx, func(q *store.Queries) error {
+		if err := s.validMacroActions(ctx, q, p.workspaceID, &actions); err != nil {
+			return err
+		}
+		var err error
+		out, err = q.CreateMacro(ctx, store.CreateMacroParams{
+			ID: newID(), WorkspaceID: p.workspaceID, OwnerMemberID: m.OwnerMemberID, Name: m.Name, Shortcut: m.Shortcut,
+			Body: m.Body, Actions: mustJSON(actions), Position: m.Position, Now: s.now(),
+		})
+		return err
 	})
 	if store.IsUniqueViolation(err) {
 		return nil, errMacroShortcutTaken
@@ -235,15 +266,24 @@ func (s *Server) UpdateMacro(ctx context.Context, req oas.UpdateMacroRequestObje
 	if b.Actions != nil {
 		actions = *b.Actions
 	}
-	if err := s.validMacroActions(ctx, s.st.Queries, p.workspaceID, &actions); err != nil {
-		return nil, err
-	}
 	if m.Body == nil && emptyActions(actions) {
 		return nil, errValidation("a macro needs a body, actions or both")
 	}
-	out, err := s.st.UpdateMacro(ctx, store.UpdateMacroParams{
-		WorkspaceID: p.workspaceID, ID: m.ID, Name: m.Name, Shortcut: m.Shortcut, Body: m.Body, Actions: mustJSON(actions),
-		Position: m.Position, Now: s.now(),
+	var out store.Macro
+	err = s.st.InTx(ctx, func(q *store.Queries) error {
+		stored := m.Actions
+		if b.Actions != nil {
+			if err := s.validMacroActions(ctx, q, p.workspaceID, &actions); err != nil {
+				return err
+			}
+			stored = mustJSON(actions)
+		}
+		var err error
+		out, err = q.UpdateMacro(ctx, store.UpdateMacroParams{
+			WorkspaceID: p.workspaceID, ID: m.ID, Name: m.Name, Shortcut: m.Shortcut, Body: m.Body, Actions: stored,
+			Position: m.Position, Now: s.now(),
+		})
+		return err
 	})
 	if store.IsUniqueViolation(err) {
 		return nil, errMacroShortcutTaken
@@ -359,13 +399,23 @@ func (s *Server) applyAfterMessage(ctx context.Context, q *store.Queries, events
 	if macro == nil && then == nil {
 		return nil
 	}
+	upd, add, remove := macroChange(macro, then, now)
 	if macro != nil {
 		ev := oas.MessageEvent{Type: oas.MacroApplied, Macro: &oas.MacroRef{Id: macro.ID, Name: macro.Name}}
+		if (then == nil || !then.AssigneeId.IsSpecified()) && upd.AssigneeId.IsSpecified() && !upd.AssigneeId.IsNull() {
+			ok, err := memberHasInbox(ctx, q, p.workspaceID, c.InboxID, upd.AssigneeId.MustGet())
+			if err != nil {
+				return err
+			}
+			if !ok {
+				upd.AssigneeId = nullable.Nullable[uuid.UUID]{}
+				ev.Skipped = &[]oas.MacroSkipped{oas.MacroSkippedAssignee}
+			}
+		}
 		if err := s.writeEvent(ctx, q, events, p, c, ev, now); err != nil {
 			return err
 		}
 	}
-	upd, add, remove := macroChange(macro, then, now)
 	_, err := s.changeConversation(ctx, q, events, p, c.ID, upd, add, remove)
 	return err
 }

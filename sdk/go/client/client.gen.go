@@ -4026,6 +4026,21 @@ func (e Locale) Valid() bool {
 	}
 }
 
+// Defines values for MacroSkipped.
+const (
+	MacroSkippedAssignee MacroSkipped = "assignee"
+)
+
+// Valid indicates whether the value is a known member of the MacroSkipped enum.
+func (e MacroSkipped) Valid() bool {
+	switch e {
+	case MacroSkippedAssignee:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for MacroVisibility.
 const (
 	MacroVisibilityPersonal MacroVisibility = "personal"
@@ -15943,7 +15958,8 @@ type Locale string
 // Macro defines model for Macro.
 type Macro struct {
 	// Actions What sending a message with the macro does to the conversation. Absent fields change
-	// nothing. A deleted label drops out of `add_labels` and `remove_labels`.
+	// nothing. A deleted label drops out of `add_labels` and `remove_labels`, and a removed
+	// member out of `assignee_id`.
 	Actions MacroActions `json:"actions"`
 
 	// Body The reply text that fills the composer; absent for a macro of actions only.
@@ -15965,7 +15981,8 @@ type Macro struct {
 }
 
 // MacroActions What sending a message with the macro does to the conversation. Absent fields change
-// nothing. A deleted label drops out of `add_labels` and `remove_labels`.
+// nothing. A deleted label drops out of `add_labels` and `remove_labels`, and a removed
+// member out of `assignee_id`.
 type MacroActions struct {
 	AddLabels *[]uuid.UUID `json:"add_labels,omitempty"`
 
@@ -15984,7 +16001,8 @@ type MacroActions struct {
 // MacroCreate Needs a `body`, at least one action, or both.
 type MacroCreate struct {
 	// Actions What sending a message with the macro does to the conversation. Absent fields change
-	// nothing. A deleted label drops out of `add_labels` and `remove_labels`.
+	// nothing. A deleted label drops out of `add_labels` and `remove_labels`, and a removed
+	// member out of `assignee_id`.
 	Actions  *MacroActions `json:"actions,omitempty"`
 	Body     *string       `json:"body,omitempty"`
 	Name     string        `json:"name"`
@@ -16010,10 +16028,14 @@ type MacroRef struct {
 	Name string `json:"name"`
 }
 
+// MacroSkipped defines model for MacroSkipped.
+type MacroSkipped string
+
 // MacroUpdate defines model for MacroUpdate.
 type MacroUpdate struct {
 	// Actions What sending a message with the macro does to the conversation. Absent fields change
-	// nothing. A deleted label drops out of `add_labels` and `remove_labels`.
+	// nothing. A deleted label drops out of `add_labels` and `remove_labels`, and a removed
+	// member out of `assignee_id`.
 	Actions *MacroActions `json:"actions,omitempty"`
 
 	// Body `null` removes the reply text.
@@ -16559,10 +16581,15 @@ type MessageEvent struct {
 	PreviousStatus  *ConversationStatus `json:"previous_status,omitempty"`
 
 	// Rating `rated` only: the contact's rating; the message body is their comment.
-	Rating        *Rating             `json:"rating,omitempty"`
-	RemovedLabels *[]uuid.UUID        `json:"removed_labels,omitempty"`
-	Status        *ConversationStatus `json:"status,omitempty"`
-	Type          EventType           `json:"type"`
+	Rating        *Rating      `json:"rating,omitempty"`
+	RemovedLabels *[]uuid.UUID `json:"removed_labels,omitempty"`
+
+	// Skipped `macro_applied` only: actions of the macro left out. `assignee`: the member can no
+	// longer take the conversation (removed, or without access to its inbox); the reply was
+	// sent and the rest applied.
+	Skipped *[]MacroSkipped     `json:"skipped,omitempty"`
+	Status  *ConversationStatus `json:"status,omitempty"`
+	Type    EventType           `json:"type"`
 }
 
 // MessageKind `message` goes to or comes from the contact, `note` is for members only, `event` records a
@@ -33366,9 +33393,10 @@ type ClientInterface interface {
 	// `from_address`, the reply is refused with `409 email_no_sender`.
 	//
 	// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
-	// transaction as the message: when either is refused (an assignee without access to the
-	// inbox, a snooze without a future time) nothing is written, and when the message is
-	// refused no action is applied. With both, the macro's actions come first and the fields of
+	// transaction as the message: when either is refused (an assignee of `then` without access
+	// to the inbox, a snooze without a future time) nothing is written, and when the message is
+	// refused no action is applied. A macro's assignee who can no longer take the conversation
+	// is skipped rather than refusing the reply, and the event lists it in `skipped`. With both, the macro's actions come first and the fields of
 	// `then` take their place (`then.labels` replaces the labels, the macro's label changes
 	// included). They need `conversations:write` for API keys and OAuth tokens, are refused on a
 	// draft (`400 validation_failed`) and are not applied again when a `client_id` repeats. A
@@ -33420,9 +33448,10 @@ type ClientInterface interface {
 	// `from_address`, the reply is refused with `409 email_no_sender`.
 	//
 	// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
-	// transaction as the message: when either is refused (an assignee without access to the
-	// inbox, a snooze without a future time) nothing is written, and when the message is
-	// refused no action is applied. With both, the macro's actions come first and the fields of
+	// transaction as the message: when either is refused (an assignee of `then` without access
+	// to the inbox, a snooze without a future time) nothing is written, and when the message is
+	// refused no action is applied. A macro's assignee who can no longer take the conversation
+	// is skipped rather than refusing the reply, and the event lists it in `skipped`. With both, the macro's actions come first and the fields of
 	// `then` take their place (`then.labels` replaces the labels, the macro's label changes
 	// included). They need `conversations:write` for API keys and OAuth tokens, are refused on a
 	// draft (`400 validation_failed`) and are not applied again when a `client_id` repeats. A
@@ -35717,8 +35746,9 @@ type ClientInterface interface {
 
 	// UpdateMacroWithBody Update a macro
 	//
-	// Same permissions as creating one of its visibility. `actions` replaces the actions as a
-	// whole. The visibility does not change; create a new macro instead.
+	// Same permissions as creating one of its visibility. Only the fields sent are checked;
+	// `actions` replaces the actions as a whole. The visibility does not change; create a new
+	// macro instead.
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -35727,8 +35757,9 @@ type ClientInterface interface {
 
 	// UpdateMacro Update a macro
 	//
-	// Same permissions as creating one of its visibility. `actions` replaces the actions as a
-	// whole. The visibility does not change; create a new macro instead.
+	// Same permissions as creating one of its visibility. Only the fields sent are checked;
+	// `actions` replaces the actions as a whole. The visibility does not change; create a new
+	// macro instead.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -44582,9 +44613,10 @@ func (c *Client) ListMessages(ctx context.Context, conversationId ConversationId
 // `from_address`, the reply is refused with `409 email_no_sender`.
 //
 // `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
-// transaction as the message: when either is refused (an assignee without access to the
-// inbox, a snooze without a future time) nothing is written, and when the message is
-// refused no action is applied. With both, the macro's actions come first and the fields of
+// transaction as the message: when either is refused (an assignee of `then` without access
+// to the inbox, a snooze without a future time) nothing is written, and when the message is
+// refused no action is applied. A macro's assignee who can no longer take the conversation
+// is skipped rather than refusing the reply, and the event lists it in `skipped`. With both, the macro's actions come first and the fields of
 // `then` take their place (`then.labels` replaces the labels, the macro's label changes
 // included). They need `conversations:write` for API keys and OAuth tokens, are refused on a
 // draft (`400 validation_failed`) and are not applied again when a `client_id` repeats. A
@@ -44646,9 +44678,10 @@ func (c *Client) CreateMessageWithBody(ctx context.Context, conversationId Conve
 // `from_address`, the reply is refused with `409 email_no_sender`.
 //
 // `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
-// transaction as the message: when either is refused (an assignee without access to the
-// inbox, a snooze without a future time) nothing is written, and when the message is
-// refused no action is applied. With both, the macro's actions come first and the fields of
+// transaction as the message: when either is refused (an assignee of `then` without access
+// to the inbox, a snooze without a future time) nothing is written, and when the message is
+// refused no action is applied. A macro's assignee who can no longer take the conversation
+// is skipped rather than refusing the reply, and the event lists it in `skipped`. With both, the macro's actions come first and the fields of
 // `then` take their place (`then.labels` replaces the labels, the macro's label changes
 // included). They need `conversations:write` for API keys and OAuth tokens, are refused on a
 // draft (`400 validation_failed`) and are not applied again when a `client_id` repeats. A
@@ -48573,8 +48606,9 @@ func (c *Client) GetMacro(ctx context.Context, macroId MacroId, params *GetMacro
 
 // UpdateMacroWithBody Update a macro
 //
-// Same permissions as creating one of its visibility. `actions` replaces the actions as a
-// whole. The visibility does not change; create a new macro instead.
+// Same permissions as creating one of its visibility. Only the fields sent are checked;
+// `actions` replaces the actions as a whole. The visibility does not change; create a new
+// macro instead.
 //
 // Takes any type of body and a specified content type.
 //
@@ -48593,8 +48627,9 @@ func (c *Client) UpdateMacroWithBody(ctx context.Context, macroId MacroId, param
 
 // UpdateMacro Update a macro
 //
-// Same permissions as creating one of its visibility. `actions` replaces the actions as a
-// whole. The visibility does not change; create a new macro instead.
+// Same permissions as creating one of its visibility. Only the fields sent are checked;
+// `actions` replaces the actions as a whole. The visibility does not change; create a new
+// macro instead.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -84413,9 +84448,10 @@ type ClientWithResponsesInterface interface {
 	// `from_address`, the reply is refused with `409 email_no_sender`.
 	//
 	// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
-	// transaction as the message: when either is refused (an assignee without access to the
-	// inbox, a snooze without a future time) nothing is written, and when the message is
-	// refused no action is applied. With both, the macro's actions come first and the fields of
+	// transaction as the message: when either is refused (an assignee of `then` without access
+	// to the inbox, a snooze without a future time) nothing is written, and when the message is
+	// refused no action is applied. A macro's assignee who can no longer take the conversation
+	// is skipped rather than refusing the reply, and the event lists it in `skipped`. With both, the macro's actions come first and the fields of
 	// `then` take their place (`then.labels` replaces the labels, the macro's label changes
 	// included). They need `conversations:write` for API keys and OAuth tokens, are refused on a
 	// draft (`400 validation_failed`) and are not applied again when a `client_id` repeats. A
@@ -84467,9 +84503,10 @@ type ClientWithResponsesInterface interface {
 	// `from_address`, the reply is refused with `409 email_no_sender`.
 	//
 	// `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
-	// transaction as the message: when either is refused (an assignee without access to the
-	// inbox, a snooze without a future time) nothing is written, and when the message is
-	// refused no action is applied. With both, the macro's actions come first and the fields of
+	// transaction as the message: when either is refused (an assignee of `then` without access
+	// to the inbox, a snooze without a future time) nothing is written, and when the message is
+	// refused no action is applied. A macro's assignee who can no longer take the conversation
+	// is skipped rather than refusing the reply, and the event lists it in `skipped`. With both, the macro's actions come first and the fields of
 	// `then` take their place (`then.labels` replaces the labels, the macro's label changes
 	// included). They need `conversations:write` for API keys and OAuth tokens, are refused on a
 	// draft (`400 validation_failed`) and are not applied again when a `client_id` repeats. A
@@ -86926,8 +86963,9 @@ type ClientWithResponsesInterface interface {
 
 	// UpdateMacroWithBodyWithResponse Update a macro
 	//
-	// Same permissions as creating one of its visibility. `actions` replaces the actions as a
-	// whole. The visibility does not change; create a new macro instead.
+	// Same permissions as creating one of its visibility. Only the fields sent are checked;
+	// `actions` replaces the actions as a whole. The visibility does not change; create a new
+	// macro instead.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -86936,8 +86974,9 @@ type ClientWithResponsesInterface interface {
 
 	// UpdateMacroWithResponse Update a macro
 	//
-	// Same permissions as creating one of its visibility. `actions` replaces the actions as a
-	// whole. The visibility does not change; create a new macro instead.
+	// Same permissions as creating one of its visibility. Only the fields sent are checked;
+	// `actions` replaces the actions as a whole. The visibility does not change; create a new
+	// macro instead.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -124681,9 +124720,10 @@ func (c *ClientWithResponses) ListMessagesWithResponse(ctx context.Context, conv
 // `from_address`, the reply is refused with `409 email_no_sender`.
 //
 // `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
-// transaction as the message: when either is refused (an assignee without access to the
-// inbox, a snooze without a future time) nothing is written, and when the message is
-// refused no action is applied. With both, the macro's actions come first and the fields of
+// transaction as the message: when either is refused (an assignee of `then` without access
+// to the inbox, a snooze without a future time) nothing is written, and when the message is
+// refused no action is applied. A macro's assignee who can no longer take the conversation
+// is skipped rather than refusing the reply, and the event lists it in `skipped`. With both, the macro's actions come first and the fields of
 // `then` take their place (`then.labels` replaces the labels, the macro's label changes
 // included). They need `conversations:write` for API keys and OAuth tokens, are refused on a
 // draft (`400 validation_failed`) and are not applied again when a `client_id` repeats. A
@@ -124741,9 +124781,10 @@ func (c *ClientWithResponses) CreateMessageWithBodyWithResponse(ctx context.Cont
 // `from_address`, the reply is refused with `409 email_no_sender`.
 //
 // `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
-// transaction as the message: when either is refused (an assignee without access to the
-// inbox, a snooze without a future time) nothing is written, and when the message is
-// refused no action is applied. With both, the macro's actions come first and the fields of
+// transaction as the message: when either is refused (an assignee of `then` without access
+// to the inbox, a snooze without a future time) nothing is written, and when the message is
+// refused no action is applied. A macro's assignee who can no longer take the conversation
+// is skipped rather than refusing the reply, and the event lists it in `skipped`. With both, the macro's actions come first and the fields of
 // `then` take their place (`then.labels` replaces the labels, the macro's label changes
 // included). They need `conversations:write` for API keys and OAuth tokens, are refused on a
 // draft (`400 validation_failed`) and are not applied again when a `client_id` repeats. A
@@ -128178,8 +128219,9 @@ func (c *ClientWithResponses) GetMacroWithResponse(ctx context.Context, macroId 
 
 // UpdateMacroWithBodyWithResponse Update a macro
 //
-// Same permissions as creating one of its visibility. `actions` replaces the actions as a
-// whole. The visibility does not change; create a new macro instead.
+// Same permissions as creating one of its visibility. Only the fields sent are checked;
+// `actions` replaces the actions as a whole. The visibility does not change; create a new
+// macro instead.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -128194,8 +128236,9 @@ func (c *ClientWithResponses) UpdateMacroWithBodyWithResponse(ctx context.Contex
 
 // UpdateMacroWithResponse Update a macro
 //
-// Same permissions as creating one of its visibility. `actions` replaces the actions as a
-// whole. The visibility does not change; create a new macro instead.
+// Same permissions as creating one of its visibility. Only the fields sent are checked;
+// `actions` replaces the actions as a whole. The visibility does not change; create a new
+// macro instead.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //

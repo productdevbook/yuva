@@ -4028,6 +4028,21 @@ func (e Locale) Valid() bool {
 	}
 }
 
+// Defines values for MacroSkipped.
+const (
+	MacroSkippedAssignee MacroSkipped = "assignee"
+)
+
+// Valid indicates whether the value is a known member of the MacroSkipped enum.
+func (e MacroSkipped) Valid() bool {
+	switch e {
+	case MacroSkippedAssignee:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for MacroVisibility.
 const (
 	MacroVisibilityPersonal MacroVisibility = "personal"
@@ -15897,7 +15912,8 @@ type Locale string
 // Macro defines model for Macro.
 type Macro struct {
 	// Actions What sending a message with the macro does to the conversation. Absent fields change
-	// nothing. A deleted label drops out of `add_labels` and `remove_labels`.
+	// nothing. A deleted label drops out of `add_labels` and `remove_labels`, and a removed
+	// member out of `assignee_id`.
 	Actions MacroActions `json:"actions"`
 
 	// Body The reply text that fills the composer; absent for a macro of actions only.
@@ -15919,7 +15935,8 @@ type Macro struct {
 }
 
 // MacroActions What sending a message with the macro does to the conversation. Absent fields change
-// nothing. A deleted label drops out of `add_labels` and `remove_labels`.
+// nothing. A deleted label drops out of `add_labels` and `remove_labels`, and a removed
+// member out of `assignee_id`.
 type MacroActions struct {
 	AddLabels *[]uuid.UUID `json:"add_labels,omitempty"`
 
@@ -15938,7 +15955,8 @@ type MacroActions struct {
 // MacroCreate Needs a `body`, at least one action, or both.
 type MacroCreate struct {
 	// Actions What sending a message with the macro does to the conversation. Absent fields change
-	// nothing. A deleted label drops out of `add_labels` and `remove_labels`.
+	// nothing. A deleted label drops out of `add_labels` and `remove_labels`, and a removed
+	// member out of `assignee_id`.
 	Actions  *MacroActions `json:"actions,omitempty"`
 	Body     *string       `json:"body,omitempty"`
 	Name     string        `json:"name"`
@@ -15964,10 +15982,14 @@ type MacroRef struct {
 	Name string `json:"name"`
 }
 
+// MacroSkipped defines model for MacroSkipped.
+type MacroSkipped string
+
 // MacroUpdate defines model for MacroUpdate.
 type MacroUpdate struct {
 	// Actions What sending a message with the macro does to the conversation. Absent fields change
-	// nothing. A deleted label drops out of `add_labels` and `remove_labels`.
+	// nothing. A deleted label drops out of `add_labels` and `remove_labels`, and a removed
+	// member out of `assignee_id`.
 	Actions *MacroActions `json:"actions,omitempty"`
 
 	// Body `null` removes the reply text.
@@ -16513,10 +16535,15 @@ type MessageEvent struct {
 	PreviousStatus  *ConversationStatus `json:"previous_status,omitempty"`
 
 	// Rating `rated` only: the contact's rating; the message body is their comment.
-	Rating        *Rating             `json:"rating,omitempty"`
-	RemovedLabels *[]uuid.UUID        `json:"removed_labels,omitempty"`
-	Status        *ConversationStatus `json:"status,omitempty"`
-	Type          EventType           `json:"type"`
+	Rating        *Rating      `json:"rating,omitempty"`
+	RemovedLabels *[]uuid.UUID `json:"removed_labels,omitempty"`
+
+	// Skipped `macro_applied` only: actions of the macro left out. `assignee`: the member can no
+	// longer take the conversation (removed, or without access to its inbox); the reply was
+	// sent and the rest applied.
+	Skipped *[]MacroSkipped     `json:"skipped,omitempty"`
+	Status  *ConversationStatus `json:"status,omitempty"`
+	Type    EventType           `json:"type"`
 }
 
 // MessageKind `message` goes to or comes from the contact, `note` is for members only, `event` records a

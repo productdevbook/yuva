@@ -3688,9 +3688,10 @@ paths:
         `from_address`, the reply is refused with `409 email_no_sender`.
 
         `macro_id` applies a macro's actions and `then` applies a `ConversationUpdate`, in the same
-        transaction as the message: when either is refused (an assignee without access to the
-        inbox, a snooze without a future time) nothing is written, and when the message is
-        refused no action is applied. With both, the macro's actions come first and the fields of
+        transaction as the message: when either is refused (an assignee of `then` without access
+        to the inbox, a snooze without a future time) nothing is written, and when the message is
+        refused no action is applied. A macro's assignee who can no longer take the conversation
+        is skipped rather than refusing the reply, and the event lists it in `skipped`. With both, the macro's actions come first and the fields of
         `then` take their place (`then.labels` replaces the labels, the macro's label changes
         included). They need `conversations:write` for API keys and OAuth tokens, are refused on a
         draft (`400 validation_failed`) and are not applied again when a `client_id` repeats. A
@@ -4511,8 +4512,9 @@ paths:
       operationId: updateMacro
       summary: Update a macro
       description: |
-        Same permissions as creating one of its visibility. `actions` replaces the actions as a
-        whole. The visibility does not change; create a new macro instead.
+        Same permissions as creating one of its visibility. Only the fields sent are checked;
+        `actions` replaces the actions as a whole. The visibility does not change; create a new
+        macro instead.
       tags: [macros]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
@@ -21219,6 +21221,14 @@ components:
         macro:
           $ref: "#/components/schemas/MacroRef"
           description: "`macro_applied` only: the macro sent with the message just before."
+        skipped:
+          type: array
+          description: |
+            `macro_applied` only: actions of the macro left out. `assignee`: the member can no
+            longer take the conversation (removed, or without access to its inbox); the reply was
+            sent and the rest applied.
+          items:
+            $ref: "#/components/schemas/MacroSkipped"
     Attachment:
       type: object
       required: [id, filename, content_type, size, inline, created_at]
@@ -21674,7 +21684,8 @@ components:
       type: object
       description: |
         What sending a message with the macro does to the conversation. Absent fields change
-        nothing. A deleted label drops out of `add_labels` and `remove_labels`.
+        nothing. A deleted label drops out of `add_labels` and `remove_labels`, and a removed
+        member out of `assignee_id`.
       properties:
         add_labels:
           type: array
@@ -21789,6 +21800,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Macro"
+    MacroSkipped:
+      type: string
+      enum: [assignee]
+      x-enum-varnames: [MacroSkippedAssignee]
     MacroRef:
       type: object
       required: [id, name]

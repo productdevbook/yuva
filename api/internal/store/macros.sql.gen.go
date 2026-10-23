@@ -12,6 +12,21 @@ import (
 	"uuid"
 )
 
+const clearMacroAssignee = `-- name: ClearMacroAssignee :exec
+UPDATE macros SET actions = actions - 'assignee_id'
+WHERE workspace_id = $1 AND actions->>'assignee_id' = $2::text
+`
+
+type ClearMacroAssigneeParams struct {
+	WorkspaceID uuid.UUID
+	MemberID    string
+}
+
+func (q *Queries) ClearMacroAssignee(ctx context.Context, arg ClearMacroAssigneeParams) error {
+	_, err := q.db.Exec(ctx, clearMacroAssignee, arg.WorkspaceID, arg.MemberID)
+	return err
+}
+
 const createMacro = `-- name: CreateMacro :one
 INSERT INTO macros (id, workspace_id, owner_member_id, name, shortcut, body, actions, position, created_at, updated_at)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $9)
@@ -140,6 +155,64 @@ func (q *Queries) ListMacrosFor(ctx context.Context, arg ListMacrosForParams) ([
 			return nil, err
 		}
 		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const lockLabels = `-- name: LockLabels :many
+SELECT id FROM labels WHERE workspace_id = $1 AND id = ANY($2::uuid[]) FOR SHARE
+`
+
+type LockLabelsParams struct {
+	WorkspaceID uuid.UUID
+	Ids         []uuid.UUID
+}
+
+func (q *Queries) LockLabels(ctx context.Context, arg LockLabelsParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, lockLabels, arg.WorkspaceID, arg.Ids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var id uuid.UUID
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const lockMemberShared = `-- name: LockMemberShared :many
+SELECT id FROM members WHERE workspace_id = $1 AND id = $2 FOR SHARE
+`
+
+type LockMemberSharedParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) LockMemberShared(ctx context.Context, arg LockMemberSharedParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, lockMemberShared, arg.WorkspaceID, arg.ID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var id uuid.UUID
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

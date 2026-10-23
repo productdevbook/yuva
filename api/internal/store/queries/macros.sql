@@ -27,3 +27,13 @@ UPDATE macros SET actions = jsonb_set(jsonb_set(actions,
         '{remove_labels}', COALESCE(actions->'remove_labels', '[]'::jsonb) - @label_id::text)
 WHERE workspace_id = @workspace_id
   AND (actions->'add_labels' ? @label_id::text OR actions->'remove_labels' ? @label_id::text);
+
+-- name: ClearMacroAssignee :exec
+UPDATE macros SET actions = actions - 'assignee_id'
+WHERE workspace_id = @workspace_id AND actions->>'assignee_id' = @member_id::text;
+
+-- name: LockLabels :many
+SELECT id FROM labels WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[]) FOR SHARE;
+
+-- name: LockMemberShared :many
+SELECT id FROM members WHERE workspace_id = @workspace_id AND id = @id FOR SHARE;

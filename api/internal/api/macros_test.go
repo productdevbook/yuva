@@ -1,11 +1,13 @@
 package api_test
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"slices"
 	"testing"
 	"time"
+	"uuid"
 )
 
 func macroIDs(c *client) []string {
@@ -249,5 +251,131 @@ func TestListMacrosTool(t *testing.T) {
 	_ = json.Unmarshal(b, &items)
 	if len(items) != 1 || items[0].Body != "Thanks!" || items[0].Actions["status"] != "closed" || items[0].Actions["unassign"] != true {
 		t.Fatalf("list_macros: %s", b)
+	}
+}
+
+func TestMacroAssigneeGone(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	tm.owner.expect(http.StatusNoContent, "PUT", "/v1/inboxes/"+tm.inbox+"/members/"+tm.agentID, nil)
+	macro := tm.owner.expect(http.StatusCreated, "POST", "/v1/macros", map[string]any{
+		"visibility": "shared", "name": "Hand over", "shortcut": "hand-over", "body": "Passing this on.",
+		"actions": map[string]any{"assignee_id": tm.agentID, "status": "pending"},
+	}).str("id")
+	ghost := tm.owner.expect(http.StatusCreated, "POST", "/v1/macros", map[string]any{
+		"visibility": "shared", "name": "Ghost", "shortcut": "ghost", "body": "x", "actions": map[string]any{"priority": "high"},
+	}).str("id")
+	if _, err := h.st.Pool.Exec(context.Background(), `UPDATE macros SET actions = jsonb_set(actions, '{assignee_id}', to_jsonb($2::text)) WHERE id = $1`,
+		uuid.MustParse(ghost), uuid.NewV7().String()); err != nil {
+		t.Fatal(err)
+	}
+	if r := tm.owner.expect(http.StatusOK, "PATCH", "/v1/macros/"+ghost, map[string]any{"name": "Renamed"}); r.str("name") != "Renamed" {
+		t.Fatalf("rename: %s", r.raw)
+	}
+
+	tm.owner.expect(http.StatusNoContent, "DELETE", "/v1/inboxes/"+tm.inbox+"/members/"+tm.agentID, nil)
+	conv := tm.conversation(tm.owner)
+	tm.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "body": "Passing this on.", "macro_id": macro})
+	if c := conversationOf(tm.owner, conv); c["status"] != "pending" || c["assignee_id"] != nil {
+		t.Fatalf("macro with a skipped assignee: %v", c)
+	}
+	var skipped any
+	for _, m := range messages(tm.owner, conv) {
+		if ev, _ := m["event"].(map[string]any); ev != nil && ev["type"] == "macro_applied" {
+			skipped = ev["skipped"]
+		}
+	}
+	if !slices.Equal(asStrings(skipped), []string{"assignee"}) {
+		t.Fatalf("macro_applied skipped %v", skipped)
+	}
+	tm.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", "/v1/conversations/"+conv+"/messages",
+		map[string]any{"kind": "message", "body": "x", "macro_id": macro, "then": map[string]any{"assignee_id": tm.agentID}})
+
+	tm.owner.expect(http.StatusNoContent, "DELETE", "/v1/members/"+tm.agentID, nil)
+	if a := tm.owner.expect(http.StatusOK, "GET", "/v1/macros/"+macro, nil).body["actions"].(map[string]any); a["assignee_id"] != nil || a["status"] != "pending" {
+		t.Fatalf("removed member kept in macro: %v", a)
+	}
+}
+
+func asStrings(v any) []string {
+	var out []string
+	l, _ := v.([]any)
+	for _, x := range l {
+		s, _ := x.(string)
+		out = append(out, s)
+	}
+	return out
+}
+
+// waitBlocked waits until a statement matching like waits on a lock in the test database.
+func waitBlocked(t *testing.T, h *harness, like string) {
+	t.Helper()
+	for range 200 {
+		var n int
+		if err := h.st.Pool.QueryRow(context.Background(), `SELECT count(*) FROM pg_stat_activity
+			WHERE datname = current_database() AND wait_event_type = 'Lock' AND query LIKE $1`, like).Scan(&n); err != nil {
+			t.Fatal(err)
+		}
+		if n > 0 {
+			return
+		}
+		time.Sleep(25 * time.Millisecond)
+	}
+	t.Fatalf("no statement like %q waited on a lock", like)
+}
+
+func TestMacroLabelDeletedWhileSaving(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	ctx := context.Background()
+	ws := uuid.MustParse(tm.ws)
+
+	gone := tm.owner.expect(http.StatusCreated, "POST", "/v1/labels", map[string]any{"name": "gone"}).str("id")
+	tx, err := h.st.Pool.Begin(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tx.Exec(ctx, "DELETE FROM labels WHERE workspace_id = $1 AND id = $2", ws, uuid.MustParse(gone)); err != nil {
+		t.Fatal(err)
+	}
+	saved := make(chan response, 1)
+	go func() {
+		saved <- tm.owner.do("POST", "/v1/macros", map[string]any{"visibility": "shared", "name": "Late", "shortcut": "late", "actions": map[string]any{"add_labels": []string{gone}}})
+	}()
+	waitBlocked(t, h, "%FOR SHARE%")
+	if err := tx.Commit(ctx); err != nil {
+		t.Fatal(err)
+	}
+	if r := <-saved; r.status != http.StatusBadRequest || r.str("code") != "validation_failed" {
+		t.Fatalf("save after the label was deleted: %d %s", r.status, r.raw)
+	}
+
+	kept := tm.owner.expect(http.StatusCreated, "POST", "/v1/labels", map[string]any{"name": "kept"}).str("id")
+	tx, err = h.st.Pool.Begin(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer tx.Rollback(ctx)
+	if _, err := tx.Exec(ctx, "SELECT id FROM labels WHERE workspace_id = $1 AND id = $2 FOR SHARE", ws, uuid.MustParse(kept)); err != nil {
+		t.Fatal(err)
+	}
+	macro := uuid.NewV7()
+	if _, err := tx.Exec(ctx, `INSERT INTO macros (id, workspace_id, name, shortcut, actions, created_at, updated_at)
+		VALUES ($1, $2, 'Early', 'early', jsonb_build_object('add_labels', jsonb_build_array($3::text)), now(), now())`, macro, ws, kept); err != nil {
+		t.Fatal(err)
+	}
+	deleted := make(chan response, 1)
+	go func() { deleted <- tm.owner.do("DELETE", "/v1/labels/"+kept, nil) }()
+	waitBlocked(t, h, "%DELETE FROM labels%")
+	if err := tx.Commit(ctx); err != nil {
+		t.Fatal(err)
+	}
+	if r := <-deleted; r.status != http.StatusNoContent {
+		t.Fatalf("label delete: %d %s", r.status, r.raw)
+	}
+	if a := tm.owner.expect(http.StatusOK, "GET", "/v1/macros/"+macro.String(), nil).body["actions"].(map[string]any); a["add_labels"] != nil {
+		t.Fatalf("label deleted after the save stayed in the macro: %v", a)
 	}
 }
