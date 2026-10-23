@@ -614,13 +614,14 @@ channel, the Swift and Kotlin samples get the reply push while closed.
 
 ## M33 — Single sign-on for members
 
-Status: planned; items Y-160 to Y-161 in `backlog.md`. Part of 0.1.0.
+Status: done on main (#160, #161), verified on 2026-10-23 with Keycloak 26 by OIDC and SAML in a real browser; the domain claim was marked verified in the database (no public DNS here). SSO required is enforced on workspace access, not at sign-in (`architecture.md` › Single sign-on).
 
 - OpenID Connect and SAML sign-in for a workspace's verified e-mail domains, with optional just-in-time
   membership.
 
-Accept: a member of a claimed domain signs in through Keycloak by OIDC and by SAML; with codes turned
-off for the domain an e-mailed code is refused; every sign-in is in the audit log.
+Accept: a member of a claimed domain signs in through Keycloak by OIDC and by SAML; with SSO required, a
+session that did not come through the workspace's SSO is refused in that workspace (owners exempt) while
+the person can still sign in by code as a reader; every sign-in is in the audit log.
 
 ## M26 — Release 0.1.0
 
