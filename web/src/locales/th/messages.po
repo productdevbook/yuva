@@ -251,6 +251,7 @@ msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, other {# แบรนด์}}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, other {# โฟลเดอร์}}"
 
@@ -713,6 +714,10 @@ msgstr "{provider} จำกัดบัญชีนี้ชั่วครา�
 #: src/features/migrations/text.ts
 msgid "{provider} refused the sign-in"
 msgstr "{provider} ปฏิเสธการลงชื่อเข้าใช้"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "{provider} stopped accepting the token. Enter a new token for the same account; the migration continues where it stopped."
+msgstr "{provider} ไม่ยอมรับโทเค็นอีกต่อไป ป้อนโทเค็นใหม่สำหรับบัญชีเดิม การย้ายจะทำต่อจากจุดที่หยุดไว้"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "{provider} stopped accepting Yuva's sign-in. Enter a new app password; the migration continues where it stopped."
@@ -1663,6 +1668,10 @@ msgstr "เพิ่มโดยทีม"
 msgid "Address"
 msgstr "ที่อยู่"
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Address of your {provider}"
+msgstr "ที่อยู่ {provider} ของคุณ"
+
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 msgid "Address or name"
@@ -2242,6 +2251,10 @@ msgstr "คีย์ API และผู้ช่วยจะส่งคำต�
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "API keys and assistants will deliver replies at once. Customers receive what they write, with nobody reviewing it first. You can turn this off again at any time."
 msgstr "คีย์ API และผู้ช่วยจะส่งคำตอบทันที ลูกค้าจะได้รับสิ่งที่เขียนโดยไม่มีใครตรวจก่อน คุณปิดสิ่งนี้ได้ทุกเมื่อ"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "API token"
+msgstr "โทเค็น API"
 
 #: src/components/common/Source.tsx
 #: src/features/conversation/Feedback.tsx
@@ -3646,6 +3659,7 @@ msgid "Connect {clientName} to Yuva?"
 msgstr "เชื่อมต่อ {clientName} กับ Yuva ไหม"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connect {provider}"
 msgstr "เชื่อมต่อ {provider}"
 
@@ -3719,6 +3733,7 @@ msgid "Connected to {host}"
 msgstr "เชื่อมต่อกับ {host} แล้ว"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connected to {provider}"
 msgstr "เชื่อมต่อกับ {provider} แล้ว"
 
@@ -3824,6 +3839,7 @@ msgstr "เนื้อหา"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/SourceStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -4047,6 +4063,10 @@ msgstr "สร้างรหัสผ่านแอปใหม่ที่เ
 #: src/app/Sidebar.tsx
 msgid "Create a workspace"
 msgstr "สร้างพื้นที่ทำงาน"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Create an API token in {provider}"
+msgstr "สร้างโทเค็น API ใน {provider}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Create an app in Help Scout"
@@ -4541,6 +4561,7 @@ msgstr "การแจ้งเตือนบนเดสก์ท็อปถ
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Details"
 msgstr "รายละเอียด"
 
@@ -5150,6 +5171,10 @@ msgstr "ใส่ชื่อโฮสต์หรือที่อยู่ IP
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a host name or IP address."
 msgstr "ใส่ชื่อโฮสต์หรือที่อยู่ IP"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Enter a token again only to change it."
+msgstr "ป้อนโทเค็นอีกครั้งเฉพาะเมื่อต้องการเปลี่ยน"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address, or leave it empty."
@@ -5857,6 +5882,7 @@ msgstr "API เต็มรูปแบบ"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 msgid "Full guide"
 msgstr "คู่มือฉบับเต็ม"
@@ -6383,6 +6409,7 @@ msgstr "หาก {provider} ส่งอีเมลยืนยันไปท
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "If an assistant sent you here, you can go back to it now, or choose what to bring yourself."
 msgstr "หากผู้ช่วยส่งคุณมาที่นี่ คุณกลับไปหาผู้ช่วยได้ตอนนี้ หรือเลือกเองว่าจะนำเข้าอะไร"
 
@@ -11393,6 +11420,7 @@ msgid "Reconnect {address}"
 msgstr "เชื่อมต่อ {address} ใหม่"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Reconnect {provider}"
 msgstr "เชื่อมต่อ {provider} ใหม่"
 
@@ -12337,6 +12365,10 @@ msgstr "ค้นหา คัดแยก และร่างการตอ�
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from your terminal. It acts as you, with the access you allow."
 msgstr "ค้นหา คัดแยก และร่างการตอบกลับจากเทอร์มินัลของคุณ ทำงานในนามของคุณ ภายใต้สิทธิ์ที่คุณอนุญาต"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Second secret"
+msgstr "ข้อมูลลับที่สอง"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Seconds, 1 to 30."
@@ -13594,6 +13626,7 @@ msgid "Storage"
 msgstr "พื้นที่เก็บข้อมูล"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Stored encrypted and never shown again, not even to you."
 msgstr "เก็บแบบเข้ารหัสและไม่แสดงอีก แม้แต่กับคุณ"
 
@@ -13602,6 +13635,7 @@ msgid "Struck-out values are not taken: this contact keeps its own value for tho
 msgstr "ค่าที่ขีดฆ่าจะไม่ถูกนำมา ผู้ติดต่อนี้คงค่าของตนเองสำหรับคีย์เหล่านั้น"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Subdomain"
 msgstr "โดเมนย่อย"
 
@@ -13839,10 +13873,12 @@ msgid "Test"
 msgstr "ทดสอบ"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test again"
 msgstr "ทดสอบอีกครั้ง"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test connection"
 msgstr "ทดสอบการเชื่อมต่อ"
 
@@ -14193,6 +14229,10 @@ msgstr "คัดลอกประวัติแล้วและอีเม
 #: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "กำลังตั้งค่าชื่อโฮสต์ ใช้เวลาครู่หนึ่งหลังพบเรคคอร์ด"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "The HTTPS address you open it at, such as https://help.example.com."
+msgstr "ที่อยู่ HTTPS ที่คุณใช้เปิด เช่น https://help.example.com"
 
 #: src/features/broadcasts/Import.tsx
 msgid "The import failed, and nothing was added from the file."
@@ -17011,6 +17051,7 @@ msgid "Yuva deleted its token but cannot revoke it in Zendesk. Delete the client
 msgstr "Yuva ลบโทเค็นแล้วแต่เพิกถอนใน Zendesk ไม่ได้ ลบไคลเอนต์ใน Admin Center › Apps and integrations › APIs › OAuth clients Yuva ไม่ต้องใช้อีก"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Yuva deletes its token when the migration ends."
 msgstr "Yuva ลบโทเค็นเมื่อการย้ายสิ้นสุด"
 
@@ -17070,9 +17111,17 @@ msgstr "Yuva อ่านอย่างเดียว นอกจากลง
 msgid "Yuva only reads. It never deletes, moves, archives or marks anything as read in {provider}, and your mail stays where it is."
 msgstr "Yuva อ่านอย่างเดียว ไม่เคยลบ ย้าย เก็บถาวร หรือทำเครื่องหมายว่าอ่านแล้วกับสิ่งใดใน {provider} และอีเมลของคุณอยู่ที่เดิม"
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
+msgstr "Yuva อ่านอย่างเดียว การเชื่อมต่อส่งเฉพาะคำขออ่านไปยัง {provider} และส่งโทเค็นไปยัง API ของ {provider} เท่านั้น จึงไม่มีทิกเก็ต ลูกค้า หรือการตั้งค่าใดเปลี่ยน"
+
 #: src/features/status/MonitorDialog.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Yuva เปิดการเชื่อมต่อไปยังโฮสต์และพอร์ตเป็นระยะ"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva reads {provider} with an API token you create in your own account, and only reads."
+msgstr "Yuva อ่าน {provider} ด้วยโทเค็น API ที่คุณสร้างในบัญชีของคุณเอง และอ่านอย่างเดียว"
 
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."

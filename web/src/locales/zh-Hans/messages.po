@@ -251,6 +251,7 @@ msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, other {# 个品牌}}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, other {# 个文件夹}}"
 
@@ -713,6 +714,10 @@ msgstr "{provider} 目前限制了此账号。请稍等片刻,然后再次测试
 #: src/features/migrations/text.ts
 msgid "{provider} refused the sign-in"
 msgstr "{provider} 拒绝了登录"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "{provider} stopped accepting the token. Enter a new token for the same account; the migration continues where it stopped."
+msgstr "{provider} 不再接受该令牌。请为同一账户输入新的令牌;迁移会从中断处继续。"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "{provider} stopped accepting Yuva's sign-in. Enter a new app password; the migration continues where it stopped."
@@ -1663,6 +1668,10 @@ msgstr "由团队添加"
 msgid "Address"
 msgstr "地址"
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Address of your {provider}"
+msgstr "你的 {provider} 地址"
+
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 msgid "Address or name"
@@ -2242,6 +2251,10 @@ msgstr "API 密钥和助手会立即发出回复，无需成员先审阅。"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "API keys and assistants will deliver replies at once. Customers receive what they write, with nobody reviewing it first. You can turn this off again at any time."
 msgstr "API 密钥和助手将立即发出回复。客户会收到所写内容，没有人会先审阅。你可以随时再次关闭。"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "API token"
+msgstr "API 令牌"
 
 #: src/components/common/Source.tsx
 #: src/features/conversation/Feedback.tsx
@@ -3646,6 +3659,7 @@ msgid "Connect {clientName} to Yuva?"
 msgstr "将 {clientName} 连接到 Yuva?"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connect {provider}"
 msgstr "连接 {provider}"
 
@@ -3719,6 +3733,7 @@ msgid "Connected to {host}"
 msgstr "已连接到 {host}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connected to {provider}"
 msgstr "已连接到 {provider}"
 
@@ -3824,6 +3839,7 @@ msgstr "内容"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/SourceStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -4047,6 +4063,10 @@ msgstr "创建一个可通过 IMAP 访问邮件的新应用专用密码,命名�
 #: src/app/Sidebar.tsx
 msgid "Create a workspace"
 msgstr "创建工作区"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Create an API token in {provider}"
+msgstr "在 {provider} 中创建 API 令牌"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Create an app in Help Scout"
@@ -4541,6 +4561,7 @@ msgstr "浏览器设置中已屏蔽此站点的桌面通知,因此只会播放�
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Details"
 msgstr "详情"
 
@@ -5150,6 +5171,10 @@ msgstr "请输入主机名或 IP 地址。"
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a host name or IP address."
 msgstr "请输入主机名或 IP 地址。"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Enter a token again only to change it."
+msgstr "仅在要更改时再次输入令牌。"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address, or leave it empty."
@@ -5857,6 +5882,7 @@ msgstr "完整 API"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 msgid "Full guide"
 msgstr "完整指南"
@@ -6383,6 +6409,7 @@ msgstr "如果 {provider} 向该地址发送确认邮件,它会作为一个对�
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "If an assistant sent you here, you can go back to it now, or choose what to bring yourself."
 msgstr "如果是助手把你带到这里,你现在可以返回助手,或自己选择要导入的内容。"
 
@@ -11393,6 +11420,7 @@ msgid "Reconnect {address}"
 msgstr "重新连接 {address}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Reconnect {provider}"
 msgstr "重新连接 {provider}"
 
@@ -12337,6 +12365,10 @@ msgstr "在 Codex 中搜索、分诊和起草回复。它以你的身份运行,�
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from your terminal. It acts as you, with the access you allow."
 msgstr "在你的终端中搜索、分诊和起草回复。它以你的身份运行,访问范围由你授权。"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Second secret"
+msgstr "第二个密钥"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Seconds, 1 to 30."
@@ -13594,6 +13626,7 @@ msgid "Storage"
 msgstr "存储"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Stored encrypted and never shown again, not even to you."
 msgstr "已加密存储,且不会再次显示,连你也看不到。"
 
@@ -13602,6 +13635,7 @@ msgid "Struck-out values are not taken: this contact keeps its own value for tho
 msgstr "划掉的值不会采用:此联系人在这些键上保留自己的值。"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Subdomain"
 msgstr "子域名"
 
@@ -13839,10 +13873,12 @@ msgid "Test"
 msgstr "测试"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test again"
 msgstr "再次测试"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test connection"
 msgstr "测试连接"
 
@@ -14193,6 +14229,10 @@ msgstr "历史记录已复制,其邮件现在到达 Yuva。"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "正在设置主机名。找到记录后需要一点时间。"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "The HTTPS address you open it at, such as https://help.example.com."
+msgstr "你打开它所用的 HTTPS 地址,例如 https://help.example.com。"
 
 #: src/features/broadcasts/Import.tsx
 msgid "The import failed, and nothing was added from the file."
@@ -17011,6 +17051,7 @@ msgid "Yuva deleted its token but cannot revoke it in Zendesk. Delete the client
 msgstr "Yuva 已删除其令牌,但无法在 Zendesk 撤销它。请在“管理中心 › 应用和集成 › API › OAuth 客户端”中删除该客户端;Yuva 不再需要它。"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Yuva deletes its token when the migration ends."
 msgstr "迁移结束时,Yuva 会删除其令牌。"
 
@@ -17070,9 +17111,17 @@ msgstr "Yuva 只读取。除登录外,其连接只会向 {provider} 发送读取
 msgid "Yuva only reads. It never deletes, moves, archives or marks anything as read in {provider}, and your mail stays where it is."
 msgstr "Yuva 只读取。它绝不会在 {provider} 中删除、移动、归档任何内容或将其标为已读,你的邮件保持原样。"
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
+msgstr "Yuva 只读取。它的连接只向 {provider} 发送读取请求,令牌也只发送到 {provider} 的 API,因此不会更改任何工单、客户或设置。"
+
 #: src/features/status/MonitorDialog.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Yuva 会定期与主机和端口建立连接。"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva reads {provider} with an API token you create in your own account, and only reads."
+msgstr "Yuva 使用你在自己账户中创建的 API 令牌读取 {provider},并且只读取。"
 
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."

@@ -251,6 +251,7 @@ msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, other {# thương hiệu}}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, other {# thư mục}}"
 
@@ -713,6 +714,10 @@ msgstr "{provider} đang tạm giới hạn tài khoản này. Hãy chờ một 
 #: src/features/migrations/text.ts
 msgid "{provider} refused the sign-in"
 msgstr "{provider} đã từ chối đăng nhập"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "{provider} stopped accepting the token. Enter a new token for the same account; the migration continues where it stopped."
+msgstr "{provider} không còn chấp nhận token. Hãy nhập token mới cho cùng tài khoản; quá trình di chuyển sẽ tiếp tục từ chỗ đã dừng."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "{provider} stopped accepting Yuva's sign-in. Enter a new app password; the migration continues where it stopped."
@@ -1663,6 +1668,10 @@ msgstr "Do nhóm thêm"
 msgid "Address"
 msgstr "Địa chỉ"
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Address of your {provider}"
+msgstr "Địa chỉ {provider} của bạn"
+
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 msgid "Address or name"
@@ -2242,6 +2251,10 @@ msgstr "Khóa API và trợ lý gửi phản hồi ngay, không cần thành vi�
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "API keys and assistants will deliver replies at once. Customers receive what they write, with nobody reviewing it first. You can turn this off again at any time."
 msgstr "Khóa API và trợ lý sẽ gửi phản hồi ngay. Khách hàng nhận được những gì được viết, không ai xem lại trước. Bạn có thể tắt lại bất cứ lúc nào."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "API token"
+msgstr "Token API"
 
 #: src/components/common/Source.tsx
 #: src/features/conversation/Feedback.tsx
@@ -3646,6 +3659,7 @@ msgid "Connect {clientName} to Yuva?"
 msgstr "Kết nối {clientName} với Yuva?"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connect {provider}"
 msgstr "Kết nối {provider}"
 
@@ -3719,6 +3733,7 @@ msgid "Connected to {host}"
 msgstr "Đã kết nối tới {host}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connected to {provider}"
 msgstr "Đã kết nối tới {provider}"
 
@@ -3824,6 +3839,7 @@ msgstr "Nội dung"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/SourceStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -4047,6 +4063,10 @@ msgstr "Tạo một mật khẩu ứng dụng mới có quyền truy cập thư 
 #: src/app/Sidebar.tsx
 msgid "Create a workspace"
 msgstr "Tạo không gian làm việc"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Create an API token in {provider}"
+msgstr "Tạo token API trong {provider}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Create an app in Help Scout"
@@ -4541,6 +4561,7 @@ msgstr "Thông báo trên màn hình bị chặn cho trang này trong cài đặ
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Details"
 msgstr "Chi tiết"
 
@@ -5150,6 +5171,10 @@ msgstr "Nhập tên máy chủ hoặc địa chỉ IP."
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a host name or IP address."
 msgstr "Hãy nhập tên máy chủ hoặc địa chỉ IP."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Enter a token again only to change it."
+msgstr "Chỉ nhập lại token khi muốn thay đổi."
 
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address, or leave it empty."
@@ -5857,6 +5882,7 @@ msgstr "API đầy đủ"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 msgid "Full guide"
 msgstr "Hướng dẫn đầy đủ"
@@ -6383,6 +6409,7 @@ msgstr "Nếu {provider} gửi thư xác nhận đến địa chỉ đó, thư s
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "If an assistant sent you here, you can go back to it now, or choose what to bring yourself."
 msgstr "Nếu một trợ lý đã đưa bạn đến đây, bạn có thể quay lại với nó ngay bây giờ, hoặc tự chọn thứ muốn đưa vào."
 
@@ -11393,6 +11420,7 @@ msgid "Reconnect {address}"
 msgstr "Kết nối lại {address}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Reconnect {provider}"
 msgstr "Kết nối lại {provider}"
 
@@ -12337,6 +12365,10 @@ msgstr "Tìm kiếm, phân loại và soạn phản hồi từ Codex. Nó hành 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from your terminal. It acts as you, with the access you allow."
 msgstr "Tìm kiếm, phân loại và soạn phản hồi từ terminal của bạn. Nó hành động với danh nghĩa bạn, với quyền truy cập bạn cho phép."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Second secret"
+msgstr "Khóa bí mật thứ hai"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Seconds, 1 to 30."
@@ -13594,6 +13626,7 @@ msgid "Storage"
 msgstr "Lưu trữ"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Stored encrypted and never shown again, not even to you."
 msgstr "Được lưu mã hóa và không bao giờ hiện lại, kể cả với bạn."
 
@@ -13602,6 +13635,7 @@ msgid "Struck-out values are not taken: this contact keeps its own value for tho
 msgstr "Giá trị bị gạch ngang không được lấy: liên hệ này giữ giá trị riêng của nó cho các khóa đó."
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Subdomain"
 msgstr "Tên miền phụ"
 
@@ -13839,10 +13873,12 @@ msgid "Test"
 msgstr "Thử"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test again"
 msgstr "Thử lại"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test connection"
 msgstr "Kiểm tra kết nối"
 
@@ -14193,6 +14229,10 @@ msgstr "Lịch sử đã được sao chép và thư của nó giờ đến Yuva
 #: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "Tên máy chủ đang được thiết lập. Việc này mất một lát sau khi tìm thấy các bản ghi."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "The HTTPS address you open it at, such as https://help.example.com."
+msgstr "Địa chỉ HTTPS bạn dùng để mở, ví dụ https://help.example.com."
 
 #: src/features/broadcasts/Import.tsx
 msgid "The import failed, and nothing was added from the file."
@@ -17011,6 +17051,7 @@ msgid "Yuva deleted its token but cannot revoke it in Zendesk. Delete the client
 msgstr "Yuva đã xóa token nhưng không thu hồi được trong Zendesk. Hãy xóa ứng dụng khách trong Admin Center › Apps and integrations › APIs › OAuth clients; Yuva không còn cần nó."
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Yuva deletes its token when the migration ends."
 msgstr "Yuva xóa token khi quá trình di chuyển kết thúc."
 
@@ -17070,9 +17111,17 @@ msgstr "Yuva chỉ đọc. Ngoài đăng nhập, kết nối của nó chỉ g�
 msgid "Yuva only reads. It never deletes, moves, archives or marks anything as read in {provider}, and your mail stays where it is."
 msgstr "Yuva chỉ đọc. Nó không bao giờ xóa, di chuyển, lưu trữ hay đánh dấu đã đọc bất cứ thứ gì trong {provider}, và thư của bạn vẫn ở nguyên chỗ."
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
+msgstr "Yuva chỉ đọc. Kết nối của Yuva chỉ gửi yêu cầu đọc đến {provider}, và chỉ gửi token đến API của {provider}, nên không phiếu hỗ trợ, khách hàng hay cài đặt nào thay đổi."
+
 #: src/features/status/MonitorDialog.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Yuva mở kết nối tới một máy chủ và cổng theo định kỳ."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva reads {provider} with an API token you create in your own account, and only reads."
+msgstr "Yuva đọc {provider} bằng token API bạn tạo trong tài khoản của chính mình, và chỉ đọc."
 
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."

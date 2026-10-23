@@ -4121,6 +4121,7 @@ const (
 	MigrationAuthMicrosoft MigrationAuth = "microsoft"
 	MigrationAuthOauth     MigrationAuth = "oauth"
 	MigrationAuthPassword  MigrationAuth = "password"
+	MigrationAuthToken     MigrationAuth = "token"
 )
 
 // Valid indicates whether the value is a known member of the MigrationAuth enum.
@@ -4132,6 +4133,8 @@ func (e MigrationAuth) Valid() bool {
 		return true
 	case MigrationAuthPassword:
 		return true
+	case MigrationAuthToken:
+		return true
 	default:
 		return false
 	}
@@ -4141,6 +4144,7 @@ func (e MigrationAuth) Valid() bool {
 const (
 	CredentialsOauth    MigrationCredentialsKind = "oauth"
 	CredentialsPassword MigrationCredentialsKind = "password"
+	CredentialsToken    MigrationCredentialsKind = "token"
 )
 
 // Valid indicates whether the value is a known member of the MigrationCredentialsKind enum.
@@ -4149,6 +4153,26 @@ func (e MigrationCredentialsKind) Valid() bool {
 	case CredentialsOauth:
 		return true
 	case CredentialsPassword:
+		return true
+	case CredentialsToken:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MigrationCredentialsInputKind.
+const (
+	CredentialsInputPassword MigrationCredentialsInputKind = "password"
+	CredentialsInputToken    MigrationCredentialsInputKind = "token"
+)
+
+// Valid indicates whether the value is a known member of the MigrationCredentialsInputKind enum.
+func (e MigrationCredentialsInputKind) Valid() bool {
+	switch e {
+	case CredentialsInputPassword:
+		return true
+	case CredentialsInputToken:
 		return true
 	default:
 		return false
@@ -4458,6 +4482,30 @@ func (e MigrationMboxFormat) Valid() bool {
 	case Mboxo:
 		return true
 	case Mboxrd:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MigrationPresetTokenFields.
+const (
+	TokenFieldBaseUrl   MigrationPresetTokenFields = "base_url"
+	TokenFieldSecret    MigrationPresetTokenFields = "secret"
+	TokenFieldSubdomain MigrationPresetTokenFields = "subdomain"
+	TokenFieldToken     MigrationPresetTokenFields = "token"
+)
+
+// Valid indicates whether the value is a known member of the MigrationPresetTokenFields enum.
+func (e MigrationPresetTokenFields) Valid() bool {
+	switch e {
+	case TokenFieldBaseUrl:
+		return true
+	case TokenFieldSecret:
+		return true
+	case TokenFieldSubdomain:
+		return true
+	case TokenFieldToken:
 		return true
 	default:
 		return false
@@ -15652,8 +15700,10 @@ type Migration struct {
 	Counts    MigrationCounts `json:"counts"`
 	CreatedAt time.Time       `json:"created_at"`
 
-	// Credentials The stored credentials, without the secret. A help desk's are `oauth`, with the account's
-	// API host as `server` (`<subdomain>.zendesk.com`, `api.helpscout.net`). A Microsoft
+	// Credentials The stored credentials, without the secret. A help desk's are `oauth` or `token`, as its
+	// preset's `auth`, with the account's API host as `server` (`<subdomain>.zendesk.com`,
+	// `api.helpscout.net`, or the host of a `base_url`); a `token` is never answered and has no
+	// `scopes` or `expires_at`. A Microsoft
 	// sign-in's are `oauth` too, with `outlook.office365.com:993` as `server`, the granted
 	// `scopes` and when the access token expires; the token is refreshed before a connection
 	// when it expires within five minutes.
@@ -15793,14 +15843,17 @@ type MigrationVerifiedRoute string
 // `set_credentials`, `test_connection`, `scan`, `start`, `pause`, `resume`, `cancel`, `finish`,
 // `retry` (failed items), `remove_history`, `delete`, `probe` (a test mail to check the
 // switch), `upload` (parts of the export file, and completing it) and `sign_in` (a help
-// desk's sign-in with the team's OAuth client, or Sign in with Microsoft). A server lists
-// only the actions it offers.
+// desk's sign-in with the team's OAuth client, or Sign in with Microsoft). A help desk whose
+// auth is `token` lists `set_credentials` where one with `oauth` lists `sign_in`. A server
+// lists only the actions it offers.
 type MigrationAction string
 
 // MigrationAuth `password`: a user name with an app password or password. `microsoft`: Sign in with
 // Microsoft (`POST /v1/migrations/{migrationId}/sign-in`), whose token is sent with
 // `AUTHENTICATE XOAUTH2`. `oauth`: a help desk's sign-in with an OAuth client the team
-// creates in its own account (`POST /v1/migrations/{migrationId}/sign-in`).
+// creates in its own account (`POST /v1/migrations/{migrationId}/sign-in`). `token`: a help
+// desk's API token the team creates in its own account, with the fields the preset's
+// `token_fields` names (`PUT /v1/migrations/{migrationId}/credentials` with `kind: token`).
 type MigrationAuth string
 
 // MigrationBudget The pace Yuva keeps with this provider, below its published limits.
@@ -15811,6 +15864,11 @@ type MigrationBudget struct {
 
 	// IncrementalPerMinute Zendesk: incremental export requests a minute (of the 10 Zendesk allows).
 	IncrementalPerMinute *int32 `json:"incremental_per_minute,omitempty"`
+
+	// RequestsPerDay Help desks with a daily limit: requests a day until the provider reports its limit;
+	// then at most half of the daily limit it reports. The dry run's time estimate uses it
+	// when it is set.
+	RequestsPerDay *int32 `json:"requests_per_day,omitempty"`
 
 	// RequestsPerMinute Help desks: requests a minute until the provider reports its limit; then at most half
 	// of the per-minute limit it reports (`X-Rate-Limit`, `X-RateLimit-Limit-Minute`).
@@ -15861,8 +15919,10 @@ type MigrationCreate struct {
 	SourceAddress Email `json:"source_address"`
 }
 
-// MigrationCredentials The stored credentials, without the secret. A help desk's are `oauth`, with the account's
-// API host as `server` (`<subdomain>.zendesk.com`, `api.helpscout.net`). A Microsoft
+// MigrationCredentials The stored credentials, without the secret. A help desk's are `oauth` or `token`, as its
+// preset's `auth`, with the account's API host as `server` (`<subdomain>.zendesk.com`,
+// `api.helpscout.net`, or the host of a `base_url`); a `token` is never answered and has no
+// `scopes` or `expires_at`. A Microsoft
 // sign-in's are `oauth` too, with `outlook.office365.com:993` as `server`, the granted
 // `scopes` and when the access token expires; the token is refreshed before a connection
 // when it expires within five minutes.
@@ -15883,20 +15943,40 @@ type MigrationCredentials struct {
 // MigrationCredentialsKind defines model for MigrationCredentials.Kind.
 type MigrationCredentialsKind string
 
-// MigrationCredentialsInput defines model for MigrationCredentialsInput.
+// MigrationCredentialsInput `kind: password` needs `username` and `password`; `kind: token` needs `token` and the
+// fields the preset's `token_fields` names, and takes no others.
 type MigrationCredentialsInput struct {
+	// BaseUrl `token`, where `token_fields` names `base_url`: the HTTPS address of a self-hosted
+	// install, such as `https://help.example.com`; no user name, query or fragment.
+	BaseUrl *string `json:"base_url,omitempty"`
+
 	// CertificateSha256 Trust this certificate (SHA-256, hexadecimal, colons allowed) even if it is not valid for the host.
 	CertificateSha256 *string `json:"certificate_sha256,omitempty"`
 	Host              *string `json:"host,omitempty"`
-	Password          *string `json:"password,omitempty"`
-	Port              *int32  `json:"port,omitempty"`
+
+	// Kind `password` when left out.
+	Kind     *MigrationCredentialsInputKind `json:"kind,omitempty"`
+	Password *string                        `json:"password,omitempty"`
+	Port     *int32                         `json:"port,omitempty"`
+
+	// Secret `token`, where `token_fields` names `secret`: the help desk's second secret.
+	Secret *string `json:"secret,omitempty"`
+
+	// Subdomain `token`, where `token_fields` names `subdomain`: the account's subdomain.
+	Subdomain *string `json:"subdomain,omitempty"`
 
 	// Tls `tls`: TLS from the start (port 993). `starttls`: plain connection upgraded with `STARTTLS` (port 143).
 	Tls *MigrationTls `json:"tls,omitempty"`
 
-	// Username Usually the mailbox address; iCloud takes the part before `@`.
-	Username string `json:"username"`
+	// Token `token`: the help desk's API token.
+	Token *string `json:"token,omitempty"`
+
+	// Username `password`: usually the mailbox address; iCloud takes the part before `@`.
+	Username *string `json:"username,omitempty"`
 }
+
+// MigrationCredentialsInputKind `password` when left out.
+type MigrationCredentialsInputKind string
 
 // MigrationDetect defines model for MigrationDetect.
 type MigrationDetect struct {
@@ -16397,9 +16477,16 @@ type MigrationPreset struct {
 	// its own (`YUVA_MICROSOFT_CLIENT_ID`), which a team may still replace with its own.
 	TeamClient *bool `json:"team_client,omitempty"`
 
+	// TokenFields `token` presets: the fields `PUT /v1/migrations/{migrationId}/credentials` takes with
+	// `kind: token`, `token` first, in the order the connect form shows them.
+	TokenFields *[]MigrationPresetTokenFields `json:"token_fields,omitempty"`
+
 	// Username What the user name is: the whole `address` or its `local_part`.
 	Username MigrationPresetUsername `json:"username"`
 }
+
+// MigrationPresetTokenFields defines model for MigrationPreset.TokenFields.
+type MigrationPresetTokenFields string
 
 // MigrationPresetUsername What the user name is: the whole `address` or its `local_part`.
 type MigrationPresetUsername string
@@ -34517,20 +34604,31 @@ type ClientInterface interface {
 	// Corresponds with POST /v1/migrations/{migrationId}/cancel (the `CancelMigration` operationId).
 	CancelMigration(ctx context.Context, migrationId MigrationId, params *CancelMigrationParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// SetMigrationCredentialsWithBody Connect the mailbox with a password
+	// SetMigrationCredentialsWithBody Connect the mailbox with a password, or a help desk with an API token
 	//
-	// The user name and the app password (or password) of the mailbox, and for `imap` the
-	// server; presets take their own server, and a preset with several servers (Zoho's data
-	// centres, GMX) takes `host` from its list. The credentials are encrypted at once, replace
-	// any stored before, are never returned or logged, and are deleted when the migration
-	// completes, is cancelled or deleted. `certificate_sha256` trusts a server whose certificate
-	// is not valid for its name (a self-hosted server with its own certificate): the SHA-256 of
-	// the certificate the connection test reported, checked on every connection.
+	// `kind: password` (the default): the user name and the app password (or password) of the
+	// mailbox, and for `imap` the server; presets take their own server, and a preset with
+	// several servers (Zoho's data centres, GMX) takes `host` from its list.
+	// `certificate_sha256` trusts a server whose certificate is not valid for its name (a
+	// self-hosted server with its own certificate): the SHA-256 of the certificate the
+	// connection test reported, checked on every connection.
+	//
+	// `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
+	// team creates in its own account, plus the fields its preset's `token_fields` names: a
+	// second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+	// (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
+	// address only where the operator allows one). The token is sent only in the help desk's
+	// own auth header and only to its API hosts, with `GET` only; the connection test then reads
+	// the account and its folders.
+	//
+	// Either way the secret is encrypted at once, replaces any stored before, is never returned,
+	// logged or put in a job's arguments, and is deleted when the migration completes, is
+	// cancelled or deleted.
 	//
 	// In `draft` and `connected`; a `connected` migration goes back to `draft` until the next
 	// test passes. In `needs_attention` it reconnects the same account on the same server
-	// (`409 migration_state` otherwise, and for help desks, export files and `microsoft`, which
-	// connect otherwise).
+	// (`409 migration_state` otherwise, and for export files, `microsoft` and help desks that
+	// sign in with OAuth, which connect otherwise; `kind` must be the one the preset takes).
 	//
 	// Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 	//
@@ -34539,20 +34637,31 @@ type ClientInterface interface {
 	// Corresponds with PUT /v1/migrations/{migrationId}/credentials (the `SetMigrationCredentials` operationId).
 	SetMigrationCredentialsWithBody(ctx context.Context, migrationId MigrationId, params *SetMigrationCredentialsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// SetMigrationCredentials Connect the mailbox with a password
+	// SetMigrationCredentials Connect the mailbox with a password, or a help desk with an API token
 	//
-	// The user name and the app password (or password) of the mailbox, and for `imap` the
-	// server; presets take their own server, and a preset with several servers (Zoho's data
-	// centres, GMX) takes `host` from its list. The credentials are encrypted at once, replace
-	// any stored before, are never returned or logged, and are deleted when the migration
-	// completes, is cancelled or deleted. `certificate_sha256` trusts a server whose certificate
-	// is not valid for its name (a self-hosted server with its own certificate): the SHA-256 of
-	// the certificate the connection test reported, checked on every connection.
+	// `kind: password` (the default): the user name and the app password (or password) of the
+	// mailbox, and for `imap` the server; presets take their own server, and a preset with
+	// several servers (Zoho's data centres, GMX) takes `host` from its list.
+	// `certificate_sha256` trusts a server whose certificate is not valid for its name (a
+	// self-hosted server with its own certificate): the SHA-256 of the certificate the
+	// connection test reported, checked on every connection.
+	//
+	// `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
+	// team creates in its own account, plus the fields its preset's `token_fields` names: a
+	// second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+	// (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
+	// address only where the operator allows one). The token is sent only in the help desk's
+	// own auth header and only to its API hosts, with `GET` only; the connection test then reads
+	// the account and its folders.
+	//
+	// Either way the secret is encrypted at once, replaces any stored before, is never returned,
+	// logged or put in a job's arguments, and is deleted when the migration completes, is
+	// cancelled or deleted.
 	//
 	// In `draft` and `connected`; a `connected` migration goes back to `draft` until the next
 	// test passes. In `needs_attention` it reconnects the same account on the same server
-	// (`409 migration_state` otherwise, and for help desks, export files and `microsoft`, which
-	// connect otherwise).
+	// (`409 migration_state` otherwise, and for export files, `microsoft` and help desks that
+	// sign in with OAuth, which connect otherwise; `kind` must be the one the preset takes).
 	//
 	// Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 	//
@@ -34733,6 +34842,9 @@ type ClientInterface interface {
 
 	// StartMigrationSignInWithBody Connect a help desk or a Microsoft mailbox with a sign-in
 	//
+	// A help desk whose preset's `auth` is `token` connects with
+	// `PUT /v1/migrations/{migrationId}/credentials` instead (`409 migration_state`).
+	//
 	// Starts the sign-in of a `zendesk` or `helpscout` migration with an OAuth client the team
 	// created in its own help desk account, whose redirect URL is the preset's `redirect_url`:
 	// in Zendesk an OAuth client (Admin Center › Apps and integrations › APIs › OAuth clients),
@@ -34788,6 +34900,9 @@ type ClientInterface interface {
 	StartMigrationSignInWithBody(ctx context.Context, migrationId MigrationId, params *StartMigrationSignInParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// StartMigrationSignIn Connect a help desk or a Microsoft mailbox with a sign-in
+	//
+	// A help desk whose preset's `auth` is `token` connects with
+	// `PUT /v1/migrations/{migrationId}/credentials` instead (`409 migration_state`).
 	//
 	// Starts the sign-in of a `zendesk` or `helpscout` migration with an OAuth client the team
 	// created in its own help desk account, whose redirect URL is the preset's `redirect_url`:
@@ -47270,20 +47385,31 @@ func (c *Client) CancelMigration(ctx context.Context, migrationId MigrationId, p
 	return c.Client.Do(req)
 }
 
-// SetMigrationCredentialsWithBody Connect the mailbox with a password
+// SetMigrationCredentialsWithBody Connect the mailbox with a password, or a help desk with an API token
 //
-// The user name and the app password (or password) of the mailbox, and for `imap` the
-// server; presets take their own server, and a preset with several servers (Zoho's data
-// centres, GMX) takes `host` from its list. The credentials are encrypted at once, replace
-// any stored before, are never returned or logged, and are deleted when the migration
-// completes, is cancelled or deleted. `certificate_sha256` trusts a server whose certificate
-// is not valid for its name (a self-hosted server with its own certificate): the SHA-256 of
-// the certificate the connection test reported, checked on every connection.
+// `kind: password` (the default): the user name and the app password (or password) of the
+// mailbox, and for `imap` the server; presets take their own server, and a preset with
+// several servers (Zoho's data centres, GMX) takes `host` from its list.
+// `certificate_sha256` trusts a server whose certificate is not valid for its name (a
+// self-hosted server with its own certificate): the SHA-256 of the certificate the
+// connection test reported, checked on every connection.
+//
+// `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
+// team creates in its own account, plus the fields its preset's `token_fields` names: a
+// second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+// (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
+// address only where the operator allows one). The token is sent only in the help desk's
+// own auth header and only to its API hosts, with `GET` only; the connection test then reads
+// the account and its folders.
+//
+// Either way the secret is encrypted at once, replaces any stored before, is never returned,
+// logged or put in a job's arguments, and is deleted when the migration completes, is
+// cancelled or deleted.
 //
 // In `draft` and `connected`; a `connected` migration goes back to `draft` until the next
 // test passes. In `needs_attention` it reconnects the same account on the same server
-// (`409 migration_state` otherwise, and for help desks, export files and `microsoft`, which
-// connect otherwise).
+// (`409 migration_state` otherwise, and for export files, `microsoft` and help desks that
+// sign in with OAuth, which connect otherwise; `kind` must be the one the preset takes).
 //
 // Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 //
@@ -47302,20 +47428,31 @@ func (c *Client) SetMigrationCredentialsWithBody(ctx context.Context, migrationI
 	return c.Client.Do(req)
 }
 
-// SetMigrationCredentials Connect the mailbox with a password
+// SetMigrationCredentials Connect the mailbox with a password, or a help desk with an API token
 //
-// The user name and the app password (or password) of the mailbox, and for `imap` the
-// server; presets take their own server, and a preset with several servers (Zoho's data
-// centres, GMX) takes `host` from its list. The credentials are encrypted at once, replace
-// any stored before, are never returned or logged, and are deleted when the migration
-// completes, is cancelled or deleted. `certificate_sha256` trusts a server whose certificate
-// is not valid for its name (a self-hosted server with its own certificate): the SHA-256 of
-// the certificate the connection test reported, checked on every connection.
+// `kind: password` (the default): the user name and the app password (or password) of the
+// mailbox, and for `imap` the server; presets take their own server, and a preset with
+// several servers (Zoho's data centres, GMX) takes `host` from its list.
+// `certificate_sha256` trusts a server whose certificate is not valid for its name (a
+// self-hosted server with its own certificate): the SHA-256 of the certificate the
+// connection test reported, checked on every connection.
+//
+// `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
+// team creates in its own account, plus the fields its preset's `token_fields` names: a
+// second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+// (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
+// address only where the operator allows one). The token is sent only in the help desk's
+// own auth header and only to its API hosts, with `GET` only; the connection test then reads
+// the account and its folders.
+//
+// Either way the secret is encrypted at once, replaces any stored before, is never returned,
+// logged or put in a job's arguments, and is deleted when the migration completes, is
+// cancelled or deleted.
 //
 // In `draft` and `connected`; a `connected` migration goes back to `draft` until the next
 // test passes. In `needs_attention` it reconnects the same account on the same server
-// (`409 migration_state` otherwise, and for help desks, export files and `microsoft`, which
-// connect otherwise).
+// (`409 migration_state` otherwise, and for export files, `microsoft` and help desks that
+// sign in with OAuth, which connect otherwise; `kind` must be the one the preset takes).
 //
 // Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 //
@@ -47626,6 +47763,9 @@ func (c *Client) ScanMigration(ctx context.Context, migrationId MigrationId, par
 
 // StartMigrationSignInWithBody Connect a help desk or a Microsoft mailbox with a sign-in
 //
+// A help desk whose preset's `auth` is `token` connects with
+// `PUT /v1/migrations/{migrationId}/credentials` instead (`409 migration_state`).
+//
 // Starts the sign-in of a `zendesk` or `helpscout` migration with an OAuth client the team
 // created in its own help desk account, whose redirect URL is the preset's `redirect_url`:
 // in Zendesk an OAuth client (Admin Center › Apps and integrations › APIs › OAuth clients),
@@ -47691,6 +47831,9 @@ func (c *Client) StartMigrationSignInWithBody(ctx context.Context, migrationId M
 }
 
 // StartMigrationSignIn Connect a help desk or a Microsoft mailbox with a sign-in
+//
+// A help desk whose preset's `auth` is `token` connects with
+// `PUT /v1/migrations/{migrationId}/credentials` instead (`409 migration_state`).
 //
 // Starts the sign-in of a `zendesk` or `helpscout` migration with an OAuth client the team
 // created in its own help desk account, whose redirect URL is the preset's `redirect_url`:
@@ -83790,20 +83933,31 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /v1/migrations/{migrationId}/cancel (the `CancelMigration` operationId).
 	CancelMigrationWithResponse(ctx context.Context, migrationId MigrationId, params *CancelMigrationParams, reqEditors ...RequestEditorFn) (*CancelMigrationResponse, error)
 
-	// SetMigrationCredentialsWithBodyWithResponse Connect the mailbox with a password
+	// SetMigrationCredentialsWithBodyWithResponse Connect the mailbox with a password, or a help desk with an API token
 	//
-	// The user name and the app password (or password) of the mailbox, and for `imap` the
-	// server; presets take their own server, and a preset with several servers (Zoho's data
-	// centres, GMX) takes `host` from its list. The credentials are encrypted at once, replace
-	// any stored before, are never returned or logged, and are deleted when the migration
-	// completes, is cancelled or deleted. `certificate_sha256` trusts a server whose certificate
-	// is not valid for its name (a self-hosted server with its own certificate): the SHA-256 of
-	// the certificate the connection test reported, checked on every connection.
+	// `kind: password` (the default): the user name and the app password (or password) of the
+	// mailbox, and for `imap` the server; presets take their own server, and a preset with
+	// several servers (Zoho's data centres, GMX) takes `host` from its list.
+	// `certificate_sha256` trusts a server whose certificate is not valid for its name (a
+	// self-hosted server with its own certificate): the SHA-256 of the certificate the
+	// connection test reported, checked on every connection.
+	//
+	// `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
+	// team creates in its own account, plus the fields its preset's `token_fields` names: a
+	// second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+	// (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
+	// address only where the operator allows one). The token is sent only in the help desk's
+	// own auth header and only to its API hosts, with `GET` only; the connection test then reads
+	// the account and its folders.
+	//
+	// Either way the secret is encrypted at once, replaces any stored before, is never returned,
+	// logged or put in a job's arguments, and is deleted when the migration completes, is
+	// cancelled or deleted.
 	//
 	// In `draft` and `connected`; a `connected` migration goes back to `draft` until the next
 	// test passes. In `needs_attention` it reconnects the same account on the same server
-	// (`409 migration_state` otherwise, and for help desks, export files and `microsoft`, which
-	// connect otherwise).
+	// (`409 migration_state` otherwise, and for export files, `microsoft` and help desks that
+	// sign in with OAuth, which connect otherwise; `kind` must be the one the preset takes).
 	//
 	// Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 	//
@@ -83812,20 +83966,31 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with PUT /v1/migrations/{migrationId}/credentials (the `SetMigrationCredentials` operationId).
 	SetMigrationCredentialsWithBodyWithResponse(ctx context.Context, migrationId MigrationId, params *SetMigrationCredentialsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetMigrationCredentialsResponse, error)
 
-	// SetMigrationCredentialsWithResponse Connect the mailbox with a password
+	// SetMigrationCredentialsWithResponse Connect the mailbox with a password, or a help desk with an API token
 	//
-	// The user name and the app password (or password) of the mailbox, and for `imap` the
-	// server; presets take their own server, and a preset with several servers (Zoho's data
-	// centres, GMX) takes `host` from its list. The credentials are encrypted at once, replace
-	// any stored before, are never returned or logged, and are deleted when the migration
-	// completes, is cancelled or deleted. `certificate_sha256` trusts a server whose certificate
-	// is not valid for its name (a self-hosted server with its own certificate): the SHA-256 of
-	// the certificate the connection test reported, checked on every connection.
+	// `kind: password` (the default): the user name and the app password (or password) of the
+	// mailbox, and for `imap` the server; presets take their own server, and a preset with
+	// several servers (Zoho's data centres, GMX) takes `host` from its list.
+	// `certificate_sha256` trusts a server whose certificate is not valid for its name (a
+	// self-hosted server with its own certificate): the SHA-256 of the certificate the
+	// connection test reported, checked on every connection.
+	//
+	// `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
+	// team creates in its own account, plus the fields its preset's `token_fields` names: a
+	// second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+	// (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
+	// address only where the operator allows one). The token is sent only in the help desk's
+	// own auth header and only to its API hosts, with `GET` only; the connection test then reads
+	// the account and its folders.
+	//
+	// Either way the secret is encrypted at once, replaces any stored before, is never returned,
+	// logged or put in a job's arguments, and is deleted when the migration completes, is
+	// cancelled or deleted.
 	//
 	// In `draft` and `connected`; a `connected` migration goes back to `draft` until the next
 	// test passes. In `needs_attention` it reconnects the same account on the same server
-	// (`409 migration_state` otherwise, and for help desks, export files and `microsoft`, which
-	// connect otherwise).
+	// (`409 migration_state` otherwise, and for export files, `microsoft` and help desks that
+	// sign in with OAuth, which connect otherwise; `kind` must be the one the preset takes).
 	//
 	// Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 	//
@@ -84022,6 +84187,9 @@ type ClientWithResponsesInterface interface {
 
 	// StartMigrationSignInWithBodyWithResponse Connect a help desk or a Microsoft mailbox with a sign-in
 	//
+	// A help desk whose preset's `auth` is `token` connects with
+	// `PUT /v1/migrations/{migrationId}/credentials` instead (`409 migration_state`).
+	//
 	// Starts the sign-in of a `zendesk` or `helpscout` migration with an OAuth client the team
 	// created in its own help desk account, whose redirect URL is the preset's `redirect_url`:
 	// in Zendesk an OAuth client (Admin Center › Apps and integrations › APIs › OAuth clients),
@@ -84077,6 +84245,9 @@ type ClientWithResponsesInterface interface {
 	StartMigrationSignInWithBodyWithResponse(ctx context.Context, migrationId MigrationId, params *StartMigrationSignInParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*StartMigrationSignInResponse, error)
 
 	// StartMigrationSignInWithResponse Connect a help desk or a Microsoft mailbox with a sign-in
+	//
+	// A help desk whose preset's `auth` is `token` connects with
+	// `PUT /v1/migrations/{migrationId}/credentials` instead (`409 migration_state`).
 	//
 	// Starts the sign-in of a `zendesk` or `helpscout` migration with an OAuth client the team
 	// created in its own help desk account, whose redirect URL is the preset's `redirect_url`:
@@ -123750,20 +123921,31 @@ func (c *ClientWithResponses) CancelMigrationWithResponse(ctx context.Context, m
 	return ParseCancelMigrationResponse(rsp)
 }
 
-// SetMigrationCredentialsWithBodyWithResponse Connect the mailbox with a password
+// SetMigrationCredentialsWithBodyWithResponse Connect the mailbox with a password, or a help desk with an API token
 //
-// The user name and the app password (or password) of the mailbox, and for `imap` the
-// server; presets take their own server, and a preset with several servers (Zoho's data
-// centres, GMX) takes `host` from its list. The credentials are encrypted at once, replace
-// any stored before, are never returned or logged, and are deleted when the migration
-// completes, is cancelled or deleted. `certificate_sha256` trusts a server whose certificate
-// is not valid for its name (a self-hosted server with its own certificate): the SHA-256 of
-// the certificate the connection test reported, checked on every connection.
+// `kind: password` (the default): the user name and the app password (or password) of the
+// mailbox, and for `imap` the server; presets take their own server, and a preset with
+// several servers (Zoho's data centres, GMX) takes `host` from its list.
+// `certificate_sha256` trusts a server whose certificate is not valid for its name (a
+// self-hosted server with its own certificate): the SHA-256 of the certificate the
+// connection test reported, checked on every connection.
+//
+// `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
+// team creates in its own account, plus the fields its preset's `token_fields` names: a
+// second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+// (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
+// address only where the operator allows one). The token is sent only in the help desk's
+// own auth header and only to its API hosts, with `GET` only; the connection test then reads
+// the account and its folders.
+//
+// Either way the secret is encrypted at once, replaces any stored before, is never returned,
+// logged or put in a job's arguments, and is deleted when the migration completes, is
+// cancelled or deleted.
 //
 // In `draft` and `connected`; a `connected` migration goes back to `draft` until the next
 // test passes. In `needs_attention` it reconnects the same account on the same server
-// (`409 migration_state` otherwise, and for help desks, export files and `microsoft`, which
-// connect otherwise).
+// (`409 migration_state` otherwise, and for export files, `microsoft` and help desks that
+// sign in with OAuth, which connect otherwise; `kind` must be the one the preset takes).
 //
 // Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 //
@@ -123778,20 +123960,31 @@ func (c *ClientWithResponses) SetMigrationCredentialsWithBodyWithResponse(ctx co
 	return ParseSetMigrationCredentialsResponse(rsp)
 }
 
-// SetMigrationCredentialsWithResponse Connect the mailbox with a password
+// SetMigrationCredentialsWithResponse Connect the mailbox with a password, or a help desk with an API token
 //
-// The user name and the app password (or password) of the mailbox, and for `imap` the
-// server; presets take their own server, and a preset with several servers (Zoho's data
-// centres, GMX) takes `host` from its list. The credentials are encrypted at once, replace
-// any stored before, are never returned or logged, and are deleted when the migration
-// completes, is cancelled or deleted. `certificate_sha256` trusts a server whose certificate
-// is not valid for its name (a self-hosted server with its own certificate): the SHA-256 of
-// the certificate the connection test reported, checked on every connection.
+// `kind: password` (the default): the user name and the app password (or password) of the
+// mailbox, and for `imap` the server; presets take their own server, and a preset with
+// several servers (Zoho's data centres, GMX) takes `host` from its list.
+// `certificate_sha256` trusts a server whose certificate is not valid for its name (a
+// self-hosted server with its own certificate): the SHA-256 of the certificate the
+// connection test reported, checked on every connection.
+//
+// `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
+// team creates in its own account, plus the fields its preset's `token_fields` names: a
+// second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+// (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
+// address only where the operator allows one). The token is sent only in the help desk's
+// own auth header and only to its API hosts, with `GET` only; the connection test then reads
+// the account and its folders.
+//
+// Either way the secret is encrypted at once, replaces any stored before, is never returned,
+// logged or put in a job's arguments, and is deleted when the migration completes, is
+// cancelled or deleted.
 //
 // In `draft` and `connected`; a `connected` migration goes back to `draft` until the next
 // test passes. In `needs_attention` it reconnects the same account on the same server
-// (`409 migration_state` otherwise, and for help desks, export files and `microsoft`, which
-// connect otherwise).
+// (`409 migration_state` otherwise, and for export files, `microsoft` and help desks that
+// sign in with OAuth, which connect otherwise; `kind` must be the one the preset takes).
 //
 // Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
 //
@@ -124066,6 +124259,9 @@ func (c *ClientWithResponses) ScanMigrationWithResponse(ctx context.Context, mig
 
 // StartMigrationSignInWithBodyWithResponse Connect a help desk or a Microsoft mailbox with a sign-in
 //
+// A help desk whose preset's `auth` is `token` connects with
+// `PUT /v1/migrations/{migrationId}/credentials` instead (`409 migration_state`).
+//
 // Starts the sign-in of a `zendesk` or `helpscout` migration with an OAuth client the team
 // created in its own help desk account, whose redirect URL is the preset's `redirect_url`:
 // in Zendesk an OAuth client (Admin Center › Apps and integrations › APIs › OAuth clients),
@@ -124127,6 +124323,9 @@ func (c *ClientWithResponses) StartMigrationSignInWithBodyWithResponse(ctx conte
 }
 
 // StartMigrationSignInWithResponse Connect a help desk or a Microsoft mailbox with a sign-in
+//
+// A help desk whose preset's `auth` is `token` connects with
+// `PUT /v1/migrations/{migrationId}/credentials` instead (`409 migration_state`).
 //
 // Starts the sign-in of a `zendesk` or `helpscout` migration with an OAuth client the team
 // created in its own help desk account, whose redirect URL is the preset's `redirect_url`:

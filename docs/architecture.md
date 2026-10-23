@@ -1791,7 +1791,15 @@ losing a message and without changing anything at the source. Decisions:
   mailboxes: Takeout first, then IMAP for newer mail and the cutover. Help desks: Zendesk with OAuth
   `read`, Help Scout; each team creates the OAuth client in its own help desk with Yuva's redirect URL
   and enters its id and secret on the panel's connect page (there is no operator-wide client), and a
-  help-desk migration goes through the same cutover as a mailbox. Detection from the address and the domain's MX picks the preset; autoconfig is
+  help-desk migration goes through the same cutover as a mailbox. Every help desk is one entry of a
+  registry (`internal/migrate/helpdesk`): its API hosts, attachment hosts, auth kind (`oauth` or
+  `token`) and how the token is sent (Bearer, Basic or a named header), its limits with their windows
+  (a minute, ten seconds or a day), limit and retry headers and default budgets, its contacts'
+  attribute prefix and how its changes are read after the scan; the preset, the sign-in, the reader
+  and the copy read the entry, so a new help desk is a new entry. A `token` desk connects with
+  `PUT /v1/migrations/{id}/credentials` (`kind: token`, the API token and, where the entry asks, a
+  second secret, the account's subdomain or the HTTPS base URL of a self-hosted install), sealed like
+  OAuth tokens and deleted with them; the panel shows its form in place of "Sign in". Detection from the address and the domain's MX picks the preset; autoconfig is
   read only from the team's own domain. Provider mail APIs and other sign-ins were considered and
   rejected for one IMAP path.
 - **Read-only, enforced three times.** No credential a mailbox accepts is read-only (Microsoft's
@@ -1803,7 +1811,10 @@ losing a message and without changing anything at the source. Decisions:
   connection before it is sent. Help-desk sources use a transport that refuses every method but `GET`
   (the token exchange and refresh `POST` to the provider's token endpoint aside) and every host not on
   the source's list; attachments the provider keeps on other public hosts are fetched by a separate
-  client without the token. A sign-in must grant exactly the requested scopes. Tests
+  client without the token. A `token` desk's token goes only to its API hosts, never to an attachment
+  host, and a team-entered base URL is dialled with the same address checks as an IMAP server
+  (private addresses only with `YUVA_MIGRATION_ALLOW_PRIVATE`). A sign-in must grant exactly the
+  requested scopes. Tests
   fail the build if a write command or method could be sent, and an integration test proves a Dovecot
   mailbox byte-identical after a migration.
 - **Two phases.** A scan reads headers only (the whole message only when it has no Message-ID, to take
@@ -1832,8 +1843,9 @@ losing a message and without changing anything at the source. Decisions:
   is not imported again, which also lets a Takeout import and a later IMAP migration of the same
   mailbox meet without duplicates; a thread whose earlier messages the channel already has continues
   in that conversation, in every migration. Each source has a budget below its published limit (Gmail IMAP
-  1,500 MB a day, other servers one connection and 4 MB/s, help desks half their rate limit), kept on
-  the migration row; limit answers and `Retry-After` are honoured. Microsoft tokens are refreshed
+  1,500 MB a day, other servers one connection and 4 MB/s, help desks half their rate limit in its
+  window, and half their daily limit next to it where they have one), kept on the migration row;
+  limit answers (`429`, and `420` where a help desk sends it) and `Retry-After` are honoured. Microsoft tokens are refreshed
   before a connection and resealed. Pause stops after the batch in progress (at most 50 messages);
   any change to a ready migration's options sends it back for a new dry run. Memory does not grow
   with the mailbox: the scan reads headers a page at a time, the plan joins threads in the database

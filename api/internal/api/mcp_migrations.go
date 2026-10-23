@@ -18,7 +18,15 @@ import (
 var (
 	errNotMigrationManager = problem(http.StatusForbidden, "forbidden", "only owners, admins and API keys without an inbox limit move mailboxes into Yuva")
 	migrationStates        = []any{"draft", "connected", "scanning", "ready", "copying", "paused", "needs_attention", "syncing", "completed", "cancelled", "removing", "removed"}
-	migrationPresets       = []any{"gmail", "google_workspace", "microsoft", "yandex", "icloud", "zoho", "yahoo", "fastmail", "gmx", "imap", "zendesk", "helpscout"}
+	migrationPresets       = func() []any {
+		var out []any
+		for _, p := range migrate.Presets {
+			if p.Source != string(oas.MigrationSourceFile) {
+				out = append(out, p.ID)
+			}
+		}
+		return out
+	}()
 )
 
 const readOnlyPromise = "Yuva only reads the mailbox: it opens folders read-only, never deletes, moves, flags or marks anything there, and the old mailbox stays as it is."
@@ -95,7 +103,7 @@ type mcpMigration struct {
 	Counts                 mcpMigrationCounts         `json:"counts"`
 	Connected              bool                       `json:"connected" jsonschema:"the mailbox's credentials are stored; they are never shown"`
 	Actions                []string                   `json:"actions" jsonschema:"what can be done now"`
-	ConnectURL             string                     `json:"connect_url,omitempty" jsonschema:"the page where the person connects the mailbox (app password or sign-in); give it to them and never ask for a password; its workspace parameter opens it in this workspace even when another one is open in the panel"`
+	ConnectURL             string                     `json:"connect_url,omitempty" jsonschema:"the page where the person connects the mailbox (app password, sign-in or a help desk's API token); give it to them and never ask for a password or token; its workspace parameter opens it in this workspace even when another one is open in the panel"`
 	Estimate               *mcpMigrationEstimate      `json:"estimate,omitempty" jsonschema:"the dry run, once scanned"`
 	Folders                []mcpMigrationFolder       `json:"folders,omitempty"`
 	TeamSuggestions        []mcpTeamSuggestion        `json:"team_suggestions,omitempty" jsonschema:"once scanned: the other addresses that sent mail from the mailbox's Sent folders, most first; ask the person which are the team's (aliases, colleagues) and pass those as team_addresses"`
@@ -207,7 +215,7 @@ type detectSourceOut struct {
 	Provider  string   `json:"provider" jsonschema:"the preset to create the migration with"`
 	Name      string   `json:"name" jsonschema:"the provider's name"`
 	Available bool     `json:"available" jsonschema:"false when this server cannot connect to the provider yet"`
-	Auth      []string `json:"auth" jsonschema:"how the mailbox connects: password (an app password), microsoft (the person signs in with Microsoft at connect_url) or oauth (a help desk's sign-in)"`
+	Auth      []string `json:"auth" jsonschema:"how the mailbox connects: password (an app password), microsoft (the person signs in with Microsoft at connect_url) oauth (a help desk's sign-in) or token (a help desk's API token, entered at connect_url)"`
 	Guide     string   `json:"guide" jsonschema:"the provider's guide"`
 	Note      string   `json:"note,omitempty"`
 	FoundBy   string   `json:"found_by"`

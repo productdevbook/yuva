@@ -12,7 +12,11 @@ import (
 	"time"
 )
 
-const errBodyBytes = 300
+const (
+	errBodyBytes = 300
+	// statusEnhanceYourCalm is the 420 some help desks answer instead of 429.
+	statusEnhanceYourCalm = 420
+)
 
 // ErrTooLarge is a body over Config.MaxBytes.
 var ErrTooLarge = errors.New("the answer is larger than the limit")
@@ -128,7 +132,7 @@ func (c *client) get(ctx context.Context, hc *http.Client, class Class, rawURL, 
 		now := c.cfg.now()
 		err := c.budget.Take(class, now)
 		var wait *WaitError
-		if errors.As(err, &wait) && (!wait.Incremental || wait.Until.Sub(now) <= inlineWait) {
+		if errors.As(err, &wait) && (!wait.Incremental && !wait.Daily || wait.Until.Sub(now) <= inlineWait) {
 			if err := c.cfg.sleep(ctx, wait.Until.Sub(now)); err != nil {
 				return nil, err
 			}
@@ -184,7 +188,7 @@ func (c *client) failure(res *http.Response, path string) error {
 	switch res.StatusCode {
 	case http.StatusUnauthorized:
 		return &AuthError{se}
-	case http.StatusTooManyRequests:
+	case http.StatusTooManyRequests, statusEnhanceYourCalm:
 		wait := time.Minute
 		for _, h := range c.retryHeaders {
 			if v, err := strconv.Atoi(strings.TrimSpace(res.Header.Get(h))); err == nil && v >= 0 {

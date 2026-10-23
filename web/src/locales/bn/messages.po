@@ -251,6 +251,7 @@ msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, one {#টি ব্র্যান্ড} other {#টি ব্র্যান্ড}}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, one {#টি ফোল্ডার} other {#টি ফোল্ডার}}"
 
@@ -713,6 +714,10 @@ msgstr "{provider} আপাতত এই অ্যাকাউন্ট সী�
 #: src/features/migrations/text.ts
 msgid "{provider} refused the sign-in"
 msgstr "{provider} সাইন-ইন প্রত্যাখ্যান করেছে"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "{provider} stopped accepting the token. Enter a new token for the same account; the migration continues where it stopped."
+msgstr "{provider} টোকেন গ্রহণ করা বন্ধ করেছে। একই অ্যাকাউন্টের জন্য নতুন টোকেন দিন; মাইগ্রেশন যেখানে থেমেছিল সেখান থেকে চলবে।"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "{provider} stopped accepting Yuva's sign-in. Enter a new app password; the migration continues where it stopped."
@@ -1663,6 +1668,10 @@ msgstr "টিম যোগ করেছে"
 msgid "Address"
 msgstr "ঠিকানা"
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Address of your {provider}"
+msgstr "আপনার {provider}-এর ঠিকানা"
+
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 msgid "Address or name"
@@ -2242,6 +2251,10 @@ msgstr "API কী ও অ্যাসিস্ট্যান্ট কোন�
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "API keys and assistants will deliver replies at once. Customers receive what they write, with nobody reviewing it first. You can turn this off again at any time."
 msgstr "API কী ও অ্যাসিস্ট্যান্ট তাৎক্ষণিক উত্তর পৌঁছে দেবে। কেউ আগে পর্যালোচনা না করেই গ্রাহকরা যা লেখা হবে তা পাবেন। আপনি যেকোনো সময় এটি আবার বন্ধ করতে পারেন।"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "API token"
+msgstr "API টোকেন"
 
 #: src/components/common/Source.tsx
 #: src/features/conversation/Feedback.tsx
@@ -3646,6 +3659,7 @@ msgid "Connect {clientName} to Yuva?"
 msgstr "{clientName}-কে Yuva-র সঙ্গে সংযুক্ত করবেন?"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connect {provider}"
 msgstr "{provider} সংযোগ করুন"
 
@@ -3719,6 +3733,7 @@ msgid "Connected to {host}"
 msgstr "{host}-এ সংযুক্ত"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connected to {provider}"
 msgstr "{provider}-এ সংযুক্ত"
 
@@ -3824,6 +3839,7 @@ msgstr "বিষয়বস্তু"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/SourceStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -4047,6 +4063,10 @@ msgstr "IMAP-এ মেইলের অ্যাক্সেস সহ একট
 #: src/app/Sidebar.tsx
 msgid "Create a workspace"
 msgstr "ওয়ার্কস্পেস তৈরি করুন"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Create an API token in {provider}"
+msgstr "{provider}-এ একটি API টোকেন তৈরি করুন"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Create an app in Help Scout"
@@ -4541,6 +4561,7 @@ msgstr "ব্রাউজারের সেটিংসে এই সাইট
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Details"
 msgstr "বিবরণ"
 
@@ -5150,6 +5171,10 @@ msgstr "একটি হোস্টের নাম বা আইপি ঠি�
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a host name or IP address."
 msgstr "একটি হোস্ট নাম বা IP ঠিকানা দিন।"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Enter a token again only to change it."
+msgstr "শুধু বদলানোর জন্যই আবার টোকেন দিন।"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address, or leave it empty."
@@ -5857,6 +5882,7 @@ msgstr "সম্পূর্ণ API"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 msgid "Full guide"
 msgstr "সম্পূর্ণ গাইড"
@@ -6383,6 +6409,7 @@ msgstr "{provider} ওই ঠিকানায় নিশ্চিতকর�
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "If an assistant sent you here, you can go back to it now, or choose what to bring yourself."
 msgstr "কোনো অ্যাসিস্ট্যান্ট আপনাকে এখানে পাঠিয়ে থাকলে আপনি এখন তার কাছে ফিরে যেতে পারেন, বা নিজে বেছে নিতে পারেন কী আনবেন।"
 
@@ -11393,6 +11420,7 @@ msgid "Reconnect {address}"
 msgstr "{address} আবার সংযোগ করুন"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Reconnect {provider}"
 msgstr "{provider} আবার সংযোগ করুন"
 
@@ -12337,6 +12365,10 @@ msgstr "Codex থেকে অনুসন্ধান, বাছাই ও উ�
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from your terminal. It acts as you, with the access you allow."
 msgstr "আপনার টার্মিনাল থেকে অনুসন্ধান, বাছাই ও উত্তরের ড্রাফট করুন। এটি আপনার হয়ে কাজ করে, আপনি যে অ্যাক্সেস দেন সেই অনুযায়ী।"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Second secret"
+msgstr "দ্বিতীয় সিক্রেট"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Seconds, 1 to 30."
@@ -13594,6 +13626,7 @@ msgid "Storage"
 msgstr "স্টোরেজ"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Stored encrypted and never shown again, not even to you."
 msgstr "এনক্রিপ্ট করে রাখা হয় এবং আর কখনও দেখানো হয় না, আপনাকেও নয়।"
 
@@ -13602,6 +13635,7 @@ msgid "Struck-out values are not taken: this contact keeps its own value for tho
 msgstr "কাটা মান নেওয়া হয় না: এই কনট্যাক্ট ওই কী-গুলোর জন্য নিজের মান রাখে।"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Subdomain"
 msgstr "সাবডোমেন"
 
@@ -13839,10 +13873,12 @@ msgid "Test"
 msgstr "টেস্ট"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test again"
 msgstr "আবার টেস্ট করুন"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test connection"
 msgstr "সংযোগ টেস্ট করুন"
 
@@ -14193,6 +14229,10 @@ msgstr "ইতিহাস কপি হয়েছে এবং এর মে�
 #: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "হোস্টনেম সেট আপ হচ্ছে। রেকর্ড পাওয়ার পর এতে কিছুক্ষণ লাগে।"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "The HTTPS address you open it at, such as https://help.example.com."
+msgstr "যে HTTPS ঠিকানায় আপনি এটি খোলেন, যেমন https://help.example.com।"
 
 #: src/features/broadcasts/Import.tsx
 msgid "The import failed, and nothing was added from the file."
@@ -17011,6 +17051,7 @@ msgid "Yuva deleted its token but cannot revoke it in Zendesk. Delete the client
 msgstr "Yuva তার টোকেন মুছে ফেলেছে কিন্তু Zendesk-এ বাতিল করতে পারে না। Admin Center › Apps and integrations › APIs › OAuth clients-এ ক্লায়েন্ট মুছুন; Yuva-র এটি আর দরকার নেই।"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Yuva deletes its token when the migration ends."
 msgstr "মাইগ্রেশন শেষ হলে Yuva তার টোকেন মুছে দেয়।"
 
@@ -17070,9 +17111,17 @@ msgstr "Yuva শুধু পড়ে। সাইন ইন ছাড়া �
 msgid "Yuva only reads. It never deletes, moves, archives or marks anything as read in {provider}, and your mail stays where it is."
 msgstr "Yuva শুধু পড়ে। এটি {provider}-এ কিছুই কখনও মোছে না, সরায় না, আর্কাইভ করে না বা পঠিত চিহ্নিত করে না, এবং আপনার মেইল যেখানে আছে সেখানেই থাকে।"
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
+msgstr "Yuva শুধু পড়ে। এর সংযোগ {provider}-এ পড়ার অনুরোধ ছাড়া কিছু পাঠায় না, আর টোকেন শুধু {provider}-এর API-তে পাঠায়, তাই কোনো টিকিট, গ্রাহক বা সেটিং বদলায় না।"
+
 #: src/features/status/MonitorDialog.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Yuva নিয়মিত একটি হোস্ট ও পোর্টে সংযোগ খোলে।"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva reads {provider} with an API token you create in your own account, and only reads."
+msgstr "Yuva আপনার নিজের অ্যাকাউন্টে তৈরি করা API টোকেন দিয়ে {provider} পড়ে, এবং শুধু পড়ে।"
 
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."

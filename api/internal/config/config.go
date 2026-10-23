@@ -13,6 +13,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/productdevbook/yuva/api/internal/migrate/helpdesk"
 )
 
 type Config struct {
@@ -705,7 +707,13 @@ func (c *Config) loadSES() error {
 	return nil
 }
 
-var migrationSources = []string{"imap", "file", "zendesk", "helpscout"}
+var migrationSources = func() []string {
+	out := []string{"imap", "file"}
+	for _, d := range helpdesk.Desks() {
+		out = append(out, d.Source)
+	}
+	return out
+}()
 
 var forwardingDomainRe = regexp.MustCompile(`^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$`)
 var microsoftTenantRe = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9.-]{0,252}$`)
@@ -757,7 +765,7 @@ func (c *Config) loadMigrations() error {
 		c.MigrationSources = []string{}
 		for _, s := range lowerList(os.Getenv("YUVA_MIGRATION_SOURCES")) {
 			if !slices.Contains(migrationSources, s) {
-				return fmt.Errorf("YUVA_MIGRATION_SOURCES: %q is not one of imap, file, zendesk, helpscout", s)
+				return fmt.Errorf("YUVA_MIGRATION_SOURCES: %q is not one of %s", s, strings.Join(migrationSources, ", "))
 			}
 			c.MigrationSources = append(c.MigrationSources, s)
 		}

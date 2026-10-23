@@ -15,13 +15,7 @@ import (
 
 // HelpScoutBudget is a Help Scout account's budget: half of its X-RateLimit-Limit-Minute, which
 // all of the account's apps share.
-func HelpScoutBudget(b *Budget) *Budget {
-	if b == nil {
-		b = &Budget{}
-	}
-	b.Default, b.IncrementalMax, b.LimitHeaders = 100, 0, []string{"X-RateLimit-Limit-Minute"}
-	return b
-}
+func HelpScoutBudget(b *Budget) *Budget { return helpScoutDesk.Budget(b) }
 
 // HelpScout reads one Help Scout account through the Mailbox API 2.0. Help Scout has no read-only
 // permission: the GET-only transport is what keeps this reader from changing anything.
@@ -30,11 +24,7 @@ type HelpScout struct {
 }
 
 func NewHelpScout(cfg Config, token func() string, budget *Budget) *HelpScout {
-	hosts := Hosts{Exact: []string{HelpScoutAPIHost}}
-	return &HelpScout{c: &client{
-		cfg: cfg, budget: HelpScoutBudget(budget), retryHeaders: []string{"X-RateLimit-Retry-After", "Retry-After"},
-		api: cfg.dataClient(hosts, hosts, token), files: cfg.dataClient(hosts, hosts, token),
-	}}
+	return &HelpScout{c: helpScoutDesk.client(cfg, Account{}, Credentials{Token: token}, budget)}
 }
 
 func (h *HelpScout) url(path string, q url.Values) string {

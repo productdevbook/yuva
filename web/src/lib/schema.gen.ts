@@ -4157,19 +4157,30 @@ export interface paths {
         };
         get?: never;
         /**
-         * Connect the mailbox with a password
-         * @description The user name and the app password (or password) of the mailbox, and for `imap` the
-         *     server; presets take their own server, and a preset with several servers (Zoho's data
-         *     centres, GMX) takes `host` from its list. The credentials are encrypted at once, replace
-         *     any stored before, are never returned or logged, and are deleted when the migration
-         *     completes, is cancelled or deleted. `certificate_sha256` trusts a server whose certificate
-         *     is not valid for its name (a self-hosted server with its own certificate): the SHA-256 of
-         *     the certificate the connection test reported, checked on every connection.
+         * Connect the mailbox with a password, or a help desk with an API token
+         * @description `kind: password` (the default): the user name and the app password (or password) of the
+         *     mailbox, and for `imap` the server; presets take their own server, and a preset with
+         *     several servers (Zoho's data centres, GMX) takes `host` from its list.
+         *     `certificate_sha256` trusts a server whose certificate is not valid for its name (a
+         *     self-hosted server with its own certificate): the SHA-256 of the certificate the
+         *     connection test reported, checked on every connection.
+         *
+         *     `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
+         *     team creates in its own account, plus the fields its preset's `token_fields` names: a
+         *     second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+         *     (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
+         *     address only where the operator allows one). The token is sent only in the help desk's
+         *     own auth header and only to its API hosts, with `GET` only; the connection test then reads
+         *     the account and its folders.
+         *
+         *     Either way the secret is encrypted at once, replaces any stored before, is never returned,
+         *     logged or put in a job's arguments, and is deleted when the migration completes, is
+         *     cancelled or deleted.
          *
          *     In `draft` and `connected`; a `connected` migration goes back to `draft` until the next
          *     test passes. In `needs_attention` it reconnects the same account on the same server
-         *     (`409 migration_state` otherwise, and for help desks, export files and `microsoft`, which
-         *     connect otherwise).
+         *     (`409 migration_state` otherwise, and for export files, `microsoft` and help desks that
+         *     sign in with OAuth, which connect otherwise; `kind` must be the one the preset takes).
          *
          *     Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
          */
@@ -4232,7 +4243,10 @@ export interface paths {
         put?: never;
         /**
          * Connect a help desk or a Microsoft mailbox with a sign-in
-         * @description Starts the sign-in of a `zendesk` or `helpscout` migration with an OAuth client the team
+         * @description A help desk whose preset's `auth` is `token` connects with
+         *     `PUT /v1/migrations/{migrationId}/credentials` instead (`409 migration_state`).
+         *
+         *     Starts the sign-in of a `zendesk` or `helpscout` migration with an OAuth client the team
          *     created in its own help desk account, whose redirect URL is the preset's `redirect_url`:
          *     in Zendesk an OAuth client (Admin Center › Apps and integrations › APIs › OAuth clients),
          *     in Help Scout an app (Your Profile › My Apps). The client id and secret are encrypted at
@@ -12468,8 +12482,9 @@ export interface components {
          *     `set_credentials`, `test_connection`, `scan`, `start`, `pause`, `resume`, `cancel`, `finish`,
          *     `retry` (failed items), `remove_history`, `delete`, `probe` (a test mail to check the
          *     switch), `upload` (parts of the export file, and completing it) and `sign_in` (a help
-         *     desk's sign-in with the team's OAuth client, or Sign in with Microsoft). A server lists
-         *     only the actions it offers.
+         *     desk's sign-in with the team's OAuth client, or Sign in with Microsoft). A help desk whose
+         *     auth is `token` lists `set_credentials` where one with `oauth` lists `sign_in`. A server
+         *     lists only the actions it offers.
          * @enum {string}
          */
         MigrationAction: "update" | "set_credentials" | "test_connection" | "scan" | "start" | "pause" | "resume" | "cancel" | "finish" | "retry" | "remove_history" | "delete" | "probe" | "upload" | "sign_in";
@@ -12488,20 +12503,24 @@ export interface components {
          * @description `password`: a user name with an app password or password. `microsoft`: Sign in with
          *     Microsoft (`POST /v1/migrations/{migrationId}/sign-in`), whose token is sent with
          *     `AUTHENTICATE XOAUTH2`. `oauth`: a help desk's sign-in with an OAuth client the team
-         *     creates in its own account (`POST /v1/migrations/{migrationId}/sign-in`).
+         *     creates in its own account (`POST /v1/migrations/{migrationId}/sign-in`). `token`: a help
+         *     desk's API token the team creates in its own account, with the fields the preset's
+         *     `token_fields` names (`PUT /v1/migrations/{migrationId}/credentials` with `kind: token`).
          * @enum {string}
          */
-        MigrationAuth: "password" | "microsoft" | "oauth";
+        MigrationAuth: "password" | "microsoft" | "oauth" | "token";
         /**
-         * @description The stored credentials, without the secret. A help desk's are `oauth`, with the account's
-         *     API host as `server` (`<subdomain>.zendesk.com`, `api.helpscout.net`). A Microsoft
+         * @description The stored credentials, without the secret. A help desk's are `oauth` or `token`, as its
+         *     preset's `auth`, with the account's API host as `server` (`<subdomain>.zendesk.com`,
+         *     `api.helpscout.net`, or the host of a `base_url`); a `token` is never answered and has no
+         *     `scopes` or `expires_at`. A Microsoft
          *     sign-in's are `oauth` too, with `outlook.office365.com:993` as `server`, the granted
          *     `scopes` and when the access token expires; the token is refreshed before a connection
          *     when it expires within five minutes.
          */
         MigrationCredentials: {
             /** @enum {string} */
-            kind: "password" | "oauth";
+            kind: "password" | "oauth" | "token";
             server: components["schemas"]["MigrationServer"];
             /** @description The trusted certificate's SHA-256, when one is pinned. */
             certificate_sha256?: string;
@@ -12515,10 +12534,31 @@ export interface components {
             /** Format: date-time */
             updated_at: string;
         };
+        /**
+         * @description `kind: password` needs `username` and `password`; `kind: token` needs `token` and the
+         *     fields the preset's `token_fields` names, and takes no others.
+         */
         MigrationCredentialsInput: {
-            /** @description Usually the mailbox address; iCloud takes the part before `@`. */
-            username: string;
-            password: string;
+            /**
+             * @description `password` when left out.
+             * @enum {string}
+             */
+            kind?: "password" | "token";
+            /** @description `password`: usually the mailbox address; iCloud takes the part before `@`. */
+            username?: string;
+            password?: string;
+            /** @description `token`: the help desk's API token. */
+            token?: string;
+            /** @description `token`, where `token_fields` names `secret`: the help desk's second secret. */
+            secret?: string;
+            /** @description `token`, where `token_fields` names `subdomain`: the account's subdomain. */
+            subdomain?: string;
+            /**
+             * Format: uri
+             * @description `token`, where `token_fields` names `base_url`: the HTTPS address of a self-hosted
+             *     install, such as `https://help.example.com`; no user name, query or fragment.
+             */
+            base_url?: string;
             host?: string;
             /** Format: int32 */
             port?: number;
@@ -13056,6 +13096,13 @@ export interface components {
              * @description Zendesk: incremental export requests a minute (of the 10 Zendesk allows).
              */
             incremental_per_minute?: number;
+            /**
+             * Format: int32
+             * @description Help desks with a daily limit: requests a day until the provider reports its limit;
+             *     then at most half of the daily limit it reports. The dry run's time estimate uses it
+             *     when it is set.
+             */
+            requests_per_day?: number;
         };
         MigrationPreset: {
             id: components["schemas"]["MigrationPresetId"];
@@ -13111,6 +13158,11 @@ export interface components {
             team_client?: boolean;
             /** @description The sign-in needs the account's subdomain (Zendesk's `<subdomain>.zendesk.com`). */
             subdomain?: boolean;
+            /**
+             * @description `token` presets: the fields `PUT /v1/migrations/{migrationId}/credentials` takes with
+             *     `kind: token`, `token` first, in the order the connect form shows them.
+             */
+            token_fields?: ("token" | "secret" | "subdomain" | "base_url")[];
         };
         MigrationPresetList: {
             items: components["schemas"]["MigrationPreset"][];

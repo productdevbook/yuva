@@ -1,4 +1,4 @@
-// Package helpdesk reads help desks (Zendesk, Help Scout) over their APIs, only ever with GET:
+// Package helpdesk reads the help desks of its registry (Desks) over their APIs, only ever with GET:
 // every data request goes through a transport that refuses any other method, and the one POST
 // Yuva sends, the OAuth token exchange, goes through a client that reaches the token endpoint
 // and nothing else.
@@ -92,19 +92,35 @@ func closeBody(r *http.Request) {
 	}
 }
 
-// bearer adds the access token to requests for the token's own hosts, and only those, so a
-// redirect or an attachment elsewhere never carries it.
+// bearer adds the token, as send says (a Bearer token when it is empty), to requests for the
+// token's own hosts, and only those, so a redirect or an attachment elsewhere never carries it.
 type bearer struct {
-	hosts Hosts
-	token func() string
-	next  http.RoundTripper
+	hosts  Hosts
+	token  func() string
+	send   Send
+	secret string
+	next   http.RoundTripper
 }
 
 func (b bearer) RoundTrip(r *http.Request) (*http.Response, error) {
 	r = r.Clone(r.Context())
 	r.Header.Del("Authorization")
+	if b.send.Header != "" {
+		r.Header.Del(b.send.Header)
+	}
 	if b.hosts.Allows(r.URL.Hostname()) {
-		r.Header.Set("Authorization", "Bearer "+b.token())
+		switch b.send.Scheme {
+		case SendBasic:
+			password := b.secret
+			if password == "" {
+				password = b.send.Password
+			}
+			r.SetBasicAuth(b.token(), password)
+		case SendHeader:
+			r.Header.Set(b.send.Header, b.token())
+		default:
+			r.Header.Set("Authorization", "Bearer "+b.token())
+		}
 	}
 	return b.next.RoundTrip(r)
 }
@@ -165,10 +181,11 @@ func (c Config) timeout() time.Duration {
 	return c.Timeout
 }
 
-// dataClient sends GETs to hosts, adding the token for tokenHosts.
-func (c Config) dataClient(hosts, tokenHosts Hosts, token func() string) *http.Client {
+// dataClient sends GETs to hosts, adding the token as auth says for its hosts.
+func (c Config) dataClient(hosts Hosts, auth bearer) *http.Client {
+	auth.next = getOnly{hosts: hosts, next: c.base()}
 	return &http.Client{
-		Transport: bearer{hosts: tokenHosts, token: token, next: getOnly{hosts: hosts, next: c.base()}},
+		Transport: auth,
 		Timeout:   c.timeout(),
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			if len(via) >= 5 {
@@ -208,10 +225,12 @@ func (e *LimitError) Error() string {
 	return "the help desk asked to wait until " + e.Until.Format(time.RFC3339)
 }
 
-// WaitError is Yuva's own budget asking to wait; Incremental when for the incremental exports.
+// WaitError is Yuva's own budget asking to wait; Incremental when for the incremental exports,
+// Daily when for the day's budget.
 type WaitError struct {
 	Until       time.Time
 	Incremental bool
+	Daily       bool
 }
 
 func (e *WaitError) Error() string {

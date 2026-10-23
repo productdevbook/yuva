@@ -1051,8 +1051,14 @@ func (s *Server) dryRun(ctx context.Context, q *store.Queries, m store.Migration
 		secs = max(secs, float64(t.Bytes)/float64(preset.Budget.BytesPerDay)*86400)
 	case preset.Budget.BytesPerSecond > 0:
 		secs = max(secs, float64(t.Bytes)/float64(preset.Budget.BytesPerSecond))
-	case preset.Budget.RequestsPerMinute > 0:
-		secs = max(secs, float64(t.Conversations)*helpdeskRequestsPerTicket*60/float64(preset.Budget.RequestsPerMinute))
+	case preset.Budget.RequestsPerMinute > 0 || preset.Budget.RequestsPerDay > 0:
+		requests := float64(t.Conversations) * helpdeskRequestsPerTicket
+		if preset.Budget.RequestsPerMinute > 0 {
+			secs = max(secs, requests*60/float64(preset.Budget.RequestsPerMinute))
+		}
+		if preset.Budget.RequestsPerDay > 0 {
+			secs = max(secs, requests*86400/float64(preset.Budget.RequestsPerDay))
+		}
 	}
 	est.SecondsMin = int64(math.Ceil(secs))
 	est.SecondsMax = int64(math.Ceil(secs * estimateMarginRatio))

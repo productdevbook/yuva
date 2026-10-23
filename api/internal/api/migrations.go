@@ -14,6 +14,7 @@ import (
 
 	"github.com/productdevbook/yuva/api/internal/email"
 	"github.com/productdevbook/yuva/api/internal/migrate"
+	"github.com/productdevbook/yuva/api/internal/migrate/helpdesk"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -52,8 +53,14 @@ var (
 	errMigrationNoCreds      = problem(http.StatusConflict, "migration_state", "set the mailbox's credentials before testing the connection")
 	errFileNoCredentials     = problem(http.StatusConflict, "migration_state", "an export file migration reads its uploaded file; it has no mailbox to connect to")
 	errMicrosoftNoPassword   = problem(http.StatusConflict, "migration_state", "Outlook.com and Microsoft 365 accept no passwords: sign in with Microsoft (POST .../sign-in)")
-	builtMigrationSources    = []string{string(oas.MigrationSourceImap), string(oas.MigrationSourceFile), string(oas.MigrationSourceZendesk), string(oas.MigrationSourceHelpscout)}
-	runningMigrationStates   = []string{migrationScanning, migrationCopying, migrationSyncing, migrationRemoving}
+	builtMigrationSources    = func() []string {
+		out := []string{string(oas.MigrationSourceImap), string(oas.MigrationSourceFile)}
+		for _, d := range helpdesk.Desks() {
+			out = append(out, d.Source)
+		}
+		return out
+	}()
+	runningMigrationStates = []string{migrationScanning, migrationCopying, migrationSyncing, migrationRemoving}
 )
 
 func errMigrationState(detail string) *apiError {
@@ -199,13 +206,17 @@ func migrationActions(m store.Migration, hasCreds bool) []oas.MigrationAction {
 		hasCreds = uploadReady(m)
 	}
 	desk := helpdeskMigration(m) || microsoftMigration(m)
+	connect := oas.MigrationActionSignIn
+	if tokenDesk(m) {
+		connect = oas.MigrationActionSetCredentials
+	}
 	switch {
 	case desk && (m.State == migrationDraft || m.State == migrationConnected):
-		out = append(out, oas.MigrationActionUpdate, oas.MigrationActionSignIn)
+		out = append(out, oas.MigrationActionUpdate, connect)
 	case desk && m.State == migrationReady:
 		out = append(out, oas.MigrationActionUpdate)
 	case desk && m.State == migrationNeedsAttention:
-		out = append(out, oas.MigrationActionSignIn)
+		out = append(out, connect)
 	case m.State == migrationDraft && file:
 		out = append(out, oas.MigrationActionUpdate, oas.MigrationActionUpload)
 	case m.State == migrationConnected && file, m.State == migrationReady:
@@ -685,6 +696,13 @@ func (s *Server) ListMigrationPresets(ctx context.Context, req oas.ListMigration
 				body.Subdomain = new(true)
 			}
 		}
+		if len(p.TokenFields) > 0 {
+			fields := make([]oas.MigrationPresetTokenFields, len(p.TokenFields))
+			for i, f := range p.TokenFields {
+				fields[i] = oas.MigrationPresetTokenFields(f)
+			}
+			body.TokenFields = &fields
+		}
 		if _, ok := s.microsoftServerApp(); ok && p.ID == migrate.PresetMicrosoft {
 			body.TeamClient = new(false)
 		}
@@ -705,6 +723,9 @@ func presetBody(p migrate.Preset) oas.MigrationPreset {
 	}
 	if p.Budget.IncrementalPerMinute > 0 {
 		out.Budget.IncrementalPerMinute = new(int32(p.Budget.IncrementalPerMinute))
+	}
+	if p.Budget.RequestsPerDay > 0 {
+		out.Budget.RequestsPerDay = new(int32(p.Budget.RequestsPerDay))
 	}
 	for _, sv := range p.Servers {
 		out.Servers = append(out.Servers, serverBody(sv))
@@ -1071,7 +1092,16 @@ func migrationServer(preset migrate.Preset, b *oas.MigrationCredentialsInput) (m
 func (s *Server) SetMigrationCredentials(ctx context.Context, req oas.SetMigrationCredentialsRequestObject) (oas.SetMigrationCredentialsResponseObject, error) {
 	p := principalFrom(ctx)
 	b := req.Body
-	username := strings.TrimSpace(b.Username)
+	if b.Kind != nil && *b.Kind == oas.CredentialsInputToken {
+		return s.setTokenCredentials(ctx, p, req.MigrationId, b)
+	}
+	if b.Kind != nil && *b.Kind != oas.CredentialsInputPassword {
+		return nil, errValidation("kind must be password or token")
+	}
+	if b.Token != nil || b.Secret != nil || b.Subdomain != nil || b.BaseUrl != nil {
+		return nil, errValidation("token, secret, subdomain and base_url go with kind token")
+	}
+	username := strings.TrimSpace(deref(b.Username))
 	if n := len([]rune(username)); n < 1 || n > 320 {
 		return nil, errValidation("username must be 1 to 320 characters")
 	}
@@ -1093,6 +1123,9 @@ func (s *Server) SetMigrationCredentials(ctx context.Context, req oas.SetMigrati
 		}
 		if fileMigration(m) {
 			return errFileNoCredentials
+		}
+		if d, ok := deskOf(m); ok && d.Auth == helpdesk.AuthToken {
+			return errMigrationState(d.Name + " connects with an API token: kind token, not a password")
 		}
 		if helpdeskMigration(m) {
 			return errHelpdeskNoPassword

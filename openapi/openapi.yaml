@@ -7368,20 +7368,31 @@ paths:
   /v1/migrations/{migrationId}/credentials:
     put:
       operationId: setMigrationCredentials
-      summary: Connect the mailbox with a password
+      summary: Connect the mailbox with a password, or a help desk with an API token
       description: |
-        The user name and the app password (or password) of the mailbox, and for `imap` the
-        server; presets take their own server, and a preset with several servers (Zoho's data
-        centres, GMX) takes `host` from its list. The credentials are encrypted at once, replace
-        any stored before, are never returned or logged, and are deleted when the migration
-        completes, is cancelled or deleted. `certificate_sha256` trusts a server whose certificate
-        is not valid for its name (a self-hosted server with its own certificate): the SHA-256 of
-        the certificate the connection test reported, checked on every connection.
+        `kind: password` (the default): the user name and the app password (or password) of the
+        mailbox, and for `imap` the server; presets take their own server, and a preset with
+        several servers (Zoho's data centres, GMX) takes `host` from its list.
+        `certificate_sha256` trusts a server whose certificate is not valid for its name (a
+        self-hosted server with its own certificate): the SHA-256 of the certificate the
+        connection test reported, checked on every connection.
+
+        `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
+        team creates in its own account, plus the fields its preset's `token_fields` names: a
+        second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+        (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
+        address only where the operator allows one). The token is sent only in the help desk's
+        own auth header and only to its API hosts, with `GET` only; the connection test then reads
+        the account and its folders.
+
+        Either way the secret is encrypted at once, replaces any stored before, is never returned,
+        logged or put in a job's arguments, and is deleted when the migration completes, is
+        cancelled or deleted.
 
         In `draft` and `connected`; a `connected` migration goes back to `draft` until the next
         test passes. In `needs_attention` it reconnects the same account on the same server
-        (`409 migration_state` otherwise, and for help desks, export files and `microsoft`, which
-        connect otherwise).
+        (`409 migration_state` otherwise, and for export files, `microsoft` and help desks that
+        sign in with OAuth, which connect otherwise; `kind` must be the one the preset takes).
 
         Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
       tags: [migrations]
@@ -7462,6 +7473,9 @@ paths:
       operationId: startMigrationSignIn
       summary: Connect a help desk or a Microsoft mailbox with a sign-in
       description: |
+        A help desk whose preset's `auth` is `token` connects with
+        `PUT /v1/migrations/{migrationId}/credentials` instead (`409 migration_state`).
+
         Starts the sign-in of a `zendesk` or `helpscout` migration with an OAuth client the team
         created in its own help desk account, whose redirect URL is the preset's `redirect_url`:
         in Zendesk an OAuth client (Admin Center › Apps and integrations › APIs › OAuth clients),
@@ -20884,8 +20898,9 @@ components:
         `set_credentials`, `test_connection`, `scan`, `start`, `pause`, `resume`, `cancel`, `finish`,
         `retry` (failed items), `remove_history`, `delete`, `probe` (a test mail to check the
         switch), `upload` (parts of the export file, and completing it) and `sign_in` (a help
-        desk's sign-in with the team's OAuth client, or Sign in with Microsoft). A server lists
-        only the actions it offers.
+        desk's sign-in with the team's OAuth client, or Sign in with Microsoft). A help desk whose
+        auth is `token` lists `set_credentials` where one with `oauth` lists `sign_in`. A server
+        lists only the actions it offers.
       enum: [update, set_credentials, test_connection, scan, start, pause, resume, cancel, finish, retry, remove_history, delete, probe, upload, sign_in]
       x-enum-varnames: [MigrationActionUpdate, MigrationActionSetCredentials, MigrationActionTestConnection, MigrationActionScan, MigrationActionStart, MigrationActionPause, MigrationActionResume, MigrationActionCancel, MigrationActionFinish, MigrationActionRetry, MigrationActionRemoveHistory, MigrationActionDelete, MigrationActionProbe, MigrationActionUpload, MigrationActionSignIn]
     MigrationTls:
@@ -20914,14 +20929,18 @@ components:
         `password`: a user name with an app password or password. `microsoft`: Sign in with
         Microsoft (`POST /v1/migrations/{migrationId}/sign-in`), whose token is sent with
         `AUTHENTICATE XOAUTH2`. `oauth`: a help desk's sign-in with an OAuth client the team
-        creates in its own account (`POST /v1/migrations/{migrationId}/sign-in`).
-      enum: [password, microsoft, oauth]
-      x-enum-varnames: [MigrationAuthPassword, MigrationAuthMicrosoft, MigrationAuthOauth]
+        creates in its own account (`POST /v1/migrations/{migrationId}/sign-in`). `token`: a help
+        desk's API token the team creates in its own account, with the fields the preset's
+        `token_fields` names (`PUT /v1/migrations/{migrationId}/credentials` with `kind: token`).
+      enum: [password, microsoft, oauth, token]
+      x-enum-varnames: [MigrationAuthPassword, MigrationAuthMicrosoft, MigrationAuthOauth, MigrationAuthToken]
     MigrationCredentials:
       type: object
       description: |
-        The stored credentials, without the secret. A help desk's are `oauth`, with the account's
-        API host as `server` (`<subdomain>.zendesk.com`, `api.helpscout.net`). A Microsoft
+        The stored credentials, without the secret. A help desk's are `oauth` or `token`, as its
+        preset's `auth`, with the account's API host as `server` (`<subdomain>.zendesk.com`,
+        `api.helpscout.net`, or the host of a `base_url`); a `token` is never answered and has no
+        `scopes` or `expires_at`. A Microsoft
         sign-in's are `oauth` too, with `outlook.office365.com:993` as `server`, the granted
         `scopes` and when the access token expires; the token is refreshed before a connection
         when it expires within five minutes.
@@ -20929,8 +20948,8 @@ components:
       properties:
         kind:
           type: string
-          enum: [password, oauth]
-          x-enum-varnames: [CredentialsPassword, CredentialsOauth]
+          enum: [password, oauth, token]
+          x-enum-varnames: [CredentialsPassword, CredentialsOauth, CredentialsToken]
         server:
           $ref: "#/components/schemas/MigrationServer"
         certificate_sha256:
@@ -20951,18 +20970,48 @@ components:
           format: date-time
     MigrationCredentialsInput:
       type: object
-      required: [username, password]
+      description: |
+        `kind: password` needs `username` and `password`; `kind: token` needs `token` and the
+        fields the preset's `token_fields` names, and takes no others.
       properties:
+        kind:
+          type: string
+          description: "`password` when left out."
+          enum: [password, token]
+          x-enum-varnames: [CredentialsInputPassword, CredentialsInputToken]
         username:
           type: string
           minLength: 1
           maxLength: 320
-          description: Usually the mailbox address; iCloud takes the part before `@`.
+          description: "`password`: usually the mailbox address; iCloud takes the part before `@`."
         password:
           type: string
           minLength: 1
           maxLength: 1000
           writeOnly: true
+        token:
+          type: string
+          minLength: 1
+          maxLength: 4000
+          writeOnly: true
+          description: "`token`: the help desk's API token."
+        secret:
+          type: string
+          minLength: 1
+          maxLength: 4000
+          writeOnly: true
+          description: "`token`, where `token_fields` names `secret`: the help desk's second secret."
+        subdomain:
+          type: string
+          pattern: "^[a-z0-9][a-z0-9-]{0,62}$"
+          description: "`token`, where `token_fields` names `subdomain`: the account's subdomain."
+        base_url:
+          type: string
+          format: uri
+          maxLength: 2000
+          description: |
+            `token`, where `token_fields` names `base_url`: the HTTPS address of a self-hosted
+            install, such as `https://help.example.com`; no user name, query or fragment.
         host:
           type: string
           minLength: 1
@@ -21669,6 +21718,13 @@ components:
           type: integer
           format: int32
           description: "Zendesk: incremental export requests a minute (of the 10 Zendesk allows)."
+        requests_per_day:
+          type: integer
+          format: int32
+          description: |
+            Help desks with a daily limit: requests a day until the provider reports its limit;
+            then at most half of the daily limit it reports. The dry run's time estimate uses it
+            when it is set.
     MigrationPreset:
       type: object
       required: [id, source, name, servers, auth, app_password, username, folders, budget, guide, available]
@@ -21743,6 +21799,15 @@ components:
         subdomain:
           type: boolean
           description: The sign-in needs the account's subdomain (Zendesk's `<subdomain>.zendesk.com`).
+        token_fields:
+          type: array
+          description: |
+            `token` presets: the fields `PUT /v1/migrations/{migrationId}/credentials` takes with
+            `kind: token`, `token` first, in the order the connect form shows them.
+          items:
+            type: string
+            enum: [token, secret, subdomain, base_url]
+            x-enum-varnames: [TokenFieldToken, TokenFieldSecret, TokenFieldSubdomain, TokenFieldBaseUrl]
     MigrationPresetList:
       type: object
       required: [items]

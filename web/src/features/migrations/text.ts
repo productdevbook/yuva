@@ -35,7 +35,7 @@ export const stateTones: Record<MigrationState, Tone> = {
 }
 
 export function isHelpdesk(source: MigrationSource | undefined) {
-  return source === "zendesk" || source === "helpscout"
+  return source !== undefined && source !== "imap" && source !== "file"
 }
 
 const TLDISH = /^[a-z]{2,3}(\.[a-z]{2,3})?$/

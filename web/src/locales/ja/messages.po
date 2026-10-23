@@ -251,6 +251,7 @@ msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, other {# ブランド}}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, other {# フォルダー}}"
 
@@ -713,6 +714,10 @@ msgstr "{provider} がこのアカウントを一時的に制限しています�
 #: src/features/migrations/text.ts
 msgid "{provider} refused the sign-in"
 msgstr "{provider} がサインインを拒否しました"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "{provider} stopped accepting the token. Enter a new token for the same account; the migration continues where it stopped."
+msgstr "{provider} がトークンを受け付けなくなりました。同じアカウントの新しいトークンを入力してください。移行は止まったところから続きます。"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "{provider} stopped accepting Yuva's sign-in. Enter a new app password; the migration continues where it stopped."
@@ -1663,6 +1668,10 @@ msgstr "チームが追加"
 msgid "Address"
 msgstr "アドレス"
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Address of your {provider}"
+msgstr "{provider} のアドレス"
+
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 msgid "Address or name"
@@ -2242,6 +2251,10 @@ msgstr "API キーとアシスタントは、メンバーが事前に確認す�
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "API keys and assistants will deliver replies at once. Customers receive what they write, with nobody reviewing it first. You can turn this off again at any time."
 msgstr "API キーとアシスタントは返信をすぐに配信します。顧客には、誰も事前に確認しないまま書かれた内容が届きます。この設定はいつでもオフに戻せます。"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "API token"
+msgstr "API トークン"
 
 #: src/components/common/Source.tsx
 #: src/features/conversation/Feedback.tsx
@@ -3646,6 +3659,7 @@ msgid "Connect {clientName} to Yuva?"
 msgstr "{clientName} を Yuva に接続しますか?"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connect {provider}"
 msgstr "{provider} を接続"
 
@@ -3719,6 +3733,7 @@ msgid "Connected to {host}"
 msgstr "{host} に接続済み"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connected to {provider}"
 msgstr "{provider} に接続済み"
 
@@ -3824,6 +3839,7 @@ msgstr "コンテンツ"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/SourceStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -4047,6 +4063,10 @@ msgstr "IMAP でメールにアクセスできる新しいアプリパスワー�
 #: src/app/Sidebar.tsx
 msgid "Create a workspace"
 msgstr "ワークスペースを作成"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Create an API token in {provider}"
+msgstr "{provider} で API トークンを作成"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Create an app in Help Scout"
@@ -4541,6 +4561,7 @@ msgstr "このサイトのデスクトップ通知はブラウザーの設定で
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Details"
 msgstr "詳細"
 
@@ -5150,6 +5171,10 @@ msgstr "ホスト名または IP アドレスを入力してください。"
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a host name or IP address."
 msgstr "ホスト名または IP アドレスを入力してください。"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Enter a token again only to change it."
+msgstr "変更する場合にのみトークンを入力し直してください。"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address, or leave it empty."
@@ -5857,6 +5882,7 @@ msgstr "フル API"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 msgid "Full guide"
 msgstr "完全ガイド"
@@ -6383,6 +6409,7 @@ msgstr "{provider} がそのアドレスに確認メールを送ると、この�
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "If an assistant sent you here, you can go back to it now, or choose what to bring yourself."
 msgstr "アシスタントからここに来た場合は、今すぐ戻るか、取り込む内容を自分で選べます。"
 
@@ -11393,6 +11420,7 @@ msgid "Reconnect {address}"
 msgstr "{address} を再接続"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Reconnect {provider}"
 msgstr "{provider} を再接続"
 
@@ -12337,6 +12365,10 @@ msgstr "Codex から、検索、振り分け、返信のドラフト作成がで
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from your terminal. It acts as you, with the access you allow."
 msgstr "ターミナルから、検索、振り分け、返信のドラフト作成ができます。あなたの権限で動作し、許可したアクセスの範囲で操作します。"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Second secret"
+msgstr "2 つ目のシークレット"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Seconds, 1 to 30."
@@ -13594,6 +13626,7 @@ msgid "Storage"
 msgstr "ストレージ"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Stored encrypted and never shown again, not even to you."
 msgstr "暗号化して保存され、二度と表示されません(あなた自身にも)。"
 
@@ -13602,6 +13635,7 @@ msgid "Struck-out values are not taken: this contact keeps its own value for tho
 msgstr "取り消し線の値は取り込まれません。この連絡先はそれらのキーについて自分の値を保持します。"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Subdomain"
 msgstr "サブドメイン"
 
@@ -13839,10 +13873,12 @@ msgid "Test"
 msgstr "テスト"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test again"
 msgstr "もう一度テスト"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test connection"
 msgstr "接続をテスト"
 
@@ -14193,6 +14229,10 @@ msgstr "履歴がコピーされ、メールは Yuva に届くようになりま
 #: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "ホスト名を設定しています。レコードが見つかった後、少し時間がかかります。"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "The HTTPS address you open it at, such as https://help.example.com."
+msgstr "開くときの HTTPS アドレス(例: https://help.example.com)。"
 
 #: src/features/broadcasts/Import.tsx
 msgid "The import failed, and nothing was added from the file."
@@ -17011,6 +17051,7 @@ msgid "Yuva deleted its token but cannot revoke it in Zendesk. Delete the client
 msgstr "Yuva はトークンを削除しましたが、Zendesk 側で取り消せませんでした。管理センター › アプリおよびインテグレーション › API › OAuth クライアントでクライアントを削除してください。Yuva にはもう必要ありません。"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Yuva deletes its token when the migration ends."
 msgstr "Yuva は移行の終了時にトークンを削除します。"
 
@@ -17070,9 +17111,17 @@ msgstr "Yuva は読み取るだけです。サインイン以外では、接続�
 msgid "Yuva only reads. It never deletes, moves, archives or marks anything as read in {provider}, and your mail stays where it is."
 msgstr "Yuva は読み取るだけです。{provider} で何かを削除、移動、アーカイブ、既読にすることはなく、メールはそのまま残ります。"
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
+msgstr "Yuva は読み取るだけです。接続は {provider} に読み取りリクエストしか送らず、トークンも {provider} の API にだけ送るため、チケット、顧客、設定は一切変わりません。"
+
 #: src/features/status/MonitorDialog.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Yuva は定期的にホストとポートへ接続します。"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva reads {provider} with an API token you create in your own account, and only reads."
+msgstr "Yuva は、ご自身のアカウントで作成した API トークンで {provider} を読み取ります。読み取るだけです。"
 
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."

@@ -14,6 +14,7 @@ import { MapStep } from "@/features/migrations/MapStep"
 import { useMigration, usePresets } from "@/features/migrations/queries"
 import { ReviewStep } from "@/features/migrations/ReviewStep"
 import { SignInConnectStep } from "@/features/migrations/SignInConnectStep"
+import { TokenConnectStep } from "@/features/migrations/TokenConnectStep"
 import { SourceStep } from "@/features/migrations/SourceStep"
 import { SwitchStep } from "@/features/migrations/SwitchStep"
 import { isHelpdesk, useFormatName, useMigrationText } from "@/features/migrations/text"
@@ -243,6 +244,8 @@ export function MigrationPage() {
     case "connect":
       return isFile(m) ? (
         <UploadStep key={m.id} m={m} preset={preset} />
+      ) : preset.auth.includes("token") ? (
+        <TokenConnectStep key={m.id} m={m} preset={preset} />
       ) : isHelpdesk(m.source) || m.preset === "microsoft" ? (
         <SignInConnectStep key={m.id} m={m} preset={preset} />
       ) : (

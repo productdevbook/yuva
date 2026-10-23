@@ -36,19 +36,39 @@ const (
 
 var (
 	subdomainRe           = regexp.MustCompile(`^[a-z0-9][a-z0-9-]{0,62}$`)
-	errNotHelpdesk        = errMigrationState("only a Zendesk, Help Scout or Microsoft migration signs in")
+	errNotHelpdesk        = errMigrationState("only a help desk or a Microsoft migration signs in")
 	errHelpdeskNoPassword = errMigrationState("a help desk connects with a sign-in (POST .../sign-in), not a password")
 )
 
 func helpdeskMigration(m store.Migration) bool { return migrate.Helpdesk(m.Source) }
 
-// helpdeskSecret is what a help desk's sealed credentials hold: the team's OAuth client, the
-// tokens, and the signed-in account a reconnect must sign in to again.
+// deskOf is the registry entry of a help-desk migration's source.
+func deskOf(m store.Migration) (helpdesk.Desk, bool) { return helpdesk.Lookup(m.Source) }
+
+// tokenDesk tells a help desk that connects with an API token.
+func tokenDesk(m store.Migration) bool {
+	d, ok := deskOf(m)
+	return ok && d.Auth == helpdesk.AuthToken
+}
+
+func errTokenNoSignIn(d helpdesk.Desk) *apiError {
+	return errMigrationState(d.Name + " connects with an API token (PUT .../credentials with kind token), not a sign-in")
+}
+
+// helpdeskSecret is what a help desk's sealed credentials hold: the team's OAuth client and the
+// tokens, or the API token and a second secret, the account's subdomain or base URL, and the
+// account a reconnect must reach again.
 type helpdeskSecret struct {
 	App       helpdesk.App    `json:"app"`
 	Tokens    helpdesk.Tokens `json:"tokens"`
 	Subdomain string          `json:"subdomain,omitempty"`
+	BaseURL   string          `json:"base_url,omitempty"`
+	Secret    string          `json:"secret,omitempty"`
 	Account   string          `json:"account"`
+}
+
+func (sec helpdeskSecret) account() helpdesk.Account {
+	return helpdesk.Account{Subdomain: sec.Subdomain, BaseURL: sec.BaseURL}
 }
 
 type signInSecret struct {
@@ -108,25 +128,8 @@ func (s *Server) checkedDial(ctx context.Context, _, addr string) (net.Conn, err
 	return migrate.DialAddresses(ctx, ips, n, 10*time.Second)
 }
 
-func (s *Server) helpdeskSource(source, subdomain string, token func() string, budget *helpdesk.Budget) helpdesk.Source {
-	if source == migrate.SourceZendesk {
-		return helpdesk.NewZendesk(s.helpdeskConfig(), subdomain, token, budget)
-	}
-	return helpdesk.NewHelpScout(s.helpdeskConfig(), token, budget)
-}
-
-func helpdeskHost(source, subdomain string) string {
-	if source == migrate.SourceZendesk {
-		return helpdesk.ZendeskHost(subdomain)
-	}
-	return helpdesk.HelpScoutAPIHost
-}
-
-func helpdeskScopes(source string) []string {
-	if source == migrate.SourceZendesk {
-		return []string{helpdesk.ZendeskScope}
-	}
-	return []string{}
+func (s *Server) helpdeskSource(d helpdesk.Desk, sec helpdeskSecret, token func() string, budget *helpdesk.Budget) helpdesk.Source {
+	return d.Open(s.helpdeskConfig(), sec.account(), helpdesk.Credentials{Token: token, Secret: sec.Secret}, budget)
 }
 
 // signInState names the workspace and the migration, so the callback finds its sign-in without
@@ -183,22 +186,27 @@ func (s *Server) StartMigrationSignIn(ctx context.Context, req oas.StartMigratio
 		if err != nil {
 			return err
 		}
-		if !helpdeskMigration(m) {
+		d, ok := deskOf(m)
+		if !ok {
 			return errNotHelpdesk
+		}
+		if d.Auth != helpdesk.AuthOAuth {
+			return errTokenNoSignIn(d)
 		}
 		switch m.State {
 		case migrationDraft, migrationConnected, migrationNeedsAttention:
 		default:
 			return errMigrationState("a help desk signs in while the migration is a draft, connected or needs attention")
 		}
-		if m.Source == migrate.SourceZendesk {
+		if d.Account == helpdesk.AccountSubdomain {
 			if !subdomainRe.MatchString(subdomain) {
 				return errValidation("subdomain must be the account's subdomain, acme of acme.zendesk.com")
 			}
 		} else {
 			subdomain = ""
 		}
-		host := helpdeskHost(m.Source, subdomain)
+		account := helpdesk.Account{Subdomain: subdomain}
+		host := d.Host(account)
 		if m.State == migrationNeedsAttention {
 			cred, err := q.GetMigrationCredentials(ctx, store.GetMigrationCredentialsParams{WorkspaceID: m.WorkspaceID, MigrationID: m.ID})
 			if err == nil && !strings.EqualFold(cred.Host, host) {
@@ -210,12 +218,11 @@ func (s *Server) StartMigrationSignIn(ctx context.Context, req oas.StartMigratio
 		}
 		state := signInState(m.WorkspaceID, m.ID)
 		sec := signInSecret{App: helpdesk.App{ClientID: clientID, ClientSecret: secret}, Subdomain: subdomain}
-		authorize := helpdesk.HelpScoutAuthorizeURL(clientID, state)
-		if m.Source == migrate.SourceZendesk {
-			var challenge string
+		var challenge string
+		if d.OAuth.PKCE {
 			sec.Verifier, challenge = helpdesk.PKCE()
-			authorize = helpdesk.ZendeskAuthorizeURL(subdomain, clientID, s.signInRedirectURL(), state, challenge)
 		}
+		authorize := d.OAuth.AuthorizeURL(account, clientID, s.signInRedirectURL(), state, challenge)
 		var keyID *uuid.UUID
 		if p.isKey() {
 			keyID = &p.keyID
@@ -283,7 +290,8 @@ func (s *Server) finishSignIn(ctx context.Context, r *http.Request, ws, mid uuid
 	if query.Get("error") != "" || query.Get("code") == "" {
 		return s.signInFailed(ctx, ws, mid, oas.SignInAccessDenied)
 	}
-	if err != nil || !helpdeskMigration(m) || (m.State != migrationDraft && m.State != migrationConnected && m.State != migrationNeedsAttention) {
+	d, isDesk := deskOf(m)
+	if err != nil || !isDesk || d.Auth != helpdesk.AuthOAuth || (m.State != migrationDraft && m.State != migrationConnected && m.State != migrationNeedsAttention) {
 		return oas.SignInExpired
 	}
 	plain, err := s.secrets.Open(row.Sealed, migrationSecretContext(ws, mid))
@@ -295,12 +303,8 @@ func (s *Server) finishSignIn(ctx context.Context, r *http.Request, ws, mid uuid
 	defer cancel()
 	cfg := s.helpdeskConfig()
 	code := query.Get("code")
-	var tokens helpdesk.Tokens
-	if m.Source == migrate.SourceZendesk {
-		tokens, err = helpdesk.ZendeskExchange(cctx, cfg, sec.Subdomain, sec.App, code, s.signInRedirectURL(), sec.Verifier)
-	} else {
-		tokens, err = helpdesk.HelpScoutExchange(cctx, cfg, sec.App, code)
-	}
+	account := helpdesk.Account{Subdomain: sec.Subdomain}
+	tokens, err := d.OAuth.Exchange(cctx, cfg, account, sec.App, code, s.signInRedirectURL(), sec.Verifier)
 	if err != nil {
 		var te *helpdesk.TokenError
 		switch {
@@ -312,17 +316,17 @@ func (s *Server) finishSignIn(ctx context.Context, r *http.Request, ws, mid uuid
 		s.log.WarnContext(ctx, "migration sign-in token", slog.String("migration_id", mid.String()), slog.String("error", migrate.Scrub(err.Error(), sec.App.ClientSecret, code)))
 		return s.signInFailed(ctx, ws, mid, oas.SignInSourceUnreachable)
 	}
-	if want := helpdeskScopes(m.Source); m.Source == migrate.SourceZendesk && !sameScopes(tokens.Scopes, want) {
+	if len(d.Scopes) > 0 && !sameScopes(tokens.Scopes, d.Scopes) {
 		return s.signInFailed(ctx, ws, mid, oas.SignInScopeTooBroad)
 	}
 	budget := s.migrationBudget(m)
-	src := s.helpdeskSource(m.Source, sec.Subdomain, func() string { return tokens.Access }, budget)
+	src := s.helpdeskSource(d, helpdeskSecret{Subdomain: sec.Subdomain}, func() string { return tokens.Access }, budget)
 	me, err := src.Me(cctx)
 	s.saveBudget(ctx, m, budget)
 	if err != nil {
 		return s.signInFailed(ctx, ws, mid, signInFailure(err))
 	}
-	if m.Source == migrate.SourceZendesk && !me.Admin {
+	if d.Admin && !me.Admin {
 		return s.signInFailed(ctx, ws, mid, oas.SignInNotAdmin)
 	}
 	folders, err := src.Folders(cctx)
@@ -331,7 +335,7 @@ func (s *Server) finishSignIn(ctx context.Context, r *http.Request, ws, mid uuid
 		return s.signInFailed(ctx, ws, mid, signInFailure(err))
 	}
 	secret := helpdeskSecret{App: sec.App, Tokens: tokens, Subdomain: sec.Subdomain, Account: me.ID}
-	host := helpdeskHost(m.Source, sec.Subdomain)
+	host := d.Host(account)
 	result := oas.SignInConnected
 	err = s.inTx(ctx, ws, func(q *store.Queries, events *eventBatch) error {
 		cur, err := q.LockMigration(ctx, store.LockMigrationParams{WorkspaceID: ws, ID: mid})
@@ -528,15 +532,14 @@ func (s *Server) openHelpdesk(ctx context.Context, m store.Migration, budget *he
 	if err := json.Unmarshal(plain, &sec); err != nil {
 		return nil, sec, err
 	}
-	if sec.Tokens.Refresh != "" && !sec.Tokens.Expires.IsZero() && s.now().Add(tokenRefreshAhead).After(sec.Tokens.Expires) {
+	d, ok := deskOf(m)
+	if !ok {
+		return nil, sec, errNotHelpdesk
+	}
+	if d.OAuth != nil && sec.Tokens.Refresh != "" && !sec.Tokens.Expires.IsZero() && s.now().Add(tokenRefreshAhead).After(sec.Tokens.Expires) {
 		cctx, cancel := context.WithTimeout(ctx, signInTimeout)
 		defer cancel()
-		var t helpdesk.Tokens
-		if m.Source == migrate.SourceZendesk {
-			t, err = helpdesk.ZendeskRefresh(cctx, s.helpdeskConfig(), sec.Subdomain, sec.App, sec.Tokens.Refresh)
-		} else {
-			t, err = helpdesk.HelpScoutRefresh(cctx, s.helpdeskConfig(), sec.App, sec.Tokens.Refresh)
-		}
+		t, err := d.OAuth.Refresh(cctx, s.helpdeskConfig(), sec.account(), sec.App, sec.Tokens.Refresh)
 		if err != nil {
 			return nil, sec, err
 		}
@@ -549,7 +552,7 @@ func (s *Server) openHelpdesk(ctx context.Context, m store.Migration, budget *he
 		if t.Scopes == nil {
 			t.Scopes = []string{}
 		}
-		if m.Source == migrate.SourceZendesk && !sameScopes(t.Scopes, helpdeskScopes(m.Source)) {
+		if len(d.Scopes) > 0 && !sameScopes(t.Scopes, d.Scopes) {
 			return nil, sec, &helpdesk.TokenError{Status: http.StatusForbidden, Code: "scope_too_broad"}
 		}
 		sec.Tokens = t
@@ -561,11 +564,11 @@ func (s *Server) openHelpdesk(ctx context.Context, m store.Migration, budget *he
 		}
 	}
 	access := sec.Tokens.Access
-	return s.helpdeskSource(m.Source, sec.Subdomain, func() string { return access }, budget), sec, nil
+	return s.helpdeskSource(d, sec, func() string { return access }, budget), sec, nil
 }
 
 func (sec helpdeskSecret) secrets() []string {
-	return []string{sec.Tokens.Access, sec.Tokens.Refresh, sec.App.ClientSecret}
+	return []string{sec.Tokens.Access, sec.Tokens.Refresh, sec.App.ClientSecret, sec.Secret}
 }
 
 // testHelpdesk runs a help desk's connection test: the stored token reads the signed-in user,
@@ -580,11 +583,15 @@ func (s *Server) testHelpdesk(ctx context.Context, m store.Migration) (migrate.T
 	}
 	budget := s.migrationBudget(m)
 	defer s.saveBudget(ctx, m, budget)
+	d, _ := deskOf(m)
 	src, sec, err := s.openHelpdesk(ctx, m, budget)
+	var me helpdesk.Person
 	if err == nil {
-		var me helpdesk.Person
-		if me, err = src.Me(ctx); err == nil && m.Source == migrate.SourceZendesk && !me.Admin {
-			return fail(migrate.StepSignIn, string(oas.TestCodeNotAdmin), errors.New("the signed-in Zendesk user is not an admin"), sec)
+		if me, err = src.Me(ctx); err == nil && d.Admin && !me.Admin {
+			return fail(migrate.StepSignIn, string(oas.TestCodeNotAdmin), errors.New("the signed-in "+d.Name+" user is not an admin"), sec)
+		}
+		if err == nil && d.Auth == helpdesk.AuthToken && sec.Account != "" && sec.Account != me.ID {
+			return fail(migrate.StepSignIn, string(oas.TestCodeAuthFailed), errors.New("the token belongs to another account than the one this migration reads"), sec)
 		}
 	}
 	if err != nil {
@@ -613,7 +620,31 @@ func (s *Server) testHelpdesk(ctx context.Context, m store.Migration) (migrate.T
 	}
 	res.Steps = append(res.Steps, migrate.TestStep{Step: migrate.StepFolders, OK: true})
 	res.OK, res.Folders = true, len(folders)
+	if d.Auth == helpdesk.AuthToken && sec.Account == "" {
+		s.recordDeskAccount(ctx, m, me.ID)
+	}
 	return res, folders
+}
+
+// recordDeskAccount keeps the account a token read the first time, which a reconnect must read
+// again; the credentials keep their time, so the test still connects the migration.
+func (s *Server) recordDeskAccount(ctx context.Context, m store.Migration, account string) {
+	cred, err := s.st.GetMigrationCredentials(ctx, store.GetMigrationCredentialsParams{WorkspaceID: m.WorkspaceID, MigrationID: m.ID})
+	if err != nil {
+		return
+	}
+	plain, err := s.secrets.Open(cred.Sealed, migrationSecretContext(m.WorkspaceID, m.ID))
+	var sec helpdeskSecret
+	if err != nil || json.Unmarshal(plain, &sec) != nil || sec.Account != "" {
+		return
+	}
+	sec.Account = account
+	if _, err := s.st.ResealMigrationCredentials(ctx, store.ResealMigrationCredentialsParams{
+		WorkspaceID: m.WorkspaceID, MigrationID: m.ID, Sealed: s.secrets.Seal(mustJSON(sec), migrationSecretContext(m.WorkspaceID, m.ID)),
+		Scopes: cred.Scopes, ExpiresAt: cred.ExpiresAt, Previous: cred.Sealed,
+	}); err != nil {
+		s.log.WarnContext(ctx, "migration account", slog.Any("error", err))
+	}
 }
 
 func (s *Server) testHelpdeskConnection(ctx context.Context, p principal, id uuid.UUID) (oas.TestMigrationConnectionResponseObject, error) {
@@ -631,6 +662,9 @@ func (s *Server) testHelpdeskConnection(ctx context.Context, p principal, id uui
 			return errMigrationState("the connection can be tested before the copy starts, or while it is paused or needs attention")
 		}
 		cred, err := q.GetMigrationCredentials(ctx, store.GetMigrationCredentialsParams{WorkspaceID: p.workspaceID, MigrationID: cur.ID})
+		if store.IsNotFound(err) && tokenDesk(cur) {
+			return errMigrationState("enter the help desk's API token before testing the connection")
+		}
 		if store.IsNotFound(err) {
 			return errMigrationState("sign in to the help desk before testing the connection")
 		}
@@ -710,4 +744,163 @@ func (s *Server) saveBudget(ctx context.Context, m store.Migration, b *helpdesk.
 	if err != nil {
 		s.log.WarnContext(ctx, "migration budget", slog.Any("error", err))
 	}
+}
+
+// setTokenCredentials stores a token desk's API token with the fields its registry entry asks
+// for, sealed like OAuth tokens; the connection test then reads the account.
+func (s *Server) setTokenCredentials(ctx context.Context, p principal, id uuid.UUID, b *oas.MigrationCredentialsInput) (oas.SetMigrationCredentialsResponseObject, error) {
+	token := strings.TrimSpace(deref(b.Token))
+	if n := len(token); n < 1 || n > 4000 {
+		return nil, errValidation("token must be 1 to 4,000 characters")
+	}
+	if b.Username != nil || b.Password != nil || b.Host != nil || b.Port != nil || b.Tls != nil || b.CertificateSha256 != nil {
+		return nil, errValidation("kind token takes token and the preset's token_fields, not username, password or a server")
+	}
+	verified, err := s.reconnectAccount(ctx, p, id, token, b)
+	if err != nil {
+		return nil, err
+	}
+	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
+		m, err := visibleMigration(ctx, q, p, id, true)
+		if err != nil {
+			return err
+		}
+		d, ok := deskOf(m)
+		if !ok {
+			return errMigrationState("only a help desk whose preset's auth is token connects with kind token")
+		}
+		if d.Auth != helpdesk.AuthToken {
+			return errMigrationState(d.Name + " connects with a sign-in (POST .../sign-in), not an API token")
+		}
+		sec, port, err := tokenSecret(d, token, b)
+		if err != nil {
+			return err
+		}
+		host := d.Host(sec.account())
+		switch m.State {
+		case migrationDraft, migrationConnected:
+		case migrationNeedsAttention:
+			old, err := q.GetMigrationCredentials(ctx, store.GetMigrationCredentialsParams{WorkspaceID: p.workspaceID, MigrationID: m.ID})
+			if err != nil && !store.IsNotFound(err) {
+				return err
+			}
+			if err == nil {
+				var prev helpdeskSecret
+				plain, err := s.secrets.Open(old.Sealed, migrationSecretContext(p.workspaceID, m.ID))
+				if err != nil || json.Unmarshal(plain, &prev) != nil || !strings.EqualFold(old.Host, host) || prev.BaseURL != sec.BaseURL ||
+					(prev.Account != "" && prev.Account != verified) {
+					return errMigrationState("reconnect the same account; start a new migration for another help desk")
+				}
+				sec.Account = prev.Account
+			}
+		default:
+			return errMigrationState("credentials can be set while the migration is a draft, connected or needs attention")
+		}
+		if err := q.SetMigrationCredentials(ctx, store.SetMigrationCredentialsParams{
+			WorkspaceID: p.workspaceID, MigrationID: m.ID, Kind: string(oas.CredentialsToken),
+			Sealed: s.secrets.Seal(mustJSON(sec), migrationSecretContext(p.workspaceID, m.ID)),
+			Host:   host, Port: port, Tls: string(oas.ImapTls), Scopes: []string{}, Now: s.now(),
+		}); err != nil {
+			return err
+		}
+		if _, err := s.migrationAudit(ctx, q, p, m.ID, "credentials_set", map[string]any{"host": host, "port": port, "kind": "token"}); err != nil {
+			return err
+		}
+		if m.State != migrationConnected {
+			return nil
+		}
+		updated, err := q.SetMigrationState(ctx, store.SetMigrationStateParams{WorkspaceID: p.workspaceID, ID: m.ID, State: migrationDraft, Now: s.now()})
+		if err != nil {
+			return err
+		}
+		return s.migrationChanged(ctx, q, events, updated, &m.State)
+	})
+	if err != nil {
+		return nil, err
+	}
+	return oas.SetMigrationCredentials204Response{}, nil
+}
+
+// reconnectAccount reads, with the new token, the account a needs_attention token desk reconnects
+// to, when the stored credentials name one: resuming does not test the connection again, so a
+// token of another account must be refused here. It answers "" when there is nothing to check.
+func (s *Server) reconnectAccount(ctx context.Context, p principal, id uuid.UUID, token string, b *oas.MigrationCredentialsInput) (string, error) {
+	m, err := visibleMigration(ctx, s.st.Queries, p, id, false)
+	if err != nil {
+		return "", err
+	}
+	d, ok := deskOf(m)
+	if !ok || d.Auth != helpdesk.AuthToken || m.State != migrationNeedsAttention {
+		return "", nil
+	}
+	cred, err := s.st.GetMigrationCredentials(ctx, store.GetMigrationCredentialsParams{WorkspaceID: m.WorkspaceID, MigrationID: m.ID})
+	if store.IsNotFound(err) {
+		return "", nil
+	}
+	if err != nil {
+		return "", err
+	}
+	var prev helpdeskSecret
+	if plain, err := s.secrets.Open(cred.Sealed, migrationSecretContext(m.WorkspaceID, m.ID)); err != nil || json.Unmarshal(plain, &prev) != nil || prev.Account == "" {
+		return "", nil
+	}
+	sec, _, err := tokenSecret(d, token, b)
+	if err != nil {
+		return "", err
+	}
+	cctx, cancel := context.WithTimeout(ctx, signInTimeout)
+	defer cancel()
+	budget := s.migrationBudget(m)
+	me, err := s.helpdeskSource(d, sec, func() string { return sec.Tokens.Access }, budget).Me(cctx)
+	s.saveBudget(ctx, m, budget)
+	if err != nil {
+		return "", errValidation(d.Name + " did not accept the token: " + migrate.Scrub(err.Error(), sec.secrets()...))
+	}
+	if me.ID != prev.Account {
+		return "", errMigrationState("reconnect the same account; start a new migration for another help desk")
+	}
+	return me.ID, nil
+}
+
+// tokenSecret checks the fields a token desk takes, and only those, and gives what is sealed and
+// the API port.
+func tokenSecret(d helpdesk.Desk, token string, b *oas.MigrationCredentialsInput) (helpdeskSecret, int32, error) {
+	sec := helpdeskSecret{Tokens: helpdesk.Tokens{Access: token}}
+	port := int32(helpdeskPort)
+	fields := d.Fields()
+	for _, f := range []struct {
+		name string
+		v    *string
+	}{{helpdesk.FieldSecret, b.Secret}, {helpdesk.FieldSubdomain, b.Subdomain}, {helpdesk.FieldBaseURL, b.BaseUrl}} {
+		if f.v != nil && !slices.Contains(fields, f.name) {
+			return sec, 0, errValidation(f.name + " is not one of " + d.Name + "'s token_fields")
+		}
+		if f.v == nil && slices.Contains(fields, f.name) {
+			return sec, 0, errValidation(f.name + " is required for " + d.Name)
+		}
+	}
+	if b.Secret != nil {
+		sec.Secret = strings.TrimSpace(*b.Secret)
+		if n := len(sec.Secret); n < 1 || n > 4000 {
+			return sec, 0, errValidation("secret must be 1 to 4,000 characters")
+		}
+	}
+	if b.Subdomain != nil {
+		sec.Subdomain = strings.ToLower(strings.TrimSpace(*b.Subdomain))
+		if !subdomainRe.MatchString(sec.Subdomain) {
+			return sec, 0, errValidation("subdomain must be the account's subdomain: letters, digits and hyphens")
+		}
+	}
+	if b.BaseUrl != nil {
+		base, err := helpdesk.BaseURL(*b.BaseUrl)
+		if err != nil || len(base) > 2000 {
+			return sec, 0, errValidation("base_url must be an HTTPS address such as https://help.example.com, without a user name, query or fragment")
+		}
+		sec.BaseURL = base
+		u, _ := url.Parse(base)
+		if n, err := strconv.Atoi(u.Port()); err == nil {
+			port = int32(n)
+		}
+	}
+	return sec, port, nil
 }

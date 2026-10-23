@@ -24,6 +24,7 @@ import (
 
 const (
 	reasonHelpdeskBudget      = "Keeping within the help desk's rate limit; continuing shortly."
+	reasonHelpdeskDaily       = "The help desk's requests for today are used up; continuing when its day renews."
 	helpdeskRequestsPerTicket = 2
 	helpdeskReasonSpam        = "spam"
 	helpdeskReasonTrash       = "trash"
@@ -36,6 +37,9 @@ var errDeskBlocked = errors.New("the requester is blocked")
 // deskErr turns the budget's wait into the run's and marks the help desk's failures as the source's.
 func deskErr(err error) error {
 	var w *helpdesk.WaitError
+	if errors.As(err, &w) && w.Daily {
+		return &waitError{until: w.Until, reason: reasonHelpdeskDaily}
+	}
 	if errors.As(err, &w) {
 		return &waitError{until: w.Until, reason: reasonHelpdeskBudget}
 	}
@@ -100,10 +104,10 @@ func folderRefs(rows []store.MigrationFolder) map[string]int32 {
 	return out
 }
 
-// syncStart is where reading changes begins once the scan read every ticket: Zendesk's last
-// cursor, or Help Scout's conversations modified since the scan started, a minute early.
+// syncStart is where reading changes begins once the scan read every ticket: an incremental
+// desk's last cursor, or the tickets modified since the scan started, a minute early.
 func syncStart(source string, last helpdesk.Cursor) helpdesk.Cursor {
-	if source == migrate.SourceZendesk {
+	if d, _ := helpdesk.Lookup(source); d.Sync == helpdesk.SyncIncremental {
 		if last.After != "" {
 			return helpdesk.Cursor{After: last.After}
 		}
@@ -852,15 +856,10 @@ func (r *migrationRun) deskAttachments(ctx context.Context, src helpdesk.Source,
 }
 
 func deskAttributes(source string, p helpdesk.Person) map[string]string {
-	out := map[string]string{}
-	switch source {
-	case migrate.SourceZendesk:
-		out["zendesk_id"] = p.ID
-		if p.ExternalID != "" {
-			out["zendesk_external_id"] = p.ExternalID
-		}
-	default:
-		out["helpscout_id"] = p.ID
+	d, _ := helpdesk.Lookup(source)
+	out := map[string]string{d.AttributePrefix + "_id": p.ID}
+	if p.ExternalID != "" {
+		out[d.AttributePrefix+"_external_id"] = p.ExternalID
 	}
 	if p.Phone != "" {
 		out["phone"] = p.Phone
@@ -1169,7 +1168,7 @@ func (r *migrationRun) syncHelpdesk(ctx context.Context) (syncPass, error) {
 		next.Sync = page.Next
 		next.Sync.StartedAt = doc.Sync.StartedAt
 		if page.End {
-			if r.m.Source == migrate.SourceZendesk {
+			if d, _ := deskOf(r.m); d.Sync == helpdesk.SyncIncremental {
 				next.Sync = helpdesk.Cursor{After: page.Next.After}
 				if next.Sync.After == "" {
 					next.Sync = doc.Sync

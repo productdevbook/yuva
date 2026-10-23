@@ -251,6 +251,7 @@ msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, other {# jenama}}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, other {# folder}}"
 
@@ -713,6 +714,10 @@ msgstr "{provider} menghadkan akaun ini buat masa ini. Tunggu sebentar, kemudian
 #: src/features/migrations/text.ts
 msgid "{provider} refused the sign-in"
 msgstr "{provider} menolak log masuk"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "{provider} stopped accepting the token. Enter a new token for the same account; the migration continues where it stopped."
+msgstr "{provider} tidak lagi menerima token. Masukkan token baharu untuk akaun yang sama; pemindahan bersambung dari tempat ia berhenti."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "{provider} stopped accepting Yuva's sign-in. Enter a new app password; the migration continues where it stopped."
@@ -1663,6 +1668,10 @@ msgstr "Ditambah oleh pasukan"
 msgid "Address"
 msgstr "Alamat"
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Address of your {provider}"
+msgstr "Alamat {provider} anda"
+
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 msgid "Address or name"
@@ -2242,6 +2251,10 @@ msgstr "Kunci API dan pembantu menghantar balasan serta-merta, tanpa disemak ahl
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "API keys and assistants will deliver replies at once. Customers receive what they write, with nobody reviewing it first. You can turn this off again at any time."
 msgstr "Kunci API dan pembantu akan menghantar balasan serta-merta. Pelanggan menerima apa yang ditulis, tanpa disemak sesiapa terlebih dahulu. Anda boleh mematikannya semula pada bila-bila masa."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "API token"
+msgstr "Token API"
 
 #: src/components/common/Source.tsx
 #: src/features/conversation/Feedback.tsx
@@ -3646,6 +3659,7 @@ msgid "Connect {clientName} to Yuva?"
 msgstr "Sambungkan {clientName} ke Yuva?"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connect {provider}"
 msgstr "Sambung {provider}"
 
@@ -3719,6 +3733,7 @@ msgid "Connected to {host}"
 msgstr "Disambungkan ke {host}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connected to {provider}"
 msgstr "Disambungkan ke {provider}"
 
@@ -3824,6 +3839,7 @@ msgstr "Kandungan"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/SourceStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -4047,6 +4063,10 @@ msgstr "Cipta kata laluan apl baharu dengan akses kepada mel melalui IMAP, berna
 #: src/app/Sidebar.tsx
 msgid "Create a workspace"
 msgstr "Cipta ruang kerja"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Create an API token in {provider}"
+msgstr "Cipta token API dalam {provider}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Create an app in Help Scout"
@@ -4541,6 +4561,7 @@ msgstr "Pemberitahuan desktop disekat untuk tapak ini dalam tetapan pelayar, jad
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Details"
 msgstr "Butiran"
 
@@ -5150,6 +5171,10 @@ msgstr "Masukkan nama hos atau alamat IP."
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a host name or IP address."
 msgstr "Masukkan nama hos atau alamat IP."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Enter a token again only to change it."
+msgstr "Masukkan token sekali lagi hanya untuk menukarnya."
 
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address, or leave it empty."
@@ -5857,6 +5882,7 @@ msgstr "API penuh"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 msgid "Full guide"
 msgstr "Panduan penuh"
@@ -6383,6 +6409,7 @@ msgstr "Jika {provider} mengirim pengesahan ke alamat itu, ia tiba dalam peti ma
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "If an assistant sent you here, you can go back to it now, or choose what to bring yourself."
 msgstr "Jika pembantu menghantar anda ke sini, anda boleh kembali kepadanya sekarang, atau pilih apa yang hendak dibawa sendiri."
 
@@ -11393,6 +11420,7 @@ msgid "Reconnect {address}"
 msgstr "Sambung semula {address}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Reconnect {provider}"
 msgstr "Sambung semula {provider}"
 
@@ -12337,6 +12365,10 @@ msgstr "Cari, asingkan dan tulis draf balasan daripada Codex. Ia bertindak sebag
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from your terminal. It acts as you, with the access you allow."
 msgstr "Cari, asingkan dan tulis draf balasan daripada terminal anda. Ia bertindak sebagai anda, dengan akses yang anda benarkan."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Second secret"
+msgstr "Rahsia kedua"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Seconds, 1 to 30."
@@ -13594,6 +13626,7 @@ msgid "Storage"
 msgstr "Storan"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Stored encrypted and never shown again, not even to you."
 msgstr "Disimpan disulitkan dan tidak pernah ditunjukkan lagi, tidak juga kepada anda."
 
@@ -13602,6 +13635,7 @@ msgid "Struck-out values are not taken: this contact keeps its own value for tho
 msgstr "Nilai yang dipotong tidak diambil: kenalan ini mengekalkan nilainya sendiri untuk kunci tersebut."
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Subdomain"
 msgstr "Subdomain"
 
@@ -13839,10 +13873,12 @@ msgid "Test"
 msgstr "Uji"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test again"
 msgstr "Uji semula"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test connection"
 msgstr "Uji sambungan"
 
@@ -14193,6 +14229,10 @@ msgstr "Sejarah disalin dan melnya kini sampai ke Yuva."
 #: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "Nama hos sedang disediakan. Ia mengambil sedikit masa selepas rekod ditemui."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "The HTTPS address you open it at, such as https://help.example.com."
+msgstr "Alamat HTTPS yang anda gunakan untuk membukanya, seperti https://help.example.com."
 
 #: src/features/broadcasts/Import.tsx
 msgid "The import failed, and nothing was added from the file."
@@ -17011,6 +17051,7 @@ msgid "Yuva deleted its token but cannot revoke it in Zendesk. Delete the client
 msgstr "Yuva memadam tokennya tetapi tidak boleh membatalkannya dalam Zendesk. Padam klien dalam Admin Center › Apps and integrations › APIs › OAuth clients; Yuva tidak memerlukannya lagi."
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Yuva deletes its token when the migration ends."
 msgstr "Yuva memadam tokennya apabila pemindahan tamat."
 
@@ -17070,9 +17111,17 @@ msgstr "Yuva hanya membaca. Selain log masuk, sambungannya tidak menghantar apa-
 msgid "Yuva only reads. It never deletes, moves, archives or marks anything as read in {provider}, and your mail stays where it is."
 msgstr "Yuva hanya membaca. Ia tidak pernah memadam, mengalih, mengarkib atau menanda apa-apa sebagai dibaca dalam {provider}, dan mel anda kekal di tempatnya."
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
+msgstr "Yuva hanya membaca. Sambungannya tidak menghantar apa-apa kepada {provider} selain permintaan baca, dan token hanya kepada API {provider}, jadi tiada tiket, pelanggan atau tetapan yang berubah."
+
 #: src/features/status/MonitorDialog.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Yuva membuka sambungan ke hos dan port secara berkala."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva reads {provider} with an API token you create in your own account, and only reads."
+msgstr "Yuva membaca {provider} dengan token API yang anda cipta dalam akaun anda sendiri, dan hanya membaca."
 
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."

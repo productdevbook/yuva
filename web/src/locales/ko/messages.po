@@ -251,6 +251,7 @@ msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, other {브랜드 #개}}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, other {폴더 #개}}"
 
@@ -713,6 +714,10 @@ msgstr "{provider}이(가) 현재 이 계정을 제한하고 있습니다. 잠�
 #: src/features/migrations/text.ts
 msgid "{provider} refused the sign-in"
 msgstr "{provider}이(가) 로그인을 거부했습니다"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "{provider} stopped accepting the token. Enter a new token for the same account; the migration continues where it stopped."
+msgstr "{provider}이(가) 더 이상 토큰을 받지 않습니다. 같은 계정의 새 토큰을 입력하세요. 이전은 멈춘 곳부터 이어집니다."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "{provider} stopped accepting Yuva's sign-in. Enter a new app password; the migration continues where it stopped."
@@ -1663,6 +1668,10 @@ msgstr "팀이 추가함"
 msgid "Address"
 msgstr "주소"
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Address of your {provider}"
+msgstr "{provider} 주소"
+
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 msgid "Address or name"
@@ -2242,6 +2251,10 @@ msgstr "API 키와 어시스턴트는 멤버가 먼저 검토하지 않고 답�
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "API keys and assistants will deliver replies at once. Customers receive what they write, with nobody reviewing it first. You can turn this off again at any time."
 msgstr "API 키와 어시스턴트가 답장을 즉시 전달합니다. 고객은 아무도 먼저 검토하지 않은 작성 내용을 받게 됩니다. 언제든 다시 끌 수 있습니다."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "API token"
+msgstr "API 토큰"
 
 #: src/components/common/Source.tsx
 #: src/features/conversation/Feedback.tsx
@@ -3646,6 +3659,7 @@ msgid "Connect {clientName} to Yuva?"
 msgstr "{clientName}을(를) Yuva에 연결할까요?"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connect {provider}"
 msgstr "{provider} 연결"
 
@@ -3719,6 +3733,7 @@ msgid "Connected to {host}"
 msgstr "{host}에 연결됨"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connected to {provider}"
 msgstr "{provider}에 연결됨"
 
@@ -3824,6 +3839,7 @@ msgstr "콘텐츠"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/SourceStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -4047,6 +4063,10 @@ msgstr "IMAP으로 메일에 접근할 수 있는 새 앱 비밀번호를 \"Yuva
 #: src/app/Sidebar.tsx
 msgid "Create a workspace"
 msgstr "워크스페이스 만들기"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Create an API token in {provider}"
+msgstr "{provider}에서 API 토큰 만들기"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Create an app in Help Scout"
@@ -4541,6 +4561,7 @@ msgstr "브라우저 설정에서 이 사이트의 데스크톱 알림이 차단
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Details"
 msgstr "상세"
 
@@ -5150,6 +5171,10 @@ msgstr "호스트 이름 또는 IP 주소를 입력하세요."
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a host name or IP address."
 msgstr "호스트 이름 또는 IP 주소를 입력하세요."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Enter a token again only to change it."
+msgstr "토큰을 바꿀 때만 다시 입력하세요."
 
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address, or leave it empty."
@@ -5857,6 +5882,7 @@ msgstr "전체 API"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 msgid "Full guide"
 msgstr "전체 가이드"
@@ -6383,6 +6409,7 @@ msgstr "{provider}이(가) 그 주소로 확인 메일을 보내면 이 받은 �
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "If an assistant sent you here, you can go back to it now, or choose what to bring yourself."
 msgstr "어시스턴트가 여기로 안내했다면 지금 돌아가거나, 가져올 항목을 직접 선택할 수 있습니다."
 
@@ -11393,6 +11420,7 @@ msgid "Reconnect {address}"
 msgstr "{address} 다시 연결"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Reconnect {provider}"
 msgstr "{provider} 다시 연결"
 
@@ -12337,6 +12365,10 @@ msgstr "Codex에서 검색, 분류, 답장 초안 작성을 할 수 있습니다
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from your terminal. It acts as you, with the access you allow."
 msgstr "터미널에서 검색, 분류, 답장 초안 작성을 할 수 있습니다. 사용자 권한으로 동작하며, 허용한 접근 범위 안에서 작업합니다."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Second secret"
+msgstr "두 번째 비밀 키"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Seconds, 1 to 30."
@@ -13594,6 +13626,7 @@ msgid "Storage"
 msgstr "저장소"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Stored encrypted and never shown again, not even to you."
 msgstr "암호화되어 저장되며 나에게도 다시 표시되지 않습니다."
 
@@ -13602,6 +13635,7 @@ msgid "Struck-out values are not taken: this contact keeps its own value for tho
 msgstr "취소선이 그어진 값은 가져오지 않습니다. 이 연락처는 해당 키에 대해 자신의 값을 유지합니다."
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Subdomain"
 msgstr "서브도메인"
 
@@ -13839,10 +13873,12 @@ msgid "Test"
 msgstr "테스트"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test again"
 msgstr "다시 테스트"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test connection"
 msgstr "연결 테스트"
 
@@ -14193,6 +14229,10 @@ msgstr "기록이 복사되었고 이제 메일이 Yuva에 도착합니다."
 #: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "호스트 이름을 설정하는 중입니다. 레코드를 찾은 뒤 잠시 걸립니다."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "The HTTPS address you open it at, such as https://help.example.com."
+msgstr "열 때 사용하는 HTTPS 주소(예: https://help.example.com)."
 
 #: src/features/broadcasts/Import.tsx
 msgid "The import failed, and nothing was added from the file."
@@ -17011,6 +17051,7 @@ msgid "Yuva deleted its token but cannot revoke it in Zendesk. Delete the client
 msgstr "Yuva가 토큰을 삭제했지만 Zendesk에서 폐기하지는 못했습니다. 관리 센터 › 앱 및 통합 › API › OAuth 클라이언트에서 클라이언트를 삭제하세요. Yuva에는 더 이상 필요하지 않습니다."
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Yuva deletes its token when the migration ends."
 msgstr "Yuva는 이전이 끝나면 토큰을 삭제합니다."
 
@@ -17070,9 +17111,17 @@ msgstr "Yuva는 읽기만 합니다. 로그인 외에 연결이 {provider}에 �
 msgid "Yuva only reads. It never deletes, moves, archives or marks anything as read in {provider}, and your mail stays where it is."
 msgstr "Yuva는 읽기만 합니다. {provider}에서 아무것도 삭제, 이동, 보관, 읽음 표시하지 않으며 메일은 그대로 남습니다."
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
+msgstr "Yuva는 읽기만 합니다. 연결은 {provider}에 읽기 요청만 보내고 토큰도 {provider} API에만 보내므로 티켓, 고객, 설정이 바뀌지 않습니다."
+
 #: src/features/status/MonitorDialog.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Yuva가 주기적으로 호스트와 포트에 연결합니다."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva reads {provider} with an API token you create in your own account, and only reads."
+msgstr "Yuva는 직접 계정에서 만든 API 토큰으로 {provider}을(를) 읽으며, 읽기만 합니다."
 
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."

@@ -251,6 +251,7 @@ msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, one {מותג #} two {# מותגים} other {# מותגים}}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, one {תיקייה #} two {# תיקיות} other {# תיקיות}}"
 
@@ -713,6 +714,10 @@ msgstr "{provider} מגביל את החשבון הזה כרגע. המתן קצת
 #: src/features/migrations/text.ts
 msgid "{provider} refused the sign-in"
 msgstr "{provider} דחה את הכניסה"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "{provider} stopped accepting the token. Enter a new token for the same account; the migration continues where it stopped."
+msgstr "{provider} הפסיק לקבל את האסימון. הזינו אסימון חדש לאותו חשבון; ההעברה ממשיכה מהמקום שבו נעצרה."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "{provider} stopped accepting Yuva's sign-in. Enter a new app password; the migration continues where it stopped."
@@ -1663,6 +1668,10 @@ msgstr "נוסף על ידי הצוות"
 msgid "Address"
 msgstr "כתובת"
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Address of your {provider}"
+msgstr "הכתובת של {provider} שלכם"
+
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 msgid "Address or name"
@@ -2242,6 +2251,10 @@ msgstr "מפתחות API ועוזרים מוסרים תשובות מיד, בלי
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "API keys and assistants will deliver replies at once. Customers receive what they write, with nobody reviewing it first. You can turn this off again at any time."
 msgstr "מפתחות API ועוזרים ימסרו תשובות מיד. לקוחות יקבלו את מה שנכתב, בלי שמישהו יבדוק אותו קודם. אפשר לכבות זאת שוב בכל עת."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "API token"
+msgstr "אסימון API"
 
 #: src/components/common/Source.tsx
 #: src/features/conversation/Feedback.tsx
@@ -3646,6 +3659,7 @@ msgid "Connect {clientName} to Yuva?"
 msgstr "לחבר את {clientName} ל-Yuva?"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connect {provider}"
 msgstr "חיבור {provider}"
 
@@ -3719,6 +3733,7 @@ msgid "Connected to {host}"
 msgstr "מחובר אל {host}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connected to {provider}"
 msgstr "מחובר אל {provider}"
 
@@ -3824,6 +3839,7 @@ msgstr "תוכן"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/SourceStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -4047,6 +4063,10 @@ msgstr "צור סיסמת אפליקציה חדשה עם גישה לדואר ד�
 #: src/app/Sidebar.tsx
 msgid "Create a workspace"
 msgstr "יצירת סביבת עבודה"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Create an API token in {provider}"
+msgstr "צרו אסימון API ב-{provider}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Create an app in Help Scout"
@@ -4541,6 +4561,7 @@ msgstr "התראות שולחן עבודה חסומות לאתר הזה בהגד
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Details"
 msgstr "פרטים"
 
@@ -5150,6 +5171,10 @@ msgstr "הזינו שם מארח או כתובת IP."
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a host name or IP address."
 msgstr "הזן שם מארח או כתובת IP."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Enter a token again only to change it."
+msgstr "הזינו אסימון שוב רק כדי לשנות אותו."
 
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address, or leave it empty."
@@ -5857,6 +5882,7 @@ msgstr "API מלא"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 msgid "Full guide"
 msgstr "מדריך מלא"
@@ -6383,6 +6409,7 @@ msgstr "אם {provider} שולח אישור לכתובת הזאת, הוא מגי
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "If an assistant sent you here, you can go back to it now, or choose what to bring yourself."
 msgstr "אם עוזר שלח אותך לכאן, אפשר לחזור אליו עכשיו, או לבחור מה להביא בעצמך."
 
@@ -11393,6 +11420,7 @@ msgid "Reconnect {address}"
 msgstr "חיבור מחדש של {address}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Reconnect {provider}"
 msgstr "חיבור מחדש של {provider}"
 
@@ -12337,6 +12365,10 @@ msgstr "חפש, מיין וכתוב טיוטות תשובה מ-Codex. הוא פ�
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from your terminal. It acts as you, with the access you allow."
 msgstr "חפש, מיין וכתוב טיוטות תשובה מהטרמינל שלך. הוא פועל בשמך, עם הגישה שאתה מאשר."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Second secret"
+msgstr "סוד שני"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Seconds, 1 to 30."
@@ -13594,6 +13626,7 @@ msgid "Storage"
 msgstr "אחסון"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Stored encrypted and never shown again, not even to you."
 msgstr "נשמר מוצפן ולא מוצג שוב לעולם, גם לא לך."
 
@@ -13602,6 +13635,7 @@ msgid "Struck-out values are not taken: this contact keeps its own value for tho
 msgstr "ערכים מחוקים לא נלקחים: איש הקשר הזה שומר על הערך שלו עבור המפתחות האלה."
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Subdomain"
 msgstr "תת-דומיין"
 
@@ -13839,10 +13873,12 @@ msgid "Test"
 msgstr "בדיקה"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test again"
 msgstr "בדיקה חוזרת"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test connection"
 msgstr "בדיקת חיבור"
 
@@ -14193,6 +14229,10 @@ msgstr "ההיסטוריה הועתקה והדואר שלה מגיע עכשיו 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "שם המארח בהגדרה. זה לוקח רגע אחרי שהרשומות נמצאות."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "The HTTPS address you open it at, such as https://help.example.com."
+msgstr "כתובת ה-HTTPS שבה אתם פותחים אותו, למשל https://help.example.com."
 
 #: src/features/broadcasts/Import.tsx
 msgid "The import failed, and nothing was added from the file."
@@ -17011,6 +17051,7 @@ msgid "Yuva deleted its token but cannot revoke it in Zendesk. Delete the client
 msgstr "Yuva מחקה את האסימון שלה אבל אינה יכולה לבטל אותו ב-Zendesk. מחק את הלקוח ב-Admin Center › Apps and integrations › APIs › OAuth clients; Yuva כבר לא צריכה אותו."
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Yuva deletes its token when the migration ends."
 msgstr "Yuva מוחקת את האסימון שלה כשההעברה מסתיימת."
 
@@ -17070,9 +17111,17 @@ msgstr "Yuva רק קוראת. מלבד כניסה, החיבור שלה שולח 
 msgid "Yuva only reads. It never deletes, moves, archives or marks anything as read in {provider}, and your mail stays where it is."
 msgstr "Yuva רק קוראת. היא לעולם לא מוחקת, מעבירה, מעבירה לארכיון או מסמנת משהו כנקרא ב-{provider}, והדואר שלך נשאר במקומו."
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
+msgstr "Yuva רק קוראת. החיבור שלה שולח ל-{provider} רק בקשות קריאה, ואת האסימון רק ל-API של {provider}, כך שאף פנייה, לקוח או הגדרה לא משתנים."
+
 #: src/features/status/MonitorDialog.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Yuva פותחת מדי פעם חיבור למארח ולפורט."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva reads {provider} with an API token you create in your own account, and only reads."
+msgstr "Yuva קוראת את {provider} עם אסימון API שאתם יוצרים בחשבון שלכם, ורק קוראת."
 
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."

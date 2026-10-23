@@ -251,6 +251,7 @@ msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, one {# brand} other {# brands}}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, one {# mappe} other {# mapper}}"
 
@@ -713,6 +714,10 @@ msgstr "{provider} begrænser denne konto for nu. Vent lidt, og test igen."
 #: src/features/migrations/text.ts
 msgid "{provider} refused the sign-in"
 msgstr "{provider} afviste login"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "{provider} stopped accepting the token. Enter a new token for the same account; the migration continues where it stopped."
+msgstr "{provider} accepterer ikke længere tokenet. Angiv et nyt token til den samme konto; migreringen fortsætter, hvor den stoppede."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "{provider} stopped accepting Yuva's sign-in. Enter a new app password; the migration continues where it stopped."
@@ -1663,6 +1668,10 @@ msgstr "Tilføjet af teamet"
 msgid "Address"
 msgstr "Adresse"
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Address of your {provider}"
+msgstr "Adressen på dit {provider}"
+
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 msgid "Address or name"
@@ -2242,6 +2251,10 @@ msgstr "API-nøgler og assistenter leverer svar med det samme, uden at et medlem
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "API keys and assistants will deliver replies at once. Customers receive what they write, with nobody reviewing it first. You can turn this off again at any time."
 msgstr "API-nøgler og assistenter leverer svar med det samme. Kunderne får det, der skrives, uden at nogen gennemgår det først. Du kan slå det fra igen når som helst."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "API token"
+msgstr "API-token"
 
 #: src/components/common/Source.tsx
 #: src/features/conversation/Feedback.tsx
@@ -3646,6 +3659,7 @@ msgid "Connect {clientName} to Yuva?"
 msgstr "Forbind {clientName} til Yuva?"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connect {provider}"
 msgstr "Forbind {provider}"
 
@@ -3719,6 +3733,7 @@ msgid "Connected to {host}"
 msgstr "Forbundet til {host}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connected to {provider}"
 msgstr "Forbundet til {provider}"
 
@@ -3824,6 +3839,7 @@ msgstr "Indhold"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/SourceStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -4047,6 +4063,10 @@ msgstr "Opret en ny app-adgangskode med adgang til mail via IMAP, kaldet “Yuva
 #: src/app/Sidebar.tsx
 msgid "Create a workspace"
 msgstr "Opret arbejdsområde"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Create an API token in {provider}"
+msgstr "Opret et API-token i {provider}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Create an app in Help Scout"
@@ -4541,6 +4561,7 @@ msgstr "Skrivebordsnotifikationer er blokeret for dette websted i browserens ind
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Details"
 msgstr "Detaljer"
 
@@ -5150,6 +5171,10 @@ msgstr "Angiv et værtsnavn eller en IP-adresse."
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a host name or IP address."
 msgstr "Indtast et værtsnavn eller en IP-adresse."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Enter a token again only to change it."
+msgstr "Angiv kun et token igen for at ændre det."
 
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address, or leave it empty."
@@ -5857,6 +5882,7 @@ msgstr "Fuld API"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 msgid "Full guide"
 msgstr "Fuld guide"
@@ -6383,6 +6409,7 @@ msgstr "Hvis {provider} sender en bekræftelse til den adresse, ankommer den i d
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "If an assistant sent you here, you can go back to it now, or choose what to bring yourself."
 msgstr "Hvis en assistent sendte dig hertil, kan du gå tilbage til den nu eller selv vælge, hvad du vil hente."
 
@@ -11393,6 +11420,7 @@ msgid "Reconnect {address}"
 msgstr "Forbind {address} igen"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Reconnect {provider}"
 msgstr "Forbind {provider} igen"
 
@@ -12337,6 +12365,10 @@ msgstr "Søg, sortér og skriv kladder til svar fra Codex. Den handler som dig m
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from your terminal. It acts as you, with the access you allow."
 msgstr "Søg, sortér og skriv kladder til svar fra din terminal. Den handler som dig med den adgang, du tillader."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Second secret"
+msgstr "Anden hemmelighed"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Seconds, 1 to 30."
@@ -13594,6 +13626,7 @@ msgid "Storage"
 msgstr "Lager"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Stored encrypted and never shown again, not even to you."
 msgstr "Gemt krypteret og vises aldrig igen, heller ikke for dig."
 
@@ -13602,6 +13635,7 @@ msgid "Struck-out values are not taken: this contact keeps its own value for tho
 msgstr "Overstregede værdier tages ikke: denne kontakt beholder sin egen værdi for de nøgler."
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Subdomain"
 msgstr "Underdomæne"
 
@@ -13839,10 +13873,12 @@ msgid "Test"
 msgstr "Test"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test again"
 msgstr "Test igen"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test connection"
 msgstr "Test forbindelsen"
 
@@ -14193,6 +14229,10 @@ msgstr "Historikken er kopieret, og dens mail når nu Yuva."
 #: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "Værtsnavnet bliver sat op. Det tager et øjeblik, når posterne er fundet."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "The HTTPS address you open it at, such as https://help.example.com."
+msgstr "HTTPS-adressen, du åbner det på, f.eks. https://help.example.com."
 
 #: src/features/broadcasts/Import.tsx
 msgid "The import failed, and nothing was added from the file."
@@ -17011,6 +17051,7 @@ msgid "Yuva deleted its token but cannot revoke it in Zendesk. Delete the client
 msgstr "Yuva slettede sit token, men kan ikke tilbagekalde det i Zendesk. Slet klienten i Admin Center › Apps og integrationer › API'er › OAuth-klienter; Yuva har ikke længere brug for den."
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Yuva deletes its token when the migration ends."
 msgstr "Yuva sletter sit token, når migreringen slutter."
 
@@ -17070,9 +17111,17 @@ msgstr "Yuva læser kun. Ud over login sender dens forbindelse kun læseanmodnin
 msgid "Yuva only reads. It never deletes, moves, archives or marks anything as read in {provider}, and your mail stays where it is."
 msgstr "Yuva læser kun. Den sletter, flytter, arkiverer eller markerer aldrig noget som læst i {provider}, og din mail bliver, hvor den er."
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
+msgstr "Yuva læser kun. Forbindelsen sender intet andet end læseanmodninger til {provider}, og tokenet kun til API'et for {provider}, så ingen sag, kunde eller indstilling ændres."
+
 #: src/features/status/MonitorDialog.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Yuva åbner jævnligt en forbindelse til en vært og en port."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva reads {provider} with an API token you create in your own account, and only reads."
+msgstr "Yuva læser {provider} med et API-token, du opretter i din egen konto, og læser kun."
 
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."

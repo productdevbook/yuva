@@ -6,6 +6,7 @@ package migrate
 import (
 	"strings"
 
+	"github.com/productdevbook/yuva/api/internal/migrate/helpdesk"
 	"github.com/productdevbook/yuva/api/internal/migrate/microsoft"
 )
 
@@ -19,9 +20,11 @@ type Budget struct {
 	Connections    int
 	BytesPerDay    int64
 	BytesPerSecond int64
-	// RequestsPerMinute and IncrementalPerMinute are a help desk's, until it reports its limit.
+	// RequestsPerMinute, IncrementalPerMinute and RequestsPerDay are a help desk's, until it
+	// reports its limits.
 	RequestsPerMinute    int
 	IncrementalPerMinute int
+	RequestsPerDay       int
 }
 
 type Preset struct {
@@ -37,15 +40,18 @@ type Preset struct {
 	Guide       string
 	Available   bool
 	// Scopes are what a help desk's or Microsoft's sign-in asks for; Subdomain, that it needs the
-	// account's. Microsoft's Available is the server's to tell (Sign in with Microsoft).
-	Scopes    []string
-	Subdomain bool
+	// account's; TokenFields, what a token desk's connect form asks for. Microsoft's Available is
+	// the server's to tell (Sign in with Microsoft).
+	Scopes      []string
+	Subdomain   bool
+	TokenFields []string
 }
 
 const (
 	AuthPassword  = "password"
 	AuthMicrosoft = "microsoft"
-	AuthOAuth     = "oauth"
+	AuthOAuth     = helpdesk.AuthOAuth
+	AuthToken     = helpdesk.AuthToken
 
 	SourceZendesk   = "zendesk"
 	SourceHelpScout = "helpscout"
@@ -120,18 +126,34 @@ var Presets = []Preset{
 		Guide: "migrate-files", Available: true},
 	{ID: PresetFile, Source: "file", Name: "Export file", Auth: []string{}, Username: UsernameAddress, Folders: withArchive,
 		Guide: "migrate-files", Available: true},
-	{ID: PresetZendesk, Source: SourceZendesk, Name: "Zendesk", Auth: []string{AuthOAuth}, Username: UsernameAddress, Folders: []string{"INBOX"},
-		Budget: Budget{Connections: 1, RequestsPerMinute: 100, IncrementalPerMinute: 5}, Guide: "migrate-zendesk", Available: true,
-		Scopes: []string{"read"}, Subdomain: true},
-	{ID: PresetHelpScout, Source: SourceHelpScout, Name: "Help Scout", Servers: []Server{{Host: "api.helpscout.net", Port: 443, TLS: "tls"}},
-		Auth: []string{AuthOAuth}, Username: UsernameAddress, Folders: []string{"INBOX"}, Budget: Budget{Connections: 1, RequestsPerMinute: 100},
-		Guide: "migrate-helpscout", Available: true, Scopes: []string{}},
+}
+
+// deskPreset is a help desk's preset, read from its registry entry: the preset's id is the source.
+func deskPreset(d helpdesk.Desk) Preset {
+	p := Preset{
+		ID: d.Source, Source: d.Source, Name: d.Name, Auth: []string{d.Auth}, Username: UsernameAddress, Folders: []string{"INBOX"},
+		Budget: Budget{Connections: 1, RequestsPerMinute: d.PerMinute(), IncrementalPerMinute: d.IncrementalMax, RequestsPerDay: d.PerDay()},
+		Guide:  d.Guide, Available: true, Subdomain: d.Account == helpdesk.AccountSubdomain && d.Auth == AuthOAuth, TokenFields: d.Fields(),
+	}
+	if d.Auth == AuthOAuth {
+		p.Scopes = d.Scopes
+	}
+	if d.Account == helpdesk.AccountNone {
+		p.Servers = []Server{{Host: d.Host(helpdesk.Account{}), Port: 443, TLS: "tls"}}
+	}
+	return p
 }
 
 // Helpdesk tells a help-desk source.
-func Helpdesk(source string) bool { return source == SourceZendesk || source == SourceHelpScout }
+func Helpdesk(source string) bool {
+	_, ok := helpdesk.Lookup(source)
+	return ok
+}
 
 func init() {
+	for _, d := range helpdesk.Desks() {
+		Presets = append(Presets, deskPreset(d))
+	}
 	for i := range Presets {
 		if Presets[i].Source == "" {
 			Presets[i].Source = "imap"

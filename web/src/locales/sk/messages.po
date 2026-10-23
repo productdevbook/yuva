@@ -251,6 +251,7 @@ msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, one {# značka} few {# značky} many {# značky} other {# značiek}}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, one {# priečinok} few {# priečinky} many {# priečinka} other {# priečinkov}}"
 
@@ -713,6 +714,10 @@ msgstr "{provider} tento účet zatiaľ obmedzuje. Chvíľu počkajte a potom te
 #: src/features/migrations/text.ts
 msgid "{provider} refused the sign-in"
 msgstr "{provider} odmietol prihlásenie"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "{provider} stopped accepting the token. Enter a new token for the same account; the migration continues where it stopped."
+msgstr "{provider} prestal prijímať token. Zadajte nový token pre ten istý účet; migrácia bude pokračovať tam, kde skončila."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "{provider} stopped accepting Yuva's sign-in. Enter a new app password; the migration continues where it stopped."
@@ -1663,6 +1668,10 @@ msgstr "Pridané tímom"
 msgid "Address"
 msgstr "Adresa"
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Address of your {provider}"
+msgstr "Adresa vášho {provider}"
+
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 msgid "Address or name"
@@ -2242,6 +2251,10 @@ msgstr "Kľúče API a asistenti doručujú odpovede hneď, bez toho aby ich čl
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "API keys and assistants will deliver replies at once. Customers receive what they write, with nobody reviewing it first. You can turn this off again at any time."
 msgstr "Kľúče API a asistenti budú doručovať odpovede hneď. Zákazníci dostanú to, čo sa napíše, bez vopred vykonanej kontroly. Môžete to kedykoľvek znova vypnúť."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "API token"
+msgstr "Token API"
 
 #: src/components/common/Source.tsx
 #: src/features/conversation/Feedback.tsx
@@ -3646,6 +3659,7 @@ msgid "Connect {clientName} to Yuva?"
 msgstr "Pripojiť {clientName} k Yuve?"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connect {provider}"
 msgstr "Pripojiť {provider}"
 
@@ -3719,6 +3733,7 @@ msgid "Connected to {host}"
 msgstr "Pripojené k {host}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connected to {provider}"
 msgstr "Pripojené k {provider}"
 
@@ -3824,6 +3839,7 @@ msgstr "Obsah"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/SourceStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -4047,6 +4063,10 @@ msgstr "Vytvorte nové heslo aplikácie s prístupom k pošte cez IMAP, s názvo
 #: src/app/Sidebar.tsx
 msgid "Create a workspace"
 msgstr "Vytvoriť pracovný priestor"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Create an API token in {provider}"
+msgstr "Vytvorte token API v {provider}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Create an app in Help Scout"
@@ -4541,6 +4561,7 @@ msgstr "Oznámenia na ploche sú pre tento web zablokované v nastaveniach prehl
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Details"
 msgstr "Podrobnosti"
 
@@ -5150,6 +5171,10 @@ msgstr "Zadajte názov hostiteľa alebo IP adresu."
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a host name or IP address."
 msgstr "Zadajte názov hostiteľa alebo adresu IP."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Enter a token again only to change it."
+msgstr "Token zadajte znova, len ak ho chcete zmeniť."
 
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address, or leave it empty."
@@ -5857,6 +5882,7 @@ msgstr "Plné API"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 msgid "Full guide"
 msgstr "Úplný sprievodca"
@@ -6383,6 +6409,7 @@ msgstr "Ak {provider} pošle na túto adresu potvrdenie, dorazí do tejto schrá
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "If an assistant sent you here, you can go back to it now, or choose what to bring yourself."
 msgstr "Ak vás sem poslal asistent, môžete sa k nemu teraz vrátiť, alebo si sami vybrať, čo preniesť."
 
@@ -11393,6 +11420,7 @@ msgid "Reconnect {address}"
 msgstr "Pripojiť {address} znova"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Reconnect {provider}"
 msgstr "Pripojiť {provider} znova"
 
@@ -12337,6 +12365,10 @@ msgstr "Hľadajte, triedte a pripravujte koncepty odpovedí z Codexu. Koná ako 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from your terminal. It acts as you, with the access you allow."
 msgstr "Hľadajte, triedte a pripravujte koncepty odpovedí z terminálu. Koná ako vy, s prístupom, ktorý povolíte."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Second secret"
+msgstr "Druhý tajný kľúč"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Seconds, 1 to 30."
@@ -13594,6 +13626,7 @@ msgid "Storage"
 msgstr "Úložisko"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Stored encrypted and never shown again, not even to you."
 msgstr "Uložené šifrovane a už sa nikdy nezobrazí, ani vám."
 
@@ -13602,6 +13635,7 @@ msgid "Struck-out values are not taken: this contact keeps its own value for tho
 msgstr "Preškrtnuté hodnoty sa neberú: tento kontakt si pre tieto kľúče ponecháva vlastnú hodnotu."
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Subdomain"
 msgstr "Subdoména"
 
@@ -13839,10 +13873,12 @@ msgid "Test"
 msgstr "Test"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test again"
 msgstr "Otestovať znova"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test connection"
 msgstr "Otestovať pripojenie"
 
@@ -14193,6 +14229,10 @@ msgstr "História je skopírovaná a jej pošta teraz chodí do Yuvy."
 #: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "Názov hostiteľa sa nastavuje. Po nájdení záznamov to chvíľu trvá."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "The HTTPS address you open it at, such as https://help.example.com."
+msgstr "Adresa HTTPS, na ktorej ho otvárate, napríklad https://help.example.com."
 
 #: src/features/broadcasts/Import.tsx
 msgid "The import failed, and nothing was added from the file."
@@ -17011,6 +17051,7 @@ msgid "Yuva deleted its token but cannot revoke it in Zendesk. Delete the client
 msgstr "Yuva odstránila svoj token, ale nemôže ho zrušiť v Zendesk. Odstráňte klienta v Admin Center › Apps and integrations › APIs › OAuth clients; Yuva ho už nepotrebuje."
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Yuva deletes its token when the migration ends."
 msgstr "Yuva odstráni svoj token, keď migrácia skončí."
 
@@ -17070,9 +17111,17 @@ msgstr "Yuva iba číta. Okrem prihlásenia jej pripojenie posiela {provider} le
 msgid "Yuva only reads. It never deletes, moves, archives or marks anything as read in {provider}, and your mail stays where it is."
 msgstr "Yuva iba číta. U {provider} nikdy nič neodstraňuje, nepresúva, neukladá do archívu ani neoznačuje ako prečítané a vaša pošta zostáva, kde je."
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
+msgstr "Yuva iba číta. Jeho pripojenie posiela do {provider} len požiadavky na čítanie a token len do API {provider}, takže sa žiadna požiadavka, zákazník ani nastavenie nezmení."
+
 #: src/features/status/MonitorDialog.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Yuva pravidelne nadviaže spojenie s hostiteľom a portom."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva reads {provider} with an API token you create in your own account, and only reads."
+msgstr "Yuva číta {provider} pomocou tokenu API, ktorý vytvoríte vo vlastnom účte, a iba číta."
 
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."

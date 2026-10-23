@@ -251,6 +251,7 @@ msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, one {# επωνυμία} other {# επωνυμίες}}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, one {# φάκελος} other {# φάκελοι}}"
 
@@ -713,6 +714,10 @@ msgstr "Το {provider} περιορίζει προς το παρόν αυτόν
 #: src/features/migrations/text.ts
 msgid "{provider} refused the sign-in"
 msgstr "Το {provider} απέρριψε τη σύνδεση"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "{provider} stopped accepting the token. Enter a new token for the same account; the migration continues where it stopped."
+msgstr "Το {provider} δεν δέχεται πλέον το διακριτικό. Εισαγάγετε νέο διακριτικό για τον ίδιο λογαριασμό· η μεταφορά συνεχίζει από εκεί που σταμάτησε."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "{provider} stopped accepting Yuva's sign-in. Enter a new app password; the migration continues where it stopped."
@@ -1663,6 +1668,10 @@ msgstr "Προστέθηκε από την ομάδα"
 msgid "Address"
 msgstr "Διεύθυνση"
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Address of your {provider}"
+msgstr "Διεύθυνση του {provider} σας"
+
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 msgid "Address or name"
@@ -2242,6 +2251,10 @@ msgstr "Τα κλειδιά API και οι βοηθοί παραδίδουν τ
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "API keys and assistants will deliver replies at once. Customers receive what they write, with nobody reviewing it first. You can turn this off again at any time."
 msgstr "Τα κλειδιά API και οι βοηθοί θα παραδίδουν τις απαντήσεις αμέσως. Οι πελάτες θα λαμβάνουν ό,τι γράφεται, χωρίς να το ελέγξει κανείς πρώτα. Μπορείτε να το απενεργοποιήσετε ξανά όποτε θέλετε."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "API token"
+msgstr "Διακριτικό API"
 
 #: src/components/common/Source.tsx
 #: src/features/conversation/Feedback.tsx
@@ -3646,6 +3659,7 @@ msgid "Connect {clientName} to Yuva?"
 msgstr "Να συνδεθεί το {clientName} με το Yuva;"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connect {provider}"
 msgstr "Σύνδεση του {provider}"
 
@@ -3719,6 +3733,7 @@ msgid "Connected to {host}"
 msgstr "Συνδέθηκε στο {host}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connected to {provider}"
 msgstr "Συνδέθηκε στο {provider}"
 
@@ -3824,6 +3839,7 @@ msgstr "Περιεχόμενο"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/SourceStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -4047,6 +4063,10 @@ msgstr "Δημιουργήστε νέο κωδικό εφαρμογής με π�
 #: src/app/Sidebar.tsx
 msgid "Create a workspace"
 msgstr "Δημιουργία χώρου εργασίας"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Create an API token in {provider}"
+msgstr "Δημιουργήστε διακριτικό API στο {provider}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Create an app in Help Scout"
@@ -4541,6 +4561,7 @@ msgstr "Οι ειδοποιήσεις επιφάνειας εργασίας εί
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Details"
 msgstr "Λεπτομέρειες"
 
@@ -5150,6 +5171,10 @@ msgstr "Εισαγάγετε όνομα κεντρικού υπολογιστή 
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a host name or IP address."
 msgstr "Εισαγάγετε όνομα υπολογιστή ή διεύθυνση IP."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Enter a token again only to change it."
+msgstr "Εισαγάγετε ξανά διακριτικό μόνο για να το αλλάξετε."
 
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address, or leave it empty."
@@ -5857,6 +5882,7 @@ msgstr "Πλήρες API"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 msgid "Full guide"
 msgstr "Πλήρης οδηγός"
@@ -6383,6 +6409,7 @@ msgstr "Αν το {provider} στείλει επιβεβαίωση σε αυτή
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "If an assistant sent you here, you can go back to it now, or choose what to bring yourself."
 msgstr "Αν σας έστειλε εδώ ένας βοηθός, μπορείτε να γυρίσετε σε αυτόν τώρα ή να επιλέξετε μόνοι σας τι θα φέρετε."
 
@@ -11393,6 +11420,7 @@ msgid "Reconnect {address}"
 msgstr "Επανασύνδεση του {address}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Reconnect {provider}"
 msgstr "Επανασύνδεση του {provider}"
 
@@ -12337,6 +12365,10 @@ msgstr "Αναζητήστε, διαχωρίστε και συντάξτε πρ�
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from your terminal. It acts as you, with the access you allow."
 msgstr "Αναζητήστε, διαχωρίστε και συντάξτε πρόχειρες απαντήσεις από το τερματικό σας. Ενεργεί εξ ονόματός σας, με την πρόσβαση που επιτρέπετε."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Second secret"
+msgstr "Δεύτερο μυστικό"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Seconds, 1 to 30."
@@ -13594,6 +13626,7 @@ msgid "Storage"
 msgstr "Αποθήκευση"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Stored encrypted and never shown again, not even to you."
 msgstr "Αποθηκεύεται κρυπτογραφημένο και δεν εμφανίζεται ξανά, ούτε σε εσάς."
 
@@ -13602,6 +13635,7 @@ msgid "Struck-out values are not taken: this contact keeps its own value for tho
 msgstr "Οι διαγραμμένες τιμές δεν λαμβάνονται: αυτή η επαφή κρατά τη δική της τιμή για αυτά τα κλειδιά."
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Subdomain"
 msgstr "Υποτομέας"
 
@@ -13839,10 +13873,12 @@ msgid "Test"
 msgstr "Δοκιμή"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test again"
 msgstr "Δοκιμή ξανά"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test connection"
 msgstr "Δοκιμή σύνδεσης"
 
@@ -14193,6 +14229,10 @@ msgstr "Το ιστορικό αντιγράφηκε και η αλληλογρ�
 #: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "Το όνομα κεντρικού υπολογιστή ρυθμίζεται. Χρειάζεται λίγη ώρα αφού βρεθούν οι εγγραφές."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "The HTTPS address you open it at, such as https://help.example.com."
+msgstr "Η διεύθυνση HTTPS στην οποία το ανοίγετε, π.χ. https://help.example.com."
 
 #: src/features/broadcasts/Import.tsx
 msgid "The import failed, and nothing was added from the file."
@@ -17011,6 +17051,7 @@ msgid "Yuva deleted its token but cannot revoke it in Zendesk. Delete the client
 msgstr "Το Yuva διέγραψε το διακριτικό του αλλά δεν μπορεί να το ανακαλέσει στο Zendesk. Διαγράψτε τον πελάτη στο Admin Center › Apps and integrations › APIs › OAuth clients· το Yuva δεν τον χρειάζεται πια."
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Yuva deletes its token when the migration ends."
 msgstr "Το Yuva διαγράφει το διακριτικό του όταν τελειώσει η μεταφορά."
 
@@ -17070,9 +17111,17 @@ msgstr "Το Yuva μόνο διαβάζει. Εκτός από τη σύνδεσ
 msgid "Yuva only reads. It never deletes, moves, archives or marks anything as read in {provider}, and your mail stays where it is."
 msgstr "Το Yuva μόνο διαβάζει. Δεν διαγράφει, μετακινεί, αρχειοθετεί ή σημαίνει ποτέ τίποτα ως αναγνωσμένο στο {provider}, και η αλληλογραφία σας μένει εκεί που είναι."
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
+msgstr "Το Yuva μόνο διαβάζει. Η σύνδεσή του στέλνει στο {provider} μόνο αιτήματα ανάγνωσης και το διακριτικό μόνο στο API του {provider}, οπότε κανένα αίτημα, πελάτης ή ρύθμιση δεν αλλάζει."
+
 #: src/features/status/MonitorDialog.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Το Yuva ανοίγει τακτικά σύνδεση με έναν κεντρικό υπολογιστή και μια θύρα."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva reads {provider} with an API token you create in your own account, and only reads."
+msgstr "Το Yuva διαβάζει το {provider} με ένα διακριτικό API που δημιουργείτε στον δικό σας λογαριασμό, και μόνο διαβάζει."
 
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."

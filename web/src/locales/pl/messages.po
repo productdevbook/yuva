@@ -251,6 +251,7 @@ msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, one {# marka} few {# marki} many {# marek} other {# marki}}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, one {# folder} few {# foldery} many {# folderów} other {# folderu}}"
 
@@ -713,6 +714,10 @@ msgstr "{provider} na razie ogranicza to konto. Poczekaj chwilę, a potem sprawd
 #: src/features/migrations/text.ts
 msgid "{provider} refused the sign-in"
 msgstr "{provider} odrzucił logowanie"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "{provider} stopped accepting the token. Enter a new token for the same account; the migration continues where it stopped."
+msgstr "{provider} przestał akceptować token. Wpisz nowy token dla tego samego konta; migracja będzie kontynuowana od miejsca, w którym się zatrzymała."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "{provider} stopped accepting Yuva's sign-in. Enter a new app password; the migration continues where it stopped."
@@ -1663,6 +1668,10 @@ msgstr "Dodane przez zespół"
 msgid "Address"
 msgstr "Adres"
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Address of your {provider}"
+msgstr "Adres Twojego {provider}"
+
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 msgid "Address or name"
@@ -2242,6 +2251,10 @@ msgstr "Klucze API i asystenci dostarczają odpowiedzi od razu, bez wcześniejsz
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "API keys and assistants will deliver replies at once. Customers receive what they write, with nobody reviewing it first. You can turn this off again at any time."
 msgstr "Klucze API i asystenci będą dostarczać odpowiedzi od razu. Klienci dostaną to, co zostanie napisane, bez wcześniejszego przeglądu. Możesz to wyłączyć w dowolnej chwili."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "API token"
+msgstr "Token API"
 
 #: src/components/common/Source.tsx
 #: src/features/conversation/Feedback.tsx
@@ -3646,6 +3659,7 @@ msgid "Connect {clientName} to Yuva?"
 msgstr "Połączyć {clientName} z Yuva?"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connect {provider}"
 msgstr "Połącz {provider}"
 
@@ -3719,6 +3733,7 @@ msgid "Connected to {host}"
 msgstr "Połączono z {host}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Connected to {provider}"
 msgstr "Połączono z {provider}"
 
@@ -3824,6 +3839,7 @@ msgstr "Treść"
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/SourceStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -4047,6 +4063,10 @@ msgstr "Utwórz nowe hasło aplikacji z dostępem do poczty przez IMAP, o nazwie
 #: src/app/Sidebar.tsx
 msgid "Create a workspace"
 msgstr "Utwórz obszar roboczy"
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Create an API token in {provider}"
+msgstr "Utwórz token API w {provider}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Create an app in Help Scout"
@@ -4541,6 +4561,7 @@ msgstr "Powiadomienia na pulpicie są zablokowane dla tej witryny w ustawieniach
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Details"
 msgstr "Szczegóły"
 
@@ -5150,6 +5171,10 @@ msgstr "Podaj nazwę hosta lub adres IP."
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a host name or IP address."
 msgstr "Wpisz nazwę hosta lub adres IP."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Enter a token again only to change it."
+msgstr "Wpisz token ponownie tylko po to, aby go zmienić."
 
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address, or leave it empty."
@@ -5857,6 +5882,7 @@ msgstr "Pełne API"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/migrations/UploadStep.tsx
 msgid "Full guide"
 msgstr "Pełny przewodnik"
@@ -6383,6 +6409,7 @@ msgstr "Jeśli {provider} wyśle potwierdzenie na ten adres, dotrze do tej skrzy
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "If an assistant sent you here, you can go back to it now, or choose what to bring yourself."
 msgstr "Jeśli przysłał Cię tu asystent, możesz teraz do niego wrócić albo samodzielnie wybrać, co przenieść."
 
@@ -11393,6 +11420,7 @@ msgid "Reconnect {address}"
 msgstr "Połącz ponownie {address}"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Reconnect {provider}"
 msgstr "Połącz ponownie {provider}"
 
@@ -12337,6 +12365,10 @@ msgstr "Szukaj, sortuj i przygotowuj wersje robocze odpowiedzi z Codex. Działa 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from your terminal. It acts as you, with the access you allow."
 msgstr "Szukaj, sortuj i przygotowuj wersje robocze odpowiedzi z terminala. Działa jako Ty, z dostępem, który zezwolisz."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Second secret"
+msgstr "Drugi sekret"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Seconds, 1 to 30."
@@ -13594,6 +13626,7 @@ msgid "Storage"
 msgstr "Przechowywanie"
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Stored encrypted and never shown again, not even to you."
 msgstr "Przechowywane zaszyfrowane i nigdy więcej nie pokazywane, nawet Tobie."
 
@@ -13602,6 +13635,7 @@ msgid "Struck-out values are not taken: this contact keeps its own value for tho
 msgstr "Przekreślone wartości nie są brane: ten kontakt zachowuje własną wartość dla tych kluczy."
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Subdomain"
 msgstr "Subdomena"
 
@@ -13839,10 +13873,12 @@ msgid "Test"
 msgstr "Test"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test again"
 msgstr "Przetestuj ponownie"
 
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Test connection"
 msgstr "Przetestuj połączenie"
 
@@ -14193,6 +14229,10 @@ msgstr "Historia jest skopiowana, a jej poczta trafia teraz do Yuva."
 #: src/features/settings/OwnDomainCard.tsx
 msgid "The hostname is being set up. This takes a moment once the records are found."
 msgstr "Nazwa hosta jest konfigurowana. Trwa to chwilę po znalezieniu rekordów."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "The HTTPS address you open it at, such as https://help.example.com."
+msgstr "Adres HTTPS, pod którym go otwierasz, na przykład https://help.example.com."
 
 #: src/features/broadcasts/Import.tsx
 msgid "The import failed, and nothing was added from the file."
@@ -17011,6 +17051,7 @@ msgid "Yuva deleted its token but cannot revoke it in Zendesk. Delete the client
 msgstr "Yuva usunęła swój token, ale nie może go unieważnić w Zendesk. Usuń klienta w Admin Center › Apps and integrations › APIs › OAuth clients; Yuva już go nie potrzebuje."
 
 #: src/features/migrations/SignInConnectStep.tsx
+#: src/features/migrations/TokenConnectStep.tsx
 msgid "Yuva deletes its token when the migration ends."
 msgstr "Yuva usuwa swój token po zakończeniu migracji."
 
@@ -17070,9 +17111,17 @@ msgstr "Yuva tylko czyta. Poza logowaniem jej połączenie wysyła do {provider}
 msgid "Yuva only reads. It never deletes, moves, archives or marks anything as read in {provider}, and your mail stays where it is."
 msgstr "Yuva tylko czyta. Nigdy niczego nie usuwa, nie przenosi, nie archiwizuje ani nie oznacza jako przeczytane w {provider}, a Twoja poczta zostaje tam, gdzie jest."
 
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva only reads. Its connection sends {provider} nothing but read requests, and the token only to {provider}'s API, so no ticket, customer or setting changes."
+msgstr "Yuva tylko czyta. Jego połączenie wysyła do {provider} wyłącznie żądania odczytu, a token tylko do API {provider}, więc żadne zgłoszenie, klient ani ustawienie się nie zmienia."
+
 #: src/features/status/MonitorDialog.tsx
 msgid "Yuva opens a connection to a host and port on a schedule."
 msgstr "Yuva regularnie otwiera połączenie z hostem i portem."
+
+#: src/features/migrations/TokenConnectStep.tsx
+msgid "Yuva reads {provider} with an API token you create in your own account, and only reads."
+msgstr "Yuva czyta {provider} za pomocą tokenu API, który tworzysz na własnym koncie, i tylko czyta."
 
 #: src/features/migrations/Wizard.tsx
 msgid "Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies."

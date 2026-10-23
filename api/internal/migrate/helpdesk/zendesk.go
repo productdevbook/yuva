@@ -16,13 +16,7 @@ const (
 
 // ZendeskBudget is a Zendesk account's budget: half of its X-Rate-Limit, 5 incremental requests a
 // minute of the 10 Zendesk allows.
-func ZendeskBudget(b *Budget) *Budget {
-	if b == nil {
-		b = &Budget{}
-	}
-	b.Default, b.IncrementalMax, b.LimitHeaders = 100, 5, []string{"X-Rate-Limit", "X-Ratelimit-Limit"}
-	return b
-}
+func ZendeskBudget(b *Budget) *Budget { return zendeskDesk.Budget(b) }
 
 // Zendesk reads one Zendesk account with an OAuth token of scope read.
 type Zendesk struct {
@@ -34,13 +28,8 @@ type Zendesk struct {
 // *.zdusercontent.com, where Zendesk keeps attachments; attachments elsewhere are fetched
 // without it.
 func NewZendesk(cfg Config, subdomain string, token func() string, budget *Budget) *Zendesk {
-	host := ZendeskHost(subdomain)
-	tokenHosts := Hosts{Exact: []string{host}, Suffixes: []string{"zdusercontent.com"}}
-	return &Zendesk{host: host, c: &client{
-		cfg: cfg, budget: ZendeskBudget(budget), retryHeaders: []string{"Retry-After"},
-		api:   cfg.dataClient(Hosts{Exact: []string{host}}, tokenHosts, token),
-		files: cfg.dataClient(Hosts{Any: true}, tokenHosts, token),
-	}}
+	a := Account{Subdomain: subdomain}
+	return &Zendesk{host: ZendeskHost(subdomain), c: zendeskDesk.client(cfg, a, Credentials{Token: token}, budget)}
 }
 
 func (z *Zendesk) url(path string, q url.Values) string {
