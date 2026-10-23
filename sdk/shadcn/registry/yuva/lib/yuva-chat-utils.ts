@@ -34,6 +34,7 @@ export interface YuvaChatLabels {
   sendFailed: string
   remove: string
   download: string
+  removed: string
   typing: (name: string) => string
   typingSomeone: string
   jumpToLatest: (unread: number) => string
@@ -103,6 +104,7 @@ export const defaultYuvaChatLabels: YuvaChatLabels = {
   sendFailed: "Not sent",
   remove: "Remove",
   download: "Download",
+  removed: "This message was removed",
   typing: (name) => `${name} is typing`,
   typingSomeone: "Typing",
   jumpToLatest: (unread) => (unread > 0 ? `${unread} new, jump to latest` : "Jump to latest"),

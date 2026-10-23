@@ -111,6 +111,16 @@ export function useConversations(): ConversationsResult {
           ...s,
           items: s.items.map((c) => (c.id === message.conversation_id ? { ...c, status: message.data.status } : c)),
         }))
+      } else if (message.type === "message.redacted") {
+        const m = message.data
+        setState((s) => ({
+          ...s,
+          items: s.items.map((c) =>
+            c.id === m.conversation_id && c.last_message?.id === m.id
+              ? { ...c, last_message: { ...c.last_message, text: "", redacted: true } }
+              : c
+          ),
+        }))
       } else if (message.type === "message.created") {
         const m = message.data
         if (!current.current.items.some((c) => c.id === m.conversation_id)) return void load(false)
@@ -124,6 +134,7 @@ export function useConversations(): ConversationsResult {
                     author_type: m.author.type,
                     text: m.body.slice(0, 140),
                     created_at: m.created_at,
+                    ...(m.redacted ? { redacted: true } : {}),
                   },
                   last_message_at: m.created_at,
                   unread: c.unread || m.author.type !== "contact",
@@ -323,7 +334,9 @@ export function useMessages(conversationId: string | null | undefined): Messages
     const offEvent = client.on("event", (message) => {
       if (message.type === "resync_required") void load(false)
       else if (
-        (message.type === "message.created" || message.type === "message.updated") &&
+        (message.type === "message.created" ||
+          message.type === "message.updated" ||
+          message.type === "message.redacted") &&
         message.data.conversation_id === conversationId
       )
         upsert(message.data)

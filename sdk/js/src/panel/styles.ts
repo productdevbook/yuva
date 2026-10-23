@@ -185,6 +185,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .bubble { max-inline-size: 88%; padding: 8px 12px; border-radius: 12px; overflow-wrap: anywhere; white-space: normal; }
 .mine .bubble { background: var(--yuva-accent); color: var(--yuva-on-accent); max-inline-size: 80%; }
 .theirs .bubble { border: 1px solid var(--yuva-border); background: var(--yuva-deep); }
+.mine .bubble.removed, .theirs .bubble.removed { background: transparent; border: 1px dashed var(--yuva-border); color: var(--yuva-faint); font-style: italic; }
 .bubble a { color: inherit; text-decoration: underline; }
 .bubble code { font-family: var(--yuva-mono); font-size: 13px; padding: 1px 4px; border-radius: 4px; background: rgb(127 127 127 / 0.2); }
 .bubble pre { margin: 4px 0; padding: 8px; border-radius: 8px; background: rgb(127 127 127 / 0.2); font-family: var(--yuva-mono); font-size: 13px; white-space: pre-wrap; }

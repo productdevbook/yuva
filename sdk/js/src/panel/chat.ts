@@ -647,6 +647,7 @@ export class Chat implements PanelController {
       }
       case "message.created":
       case "message.updated":
+      case "message.redacted":
         this.#upsertMessage(message.data, message.type === "message.created")
         break
       case "read": {
@@ -709,7 +710,13 @@ export class Chat implements PanelController {
         .catch(() => undefined)
       return
     }
-    if (created) {
+    if (!created && message.redacted) {
+      if (conversation.last_message?.id === message.id)
+        this.#conversations.set(id, {
+          ...conversation,
+          last_message: { ...conversation.last_message, text: "", redacted: true },
+        })
+    } else if (created) {
       const text = message.body.replace(/\s+/g, " ").trim()
       this.#conversations.set(id, {
         ...conversation,
@@ -718,6 +725,7 @@ export class Chat implements PanelController {
           author_type: message.author.type,
           text: text.length > 140 ? `${text.slice(0, 139)}…` : text,
           created_at: message.created_at,
+          ...(message.redacted ? { redacted: true } : {}),
         },
         last_message_at: message.created_at,
         unread: conversation.unread || message.author.type !== "contact",
@@ -1277,7 +1285,7 @@ export class Chat implements PanelController {
         )
       )
       const preview = conversation.last_message
-        ? `${conversation.last_message.author_type === "contact" ? this.#t(msg`You:`) + " " : ""}${conversation.last_message.text || this.#t(msg`Attachment`)}`
+        ? `${conversation.last_message.author_type === "contact" ? this.#t(msg`You:`) + " " : ""}${conversation.last_message.redacted ? this.#t(msg`This message was removed`) : conversation.last_message.text || this.#t(msg`Attachment`)}`
         : ""
       const previewLine = el("div", "item-preview", preview.replace(/\*\*|`/g, ""))
       previewLine.dir = "auto"
@@ -1432,15 +1440,20 @@ export class Chat implements PanelController {
       if (!group) return
       if (message) {
         group.at = created
-        if (message.body.trim()) {
+        if (message.redacted) {
+          const line = el("div", "bubble removed", this.#t(msg`This message was removed`))
+          line.title = new Date(created).toLocaleString(locale)
+          group.stack.append(line)
+        } else if (message.body.trim()) {
           const bubble = el("div", "bubble")
           bubble.dir = "auto"
           bubble.title = new Date(created).toLocaleString(locale)
           bubble.append(richText(message.body))
           group.stack.append(bubble)
         }
-        if (message.attachments.length > 0) group.stack.append(this.#renderAttachments(message.attachments, mine))
-        for (const card of message.cards ?? []) group.stack.append(this.#renderCard(card))
+        if (!message.redacted && message.attachments.length > 0)
+          group.stack.append(this.#renderAttachments(message.attachments, mine))
+        for (const card of message.redacted ? [] : (message.cards ?? [])) group.stack.append(this.#renderCard(card))
       } else if (entry.kind === "pending") {
         const item = entry.pending
         if (item.body) {

@@ -74,7 +74,11 @@ export function YuvaChatConversations({ chat, labels: custom, locale, onOpen, cl
                       <span className="size-2 rounded-full bg-primary" role="img" aria-label={labels.unread} />
                     )}
                   </ItemTitle>
-                  {conversation.last_message && <ItemDescription>{conversation.last_message.text}</ItemDescription>}
+                  {conversation.last_message && (
+                    <ItemDescription>
+                      {conversation.last_message.redacted ? labels.removed : conversation.last_message.text}
+                    </ItemDescription>
+                  )}
                 </ItemContent>
                 <ItemActions className="self-start text-xs text-muted-foreground">
                   {whenLabel(conversation.last_message_at ?? conversation.created_at, locale)}

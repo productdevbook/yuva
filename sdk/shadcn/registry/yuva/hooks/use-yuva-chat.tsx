@@ -45,6 +45,7 @@ export interface YuvaChatMessage {
   author: ClientMessage["author"]
   body: string
   attachments: ClientAttachment[]
+  redacted: boolean
   files: YuvaChatFile[]
   createdAt: string
   status: YuvaChatMessageStatus
@@ -97,6 +98,7 @@ function fromServer(message: ClientMessage): YuvaChatMessage {
     author: message.author,
     body: message.body,
     attachments: message.attachments,
+    redacted: !!message.redacted,
     files: [],
     createdAt: message.created_at,
     status: "sent",
@@ -242,7 +244,11 @@ export function useYuvaChat({
       } else if (event.type === "conversation.updated") {
         const { id, status, can_rate, rating } = event.data
         setConversations((list) => list.map((item) => (item.id === id ? { ...item, status, can_rate, rating } : item)))
-      } else if (event.type === "message.created" || event.type === "message.updated") {
+      } else if (
+        event.type === "message.created" ||
+        event.type === "message.updated" ||
+        event.type === "message.redacted"
+      ) {
         const message = event.data
         const incoming = message.direction === "out"
         if (message.conversation_id === active.current) {
@@ -251,6 +257,15 @@ export function useYuvaChat({
             clearTypingShown()
             setTypingAuthor(null)
           }
+        }
+        if (event.type === "message.redacted") {
+          setConversations((list) =>
+            list.map((item) =>
+              item.id === message.conversation_id && item.last_message?.id === message.id
+                ? { ...item, last_message: { ...item.last_message, text: "", redacted: true } }
+                : item
+            )
+          )
         }
         if (event.type === "message.created") {
           setConversations((list) => {
@@ -263,6 +278,7 @@ export function useYuvaChat({
                 id: message.id,
                 author_type: message.author.type,
                 text: preview(message.body),
+                redacted: message.redacted,
                 created_at: message.created_at,
               },
               last_message_at: message.created_at,
@@ -392,6 +408,7 @@ export function useYuvaChat({
         author: { type: "contact" },
         body: text,
         attachments: [],
+        redacted: false,
         files: picked.map((file) => ({ name: file.name, size: file.size, type: file.type })),
         createdAt: new Date().toISOString(),
         status: "sending",

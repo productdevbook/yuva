@@ -276,6 +276,18 @@ describe("<yuva-chat> realtime", () => {
     await until(() => panel(element).textContent?.includes("A reply from Ada") ?? false)
     expect(panel(element).textContent).toContain("A reply from Ada")
     expect(sockets).toHaveLength(1)
+
+    sockets[0]!.receive({
+      id: 2,
+      type: "message.redacted",
+      conversation_id: "c1",
+      created_at: at,
+      data: { ...message("m2", "", "member"), redacted: true },
+    })
+    await until(() => panel(element).textContent?.includes("This message was removed") ?? false)
+    const bubbles = [...panel(element).querySelectorAll(".bubble")].map((b) => b.textContent)
+    expect(bubbles).not.toContain("A reply from Ada")
+    expect(panel(element).querySelectorAll(".bubble.removed")).toHaveLength(1)
   })
 
   test("the first message sends the page it starts on, without query and fragment", async () => {

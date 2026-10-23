@@ -122,7 +122,8 @@ function Linked({ body }: { body: string }) {
   )
 }
 
-function BubbleText({ message, mine }: { message: YuvaChatMessage; mine: boolean }) {
+function BubbleText({ message, mine, labels }: { message: YuvaChatMessage; mine: boolean; labels: YuvaChatLabels }) {
+  if (message.redacted) return <p className="text-sm text-muted-foreground italic">{labels.removed}</p>
   if (!message.body) return null
   const link = soleLink(message.body)
   const failed = message.status === "error"
@@ -276,7 +277,7 @@ function Group({
         <BubbleGroup>
           {group.messages.map((message) => (
             <React.Fragment key={message.id}>
-              <BubbleText message={message} mine={group.mine} />
+              <BubbleText message={message} mine={group.mine} labels={labels} />
               <MessageAttachments message={message} labels={labels} locale={locale} chat={chat} />
             </React.Fragment>
           ))}

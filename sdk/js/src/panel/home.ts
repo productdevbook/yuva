@@ -94,7 +94,7 @@ export function buildHome(data: HomeData): HTMLElement {
       )
     )
     const preview = latest.last_message
-      ? `${latest.last_message.author_type === "contact" ? `${t(msg`You:`)} ` : ""}${latest.last_message.text || t(msg`Attachment`)}`
+      ? `${latest.last_message.author_type === "contact" ? `${t(msg`You:`)} ` : ""}${latest.last_message.redacted ? t(msg`This message was removed`) : latest.last_message.text || t(msg`Attachment`)}`
       : ""
     const line = el("span", "item-preview", preview.replace(/\*\*|`/g, ""))
     line.dir = "auto"
