@@ -126,7 +126,10 @@ func (s *Server) DeleteLabel(ctx context.Context, req oas.DeleteLabelRequestObje
 		if err := s.syncSLAConversations(ctx, q, ev, p.workspaceID, driven); err != nil {
 			return err
 		}
-		return q.StripLabelFromMacros(ctx, store.StripLabelFromMacrosParams{WorkspaceID: p.workspaceID, LabelID: req.LabelId.String()})
+		if err := q.StripLabelFromMacros(ctx, store.StripLabelFromMacrosParams{WorkspaceID: p.workspaceID, LabelID: req.LabelId.String()}); err != nil {
+			return err
+		}
+		return q.StripLabelFromSavedViews(ctx, store.StripLabelFromSavedViewsParams{WorkspaceID: p.workspaceID, LabelID: req.LabelId.String()})
 	})
 	if err != nil {
 		return nil, err

@@ -2106,6 +2106,19 @@ type SamlAssertion struct {
 	ExpiresAt   time.Time
 }
 
+type SavedView struct {
+	ID            uuid.UUID
+	WorkspaceID   uuid.UUID
+	Visibility    string
+	OwnerMemberID *uuid.UUID
+	TeamID        *uuid.UUID
+	Name          string
+	Filters       []byte
+	Position      int32
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+}
+
 type SesTenant struct {
 	WorkspaceID      uuid.UUID
 	InboxID          uuid.UUID

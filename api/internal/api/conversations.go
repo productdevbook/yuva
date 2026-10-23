@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"slices"
 	"strings"
@@ -397,136 +398,19 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 	if err != nil {
 		return nil, err
 	}
-	bySLA := prm.Sort != nil && *prm.Sort == oas.ListConversationsSortSlaDue
-	if prm.Sort != nil && !prm.Sort.Valid() {
-		return nil, errValidation("sort must be last_activity or sla_due")
+	arg, err := s.conversationFilter(ctx, s.st.Queries, p, prm, fieldFilterPairs(ctx))
+	if err != nil {
+		return nil, err
 	}
-	var at, due *time.Time
-	var cid *uuid.UUID
-	if bySLA {
-		due, at, cid, err = decodeSLACursor(prm.Cursor)
+	if arg.BySla {
+		arg.CursorDue, arg.CursorAt, arg.CursorID, err = decodeSLACursor(prm.Cursor)
 	} else {
-		at, cid, err = decodeCursor(prm.Cursor)
+		arg.CursorAt, arg.CursorID, err = decodeCursor(prm.Cursor)
 	}
 	if err != nil {
 		return nil, err
 	}
-	q, err := searchQuery(prm.Q)
-	if err != nil {
-		return nil, err
-	}
-	pos, neg := splitSearch(q)
-	arg := store.ListConversationsParams{
-		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(),
-		InboxID: prm.InboxId, ContactID: prm.ContactId, BroadcastID: prm.BroadcastId, LabelID: prm.LabelId, Q: pos, QNot: neg,
-		CursorAt: at, CursorID: cid, Lim: lim + 1, Spam: prm.Spam, Trashed: prm.Trashed != nil && *prm.Trashed,
-		BySla: bySLA, CursorDue: due, SlaNow: s.now(),
-	}
-	if arg.SlaStates, err = enumList(prm.SlaState, "sla_state must be on_track, due_soon, breached, met or paused"); err != nil {
-		return nil, err
-	}
-	if arg.Trashed {
-		if err := requireTrashManager(p); err != nil {
-			return nil, err
-		}
-	} else if arg.Spam == nil {
-		arg.Spam = new(false)
-	}
-	if arg.Kinds, err = enumList(prm.Kind, "kind must be conversation or feedback"); err != nil {
-		return nil, err
-	}
-	if arg.ChannelKinds, err = enumList(prm.ChannelKind, "channel_kind must be chat, email, app or api"); err != nil {
-		return nil, err
-	}
-	if prm.Category != nil {
-		if !categoryKeyPattern.MatchString(*prm.Category) {
-			return nil, errValidation("category must be a feedback category key")
-		}
-		k, c := string(oas.ConversationKindFeedback), string(*prm.Category)
-		if arg.Kinds != nil && !slices.Contains(arg.Kinds, k) {
-			return nil, errValidation("category is only for kind=feedback")
-		}
-		arg.Kinds, arg.Category = []string{k}, &c
-	}
-	if prm.Site != nil {
-		site, ok := normalizeOrigin(*prm.Site)
-		if !ok {
-			return nil, errValidation("site must be an origin, scheme://host[:port]")
-		}
-		arg.Site = &site
-	}
-	if prm.InboxId != nil {
-		if _, err := visibleInbox(ctx, s.st.Queries, p, *prm.InboxId); err != nil {
-			return nil, err
-		}
-	}
-	if prm.Page != nil {
-		page, _, err := pageURL(*prm.Page)
-		if err != nil {
-			return nil, err
-		}
-		arg.Page = &page
-	}
-	if prm.ContactId != nil {
-		found, err := s.st.ContactExists(ctx, store.ContactExistsParams{WorkspaceID: p.workspaceID, ID: *prm.ContactId})
-		if err != nil {
-			return nil, err
-		}
-		if !found {
-			return nil, errContactGone
-		}
-	}
-	if prm.IdeaId != nil {
-		if _, err := visibleIdea(ctx, s.st.Queries, p, *prm.IdeaId, false); err != nil {
-			return nil, err
-		}
-		arg.IdeaID = prm.IdeaId
-	}
-	if prm.Idea != nil {
-		if *prm.Idea != oas.ListConversationsParamsIdeaNone {
-			return nil, errValidation("idea must be none")
-		}
-		arg.NoIdea = true
-	}
-	if prm.Pinned != nil {
-		if p.isKey() {
-			return nil, errValidation("pinned needs a member session")
-		}
-		arg.Pinned, arg.PinnedBy = prm.Pinned, &p.memberID
-	}
-	if arg.Statuses, err = enumList(prm.Status, "status must be open, pending, snoozed or closed"); err != nil {
-		return nil, err
-	}
-	if prm.Assignee != nil {
-		switch a := strings.TrimSpace(*prm.Assignee); a {
-		case assigneeMe:
-			if p.isKey() {
-				return nil, errValidation("assignee=me needs a member session")
-			}
-			arg.AssigneeID = &p.memberID
-		case assigneeUnassigned:
-			arg.Unassigned = true
-		default:
-			id, err := uuid.Parse(a)
-			if err != nil {
-				return nil, errValidation("assignee must be a member id, me or unassigned")
-			}
-			arg.AssigneeID = &id
-		}
-	}
-	arg.TeamID = prm.TeamId
-	if prm.Team != nil {
-		if *prm.Team != oas.ListConversationsTeamMine {
-			return nil, errValidation("team must be mine")
-		}
-		if p.isKey() {
-			return nil, errValidation("team=mine needs a member session")
-		}
-		arg.TeamsOf = &p.memberID
-	}
-	if arg.Fields, err = fieldFilter(ctx, s.st.Queries, p.workspaceID, fieldFilterPairs(ctx)); err != nil {
-		return nil, err
-	}
+	arg.Lim = lim + 1
 	rows, err := s.st.ListConversations(ctx, arg)
 	if err != nil {
 		return nil, err
@@ -536,7 +420,7 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 		rows = rows[:lim]
 		last := rows[lim-1]
 		c := encodeCursor(last.LastActivityAt, last.ID)
-		if bySLA {
+		if arg.BySla {
 			c = encodeSLACursor(last.SlaDueAt, last.LastActivityAt, last.ID)
 		}
 		next = &c
@@ -546,6 +430,155 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 		return nil, err
 	}
 	return oas.ListConversations200JSONResponse{Items: items, NextCursor: next}, nil
+}
+
+// conversationFilter reads the filters of ListConversations, everything but the page, for p. It is
+// the one parser of those parameters: saved views check and count with it too. A refused value
+// comes back as a listFilterError naming its parameter.
+func (s *Server) conversationFilter(ctx context.Context, q *store.Queries, p principal, prm oas.ListConversationsParams, fields map[string][]string) (store.ListConversationsParams, error) {
+	var none store.ListConversationsParams
+	search, err := searchQuery(prm.Q)
+	if err != nil {
+		return none, onParam("q", err)
+	}
+	pos, neg := splitSearch(search)
+	if prm.Sort != nil && !prm.Sort.Valid() {
+		return none, onParam("sort", errValidation("sort must be last_activity or sla_due"))
+	}
+	arg := store.ListConversationsParams{
+		WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(),
+		InboxID: prm.InboxId, ContactID: prm.ContactId, BroadcastID: prm.BroadcastId, LabelID: prm.LabelId, Q: pos, QNot: neg,
+		Spam: prm.Spam, Trashed: prm.Trashed != nil && *prm.Trashed,
+		BySla: prm.Sort != nil && *prm.Sort == oas.ListConversationsSortSlaDue, SlaNow: s.now(),
+	}
+	if arg.SlaStates, err = enumList(prm.SlaState, "sla_state must be on_track, due_soon, breached, met or paused"); err != nil {
+		return none, onParam("sla_state", err)
+	}
+	if arg.Trashed {
+		if err := requireTrashManager(p); err != nil {
+			return none, onParam("trashed", err)
+		}
+	} else if arg.Spam == nil {
+		arg.Spam = new(false)
+	}
+	if arg.Kinds, err = enumList(prm.Kind, "kind must be conversation or feedback"); err != nil {
+		return none, onParam("kind", err)
+	}
+	if arg.ChannelKinds, err = enumList(prm.ChannelKind, "channel_kind must be chat, email, app or api"); err != nil {
+		return none, onParam("channel_kind", err)
+	}
+	if prm.Category != nil {
+		if !categoryKeyPattern.MatchString(*prm.Category) {
+			return none, onParam("category", errValidation("category must be a feedback category key"))
+		}
+		k, c := string(oas.ConversationKindFeedback), string(*prm.Category)
+		if arg.Kinds != nil && !slices.Contains(arg.Kinds, k) {
+			return none, onParam("category", errValidation("category is only for kind=feedback"))
+		}
+		arg.Kinds, arg.Category = []string{k}, &c
+	}
+	if prm.Site != nil {
+		site, ok := normalizeOrigin(*prm.Site)
+		if !ok {
+			return none, onParam("site", errValidation("site must be an origin, scheme://host[:port]"))
+		}
+		arg.Site = &site
+	}
+	if prm.InboxId != nil {
+		if _, err := visibleInbox(ctx, q, p, *prm.InboxId); err != nil {
+			return none, onParam("inbox_id", err)
+		}
+	}
+	if prm.Page != nil {
+		page, _, err := pageURL(*prm.Page)
+		if err != nil {
+			return none, onParam("page", err)
+		}
+		arg.Page = &page
+	}
+	if prm.ContactId != nil {
+		found, err := q.ContactExists(ctx, store.ContactExistsParams{WorkspaceID: p.workspaceID, ID: *prm.ContactId})
+		if err != nil {
+			return none, err
+		}
+		if !found {
+			return none, onParam("contact_id", errContactGone)
+		}
+	}
+	if prm.IdeaId != nil {
+		if _, err := visibleIdea(ctx, q, p, *prm.IdeaId, false); err != nil {
+			return none, onParam("idea_id", err)
+		}
+		arg.IdeaID = prm.IdeaId
+	}
+	if prm.Idea != nil {
+		if *prm.Idea != oas.ListConversationsParamsIdeaNone {
+			return none, onParam("idea", errValidation("idea must be none"))
+		}
+		arg.NoIdea = true
+	}
+	if prm.Pinned != nil {
+		if p.isKey() {
+			return none, onParam("pinned", errValidation("pinned needs a member session"))
+		}
+		arg.Pinned, arg.PinnedBy = prm.Pinned, &p.memberID
+	}
+	if arg.Statuses, err = enumList(prm.Status, "status must be open, pending, snoozed or closed"); err != nil {
+		return none, onParam("status", err)
+	}
+	if prm.Assignee != nil {
+		switch a := strings.TrimSpace(*prm.Assignee); a {
+		case assigneeMe:
+			if p.isKey() {
+				return none, onParam("assignee", errValidation("assignee=me needs a member session"))
+			}
+			arg.AssigneeID = &p.memberID
+		case assigneeUnassigned:
+			arg.Unassigned = true
+		default:
+			id, err := uuid.Parse(a)
+			if err != nil {
+				return none, onParam("assignee", errValidation("assignee must be a member id, me or unassigned"))
+			}
+			arg.AssigneeID = &id
+		}
+	}
+	arg.TeamID = prm.TeamId
+	if prm.Team != nil {
+		if *prm.Team != oas.ListConversationsTeamMine {
+			return none, onParam("team", errValidation("team must be mine"))
+		}
+		if p.isKey() {
+			return none, onParam("team", errValidation("team=mine needs a member session"))
+		}
+		arg.TeamsOf = &p.memberID
+	}
+	if arg.Fields, err = fieldFilter(ctx, q, p.workspaceID, fields); err != nil {
+		var e *apiError
+		if errors.As(err, &e) && e.Field != "" {
+			return none, onParam(fieldFilterPrefix+e.Field, err)
+		}
+		return none, err
+	}
+	return arg, nil
+}
+
+// listFilterError names the parameter of ListConversations whose value was refused; it answers as
+// the error it wraps.
+type listFilterError struct {
+	param string
+	err   error
+}
+
+func (e *listFilterError) Error() string { return e.err.Error() }
+func (e *listFilterError) Unwrap() error { return e.err }
+
+func onParam(param string, err error) error {
+	var e *apiError
+	if !errors.As(err, &e) {
+		return err
+	}
+	return &listFilterError{param: param, err: err}
 }
 
 func (s *Server) GetConversationCounts(ctx context.Context, req oas.GetConversationCountsRequestObject) (oas.GetConversationCountsResponseObject, error) {

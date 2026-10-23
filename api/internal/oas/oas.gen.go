@@ -952,6 +952,7 @@ const (
 	RoadmapWrite        ApiKeyScope = "roadmap:write"
 	StatusManage        ApiKeyScope = "status:manage"
 	StatusRead          ApiKeyScope = "status:read"
+	ViewsWrite          ApiKeyScope = "views:write"
 	WebhooksManage      ApiKeyScope = "webhooks:manage"
 	WorkspaceManage     ApiKeyScope = "workspace:manage"
 )
@@ -1036,6 +1037,8 @@ func (e ApiKeyScope) Valid() bool {
 	case StatusManage:
 		return true
 	case StatusRead:
+		return true
+	case ViewsWrite:
 		return true
 	case WebhooksManage:
 		return true
@@ -5675,6 +5678,27 @@ func (e Role) Valid() bool {
 	}
 }
 
+// Defines values for SavedViewVisibility.
+const (
+	SavedViewPersonal  SavedViewVisibility = "personal"
+	SavedViewTeam      SavedViewVisibility = "team"
+	SavedViewWorkspace SavedViewVisibility = "workspace"
+)
+
+// Valid indicates whether the value is a known member of the SavedViewVisibility enum.
+func (e SavedViewVisibility) Valid() bool {
+	switch e {
+	case SavedViewPersonal:
+		return true
+	case SavedViewTeam:
+		return true
+	case SavedViewWorkspace:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for SesTenantStatusPausedBy.
 const (
 	SesPausedByAws    SesTenantStatusPausedBy = "aws"
@@ -8585,7 +8609,9 @@ type AnalyticsRangeProblem struct {
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
 
-	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
+	// on saved views: the filter parameter refused.
+	//
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
@@ -9186,12 +9212,15 @@ type ApiKeyList struct {
 //	  - `issues:write`: create, link and unlink GitHub and Linear issues on feedback and ideas,
 //	    together with `conversations:read`.
 //
+//	  - `views:write`: save, change, reorder and delete saved views: personal ones for OAuth
+//	    tokens, workspace and team ones for owners' and admins' tokens and for API keys.
+//
 //	  - `fields:manage`: create, change and delete custom field definitions. Owners and admins
 //	    only; never offered to agents' tokens, refused for keys limited to inboxes. Never
 //	    implied: a key made without naming its scopes does not hold it. Writing values needs
 //	    `conversations:write` or `contacts:write`.
 //
-// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write` and `fields:manage` are never added to keys made before they existed.
+// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage` and `views:write` are never added to keys made before they existed.
 type ApiKeyScope string
 
 // ApiKeyUpdate Only the fields sent change. Scopes, inbox limit and expiry cannot change.
@@ -9910,7 +9939,9 @@ type BroadcastProblem struct {
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
 
-	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
+	// on saved views: the filter parameter refused.
+	//
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
@@ -10278,7 +10309,9 @@ type ChangelogConflictProblem struct {
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
 
-	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
+	// on saved views: the filter parameter refused.
+	//
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
@@ -13975,7 +14008,9 @@ type EmailDesignProblem struct {
 	Detail *string             `json:"detail,omitempty"`
 	Errors *[]EmailDesignIssue `json:"errors,omitempty"`
 
-	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
+	// on saved views: the filter parameter refused.
+	//
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
@@ -14318,7 +14353,9 @@ type EmailImageProblem struct {
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
 
-	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
+	// on saved views: the filter parameter refused.
+	//
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
@@ -15386,7 +15423,9 @@ type HelpConflictProblem struct {
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
 
-	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
+	// on saved views: the filter parameter refused.
+	//
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
@@ -18153,7 +18192,9 @@ type MigrationFileProblem struct {
 	// Entry `file_refused` only: the zip entry it is about, when one is.
 	Entry *string `json:"entry,omitempty"`
 
-	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
+	// on saved views: the filter parameter refused.
+	//
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
@@ -19204,7 +19245,9 @@ type Problem struct {
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
 
-	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
+	// on saved views: the filter parameter refused.
+	//
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
@@ -19834,6 +19877,90 @@ type RoadmapSuggestions string
 
 // Role defines model for Role.
 type Role string
+
+// SavedView defines model for SavedView.
+type SavedView struct {
+	// Count Open conversations under the filters that the caller sees, at most 1000. Absent when
+	// the filters do not apply to the caller.
+	Count *int32 `json:"count,omitempty"`
+
+	// CountCapped `true` when more than 1000 conversations match; `count` is then 1000.
+	CountCapped *bool     `json:"count_capped,omitempty"`
+	CreatedAt   time.Time `json:"created_at"`
+
+	// Filters Query parameters of `GET /v1/conversations`, by name, each with its value as it would
+	// appear in the query string (lists comma-separated), e.g.
+	// `{"status": "open,pending", "label_id": "…", "field.plan": "pro"}`. `cursor` and `limit`
+	// are not filters. Ids are kept, so a renamed label, team or field changes nothing; a
+	// deleted label, team or conversation field drops out of every view's filters.
+	Filters SavedViewFilters `json:"filters"`
+	Id      uuid.UUID        `json:"id"`
+	Name    string           `json:"name"`
+
+	// OwnerMemberId The member a `personal` view belongs to.
+	OwnerMemberId *uuid.UUID `json:"owner_member_id,omitempty"`
+	Position      int32      `json:"position"`
+
+	// TeamId The team a `team` view is shared with.
+	TeamId    *uuid.UUID `json:"team_id,omitempty"`
+	UpdatedAt time.Time  `json:"updated_at"`
+
+	// Visibility `personal`: only its owner sees it. `workspace`: every member. `team`: the team's members,
+	// owners and admins.
+	Visibility SavedViewVisibility `json:"visibility"`
+}
+
+// SavedViewCreate defines model for SavedViewCreate.
+type SavedViewCreate struct {
+	// Filters Query parameters of `GET /v1/conversations`, by name, each with its value as it would
+	// appear in the query string (lists comma-separated), e.g.
+	// `{"status": "open,pending", "label_id": "…", "field.plan": "pro"}`. `cursor` and `limit`
+	// are not filters. Ids are kept, so a renamed label, team or field changes nothing; a
+	// deleted label, team or conversation field drops out of every view's filters.
+	Filters  SavedViewFilters `json:"filters"`
+	Name     string           `json:"name"`
+	Position *int32           `json:"position,omitempty"`
+
+	// TeamId Required for a `team` view, refused for the others.
+	TeamId *uuid.UUID `json:"team_id,omitempty"`
+
+	// Visibility `personal`: only its owner sees it. `workspace`: every member. `team`: the team's members,
+	// owners and admins.
+	Visibility SavedViewVisibility `json:"visibility"`
+}
+
+// SavedViewFilters Query parameters of `GET /v1/conversations`, by name, each with its value as it would
+// appear in the query string (lists comma-separated), e.g.
+// `{"status": "open,pending", "label_id": "…", "field.plan": "pro"}`. `cursor` and `limit`
+// are not filters. Ids are kept, so a renamed label, team or field changes nothing; a
+// deleted label, team or conversation field drops out of every view's filters.
+type SavedViewFilters map[string]string
+
+// SavedViewList defines model for SavedViewList.
+type SavedViewList struct {
+	Items []SavedView `json:"items"`
+}
+
+// SavedViewOrder defines model for SavedViewOrder.
+type SavedViewOrder struct {
+	Ids []uuid.UUID `json:"ids"`
+}
+
+// SavedViewUpdate defines model for SavedViewUpdate.
+type SavedViewUpdate struct {
+	// Filters Query parameters of `GET /v1/conversations`, by name, each with its value as it would
+	// appear in the query string (lists comma-separated), e.g.
+	// `{"status": "open,pending", "label_id": "…", "field.plan": "pro"}`. `cursor` and `limit`
+	// are not filters. Ids are kept, so a renamed label, team or field changes nothing; a
+	// deleted label, team or conversation field drops out of every view's filters.
+	Filters  *SavedViewFilters `json:"filters,omitempty"`
+	Name     *string           `json:"name,omitempty"`
+	Position *int32            `json:"position,omitempty"`
+}
+
+// SavedViewVisibility `personal`: only its owner sees it. `workspace`: every member. `team`: the team's members,
+// owners and admins.
+type SavedViewVisibility string
 
 // SesTenantStatus The inbox's Amazon SES tenant, when the server manages one. `sending_status: disabled` means SES
 // paused it: the inbox's mail through the server's SES account is refused and its broadcasts pause
@@ -22783,6 +22910,9 @@ type TemplateLocale = EmailTemplateLocale
 
 // TemplateSlug defines model for TemplateSlug.
 type TemplateSlug = string
+
+// ViewId defines model for ViewId.
+type ViewId = uuid.UUID
 
 // WebhookId defines model for WebhookId.
 type WebhookId = uuid.UUID
@@ -26234,6 +26364,45 @@ type GetUsageParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListViewsParams defines parameters for ListViews.
+type ListViewsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CreateViewParams defines parameters for CreateView.
+type CreateViewParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ReorderViewsParams defines parameters for ReorderViews.
+type ReorderViewsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteViewParams defines parameters for DeleteView.
+type DeleteViewParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetViewParams defines parameters for GetView.
+type GetViewParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateViewParams defines parameters for UpdateView.
+type UpdateViewParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // ListWebhooksParams defines parameters for ListWebhooks.
 type ListWebhooksParams struct {
 	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
@@ -27469,6 +27638,15 @@ type CreateTeamJSONRequestBody = TeamCreate
 
 // UpdateTeamJSONRequestBody defines body for UpdateTeam for application/json ContentType.
 type UpdateTeamJSONRequestBody = TeamUpdate
+
+// CreateViewJSONRequestBody defines body for CreateView for application/json ContentType.
+type CreateViewJSONRequestBody = SavedViewCreate
+
+// ReorderViewsJSONRequestBody defines body for ReorderViews for application/json ContentType.
+type ReorderViewsJSONRequestBody = SavedViewOrder
+
+// UpdateViewJSONRequestBody defines body for UpdateView for application/json ContentType.
+type UpdateViewJSONRequestBody = SavedViewUpdate
 
 // CreateWebhookJSONRequestBody defines body for CreateWebhook for application/json ContentType.
 type CreateWebhookJSONRequestBody = WebhookEndpointCreate
@@ -33077,6 +33255,24 @@ type ServerInterface interface {
 	// GetVersion Server version
 	// (GET /v1/version)
 	GetVersion(w http.ResponseWriter, r *http.Request)
+	// ListViews List saved views
+	// (GET /v1/views)
+	ListViews(w http.ResponseWriter, r *http.Request, params ListViewsParams)
+	// CreateView Save a view
+	// (POST /v1/views)
+	CreateView(w http.ResponseWriter, r *http.Request, params CreateViewParams)
+	// ReorderViews Reorder saved views
+	// (PUT /v1/views/order)
+	ReorderViews(w http.ResponseWriter, r *http.Request, params ReorderViewsParams)
+	// DeleteView Delete a saved view
+	// (DELETE /v1/views/{viewId})
+	DeleteView(w http.ResponseWriter, r *http.Request, viewId ViewId, params DeleteViewParams)
+	// GetView Get a saved view
+	// (GET /v1/views/{viewId})
+	GetView(w http.ResponseWriter, r *http.Request, viewId ViewId, params GetViewParams)
+	// UpdateView Update a saved view
+	// (PATCH /v1/views/{viewId})
+	UpdateView(w http.ResponseWriter, r *http.Request, viewId ViewId, params UpdateViewParams)
 	// ListWebhooks List webhook endpoints
 	// (GET /v1/webhooks)
 	ListWebhooks(w http.ResponseWriter, r *http.Request, params ListWebhooksParams)
@@ -59911,6 +60107,298 @@ func (siw *ServerInterfaceWrapper) GetVersion(w http.ResponseWriter, r *http.Req
 	handler.ServeHTTP(w, r)
 }
 
+// ListViews operation middleware
+func (siw *ServerInterfaceWrapper) ListViews(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListViewsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListViews(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateView operation middleware
+func (siw *ServerInterfaceWrapper) CreateView(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateViewParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateView(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ReorderViews operation middleware
+func (siw *ServerInterfaceWrapper) ReorderViews(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ReorderViewsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ReorderViews(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteView operation middleware
+func (siw *ServerInterfaceWrapper) DeleteView(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "viewId" -------------
+	var viewId ViewId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "viewId", r.PathValue("viewId"), &viewId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "viewId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteViewParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteView(w, r, viewId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetView operation middleware
+func (siw *ServerInterfaceWrapper) GetView(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "viewId" -------------
+	var viewId ViewId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "viewId", r.PathValue("viewId"), &viewId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "viewId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetViewParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetView(w, r, viewId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateView operation middleware
+func (siw *ServerInterfaceWrapper) UpdateView(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "viewId" -------------
+	var viewId ViewId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "viewId", r.PathValue("viewId"), &viewId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "viewId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateViewParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateView(w, r, viewId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListWebhooks operation middleware
 func (siw *ServerInterfaceWrapper) ListWebhooks(w http.ResponseWriter, r *http.Request) {
 
@@ -61008,6 +61496,12 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/macros/{macroId}", wrapper.DeleteMacro)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/macros/{macroId}", wrapper.GetMacro)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/macros/{macroId}", wrapper.UpdateMacro)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/views", wrapper.ListViews)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/views", wrapper.CreateView)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/views/order", wrapper.ReorderViews)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/views/{viewId}", wrapper.DeleteView)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/views/{viewId}", wrapper.GetView)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/views/{viewId}", wrapper.UpdateView)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/custom-fields", wrapper.ListCustomFields)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/custom-fields", wrapper.CreateCustomField)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/custom-fields/{customFieldId}", wrapper.DeleteCustomField)
@@ -102523,6 +103017,410 @@ func (response GetVersion200JSONResponse) VisitGetVersionResponse(w http.Respons
 	return err
 }
 
+type ListViewsRequestObject struct {
+	Params ListViewsParams
+}
+
+type ListViewsResponseObject interface {
+	VisitListViewsResponse(w http.ResponseWriter) error
+}
+
+type ListViews200JSONResponse SavedViewList
+
+func (response ListViews200JSONResponse) VisitListViewsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListViews401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListViews401ApplicationProblemPlusJSONResponse) VisitListViewsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListViews403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListViews403ApplicationProblemPlusJSONResponse) VisitListViewsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateViewRequestObject struct {
+	Params CreateViewParams
+	Body   *CreateViewJSONRequestBody
+}
+
+type CreateViewResponseObject interface {
+	VisitCreateViewResponse(w http.ResponseWriter) error
+}
+
+type CreateView201JSONResponse SavedView
+
+func (response CreateView201JSONResponse) VisitCreateViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateView400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response CreateView400ApplicationProblemPlusJSONResponse) VisitCreateViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateView401ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateView401ApplicationProblemPlusJSONResponse) VisitCreateViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateView403ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateView403ApplicationProblemPlusJSONResponse) VisitCreateViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ReorderViewsRequestObject struct {
+	Params ReorderViewsParams
+	Body   *ReorderViewsJSONRequestBody
+}
+
+type ReorderViewsResponseObject interface {
+	VisitReorderViewsResponse(w http.ResponseWriter) error
+}
+
+type ReorderViews204Response struct {
+}
+
+func (response ReorderViews204Response) VisitReorderViewsResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type ReorderViews400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ReorderViews400ApplicationProblemPlusJSONResponse) VisitReorderViewsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ReorderViews401ApplicationProblemPlusJSONResponse Problem
+
+func (response ReorderViews401ApplicationProblemPlusJSONResponse) VisitReorderViewsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ReorderViews403ApplicationProblemPlusJSONResponse Problem
+
+func (response ReorderViews403ApplicationProblemPlusJSONResponse) VisitReorderViewsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ReorderViews404ApplicationProblemPlusJSONResponse Problem
+
+func (response ReorderViews404ApplicationProblemPlusJSONResponse) VisitReorderViewsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteViewRequestObject struct {
+	ViewId ViewId `json:"viewId"`
+	Params DeleteViewParams
+}
+
+type DeleteViewResponseObject interface {
+	VisitDeleteViewResponse(w http.ResponseWriter) error
+}
+
+type DeleteView204Response struct {
+}
+
+func (response DeleteView204Response) VisitDeleteViewResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteView401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteView401ApplicationProblemPlusJSONResponse) VisitDeleteViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteView403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteView403ApplicationProblemPlusJSONResponse) VisitDeleteViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteView404ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteView404ApplicationProblemPlusJSONResponse) VisitDeleteViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetViewRequestObject struct {
+	ViewId ViewId `json:"viewId"`
+	Params GetViewParams
+}
+
+type GetViewResponseObject interface {
+	VisitGetViewResponse(w http.ResponseWriter) error
+}
+
+type GetView200JSONResponse SavedView
+
+func (response GetView200JSONResponse) VisitGetViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetView401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetView401ApplicationProblemPlusJSONResponse) VisitGetViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetView403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetView403ApplicationProblemPlusJSONResponse) VisitGetViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetView404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetView404ApplicationProblemPlusJSONResponse) VisitGetViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateViewRequestObject struct {
+	ViewId ViewId `json:"viewId"`
+	Params UpdateViewParams
+	Body   *UpdateViewJSONRequestBody
+}
+
+type UpdateViewResponseObject interface {
+	VisitUpdateViewResponse(w http.ResponseWriter) error
+}
+
+type UpdateView200JSONResponse SavedView
+
+func (response UpdateView200JSONResponse) VisitUpdateViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateView400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UpdateView400ApplicationProblemPlusJSONResponse) VisitUpdateViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateView401ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateView401ApplicationProblemPlusJSONResponse) VisitUpdateViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateView403ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateView403ApplicationProblemPlusJSONResponse) VisitUpdateViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateView404ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateView404ApplicationProblemPlusJSONResponse) VisitUpdateViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type ListWebhooksRequestObject struct {
 	Params ListWebhooksParams
 }
@@ -105030,6 +105928,24 @@ type StrictServerInterface interface {
 	// GetVersion Server version
 	// (GET /v1/version)
 	GetVersion(ctx context.Context, request GetVersionRequestObject) (GetVersionResponseObject, error)
+	// ListViews List saved views
+	// (GET /v1/views)
+	ListViews(ctx context.Context, request ListViewsRequestObject) (ListViewsResponseObject, error)
+	// CreateView Save a view
+	// (POST /v1/views)
+	CreateView(ctx context.Context, request CreateViewRequestObject) (CreateViewResponseObject, error)
+	// ReorderViews Reorder saved views
+	// (PUT /v1/views/order)
+	ReorderViews(ctx context.Context, request ReorderViewsRequestObject) (ReorderViewsResponseObject, error)
+	// DeleteView Delete a saved view
+	// (DELETE /v1/views/{viewId})
+	DeleteView(ctx context.Context, request DeleteViewRequestObject) (DeleteViewResponseObject, error)
+	// GetView Get a saved view
+	// (GET /v1/views/{viewId})
+	GetView(ctx context.Context, request GetViewRequestObject) (GetViewResponseObject, error)
+	// UpdateView Update a saved view
+	// (PATCH /v1/views/{viewId})
+	UpdateView(ctx context.Context, request UpdateViewRequestObject) (UpdateViewResponseObject, error)
 	// ListWebhooks List webhook endpoints
 	// (GET /v1/webhooks)
 	ListWebhooks(ctx context.Context, request ListWebhooksRequestObject) (ListWebhooksResponseObject, error)
@@ -119128,6 +120044,186 @@ func (sh *strictHandler) GetVersion(w http.ResponseWriter, r *http.Request) {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(GetVersionResponseObject); ok {
 		if err := validResponse.VisitGetVersionResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListViews operation middleware
+func (sh *strictHandler) ListViews(w http.ResponseWriter, r *http.Request, params ListViewsParams) {
+	var request ListViewsRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListViews(ctx, request.(ListViewsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListViews")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListViewsResponseObject); ok {
+		if err := validResponse.VisitListViewsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreateView operation middleware
+func (sh *strictHandler) CreateView(w http.ResponseWriter, r *http.Request, params CreateViewParams) {
+	var request CreateViewRequestObject
+
+	request.Params = params
+
+	var body CreateViewJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateView(ctx, request.(CreateViewRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateView")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(CreateViewResponseObject); ok {
+		if err := validResponse.VisitCreateViewResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ReorderViews operation middleware
+func (sh *strictHandler) ReorderViews(w http.ResponseWriter, r *http.Request, params ReorderViewsParams) {
+	var request ReorderViewsRequestObject
+
+	request.Params = params
+
+	var body ReorderViewsJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ReorderViews(ctx, request.(ReorderViewsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ReorderViews")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ReorderViewsResponseObject); ok {
+		if err := validResponse.VisitReorderViewsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteView operation middleware
+func (sh *strictHandler) DeleteView(w http.ResponseWriter, r *http.Request, viewId ViewId, params DeleteViewParams) {
+	var request DeleteViewRequestObject
+
+	request.ViewId = viewId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteView(ctx, request.(DeleteViewRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteView")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteViewResponseObject); ok {
+		if err := validResponse.VisitDeleteViewResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetView operation middleware
+func (sh *strictHandler) GetView(w http.ResponseWriter, r *http.Request, viewId ViewId, params GetViewParams) {
+	var request GetViewRequestObject
+
+	request.ViewId = viewId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetView(ctx, request.(GetViewRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetView")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetViewResponseObject); ok {
+		if err := validResponse.VisitGetViewResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UpdateView operation middleware
+func (sh *strictHandler) UpdateView(w http.ResponseWriter, r *http.Request, viewId ViewId, params UpdateViewParams) {
+	var request UpdateViewRequestObject
+
+	request.ViewId = viewId
+	request.Params = params
+
+	var body UpdateViewJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateView(ctx, request.(UpdateViewRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateView")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UpdateViewResponseObject); ok {
+		if err := validResponse.VisitUpdateViewResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

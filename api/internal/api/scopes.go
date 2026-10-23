@@ -14,7 +14,7 @@ var allScopes = []oas.ApiKeyScope{
 	oas.BroadcastsRead, oas.BroadcastsWrite, oas.BroadcastsSend, oas.MigrationsManage,
 	oas.AnalyticsRead, oas.AnalyticsWrite, oas.AnalyticsManage, oas.StatusRead, oas.StatusManage,
 	oas.HelpRead, oas.HelpWrite, oas.HelpPublish, oas.RoadmapRead, oas.RoadmapWrite, oas.RoadmapStage,
-	oas.ChangelogRead, oas.ChangelogWrite, oas.ChangelogPublish, oas.AuditRead, oas.IntegrationsRead, oas.IntegrationsManage, oas.IssuesWrite, oas.FieldsManage,
+	oas.ChangelogRead, oas.ChangelogWrite, oas.ChangelogPublish, oas.AuditRead, oas.IntegrationsRead, oas.IntegrationsManage, oas.IssuesWrite, oas.FieldsManage, oas.ViewsWrite,
 }
 
 // notImpliedScopes are left out of a key made without naming its scopes.
@@ -144,6 +144,13 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"CreateMacro": nil,
 	"UpdateMacro": nil,
 	"DeleteMacro": nil,
+
+	"ListViews":    {oas.ConversationsRead},
+	"GetView":      {oas.ConversationsRead},
+	"CreateView":   nil,
+	"UpdateView":   nil,
+	"DeleteView":   nil,
+	"ReorderViews": nil,
 
 	"ListCustomFields":  nil,
 	"GetCustomField":    nil,
@@ -422,7 +429,8 @@ func errInsufficientScope(scope oas.ApiKeyScope) *apiError {
 
 // keyMayCall refuses a key an operation that is not in operationScopes or whose scopes it lacks;
 // CreateMessage (nil) needs messages:write or notes:write by its kind, the macro writes (nil)
-// canned_replies:write for a shared macro and conversations:write for a personal one, and BulkUpdateConversations
+// canned_replies:write for a shared macro and conversations:write for a personal one, the view writes
+// (nil) views:write, and BulkUpdateConversations
 // (nil) conversations:delete for trashed and conversations:write for any other change, checked
 // once the body is read; the custom field reads (nil) conversations:read or contacts:read.
 func keyMayCall(p principal, operationID string) error {

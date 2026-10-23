@@ -374,6 +374,9 @@ func (s *Server) DeleteTeam(ctx context.Context, req oas.DeleteTeamRequestObject
 		}); err != nil {
 			return err
 		}
+		if err := q.StripTeamFromSavedViews(ctx, store.StripTeamFromSavedViewsParams{WorkspaceID: p.workspaceID, TeamID: t.ID.String()}); err != nil {
+			return err
+		}
 		teamEvent(events, eventTeamDeleted, body, nil)
 		return s.audit(ctx, q, p, oas.AuditTeamDeleted, oas.AuditTargetTeam, t.ID, auditDetails{"name": t.Name})
 	})

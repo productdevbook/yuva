@@ -950,6 +950,7 @@ const (
 	RoadmapWrite        ApiKeyScope = "roadmap:write"
 	StatusManage        ApiKeyScope = "status:manage"
 	StatusRead          ApiKeyScope = "status:read"
+	ViewsWrite          ApiKeyScope = "views:write"
 	WebhooksManage      ApiKeyScope = "webhooks:manage"
 	WorkspaceManage     ApiKeyScope = "workspace:manage"
 )
@@ -1034,6 +1035,8 @@ func (e ApiKeyScope) Valid() bool {
 	case StatusManage:
 		return true
 	case StatusRead:
+		return true
+	case ViewsWrite:
 		return true
 	case WebhooksManage:
 		return true
@@ -5673,6 +5676,27 @@ func (e Role) Valid() bool {
 	}
 }
 
+// Defines values for SavedViewVisibility.
+const (
+	SavedViewPersonal  SavedViewVisibility = "personal"
+	SavedViewTeam      SavedViewVisibility = "team"
+	SavedViewWorkspace SavedViewVisibility = "workspace"
+)
+
+// Valid indicates whether the value is a known member of the SavedViewVisibility enum.
+func (e SavedViewVisibility) Valid() bool {
+	switch e {
+	case SavedViewPersonal:
+		return true
+	case SavedViewTeam:
+		return true
+	case SavedViewWorkspace:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for SesTenantStatusPausedBy.
 const (
 	SesPausedByAws    SesTenantStatusPausedBy = "aws"
@@ -8631,7 +8655,9 @@ type AnalyticsRangeProblem struct {
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
 
-	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
+	// on saved views: the filter parameter refused.
+	//
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
@@ -9232,12 +9258,15 @@ type ApiKeyList struct {
 //	  - `issues:write`: create, link and unlink GitHub and Linear issues on feedback and ideas,
 //	    together with `conversations:read`.
 //
+//	  - `views:write`: save, change, reorder and delete saved views: personal ones for OAuth
+//	    tokens, workspace and team ones for owners' and admins' tokens and for API keys.
+//
 //	  - `fields:manage`: create, change and delete custom field definitions. Owners and admins
 //	    only; never offered to agents' tokens, refused for keys limited to inboxes. Never
 //	    implied: a key made without naming its scopes does not hold it. Writing values needs
 //	    `conversations:write` or `contacts:write`.
 //
-// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write` and `fields:manage` are never added to keys made before they existed.
+// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage` and `views:write` are never added to keys made before they existed.
 type ApiKeyScope string
 
 // ApiKeyUpdate Only the fields sent change. Scopes, inbox limit and expiry cannot change.
@@ -9956,7 +9985,9 @@ type BroadcastProblem struct {
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
 
-	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
+	// on saved views: the filter parameter refused.
+	//
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
@@ -10324,7 +10355,9 @@ type ChangelogConflictProblem struct {
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
 
-	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
+	// on saved views: the filter parameter refused.
+	//
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
@@ -14021,7 +14054,9 @@ type EmailDesignProblem struct {
 	Detail *string             `json:"detail,omitempty"`
 	Errors *[]EmailDesignIssue `json:"errors,omitempty"`
 
-	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
+	// on saved views: the filter parameter refused.
+	//
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
@@ -14364,7 +14399,9 @@ type EmailImageProblem struct {
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
 
-	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
+	// on saved views: the filter parameter refused.
+	//
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
@@ -15432,7 +15469,9 @@ type HelpConflictProblem struct {
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
 
-	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
+	// on saved views: the filter parameter refused.
+	//
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
@@ -18199,7 +18238,9 @@ type MigrationFileProblem struct {
 	// Entry `file_refused` only: the zip entry it is about, when one is.
 	Entry *string `json:"entry,omitempty"`
 
-	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
+	// on saved views: the filter parameter refused.
+	//
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
@@ -19250,7 +19291,9 @@ type Problem struct {
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
 
-	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
+	// on saved views: the filter parameter refused.
+	//
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
@@ -19880,6 +19923,90 @@ type RoadmapSuggestions string
 
 // Role defines model for Role.
 type Role string
+
+// SavedView defines model for SavedView.
+type SavedView struct {
+	// Count Open conversations under the filters that the caller sees, at most 1000. Absent when
+	// the filters do not apply to the caller.
+	Count *int32 `json:"count,omitempty"`
+
+	// CountCapped `true` when more than 1000 conversations match; `count` is then 1000.
+	CountCapped *bool     `json:"count_capped,omitempty"`
+	CreatedAt   time.Time `json:"created_at"`
+
+	// Filters Query parameters of `GET /v1/conversations`, by name, each with its value as it would
+	// appear in the query string (lists comma-separated), e.g.
+	// `{"status": "open,pending", "label_id": "…", "field.plan": "pro"}`. `cursor` and `limit`
+	// are not filters. Ids are kept, so a renamed label, team or field changes nothing; a
+	// deleted label, team or conversation field drops out of every view's filters.
+	Filters SavedViewFilters `json:"filters"`
+	Id      uuid.UUID        `json:"id"`
+	Name    string           `json:"name"`
+
+	// OwnerMemberId The member a `personal` view belongs to.
+	OwnerMemberId *uuid.UUID `json:"owner_member_id,omitempty"`
+	Position      int32      `json:"position"`
+
+	// TeamId The team a `team` view is shared with.
+	TeamId    *uuid.UUID `json:"team_id,omitempty"`
+	UpdatedAt time.Time  `json:"updated_at"`
+
+	// Visibility `personal`: only its owner sees it. `workspace`: every member. `team`: the team's members,
+	// owners and admins.
+	Visibility SavedViewVisibility `json:"visibility"`
+}
+
+// SavedViewCreate defines model for SavedViewCreate.
+type SavedViewCreate struct {
+	// Filters Query parameters of `GET /v1/conversations`, by name, each with its value as it would
+	// appear in the query string (lists comma-separated), e.g.
+	// `{"status": "open,pending", "label_id": "…", "field.plan": "pro"}`. `cursor` and `limit`
+	// are not filters. Ids are kept, so a renamed label, team or field changes nothing; a
+	// deleted label, team or conversation field drops out of every view's filters.
+	Filters  SavedViewFilters `json:"filters"`
+	Name     string           `json:"name"`
+	Position *int32           `json:"position,omitempty"`
+
+	// TeamId Required for a `team` view, refused for the others.
+	TeamId *uuid.UUID `json:"team_id,omitempty"`
+
+	// Visibility `personal`: only its owner sees it. `workspace`: every member. `team`: the team's members,
+	// owners and admins.
+	Visibility SavedViewVisibility `json:"visibility"`
+}
+
+// SavedViewFilters Query parameters of `GET /v1/conversations`, by name, each with its value as it would
+// appear in the query string (lists comma-separated), e.g.
+// `{"status": "open,pending", "label_id": "…", "field.plan": "pro"}`. `cursor` and `limit`
+// are not filters. Ids are kept, so a renamed label, team or field changes nothing; a
+// deleted label, team or conversation field drops out of every view's filters.
+type SavedViewFilters map[string]string
+
+// SavedViewList defines model for SavedViewList.
+type SavedViewList struct {
+	Items []SavedView `json:"items"`
+}
+
+// SavedViewOrder defines model for SavedViewOrder.
+type SavedViewOrder struct {
+	Ids []uuid.UUID `json:"ids"`
+}
+
+// SavedViewUpdate defines model for SavedViewUpdate.
+type SavedViewUpdate struct {
+	// Filters Query parameters of `GET /v1/conversations`, by name, each with its value as it would
+	// appear in the query string (lists comma-separated), e.g.
+	// `{"status": "open,pending", "label_id": "…", "field.plan": "pro"}`. `cursor` and `limit`
+	// are not filters. Ids are kept, so a renamed label, team or field changes nothing; a
+	// deleted label, team or conversation field drops out of every view's filters.
+	Filters  *SavedViewFilters `json:"filters,omitempty"`
+	Name     *string           `json:"name,omitempty"`
+	Position *int32            `json:"position,omitempty"`
+}
+
+// SavedViewVisibility `personal`: only its owner sees it. `workspace`: every member. `team`: the team's members,
+// owners and admins.
+type SavedViewVisibility string
 
 // SesTenantStatus The inbox's Amazon SES tenant, when the server manages one. `sending_status: disabled` means SES
 // paused it: the inbox's mail through the server's SES account is refused and its broadcasts pause
@@ -22829,6 +22956,9 @@ type TemplateLocale = EmailTemplateLocale
 
 // TemplateSlug defines model for TemplateSlug.
 type TemplateSlug = string
+
+// ViewId defines model for ViewId.
+type ViewId = uuid.UUID
 
 // WebhookId defines model for WebhookId.
 type WebhookId = uuid.UUID
@@ -26334,6 +26464,45 @@ type GetUsageParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListViewsParams defines parameters for ListViews.
+type ListViewsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CreateViewParams defines parameters for CreateView.
+type CreateViewParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ReorderViewsParams defines parameters for ReorderViews.
+type ReorderViewsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteViewParams defines parameters for DeleteView.
+type DeleteViewParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetViewParams defines parameters for GetView.
+type GetViewParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateViewParams defines parameters for UpdateView.
+type UpdateViewParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // ListWebhooksParams defines parameters for ListWebhooks.
 type ListWebhooksParams struct {
 	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
@@ -27584,6 +27753,15 @@ type CreateTeamJSONRequestBody = TeamCreate
 
 // UpdateTeamJSONRequestBody defines body for UpdateTeam for application/json ContentType.
 type UpdateTeamJSONRequestBody = TeamUpdate
+
+// CreateViewJSONRequestBody defines body for CreateView for application/json ContentType.
+type CreateViewJSONRequestBody = SavedViewCreate
+
+// ReorderViewsJSONRequestBody defines body for ReorderViews for application/json ContentType.
+type ReorderViewsJSONRequestBody = SavedViewOrder
+
+// UpdateViewJSONRequestBody defines body for UpdateView for application/json ContentType.
+type UpdateViewJSONRequestBody = SavedViewUpdate
 
 // CreateWebhookJSONRequestBody defines body for CreateWebhook for application/json ContentType.
 type CreateWebhookJSONRequestBody = WebhookEndpointCreate
@@ -41296,6 +41474,121 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /v1/version (the `GetVersion` operationId).
 	GetVersion(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListViews List saved views
+	//
+	// The saved views of the conversation list the caller sees: their own personal views, the
+	// workspace's views and the views of their teams (owners, admins and API keys see every
+	// team's views; API keys have no personal views). Personal first, then team, then
+	// workspace, each by `position` and name; at most 50.
+	//
+	// Each view carries `count`: its open conversations, counted with the view's filters under
+	// the caller's own inbox access, so a shared view never counts what the caller cannot see.
+	// `count` stops at 1000 (`count_capped`), and is absent when the filters do not apply to the
+	// caller, for example `assignee=me` for an API key or an inbox the caller cannot see.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Corresponds with GET /v1/views (the `ListViews` operationId).
+	ListViews(ctx context.Context, params *ListViewsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateViewWithBody Save a view
+	//
+	// A `personal` view belongs to the calling member: any member with a session, or an OAuth
+	// token with `views:write`; API keys are refused with `403 member_session_required`.
+	// `workspace` and `team` views are created by owners and admins (with `views:write` on an
+	// OAuth token) and API keys with `views:write`; agents get `403 forbidden`. A `team` view
+	// names its `team_id` and is listed to that team's members, owners and admins; deleting the
+	// team deletes its views.
+	//
+	// `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
+	// caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
+	// `400 validation_failed` with `field` naming the parameter. A view counts towards the
+	// limit of 50 views the caller sees (`403 view_limit`).
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/views (the `CreateView` operationId).
+	CreateViewWithBody(ctx context.Context, params *CreateViewParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateView Save a view
+	//
+	// A `personal` view belongs to the calling member: any member with a session, or an OAuth
+	// token with `views:write`; API keys are refused with `403 member_session_required`.
+	// `workspace` and `team` views are created by owners and admins (with `views:write` on an
+	// OAuth token) and API keys with `views:write`; agents get `403 forbidden`. A `team` view
+	// names its `team_id` and is listed to that team's members, owners and admins; deleting the
+	// team deletes its views.
+	//
+	// `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
+	// caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
+	// `400 validation_failed` with `field` naming the parameter. A view counts towards the
+	// limit of 50 views the caller sees (`403 view_limit`).
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/views (the `CreateView` operationId).
+	CreateView(ctx context.Context, params *CreateViewParams, body CreateViewJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ReorderViewsWithBody Reorder saved views
+	//
+	// Sets each named view's `position` to its index in `ids`. Every view must be one the caller
+	// sees and may change (same permissions as updating it); otherwise `404` or `403` and
+	// nothing moves. Views not named keep their position.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /v1/views/order (the `ReorderViews` operationId).
+	ReorderViewsWithBody(ctx context.Context, params *ReorderViewsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ReorderViews Reorder saved views
+	//
+	// Sets each named view's `position` to its index in `ids`. Every view must be one the caller
+	// sees and may change (same permissions as updating it); otherwise `404` or `403` and
+	// nothing moves. Views not named keep their position.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /v1/views/order (the `ReorderViews` operationId).
+	ReorderViews(ctx context.Context, params *ReorderViewsParams, body ReorderViewsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteView Delete a saved view
+	//
+	// Same permissions as creating one of its visibility.
+	//
+	// Corresponds with DELETE /v1/views/{viewId} (the `DeleteView` operationId).
+	DeleteView(ctx context.Context, viewId ViewId, params *DeleteViewParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetView Get a saved view
+	//
+	// A view the caller sees, with its `count` as in the list; any other is `404`.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Corresponds with GET /v1/views/{viewId} (the `GetView` operationId).
+	GetView(ctx context.Context, viewId ViewId, params *GetViewParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateViewWithBody Update a saved view
+	//
+	// Same permissions as creating one of its visibility; members of a team see its views but
+	// do not change them. `filters` replaces the filters as a whole and is checked as on create.
+	// The visibility and team do not change; save a new view instead.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PATCH /v1/views/{viewId} (the `UpdateView` operationId).
+	UpdateViewWithBody(ctx context.Context, viewId ViewId, params *UpdateViewParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateView Update a saved view
+	//
+	// Same permissions as creating one of its visibility; members of a team see its views but
+	// do not change them. `filters` replaces the filters as a whole and is checked as on create.
+	// The visibility and team do not change; save a new view instead.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PATCH /v1/views/{viewId} (the `UpdateView` operationId).
+	UpdateView(ctx context.Context, viewId ViewId, params *UpdateViewParams, body UpdateViewJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListWebhooks List webhook endpoints
 	//
@@ -57491,6 +57784,211 @@ func (c *Client) GetUsage(ctx context.Context, params *GetUsageParams, reqEditor
 // Corresponds with GET /v1/version (the `GetVersion` operationId).
 func (c *Client) GetVersion(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetVersionRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListViews List saved views
+//
+// The saved views of the conversation list the caller sees: their own personal views, the
+// workspace's views and the views of their teams (owners, admins and API keys see every
+// team's views; API keys have no personal views). Personal first, then team, then
+// workspace, each by `position` and name; at most 50.
+//
+// Each view carries `count`: its open conversations, counted with the view's filters under
+// the caller's own inbox access, so a shared view never counts what the caller cannot see.
+// `count` stops at 1000 (`count_capped`), and is absent when the filters do not apply to the
+// caller, for example `assignee=me` for an API key or an inbox the caller cannot see.
+//
+// Scope: `conversations:read`.
+//
+// Corresponds with GET /v1/views (the `ListViews` operationId).
+func (c *Client) ListViews(ctx context.Context, params *ListViewsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListViewsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateViewWithBody Save a view
+//
+// A `personal` view belongs to the calling member: any member with a session, or an OAuth
+// token with `views:write`; API keys are refused with `403 member_session_required`.
+// `workspace` and `team` views are created by owners and admins (with `views:write` on an
+// OAuth token) and API keys with `views:write`; agents get `403 forbidden`. A `team` view
+// names its `team_id` and is listed to that team's members, owners and admins; deleting the
+// team deletes its views.
+//
+// `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
+// caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
+// `400 validation_failed` with `field` naming the parameter. A view counts towards the
+// limit of 50 views the caller sees (`403 view_limit`).
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/views (the `CreateView` operationId).
+func (c *Client) CreateViewWithBody(ctx context.Context, params *CreateViewParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateViewRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateView Save a view
+//
+// A `personal` view belongs to the calling member: any member with a session, or an OAuth
+// token with `views:write`; API keys are refused with `403 member_session_required`.
+// `workspace` and `team` views are created by owners and admins (with `views:write` on an
+// OAuth token) and API keys with `views:write`; agents get `403 forbidden`. A `team` view
+// names its `team_id` and is listed to that team's members, owners and admins; deleting the
+// team deletes its views.
+//
+// `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
+// caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
+// `400 validation_failed` with `field` naming the parameter. A view counts towards the
+// limit of 50 views the caller sees (`403 view_limit`).
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/views (the `CreateView` operationId).
+func (c *Client) CreateView(ctx context.Context, params *CreateViewParams, body CreateViewJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateViewRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ReorderViewsWithBody Reorder saved views
+//
+// Sets each named view's `position` to its index in `ids`. Every view must be one the caller
+// sees and may change (same permissions as updating it); otherwise `404` or `403` and
+// nothing moves. Views not named keep their position.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /v1/views/order (the `ReorderViews` operationId).
+func (c *Client) ReorderViewsWithBody(ctx context.Context, params *ReorderViewsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReorderViewsRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ReorderViews Reorder saved views
+//
+// Sets each named view's `position` to its index in `ids`. Every view must be one the caller
+// sees and may change (same permissions as updating it); otherwise `404` or `403` and
+// nothing moves. Views not named keep their position.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /v1/views/order (the `ReorderViews` operationId).
+func (c *Client) ReorderViews(ctx context.Context, params *ReorderViewsParams, body ReorderViewsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReorderViewsRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteView Delete a saved view
+//
+// Same permissions as creating one of its visibility.
+//
+// Corresponds with DELETE /v1/views/{viewId} (the `DeleteView` operationId).
+func (c *Client) DeleteView(ctx context.Context, viewId ViewId, params *DeleteViewParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteViewRequest(c.Server, viewId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetView Get a saved view
+//
+// A view the caller sees, with its `count` as in the list; any other is `404`.
+//
+// Scope: `conversations:read`.
+//
+// Corresponds with GET /v1/views/{viewId} (the `GetView` operationId).
+func (c *Client) GetView(ctx context.Context, viewId ViewId, params *GetViewParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetViewRequest(c.Server, viewId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateViewWithBody Update a saved view
+//
+// Same permissions as creating one of its visibility; members of a team see its views but
+// do not change them. `filters` replaces the filters as a whole and is checked as on create.
+// The visibility and team do not change; save a new view instead.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PATCH /v1/views/{viewId} (the `UpdateView` operationId).
+func (c *Client) UpdateViewWithBody(ctx context.Context, viewId ViewId, params *UpdateViewParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateViewRequestWithBody(c.Server, viewId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateView Update a saved view
+//
+// Same permissions as creating one of its visibility; members of a team see its views but
+// do not change them. `filters` replaces the filters as a whole and is checked as on create.
+// The visibility and team do not change; save a new view instead.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PATCH /v1/views/{viewId} (the `UpdateView` operationId).
+func (c *Client) UpdateView(ctx context.Context, viewId ViewId, params *UpdateViewParams, body UpdateViewJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateViewRequest(c.Server, viewId, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -87856,6 +88354,329 @@ func NewGetVersionRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewListViewsRequest constructs an http.Request for the ListViews method
+func NewListViewsRequest(server string, params *ListViewsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/views")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewCreateViewRequest calls the generic CreateView builder with application/json body
+func NewCreateViewRequest(server string, params *CreateViewParams, body CreateViewJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateViewRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewCreateViewRequestWithBody constructs an http.Request for the CreateView method, with any body, and a specified content type
+func NewCreateViewRequestWithBody(server string, params *CreateViewParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/views")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewReorderViewsRequest calls the generic ReorderViews builder with application/json body
+func NewReorderViewsRequest(server string, params *ReorderViewsParams, body ReorderViewsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewReorderViewsRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewReorderViewsRequestWithBody constructs an http.Request for the ReorderViews method, with any body, and a specified content type
+func NewReorderViewsRequestWithBody(server string, params *ReorderViewsParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/views/order")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewDeleteViewRequest constructs an http.Request for the DeleteView method
+func NewDeleteViewRequest(server string, viewId ViewId, params *DeleteViewParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "viewId", viewId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/views/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewGetViewRequest constructs an http.Request for the GetView method
+func NewGetViewRequest(server string, viewId ViewId, params *GetViewParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "viewId", viewId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/views/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewUpdateViewRequest calls the generic UpdateView builder with application/json body
+func NewUpdateViewRequest(server string, viewId ViewId, params *UpdateViewParams, body UpdateViewJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateViewRequestWithBody(server, viewId, params, "application/json", bodyReader)
+}
+
+// NewUpdateViewRequestWithBody constructs an http.Request for the UpdateView method, with any body, and a specified content type
+func NewUpdateViewRequestWithBody(server string, viewId ViewId, params *UpdateViewParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "viewId", viewId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/views/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewListWebhooksRequest constructs an http.Request for the ListWebhooks method
 func NewListWebhooksRequest(server string, params *ListWebhooksParams) (*http.Request, error) {
 	var err error
@@ -98804,6 +99625,127 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /v1/version (the `GetVersion` operationId).
 	GetVersionWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetVersionResponse, error)
+
+	// ListViewsWithResponse List saved views
+	//
+	// The saved views of the conversation list the caller sees: their own personal views, the
+	// workspace's views and the views of their teams (owners, admins and API keys see every
+	// team's views; API keys have no personal views). Personal first, then team, then
+	// workspace, each by `position` and name; at most 50.
+	//
+	// Each view carries `count`: its open conversations, counted with the view's filters under
+	// the caller's own inbox access, so a shared view never counts what the caller cannot see.
+	// `count` stops at 1000 (`count_capped`), and is absent when the filters do not apply to the
+	// caller, for example `assignee=me` for an API key or an inbox the caller cannot see.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/views (the `ListViews` operationId).
+	ListViewsWithResponse(ctx context.Context, params *ListViewsParams, reqEditors ...RequestEditorFn) (*ListViewsResponse, error)
+
+	// CreateViewWithBodyWithResponse Save a view
+	//
+	// A `personal` view belongs to the calling member: any member with a session, or an OAuth
+	// token with `views:write`; API keys are refused with `403 member_session_required`.
+	// `workspace` and `team` views are created by owners and admins (with `views:write` on an
+	// OAuth token) and API keys with `views:write`; agents get `403 forbidden`. A `team` view
+	// names its `team_id` and is listed to that team's members, owners and admins; deleting the
+	// team deletes its views.
+	//
+	// `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
+	// caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
+	// `400 validation_failed` with `field` naming the parameter. A view counts towards the
+	// limit of 50 views the caller sees (`403 view_limit`).
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/views (the `CreateView` operationId).
+	CreateViewWithBodyWithResponse(ctx context.Context, params *CreateViewParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateViewResponse, error)
+
+	// CreateViewWithResponse Save a view
+	//
+	// A `personal` view belongs to the calling member: any member with a session, or an OAuth
+	// token with `views:write`; API keys are refused with `403 member_session_required`.
+	// `workspace` and `team` views are created by owners and admins (with `views:write` on an
+	// OAuth token) and API keys with `views:write`; agents get `403 forbidden`. A `team` view
+	// names its `team_id` and is listed to that team's members, owners and admins; deleting the
+	// team deletes its views.
+	//
+	// `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
+	// caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
+	// `400 validation_failed` with `field` naming the parameter. A view counts towards the
+	// limit of 50 views the caller sees (`403 view_limit`).
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/views (the `CreateView` operationId).
+	CreateViewWithResponse(ctx context.Context, params *CreateViewParams, body CreateViewJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateViewResponse, error)
+
+	// ReorderViewsWithBodyWithResponse Reorder saved views
+	//
+	// Sets each named view's `position` to its index in `ids`. Every view must be one the caller
+	// sees and may change (same permissions as updating it); otherwise `404` or `403` and
+	// nothing moves. Views not named keep their position.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/views/order (the `ReorderViews` operationId).
+	ReorderViewsWithBodyWithResponse(ctx context.Context, params *ReorderViewsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ReorderViewsResponse, error)
+
+	// ReorderViewsWithResponse Reorder saved views
+	//
+	// Sets each named view's `position` to its index in `ids`. Every view must be one the caller
+	// sees and may change (same permissions as updating it); otherwise `404` or `403` and
+	// nothing moves. Views not named keep their position.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/views/order (the `ReorderViews` operationId).
+	ReorderViewsWithResponse(ctx context.Context, params *ReorderViewsParams, body ReorderViewsJSONRequestBody, reqEditors ...RequestEditorFn) (*ReorderViewsResponse, error)
+
+	// DeleteViewWithResponse Delete a saved view
+	//
+	// Same permissions as creating one of its visibility.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/views/{viewId} (the `DeleteView` operationId).
+	DeleteViewWithResponse(ctx context.Context, viewId ViewId, params *DeleteViewParams, reqEditors ...RequestEditorFn) (*DeleteViewResponse, error)
+
+	// GetViewWithResponse Get a saved view
+	//
+	// A view the caller sees, with its `count` as in the list; any other is `404`.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/views/{viewId} (the `GetView` operationId).
+	GetViewWithResponse(ctx context.Context, viewId ViewId, params *GetViewParams, reqEditors ...RequestEditorFn) (*GetViewResponse, error)
+
+	// UpdateViewWithBodyWithResponse Update a saved view
+	//
+	// Same permissions as creating one of its visibility; members of a team see its views but
+	// do not change them. `filters` replaces the filters as a whole and is checked as on create.
+	// The visibility and team do not change; save a new view instead.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /v1/views/{viewId} (the `UpdateView` operationId).
+	UpdateViewWithBodyWithResponse(ctx context.Context, viewId ViewId, params *UpdateViewParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateViewResponse, error)
+
+	// UpdateViewWithResponse Update a saved view
+	//
+	// Same permissions as creating one of its visibility; members of a team see its views but
+	// do not change them. `filters` replaces the filters as a whole and is checked as on create.
+	// The visibility and team do not change; save a new view instead.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /v1/views/{viewId} (the `UpdateView` operationId).
+	UpdateViewWithResponse(ctx context.Context, viewId ViewId, params *UpdateViewParams, body UpdateViewJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateViewResponse, error)
 
 	// ListWebhooksWithResponse List webhook endpoints
 	//
@@ -131225,6 +132167,371 @@ func (r GetVersionResponse) ContentType() string {
 	return ""
 }
 
+type ListViewsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SavedViewList
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListViewsResponse) GetJSON200() *SavedViewList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListViewsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListViewsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r ListViewsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListViewsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListViewsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListViewsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateViewResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON201 the response for an HTTP 201 `application/json` response
+	JSON201 *SavedView
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON201 returns the response for an HTTP 201 `application/json` response
+func (r CreateViewResponse) GetJSON201() *SavedView {
+	return r.JSON201
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r CreateViewResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r CreateViewResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r CreateViewResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r CreateViewResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateViewResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateViewResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateViewResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ReorderViewsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r ReorderViewsResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ReorderViewsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ReorderViewsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ReorderViewsResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r ReorderViewsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ReorderViewsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ReorderViewsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ReorderViewsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteViewResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DeleteViewResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeleteViewResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r DeleteViewResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteViewResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteViewResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteViewResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteViewResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetViewResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SavedView
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetViewResponse) GetJSON200() *SavedView {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetViewResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetViewResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r GetViewResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r GetViewResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetViewResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetViewResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetViewResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateViewResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SavedView
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateViewResponse) GetJSON200() *SavedView {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r UpdateViewResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r UpdateViewResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r UpdateViewResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r UpdateViewResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateViewResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateViewResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateViewResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateViewResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type ListWebhooksResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -146110,6 +147417,181 @@ func (c *ClientWithResponses) GetVersionWithResponse(ctx context.Context, reqEdi
 		return nil, err
 	}
 	return ParseGetVersionResponse(rsp)
+}
+
+// ListViewsWithResponse List saved views
+//
+// The saved views of the conversation list the caller sees: their own personal views, the
+// workspace's views and the views of their teams (owners, admins and API keys see every
+// team's views; API keys have no personal views). Personal first, then team, then
+// workspace, each by `position` and name; at most 50.
+//
+// Each view carries `count`: its open conversations, counted with the view's filters under
+// the caller's own inbox access, so a shared view never counts what the caller cannot see.
+// `count` stops at 1000 (`count_capped`), and is absent when the filters do not apply to the
+// caller, for example `assignee=me` for an API key or an inbox the caller cannot see.
+//
+// Scope: `conversations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/views (the `ListViews` operationId).
+func (c *ClientWithResponses) ListViewsWithResponse(ctx context.Context, params *ListViewsParams, reqEditors ...RequestEditorFn) (*ListViewsResponse, error) {
+	rsp, err := c.ListViews(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListViewsResponse(rsp)
+}
+
+// CreateViewWithBodyWithResponse Save a view
+//
+// A `personal` view belongs to the calling member: any member with a session, or an OAuth
+// token with `views:write`; API keys are refused with `403 member_session_required`.
+// `workspace` and `team` views are created by owners and admins (with `views:write` on an
+// OAuth token) and API keys with `views:write`; agents get `403 forbidden`. A `team` view
+// names its `team_id` and is listed to that team's members, owners and admins; deleting the
+// team deletes its views.
+//
+// `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
+// caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
+// `400 validation_failed` with `field` naming the parameter. A view counts towards the
+// limit of 50 views the caller sees (`403 view_limit`).
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/views (the `CreateView` operationId).
+func (c *ClientWithResponses) CreateViewWithBodyWithResponse(ctx context.Context, params *CreateViewParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateViewResponse, error) {
+	rsp, err := c.CreateViewWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateViewResponse(rsp)
+}
+
+// CreateViewWithResponse Save a view
+//
+// A `personal` view belongs to the calling member: any member with a session, or an OAuth
+// token with `views:write`; API keys are refused with `403 member_session_required`.
+// `workspace` and `team` views are created by owners and admins (with `views:write` on an
+// OAuth token) and API keys with `views:write`; agents get `403 forbidden`. A `team` view
+// names its `team_id` and is listed to that team's members, owners and admins; deleting the
+// team deletes its views.
+//
+// `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
+// caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
+// `400 validation_failed` with `field` naming the parameter. A view counts towards the
+// limit of 50 views the caller sees (`403 view_limit`).
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/views (the `CreateView` operationId).
+func (c *ClientWithResponses) CreateViewWithResponse(ctx context.Context, params *CreateViewParams, body CreateViewJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateViewResponse, error) {
+	rsp, err := c.CreateView(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateViewResponse(rsp)
+}
+
+// ReorderViewsWithBodyWithResponse Reorder saved views
+//
+// Sets each named view's `position` to its index in `ids`. Every view must be one the caller
+// sees and may change (same permissions as updating it); otherwise `404` or `403` and
+// nothing moves. Views not named keep their position.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/views/order (the `ReorderViews` operationId).
+func (c *ClientWithResponses) ReorderViewsWithBodyWithResponse(ctx context.Context, params *ReorderViewsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ReorderViewsResponse, error) {
+	rsp, err := c.ReorderViewsWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReorderViewsResponse(rsp)
+}
+
+// ReorderViewsWithResponse Reorder saved views
+//
+// Sets each named view's `position` to its index in `ids`. Every view must be one the caller
+// sees and may change (same permissions as updating it); otherwise `404` or `403` and
+// nothing moves. Views not named keep their position.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/views/order (the `ReorderViews` operationId).
+func (c *ClientWithResponses) ReorderViewsWithResponse(ctx context.Context, params *ReorderViewsParams, body ReorderViewsJSONRequestBody, reqEditors ...RequestEditorFn) (*ReorderViewsResponse, error) {
+	rsp, err := c.ReorderViews(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReorderViewsResponse(rsp)
+}
+
+// DeleteViewWithResponse Delete a saved view
+//
+// Same permissions as creating one of its visibility.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/views/{viewId} (the `DeleteView` operationId).
+func (c *ClientWithResponses) DeleteViewWithResponse(ctx context.Context, viewId ViewId, params *DeleteViewParams, reqEditors ...RequestEditorFn) (*DeleteViewResponse, error) {
+	rsp, err := c.DeleteView(ctx, viewId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteViewResponse(rsp)
+}
+
+// GetViewWithResponse Get a saved view
+//
+// A view the caller sees, with its `count` as in the list; any other is `404`.
+//
+// Scope: `conversations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/views/{viewId} (the `GetView` operationId).
+func (c *ClientWithResponses) GetViewWithResponse(ctx context.Context, viewId ViewId, params *GetViewParams, reqEditors ...RequestEditorFn) (*GetViewResponse, error) {
+	rsp, err := c.GetView(ctx, viewId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetViewResponse(rsp)
+}
+
+// UpdateViewWithBodyWithResponse Update a saved view
+//
+// Same permissions as creating one of its visibility; members of a team see its views but
+// do not change them. `filters` replaces the filters as a whole and is checked as on create.
+// The visibility and team do not change; save a new view instead.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /v1/views/{viewId} (the `UpdateView` operationId).
+func (c *ClientWithResponses) UpdateViewWithBodyWithResponse(ctx context.Context, viewId ViewId, params *UpdateViewParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateViewResponse, error) {
+	rsp, err := c.UpdateViewWithBody(ctx, viewId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateViewResponse(rsp)
+}
+
+// UpdateViewWithResponse Update a saved view
+//
+// Same permissions as creating one of its visibility; members of a team see its views but
+// do not change them. `filters` replaces the filters as a whole and is checked as on create.
+// The visibility and team do not change; save a new view instead.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /v1/views/{viewId} (the `UpdateView` operationId).
+func (c *ClientWithResponses) UpdateViewWithResponse(ctx context.Context, viewId ViewId, params *UpdateViewParams, body UpdateViewJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateViewResponse, error) {
+	rsp, err := c.UpdateView(ctx, viewId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateViewResponse(rsp)
 }
 
 // ListWebhooksWithResponse List webhook endpoints
@@ -171799,6 +173281,287 @@ func ParseGetVersionResponse(rsp *http.Response) (*GetVersionResponse, error) {
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListViewsResponse parses an HTTP response from a ListViewsWithResponse call
+func ParseListViewsResponse(rsp *http.Response) (*ListViewsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListViewsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SavedViewList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateViewResponse parses an HTTP response from a CreateViewWithResponse call
+func ParseCreateViewResponse(rsp *http.Response) (*CreateViewResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateViewResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest SavedView
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseReorderViewsResponse parses an HTTP response from a ReorderViewsWithResponse call
+func ParseReorderViewsResponse(rsp *http.Response) (*ReorderViewsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ReorderViewsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteViewResponse parses an HTTP response from a DeleteViewWithResponse call
+func ParseDeleteViewResponse(rsp *http.Response) (*DeleteViewResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteViewResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetViewResponse parses an HTTP response from a GetViewWithResponse call
+func ParseGetViewResponse(rsp *http.Response) (*GetViewResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetViewResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SavedView
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateViewResponse parses an HTTP response from a UpdateViewWithResponse call
+func ParseUpdateViewResponse(rsp *http.Response) (*UpdateViewResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateViewResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SavedView
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
 
 	}
 

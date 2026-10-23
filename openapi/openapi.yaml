@@ -142,6 +142,10 @@ tags:
     description: |
       A reply plus actions (labels, assignee, status, priority, snooze), personal or shared. The
       actions are applied only when a message is sent with `macro_id`.
+  - name: views
+    description: |
+      Saved filters of the conversation list, personal or shared with the workspace or a team,
+      each with its count of open conversations for the caller.
   - name: docs
     description: |
       Documentation pages on a product's own site: ratings per page, feedback sent from a page, and
@@ -5532,6 +5536,176 @@ paths:
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
         - $ref: "#/components/parameters/MacroId"
+      responses:
+        "204":
+          description: Deleted.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/views:
+    get:
+      operationId: listViews
+      summary: List saved views
+      description: |
+        The saved views of the conversation list the caller sees: their own personal views, the
+        workspace's views and the views of their teams (owners, admins and API keys see every
+        team's views; API keys have no personal views). Personal first, then team, then
+        workspace, each by `position` and name; at most 50.
+
+        Each view carries `count`: its open conversations, counted with the view's filters under
+        the caller's own inbox access, so a shared view never counts what the caller cannot see.
+        `count` stops at 1000 (`count_capped`), and is absent when the filters do not apply to the
+        caller, for example `assignee=me` for an API key or an inbox the caller cannot see.
+
+        Scope: `conversations:read`.
+      tags: [views]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The views.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavedViewList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createView
+      summary: Save a view
+      description: |
+        A `personal` view belongs to the calling member: any member with a session, or an OAuth
+        token with `views:write`; API keys are refused with `403 member_session_required`.
+        `workspace` and `team` views are created by owners and admins (with `views:write` on an
+        OAuth token) and API keys with `views:write`; agents get `403 forbidden`. A `team` view
+        names its `team_id` and is listed to that team's members, owners and admins; deleting the
+        team deletes its views.
+
+        `filters` are checked as `GET /v1/conversations` checks its query parameters, for the
+        caller: an unknown parameter, `cursor`, `limit`, or a value the list refuses answers
+        `400 validation_failed` with `field` naming the parameter. A view counts towards the
+        limit of 50 views the caller sees (`403 view_limit`).
+      tags: [views]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SavedViewCreate"
+      responses:
+        "201":
+          description: The view, with its count for the caller.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavedView"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+  /v1/views/order:
+    put:
+      operationId: reorderViews
+      summary: Reorder saved views
+      description: |
+        Sets each named view's `position` to its index in `ids`. Every view must be one the caller
+        sees and may change (same permissions as updating it); otherwise `404` or `403` and
+        nothing moves. Views not named keep their position.
+      tags: [views]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SavedViewOrder"
+      responses:
+        "204":
+          description: Reordered.
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/views/{viewId}:
+    get:
+      operationId: getView
+      summary: Get a saved view
+      description: |
+        A view the caller sees, with its `count` as in the list; any other is `404`.
+
+        Scope: `conversations:read`.
+      tags: [views]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ViewId"
+      responses:
+        "200":
+          description: The view.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavedView"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    patch:
+      operationId: updateView
+      summary: Update a saved view
+      description: |
+        Same permissions as creating one of its visibility; members of a team see its views but
+        do not change them. `filters` replaces the filters as a whole and is checked as on create.
+        The visibility and team do not change; save a new view instead.
+      tags: [views]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ViewId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SavedViewUpdate"
+      responses:
+        "200":
+          description: The updated view, with its count for the caller.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavedView"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteView
+      summary: Delete a saved view
+      description: Same permissions as creating one of its visibility.
+      tags: [views]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ViewId"
       responses:
         "204":
           description: Deleted.
@@ -19155,6 +19329,13 @@ components:
       schema:
         type: string
         format: uuid
+    ViewId:
+      name: viewId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
     CustomFieldId:
       name: customFieldId
       in: path
@@ -20512,12 +20693,15 @@ components:
         - `issues:write`: create, link and unlink GitHub and Linear issues on feedback and ideas,
           together with `conversations:read`.
 
+        - `views:write`: save, change, reorder and delete saved views: personal ones for OAuth
+          tokens, workspace and team ones for owners' and admins' tokens and for API keys.
+
         - `fields:manage`: create, change and delete custom field definitions. Owners and admins
           only; never offered to agents' tokens, refused for keys limited to inboxes. Never
           implied: a key made without naming its scopes does not hold it. Writing values needs
           `conversations:write` or `contacts:write`.
 
-        `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write` and `fields:manage` are never added to keys made before they existed.
+        `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage` and `views:write` are never added to keys made before they existed.
       enum:
         - conversations:read
         - conversations:write
@@ -20560,6 +20744,7 @@ components:
         - integrations:manage
         - issues:write
         - fields:manage
+        - views:write
     BotAvatarUrl:
       type: string
       format: uri
@@ -24398,6 +24583,123 @@ components:
         name:
           type: string
           description: The macro's name when it was applied.
+    SavedViewVisibility:
+      type: string
+      enum: [personal, workspace, team]
+      x-enum-varnames: [SavedViewPersonal, SavedViewWorkspace, SavedViewTeam]
+      description: |
+        `personal`: only its owner sees it. `workspace`: every member. `team`: the team's members,
+        owners and admins.
+    SavedViewFilters:
+      type: object
+      maxProperties: 30
+      description: |
+        Query parameters of `GET /v1/conversations`, by name, each with its value as it would
+        appear in the query string (lists comma-separated), e.g.
+        `{"status": "open,pending", "label_id": "…", "field.plan": "pro"}`. `cursor` and `limit`
+        are not filters. Ids are kept, so a renamed label, team or field changes nothing; a
+        deleted label, team or conversation field drops out of every view's filters.
+      additionalProperties:
+        type: string
+        maxLength: 2000
+    SavedView:
+      type: object
+      required: [id, visibility, name, filters, position, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        visibility:
+          $ref: "#/components/schemas/SavedViewVisibility"
+        owner_member_id:
+          type: string
+          format: uuid
+          description: The member a `personal` view belongs to.
+        team_id:
+          type: string
+          format: uuid
+          description: The team a `team` view is shared with.
+        name:
+          type: string
+        filters:
+          $ref: "#/components/schemas/SavedViewFilters"
+        position:
+          type: integer
+          format: int32
+        count:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 1000
+          description: |
+            Open conversations under the filters that the caller sees, at most 1000. Absent when
+            the filters do not apply to the caller.
+        count_capped:
+          type: boolean
+          description: "`true` when more than 1000 conversations match; `count` is then 1000."
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    SavedViewCreate:
+      type: object
+      required: [visibility, name, filters]
+      properties:
+        visibility:
+          $ref: "#/components/schemas/SavedViewVisibility"
+        team_id:
+          type: string
+          format: uuid
+          description: Required for a `team` view, refused for the others.
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        filters:
+          $ref: "#/components/schemas/SavedViewFilters"
+        position:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 10000
+    SavedViewUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        filters:
+          $ref: "#/components/schemas/SavedViewFilters"
+        position:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 10000
+    SavedViewList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          maxItems: 50
+          items:
+            $ref: "#/components/schemas/SavedView"
+    SavedViewOrder:
+      type: object
+      required: [ids]
+      properties:
+        ids:
+          type: array
+          minItems: 1
+          maxItems: 50
+          uniqueItems: true
+          items:
+            type: string
+            format: uuid
     UsageMonth:
       type: object
       required: [month, conversations, messages, attachment_bytes, broadcast_recipients, imported_conversations, imported_messages, imported_bytes, analytics_events]
@@ -39542,7 +39844,9 @@ components:
           examples: [messages:write]
         field:
           type: string
-          description: "`field_invalid` and `field_required` only: the key of the custom field."
+          description: |
+            `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
+            on saved views: the filter parameter refused.
           examples: [order_id]
         limit:
           $ref: "#/components/schemas/HostedLimit"

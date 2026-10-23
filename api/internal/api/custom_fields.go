@@ -577,6 +577,7 @@ func (s *Server) DeleteCustomField(ctx context.Context, req oas.DeleteCustomFiel
 		}
 		if f.Object == fieldObjectConv {
 			events.job(CustomFieldClearArgs{WorkspaceID: p.workspaceID, FieldID: &f.ID, Key: f.Key, Run: newID()}, nil)
+			return q.StripFieldFromSavedViews(ctx, store.StripFieldFromSavedViewsParams{WorkspaceID: p.workspaceID, Key: f.Key})
 		}
 		return nil
 	})
