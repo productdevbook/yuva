@@ -127,6 +127,22 @@ panel (embedded SPA) ─────────► /v1 + WS ──────�
 - Background work on River (Postgres-backed queue): outbound e-mail, webhooks, notification
   fan-out, attachment cleanup, retention, and migrations on their own `migrations` queue (see
   "Moving to Yuva").
+- Rate limits count in Postgres so every replica shares them (#134): `rate_limits` (UNLOGGED, one
+  row per key) holds a fixed window that starts with the key's first request; one upsert per check
+  counts and answers, and several keys go in one statement when a batch is checked (analytics server
+  events; takes of one key are merged first). Windows and leases are measured by the database's
+  clock (`clock_timestamp()`), never a replica's. A check that fails in the database lets the
+  request through and is logged at most once a minute: a broken limiter must not take the API down.
+  A check that depends on rows a transaction read (slug changes, idea votes, subscription
+  confirmations, new anonymous visitors) runs on that transaction's connection in a savepoint, so it
+  never waits for a second pool connection; all other checks run before any transaction opens. Keys
+  are HMAC-SHA256 (derived from the master key) of the limit name and its subject, truncated to 16
+  bytes, so no address or e-mail address is stored. The 4 concurrent analytics queries per workspace
+  are leases in `rate_slots` (2 × the query timeout + 30 s, so a crashed process frees them). A River
+  job every minute deletes ended windows and leases. `rate_limits` and `rate_slots` are the written
+  exception to the `workspace_id` rule: most limits are per address or token before any workspace is
+  known, and the key is a hash. Sign-ups, migration connection tests and list imports count their
+  own rows, as before.
 - Realtime: WebSocket (`coder/websocket`). Every change that members see live writes a row to
   `events` in the same transaction, last, under a per-workspace advisory lock, so event ids within
   a workspace follow commit order; the transaction's `NOTIFY` carries the id. One listener per
@@ -540,7 +556,7 @@ re-checks its token every 30 seconds and ends when the token stops working. The 
   reviews it and opens it under their own GitHub account, so the server holds no GitHub credential
   and cannot be used to post to the repository.
 - Rate limit per token or key (600 requests a minute, `429` with `Retry-After`), counted per grant
-  for Connected apps.
+  for Connected apps, in Postgres like the other rate limits.
 
 #### MCP coverage (M23)
 
@@ -2457,8 +2473,7 @@ incident before a customer writes, and the conversations an outage brings are an
   and pausing or deleting it resolves that incident with an update saying so and puts the component back
   unless something else holds it. A heartbeat or push call counts first against a per-address limit
   (600 a minute per client address, IPv6 per /64; unknown tokens count too) and then against the monitor's
-  own limit (60 a minute), which is created only after the token is found; a full limiter refuses an
-  unknown token but never a known monitor. The overdue-beat sweep is one job at a time and finds the due monitors of all workspaces
+  own limit (60 a minute), which is created only after the token is found. The overdue-beat sweep is one job at a time and finds the due monitors of all workspaces
   in one query, then handles each in its workspace; one failing monitor is logged and the others go on.
   A monitor going down or up notifies the inbox's members like a new conversation does (push, e-mail
   per their settings), one job per member and channel carrying the transition's state, message and
