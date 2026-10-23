@@ -10,7 +10,7 @@ import type {
   SubscriptionState,
 } from "@/lib/api"
 
-export type ConversationFilters = Omit<ConversationQuery, "cursor" | "limit">
+export type ConversationFilters = Omit<ConversationQuery, "cursor" | "limit"> & { fields?: Record<string, string> }
 
 export type DraftFilters = { inbox_id?: string; author?: DraftAuthorKind }
 
@@ -89,6 +89,7 @@ export const keys = {
   cannedReplies: (ws: string) => ["ws", ws, "canned-replies"] as const,
   macros: (ws: string) => ["ws", ws, "macros"] as const,
   teams: (ws: string) => ["ws", ws, "teams"] as const,
+  customFields: (ws: string) => ["ws", ws, "custom-fields"] as const,
   contact: (ws: string, id: string) => ["ws", ws, "contact", id] as const,
   contactSearch: (ws: string) => ["ws", ws, "contact-search"] as const,
   contactConversationCount: (ws: string, id: string) => ["ws", ws, "contact-conversation-count", id] as const,

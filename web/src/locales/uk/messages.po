@@ -11,6 +11,10 @@ msgstr ""
 msgid ".eml files in a zip"
 msgstr "Файли .eml у zip-архіві"
 
+#: src/features/fields/BulkFailures.tsx
+msgid "“{name}” holds a value that does not fit"
+msgstr "У полі «{name}» значення не підходить"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "«Чи була ця сторінка корисною?», відгуки й обговорення у вашій документації"
@@ -290,6 +294,10 @@ msgstr "{count, plural, one {# дозвіл} few {# дозволи} many {# до
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {Піде # отримувачу.} few {Піде # отримувачам.} many {Піде # отримувачам.} other {Піде # отримувача.}}"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "{count} could not be closed"
+msgstr "Не вдалося закрити: {count}"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "{count} events"
@@ -1107,6 +1115,10 @@ msgstr "Контакт видалено"
 msgid "A conversation"
 msgstr "Розмова"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
+msgstr "Розмову не можна закрити, доки в цьому полі немає значення. Спам виключено."
+
 #: src/components/common/text.ts
 msgid "A conversation changed"
 msgstr "Розмова змінилася"
@@ -1223,6 +1235,10 @@ msgstr "Статтю довідкового центру знято з публ�
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "A key lets your backend, a script or a bot read and write conversations. Limit it to the products and scopes it needs."
 msgstr "Ключ дає змогу вашому бекенду, скрипту або боту читати й писати розмови. Обмежте його продуктами та дозволами, які йому потрібні."
+
+#: src/components/common/text.ts
+msgid "A kind of field holds at most 50 fields. Delete one first."
+msgstr "Об’єкт може мати не більше 50 полів. Спершу видаліть одне."
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -2315,6 +2331,10 @@ msgid "another conversation"
 msgstr "інша розмова"
 
 #: src/components/common/text.ts
+msgid "Another field of this kind already uses this key."
+msgstr "Інше поле цього виду вже використовує цей ключ."
+
+#: src/components/common/text.ts
 msgid "Another import of this workspace is running. Imports run one at a time; try again when it ends."
 msgstr "Інший імпорт цього робочого простору вже триває. Імпорти виконуються по одному; повторіть, коли він завершиться."
 
@@ -2402,6 +2422,10 @@ msgstr "Будь-яка розмова"
 #: src/features/contact/ContactsPage.tsx
 msgid "Any country"
 msgstr "Будь-яка країна"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Any field"
+msgstr "Будь-яке поле"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
@@ -3157,6 +3181,7 @@ msgstr "Назва кампанії"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
+#: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -3465,6 +3490,10 @@ msgstr "Перевірте, що адреса переспрямування т�
 msgid "Check your e-mail"
 msgstr "Перевірте свою пошту"
 
+#: src/features/fields/value.ts
+msgid "Checkbox"
+msgstr "Прапорець"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Checked"
 msgstr "Перевірено"
@@ -3542,6 +3571,10 @@ msgstr "Виберіть сторінку"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose a region"
 msgstr "Виберіть регіон"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Choose a value"
+msgstr "Виберіть значення"
 
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
@@ -4101,6 +4134,10 @@ msgstr "Дані контакта"
 msgid "Contact details (C)"
 msgstr "Дані контакта (C)"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contact fields"
+msgstr "Поля контакту"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Contact id copied"
 msgstr "ID контакту скопійовано"
@@ -4125,6 +4162,10 @@ msgstr "Контакти"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Contacts and exports"
 msgstr "Контакти та експорти"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contacts keep the values they hold; they show as plain attributes instead of a typed field."
+msgstr "Контакти зберігають свої значення; вони відображаються як звичайні атрибути, а не як типізоване поле."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4180,6 +4221,10 @@ msgstr "Дії з розмовою"
 #: src/features/conversation/actions.ts
 msgid "Conversation closed"
 msgstr "Розмову закрито"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Conversation fields"
+msgstr "Поля розмови"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Conversation list"
@@ -4421,6 +4466,10 @@ msgstr "Створити канал"
 msgid "Create draft"
 msgstr "Створити чернетку"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Create field"
+msgstr "Створити поле"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -4558,6 +4607,15 @@ msgstr "Файл CSV"
 msgid "Custom"
 msgstr "Власний"
 
+#: src/features/fields/FieldFilter.tsx
+msgid "Custom field"
+msgstr "Користувацьке поле"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Custom fields"
+msgstr "Користувацькі поля"
+
 #: src/app/Sidebar.tsx
 msgid "Customers"
 msgstr "Клієнти"
@@ -4609,6 +4667,7 @@ msgid "Database upgrade"
 msgstr "Оновлення бази даних"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/fields/value.ts
 msgid "Date"
 msgstr "Дата"
 
@@ -4658,6 +4717,7 @@ msgstr "Знижена продуктивність"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -4765,6 +4825,10 @@ msgstr "Видалити чернетку"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the entry"
 msgstr "Видалити запис"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Delete the field {name}?"
+msgstr "Видалити поле {name}?"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
@@ -5188,6 +5252,7 @@ msgstr "Домен не підтверджено"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
+#: src/features/fields/BulkFailures.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -5475,6 +5540,7 @@ msgstr "Кожна з усіма повідомленнями й нотатка�
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -5516,6 +5582,10 @@ msgstr "Змінити подробиці"
 msgid "Edit details ({editKey})"
 msgstr "Змінити подробиці ({editKey})"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Edit field"
+msgstr "Редагувати поле"
+
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
 msgstr "Редагування колекцій довідкового центру та чернеток статей"
@@ -5535,6 +5605,11 @@ msgstr "Редагувати монітор"
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Редагувати команду"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Edit the custom fields"
+msgstr "Редагувати користувацькі поля"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -6010,6 +6085,11 @@ msgstr "Відгук, надісланий із застосунку"
 msgid "Feedback, {feedback} open"
 msgstr "Відгуки, відкритих: {feedback}"
 
+#: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Fields"
+msgstr "Поля"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "Файл"
@@ -6021,6 +6101,14 @@ msgstr "Файл і згода"
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Files"
 msgstr "Файли"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Fill in before closing"
+msgstr "Заповніть перед закриттям"
+
+#: src/components/common/text.ts
+msgid "Fill in the required fields before closing."
+msgstr "Заповніть обов’язкові поля перед закриттям."
 
 #: src/features/broadcasts/TestSend.tsx
 msgid "Fill the test with a contact’s values"
@@ -7545,6 +7633,10 @@ msgstr "Текст і файли буде видалено остаточно, �
 msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
 msgstr "Текст і файли буде видалено остаточно, а в розмові буде позначено, що ви його видалили. Надісланий лист не можна відкликати зі скриньки одержувача."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
+msgstr "Його значення буде стерто з усіх розмов у фоновому режимі. Це не можна скасувати."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Приєднався(лась) до робочого простору з роллю {role}"
@@ -7583,6 +7675,7 @@ msgstr "Зберігається з кожною підпискою з цьог�
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Key"
 msgstr "Ключ"
 
@@ -8824,6 +8917,7 @@ msgstr "Перемістити до кошика: {0}?"
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Переміщувати розмови до кошика, відновлювати їх і читати кошик"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8922,6 +9016,7 @@ msgstr "Перемістити до кошика"
 msgid "Move to Yuva"
 msgstr "Перейти до Yuva"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
@@ -8982,6 +9077,7 @@ msgstr "Мої команди"
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
@@ -9051,6 +9147,10 @@ msgstr "Звузьте те, що можна прикріплювати в ць�
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Потрібно для розсилок"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "Needs “{name}” before it can close"
+msgstr "Щоб закрити, потрібне поле «{name}»"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
@@ -9206,6 +9306,11 @@ msgstr "нові обговорення"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "Новий запис"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "New field"
+msgstr "Нове поле"
 
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
@@ -9397,6 +9502,9 @@ msgstr "Далі виберіть, куди вони потраплять."
 msgid "Nightly backup"
 msgstr "Нічне резервне копіювання"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "Ні"
@@ -9667,6 +9775,10 @@ msgstr "Подій не записано."
 msgid "No feedback from this page."
 msgstr "З цієї сторінки немає відгуків."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "No fields yet."
+msgstr "Полів поки немає."
+
 #: src/features/settings/channels/Attachments.tsx
 msgid "No file is accepted."
 msgstr "Жодні файли не приймаються."
@@ -9874,6 +9986,7 @@ msgstr "Сторінки статусу ще немає. Її створюють
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/History.tsx
 #: src/features/conversation/RelatedLine.tsx
+#: src/features/fields/BulkFailures.tsx
 msgid "No subject"
 msgstr "Без теми"
 
@@ -10155,6 +10268,10 @@ msgstr "Не надіслано"
 msgid "not set"
 msgstr "не задано"
 
+#: src/features/fields/FieldInput.tsx
+msgid "Not set"
+msgstr "Не задано"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Not set up"
 msgstr "Не налаштовано"
@@ -10396,6 +10513,10 @@ msgstr "зараз"
 msgid "Now"
 msgstr "Зараз"
 
+#: src/features/fields/value.ts
+msgid "Number"
+msgstr "Число"
+
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Objected to all mail"
@@ -10549,6 +10670,10 @@ msgstr "Один лист кожні {every}"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "По одному в рядку, від 1 до 20. Віджет можуть використовувати лише сторінки з цих джерел."
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "One per line, all different, at most 100."
+msgstr "По одному в рядку, усі різні, не більше 100."
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
@@ -11087,6 +11212,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "Необов’язково. Перші 64 КіБ відповіді мають його містити; регістр враховується."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Options"
 msgstr "Параметри"
 
@@ -11125,6 +11251,10 @@ msgstr "Або завантажте файл експорту"
 #: src/features/inbox/ChatList.tsx
 msgid "Order and view"
 msgstr "Порядок і вигляд"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Order number"
+msgstr "Номер замовлення"
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Original"
@@ -12455,6 +12585,10 @@ msgstr "Посилання"
 msgid "Refresh"
 msgstr "Оновити"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Refund"
+msgstr "Повернення коштів"
+
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Refund approved"
 msgstr "Повернення схвалено"
@@ -12670,6 +12804,10 @@ msgstr "Видалив(ла) нотатку з розмови"
 #: src/features/conversation/messages/Redacted.tsx
 msgid "Removed by {who}"
 msgstr "Видалено користувачем {who}"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
+msgstr "Вилучені варіанти стираються з усіх розмов, де вони є. Це виконується у фоні."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -12948,6 +13086,11 @@ msgstr "Вплив на репутацію"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Required to close"
+msgstr "Обов’язково для закриття"
 
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
@@ -13279,6 +13422,7 @@ msgstr "Субота"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -13296,6 +13440,10 @@ msgstr "Зберегти"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "Збережіть відповідь разом із тим, що має статися з розмовою, коли ви її надішлете."
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Save and close"
+msgstr "Зберегти й закрити"
 
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -13581,6 +13729,10 @@ msgstr "Був(ла) {seen}"
 #: src/features/status/IncidentDetail.tsx
 msgid "Seen by the monitor"
 msgstr "Помічений монітором"
+
+#: src/features/fields/value.ts
+msgid "Select"
+msgstr "Вибір"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15268,6 +15420,7 @@ msgstr "Перевірка з'єднання…"
 msgid "Tests go only to members of the workspace, at most five at a time, with [Test] before the subject."
 msgstr "Тести йдуть лише учасникам робочого простору, не більше п'яти за раз, із позначкою [Test] перед темою."
 
+#: src/features/fields/value.ts
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15705,6 +15858,10 @@ msgstr "Ключ бачить лише ці скриньки й не може к
 msgid "The key stops working at the end of this day."
 msgstr "Ключ перестане працювати наприкінці цього дня."
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "The key, the object and the type cannot change after creation."
+msgstr "Ключ, об’єкт і тип не можна змінити після створення."
+
 #: src/features/settings/channels/ApiChannelDialog.tsx
 msgid "The kind cannot be changed later."
 msgstr "Вид не можна змінити пізніше."
@@ -15857,6 +16014,10 @@ msgstr "Стара скринька перестає отримувати пош
 #: src/components/common/text.ts
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "У іншої скриньки немає поштового каналу, тож цю розмову за e-mail не можна туди перемістити. Спершу додайте їй поштовий канал."
+
+#: src/features/fields/BulkFailures.tsx
+msgid "The others were closed. Open one to fill in what it needs, then close it."
+msgstr "Решту закрито. Відкрийте одну, заповніть потрібне й закрийте її."
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -16196,6 +16357,10 @@ msgstr "Завантажений файл видалено {fileDeletedAt}. Yuva
 #: src/features/migrations/text.ts
 msgid "The user name is your iCloud address without @icloud.com."
 msgstr "Ім'я користувача — ваша адреса iCloud без @icloud.com."
+
+#: src/components/common/text.ts
+msgid "The values of a deleted field with this key are still being cleared. Try again in a moment."
+msgstr "Значення видаленого поля з цим ключем ще стираються. Повторіть за хвилину."
 
 #. placeholder {0}: e.from
 #: src/features/conversation/messages/Thread.tsx
@@ -16684,6 +16849,10 @@ msgstr "Ця підписка більше не чекає підтвердже�
 msgid "This team does not cover the conversation's inbox."
 msgstr "Ця команда не охоплює скриньку розмови."
 
+#: src/components/common/text.ts
+msgid "This value does not fit the field."
+msgstr "Це значення не підходить для поля."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "Це було повідомлення про завершення, а попереднього повідомлення надіслано не було, тож ніхто не знав про інцидент"
@@ -16982,6 +17151,7 @@ msgid "TXT record"
 msgstr "TXT-запис"
 
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Type"
 msgstr "Тип"
 
@@ -17000,6 +17170,14 @@ msgstr "Введіть назву робочого простору для пі�
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "Type your e-mail address to confirm"
 msgstr "Введіть свою адресу електронної пошти для підтвердження"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Typed values on conversations and contacts"
+msgstr "Типізовані значення в розмовах і контактах"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Typed values your team keeps on conversations and contacts, such as an order number or a plan. Agents edit them beside the thread."
+msgstr "Типізовані значення, які команда зберігає в розмовах і контактах, наприклад номер замовлення або тариф. Агенти редагують їх поруч із розмовою."
 
 #: src/app/TeamMenu.tsx
 msgid "Typing · {where}"
@@ -17916,6 +18094,10 @@ msgstr "Що бачить клієнт"
 msgid "What the import will do"
 msgstr "Що зробить імпорт"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "What the team sees."
+msgstr "Що бачить команда."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "What they agreed to"
 msgstr "На що вони погодилися"
@@ -18060,6 +18242,10 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Where should Yuva send events?"
 msgstr "Куди Yuva має надсилати події?"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
+msgstr "Де API зберігає значення. Малі літери, цифри й підкреслення; змінити не можна."
 
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "Which address do customers write to?"
@@ -18318,6 +18504,9 @@ msgstr "Написання записів «Що нового» та їхніх 
 msgid "Write where and when they agreed."
 msgstr "Вкажіть, де й коли вони дали згоду."
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Так"
@@ -18642,6 +18831,10 @@ msgstr "Ваш часовий пояс, {zone}. Це {utc} UTC."
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"
 msgstr "Ваш сайт"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Your workspace asks for these fields on every conversation it closes."
+msgstr "Ваш робочий простір вимагає ці поля в кожній розмові, яку закриває."
 
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."

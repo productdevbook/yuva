@@ -11,6 +11,10 @@ msgstr ""
 msgid ".eml files in a zip"
 msgstr "ไฟล์ .eml ในไฟล์ zip"
 
+#: src/features/fields/BulkFailures.tsx
+msgid "“{name}” holds a value that does not fit"
+msgstr "ค่าของ “{name}” ไม่ตรงกับฟิลด์"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "“หน้านี้มีประโยชน์ไหม” ความคิดเห็นและการพูดคุยในเอกสารของคุณ"
@@ -290,6 +294,10 @@ msgstr "{count, plural, other {# สิทธิ์}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, other {จะส่งถึงผู้รับ # คน}}"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "{count} could not be closed"
+msgstr "ปิด {count} รายการไม่ได้"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "{count} events"
@@ -1107,6 +1115,10 @@ msgstr "รายชื่อติดต่อถูกลบ"
 msgid "A conversation"
 msgstr "การสนทนาหนึ่งรายการ"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
+msgstr "ปิดการสนทนาไม่ได้จนกว่าฟิลด์นี้จะมีค่า สแปมได้รับยกเว้น"
+
 #: src/components/common/text.ts
 msgid "A conversation changed"
 msgstr "การสนทนามีการเปลี่ยนแปลง"
@@ -1223,6 +1235,10 @@ msgstr "บทความของศูนย์ช่วยเหลือถ
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "A key lets your backend, a script or a bot read and write conversations. Limit it to the products and scopes it needs."
 msgstr "คีย์ช่วยให้แบ็กเอนด์ สคริปต์ หรือบอทของคุณอ่านและเขียนการสนทนาได้ จำกัดให้ใช้ได้เฉพาะผลิตภัณฑ์และสิทธิ์ที่จำเป็น"
+
+#: src/components/common/text.ts
+msgid "A kind of field holds at most 50 fields. Delete one first."
+msgstr "หนึ่งออบเจ็กต์มีฟิลด์ได้สูงสุด 50 ฟิลด์ โปรดลบออกก่อนหนึ่งฟิลด์"
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -2315,6 +2331,10 @@ msgid "another conversation"
 msgstr "การสนทนาอื่น"
 
 #: src/components/common/text.ts
+msgid "Another field of this kind already uses this key."
+msgstr "ฟิลด์อื่นชนิดนี้ใช้คีย์นี้อยู่แล้ว"
+
+#: src/components/common/text.ts
 msgid "Another import of this workspace is running. Imports run one at a time; try again when it ends."
 msgstr "การนำเข้าอีกรายการของพื้นที่ทำงานนี้กำลังทำงานอยู่ การนำเข้าทำงานทีละรายการ ลองอีกครั้งเมื่อเสร็จ"
 
@@ -2402,6 +2422,10 @@ msgstr "การสนทนาใดก็ได้"
 #: src/features/contact/ContactsPage.tsx
 msgid "Any country"
 msgstr "ทุกประเทศ"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Any field"
+msgstr "ฟิลด์ใดก็ได้"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
@@ -3157,6 +3181,7 @@ msgstr "ชื่อแคมเปญ"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
+#: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -3465,6 +3490,10 @@ msgstr "ตรวจสอบว่าที่อยู่ส่งต่อต
 msgid "Check your e-mail"
 msgstr "ตรวจสอบอีเมลของคุณ"
 
+#: src/features/fields/value.ts
+msgid "Checkbox"
+msgstr "ช่องทำเครื่องหมาย"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Checked"
 msgstr "ตรวจสอบแล้ว"
@@ -3542,6 +3571,10 @@ msgstr "เลือกหน้า"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose a region"
 msgstr "เลือกภูมิภาค"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Choose a value"
+msgstr "เลือกค่า"
 
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
@@ -4101,6 +4134,10 @@ msgstr "รายละเอียดผู้ติดต่อ"
 msgid "Contact details (C)"
 msgstr "รายละเอียดผู้ติดต่อ (C)"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contact fields"
+msgstr "ฟิลด์ของผู้ติดต่อ"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Contact id copied"
 msgstr "คัดลอกรหัสผู้ติดต่อแล้ว"
@@ -4125,6 +4162,10 @@ msgstr "ผู้ติดต่อ"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Contacts and exports"
 msgstr "รายชื่อติดต่อและการส่งออก"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contacts keep the values they hold; they show as plain attributes instead of a typed field."
+msgstr "ผู้ติดต่อยังคงเก็บค่าที่มีอยู่ โดยจะแสดงเป็นแอตทริบิวต์ธรรมดาแทนฟิลด์ที่มีชนิด"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4180,6 +4221,10 @@ msgstr "การดำเนินการของการสนทนา"
 #: src/features/conversation/actions.ts
 msgid "Conversation closed"
 msgstr "ปิดการสนทนาแล้ว"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Conversation fields"
+msgstr "ฟิลด์ของการสนทนา"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Conversation list"
@@ -4421,6 +4466,10 @@ msgstr "สร้างช่องทาง"
 msgid "Create draft"
 msgstr "สร้างฉบับร่าง"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Create field"
+msgstr "สร้างฟิลด์"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -4558,6 +4607,15 @@ msgstr "ไฟล์ CSV"
 msgid "Custom"
 msgstr "กำหนดเอง"
 
+#: src/features/fields/FieldFilter.tsx
+msgid "Custom field"
+msgstr "ฟิลด์กำหนดเอง"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Custom fields"
+msgstr "ฟิลด์กำหนดเอง"
+
 #: src/app/Sidebar.tsx
 msgid "Customers"
 msgstr "ลูกค้า"
@@ -4609,6 +4667,7 @@ msgid "Database upgrade"
 msgstr "การอัปเกรดฐานข้อมูล"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/fields/value.ts
 msgid "Date"
 msgstr "วันที่"
 
@@ -4658,6 +4717,7 @@ msgstr "ประสิทธิภาพลดลง"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -4765,6 +4825,10 @@ msgstr "ลบฉบับร่าง"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the entry"
 msgstr "ลบรายการ"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Delete the field {name}?"
+msgstr "ลบฟิลด์ {name} หรือไม่"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
@@ -5188,6 +5252,7 @@ msgstr "ยังไม่ได้ยืนยันโดเมน"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
+#: src/features/fields/BulkFailures.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -5475,6 +5540,7 @@ msgstr "แต่ละรายการพร้อมข้อความแ
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -5516,6 +5582,10 @@ msgstr "แก้ไขรายละเอียด"
 msgid "Edit details ({editKey})"
 msgstr "แก้ไขรายละเอียด ({editKey})"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Edit field"
+msgstr "แก้ไขฟิลด์"
+
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
 msgstr "แก้ไขคอลเลกชันของศูนย์ช่วยเหลือและร่างบทความ"
@@ -5535,6 +5605,11 @@ msgstr "แก้ไขมอนิเตอร์"
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "แก้ไขทีม"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Edit the custom fields"
+msgstr "แก้ไขฟิลด์กำหนดเอง"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -6010,6 +6085,11 @@ msgstr "ความคิดเห็นที่ส่งจากแอป"
 msgid "Feedback, {feedback} open"
 msgstr "Feedback, {feedback} open"
 
+#: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Fields"
+msgstr "ฟิลด์"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "ไฟล์"
@@ -6021,6 +6101,14 @@ msgstr "ไฟล์และความยินยอม"
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Files"
 msgstr "ไฟล์"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Fill in before closing"
+msgstr "กรอกก่อนปิด"
+
+#: src/components/common/text.ts
+msgid "Fill in the required fields before closing."
+msgstr "กรอกฟิลด์ที่จำเป็นก่อนปิด"
 
 #: src/features/broadcasts/TestSend.tsx
 msgid "Fill the test with a contact’s values"
@@ -7545,6 +7633,10 @@ msgstr "ข้อความและไฟล์จะถูกลบถาว
 msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
 msgstr "ข้อความและไฟล์จะถูกลบถาวร และการสนทนาจะแสดงว่าคุณเป็นผู้ลบ อีเมลที่ส่งไปแล้วไม่สามารถดึงกลับจากกล่องจดหมายของผู้รับได้"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
+msgstr "ค่าของฟิลด์จะถูกล้างจากทุกการสนทนาในเบื้องหลัง ย้อนกลับไม่ได้"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "เข้าร่วมพื้นที่ทำงานเป็น {role}"
@@ -7583,6 +7675,7 @@ msgstr "เก็บไว้กับทุกการสมัครรับ
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Key"
 msgstr "คีย์"
 
@@ -8824,6 +8917,7 @@ msgstr "ย้าย {0} รายการไปที่ถังขยะไ�
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "ย้ายการสนทนาไปที่ถังขยะ กู้คืน และอ่านถังขยะ"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8922,6 +9016,7 @@ msgstr "ย้ายไปที่ถังขยะ"
 msgid "Move to Yuva"
 msgstr "ย้ายมา Yuva"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
@@ -8982,6 +9077,7 @@ msgstr "ทีมของฉัน"
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
@@ -9051,6 +9147,10 @@ msgstr "จำกัดสิ่งที่แนบได้ในช่อง
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "จำเป็นสำหรับบรอดคาสต์"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "Needs “{name}” before it can close"
+msgstr "ต้องมี “{name}” จึงจะปิดได้"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
@@ -9206,6 +9306,11 @@ msgstr "กระทู้ใหม่"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "รายการใหม่"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "New field"
+msgstr "ฟิลด์ใหม่"
 
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
@@ -9397,6 +9502,9 @@ msgstr "ถัดไป เลือกว่าพวกเขาจะไป�
 msgid "Nightly backup"
 msgstr "การสำรองข้อมูลกลางคืน"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "ไม่"
@@ -9667,6 +9775,10 @@ msgstr "ไม่มีเหตุการณ์ที่บันทึกไ
 msgid "No feedback from this page."
 msgstr "ไม่มีความคิดเห็นจากหน้านี้"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "No fields yet."
+msgstr "ยังไม่มีฟิลด์"
+
 #: src/features/settings/channels/Attachments.tsx
 msgid "No file is accepted."
 msgstr "ไม่รับไฟล์ใดเลย"
@@ -9874,6 +9986,7 @@ msgstr "ยังไม่มีหน้าสถานะ เจ้าขอ�
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/History.tsx
 #: src/features/conversation/RelatedLine.tsx
+#: src/features/fields/BulkFailures.tsx
 msgid "No subject"
 msgstr "ไม่มีหัวเรื่อง"
 
@@ -10155,6 +10268,10 @@ msgstr "ไม่ได้ส่ง"
 msgid "not set"
 msgstr "ยังไม่ได้ตั้งค่า"
 
+#: src/features/fields/FieldInput.tsx
+msgid "Not set"
+msgstr "ยังไม่ได้ตั้งค่า"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Not set up"
 msgstr "ยังไม่ได้ตั้งค่า"
@@ -10396,6 +10513,10 @@ msgstr "ตอนนี้"
 msgid "Now"
 msgstr "ตอนนี้"
 
+#: src/features/fields/value.ts
+msgid "Number"
+msgstr "ตัวเลข"
+
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Objected to all mail"
@@ -10549,6 +10670,10 @@ msgstr "หนึ่งอีเมลทุก {every}"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "หนึ่งรายการต่อบรรทัด 1 ถึง 20 เฉพาะหน้าบน origin เหล่านี้เท่านั้นที่ใช้วิดเจ็ตได้"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "One per line, all different, at most 100."
+msgstr "บรรทัดละหนึ่งตัวเลือก ต้องไม่ซ้ำกัน สูงสุด 100"
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
@@ -11087,6 +11212,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "ไม่บังคับ 64 KiB แรกของคำตอบต้องมีคำนี้ และตัวพิมพ์เล็กใหญ่มีผล"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Options"
 msgstr "ตัวเลือก"
 
@@ -11125,6 +11251,10 @@ msgstr "หรืออัปโหลดไฟล์ส่งออก"
 #: src/features/inbox/ChatList.tsx
 msgid "Order and view"
 msgstr "ลำดับและมุมมอง"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Order number"
+msgstr "หมายเลขคำสั่งซื้อ"
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Original"
@@ -12455,6 +12585,10 @@ msgstr "อ้างอิง"
 msgid "Refresh"
 msgstr "รีเฟรช"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Refund"
+msgstr "คืนเงิน"
+
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Refund approved"
 msgstr "อนุมัติการคืนเงินแล้ว"
@@ -12670,6 +12804,10 @@ msgstr "ลบบันทึกออกจากการสนทนา"
 #: src/features/conversation/messages/Redacted.tsx
 msgid "Removed by {who}"
 msgstr "ลบโดย {who}"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
+msgstr "ตัวเลือกที่เอาออกจะถูกล้างจากทุกการสนทนาที่มีตัวเลือกนั้น ทำงานในเบื้องหลัง"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -12948,6 +13086,11 @@ msgstr "ผลต่อชื่อเสียง"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Required to close"
+msgstr "จำเป็นเพื่อปิด"
 
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
@@ -13279,6 +13422,7 @@ msgstr "วันเสาร์"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -13296,6 +13440,10 @@ msgstr "บันทึก"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "บันทึกคำตอบพร้อมสิ่งที่ต้องเกิดกับการสนทนาเมื่อส่ง"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Save and close"
+msgstr "บันทึกและปิด"
 
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -13581,6 +13729,10 @@ msgstr "พบ {seen}"
 #: src/features/status/IncidentDetail.tsx
 msgid "Seen by the monitor"
 msgstr "มอนิเตอร์พบ"
+
+#: src/features/fields/value.ts
+msgid "Select"
+msgstr "ตัวเลือก"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15268,6 +15420,7 @@ msgstr "กำลังทดสอบการเชื่อมต่อ…"
 msgid "Tests go only to members of the workspace, at most five at a time, with [Test] before the subject."
 msgstr "การทดสอบส่งถึงสมาชิกของพื้นที่ทำงานเท่านั้น ครั้งละไม่เกินห้าคน โดยมี [Test] นำหน้าหัวเรื่อง"
 
+#: src/features/fields/value.ts
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15705,6 +15858,10 @@ msgstr "คีย์นี้เห็นเฉพาะกล่องจดห
 msgid "The key stops working at the end of this day."
 msgstr "คีย์หยุดทำงานเมื่อสิ้นสุดวันนี้"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "The key, the object and the type cannot change after creation."
+msgstr "คีย์ ออบเจ็กต์ และชนิดเปลี่ยนไม่ได้หลังสร้าง"
+
 #: src/features/settings/channels/ApiChannelDialog.tsx
 msgid "The kind cannot be changed later."
 msgstr "เปลี่ยนประเภทภายหลังไม่ได้"
@@ -15857,6 +16014,10 @@ msgstr "กล่องจดหมายเดิมหยุดรับอี
 #: src/components/common/text.ts
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "กล่องข้อความอีกกล่องไม่มีช่องทางอีเมล การสนทนาทางอีเมลนี้จึงย้ายไปที่นั่นไม่ได้ เพิ่มช่องทางอีเมลให้กล่องนั้นก่อน"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "The others were closed. Open one to fill in what it needs, then close it."
+msgstr "รายการที่เหลือถูกปิดแล้ว เปิดหนึ่งรายการ กรอกสิ่งที่ต้องใช้ แล้วปิด"
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -16196,6 +16357,10 @@ msgstr "ไฟล์ที่อัปโหลดถูกลบเมื่อ
 #: src/features/migrations/text.ts
 msgid "The user name is your iCloud address without @icloud.com."
 msgstr "ชื่อผู้ใช้คือที่อยู่ iCloud ของคุณโดยไม่มี @icloud.com"
+
+#: src/components/common/text.ts
+msgid "The values of a deleted field with this key are still being cleared. Try again in a moment."
+msgstr "ค่าของฟิลด์ที่ลบไปซึ่งใช้คีย์นี้ยังถูกล้างอยู่ ลองอีกครั้งในอีกสักครู่"
 
 #. placeholder {0}: e.from
 #: src/features/conversation/messages/Thread.tsx
@@ -16684,6 +16849,10 @@ msgstr "การสมัครรับนี้ไม่ได้รอกา
 msgid "This team does not cover the conversation's inbox."
 msgstr "ทีมนี้ไม่ได้ดูแลกล่องข้อความของการสนทนา"
 
+#: src/components/common/text.ts
+msgid "This value does not fit the field."
+msgstr "ค่านี้ไม่ตรงกับฟิลด์"
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "นี่เป็นการแจ้งปิดเหตุการณ์ และไม่ได้ส่งการแจ้งก่อนหน้านี้ จึงไม่มีใครทราบเรื่องเหตุการณ์นี้มาก่อน"
@@ -16982,6 +17151,7 @@ msgid "TXT record"
 msgstr "เรคคอร์ด TXT"
 
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Type"
 msgstr "ประเภท"
 
@@ -17000,6 +17170,14 @@ msgstr "พิมพ์ชื่อพื้นที่ทำงานเพื
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "Type your e-mail address to confirm"
 msgstr "พิมพ์ที่อยู่อีเมลของคุณเพื่อยืนยัน"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Typed values on conversations and contacts"
+msgstr "ค่าที่มีชนิดในการสนทนาและผู้ติดต่อ"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Typed values your team keeps on conversations and contacts, such as an order number or a plan. Agents edit them beside the thread."
+msgstr "ค่าที่มีชนิดซึ่งทีมของคุณเก็บไว้กับการสนทนาและผู้ติดต่อ เช่น หมายเลขคำสั่งซื้อหรือแพ็กเกจ เอเจนต์แก้ไขได้ข้างการสนทนา"
 
 #: src/app/TeamMenu.tsx
 msgid "Typing · {where}"
@@ -17916,6 +18094,10 @@ msgstr "สิ่งที่ลูกค้าเห็น"
 msgid "What the import will do"
 msgstr "การนำเข้าจะทำอะไร"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "What the team sees."
+msgstr "สิ่งที่ทีมเห็น"
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "What they agreed to"
 msgstr "สิ่งที่พวกเขายินยอม"
@@ -18060,6 +18242,10 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Where should Yuva send events?"
 msgstr "Yuva ควรส่งเหตุการณ์ไปที่ใด"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
+msgstr "ที่ที่ API เก็บค่า ตัวพิมพ์เล็ก ตัวเลข และขีดล่าง เปลี่ยนไม่ได้"
 
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "Which address do customers write to?"
@@ -18318,6 +18504,9 @@ msgstr "เขียนรายการใน \"มีอะไรใหม่
 msgid "Write where and when they agreed."
 msgstr "เขียนว่าพวกเขายินยอมที่ไหนและเมื่อใด"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "ใช่"
@@ -18642,6 +18831,10 @@ msgstr "เขตเวลาของคุณ {zone} คือ {utc} UTC"
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"
 msgstr "เว็บไซต์ของคุณ"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Your workspace asks for these fields on every conversation it closes."
+msgstr "พื้นที่ทำงานของคุณขอให้กรอกฟิลด์เหล่านี้ในทุกการสนทนาที่ปิด"
 
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."

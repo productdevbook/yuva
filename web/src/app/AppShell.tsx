@@ -6,6 +6,7 @@ import { Palette } from "@/app/Palette"
 import { useGo } from "@/app/Rail"
 import { inboxRoot, isChats, ShellContext } from "@/app/shell"
 import { Toaster } from "@/components/common"
+import { RequiredFieldsHost } from "@/features/fields/RequiredFieldsHost"
 import { SHORTCUTS, ShortcutSheet } from "@/components/common/ShortcutSheet"
 import { focusListSearch } from "@/features/inbox/listSearch"
 import { useCounts } from "@/features/inbox/queries"
@@ -97,6 +98,7 @@ export function AppShell() {
       </div>
       <Palette open={palette} onOpenChange={setPalette} />
       <ShortcutSheet open={shortcuts} onOpenChange={setShortcuts} home={canManage} />
+      <RequiredFieldsHost />
       <Toaster />
       <ConnectionBanner />
     </ShellContext.Provider>

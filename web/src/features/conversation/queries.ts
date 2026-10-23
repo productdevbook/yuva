@@ -1,5 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
+import { withRequiredFields } from "@/features/fields/required"
 import { api, unwrap, type ConversationUpdate, type Message, type MessageCreate } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { applyEvent, applyRead } from "@/lib/live"
@@ -66,8 +67,7 @@ export function useUpdateConversation(id: string) {
   const qc = useQueryClient()
   const live = useLiveContext()
   return useMutation({
-    mutationFn: (body: ConversationUpdate) =>
-      unwrap(api.PATCH("/v1/conversations/{conversationId}", { params: { path: { conversationId: id } }, body })),
+    mutationFn: (body: ConversationUpdate) => patchConversation(id, body),
     onSuccess: (data) => {
       applyEvent(qc, live, { type: "conversation.updated", data })
       if (!isLive(live.ws)) void qc.invalidateQueries({ queryKey: keys.messages(live.ws, id) })
@@ -112,7 +112,11 @@ export function useTrashConversation(id: string) {
 
 export type Outgoing = MessageCreate & { client_id: string; files: File[] }
 
-export function postMessage(conversationId: string, { files, ...body }: Outgoing) {
+export function postMessage(conversationId: string, out: Outgoing) {
+  return withRequiredFields(conversationId, () => sendMessage(conversationId, out))
+}
+
+function sendMessage(conversationId: string, { files, ...body }: Outgoing) {
   const path = { params: { path: { conversationId } } }
   if (files.length === 0) {
     return unwrap(api.POST("/v1/conversations/{conversationId}/messages", { ...path, body }))
@@ -136,7 +140,9 @@ export function postMessage(conversationId: string, { files, ...body }: Outgoing
 }
 
 export function patchConversation(id: string, body: ConversationUpdate) {
-  return unwrap(api.PATCH("/v1/conversations/{conversationId}", { params: { path: { conversationId: id } }, body }))
+  const send = () =>
+    unwrap(api.PATCH("/v1/conversations/{conversationId}", { params: { path: { conversationId: id } }, body }))
+  return body.status === "closed" ? withRequiredFields(id, send) : send()
 }
 
 export function useSendMessage(conversationId: string) {

@@ -11,6 +11,10 @@ msgstr ""
 msgid ".eml files in a zip"
 msgstr "Zip içinde .eml dosyaları"
 
+#: src/features/fields/BulkFailures.tsx
+msgid "“{name}” holds a value that does not fit"
+msgstr "“{name}” alanındaki değer alana uymuyor"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "Dokümanlarınızda “Bu sayfa yararlı oldu mu?”, geri bildirim ve tartışmalar"
@@ -290,6 +294,10 @@ msgstr "{count, plural, one {# kapsam} other {# kapsam}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {# alıcıya gidecek.} other {# alıcıya gidecek.}}"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "{count} could not be closed"
+msgstr "{count} görüşme kapatılamadı"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "{count} events"
@@ -1107,6 +1115,10 @@ msgstr "Bir kişi silindi"
 msgid "A conversation"
 msgstr "Bir konuşma"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
+msgstr "Bu alanın değeri girilmeden görüşme kapatılamaz. Spam bunun dışındadır."
+
 #: src/components/common/text.ts
 msgid "A conversation changed"
 msgstr "Bir konuşma değişti"
@@ -1223,6 +1235,10 @@ msgstr "Bir yardım merkezi makalesinin yayını kaldırıldı"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "A key lets your backend, a script or a bot read and write conversations. Limit it to the products and scopes it needs."
 msgstr "Bir anahtar, arka ucunuzun, bir betiğin veya botun konuşmaları okuyup yazmasını sağlar. Onu ihtiyaç duyduğu ürünler ve kapsamlarla sınırlayın."
+
+#: src/components/common/text.ts
+msgid "A kind of field holds at most 50 fields. Delete one first."
+msgstr "Bir nesnenin en fazla 50 alanı olabilir. Önce birini silin."
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -2315,6 +2331,10 @@ msgid "another conversation"
 msgstr "başka bir konuşma"
 
 #: src/components/common/text.ts
+msgid "Another field of this kind already uses this key."
+msgstr "Bu türde başka bir alan zaten bu anahtarı kullanıyor."
+
+#: src/components/common/text.ts
 msgid "Another import of this workspace is running. Imports run one at a time; try again when it ends."
 msgstr "Bu çalışma alanında başka bir içe aktarma sürüyor. İçe aktarmalar sırayla çalışır; o bitince yeniden deneyin."
 
@@ -2402,6 +2422,10 @@ msgstr "Tüm konuşmalar"
 #: src/features/contact/ContactsPage.tsx
 msgid "Any country"
 msgstr "Herhangi bir ülke"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Any field"
+msgstr "Herhangi bir alan"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
@@ -3157,6 +3181,7 @@ msgstr "Kampanya adı"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
+#: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -3465,6 +3490,10 @@ msgstr "Yönlendirme adresinin tam olarak yukarıdaki adres olduğunu kontrol ed
 msgid "Check your e-mail"
 msgstr "E-postanızı kontrol edin"
 
+#: src/features/fields/value.ts
+msgid "Checkbox"
+msgstr "Onay kutusu"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Checked"
 msgstr "Denetlendi"
@@ -3542,6 +3571,10 @@ msgstr "Bir sayfa seçin"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose a region"
 msgstr "Bölge seçin"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Choose a value"
+msgstr "Bir değer seçin"
 
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
@@ -4101,6 +4134,10 @@ msgstr "Kişi bilgileri"
 msgid "Contact details (C)"
 msgstr "Kişi bilgileri (C)"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contact fields"
+msgstr "Kişi alanları"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Contact id copied"
 msgstr "Kişi kimliği kopyalandı"
@@ -4125,6 +4162,10 @@ msgstr "Kişiler"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Contacts and exports"
 msgstr "Kişiler ve dışa aktarmalar"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contacts keep the values they hold; they show as plain attributes instead of a typed field."
+msgstr "Kişiler sahip oldukları değerleri korur; artık türlü alan olarak değil, düz öznitelik olarak görünürler."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4180,6 +4221,10 @@ msgstr "Konuşma işlemleri"
 #: src/features/conversation/actions.ts
 msgid "Conversation closed"
 msgstr "Konuşma bitirildi"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Conversation fields"
+msgstr "Görüşme alanları"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Conversation list"
@@ -4421,6 +4466,10 @@ msgstr "Kanalı oluştur"
 msgid "Create draft"
 msgstr "Taslak oluştur"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Create field"
+msgstr "Alanı oluştur"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -4558,6 +4607,15 @@ msgstr "CSV dosyası"
 msgid "Custom"
 msgstr "Özel"
 
+#: src/features/fields/FieldFilter.tsx
+msgid "Custom field"
+msgstr "Özel alan"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Custom fields"
+msgstr "Özel alanlar"
+
 #: src/app/Sidebar.tsx
 msgid "Customers"
 msgstr "Müşteriler"
@@ -4609,6 +4667,7 @@ msgid "Database upgrade"
 msgstr "Veritabanı yükseltmesi"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/fields/value.ts
 msgid "Date"
 msgstr "Tarih"
 
@@ -4658,6 +4717,7 @@ msgstr "Düşük performans"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -4765,6 +4825,10 @@ msgstr "Taslağı sil"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the entry"
 msgstr "Kaydı sil"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Delete the field {name}?"
+msgstr "{name} alanı silinsin mi?"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
@@ -5188,6 +5252,7 @@ msgstr "Alan adı doğrulanmadı"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
+#: src/features/fields/BulkFailures.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -5475,6 +5540,7 @@ msgstr "Her biri tüm mesajları ve notlarıyla"
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -5516,6 +5582,10 @@ msgstr "Ayrıntıları düzenle"
 msgid "Edit details ({editKey})"
 msgstr "Ayrıntıları düzenle ({editKey})"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Edit field"
+msgstr "Alanı düzenle"
+
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
 msgstr "Yardım merkezi koleksiyonlarını ve makale taslaklarını düzenle"
@@ -5535,6 +5605,11 @@ msgstr "Monitörü düzenle"
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Ekibi düzenle"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Edit the custom fields"
+msgstr "Özel alanları düzenle"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -6010,6 +6085,11 @@ msgstr "Uygulamadan gönderilen geri bildirim"
 msgid "Feedback, {feedback} open"
 msgstr "Geri bildirim, {feedback} açık"
 
+#: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Fields"
+msgstr "Alanlar"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "Dosya"
@@ -6021,6 +6101,14 @@ msgstr "Dosya ve onay"
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Files"
 msgstr "Dosyalar"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Fill in before closing"
+msgstr "Kapatmadan önce doldurun"
+
+#: src/components/common/text.ts
+msgid "Fill in the required fields before closing."
+msgstr "Kapatmadan önce gerekli alanları doldurun."
 
 #: src/features/broadcasts/TestSend.tsx
 msgid "Fill the test with a contact’s values"
@@ -7545,6 +7633,10 @@ msgstr "Metni ve dosyaları kalıcı olarak silinir ve konuşmada sizin kaldırd
 msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
 msgstr "Metni ve dosyaları kalıcı olarak silinir ve konuşmada sizin kaldırdığınız görünür. Gönderilmiş bir e-posta alıcının posta kutusundan geri alınamaz."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
+msgstr "Değerleri tüm görüşmelerden arka planda temizlenir. Bu geri alınamaz."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Çalışma alanına {role} olarak katıldı"
@@ -7583,6 +7675,7 @@ msgstr "Bu dosyadan gelen her aboneliğin yanında, onay kaydı olarak saklanır
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Key"
 msgstr "Anahtar"
 
@@ -8824,6 +8917,7 @@ msgstr "{0} konuşma Çöp kutusuna taşınsın mı?"
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Konuşmaları Çöp kutusuna taşı, geri al ve Çöp kutusunu oku"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8922,6 +9016,7 @@ msgstr "Çöp kutusuna taşı"
 msgid "Move to Yuva"
 msgstr "Yuva'ya taşı"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
@@ -8982,6 +9077,7 @@ msgstr "Ekiplerim"
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
@@ -9051,6 +9147,10 @@ msgstr "Bu kanalda nelerin eklenebileceğini daraltın. Sunucunun kendi sınırl
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Bültenler için gerekli"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "Needs “{name}” before it can close"
+msgstr "Kapatılabilmesi için “{name}” gerekli"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
@@ -9206,6 +9306,11 @@ msgstr "yeni tartışma"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "Yeni kayıt"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "New field"
+msgstr "Yeni alan"
 
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
@@ -9397,6 +9502,9 @@ msgstr "Şimdi nereye gideceklerini seçin."
 msgid "Nightly backup"
 msgstr "Gece yedeklemesi"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "Hayır"
@@ -9667,6 +9775,10 @@ msgstr "Kayıtlı olay yok."
 msgid "No feedback from this page."
 msgstr "Bu sayfadan geri bildirim yok."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "No fields yet."
+msgstr "Henüz alan yok."
+
 #: src/features/settings/channels/Attachments.tsx
 msgid "No file is accepted."
 msgstr "Hiçbir dosya kabul edilmiyor."
@@ -9874,6 +9986,7 @@ msgstr "Henüz durum sayfası yok. Sahipler ve yöneticiler oluşturur."
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/History.tsx
 #: src/features/conversation/RelatedLine.tsx
+#: src/features/fields/BulkFailures.tsx
 msgid "No subject"
 msgstr "Konu yok"
 
@@ -10155,6 +10268,10 @@ msgstr "Gönderilmedi"
 msgid "not set"
 msgstr "ayarlanmadı"
 
+#: src/features/fields/FieldInput.tsx
+msgid "Not set"
+msgstr "Ayarlanmadı"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Not set up"
 msgstr "Kurulmadı"
@@ -10396,6 +10513,10 @@ msgstr "şimdi"
 msgid "Now"
 msgstr "Şimdi"
 
+#: src/features/fields/value.ts
+msgid "Number"
+msgstr "Sayı"
+
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Objected to all mail"
@@ -10549,6 +10670,10 @@ msgstr "{every} arayla bir posta"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Her satıra bir tane, 1 ile 20 arası. Sohbet penceresini yalnızca bu kaynaklardaki sayfalar kullanabilir."
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "One per line, all different, at most 100."
+msgstr "Her satıra bir seçenek, hepsi farklı, en fazla 100."
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
@@ -11087,6 +11212,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "İsteğe bağlı. Yanıtın ilk 64 KiB'ında bulunmalı, büyük küçük harf ayrımı yapılır."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Options"
 msgstr "Seçenekler"
 
@@ -11125,6 +11251,10 @@ msgstr "Ya da bir dışa aktarım dosyası yükleyin"
 #: src/features/inbox/ChatList.tsx
 msgid "Order and view"
 msgstr "Sıralama ve görünüm"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Order number"
+msgstr "Sipariş numarası"
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Original"
@@ -12455,6 +12585,10 @@ msgstr "Referans"
 msgid "Refresh"
 msgstr "Yenile"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Refund"
+msgstr "İade"
+
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Refund approved"
 msgstr "İade onaylandı"
@@ -12670,6 +12804,10 @@ msgstr "Bir konuşmadan bir not kaldırdı"
 #: src/features/conversation/messages/Redacted.tsx
 msgid "Removed by {who}"
 msgstr "{who} kaldırdı"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
+msgstr "Kaldırılan seçenekler, onları taşıyan tüm görüşmelerden temizlenir. Bu arka planda çalışır."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -12948,6 +13086,11 @@ msgstr "İtibar etkisi"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Require single sign-on"
 msgstr "Tek oturum açmayı zorunlu kıl"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Required to close"
+msgstr "Kapatmak için gerekli"
 
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
@@ -13279,6 +13422,7 @@ msgstr "Cumartesi"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -13296,6 +13440,10 @@ msgstr "Kaydet"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "Bir yanıtı, gönderdiğinizde konuşmaya olacakların yanında kaydedin."
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Save and close"
+msgstr "Kaydet ve kapat"
 
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -13581,6 +13729,10 @@ msgstr "Görülme: {seen}"
 #: src/features/status/IncidentDetail.tsx
 msgid "Seen by the monitor"
 msgstr "Monitörün gördüğü"
+
+#: src/features/fields/value.ts
+msgid "Select"
+msgstr "Seçim"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15268,6 +15420,7 @@ msgstr "Bağlantı deneniyor…"
 msgid "Tests go only to members of the workspace, at most five at a time, with [Test] before the subject."
 msgstr "Denemeler yalnızca çalışma alanının üyelerine, bir seferde en fazla beş kişiye, konunun önünde [Test] ile gider."
 
+#: src/features/fields/value.ts
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15705,6 +15858,10 @@ msgstr "Anahtar yalnızca bu gelen kutularını görür; gelen kutularını, web
 msgid "The key stops working at the end of this day."
 msgstr "Anahtar bu günün sonunda çalışmayı bırakır."
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "The key, the object and the type cannot change after creation."
+msgstr "Anahtar, nesne ve tür oluşturulduktan sonra değiştirilemez."
+
 #: src/features/settings/channels/ApiChannelDialog.tsx
 msgid "The kind cannot be changed later."
 msgstr "Tür daha sonra değiştirilemez."
@@ -15857,6 +16014,10 @@ msgstr "Eski posta kutusu o alan adına gelen e-postaları artık almaz."
 #: src/components/common/text.ts
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "Diğer gelen kutusunun e-posta kanalı yok, bu yüzden bu e-posta konuşması oraya taşınamaz. Önce ona bir e-posta kanalı ekleyin."
+
+#: src/features/fields/BulkFailures.tsx
+msgid "The others were closed. Open one to fill in what it needs, then close it."
+msgstr "Diğerleri kapatıldı. Gerekenleri doldurmak için birini açın, sonra kapatın."
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -16196,6 +16357,10 @@ msgstr "Yüklenen dosya silindi ({fileDeletedAt}). Yuva yalnızca içe aktardık
 #: src/features/migrations/text.ts
 msgid "The user name is your iCloud address without @icloud.com."
 msgstr "Kullanıcı adı, iCloud adresinizin @icloud.com olmadan halidir."
+
+#: src/components/common/text.ts
+msgid "The values of a deleted field with this key are still being cleared. Try again in a moment."
+msgstr "Bu anahtara sahip silinmiş bir alanın değerleri hâlâ temizleniyor. Biraz sonra tekrar deneyin."
 
 #. placeholder {0}: e.from
 #: src/features/conversation/messages/Thread.tsx
@@ -16684,6 +16849,10 @@ msgstr "Bu abonelik artık onay beklemiyor."
 msgid "This team does not cover the conversation's inbox."
 msgstr "Bu ekip, konuşmanın gelen kutusunu kapsamıyor."
 
+#: src/components/common/text.ts
+msgid "This value does not fit the field."
+msgstr "Bu değer alana uymuyor."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "Bu bir kapanış bildirimiydi ve daha önce hiç bildirim gönderilmediği için kimse olaydan haberdar değildi"
@@ -16982,6 +17151,7 @@ msgid "TXT record"
 msgstr "TXT kaydı"
 
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Type"
 msgstr "Tür"
 
@@ -17000,6 +17170,14 @@ msgstr "Onaylamak için çalışma alanının adını yazın"
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "Type your e-mail address to confirm"
 msgstr "Onaylamak için e-posta adresinizi yazın"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Typed values on conversations and contacts"
+msgstr "Görüşmelerde ve kişilerde türlü değerler"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Typed values your team keeps on conversations and contacts, such as an order number or a plan. Agents edit them beside the thread."
+msgstr "Ekibinizin görüşmelerde ve kişilerde tuttuğu türlü değerler; örneğin sipariş numarası ya da paket. Temsilciler bunları görüşmenin yanında düzenler."
 
 #: src/app/TeamMenu.tsx
 msgid "Typing · {where}"
@@ -17916,6 +18094,10 @@ msgstr "Müşterinin gördüğü"
 msgid "What the import will do"
 msgstr "İçe aktarma ne yapacak"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "What the team sees."
+msgstr "Ekibin gördüğü ad."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "What they agreed to"
 msgstr "Kabul ettiği metin"
@@ -18060,6 +18242,10 @@ msgstr "Kimse ekip seçmediğinde yeni issue'ların gideceği yer, ENG gibi bir 
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Where should Yuva send events?"
 msgstr "Yuva olayları nereye göndersin?"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
+msgstr "API'nin değeri sakladığı yer. Küçük harf, rakam ve alt çizgi; değiştirilemez."
 
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "Which address do customers write to?"
@@ -18318,6 +18504,9 @@ msgstr "Yenilikler girdilerini ve çevirilerini yaz"
 msgid "Write where and when they agreed."
 msgstr "Nerede ve ne zaman onay verdiklerini yazın."
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Evet"
@@ -18642,6 +18831,10 @@ msgstr "Saat diliminiz: {zone}. Bu, {utc} UTC demek."
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"
 msgstr "Web siteniz"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Your workspace asks for these fields on every conversation it closes."
+msgstr "Çalışma alanınız, kapattığı her görüşmede bu alanların doldurulmasını ister."
 
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."

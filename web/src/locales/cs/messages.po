@@ -11,6 +11,10 @@ msgstr ""
 msgid ".eml files in a zip"
 msgstr "Soubory .eml v archivu zip"
 
+#: src/features/fields/BulkFailures.tsx
+msgid "“{name}” holds a value that does not fit"
+msgstr "Hodnota pole „{name}“ neodpovídá"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "„Byla tato stránka užitečná?“, zpětná vazba a diskuse ve vaší dokumentaci"
@@ -290,6 +294,10 @@ msgstr "{count, plural, one {# oprávnění} few {# oprávnění} many {# opráv
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {Odejde # příjemci.} few {Odejde # příjemcům.} many {Odejde # příjemce.} other {Odejde # příjemcům.}}"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "{count} could not be closed"
+msgstr "Nepodařilo se zavřít: {count}"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "{count} events"
@@ -1107,6 +1115,10 @@ msgstr "Kontakt byl smazán"
 msgid "A conversation"
 msgstr "Konverzace"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
+msgstr "Konverzaci nelze zavřít, dokud toto pole nemá hodnotu. Spam je vyňat."
+
 #: src/components/common/text.ts
 msgid "A conversation changed"
 msgstr "Konverzace se změnila"
@@ -1223,6 +1235,10 @@ msgstr "Publikování článku nápovědy bylo zrušeno"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "A key lets your backend, a script or a bot read and write conversations. Limit it to the products and scopes it needs."
 msgstr "Klíč umožňuje vašemu backendu, skriptu nebo botovi číst a psát konverzace. Omezte ho na produkty a oprávnění, která potřebuje."
+
+#: src/components/common/text.ts
+msgid "A kind of field holds at most 50 fields. Delete one first."
+msgstr "Objekt může mít nejvýše 50 polí. Nejprve jedno smažte."
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -2315,6 +2331,10 @@ msgid "another conversation"
 msgstr "jiná konverzace"
 
 #: src/components/common/text.ts
+msgid "Another field of this kind already uses this key."
+msgstr "Jiné pole tohoto druhu už tento klíč používá."
+
+#: src/components/common/text.ts
 msgid "Another import of this workspace is running. Imports run one at a time; try again when it ends."
 msgstr "Probíhá jiný import tohoto pracovního prostoru. Importy běží po jednom; zkuste to znovu, až skončí."
 
@@ -2402,6 +2422,10 @@ msgstr "Jakákoli konverzace"
 #: src/features/contact/ContactsPage.tsx
 msgid "Any country"
 msgstr "Libovolná země"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Any field"
+msgstr "Libovolné pole"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
@@ -3157,6 +3181,7 @@ msgstr "Název kampaně"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
+#: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -3465,6 +3490,10 @@ msgstr "Zkontrolujte, že adresa přeposílání je přesně ta výše."
 msgid "Check your e-mail"
 msgstr "Zkontrolujte svůj e-mail"
 
+#: src/features/fields/value.ts
+msgid "Checkbox"
+msgstr "Zaškrtávací pole"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Checked"
 msgstr "Zkontrolováno"
@@ -3542,6 +3571,10 @@ msgstr "Vyberte stránku"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose a region"
 msgstr "Vyberte oblast"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Choose a value"
+msgstr "Zvolte hodnotu"
 
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
@@ -4101,6 +4134,10 @@ msgstr "Údaje kontaktu"
 msgid "Contact details (C)"
 msgstr "Údaje kontaktu (C)"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contact fields"
+msgstr "Pole kontaktu"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Contact id copied"
 msgstr "ID kontaktu zkopírováno"
@@ -4125,6 +4162,10 @@ msgstr "Kontakty"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Contacts and exports"
 msgstr "Kontakty a exporty"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contacts keep the values they hold; they show as plain attributes instead of a typed field."
+msgstr "Kontakty si ponechají své hodnoty; zobrazí se jako běžné atributy místo typovaného pole."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4180,6 +4221,10 @@ msgstr "Akce konverzace"
 #: src/features/conversation/actions.ts
 msgid "Conversation closed"
 msgstr "Konverzace uzavřena"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Conversation fields"
+msgstr "Pole konverzace"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Conversation list"
@@ -4421,6 +4466,10 @@ msgstr "Vytvořit kanál"
 msgid "Create draft"
 msgstr "Vytvořit koncept"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Create field"
+msgstr "Vytvořit pole"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -4558,6 +4607,15 @@ msgstr "Soubor CSV"
 msgid "Custom"
 msgstr "Vlastní"
 
+#: src/features/fields/FieldFilter.tsx
+msgid "Custom field"
+msgstr "Vlastní pole"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Custom fields"
+msgstr "Vlastní pole"
+
 #: src/app/Sidebar.tsx
 msgid "Customers"
 msgstr "Zákazníci"
@@ -4609,6 +4667,7 @@ msgid "Database upgrade"
 msgstr "Upgrade databáze"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/fields/value.ts
 msgid "Date"
 msgstr "Datum"
 
@@ -4658,6 +4717,7 @@ msgstr "Snížený výkon"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -4765,6 +4825,10 @@ msgstr "Smazat koncept"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the entry"
 msgstr "Smazat záznam"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Delete the field {name}?"
+msgstr "Smazat pole {name}?"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
@@ -5188,6 +5252,7 @@ msgstr "Doména neověřena"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
+#: src/features/fields/BulkFailures.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -5475,6 +5540,7 @@ msgstr "Každá se všemi svými zprávami a poznámkami"
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -5516,6 +5582,10 @@ msgstr "Upravit podrobnosti"
 msgid "Edit details ({editKey})"
 msgstr "Upravit podrobnosti ({editKey})"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Edit field"
+msgstr "Upravit pole"
+
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
 msgstr "Úprava kolekcí centra nápovědy a konceptů článků"
@@ -5535,6 +5605,11 @@ msgstr "Upravit monitor"
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Upravit tým"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Edit the custom fields"
+msgstr "Upravit vlastní pole"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -6010,6 +6085,11 @@ msgstr "Zpětná vazba odeslaná z aplikace"
 msgid "Feedback, {feedback} open"
 msgstr "Zpětná vazba, otevřených: {feedback}"
 
+#: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Fields"
+msgstr "Pole"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "Soubor"
@@ -6021,6 +6101,14 @@ msgstr "Soubor a souhlas"
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Files"
 msgstr "Soubory"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Fill in before closing"
+msgstr "Vyplňte před zavřením"
+
+#: src/components/common/text.ts
+msgid "Fill in the required fields before closing."
+msgstr "Před zavřením vyplňte povinná pole."
 
 #: src/features/broadcasts/TestSend.tsx
 msgid "Fill the test with a contact’s values"
@@ -7545,6 +7633,10 @@ msgstr "Její text a soubory se trvale smažou a konverzace ukáže, že jste ji
 msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
 msgstr "Její text a soubory se trvale smažou a konverzace ukáže, že jste ji odebrali. Odeslaný e-mail nelze z poštovní schránky příjemce vzít zpět."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
+msgstr "Jeho hodnoty se na pozadí vymažou ze všech konverzací. Nelze to vrátit zpět."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Připojil(a) se k pracovnímu prostoru jako {role}"
@@ -7583,6 +7675,7 @@ msgstr "Uchovává se u každého odběru z tohoto souboru jako záznam jejich s
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Key"
 msgstr "Klíč"
 
@@ -8824,6 +8917,7 @@ msgstr "Přesunout {0} do koše?"
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Přesouvat konverzace do koše, obnovovat je a číst koš"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8922,6 +9016,7 @@ msgstr "Přesunout do koše"
 msgid "Move to Yuva"
 msgstr "Přejít na Yuvu"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
@@ -8982,6 +9077,7 @@ msgstr "Moje týmy"
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
@@ -9051,6 +9147,10 @@ msgstr "Zúžte, co lze v tomto kanálu přiložit. Limity serveru zůstávají 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Potřeba pro hromadné zprávy"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "Needs “{name}” before it can close"
+msgstr "K zavření je potřeba „{name}“"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
@@ -9206,6 +9306,11 @@ msgstr "nové diskuse"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "Nový záznam"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "New field"
+msgstr "Nové pole"
 
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
@@ -9397,6 +9502,9 @@ msgstr "Dále vyberte, kam půjdou."
 msgid "Nightly backup"
 msgstr "Noční záloha"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "Ne"
@@ -9667,6 +9775,10 @@ msgstr "Nezaznamenány žádné události."
 msgid "No feedback from this page."
 msgstr "Žádná zpětná vazba z této stránky."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "No fields yet."
+msgstr "Zatím žádná pole."
+
 #: src/features/settings/channels/Attachments.tsx
 msgid "No file is accepted."
 msgstr "Nepřijímá se žádný soubor."
@@ -9874,6 +9986,7 @@ msgstr "Zatím žádná stránka stavu. Vytvářejí ji vlastníci a správci."
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/History.tsx
 #: src/features/conversation/RelatedLine.tsx
+#: src/features/fields/BulkFailures.tsx
 msgid "No subject"
 msgstr "Bez předmětu"
 
@@ -10155,6 +10268,10 @@ msgstr "Neodesláno"
 msgid "not set"
 msgstr "nenastaveno"
 
+#: src/features/fields/FieldInput.tsx
+msgid "Not set"
+msgstr "Nenastaveno"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Not set up"
 msgstr "Nenastaveno"
@@ -10396,6 +10513,10 @@ msgstr "nyní"
 msgid "Now"
 msgstr "Teď"
 
+#: src/features/fields/value.ts
+msgid "Number"
+msgstr "Číslo"
+
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Objected to all mail"
@@ -10549,6 +10670,10 @@ msgstr "Jedna zpráva každých {every}"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Jeden na řádek, 1 až 20. Widget mohou používat jen stránky z těchto originů."
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "One per line, all different, at most 100."
+msgstr "Jedna na řádek, všechny různé, nejvýše 100."
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
@@ -11087,6 +11212,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "Volitelné. Prvních 64 KiB odpovědi ho musí obsahovat; záleží na velikosti písmen."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Options"
 msgstr "Možnosti"
 
@@ -11125,6 +11251,10 @@ msgstr "Nebo nahrajte exportní soubor"
 #: src/features/inbox/ChatList.tsx
 msgid "Order and view"
 msgstr "Pořadí a zobrazení"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Order number"
+msgstr "Číslo objednávky"
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Original"
@@ -12455,6 +12585,10 @@ msgstr "Reference"
 msgid "Refresh"
 msgstr "Obnovit"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Refund"
+msgstr "Vrácení peněz"
+
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Refund approved"
 msgstr "Vrácení peněz schváleno"
@@ -12670,6 +12804,10 @@ msgstr "Odebral(a) poznámku z konverzace"
 #: src/features/conversation/messages/Redacted.tsx
 msgid "Removed by {who}"
 msgstr "Odebral(a): {who}"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
+msgstr "Odebrané možnosti se vymažou ze všech konverzací, které je mají. Probíhá to na pozadí."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -12948,6 +13086,11 @@ msgstr "Dopad na reputaci"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Required to close"
+msgstr "Povinné k zavření"
 
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
@@ -13279,6 +13422,7 @@ msgstr "Sobota"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -13296,6 +13440,10 @@ msgstr "Uložit"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "Uložte odpověď spolu s tím, co se má stát s konverzací po jejím odeslání."
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Save and close"
+msgstr "Uložit a zavřít"
 
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -13581,6 +13729,10 @@ msgstr "Spatřen {seen}"
 #: src/features/status/IncidentDetail.tsx
 msgid "Seen by the monitor"
 msgstr "Spatřeno monitorem"
+
+#: src/features/fields/value.ts
+msgid "Select"
+msgstr "Výběr"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15268,6 +15420,7 @@ msgstr "Testuje se připojení…"
 msgid "Tests go only to members of the workspace, at most five at a time, with [Test] before the subject."
 msgstr "Testy jdou jen členům pracovního prostoru, nejvýše pěti najednou, s [Test] před předmětem."
 
+#: src/features/fields/value.ts
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15705,6 +15858,10 @@ msgstr "Klíč vidí jen tyto schránky a nemůže spravovat schránky, webhooky
 msgid "The key stops working at the end of this day."
 msgstr "Klíč přestane fungovat na konci tohoto dne."
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "The key, the object and the type cannot change after creation."
+msgstr "Klíč, objekt a typ nelze po vytvoření změnit."
+
 #: src/features/settings/channels/ApiChannelDialog.tsx
 msgid "The kind cannot be changed later."
 msgstr "Druh nelze později změnit."
@@ -15857,6 +16014,10 @@ msgstr "Stará schránka přestane pro tuto doménu přijímat poštu."
 #: src/components/common/text.ts
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "Druhá schránka nemá e-mailový kanál, takže tuto e-mailovou konverzaci nelze přesunout tam. Nejprve do ní přidejte e-mailový kanál."
+
+#: src/features/fields/BulkFailures.tsx
+msgid "The others were closed. Open one to fill in what it needs, then close it."
+msgstr "Ostatní byly zavřeny. Otevřete jednu, doplňte, co potřebuje, a zavřete ji."
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -16196,6 +16357,10 @@ msgstr "Nahraný soubor byl smazán {fileDeletedAt}. Yuva si ponechá jen to, co
 #: src/features/migrations/text.ts
 msgid "The user name is your iCloud address without @icloud.com."
 msgstr "Uživatelské jméno je vaše adresa iCloud bez @icloud.com."
+
+#: src/components/common/text.ts
+msgid "The values of a deleted field with this key are still being cleared. Try again in a moment."
+msgstr "Hodnoty smazaného pole s tímto klíčem se ještě mažou. Zkuste to za chvíli znovu."
 
 #. placeholder {0}: e.from
 #: src/features/conversation/messages/Thread.tsx
@@ -16684,6 +16849,10 @@ msgstr "Tento odběr už nečeká na potvrzení."
 msgid "This team does not cover the conversation's inbox."
 msgstr "Tento tým nepokrývá schránku konverzace."
 
+#: src/components/common/text.ts
+msgid "This value does not fit the field."
+msgstr "Tato hodnota se k poli nehodí."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "Toto bylo závěrečné oznámení a žádné dřívější nebylo odesláno, takže se o incidentu nikdo nedozvěděl"
@@ -16982,6 +17151,7 @@ msgid "TXT record"
 msgstr "Záznam TXT"
 
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Type"
 msgstr "Typ"
 
@@ -17000,6 +17170,14 @@ msgstr "Pro potvrzení napište název pracovního prostoru"
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "Type your e-mail address to confirm"
 msgstr "Pro potvrzení napište svou e-mailovou adresu"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Typed values on conversations and contacts"
+msgstr "Typované hodnoty u konverzací a kontaktů"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Typed values your team keeps on conversations and contacts, such as an order number or a plan. Agents edit them beside the thread."
+msgstr "Typované hodnoty, které váš tým vede u konverzací a kontaktů, například číslo objednávky nebo tarif. Agenti je upravují vedle konverzace."
 
 #: src/app/TeamMenu.tsx
 msgid "Typing · {where}"
@@ -17916,6 +18094,10 @@ msgstr "Co zákazník vidí"
 msgid "What the import will do"
 msgstr "Co import udělá"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "What the team sees."
+msgstr "Co vidí tým."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "What they agreed to"
 msgstr "S čím souhlasili"
@@ -18060,6 +18242,10 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Where should Yuva send events?"
 msgstr "Kam má Yuva posílat události?"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
+msgstr "Kam API hodnotu ukládá. Malá písmena, číslice a podtržítka; nelze změnit."
 
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "Which address do customers write to?"
@@ -18318,6 +18504,9 @@ msgstr "Psát záznamy v Novinkách a jejich překlady"
 msgid "Write where and when they agreed."
 msgstr "Napište, kde a kdy souhlasili."
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Ano"
@@ -18642,6 +18831,10 @@ msgstr "Vaše časové pásmo, {zone}. To je {utc} UTC."
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"
 msgstr "Váš web"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Your workspace asks for these fields on every conversation it closes."
+msgstr "Váš pracovní prostor tato pole vyžaduje u každé konverzace, kterou zavírá."
 
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."

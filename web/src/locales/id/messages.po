@@ -11,6 +11,10 @@ msgstr ""
 msgid ".eml files in a zip"
 msgstr "File .eml dalam zip"
 
+#: src/features/fields/BulkFailures.tsx
+msgid "“{name}” holds a value that does not fit"
+msgstr "Nilai “{name}” tidak cocok dengan kolom"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "“Apakah halaman ini membantu?”, masukan dan diskusi di dokumentasi Anda"
@@ -290,6 +294,10 @@ msgstr "{count, plural, other {# izin}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, other {Akan dikirim ke # penerima.}}"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "{count} could not be closed"
+msgstr "{count} tidak dapat ditutup"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "{count} events"
@@ -1107,6 +1115,10 @@ msgstr "Kontak dihapus"
 msgid "A conversation"
 msgstr "Satu percakapan"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
+msgstr "Percakapan tidak dapat ditutup sebelum kolom ini memiliki nilai. Spam dikecualikan."
+
 #: src/components/common/text.ts
 msgid "A conversation changed"
 msgstr "Percakapan berubah"
@@ -1223,6 +1235,10 @@ msgstr "Artikel pusat bantuan dibatalkan penerbitannya"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "A key lets your backend, a script or a bot read and write conversations. Limit it to the products and scopes it needs."
 msgstr "Kunci memungkinkan backend, skrip, atau bot Anda membaca dan menulis percakapan. Batasi pada produk dan izin yang dibutuhkan."
+
+#: src/components/common/text.ts
+msgid "A kind of field holds at most 50 fields. Delete one first."
+msgstr "Satu objek menampung paling banyak 50 kolom. Hapus satu terlebih dahulu."
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -2315,6 +2331,10 @@ msgid "another conversation"
 msgstr "percakapan lain"
 
 #: src/components/common/text.ts
+msgid "Another field of this kind already uses this key."
+msgstr "Kolom lain dengan jenis ini sudah memakai kunci ini."
+
+#: src/components/common/text.ts
 msgid "Another import of this workspace is running. Imports run one at a time; try again when it ends."
 msgstr "Impor lain di ruang kerja ini sedang berjalan. Impor berjalan satu per satu; coba lagi setelah selesai."
 
@@ -2402,6 +2422,10 @@ msgstr "Percakapan apa pun"
 #: src/features/contact/ContactsPage.tsx
 msgid "Any country"
 msgstr "Negara mana pun"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Any field"
+msgstr "Kolom apa pun"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
@@ -3157,6 +3181,7 @@ msgstr "Nama kampanye"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
+#: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -3465,6 +3490,10 @@ msgstr "Pastikan alamat penerusan persis sama dengan yang di atas."
 msgid "Check your e-mail"
 msgstr "Periksa email Anda"
 
+#: src/features/fields/value.ts
+msgid "Checkbox"
+msgstr "Kotak centang"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Checked"
 msgstr "Diperiksa"
@@ -3542,6 +3571,10 @@ msgstr "Pilih halaman"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose a region"
 msgstr "Pilih wilayah"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Choose a value"
+msgstr "Pilih nilai"
 
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
@@ -4101,6 +4134,10 @@ msgstr "Detail kontak"
 msgid "Contact details (C)"
 msgstr "Detail kontak (C)"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contact fields"
+msgstr "Kolom kontak"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Contact id copied"
 msgstr "ID kontak disalin"
@@ -4125,6 +4162,10 @@ msgstr "Kontak"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Contacts and exports"
 msgstr "Kontak dan ekspor"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contacts keep the values they hold; they show as plain attributes instead of a typed field."
+msgstr "Kontak mempertahankan nilai yang dimilikinya; nilai itu tampil sebagai atribut biasa, bukan kolom bertipe."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4180,6 +4221,10 @@ msgstr "Tindakan percakapan"
 #: src/features/conversation/actions.ts
 msgid "Conversation closed"
 msgstr "Percakapan ditutup"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Conversation fields"
+msgstr "Kolom percakapan"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Conversation list"
@@ -4421,6 +4466,10 @@ msgstr "Buat saluran"
 msgid "Create draft"
 msgstr "Buat draf"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Create field"
+msgstr "Buat kolom"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -4558,6 +4607,15 @@ msgstr "File CSV"
 msgid "Custom"
 msgstr "Kustom"
 
+#: src/features/fields/FieldFilter.tsx
+msgid "Custom field"
+msgstr "Kolom khusus"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Custom fields"
+msgstr "Kolom khusus"
+
 #: src/app/Sidebar.tsx
 msgid "Customers"
 msgstr "Pelanggan"
@@ -4609,6 +4667,7 @@ msgid "Database upgrade"
 msgstr "Peningkatan versi basis data"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/fields/value.ts
 msgid "Date"
 msgstr "Tanggal"
 
@@ -4658,6 +4717,7 @@ msgstr "Performa menurun"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -4765,6 +4825,10 @@ msgstr "Hapus draf"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the entry"
 msgstr "Hapus entri"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Delete the field {name}?"
+msgstr "Hapus kolom {name}?"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
@@ -5188,6 +5252,7 @@ msgstr "Domain belum terverifikasi"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
+#: src/features/fields/BulkFailures.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -5475,6 +5540,7 @@ msgstr "Masing-masing dengan semua pesan dan catatannya"
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -5516,6 +5582,10 @@ msgstr "Edit detail"
 msgid "Edit details ({editKey})"
 msgstr "Edit detail ({editKey})"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Edit field"
+msgstr "Edit kolom"
+
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
 msgstr "Edit koleksi pusat bantuan dan draf artikel"
@@ -5535,6 +5605,11 @@ msgstr "Edit monitor"
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Ubah tim"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Edit the custom fields"
+msgstr "Edit kolom khusus"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -6010,6 +6085,11 @@ msgstr "Masukan yang dikirim dari aplikasi"
 msgid "Feedback, {feedback} open"
 msgstr "Masukan, {feedback} terbuka"
 
+#: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Fields"
+msgstr "Kolom"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "File"
@@ -6021,6 +6101,14 @@ msgstr "File dan persetujuan"
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Files"
 msgstr "File"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Fill in before closing"
+msgstr "Isi sebelum menutup"
+
+#: src/components/common/text.ts
+msgid "Fill in the required fields before closing."
+msgstr "Isi kolom wajib sebelum menutup."
 
 #: src/features/broadcasts/TestSend.tsx
 msgid "Fill the test with a contact’s values"
@@ -7545,6 +7633,10 @@ msgstr "Teks dan filenya dihapus permanen, dan percakapan menunjukkan bahwa Anda
 msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
 msgstr "Teks dan filenya dihapus permanen, dan percakapan menunjukkan bahwa Anda yang menghapusnya. Email yang sudah terkirim tidak dapat ditarik dari kotak surat penerima."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
+msgstr "Nilainya dihapus dari semua percakapan di latar belakang. Ini tidak dapat dibatalkan."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Bergabung ke ruang kerja sebagai {role}"
@@ -7583,6 +7675,7 @@ msgstr "Disimpan bersama setiap langganan dari file ini, sebagai catatan persetu
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Key"
 msgstr "Kunci"
 
@@ -8824,6 +8917,7 @@ msgstr "Pindahkan {0} ke Sampah?"
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Memindahkan percakapan ke Sampah, memulihkannya, dan membaca Sampah"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8922,6 +9016,7 @@ msgstr "Pindahkan ke Sampah"
 msgid "Move to Yuva"
 msgstr "Pindah ke Yuva"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
@@ -8982,6 +9077,7 @@ msgstr "Tim saya"
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
@@ -9051,6 +9147,10 @@ msgstr "Persempit apa yang bisa dilampirkan di kanal ini. Batas server sendiri t
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Diperlukan untuk siaran massal"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "Needs “{name}” before it can close"
+msgstr "Perlu “{name}” sebelum dapat ditutup"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
@@ -9206,6 +9306,11 @@ msgstr "diskusi baru"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "Entri baru"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "New field"
+msgstr "Kolom baru"
 
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
@@ -9397,6 +9502,9 @@ msgstr "Selanjutnya, pilih ke mana mereka masuk."
 msgid "Nightly backup"
 msgstr "Pencadangan malam"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "Tidak"
@@ -9667,6 +9775,10 @@ msgstr "Tidak ada peristiwa tercatat."
 msgid "No feedback from this page."
 msgstr "Tidak ada masukan dari halaman ini."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "No fields yet."
+msgstr "Belum ada kolom."
+
 #: src/features/settings/channels/Attachments.tsx
 msgid "No file is accepted."
 msgstr "Tidak ada file yang diterima."
@@ -9874,6 +9986,7 @@ msgstr "Belum ada halaman status. Pemilik dan admin yang membuatnya."
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/History.tsx
 #: src/features/conversation/RelatedLine.tsx
+#: src/features/fields/BulkFailures.tsx
 msgid "No subject"
 msgstr "Tanpa subjek"
 
@@ -10155,6 +10268,10 @@ msgstr "Tidak terkirim"
 msgid "not set"
 msgstr "belum diatur"
 
+#: src/features/fields/FieldInput.tsx
+msgid "Not set"
+msgstr "Belum diatur"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Not set up"
 msgstr "Belum disiapkan"
@@ -10396,6 +10513,10 @@ msgstr "sekarang"
 msgid "Now"
 msgstr "Sekarang"
 
+#: src/features/fields/value.ts
+msgid "Number"
+msgstr "Angka"
+
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Objected to all mail"
@@ -10549,6 +10670,10 @@ msgstr "Satu email setiap {every}"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Satu per baris, 1 sampai 20. Hanya halaman di origin ini yang dapat memakai widget."
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "One per line, all different, at most 100."
+msgstr "Satu per baris, semuanya berbeda, maksimal 100."
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
@@ -11087,6 +11212,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "Opsional. 64 KiB pertama jawaban harus memuatnya; huruf besar dan kecil dibedakan."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Options"
 msgstr "Opsi"
 
@@ -11125,6 +11251,10 @@ msgstr "Atau unggah file ekspor"
 #: src/features/inbox/ChatList.tsx
 msgid "Order and view"
 msgstr "Urutan dan tampilan"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Order number"
+msgstr "Nomor pesanan"
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Original"
@@ -12455,6 +12585,10 @@ msgstr "Referensi"
 msgid "Refresh"
 msgstr "Segarkan"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Refund"
+msgstr "Pengembalian dana"
+
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Refund approved"
 msgstr "Pengembalian dana disetujui"
@@ -12670,6 +12804,10 @@ msgstr "Menghapus sebuah catatan dari percakapan"
 #: src/features/conversation/messages/Redacted.tsx
 msgid "Removed by {who}"
 msgstr "Dihapus oleh {who}"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
+msgstr "Opsi yang dihapus dibersihkan dari semua percakapan yang memilikinya. Ini berjalan di latar belakang."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -12948,6 +13086,11 @@ msgstr "Dampak pada reputasi"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Required to close"
+msgstr "Wajib untuk menutup"
 
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
@@ -13279,6 +13422,7 @@ msgstr "Sabtu"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -13296,6 +13440,10 @@ msgstr "Simpan"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "Simpan balasan bersama hal yang harus terjadi pada percakapan saat Anda mengirimnya."
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Save and close"
+msgstr "Simpan dan tutup"
 
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -13581,6 +13729,10 @@ msgstr "Dilihat {seen}"
 #: src/features/status/IncidentDetail.tsx
 msgid "Seen by the monitor"
 msgstr "Dilihat oleh monitor"
+
+#: src/features/fields/value.ts
+msgid "Select"
+msgstr "Pilihan"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15268,6 +15420,7 @@ msgstr "Menguji koneksi…"
 msgid "Tests go only to members of the workspace, at most five at a time, with [Test] before the subject."
 msgstr "Uji hanya dikirim ke anggota ruang kerja, paling banyak lima sekaligus, dengan [Test] sebelum subjek."
 
+#: src/features/fields/value.ts
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15705,6 +15858,10 @@ msgstr "Kunci hanya melihat kotak masuk ini dan tidak dapat mengelola kotak masu
 msgid "The key stops working at the end of this day."
 msgstr "Kunci berhenti bekerja di akhir hari ini."
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "The key, the object and the type cannot change after creation."
+msgstr "Kunci, objek, dan tipe tidak dapat diubah setelah dibuat."
+
 #: src/features/settings/channels/ApiChannelDialog.tsx
 msgid "The kind cannot be changed later."
 msgstr "Jenis tidak dapat diubah nanti."
@@ -15857,6 +16014,10 @@ msgstr "Kotak surat lama berhenti menerima email untuk domain itu."
 #: src/components/common/text.ts
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "Kotak masuk lain tidak punya saluran email, sehingga percakapan email ini tidak dapat dipindahkan ke sana. Tambahkan saluran email dulu."
+
+#: src/features/fields/BulkFailures.tsx
+msgid "The others were closed. Open one to fill in what it needs, then close it."
+msgstr "Sisanya sudah ditutup. Buka satu, isi yang diperlukan, lalu tutup."
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -16196,6 +16357,10 @@ msgstr "File yang diunggah dihapus {fileDeletedAt}. Yuva hanya menyimpan yang di
 #: src/features/migrations/text.ts
 msgid "The user name is your iCloud address without @icloud.com."
 msgstr "Nama pengguna adalah alamat iCloud Anda tanpa @icloud.com."
+
+#: src/components/common/text.ts
+msgid "The values of a deleted field with this key are still being cleared. Try again in a moment."
+msgstr "Nilai kolom terhapus dengan kunci ini masih dibersihkan. Coba lagi sebentar lagi."
 
 #. placeholder {0}: e.from
 #: src/features/conversation/messages/Thread.tsx
@@ -16684,6 +16849,10 @@ msgstr "Langganan ini tidak lagi menunggu konfirmasi."
 msgid "This team does not cover the conversation's inbox."
 msgstr "Tim ini tidak mencakup kotak masuk percakapan."
 
+#: src/components/common/text.ts
+msgid "This value does not fit the field."
+msgstr "Nilai ini tidak cocok dengan kolom."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "Ini adalah pemberitahuan penutup dan tidak ada pemberitahuan sebelumnya yang dikirim, sehingga tidak ada yang tahu tentang insiden ini"
@@ -16982,6 +17151,7 @@ msgid "TXT record"
 msgstr "Rekaman TXT"
 
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Type"
 msgstr "Jenis"
 
@@ -17000,6 +17170,14 @@ msgstr "Ketik nama ruang kerja untuk mengonfirmasi"
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "Type your e-mail address to confirm"
 msgstr "Ketik alamat email Anda untuk mengonfirmasi"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Typed values on conversations and contacts"
+msgstr "Nilai bertipe pada percakapan dan kontak"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Typed values your team keeps on conversations and contacts, such as an order number or a plan. Agents edit them beside the thread."
+msgstr "Nilai bertipe yang disimpan tim Anda pada percakapan dan kontak, seperti nomor pesanan atau paket. Agen mengeditnya di samping percakapan."
 
 #: src/app/TeamMenu.tsx
 msgid "Typing · {where}"
@@ -17916,6 +18094,10 @@ msgstr "Yang dilihat pelanggan"
 msgid "What the import will do"
 msgstr "Yang akan dilakukan impor"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "What the team sees."
+msgstr "Yang dilihat tim."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "What they agreed to"
 msgstr "Yang mereka setujui"
@@ -18060,6 +18242,10 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Where should Yuva send events?"
 msgstr "Ke mana Yuva harus mengirim peristiwa?"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
+msgstr "Tempat API menyimpan nilai. Huruf kecil, angka, dan garis bawah; tidak dapat diubah."
 
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "Which address do customers write to?"
@@ -18318,6 +18504,9 @@ msgstr "Tulis entri Yang baru dan terjemahannya"
 msgid "Write where and when they agreed."
 msgstr "Tulis di mana dan kapan mereka setuju."
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Ya"
@@ -18642,6 +18831,10 @@ msgstr "Zona waktu Anda, {zone}. Itu {utc} UTC."
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"
 msgstr "Situs web Anda"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Your workspace asks for these fields on every conversation it closes."
+msgstr "Ruang kerja Anda meminta kolom ini di setiap percakapan yang ditutupnya."
 
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."

@@ -11,6 +11,10 @@ msgstr ""
 msgid ".eml files in a zip"
 msgstr "Fitxers .eml en un zip"
 
+#: src/features/fields/BulkFailures.tsx
+msgid "“{name}” holds a value that does not fit"
+msgstr "«{name}» té un valor que no encaixa"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "«T'ha estat útil aquesta pàgina?», comentaris i debats a la teva documentació"
@@ -290,6 +294,10 @@ msgstr "{count, plural, one {# permís} other {# permisos}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {Va a # destinatari.} other {Va a # destinataris.}}"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "{count} could not be closed"
+msgstr "No s’han pogut tancar {count}"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "{count} events"
@@ -1107,6 +1115,10 @@ msgstr "S'ha eliminat un contacte"
 msgid "A conversation"
 msgstr "Una conversa"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
+msgstr "Una conversa no es pot tancar fins que aquest camp tingui un valor. El correu brossa n’està exempt."
+
 #: src/components/common/text.ts
 msgid "A conversation changed"
 msgstr "Ha canviat una conversa"
@@ -1223,6 +1235,10 @@ msgstr "S'ha despublicat un article del centre d'ajuda"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "A key lets your backend, a script or a bot read and write conversations. Limit it to the products and scopes it needs."
 msgstr "Una clau permet que el teu backend, un script o un bot llegeixin i escriguin converses. Limita-la als productes i permisos que necessita."
+
+#: src/components/common/text.ts
+msgid "A kind of field holds at most 50 fields. Delete one first."
+msgstr "Un objecte admet com a màxim 50 camps. Elimina’n un primer."
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -2315,6 +2331,10 @@ msgid "another conversation"
 msgstr "una altra conversa"
 
 #: src/components/common/text.ts
+msgid "Another field of this kind already uses this key."
+msgstr "Un altre camp d’aquest tipus ja fa servir aquesta clau."
+
+#: src/components/common/text.ts
 msgid "Another import of this workspace is running. Imports run one at a time; try again when it ends."
 msgstr "Una altra importació d'aquest espai de treball s'està executant. Les importacions s'executen una a una; torna-ho a provar quan acabi."
 
@@ -2402,6 +2422,10 @@ msgstr "Qualsevol conversa"
 #: src/features/contact/ContactsPage.tsx
 msgid "Any country"
 msgstr "Qualsevol país"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Any field"
+msgstr "Qualsevol camp"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
@@ -3157,6 +3181,7 @@ msgstr "Nom de la campanya"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
+#: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -3465,6 +3490,10 @@ msgstr "Comprova que l'adreça de reenviament és exactament la de dalt."
 msgid "Check your e-mail"
 msgstr "Mira el teu correu"
 
+#: src/features/fields/value.ts
+msgid "Checkbox"
+msgstr "Casella de selecció"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Checked"
 msgstr "Comprovat"
@@ -3542,6 +3571,10 @@ msgstr "Tria una pàgina"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose a region"
 msgstr "Tria una regió"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Choose a value"
+msgstr "Tria un valor"
 
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
@@ -4101,6 +4134,10 @@ msgstr "Dades del contacte"
 msgid "Contact details (C)"
 msgstr "Dades del contacte (C)"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contact fields"
+msgstr "Camps del contacte"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Contact id copied"
 msgstr "ID del contacte copiat"
@@ -4125,6 +4162,10 @@ msgstr "Contactes"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Contacts and exports"
 msgstr "Contactes i exportacions"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contacts keep the values they hold; they show as plain attributes instead of a typed field."
+msgstr "Els contactes conserven els valors que tenen; es mostren com a atributs simples en lloc d’un camp amb tipus."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4180,6 +4221,10 @@ msgstr "Accions de la conversa"
 #: src/features/conversation/actions.ts
 msgid "Conversation closed"
 msgstr "Conversa tancada"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Conversation fields"
+msgstr "Camps de la conversa"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Conversation list"
@@ -4421,6 +4466,10 @@ msgstr "Crea el canal"
 msgid "Create draft"
 msgstr "Crea un esborrany"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Create field"
+msgstr "Crea el camp"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -4558,6 +4607,15 @@ msgstr "Fitxer CSV"
 msgid "Custom"
 msgstr "Personalitzat"
 
+#: src/features/fields/FieldFilter.tsx
+msgid "Custom field"
+msgstr "Camp personalitzat"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Custom fields"
+msgstr "Camps personalitzats"
+
 #: src/app/Sidebar.tsx
 msgid "Customers"
 msgstr "Clients"
@@ -4609,6 +4667,7 @@ msgid "Database upgrade"
 msgstr "Actualització de la base de dades"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/fields/value.ts
 msgid "Date"
 msgstr "Data"
 
@@ -4658,6 +4717,7 @@ msgstr "Rendiment degradat"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -4765,6 +4825,10 @@ msgstr "Suprimeix l’esborrany"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the entry"
 msgstr "Elimina l’entrada"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Delete the field {name}?"
+msgstr "Vols eliminar el camp {name}?"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
@@ -5188,6 +5252,7 @@ msgstr "Domini no verificat"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
+#: src/features/fields/BulkFailures.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -5475,6 +5540,7 @@ msgstr "Cadascuna amb tots els seus missatges i notes"
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -5516,6 +5582,10 @@ msgstr "Edita els detalls"
 msgid "Edit details ({editKey})"
 msgstr "Edita els detalls ({editKey})"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Edit field"
+msgstr "Edita el camp"
+
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
 msgstr "Edita les col·leccions del centre d'ajuda i els esborranys dels articles"
@@ -5535,6 +5605,11 @@ msgstr "Edita el monitor"
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Edita l'equip"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Edit the custom fields"
+msgstr "Edita els camps personalitzats"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -6010,6 +6085,11 @@ msgstr "Comentaris enviats des de l'aplicació"
 msgid "Feedback, {feedback} open"
 msgstr "Suggeriments, {feedback} oberts"
 
+#: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Fields"
+msgstr "Camps"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "Fitxer"
@@ -6021,6 +6101,14 @@ msgstr "Fitxer i consentiment"
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Files"
 msgstr "Fitxers"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Fill in before closing"
+msgstr "Omple abans de tancar"
+
+#: src/components/common/text.ts
+msgid "Fill in the required fields before closing."
+msgstr "Omple els camps obligatoris abans de tancar."
 
 #: src/features/broadcasts/TestSend.tsx
 msgid "Fill the test with a contact’s values"
@@ -7545,6 +7633,10 @@ msgstr "El seu text i els fitxers se suprimeixen per sempre i la conversa mostra
 msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
 msgstr "El seu text i els fitxers se suprimeixen per sempre i la conversa mostra que l'has eliminat. Un correu ja enviat no es pot recuperar de la bústia del destinatari."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
+msgstr "Els seus valors s’esborren de totes les converses, en segon pla. No es pot desfer."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "S'ha unit a l'espai de treball com a {role}"
@@ -7583,6 +7675,7 @@ msgstr "Es conserva amb cada subscripció d'aquest fitxer, com a registre del se
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Key"
 msgstr "Clau"
 
@@ -8824,6 +8917,7 @@ msgstr "Vols moure {0} a la paperera?"
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Moure converses a la paperera, restaurar-les i llegir la paperera"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8922,6 +9016,7 @@ msgstr "Moure a la paperera"
 msgid "Move to Yuva"
 msgstr "Passa a Yuva"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
@@ -8982,6 +9077,7 @@ msgstr "Els meus equips"
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
@@ -9051,6 +9147,10 @@ msgstr "Limita el que es pot adjuntar en aquest canal. Els límits del servidor 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Necessari per als enviaments massius"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "Needs “{name}” before it can close"
+msgstr "Cal «{name}» per poder tancar-la"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
@@ -9206,6 +9306,11 @@ msgstr "debats nous"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "Entrada nova"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "New field"
+msgstr "Camp nou"
 
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
@@ -9397,6 +9502,9 @@ msgstr "Després, tria on van."
 msgid "Nightly backup"
 msgstr "Còpia de seguretat nocturna"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "No"
@@ -9667,6 +9775,10 @@ msgstr "No hi ha cap esdeveniment registrat."
 msgid "No feedback from this page."
 msgstr "Cap comentari d'aquesta pàgina."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "No fields yet."
+msgstr "Encara no hi ha cap camp."
+
 #: src/features/settings/channels/Attachments.tsx
 msgid "No file is accepted."
 msgstr "No s’accepta cap fitxer."
@@ -9874,6 +9986,7 @@ msgstr "Encara no hi ha pàgina d’estat. La creen els propietaris i els admini
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/History.tsx
 #: src/features/conversation/RelatedLine.tsx
+#: src/features/fields/BulkFailures.tsx
 msgid "No subject"
 msgstr "Sense assumpte"
 
@@ -10155,6 +10268,10 @@ msgstr "No enviat"
 msgid "not set"
 msgstr "sense definir"
 
+#: src/features/fields/FieldInput.tsx
+msgid "Not set"
+msgstr "Sense definir"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Not set up"
 msgstr "Sense configurar"
@@ -10396,6 +10513,10 @@ msgstr "ara"
 msgid "Now"
 msgstr "Ara"
 
+#: src/features/fields/value.ts
+msgid "Number"
+msgstr "Número"
+
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Objected to all mail"
@@ -10549,6 +10670,10 @@ msgstr "Un correu cada {every}"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Un per línia, de 1 a 20. Només les pàgines d'aquests orígens poden fer servir el giny."
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "One per line, all different, at most 100."
+msgstr "Una per línia, totes diferents, com a màxim 100."
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
@@ -11087,6 +11212,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "Opcional. Els primers 64 KiB de la resposta l’han de contenir; es distingeix entre majúscules i minúscules."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Options"
 msgstr "Opcions"
 
@@ -11125,6 +11251,10 @@ msgstr "O puja un fitxer d'exportació"
 #: src/features/inbox/ChatList.tsx
 msgid "Order and view"
 msgstr "Ordre i vista"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Order number"
+msgstr "Número de comanda"
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Original"
@@ -12455,6 +12585,10 @@ msgstr "Referència"
 msgid "Refresh"
 msgstr "Actualitza"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Refund"
+msgstr "Reemborsament"
+
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Refund approved"
 msgstr "Reemborsament aprovat"
@@ -12670,6 +12804,10 @@ msgstr "Ha eliminat una nota d'una conversa"
 #: src/features/conversation/messages/Redacted.tsx
 msgid "Removed by {who}"
 msgstr "Eliminat per {who}"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
+msgstr "Les opcions eliminades s’esborren de totes les converses que les tenen. S’executa en segon pla."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -12948,6 +13086,11 @@ msgstr "Impacte en la reputació"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Required to close"
+msgstr "Obligatori per tancar"
 
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
@@ -13279,6 +13422,7 @@ msgstr "Dissabte"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -13296,6 +13440,10 @@ msgstr "Desa"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "Desa una resposta juntament amb el que ha de passar amb la conversa quan l'enviïs."
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Save and close"
+msgstr "Desa i tanca"
 
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -13581,6 +13729,10 @@ msgstr "Vist {seen}"
 #: src/features/status/IncidentDetail.tsx
 msgid "Seen by the monitor"
 msgstr "Vist pel monitor"
+
+#: src/features/fields/value.ts
+msgid "Select"
+msgstr "Selecció"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15268,6 +15420,7 @@ msgstr "Provant la connexió…"
 msgid "Tests go only to members of the workspace, at most five at a time, with [Test] before the subject."
 msgstr "Les proves només van als membres de l'espai de treball, com a màxim cinc alhora, amb [Test] davant de l'assumpte."
 
+#: src/features/fields/value.ts
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15705,6 +15858,10 @@ msgstr "La clau només veu aquestes safates d'entrada i no pot gestionar safates
 msgid "The key stops working at the end of this day."
 msgstr "La clau deixa de funcionar al final d'aquest dia."
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "The key, the object and the type cannot change after creation."
+msgstr "La clau, l’objecte i el tipus no es poden canviar un cop creats."
+
 #: src/features/settings/channels/ApiChannelDialog.tsx
 msgid "The kind cannot be changed later."
 msgstr "El tipus no es pot canviar més tard."
@@ -15857,6 +16014,10 @@ msgstr "L'antiga bústia deixa de rebre correu d'aquest domini."
 #: src/components/common/text.ts
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "L'altra safata no té cap canal de correu, de manera que aquesta conversa de correu no s'hi pot moure. Afegeix-hi primer un canal de correu."
+
+#: src/features/fields/BulkFailures.tsx
+msgid "The others were closed. Open one to fill in what it needs, then close it."
+msgstr "Les altres s’han tancat. Obre’n una, omple el que necessita i tanca-la."
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -16196,6 +16357,10 @@ msgstr "El fitxer pujat es va eliminar {fileDeletedAt}. Yuva només conserva el 
 #: src/features/migrations/text.ts
 msgid "The user name is your iCloud address without @icloud.com."
 msgstr "El nom d'usuari és la teva adreça d'iCloud sense @icloud.com."
+
+#: src/components/common/text.ts
+msgid "The values of a deleted field with this key are still being cleared. Try again in a moment."
+msgstr "Els valors d’un camp eliminat amb aquesta clau encara s’estan esborrant. Torna-ho a provar d’aquí a un moment."
 
 #. placeholder {0}: e.from
 #: src/features/conversation/messages/Thread.tsx
@@ -16684,6 +16849,10 @@ msgstr "Aquesta subscripció ja no espera confirmació."
 msgid "This team does not cover the conversation's inbox."
 msgstr "Aquest equip no cobreix la safata de la conversa."
 
+#: src/components/common/text.ts
+msgid "This value does not fit the field."
+msgstr "Aquest valor no encaixa amb el camp."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "Era un avís de tancament i no s'havia enviat cap avís anterior, de manera que ningú coneixia l'incident"
@@ -16982,6 +17151,7 @@ msgid "TXT record"
 msgstr "Registre TXT"
 
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Type"
 msgstr "Tipus"
 
@@ -17000,6 +17170,14 @@ msgstr "Escriu el nom de l'espai de treball per confirmar"
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "Type your e-mail address to confirm"
 msgstr "Escriu la teva adreça electrònica per confirmar"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Typed values on conversations and contacts"
+msgstr "Valors amb tipus a converses i contactes"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Typed values your team keeps on conversations and contacts, such as an order number or a plan. Agents edit them beside the thread."
+msgstr "Valors amb tipus que el teu equip guarda a converses i contactes, com un número de comanda o un pla. Els agents els editen al costat de la conversa."
 
 #: src/app/TeamMenu.tsx
 msgid "Typing · {where}"
@@ -17916,6 +18094,10 @@ msgstr "El que veu el client"
 msgid "What the import will do"
 msgstr "El que farà la importació"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "What the team sees."
+msgstr "El que veu l’equip."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "What they agreed to"
 msgstr "A què han accedit"
@@ -18060,6 +18242,10 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Where should Yuva send events?"
 msgstr "On ha d'enviar Yuva els esdeveniments?"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
+msgstr "On l’API desa el valor. Minúscules, dígits i guions baixos; no es pot canviar."
 
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "Which address do customers write to?"
@@ -18318,6 +18504,9 @@ msgstr "Escriu entrades de Novetats i les seves traduccions"
 msgid "Write where and when they agreed."
 msgstr "Escriu on i quan han acceptat."
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Sí"
@@ -18642,6 +18831,10 @@ msgstr "La teva zona horària, {zone}. Això és {utc} UTC."
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"
 msgstr "El teu lloc web"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Your workspace asks for these fields on every conversation it closes."
+msgstr "El teu espai de treball demana aquests camps a cada conversa que tanca."
 
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."

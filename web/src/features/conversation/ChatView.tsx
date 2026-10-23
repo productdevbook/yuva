@@ -447,6 +447,14 @@ function Loaded({
       setMoreView("labels")
       setMoreOpen(true)
     },
+    fields: () => {
+      const wasOpen = shownPanel
+      if (!wasOpen) setPanel(true)
+      setTimeout(
+        () => document.querySelector<HTMLElement>("[data-testid=conversation-fields] [data-field-input]")?.focus(),
+        wasOpen ? 0 : 200
+      )
+    },
     progress: () => c.kind === "feedback" && setMenu("progress"),
     close: () => (c.status === "closed" ? actions.reopen() : actions.close()),
     contact: togglePanel,
@@ -481,6 +489,7 @@ function Loaded({
           [SHORTCUTS.hand]: handlers.hand,
           [SHORTCUTS.assignTeam]: handlers.assignTeam,
           [SHORTCUTS.labels]: handlers.labels,
+          [SHORTCUTS.fields]: handlers.fields,
           [SHORTCUTS.progress]: handlers.progress,
           [SHORTCUTS.close]: handlers.close,
           [SHORTCUTS.leave]: () => showCollision && leaveTo(),

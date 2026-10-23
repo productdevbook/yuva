@@ -11,6 +11,10 @@ msgstr ""
 msgid ".eml files in a zip"
 msgstr "Tệp .eml trong một tệp zip"
 
+#: src/features/fields/BulkFailures.tsx
+msgid "“{name}” holds a value that does not fit"
+msgstr "Giá trị của “{name}” không phù hợp"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "“Trang này có hữu ích không?”, phản hồi và thảo luận trên tài liệu của bạn"
@@ -290,6 +294,10 @@ msgstr "{count, plural, other {# quyền}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, other {Gửi đến # người nhận.}}"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "{count} could not be closed"
+msgstr "Không thể đóng {count} cuộc trò chuyện"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "{count} events"
@@ -1107,6 +1115,10 @@ msgstr "Một liên hệ đã bị xóa"
 msgid "A conversation"
 msgstr "Một cuộc trò chuyện"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
+msgstr "Không thể đóng cuộc trò chuyện cho đến khi trường này có giá trị. Thư rác được miễn."
+
 #: src/components/common/text.ts
 msgid "A conversation changed"
 msgstr "Một cuộc trò chuyện đã thay đổi"
@@ -1223,6 +1235,10 @@ msgstr "Một bài viết của trung tâm trợ giúp đã bị hủy xuất b�
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "A key lets your backend, a script or a bot read and write conversations. Limit it to the products and scopes it needs."
 msgstr "Khóa cho phép backend, tập lệnh hoặc bot của bạn đọc và ghi cuộc trò chuyện. Hãy giới hạn nó ở các sản phẩm và quyền cần thiết."
+
+#: src/components/common/text.ts
+msgid "A kind of field holds at most 50 fields. Delete one first."
+msgstr "Mỗi đối tượng có tối đa 50 trường. Hãy xóa một trường trước."
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -2315,6 +2331,10 @@ msgid "another conversation"
 msgstr "cuộc trò chuyện khác"
 
 #: src/components/common/text.ts
+msgid "Another field of this kind already uses this key."
+msgstr "Một trường khác cùng loại đã dùng khóa này."
+
+#: src/components/common/text.ts
 msgid "Another import of this workspace is running. Imports run one at a time; try again when it ends."
 msgstr "Một lần nhập khác của không gian làm việc này đang chạy. Các lần nhập chạy lần lượt; hãy thử lại khi nó kết thúc."
 
@@ -2402,6 +2422,10 @@ msgstr "Bất kỳ cuộc trò chuyện nào"
 #: src/features/contact/ContactsPage.tsx
 msgid "Any country"
 msgstr "Mọi quốc gia"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Any field"
+msgstr "Bất kỳ trường nào"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
@@ -3157,6 +3181,7 @@ msgstr "Tên chiến dịch"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
+#: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -3465,6 +3490,10 @@ msgstr "Hãy kiểm tra địa chỉ chuyển tiếp đúng là địa chỉ ở
 msgid "Check your e-mail"
 msgstr "Kiểm tra email của bạn"
 
+#: src/features/fields/value.ts
+msgid "Checkbox"
+msgstr "Hộp kiểm"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Checked"
 msgstr "Đã kiểm tra"
@@ -3542,6 +3571,10 @@ msgstr "Chọn một trang"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose a region"
 msgstr "Chọn khu vực"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Choose a value"
+msgstr "Chọn một giá trị"
 
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
@@ -4101,6 +4134,10 @@ msgstr "Thông tin liên hệ"
 msgid "Contact details (C)"
 msgstr "Thông tin liên hệ (C)"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contact fields"
+msgstr "Trường liên hệ"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Contact id copied"
 msgstr "Đã sao chép ID liên hệ"
@@ -4125,6 +4162,10 @@ msgstr "Liên hệ"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Contacts and exports"
 msgstr "Liên hệ và xuất dữ liệu"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contacts keep the values they hold; they show as plain attributes instead of a typed field."
+msgstr "Liên hệ giữ nguyên các giá trị đang có; chúng hiển thị như thuộc tính thường thay vì trường có kiểu."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4180,6 +4221,10 @@ msgstr "Thao tác với cuộc trò chuyện"
 #: src/features/conversation/actions.ts
 msgid "Conversation closed"
 msgstr "Đã đóng cuộc trò chuyện"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Conversation fields"
+msgstr "Trường cuộc trò chuyện"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Conversation list"
@@ -4421,6 +4466,10 @@ msgstr "Tạo kênh"
 msgid "Create draft"
 msgstr "Tạo bản nháp"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Create field"
+msgstr "Tạo trường"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -4558,6 +4607,15 @@ msgstr "Tệp CSV"
 msgid "Custom"
 msgstr "Tùy chỉnh"
 
+#: src/features/fields/FieldFilter.tsx
+msgid "Custom field"
+msgstr "Trường tùy chỉnh"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Custom fields"
+msgstr "Trường tùy chỉnh"
+
 #: src/app/Sidebar.tsx
 msgid "Customers"
 msgstr "Khách hàng"
@@ -4609,6 +4667,7 @@ msgid "Database upgrade"
 msgstr "Nâng cấp cơ sở dữ liệu"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/fields/value.ts
 msgid "Date"
 msgstr "Ngày"
 
@@ -4658,6 +4717,7 @@ msgstr "Hiệu năng giảm"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -4765,6 +4825,10 @@ msgstr "Xóa bản nháp"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the entry"
 msgstr "Xóa mục"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Delete the field {name}?"
+msgstr "Xóa trường {name}?"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
@@ -5188,6 +5252,7 @@ msgstr "Tên miền chưa được xác minh"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
+#: src/features/fields/BulkFailures.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -5475,6 +5540,7 @@ msgstr "Mỗi cái cùng toàn bộ tin nhắn và ghi chú"
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -5516,6 +5582,10 @@ msgstr "Sửa chi tiết"
 msgid "Edit details ({editKey})"
 msgstr "Sửa chi tiết ({editKey})"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Edit field"
+msgstr "Sửa trường"
+
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
 msgstr "Chỉnh sửa bộ sưu tập của trung tâm trợ giúp và bản nháp bài viết"
@@ -5535,6 +5605,11 @@ msgstr "Sửa trình giám sát"
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Sửa nhóm"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Edit the custom fields"
+msgstr "Sửa các trường tùy chỉnh"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -6010,6 +6085,11 @@ msgstr "Phản hồi gửi từ ứng dụng"
 msgid "Feedback, {feedback} open"
 msgstr "Góp ý, {feedback} đang mở"
 
+#: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Fields"
+msgstr "Trường"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "Tệp"
@@ -6021,6 +6101,14 @@ msgstr "Tệp và sự đồng ý"
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Files"
 msgstr "Tệp"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Fill in before closing"
+msgstr "Điền trước khi đóng"
+
+#: src/components/common/text.ts
+msgid "Fill in the required fields before closing."
+msgstr "Hãy điền các trường bắt buộc trước khi đóng."
 
 #: src/features/broadcasts/TestSend.tsx
 msgid "Fill the test with a contact’s values"
@@ -7545,6 +7633,10 @@ msgstr "Nội dung và tệp của nó bị xóa vĩnh viễn, và cuộc trò c
 msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
 msgstr "Nội dung và tệp của nó bị xóa vĩnh viễn, và cuộc trò chuyện sẽ hiển thị rằng bạn đã gỡ nó. Email đã gửi không thể thu hồi khỏi hộp thư của người nhận."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
+msgstr "Các giá trị của nó bị xóa khỏi mọi cuộc trò chuyện trong nền. Không thể hoàn tác."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Đã tham gia không gian làm việc với vai trò {role}"
@@ -7583,6 +7675,7 @@ msgstr "Được giữ cùng mọi đăng ký từ tệp này, làm bản ghi s�
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Key"
 msgstr "Khóa"
 
@@ -8824,6 +8917,7 @@ msgstr "Chuyển {0} vào Thùng rác?"
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Chuyển cuộc trò chuyện vào Thùng rác, khôi phục chúng và đọc Thùng rác"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8922,6 +9016,7 @@ msgstr "Chuyển vào Thùng rác"
 msgid "Move to Yuva"
 msgstr "Chuyển sang Yuva"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
@@ -8982,6 +9077,7 @@ msgstr "Nhóm của tôi"
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
@@ -9051,6 +9147,10 @@ msgstr "Thu hẹp những gì có thể đính kèm trong kênh này. Giới h�
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Cần cho thư hàng loạt"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "Needs “{name}” before it can close"
+msgstr "Cần “{name}” trước khi có thể đóng"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
@@ -9206,6 +9306,11 @@ msgstr "thảo luận mới"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "Mục mới"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "New field"
+msgstr "Trường mới"
 
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
@@ -9397,6 +9502,9 @@ msgstr "Tiếp theo, chọn nơi họ được đưa vào."
 msgid "Nightly backup"
 msgstr "Sao lưu ban đêm"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "Không"
@@ -9667,6 +9775,10 @@ msgstr "Không có sự kiện nào được ghi lại."
 msgid "No feedback from this page."
 msgstr "Không có phản hồi từ trang này."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "No fields yet."
+msgstr "Chưa có trường nào."
+
 #: src/features/settings/channels/Attachments.tsx
 msgid "No file is accepted."
 msgstr "Không chấp nhận tệp nào."
@@ -9874,6 +9986,7 @@ msgstr "Chưa có trang trạng thái. Chủ sở hữu và quản trị viên t
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/History.tsx
 #: src/features/conversation/RelatedLine.tsx
+#: src/features/fields/BulkFailures.tsx
 msgid "No subject"
 msgstr "Không có chủ đề"
 
@@ -10155,6 +10268,10 @@ msgstr "Chưa gửi"
 msgid "not set"
 msgstr "chưa đặt"
 
+#: src/features/fields/FieldInput.tsx
+msgid "Not set"
+msgstr "Chưa đặt"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Not set up"
 msgstr "Chưa thiết lập"
@@ -10396,6 +10513,10 @@ msgstr "bây giờ"
 msgid "Now"
 msgstr "Bây giờ"
 
+#: src/features/fields/value.ts
+msgid "Number"
+msgstr "Số"
+
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Objected to all mail"
@@ -10549,6 +10670,10 @@ msgstr "Cứ {every} một thư"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Mỗi dòng một cái, từ 1 đến 20. Chỉ các trang thuộc những origin này mới dùng được widget."
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "One per line, all different, at most 100."
+msgstr "Mỗi dòng một giá trị, không trùng nhau, tối đa 100."
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
@@ -11087,6 +11212,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "Tùy chọn. 64 KiB đầu của phản hồi phải chứa nó; phân biệt chữ hoa và chữ thường."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Options"
 msgstr "Tùy chọn"
 
@@ -11125,6 +11251,10 @@ msgstr "Hoặc tải lên tệp xuất"
 #: src/features/inbox/ChatList.tsx
 msgid "Order and view"
 msgstr "Thứ tự và chế độ xem"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Order number"
+msgstr "Mã đơn hàng"
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Original"
@@ -12455,6 +12585,10 @@ msgstr "Tham chiếu"
 msgid "Refresh"
 msgstr "Làm mới"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Refund"
+msgstr "Hoàn tiền"
+
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Refund approved"
 msgstr "Đã duyệt hoàn tiền"
@@ -12670,6 +12804,10 @@ msgstr "Đã gỡ một ghi chú khỏi cuộc trò chuyện"
 #: src/features/conversation/messages/Redacted.tsx
 msgid "Removed by {who}"
 msgstr "Gỡ bởi {who}"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
+msgstr "Các tùy chọn đã gỡ sẽ bị xóa khỏi mọi cuộc trò chuyện có chúng. Việc này chạy trong nền."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -12948,6 +13086,11 @@ msgstr "Ảnh hưởng đến uy tín"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Required to close"
+msgstr "Bắt buộc để đóng"
 
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
@@ -13279,6 +13422,7 @@ msgstr "Thứ Bảy"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -13296,6 +13440,10 @@ msgstr "Lưu"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "Lưu một câu trả lời cùng với điều sẽ xảy ra với cuộc trò chuyện khi bạn gửi."
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Save and close"
+msgstr "Lưu và đóng"
 
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -13581,6 +13729,10 @@ msgstr "Thấy {seen}"
 #: src/features/status/IncidentDetail.tsx
 msgid "Seen by the monitor"
 msgstr "Được trình giám sát thấy"
+
+#: src/features/fields/value.ts
+msgid "Select"
+msgstr "Lựa chọn"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15268,6 +15420,7 @@ msgstr "Đang kiểm tra kết nối…"
 msgid "Tests go only to members of the workspace, at most five at a time, with [Test] before the subject."
 msgstr "Thử nghiệm chỉ gửi đến thành viên của không gian làm việc, tối đa năm người mỗi lần, với [Test] trước chủ đề."
 
+#: src/features/fields/value.ts
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15705,6 +15858,10 @@ msgstr "Khóa chỉ thấy các hộp thư đến này và không thể quản l
 msgid "The key stops working at the end of this day."
 msgstr "Khóa ngừng hoạt động vào cuối ngày này."
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "The key, the object and the type cannot change after creation."
+msgstr "Không thể đổi khóa, đối tượng và kiểu sau khi tạo."
+
 #: src/features/settings/channels/ApiChannelDialog.tsx
 msgid "The kind cannot be changed later."
 msgstr "Loại không thể đổi sau này."
@@ -15857,6 +16014,10 @@ msgstr "Hộp thư cũ ngừng nhận thư cho tên miền đó."
 #: src/components/common/text.ts
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "Hộp thư kia không có kênh email, nên cuộc trò chuyện email này không thể chuyển đến đó. Hãy thêm kênh email cho nó trước."
+
+#: src/features/fields/BulkFailures.tsx
+msgid "The others were closed. Open one to fill in what it needs, then close it."
+msgstr "Các cuộc còn lại đã được đóng. Hãy mở một cuộc, điền những gì còn thiếu rồi đóng."
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -16196,6 +16357,10 @@ msgstr "Tệp đã tải lên bị xóa {fileDeletedAt}. Yuva chỉ giữ nhữn
 #: src/features/migrations/text.ts
 msgid "The user name is your iCloud address without @icloud.com."
 msgstr "Tên người dùng là địa chỉ iCloud của bạn không có @icloud.com."
+
+#: src/components/common/text.ts
+msgid "The values of a deleted field with this key are still being cleared. Try again in a moment."
+msgstr "Giá trị của một trường đã xóa có khóa này vẫn đang được xóa. Hãy thử lại sau giây lát."
 
 #. placeholder {0}: e.from
 #: src/features/conversation/messages/Thread.tsx
@@ -16684,6 +16849,10 @@ msgstr "Đăng ký này không còn chờ xác nhận."
 msgid "This team does not cover the conversation's inbox."
 msgstr "Nhóm này không phụ trách hộp thư của cuộc trò chuyện."
 
+#: src/components/common/text.ts
+msgid "This value does not fit the field."
+msgstr "Giá trị này không phù hợp với trường."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "Đây là thông báo kết thúc và trước đó chưa có thông báo nào được gửi, nên không ai biết về sự cố này"
@@ -16982,6 +17151,7 @@ msgid "TXT record"
 msgstr "Bản ghi TXT"
 
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Type"
 msgstr "Loại"
 
@@ -17000,6 +17170,14 @@ msgstr "Gõ tên không gian làm việc để xác nhận"
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "Type your e-mail address to confirm"
 msgstr "Gõ địa chỉ email của bạn để xác nhận"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Typed values on conversations and contacts"
+msgstr "Giá trị có kiểu trong cuộc trò chuyện và liên hệ"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Typed values your team keeps on conversations and contacts, such as an order number or a plan. Agents edit them beside the thread."
+msgstr "Các giá trị có kiểu mà nhóm của bạn lưu trong cuộc trò chuyện và liên hệ, như mã đơn hàng hoặc gói. Nhân viên chỉnh sửa chúng bên cạnh cuộc trò chuyện."
 
 #: src/app/TeamMenu.tsx
 msgid "Typing · {where}"
@@ -17916,6 +18094,10 @@ msgstr "Những gì khách hàng thấy"
 msgid "What the import will do"
 msgstr "Lần nhập sẽ làm gì"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "What the team sees."
+msgstr "Điều nhóm nhìn thấy."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "What they agreed to"
 msgstr "Họ đã đồng ý điều gì"
@@ -18060,6 +18242,10 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Where should Yuva send events?"
 msgstr "Yuva nên gửi sự kiện đến đâu?"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
+msgstr "Nơi API lưu giá trị. Chữ thường, chữ số và dấu gạch dưới; không thể đổi."
 
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "Which address do customers write to?"
@@ -18318,6 +18504,9 @@ msgstr "Viết các mục trong Có gì mới và bản dịch của chúng"
 msgid "Write where and when they agreed."
 msgstr "Hãy ghi họ đã đồng ý ở đâu và khi nào."
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Có"
@@ -18642,6 +18831,10 @@ msgstr "Múi giờ của bạn, {zone}. Tức là {utc} UTC."
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"
 msgstr "Trang web của bạn"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Your workspace asks for these fields on every conversation it closes."
+msgstr "Không gian làm việc của bạn yêu cầu các trường này ở mỗi cuộc trò chuyện được đóng."
 
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."

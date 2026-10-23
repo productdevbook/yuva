@@ -78,6 +78,7 @@ import { ProductTag } from "@/features/inbox/ProductTag"
 import { LabelTag, look } from "@/features/inbox/PageFrame"
 import { useListActions } from "@/features/inbox/memberState"
 import { setListQuery, useListSearch } from "@/features/inbox/listSearch"
+import { BulkFailuresDialog } from "@/features/fields/BulkFailures"
 import { SourceFilter, sourceFilters, useSourceFilter } from "@/features/inbox/SourceFilter"
 import {
   useBulkTeam,
@@ -86,7 +87,7 @@ import {
   useCounts,
   useLoadedCount,
 } from "@/features/inbox/queries"
-import type { Contact, ConversationListItem, ConversationStatus } from "@/lib/api"
+import type { ConversationBulkFailure, Contact, ConversationListItem, ConversationStatus } from "@/lib/api"
 import type { ConversationFilters } from "@/lib/keys"
 import { useSetAvailability } from "@/lib/availability"
 import { useSession } from "@/lib/session"
@@ -726,7 +727,8 @@ export function ChatList({
   const sort: Order = order ?? (chip === "waiting" ? "oldest" : "newest")
 
   const [source, setSource] = useSourceFilter()
-  const narrowed = !!source.source || !!source.site || !!source.broadcast || !!labelId || !!teamId || !!chipInbox
+  const narrowed =
+    !!source.source || !!source.site || !!source.broadcast || !!source.field || !!labelId || !!teamId || !!chipInbox
   const filters = {
     kind: ["conversation" as const],
     ...chipFilters[chip],
@@ -752,9 +754,19 @@ export function ChatList({
   const live = useLiveIds(rows.filter((c) => c.status !== "closed"))
   const { cursorId, setCursorId, moveCursor, openCursor } = useListCursor(rows, currentId, onOpen, active, scroller)
 
-  const scope = [chip, q, inboxId, labelId, teamId, unreadOnly, source.source, source.site, source.broadcast?.id].join(
-    "|"
-  )
+  const scope = [
+    chip,
+    q,
+    inboxId,
+    labelId,
+    teamId,
+    unreadOnly,
+    source.source,
+    source.site,
+    source.broadcast?.id,
+    source.field?.key,
+    source.field?.value,
+  ].join("|")
   const shown = useRef({ scope, ids: [] as string[] })
   useEffect(() => {
     const before = shown.current
@@ -880,6 +892,7 @@ export function ChatList({
     for (const g of statusGroups(prev))
       bulk.mutate({ conversation_ids: g.ids, status: g.status, snooze_until: g.until }, { onError: failed })
   }
+  const [failures, setFailures] = useState<ConversationBulkFailure[]>([])
   const closeChosen = () => {
     const prev = chosenRows.filter((c) => c.status !== "closed").slice(0, 100)
     if (prev.length === 0) return
@@ -888,7 +901,8 @@ export function ChatList({
       {
         onSuccess: (r) => {
           const done = new Set(r.updated.map((c) => c.id))
-          toast(t`${done.size} closed`, () => restoreStatus(prev.filter((c) => done.has(c.id))))
+          if (done.size > 0) toast(t`${done.size} closed`, () => restoreStatus(prev.filter((c) => done.has(c.id))))
+          if (r.failed.length > 0) setFailures(r.failed)
           stopSelecting()
         },
         onError: failed,
@@ -1343,6 +1357,7 @@ export function ChatList({
         <ErrorLine error={list.error} className="px-4 py-2" />
       </div>
       {confirmDialog}
+      <BulkFailuresDialog failures={failures} rows={rows} onClose={() => setFailures([])} />
       {linking && (
         <LinkIncidentDialog conversationIds={chosen} onClose={() => setLinking(false)} onDone={stopSelecting} />
       )}

@@ -77,6 +77,7 @@ function useItems(open: boolean): Item[] {
       act("assignTeam", t`Assign to a team`, SHORTCUTS.assignTeam)
       act("snooze", t`Snooze`, SHORTCUTS.snooze)
       act("labels", t`Labels`, SHORTCUTS.labels)
+      act("fields", t`Edit the custom fields`, SHORTCUTS.fields)
       if (pathname.startsWith("/feedback/")) act("progress", t`Set the feedback progress`, SHORTCUTS.progress)
       act("close", t`Close or reopen`, SHORTCUTS.close)
       act("history", t`Other conversations`, SHORTCUTS.history)

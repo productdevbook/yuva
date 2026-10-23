@@ -11,6 +11,10 @@ msgstr ""
 msgid ".eml files in a zip"
 msgstr ".eml fájlok zipben"
 
+#: src/features/fields/BulkFailures.tsx
+msgid "“{name}” holds a value that does not fit"
+msgstr "A(z) „{name}” mező értéke nem megfelelő"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "„Hasznos volt ez az oldal?”, visszajelzések és viták a dokumentációdban"
@@ -290,6 +294,10 @@ msgstr "{count, plural, one {# jogosultság} other {# jogosultság}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {# címzettnek megy.} other {# címzettnek megy.}}"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "{count} could not be closed"
+msgstr "{count} nem zárható le"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "{count} events"
@@ -1107,6 +1115,10 @@ msgstr "Egy kontaktot töröltek"
 msgid "A conversation"
 msgstr "Egy beszélgetés"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
+msgstr "A beszélgetés nem zárható le, amíg ennek a mezőnek nincs értéke. A spam kivétel."
+
 #: src/components/common/text.ts
 msgid "A conversation changed"
 msgstr "Egy beszélgetés megváltozott"
@@ -1223,6 +1235,10 @@ msgstr "Egy súgóközpont-cikk közzététele vissza lett vonva"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "A key lets your backend, a script or a bot read and write conversations. Limit it to the products and scopes it needs."
 msgstr "A kulccsal a háttérrendszered, egy szkript vagy egy bot olvashat és írhat beszélgetéseket. Korlátozd azokra a termékekre és jogosultságokra, amelyekre szüksége van."
+
+#: src/components/common/text.ts
+msgid "A kind of field holds at most 50 fields. Delete one first."
+msgstr "Egy objektumnak legfeljebb 50 mezője lehet. Előbb töröljön egyet."
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -2315,6 +2331,10 @@ msgid "another conversation"
 msgstr "másik beszélgetés"
 
 #: src/components/common/text.ts
+msgid "Another field of this kind already uses this key."
+msgstr "Ennek a fajtának egy másik mezője már használja ezt a kulcsot."
+
+#: src/components/common/text.ts
 msgid "Another import of this workspace is running. Imports run one at a time; try again when it ends."
 msgstr "Ennek a munkaterületnek egy másik importja fut. Az importok egyenként futnak; próbáld újra, ha véget ér."
 
@@ -2402,6 +2422,10 @@ msgstr "Bármely beszélgetés"
 #: src/features/contact/ContactsPage.tsx
 msgid "Any country"
 msgstr "Bármely ország"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Any field"
+msgstr "Bármely mező"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
@@ -3157,6 +3181,7 @@ msgstr "Kampány neve"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
+#: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -3465,6 +3490,10 @@ msgstr "Ellenőrizd, hogy az átirányítási cím pontosan a fenti."
 msgid "Check your e-mail"
 msgstr "Nézd meg az e-mailedet"
 
+#: src/features/fields/value.ts
+msgid "Checkbox"
+msgstr "Jelölőnégyzet"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Checked"
 msgstr "Ellenőrizve"
@@ -3542,6 +3571,10 @@ msgstr "Válasszon oldalt"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose a region"
 msgstr "Válassz régiót"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Choose a value"
+msgstr "Válasszon értéket"
 
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
@@ -4101,6 +4134,10 @@ msgstr "Kontakt adatai"
 msgid "Contact details (C)"
 msgstr "Kontakt adatai (C)"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contact fields"
+msgstr "Kapcsolatmezők"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Contact id copied"
 msgstr "Kapcsolatazonosító másolva"
@@ -4125,6 +4162,10 @@ msgstr "Kontaktok"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Contacts and exports"
 msgstr "Névjegyek és exportok"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contacts keep the values they hold; they show as plain attributes instead of a typed field."
+msgstr "A kapcsolatok megtartják az értékeiket; típusos mező helyett egyszerű tulajdonságként jelennek meg."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4180,6 +4221,10 @@ msgstr "Beszélgetés műveletei"
 #: src/features/conversation/actions.ts
 msgid "Conversation closed"
 msgstr "Beszélgetés lezárva"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Conversation fields"
+msgstr "Beszélgetésmezők"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Conversation list"
@@ -4421,6 +4466,10 @@ msgstr "Csatorna létrehozása"
 msgid "Create draft"
 msgstr "Piszkozat létrehozása"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Create field"
+msgstr "Mező létrehozása"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -4558,6 +4607,15 @@ msgstr "CSV-fájl"
 msgid "Custom"
 msgstr "Egyéni"
 
+#: src/features/fields/FieldFilter.tsx
+msgid "Custom field"
+msgstr "Egyéni mező"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Custom fields"
+msgstr "Egyéni mezők"
+
 #: src/app/Sidebar.tsx
 msgid "Customers"
 msgstr "Ügyfelek"
@@ -4609,6 +4667,7 @@ msgid "Database upgrade"
 msgstr "Adatbázis-frissítés"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/fields/value.ts
 msgid "Date"
 msgstr "Dátum"
 
@@ -4658,6 +4717,7 @@ msgstr "Csökkent teljesítmény"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -4765,6 +4825,10 @@ msgstr "A piszkozat törlése"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the entry"
 msgstr "A bejegyzés törlése"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Delete the field {name}?"
+msgstr "Törli a(z) {name} mezőt?"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
@@ -5188,6 +5252,7 @@ msgstr "A domain nincs ellenőrizve"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
+#: src/features/fields/BulkFailures.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -5475,6 +5540,7 @@ msgstr "Mindegyik az összes üzenetével és jegyzetével"
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -5516,6 +5582,10 @@ msgstr "Részletek szerkesztése"
 msgid "Edit details ({editKey})"
 msgstr "Részletek szerkesztése ({editKey})"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Edit field"
+msgstr "Mező szerkesztése"
+
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
 msgstr "Súgóközpont-gyűjtemények és cikkvázlatok szerkesztése"
@@ -5535,6 +5605,11 @@ msgstr "Figyelő szerkesztése"
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Csapat szerkesztése"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Edit the custom fields"
+msgstr "Az egyéni mezők szerkesztése"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -6010,6 +6085,11 @@ msgstr "Az alkalmazásból küldött visszajelzés"
 msgid "Feedback, {feedback} open"
 msgstr "Visszajelzések, {feedback} nyitott"
 
+#: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Fields"
+msgstr "Mezők"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "Fájl"
@@ -6021,6 +6101,14 @@ msgstr "Fájl és hozzájárulás"
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Files"
 msgstr "Fájlok"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Fill in before closing"
+msgstr "Töltse ki lezárás előtt"
+
+#: src/components/common/text.ts
+msgid "Fill in the required fields before closing."
+msgstr "Lezárás előtt töltse ki a kötelező mezőket."
 
 #: src/features/broadcasts/TestSend.tsx
 msgid "Fill the test with a contact’s values"
@@ -7545,6 +7633,10 @@ msgstr "A szövege és a fájljai véglegesen törlődnek, a beszélgetésben pe
 msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
 msgstr "A szövege és a fájljai véglegesen törlődnek, a beszélgetésben pedig látszik, hogy te távolítottad el. Egy elküldött e-mailt nem lehet visszahívni a címzett postafiókjából."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
+msgstr "Az értékei a háttérben törlődnek az összes beszélgetésből. Ez nem vonható vissza."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Csatlakozott a munkaterülethez, szerepkör: {role}"
@@ -7583,6 +7675,7 @@ msgstr "Az ebből a fájlból származó minden feliratkozás mellett megmarad a
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Key"
 msgstr "Kulcs"
 
@@ -8824,6 +8917,7 @@ msgstr "A Kukába helyezed: {0}?"
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Beszélgetések Kukába helyezése, visszaállítása és a Kuka olvasása"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8922,6 +9016,7 @@ msgstr "Kukába helyezés"
 msgid "Move to Yuva"
 msgstr "Költözés a Yuvába"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
@@ -8982,6 +9077,7 @@ msgstr "Csapataim"
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
@@ -9051,6 +9147,10 @@ msgstr "Szűkítsd, mit lehet csatolni ebben a csatornában. A kiszolgáló saj�
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Tömeges levelekhez szükséges"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "Needs “{name}” before it can close"
+msgstr "A lezáráshoz kell a(z) „{name}”"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
@@ -9206,6 +9306,11 @@ msgstr "új viták"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "Új bejegyzés"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "New field"
+msgstr "Új mező"
 
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
@@ -9397,6 +9502,9 @@ msgstr "Ezután válaszd ki, hova kerüljenek."
 msgid "Nightly backup"
 msgstr "Éjszakai mentés"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "Nem"
@@ -9667,6 +9775,10 @@ msgstr "Nincs rögzített esemény."
 msgid "No feedback from this page."
 msgstr "Nincs visszajelzés erről az oldalról."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "No fields yet."
+msgstr "Még nincs mező."
+
 #: src/features/settings/channels/Attachments.tsx
 msgid "No file is accepted."
 msgstr "Egyetlen fájl sem fogadható el."
@@ -9874,6 +9986,7 @@ msgstr "Még nincs állapotoldal. A tulajdonosok és az adminisztrátorok hozzá
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/History.tsx
 #: src/features/conversation/RelatedLine.tsx
+#: src/features/fields/BulkFailures.tsx
 msgid "No subject"
 msgstr "Nincs tárgy"
 
@@ -10155,6 +10268,10 @@ msgstr "Nem lett elküldve"
 msgid "not set"
 msgstr "nincs beállítva"
 
+#: src/features/fields/FieldInput.tsx
+msgid "Not set"
+msgstr "Nincs beállítva"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Not set up"
 msgstr "Nincs beállítva"
@@ -10396,6 +10513,10 @@ msgstr "most"
 msgid "Now"
 msgstr "Most"
 
+#: src/features/fields/value.ts
+msgid "Number"
+msgstr "Szám"
+
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Objected to all mail"
@@ -10549,6 +10670,10 @@ msgstr "Egy levél {every} alatt"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Soronként egy, 1–20. Csak az ezekről az originekről származó oldalak használhatják a widgetet."
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "One per line, all different, at most 100."
+msgstr "Soronként egy, mind különböző, legfeljebb 100."
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
@@ -11087,6 +11212,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "Nem kötelező. A válasz első 64 KiB-jának tartalmaznia kell; a kis- és nagybetű számít."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Options"
 msgstr "Beállítások"
 
@@ -11125,6 +11251,10 @@ msgstr "Vagy tölts fel egy exportfájlt"
 #: src/features/inbox/ChatList.tsx
 msgid "Order and view"
 msgstr "Sorrend és nézet"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Order number"
+msgstr "Rendelésszám"
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Original"
@@ -12455,6 +12585,10 @@ msgstr "Hivatkozás"
 msgid "Refresh"
 msgstr "Frissítés"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Refund"
+msgstr "Visszatérítés"
+
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Refund approved"
 msgstr "Visszatérítés jóváhagyva"
@@ -12670,6 +12804,10 @@ msgstr "Eltávolított egy jegyzetet egy beszélgetésből"
 #: src/features/conversation/messages/Redacted.tsx
 msgid "Removed by {who}"
 msgstr "Eltávolította: {who}"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
+msgstr "Az eltávolított lehetőségek törlődnek az összes beszélgetésből, amely tartalmazza őket. Ez a háttérben fut."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -12948,6 +13086,11 @@ msgstr "Hatás a hírnévre"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Required to close"
+msgstr "Lezáráshoz kötelező"
 
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
@@ -13279,6 +13422,7 @@ msgstr "Szombat"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -13296,6 +13440,10 @@ msgstr "Mentés"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "Mentsd el a választ azzal együtt, hogy mi történjen a beszélgetéssel, amikor elküldöd."
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Save and close"
+msgstr "Mentés és lezárás"
 
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -13581,6 +13729,10 @@ msgstr "Látva: {seen}"
 #: src/features/status/IncidentDetail.tsx
 msgid "Seen by the monitor"
 msgstr "A figyelő látta"
+
+#: src/features/fields/value.ts
+msgid "Select"
+msgstr "Választás"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15268,6 +15420,7 @@ msgstr "A kapcsolat tesztelése…"
 msgid "Tests go only to members of the workspace, at most five at a time, with [Test] before the subject."
 msgstr "A tesztek csak a munkaterület tagjainak mennek, egyszerre legfeljebb ötnek, a tárgy előtt [Test] előtaggal."
 
+#: src/features/fields/value.ts
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15705,6 +15858,10 @@ msgstr "A kulcs csak ezeket a postaládákat látja, nem kezelhet postaládákat
 msgid "The key stops working at the end of this day."
 msgstr "A kulcs a mai nap végén megszűnik működni."
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "The key, the object and the type cannot change after creation."
+msgstr "A kulcs, az objektum és a típus létrehozás után nem módosítható."
+
 #: src/features/settings/channels/ApiChannelDialog.tsx
 msgid "The kind cannot be changed later."
 msgstr "A fajtát később nem lehet módosítani."
@@ -15857,6 +16014,10 @@ msgstr "A régi postafiók többé nem fogad levelet ehhez a domainhez."
 #: src/components/common/text.ts
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "A másik postafióknak nincs e-mail-csatornája, így ez az e-mail-beszélgetés nem helyezhető át oda. Előbb adj hozzá e-mail-csatornát."
+
+#: src/features/fields/BulkFailures.tsx
+msgid "The others were closed. Open one to fill in what it needs, then close it."
+msgstr "A többi lezárult. Nyisson meg egyet, töltse ki, ami hiányzik, majd zárja le."
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -16196,6 +16357,10 @@ msgstr "A feltöltött fájl törölve: {fileDeletedAt}. A Yuva csak azt tartja 
 #: src/features/migrations/text.ts
 msgid "The user name is your iCloud address without @icloud.com."
 msgstr "A felhasználónév az iCloud-címed @icloud.com nélkül."
+
+#: src/components/common/text.ts
+msgid "The values of a deleted field with this key are still being cleared. Try again in a moment."
+msgstr "Az ilyen kulcsú, törölt mező értékei még törlés alatt állnak. Próbálja újra egy pillanat múlva."
 
 #. placeholder {0}: e.from
 #: src/features/conversation/messages/Thread.tsx
@@ -16684,6 +16849,10 @@ msgstr "Ez a feliratkozás már nem vár megerősítésre."
 msgid "This team does not cover the conversation's inbox."
 msgstr "Ez a csapat nem fedi le a beszélgetés postafiókját."
 
+#: src/components/common/text.ts
+msgid "This value does not fit the field."
+msgstr "Ez az érték nem illik a mezőhöz."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "Ez lezáró értesítés volt, korábbi értesítés pedig nem ment ki, így senki sem tudott az incidensről"
@@ -16982,6 +17151,7 @@ msgid "TXT record"
 msgstr "TXT-rekord"
 
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Type"
 msgstr "Típus"
 
@@ -17000,6 +17170,14 @@ msgstr "A megerősítéshez írd be a munkaterület nevét"
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "Type your e-mail address to confirm"
 msgstr "A megerősítéshez írd be az e-mail-címedet"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Typed values on conversations and contacts"
+msgstr "Típusos értékek beszélgetéseken és kapcsolatokon"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Typed values your team keeps on conversations and contacts, such as an order number or a plan. Agents edit them beside the thread."
+msgstr "Típusos értékek, amelyeket a csapata a beszélgetéseken és kapcsolatokon tart, például rendelésszám vagy csomag. Az ügyintézők a beszélgetés mellett szerkesztik őket."
 
 #: src/app/TeamMenu.tsx
 msgid "Typing · {where}"
@@ -17916,6 +18094,10 @@ msgstr "Mit lát az ügyfél"
 msgid "What the import will do"
 msgstr "Mit fog tenni az import"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "What the team sees."
+msgstr "Amit a csapat lát."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "What they agreed to"
 msgstr "Mibe egyeztek bele"
@@ -18060,6 +18242,10 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Where should Yuva send events?"
 msgstr "Hova küldje a Yuva az eseményeket?"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
+msgstr "Ahová az API az értéket menti. Kisbetűk, számjegyek és aláhúzás; nem módosítható."
 
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "Which address do customers write to?"
@@ -18318,6 +18504,9 @@ msgstr "Újdonságok-bejegyzések és fordításaik írása"
 msgid "Write where and when they agreed."
 msgstr "Írd le, hol és mikor egyeztek bele."
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Igen"
@@ -18642,6 +18831,10 @@ msgstr "Az időzónád, {zone}. Ez {utc} UTC."
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"
 msgstr "A webhelyed"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Your workspace asks for these fields on every conversation it closes."
+msgstr "A munkaterülete minden lezárt beszélgetésnél kéri ezeket a mezőket."
 
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."

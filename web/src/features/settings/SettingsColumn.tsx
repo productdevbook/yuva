@@ -12,6 +12,7 @@ import {
   PlugIcon,
   PlusIcon,
   QuoteIcon,
+  TextCursorInputIcon,
   UsersRoundIcon,
   ZapIcon,
   ScrollTextIcon,
@@ -30,7 +31,15 @@ import { Page, RowIcon, RowText } from "@/features/settings/ui"
 import { api, unwrap } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
-import { useCannedReplies, useInboxes, useLabels, useMacros, useMembers, useTeams } from "@/lib/workspace"
+import {
+  useCannedReplies,
+  useCustomFields,
+  useInboxes,
+  useLabels,
+  useMacros,
+  useMembers,
+  useTeams,
+} from "@/lib/workspace"
 
 const WIDE = [
   "/settings/api-keys",
@@ -117,6 +126,7 @@ export function SettingsColumn() {
   const labels = useLabels().data
   const macros = useMacros().data
   const teams = useTeams().data
+  const fields = useCustomFields().data
   const apiKeys = useQuery({
     queryKey: keys.apiKeys(ws),
     queryFn: () => unwrap(api.GET("/v1/api-keys")).then((r) => r.items),
@@ -206,6 +216,17 @@ export function SettingsColumn() {
             <RowText
               title={<Trans>Teams</Trans>}
               detail={<Trans>Groups of members and the inboxes they cover</Trans>}
+            />
+          </NavRow>
+        )}
+        {canManage && (
+          <NavRow to="/settings/fields" value={list(fields?.length)}>
+            <RowIcon>
+              <TextCursorInputIcon />
+            </RowIcon>
+            <RowText
+              title={<Trans>Custom fields</Trans>}
+              detail={<Trans>Typed values on conversations and contacts</Trans>}
             />
           </NavRow>
         )}

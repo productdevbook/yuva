@@ -1,7 +1,7 @@
 import { useQueries, useQuery } from "@tanstack/react-query"
 import { useMemo } from "react"
 
-import { api, unwrap, type Channel } from "@/lib/api"
+import { api, unwrap, type Channel, type CustomFieldObject } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import type { LiveContext } from "@/lib/live"
 import { useSession } from "@/lib/session"
@@ -88,6 +88,17 @@ export function useTeams() {
     queryFn: () => unwrap(api.GET("/v1/teams")).then((r) => r.items),
     staleTime: 60_000,
   })
+}
+
+export function useCustomFields(object?: CustomFieldObject) {
+  const { workspaceId: ws } = useSession()
+  const q = useQuery({
+    queryKey: keys.customFields(ws),
+    queryFn: () => unwrap(api.GET("/v1/custom-fields")).then((r) => r.items),
+    staleTime: 60_000,
+  })
+  const data = object && q.data ? q.data.filter((f) => f.object === object) : q.data
+  return { ...q, data }
 }
 
 export function useMyTeams() {

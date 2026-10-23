@@ -8,6 +8,8 @@ import { Item } from "@/components/ui/item"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
 import { look } from "@/features/inbox/PageFrame"
+import { FieldFilterSection, fieldFilterText } from "@/features/fields/FieldFilter"
+import { useConversationFieldList } from "@/features/fields/ConversationFields"
 import { useBroadcasts } from "@/features/broadcasts/broadcastQueries"
 import { useDocsSites } from "@/features/docs/queries"
 import type { ChannelKind } from "@/lib/api"
@@ -15,7 +17,14 @@ import type { ConversationFilters } from "@/lib/keys"
 import { cn } from "@/lib/utils"
 import { useChannelMap } from "@/lib/workspace"
 
-export type SourceFilterValue = { source?: ChannelKind; site?: string; broadcast?: { id: string; name: string } }
+export type FieldFilterValue = { key: string; value: string }
+
+export type SourceFilterValue = {
+  source?: ChannelKind
+  site?: string
+  broadcast?: { id: string; name: string }
+  field?: FieldFilterValue
+}
 
 let value: SourceFilterValue = {}
 const listeners = new Set<() => void>()
@@ -43,6 +52,7 @@ export function sourceFilters(v: SourceFilterValue): ConversationFilters {
   }
   if (v.site) f.site = v.site
   if (v.broadcast) f.broadcast_id = v.broadcast.id
+  if (v.field) f.fields = { [v.field.key]: v.field.value }
   return f
 }
 
@@ -145,12 +155,21 @@ export function SourceFilter({
   const text = useSourceText()
   const [v, set] = useSourceFilter()
   const sites = useSites(inboxId)
+  const fields = useConversationFieldList()
   const update = (next: SourceFilterValue) => {
     set(next)
     onChange()
   }
-  const active = !!v.source || !!v.site || !!v.broadcast
-  const summary = [v.source && text[v.source], v.site && hostOf(v.site), v.broadcast?.name].filter(Boolean).join(" · ")
+  const active = !!v.source || !!v.site || !!v.broadcast || !!v.field
+  const picked = v.field && fields.find((f) => f.key === v.field?.key)
+  const summary = [
+    v.source && text[v.source],
+    v.site && hostOf(v.site),
+    v.broadcast?.name,
+    picked && v.field && fieldFilterText(picked, v.field.value, t`Yes`, t`No`),
+  ]
+    .filter(Boolean)
+    .join(" · ")
   return (
     <Popover>
       <PopoverTrigger
@@ -230,6 +249,7 @@ export function SourceFilter({
           </>
         )}
         <BroadcastChoices inboxId={inboxId} v={v} update={update} />
+        <FieldFilterSection fields={fields} value={v.field} onChange={(field) => update({ ...v, field })} />
       </PopoverContent>
     </Popover>
   )

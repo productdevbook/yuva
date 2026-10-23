@@ -11,6 +11,10 @@ msgstr ""
 msgid ".eml files in a zip"
 msgstr "zip内の .eml ファイル"
 
+#: src/features/fields/BulkFailures.tsx
+msgid "“{name}” holds a value that does not fit"
+msgstr "「{name}」の値がフィールドに合っていません"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "「このページは役に立ちましたか?」、ドキュメントへのフィードバックとディスカッション"
@@ -290,6 +294,10 @@ msgstr "{count, plural, other {#件のスコープ}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, other {# 件の宛先に送信されます。}}"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "{count} could not be closed"
+msgstr "{count}件を閉じられませんでした"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "{count} events"
@@ -1107,6 +1115,10 @@ msgstr "連絡先が削除されたとき"
 msgid "A conversation"
 msgstr "会話"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
+msgstr "このフィールドに値が入るまで、会話は閉じられません。スパムは対象外です。"
+
 #: src/components/common/text.ts
 msgid "A conversation changed"
 msgstr "会話が変更されたとき"
@@ -1223,6 +1235,10 @@ msgstr "ヘルプセンターの記事が非公開になりました"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "A key lets your backend, a script or a bot read and write conversations. Limit it to the products and scopes it needs."
 msgstr "キーを使うと、バックエンド、スクリプト、ボットが会話を読み書きできます。必要な製品とスコープだけに制限してください。"
+
+#: src/components/common/text.ts
+msgid "A kind of field holds at most 50 fields. Delete one first."
+msgstr "1つのオブジェクトに持てるフィールドは最大50個です。先にどれかを削除してください。"
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -2315,6 +2331,10 @@ msgid "another conversation"
 msgstr "別の会話"
 
 #: src/components/common/text.ts
+msgid "Another field of this kind already uses this key."
+msgstr "この種類の別のフィールドがすでにこのキーを使っています。"
+
+#: src/components/common/text.ts
 msgid "Another import of this workspace is running. Imports run one at a time; try again when it ends."
 msgstr "このワークスペースの別のインポートが実行中です。インポートは 1 つずつ実行されます。終了してからもう一度お試しください。"
 
@@ -2402,6 +2422,10 @@ msgstr "任意の会話"
 #: src/features/contact/ContactsPage.tsx
 msgid "Any country"
 msgstr "すべての国"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Any field"
+msgstr "すべてのフィールド"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
@@ -3157,6 +3181,7 @@ msgstr "キャンペーン名"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
+#: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -3465,6 +3490,10 @@ msgstr "転送先アドレスが上のものと完全に一致しているか確
 msgid "Check your e-mail"
 msgstr "メールを確認してください"
 
+#: src/features/fields/value.ts
+msgid "Checkbox"
+msgstr "チェックボックス"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Checked"
 msgstr "確認済み"
@@ -3542,6 +3571,10 @@ msgstr "ページを選択"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose a region"
 msgstr "リージョンを選択"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Choose a value"
+msgstr "値を選択"
 
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
@@ -4101,6 +4134,10 @@ msgstr "連絡先の詳細"
 msgid "Contact details (C)"
 msgstr "連絡先の詳細(C)"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contact fields"
+msgstr "連絡先フィールド"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Contact id copied"
 msgstr "コンタクト ID をコピーしました"
@@ -4125,6 +4162,10 @@ msgstr "連絡先"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Contacts and exports"
 msgstr "連絡先とエクスポート"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contacts keep the values they hold; they show as plain attributes instead of a typed field."
+msgstr "連絡先は持っている値を保持します。型付きフィールドではなく、通常の属性として表示されます。"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4180,6 +4221,10 @@ msgstr "会話の操作"
 #: src/features/conversation/actions.ts
 msgid "Conversation closed"
 msgstr "会話を完了しました"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Conversation fields"
+msgstr "会話フィールド"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Conversation list"
@@ -4421,6 +4466,10 @@ msgstr "チャネルを作成"
 msgid "Create draft"
 msgstr "ドラフトを作成"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Create field"
+msgstr "フィールドを作成"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -4558,6 +4607,15 @@ msgstr "CSV ファイル"
 msgid "Custom"
 msgstr "カスタム"
 
+#: src/features/fields/FieldFilter.tsx
+msgid "Custom field"
+msgstr "カスタムフィールド"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Custom fields"
+msgstr "カスタムフィールド"
+
 #: src/app/Sidebar.tsx
 msgid "Customers"
 msgstr "顧客"
@@ -4609,6 +4667,7 @@ msgid "Database upgrade"
 msgstr "データベースのアップグレード"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/fields/value.ts
 msgid "Date"
 msgstr "日付"
 
@@ -4658,6 +4717,7 @@ msgstr "パフォーマンス低下"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -4765,6 +4825,10 @@ msgstr "下書きを削除"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the entry"
 msgstr "エントリを削除"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Delete the field {name}?"
+msgstr "フィールド「{name}」を削除しますか？"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
@@ -5188,6 +5252,7 @@ msgstr "ドメイン未確認"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
+#: src/features/fields/BulkFailures.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -5475,6 +5540,7 @@ msgstr "すべてのメッセージとメモを含む各会話"
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -5516,6 +5582,10 @@ msgstr "詳細を編集"
 msgid "Edit details ({editKey})"
 msgstr "詳細を編集（{editKey}）"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Edit field"
+msgstr "フィールドを編集"
+
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
 msgstr "ヘルプセンターのコレクションと記事の下書きを編集"
@@ -5535,6 +5605,11 @@ msgstr "モニターを編集"
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "チームを編集"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Edit the custom fields"
+msgstr "カスタムフィールドを編集"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -6010,6 +6085,11 @@ msgstr "アプリから送られたフィードバック"
 msgid "Feedback, {feedback} open"
 msgstr "フィードバック、未解決 {feedback} 件"
 
+#: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Fields"
+msgstr "フィールド"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "ファイル"
@@ -6021,6 +6101,14 @@ msgstr "ファイルと同意"
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Files"
 msgstr "ファイル"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Fill in before closing"
+msgstr "閉じる前に入力"
+
+#: src/components/common/text.ts
+msgid "Fill in the required fields before closing."
+msgstr "閉じる前に必須フィールドを入力してください。"
 
 #: src/features/broadcasts/TestSend.tsx
 msgid "Fill the test with a contact’s values"
@@ -7545,6 +7633,10 @@ msgstr "本文とファイルは完全に削除され、スレッドには削除
 msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
 msgstr "本文とファイルは完全に削除され、スレッドには削除したことが表示されます。 送信済みのメールは、受信者のメールボックスから取り戻すことはできません。"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
+msgstr "その値はすべての会話からバックグラウンドで消去されます。この操作は元に戻せません。"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "{role} としてワークスペースに参加しました"
@@ -7583,6 +7675,7 @@ msgstr "このファイルからのすべての登録に、同意の記録とし
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Key"
 msgstr "キー"
 
@@ -8824,6 +8917,7 @@ msgstr "{0} 件をゴミ箱に移動しますか？"
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "会話をゴミ箱に移動し、復元し、ゴミ箱を読み取る"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8922,6 +9016,7 @@ msgstr "ゴミ箱に移動"
 msgid "Move to Yuva"
 msgstr "Yuva に移行"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
@@ -8982,6 +9077,7 @@ msgstr "自分のチーム"
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
@@ -9051,6 +9147,10 @@ msgstr "このチャネルで添付できるものを絞り込みます。サー
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "一斉配信に必要"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "Needs “{name}” before it can close"
+msgstr "閉じるには「{name}」が必要です"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
@@ -9206,6 +9306,11 @@ msgstr "新しいディスカッション"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "新しいエントリ"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "New field"
+msgstr "新しいフィールド"
 
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
@@ -9397,6 +9502,9 @@ msgstr "次に、取り込み先を選びます。"
 msgid "Nightly backup"
 msgstr "夜間バックアップ"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "いいえ"
@@ -9667,6 +9775,10 @@ msgstr "記録されたイベントはありません。"
 msgid "No feedback from this page."
 msgstr "このページからのフィードバックはありません。"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "No fields yet."
+msgstr "フィールドはまだありません。"
+
 #: src/features/settings/channels/Attachments.tsx
 msgid "No file is accepted."
 msgstr "どのファイルも受け付けません。"
@@ -9874,6 +9986,7 @@ msgstr "ステータスページはまだありません。オーナーと管理
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/History.tsx
 #: src/features/conversation/RelatedLine.tsx
+#: src/features/fields/BulkFailures.tsx
 msgid "No subject"
 msgstr "件名なし"
 
@@ -10155,6 +10268,10 @@ msgstr "未送信"
 msgid "not set"
 msgstr "未設定"
 
+#: src/features/fields/FieldInput.tsx
+msgid "Not set"
+msgstr "未設定"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Not set up"
 msgstr "未設定"
@@ -10396,6 +10513,10 @@ msgstr "今"
 msgid "Now"
 msgstr "今"
 
+#: src/features/fields/value.ts
+msgid "Number"
+msgstr "数値"
+
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Objected to all mail"
@@ -10549,6 +10670,10 @@ msgstr "{every} ごとに 1 通"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "1 行に 1 件、1 〜 20 件。これらのオリジンのページだけがウィジェットを使えます。"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "One per line, all different, at most 100."
+msgstr "1行に1つ、すべて異なる値、最大100個。"
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
@@ -11087,6 +11212,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "任意。応答の先頭 64 KiB に含まれている必要があります。大文字と小文字は区別されます。"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Options"
 msgstr "オプション"
 
@@ -11125,6 +11251,10 @@ msgstr "またはエクスポートファイルをアップロード"
 #: src/features/inbox/ChatList.tsx
 msgid "Order and view"
 msgstr "並び順と表示"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Order number"
+msgstr "注文番号"
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Original"
@@ -12455,6 +12585,10 @@ msgstr "参照"
 msgid "Refresh"
 msgstr "更新"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Refund"
+msgstr "返金"
+
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Refund approved"
 msgstr "返金承認"
@@ -12670,6 +12804,10 @@ msgstr "会話からノートを削除しました"
 #: src/features/conversation/messages/Redacted.tsx
 msgid "Removed by {who}"
 msgstr "{who} が削除"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
+msgstr "削除した選択肢は、それを持つすべての会話から消去されます。処理はバックグラウンドで行われます。"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -12948,6 +13086,11 @@ msgstr "評価への影響"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Required to close"
+msgstr "閉じるときに必須"
 
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
@@ -13279,6 +13422,7 @@ msgstr "土曜日"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -13296,6 +13440,10 @@ msgstr "保存"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "返信と、送信時に会話に起こることをまとめて保存します。"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Save and close"
+msgstr "保存して閉じる"
 
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -13581,6 +13729,10 @@ msgstr "{seen} に確認"
 #: src/features/status/IncidentDetail.tsx
 msgid "Seen by the monitor"
 msgstr "モニターが確認"
+
+#: src/features/fields/value.ts
+msgid "Select"
+msgstr "選択"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15268,6 +15420,7 @@ msgstr "接続をテスト中…"
 msgid "Tests go only to members of the workspace, at most five at a time, with [Test] before the subject."
 msgstr "テストはワークスペースのメンバーにのみ、一度に最大 5 人まで、件名の前に [Test] を付けて送信されます。"
 
+#: src/features/fields/value.ts
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15705,6 +15858,10 @@ msgstr "このキーはこれらの受信トレイしか見られず、受信ト
 msgid "The key stops working at the end of this day."
 msgstr "キーはこの日の終わりに動作しなくなります。"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "The key, the object and the type cannot change after creation."
+msgstr "キー、オブジェクト、タイプは作成後に変更できません。"
+
 #: src/features/settings/channels/ApiChannelDialog.tsx
 msgid "The kind cannot be changed later."
 msgstr "種類は後から変更できません。"
@@ -15857,6 +16014,10 @@ msgstr "旧メールボックスは、そのドメインのメールを受信し
 #: src/components/common/text.ts
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "もう一方の受信トレイにはメールチャネルがないため、このメール会話は移動できません。先にメールチャネルを追加してください。"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "The others were closed. Open one to fill in what it needs, then close it."
+msgstr "残りは閉じました。1件を開いて必要な項目を入力し、閉じてください。"
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -16196,6 +16357,10 @@ msgstr "アップロードしたファイルは {fileDeletedAt} に削除され�
 #: src/features/migrations/text.ts
 msgid "The user name is your iCloud address without @icloud.com."
 msgstr "ユーザー名は、iCloud アドレスから @icloud.com を除いたものです。"
+
+#: src/components/common/text.ts
+msgid "The values of a deleted field with this key are still being cleared. Try again in a moment."
+msgstr "このキーの削除済みフィールドの値がまだ消去されています。しばらくしてからもう一度お試しください。"
 
 #. placeholder {0}: e.from
 #: src/features/conversation/messages/Thread.tsx
@@ -16684,6 +16849,10 @@ msgstr "この登録はもう確認待ちではありません。"
 msgid "This team does not cover the conversation's inbox."
 msgstr "このチームは、この会話の受信トレイを対象にしていません。"
 
+#: src/components/common/text.ts
+msgid "This value does not fit the field."
+msgstr "この値はフィールドに合っていません。"
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "これは終了通知で、それ以前の通知は送信されていないため、誰もこのインシデントを把握していませんでした"
@@ -16982,6 +17151,7 @@ msgid "TXT record"
 msgstr "TXT レコード"
 
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Type"
 msgstr "種類"
 
@@ -17000,6 +17170,14 @@ msgstr "確認のため、ワークスペース名を入力してください"
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "Type your e-mail address to confirm"
 msgstr "確認のため、メールアドレスを入力してください"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Typed values on conversations and contacts"
+msgstr "会話と連絡先の型付きの値"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Typed values your team keeps on conversations and contacts, such as an order number or a plan. Agents edit them beside the thread."
+msgstr "注文番号やプランなど、チームが会話や連絡先に持たせる型付きの値です。担当者はスレッドの横で編集します。"
 
 #: src/app/TeamMenu.tsx
 msgid "Typing · {where}"
@@ -17916,6 +18094,10 @@ msgstr "お客様に表示される内容"
 msgid "What the import will do"
 msgstr "インポートで行われること"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "What the team sees."
+msgstr "チームに表示される名前です。"
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "What they agreed to"
 msgstr "同意した内容"
@@ -18060,6 +18242,10 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Where should Yuva send events?"
 msgstr "Yuva はイベントをどこに送りますか?"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
+msgstr "APIが値を保存する場所です。小文字、数字、アンダースコア。変更できません。"
 
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "Which address do customers write to?"
@@ -18318,6 +18504,9 @@ msgstr "「新着情報」のエントリと翻訳を書く"
 msgid "Write where and when they agreed."
 msgstr "いつどこで同意したかを書いてください。"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "はい"
@@ -18642,6 +18831,10 @@ msgstr "あなたのタイムゾーン {zone}。UTC {utc} です。"
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"
 msgstr "あなたのウェブサイト"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Your workspace asks for these fields on every conversation it closes."
+msgstr "このワークスペースでは、閉じるすべての会話でこれらのフィールドが必要です。"
 
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."

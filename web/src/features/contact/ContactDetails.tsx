@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useClearUndeliverable, useCreateConversation, useUpdateContact } from "@/features/contact/queries"
-import { attrValue } from "@/features/contact/Section"
+import { useContactEntries } from "@/features/contact/entries"
 import { currentRating, RatingMark } from "@/features/conversation/rating"
 import { useConversations } from "@/features/inbox/queries"
 import type { Contact, ContactSummary, ConversationListItem, ConversationStatus, UndeliverableEmail } from "@/lib/api"
@@ -185,7 +185,10 @@ export function Identities({
 
 export function Attributes({ contact }: { contact: Contact }) {
   const { t, i18n } = useLingui()
-  const entries: [string, string][] = Object.entries(contact.attributes ?? {}).map(([k, v]) => [k, attrValue(v)])
+  const entries: [string, string][] = useContactEntries(contact).map((e): [string, string] => [
+    e.raw ? e.key : e.label,
+    e.value,
+  ])
   if (contact.locale) entries.unshift([t`Language`, languageName(contact.locale, i18n.locale)])
   if (entries.length === 0) return null
   return (

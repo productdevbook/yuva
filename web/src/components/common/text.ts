@@ -436,6 +436,12 @@ export function useErrorText() {
     if (err.code === "team_taken") return t`Another team already has this name.`
     if (err.code === "team_limit") return t`A team holds at most 500 members and 100 inboxes.`
     if (err.code === "team_access") return t`This team does not cover the conversation's inbox.`
+    if (err.code === "field_taken") return t`Another field of this kind already uses this key.`
+    if (err.code === "field_limit") return t`A kind of field holds at most 50 fields. Delete one first.`
+    if (err.code === "field_clearing")
+      return t`The values of a deleted field with this key are still being cleared. Try again in a moment.`
+    if (err.code === "field_invalid") return t`This value does not fit the field.`
+    if (err.code === "field_required") return t`Fill in the required fields before closing.`
     if (err.code === "shortcut_taken") return t`Another macro already uses this shortcut.`
     if (err.code === "already_discussed") return t`This conversation is already a discussion.`
     if (err.code === "no_discussion_channel")

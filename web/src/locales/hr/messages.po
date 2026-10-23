@@ -11,6 +11,10 @@ msgstr ""
 msgid ".eml files in a zip"
 msgstr ".eml datoteke u zip arhivi"
 
+#: src/features/fields/BulkFailures.tsx
+msgid "“{name}” holds a value that does not fit"
+msgstr "Vrijednost polja „{name}” ne odgovara"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "„Je li ova stranica bila korisna?”, povratne informacije i rasprave u vašoj dokumentaciji"
@@ -290,6 +294,10 @@ msgstr "{count, plural, one {# dopuštenje} few {# dopuštenja} other {# dopušt
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {Ide # primatelju.} few {Ide na # primatelja.} other {Ide na # primatelja.}}"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "{count} could not be closed"
+msgstr "Nije moguće zatvoriti: {count}"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "{count} events"
@@ -1107,6 +1115,10 @@ msgstr "Kontakt je izbrisan"
 msgid "A conversation"
 msgstr "Razgovor"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
+msgstr "Razgovor se ne može zatvoriti dok ovo polje nema vrijednost. Neželjena pošta je izuzeta."
+
 #: src/components/common/text.ts
 msgid "A conversation changed"
 msgstr "Razgovor se promijenio"
@@ -1223,6 +1235,10 @@ msgstr "Objava članka centra za pomoć je povučena"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "A key lets your backend, a script or a bot read and write conversations. Limit it to the products and scopes it needs."
 msgstr "Ključ omogućuje vašem backendu, skripti ili botu čitanje i pisanje razgovora. Ograničite ga na proizvode i dopuštenja koja mu trebaju."
+
+#: src/components/common/text.ts
+msgid "A kind of field holds at most 50 fields. Delete one first."
+msgstr "Objekt može imati najviše 50 polja. Najprije izbrišite jedno."
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -2315,6 +2331,10 @@ msgid "another conversation"
 msgstr "drugi razgovor"
 
 #: src/components/common/text.ts
+msgid "Another field of this kind already uses this key."
+msgstr "Drugo polje ove vrste već koristi ovaj ključ."
+
+#: src/components/common/text.ts
 msgid "Another import of this workspace is running. Imports run one at a time; try again when it ends."
 msgstr "Drugi uvoz ovog radnog prostora je u tijeku. Uvozi idu jedan po jedan; pokušajte ponovno kad završi."
 
@@ -2402,6 +2422,10 @@ msgstr "Bilo koji razgovor"
 #: src/features/contact/ContactsPage.tsx
 msgid "Any country"
 msgstr "Bilo koja zemlja"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Any field"
+msgstr "Bilo koje polje"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
@@ -3157,6 +3181,7 @@ msgstr "Naziv kampanje"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
+#: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -3465,6 +3490,10 @@ msgstr "Provjerite je li adresa preusmjeravanja točno ona gore."
 msgid "Check your e-mail"
 msgstr "Provjerite svoju e-poštu"
 
+#: src/features/fields/value.ts
+msgid "Checkbox"
+msgstr "Kvadratić za potvrdu"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Checked"
 msgstr "Provjereno"
@@ -3542,6 +3571,10 @@ msgstr "Odaberite stranicu"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose a region"
 msgstr "Odaberite regiju"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Choose a value"
+msgstr "Odaberite vrijednost"
 
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
@@ -4101,6 +4134,10 @@ msgstr "Podaci o kontaktu"
 msgid "Contact details (C)"
 msgstr "Podaci o kontaktu (C)"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contact fields"
+msgstr "Polja kontakta"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Contact id copied"
 msgstr "ID kontakta kopiran"
@@ -4125,6 +4162,10 @@ msgstr "Kontakti"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Contacts and exports"
 msgstr "Kontakti i izvozi"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contacts keep the values they hold; they show as plain attributes instead of a typed field."
+msgstr "Kontakti zadržavaju svoje vrijednosti; prikazuju se kao obična svojstva umjesto polja s tipom."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4180,6 +4221,10 @@ msgstr "Radnje razgovora"
 #: src/features/conversation/actions.ts
 msgid "Conversation closed"
 msgstr "Razgovor zatvoren"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Conversation fields"
+msgstr "Polja razgovora"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Conversation list"
@@ -4421,6 +4466,10 @@ msgstr "Izradi kanal"
 msgid "Create draft"
 msgstr "Izradi skicu"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Create field"
+msgstr "Izradi polje"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -4558,6 +4607,15 @@ msgstr "CSV datoteka"
 msgid "Custom"
 msgstr "Prilagođeno"
 
+#: src/features/fields/FieldFilter.tsx
+msgid "Custom field"
+msgstr "Prilagođeno polje"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Custom fields"
+msgstr "Prilagođena polja"
+
 #: src/app/Sidebar.tsx
 msgid "Customers"
 msgstr "Kupci"
@@ -4609,6 +4667,7 @@ msgid "Database upgrade"
 msgstr "Nadogradnja baze podataka"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/fields/value.ts
 msgid "Date"
 msgstr "Datum"
 
@@ -4658,6 +4717,7 @@ msgstr "Smanjena učinkovitost"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -4765,6 +4825,10 @@ msgstr "Izbriši skicu"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the entry"
 msgstr "Izbriši zapis"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Delete the field {name}?"
+msgstr "Izbrisati polje {name}?"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
@@ -5188,6 +5252,7 @@ msgstr "Domena nije potvrđena"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
+#: src/features/fields/BulkFailures.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -5475,6 +5540,7 @@ msgstr "Svaki sa svim svojim porukama i bilješkama"
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -5516,6 +5582,10 @@ msgstr "Uredi pojedinosti"
 msgid "Edit details ({editKey})"
 msgstr "Uredi pojedinosti ({editKey})"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Edit field"
+msgstr "Uredi polje"
+
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
 msgstr "Uređivanje zbirki centra za pomoć i skica članaka"
@@ -5535,6 +5605,11 @@ msgstr "Uredi monitor"
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Uredi tim"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Edit the custom fields"
+msgstr "Uredi prilagođena polja"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -6010,6 +6085,11 @@ msgstr "Povratna informacija poslana iz aplikacije"
 msgid "Feedback, {feedback} open"
 msgstr "Povratne informacije, otvorenih: {feedback}"
 
+#: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Fields"
+msgstr "Polja"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "Datoteka"
@@ -6021,6 +6101,14 @@ msgstr "Datoteka i privola"
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Files"
 msgstr "Datoteke"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Fill in before closing"
+msgstr "Ispunite prije zatvaranja"
+
+#: src/components/common/text.ts
+msgid "Fill in the required fields before closing."
+msgstr "Prije zatvaranja ispunite obvezna polja."
 
 #: src/features/broadcasts/TestSend.tsx
 msgid "Fill the test with a contact’s values"
@@ -7545,6 +7633,10 @@ msgstr "Njezin tekst i datoteke trajno se brišu, a razgovor prikazuje da ste je
 msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
 msgstr "Njezin tekst i datoteke trajno se brišu, a razgovor prikazuje da ste je uklonili. Poslana e-pošta ne može se povući iz poštanskog sandučića primatelja."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
+msgstr "Njegove se vrijednosti u pozadini brišu iz svih razgovora. To se ne može poništiti."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Pridružio/la se radnom prostoru kao {role}"
@@ -7583,6 +7675,7 @@ msgstr "Čuva se uz svaku pretplatu iz ove datoteke kao zapis o njihovoj privoli
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Key"
 msgstr "Ključ"
 
@@ -8824,6 +8917,7 @@ msgstr "Premjestiti u smeće: {0}?"
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Premještanje razgovora u smeće, njihovo vraćanje i čitanje smeća"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8922,6 +9016,7 @@ msgstr "Premjesti u smeće"
 msgid "Move to Yuva"
 msgstr "Prijeđite na Yuvu"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
@@ -8982,6 +9077,7 @@ msgstr "Moji timovi"
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
@@ -9051,6 +9147,10 @@ msgstr "Suzite što se može priložiti u ovom kanalu. Ograničenja poslužitelj
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Potrebno za masovne poruke"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "Needs “{name}” before it can close"
+msgstr "Za zatvaranje je potrebno „{name}”"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
@@ -9206,6 +9306,11 @@ msgstr "nove rasprave"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "Novi zapis"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "New field"
+msgstr "Novo polje"
 
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
@@ -9397,6 +9502,9 @@ msgstr "Zatim odaberite kamo idu."
 msgid "Nightly backup"
 msgstr "Noćna sigurnosna kopija"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "Ne"
@@ -9667,6 +9775,10 @@ msgstr "Nema zabilježenih događaja."
 msgid "No feedback from this page."
 msgstr "Nema povratnih informacija s ove stranice."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "No fields yet."
+msgstr "Još nema polja."
+
 #: src/features/settings/channels/Attachments.tsx
 msgid "No file is accepted."
 msgstr "Nijedna datoteka nije prihvaćena."
@@ -9874,6 +9986,7 @@ msgstr "Stranice statusa još nema. Izrađuju je vlasnici i administratori."
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/History.tsx
 #: src/features/conversation/RelatedLine.tsx
+#: src/features/fields/BulkFailures.tsx
 msgid "No subject"
 msgstr "Bez predmeta"
 
@@ -10155,6 +10268,10 @@ msgstr "Nije poslano"
 msgid "not set"
 msgstr "nije postavljeno"
 
+#: src/features/fields/FieldInput.tsx
+msgid "Not set"
+msgstr "Nije postavljeno"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Not set up"
 msgstr "Nije postavljeno"
@@ -10396,6 +10513,10 @@ msgstr "sada"
 msgid "Now"
 msgstr "Sada"
 
+#: src/features/fields/value.ts
+msgid "Number"
+msgstr "Broj"
+
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Objected to all mail"
@@ -10549,6 +10670,10 @@ msgstr "Jedna poruka svakih {every}"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Jedan po retku, 1 do 20. Widget mogu koristiti samo stranice s ovih origina."
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "One per line, all different, at most 100."
+msgstr "Jedna po retku, sve različite, najviše 100."
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
@@ -11087,6 +11212,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "Neobavezno. Prvih 64 KiB odgovora mora ga sadržavati; razlikuju se velika i mala slova."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Options"
 msgstr "Opcije"
 
@@ -11125,6 +11251,10 @@ msgstr "Ili učitajte izvoznu datoteku"
 #: src/features/inbox/ChatList.tsx
 msgid "Order and view"
 msgstr "Redoslijed i prikaz"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Order number"
+msgstr "Broj narudžbe"
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Original"
@@ -12455,6 +12585,10 @@ msgstr "Referenca"
 msgid "Refresh"
 msgstr "Osvježi"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Refund"
+msgstr "Povrat novca"
+
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Refund approved"
 msgstr "Povrat odobren"
@@ -12670,6 +12804,10 @@ msgstr "Uklonio/la bilješku iz razgovora"
 #: src/features/conversation/messages/Redacted.tsx
 msgid "Removed by {who}"
 msgstr "Uklonio/la: {who}"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
+msgstr "Uklonjene se opcije brišu iz svih razgovora koji ih imaju. To se izvodi u pozadini."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -12948,6 +13086,11 @@ msgstr "Utjecaj na ugled"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Required to close"
+msgstr "Obvezno za zatvaranje"
 
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
@@ -13279,6 +13422,7 @@ msgstr "Subota"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -13296,6 +13440,10 @@ msgstr "Spremi"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "Spremite odgovor zajedno s onim što se treba dogoditi s razgovorom kad ga pošaljete."
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Save and close"
+msgstr "Spremi i zatvori"
 
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -13581,6 +13729,10 @@ msgstr "Viđen {seen}"
 #: src/features/status/IncidentDetail.tsx
 msgid "Seen by the monitor"
 msgstr "Vidio monitor"
+
+#: src/features/fields/value.ts
+msgid "Select"
+msgstr "Odabir"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15268,6 +15420,7 @@ msgstr "Testiranje veze…"
 msgid "Tests go only to members of the workspace, at most five at a time, with [Test] before the subject."
 msgstr "Testovi idu samo članovima radnog prostora, najviše petorici odjednom, s [Test] ispred predmeta."
 
+#: src/features/fields/value.ts
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15705,6 +15858,10 @@ msgstr "Ključ vidi samo ove sandučiće i ne može upravljati sandučićima, we
 msgid "The key stops working at the end of this day."
 msgstr "Ključ prestaje raditi na kraju ovog dana."
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "The key, the object and the type cannot change after creation."
+msgstr "Ključ, objekt i tip ne mogu se mijenjati nakon izrade."
+
 #: src/features/settings/channels/ApiChannelDialog.tsx
 msgid "The kind cannot be changed later."
 msgstr "Vrsta se poslije ne može promijeniti."
@@ -15857,6 +16014,10 @@ msgstr "Stari pretinac prestaje primati poštu za tu domenu."
 #: src/components/common/text.ts
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "Drugi pretinac nema e-poštni kanal pa se ovaj e-poštni razgovor ne može premjestiti tamo. Prvo mu dodajte e-poštni kanal."
+
+#: src/features/fields/BulkFailures.tsx
+msgid "The others were closed. Open one to fill in what it needs, then close it."
+msgstr "Ostali su zatvoreni. Otvorite jedan, ispunite što treba i zatvorite ga."
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -16196,6 +16357,10 @@ msgstr "Učitana datoteka izbrisana je {fileDeletedAt}. Yuva zadržava samo ono 
 #: src/features/migrations/text.ts
 msgid "The user name is your iCloud address without @icloud.com."
 msgstr "Korisničko ime je vaša iCloud adresa bez @icloud.com."
+
+#: src/components/common/text.ts
+msgid "The values of a deleted field with this key are still being cleared. Try again in a moment."
+msgstr "Vrijednosti izbrisanog polja s ovim ključem još se brišu. Pokušajte ponovno za trenutak."
 
 #. placeholder {0}: e.from
 #: src/features/conversation/messages/Thread.tsx
@@ -16684,6 +16849,10 @@ msgstr "Ova pretplata više ne čeka potvrdu."
 msgid "This team does not cover the conversation's inbox."
 msgstr "Ovaj tim ne pokriva pretinac razgovora."
 
+#: src/components/common/text.ts
+msgid "This value does not fit the field."
+msgstr "Ova vrijednost ne odgovara polju."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "Ovo je bila završna obavijest, a nijedna prethodna nije poslana, pa nitko nije znao za incident"
@@ -16982,6 +17151,7 @@ msgid "TXT record"
 msgstr "TXT zapis"
 
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Type"
 msgstr "Vrsta"
 
@@ -17000,6 +17170,14 @@ msgstr "Upišite naziv radnog prostora za potvrdu"
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "Type your e-mail address to confirm"
 msgstr "Upišite svoju e-adresu za potvrdu"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Typed values on conversations and contacts"
+msgstr "Vrijednosti s tipom u razgovorima i kontaktima"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Typed values your team keeps on conversations and contacts, such as an order number or a plan. Agents edit them beside the thread."
+msgstr "Vrijednosti s tipom koje vaš tim vodi uz razgovore i kontakte, poput broja narudžbe ili paketa. Agenti ih uređuju uz razgovor."
 
 #: src/app/TeamMenu.tsx
 msgid "Typing · {where}"
@@ -17916,6 +18094,10 @@ msgstr "Što klijent vidi"
 msgid "What the import will do"
 msgstr "Što će uvoz napraviti"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "What the team sees."
+msgstr "Ono što tim vidi."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "What they agreed to"
 msgstr "Na što su pristali"
@@ -18060,6 +18242,10 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Where should Yuva send events?"
 msgstr "Kamo Yuva treba slati događaje?"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
+msgstr "Gdje API sprema vrijednost. Mala slova, znamenke i podcrte; ne može se mijenjati."
 
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "Which address do customers write to?"
@@ -18318,6 +18504,9 @@ msgstr "Piši unose u Što je novo i njihove prijevode"
 msgid "Write where and when they agreed."
 msgstr "Napišite gdje i kada su pristali."
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Da"
@@ -18642,6 +18831,10 @@ msgstr "Vaša vremenska zona, {zone}. To je {utc} UTC."
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"
 msgstr "Vaše web-mjesto"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Your workspace asks for these fields on every conversation it closes."
+msgstr "Vaš radni prostor traži ova polja u svakom razgovoru koji zatvara."
 
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."

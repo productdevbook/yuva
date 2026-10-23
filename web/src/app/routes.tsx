@@ -35,6 +35,7 @@ import {
 import { InboxWebhooksPage } from "@/features/settings/inboxes/InboxWebhooksPage"
 import { LabelsPage } from "@/features/settings/labels/LabelsPage"
 import { MacrosPage } from "@/features/settings/macros/MacrosPage"
+import { FieldsPage } from "@/features/settings/fields/FieldsPage"
 import { TeamsPage } from "@/features/settings/teams/TeamsPage"
 import { NotificationsPage } from "@/features/settings/notifications/NotificationsPage"
 import { ProfilePage } from "@/features/settings/profile/ProfilePage"
@@ -289,6 +290,7 @@ export function AppRoutes() {
               <Route path="canned-replies" element={<CannedRepliesPage />} />
               <Route path="macros" element={<MacrosPage />} />
               <Route path="teams" element={<TeamsPage />} />
+              <Route path="fields" element={<FieldsPage />} />
               <Route path="api-keys" element={<ApiKeysPage />} />
               <Route path="connected-apps" element={<ConnectedAppsPage />} />
               <Route path="connected-apps/:assistant" element={<ConnectedAppsPage />} />

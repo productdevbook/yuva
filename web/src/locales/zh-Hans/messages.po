@@ -11,6 +11,10 @@ msgstr ""
 msgid ".eml files in a zip"
 msgstr "zip 中的 .eml 文件"
 
+#: src/features/fields/BulkFailures.tsx
+msgid "“{name}” holds a value that does not fit"
+msgstr "“{name}”的值与字段不符"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "“此页面对您有帮助吗?”、文档上的反馈和讨论"
@@ -290,6 +294,10 @@ msgstr "{count, plural, other {# 项权限}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, other {将发送给 # 位收件人。}}"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "{count} could not be closed"
+msgstr "有 {count} 个无法关闭"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "{count} events"
@@ -1107,6 +1115,10 @@ msgstr "联系人被删除时"
 msgid "A conversation"
 msgstr "一个对话"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
+msgstr "此字段有值之前，对话无法关闭。垃圾邮件除外。"
+
 #: src/components/common/text.ts
 msgid "A conversation changed"
 msgstr "对话发生变化时"
@@ -1223,6 +1235,10 @@ msgstr "帮助中心文章已取消发布"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "A key lets your backend, a script or a bot read and write conversations. Limit it to the products and scopes it needs."
 msgstr "密钥可让你的后端、脚本或机器人读取和写入对话。请将其限制在它所需的产品和权限范围内。"
+
+#: src/components/common/text.ts
+msgid "A kind of field holds at most 50 fields. Delete one first."
+msgstr "每种对象最多有 50 个字段。请先删除一个。"
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -2315,6 +2331,10 @@ msgid "another conversation"
 msgstr "另一个对话"
 
 #: src/components/common/text.ts
+msgid "Another field of this kind already uses this key."
+msgstr "此类的另一个字段已使用这个键。"
+
+#: src/components/common/text.ts
 msgid "Another import of this workspace is running. Imports run one at a time; try again when it ends."
 msgstr "此工作区的另一个导入正在运行。导入一次只能运行一个;请在其结束后再试。"
 
@@ -2402,6 +2422,10 @@ msgstr "任何对话"
 #: src/features/contact/ContactsPage.tsx
 msgid "Any country"
 msgstr "任何国家"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Any field"
+msgstr "任意字段"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
@@ -3157,6 +3181,7 @@ msgstr "活动名称"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
+#: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -3465,6 +3490,10 @@ msgstr "请检查转发地址是否与上面的地址完全一致。"
 msgid "Check your e-mail"
 msgstr "查看你的邮件"
 
+#: src/features/fields/value.ts
+msgid "Checkbox"
+msgstr "复选框"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Checked"
 msgstr "已检查"
@@ -3542,6 +3571,10 @@ msgstr "选择页面"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose a region"
 msgstr "选择区域"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Choose a value"
+msgstr "选择一个值"
 
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
@@ -4101,6 +4134,10 @@ msgstr "联系人详情"
 msgid "Contact details (C)"
 msgstr "联系人详情(C)"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contact fields"
+msgstr "联系人字段"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Contact id copied"
 msgstr "联系人 ID 已复制"
@@ -4125,6 +4162,10 @@ msgstr "联系人"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Contacts and exports"
 msgstr "联系人和导出"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contacts keep the values they hold; they show as plain attributes instead of a typed field."
+msgstr "联系人保留已有的值；它们会显示为普通属性，而不是带类型的字段。"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4180,6 +4221,10 @@ msgstr "对话操作"
 #: src/features/conversation/actions.ts
 msgid "Conversation closed"
 msgstr "对话已关闭"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Conversation fields"
+msgstr "对话字段"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Conversation list"
@@ -4421,6 +4466,10 @@ msgstr "创建渠道"
 msgid "Create draft"
 msgstr "创建草稿"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Create field"
+msgstr "创建字段"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -4558,6 +4607,15 @@ msgstr "CSV 文件"
 msgid "Custom"
 msgstr "自定义"
 
+#: src/features/fields/FieldFilter.tsx
+msgid "Custom field"
+msgstr "自定义字段"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Custom fields"
+msgstr "自定义字段"
+
 #: src/app/Sidebar.tsx
 msgid "Customers"
 msgstr "客户"
@@ -4609,6 +4667,7 @@ msgid "Database upgrade"
 msgstr "数据库升级"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/fields/value.ts
 msgid "Date"
 msgstr "日期"
 
@@ -4658,6 +4717,7 @@ msgstr "性能下降"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -4765,6 +4825,10 @@ msgstr "删除草稿"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the entry"
 msgstr "删除条目"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Delete the field {name}?"
+msgstr "删除字段 {name}？"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
@@ -5188,6 +5252,7 @@ msgstr "域名未验证"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
+#: src/features/fields/BulkFailures.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -5475,6 +5540,7 @@ msgstr "每个都包含其所有消息和备注"
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -5516,6 +5582,10 @@ msgstr "编辑详情"
 msgid "Edit details ({editKey})"
 msgstr "编辑详情（{editKey}）"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Edit field"
+msgstr "编辑字段"
+
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
 msgstr "编辑帮助中心合集和文章草稿"
@@ -5535,6 +5605,11 @@ msgstr "编辑监控"
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "编辑团队"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Edit the custom fields"
+msgstr "编辑自定义字段"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -6010,6 +6085,11 @@ msgstr "从应用发送的反馈"
 msgid "Feedback, {feedback} open"
 msgstr "反馈，{feedback} 条未解决"
 
+#: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Fields"
+msgstr "字段"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "文件"
@@ -6021,6 +6101,14 @@ msgstr "文件与同意"
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Files"
 msgstr "文件"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Fill in before closing"
+msgstr "关闭前请填写"
+
+#: src/components/common/text.ts
+msgid "Fill in the required fields before closing."
+msgstr "关闭前请填写必填字段。"
 
 #: src/features/broadcasts/TestSend.tsx
 msgid "Fill the test with a contact’s values"
@@ -7545,6 +7633,10 @@ msgstr "其文字和文件将被永久删除，对话中会显示是你移除的
 msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
 msgstr "其文字和文件将被永久删除，对话中会显示是你移除的。 已发送的电子邮件无法从收件人的邮箱中撤回。"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
+msgstr "它的值会在后台从所有对话中清除。此操作无法撤销。"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "以{role}身份加入了工作区"
@@ -7583,6 +7675,7 @@ msgstr "随来自此文件的每个订阅一起保存,作为他们同意的记�
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Key"
 msgstr "密钥"
 
@@ -8824,6 +8917,7 @@ msgstr "将 {0} 项移到垃圾箱？"
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "将对话移到垃圾箱、恢复对话并读取垃圾箱"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8922,6 +9016,7 @@ msgstr "移到垃圾箱"
 msgid "Move to Yuva"
 msgstr "迁移到 Yuva"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
@@ -8982,6 +9077,7 @@ msgstr "我的团队"
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
@@ -9051,6 +9147,10 @@ msgstr "限制此渠道可附加的内容。服务器自身的限制仍是上限
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "群发所需"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "Needs “{name}” before it can close"
+msgstr "需要“{name}”才能关闭"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
@@ -9206,6 +9306,11 @@ msgstr "新讨论"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "新条目"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "New field"
+msgstr "新建字段"
 
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
@@ -9397,6 +9502,9 @@ msgstr "接下来选择它们去哪里。"
 msgid "Nightly backup"
 msgstr "夜间备份"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "否"
@@ -9667,6 +9775,10 @@ msgstr "没有记录到事件。"
 msgid "No feedback from this page."
 msgstr "此页面没有反馈。"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "No fields yet."
+msgstr "还没有字段。"
+
 #: src/features/settings/channels/Attachments.tsx
 msgid "No file is accepted."
 msgstr "不接受任何文件。"
@@ -9874,6 +9986,7 @@ msgstr "还没有状态页。由所有者和管理员创建。"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/History.tsx
 #: src/features/conversation/RelatedLine.tsx
+#: src/features/fields/BulkFailures.tsx
 msgid "No subject"
 msgstr "无主题"
 
@@ -10155,6 +10268,10 @@ msgstr "未发送"
 msgid "not set"
 msgstr "未设置"
 
+#: src/features/fields/FieldInput.tsx
+msgid "Not set"
+msgstr "未设置"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Not set up"
 msgstr "未设置"
@@ -10396,6 +10513,10 @@ msgstr "刚刚"
 msgid "Now"
 msgstr "现在"
 
+#: src/features/fields/value.ts
+msgid "Number"
+msgstr "数字"
+
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Objected to all mail"
@@ -10549,6 +10670,10 @@ msgstr "每 {every} 一封邮件"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "每行一个,1 到 20 个。只有这些来源上的页面才能使用小部件。"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "One per line, all different, at most 100."
+msgstr "每行一个，互不相同，最多 100 个。"
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
@@ -11087,6 +11212,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "可选。响应的前 64 KiB 必须包含它,区分大小写。"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Options"
 msgstr "选项"
 
@@ -11125,6 +11251,10 @@ msgstr "或上传导出文件"
 #: src/features/inbox/ChatList.tsx
 msgid "Order and view"
 msgstr "排序与视图"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Order number"
+msgstr "订单号"
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Original"
@@ -12455,6 +12585,10 @@ msgstr "引用"
 msgid "Refresh"
 msgstr "刷新"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Refund"
+msgstr "退款"
+
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Refund approved"
 msgstr "退款已批准"
@@ -12670,6 +12804,10 @@ msgstr "从对话中移除了一条备注"
 #: src/features/conversation/messages/Redacted.tsx
 msgid "Removed by {who}"
 msgstr "由 {who} 移除"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
+msgstr "移除的选项会从所有包含它们的对话中清除。此操作在后台运行。"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -12948,6 +13086,11 @@ msgstr "信誉影响"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Required to close"
+msgstr "关闭时必填"
 
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
@@ -13279,6 +13422,7 @@ msgstr "星期六"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -13296,6 +13440,10 @@ msgstr "保存"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "把一条回复和发送时会对会话执行的操作一起保存。"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Save and close"
+msgstr "保存并关闭"
 
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -13581,6 +13729,10 @@ msgstr "{seen}见到"
 #: src/features/status/IncidentDetail.tsx
 msgid "Seen by the monitor"
 msgstr "被监控看到"
+
+#: src/features/fields/value.ts
+msgid "Select"
+msgstr "选择"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15268,6 +15420,7 @@ msgstr "正在测试连接…"
 msgid "Tests go only to members of the workspace, at most five at a time, with [Test] before the subject."
 msgstr "测试只会发给工作区成员,一次最多五人,主题前会加上 [Test]。"
 
+#: src/features/fields/value.ts
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15705,6 +15858,10 @@ msgstr "该密钥只能看到这些收件箱，不能管理收件箱、Webhook �
 msgid "The key stops working at the end of this day."
 msgstr "该密钥会在这一天结束时失效。"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "The key, the object and the type cannot change after creation."
+msgstr "键、对象和类型在创建后无法更改。"
+
 #: src/features/settings/channels/ApiChannelDialog.tsx
 msgid "The kind cannot be changed later."
 msgstr "类型之后无法更改。"
@@ -15857,6 +16014,10 @@ msgstr "旧邮箱不再接收该域名的邮件。"
 #: src/components/common/text.ts
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "另一个收件箱没有邮件渠道,因此此邮件对话无法移到那里。请先为它添加邮件渠道。"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "The others were closed. Open one to fill in what it needs, then close it."
+msgstr "其余的已关闭。请打开其中一个，填好所需内容后再关闭。"
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -16196,6 +16357,10 @@ msgstr "上传的文件已于 {fileDeletedAt} 删除。Yuva 只保留它导入�
 #: src/features/migrations/text.ts
 msgid "The user name is your iCloud address without @icloud.com."
 msgstr "用户名是不带 @icloud.com 的 iCloud 地址。"
+
+#: src/components/common/text.ts
+msgid "The values of a deleted field with this key are still being cleared. Try again in a moment."
+msgstr "具有此键的已删除字段的值仍在清除中。请稍后再试。"
 
 #. placeholder {0}: e.from
 #: src/features/conversation/messages/Thread.tsx
@@ -16684,6 +16849,10 @@ msgstr "此订阅不再等待确认。"
 msgid "This team does not cover the conversation's inbox."
 msgstr "该团队不负责此会话的收件箱。"
 
+#: src/components/common/text.ts
+msgid "This value does not fit the field."
+msgstr "此值与字段不符。"
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "这是一封收尾通知,但此前未发送过任何通知,因此没有人知道该事件"
@@ -16982,6 +17151,7 @@ msgid "TXT record"
 msgstr "TXT 记录"
 
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Type"
 msgstr "类型"
 
@@ -17000,6 +17170,14 @@ msgstr "输入工作区名称以确认"
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "Type your e-mail address to confirm"
 msgstr "输入你的电子邮件地址以确认"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Typed values on conversations and contacts"
+msgstr "对话和联系人上带类型的值"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Typed values your team keeps on conversations and contacts, such as an order number or a plan. Agents edit them beside the thread."
+msgstr "团队在对话和联系人上保存的带类型的值，例如订单号或套餐。客服在对话旁编辑它们。"
 
 #: src/app/TeamMenu.tsx
 msgid "Typing · {where}"
@@ -17916,6 +18094,10 @@ msgstr "客户看到的内容"
 msgid "What the import will do"
 msgstr "导入将会做什么"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "What the team sees."
+msgstr "团队看到的名称。"
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "What they agreed to"
 msgstr "他们同意的内容"
@@ -18060,6 +18242,10 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Where should Yuva send events?"
 msgstr "Yuva 应该把事件发送到哪里?"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
+msgstr "API 保存该值所用的名称。小写字母、数字和下划线；无法更改。"
 
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "Which address do customers write to?"
@@ -18318,6 +18504,9 @@ msgstr "撰写「最新动态」条目及其翻译"
 msgid "Write where and when they agreed."
 msgstr "写明他们是在哪里、何时同意的。"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "是"
@@ -18642,6 +18831,10 @@ msgstr "你的时区 {zone}。即 UTC {utc}。"
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"
 msgstr "你的网站"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Your workspace asks for these fields on every conversation it closes."
+msgstr "你的工作区要求在每个关闭的对话中填写这些字段。"
 
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."

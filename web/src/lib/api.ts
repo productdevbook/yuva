@@ -119,6 +119,11 @@ export type Macro = S["Macro"]
 export type MacroActions = S["MacroActions"]
 export type MacroVisibility = S["MacroVisibility"]
 export type MacroRef = S["MacroRef"]
+export type CustomField = S["CustomField"]
+export type CustomFieldCreate = S["CustomFieldCreate"]
+export type CustomFieldUpdate = S["CustomFieldUpdate"]
+export type CustomFieldType = S["CustomFieldType"]
+export type CustomFieldObject = S["CustomFieldObject"]
 export type Team = S["Team"]
 export type TeamEventData = S["TeamEventData"]
 export type InboxMember = S["InboxMember"]
@@ -387,6 +392,7 @@ export class ApiError extends Error {
   status: number
   code?: string
   detail?: string
+  field?: string
   body?: unknown
 
   constructor(status: number, problem?: Partial<Problem>) {
@@ -394,6 +400,7 @@ export class ApiError extends Error {
     this.status = status
     this.code = problem?.code
     this.detail = problem?.detail
+    this.field = problem?.field
     this.body = problem
   }
 }

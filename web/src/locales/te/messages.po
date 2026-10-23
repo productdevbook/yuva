@@ -11,6 +11,10 @@ msgstr ""
 msgid ".eml files in a zip"
 msgstr "zip లో .eml ఫైల్‌లు"
 
+#: src/features/fields/BulkFailures.tsx
+msgid "“{name}” holds a value that does not fit"
+msgstr "“{name}” విలువ ఫీల్డ్‌కు సరిపోవడం లేదు"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "“ఈ పేజీ ఉపయోగకరంగా ఉందా?”, మీ డాక్స్‌పై అభిప్రాయాలు మరియు చర్చలు"
@@ -290,6 +294,10 @@ msgstr "{count, plural, one {# అనుమతి} other {# అనుమతు�
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {ఇది # గ్రహీతకు వెళ్తుంది.} other {ఇది # గ్రహీతలకు వెళ్తుంది.}}"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "{count} could not be closed"
+msgstr "{count} మూసివేయలేకపోయాం"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "{count} events"
@@ -1107,6 +1115,10 @@ msgstr "కాంటాక్ట్ తొలగించబడింది"
 msgid "A conversation"
 msgstr "ఒక సంభాషణ"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
+msgstr "ఈ ఫీల్డ్‌కు విలువ ఉండే వరకు సంభాషణను మూసివేయలేరు. స్పామ్ దీనికి మినహాయింపు."
+
 #: src/components/common/text.ts
 msgid "A conversation changed"
 msgstr "సంభాషణ మారింది"
@@ -1223,6 +1235,10 @@ msgstr "సహాయ కేంద్రం వ్యాసం ప్రచుర
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "A key lets your backend, a script or a bot read and write conversations. Limit it to the products and scopes it needs."
 msgstr "కీ ద్వారా మీ బ్యాకెండ్, స్క్రిప్ట్ లేదా బాట్ సంభాషణలను చదవగలదు, రాయగలదు. దానికి అవసరమైన ఉత్పత్తులు, అనుమతులకే పరిమితం చేయండి."
+
+#: src/components/common/text.ts
+msgid "A kind of field holds at most 50 fields. Delete one first."
+msgstr "ఒక ఆబ్జెక్ట్‌కు గరిష్ఠంగా 50 ఫీల్డ్‌లు ఉండవచ్చు. ముందుగా ఒకదాన్ని తొలగించండి."
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -2315,6 +2331,10 @@ msgid "another conversation"
 msgstr "మరో సంభాషణ"
 
 #: src/components/common/text.ts
+msgid "Another field of this kind already uses this key."
+msgstr "ఈ రకానికి చెందిన మరో ఫీల్డ్ ఇప్పటికే ఈ కీని ఉపయోగిస్తోంది."
+
+#: src/components/common/text.ts
 msgid "Another import of this workspace is running. Imports run one at a time; try again when it ends."
 msgstr "ఈ వర్క్‌స్పేస్ యొక్క మరో దిగుమతి నడుస్తోంది. దిగుమతులు ఒకసారి ఒకటి నడుస్తాయి; అది ముగిసినప్పుడు మళ్లీ ప్రయత్నించండి."
 
@@ -2402,6 +2422,10 @@ msgstr "ఏ సంభాషణ అయినా"
 #: src/features/contact/ContactsPage.tsx
 msgid "Any country"
 msgstr "ఏ దేశమైనా"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Any field"
+msgstr "ఏదైనా ఫీల్డ్"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
@@ -3157,6 +3181,7 @@ msgstr "ప్రచారం పేరు"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
+#: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -3465,6 +3490,10 @@ msgstr "ఫార్వర్డ్ చేసే చిరునామా సర
 msgid "Check your e-mail"
 msgstr "మీ ఇమెయిల్‌ను తనిఖీ చేయండి"
 
+#: src/features/fields/value.ts
+msgid "Checkbox"
+msgstr "చెక్‌బాక్స్"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Checked"
 msgstr "తనిఖీ చేయబడింది"
@@ -3542,6 +3571,10 @@ msgstr "పేజీని ఎంచుకోండి"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose a region"
 msgstr "ప్రాంతాన్ని ఎంచుకోండి"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Choose a value"
+msgstr "ఒక విలువను ఎంచుకోండి"
 
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
@@ -4101,6 +4134,10 @@ msgstr "కాంటాక్ట్ వివరాలు"
 msgid "Contact details (C)"
 msgstr "కాంటాక్ట్ వివరాలు (C)"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contact fields"
+msgstr "కాంటాక్ట్ ఫీల్డ్‌లు"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Contact id copied"
 msgstr "కాంటాక్ట్ ID కాపీ చేయబడింది"
@@ -4125,6 +4162,10 @@ msgstr "కాంటాక్ట్‌లు"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Contacts and exports"
 msgstr "కాంటాక్ట్‌లు మరియు ఎగుమతులు"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contacts keep the values they hold; they show as plain attributes instead of a typed field."
+msgstr "కాంటాక్ట్‌లు తమ విలువలను ఉంచుకుంటాయి; అవి రకం ఉన్న ఫీల్డ్‌కు బదులుగా సాధారణ లక్షణాలుగా కనిపిస్తాయి."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4180,6 +4221,10 @@ msgstr "సంభాషణ చర్యలు"
 #: src/features/conversation/actions.ts
 msgid "Conversation closed"
 msgstr "సంభాషణ మూసివేయబడింది"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Conversation fields"
+msgstr "సంభాషణ ఫీల్డ్‌లు"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Conversation list"
@@ -4421,6 +4466,10 @@ msgstr "ఛానెల్‌ను సృష్టించండి"
 msgid "Create draft"
 msgstr "డ్రాఫ్ట్‌ను సృష్టించండి"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Create field"
+msgstr "ఫీల్డ్ సృష్టించండి"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -4558,6 +4607,15 @@ msgstr "CSV ఫైల్"
 msgid "Custom"
 msgstr "కస్టమ్"
 
+#: src/features/fields/FieldFilter.tsx
+msgid "Custom field"
+msgstr "అనుకూల ఫీల్డ్"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Custom fields"
+msgstr "అనుకూల ఫీల్డ్‌లు"
+
 #: src/app/Sidebar.tsx
 msgid "Customers"
 msgstr "కస్టమర్‌లు"
@@ -4609,6 +4667,7 @@ msgid "Database upgrade"
 msgstr "డేటాబేస్ అప్‌గ్రేడ్"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/fields/value.ts
 msgid "Date"
 msgstr "తేదీ"
 
@@ -4658,6 +4717,7 @@ msgstr "తగ్గిన పనితీరు"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -4765,6 +4825,10 @@ msgstr "డ్రాఫ్ట్‌ను తొలగించండి"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the entry"
 msgstr "ఎంట్రీని తొలగించండి"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Delete the field {name}?"
+msgstr "{name} ఫీల్డ్‌ను తొలగించాలా?"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
@@ -5188,6 +5252,7 @@ msgstr "డొమైన్ ధృవీకరించబడలేదు"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
+#: src/features/fields/BulkFailures.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -5475,6 +5540,7 @@ msgstr "ప్రతిదీ దాని అన్ని సందేశాల
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -5516,6 +5582,10 @@ msgstr "వివరాలను సవరించండి"
 msgid "Edit details ({editKey})"
 msgstr "వివరాలను సవరించండి ({editKey})"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Edit field"
+msgstr "ఫీల్డ్‌ను సవరించండి"
+
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
 msgstr "సహాయ కేంద్రం సేకరణలు, వ్యాస ముసాయిదాలను సవరించండి"
@@ -5535,6 +5605,11 @@ msgstr "మానిటర్ సవరించండి"
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "బృందాన్ని సవరించండి"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Edit the custom fields"
+msgstr "అనుకూల ఫీల్డ్‌లను సవరించండి"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -6010,6 +6085,11 @@ msgstr "యాప్ నుండి పంపిన అభిప్రాయం
 msgid "Feedback, {feedback} open"
 msgstr "Feedback, {feedback} open"
 
+#: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Fields"
+msgstr "ఫీల్డ్‌లు"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "ఫైల్"
@@ -6021,6 +6101,14 @@ msgstr "ఫైల్ మరియు సమ్మతి"
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Files"
 msgstr "ఫైళ్లు"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Fill in before closing"
+msgstr "మూసివేసే ముందు పూరించండి"
+
+#: src/components/common/text.ts
+msgid "Fill in the required fields before closing."
+msgstr "మూసివేసే ముందు అవసరమైన ఫీల్డ్‌లను పూరించండి."
 
 #: src/features/broadcasts/TestSend.tsx
 msgid "Fill the test with a contact’s values"
@@ -7545,6 +7633,10 @@ msgstr "దాని టెక్స్ట్ మరియు ఫైళ్లు
 msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
 msgstr "దాని టెక్స్ట్ మరియు ఫైళ్లు శాశ్వతంగా తొలగించబడతాయి, మీరు దాన్ని తొలగించినట్లు సంభాషణలో కనిపిస్తుంది. పంపిన ఇమెయిల్‌ను గ్రహీత మెయిల్‌బాక్స్ నుండి వెనక్కి తీసుకోలేరు."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
+msgstr "దీని విలువలు అన్ని సంభాషణల నుండి నేపథ్యంలో తొలగించబడతాయి. దీన్ని రద్దు చేయలేరు."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "{role}గా వర్క్‌స్పేస్‌లో చేరారు"
@@ -7583,6 +7675,7 @@ msgstr "ఈ ఫైల్‌లోని ప్రతి సబ్‌స్క్
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Key"
 msgstr "కీ"
 
@@ -8824,6 +8917,7 @@ msgstr "{0} ను ట్రాష్‌కు తరలించాలా?"
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "సంభాషణలను ట్రాష్‌కు తరలించండి, పునరుద్ధరించండి, ట్రాష్ చదవండి"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8922,6 +9016,7 @@ msgstr "ట్రాష్‌కు తరలించండి"
 msgid "Move to Yuva"
 msgstr "Yuva కు తరలించండి"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
@@ -8982,6 +9077,7 @@ msgstr "నా బృందాలు"
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
@@ -9051,6 +9147,10 @@ msgstr "ఈ ఛానెల్‌లో ఏమి జతచేయవచ్చో
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "బ్రాడ్‌కాస్ట్‌ల కోసం అవసరం"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "Needs “{name}” before it can close"
+msgstr "మూసివేయడానికి “{name}” అవసరం"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
@@ -9206,6 +9306,11 @@ msgstr "కొత్త చర్చలు"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "కొత్త ఎంట్రీ"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "New field"
+msgstr "కొత్త ఫీల్డ్"
 
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
@@ -9397,6 +9502,9 @@ msgstr "తర్వాత, అవి ఎక్కడికి వెళ్ల�
 msgid "Nightly backup"
 msgstr "రాత్రి బ్యాకప్"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "కాదు"
@@ -9667,6 +9775,10 @@ msgstr "ఈవెంట్‌లు నమోదు కాలేదు."
 msgid "No feedback from this page."
 msgstr "ఈ పేజీ నుండి అభిప్రాయాలు లేవు."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "No fields yet."
+msgstr "ఇంకా ఫీల్డ్‌లు లేవు."
+
 #: src/features/settings/channels/Attachments.tsx
 msgid "No file is accepted."
 msgstr "ఏ ఫైల్ అంగీకరించబడదు."
@@ -9874,6 +9986,7 @@ msgstr "ఇంకా స్టేటస్ పేజీ లేదు. యజమ�
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/History.tsx
 #: src/features/conversation/RelatedLine.tsx
+#: src/features/fields/BulkFailures.tsx
 msgid "No subject"
 msgstr "విషయం లేదు"
 
@@ -10155,6 +10268,10 @@ msgstr "పంపబడలేదు"
 msgid "not set"
 msgstr "సెట్ చేయలేదు"
 
+#: src/features/fields/FieldInput.tsx
+msgid "Not set"
+msgstr "సెట్ చేయలేదు"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Not set up"
 msgstr "సెటప్ చేయలేదు"
@@ -10396,6 +10513,10 @@ msgstr "ఇప్పుడు"
 msgid "Now"
 msgstr "ఇప్పుడు"
 
+#: src/features/fields/value.ts
+msgid "Number"
+msgstr "సంఖ్య"
+
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Objected to all mail"
@@ -10549,6 +10670,10 @@ msgstr "ప్రతి {every} కు ఒక మెయిల్"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "ఒక్కో లైన్‌కు ఒకటి, 1 నుండి 20. ఈ ఆరిజిన్‌లలోని పేజీలు మాత్రమే విడ్జెట్‌ను ఉపయోగించగలవు."
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "One per line, all different, at most 100."
+msgstr "ప్రతి పంక్తికి ఒకటి, అన్నీ వేర్వేరు, గరిష్ఠంగా 100."
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
@@ -11087,6 +11212,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "ఐచ్ఛికం. సమాధానంలోని మొదటి 64 KiB లో ఇది ఉండాలి; పెద్ద మరియు చిన్న అక్షరాలు వేరుగా పరిగణించబడతాయి."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Options"
 msgstr "ఎంపికలు"
 
@@ -11125,6 +11251,10 @@ msgstr "లేదా ఎగుమతి ఫైల్‌ను అప్‌లో
 #: src/features/inbox/ChatList.tsx
 msgid "Order and view"
 msgstr "క్రమం మరియు వీక్షణ"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Order number"
+msgstr "ఆర్డర్ నంబర్"
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Original"
@@ -12455,6 +12585,10 @@ msgstr "సూచన"
 msgid "Refresh"
 msgstr "రిఫ్రెష్ చేయండి"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Refund"
+msgstr "రీఫండ్"
+
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Refund approved"
 msgstr "రిఫండ్ ఆమోదించబడింది"
@@ -12670,6 +12804,10 @@ msgstr "సంభాషణ నుండి ఒక గమనికను తొ�
 #: src/features/conversation/messages/Redacted.tsx
 msgid "Removed by {who}"
 msgstr "{who} తొలగించారు"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
+msgstr "తీసివేసిన ఎంపికలు వాటిని కలిగి ఉన్న అన్ని సంభాషణల నుండి తొలగించబడతాయి. ఇది నేపథ్యంలో నడుస్తుంది."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -12948,6 +13086,11 @@ msgstr "ప్రతిష్ఠపై ప్రభావం"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Required to close"
+msgstr "మూసివేయడానికి తప్పనిసరి"
 
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
@@ -13279,6 +13422,7 @@ msgstr "శనివారం"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -13296,6 +13440,10 @@ msgstr "సేవ్ చేయండి"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "పంపినప్పుడు సంభాషణకు ఏం జరగాలో దానితో పాటు ఒక సమాధానాన్ని సేవ్ చేయండి."
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Save and close"
+msgstr "సేవ్ చేసి మూసివేయండి"
 
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -13581,6 +13729,10 @@ msgstr "{seen} చూసింది"
 #: src/features/status/IncidentDetail.tsx
 msgid "Seen by the monitor"
 msgstr "మానిటర్ చూసింది"
+
+#: src/features/fields/value.ts
+msgid "Select"
+msgstr "ఎంపిక"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15268,6 +15420,7 @@ msgstr "కనెక్షన్‌ను పరీక్షిస్తోం�
 msgid "Tests go only to members of the workspace, at most five at a time, with [Test] before the subject."
 msgstr "టెస్ట్‌లు వర్క్‌స్పేస్ సభ్యులకు మాత్రమే, ఒకసారి గరిష్టంగా ఐదుగురికి, విషయానికి ముందు [Test] తో వెళ్తాయి."
 
+#: src/features/fields/value.ts
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15705,6 +15858,10 @@ msgstr "ఈ కీ ఈ ఇన్‌బాక్స్‌లను మాత్�
 msgid "The key stops working at the end of this day."
 msgstr "కీ ఈ రోజు చివరన పనిచేయడం ఆగిపోతుంది."
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "The key, the object and the type cannot change after creation."
+msgstr "కీ, ఆబ్జెక్ట్, రకం సృష్టించిన తర్వాత మార్చలేరు."
+
 #: src/features/settings/channels/ApiChannelDialog.tsx
 msgid "The kind cannot be changed later."
 msgstr "రకాన్ని తర్వాత మార్చలేరు."
@@ -15857,6 +16014,10 @@ msgstr "పాత మెయిల్‌బాక్స్ ఆ డొమైన్
 #: src/components/common/text.ts
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "మరో ఇన్‌బాక్స్‌కు ఇమెయిల్ ఛానెల్ లేదు, కాబట్టి ఈ ఇమెయిల్ సంభాషణ అక్కడికి వెళ్లలేదు. ముందుగా దానికి ఇమెయిల్ ఛానెల్‌ను జోడించండి."
+
+#: src/features/fields/BulkFailures.tsx
+msgid "The others were closed. Open one to fill in what it needs, then close it."
+msgstr "మిగిలినవి మూసివేయబడ్డాయి. ఒకదాన్ని తెరిచి, కావలసినది పూరించి, ఆపై మూసివేయండి."
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -16196,6 +16357,10 @@ msgstr "అప్‌లోడ్ చేసిన ఫైల్ {fileDeletedAt} �
 #: src/features/migrations/text.ts
 msgid "The user name is your iCloud address without @icloud.com."
 msgstr "వినియోగదారు పేరు అంటే @icloud.com లేని మీ iCloud చిరునామా."
+
+#: src/components/common/text.ts
+msgid "The values of a deleted field with this key are still being cleared. Try again in a moment."
+msgstr "ఈ కీ ఉన్న తొలగించిన ఫీల్డ్ విలువలు ఇంకా తొలగించబడుతున్నాయి. కాసేపటి తర్వాత మళ్లీ ప్రయత్నించండి."
 
 #. placeholder {0}: e.from
 #: src/features/conversation/messages/Thread.tsx
@@ -16684,6 +16849,10 @@ msgstr "ఈ సబ్‌స్క్రిప్షన్ ఇకపై నిర
 msgid "This team does not cover the conversation's inbox."
 msgstr "ఈ బృందం సంభాషణ ఇన్‌బాక్స్‌ను చూడదు."
 
+#: src/components/common/text.ts
+msgid "This value does not fit the field."
+msgstr "ఈ విలువ ఫీల్డ్‌కు సరిపోవడం లేదు."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "ఇది ముగింపు నోటీసు, దీనికి ముందు ఎలాంటి నోటీసు పంపబడలేదు, కాబట్టి ఈ ఘటన గురించి ఎవరికీ తెలియలేదు"
@@ -16982,6 +17151,7 @@ msgid "TXT record"
 msgstr "TXT రికార్డ్"
 
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Type"
 msgstr "రకం"
 
@@ -17000,6 +17170,14 @@ msgstr "నిర్ధారించడానికి వర్క్‌స�
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "Type your e-mail address to confirm"
 msgstr "నిర్ధారించడానికి మీ ఇమెయిల్ చిరునామాను టైప్ చేయండి"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Typed values on conversations and contacts"
+msgstr "సంభాషణలు, కాంటాక్ట్‌లపై రకం ఉన్న విలువలు"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Typed values your team keeps on conversations and contacts, such as an order number or a plan. Agents edit them beside the thread."
+msgstr "ఆర్డర్ నంబర్ లేదా ప్లాన్ వంటి, మీ బృందం సంభాషణలు, కాంటాక్ట్‌లపై ఉంచే రకం ఉన్న విలువలు. ఏజెంట్లు వాటిని సంభాషణ పక్కనే సవరిస్తారు."
 
 #: src/app/TeamMenu.tsx
 msgid "Typing · {where}"
@@ -17916,6 +18094,10 @@ msgstr "కస్టమర్ చూసేది"
 msgid "What the import will do"
 msgstr "దిగుమతి ఏమి చేస్తుంది"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "What the team sees."
+msgstr "బృందానికి కనిపించేది."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "What they agreed to"
 msgstr "వారు అంగీకరించినది"
@@ -18060,6 +18242,10 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Where should Yuva send events?"
 msgstr "Yuva ఈవెంట్‌లను ఎక్కడికి పంపాలి?"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
+msgstr "API విలువను ఎక్కడ నిల్వ చేస్తుంది. చిన్న అక్షరాలు, అంకెలు, అండర్‌స్కోర్‌లు; మార్చలేరు."
 
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "Which address do customers write to?"
@@ -18318,6 +18504,9 @@ msgstr "\"కొత్తవి\" ఎంట్రీలను, అనువా�
 msgid "Write where and when they agreed."
 msgstr "వారు ఎక్కడ మరియు ఎప్పుడు అంగీకరించారో రాయండి."
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "అవును"
@@ -18642,6 +18831,10 @@ msgstr "మీ సమయ మండలం, {zone}. అది {utc} UTC."
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"
 msgstr "మీ వెబ్‌సైట్"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Your workspace asks for these fields on every conversation it closes."
+msgstr "మీ వర్క్‌స్పేస్ మూసివేసే ప్రతి సంభాషణలో ఈ ఫీల్డ్‌లను అడుగుతుంది."
 
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."

@@ -10,9 +10,11 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { languageName, NewConversationDialog, useContactConversations } from "@/features/contact/ContactDetails"
 import { ContactNotes } from "@/features/contact/ContactNotes"
 import { ConversationMedia } from "@/features/contact/ConversationMedia"
+import { ConversationFields, useConversationFieldList } from "@/features/fields/ConversationFields"
 import { MergeContactDialog } from "@/features/contact/MergeContactDialog"
 import { useContact, useContactPresence } from "@/features/contact/queries"
-import { attrValue, contactName } from "@/features/contact/Section"
+import { useContactEntries } from "@/features/contact/entries"
+import { contactName } from "@/features/contact/Section"
 import { look, Overline } from "@/features/inbox/PageFrame"
 import { ProductTag } from "@/features/inbox/ProductTag"
 import type { Contact, ConversationListItem } from "@/lib/api"
@@ -78,17 +80,9 @@ export function ProductRows({ contact }: { contact: Contact }) {
   )
 }
 
-function label(k: string) {
-  return k.charAt(0).toUpperCase() + k.slice(1).replace(/[_-]+/g, " ")
-}
-
 export function DetailRows({ contact }: { contact: Contact }) {
   const { t, i18n } = useLingui()
-  const entries: [string, string, boolean][] = Object.entries(contact.attributes ?? {}).map(([k, v]) => [
-    label(k),
-    attrValue(v),
-    true,
-  ])
+  const entries = useContactEntries(contact).map((e): [string, string, boolean] => [e.label, e.value, e.raw])
   if (contact.locale) entries.push([t`Language`, languageName(contact.locale, i18n.locale), false])
   if (entries.length === 0) return null
   return (
@@ -193,6 +187,7 @@ export function ContactAside({
   const [merging, setMerging] = useState(false)
   const [starting, setStarting] = useState(false)
   const [media, setMedia] = useState(false)
+  const hasFields = useConversationFieldList().length > 0
   const c = contact.data
 
   const tools = (
@@ -252,6 +247,11 @@ export function ContactAside({
           </span>
         )}
       </header>
+      {conversationId && hasFields && (
+        <CardSection title={<Trans>Fields</Trans>} testId="fields-section">
+          <ConversationFields conversationId={conversationId} />
+        </CardSection>
+      )}
       {c.inboxes.length > 0 && (
         <CardSection title={<Trans>Products</Trans>}>
           <ProductRows contact={c} />

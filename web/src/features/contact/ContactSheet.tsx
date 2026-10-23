@@ -19,6 +19,7 @@ import {
 } from "@/features/contact/ContactDetails"
 import { ContactAside } from "@/features/contact/ContactCard"
 import { ConversationMedia } from "@/features/contact/ConversationMedia"
+import { ConversationFields, useConversationFieldList } from "@/features/fields/ConversationFields"
 import { MergeContactDialog } from "@/features/contact/MergeContactDialog"
 import { Presence } from "@/features/contact/Presence"
 import { ContactNotes, useNoteCount } from "@/features/contact/ContactNotes"
@@ -50,6 +51,7 @@ function Body({
   const [tab, setTab] = useState<Tab>("info")
   const [merging, setMerging] = useState(false)
   const [starting, setStarting] = useState(false)
+  const hasFields = useConversationFieldList().length > 0
   const c = contact.data
   const fmt = new Intl.NumberFormat(i18n.locale)
 
@@ -164,6 +166,14 @@ function Body({
       <div className="min-h-0 flex-1 overflow-y-auto p-4">
         {tab === "info" ? (
           <div className="flex flex-col gap-5">
+            {conversationId && hasFields && (
+              <section data-testid="fields-section">
+                <SectionTitle>
+                  <Trans>Fields</Trans>
+                </SectionTitle>
+                <ConversationFields conversationId={conversationId} />
+              </section>
+            )}
             <section>
               <SectionTitle>
                 <Trans>Contact</Trans>

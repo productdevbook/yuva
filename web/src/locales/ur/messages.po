@@ -11,6 +11,10 @@ msgstr ""
 msgid ".eml files in a zip"
 msgstr "zip میں .eml فائلیں"
 
+#: src/features/fields/BulkFailures.tsx
+msgid "“{name}” holds a value that does not fit"
+msgstr "«{name}» کی قدر فیلڈ سے مطابقت نہیں رکھتی"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "«کیا یہ صفحہ مفید تھا؟»، آپ کی دستاویزات پر رائے اور بحثیں"
@@ -290,6 +294,10 @@ msgstr "{count, plural, one {# اجازت} other {# اجازتیں}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {یہ # وصول کنندہ کو جاتا ہے۔} other {یہ # وصول کنندگان کو جاتا ہے۔}}"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "{count} could not be closed"
+msgstr "{count} بند نہیں ہو سکیں"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "{count} events"
@@ -1107,6 +1115,10 @@ msgstr "رابطہ حذف ہوا"
 msgid "A conversation"
 msgstr "ایک گفتگو"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
+msgstr "اس فیلڈ میں قدر آنے تک گفتگو بند نہیں کی جا سکتی۔ سپیم مستثنیٰ ہے۔"
+
 #: src/components/common/text.ts
 msgid "A conversation changed"
 msgstr "گفتگو تبدیل ہوئی"
@@ -1223,6 +1235,10 @@ msgstr "مدد مرکز کے ایک مضمون کی اشاعت واپس لی گ�
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "A key lets your backend, a script or a bot read and write conversations. Limit it to the products and scopes it needs."
 msgstr "کلید آپ کے بیک اینڈ، اسکرپٹ یا بوٹ کو گفتگوئیں پڑھنے اور لکھنے دیتی ہے۔ اسے صرف ان پروڈکٹس اور اجازتوں تک محدود رکھیں جن کی اسے ضرورت ہے۔"
+
+#: src/components/common/text.ts
+msgid "A kind of field holds at most 50 fields. Delete one first."
+msgstr "ایک آبجیکٹ میں زیادہ سے زیادہ 50 فیلڈ ہو سکتے ہیں۔ پہلے کوئی ایک حذف کریں۔"
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -2315,6 +2331,10 @@ msgid "another conversation"
 msgstr "دوسری گفتگو"
 
 #: src/components/common/text.ts
+msgid "Another field of this kind already uses this key."
+msgstr "اس قسم کا کوئی اور فیلڈ یہ کلید پہلے ہی استعمال کر رہا ہے۔"
+
+#: src/components/common/text.ts
 msgid "Another import of this workspace is running. Imports run one at a time; try again when it ends."
 msgstr "اس ورک اسپیس کی ایک اور درآمد چل رہی ہے۔ درآمدات ایک وقت میں ایک چلتی ہیں؛ ختم ہونے پر دوبارہ کوشش کریں۔"
 
@@ -2402,6 +2422,10 @@ msgstr "کوئی بھی گفتگو"
 #: src/features/contact/ContactsPage.tsx
 msgid "Any country"
 msgstr "کوئی بھی ملک"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Any field"
+msgstr "کوئی بھی فیلڈ"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
@@ -3157,6 +3181,7 @@ msgstr "مہم کا نام"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
+#: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -3465,6 +3490,10 @@ msgstr "جانچیں کہ فارورڈنگ کا پتہ بالکل وہی ہے ج
 msgid "Check your e-mail"
 msgstr "اپنی ای میل دیکھیں"
 
+#: src/features/fields/value.ts
+msgid "Checkbox"
+msgstr "چیک باکس"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Checked"
 msgstr "جانچا گیا"
@@ -3542,6 +3571,10 @@ msgstr "صفحہ منتخب کریں"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose a region"
 msgstr "علاقہ چنیں"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Choose a value"
+msgstr "کوئی قدر منتخب کریں"
 
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
@@ -4101,6 +4134,10 @@ msgstr "رابطے کی تفصیلات"
 msgid "Contact details (C)"
 msgstr "رابطے کی تفصیلات (C)"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contact fields"
+msgstr "رابطے کے فیلڈ"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Contact id copied"
 msgstr "رابطے کی آئی ڈی کاپی ہو گئی"
@@ -4125,6 +4162,10 @@ msgstr "رابطے"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Contacts and exports"
 msgstr "رابطے اور برآمدات"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contacts keep the values they hold; they show as plain attributes instead of a typed field."
+msgstr "رابطے اپنی موجود قدریں رکھتے ہیں؛ وہ قسم والے فیلڈ کے بجائے سادہ وصف کے طور پر نظر آتے ہیں۔"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4180,6 +4221,10 @@ msgstr "گفتگو کی کارروائیاں"
 #: src/features/conversation/actions.ts
 msgid "Conversation closed"
 msgstr "گفتگو بند ہو گئی"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Conversation fields"
+msgstr "گفتگو کے فیلڈ"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Conversation list"
@@ -4421,6 +4466,10 @@ msgstr "چینل بنائیں"
 msgid "Create draft"
 msgstr "مسودہ بنائیں"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Create field"
+msgstr "فیلڈ بنائیں"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -4558,6 +4607,15 @@ msgstr "CSV فائل"
 msgid "Custom"
 msgstr "حسب ضرورت"
 
+#: src/features/fields/FieldFilter.tsx
+msgid "Custom field"
+msgstr "حسبِ ضرورت فیلڈ"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Custom fields"
+msgstr "حسبِ ضرورت فیلڈ"
+
 #: src/app/Sidebar.tsx
 msgid "Customers"
 msgstr "صارفین"
@@ -4609,6 +4667,7 @@ msgid "Database upgrade"
 msgstr "ڈیٹابیس اپ گریڈ"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/fields/value.ts
 msgid "Date"
 msgstr "تاریخ"
 
@@ -4658,6 +4717,7 @@ msgstr "کارکردگی میں کمی"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -4765,6 +4825,10 @@ msgstr "مسودہ حذف کریں"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the entry"
 msgstr "اندراج حذف کریں"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Delete the field {name}?"
+msgstr "فیلڈ {name} حذف کریں؟"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
@@ -5188,6 +5252,7 @@ msgstr "ڈومین کی تصدیق نہیں ہوئی"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
+#: src/features/fields/BulkFailures.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -5475,6 +5540,7 @@ msgstr "ہر ایک اپنے تمام پیغامات اور نوٹس کے سات
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -5516,6 +5582,10 @@ msgstr "تفصیلات میں ترمیم کریں"
 msgid "Edit details ({editKey})"
 msgstr "تفصیلات میں ترمیم کریں ({editKey})"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Edit field"
+msgstr "فیلڈ میں ترمیم"
+
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
 msgstr "مدد مرکز کے مجموعے اور مضامین کے مسودے ترمیم کریں"
@@ -5535,6 +5605,11 @@ msgstr "مانیٹر میں ترمیم کریں"
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "ٹیم میں ترمیم کریں"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Edit the custom fields"
+msgstr "حسبِ ضرورت فیلڈ میں ترمیم"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -6010,6 +6085,11 @@ msgstr "ایپ سے بھیجی گئی رائے"
 msgid "Feedback, {feedback} open"
 msgstr "Feedback, {feedback} open"
 
+#: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Fields"
+msgstr "فیلڈ"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "فائل"
@@ -6021,6 +6101,14 @@ msgstr "فائل اور رضامندی"
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Files"
 msgstr "فائلیں"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Fill in before closing"
+msgstr "بند کرنے سے پہلے بھریں"
+
+#: src/components/common/text.ts
+msgid "Fill in the required fields before closing."
+msgstr "بند کرنے سے پہلے لازمی فیلڈ بھریں۔"
 
 #: src/features/broadcasts/TestSend.tsx
 msgid "Fill the test with a contact’s values"
@@ -7545,6 +7633,10 @@ msgstr "اس کا متن اور فائلیں ہمیشہ کے لیے حذف ہو 
 msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
 msgstr "اس کا متن اور فائلیں ہمیشہ کے لیے حذف ہو جاتی ہیں اور گفتگو میں دکھایا جاتا ہے کہ آپ نے اسے ہٹایا۔ بھیجی جا چکی ای میل وصول کنندہ کے میل باکس سے واپس نہیں لی جا سکتی۔"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
+msgstr "اس کی قدریں پس منظر میں تمام گفتگو سے مٹا دی جاتی ہیں۔ اسے واپس نہیں کیا جا سکتا۔"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "{role} کے طور پر ورک اسپیس میں شامل ہوئے"
@@ -7583,6 +7675,7 @@ msgstr "اس فائل کی ہر سبسکرپشن کے ساتھ رکھا جاتا
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Key"
 msgstr "کلید"
 
@@ -8824,6 +8917,7 @@ msgstr "{0} کو ٹریش میں منتقل کریں؟"
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "گفتگو کو ٹریش میں منتقل کریں، بحال کریں اور ٹریش پڑھیں"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8922,6 +9016,7 @@ msgstr "ٹریش میں منتقل کریں"
 msgid "Move to Yuva"
 msgstr "Yuva پر منتقل ہوں"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
@@ -8982,6 +9077,7 @@ msgstr "میری ٹیمیں"
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
@@ -9051,6 +9147,10 @@ msgstr "اس چینل میں جو کچھ منسلک کیا جا سکتا ہے ا
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "براڈکاسٹس کے لیے ضروری"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "Needs “{name}” before it can close"
+msgstr "بند کرنے کے لیے «{name}» درکار ہے"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
@@ -9206,6 +9306,11 @@ msgstr "نئی بحثیں"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "نیا اندراج"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "New field"
+msgstr "نیا فیلڈ"
 
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
@@ -9397,6 +9502,9 @@ msgstr "اب چنیں وہ کہاں جائیں۔"
 msgid "Nightly backup"
 msgstr "رات کا بیک اپ"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "نہیں"
@@ -9667,6 +9775,10 @@ msgstr "کوئی واقعہ ریکارڈ نہیں ہوا۔"
 msgid "No feedback from this page."
 msgstr "اس صفحے سے کوئی رائے نہیں۔"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "No fields yet."
+msgstr "ابھی کوئی فیلڈ نہیں۔"
+
 #: src/features/settings/channels/Attachments.tsx
 msgid "No file is accepted."
 msgstr "کوئی فائل قبول نہیں کی جاتی۔"
@@ -9874,6 +9986,7 @@ msgstr "ابھی اسٹیٹس صفحہ نہیں ہے۔ مالکان اور ای�
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/History.tsx
 #: src/features/conversation/RelatedLine.tsx
+#: src/features/fields/BulkFailures.tsx
 msgid "No subject"
 msgstr "کوئی موضوع نہیں"
 
@@ -10155,6 +10268,10 @@ msgstr "نہیں بھیجا گیا"
 msgid "not set"
 msgstr "سیٹ نہیں ہے"
 
+#: src/features/fields/FieldInput.tsx
+msgid "Not set"
+msgstr "مقرر نہیں"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Not set up"
 msgstr "سیٹ اپ نہیں"
@@ -10396,6 +10513,10 @@ msgstr "ابھی"
 msgid "Now"
 msgstr "ابھی"
 
+#: src/features/fields/value.ts
+msgid "Number"
+msgstr "عدد"
+
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Objected to all mail"
@@ -10549,6 +10670,10 @@ msgstr "ہر {every} میں ایک میل"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "فی سطر ایک، 1 سے 20۔ صرف ان اوریجنز کے صفحات ویجیٹ استعمال کر سکتے ہیں۔"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "One per line, all different, at most 100."
+msgstr "ہر سطر میں ایک، سب مختلف، زیادہ سے زیادہ 100۔"
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
@@ -11087,6 +11212,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "اختیاری۔ جواب کے پہلے 64 KiB میں یہ ہونا چاہیے؛ بڑے اور چھوٹے حروف میں فرق ہے۔"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Options"
 msgstr "اختیارات"
 
@@ -11125,6 +11251,10 @@ msgstr "یا ایکسپورٹ فائل اپ لوڈ کریں"
 #: src/features/inbox/ChatList.tsx
 msgid "Order and view"
 msgstr "ترتیب اور منظر"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Order number"
+msgstr "آرڈر نمبر"
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Original"
@@ -12455,6 +12585,10 @@ msgstr "حوالہ"
 msgid "Refresh"
 msgstr "ریفریش"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Refund"
+msgstr "رقم کی واپسی"
+
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Refund approved"
 msgstr "رقم کی واپسی منظور"
@@ -12670,6 +12804,10 @@ msgstr "گفتگو سے ایک نوٹ ہٹایا"
 #: src/features/conversation/messages/Redacted.tsx
 msgid "Removed by {who}"
 msgstr "{who} نے ہٹایا"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
+msgstr "ہٹائے گئے اختیارات ان تمام گفتگو سے مٹا دیے جاتے ہیں جن میں وہ ہیں۔ یہ پس منظر میں چلتا ہے۔"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -12948,6 +13086,11 @@ msgstr "ساکھ پر اثر"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Required to close"
+msgstr "بند کرنے کے لیے لازمی"
 
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
@@ -13279,6 +13422,7 @@ msgstr "ہفتہ"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -13296,6 +13440,10 @@ msgstr "محفوظ کریں"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "ایک جواب کو اس کے ساتھ محفوظ کریں کہ بھیجنے پر گفتگو کے ساتھ کیا ہونا چاہیے۔"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Save and close"
+msgstr "محفوظ کریں اور بند کریں"
 
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -13581,6 +13729,10 @@ msgstr "{seen} دیکھا گیا"
 #: src/features/status/IncidentDetail.tsx
 msgid "Seen by the monitor"
 msgstr "مانیٹر نے دیکھا"
+
+#: src/features/fields/value.ts
+msgid "Select"
+msgstr "انتخاب"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15268,6 +15420,7 @@ msgstr "کنکشن ٹیسٹ ہو رہا ہے…"
 msgid "Tests go only to members of the workspace, at most five at a time, with [Test] before the subject."
 msgstr "ٹیسٹ صرف ورک اسپیس کے ممبرز کو جاتے ہیں، ایک وقت میں زیادہ سے زیادہ پانچ، موضوع سے پہلے [Test] کے ساتھ۔"
 
+#: src/features/fields/value.ts
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15705,6 +15858,10 @@ msgstr "یہ کلید صرف یہ ان باکسز دیکھ سکتی ہے؛ یہ 
 msgid "The key stops working at the end of this day."
 msgstr "کلید اس دن کے آخر میں کام کرنا بند کر دیتی ہے۔"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "The key, the object and the type cannot change after creation."
+msgstr "کلید، آبجیکٹ اور قسم بنانے کے بعد بدلی نہیں جا سکتیں۔"
+
 #: src/features/settings/channels/ApiChannelDialog.tsx
 msgid "The kind cannot be changed later."
 msgstr "قسم بعد میں نہیں بدلی جا سکتی۔"
@@ -15857,6 +16014,10 @@ msgstr "پرانا میل باکس اس ڈومین کی میل وصول کرنا
 #: src/components/common/text.ts
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "دوسرے ان باکس میں ای میل چینل نہیں، اس لیے یہ ای میل گفتگو وہاں منتقل نہیں ہو سکتی۔ پہلے اس میں ای میل چینل شامل کریں۔"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "The others were closed. Open one to fill in what it needs, then close it."
+msgstr "باقی بند ہو گئیں۔ ایک کھولیں، جو درکار ہے وہ بھریں، پھر بند کریں۔"
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -16196,6 +16357,10 @@ msgstr "اپ لوڈ کی گئی فائل {fileDeletedAt} کو حذف ہوئی۔ 
 #: src/features/migrations/text.ts
 msgid "The user name is your iCloud address without @icloud.com."
 msgstr "صارف نام آپ کا iCloud پتہ ہے بغیر @icloud.com کے۔"
+
+#: src/components/common/text.ts
+msgid "The values of a deleted field with this key are still being cleared. Try again in a moment."
+msgstr "اس کلید والے حذف شدہ فیلڈ کی قدریں ابھی مٹائی جا رہی ہیں۔ تھوڑی دیر بعد دوبارہ کوشش کریں۔"
 
 #. placeholder {0}: e.from
 #: src/features/conversation/messages/Thread.tsx
@@ -16684,6 +16849,10 @@ msgstr "یہ سبسکرپشن اب تصدیق کی منتظر نہیں۔"
 msgid "This team does not cover the conversation's inbox."
 msgstr "یہ ٹیم گفتگو کے ان باکس کو کور نہیں کرتی۔"
 
+#: src/components/common/text.ts
+msgid "This value does not fit the field."
+msgstr "یہ قدر فیلڈ سے مطابقت نہیں رکھتی۔"
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "یہ اختتامی نوٹس تھا اور اس سے پہلے کوئی نوٹس نہیں بھیجا گیا تھا، اس لیے کسی کو واقعے کی خبر نہیں ہوئی"
@@ -16982,6 +17151,7 @@ msgid "TXT record"
 msgstr "TXT ریکارڈ"
 
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Type"
 msgstr "قسم"
 
@@ -17000,6 +17170,14 @@ msgstr "تصدیق کے لیے ورک اسپیس کا نام لکھیں"
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "Type your e-mail address to confirm"
 msgstr "تصدیق کے لیے اپنا ای میل پتہ لکھیں"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Typed values on conversations and contacts"
+msgstr "گفتگو اور رابطوں پر قسم والی قدریں"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Typed values your team keeps on conversations and contacts, such as an order number or a plan. Agents edit them beside the thread."
+msgstr "قسم والی قدریں جو آپ کی ٹیم گفتگو اور رابطوں پر رکھتی ہے، جیسے آرڈر نمبر یا پلان۔ ایجنٹ انہیں گفتگو کے ساتھ ایڈٹ کرتے ہیں۔"
 
 #: src/app/TeamMenu.tsx
 msgid "Typing · {where}"
@@ -17916,6 +18094,10 @@ msgstr "صارف کو کیا دکھتا ہے"
 msgid "What the import will do"
 msgstr "درآمد کیا کرے گی"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "What the team sees."
+msgstr "ٹیم کو جو نظر آتا ہے۔"
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "What they agreed to"
 msgstr "انہوں نے کس بات پر رضامندی دی"
@@ -18060,6 +18242,10 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Where should Yuva send events?"
 msgstr "Yuva کو واقعات کہاں بھیجنے چاہییں؟"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
+msgstr "وہ جگہ جہاں API قدر رکھتا ہے۔ چھوٹے حروف، ہندسے اور انڈر اسکور؛ اسے بدلا نہیں جا سکتا۔"
 
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "Which address do customers write to?"
@@ -18318,6 +18504,9 @@ msgstr "\"نیا کیا ہے\" کی اندراجات اور تراجم لکھی�
 msgid "Write where and when they agreed."
 msgstr "لکھیں کہ انہوں نے کہاں اور کب رضامندی دی۔"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "ہاں"
@@ -18642,6 +18831,10 @@ msgstr "آپ کا ٹائم زون، {zone}۔ یعنی {utc} UTC۔"
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"
 msgstr "آپ کی ویب سائٹ"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Your workspace asks for these fields on every conversation it closes."
+msgstr "آپ کی ورک اسپیس ہر بند ہونے والی گفتگو میں یہ فیلڈ مانگتی ہے۔"
 
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."

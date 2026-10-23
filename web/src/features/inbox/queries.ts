@@ -12,8 +12,13 @@ export function useConversations(filters: ConversationFilters, enabled = true) {
   const { workspaceId: ws } = useSession()
   return useInfiniteQuery({
     queryKey: keys.conversations(ws, filters),
-    queryFn: ({ pageParam }) =>
-      unwrap(api.GET("/v1/conversations", { params: { query: { ...filters, cursor: pageParam, limit: 100 } } })),
+    queryFn: ({ pageParam }) => {
+      const { fields, ...rest } = filters
+      const dynamic = Object.fromEntries(Object.entries(fields ?? {}).map(([k, v]) => [`field.${k}`, v]))
+      return unwrap(
+        api.GET("/v1/conversations", { params: { query: { ...rest, ...dynamic, cursor: pageParam, limit: 100 } } })
+      )
+    },
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (last) => last.next_cursor,
     enabled,

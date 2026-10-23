@@ -11,6 +11,10 @@ msgstr ""
 msgid ".eml files in a zip"
 msgstr ".eml-tiedostot zipissä"
 
+#: src/features/fields/BulkFailures.tsx
+msgid "“{name}” holds a value that does not fit"
+msgstr "Kentän “{name}” arvo ei sovi"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "”Oliko tästä sivusta apua?”, palaute ja keskustelut dokumentaatiossasi"
@@ -290,6 +294,10 @@ msgstr "{count, plural, one {# oikeus} other {# oikeutta}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {Se lähtee # vastaanottajalle.} other {Se lähtee # vastaanottajalle.}}"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "{count} could not be closed"
+msgstr "{count} ei voitu sulkea"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "{count} events"
@@ -1107,6 +1115,10 @@ msgstr "Kontakti poistettiin"
 msgid "A conversation"
 msgstr "Keskustelu"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
+msgstr "Keskustelua ei voi sulkea, ennen kuin tällä kentällä on arvo. Roskaposti on poikkeus."
+
 #: src/components/common/text.ts
 msgid "A conversation changed"
 msgstr "Keskustelu muuttui"
@@ -1223,6 +1235,10 @@ msgstr "Ohjekeskuksen artikkelin julkaisu peruttiin"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "A key lets your backend, a script or a bot read and write conversations. Limit it to the products and scopes it needs."
 msgstr "Avaimella taustajärjestelmäsi, skriptisi tai bottisi voi lukea ja kirjoittaa keskusteluja. Rajaa se tuotteisiin ja oikeuksiin, joita se tarvitsee."
+
+#: src/components/common/text.ts
+msgid "A kind of field holds at most 50 fields. Delete one first."
+msgstr "Objektilla voi olla enintään 50 kenttää. Poista ensin yksi."
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -2315,6 +2331,10 @@ msgid "another conversation"
 msgstr "toinen keskustelu"
 
 #: src/components/common/text.ts
+msgid "Another field of this kind already uses this key."
+msgstr "Toinen tämän lajin kenttä käyttää jo tätä avainta."
+
+#: src/components/common/text.ts
 msgid "Another import of this workspace is running. Imports run one at a time; try again when it ends."
 msgstr "Tämän työtilan toinen tuonti on käynnissä. Tuonnit ajetaan yksi kerrallaan; yritä uudelleen, kun se päättyy."
 
@@ -2402,6 +2422,10 @@ msgstr "Mikä tahansa keskustelu"
 #: src/features/contact/ContactsPage.tsx
 msgid "Any country"
 msgstr "Mikä tahansa maa"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Any field"
+msgstr "Mikä tahansa kenttä"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
@@ -3157,6 +3181,7 @@ msgstr "Kampanjan nimi"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
+#: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -3465,6 +3490,10 @@ msgstr "Tarkista, että ohjausosoite on täsmälleen yllä oleva."
 msgid "Check your e-mail"
 msgstr "Tarkista sähköpostisi"
 
+#: src/features/fields/value.ts
+msgid "Checkbox"
+msgstr "Valintaruutu"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Checked"
 msgstr "Tarkistettu"
@@ -3542,6 +3571,10 @@ msgstr "Valitse sivu"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose a region"
 msgstr "Valitse alue"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Choose a value"
+msgstr "Valitse arvo"
 
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
@@ -4101,6 +4134,10 @@ msgstr "Kontaktin tiedot"
 msgid "Contact details (C)"
 msgstr "Kontaktin tiedot (C)"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contact fields"
+msgstr "Yhteystiedon kentät"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Contact id copied"
 msgstr "Yhteystiedon tunnus kopioitu"
@@ -4125,6 +4162,10 @@ msgstr "Kontaktit"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Contacts and exports"
 msgstr "Yhteystiedot ja viennit"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contacts keep the values they hold; they show as plain attributes instead of a typed field."
+msgstr "Yhteystiedot säilyttävät arvonsa; ne näkyvät tavallisina ominaisuuksina tyypitetyn kentän sijaan."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4180,6 +4221,10 @@ msgstr "Keskustelun toiminnot"
 #: src/features/conversation/actions.ts
 msgid "Conversation closed"
 msgstr "Keskustelu suljettu"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Conversation fields"
+msgstr "Keskustelun kentät"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Conversation list"
@@ -4421,6 +4466,10 @@ msgstr "Luo kanava"
 msgid "Create draft"
 msgstr "Luo luonnos"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Create field"
+msgstr "Luo kenttä"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -4558,6 +4607,15 @@ msgstr "CSV-tiedosto"
 msgid "Custom"
 msgstr "Mukautettu"
 
+#: src/features/fields/FieldFilter.tsx
+msgid "Custom field"
+msgstr "Mukautettu kenttä"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Custom fields"
+msgstr "Mukautetut kentät"
+
 #: src/app/Sidebar.tsx
 msgid "Customers"
 msgstr "Asiakkaat"
@@ -4609,6 +4667,7 @@ msgid "Database upgrade"
 msgstr "Tietokannan päivitys"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/fields/value.ts
 msgid "Date"
 msgstr "Päivämäärä"
 
@@ -4658,6 +4717,7 @@ msgstr "Heikentynyt suorituskyky"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -4765,6 +4825,10 @@ msgstr "Poista luonnos"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the entry"
 msgstr "Poista merkintä"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Delete the field {name}?"
+msgstr "Poistetaanko kenttä {name}?"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
@@ -5188,6 +5252,7 @@ msgstr "Verkkotunnusta ei ole vahvistettu"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
+#: src/features/fields/BulkFailures.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -5475,6 +5540,7 @@ msgstr "Jokainen kaikkine viesteineen ja muistiinpanoineen"
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -5516,6 +5582,10 @@ msgstr "Muokkaa tietoja"
 msgid "Edit details ({editKey})"
 msgstr "Muokkaa tietoja ({editKey})"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Edit field"
+msgstr "Muokkaa kenttää"
+
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
 msgstr "Muokkaa ohjekeskuksen kokoelmia ja artikkeliluonnoksia"
@@ -5535,6 +5605,11 @@ msgstr "Muokkaa valvontaa"
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Muokkaa tiimiä"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Edit the custom fields"
+msgstr "Muokkaa mukautettuja kenttiä"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -6010,6 +6085,11 @@ msgstr "Sovelluksesta lähetetty palaute"
 msgid "Feedback, {feedback} open"
 msgstr "Palaute, {feedback} avointa"
 
+#: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Fields"
+msgstr "Kentät"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "Tiedosto"
@@ -6021,6 +6101,14 @@ msgstr "Tiedosto ja suostumus"
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Files"
 msgstr "Tiedostot"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Fill in before closing"
+msgstr "Täytä ennen sulkemista"
+
+#: src/components/common/text.ts
+msgid "Fill in the required fields before closing."
+msgstr "Täytä pakolliset kentät ennen sulkemista."
 
 #: src/features/broadcasts/TestSend.tsx
 msgid "Fill the test with a contact’s values"
@@ -7545,6 +7633,10 @@ msgstr "Sen teksti ja tiedostot poistetaan pysyvästi, ja keskustelussa näkyy, 
 msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
 msgstr "Sen teksti ja tiedostot poistetaan pysyvästi, ja keskustelussa näkyy, että poistit sen. Lähetettyä sähköpostia ei voi palauttaa vastaanottajan postilaatikosta."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
+msgstr "Sen arvot poistetaan kaikista keskusteluista taustalla. Tätä ei voi perua."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Liittyi työtilaan roolilla {role}"
@@ -7583,6 +7675,7 @@ msgstr "Säilytetään jokaisen tästä tiedostosta tulleen tilauksen mukana hei
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Key"
 msgstr "Avain"
 
@@ -8824,6 +8917,7 @@ msgstr "Siirretäänkö {0} roskakoriin?"
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Siirrä keskusteluja roskakoriin, palauta ne ja lue roskakoria"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8922,6 +9016,7 @@ msgstr "Siirrä roskakoriin"
 msgid "Move to Yuva"
 msgstr "Siirry Yuvaan"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
@@ -8982,6 +9077,7 @@ msgstr "Tiimini"
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
@@ -9051,6 +9147,10 @@ msgstr "Rajaa, mitä tähän kanavaan voi liittää. Palvelimen omat rajat pysyv
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Tarvitaan joukkolähetyksiin"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "Needs “{name}” before it can close"
+msgstr "Kenttä “{name}” tarvitaan sulkemiseen"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
@@ -9206,6 +9306,11 @@ msgstr "uutta keskustelua"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "Uusi merkintä"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "New field"
+msgstr "Uusi kenttä"
 
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
@@ -9397,6 +9502,9 @@ msgstr "Valitse seuraavaksi, minne ne menevät."
 msgid "Nightly backup"
 msgstr "Yöllinen varmuuskopio"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "Ei"
@@ -9667,6 +9775,10 @@ msgstr "Ei tallennettuja tapahtumia."
 msgid "No feedback from this page."
 msgstr "Ei palautetta tältä sivulta."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "No fields yet."
+msgstr "Ei vielä kenttiä."
+
 #: src/features/settings/channels/Attachments.tsx
 msgid "No file is accepted."
 msgstr "Tiedostoja ei hyväksytä."
@@ -9874,6 +9986,7 @@ msgstr "Ei vielä tilasivua. Omistajat ja ylläpitäjät luovat sen."
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/History.tsx
 #: src/features/conversation/RelatedLine.tsx
+#: src/features/fields/BulkFailures.tsx
 msgid "No subject"
 msgstr "Ei aihetta"
 
@@ -10155,6 +10268,10 @@ msgstr "Ei lähetetty"
 msgid "not set"
 msgstr "ei asetettu"
 
+#: src/features/fields/FieldInput.tsx
+msgid "Not set"
+msgstr "Ei asetettu"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Not set up"
 msgstr "Ei määritetty"
@@ -10396,6 +10513,10 @@ msgstr "nyt"
 msgid "Now"
 msgstr "Nyt"
 
+#: src/features/fields/value.ts
+msgid "Number"
+msgstr "Luku"
+
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Objected to all mail"
@@ -10549,6 +10670,10 @@ msgstr "Yksi viesti {every} välein"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Yksi per rivi, 1–20. Vain näiden originien sivut voivat käyttää widgetiä."
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "One per line, all different, at most 100."
+msgstr "Yksi per rivi, kaikki erilaisia, enintään 100."
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
@@ -11087,6 +11212,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "Valinnainen. Vastauksen ensimmäisten 64 KiB:n on sisällettävä se; isot ja pienet kirjaimet erotetaan."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Options"
 msgstr "Asetukset"
 
@@ -11125,6 +11251,10 @@ msgstr "Tai lataa vientitiedosto"
 #: src/features/inbox/ChatList.tsx
 msgid "Order and view"
 msgstr "Järjestys ja näkymä"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Order number"
+msgstr "Tilausnumero"
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Original"
@@ -12455,6 +12585,10 @@ msgstr "Viite"
 msgid "Refresh"
 msgstr "Päivitä"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Refund"
+msgstr "Hyvitys"
+
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Refund approved"
 msgstr "Hyvitys hyväksytty"
@@ -12670,6 +12804,10 @@ msgstr "Poisti muistiinpanon keskustelusta"
 #: src/features/conversation/messages/Redacted.tsx
 msgid "Removed by {who}"
 msgstr "Poistanut {who}"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
+msgstr "Poistetut vaihtoehdot tyhjennetään kaikista keskusteluista, joissa ne ovat. Tämä tapahtuu taustalla."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -12948,6 +13086,11 @@ msgstr "Vaikutus maineeseen"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Required to close"
+msgstr "Pakollinen sulkiessa"
 
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
@@ -13279,6 +13422,7 @@ msgstr "Lauantai"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -13296,6 +13440,10 @@ msgstr "Tallenna"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "Tallenna vastaus ja se, mitä keskustelulle tapahtuu, kun lähetät sen."
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Save and close"
+msgstr "Tallenna ja sulje"
 
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -13581,6 +13729,10 @@ msgstr "Nähty {seen}"
 #: src/features/status/IncidentDetail.tsx
 msgid "Seen by the monitor"
 msgstr "Valvonnan näkemä"
+
+#: src/features/fields/value.ts
+msgid "Select"
+msgstr "Valinta"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15268,6 +15420,7 @@ msgstr "Testataan yhteyttä …"
 msgid "Tests go only to members of the workspace, at most five at a time, with [Test] before the subject."
 msgstr "Testit menevät vain työtilan jäsenille, enintään viisi kerrallaan, ja aiheen edessä on [Test]."
 
+#: src/features/fields/value.ts
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15705,6 +15858,10 @@ msgstr "Avain näkee vain nämä postilaatikot, eikä se voi hallita postilaatik
 msgid "The key stops working at the end of this day."
 msgstr "Avain lakkaa toimimasta tämän päivän lopussa."
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "The key, the object and the type cannot change after creation."
+msgstr "Avainta, objektia ja tyyppiä ei voi muuttaa luomisen jälkeen."
+
 #: src/features/settings/channels/ApiChannelDialog.tsx
 msgid "The kind cannot be changed later."
 msgstr "Tyyppiä ei voi muuttaa myöhemmin."
@@ -15857,6 +16014,10 @@ msgstr "Vanha postilaatikko lakkaa vastaanottamasta postia kyseiselle verkkotunn
 #: src/components/common/text.ts
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "Toisella postilaatikolla ei ole sähköpostikanavaa, joten tätä sähköpostikeskustelua ei voi siirtää sinne. Lisää siihen ensin sähköpostikanava."
+
+#: src/features/fields/BulkFailures.tsx
+msgid "The others were closed. Open one to fill in what it needs, then close it."
+msgstr "Muut suljettiin. Avaa yksi, täytä puuttuva ja sulje se."
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -16196,6 +16357,10 @@ msgstr "Ladattu tiedosto poistettiin {fileDeletedAt}. Yuva säilyttää vain sen
 #: src/features/migrations/text.ts
 msgid "The user name is your iCloud address without @icloud.com."
 msgstr "Käyttäjätunnus on iCloud-osoitteesi ilman @icloud.com."
+
+#: src/components/common/text.ts
+msgid "The values of a deleted field with this key are still being cleared. Try again in a moment."
+msgstr "Tällä avaimella poistetun kentän arvoja tyhjennetään vielä. Yritä hetken kuluttua uudelleen."
 
 #. placeholder {0}: e.from
 #: src/features/conversation/messages/Thread.tsx
@@ -16684,6 +16849,10 @@ msgstr "Tämä tilaus ei enää odota vahvistusta."
 msgid "This team does not cover the conversation's inbox."
 msgstr "Tämä tiimi ei kata keskustelun postilaatikkoa."
 
+#: src/components/common/text.ts
+msgid "This value does not fit the field."
+msgstr "Tämä arvo ei sovi kenttään."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "Tämä oli päättymisilmoitus, eikä aiempaa ilmoitusta lähetetty, joten kukaan ei ollut kuullut häiriöstä"
@@ -16982,6 +17151,7 @@ msgid "TXT record"
 msgstr "TXT-tietue"
 
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Type"
 msgstr "Tyyppi"
 
@@ -17000,6 +17170,14 @@ msgstr "Kirjoita työtilan nimi vahvistaaksesi"
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "Type your e-mail address to confirm"
 msgstr "Kirjoita sähköpostiosoitteesi vahvistaaksesi"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Typed values on conversations and contacts"
+msgstr "Tyypitetyt arvot keskusteluissa ja yhteystiedoissa"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Typed values your team keeps on conversations and contacts, such as an order number or a plan. Agents edit them beside the thread."
+msgstr "Tyypitettyjä arvoja, joita tiimisi pitää keskusteluissa ja yhteystiedoissa, kuten tilausnumero tai paketti. Käsittelijät muokkaavat niitä keskustelun vieressä."
 
 #: src/app/TeamMenu.tsx
 msgid "Typing · {where}"
@@ -17916,6 +18094,10 @@ msgstr "Mitä asiakas näkee"
 msgid "What the import will do"
 msgstr "Mitä tuonti tekee"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "What the team sees."
+msgstr "Mitä tiimi näkee."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "What they agreed to"
 msgstr "Mihin he suostuivat"
@@ -18060,6 +18242,10 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Where should Yuva send events?"
 msgstr "Minne Yuvan pitäisi lähettää tapahtumia?"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
+msgstr "Mihin API tallentaa arvon. Pieniä kirjaimia, numeroita ja alaviivoja; ei voi muuttaa."
 
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "Which address do customers write to?"
@@ -18318,6 +18504,9 @@ msgstr "Kirjoita Uutta-merkintöjä ja niiden käännöksiä"
 msgid "Write where and when they agreed."
 msgstr "Kirjoita, missä ja milloin he suostuivat."
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Kyllä"
@@ -18642,6 +18831,10 @@ msgstr "Aikavyöhykkeesi, {zone}. Se on {utc} UTC."
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"
 msgstr "Verkkosivustosi"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Your workspace asks for these fields on every conversation it closes."
+msgstr "Työtilasi vaatii nämä kentät jokaisessa sulkemassaan keskustelussa."
 
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."

@@ -11,6 +11,10 @@ msgstr ""
 msgid ".eml files in a zip"
 msgstr "zip માં .eml ફાઇલો"
 
+#: src/features/fields/BulkFailures.tsx
+msgid "“{name}” holds a value that does not fit"
+msgstr "“{name}” નું મૂલ્ય ફીલ્ડ સાથે બંધબેસતું નથી"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "“શું આ પેજ ઉપયોગી હતું?”, તમારા ડૉક્સ પર ફીડબૅક અને ચર્ચાઓ"
@@ -290,6 +294,10 @@ msgstr "{count, plural, one {# પરવાનગી} other {# પરવાન�
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {તે # પ્રાપ્તકર્તાને જાય છે.} other {તે # પ્રાપ્તકર્તાઓને જાય છે.}}"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "{count} could not be closed"
+msgstr "{count} બંધ થઈ શકી નહીં"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "{count} events"
@@ -1107,6 +1115,10 @@ msgstr "સંપર્ક કાઢી નાખ્યો"
 msgid "A conversation"
 msgstr "એક વાતચીત"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
+msgstr "આ ફીલ્ડમાં મૂલ્ય ન હોય ત્યાં સુધી વાતચીત બંધ કરી શકાતી નથી. સ્પામ અપવાદ છે."
+
 #: src/components/common/text.ts
 msgid "A conversation changed"
 msgstr "વાતચીત બદલાઈ"
@@ -1223,6 +1235,10 @@ msgstr "સહાય કેન્દ્રનો એક લેખ અપ્ર�
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "A key lets your backend, a script or a bot read and write conversations. Limit it to the products and scopes it needs."
 msgstr "કી વડે તમારું બૅકએન્ડ, સ્ક્રિપ્ટ કે બૉટ વાતચીત વાંચી અને લખી શકે છે. તેને ફક્ત જરૂરી પ્રોડક્ટ અને પરવાનગીઓ સુધી મર્યાદિત રાખો."
+
+#: src/components/common/text.ts
+msgid "A kind of field holds at most 50 fields. Delete one first."
+msgstr "એક ઑબ્જેક્ટમાં વધુમાં વધુ 50 ફીલ્ડ હોઈ શકે. પહેલા એક કાઢી નાખો."
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -2315,6 +2331,10 @@ msgid "another conversation"
 msgstr "બીજી વાતચીત"
 
 #: src/components/common/text.ts
+msgid "Another field of this kind already uses this key."
+msgstr "આ પ્રકારનું બીજું ફીલ્ડ આ કી પહેલેથી વાપરે છે."
+
+#: src/components/common/text.ts
 msgid "Another import of this workspace is running. Imports run one at a time; try again when it ends."
 msgstr "આ વર્કસ્પેસની બીજી આયાત ચાલી રહી છે. આયાત એક સમયે એક ચાલે છે; તે પૂરી થાય ત્યારે ફરી પ્રયાસ કરો."
 
@@ -2402,6 +2422,10 @@ msgstr "કોઈપણ વાતચીત"
 #: src/features/contact/ContactsPage.tsx
 msgid "Any country"
 msgstr "કોઈપણ દેશ"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Any field"
+msgstr "કોઈપણ ફીલ્ડ"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
@@ -3157,6 +3181,7 @@ msgstr "કૅમ્પેઇનનું નામ"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
+#: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -3465,6 +3490,10 @@ msgstr "તપાસો કે ફૉરવર્ડિંગ સરનામુ
 msgid "Check your e-mail"
 msgstr "તમારો ઇમેઇલ તપાસો"
 
+#: src/features/fields/value.ts
+msgid "Checkbox"
+msgstr "ચેકબૉક્સ"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Checked"
 msgstr "તપાસ્યું"
@@ -3542,6 +3571,10 @@ msgstr "પેજ પસંદ કરો"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose a region"
 msgstr "પ્રદેશ પસંદ કરો"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Choose a value"
+msgstr "મૂલ્ય પસંદ કરો"
 
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
@@ -4101,6 +4134,10 @@ msgstr "સંપર્ક વિગતો"
 msgid "Contact details (C)"
 msgstr "સંપર્ક વિગતો (C)"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contact fields"
+msgstr "સંપર્ક ફીલ્ડ"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Contact id copied"
 msgstr "સંપર્ક ID કૉપિ થયું"
@@ -4125,6 +4162,10 @@ msgstr "સંપર્કો"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Contacts and exports"
 msgstr "સંપર્કો અને નિકાસ"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contacts keep the values they hold; they show as plain attributes instead of a typed field."
+msgstr "સંપર્કો તેમના મૂલ્યો જાળવી રાખે છે; તે પ્રકારવાળા ફીલ્ડને બદલે સામાન્ય ગુણધર્મ તરીકે દેખાય છે."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4180,6 +4221,10 @@ msgstr "વાતચીતની ક્રિયાઓ"
 #: src/features/conversation/actions.ts
 msgid "Conversation closed"
 msgstr "વાતચીત બંધ થઈ"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Conversation fields"
+msgstr "વાતચીત ફીલ્ડ"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Conversation list"
@@ -4421,6 +4466,10 @@ msgstr "ચૅનલ બનાવો"
 msgid "Create draft"
 msgstr "ડ્રાફ્ટ બનાવો"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Create field"
+msgstr "ફીલ્ડ બનાવો"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -4558,6 +4607,15 @@ msgstr "CSV ફાઇલ"
 msgid "Custom"
 msgstr "કસ્ટમ"
 
+#: src/features/fields/FieldFilter.tsx
+msgid "Custom field"
+msgstr "કસ્ટમ ફીલ્ડ"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Custom fields"
+msgstr "કસ્ટમ ફીલ્ડ"
+
 #: src/app/Sidebar.tsx
 msgid "Customers"
 msgstr "ગ્રાહકો"
@@ -4609,6 +4667,7 @@ msgid "Database upgrade"
 msgstr "ડેટાબેઝ અપગ્રેડ"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/fields/value.ts
 msgid "Date"
 msgstr "તારીખ"
 
@@ -4658,6 +4717,7 @@ msgstr "ઘટેલું પ્રદર્શન"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -4765,6 +4825,10 @@ msgstr "ડ્રાફ્ટ કાઢી નાખો"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the entry"
 msgstr "એન્ટ્રી કાઢી નાખો"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Delete the field {name}?"
+msgstr "ફીલ્ડ {name} કાઢી નાખવું?"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
@@ -5188,6 +5252,7 @@ msgstr "ડોમેન ચકાસાયું નથી"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
+#: src/features/fields/BulkFailures.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -5475,6 +5540,7 @@ msgstr "દરેક તેના બધા સંદેશા અને નો�
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -5516,6 +5582,10 @@ msgstr "વિગતો સંપાદિત કરો"
 msgid "Edit details ({editKey})"
 msgstr "વિગતો સંપાદિત કરો ({editKey})"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Edit field"
+msgstr "ફીલ્ડ સંપાદિત કરો"
+
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
 msgstr "સહાય કેન્દ્રના સંગ્રહો અને લેખોના ડ્રાફ્ટ સંપાદિત કરો"
@@ -5535,6 +5605,11 @@ msgstr "મોનિટર સંપાદિત કરો"
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "ટીમ સંપાદિત કરો"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Edit the custom fields"
+msgstr "કસ્ટમ ફીલ્ડ સંપાદિત કરો"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -6010,6 +6085,11 @@ msgstr "ઍપમાંથી મોકલાયેલું ફીડબૅક"
 msgid "Feedback, {feedback} open"
 msgstr "Feedback, {feedback} open"
 
+#: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Fields"
+msgstr "ફીલ્ડ"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "ફાઇલ"
@@ -6021,6 +6101,14 @@ msgstr "ફાઇલ અને સંમતિ"
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Files"
 msgstr "ફાઇલો"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Fill in before closing"
+msgstr "બંધ કરતા પહેલા ભરો"
+
+#: src/components/common/text.ts
+msgid "Fill in the required fields before closing."
+msgstr "બંધ કરતા પહેલા જરૂરી ફીલ્ડ ભરો."
 
 #: src/features/broadcasts/TestSend.tsx
 msgid "Fill the test with a contact’s values"
@@ -7545,6 +7633,10 @@ msgstr "તેનો ટેક્સ્ટ અને ફાઇલો કાય�
 msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
 msgstr "તેનો ટેક્સ્ટ અને ફાઇલો કાયમ માટે કાઢી નંખાય છે અને વાતચીતમાં દેખાય છે કે તમે તેને દૂર કર્યો. મોકલાઈ ગયેલો ઇમેઇલ પ્રાપ્તકર્તાના મેઇલબોક્સમાંથી પાછો લઈ શકાતો નથી."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
+msgstr "તેના મૂલ્યો બધી વાતચીતમાંથી બૅકગ્રાઉન્ડમાં સાફ થાય છે. આ પાછું ફેરવી શકાતું નથી."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "{role} તરીકે વર્કસ્પેસમાં જોડાયા"
@@ -7583,6 +7675,7 @@ msgstr "આ ફાઇલના દરેક સબ્સ્ક્રિપ્શ
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Key"
 msgstr "કી"
 
@@ -8824,6 +8917,7 @@ msgstr "{0} ને ટ્રૅશમાં ખસેડવું છે?"
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "વાતચીતોને ટ્રૅશમાં ખસેડો, પુનઃસ્થાપિત કરો અને ટ્રૅશ વાંચો"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8922,6 +9016,7 @@ msgstr "ટ્રૅશમાં ખસેડો"
 msgid "Move to Yuva"
 msgstr "Yuva માં ખસેડો"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
@@ -8982,6 +9077,7 @@ msgstr "મારી ટીમો"
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
@@ -9051,6 +9147,10 @@ msgstr "આ ચૅનલમાં શું જોડી શકાય તે મ
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "બ્રૉડકાસ્ટ માટે જરૂરી"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "Needs “{name}” before it can close"
+msgstr "બંધ કરવા માટે “{name}” જરૂરી છે"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
@@ -9206,6 +9306,11 @@ msgstr "નવી ચર્ચાઓ"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "નવી એન્ટ્રી"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "New field"
+msgstr "નવું ફીલ્ડ"
 
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
@@ -9397,6 +9502,9 @@ msgstr "આગળ, તેઓ ક્યાં જાય તે પસંદ ક�
 msgid "Nightly backup"
 msgstr "રાત્રિનો બેકઅપ"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "ના"
@@ -9667,6 +9775,10 @@ msgstr "કોઈ ઇવેન્ટ નોંધાઈ નથી."
 msgid "No feedback from this page."
 msgstr "આ પેજ પરથી કોઈ ફીડબૅક નથી."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "No fields yet."
+msgstr "હજી કોઈ ફીલ્ડ નથી."
+
 #: src/features/settings/channels/Attachments.tsx
 msgid "No file is accepted."
 msgstr "કોઈ ફાઇલ સ્વીકારાતી નથી."
@@ -9874,6 +9986,7 @@ msgstr "હજી સ્ટેટસ પેજ નથી. માલિકો અ
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/History.tsx
 #: src/features/conversation/RelatedLine.tsx
+#: src/features/fields/BulkFailures.tsx
 msgid "No subject"
 msgstr "વિષય નથી"
 
@@ -10155,6 +10268,10 @@ msgstr "મોકલાયું નહીં"
 msgid "not set"
 msgstr "સેટ નથી"
 
+#: src/features/fields/FieldInput.tsx
+msgid "Not set"
+msgstr "સેટ નથી"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Not set up"
 msgstr "સેટ કર્યું નથી"
@@ -10396,6 +10513,10 @@ msgstr "હમણાં"
 msgid "Now"
 msgstr "હમણાં"
 
+#: src/features/fields/value.ts
+msgid "Number"
+msgstr "સંખ્યા"
+
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Objected to all mail"
@@ -10549,6 +10670,10 @@ msgstr "દર {every} એક મેઇલ"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "લીટી દીઠ એક, 1 થી 20. ફક્ત આ ઓરિજિન પરનાં પેજ વિજેટ વાપરી શકે છે."
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "One per line, all different, at most 100."
+msgstr "દરેક લીટીમાં એક, બધા અલગ, વધુમાં વધુ 100."
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
@@ -11087,6 +11212,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "વૈકલ્પિક. જવાબના પ્રથમ 64 KiB માં તે હોવો જોઈએ; મોટા અને નાના અક્ષરો અલગ ગણાય છે."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Options"
 msgstr "વિકલ્પો"
 
@@ -11125,6 +11251,10 @@ msgstr "અથવા એક્સપોર્ટ ફાઇલ અપલોડ �
 #: src/features/inbox/ChatList.tsx
 msgid "Order and view"
 msgstr "ક્રમ અને દૃશ્ય"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Order number"
+msgstr "ઑર્ડર નંબર"
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Original"
@@ -12455,6 +12585,10 @@ msgstr "સંદર્ભ"
 msgid "Refresh"
 msgstr "રિફ્રેશ કરો"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Refund"
+msgstr "રિફંડ"
+
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Refund approved"
 msgstr "રિફંડ મંજૂર"
@@ -12670,6 +12804,10 @@ msgstr "વાતચીતમાંથી એક નોંધ દૂર કર�
 #: src/features/conversation/messages/Redacted.tsx
 msgid "Removed by {who}"
 msgstr "{who} દ્વારા દૂર કરાયો"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
+msgstr "કાઢેલા વિકલ્પો તે ધરાવતી બધી વાતચીતમાંથી સાફ થાય છે. આ બૅકગ્રાઉન્ડમાં ચાલે છે."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -12948,6 +13086,11 @@ msgstr "પ્રતિષ્ઠા પર અસર"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Required to close"
+msgstr "બંધ કરવા માટે જરૂરી"
 
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
@@ -13279,6 +13422,7 @@ msgstr "શનિવાર"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -13296,6 +13440,10 @@ msgstr "સાચવો"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "જવાબ સાથે મોકલતી વખતે વાતચીતનું શું થવું જોઈએ તે પણ સાચવો."
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Save and close"
+msgstr "સાચવો અને બંધ કરો"
 
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -13581,6 +13729,10 @@ msgstr "{seen} જોયું"
 #: src/features/status/IncidentDetail.tsx
 msgid "Seen by the monitor"
 msgstr "મોનિટરે જોયું"
+
+#: src/features/fields/value.ts
+msgid "Select"
+msgstr "પસંદગી"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15268,6 +15420,7 @@ msgstr "કનેક્શન ટેસ્ટ થઈ રહ્યું છે�
 msgid "Tests go only to members of the workspace, at most five at a time, with [Test] before the subject."
 msgstr "ટેસ્ટ ફક્ત વર્કસ્પેસના સભ્યોને જાય છે, એક સમયે વધુમાં વધુ પાંચ, વિષય પહેલાં [Test] સાથે."
 
+#: src/features/fields/value.ts
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15705,6 +15858,10 @@ msgstr "આ કી ફક્ત આ ઇનબૉક્સ જોઈ શકે �
 msgid "The key stops working at the end of this day."
 msgstr "કી આ દિવસના અંતે કામ કરવાનું બંધ કરે છે."
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "The key, the object and the type cannot change after creation."
+msgstr "કી, ઑબ્જેક્ટ અને પ્રકાર બનાવ્યા પછી બદલી શકાતા નથી."
+
 #: src/features/settings/channels/ApiChannelDialog.tsx
 msgid "The kind cannot be changed later."
 msgstr "પ્રકાર પછી બદલી શકાતો નથી."
@@ -15857,6 +16014,10 @@ msgstr "જૂનું મેઇલબૉક્સ તે ડોમેનનો
 #: src/components/common/text.ts
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "બીજા ઇનબૉક્સમાં ઇમેઇલ ચૅનલ નથી, તેથી આ ઇમેઇલ વાતચીત ત્યાં જઈ શકતી નથી. પહેલાં તેમાં ઇમેઇલ ચૅનલ ઉમેરો."
+
+#: src/features/fields/BulkFailures.tsx
+msgid "The others were closed. Open one to fill in what it needs, then close it."
+msgstr "બાકીની બંધ થઈ ગઈ. એક ખોલો, જે જોઈએ તે ભરો અને પછી બંધ કરો."
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -16196,6 +16357,10 @@ msgstr "અપલોડ કરેલી ફાઇલ {fileDeletedAt} કાઢ�
 #: src/features/migrations/text.ts
 msgid "The user name is your iCloud address without @icloud.com."
 msgstr "વપરાશકર્તા નામ તમારું iCloud સરનામું છે @icloud.com વિના."
+
+#: src/components/common/text.ts
+msgid "The values of a deleted field with this key are still being cleared. Try again in a moment."
+msgstr "આ કી ધરાવતા કાઢી નાખેલા ફીલ્ડના મૂલ્યો હજી સાફ થઈ રહ્યા છે. થોડીવાર પછી ફરી પ્રયાસ કરો."
 
 #. placeholder {0}: e.from
 #: src/features/conversation/messages/Thread.tsx
@@ -16684,6 +16849,10 @@ msgstr "આ સબ્સ્ક્રિપ્શન હવે પુષ્ટિ
 msgid "This team does not cover the conversation's inbox."
 msgstr "આ ટીમ વાતચીતનું ઇનબૉક્સ સંભાળતી નથી."
 
+#: src/components/common/text.ts
+msgid "This value does not fit the field."
+msgstr "આ મૂલ્ય ફીલ્ડ સાથે બંધબેસતું નથી."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "આ સમાપ્તિ નોટિસ હતી અને તેની પહેલાં કોઈ નોટિસ મોકલાઈ નહોતી, તેથી કોઈને ઘટના વિશે જાણ થઈ નહોતી"
@@ -16982,6 +17151,7 @@ msgid "TXT record"
 msgstr "TXT રેકોર્ડ"
 
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Type"
 msgstr "પ્રકાર"
 
@@ -17000,6 +17170,14 @@ msgstr "પુષ્ટિ માટે વર્કસ્પેસનું ન
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "Type your e-mail address to confirm"
 msgstr "પુષ્ટિ માટે તમારું ઇમેઇલ સરનામું ટાઇપ કરો"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Typed values on conversations and contacts"
+msgstr "વાતચીત અને સંપર્કો પર પ્રકારવાળા મૂલ્યો"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Typed values your team keeps on conversations and contacts, such as an order number or a plan. Agents edit them beside the thread."
+msgstr "પ્રકારવાળા મૂલ્યો જે તમારી ટીમ વાતચીત અને સંપર્કો પર રાખે છે, જેમ કે ઑર્ડર નંબર અથવા પ્લાન. એજન્ટ તેમને વાતચીતની બાજુમાં સંપાદિત કરે છે."
 
 #: src/app/TeamMenu.tsx
 msgid "Typing · {where}"
@@ -17916,6 +18094,10 @@ msgstr "ગ્રાહક શું જુએ છે"
 msgid "What the import will do"
 msgstr "આયાત શું કરશે"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "What the team sees."
+msgstr "ટીમને જે દેખાય છે."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "What they agreed to"
 msgstr "તેઓ શેના માટે સંમત થયા"
@@ -18060,6 +18242,10 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Where should Yuva send events?"
 msgstr "Yuva એ ઇવેન્ટ ક્યાં મોકલવી જોઈએ?"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
+msgstr "જ્યાં API મૂલ્ય સંગ્રહે છે. નાના અક્ષરો, અંકો અને અંડરસ્કોર; બદલી શકાતું નથી."
 
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "Which address do customers write to?"
@@ -18318,6 +18504,9 @@ msgstr "\"નવું શું છે\" એન્ટ્રીઓ અને અ
 msgid "Write where and when they agreed."
 msgstr "તેઓ ક્યાં અને ક્યારે સંમત થયા તે લખો."
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "હા"
@@ -18642,6 +18831,10 @@ msgstr "તમારો સમય ક્ષેત્ર, {zone}. તે {utc} UT
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"
 msgstr "તમારી વેબસાઇટ"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Your workspace asks for these fields on every conversation it closes."
+msgstr "તમારી વર્કસ્પેસ બંધ થતી દરેક વાતચીતમાં આ ફીલ્ડ માંગે છે."
 
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."

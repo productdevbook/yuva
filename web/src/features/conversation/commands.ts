@@ -10,6 +10,7 @@ export type CommandName =
   | "hand"
   | "assignTeam"
   | "labels"
+  | "fields"
   | "progress"
   | "close"
   | "contact"

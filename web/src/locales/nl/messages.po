@@ -11,6 +11,10 @@ msgstr ""
 msgid ".eml files in a zip"
 msgstr ".eml-bestanden in een zip"
 
+#: src/features/fields/BulkFailures.tsx
+msgid "“{name}” holds a value that does not fit"
+msgstr "“{name}” bevat een waarde die niet past"
+
 #: src/features/setup/ChannelStep.tsx
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "“Was deze pagina nuttig?”, feedback en discussies op je documentatie"
@@ -290,6 +294,10 @@ msgstr "{count, plural, one {# machtiging} other {# machtigingen}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {Gaat naar # ontvanger.} other {Gaat naar # ontvangers.}}"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "{count} could not be closed"
+msgstr "{count} konden niet worden gesloten"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "{count} events"
@@ -1107,6 +1115,10 @@ msgstr "Een contact is verwijderd"
 msgid "A conversation"
 msgstr "Een gesprek"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "A conversation cannot be closed until this field has a value. Spam is exempt."
+msgstr "Een gesprek kan pas worden gesloten als dit veld een waarde heeft. Spam is uitgezonderd."
+
 #: src/components/common/text.ts
 msgid "A conversation changed"
 msgstr "Een gesprek is gewijzigd"
@@ -1223,6 +1235,10 @@ msgstr "Een helpcentrumartikel is niet langer gepubliceerd"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "A key lets your backend, a script or a bot read and write conversations. Limit it to the products and scopes it needs."
 msgstr "Met een sleutel kunnen je backend, een script of een bot gesprekken lezen en schrijven. Beperk hem tot de producten en machtigingen die hij nodig heeft."
+
+#: src/components/common/text.ts
+msgid "A kind of field holds at most 50 fields. Delete one first."
+msgstr "Een object heeft maximaal 50 velden. Verwijder eerst een veld."
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -2315,6 +2331,10 @@ msgid "another conversation"
 msgstr "een ander gesprek"
 
 #: src/components/common/text.ts
+msgid "Another field of this kind already uses this key."
+msgstr "Een ander veld van dit soort gebruikt deze sleutel al."
+
+#: src/components/common/text.ts
 msgid "Another import of this workspace is running. Imports run one at a time; try again when it ends."
 msgstr "Er loopt een andere import van deze werkruimte. Imports lopen één voor één; probeer het opnieuw als die klaar is."
 
@@ -2402,6 +2422,10 @@ msgstr "Elk gesprek"
 #: src/features/contact/ContactsPage.tsx
 msgid "Any country"
 msgstr "Elk land"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Any field"
+msgstr "Elk veld"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Any label"
@@ -3157,6 +3181,7 @@ msgstr "Campagnenaam"
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/FromDocs.tsx
+#: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -3465,6 +3490,10 @@ msgstr "Controleer of het doorstuuradres precies het adres hierboven is."
 msgid "Check your e-mail"
 msgstr "Controleer je e-mail"
 
+#: src/features/fields/value.ts
+msgid "Checkbox"
+msgstr "Selectievakje"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Checked"
 msgstr "Gecontroleerd"
@@ -3542,6 +3571,10 @@ msgstr "Kies een pagina"
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Choose a region"
 msgstr "Kies een regio"
+
+#: src/features/fields/FieldFilter.tsx
+msgid "Choose a value"
+msgstr "Kies een waarde"
 
 #: src/app/Gate.tsx
 msgid "Choose a workspace"
@@ -4101,6 +4134,10 @@ msgstr "Contactgegevens"
 msgid "Contact details (C)"
 msgstr "Contactgegevens (C)"
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contact fields"
+msgstr "Contactvelden"
+
 #: src/features/contact/ContactDetail.tsx
 msgid "Contact id copied"
 msgstr "Contact-id gekopieerd"
@@ -4125,6 +4162,10 @@ msgstr "Contacten"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Contacts and exports"
 msgstr "Contacten en exports"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Contacts keep the values they hold; they show as plain attributes instead of a typed field."
+msgstr "Contacten houden de waarden die ze hebben; ze verschijnen als gewone kenmerken in plaats van als getypeerd veld."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "contains"
@@ -4180,6 +4221,10 @@ msgstr "Acties voor het gesprek"
 #: src/features/conversation/actions.ts
 msgid "Conversation closed"
 msgstr "Gesprek gesloten"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Conversation fields"
+msgstr "Gespreksvelden"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Conversation list"
@@ -4421,6 +4466,10 @@ msgstr "Kanaal aanmaken"
 msgid "Create draft"
 msgstr "Concept aanmaken"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Create field"
+msgstr "Veld maken"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -4558,6 +4607,15 @@ msgstr "CSV-bestand"
 msgid "Custom"
 msgstr "Aangepast"
 
+#: src/features/fields/FieldFilter.tsx
+msgid "Custom field"
+msgstr "Aangepast veld"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Custom fields"
+msgstr "Aangepaste velden"
+
 #: src/app/Sidebar.tsx
 msgid "Customers"
 msgstr "Klanten"
@@ -4609,6 +4667,7 @@ msgid "Database upgrade"
 msgstr "Database-upgrade"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/fields/value.ts
 msgid "Date"
 msgstr "Datum"
 
@@ -4658,6 +4717,7 @@ msgstr "Verminderde prestaties"
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -4765,6 +4825,10 @@ msgstr "Het concept verwijderen"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the entry"
 msgstr "Het item verwijderen"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Delete the field {name}?"
+msgstr "Veld {name} verwijderen?"
 
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
@@ -5188,6 +5252,7 @@ msgstr "Domein niet geverifieerd"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
+#: src/features/fields/BulkFailures.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -5475,6 +5540,7 @@ msgstr "Elk met al zijn berichten en notities"
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
 #: src/features/settings/macros/MacrosPage.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -5516,6 +5582,10 @@ msgstr "Details bewerken"
 msgid "Edit details ({editKey})"
 msgstr "Details bewerken ({editKey})"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Edit field"
+msgstr "Veld bewerken"
+
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
 msgstr "Helpcentrumcollecties en conceptartikelen bewerken"
@@ -5535,6 +5605,11 @@ msgstr "Monitor bewerken"
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Team bewerken"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Edit the custom fields"
+msgstr "De aangepaste velden bewerken"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Edit the design"
@@ -6010,6 +6085,11 @@ msgstr "Feedback verzonden vanuit de app"
 msgid "Feedback, {feedback} open"
 msgstr "Feedback, {feedback} open"
 
+#: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactSheet.tsx
+msgid "Fields"
+msgstr "Velden"
+
 #: src/features/migrations/Wizard.tsx
 msgid "File"
 msgstr "Bestand"
@@ -6021,6 +6101,14 @@ msgstr "Bestand en toestemming"
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Files"
 msgstr "Bestanden"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Fill in before closing"
+msgstr "Invullen voor het sluiten"
+
+#: src/components/common/text.ts
+msgid "Fill in the required fields before closing."
+msgstr "Vul de verplichte velden in voordat je sluit."
 
 #: src/features/broadcasts/TestSend.tsx
 msgid "Fill the test with a contact’s values"
@@ -7545,6 +7633,10 @@ msgstr "De tekst en bestanden worden definitief gewist en het gesprek laat zien 
 msgid "Its text and files are deleted for good and the thread shows that you removed it. A sent e-mail cannot be taken back from the recipient's mailbox."
 msgstr "De tekst en bestanden worden definitief gewist en het gesprek laat zien dat jij het hebt verwijderd. Een verzonden e-mail kan niet uit de mailbox van de ontvanger worden teruggehaald."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
+msgstr "De waarden worden op de achtergrond uit alle gesprekken gewist. Dit kan niet ongedaan worden gemaakt."
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Lid geworden van de werkruimte als {role}"
@@ -7583,6 +7675,7 @@ msgstr "Bewaard bij elk abonnement uit dit bestand, als vastlegging van hun toes
 
 #: src/features/migrations/TokenConnectStep.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Key"
 msgstr "Sleutel"
 
@@ -8824,6 +8917,7 @@ msgstr "{0} naar de prullenbak verplaatsen?"
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Gesprekken naar de prullenbak verplaatsen, herstellen en de prullenbak lezen"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move down"
@@ -8922,6 +9016,7 @@ msgstr "Naar de prullenbak verplaatsen"
 msgid "Move to Yuva"
 msgstr "Overstappen naar Yuva"
 
+#: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "Move up"
@@ -8982,6 +9077,7 @@ msgstr "Mijn teams"
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
@@ -9051,6 +9147,10 @@ msgstr "Beperk wat in dit kanaal kan worden bijgevoegd. De limieten van de serve
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Nodig voor mailings"
+
+#: src/features/fields/BulkFailures.tsx
+msgid "Needs “{name}” before it can close"
+msgstr "“{name}” is nodig voordat het gesloten kan worden"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "Needs a sender"
@@ -9206,6 +9306,11 @@ msgstr "nieuwe discussies"
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "Nieuw item"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "New field"
+msgstr "Nieuw veld"
 
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
@@ -9397,6 +9502,9 @@ msgstr "Kies vervolgens waar ze naartoe gaan."
 msgid "Nightly backup"
 msgstr "Nachtelijke back-up"
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "Nee"
@@ -9667,6 +9775,10 @@ msgstr "Geen gebeurtenissen vastgelegd."
 msgid "No feedback from this page."
 msgstr "Geen feedback van deze pagina."
 
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "No fields yet."
+msgstr "Nog geen velden."
+
 #: src/features/settings/channels/Attachments.tsx
 msgid "No file is accepted."
 msgstr "Er wordt geen bestand geaccepteerd."
@@ -9874,6 +9986,7 @@ msgstr "Nog geen statuspagina. Eigenaren en beheerders maken die aan."
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/History.tsx
 #: src/features/conversation/RelatedLine.tsx
+#: src/features/fields/BulkFailures.tsx
 msgid "No subject"
 msgstr "Geen onderwerp"
 
@@ -10155,6 +10268,10 @@ msgstr "Niet verzonden"
 msgid "not set"
 msgstr "niet ingesteld"
 
+#: src/features/fields/FieldInput.tsx
+msgid "Not set"
+msgstr "Niet ingesteld"
+
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Not set up"
 msgstr "Niet ingesteld"
@@ -10396,6 +10513,10 @@ msgstr "nu"
 msgid "Now"
 msgstr "Nu"
 
+#: src/features/fields/value.ts
+msgid "Number"
+msgstr "Getal"
+
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Objected to all mail"
@@ -10549,6 +10670,10 @@ msgstr "Eén mail per {every}"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Eén per regel, 1 tot 20. Alleen pagina’s op deze origins kunnen de widget gebruiken."
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "One per line, all different, at most 100."
+msgstr "Eén per regel, allemaal verschillend, maximaal 100."
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "One per line, such as application/pdf or image/*. Leave empty to follow the server."
@@ -11087,6 +11212,7 @@ msgid "Optional. The first 64 KiB of the answer must contain it, upper and lower
 msgstr "Optioneel. De eerste 64 KiB van het antwoord moeten het bevatten; hoofdletters tellen mee."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Options"
 msgstr "Opties"
 
@@ -11125,6 +11251,10 @@ msgstr "Of upload een exportbestand"
 #: src/features/inbox/ChatList.tsx
 msgid "Order and view"
 msgstr "Volgorde en weergave"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Order number"
+msgstr "Bestelnummer"
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Original"
@@ -12455,6 +12585,10 @@ msgstr "Referentie"
 msgid "Refresh"
 msgstr "Vernieuwen"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Refund"
+msgstr "Terugbetaling"
+
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Refund approved"
 msgstr "Terugbetaling goedgekeurd"
@@ -12670,6 +12804,10 @@ msgstr "Heeft een notitie uit een gesprek verwijderd"
 #: src/features/conversation/messages/Redacted.tsx
 msgid "Removed by {who}"
 msgstr "Verwijderd door {who}"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Removed options are cleared from every conversation that holds them. This runs in the background."
+msgstr "Verwijderde opties worden gewist uit alle gesprekken die ze hebben. Dit gebeurt op de achtergrond."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "Removes {name} with its products, channels, conversations, contacts, files, labels, webhooks and API keys for everyone. Members keep their accounts."
@@ -12948,6 +13086,11 @@ msgstr "Impact op de reputatie"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Require single sign-on"
 msgstr "Require single sign-on"
+
+#: src/features/settings/fields/FieldDialog.tsx
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Required to close"
+msgstr "Verplicht om te sluiten"
 
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
@@ -13279,6 +13422,7 @@ msgstr "Zaterdag"
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -13296,6 +13440,10 @@ msgstr "Opslaan"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "Bewaar een antwoord samen met wat er met het gesprek moet gebeuren als je het verstuurt."
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Save and close"
+msgstr "Opslaan en sluiten"
 
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
@@ -13581,6 +13729,10 @@ msgstr "Gezien {seen}"
 #: src/features/status/IncidentDetail.tsx
 msgid "Seen by the monitor"
 msgstr "Gezien door de monitor"
+
+#: src/features/fields/value.ts
+msgid "Select"
+msgstr "Keuze"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15268,6 +15420,7 @@ msgstr "De verbinding testen…"
 msgid "Tests go only to members of the workspace, at most five at a time, with [Test] before the subject."
 msgstr "Tests gaan alleen naar leden van de werkruimte, maximaal vijf tegelijk, met [Test] vóór het onderwerp."
 
+#: src/features/fields/value.ts
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
@@ -15705,6 +15858,10 @@ msgstr "De sleutel ziet alleen deze inboxen en kan geen inboxen, webhooks of de 
 msgid "The key stops working at the end of this day."
 msgstr "De sleutel werkt aan het einde van deze dag niet meer."
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "The key, the object and the type cannot change after creation."
+msgstr "De sleutel, het object en het type kunnen na het maken niet meer veranderen."
+
 #: src/features/settings/channels/ApiChannelDialog.tsx
 msgid "The kind cannot be changed later."
 msgstr "Het soort kan later niet worden gewijzigd."
@@ -15857,6 +16014,10 @@ msgstr "De oude mailbox ontvangt geen mail meer voor dat domein."
 #: src/components/common/text.ts
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "De andere mailbox heeft geen e-mailkanaal, dus dit e-mailgesprek kan er niet naartoe. Voeg er eerst een e-mailkanaal aan toe."
+
+#: src/features/fields/BulkFailures.tsx
+msgid "The others were closed. Open one to fill in what it needs, then close it."
+msgstr "De rest is gesloten. Open een gesprek, vul in wat het nodig heeft en sluit het dan."
 
 #: src/features/status/Notices.tsx
 msgid "The page already sent 10 notices in the last hour"
@@ -16196,6 +16357,10 @@ msgstr "Het geüploade bestand is verwijderd {fileDeletedAt}. Yuva bewaart allee
 #: src/features/migrations/text.ts
 msgid "The user name is your iCloud address without @icloud.com."
 msgstr "De gebruikersnaam is je iCloud-adres zonder @icloud.com."
+
+#: src/components/common/text.ts
+msgid "The values of a deleted field with this key are still being cleared. Try again in a moment."
+msgstr "De waarden van een verwijderd veld met deze sleutel worden nog gewist. Probeer het zo opnieuw."
 
 #. placeholder {0}: e.from
 #: src/features/conversation/messages/Thread.tsx
@@ -16684,6 +16849,10 @@ msgstr "Dit abonnement wacht niet meer op bevestiging."
 msgid "This team does not cover the conversation's inbox."
 msgstr "Dit team dekt het mailbox van het gesprek niet."
 
+#: src/components/common/text.ts
+msgid "This value does not fit the field."
+msgstr "Deze waarde past niet bij het veld."
+
 #: src/features/status/Notices.tsx
 msgid "This was a closing notice and no earlier notice was sent, so nobody had heard of the incident"
 msgstr "Dit was een afsluitende melding en er is geen eerdere melding verzonden, dus niemand had van het incident gehoord"
@@ -16982,6 +17151,7 @@ msgid "TXT record"
 msgstr "TXT-record"
 
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/fields/FieldDialog.tsx
 msgid "Type"
 msgstr "Type"
 
@@ -17000,6 +17170,14 @@ msgstr "Typ de naam van de werkruimte ter bevestiging"
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "Type your e-mail address to confirm"
 msgstr "Typ je e-mailadres ter bevestiging"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Typed values on conversations and contacts"
+msgstr "Getypeerde waarden bij gesprekken en contacten"
+
+#: src/features/settings/fields/FieldsPage.tsx
+msgid "Typed values your team keeps on conversations and contacts, such as an order number or a plan. Agents edit them beside the thread."
+msgstr "Getypeerde waarden die je team bij gesprekken en contacten bijhoudt, zoals een bestelnummer of een abonnement. Medewerkers bewerken ze naast het gesprek."
 
 #: src/app/TeamMenu.tsx
 msgid "Typing · {where}"
@@ -17916,6 +18094,10 @@ msgstr "Wat de klant ziet"
 msgid "What the import will do"
 msgstr "Wat de import gaat doen"
 
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "What the team sees."
+msgstr "Wat het team ziet."
+
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "What they agreed to"
 msgstr "Waarmee ze instemden"
@@ -18060,6 +18242,10 @@ msgstr "Where new issues go when nobody picks a team, as a team key such as ENG.
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Where should Yuva send events?"
 msgstr "Waarheen moet Yuva gebeurtenissen sturen?"
+
+#: src/features/settings/fields/FieldDialog.tsx
+msgid "Where the API stores the value. Lowercase letters, digits and underscores; it cannot change."
+msgstr "Waar de API de waarde opslaat. Kleine letters, cijfers en underscores; dit kan niet veranderen."
 
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "Which address do customers write to?"
@@ -18318,6 +18504,9 @@ msgstr "Vermeldingen in Nieuw en hun vertalingen schrijven"
 msgid "Write where and when they agreed."
 msgstr "Schrijf op waar en wanneer ze instemden."
 
+#: src/features/fields/FieldFilter.tsx
+#: src/features/fields/value.ts
+#: src/features/inbox/SourceFilter.tsx
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Ja"
@@ -18642,6 +18831,10 @@ msgstr "Je tijdzone, {zone}. Dat is {utc} UTC."
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"
 msgstr "Je website"
+
+#: src/features/fields/RequiredFieldsHost.tsx
+msgid "Your workspace asks for these fields on every conversation it closes."
+msgstr "Je werkruimte vraagt deze velden bij elk gesprek dat ze sluit."
 
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Your workspace name, how long closed conversations are kept, and who may send broadcasts."
