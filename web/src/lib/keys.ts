@@ -64,6 +64,9 @@ export const keys = {
   helpArticle: (ws: string, center: string, id: string) => ["ws", ws, "help", "article", center, id] as const,
   helpRevisions: (ws: string, center: string, id: string, locale: string) =>
     ["ws", ws, "help", "revisions", center, id, locale] as const,
+  helpImports: (ws: string, center: string) => ["ws", ws, "help", "imports", center] as const,
+  helpImportRedirects: (ws: string, center: string, id: string) =>
+    ["ws", ws, "help", "import-redirects", center, id] as const,
   helpReport: (ws: string, center: string, days: number) => ["ws", ws, "help", "report", center, days] as const,
   helpSearch: (ws: string, center: string, q: string, locale: string) =>
     ["ws", ws, "help", "search", center, q, locale] as const,

@@ -1,4 +1,5 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useEffect } from "react"
 
 import {
   api,
@@ -12,8 +13,10 @@ import {
   type HelpCenterUpdate,
   type HelpCollectionCreate,
   type HelpCollectionUpdate,
+  type HelpImportCreate,
 } from "@/lib/api"
 import { keys, type HelpArticleFilters } from "@/lib/keys"
+import { useRealtimeStatus } from "@/lib/realtime"
 import { useSession } from "@/lib/session"
 
 export const centerLink = (centerId: string, tab?: string) => `/knowledge/${centerId}${tab ? `?tab=${tab}` : ""}`
@@ -362,5 +365,62 @@ export function useHelpPreview(centerId: string, enabled: boolean) {
     },
     enabled,
     gcTime: 0,
+  })
+}
+
+export function useHelpImports(centerId: string) {
+  const qc = useQueryClient()
+  const { workspaceId: ws } = useSession()
+  const live = useRealtimeStatus() === "live"
+  useEffect(() => {
+    if (live) void qc.invalidateQueries({ queryKey: keys.helpImports(ws, centerId) })
+  }, [live, ws, centerId, qc])
+  return useInfiniteQuery({
+    queryKey: keys.helpImports(ws, centerId),
+    queryFn: ({ pageParam }) =>
+      unwrap(
+        api.GET("/v1/help-centers/{centerId}/imports", {
+          params: { path: { centerId }, query: { cursor: pageParam, limit: 20 } },
+        })
+      ),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (last) => last.next_cursor,
+  })
+}
+
+export function useStartHelpImport(centerId: string) {
+  const qc = useQueryClient()
+  const { workspaceId: ws } = useSession()
+  return useMutation({
+    mutationFn: (body: HelpImportCreate) =>
+      unwrap(api.POST("/v1/help-centers/{centerId}/imports", { params: { path: { centerId } }, body })),
+    onSuccess: () => qc.invalidateQueries({ queryKey: keys.helpImports(ws, centerId) }),
+  })
+}
+
+export function useCancelHelpImport(centerId: string) {
+  const qc = useQueryClient()
+  const { workspaceId: ws } = useSession()
+  return useMutation({
+    mutationFn: (importId: string) =>
+      unwrap(
+        api.DELETE("/v1/help-centers/{centerId}/imports/{importId}", { params: { path: { centerId, importId } } })
+      ),
+    onSuccess: () => qc.invalidateQueries({ queryKey: keys.helpImports(ws, centerId) }),
+  })
+}
+
+export function useHelpImportRedirects(centerId: string, importId: string) {
+  const { workspaceId: ws } = useSession()
+  return useInfiniteQuery({
+    queryKey: keys.helpImportRedirects(ws, centerId, importId),
+    queryFn: ({ pageParam }) =>
+      unwrap(
+        api.GET("/v1/help-centers/{centerId}/imports/{importId}/redirects", {
+          params: { path: { centerId, importId }, query: { cursor: pageParam, limit: 50 } },
+        })
+      ),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (last) => last.next_cursor,
   })
 }

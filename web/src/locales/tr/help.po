@@ -7,6 +7,61 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: tr\n"
 
+#. placeholder {0}: c.articles
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {# article read} other {# articles read}}"
+msgstr "{0, plural, one {# makale okundu} other {# makale okundu}}"
+
+#. placeholder {0}: c.truncated
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {# body cut at 100,000 characters} other {# bodies cut at 100,000 characters}}"
+msgstr "{0, plural, one {# metin 100.000 karakterde kesildi} other {# metin 100.000 karakterde kesildi}}"
+
+#. placeholder {0}: c.collections
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {# collection} other {# collections}}"
+msgstr "{0, plural, one {# koleksiyon} other {# koleksiyon}}"
+
+#. placeholder {0}: c.translations_kept
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {# edited draft kept} other {# edited drafts kept}}"
+msgstr "{0, plural, one {düzenlenmiş # taslak korundu} other {düzenlenmiş # taslak korundu}}"
+
+#. placeholder {0}: c.images_failed
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {# image failed} other {# images failed}}"
+msgstr "{0, plural, one {# görsel alınamadı} other {# görsel alınamadı}}"
+
+#. placeholder {0}: c.images_stored
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {# image stored} other {# images stored}}"
+msgstr "{0, plural, one {# görsel saklandı} other {# görsel saklandı}}"
+
+#. placeholder {0}: c.failed
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {# item could not be written} other {# items could not be written}}"
+msgstr "{0, plural, one {# öğe yazılamadı} other {# öğe yazılamadı}}"
+
+#. placeholder {0}: c.links_rewritten
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {# link rewritten} other {# links rewritten}}"
+msgstr "{0, plural, one {# bağlantı yeniden yazıldı} other {# bağlantı yeniden yazıldı}}"
+
+#. placeholder {0}: c.translations_unchanged
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {# translation unchanged} other {# translations unchanged}}"
+msgstr "{0, plural, one {# çeviri değişmedi} other {# çeviri değişmedi}}"
+
+#. placeholder {0}: item.skipped_locales.length
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {Add the language in the settings, then import again.} other {Add the languages in the settings, then import again.}}"
+msgstr "{0, plural, one {Dili ayarlardan ekleyin, sonra yeniden içe aktarın.} other {Dilleri ayarlardan ekleyin, sonra yeniden içe aktarın.}}"
+
+#. placeholder {0}: item.skipped_locales.length
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
+msgstr "{0, plural, one {Yardım merkezi bu dili sunmuyor, bu yüzden bu dildeki çeviriler içe aktarılmadı.} other {Yardım merkezi bu dilleri sunmuyor, bu yüzden bu dillerdeki çeviriler içe aktarılmadı.}}"
+
 #: src/features/help/ArticlesTab.tsx
 msgid "{drafts} drafts"
 msgstr "{drafts} taslak"
@@ -14,6 +69,10 @@ msgstr "{drafts} taslak"
 #: src/features/help/HelpColumn.tsx
 msgid "{published} of {total} articles published"
 msgstr "{total} makalenin {published} tanesi yayında"
+
+#: src/features/help/ImportCard.tsx
+msgid "{saved, plural, one {# draft saved} other {# drafts saved}}"
+msgstr "{saved, plural, one {# taslak kaydedildi} other {# taslak kaydedildi}}"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "{searches} searches"
@@ -47,6 +106,10 @@ msgstr "Dil ekle"
 msgid "Add a sub-collection"
 msgstr "Alt koleksiyon ekle"
 
+#: src/features/help/ImportCard.tsx
+msgid "Add locale"
+msgstr "Dil ekle"
+
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Address"
@@ -67,6 +130,10 @@ msgstr "Bir API anahtarı"
 #: src/features/help/SettingsTab.tsx
 msgid "An https image."
 msgstr "Bir https görseli."
+
+#: src/features/help/text.tsx
+msgid "An import is already running in this help center."
+msgstr "Bu yardım merkezinde zaten bir içe aktarma çalışıyor."
 
 #: src/features/help/SettingsTab.tsx
 msgid "Analytics property"
@@ -152,6 +219,14 @@ msgstr "Kalın"
 msgid "Book"
 msgstr "Kitap"
 
+#: src/features/help/ImportCard.tsx
+msgid "Bring in the articles of a Zendesk Guide or Help Scout Docs site, with translations and images, as drafts."
+msgstr "Bir Zendesk Guide veya Help Scout Docs sitesinin makalelerini çevirileri ve görselleriyle taslak olarak getirin."
+
+#: src/features/help/ImportCard.tsx
+msgid "Brings the collections and articles of another help center in as drafts. Nothing is published and the source is only read."
+msgstr "Başka bir yardım merkezinin koleksiyonlarını ve makalelerini taslak olarak getirir. Hiçbir şey yayımlanmaz, kaynak yalnızca okunur."
+
 #: src/features/help/EditorToolbar.tsx
 msgid "Bulleted list"
 msgstr "Madde işaretli liste"
@@ -159,8 +234,17 @@ msgstr "Madde işaretli liste"
 #: src/features/help/ArticlesTab.tsx
 #: src/features/help/CollectionsTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
+#: src/features/help/ImportCard.tsx
 msgid "Cancel"
 msgstr "Vazgeç"
+
+#: src/features/help/ImportCard.tsx
+msgid "Cancel import"
+msgstr "İçe aktarmayı iptal et"
+
+#: src/features/help/ImportCard.tsx
+msgid "Cancelled"
+msgstr "İptal edildi"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
@@ -182,6 +266,14 @@ msgstr "Sohbet kanalı"
 #: src/features/help/ReportTab.tsx
 msgid "Chats started"
 msgstr "Başlayan sohbetler"
+
+#: src/features/help/ImportCard.tsx
+msgid "Checking the sign-in"
+msgstr "Oturum denetleniyor"
+
+#: src/features/help/ImportCard.tsx
+msgid "Close"
+msgstr "Kapat"
 
 #: src/features/help/EditorToolbar.tsx
 #: src/features/help/text.tsx
@@ -278,6 +370,23 @@ msgstr "Yardım merkezini koleksiyonları, makaleleri, revizyonları ve sayaçla
 msgid "Description"
 msgstr "Açıklama"
 
+#: src/features/help/ImportCard.tsx
+msgid "Docs API key"
+msgstr "Docs API anahtarı"
+
+#: src/features/help/ImportCard.tsx
+msgid "Docs site (optional)"
+msgstr "Docs sitesi (isteğe bağlı)"
+
+#: src/features/help/ImportCard.tsx
+msgid "Docs sites have no languages."
+msgstr "Docs sitelerinde dil yoktur."
+
+#: src/features/help/ImportCard.tsx
+msgid "Done"
+msgstr "Bitti"
+
+#: src/features/help/ImportCard.tsx
 #: src/features/help/text.tsx
 msgid "Draft"
 msgstr "Taslak"
@@ -313,6 +422,14 @@ msgstr "Her arama bir sonuç buldu."
 #: src/features/help/ArticleEditor.tsx
 msgid "Every translation, its revisions and its counters are deleted."
 msgstr "Tüm çeviriler, revizyonları ve sayaçları silinir."
+
+#: src/features/help/ImportCard.tsx
+msgid "Everything imported is a draft."
+msgstr "İçe aktarılan her şey taslaktır."
+
+#: src/features/help/ImportCard.tsx
+msgid "Failed"
+msgstr "Başarısız"
 
 #: src/features/help/EditorToolbar.tsx
 msgid "Formatting"
@@ -379,6 +496,26 @@ msgstr "Simge"
 msgid "Image"
 msgstr "Görsel"
 
+#: src/features/help/ImportCard.tsx
+msgid "Import articles"
+msgstr "Makaleleri içe aktar"
+
+#: src/features/help/ImportCard.tsx
+msgid "Import from"
+msgstr "Kaynak"
+
+#: src/features/help/ImportCard.tsx
+msgid "Import from {source}"
+msgstr "{source} kaynağından içe aktarma"
+
+#: src/features/help/ImportCard.tsx
+msgid "Import progress"
+msgstr "İçe aktarma ilerlemesi"
+
+#: src/features/help/ImportCard.tsx
+msgid "In Help Scout, open Your Profile, then API Keys, and create a Docs API key. Yuva keeps it sealed until the import ends."
+msgstr "Help Scout'ta Your Profile, ardından API Keys bölümünü açıp bir Docs API anahtarı oluşturun. Yuva anahtarı içe aktarma bitene kadar mühürlü tutar."
+
 #: src/features/help/CollectionsTab.tsx
 msgid "Inside"
 msgstr "İçinde"
@@ -402,8 +539,13 @@ msgstr "Benimkini koru"
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
 #: src/features/help/CollectionsTab.tsx
+#: src/features/help/ImportCard.tsx
 msgid "Language"
 msgstr "Dil"
+
+#: src/features/help/ImportCard.tsx
+msgid "Language of the articles"
+msgstr "Makalelerin dili"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
@@ -416,6 +558,10 @@ msgstr "Son {d} gün"
 #: src/features/help/ArticlesTab.tsx
 msgid "last 7 days"
 msgstr "son 7 gün"
+
+#: src/features/help/ImportCard.tsx
+msgid "Leave empty to read every site."
+msgstr "Boş bırakırsanız tüm siteler okunur."
 
 #: src/features/help/EditorToolbar.tsx
 msgid "Link"
@@ -474,6 +620,10 @@ msgstr "Yukarı taşı"
 #: src/features/help/SettingsTab.tsx
 msgid "Name"
 msgstr "Ad"
+
+#: src/features/help/ImportCard.tsx
+msgid "New address"
+msgstr "Yeni adres"
 
 #: src/features/help/ArticlesTab.tsx
 #: src/features/help/pages.tsx
@@ -541,6 +691,10 @@ msgstr "Henüz yardım merkezi yok. Sahipler ve yöneticiler oluşturur."
 msgid "No inbox to show a help center for."
 msgstr "Yardım merkezi gösterilecek gelen kutusu yok."
 
+#: src/features/help/ImportCard.tsx
+msgid "No Zendesk account is signed in. Start a Zendesk migration in Moving to Yuva and sign in; its read-only access is reused here."
+msgstr "Oturum açılmış bir Zendesk hesabı yok. Yuva'ya taşıma bölümünde bir Zendesk taşıması başlatıp oturum açın; salt okunur erişimi burada yeniden kullanılır."
+
 #: src/features/help/SettingsTab.tsx
 msgid "None"
 msgstr "Yok"
@@ -562,9 +716,17 @@ msgstr "Numaralı liste"
 msgid "of {answers} answers"
 msgstr "{answers} yanıttan"
 
+#: src/features/help/ImportCard.tsx
+msgid "Off: a draft you edited in Yuva since the last import is kept."
+msgstr "Kapalı: son içe aktarmadan beri Yuva'da düzenlediğiniz taslak korunur."
+
 #: src/features/help/SettingsTab.tsx
 msgid "Off: agents write drafts and submit them, and owners and admins publish. On: agents with access to the inbox publish and unpublish too."
 msgstr "Kapalı: temsilciler taslak yazıp gönderir, sahipler ve yöneticiler yayımlar. Açık: gelen kutusuna erişimi olan temsilciler de yayımlar ve yayından kaldırır."
+
+#: src/features/help/ImportCard.tsx
+msgid "Old address"
+msgstr "Eski adres"
 
 #: src/features/help/SettingsTab.tsx
 msgid "On: anyone with the address can read the help center. Off: only your team can preview it."
@@ -577,6 +739,14 @@ msgstr "Her satıra bir yol, örneğin /billing/*. Sohbet widget’ı bu makaley
 #: src/features/help/text.tsx
 msgid "Only owners and admins can do this."
 msgstr "Bunu yalnızca sahipler ve yöneticiler yapabilir."
+
+#: src/features/help/ImportCard.tsx
+msgid "Only owners and admins can use a Zendesk migration."
+msgstr "Zendesk taşımasını yalnızca sahipler ve yöneticiler kullanabilir."
+
+#: src/features/help/ImportCard.tsx
+msgid "Open the drafts"
+msgstr "Taslakları aç"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Original"
@@ -601,6 +771,10 @@ msgstr "güncel değil"
 #: src/features/help/ArticleEditor.tsx
 msgid "Out of date"
 msgstr "Güncel değil"
+
+#: src/features/help/ImportCard.tsx
+msgid "Overwrite edited drafts"
+msgstr "Düzenlenmiş taslakların üzerine yaz"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Part of this translation’s web address. Made from the title when empty."
@@ -662,6 +836,7 @@ msgstr "Yayımla ({publishKey})"
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/ImportCard.tsx
 #: src/features/help/Revisions.tsx
 #: src/features/help/SettingsTab.tsx
 #: src/features/help/text.tsx
@@ -679,6 +854,10 @@ msgstr "Soru işareti"
 #: src/features/help/EditorToolbar.tsx
 msgid "Quote"
 msgstr "Alıntı"
+
+#: src/features/help/ImportCard.tsx
+msgid "Redirects"
+msgstr "Yönlendirmeler"
 
 #. placeholder {0}: name(l)
 #: src/features/help/SettingsTab.tsx
@@ -714,9 +893,17 @@ msgstr "Revizyonlar"
 msgid "Revisions ({alt} H)"
 msgstr "Revizyonlar ({alt} H)"
 
+#: src/features/help/ImportCard.tsx
+msgid "Rewriting links between articles"
+msgstr "Makaleler arası bağlantılar yeniden yazılıyor"
+
 #: src/features/help/text.tsx
 msgid "Rocket"
 msgstr "Roket"
+
+#: src/features/help/ImportCard.tsx
+msgid "Running"
+msgstr "Çalışıyor"
 
 #: src/features/help/CollectionsTab.tsx
 msgid "Save"
@@ -768,6 +955,10 @@ msgstr "Sonuçsuz aramalar"
 msgid "Sent"
 msgstr "Gönderilen"
 
+#: src/features/help/ImportCard.tsx
+msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
+msgstr "Bunları eski adreste kendiniz kurmalısınız. Yeni adres, makaleyi yayımlayana kadar “bulunamadı” yanıtı verir."
+
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -780,6 +971,14 @@ msgstr "Kalkan"
 #: src/features/help/ArticleEditor.tsx
 msgid "Show"
 msgstr "Göster"
+
+#: src/features/help/ImportCard.tsx
+msgid "Show more"
+msgstr "Daha fazla göster"
+
+#: src/features/help/ImportCard.tsx
+msgid "Show older imports"
+msgstr "Eski içe aktarmaları göster"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Show original"
@@ -809,9 +1008,21 @@ msgstr "Siz düzenlerken birisi bu çeviriyi kaydetti."
 msgid "Star"
 msgstr "Yıldız"
 
+#: src/features/help/ImportCard.tsx
+msgid "Start a Zendesk migration"
+msgstr "Zendesk taşıması başlat"
+
+#: src/features/help/ImportCard.tsx
+msgid "Start import"
+msgstr "İçe aktarmayı başlat"
+
 #: src/features/help/ArticlesTab.tsx
 msgid "Start with a title. You write the text next, and it stays a draft until it is published."
 msgstr "Bir başlıkla başlayın. Metni sonra yazarsınız; yayımlanana kadar taslak kalır."
+
+#: src/features/help/ImportCard.tsx
+msgid "State"
+msgstr "Durum"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Status"
@@ -869,6 +1080,10 @@ msgstr "Sayfa ziyaretçiler için çalışmayı bırakır. Taslak kalır ve yeni
 msgid "The pages offer this chat under “Still need help?”."
 msgstr "Sayfalar bu sohbeti “Hâlâ yardıma mı ihtiyacınız var?” altında sunar."
 
+#: src/features/help/ImportCard.tsx
+msgid "The read-only sign-in of this migration is reused. No new permission is asked."
+msgstr "Bu taşımanın salt okunur oturumu yeniden kullanılır. Yeni izin istenmez."
+
 #: src/features/help/ArticleEditor.tsx
 msgid "The title needs at least 3 characters"
 msgstr "Başlık en az 3 karakter olmalı"
@@ -880,6 +1095,14 @@ msgstr "Bu gelen kutusunun zaten bir yardım merkezi var."
 #: src/features/help/text.tsx
 msgid "This is the article’s only translation. Delete the article instead."
 msgstr "Bu, makalenin tek çevirisi. Bunun yerine makaleyi silin."
+
+#: src/features/help/text.tsx
+msgid "This migration is no longer signed in to Zendesk. Start a new one in Moving to Yuva."
+msgstr "Bu taşımanın Zendesk oturumu artık açık değil. Yuva'ya taşıma bölümünden yenisini başlatın."
+
+#: src/features/help/text.tsx
+msgid "This migration is not a Zendesk migration."
+msgstr "Bu taşıma bir Zendesk taşıması değil."
 
 #: src/features/help/text.tsx
 msgid "This workspace has as many help articles as the server allows. Delete old ones first."
@@ -985,6 +1208,10 @@ msgstr "Görüntüleme · 7 gün"
 msgid "Visitors can no longer open it and the chat widget stops suggesting its articles. Your articles stay as they are."
 msgstr "Ziyaretçiler artık açamaz ve sohbet widget'ı makalelerini önermeyi bırakır. Makaleleriniz olduğu gibi kalır."
 
+#: src/features/help/ImportCard.tsx
+msgid "Waiting to start"
+msgstr "Başlaması bekleniyor"
+
 #: src/features/help/ReportTab.tsx
 msgid "What visitors read and search for. Views are approximate, and counts reach this page within a minute."
 msgstr "Ziyaretçilerin okuduğu ve aradığı şeyler. Görüntülemeler yaklaşıktır ve sayılar bir dakika içinde bu sayfaya ulaşır."
@@ -1002,6 +1229,14 @@ msgstr "Yaz"
 msgid "Write the answer in Markdown…"
 msgstr "Yanıtı Markdown ile yazın…"
 
+#: src/features/help/ImportCard.tsx
+msgid "Writing articles and images"
+msgstr "Makaleler ve görseller yazılıyor"
+
+#: src/features/help/ImportCard.tsx
+msgid "Writing collections"
+msgstr "Koleksiyonlar yazılıyor"
+
 #: src/features/help/CenterBar.tsx
 msgid "Written here, shown on pages Yuva hosts, searched from the chat widget and the reply box. Documentation pages on your own site live under <0>Docs</0>."
 msgstr "Burada yazılır, Yuva'nın barındırdığı sayfalarda gösterilir, sohbet widget'ında ve yanıt kutusunda aranır. Kendi sitenizdeki dokümantasyon sayfaları <0>Dokümanlar</0> altındadır."
@@ -1009,3 +1244,7 @@ msgstr "Burada yazılır, Yuva'nın barındırdığı sayfalarda gösterilir, so
 #: src/features/help/SettingsTab.tsx
 msgid "Your product."
 msgstr "Ürününüz."
+
+#: src/features/help/ImportCard.tsx
+msgid "Zendesk account"
+msgstr "Zendesk hesabı"

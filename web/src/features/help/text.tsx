@@ -93,6 +93,10 @@ export function useHelpErrorText() {
         return t`The help center does not offer this language. Add it in the settings first.`
       if (err.code === "version_conflict") return t`Someone saved this article in the meantime.`
       if (err.code === "last_translation") return t`This is the article’s only translation. Delete the article instead.`
+      if (err.code === "import_running") return t`An import is already running in this help center.`
+      if (err.code === "source_not_connected")
+        return t`This migration is no longer signed in to Zendesk. Start a new one in Moving to Yuva.`
+      if (err.code === "source_mismatch") return t`This migration is not a Zendesk migration.`
       if (err.code === "query_empty") return t`Type a word to search for.`
       if (err.code === "rate_limited") return t`Too many requests. Wait a moment and try again.`
       if (err.code === "member_session_required") return t`Only owners and admins can do this.`

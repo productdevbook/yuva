@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useAnalyticsProperties } from "@/features/analytics/properties"
 import { useInboxChannels } from "@/features/broadcasts/queries"
 import { usePublishToggle } from "@/features/help/CenterBar"
+import { ImportCard } from "@/features/help/ImportCard"
 import { useDeleteHelpCenter, useUpdateHelpCenter } from "@/features/help/queries"
 import { ErrorLine, useLocaleName } from "@/features/help/text"
 import { Card, ChoiceSelect, Field, FormActions, FormCard, Section, ToggleRow } from "@/features/settings/ui"
@@ -416,6 +417,7 @@ export function SettingsTab({ center }: { center: HelpCenter }) {
       <Address center={center} />
       <General center={center} />
       <Publishing center={center} />
+      <ImportCard center={center} />
       <OwnDomainCard
         domain={center.custom_domain}
         enabled={!!center.own_domains}

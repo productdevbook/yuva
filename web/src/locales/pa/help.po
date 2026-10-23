@@ -7,6 +7,61 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: pa\n"
 
+#. placeholder {0}: c.articles
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {# article read} other {# articles read}}"
+msgstr "{0, plural, one {# article read} other {# articles read}}"
+
+#. placeholder {0}: c.truncated
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {# body cut at 100,000 characters} other {# bodies cut at 100,000 characters}}"
+msgstr "{0, plural, one {# body cut at 100,000 characters} other {# bodies cut at 100,000 characters}}"
+
+#. placeholder {0}: c.collections
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {# collection} other {# collections}}"
+msgstr "{0, plural, one {# collection} other {# collections}}"
+
+#. placeholder {0}: c.translations_kept
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {# edited draft kept} other {# edited drafts kept}}"
+msgstr "{0, plural, one {# edited draft kept} other {# edited drafts kept}}"
+
+#. placeholder {0}: c.images_failed
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {# image failed} other {# images failed}}"
+msgstr "{0, plural, one {# image failed} other {# images failed}}"
+
+#. placeholder {0}: c.images_stored
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {# image stored} other {# images stored}}"
+msgstr "{0, plural, one {# image stored} other {# images stored}}"
+
+#. placeholder {0}: c.failed
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {# item could not be written} other {# items could not be written}}"
+msgstr "{0, plural, one {# item could not be written} other {# items could not be written}}"
+
+#. placeholder {0}: c.links_rewritten
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {# link rewritten} other {# links rewritten}}"
+msgstr "{0, plural, one {# link rewritten} other {# links rewritten}}"
+
+#. placeholder {0}: c.translations_unchanged
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {# translation unchanged} other {# translations unchanged}}"
+msgstr "{0, plural, one {# translation unchanged} other {# translations unchanged}}"
+
+#. placeholder {0}: item.skipped_locales.length
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {Add the language in the settings, then import again.} other {Add the languages in the settings, then import again.}}"
+msgstr "{0, plural, one {Add the language in the settings, then import again.} other {Add the languages in the settings, then import again.}}"
+
+#. placeholder {0}: item.skipped_locales.length
+#: src/features/help/ImportCard.tsx
+msgid "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
+msgstr "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
+
 #: src/features/help/ArticlesTab.tsx
 msgid "{drafts} drafts"
 msgstr "{drafts} ਡਰਾਫਟ"
@@ -14,6 +69,10 @@ msgstr "{drafts} ਡਰਾਫਟ"
 #: src/features/help/HelpColumn.tsx
 msgid "{published} of {total} articles published"
 msgstr "{total} ਵਿੱਚੋਂ {published} ਲੇਖ ਪ੍ਰਕਾਸ਼ਿਤ"
+
+#: src/features/help/ImportCard.tsx
+msgid "{saved, plural, one {# draft saved} other {# drafts saved}}"
+msgstr "{saved, plural, one {# draft saved} other {# drafts saved}}"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "{searches} searches"
@@ -47,6 +106,10 @@ msgstr "ਭਾਸ਼ਾ ਸ਼ਾਮਲ ਕਰੋ"
 msgid "Add a sub-collection"
 msgstr "ਉਪ-ਸੰਗ੍ਰਹਿ ਸ਼ਾਮਲ ਕਰੋ"
 
+#: src/features/help/ImportCard.tsx
+msgid "Add locale"
+msgstr "Add locale"
+
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Address"
@@ -67,6 +130,10 @@ msgstr "ਇੱਕ API ਕੁੰਜੀ"
 #: src/features/help/SettingsTab.tsx
 msgid "An https image."
 msgstr "ਇੱਕ https ਤਸਵੀਰ।"
+
+#: src/features/help/text.tsx
+msgid "An import is already running in this help center."
+msgstr "An import is already running in this help center."
 
 #: src/features/help/SettingsTab.tsx
 msgid "Analytics property"
@@ -152,6 +219,14 @@ msgstr "ਗਾੜ੍ਹਾ"
 msgid "Book"
 msgstr "ਕਿਤਾਬ"
 
+#: src/features/help/ImportCard.tsx
+msgid "Bring in the articles of a Zendesk Guide or Help Scout Docs site, with translations and images, as drafts."
+msgstr "Bring in the articles of a Zendesk Guide or Help Scout Docs site, with translations and images, as drafts."
+
+#: src/features/help/ImportCard.tsx
+msgid "Brings the collections and articles of another help center in as drafts. Nothing is published and the source is only read."
+msgstr "Brings the collections and articles of another help center in as drafts. Nothing is published and the source is only read."
+
 #: src/features/help/EditorToolbar.tsx
 msgid "Bulleted list"
 msgstr "ਬੁਲੇਟ ਸੂਚੀ"
@@ -159,8 +234,17 @@ msgstr "ਬੁਲੇਟ ਸੂਚੀ"
 #: src/features/help/ArticlesTab.tsx
 #: src/features/help/CollectionsTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
+#: src/features/help/ImportCard.tsx
 msgid "Cancel"
 msgstr "ਰੱਦ ਕਰੋ"
+
+#: src/features/help/ImportCard.tsx
+msgid "Cancel import"
+msgstr "Cancel import"
+
+#: src/features/help/ImportCard.tsx
+msgid "Cancelled"
+msgstr "Cancelled"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
@@ -182,6 +266,14 @@ msgstr "ਚੈਟ ਚੈਨਲ"
 #: src/features/help/ReportTab.tsx
 msgid "Chats started"
 msgstr "ਸ਼ੁਰੂ ਹੋਈਆਂ ਚੈਟਾਂ"
+
+#: src/features/help/ImportCard.tsx
+msgid "Checking the sign-in"
+msgstr "Checking the sign-in"
+
+#: src/features/help/ImportCard.tsx
+msgid "Close"
+msgstr "Close"
 
 #: src/features/help/EditorToolbar.tsx
 #: src/features/help/text.tsx
@@ -278,6 +370,23 @@ msgstr "ਮਦਦ ਕੇਂਦਰ ਨੂੰ ਇਸ ਦੇ ਸੰਗ੍ਰਹਿ�
 msgid "Description"
 msgstr "ਵੇਰਵਾ"
 
+#: src/features/help/ImportCard.tsx
+msgid "Docs API key"
+msgstr "Docs API key"
+
+#: src/features/help/ImportCard.tsx
+msgid "Docs site (optional)"
+msgstr "Docs site (optional)"
+
+#: src/features/help/ImportCard.tsx
+msgid "Docs sites have no languages."
+msgstr "Docs sites have no languages."
+
+#: src/features/help/ImportCard.tsx
+msgid "Done"
+msgstr "Done"
+
+#: src/features/help/ImportCard.tsx
 #: src/features/help/text.tsx
 msgid "Draft"
 msgstr "ਖਰੜਾ"
@@ -313,6 +422,14 @@ msgstr "ਹਰ ਖੋਜ ਵਿੱਚ ਕੁਝ ਮਿਲਿਆ।"
 #: src/features/help/ArticleEditor.tsx
 msgid "Every translation, its revisions and its counters are deleted."
 msgstr "ਸਾਰੇ ਅਨੁਵਾਦ, ਉਨ੍ਹਾਂ ਦੀਆਂ ਸੋਧਾਂ ਅਤੇ ਕਾਊਂਟਰ ਮਿਟਾਏ ਜਾਂਦੇ ਹਨ।"
+
+#: src/features/help/ImportCard.tsx
+msgid "Everything imported is a draft."
+msgstr "Everything imported is a draft."
+
+#: src/features/help/ImportCard.tsx
+msgid "Failed"
+msgstr "Failed"
 
 #: src/features/help/EditorToolbar.tsx
 msgid "Formatting"
@@ -379,6 +496,26 @@ msgstr "ਆਈਕਨ"
 msgid "Image"
 msgstr "ਤਸਵੀਰ"
 
+#: src/features/help/ImportCard.tsx
+msgid "Import articles"
+msgstr "Import articles"
+
+#: src/features/help/ImportCard.tsx
+msgid "Import from"
+msgstr "Import from"
+
+#: src/features/help/ImportCard.tsx
+msgid "Import from {source}"
+msgstr "Import from {source}"
+
+#: src/features/help/ImportCard.tsx
+msgid "Import progress"
+msgstr "Import progress"
+
+#: src/features/help/ImportCard.tsx
+msgid "In Help Scout, open Your Profile, then API Keys, and create a Docs API key. Yuva keeps it sealed until the import ends."
+msgstr "In Help Scout, open Your Profile, then API Keys, and create a Docs API key. Yuva keeps it sealed until the import ends."
+
 #: src/features/help/CollectionsTab.tsx
 msgid "Inside"
 msgstr "ਦੇ ਅੰਦਰ"
@@ -402,8 +539,13 @@ msgstr "ਮੇਰਾ ਰੱਖੋ"
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
 #: src/features/help/CollectionsTab.tsx
+#: src/features/help/ImportCard.tsx
 msgid "Language"
 msgstr "ਭਾਸ਼ਾ"
+
+#: src/features/help/ImportCard.tsx
+msgid "Language of the articles"
+msgstr "Language of the articles"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
@@ -416,6 +558,10 @@ msgstr "ਪਿਛਲੇ {d} ਦਿਨ"
 #: src/features/help/ArticlesTab.tsx
 msgid "last 7 days"
 msgstr "ਪਿਛਲੇ 7 ਦਿਨ"
+
+#: src/features/help/ImportCard.tsx
+msgid "Leave empty to read every site."
+msgstr "Leave empty to read every site."
 
 #: src/features/help/EditorToolbar.tsx
 msgid "Link"
@@ -474,6 +620,10 @@ msgstr "ਉੱਪਰ ਹਿਲਾਓ"
 #: src/features/help/SettingsTab.tsx
 msgid "Name"
 msgstr "ਨਾਮ"
+
+#: src/features/help/ImportCard.tsx
+msgid "New address"
+msgstr "New address"
 
 #: src/features/help/ArticlesTab.tsx
 #: src/features/help/pages.tsx
@@ -541,6 +691,10 @@ msgstr "ਅਜੇ ਕੋਈ ਮਦਦ ਕੇਂਦਰ ਨਹੀਂ। ਮਾਲ�
 msgid "No inbox to show a help center for."
 msgstr "ਕੋਈ ਇਨਬਾਕਸ ਨਹੀਂ ਜਿਸ ਲਈ ਮਦਦ ਕੇਂਦਰ ਦਿਖਾਇਆ ਜਾਵੇ।"
 
+#: src/features/help/ImportCard.tsx
+msgid "No Zendesk account is signed in. Start a Zendesk migration in Moving to Yuva and sign in; its read-only access is reused here."
+msgstr "No Zendesk account is signed in. Start a Zendesk migration in Moving to Yuva and sign in; its read-only access is reused here."
+
 #: src/features/help/SettingsTab.tsx
 msgid "None"
 msgstr "ਕੋਈ ਨਹੀਂ"
@@ -562,9 +716,17 @@ msgstr "ਨੰਬਰ ਵਾਲੀ ਸੂਚੀ"
 msgid "of {answers} answers"
 msgstr "{answers} ਜਵਾਬਾਂ ਵਿੱਚੋਂ"
 
+#: src/features/help/ImportCard.tsx
+msgid "Off: a draft you edited in Yuva since the last import is kept."
+msgstr "Off: a draft you edited in Yuva since the last import is kept."
+
 #: src/features/help/SettingsTab.tsx
 msgid "Off: agents write drafts and submit them, and owners and admins publish. On: agents with access to the inbox publish and unpublish too."
 msgstr "ਬੰਦ: ਏਜੰਟ ਖਰੜੇ ਲਿਖ ਕੇ ਜਮ੍ਹਾਂ ਕਰਦੇ ਹਨ, ਅਤੇ ਮਾਲਕ ਤੇ ਐਡਮਿਨ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰਦੇ ਹਨ। ਚਾਲੂ: ਇਨਬਾਕਸ ਤੱਕ ਪਹੁੰਚ ਵਾਲੇ ਏਜੰਟ ਵੀ ਪ੍ਰਕਾਸ਼ਿਤ ਅਤੇ ਅਣਪ੍ਰਕਾਸ਼ਿਤ ਕਰਦੇ ਹਨ।"
+
+#: src/features/help/ImportCard.tsx
+msgid "Old address"
+msgstr "Old address"
 
 #: src/features/help/SettingsTab.tsx
 msgid "On: anyone with the address can read the help center. Off: only your team can preview it."
@@ -577,6 +739,14 @@ msgstr "ਹਰ ਲਾਈਨ ਵਿੱਚ ਇੱਕ ਪਾਥ, ਜਿਵੇਂ /b
 #: src/features/help/text.tsx
 msgid "Only owners and admins can do this."
 msgstr "ਇਹ ਸਿਰਫ਼ ਮਾਲਕ ਅਤੇ ਐਡਮਿਨ ਕਰ ਸਕਦੇ ਹਨ।"
+
+#: src/features/help/ImportCard.tsx
+msgid "Only owners and admins can use a Zendesk migration."
+msgstr "Only owners and admins can use a Zendesk migration."
+
+#: src/features/help/ImportCard.tsx
+msgid "Open the drafts"
+msgstr "Open the drafts"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Original"
@@ -601,6 +771,10 @@ msgstr "ਪੁਰਾਣਾ"
 #: src/features/help/ArticleEditor.tsx
 msgid "Out of date"
 msgstr "ਪੁਰਾਣਾ"
+
+#: src/features/help/ImportCard.tsx
+msgid "Overwrite edited drafts"
+msgstr "Overwrite edited drafts"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Part of this translation’s web address. Made from the title when empty."
@@ -662,6 +836,7 @@ msgstr "ਪ੍ਰਕਾਸ਼ਿਤ ਕਰੋ ({publishKey})"
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/ImportCard.tsx
 #: src/features/help/Revisions.tsx
 #: src/features/help/SettingsTab.tsx
 #: src/features/help/text.tsx
@@ -679,6 +854,10 @@ msgstr "ਪ੍ਰਸ਼ਨ ਚਿੰਨ੍ਹ"
 #: src/features/help/EditorToolbar.tsx
 msgid "Quote"
 msgstr "ਹਵਾਲਾ"
+
+#: src/features/help/ImportCard.tsx
+msgid "Redirects"
+msgstr "Redirects"
 
 #. placeholder {0}: name(l)
 #: src/features/help/SettingsTab.tsx
@@ -714,9 +893,17 @@ msgstr "ਸੋਧਾਂ"
 msgid "Revisions ({alt} H)"
 msgstr "ਸੋਧਾਂ ({alt} H)"
 
+#: src/features/help/ImportCard.tsx
+msgid "Rewriting links between articles"
+msgstr "Rewriting links between articles"
+
 #: src/features/help/text.tsx
 msgid "Rocket"
 msgstr "ਰਾਕੇਟ"
+
+#: src/features/help/ImportCard.tsx
+msgid "Running"
+msgstr "Running"
 
 #: src/features/help/CollectionsTab.tsx
 msgid "Save"
@@ -768,6 +955,10 @@ msgstr "ਬਿਨਾਂ ਨਤੀਜੇ ਵਾਲੀਆਂ ਖੋਜਾਂ"
 msgid "Sent"
 msgstr "ਭੇਜੇ ਗਏ"
 
+#: src/features/help/ImportCard.tsx
+msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
+msgstr "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
+
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -780,6 +971,14 @@ msgstr "ਢਾਲ"
 #: src/features/help/ArticleEditor.tsx
 msgid "Show"
 msgstr "ਦਿਖਾਓ"
+
+#: src/features/help/ImportCard.tsx
+msgid "Show more"
+msgstr "Show more"
+
+#: src/features/help/ImportCard.tsx
+msgid "Show older imports"
+msgstr "Show older imports"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Show original"
@@ -809,9 +1008,21 @@ msgstr "ਤੁਹਾਡੇ ਸੰਪਾਦਨ ਕਰਦੇ ਸਮੇਂ ਕਿ�
 msgid "Star"
 msgstr "ਤਾਰਾ"
 
+#: src/features/help/ImportCard.tsx
+msgid "Start a Zendesk migration"
+msgstr "Start a Zendesk migration"
+
+#: src/features/help/ImportCard.tsx
+msgid "Start import"
+msgstr "Start import"
+
 #: src/features/help/ArticlesTab.tsx
 msgid "Start with a title. You write the text next, and it stays a draft until it is published."
 msgstr "ਸਿਰਲੇਖ ਨਾਲ ਸ਼ੁਰੂ ਕਰੋ। ਪਾਠ ਤੁਸੀਂ ਅੱਗੇ ਲਿਖੋਗੇ, ਅਤੇ ਪ੍ਰਕਾਸ਼ਿਤ ਹੋਣ ਤੱਕ ਉਹ ਖਰੜਾ ਰਹਿੰਦਾ ਹੈ।"
+
+#: src/features/help/ImportCard.tsx
+msgid "State"
+msgstr "State"
 
 #: src/features/help/ArticlesTab.tsx
 msgid "Status"
@@ -869,6 +1080,10 @@ msgstr "ਪੰਨਾ ਮਹਿਮਾਨਾਂ ਲਈ ਕੰਮ ਕਰਨਾ ਬ�
 msgid "The pages offer this chat under “Still need help?”."
 msgstr "ਪੰਨੇ ਇਹ ਚੈਟ “ਅਜੇ ਵੀ ਮਦਦ ਚਾਹੀਦੀ ਹੈ?” ਹੇਠਾਂ ਦਿੰਦੇ ਹਨ।"
 
+#: src/features/help/ImportCard.tsx
+msgid "The read-only sign-in of this migration is reused. No new permission is asked."
+msgstr "The read-only sign-in of this migration is reused. No new permission is asked."
+
 #: src/features/help/ArticleEditor.tsx
 msgid "The title needs at least 3 characters"
 msgstr "ਸਿਰਲੇਖ ਵਿੱਚ ਘੱਟੋ-ਘੱਟ 3 ਅੱਖਰ ਹੋਣੇ ਚਾਹੀਦੇ ਹਨ"
@@ -880,6 +1095,14 @@ msgstr "ਇਸ ਇਨਬਾਕਸ ਦਾ ਪਹਿਲਾਂ ਹੀ ਇੱਕ ਮ
 #: src/features/help/text.tsx
 msgid "This is the article’s only translation. Delete the article instead."
 msgstr "ਇਹ ਲੇਖ ਦਾ ਇਕਲੌਤਾ ਅਨੁਵਾਦ ਹੈ। ਇਸ ਦੀ ਬਜਾਏ ਲੇਖ ਮਿਟਾਓ।"
+
+#: src/features/help/text.tsx
+msgid "This migration is no longer signed in to Zendesk. Start a new one in Moving to Yuva."
+msgstr "This migration is no longer signed in to Zendesk. Start a new one in Moving to Yuva."
+
+#: src/features/help/text.tsx
+msgid "This migration is not a Zendesk migration."
+msgstr "This migration is not a Zendesk migration."
 
 #: src/features/help/text.tsx
 msgid "This workspace has as many help articles as the server allows. Delete old ones first."
@@ -985,6 +1208,10 @@ msgstr "ਵਿਊ · 7 ਦਿਨ"
 msgid "Visitors can no longer open it and the chat widget stops suggesting its articles. Your articles stay as they are."
 msgstr "ਵਿਜ਼ਟਰ ਇਸ ਨੂੰ ਹੁਣ ਖੋਲ੍ਹ ਨਹੀਂ ਸਕਣਗੇ ਅਤੇ ਚੈਟ ਵਿਜੇਟ ਇਸ ਦੇ ਲੇਖ ਸੁਝਾਉਣਾ ਬੰਦ ਕਰ ਦੇਵੇਗਾ। ਤੁਹਾਡੇ ਲੇਖ ਜਿਵੇਂ ਹਨ ਉਵੇਂ ਰਹਿਣਗੇ।"
 
+#: src/features/help/ImportCard.tsx
+msgid "Waiting to start"
+msgstr "Waiting to start"
+
 #: src/features/help/ReportTab.tsx
 msgid "What visitors read and search for. Views are approximate, and counts reach this page within a minute."
 msgstr "ਮਹਿਮਾਨ ਕੀ ਪੜ੍ਹਦੇ ਅਤੇ ਖੋਜਦੇ ਹਨ। ਦ੍ਰਿਸ਼ ਅੰਦਾਜ਼ਨ ਹਨ, ਅਤੇ ਅੰਕੜੇ ਇੱਕ ਮਿੰਟ ਵਿੱਚ ਇਸ ਪੰਨੇ ਤੱਕ ਪਹੁੰਚਦੇ ਹਨ।"
@@ -1002,6 +1229,14 @@ msgstr "ਲਿਖੋ"
 msgid "Write the answer in Markdown…"
 msgstr "ਜਵਾਬ Markdown ਵਿੱਚ ਲਿਖੋ…"
 
+#: src/features/help/ImportCard.tsx
+msgid "Writing articles and images"
+msgstr "Writing articles and images"
+
+#: src/features/help/ImportCard.tsx
+msgid "Writing collections"
+msgstr "Writing collections"
+
 #: src/features/help/CenterBar.tsx
 msgid "Written here, shown on pages Yuva hosts, searched from the chat widget and the reply box. Documentation pages on your own site live under <0>Docs</0>."
 msgstr "ਇੱਥੇ ਲਿਖਿਆ ਜਾਂਦਾ ਹੈ, Yuva ਦੁਆਰਾ ਹੋਸਟ ਕੀਤੇ ਪੰਨਿਆਂ ਉੱਤੇ ਦਿਖਾਇਆ ਜਾਂਦਾ ਹੈ ਅਤੇ ਚੈਟ ਵਿਜੇਟ ਤੇ ਜਵਾਬ ਬਾਕਸ ਤੋਂ ਖੋਜਿਆ ਜਾਂਦਾ ਹੈ। ਤੁਹਾਡੀ ਆਪਣੀ ਸਾਈਟ ਦੇ ਦਸਤਾਵੇਜ਼ ਪੰਨੇ <0>Docs</0> ਹੇਠ ਹਨ।"
@@ -1009,3 +1244,7 @@ msgstr "ਇੱਥੇ ਲਿਖਿਆ ਜਾਂਦਾ ਹੈ, Yuva ਦੁਆਰ�
 #: src/features/help/SettingsTab.tsx
 msgid "Your product."
 msgstr "ਤੁਹਾਡਾ ਉਤਪਾਦ।"
+
+#: src/features/help/ImportCard.tsx
+msgid "Zendesk account"
+msgstr "Zendesk account"

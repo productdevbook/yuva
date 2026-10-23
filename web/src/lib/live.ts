@@ -10,6 +10,8 @@ import type {
   ConversationPin,
   ConversationRead,
   DraftItem,
+  HelpImport,
+  HelpImportProgress,
   Inbox,
   ListImport,
   ListImportProgress,
@@ -433,6 +435,38 @@ function applyImportProgress(qc: QueryClient, ws: string, p: ListImportProgress)
   }))
 }
 
+type HelpImportPage = { items: HelpImport[]; next_cursor?: string }
+
+function setHelpImport(qc: QueryClient, ws: string, i: HelpImport) {
+  qc.setQueryData<InfiniteData<HelpImportPage, string | undefined>>(keys.helpImports(ws, i.center_id), (old) => {
+    if (!old) return old
+    const known = old.pages.some((p) => p.items.some((x) => x.id === i.id))
+    if (known)
+      return { ...old, pages: old.pages.map((p) => ({ ...p, items: p.items.map((x) => (x.id === i.id ? i : x)) })) }
+    const [first, ...rest] = old.pages
+    return { ...old, pages: [{ ...first, items: [i, ...first.items] }, ...rest] }
+  })
+  if (i.state === "done" || i.state === "failed" || i.state === "cancelled") {
+    void qc.invalidateQueries({ queryKey: keys.helpImportRedirects(ws, i.center_id, i.id) })
+  }
+}
+
+function applyHelpImportProgress(qc: QueryClient, ws: string, p: HelpImportProgress) {
+  qc.setQueryData<InfiniteData<HelpImportPage, string | undefined>>(keys.helpImports(ws, p.center_id), (old) =>
+    old
+      ? {
+          ...old,
+          pages: old.pages.map((pg) => ({
+            ...pg,
+            items: pg.items.map((x) =>
+              x.id === p.id ? { ...x, state: p.state, phase: p.phase, counts: p.counts } : x
+            ),
+          })),
+        }
+      : old
+  )
+}
+
 type MigrationPages = InfiniteData<{ items: Migration[]; next_cursor?: string }, string | undefined>
 
 function patchMigration(qc: QueryClient, ws: string, id: string, patch: (m: Migration) => Migration) {
@@ -773,6 +807,12 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
     case "changelog.updated":
       void qc.invalidateQueries({ queryKey: keys.changelog(ctx.ws) })
       void qc.invalidateQueries({ queryKey: keys.changelogs(ctx.ws) })
+      return
+    case "help.import.updated":
+      setHelpImport(qc, ctx.ws, event.data)
+      return
+    case "help.import.progress":
+      applyHelpImportProgress(qc, ctx.ws, event.data)
       return
     case "help.article.updated":
       void qc.invalidateQueries({ queryKey: keys.helpArticle(ctx.ws, event.data.center_id, event.data.article_id) })
