@@ -29,10 +29,6 @@ UPDATE roadmap_boards SET channel_id = @channel_id, name = @name, description = 
 WHERE workspace_id = @workspace_id AND id = @id
 RETURNING *;
 
--- name: TouchRoadmapBoard :exec
-UPDATE roadmap_boards SET changed_at = greatest(changed_at + interval '1 microsecond', @now::timestamptz)
-WHERE workspace_id = @workspace_id AND id = @id;
-
 -- name: TouchRoadmapBoardNow :exec
 UPDATE roadmap_boards SET changed_at = greatest(changed_at + interval '1 microsecond', now())
 WHERE workspace_id = @workspace_id AND id = @id;
@@ -203,10 +199,6 @@ WHERE d.workspace_id = @workspace_id AND d.board_id = @board_id AND d.kind = 'id
   AND (sqlc.narg(since)::timestamptz IS NULL OR coalesce(d.stage_changed_at, d.created_at) >= sqlc.narg(since)::timestamptz)
 ORDER BY d.vote_count DESC, d.created_at DESC, d.id DESC
 LIMIT @lim;
-
--- name: CountPublicIdeas :one
-SELECT count(*)::int FROM discussions
-WHERE workspace_id = @workspace_id AND board_id = @board_id AND kind = 'idea' AND state = 'published' AND stage = @stage::text;
 
 -- name: CountIdeaLinksToChange :one
 SELECT count(*)::int FROM roadmap_idea_conversations l

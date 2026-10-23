@@ -2817,21 +2817,6 @@ func (q *Queries) TouchHelpCenter(ctx context.Context, arg TouchHelpCenterParams
 	return err
 }
 
-const touchHelpCollection = `-- name: TouchHelpCollection :exec
-UPDATE help_collections SET updated_at = $1 WHERE workspace_id = $2 AND id = $3
-`
-
-type TouchHelpCollectionParams struct {
-	Now         time.Time
-	WorkspaceID uuid.UUID
-	ID          uuid.UUID
-}
-
-func (q *Queries) TouchHelpCollection(ctx context.Context, arg TouchHelpCollectionParams) error {
-	_, err := q.db.Exec(ctx, touchHelpCollection, arg.Now, arg.WorkspaceID, arg.ID)
-	return err
-}
-
 const unpublishHelpTranslation = `-- name: UnpublishHelpTranslation :one
 UPDATE help_article_translations SET published_title = NULL, published_body = NULL, published_keywords = NULL, published_slug = NULL,
     published_html = NULL, published_excerpt = NULL, published_at = NULL, published_by_member_id = NULL, published_by_api_key_id = NULL

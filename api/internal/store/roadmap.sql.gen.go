@@ -150,24 +150,6 @@ func (q *Queries) CountPendingBoardIdeas(ctx context.Context, arg CountPendingBo
 	return column_1, err
 }
 
-const countPublicIdeas = `-- name: CountPublicIdeas :one
-SELECT count(*)::int FROM discussions
-WHERE workspace_id = $1 AND board_id = $2 AND kind = 'idea' AND state = 'published' AND stage = $3::text
-`
-
-type CountPublicIdeasParams struct {
-	WorkspaceID uuid.UUID
-	BoardID     *uuid.UUID
-	Stage       string
-}
-
-func (q *Queries) CountPublicIdeas(ctx context.Context, arg CountPublicIdeasParams) (int32, error) {
-	row := q.db.QueryRow(ctx, countPublicIdeas, arg.WorkspaceID, arg.BoardID, arg.Stage)
-	var column_1 int32
-	err := row.Scan(&column_1)
-	return column_1, err
-}
-
 const countRoadmapBoardIdeas = `-- name: CountRoadmapBoardIdeas :many
 SELECT stage::text AS stage, state::text AS state, count(*)::int AS n FROM discussions
 WHERE workspace_id = $1 AND board_id = $2 AND kind = 'idea' AND state IN ('published', 'pending')
@@ -1193,22 +1175,6 @@ func (q *Queries) SetIdeaStage(ctx context.Context, arg SetIdeaStageParams) (Dis
 		&i.Search,
 	)
 	return i, err
-}
-
-const touchRoadmapBoard = `-- name: TouchRoadmapBoard :exec
-UPDATE roadmap_boards SET changed_at = greatest(changed_at + interval '1 microsecond', $1::timestamptz)
-WHERE workspace_id = $2 AND id = $3
-`
-
-type TouchRoadmapBoardParams struct {
-	Now         time.Time
-	WorkspaceID uuid.UUID
-	ID          uuid.UUID
-}
-
-func (q *Queries) TouchRoadmapBoard(ctx context.Context, arg TouchRoadmapBoardParams) error {
-	_, err := q.db.Exec(ctx, touchRoadmapBoard, arg.Now, arg.WorkspaceID, arg.ID)
-	return err
 }
 
 const touchRoadmapBoardNow = `-- name: TouchRoadmapBoardNow :exec

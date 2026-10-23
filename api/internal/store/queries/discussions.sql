@@ -346,9 +346,6 @@ WITH voted AS (
 SELECT discussion_id FROM authored
 UNION SELECT p.discussion_id FROM discussion_posts p WHERE p.workspace_id = @workspace_id AND p.id IN (SELECT post_id FROM voted);
 
--- name: GetPersonReaderSettings :one
-SELECT reader_email_notifications FROM people WHERE id = @id;
-
 -- name: SetPersonReaderSettings :exec
 UPDATE people SET reader_email_notifications = @reader_email_notifications WHERE id = @id;
 

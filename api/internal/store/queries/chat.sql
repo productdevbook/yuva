@@ -91,9 +91,6 @@ INSERT INTO chat_visitors (workspace_id, inbox_id, visitor_hash, contact_id, cre
 -- name: DeleteChatVisitor :exec
 DELETE FROM chat_visitors WHERE workspace_id = $1 AND inbox_id = $2 AND visitor_hash = $3;
 
--- name: IsChatVisitor :one
-SELECT EXISTS (SELECT 1 FROM chat_visitors WHERE workspace_id = $1 AND contact_id = $2) AS visitor;
-
 -- name: MoveContactConversations :many
 WITH moved AS (
     UPDATE conversations SET contact_id = @to_contact, updated_at = @now
@@ -296,14 +293,6 @@ JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversatio
 WHERE m.workspace_id = @workspace_id AND c.inbox_id = @inbox_id AND c.contact_id = @contact_id
   AND m.author_contact_id = @contact_id AND m.client_id = @client_id::text
 ORDER BY m.created_at DESC
-LIMIT 1;
-
--- name: FindThreadSentTo :one
-SELECT c.contact_id FROM message_emails e
-JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
-WHERE e.workspace_id = @workspace_id AND c.inbox_id = @inbox_id AND e.direction = 'out'
-  AND e.header_message_id = ANY(@ids::text[]) AND @address::text = ANY(e.to_addresses)
-ORDER BY e.created_at DESC, e.message_id DESC
 LIMIT 1;
 
 -- name: DeleteExpiredContactSessions :execrows

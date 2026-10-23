@@ -1490,21 +1490,6 @@ func (q *Queries) SetConversationEmailToken(ctx context.Context, arg SetConversa
 	return email_token, err
 }
 
-const setConversationSpam = `-- name: SetConversationSpam :exec
-UPDATE conversations SET spam = $1 WHERE workspace_id = $2 AND id = $3
-`
-
-type SetConversationSpamParams struct {
-	Spam        bool
-	WorkspaceID uuid.UUID
-	ID          uuid.UUID
-}
-
-func (q *Queries) SetConversationSpam(ctx context.Context, arg SetConversationSpamParams) error {
-	_, err := q.db.Exec(ctx, setConversationSpam, arg.Spam, arg.WorkspaceID, arg.ID)
-	return err
-}
-
 const setEmailChannelBroadcast = `-- name: SetEmailChannelBroadcast :one
 UPDATE email_channels SET broadcast_smtp_host = $1, broadcast_smtp_port = $2,
     broadcast_smtp_username = $3, broadcast_smtp_password = $4,

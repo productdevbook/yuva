@@ -107,9 +107,6 @@ UPDATE help_collections SET parent_id = sqlc.narg(parent_id), icon = sqlc.narg(i
 WHERE workspace_id = @workspace_id AND center_id = @center_id AND id = @id
 RETURNING *;
 
--- name: TouchHelpCollection :exec
-UPDATE help_collections SET updated_at = @now WHERE workspace_id = @workspace_id AND id = @id;
-
 -- name: DeleteHelpCollection :execrows
 DELETE FROM help_collections WHERE workspace_id = @workspace_id AND center_id = @center_id AND id = @id;
 

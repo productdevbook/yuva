@@ -1330,40 +1330,6 @@ func (q *Queries) ListBroadcasts(ctx context.Context, arg ListBroadcastsParams) 
 	return items, nil
 }
 
-const listBroadcastsByIDs = `-- name: ListBroadcastsByIDs :many
-SELECT id, name FROM broadcasts WHERE workspace_id = $1 AND id = ANY($2::uuid[])
-`
-
-type ListBroadcastsByIDsParams struct {
-	WorkspaceID uuid.UUID
-	Ids         []uuid.UUID
-}
-
-type ListBroadcastsByIDsRow struct {
-	ID   uuid.UUID
-	Name string
-}
-
-func (q *Queries) ListBroadcastsByIDs(ctx context.Context, arg ListBroadcastsByIDsParams) ([]ListBroadcastsByIDsRow, error) {
-	rows, err := q.db.Query(ctx, listBroadcastsByIDs, arg.WorkspaceID, arg.Ids)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []ListBroadcastsByIDsRow
-	for rows.Next() {
-		var i ListBroadcastsByIDsRow
-		if err := rows.Scan(&i.ID, &i.Name); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const listLatestBroadcasts = `-- name: ListLatestBroadcasts :many
 SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id FROM broadcasts WHERE workspace_id = $1 ORDER BY created_at DESC, id DESC LIMIT $2
 `

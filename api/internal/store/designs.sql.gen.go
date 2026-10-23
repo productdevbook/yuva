@@ -775,22 +775,6 @@ func (q *Queries) LockEmailImageQuota(ctx context.Context, workspaceID uuid.UUID
 	return err
 }
 
-const markEmailImagesSent = `-- name: MarkEmailImagesSent :exec
-UPDATE email_images SET sent_at = $1
-WHERE workspace_id = $2 AND id = ANY($3::uuid[]) AND sent_at IS NULL
-`
-
-type MarkEmailImagesSentParams struct {
-	Now         *time.Time
-	WorkspaceID uuid.UUID
-	Ids         []uuid.UUID
-}
-
-func (q *Queries) MarkEmailImagesSent(ctx context.Context, arg MarkEmailImagesSentParams) error {
-	_, err := q.db.Exec(ctx, markEmailImagesSent, arg.Now, arg.WorkspaceID, arg.Ids)
-	return err
-}
-
 const pruneEmailDesignVersions = `-- name: PruneEmailDesignVersions :exec
 DELETE FROM email_design_versions ev
 WHERE ev.workspace_id = $1 AND ev.design_id = $2

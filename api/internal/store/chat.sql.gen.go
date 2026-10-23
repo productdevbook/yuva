@@ -512,34 +512,6 @@ func (q *Queries) FindEmailConfirmationByHeaderAnyWorkspace(ctx context.Context,
 	return i, err
 }
 
-const findThreadSentTo = `-- name: FindThreadSentTo :one
-SELECT c.contact_id FROM message_emails e
-JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
-WHERE e.workspace_id = $1 AND c.inbox_id = $2 AND e.direction = 'out'
-  AND e.header_message_id = ANY($3::text[]) AND $4::text = ANY(e.to_addresses)
-ORDER BY e.created_at DESC, e.message_id DESC
-LIMIT 1
-`
-
-type FindThreadSentToParams struct {
-	WorkspaceID uuid.UUID
-	InboxID     uuid.UUID
-	Ids         []string
-	Address     string
-}
-
-func (q *Queries) FindThreadSentTo(ctx context.Context, arg FindThreadSentToParams) (uuid.UUID, error) {
-	row := q.db.QueryRow(ctx, findThreadSentTo,
-		arg.WorkspaceID,
-		arg.InboxID,
-		arg.Ids,
-		arg.Address,
-	)
-	var contact_id uuid.UUID
-	err := row.Scan(&contact_id)
-	return contact_id, err
-}
-
 const getChatChannel = `-- name: GetChatChannel :one
 SELECT workspace_id, channel_id, public_key, allowed_origins, allow_anonymous, ask_email_offline, greeting, launcher_position, launcher_color, platforms, discussions, announce_updates FROM chat_channels WHERE workspace_id = $1 AND channel_id = $2
 `
@@ -839,22 +811,6 @@ func (q *Queries) InboxEmailChannel(ctx context.Context, arg InboxEmailChannelPa
 		&i.SesCheckedAt,
 	)
 	return i, err
-}
-
-const isChatVisitor = `-- name: IsChatVisitor :one
-SELECT EXISTS (SELECT 1 FROM chat_visitors WHERE workspace_id = $1 AND contact_id = $2) AS visitor
-`
-
-type IsChatVisitorParams struct {
-	WorkspaceID uuid.UUID
-	ContactID   uuid.UUID
-}
-
-func (q *Queries) IsChatVisitor(ctx context.Context, arg IsChatVisitorParams) (bool, error) {
-	row := q.db.QueryRow(ctx, isChatVisitor, arg.WorkspaceID, arg.ContactID)
-	var visitor bool
-	err := row.Scan(&visitor)
-	return visitor, err
 }
 
 const latestEmailConfirmation = `-- name: LatestEmailConfirmation :one

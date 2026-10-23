@@ -652,17 +652,6 @@ func (q *Queries) GetDiscussionPost(ctx context.Context, arg GetDiscussionPostPa
 	return i, err
 }
 
-const getPersonReaderSettings = `-- name: GetPersonReaderSettings :one
-SELECT reader_email_notifications FROM people WHERE id = $1
-`
-
-func (q *Queries) GetPersonReaderSettings(ctx context.Context, id uuid.UUID) (bool, error) {
-	row := q.db.QueryRow(ctx, getPersonReaderSettings, id)
-	var reader_email_notifications bool
-	err := row.Scan(&reader_email_notifications)
-	return reader_email_notifications, err
-}
-
 const getReaderTokenByHash = `-- name: GetReaderTokenByHash :one
 SELECT t.id, t.workspace_id, t.channel_id, t.person_id, t.origin, t.expires_at FROM reader_tokens t
 JOIN sessions s ON s.id = t.session_id

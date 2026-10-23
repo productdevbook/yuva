@@ -1501,40 +1501,6 @@ func (q *Queries) LockChangelogEntry(ctx context.Context, arg LockChangelogEntry
 	return i, err
 }
 
-const lockChangelogEntryByID = `-- name: LockChangelogEntryByID :one
-SELECT id, workspace_id, changelog_id, number, labels, image_id, state, publish_at, published_at, scheduled_by_member_id, scheduled_by_api_key_id, schedule_failed, schedule_failed_at, created_by_member_id, created_by_api_key_id, created_at, updated_at FROM changelog_entries WHERE workspace_id = $1 AND id = $2 FOR UPDATE
-`
-
-type LockChangelogEntryByIDParams struct {
-	WorkspaceID uuid.UUID
-	ID          uuid.UUID
-}
-
-func (q *Queries) LockChangelogEntryByID(ctx context.Context, arg LockChangelogEntryByIDParams) (ChangelogEntry, error) {
-	row := q.db.QueryRow(ctx, lockChangelogEntryByID, arg.WorkspaceID, arg.ID)
-	var i ChangelogEntry
-	err := row.Scan(
-		&i.ID,
-		&i.WorkspaceID,
-		&i.ChangelogID,
-		&i.Number,
-		&i.Labels,
-		&i.ImageID,
-		&i.State,
-		&i.PublishAt,
-		&i.PublishedAt,
-		&i.ScheduledByMemberID,
-		&i.ScheduledByApiKeyID,
-		&i.ScheduleFailed,
-		&i.ScheduleFailedAt,
-		&i.CreatedByMemberID,
-		&i.CreatedByApiKeyID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
 const lockChangelogEntryQuota = `-- name: LockChangelogEntryQuota :exec
 SELECT pg_advisory_xact_lock(hashtextextended('yuva_changelog_entries:' || $1::uuid::text, 0))
 `

@@ -197,9 +197,6 @@ DELETE FROM email_suppressions WHERE workspace_id = $1 AND email = $2;
 -- name: GetContactIDByEmail :one
 SELECT contact_id FROM contact_emails WHERE workspace_id = $1 AND email = $2;
 
--- name: SetConversationSpam :exec
-UPDATE conversations SET spam = @spam WHERE workspace_id = @workspace_id AND id = @id;
-
 -- name: ListContactRawKeys :many
 SELECT e.raw_key::text FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id

@@ -112,10 +112,6 @@ SELECT coalesce(sum(size_bytes), 0)::bigint FROM email_images WHERE workspace_id
 -- name: DeleteEmailImage :execrows
 DELETE FROM email_images WHERE workspace_id = @workspace_id AND id = @id;
 
--- name: MarkEmailImagesSent :exec
-UPDATE email_images SET sent_at = @now
-WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[]) AND sent_at IS NULL;
-
 -- name: DeleteUnusedEmailImages :many
 DELETE FROM email_images i
 WHERE i.id IN (

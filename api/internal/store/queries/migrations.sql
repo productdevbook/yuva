@@ -164,9 +164,6 @@ WHERE workspace_id = @workspace_id AND migration_id = @migration_id AND id = @id
 UPDATE migration_folders SET uidvalidity = @uidvalidity, scanned_uid = greatest(scanned_uid, @scanned_uid)
 WHERE workspace_id = @workspace_id AND migration_id = @migration_id AND id = @id;
 
--- name: SetMigrationFolderLabel :exec
-UPDATE migration_folders SET label_id = @label_id WHERE workspace_id = @workspace_id AND migration_id = @migration_id AND id = @id;
-
 -- name: SetMigrationFolderCounts :exec
 UPDATE migration_folders f SET imported = c.imported, duplicate = c.duplicate, skipped = c.skipped, failed = c.failed, bytes = c.bytes
 FROM (SELECT unnest(@ids::int[]) AS id, unnest(@imported::int[]) AS imported, unnest(@duplicate::int[]) AS duplicate,
@@ -452,11 +449,6 @@ DELETE FROM migration_audit a
 WHERE a.workspace_id = @workspace_id AND a.created_at < @before
   AND NOT EXISTS (SELECT 1 FROM migrations m WHERE m.workspace_id = a.workspace_id AND m.id = a.migration_id
                   AND (m.finished_at IS NULL OR m.finished_at >= @before));
-
--- name: ListMigrationFolderSeen :many
-SELECT id, name, kind, selected, label_action, label_id, uidvalidity, scanned_uid, seen_uid, delim FROM migration_folders
-WHERE workspace_id = @workspace_id AND migration_id = @migration_id
-ORDER BY id;
 
 -- name: SetMigrationFolderSeen :exec
 UPDATE migration_folders SET seen_uid = greatest(seen_uid, @seen_uid)

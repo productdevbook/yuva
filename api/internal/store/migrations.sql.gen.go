@@ -1837,61 +1837,6 @@ func (q *Queries) ListMigrationErrors(ctx context.Context, arg ListMigrationErro
 	return items, nil
 }
 
-const listMigrationFolderSeen = `-- name: ListMigrationFolderSeen :many
-SELECT id, name, kind, selected, label_action, label_id, uidvalidity, scanned_uid, seen_uid, delim FROM migration_folders
-WHERE workspace_id = $1 AND migration_id = $2
-ORDER BY id
-`
-
-type ListMigrationFolderSeenParams struct {
-	WorkspaceID uuid.UUID
-	MigrationID uuid.UUID
-}
-
-type ListMigrationFolderSeenRow struct {
-	ID          int32
-	Name        string
-	Kind        string
-	Selected    bool
-	LabelAction string
-	LabelID     *uuid.UUID
-	Uidvalidity *int64
-	ScannedUid  int64
-	SeenUid     int64
-	Delim       string
-}
-
-func (q *Queries) ListMigrationFolderSeen(ctx context.Context, arg ListMigrationFolderSeenParams) ([]ListMigrationFolderSeenRow, error) {
-	rows, err := q.db.Query(ctx, listMigrationFolderSeen, arg.WorkspaceID, arg.MigrationID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []ListMigrationFolderSeenRow
-	for rows.Next() {
-		var i ListMigrationFolderSeenRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.Name,
-			&i.Kind,
-			&i.Selected,
-			&i.LabelAction,
-			&i.LabelID,
-			&i.Uidvalidity,
-			&i.ScannedUid,
-			&i.SeenUid,
-			&i.Delim,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const listMigrationFolders = `-- name: ListMigrationFolders :many
 SELECT workspace_id, migration_id, id, name, kind, selected, label_action, label_id, uidvalidity, scanned_uid, seen_uid, cursor, total, imported, duplicate, skipped, failed, bytes, delim, uidnext, size_bytes, oldest_at, newest_at, source_ref, address FROM migration_folders WHERE workspace_id = $1 AND migration_id = $2 ORDER BY id
 `
@@ -3176,27 +3121,6 @@ func (q *Queries) SetMigrationFolderCounts(ctx context.Context, arg SetMigration
 		arg.Skipped,
 		arg.Failed,
 		arg.Bytes,
-	)
-	return err
-}
-
-const setMigrationFolderLabel = `-- name: SetMigrationFolderLabel :exec
-UPDATE migration_folders SET label_id = $1 WHERE workspace_id = $2 AND migration_id = $3 AND id = $4
-`
-
-type SetMigrationFolderLabelParams struct {
-	LabelID     *uuid.UUID
-	WorkspaceID uuid.UUID
-	MigrationID uuid.UUID
-	ID          int32
-}
-
-func (q *Queries) SetMigrationFolderLabel(ctx context.Context, arg SetMigrationFolderLabelParams) error {
-	_, err := q.db.Exec(ctx, setMigrationFolderLabel,
-		arg.LabelID,
-		arg.WorkspaceID,
-		arg.MigrationID,
-		arg.ID,
 	)
 	return err
 }

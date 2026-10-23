@@ -97,9 +97,6 @@ SELECT * FROM changelog_entries WHERE workspace_id = @workspace_id AND changelog
 -- name: LockChangelogEntry :one
 SELECT * FROM changelog_entries WHERE workspace_id = @workspace_id AND changelog_id = @changelog_id AND id = @id FOR UPDATE;
 
--- name: LockChangelogEntryByID :one
-SELECT * FROM changelog_entries WHERE workspace_id = @workspace_id AND id = @id FOR UPDATE;
-
 -- name: UpdateChangelogEntry :one
 UPDATE changelog_entries SET labels = @labels::text[], image_id = sqlc.narg(image_id), updated_at = @now
 WHERE workspace_id = @workspace_id AND id = @id

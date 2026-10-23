@@ -60,9 +60,6 @@ WHERE b.workspace_id = @workspace_id
 ORDER BY b.created_at DESC, b.id DESC
 LIMIT @lim;
 
--- name: ListBroadcastsByIDs :many
-SELECT id, name FROM broadcasts WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[]);
-
 -- name: CountBroadcasts :one
 SELECT count(*) FROM broadcasts WHERE workspace_id = $1;
 
