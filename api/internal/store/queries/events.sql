@@ -29,3 +29,7 @@ SELECT pg_notify(sqlc.arg(channel)::text, sqlc.arg(payload)::text);
 
 -- name: FirstEventID :one
 SELECT coalesce(min(id), 0)::bigint AS id FROM events WHERE workspace_id = $1;
+
+-- name: DeleteConversationEvents :exec
+DELETE FROM events WHERE workspace_id = @workspace_id AND conversation_id = ANY(@conversation_ids::uuid[])
+  AND (NOT @keep_trash::bool OR type NOT IN ('conversation.trashed', 'conversation.restored'));

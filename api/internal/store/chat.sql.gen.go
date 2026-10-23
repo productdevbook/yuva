@@ -456,7 +456,7 @@ func (q *Queries) FindChatChannelByKey(ctx context.Context, publicKey string) (F
 const findContactMessageByClientID = `-- name: FindContactMessageByClientID :one
 SELECT m.id, m.conversation_id FROM messages m
 JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
-WHERE m.workspace_id = $1 AND c.inbox_id = $2 AND c.contact_id = $3 AND c.trashed_at IS NULL
+WHERE m.workspace_id = $1 AND c.inbox_id = $2 AND c.contact_id = $3
   AND m.author_contact_id = $3 AND m.client_id = $4::text
 ORDER BY m.created_at DESC
 LIMIT 1

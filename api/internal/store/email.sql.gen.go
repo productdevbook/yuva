@@ -97,7 +97,7 @@ func (q *Queries) ContactReplyAddress(ctx context.Context, arg ContactReplyAddre
 
 const countRecentConversations = `-- name: CountRecentConversations :one
 SELECT count(*) FROM conversations
-WHERE workspace_id = $1 AND channel_id = $2 AND contact_id = $3 AND created_at > $4 AND trashed_at IS NULL
+WHERE workspace_id = $1 AND channel_id = $2 AND contact_id = $3 AND created_at > $4
 `
 
 type CountRecentConversationsParams struct {

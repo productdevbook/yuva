@@ -689,6 +689,9 @@ func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventB
 		}
 		if n >= newConversationsPerHour {
 			latest, err := q.LatestContactConversation(ctx, store.LatestContactConversationParams{WorkspaceID: ws, ChannelID: &ch.ChannelID, ContactID: contactID})
+			if store.IsNotFound(err) {
+				return latest, false, errIngestRateLimited
+			}
 			if err != nil {
 				return latest, false, err
 			}

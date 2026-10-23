@@ -1845,6 +1845,21 @@ func (e ClientConversationCreatedEventType) Valid() bool {
 	}
 }
 
+// Defines values for ClientConversationRemovedEventType.
+const (
+	ConversationRemoved ClientConversationRemovedEventType = "conversation.removed"
+)
+
+// Valid indicates whether the value is a known member of the ClientConversationRemovedEventType enum.
+func (e ClientConversationRemovedEventType) Valid() bool {
+	switch e {
+	case ConversationRemoved:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ClientConversationUpdatedEventType.
 const (
 	ClientConversationUpdatedEventTypeConversationUpdated ClientConversationUpdatedEventType = "conversation.updated"
@@ -10142,6 +10157,25 @@ type ClientConversationPage struct {
 	// NextCursor Absent on the last page.
 	NextCursor *string `json:"next_cursor,omitempty"`
 }
+
+// ClientConversationRemoved defines model for ClientConversationRemoved.
+type ClientConversationRemoved struct {
+	Id uuid.UUID `json:"id"`
+}
+
+// ClientConversationRemovedEvent A member removed the conversation: drop it from the list and close it if it is open. A
+// new message from the contact starts a new conversation. If it is brought back, it arrives
+// again as `conversation.created`.
+type ClientConversationRemovedEvent struct {
+	ConversationId uuid.UUID                          `json:"conversation_id"`
+	CreatedAt      time.Time                          `json:"created_at"`
+	Data           ClientConversationRemoved          `json:"data"`
+	Id             int64                              `json:"id"`
+	Type           ClientConversationRemovedEventType `json:"type"`
+}
+
+// ClientConversationRemovedEventType defines model for ClientConversationRemovedEvent.Type.
+type ClientConversationRemovedEventType string
 
 // ClientConversationStatus defines model for ClientConversationStatus.
 type ClientConversationStatus struct {
@@ -24944,6 +24978,32 @@ func (t *ClientRealtimeMessage) MergeClientConversationUpdatedEvent(v ClientConv
 	return err
 }
 
+// AsClientConversationRemovedEvent returns the union data inside the ClientRealtimeMessage as a ClientConversationRemovedEvent
+func (t ClientRealtimeMessage) AsClientConversationRemovedEvent() (ClientConversationRemovedEvent, error) {
+	var body ClientConversationRemovedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromClientConversationRemovedEvent overwrites any union data inside the ClientRealtimeMessage as the provided ClientConversationRemovedEvent
+func (t *ClientRealtimeMessage) FromClientConversationRemovedEvent(v ClientConversationRemovedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeClientConversationRemovedEvent performs a merge with any union data inside the ClientRealtimeMessage, using the provided ClientConversationRemovedEvent
+func (t *ClientRealtimeMessage) MergeClientConversationRemovedEvent(v ClientConversationRemovedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsClientMessageEvent returns the union data inside the ClientRealtimeMessage as a ClientMessageEvent
 func (t ClientRealtimeMessage) AsClientMessageEvent() (ClientMessageEvent, error) {
 	var body ClientMessageEvent
@@ -25170,6 +25230,8 @@ func (t ClientRealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsClientContactUpdatedEvent()
 	case "conversation.created":
 		return t.AsClientConversationCreatedEvent()
+	case "conversation.removed":
+		return t.AsClientConversationRemovedEvent()
 	case "conversation.updated":
 		return t.AsClientConversationUpdatedEvent()
 	case "inbox.updated":
@@ -29130,7 +29192,7 @@ type ClientInterface interface {
 	// Members' notes and internal events are never shown to contacts. `kind` keeps only
 	// conversations of those kinds, e.g. `kind=feedback` for the feedback the contact sent.
 	// A conversation a member moved to the trash is never listed and answers `404` everywhere
-	// under `/client/v1`.
+	// under `/client/v1`; the realtime stream sends `conversation.removed` when it happens.
 	//
 	// Corresponds with GET /client/v1/conversations (the `ListClientConversations` operationId).
 	ListClientConversations(ctx context.Context, params *ListClientConversationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -29190,8 +29252,10 @@ type ClientInterface interface {
 	//
 	// Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
 	// repeated `client_id` in the same conversation returns the stored message with `200`.
-	// Into a conversation a member moved to the trash, the message starts a new conversation:
-	// the answer's `conversation_id` names it, and `conversation.created` announces it.
+	// Into a conversation a member moved to the trash, the message starts a new conversation
+	// with the same kind, subject and page: the answer's `conversation_id` names it, and
+	// `conversation.created` announces it. A `client_id` already used in the trashed
+	// conversation answers that message with `200` and starts nothing.
 	// Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
 	// per IP address and per channel.
 	//
@@ -29204,8 +29268,10 @@ type ClientInterface interface {
 	//
 	// Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
 	// repeated `client_id` in the same conversation returns the stored message with `200`.
-	// Into a conversation a member moved to the trash, the message starts a new conversation:
-	// the answer's `conversation_id` names it, and `conversation.created` announces it.
+	// Into a conversation a member moved to the trash, the message starts a new conversation
+	// with the same kind, subject and page: the answer's `conversation_id` names it, and
+	// `conversation.created` announces it. A `client_id` already used in the trashed
+	// conversation answers that message with `200` and starts nothing.
 	// Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
 	// per IP address and per channel.
 	//
@@ -32093,7 +32159,7 @@ type ClientInterface interface {
 	// the trash is listed in `failed` with `not_found` for every other change, and one whose 30
 	// days in the trash are over with `trash_expired` when restored.
 	//
-	// Scope: `conversations:write`; with `trashed` also `conversations:delete`.
+	// Scope: `conversations:write`; a `trashed` change needs `conversations:delete` instead.
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -32118,7 +32184,7 @@ type ClientInterface interface {
 	// the trash is listed in `failed` with `not_found` for every other change, and one whose 30
 	// days in the trash are over with `trash_expired` when restored.
 	//
-	// Scope: `conversations:write`; with `trashed` also `conversations:delete`.
+	// Scope: `conversations:write`; a `trashed` change needs `conversations:delete` instead.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -32152,8 +32218,10 @@ type ClientInterface interface {
 	//
 	// Only owners and admins, and keys and tokens with `conversations:delete`; agents get
 	// `403 forbidden`, so a mistake cannot be hidden. Trashing a conversation already in the
-	// trash answers it unchanged. Emits `conversation.trashed`; the audit log records
-	// `conversation.trashed`.
+	// trash answers it unchanged. Its earlier events leave `GET /v1/events` and realtime
+	// replays (only its `conversation.trashed` and `conversation.restored` stay); a webhook of
+	// such an event not yet sent is dropped. The 30 days run on the database's clock. Emits
+	// `conversation.trashed`; the audit log records `conversation.trashed`.
 	//
 	// Scope: `conversations:delete`.
 	//
@@ -32271,7 +32339,7 @@ type ClientInterface interface {
 	// Messages, notes and events, oldest first by default. With `order=desc` the newest come
 	// first and `next_cursor` pages backward, so a thread can load its latest page and then
 	// older ones. A conversation in the trash answers `404` except to those who may see the
-	// trash; its attachments and raw e-mails answer `404` to everyone until it is restored.
+	// trash, who can also download its attachments and read its e-mail and raw source.
 	//
 	// Scope: `conversations:read`.
 	//
@@ -33246,7 +33314,8 @@ type ClientInterface interface {
 	// when more events follow, so call again at once; otherwise poll later. A page can hold
 	// fewer than `limit` events while `has_more` is true.
 	//
-	// Events are kept 7 days. An `after` older than the oldest kept event answers
+	// Events are kept 7 days; those of a conversation moved to the trash are removed then, except
+	// its `conversation.trashed` and `conversation.restored`. An `after` older than the oldest kept event answers
 	// `410 cursor_expired`: some events after it are gone. Reload what you need over the lists,
 	// then continue from `GET /v1/events/latest`'s `id`.
 	//
@@ -37654,7 +37723,7 @@ func (c *Client) SetClientContactEmail(ctx context.Context, body SetClientContac
 // Members' notes and internal events are never shown to contacts. `kind` keeps only
 // conversations of those kinds, e.g. `kind=feedback` for the feedback the contact sent.
 // A conversation a member moved to the trash is never listed and answers `404` everywhere
-// under `/client/v1`.
+// under `/client/v1`; the realtime stream sends `conversation.removed` when it happens.
 //
 // Corresponds with GET /client/v1/conversations (the `ListClientConversations` operationId).
 func (c *Client) ListClientConversations(ctx context.Context, params *ListClientConversationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -37764,8 +37833,10 @@ func (c *Client) ListClientMessages(ctx context.Context, conversationId Conversa
 //
 // Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
 // repeated `client_id` in the same conversation returns the stored message with `200`.
-// Into a conversation a member moved to the trash, the message starts a new conversation:
-// the answer's `conversation_id` names it, and `conversation.created` announces it.
+// Into a conversation a member moved to the trash, the message starts a new conversation
+// with the same kind, subject and page: the answer's `conversation_id` names it, and
+// `conversation.created` announces it. A `client_id` already used in the trashed
+// conversation answers that message with `200` and starts nothing.
 // Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
 // per IP address and per channel.
 //
@@ -37788,8 +37859,10 @@ func (c *Client) CreateClientMessageWithBody(ctx context.Context, conversationId
 //
 // Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
 // repeated `client_id` in the same conversation returns the stored message with `200`.
-// Into a conversation a member moved to the trash, the message starts a new conversation:
-// the answer's `conversation_id` names it, and `conversation.created` announces it.
+// Into a conversation a member moved to the trash, the message starts a new conversation
+// with the same kind, subject and page: the answer's `conversation_id` names it, and
+// `conversation.created` announces it. A `client_id` already used in the trashed
+// conversation answers that message with `200` and starts nothing.
 // Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
 // per IP address and per channel.
 //
@@ -42847,7 +42920,7 @@ func (c *Client) CreateConversation(ctx context.Context, params *CreateConversat
 // the trash is listed in `failed` with `not_found` for every other change, and one whose 30
 // days in the trash are over with `trash_expired` when restored.
 //
-// Scope: `conversations:write`; with `trashed` also `conversations:delete`.
+// Scope: `conversations:write`; a `trashed` change needs `conversations:delete` instead.
 //
 // Takes any type of body and a specified content type.
 //
@@ -42882,7 +42955,7 @@ func (c *Client) BulkUpdateConversationsWithBody(ctx context.Context, params *Bu
 // the trash is listed in `failed` with `not_found` for every other change, and one whose 30
 // days in the trash are over with `trash_expired` when restored.
 //
-// Scope: `conversations:write`; with `trashed` also `conversations:delete`.
+// Scope: `conversations:write`; a `trashed` change needs `conversations:delete` instead.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -42936,8 +43009,10 @@ func (c *Client) GetConversationCounts(ctx context.Context, params *GetConversat
 //
 // Only owners and admins, and keys and tokens with `conversations:delete`; agents get
 // `403 forbidden`, so a mistake cannot be hidden. Trashing a conversation already in the
-// trash answers it unchanged. Emits `conversation.trashed`; the audit log records
-// `conversation.trashed`.
+// trash answers it unchanged. Its earlier events leave `GET /v1/events` and realtime
+// replays (only its `conversation.trashed` and `conversation.restored` stay); a webhook of
+// such an event not yet sent is dropped. The 30 days run on the database's clock. Emits
+// `conversation.trashed`; the audit log records `conversation.trashed`.
 //
 // Scope: `conversations:delete`.
 //
@@ -43125,7 +43200,7 @@ func (c *Client) ListConversationIncidents(ctx context.Context, conversationId C
 // Messages, notes and events, oldest first by default. With `order=desc` the newest come
 // first and `next_cursor` pages backward, so a thread can load its latest page and then
 // older ones. A conversation in the trash answers `404` except to those who may see the
-// trash; its attachments and raw e-mails answer `404` to everyone until it is restored.
+// trash, who can also download its attachments and read its e-mail and raw source.
 //
 // Scope: `conversations:read`.
 //
@@ -44740,7 +44815,8 @@ func (c *Client) GetEmailTemplate(ctx context.Context, slug TemplateSlug, params
 // when more events follow, so call again at once; otherwise poll later. A page can hold
 // fewer than `limit` events while `has_more` is true.
 //
-// Events are kept 7 days. An `after` older than the oldest kept event answers
+// Events are kept 7 days; those of a conversation moved to the trash are removed then, except
+// its `conversation.trashed` and `conversation.restored`. An `after` older than the oldest kept event answers
 // `410 cursor_expired`: some events after it are gone. Reload what you need over the lists,
 // then continue from `GET /v1/events/latest`'s `id`.
 //
@@ -78311,7 +78387,7 @@ type ClientWithResponsesInterface interface {
 	// Members' notes and internal events are never shown to contacts. `kind` keeps only
 	// conversations of those kinds, e.g. `kind=feedback` for the feedback the contact sent.
 	// A conversation a member moved to the trash is never listed and answers `404` everywhere
-	// under `/client/v1`.
+	// under `/client/v1`; the realtime stream sends `conversation.removed` when it happens.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -78377,8 +78453,10 @@ type ClientWithResponsesInterface interface {
 	//
 	// Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
 	// repeated `client_id` in the same conversation returns the stored message with `200`.
-	// Into a conversation a member moved to the trash, the message starts a new conversation:
-	// the answer's `conversation_id` names it, and `conversation.created` announces it.
+	// Into a conversation a member moved to the trash, the message starts a new conversation
+	// with the same kind, subject and page: the answer's `conversation_id` names it, and
+	// `conversation.created` announces it. A `client_id` already used in the trashed
+	// conversation answers that message with `200` and starts nothing.
 	// Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
 	// per IP address and per channel.
 	//
@@ -78391,8 +78469,10 @@ type ClientWithResponsesInterface interface {
 	//
 	// Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
 	// repeated `client_id` in the same conversation returns the stored message with `200`.
-	// Into a conversation a member moved to the trash, the message starts a new conversation:
-	// the answer's `conversation_id` names it, and `conversation.created` announces it.
+	// Into a conversation a member moved to the trash, the message starts a new conversation
+	// with the same kind, subject and page: the answer's `conversation_id` names it, and
+	// `conversation.created` announces it. A `client_id` already used in the trashed
+	// conversation answers that message with `200` and starts nothing.
 	// Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
 	// per IP address and per channel.
 	//
@@ -81478,7 +81558,7 @@ type ClientWithResponsesInterface interface {
 	// the trash is listed in `failed` with `not_found` for every other change, and one whose 30
 	// days in the trash are over with `trash_expired` when restored.
 	//
-	// Scope: `conversations:write`; with `trashed` also `conversations:delete`.
+	// Scope: `conversations:write`; a `trashed` change needs `conversations:delete` instead.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -81503,7 +81583,7 @@ type ClientWithResponsesInterface interface {
 	// the trash is listed in `failed` with `not_found` for every other change, and one whose 30
 	// days in the trash are over with `trash_expired` when restored.
 	//
-	// Scope: `conversations:write`; with `trashed` also `conversations:delete`.
+	// Scope: `conversations:write`; a `trashed` change needs `conversations:delete` instead.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -81539,8 +81619,10 @@ type ClientWithResponsesInterface interface {
 	//
 	// Only owners and admins, and keys and tokens with `conversations:delete`; agents get
 	// `403 forbidden`, so a mistake cannot be hidden. Trashing a conversation already in the
-	// trash answers it unchanged. Emits `conversation.trashed`; the audit log records
-	// `conversation.trashed`.
+	// trash answers it unchanged. Its earlier events leave `GET /v1/events` and realtime
+	// replays (only its `conversation.trashed` and `conversation.restored` stay); a webhook of
+	// such an event not yet sent is dropped. The 30 days run on the database's clock. Emits
+	// `conversation.trashed`; the audit log records `conversation.trashed`.
 	//
 	// Scope: `conversations:delete`.
 	//
@@ -81664,7 +81746,7 @@ type ClientWithResponsesInterface interface {
 	// Messages, notes and events, oldest first by default. With `order=desc` the newest come
 	// first and `next_cursor` pages backward, so a thread can load its latest page and then
 	// older ones. A conversation in the trash answers `404` except to those who may see the
-	// trash; its attachments and raw e-mails answer `404` to everyone until it is restored.
+	// trash, who can also download its attachments and read its e-mail and raw source.
 	//
 	// Scope: `conversations:read`.
 	//
@@ -82701,7 +82783,8 @@ type ClientWithResponsesInterface interface {
 	// when more events follow, so call again at once; otherwise poll later. A page can hold
 	// fewer than `limit` events while `has_more` is true.
 	//
-	// Events are kept 7 days. An `after` older than the oldest kept event answers
+	// Events are kept 7 days; those of a conversation moved to the trash are removed then, except
+	// its `conversation.trashed` and `conversation.restored`. An `after` older than the oldest kept event answers
 	// `410 cursor_expired`: some events after it are gone. Reload what you need over the lists,
 	// then continue from `GET /v1/events/latest`'s `id`.
 	//
@@ -115905,7 +115988,7 @@ func (c *ClientWithResponses) SetClientContactEmailWithResponse(ctx context.Cont
 // Members' notes and internal events are never shown to contacts. `kind` keeps only
 // conversations of those kinds, e.g. `kind=feedback` for the feedback the contact sent.
 // A conversation a member moved to the trash is never listed and answers `404` everywhere
-// under `/client/v1`.
+// under `/client/v1`; the realtime stream sends `conversation.removed` when it happens.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -116001,8 +116084,10 @@ func (c *ClientWithResponses) ListClientMessagesWithResponse(ctx context.Context
 //
 // Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
 // repeated `client_id` in the same conversation returns the stored message with `200`.
-// Into a conversation a member moved to the trash, the message starts a new conversation:
-// the answer's `conversation_id` names it, and `conversation.created` announces it.
+// Into a conversation a member moved to the trash, the message starts a new conversation
+// with the same kind, subject and page: the answer's `conversation_id` names it, and
+// `conversation.created` announces it. A `client_id` already used in the trashed
+// conversation answers that message with `200` and starts nothing.
 // Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
 // per IP address and per channel.
 //
@@ -116021,8 +116106,10 @@ func (c *ClientWithResponses) CreateClientMessageWithBodyWithResponse(ctx contex
 //
 // Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
 // repeated `client_id` in the same conversation returns the stored message with `200`.
-// Into a conversation a member moved to the trash, the message starts a new conversation:
-// the answer's `conversation_id` names it, and `conversation.created` announces it.
+// Into a conversation a member moved to the trash, the message starts a new conversation
+// with the same kind, subject and page: the answer's `conversation_id` names it, and
+// `conversation.created` announces it. A `client_id` already used in the trashed
+// conversation answers that message with `200` and starts nothing.
 // Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
 // per IP address and per channel.
 //
@@ -120410,7 +120497,7 @@ func (c *ClientWithResponses) CreateConversationWithResponse(ctx context.Context
 // the trash is listed in `failed` with `not_found` for every other change, and one whose 30
 // days in the trash are over with `trash_expired` when restored.
 //
-// Scope: `conversations:write`; with `trashed` also `conversations:delete`.
+// Scope: `conversations:write`; a `trashed` change needs `conversations:delete` instead.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -120441,7 +120528,7 @@ func (c *ClientWithResponses) BulkUpdateConversationsWithBodyWithResponse(ctx co
 // the trash is listed in `failed` with `not_found` for every other change, and one whose 30
 // days in the trash are over with `trash_expired` when restored.
 //
-// Scope: `conversations:write`; with `trashed` also `conversations:delete`.
+// Scope: `conversations:write`; a `trashed` change needs `conversations:delete` instead.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -120489,8 +120576,10 @@ func (c *ClientWithResponses) GetConversationCountsWithResponse(ctx context.Cont
 //
 // Only owners and admins, and keys and tokens with `conversations:delete`; agents get
 // `403 forbidden`, so a mistake cannot be hidden. Trashing a conversation already in the
-// trash answers it unchanged. Emits `conversation.trashed`; the audit log records
-// `conversation.trashed`.
+// trash answers it unchanged. Its earlier events leave `GET /v1/events` and realtime
+// replays (only its `conversation.trashed` and `conversation.restored` stay); a webhook of
+// such an event not yet sent is dropped. The 30 days run on the database's clock. Emits
+// `conversation.trashed`; the audit log records `conversation.trashed`.
 //
 // Scope: `conversations:delete`.
 //
@@ -120656,7 +120745,7 @@ func (c *ClientWithResponses) ListConversationIncidentsWithResponse(ctx context.
 // Messages, notes and events, oldest first by default. With `order=desc` the newest come
 // first and `next_cursor` pages backward, so a thread can load its latest page and then
 // older ones. A conversation in the trash answers `404` except to those who may see the
-// trash; its attachments and raw e-mails answer `404` to everyone until it is restored.
+// trash, who can also download its attachments and read its e-mail and raw source.
 //
 // Scope: `conversations:read`.
 //
@@ -122077,7 +122166,8 @@ func (c *ClientWithResponses) GetEmailTemplateWithResponse(ctx context.Context, 
 // when more events follow, so call again at once; otherwise poll later. A page can hold
 // fewer than `limit` events while `has_more` is true.
 //
-// Events are kept 7 days. An `after` older than the oldest kept event answers
+// Events are kept 7 days; those of a conversation moved to the trash are removed then, except
+// its `conversation.trashed` and `conversation.restored`. An `after` older than the oldest kept event answers
 // `410 cursor_expired`: some events after it are gone. Reload what you need over the lists,
 // then continue from `GET /v1/events/latest`'s `id`.
 //

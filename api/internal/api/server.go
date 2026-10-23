@@ -110,8 +110,8 @@ type Deps struct {
 	Now      func() time.Time
 	// Sleep replaces the timer that spaces out the mails of a send, for tests; nil waits for real.
 	Sleep func(ctx context.Context, d time.Duration) error
-	// RateLimitClock replaces the database's clock that rate limit windows and query slot leases
-	// are measured with, for tests; nil uses the database's.
+	// RateLimitClock replaces the database's clock that rate limit windows, query slot leases and
+	// the trash's 30 days are measured with, for tests; nil uses the database's.
 	RateLimitClock func() time.Time
 
 	Secrets     *secret.Key

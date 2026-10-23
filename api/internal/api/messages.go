@@ -650,7 +650,7 @@ func (s *Server) DownloadAttachment(ctx context.Context, req oas.DownloadAttachm
 	if err != nil {
 		return nil, err
 	}
-	if !ok {
+	if !ok || (a.TrashedAt != nil && requireTrashManager(p) != nil) {
 		return nil, errAttachmentGone
 	}
 	body, err := s.objects.Open(ctx, a.StorageKey)

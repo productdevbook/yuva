@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"mime"
 	"strings"
@@ -565,7 +566,7 @@ func (s *Server) CreateClientMessage(ctx context.Context, req oas.CreateClientMe
 		}
 		isNew := false
 		if c.TrashedAt != nil {
-			if c, isNew, err = s.replaceTrashedConversation(ctx, q, events, cp, in); err != nil {
+			if c, isNew, err = s.replaceTrashedConversation(ctx, q, cp, c, in); err != nil {
 				return err
 			}
 		}
@@ -581,8 +582,16 @@ func (s *Server) CreateClientMessage(ctx context.Context, req oas.CreateClientMe
 				return err
 			}
 		}
-		msg, atts, err = s.addContactMessage(ctx, q, events, cp, c, in, isNew)
-		return err
+		mark := len(events.items)
+		if msg, atts, err = s.addContactMessage(ctx, q, events, cp, c, in, isNew); err != nil || !isNew {
+			return err
+		}
+		if c.Kind == string(oas.ConversationKindFeedback) {
+			_, err = s.feedbackCreated(ctx, q, events, mark, c, msg)
+			return err
+		}
+		events.conversationAt(mark, realtime.ConversationCreated, c, conversationBody(c, nil))
+		return nil
 	})
 	if err != nil || !created {
 		s.deleteObjects(ctx, stored)
@@ -598,30 +607,42 @@ func (s *Server) CreateClientMessage(ctx context.Context, req oas.CreateClientMe
 }
 
 // replaceTrashedConversation is where a message to a conversation in the trash goes: the
-// conversation a retry with the same client_id already started, or a new one.
-func (s *Server) replaceTrashedConversation(ctx context.Context, q *store.Queries, events *eventBatch, cp contactPrincipal, in *messageInput) (store.Conversation, bool, error) {
+// conversation that already holds a message with its client_id, the trashed one included, so a
+// retry answers the original; else a new conversation with the trashed one's kind, subject, page
+// and feedback context, whose conversation.created the caller queues once the message exists.
+func (s *Server) replaceTrashedConversation(ctx context.Context, q *store.Queries, cp contactPrincipal, trashed store.Conversation, in *messageInput) (store.Conversation, bool, error) {
 	if in.clientID != nil {
 		prev, err := q.FindContactMessageByClientID(ctx, store.FindContactMessageByClientIDParams{
 			WorkspaceID: cp.workspaceID, InboxID: cp.inboxID, ContactID: cp.contactID, ClientID: *in.clientID,
 		})
 		if err == nil {
-			c, err := clientConversation(ctx, q, cp, prev.ConversationID, true)
+			if prev.ConversationID == trashed.ID {
+				return trashed, false, nil
+			}
+			c, err := clientConversationOrTrashed(ctx, q, cp, prev.ConversationID, true)
 			return c, false, err
 		}
 		if !store.IsNotFound(err) {
 			return store.Conversation{}, false, err
 		}
 	}
+	var feedback []byte
+	if trashed.Kind == string(oas.ConversationKindFeedback) && trashed.Feedback != nil {
+		var f map[string]any
+		if err := json.Unmarshal(trashed.Feedback, &f); err != nil {
+			return store.Conversation{}, false, err
+		}
+		delete(f, "text")
+		delete(f, "attachment_count")
+		feedback = mustJSON(f)
+	}
 	channelID := cp.channelID
 	c, err := q.CreateConversation(ctx, store.CreateConversationParams{
 		ID: newID(), WorkspaceID: cp.workspaceID, InboxID: cp.inboxID, ContactID: cp.contactID, ChannelID: &channelID,
-		Priority: string(oas.Normal), Now: s.now(),
+		Subject: trashed.Subject, Priority: string(oas.Normal), Kind: &trashed.Kind, Feedback: feedback,
+		PageUrl: trashed.PageUrl, PageTitle: trashed.PageTitle, HelpArticleID: trashed.HelpArticleID, Now: s.now(),
 	})
-	if err != nil {
-		return c, false, err
-	}
-	events.conversation(realtime.ConversationCreated, c, conversationBody(c, nil))
-	return c, true, nil
+	return c, err == nil, err
 }
 
 func (s *Server) MarkClientConversationRead(ctx context.Context, req oas.MarkClientConversationReadRequestObject) (oas.MarkClientConversationReadResponseObject, error) {

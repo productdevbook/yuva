@@ -84,9 +84,9 @@ WHERE workspace_id = @workspace_id AND message_id = ANY(@message_ids::uuid[])
 ORDER BY message_id, created_at, id;
 
 -- name: GetAttachment :one
-SELECT a.*, c.inbox_id FROM attachments a
+SELECT a.*, c.inbox_id, c.trashed_at FROM attachments a
 JOIN conversations c ON c.workspace_id = a.workspace_id AND c.id = a.conversation_id
-WHERE a.workspace_id = $1 AND a.id = $2 AND c.trashed_at IS NULL;
+WHERE a.workspace_id = $1 AND a.id = $2;
 
 -- name: GetMessage :one
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,

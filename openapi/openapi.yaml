@@ -3348,7 +3348,7 @@ paths:
         the trash is listed in `failed` with `not_found` for every other change, and one whose 30
         days in the trash are over with `trash_expired` when restored.
 
-        Scope: `conversations:write`; with `trashed` also `conversations:delete`.
+        Scope: `conversations:write`; a `trashed` change needs `conversations:delete` instead.
       tags: [conversations]
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
@@ -3448,8 +3448,10 @@ paths:
 
         Only owners and admins, and keys and tokens with `conversations:delete`; agents get
         `403 forbidden`, so a mistake cannot be hidden. Trashing a conversation already in the
-        trash answers it unchanged. Emits `conversation.trashed`; the audit log records
-        `conversation.trashed`.
+        trash answers it unchanged. Its earlier events leave `GET /v1/events` and realtime
+        replays (only its `conversation.trashed` and `conversation.restored` stay); a webhook of
+        such an event not yet sent is dropped. The 30 days run on the database's clock. Emits
+        `conversation.trashed`; the audit log records `conversation.trashed`.
 
         Scope: `conversations:delete`.
       tags: [conversations]
@@ -3609,7 +3611,7 @@ paths:
         Messages, notes and events, oldest first by default. With `order=desc` the newest come
         first and `next_cursor` pages backward, so a thread can load its latest page and then
         older ones. A conversation in the trash answers `404` except to those who may see the
-        trash; its attachments and raw e-mails answer `404` to everyone until it is restored.
+        trash, who can also download its attachments and read its e-mail and raw source.
 
         Scope: `conversations:read`.
       tags: [messages]
@@ -8711,7 +8713,8 @@ paths:
         when more events follow, so call again at once; otherwise poll later. A page can hold
         fewer than `limit` events while `has_more` is true.
 
-        Events are kept 7 days. An `after` older than the oldest kept event answers
+        Events are kept 7 days; those of a conversation moved to the trash are removed then, except
+        its `conversation.trashed` and `conversation.restored`. An `after` older than the oldest kept event answers
         `410 cursor_expired`: some events after it are gone. Reload what you need over the lists,
         then continue from `GET /v1/events/latest`'s `id`.
 
@@ -14423,7 +14426,7 @@ paths:
         Members' notes and internal events are never shown to contacts. `kind` keeps only
         conversations of those kinds, e.g. `kind=feedback` for the feedback the contact sent.
         A conversation a member moved to the trash is never listed and answers `404` everywhere
-        under `/client/v1`.
+        under `/client/v1`; the realtime stream sends `conversation.removed` when it happens.
       tags: [client]
       security:
         - contactSession: []
@@ -14555,8 +14558,10 @@ paths:
       description: |
         Adds the contact's message. A closed, pending or snoozed conversation is reopened. A
         repeated `client_id` in the same conversation returns the stored message with `200`.
-        Into a conversation a member moved to the trash, the message starts a new conversation:
-        the answer's `conversation_id` names it, and `conversation.created` announces it.
+        Into a conversation a member moved to the trash, the message starts a new conversation
+        with the same kind, subject and page: the answer's `conversation_id` names it, and
+        `conversation.created` announces it. A `client_id` already used in the trashed
+        conversation answers that message with `200` and starts nothing.
         Send `multipart/form-data` to attach files, as for starting a conversation. Rate limited
         per IP address and per channel.
       tags: [client]
@@ -27246,6 +27251,35 @@ components:
           format: date-time
         data:
           $ref: "#/components/schemas/ClientConversationStatus"
+    ClientConversationRemovedEvent:
+      type: object
+      description: |
+        A member removed the conversation: drop it from the list and close it if it is open. A
+        new message from the contact starts a new conversation. If it is brought back, it arrives
+        again as `conversation.created`.
+      required: [id, type, conversation_id, created_at, data]
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [conversation.removed]
+        conversation_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/ClientConversationRemoved"
+    ClientConversationRemoved:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: string
+          format: uuid
     ClientMessageEvent:
       type: object
       description: A message was added or changed.
@@ -27360,6 +27394,7 @@ components:
       oneOf:
         - $ref: "#/components/schemas/ClientConversationCreatedEvent"
         - $ref: "#/components/schemas/ClientConversationUpdatedEvent"
+        - $ref: "#/components/schemas/ClientConversationRemovedEvent"
         - $ref: "#/components/schemas/ClientMessageEvent"
         - $ref: "#/components/schemas/ClientReadEvent"
         - $ref: "#/components/schemas/ClientTypingEvent"
@@ -27373,6 +27408,7 @@ components:
         mapping:
           conversation.created: "#/components/schemas/ClientConversationCreatedEvent"
           conversation.updated: "#/components/schemas/ClientConversationUpdatedEvent"
+          conversation.removed: "#/components/schemas/ClientConversationRemovedEvent"
           message.created: "#/components/schemas/ClientMessageEvent"
           message.updated: "#/components/schemas/ClientMessageEvent"
           read: "#/components/schemas/ClientReadEvent"

@@ -579,7 +579,7 @@ func (s *Server) visibleMessageEmail(ctx context.Context, p principal, messageID
 	if err != nil {
 		return me, err
 	}
-	if _, err := visibleConversation(ctx, s.st.Queries, p, me.ConversationID, false); err != nil {
+	if _, err := readableConversation(ctx, s.st.Queries, p, me.ConversationID); err != nil {
 		return me, errMessageGone
 	}
 	return me, nil

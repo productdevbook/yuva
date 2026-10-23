@@ -290,7 +290,7 @@ UPDATE people SET availability = $2 WHERE id = $1;
 -- name: FindContactMessageByClientID :one
 SELECT m.id, m.conversation_id FROM messages m
 JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
-WHERE m.workspace_id = @workspace_id AND c.inbox_id = @inbox_id AND c.contact_id = @contact_id AND c.trashed_at IS NULL
+WHERE m.workspace_id = @workspace_id AND c.inbox_id = @inbox_id AND c.contact_id = @contact_id
   AND m.author_contact_id = @contact_id AND m.client_id = @client_id::text
 ORDER BY m.created_at DESC
 LIMIT 1;

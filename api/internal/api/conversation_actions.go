@@ -31,6 +31,9 @@ func (s *Server) BulkUpdateConversations(ctx context.Context, req oas.BulkUpdate
 		}
 		return s.bulkTrash(ctx, p, b.ConversationIds, *b.Trashed)
 	}
+	if err := requireScope(p, oas.ConversationsWrite); err != nil {
+		return nil, err
+	}
 	if b.Status == nil && b.SnoozeUntil == nil && !b.AssigneeId.IsSpecified() && b.AddLabels == nil && b.RemoveLabels == nil {
 		return nil, errValidation("name at least one change: status, assignee_id, add_labels, remove_labels or trashed")
 	}

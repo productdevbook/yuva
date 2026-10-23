@@ -252,6 +252,8 @@ func (s *Server) clientStream(conn *websocket.Conn, r *http.Request, cp contactP
 	}
 }
 
+const clientConversationRemoved = "conversation.removed"
+
 // clientFilter turns workspace events into what a contact may see: their own conversations in
 // the session's inbox, messages without notes or internal events, the status of conversations,
 // and for live inboxes members' typing, read positions and presence.
@@ -440,10 +442,11 @@ func (f *clientFilter) transform(ctx context.Context, e realtime.Event) ([]any, 
 	frame := func(data any) []any { return frameAs(e.Type, data) }
 	switch e.Type {
 	case realtime.ConversationTrashed, realtime.ConversationDeleted:
-		if e.ConversationID != nil {
-			delete(f.convs, *e.ConversationID)
+		if !ownConv {
+			return nil, nil
 		}
-		return nil, nil
+		delete(f.convs, *e.ConversationID)
+		return frameAs(clientConversationRemoved, oas.ClientConversationRemoved{Id: *e.ConversationID}), nil
 	case realtime.ConversationCreated, realtime.ConversationUpdated, realtime.ConversationRestored:
 		var c oas.Conversation
 		if err := json.Unmarshal(e.Data, &c); err != nil {

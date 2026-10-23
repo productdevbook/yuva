@@ -12,6 +12,22 @@ import (
 	"uuid"
 )
 
+const deleteConversationEvents = `-- name: DeleteConversationEvents :exec
+DELETE FROM events WHERE workspace_id = $1 AND conversation_id = ANY($2::uuid[])
+  AND (NOT $3::bool OR type NOT IN ('conversation.trashed', 'conversation.restored'))
+`
+
+type DeleteConversationEventsParams struct {
+	WorkspaceID     uuid.UUID
+	ConversationIds []uuid.UUID
+	KeepTrash       bool
+}
+
+func (q *Queries) DeleteConversationEvents(ctx context.Context, arg DeleteConversationEventsParams) error {
+	_, err := q.db.Exec(ctx, deleteConversationEvents, arg.WorkspaceID, arg.ConversationIds, arg.KeepTrash)
+	return err
+}
+
 const deleteEventsBefore = `-- name: DeleteEventsBefore :execrows
 DELETE FROM events WHERE workspace_id = $1 AND created_at < $2
 `

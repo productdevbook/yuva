@@ -64,8 +64,23 @@ func TestTrashWhoMayAndWhereItShows(t *testing.T) {
 	other.owner.expectProblem(http.StatusNotFound, "not_found", "DELETE", "/v1/conversations/"+conv, nil)
 	other.scopedKey(h, "conversations:read", "conversations:delete").expectProblem(http.StatusNotFound, "not_found", "POST", "/v1/conversations/"+conv+"/restore", nil)
 
+	eventsOf := func(id string) []string {
+		var out []string
+		for _, e := range tm.owner.expect(http.StatusOK, "GET", "/v1/events?after=0&limit=200", nil).body["events"].([]any) {
+			if ev := e.(map[string]any); ev["conversation_id"] == id {
+				out = append(out, ev["type"].(string))
+			}
+		}
+		return out
+	}
+	if evs := eventsOf(conv); len(evs) < 3 {
+		t.Fatalf("events before trash: %v", evs)
+	}
 	key := tm.scopedKey(h, "conversations:read", "conversations:write", "conversations:delete")
 	trashed := key.expect(http.StatusOK, "DELETE", "/v1/conversations/"+conv, nil)
+	if evs := eventsOf(conv); fmt.Sprint(evs) != "[conversation.trashed]" {
+		t.Fatalf("events after trash: %v", evs)
+	}
 	at, err := time.Parse(time.RFC3339Nano, trashed.str("trashed_at"))
 	if err != nil {
 		t.Fatalf("trashed: %s", trashed.raw)
@@ -162,7 +177,9 @@ func TestBulkTrash(t *testing.T) {
 	tm.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", "/v1/conversations/bulk", map[string]any{"conversation_ids": []string{a}, "trashed": true, "status": "closed"})
 	tm.scopedKey(h, "conversations:read", "conversations:write").expectProblem(http.StatusForbidden, "insufficient_scope", "POST", "/v1/conversations/bulk",
 		map[string]any{"conversation_ids": []string{a}, "trashed": true})
-	r := tm.owner.expect(http.StatusOK, "POST", "/v1/conversations/bulk", map[string]any{"conversation_ids": []string{a, foreign, b}, "trashed": true})
+	deleter := tm.scopedKey(h, "conversations:read", "conversations:delete")
+	deleter.expectProblem(http.StatusForbidden, "insufficient_scope", "POST", "/v1/conversations/bulk", map[string]any{"conversation_ids": []string{a}, "status": "closed"})
+	r := deleter.expect(http.StatusOK, "POST", "/v1/conversations/bulk", map[string]any{"conversation_ids": []string{a, foreign, b}, "trashed": true})
 	updated, failed := r.body["updated"].([]any), r.body["failed"].([]any)
 	if len(updated) != 2 || len(failed) != 1 || failed[0].(map[string]any)["id"] != foreign || failed[0].(map[string]any)["code"] != "not_found" {
 		t.Fatalf("bulk trash: %s", r.raw)
@@ -188,10 +205,21 @@ func TestTrashedConversationLeavesContacts(t *testing.T) {
 	h := newHarness(t)
 	ct := newChatTeam(t, h, "live", false)
 	cs := ct.session(h, map[string]any{"identity_token": ct.token(h, map[string]any{"sub": "user-9"})})
-	conv := cs.start("first question")
+	started := cs.expect(http.StatusCreated, "POST", "/client/v1/conversations", map[string]any{"body": "first question", "subject": "Billing", "client_id": "first-1"})
+	conv := started.body["conversation"].(map[string]any)["id"].(string)
+	firstMessage := started.body["message"].(map[string]any)["id"].(string)
+	ws, _, err := dialContact(h, cs.token, ct.origin, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	ws.nextOf("ready")
 	ct.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "body": "an answer"})
 	before := len(messages(ct.owner, conv))
 	ct.owner.expect(http.StatusOK, "DELETE", "/v1/conversations/"+conv, nil)
+	if m := ws.nextOf("conversation.removed"); m.ConversationID != conv || !strings.Contains(string(m.Data), conv) {
+		t.Fatalf("removed frame: %+v", m)
+	}
+	ws.close()
 
 	if items := cs.expect(http.StatusOK, "GET", "/client/v1/conversations", nil).body["items"].([]any); len(items) != 0 {
 		t.Fatalf("client list: %v", items)
@@ -200,6 +228,14 @@ func TestTrashedConversationLeavesContacts(t *testing.T) {
 	cs.expectProblem(http.StatusNotFound, "not_found", "GET", "/client/v1/conversations/"+conv+"/messages", nil)
 	cs.expectProblem(http.StatusNotFound, "not_found", "POST", "/client/v1/conversations/"+conv+"/read", nil)
 
+	original := cs.expect(http.StatusOK, "POST", "/client/v1/conversations/"+conv+"/messages", map[string]any{"body": "first question", "client_id": "first-1"})
+	if original.str("id") != firstMessage || original.str("conversation_id") != conv {
+		t.Fatalf("retry of a message in the trash: %s", original.raw)
+	}
+	cs.expectProblem(http.StatusNotFound, "not_found", "POST", "/client/v1/conversations", map[string]any{"body": "first question", "client_id": "first-1"})
+	if items := cs.expect(http.StatusOK, "GET", "/client/v1/conversations", nil).body["items"].([]any); len(items) != 0 {
+		t.Fatalf("client list after retries: %v", items)
+	}
 	sent := cs.expect(http.StatusCreated, "POST", "/client/v1/conversations/"+conv+"/messages", map[string]any{"body": "hello again", "client_id": "retry-1"})
 	fresh := sent.str("conversation_id")
 	if fresh == "" || fresh == conv {
@@ -214,6 +250,9 @@ func TestTrashedConversationLeavesContacts(t *testing.T) {
 	}
 	if m := lastOf(messages(ct.owner, fresh), "message"); m["body"] != "hello again" {
 		t.Fatalf("new conversation: %v", m)
+	}
+	if got := ct.owner.expect(http.StatusOK, "GET", "/v1/conversations/"+fresh, nil); got.str("subject") != "Billing" || got.str("kind") != "conversation" {
+		t.Fatalf("new conversation keeps the context: %s", got.raw)
 	}
 	if msgs := messages(ct.owner, conv); len(msgs) != before {
 		t.Fatalf("trashed conversation changed: %v", msgs)
@@ -250,6 +289,10 @@ func TestTrashDeletedAfterThirtyDays(t *testing.T) {
 	otherTrashed, otherKept := other.conversation(other.owner), other.conversation(other.owner)
 	key := et.scopedKey(h, "conversations:read", "conversations:delete", "audit:read")
 	otherKey := other.scopedKey(h, "conversations:read", "audit:read")
+	plainKey := et.apiKey(h)
+	att := lastOf(messages(et.owner, conv), "message")["attachments"].([]any)[0].(map[string]any)["id"].(string)
+	et.owner.expect(http.StatusOK, "PATCH", "/v1/workspace", map[string]any{"retention_days": 1})
+	et.owner.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"status": "closed"})
 
 	et.owner.expect(http.StatusOK, "DELETE", "/v1/conversations/"+conv, nil)
 	et.owner.expect(http.StatusOK, "POST", "/v1/conversations/"+conv+"/restore", nil)
@@ -265,14 +308,24 @@ func TestTrashDeletedAfterThirtyDays(t *testing.T) {
 		t.Fatalf("conversation.trashed: %s", hooks[0].body)
 	}
 
-	h.clock.Advance(29*24*time.Hour + 22*time.Hour)
-	if err := h.srv.PurgeTrash(context.Background()); err != nil {
+	key.expect(http.StatusOK, "GET", "/v1/attachments/"+att, nil)
+	key.expect(http.StatusOK, "GET", "/v1/messages/"+in.str("message_id")+"/raw", nil)
+	plainKey.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/attachments/"+att, nil)
+	plainKey.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/messages/"+in.str("message_id")+"/raw", nil)
+
+	h.clock.Advance(2 * 24 * time.Hour)
+	if err := h.srv.ApplyRetention(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	key.expect(http.StatusOK, "GET", "/v1/conversations/"+conv, nil)
+	h.clock.Advance(27*24*time.Hour + 22*time.Hour)
+	if err := h.srv.PurgeTrash(context.Background(), time.Minute); err != nil {
 		t.Fatal(err)
 	}
 	key.expect(http.StatusOK, "GET", "/v1/conversations/"+conv, nil)
 	h.clock.Advance(2 * time.Hour)
 	key.expectProblem(http.StatusConflict, "trash_expired", "POST", "/v1/conversations/"+conv+"/restore", nil)
-	if err := h.srv.PurgeTrash(context.Background()); err != nil {
+	if err := h.srv.PurgeTrash(context.Background(), time.Minute); err != nil {
 		t.Fatal(err)
 	}
 	key.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/conversations/"+conv, nil)

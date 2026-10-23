@@ -153,7 +153,7 @@ SELECT * FROM channels WHERE workspace_id = $1 AND inbox_id = $2 AND kind = 'api
 
 -- name: ListExpiredConversationIDs :many
 SELECT id FROM conversations
-WHERE workspace_id = @workspace_id AND status = 'closed'
+WHERE workspace_id = @workspace_id AND status = 'closed' AND trashed_at IS NULL
   AND updated_at < @before AND last_activity_at < @before
 ORDER BY updated_at, id
 LIMIT @max_rows;
@@ -179,20 +179,21 @@ UPDATE conversations c SET feedback = c.feedback || jsonb_build_object(
 WHERE c.workspace_id = @workspace_id AND c.id = @id AND c.kind = 'feedback'
 RETURNING *;
 
+-- The trash's 30 days run on the database's clock (at replaces it in tests), as rate limits do.
 -- name: TrashConversation :one
-UPDATE conversations SET trashed_at = @now::timestamptz, trashed_by_member_id = sqlc.narg(member_id), trashed_by_api_key_id = sqlc.narg(api_key_id), updated_at = @now::timestamptz
+UPDATE conversations SET trashed_at = coalesce(sqlc.narg(at)::timestamptz, clock_timestamp()), trashed_by_member_id = sqlc.narg(member_id), trashed_by_api_key_id = sqlc.narg(api_key_id), updated_at = @now::timestamptz
 WHERE workspace_id = @workspace_id AND id = @id AND trashed_at IS NULL
 RETURNING *;
 
 -- name: RestoreConversation :one
 UPDATE conversations SET trashed_at = NULL, trashed_by_member_id = NULL, trashed_by_api_key_id = NULL, updated_at = @now
-WHERE workspace_id = @workspace_id AND id = @id AND trashed_at IS NOT NULL
+WHERE workspace_id = @workspace_id AND id = @id AND trashed_at > coalesce(sqlc.narg(at)::timestamptz, clock_timestamp()) - interval '720 hours'
 RETURNING *;
 
 -- Locked, so a restore that commits first keeps its conversation and one that comes later finds it gone.
 -- name: ListExpiredTrash :many
 SELECT id, inbox_id, contact_id FROM conversations
-WHERE workspace_id = @workspace_id AND trashed_at <= @before::timestamptz
+WHERE workspace_id = @workspace_id AND trashed_at <= coalesce(sqlc.narg(at)::timestamptz, clock_timestamp()) - interval '720 hours'
 ORDER BY trashed_at, id
 LIMIT @max_rows
 FOR UPDATE;
@@ -200,5 +201,5 @@ FOR UPDATE;
 -- name: ListWorkspacesWithExpiredTrash :many
 SELECT w.id FROM workspaces w
 WHERE w.deleted_at IS NULL
-  AND EXISTS (SELECT 1 FROM conversations c WHERE c.workspace_id = w.id AND c.trashed_at <= @before::timestamptz)
+  AND EXISTS (SELECT 1 FROM conversations c WHERE c.workspace_id = w.id AND c.trashed_at <= coalesce(sqlc.narg(at)::timestamptz, clock_timestamp()) - interval '720 hours')
 ORDER BY w.id;

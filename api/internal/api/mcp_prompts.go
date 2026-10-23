@@ -135,10 +135,11 @@ func (c *mcpCall) inboxLocale(ctx context.Context, conversationID uuid.UUID) str
 	}
 	ctx = c.as(ctx)
 	res, err := c.s.GetConversation(ctx, oas.GetConversationRequestObject{ConversationId: conversationID})
-	if err != nil || res.(oas.GetConversation200JSONResponse).TrashedAt != nil {
+	conv, ok := res.(oas.GetConversation200JSONResponse)
+	if err != nil || !ok || conv.TrashedAt != nil {
 		return ""
 	}
-	in, err := c.s.GetInbox(ctx, oas.GetInboxRequestObject{InboxId: res.(oas.GetConversation200JSONResponse).InboxId})
+	in, err := c.s.GetInbox(ctx, oas.GetInboxRequestObject{InboxId: conv.InboxId})
 	if err != nil {
 		return ""
 	}

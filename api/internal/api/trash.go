@@ -2,6 +2,8 @@ package api
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"net/http"
 	"time"
 	"uuid"
@@ -68,8 +70,13 @@ func (s *Server) RestoreConversation(ctx context.Context, req oas.RestoreConvers
 	return oas.RestoreConversation200JSONResponse(out), nil
 }
 
+// dbAt is the time trash windows are measured at: nil, the database's clock, except in tests.
+func (s *Server) dbAt() *time.Time { return s.limits.at() }
+
 // setTrashed moves a conversation to the trash or back; one already where it should be is
-// answered unchanged, without an event or audit entry.
+// answered unchanged, without an event or audit entry. Trashing deletes the conversation's earlier
+// events but its trash and restore ones, so the event feed and realtime replays stop showing it;
+// a webhook of such an event not yet fanned out is not sent.
 func (s *Server) setTrashed(ctx context.Context, q *store.Queries, events *eventBatch, p principal, id uuid.UUID, trash bool) (oas.Conversation, error) {
 	cur, err := visibleConversationOrTrashed(ctx, q, p, id, true)
 	if err != nil {
@@ -80,19 +87,22 @@ func (s *Server) setTrashed(ctx context.Context, q *store.Queries, events *event
 	typ, action := realtime.ConversationTrashed, oas.AuditConversationTrashed
 	switch {
 	case trash && cur.TrashedAt == nil:
-		arg := store.TrashConversationParams{WorkspaceID: p.workspaceID, ID: cur.ID, Now: now}
+		arg := store.TrashConversationParams{WorkspaceID: p.workspaceID, ID: cur.ID, Now: now, At: s.dbAt()}
 		if p.isKey() {
 			arg.ApiKeyID = new(p.keyID)
 		} else if p.memberID != uuid.Nil() {
 			arg.MemberID = new(p.memberID)
 		}
-		next, err = q.TrashConversation(ctx, arg)
+		if next, err = q.TrashConversation(ctx, arg); err != nil {
+			return oas.Conversation{}, err
+		}
+		err = q.DeleteConversationEvents(ctx, store.DeleteConversationEventsParams{WorkspaceID: p.workspaceID, ConversationIds: []uuid.UUID{cur.ID}, KeepTrash: true})
 	case !trash && cur.TrashedAt != nil:
-		if !now.Before(trashExpiry(*cur.TrashedAt)) {
+		typ, action = realtime.ConversationRestored, oas.AuditConversationRestored
+		next, err = q.RestoreConversation(ctx, store.RestoreConversationParams{WorkspaceID: p.workspaceID, ID: cur.ID, Now: now, At: s.dbAt()})
+		if store.IsNotFound(err) {
 			return oas.Conversation{}, errTrashExpired
 		}
-		typ, action = realtime.ConversationRestored, oas.AuditConversationRestored
-		next, err = q.RestoreConversation(ctx, store.RestoreConversationParams{WorkspaceID: p.workspaceID, ID: cur.ID, Now: now})
 	default:
 		return oneConversation(ctx, q, cur)
 	}
@@ -107,39 +117,52 @@ func (s *Server) setTrashed(ctx context.Context, q *store.Queries, events *event
 	return out, s.audit(ctx, q, p, action, oas.AuditTargetConversation, next.ID, auditDetails{"inbox_id": next.InboxID})
 }
 
-// PurgeTrash deletes for good, in every workspace, the conversations that went to the trash more
-// than 30 days ago, with their messages, attachments, raw e-mails and stored files.
-func (s *Server) PurgeTrash(ctx context.Context) error {
-	now := s.now()
-	before := now.Add(-trashKept)
-	workspaces, err := s.st.ListWorkspacesWithExpiredTrash(ctx, before)
+// PurgeTrash deletes for good, in every workspace, the conversations that went to the trash 30
+// days ago or more, with their messages, attachments, raw e-mails, stored files and events, for
+// at most about budget; the next run goes on. A workspace that fails does not stop the others.
+func (s *Server) PurgeTrash(ctx context.Context, budget time.Duration) error {
+	deadline := time.Now().Add(budget)
+	workspaces, err := s.st.ListWorkspacesWithExpiredTrash(ctx, s.dbAt())
 	if err != nil {
 		return err
 	}
+	var errs []error
 	for _, ws := range workspaces {
-		for {
-			n, _, err := s.deleteConversationBatch(ctx, ws, func(q *store.Queries, events *eventBatch) ([]uuid.UUID, error) {
-				rows, err := q.ListExpiredTrash(ctx, store.ListExpiredTrashParams{WorkspaceID: ws, Before: before, MaxRows: retentionBatch})
-				if err != nil {
-					return nil, err
-				}
-				ids := make([]uuid.UUID, len(rows))
-				for i, r := range rows {
-					ids[i] = r.ID
-					events.add(realtime.ConversationDeleted, new(r.InboxID), new(r.ID), oas.ConversationDeleted{Id: r.ID, InboxId: r.InboxID, ContactId: r.ContactID})
-					if err := writeSystemAudit(ctx, q, ws, now, oas.AuditConversationDeleted, oas.AuditTargetConversation, r.ID, auditDetails{"inbox_id": r.InboxID}); err != nil {
-						return nil, err
-					}
-				}
-				return ids, nil
-			})
-			if err != nil {
-				return err
-			}
-			if n < retentionBatch {
-				break
-			}
+		if time.Now().After(deadline) {
+			break
+		}
+		if err := s.purgeWorkspaceTrash(ctx, ws, deadline); err != nil {
+			errs = append(errs, fmt.Errorf("workspace %s: %w", ws, err))
 		}
 	}
-	return nil
+	return errors.Join(errs...)
+}
+
+func (s *Server) purgeWorkspaceTrash(ctx context.Context, ws uuid.UUID, deadline time.Time) error {
+	now := s.now()
+	for {
+		n, _, err := s.deleteConversationBatch(ctx, ws, func(q *store.Queries, events *eventBatch) ([]uuid.UUID, error) {
+			rows, err := q.ListExpiredTrash(ctx, store.ListExpiredTrashParams{WorkspaceID: ws, At: s.dbAt(), MaxRows: retentionBatch})
+			if err != nil || len(rows) == 0 {
+				return nil, err
+			}
+			ids := make([]uuid.UUID, len(rows))
+			for i, r := range rows {
+				ids[i] = r.ID
+			}
+			if err := q.DeleteConversationEvents(ctx, store.DeleteConversationEventsParams{WorkspaceID: ws, ConversationIds: ids}); err != nil {
+				return nil, err
+			}
+			for _, r := range rows {
+				events.add(realtime.ConversationDeleted, new(r.InboxID), new(r.ID), oas.ConversationDeleted{Id: r.ID, InboxId: r.InboxID, ContactId: r.ContactID})
+				if err := writeSystemAudit(ctx, q, ws, now, oas.AuditConversationDeleted, oas.AuditTargetConversation, r.ID, auditDetails{"inbox_id": r.InboxID}); err != nil {
+					return nil, err
+				}
+			}
+			return ids, nil
+		})
+		if err != nil || n < retentionBatch || time.Now().After(deadline) {
+			return err
+		}
+	}
 }

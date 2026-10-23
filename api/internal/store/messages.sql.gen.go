@@ -306,9 +306,9 @@ func (q *Queries) DeleteDraft(ctx context.Context, arg DeleteDraftParams) (int64
 }
 
 const getAttachment = `-- name: GetAttachment :one
-SELECT a.id, a.workspace_id, a.conversation_id, a.message_id, a.storage_key, a.filename, a.content_type, a.size_bytes, a.created_at, a.content_id, a.inline, c.inbox_id FROM attachments a
+SELECT a.id, a.workspace_id, a.conversation_id, a.message_id, a.storage_key, a.filename, a.content_type, a.size_bytes, a.created_at, a.content_id, a.inline, c.inbox_id, c.trashed_at FROM attachments a
 JOIN conversations c ON c.workspace_id = a.workspace_id AND c.id = a.conversation_id
-WHERE a.workspace_id = $1 AND a.id = $2 AND c.trashed_at IS NULL
+WHERE a.workspace_id = $1 AND a.id = $2
 `
 
 type GetAttachmentParams struct {
@@ -329,6 +329,7 @@ type GetAttachmentRow struct {
 	ContentID      *string
 	Inline         bool
 	InboxID        uuid.UUID
+	TrashedAt      *time.Time
 }
 
 func (q *Queries) GetAttachment(ctx context.Context, arg GetAttachmentParams) (GetAttachmentRow, error) {
@@ -347,6 +348,7 @@ func (q *Queries) GetAttachment(ctx context.Context, arg GetAttachmentParams) (G
 		&i.ContentID,
 		&i.Inline,
 		&i.InboxID,
+		&i.TrashedAt,
 	)
 	return i, err
 }

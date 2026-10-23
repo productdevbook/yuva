@@ -138,7 +138,7 @@ LIMIT 1;
 
 -- name: CountRecentConversations :one
 SELECT count(*) FROM conversations
-WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND contact_id = @contact_id AND created_at > @since AND trashed_at IS NULL;
+WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND contact_id = @contact_id AND created_at > @since;
 
 -- name: LatestContactConversation :one
 SELECT * FROM conversations

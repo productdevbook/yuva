@@ -101,7 +101,7 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"CreateConversation":      {oas.ConversationsWrite},
 	"UpdateConversation":      {oas.ConversationsWrite},
 	"MoveConversation":        {oas.ConversationsWrite},
-	"BulkUpdateConversations": {oas.ConversationsWrite},
+	"BulkUpdateConversations": nil,
 	"TrashConversation":       {oas.ConversationsDelete},
 	"RestoreConversation":     {oas.ConversationsDelete},
 
@@ -369,7 +369,9 @@ func errInsufficientScope(scope oas.ApiKeyScope) *apiError {
 }
 
 // keyMayCall refuses a key an operation that is not in operationScopes or whose scopes it lacks;
-// CreateMessage (nil) needs messages:write or notes:write by its kind, checked once the body is read.
+// CreateMessage (nil) needs messages:write or notes:write by its kind, and BulkUpdateConversations
+// (nil) conversations:delete for trashed and conversations:write for any other change, checked
+// once the body is read.
 func keyMayCall(p principal, operationID string) error {
 	scopes, ok := operationScopes[operationID]
 	if !ok {

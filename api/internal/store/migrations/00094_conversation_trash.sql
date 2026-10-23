@@ -12,6 +12,8 @@ ALTER TABLE conversations
 ALTER TABLE conversations VALIDATE CONSTRAINT conversations_trashed_by_member_fkey;
 ALTER TABLE conversations VALIDATE CONSTRAINT conversations_trashed_by_api_key_fkey;
 CREATE INDEX conversations_trashed_idx ON conversations (workspace_id, trashed_at) WHERE trashed_at IS NOT NULL;
+-- Trashing a conversation deletes its earlier events, so the event feed and replays no longer show it.
+CREATE INDEX events_conversation_idx ON events (workspace_id, conversation_id) WHERE conversation_id IS NOT NULL;
 
 CREATE OR REPLACE VIEW member_mentions AS
 SELECT m.workspace_id, mm.member_id, m.id AS message_id, m.conversation_id, c.inbox_id, m.created_at, m.mentions,
@@ -53,6 +55,7 @@ LEFT JOIN mention_seen ms
        ON ms.workspace_id = m.workspace_id AND ms.message_id = m.id AND ms.member_id = mm.member_id
 WHERE m.kind = 'note' AND NOT m.draft AND m.author_member_id IS DISTINCT FROM mm.member_id;
 
+DROP INDEX events_conversation_idx;
 DROP INDEX conversations_trashed_idx;
 ALTER TABLE conversations
     DROP CONSTRAINT conversations_trashed_by_api_key_fkey,

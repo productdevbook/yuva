@@ -718,7 +718,7 @@ func (q *Queries) ListConversationsStorageKeys(ctx context.Context, arg ListConv
 
 const listExpiredConversationIDs = `-- name: ListExpiredConversationIDs :many
 SELECT id FROM conversations
-WHERE workspace_id = $1 AND status = 'closed'
+WHERE workspace_id = $1 AND status = 'closed' AND trashed_at IS NULL
   AND updated_at < $2 AND last_activity_at < $2
 ORDER BY updated_at, id
 LIMIT $3
@@ -752,7 +752,7 @@ func (q *Queries) ListExpiredConversationIDs(ctx context.Context, arg ListExpire
 
 const listExpiredTrash = `-- name: ListExpiredTrash :many
 SELECT id, inbox_id, contact_id FROM conversations
-WHERE workspace_id = $1 AND trashed_at <= $2::timestamptz
+WHERE workspace_id = $1 AND trashed_at <= coalesce($2::timestamptz, clock_timestamp()) - interval '720 hours'
 ORDER BY trashed_at, id
 LIMIT $3
 FOR UPDATE
@@ -760,7 +760,7 @@ FOR UPDATE
 
 type ListExpiredTrashParams struct {
 	WorkspaceID uuid.UUID
-	Before      time.Time
+	At          *time.Time
 	MaxRows     int32
 }
 
@@ -772,7 +772,7 @@ type ListExpiredTrashRow struct {
 
 // Locked, so a restore that commits first keeps its conversation and one that comes later finds it gone.
 func (q *Queries) ListExpiredTrash(ctx context.Context, arg ListExpiredTrashParams) ([]ListExpiredTrashRow, error) {
-	rows, err := q.db.Query(ctx, listExpiredTrash, arg.WorkspaceID, arg.Before, arg.MaxRows)
+	rows, err := q.db.Query(ctx, listExpiredTrash, arg.WorkspaceID, arg.At, arg.MaxRows)
 	if err != nil {
 		return nil, err
 	}
@@ -794,12 +794,12 @@ func (q *Queries) ListExpiredTrash(ctx context.Context, arg ListExpiredTrashPara
 const listWorkspacesWithExpiredTrash = `-- name: ListWorkspacesWithExpiredTrash :many
 SELECT w.id FROM workspaces w
 WHERE w.deleted_at IS NULL
-  AND EXISTS (SELECT 1 FROM conversations c WHERE c.workspace_id = w.id AND c.trashed_at <= $1::timestamptz)
+  AND EXISTS (SELECT 1 FROM conversations c WHERE c.workspace_id = w.id AND c.trashed_at <= coalesce($1::timestamptz, clock_timestamp()) - interval '720 hours')
 ORDER BY w.id
 `
 
-func (q *Queries) ListWorkspacesWithExpiredTrash(ctx context.Context, before time.Time) ([]uuid.UUID, error) {
-	rows, err := q.db.Query(ctx, listWorkspacesWithExpiredTrash, before)
+func (q *Queries) ListWorkspacesWithExpiredTrash(ctx context.Context, at *time.Time) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listWorkspacesWithExpiredTrash, at)
 	if err != nil {
 		return nil, err
 	}
@@ -960,7 +960,7 @@ func (q *Queries) RemoveConversationLabel(ctx context.Context, arg RemoveConvers
 
 const restoreConversation = `-- name: RestoreConversation :one
 UPDATE conversations SET trashed_at = NULL, trashed_by_member_id = NULL, trashed_by_api_key_id = NULL, updated_at = $1
-WHERE workspace_id = $2 AND id = $3 AND trashed_at IS NOT NULL
+WHERE workspace_id = $2 AND id = $3 AND trashed_at > coalesce($4::timestamptz, clock_timestamp()) - interval '720 hours'
 RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id
 `
 
@@ -968,10 +968,16 @@ type RestoreConversationParams struct {
 	Now         time.Time
 	WorkspaceID uuid.UUID
 	ID          uuid.UUID
+	At          *time.Time
 }
 
 func (q *Queries) RestoreConversation(ctx context.Context, arg RestoreConversationParams) (Conversation, error) {
-	row := q.db.QueryRow(ctx, restoreConversation, arg.Now, arg.WorkspaceID, arg.ID)
+	row := q.db.QueryRow(ctx, restoreConversation,
+		arg.Now,
+		arg.WorkspaceID,
+		arg.ID,
+		arg.At,
+	)
 	var i Conversation
 	err := row.Scan(
 		&i.ID,
@@ -1110,24 +1116,27 @@ func (q *Queries) TouchConversation(ctx context.Context, arg TouchConversationPa
 }
 
 const trashConversation = `-- name: TrashConversation :one
-UPDATE conversations SET trashed_at = $1::timestamptz, trashed_by_member_id = $2, trashed_by_api_key_id = $3, updated_at = $1::timestamptz
-WHERE workspace_id = $4 AND id = $5 AND trashed_at IS NULL
+UPDATE conversations SET trashed_at = coalesce($1::timestamptz, clock_timestamp()), trashed_by_member_id = $2, trashed_by_api_key_id = $3, updated_at = $4::timestamptz
+WHERE workspace_id = $5 AND id = $6 AND trashed_at IS NULL
 RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id
 `
 
 type TrashConversationParams struct {
-	Now         time.Time
+	At          *time.Time
 	MemberID    *uuid.UUID
 	ApiKeyID    *uuid.UUID
+	Now         time.Time
 	WorkspaceID uuid.UUID
 	ID          uuid.UUID
 }
 
+// The trash's 30 days run on the database's clock (at replaces it in tests), as rate limits do.
 func (q *Queries) TrashConversation(ctx context.Context, arg TrashConversationParams) (Conversation, error) {
 	row := q.db.QueryRow(ctx, trashConversation,
-		arg.Now,
+		arg.At,
 		arg.MemberID,
 		arg.ApiKeyID,
+		arg.Now,
 		arg.WorkspaceID,
 		arg.ID,
 	)

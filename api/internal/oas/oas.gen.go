@@ -1847,6 +1847,21 @@ func (e ClientConversationCreatedEventType) Valid() bool {
 	}
 }
 
+// Defines values for ClientConversationRemovedEventType.
+const (
+	ConversationRemoved ClientConversationRemovedEventType = "conversation.removed"
+)
+
+// Valid indicates whether the value is a known member of the ClientConversationRemovedEventType enum.
+func (e ClientConversationRemovedEventType) Valid() bool {
+	switch e {
+	case ConversationRemoved:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ClientConversationUpdatedEventType.
 const (
 	ClientConversationUpdatedEventTypeConversationUpdated ClientConversationUpdatedEventType = "conversation.updated"
@@ -10096,6 +10111,25 @@ type ClientConversationPage struct {
 	// NextCursor Absent on the last page.
 	NextCursor *string `json:"next_cursor,omitempty"`
 }
+
+// ClientConversationRemoved defines model for ClientConversationRemoved.
+type ClientConversationRemoved struct {
+	Id uuid.UUID `json:"id"`
+}
+
+// ClientConversationRemovedEvent A member removed the conversation: drop it from the list and close it if it is open. A
+// new message from the contact starts a new conversation. If it is brought back, it arrives
+// again as `conversation.created`.
+type ClientConversationRemovedEvent struct {
+	ConversationId uuid.UUID                          `json:"conversation_id"`
+	CreatedAt      time.Time                          `json:"created_at"`
+	Data           ClientConversationRemoved          `json:"data"`
+	Id             int64                              `json:"id"`
+	Type           ClientConversationRemovedEventType `json:"type"`
+}
+
+// ClientConversationRemovedEventType defines model for ClientConversationRemovedEvent.Type.
+type ClientConversationRemovedEventType string
 
 // ClientConversationStatus defines model for ClientConversationStatus.
 type ClientConversationStatus struct {
@@ -24866,6 +24900,32 @@ func (t *ClientRealtimeMessage) MergeClientConversationUpdatedEvent(v ClientConv
 	return err
 }
 
+// AsClientConversationRemovedEvent returns the union data inside the ClientRealtimeMessage as a ClientConversationRemovedEvent
+func (t ClientRealtimeMessage) AsClientConversationRemovedEvent() (ClientConversationRemovedEvent, error) {
+	var body ClientConversationRemovedEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromClientConversationRemovedEvent overwrites any union data inside the ClientRealtimeMessage as the provided ClientConversationRemovedEvent
+func (t *ClientRealtimeMessage) FromClientConversationRemovedEvent(v ClientConversationRemovedEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeClientConversationRemovedEvent performs a merge with any union data inside the ClientRealtimeMessage, using the provided ClientConversationRemovedEvent
+func (t *ClientRealtimeMessage) MergeClientConversationRemovedEvent(v ClientConversationRemovedEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsClientMessageEvent returns the union data inside the ClientRealtimeMessage as a ClientMessageEvent
 func (t ClientRealtimeMessage) AsClientMessageEvent() (ClientMessageEvent, error) {
 	var body ClientMessageEvent
@@ -25092,6 +25152,8 @@ func (t ClientRealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsClientContactUpdatedEvent()
 	case "conversation.created":
 		return t.AsClientConversationCreatedEvent()
+	case "conversation.removed":
+		return t.AsClientConversationRemovedEvent()
 	case "conversation.updated":
 		return t.AsClientConversationUpdatedEvent()
 	case "inbox.updated":

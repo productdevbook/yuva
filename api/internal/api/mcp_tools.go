@@ -204,11 +204,11 @@ func (c *mcpCall) conversation(ctx context.Context, id uuid.UUID, cursor string,
 	if err != nil {
 		return out, err
 	}
-	conv := oas.Conversation(res.(oas.GetConversation200JSONResponse))
-	if conv.TrashedAt != nil {
+	got, ok := res.(oas.GetConversation200JSONResponse)
+	if !ok || got.TrashedAt != nil {
 		return out, errConversationGone
 	}
-	out.Conversation = conversationOut(conv)
+	out.Conversation = conversationOut(oas.Conversation(got))
 	if limit == 0 {
 		limit = 50
 	}
@@ -679,13 +679,13 @@ var mcpTools = append([]mcpTool{
 		}),
 	defineTool("add_labels", "Add labels",
 		"Adds labels to a conversation and keeps the others. Maps to POST /v1/conversations/bulk with add_labels.",
-		idempotent, nil, mcpTool{ops: []string{"BulkUpdateConversations"}},
+		idempotent, nil, mcpTool{ops: []string{"BulkUpdateConversations"}, scopes: []oas.ApiKeyScope{oas.ConversationsWrite}},
 		func(ctx context.Context, c *mcpCall, in labelsIn) (mcpConversation, error) {
 			return c.changeLabels(ctx, in, true)
 		}),
 	defineTool("remove_labels", "Remove labels",
 		"Removes labels from a conversation. Maps to POST /v1/conversations/bulk with remove_labels.",
-		idempotent, nil, mcpTool{ops: []string{"BulkUpdateConversations"}},
+		idempotent, nil, mcpTool{ops: []string{"BulkUpdateConversations"}, scopes: []oas.ApiKeyScope{oas.ConversationsWrite}},
 		func(ctx context.Context, c *mcpCall, in labelsIn) (mcpConversation, error) {
 			return c.changeLabels(ctx, in, false)
 		}),
@@ -701,7 +701,7 @@ var mcpTools = append([]mcpTool{
 		}),
 	defineTool("bulk_update", "Change several conversations",
 		"Applies one change to up to 100 conversations: status, assignee, labels to add and to remove. Each conversation is changed on its own; refused ones are listed in failed. Maps to POST /v1/conversations/bulk.",
-		idempotent, map[string][]any{"status": conversationStatuses}, mcpTool{ops: []string{"BulkUpdateConversations"}},
+		idempotent, map[string][]any{"status": conversationStatuses}, mcpTool{ops: []string{"BulkUpdateConversations"}, scopes: []oas.ApiKeyScope{oas.ConversationsWrite}},
 		func(ctx context.Context, c *mcpCall, in bulkIn) (bulkOut, error) {
 			b := oas.ConversationBulkUpdate{
 				ConversationIds: in.ConversationIDs, Status: optString[oas.ConversationStatus](in.Status), SnoozeUntil: in.SnoozeUntil,
