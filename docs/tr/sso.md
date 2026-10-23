@@ -226,7 +226,7 @@ basarak bunu temizleyin.
   yalnızca sağlayıcınız üzerinden giriş yaptıktan sonra çalışır. E-postayla gelen kod ya da geçiş
   anahtarıyla açılan oturum onları yine içeri alır, diğer çalışma alanlarına ve tartışmalarda okur
   olarak; ama bu çalışma alanı `sso_required` yanıtını verir ve panel onları sağlayıcınıza gönderir.
-  Açtığınız anda var olan oturumlar bir sonraki istekten itibaren reddedilir. Sahipler her oturumla
+  Açtığınızda bu kişilerin sağlayıcınız üzerinden açmadığı bütün oturumları kapanır; diğer çalışma alanları için de, oralara yeniden giriş yaparlar. Sahipler her oturumla
   muaftır; böylece bozulan bir sağlayıcı sizi asla dışarıda bırakmaz. Bu kişilerin bağlı uygulamaları
   (OAuth, MCP) sağlayıcı üzerinden giriş yapıp onları yeniden onaylayana kadar burada çalışmaz; API
   anahtarları etkilenmez. Slack başlıklarındaki yanıtları reddedilir; sağlayıcı üzerinden giriş

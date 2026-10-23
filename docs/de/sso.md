@@ -234,7 +234,7 @@ Prüfen, um das zu beheben.
   nur, nachdem sie sich über Ihren Anbieter angemeldet haben. Eine Sitzung per E-Mail-Code oder
   Passkey meldet sie weiterhin an, für ihre anderen Workspaces und als Leser von Diskussionen, aber
   dieser Workspace antwortet mit `sso_required` und das Panel schickt sie zu Ihrem Anbieter.
-  Sitzungen, die beim Einschalten bestehen, werden ab der nächsten Anfrage abgelehnt. Eigentümer sind
+  Beim Einschalten werden diese Personen aus allen Sitzungen abgemeldet, die nicht über Ihren Anbieter entstanden sind, auch für ihre anderen Workspaces, wo sie sich neu anmelden. Eigentümer sind
   mit jeder Sitzung ausgenommen, damit ein defekter Anbieter Sie nie aussperrt. Verbundene Apps
   (OAuth, MCP) dieser Personen funktionieren hier erst wieder, wenn sie sie nach einer Anmeldung über
   den Anbieter erneut genehmigen; API-Schlüssel sind nicht betroffen. Ihre Antworten in

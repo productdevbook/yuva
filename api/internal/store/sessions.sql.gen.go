@@ -144,6 +144,31 @@ func (q *Queries) ListSessions(ctx context.Context, arg ListSessionsParams) ([]L
 	return items, nil
 }
 
+const revokeSessionsOutsideSso = `-- name: RevokeSessionsOutsideSso :execrows
+DELETE FROM sessions s USING members m, people p
+WHERE m.workspace_id = $1 AND m.role <> 'owner' AND p.id = m.person_id AND s.person_id = p.id
+  AND s.sso_settings_id IS DISTINCT FROM $2::uuid
+  AND EXISTS (
+      SELECT 1 FROM sso_domains d
+      WHERE d.workspace_id = $1 AND d.verified_at IS NOT NULL AND d.domain = substring(p.email from '@([^@]*)$')
+  )
+`
+
+type RevokeSessionsOutsideSsoParams struct {
+	WorkspaceID uuid.UUID
+	SettingsID  uuid.UUID
+}
+
+// Turning sso_required on ends the sessions of the members it covers (owners are exempt) that were
+// not made through this workspace's provider, with their push subscriptions and reader tokens.
+func (q *Queries) RevokeSessionsOutsideSso(ctx context.Context, arg RevokeSessionsOutsideSsoParams) (int64, error) {
+	result, err := q.db.Exec(ctx, revokeSessionsOutsideSso, arg.WorkspaceID, arg.SettingsID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
 const touchSession = `-- name: TouchSession :exec
 UPDATE sessions SET last_seen_at = $1::timestamptz
 WHERE id = $2 AND last_seen_at < $3::timestamptz

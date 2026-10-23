@@ -437,7 +437,15 @@ func (s *Server) UpdateSsoSettings(ctx context.Context, req oas.UpdateSsoSetting
 			if _, err := q.SaveSsoRules(ctx, next); err != nil {
 				return err
 			}
-			if err := s.audit(ctx, q, p, oas.AuditSsoSettingsChanged, oas.AuditTargetSso, cur.ID, auditDetails{"fields": fields, "from": from, "to": to}); err != nil {
+			details := auditDetails{"fields": fields, "from": from, "to": to}
+			if next.SsoRequired && !cur.SsoRequired {
+				n, err := q.RevokeSessionsOutsideSso(ctx, store.RevokeSessionsOutsideSsoParams{WorkspaceID: p.workspaceID, SettingsID: cur.ID})
+				if err != nil {
+					return err
+				}
+				details["sessions_revoked"] = n
+			}
+			if err := s.audit(ctx, q, p, oas.AuditSsoSettingsChanged, oas.AuditTargetSso, cur.ID, details); err != nil {
 				return err
 			}
 		}

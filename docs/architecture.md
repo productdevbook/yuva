@@ -3982,8 +3982,11 @@ and audit; `sso_settings.protocol` (`oidc` or `saml`) says which one, so a works
   session (`/v1`, `/v1/realtime`, approving an OAuth request for it) is refused with `403
   sso_required` and `sso_email` (to send to `POST /v1/auth/sso`) when the person's address is in one
   of the workspace's verified domains and the session was not made through this workspace's
-  provider; the check runs on every request, so sessions that exist when the rule is turned on are
-  refused at once and realtime streams at their next re-check. Signing in with a code or a passkey is
+  provider; the check runs on every request, and realtime streams stop at their next re-check.
+  Turning the rule on also deletes the sessions of the members it covers (not owners) that were not
+  made through this provider, with their push subscriptions and reader tokens, and records the count
+  as `sessions_revoked` in `sso.settings_changed` (#180). Since sessions are the person's, that signs
+  them out of their other workspaces too; they sign in again there. Signing in with a code or a passkey is
   never refused for single sign-on: the person still reaches their other workspaces and the reader
   account (discussions on any server page). Owners are exempt whatever their session, so a broken
   provider never locks the workspace out. OAuth grants record whether they were approved with such a

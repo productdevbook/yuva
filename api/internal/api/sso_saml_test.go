@@ -503,6 +503,8 @@ func TestSAMLSettingsAndGate(t *testing.T) {
 	rival.expectProblem(http.StatusForbidden, "not_a_member", "DELETE", "/v1/sso/saml", nil)
 
 	e.owner.expect(http.StatusOK, "PATCH", "/v1/sso", map[string]any{"sso_required": true})
+	codeSession.expectProblem(http.StatusUnauthorized, "unauthenticated", "GET", "/v1/inboxes", nil)
+	codeSession.signIn(agentEmail)
 	codeSession.expectProblem(http.StatusForbidden, "sso_required", "GET", "/v1/inboxes", nil)
 	viaSAML := e.h.client()
 	wantLocation(t, e.signIn(viaSAML, agentEmail, nil), "/conversations")

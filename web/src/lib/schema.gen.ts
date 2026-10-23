@@ -893,8 +893,10 @@ export interface paths {
          * @description `sso_required`: a member whose address is in one of the workspace's verified domains acts
          *     in the workspace (`/v1` with a session, `/v1/realtime`, approving an OAuth request) only
          *     with a session made through this workspace's provider; any other session gets `403
-         *     sso_required` with `sso_email`, to send to `POST /v1/auth/sso`. Sessions that exist when it
-         *     is turned on are refused at once. Signing in with a code or a passkey still works (for
+         *     sso_required` with `sso_email`, to send to `POST /v1/auth/sso`. Turning it on ends the
+         *     sessions of covered members that were not made through this provider, as `DELETE
+         *     /v1/me/sessions` would (their other workspaces need a new sign-in too); sessions made later
+         *     are refused on every request. Signing in with a code or a passkey still works (for
          *     other workspaces and as a reader). Owners are exempt, so a broken identity provider never
          *     locks the workspace out. OAuth grants of covered members work only when they were approved
          *     with such a session; API keys are not affected. Replies and notes from Slack threads of a
@@ -12222,7 +12224,8 @@ export interface components {
          *       fetched again at a sign-in is `sso.provider_updated` by `system` with `via:
          *       metadata_refresh`. `sso.provider_deleted`: `protocol`.
          *     - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
-         *       `sso_required`, `jit` and `jit_role`.
+         *       `sso_required`, `jit` and `jit_role`; `sessions_revoked`, the sessions ended, when
+         *       `sso_required` was turned on.
          *     - `sso.signed_in`: `protocol`, `email`, and `joined` (`jit` or `invite`) when the sign-in
          *       made the person a member; the actor is the member, or `system` when the person is not one.
          *     - `sso.sign_in_refused`: `protocol`, `reason` (`failed` when the code exchange failed,

@@ -384,7 +384,7 @@ func (sh samlShape) problem(acs string) string {
 }
 
 func (s *Server) serveSAMLACS(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
+	ctx := context.WithValue(r.Context(), requestKey, r)
 	panel := strings.TrimRight(s.auth.PublicURL, "/")
 	w.Header().Set("Cache-Control", "no-store")
 	w.Header().Add("Set-Cookie", s.samlCookie("", -1))

@@ -369,19 +369,22 @@ func TestSSORequiredGatesWorkspaceAccess(t *testing.T) {
 		t.Fatalf("settings: %s", r.raw)
 	}
 
-	refused := codeSession.expect(http.StatusForbidden, "GET", "/v1/inboxes", nil)
-	if refused.str("code") != "sso_required" || refused.str("sso_email") != agentEmail {
-		t.Fatalf("existing code session: %s", refused.raw)
+	codeSession.expectProblem(http.StatusUnauthorized, "unauthenticated", "GET", "/v1/me", nil)
+	if a := e.auditActions(t)["sso.settings_changed"]; len(a) == 0 || a[0]["details"].(map[string]any)["sessions_revoked"] != float64(1) {
+		t.Fatalf("audit of the revoked sessions: %v", a)
 	}
-	codeSession.expect(http.StatusOK, "GET", "/v1/me", nil)
-	codeSession.expect(http.StatusOK, "GET", "/v1/account", nil)
-	codeSession.workspace = other.WorkspaceID.String()
-	codeSession.expect(http.StatusOK, "GET", "/v1/inboxes", nil)
 
 	fresh := e.h.client()
 	fresh.signIn(agentEmail)
 	fresh.workspace = e.ws.WorkspaceID.String()
-	fresh.expectProblem(http.StatusForbidden, "sso_required", "GET", "/v1/inboxes", nil)
+	refused := fresh.expect(http.StatusForbidden, "GET", "/v1/inboxes", nil)
+	if refused.str("code") != "sso_required" || refused.str("sso_email") != agentEmail {
+		t.Fatalf("code session: %s", refused.raw)
+	}
+	fresh.expect(http.StatusOK, "GET", "/v1/me", nil)
+	fresh.expect(http.StatusOK, "GET", "/v1/account", nil)
+	fresh.workspace = other.WorkspaceID.String()
+	fresh.expect(http.StatusOK, "GET", "/v1/inboxes", nil)
 
 	ownerByCode := e.h.client()
 	ownerByCode.signIn("owner@" + e.domain)
@@ -401,8 +404,8 @@ func TestSSORequiredGatesWorkspaceAccess(t *testing.T) {
 	viaSSO.expectProblem(http.StatusForbidden, "sso_session_scope", "GET", "/v1/inboxes", nil)
 
 	e.owner.expect(http.StatusOK, "PATCH", "/v1/sso", map[string]any{"sso_required": false})
-	codeSession.workspace = e.ws.WorkspaceID.String()
-	codeSession.expect(http.StatusOK, "GET", "/v1/inboxes", nil)
+	fresh.workspace = e.ws.WorkspaceID.String()
+	fresh.expect(http.StatusOK, "GET", "/v1/inboxes", nil)
 
 	e.owner.expect(http.StatusOK, "PATCH", "/v1/sso", map[string]any{"sso_required": true})
 	e.owner.expect(http.StatusNoContent, "DELETE", "/v1/sso/oidc", nil)
@@ -410,7 +413,13 @@ func TestSSORequiredGatesWorkspaceAccess(t *testing.T) {
 	if got.body["sso_required"] != false || got.body["oidc"] != nil || len(got.body["domains"].([]any)) != 1 {
 		t.Fatalf("after provider removed: %s", got.raw)
 	}
-	codeSession.expect(http.StatusOK, "GET", "/v1/inboxes", nil)
+	viaSSO.workspace = e.ws.WorkspaceID.String()
+	viaSSO.expect(http.StatusOK, "GET", "/v1/inboxes", nil)
+	fresh.expectProblem(http.StatusUnauthorized, "unauthenticated", "GET", "/v1/me", nil)
+	again := e.h.client()
+	again.signIn(agentEmail)
+	again.workspace = e.ws.WorkspaceID.String()
+	again.expect(http.StatusOK, "GET", "/v1/inboxes", nil)
 }
 
 func TestSSOSettingsAccessAndDomains(t *testing.T) {

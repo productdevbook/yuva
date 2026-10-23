@@ -66,6 +66,9 @@ func TestSSOSessionTakeoverAcrossWorkspacesFails(t *testing.T) {
 	if n := len(me.body["memberships"].([]any)); n != 2 {
 		t.Fatalf("memberships: %s", me.raw)
 	}
+	if n := h.count("SELECT count(*) FROM sessions s JOIN people p ON p.id = s.person_id WHERE p.email = $1 AND s.method = 'sso' AND s.user_agent IS NOT NULL", ceo); n != 1 {
+		t.Fatalf("%d SSO sessions record their device", n)
+	}
 	mails := h.mail.to(ceo)[before:]
 	if len(mails) != 1 || !strings.Contains(mails[0].Subject, "through single sign-on") || !strings.Contains(mails[0].Text, ceo) {
 		t.Fatalf("first sign-in mail: %+v", mails)

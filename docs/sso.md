@@ -221,8 +221,9 @@ publish the record again and press Verify to clear it.
 - **Require single sign-on** (`sso_required`): people of your domains work in this workspace only
   after signing in through your provider. A session made with an e-mailed code or a passkey still
   signs them in, to their other workspaces and as readers of discussions, but this workspace
-  answers `sso_required` and the panel sends them to your provider. Sessions that exist when you
-  turn it on are refused from the next request. Owners are exempt with any session, so a broken
+  answers `sso_required` and the panel sends them to your provider. Turning it on signs these
+  people out of every session they did not make through your provider, also for their other
+  workspaces, where they sign in again. Owners are exempt with any session, so a broken
   provider never locks you out. Connected apps (OAuth, MCP) of these people stop working here until
   they approve them again after signing in through the provider; API keys are not affected. Their
   replies in Slack threads are refused, and actions they queued without signing in through the

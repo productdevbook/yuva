@@ -307,7 +307,7 @@ func (s *Server) StartSsoSignIn(ctx context.Context, req oas.StartSsoSignInReque
 }
 
 func (s *Server) serveSSOCallback(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
+	ctx := context.WithValue(r.Context(), requestKey, r)
 	query := r.URL.Query()
 	panel := strings.TrimRight(s.auth.PublicURL, "/")
 	w.Header().Set("Cache-Control", "no-store")

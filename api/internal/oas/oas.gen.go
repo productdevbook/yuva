@@ -9922,7 +9922,8 @@ type Attributes map[string]interface{}
 //     fetched again at a sign-in is `sso.provider_updated` by `system` with `via:
 //     metadata_refresh`. `sso.provider_deleted`: `protocol`.
 //   - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
-//     `sso_required`, `jit` and `jit_role`.
+//     `sso_required`, `jit` and `jit_role`; `sessions_revoked`, the sessions ended, when
+//     `sso_required` was turned on.
 //   - `sso.signed_in`: `protocol`, `email`, and `joined` (`jit` or `invite`) when the sign-in
 //     made the person a member; the actor is the member, or `system` when the person is not one.
 //   - `sso.sign_in_refused`: `protocol`, `reason` (`failed` when the code exchange failed,
@@ -10036,7 +10037,8 @@ type AuditEntry struct {
 	//   fetched again at a sign-in is `sso.provider_updated` by `system` with `via:
 	//   metadata_refresh`. `sso.provider_deleted`: `protocol`.
 	// - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
-	//   `sso_required`, `jit` and `jit_role`.
+	//   `sso_required`, `jit` and `jit_role`; `sessions_revoked`, the sessions ended, when
+	//   `sso_required` was turned on.
 	// - `sso.signed_in`: `protocol`, `email`, and `joined` (`jit` or `invite`) when the sign-in
 	//   made the person a member; the actor is the member, or `system` when the person is not one.
 	// - `sso.sign_in_refused`: `protocol`, `reason` (`failed` when the code exchange failed,

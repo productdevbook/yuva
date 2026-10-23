@@ -19,3 +19,14 @@ ORDER BY last_seen_at DESC, id;
 
 -- name: DeleteOtherSessions :execrows
 DELETE FROM sessions WHERE person_id = @person_id AND id <> @keep;
+
+-- Turning sso_required on ends the sessions of the members it covers (owners are exempt) that were
+-- not made through this workspace's provider, with their push subscriptions and reader tokens.
+-- name: RevokeSessionsOutsideSso :execrows
+DELETE FROM sessions s USING members m, people p
+WHERE m.workspace_id = @workspace_id AND m.role <> 'owner' AND p.id = m.person_id AND s.person_id = p.id
+  AND s.sso_settings_id IS DISTINCT FROM @settings_id::uuid
+  AND EXISTS (
+      SELECT 1 FROM sso_domains d
+      WHERE d.workspace_id = @workspace_id AND d.verified_at IS NOT NULL AND d.domain = substring(p.email from '@([^@]*)$')
+  );
