@@ -14,6 +14,7 @@ import {
   QuoteIcon,
   TextCursorInputIcon,
   TimerIcon,
+  WorkflowIcon,
   UsersRoundIcon,
   ZapIcon,
   ScrollTextIcon,
@@ -25,6 +26,7 @@ import { Outlet, useLocation } from "react-router"
 
 import { Column, ColumnHeading, ColumnLink } from "@/components/common/Column"
 import { initials, useEnumText } from "@/components/common/text"
+import { useAutomationRules } from "@/features/settings/automation/queries"
 import { useSlack } from "@/features/settings/slack/queries"
 import { useIssueIntegrations } from "@/features/issues/queries"
 import { ProductsHome } from "@/features/settings/ProductsPage"
@@ -130,6 +132,7 @@ export function SettingsColumn() {
   const teams = useTeams().data
   const fields = useCustomFields().data
   const sla = useSlaPolicies().data
+  const rules = useAutomationRules().data
   const apiKeys = useQuery({
     queryKey: keys.apiKeys(ws),
     queryFn: () => unwrap(api.GET("/v1/api-keys")).then((r) => r.items),
@@ -241,6 +244,17 @@ export function SettingsColumn() {
             <RowText
               title={<Trans>SLA policies</Trans>}
               detail={<Trans>Reply and resolution targets with due times</Trans>}
+            />
+          </NavRow>
+        )}
+        {canManage && (
+          <NavRow to="/settings/automation" value={list(rules?.length)}>
+            <RowIcon>
+              <WorkflowIcon />
+            </RowIcon>
+            <RowText
+              title={<Trans>Automation</Trans>}
+              detail={<Trans>Rules that label, assign, reply and call webhooks</Trans>}
             />
           </NavRow>
         )}

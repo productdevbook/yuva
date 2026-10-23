@@ -1139,6 +1139,10 @@ msgstr "Μια συνομιλία άλλαξε"
 msgid "A conversation is assigned to me"
 msgstr "Μια συνομιλία έχει ανατεθεί σε μένα"
 
+#: src/features/settings/automation/text.ts
+msgid "A conversation is idle"
+msgstr "Μια συνομιλία είναι ανενεργή"
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "Μια συνομιλία λαμβάνεται ολόκληρη όταν ενημερώθηκε τελευταία φορά εντός του εύρους."
@@ -1150,6 +1154,10 @@ msgstr "Μια συνομιλία πρέπει να ταιριάζει με κά
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "Μια συνομιλία ξεκίνησε"
+
+#: src/features/settings/automation/text.ts
+msgid "A conversation starts"
+msgstr "Ξεκινά μια συνομιλία"
 
 #: src/components/common/text.ts
 msgid "A conversation was deleted for good"
@@ -1219,6 +1227,7 @@ msgstr "Ένα πρόχειρο γράφτηκε"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Το περιεχόμενο ενός αρχείου δεν ταιριάζει με τον τύπο του. Ελέγξτε το αρχείο και δοκιμάστε ξανά."
 
+#: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
@@ -1255,6 +1264,10 @@ msgstr "Ένα κλειδί επιτρέπει στο backend σας, σε έν�
 #: src/components/common/text.ts
 msgid "A kind of field holds at most 50 fields. Delete one first."
 msgstr "Ένα αντικείμενο έχει το πολύ 50 πεδία. Διαγράψτε πρώτα ένα."
+
+#: src/features/settings/automation/text.ts
+msgid "A label was deleted"
+msgstr "Μια ετικέτα διαγράφηκε"
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -1400,9 +1413,17 @@ msgstr "Μια απάντηση και οι ενέργειές της σε έν�
 msgid "A reply was written in a discussion"
 msgstr "Μια απάντηση γράφτηκε σε μια συζήτηση"
 
+#: src/features/settings/automation/text.ts
+msgid "A required field is empty"
+msgstr "Ένα υποχρεωτικό πεδίο είναι κενό"
+
 #: src/components/common/text.ts
 msgid "A roadmap idea moved to another stage"
 msgstr "Μια ιδέα του οδικού χάρτη μετακινήθηκε σε άλλο στάδιο"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "A rule that is off never runs. Rules run in the order of the list."
+msgstr "Ένας κανόνας που είναι ανενεργός δεν εκτελείται ποτέ. Οι κανόνες εκτελούνται με τη σειρά της λίστας."
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -1496,6 +1517,10 @@ msgstr "Μια καταχώριση «Τι νέο υπάρχει» αποσύρ�
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "Ένας ακέραιος αριθμός από 1 έως 10.000.000"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 automation rules. Delete one first."
+msgstr "Ένας χώρος εργασίας χωράει το πολύ 100 κανόνες αυτοματισμού. Διαγράψτε πρώτα έναν."
 
 #: src/components/common/text.ts
 msgid "A workspace holds at most 100 SLA policies. Delete one first."
@@ -1679,6 +1704,10 @@ msgstr "Προσθέστε συνομιλία ιστότοπου στις ρυθ
 msgid "Add a website or app"
 msgstr "Προσθήκη ιστότοπου ή εφαρμογής"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Add an action"
+msgstr "Προσθήκη ενέργειας"
+
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
 msgstr "Προσθέστε μια διεύθυνση στον διακομιστή σας και διαλέξτε τα συμβάντα που θα της αναφέρει το Yuva."
@@ -1697,6 +1726,10 @@ msgstr "Προσθήκη εικόνας"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
 msgstr "Προσθήκη εισερχομένων"
+
+#: src/features/settings/automation/text.ts
+msgid "Add an internal note"
+msgstr "Προσθήκη εσωτερικής σημείωσης"
 
 #: src/features/migrations/text.ts
 msgid "Add an OAuth client named “Yuva”, as a confidential client, and enter the redirect URL below as its redirect URL."
@@ -1721,6 +1754,10 @@ msgstr "Προσθήκη καναλιού"
 #: src/features/status/ComponentsTab.tsx
 msgid "Add component"
 msgstr "Προσθήκη στοιχείου"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Add condition"
+msgstr "Προσθήκη συνθήκης"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Add contact"
@@ -1747,6 +1784,10 @@ msgstr "Προσθήκη κεφαλίδας"
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
 msgstr "Προσθήκη ετικέτας {labelName}"
+
+#: src/features/settings/automation/text.ts
+msgid "Add labels"
+msgstr "Προσθήκη ετικετών"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -1929,6 +1970,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "All"
@@ -2086,6 +2128,10 @@ msgstr "Ήδη στη λίστα"
 msgid "Already on the list, left as they are"
 msgstr "Ήδη στη λίστα, παραμένουν ως έχουν"
 
+#: src/features/settings/automation/text.ts
+msgid "already so"
+msgstr "ήδη έτσι"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Also called audience or identifier."
 msgstr "Also called audience or identifier."
@@ -2203,6 +2249,7 @@ msgstr "Μια απάντηση έγινε αποδεκτή στο <0>{title}</0
 msgid "an API key"
 msgstr "ένα κλειδί API"
 
+#: src/components/common/authorText.ts
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "An API key"
 msgstr "Ένα κλειδί API"
@@ -2218,6 +2265,18 @@ msgstr "Ένας κωδικός εφαρμογής θα μπορούσε να α
 #: src/features/broadcasts/ListSettings.tsx
 msgid "An archived list keeps its subscribers and records, but forms and the preference page stop offering it."
 msgstr "Μια αρχειοθετημένη λίστα κρατά τους συνδρομητές και τις εγγραφές της, αλλά οι φόρμες και η σελίδα προτιμήσεων σταματούν να την προσφέρουν."
+
+#: src/components/common/authorText.ts
+msgid "An assistant connected by {name}"
+msgstr "Βοηθός που συνέδεσε ο/η {name}"
+
+#: src/components/common/text.ts
+msgid "An automation rule ran its webhook action"
+msgstr "Ένας κανόνας αυτοματισμού εκτέλεσε την ενέργεια webhook"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "An automation rule sends this reply, but it will not go out until an owner or admin saves the text, or bots may send is turned on."
+msgstr "Ένας κανόνας αυτοματισμού στέλνει αυτή την απάντηση, αλλά δεν θα φύγει μέχρι ένας ιδιοκτήτης ή διαχειριστής να αποθηκεύσει το κείμενο ή να επιτραπεί στα bots να στέλνουν."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "An e-mail address, phone number or web address"
@@ -2582,6 +2641,11 @@ msgstr "Εμφάνιση"
 msgid "Application (client) ID"
 msgstr "Αναγνωριστικό εφαρμογής (πελάτη)"
 
+#: src/features/settings/automation/text.ts
+msgid "Applied"
+msgstr "Εφαρμόστηκε"
+
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Applies to"
 msgstr "Ισχύει για"
@@ -2723,8 +2787,13 @@ msgstr "Ανάθεση ή παράδοση σε συνάδελφο"
 msgid "Assign to {name}"
 msgstr "Ανάθεση σε {name}"
 
+#: src/features/settings/automation/text.ts
+msgid "Assign to a member"
+msgstr "Ανάθεση σε μέλος"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/settings/automation/text.ts
 msgid "Assign to a team"
 msgstr "Ανάθεση σε ομάδα"
 
@@ -2746,6 +2815,7 @@ msgstr "Ανατέθηκε σε {assignee}"
 msgid "Assigned to {assignee}, kept by name"
 msgstr "Ανατέθηκε σε {assignee}, διατηρήθηκε με όνομα"
 
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Assignee"
 msgstr "Υπεύθυνος"
@@ -2848,6 +2918,10 @@ msgstr "Κλειδί χαρακτηριστικού, όπως plan"
 msgid "Attribute keys use letters, digits, dots, dashes and underscores, at most 64."
 msgstr "Τα κλειδιά χαρακτηριστικών χρησιμοποιούν γράμματα, ψηφία, τελείες, παύλες και κάτω παύλες, το πολύ 64."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Attribute name"
+msgstr "Όνομα χαρακτηριστικού"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Attribute of condition {n}"
 msgstr "Χαρακτηριστικό της συνθήκης {n}"
@@ -2889,9 +2963,18 @@ msgstr "Αυτόματη απάντηση"
 msgid "automatic"
 msgstr "αυτόματο"
 
+#: src/features/settings/automation/text.ts
+msgid "Automatic assignment (not available yet)"
+msgstr "Αυτόματη ανάθεση (δεν είναι ακόμη διαθέσιμη)"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "Η αυτόματη αλληλογραφία δεν προκαλεί ποτέ αυτόματη απάντηση."
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Automation"
+msgstr "Αυτοματισμός"
 
 #: src/app/UserMenu.tsx
 msgid "Available"
@@ -3076,6 +3159,14 @@ msgstr "Βρέθηκαν και οι δύο εγγραφές. Το Yuva τις �
 msgid "Bots"
 msgstr "Bots"
 
+#: src/features/settings/automation/text.ts
+msgid "Bots may not send and the author is not an owner or admin"
+msgstr "Τα bots δεν επιτρέπεται να στέλνουν και ο συντάκτης δεν είναι ιδιοκτήτης ή διαχειριστής"
+
+#: src/components/common/text.ts
+msgid "Bots may not send in this workspace, and this reply was not saved by an owner or admin."
+msgstr "Τα bots δεν επιτρέπεται να στέλνουν σε αυτόν τον χώρο εργασίας και αυτή η απάντηση δεν αποθηκεύτηκε από ιδιοκτήτη ή διαχειριστή."
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bots may not send in this workspace: the key writes drafts and a member sends them."
 msgstr "Τα bots δεν επιτρέπεται να στέλνουν σε αυτόν τον χώρο εργασίας: το κλειδί γράφει πρόχειρα και ένα μέλος τα στέλνει."
@@ -3200,6 +3291,8 @@ msgstr "Σφάλματα, ιδέες και επαίνοι από τις εφα�
 msgid "Bundle ID"
 msgstr "Bundle ID"
 
+#: src/features/settings/automation/ConditionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
 msgstr "Ώρες λειτουργίας"
@@ -3215,6 +3308,10 @@ msgstr "Με e-mail"
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "Ανά μέλος"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "by rule {rule}"
+msgstr "από τον κανόνα {rule}"
 
 #: src/components/common/text.ts
 msgid "By the team"
@@ -3340,6 +3437,7 @@ msgid "Canned replies and macros, in the reply box"
 msgstr "Έτοιμες απαντήσεις και μακροεντολές, στο πλαίσιο απάντησης"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Canned reply"
 msgstr "Έτοιμη απάντηση"
 
@@ -3419,6 +3517,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "Άλλαξε τη διάρκεια διατήρησης των συνομιλιών από {from} σε {to}"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the automation rule {name}"
+msgstr "Άλλαξε τον κανόνα αυτοματισμού {name}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the daily broadcast limit from {from} to {to}"
 msgstr "Άλλαξε το ημερήσιο όριο μαζικών αποστολών από {from} σε {to}"
 
@@ -3451,6 +3553,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Η αλλαγή του τομέα αποστολής απενεργοποιεί την υπογραφή DKIM μέχρι να την ενεργοποιήσετε ξανά για τον νέο τομέα."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -3576,6 +3679,10 @@ msgstr "Ελέγχθηκε {when}"
 #: src/features/broadcasts/Import.tsx
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "Ελέγχθηκε και περιμένει έναν ιδιοκτήτη ή διαχειριστή να το ξεκινήσει."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Checked every 5 minutes, once per quiet period. Only open and pending conversations."
+msgstr "Ελέγχεται κάθε 5 λεπτά, μία φορά ανά περίοδο ησυχίας. Μόνο ανοιχτές και εκκρεμείς συνομιλίες."
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Checked with the tracker before it replaces the old one. The current one is never shown."
@@ -3804,6 +3911,10 @@ msgstr "Κλείσιμο κάθε συνομιλίας μετά την απάν�
 msgid "Close everything"
 msgstr "Κλείσιμο όλων"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Close idle conversations"
+msgstr "Κλείσιμο ανενεργών συνομιλιών"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Close older conversations"
 msgstr "Κλείσιμο παλιών συνομιλιών"
@@ -3956,10 +4067,18 @@ msgstr "Στοιχεία που αφορά"
 msgid "Components, history, incidents and updates are deleted with it."
 msgstr "Τα στοιχεία, το ιστορικό, τα περιστατικά και οι ενημερώσεις διαγράφονται μαζί της."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Condition"
+msgstr "Συνθήκη"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Conditions"
 msgstr "Συνθήκες"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Conditions: {n}"
+msgstr "Συνθήκες: {n}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Configuration set"
@@ -4198,6 +4317,10 @@ msgstr "Η επαφή προστέθηκε. Χρησιμοποιήστε τη Ν
 msgid "Contact and identities"
 msgstr "Επαφή και ταυτότητες"
 
+#: src/features/settings/automation/text.ts
+msgid "Contact attribute"
+msgstr "Χαρακτηριστικό επαφής"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactSheet.tsx
@@ -4243,6 +4366,7 @@ msgid "Contacts keep the values they hold; they show as plain attributes instead
 msgstr "Οι επαφές κρατούν τις τιμές που έχουν· εμφανίζονται ως απλά χαρακτηριστικά αντί για πεδίο με τύπο."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "contains"
 msgstr "περιέχει"
 
@@ -4288,6 +4412,10 @@ msgstr "Continue with your organisation's sign-in"
 #: src/features/contact/ContactsPage.tsx
 msgid "Convers."
 msgstr "Συν."
+
+#: src/features/settings/automation/text.ts
+msgid "Conversation"
+msgstr "Συνομιλία"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Conversation actions"
@@ -4586,6 +4714,10 @@ msgstr "Δημιουργία λίστας"
 msgid "Create policy"
 msgstr "Δημιουργία πολιτικής"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create rule"
+msgstr "Δημιουργία κανόνα"
+
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
 msgstr "Δημιουργία σελίδας κατάστασης"
@@ -4635,6 +4767,10 @@ msgstr "Δημιουργήστε τον λογαριασμό σας στο Yuva"
 msgid "Create, change and delete custom fields"
 msgstr "Δημιουργία, αλλαγή και διαγραφή προσαρμοσμένων πεδίων"
 
+#: src/components/common/text.ts
+msgid "Create, change, reorder and delete automation rules"
+msgstr "Δημιουργία, αλλαγή, αναδιάταξη και διαγραφή κανόνων αυτοματισμού"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "Created"
@@ -4651,6 +4787,10 @@ msgstr "Δημιούργησε μια εξαγωγή αναλυτικών"
 #: src/features/settings/audit/sentence.ts
 msgid "Created the API key {name}"
 msgstr "Δημιούργησε το κλειδί API {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the automation rule {name}"
+msgstr "Δημιούργησε τον κανόνα αυτοματισμού {name}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Created the DKIM key {selector}"
@@ -4695,6 +4835,8 @@ msgid "Custom"
 msgstr "Προσαρμοσμένο"
 
 #: src/features/fields/FieldFilter.tsx
+#: src/features/settings/automation/ConditionRow.tsx
+#: src/features/settings/automation/text.ts
 msgid "Custom field"
 msgstr "Προσαρμοσμένο πεδίο"
 
@@ -4804,6 +4946,7 @@ msgstr "Μειωμένη απόδοση"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -4935,6 +5078,10 @@ msgstr "Διαγράψτε τον πελάτη OAuth που δημιουργήσ
 msgid "Delete the policy {name}?"
 msgstr "Διαγραφή της πολιτικής {name};"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Delete the rule {name}?"
+msgstr "Διαγραφή του κανόνα {name};"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Διαγραφή του επιλεγμένου μπλοκ"
@@ -5053,6 +5200,10 @@ msgstr "Διαγράφηκε στις {date}"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "Διαγραμμένος αναγνώστης"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the automation rule {name}"
+msgstr "Διέγραψε τον κανόνα αυτοματισμού {name}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
@@ -5341,6 +5492,10 @@ msgstr "Έγγραφα"
 msgid "Does it work with server-side rendering?"
 msgstr "Λειτουργεί με απόδοση στον διακομιστή (SSR);"
 
+#: src/features/settings/automation/text.ts
+msgid "does not contain"
+msgstr "δεν περιέχει"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "Domain"
@@ -5348,6 +5503,10 @@ msgstr "Domain"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Domain not verified"
 msgstr "Ο τομέας δεν έχει επαληθευτεί"
+
+#: src/features/settings/automation/text.ts
+msgid "done"
+msgstr "έγινε"
 
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5595,6 +5754,10 @@ msgstr "E-mail: {label}"
 msgid "E-mails to the people who signed up"
 msgstr "Email προς όσους έχουν εγγραφεί"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
+msgstr "Κάθε ενέργεια μία φορά, το πολύ 10. Οι ενέργειες εκτελούνται ως μία αλλαγή· αν αποτύχει μία, δεν εφαρμόζεται καμία."
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Each component gets this state while the incident is open."
 msgstr "Κάθε στοιχείο έχει αυτή την κατάσταση όσο το περιστατικό είναι ανοιχτό."
@@ -5652,6 +5815,7 @@ msgstr "Καθεμία με όλα της τα μηνύματα και τις σ
 #: src/features/broadcasts/Overview.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5720,6 +5884,10 @@ msgstr "Επεξεργασία παρακολούθησης"
 msgid "Edit policy"
 msgstr "Επεξεργασία πολιτικής"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit rule"
+msgstr "Επεξεργασία κανόνα"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Επεξεργασία ομάδας"
@@ -5784,9 +5952,14 @@ msgstr "Emoji"
 msgid "Empty in the first rows"
 msgstr "Κενό στις πρώτες γραμμές"
 
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Enabled"
 msgstr "Ενεργή"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Enabled: {name}"
+msgstr "Ενεργός: {name}"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5926,6 +6099,10 @@ msgstr "Κάθε σήμα, χαμένο σήμα και απεσταλμένη �
 msgid "Every check of the last 30 days, newest first."
 msgstr "Κάθε έλεγχος των τελευταίων 30 ημερών, με τον πιο πρόσφατο πρώτο."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "every conversation"
+msgstr "κάθε συνομιλία"
+
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Every conversation"
 msgstr "Κάθε συνομιλία"
@@ -5935,6 +6112,7 @@ msgid "Every imported conversation is closed."
 msgstr "Κάθε εισαγμένη συνομιλία είναι κλειστή."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "Every inbox"
 msgstr "Κάθε εισερχόμενα"
 
@@ -5965,6 +6143,10 @@ msgstr "Κάθε προϊόν"
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Κάθε αίτημα προς αυτό το endpoint, τα νεότερα πρώτα. Κρατούνται τα τελευταία 100."
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Every run of the last 30 days, newest first."
+msgstr "Όλες οι εκτελέσεις των τελευταίων 30 ημερών, οι νεότερες πρώτα."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
@@ -6127,6 +6309,7 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
 #: src/features/status/ResponseChart.tsx
@@ -6172,6 +6355,7 @@ msgstr "σχόλια"
 #: src/features/docs/PagesTab.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/webhooks/events.tsx
 msgid "Feedback"
 msgstr "Σχόλια"
@@ -6187,6 +6371,10 @@ msgstr "Έφτασε σχόλιο"
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Feedback categories"
 msgstr "Κατηγορίες σχολίων"
+
+#: src/features/settings/automation/text.ts
+msgid "Feedback category"
+msgstr "Κατηγορία σχολίων"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -7179,9 +7367,17 @@ msgstr "Εντοπίστηκε"
 msgid "Identity secret"
 msgstr "Μυστικό ταυτότητας"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Idle for {idle} min"
+msgstr "Ανενεργή για {idle} λεπτά"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "If {provider} mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "Αν το {provider} στείλει επιβεβαίωση σε αυτή τη διεύθυνση, φτάνει σε αυτά τα εισερχόμενα ως συνομιλία· ανοίξτε την εκεί."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "If all of these match"
+msgstr "Αν ταιριάζουν όλα αυτά"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
@@ -7445,6 +7641,7 @@ msgstr "Στο Zoho Mail, ανοίξτε Ρυθμίσεις › Λογαριασ
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Εισερχόμενα"
@@ -7514,6 +7711,10 @@ msgstr "Include the start of the message"
 #: src/features/contact/ContactSheet.tsx
 msgid "Info"
 msgstr "Πληροφορίες"
+
+#: src/features/settings/automation/text.ts
+msgid "Inside business hours"
+msgstr "Εντός ωραρίου"
 
 #: src/app/Sidebar.tsx
 msgid "Insights"
@@ -7592,8 +7793,13 @@ msgid "IP address"
 msgstr "Διεύθυνση IP"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is"
 msgstr "είναι"
+
+#: src/features/settings/automation/text.ts
+msgid "is any of"
+msgstr "είναι ένα από"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "is less than"
@@ -7603,11 +7809,17 @@ msgstr "είναι μικρότερο από"
 msgid "is more than"
 msgstr "είναι μεγαλύτερο από"
 
+#: src/features/settings/automation/text.ts
+msgid "is none of"
+msgstr "δεν είναι κανένα από"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is not"
 msgstr "δεν είναι"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is not set"
 msgstr "δεν έχει οριστεί"
 
@@ -7616,6 +7828,7 @@ msgid "is one of"
 msgstr "είναι ένα από"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is set"
 msgstr "έχει οριστεί"
 
@@ -7771,6 +7984,10 @@ msgstr "Η καταγραφή συναίνεσής του διαγράφεται
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Το ιστορικό του διαγράφεται. Τα περιστατικά που το ανέφεραν δεν το αναφέρουν πια."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Its log goes with it. What it already changed stays. This cannot be undone."
+msgstr "Το αρχείο καταγραφής του διαγράφεται μαζί του. Ό,τι έχει ήδη αλλάξει παραμένει. Αυτό δεν αναιρείται."
+
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
 msgstr "Τα μέλη χάνουν την πρόσβαση στα εισερχόμενα που έδινε η ομάδα και οι συνομιλίες χάνουν την ομάδα αλλά κρατούν τον υπεύθυνο."
@@ -7888,6 +8105,7 @@ msgstr "Κλειδιά, webhooks και συνδεδεμένοι βοηθοί"
 msgid "Keyword"
 msgstr "Λέξη-κλειδί"
 
+#: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
 msgid "Kind"
 msgstr "Είδος"
@@ -7919,6 +8137,7 @@ msgstr "Μόνο ετικέτα: η αλληλογραφία του έρχετα
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -8430,6 +8649,14 @@ msgstr "Κλειδωμένο"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "Κλειδωμένο: οι αναγνώστες δεν μπορούν πια να γράφουν εδώ. Εσείς μπορείτε."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Log"
+msgstr "Αρχείο καταγραφής"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Log of {name}"
+msgstr "Αρχείο καταγραφής του {name}"
+
 #: src/features/status/SettingsTab.tsx
 msgid "Logo URL"
 msgstr "URL λογοτύπου"
@@ -8785,6 +9012,7 @@ msgstr "διάμεσος, από το πρώτο μήνυμα έως το κλε
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
 msgstr "Μέλος"
@@ -8873,6 +9101,10 @@ msgstr "Το μήνυμα αντιγράφηκε"
 #: src/components/common/text.ts
 msgid "Message removed"
 msgstr "Το μήνυμα αφαιρέθηκε"
+
+#: src/features/settings/automation/text.ts
+msgid "Message text"
+msgstr "Κείμενο μηνύματος"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -8972,9 +9204,14 @@ msgstr "Δικές μου"
 msgid "Minor"
 msgstr "Μικρή"
 
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "minutes"
 msgstr "λεπτά"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Minutes"
+msgstr "Λεπτά"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Minutes before a due time. 0 sends no warning."
@@ -9089,6 +9326,7 @@ msgstr "Περισσότερες ψήφοι"
 msgid "Move {0} to the Trash?"
 msgstr "Να μεταφερθούν στον Κάδο: {0};"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Μετακίνηση του {name}. Σύρετε ή πατήστε Alt με τα βέλη."
@@ -9097,6 +9335,7 @@ msgstr "Μετακίνηση του {name}. Σύρετε ή πατήστε Alt �
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Μεταφορά συνομιλιών στον Κάδο, επαναφορά τους και ανάγνωση του Κάδου"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -9197,6 +9436,7 @@ msgstr "Μεταφορά στον Κάδο"
 msgid "Move to Yuva"
 msgstr "Μετακίνηση στο Yuva"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -9261,6 +9501,7 @@ msgstr "Οι προβολές μου"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
@@ -9586,6 +9827,11 @@ msgstr "Νέα πολιτική"
 msgid "New reply in <0>{title}</0>"
 msgstr "Νέα απάντηση στο <0>{title}</0>"
 
+#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "New rule"
+msgstr "Νέος κανόνας"
+
 #: src/features/settings/webhooks/sections.tsx
 msgid "New signing secret"
 msgstr "Νέο μυστικό υπογραφής"
@@ -9840,6 +10086,10 @@ msgstr "Δεν υπάρχουν ακόμη στοιχεία. Προσθέστε 
 #: src/features/status/ComponentsTab.tsx
 msgid "No components yet. Add the parts of your product that customers depend on."
 msgstr "Δεν υπάρχουν ακόμη στοιχεία. Προσθέστε τα μέρη του προϊόντος σας από τα οποία εξαρτώνται οι πελάτες."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "No conditions: the rule runs for every conversation the trigger fits."
+msgstr "Καμία συνθήκη: ο κανόνας εκτελείται για κάθε συνομιλία που καλύπτει η σκανδάλη."
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "No confirmation"
@@ -10160,6 +10410,14 @@ msgstr "Δεν υπάρχουν ακόμη χρόνοι απόκρισης σε 
 msgid "No results"
 msgstr "Κανένα αποτέλεσμα"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "No rules yet."
+msgstr "Δεν υπάρχουν ακόμη κανόνες."
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "No runs in the last 30 days."
+msgstr "Καμία εκτέλεση τις τελευταίες 30 ημέρες."
+
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "No secret yet. Make one, then paste it into GitHub."
 msgstr "No secret yet. Make one, then paste it into GitHub."
@@ -10438,6 +10696,10 @@ msgstr "Δεν εισήχθη"
 msgid "Not isolated"
 msgstr "Δεν είναι απομονωμένο"
 
+#: src/features/settings/automation/text.ts
+msgid "Not matched"
+msgstr "Δεν ταίριαξε"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Not offered on this server"
 msgstr "Δεν προσφέρεται σε αυτόν τον διακομιστή"
@@ -10465,6 +10727,10 @@ msgstr "Δεν είναι έτοιμο"
 #: src/features/migrations/SourceStep.tsx
 msgid "Not right? Pick your provider"
 msgstr "Δεν είναι σωστό; Επιλέξτε τον πάροχό σας"
+
+#: src/features/settings/automation/text.ts
+msgid "not run"
+msgstr "δεν εκτελέστηκε"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
@@ -10531,6 +10797,7 @@ msgstr "Δεν έχει χρησιμοποιηθεί ακόμη"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Note"
 msgstr "Σημείωση"
 
@@ -10682,6 +10949,11 @@ msgstr "Τίποτα δεν σε χρειάζεται σήμερα."
 #: src/features/status/MonitorDialog.tsx
 msgid "Nothing opens by itself. Open an incident from the monitor when you want one."
 msgstr "Τίποτα δεν ανοίγει από μόνο του. Ανοίξτε ένα περιστατικό από την παρακολούθηση όποτε θέλετε."
+
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Nothing to pick from yet."
+msgstr "Δεν υπάρχει ακόμη κάτι για επιλογή."
 
 #: src/features/account/AccountPage.tsx
 msgid "Nothing unread."
@@ -10878,6 +11150,7 @@ msgstr "Μόλις φτάσει ένα δοκιμαστικό μήνυμα, το
 msgid "One e-mail a month about what is new."
 msgstr "Ένα e-mail τον μήνα για τα νέα."
 
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "Ένα εισερχόμενο"
@@ -11046,6 +11319,7 @@ msgid "Only the person can subscribe again, by confirming a mail."
 msgstr "Μόνο το ίδιο το άτομο μπορεί να εγγραφεί ξανά, επιβεβαιώνοντας ένα e-mail."
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "Το βλέπει μόνο η ομάδα"
 
@@ -11169,6 +11443,10 @@ msgstr "Άνοιγμα plugins του ChatGPT"
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Open Claude connectors"
 msgstr "Άνοιγμα συνδέσμων του Claude"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Open conversation"
+msgstr "Άνοιγμα συνομιλίας"
 
 #: src/app/Palette.tsx
 msgid "Open conversations"
@@ -11420,6 +11698,7 @@ msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "το operational αποκαθιστά· τα degraded, partial_outage και major_outage ρίχνουν."
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/automation/ConditionRow.tsx
 msgid "Operator"
 msgstr "Διαχειριστής συστήματος"
 
@@ -11501,6 +11780,10 @@ msgstr "Το Άλλο παραμένει: οι κατηγορίες που αφ�
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
 msgstr "Η παρακολούθησή μας {monitor} εντοπίζει πρόβλημα από τις {at}. Το διερευνούμε."
 
+#: src/features/settings/automation/RunLog.tsx
+msgid "Outcome"
+msgstr "Αποτέλεσμα"
+
 #: src/features/migrations/text.ts
 msgid "Outlook.com and Microsoft 365"
 msgstr "Outlook.com και Microsoft 365"
@@ -11524,6 +11807,10 @@ msgstr "Το Outlook.com και το Microsoft 365 συνδέονται με «�
 #: src/features/migrations/text.ts
 msgid "Outlook's .pst files are not read; convert them to .mbox first."
 msgstr "Τα αρχεία .pst του Outlook δεν διαβάζονται· μετατρέψτε τα πρώτα σε .mbox."
+
+#: src/features/settings/automation/text.ts
+msgid "Outside business hours"
+msgstr "Εκτός ωραρίου"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
@@ -11871,6 +12158,10 @@ msgstr "Άτομο"
 msgid "Personal"
 msgstr "Προσωπική"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a canned reply"
+msgstr "Επιλέξτε μια έτοιμη απάντηση"
+
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "Επιλέξτε ένα κανάλι συνομιλίας του προϊόντος και επικολλήστε τον κώδικα. Οι αξιολογήσεις και οι ερωτήσεις καταλήγουν στα εισερχόμενά του."
@@ -11915,6 +12206,14 @@ msgstr "Επιλέξτε σχέδιο που αποδίδεται χωρίς σ�
 msgid "Pick a discussion to read and answer it."
 msgstr "Επιλέξτε μια συζήτηση για να τη διαβάσετε και να απαντήσετε."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Pick a field"
+msgstr "Επιλέξτε ένα πεδίο"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a member"
+msgstr "Επιλέξτε ένα μέλος"
+
 #: src/features/status/MonitorsPage.tsx
 msgid "Pick a monitor to see what happened."
 msgstr "Επιλέξτε μια παρακολούθηση για να δείτε τι συνέβη."
@@ -11935,6 +12234,10 @@ msgstr "Επιλέξτε ένα σχόλιο για να το δείτε εδώ.
 msgid "Pick a sender in the settings"
 msgstr "Επιλέξτε αποστολέα στις ρυθμίσεις"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a team"
+msgstr "Επιλέξτε μια ομάδα"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "Επιλέξτε ώρα στις επόμενες 90 ημέρες, στη ζώνη ώρας σας, {zone}."
@@ -11951,7 +12254,12 @@ msgstr "Επιλέξτε παρακάτω έναν βοηθό για να τον
 msgid "Pick an e-mail channel of this inbox that has an SMTP account. It sends the confirmation and welcome mails."
 msgstr "Επιλέξτε ένα κανάλι e-mail αυτών των εισερχομένων που έχει λογαριασμό SMTP. Στέλνει τα e-mail επιβεβαίωσης και καλωσορίσματος."
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick an endpoint"
+msgstr "Επιλέξτε ένα τελικό σημείο"
+
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "Pick an inbox"
 msgstr "Επιλέξτε εισερχόμενα"
 
@@ -12241,6 +12549,8 @@ msgid "Previous screenshot"
 msgstr "Προηγούμενο στιγμιότυπο"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
@@ -12528,6 +12838,10 @@ msgstr "Στην ουρά. Η νέα προσπάθεια εμφανίζεται
 msgid "Quick cleanup"
 msgstr "Γρήγορος καθαρισμός"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Quiet for (minutes)"
+msgstr "Ησυχία για (λεπτά)"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Quote"
 msgstr "Παράθεση"
@@ -12607,6 +12921,10 @@ msgstr "Διαβάστηκε ως Maildir σε zip: οι φάκελοί του �
 #: src/features/migrations/text.ts
 msgid "Read as an mbox file."
 msgstr "Διαβάστηκε ως αρχείο mbox."
+
+#: src/components/common/text.ts
+msgid "Read automation rules and their run log"
+msgstr "Ανάγνωση των κανόνων αυτοματισμού και του αρχείου εκτελέσεών τους"
 
 #: src/components/common/text.ts
 msgid "Read broadcasts and e-mail designs"
@@ -12900,9 +13218,17 @@ msgstr "Αφαίρεση του {name};"
 msgid "Remove {sender}"
 msgstr "Αφαίρεση {sender}"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Remove action"
+msgstr "Αφαίρεση ενέργειας"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove channel"
 msgstr "Αφαίρεση καναλιού"
+
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Remove condition"
+msgstr "Αφαίρεση συνθήκης"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove condition {n}"
@@ -12941,6 +13267,10 @@ msgstr "Αφαίρεση εισαγμένου ιστορικού;"
 msgid "Remove label {labelName}"
 msgstr "Αφαίρεση ετικέτας {labelName}"
 
+#: src/features/settings/automation/text.ts
+msgid "Remove labels"
+msgstr "Αφαίρεση ετικετών"
+
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Remove the APNs key?"
 msgstr "Να αφαιρεθεί το κλειδί APNs;"
@@ -12948,6 +13278,10 @@ msgstr "Να αφαιρεθεί το κλειδί APNs;"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Αφαιρέστε τον κωδικό εφαρμογής που φτιάξατε για το Yuva στο {provider}· δεν χρειάζεται πια."
+
+#: src/features/settings/automation/text.ts
+msgid "Remove the assignee"
+msgstr "Αφαίρεση υπεύθυνου"
 
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
@@ -13225,6 +13559,10 @@ msgstr "Απάντηση και επίλυση"
 msgid "Reply command"
 msgstr "Reply command"
 
+#: src/features/settings/automation/text.ts
+msgid "Reply held back to protect the customer"
+msgstr "Η απάντηση κρατήθηκε για να προστατευτεί ο πελάτης"
+
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
 msgstr "Η απάντηση αναρτήθηκε"
@@ -13283,6 +13621,10 @@ msgstr "Απάντηση στη συζήτηση αντί γι' αυτό"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "Απάντηση στην επιλεγμένη ανάρτηση"
+
+#: src/features/settings/automation/text.ts
+msgid "Reply with a canned reply"
+msgstr "Απάντηση με έτοιμη απάντηση"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Reply with a quote"
@@ -13619,9 +13961,29 @@ msgstr "Δρομολογήστε τον τομέα σας"
 msgid "Route your mail to Yuva"
 msgstr "Δρομολογήστε την αλληλογραφία σας στο Yuva"
 
+#: src/features/conversation/messages/context.ts
+msgid "Rule {rule}"
+msgstr "Κανόνας {rule}"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Rule {rule} ran, nothing needed changing"
+msgstr "Ο κανόνας {rule} εκτελέστηκε, δεν χρειαζόταν καμία αλλαγή"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Rule {rule} ran: {done}"
+msgstr "Ο κανόνας {rule} εκτελέστηκε: {done}"
+
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "Κανόνες"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Rules react to a conversation changing: they label, assign, reply, snooze or call a webhook. They run in the order of this list, each at most once per trigger, and what a rule changes never starts another rule."
+msgstr "Οι κανόνες αντιδρούν όταν αλλάζει μια συνομιλία: βάζουν ετικέτες, αναθέτουν, απαντούν, αναβάλλουν ή καλούν ένα webhook. Εκτελούνται με τη σειρά αυτής της λίστας, το πολύ μία φορά ανά σκανδάλη, και ό,τι αλλάζει ένας κανόνας δεν ξεκινά ποτέ άλλον κανόνα."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Rules that label, assign, reply and call webhooks"
+msgstr "Κανόνες που βάζουν ετικέτες, αναθέτουν, απαντούν και καλούν webhooks"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Run a check"
@@ -13676,6 +14038,7 @@ msgstr "Σάββατο"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
@@ -14207,6 +14570,10 @@ msgstr "Αποστολή μέσω του λογαριασμού σας στο Am
 msgid "Send to"
 msgstr "Αποστολή σε"
 
+#: src/features/settings/automation/text.ts
+msgid "Send to a webhook endpoint"
+msgstr "Αποστολή σε τελικό σημείο webhook"
+
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -14453,6 +14820,14 @@ msgstr "Ορισμός προόδου"
 msgid "Set the feedback progress"
 msgstr "Ορισμός προόδου του σχολίου"
 
+#: src/features/settings/automation/text.ts
+msgid "Set the priority"
+msgstr "Ορισμός προτεραιότητας"
+
+#: src/features/settings/automation/text.ts
+msgid "Set the status"
+msgstr "Ορισμός κατάστασης"
+
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Set up"
 msgstr "Ρύθμιση"
@@ -14604,6 +14979,7 @@ msgstr "Εμφάνιση του κειμένου του μηνύματος στ�
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MigrationsPage.tsx
+#: src/features/settings/automation/RunLog.tsx
 msgid "Show more"
 msgstr "Εμφάνιση περισσότερων"
 
@@ -15000,6 +15376,10 @@ msgstr "Παράλειψη αυτής της στήλης"
 msgid "Skip threads that contain only automatic mail"
 msgstr "Παράλειψη νημάτων που περιέχουν μόνο αυτόματη αλληλογραφία"
 
+#: src/features/settings/automation/text.ts
+msgid "skipped"
+msgstr "παραλείφθηκε"
+
 #: src/components/common/Linked.tsx
 #: src/components/common/text.ts
 msgid "Skipped"
@@ -15116,6 +15496,7 @@ msgstr "Διακομιστής SMTP"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "Αναβολή"
 
@@ -15368,6 +15749,8 @@ msgstr "Κατάσταση όταν πέσει"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -15460,6 +15843,7 @@ msgstr "Ο υποτομέας δεν βρέθηκε"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
 msgstr "Θέμα"
@@ -15652,6 +16036,8 @@ msgstr "Έλεγχος TCP"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
@@ -15744,11 +16130,16 @@ msgid "Tests go only to members of the workspace, at most five at a time, with [
 msgstr "Οι δοκιμές πηγαίνουν μόνο σε μέλη του χώρου εργασίας, το πολύ πέντε τη φορά, με [Test] πριν από το θέμα."
 
 #: src/features/fields/value.ts
+#: src/features/settings/automation/ConditionRow.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Text"
 msgstr "Κείμενο"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "Text last saved by {who}"
+msgstr "Το κείμενο αποθηκεύτηκε τελευταία από {who}"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Thanks for waiting. Your invoice is on its way."
@@ -15786,6 +16177,10 @@ msgstr "Ο χρήστης {provider} με τον οποίο συνδεθήκατ
 #: src/features/status/SettingsTab.tsx
 msgid "The address answers “not found” until you publish the page."
 msgstr "Η διεύθυνση απαντά «δεν βρέθηκε» μέχρι να δημοσιεύσετε τη σελίδα."
+
+#: src/features/settings/automation/text.ts
+msgid "The address bounced"
+msgstr "Η διεύθυνση επέστρεψε το μήνυμα"
 
 #: src/components/common/text.ts
 msgid "The address bounced or complained"
@@ -15827,6 +16222,14 @@ msgstr "Η μαζική αποστολή ακυρώθηκε"
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "Το πρόγραμμα περιήγησης πρέπει πρώτα να επιτρέψει τις ειδοποιήσεις επιφάνειας εργασίας· μέχρι τότε παίζει μόνο ο ήχος."
 
+#: src/features/settings/automation/text.ts
+msgid "The canned reply was deleted"
+msgstr "Η έτοιμη απάντηση διαγράφηκε"
+
+#: src/features/settings/automation/text.ts
+msgid "The change was refused"
+msgstr "Η αλλαγή απορρίφθηκε"
+
 #: src/components/common/text.ts
 msgid "The channel already has a DKIM key. Delete it before creating another."
 msgstr "Το κανάλι έχει ήδη κλειδί DKIM. Διαγράψτε το πριν δημιουργήσετε άλλο."
@@ -15834,6 +16237,10 @@ msgstr "Το κανάλι έχει ήδη κλειδί DKIM. Διαγράψτε 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The channel cannot send yet. It needs an SMTP account and an address to send from."
 msgstr "Το κανάλι δεν μπορεί ακόμη να στείλει. Χρειάζεται λογαριασμό SMTP και διεύθυνση αποστολής."
+
+#: src/features/settings/automation/text.ts
+msgid "The channel has no SMTP account"
+msgstr "Το κανάλι δεν έχει λογαριασμό SMTP"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "The channel name when empty."
@@ -15892,6 +16299,10 @@ msgstr "Η σελίδα συγκατάθεσης τσεκάρει όσα ζητ�
 #: src/components/common/text.ts
 msgid "The contact was deleted"
 msgstr "Η επαφή διαγράφηκε"
+
+#: src/features/settings/automation/text.ts
+msgid "The contact writes a message"
+msgstr "Η επαφή γράφει ένα μήνυμα"
 
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
@@ -16605,6 +17016,10 @@ msgstr "The sign-in took too long or was already used. Start again."
 msgid "The sign-in was declined"
 msgstr "Η σύνδεση απορρίφθηκε"
 
+#: src/features/settings/automation/text.ts
+msgid "The status changes"
+msgstr "Η κατάσταση αλλάζει"
+
 #: src/app/UserMenu.tsx
 msgid "The status was not changed. Try again."
 msgstr "Η κατάσταση δεν άλλαξε. Δοκιμάστε ξανά."
@@ -16616,6 +17031,10 @@ msgstr "Το θέμα"
 #: src/features/setup/NewsletterStep.tsx
 msgid "The subscribe form shows the list’s name and description."
 msgstr "Η φόρμα εγγραφής δείχνει το όνομα και την περιγραφή της λίστας."
+
+#: src/features/settings/automation/text.ts
+msgid "The team does not cover this inbox"
+msgstr "Η ομάδα δεν καλύπτει αυτά τα εισερχόμενα"
 
 #: src/app/TeamMenu.tsx
 msgid "The team today"
@@ -16698,6 +17117,10 @@ msgstr "Οι τιμές ενός διαγραμμένου πεδίου με αυ
 msgid "The visitor typed {0} in the chat and has not confirmed it yet. This reply came from that address, so it may not be from the visitor."
 msgstr "Ο επισκέπτης πληκτρολόγησε {0} στη συνομιλία και δεν το έχει επιβεβαιώσει ακόμη. Αυτή η απάντηση ήρθε από εκείνη τη διεύθυνση, οπότε μπορεί να μην είναι από τον επισκέπτη."
 
+#: src/features/settings/automation/text.ts
+msgid "The webhook endpoint is off or not available here"
+msgstr "Το τελικό σημείο webhook είναι απενεργοποιημένο ή δεν είναι διαθέσιμο εδώ"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "The What’s new count shows on the chat button while no messages are unread. The widget’s Home always shows it."
 msgstr "Ο αριθμός των νέων εμφανίζεται στο κουμπί συνομιλίας όσο δεν υπάρχουν μη αναγνωσμένα μηνύματα. Η αρχική του widget τον δείχνει πάντα."
@@ -16765,6 +17188,10 @@ msgstr "Θέμα"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Theme and e-mail view on this device"
 msgstr "Θέμα και προβολή e-mail σε αυτή τη συσκευή"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Then"
+msgstr "Τότε"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -17112,6 +17539,19 @@ msgstr "Αυτή η ιδιότητα έχει ήδη στόχο με αυτό τ
 msgid "This property already has a segment with this name."
 msgstr "Αυτή η ιδιότητα έχει ήδη τμήμα με αυτό το όνομα."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
+msgstr "Αυτή η απάντηση δεν θα σταλεί μέχρι ένας ιδιοκτήτης ή διαχειριστής να αποθηκεύσει και αυτόν τον κανόνα και την έτοιμη απάντηση {title}, ή να επιτραπεί στα bots να στέλνουν στις ρυθμίσεις των κλειδιών API."
+
+#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
+msgstr "Αυτή η απάντηση δεν θα σταλεί μέχρι ένας ιδιοκτήτης ή διαχειριστής να αποθηκεύσει την έτοιμη απάντηση {title}, ή να επιτραπεί στα bots να στέλνουν στις ρυθμίσεις των κλειδιών API."
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
+msgstr "Αυτή η απάντηση δεν θα σταλεί μέχρι ένας ιδιοκτήτης ή διαχειριστής να αποθηκεύσει αυτόν τον κανόνα, ή να επιτραπεί στα bots να στέλνουν στις ρυθμίσεις των κλειδιών API."
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request expired or was already used. Start connecting again from the app."
 msgstr "Αυτό το αίτημα έληξε ή χρησιμοποιήθηκε ήδη. Ξεκινήστε ξανά τη σύνδεση από την εφαρμογή."
@@ -17386,6 +17826,10 @@ msgstr "Κάδος, δεν εισάγεται ποτέ"
 msgid "Triage"
 msgstr "Διαλογή"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Trigger"
+msgstr "Σκανδάλη"
+
 #: src/features/migrations/ConnectStep.tsx
 msgid "Trust this certificate for this server. Do this only if it is your own server and the fingerprint matches."
 msgstr "Εμπιστευτείτε αυτό το πιστοποιητικό για αυτόν τον διακομιστή. Κάντε το μόνο αν είναι δικός σας διακομιστής και το αποτύπωμα ταιριάζει."
@@ -17604,6 +18048,10 @@ msgstr "Η παρακολούθηση διακόπηκε"
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Unit"
 msgstr "Μονάδα"
+
+#: src/components/common/authorText.ts
+msgid "Unknown"
+msgstr "Άγνωστο"
 
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
@@ -18322,6 +18770,7 @@ msgstr "Οι ιστοσελίδες χρησιμοποιούν το widget συ�
 msgid "Webhook"
 msgstr "Webhook"
 
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Webhook endpoint"
 msgstr "Endpoint webhook"
@@ -18498,6 +18947,7 @@ msgid "What’s new entry"
 msgstr "Καταχώριση νέων"
 
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "When"
 msgstr "Πότε"
 

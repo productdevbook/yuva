@@ -119,6 +119,8 @@ export const API_KEY_SCOPES: ApiKeyScope[] = [
   "issues:write",
   "fields:manage",
   "views:write",
+  "automations:read",
+  "automations:manage",
   "audit:read",
 ]
 export const OPT_IN_SCOPES: ApiKeyScope[] = [
@@ -126,6 +128,7 @@ export const OPT_IN_SCOPES: ApiKeyScope[] = [
   "messages:redact",
   "broadcasts:send",
   "fields:manage",
+  "automations:manage",
   "audit:read",
 ]
 export const OWNER_ONLY_SCOPES: ApiKeyScope[] = ["audit:read"]
@@ -162,6 +165,7 @@ export const WORKSPACE_WIDE_SCOPES: ApiKeyScope[] = [
   "analytics:manage",
   "integrations:manage",
   "fields:manage",
+  "automations:manage",
   "audit:read",
 ]
 export const DELIVERY_STATES: WebhookDeliveryState[] = ["pending", "succeeded", "failed"]
@@ -253,6 +257,7 @@ export function useEnumText() {
       "team.deleted": t`A team was deleted`,
       "conversation.sla_warning": t`An SLA target is due soon`,
       "conversation.sla_breached": t`An SLA target was breached`,
+      "automation.triggered": t`An automation rule ran its webhook action`,
     } satisfies Record<WebhookEventType, string>,
     scope: {
       "conversations:read": t`Read conversations, messages, labels and canned replies`,
@@ -296,6 +301,8 @@ export function useEnumText() {
       "issues:write": t`Create and link GitHub and Linear issues for feedback and ideas`,
       "fields:manage": t`Create, change and delete custom fields`,
       "views:write": t`Create and change saved views of the conversation list`,
+      "automations:read": t`Read automation rules and their run log`,
+      "automations:manage": t`Create, change, reorder and delete automation rules`,
       "audit:read": t`Read the audit log (owners only)`,
     } satisfies Record<ApiKeyScope, string>,
     delivery: { pending: t`Pending`, succeeded: t`Succeeded`, failed: t`Failed` } satisfies Record<
@@ -440,6 +447,10 @@ export function useErrorText() {
     if (err.code === "team_taken") return t`Another team already has this name.`
     if (err.code === "team_limit") return t`A team holds at most 500 members and 100 inboxes.`
     if (err.code === "team_access") return t`This team does not cover the conversation's inbox.`
+    if (err.code === "automation_rule_limit")
+      return t`A workspace holds at most 100 automation rules. Delete one first.`
+    if (err.code === "bot_sending_disabled")
+      return t`Bots may not send in this workspace, and this reply was not saved by an owner or admin.`
     if (err.code === "sla_policy_limit") return t`A workspace holds at most 100 SLA policies. Delete one first.`
     if (err.code === "view_limit") return t`This place holds as many views as allowed (50). Delete one first.`
     if (err.code === "field_taken") return t`Another field of this kind already uses this key.`

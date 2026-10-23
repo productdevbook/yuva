@@ -1139,6 +1139,10 @@ msgstr "একটি কথোপকথন বদলেছে"
 msgid "A conversation is assigned to me"
 msgstr "একটি কথোপকথন আমাকে অ্যাসাইন করা হয়েছে"
 
+#: src/features/settings/automation/text.ts
+msgid "A conversation is idle"
+msgstr "কথোপকথন নিষ্ক্রিয়"
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "কথোপকথন শেষবার রেঞ্জের মধ্যে আপডেট হলে সেটি পুরোটা নেওয়া হয়।"
@@ -1150,6 +1154,10 @@ msgstr "কথোপকথনকে আপনার পূরণ করা প�
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "একটি কথোপকথন শুরু হয়েছে"
+
+#: src/features/settings/automation/text.ts
+msgid "A conversation starts"
+msgstr "একটি কথোপকথন শুরু হয়"
 
 #: src/components/common/text.ts
 msgid "A conversation was deleted for good"
@@ -1219,6 +1227,7 @@ msgstr "একটি ড্রাফট লেখা হয়েছে"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "ফাইলের বিষয়বস্তু তার ধরনের সঙ্গে মেলে না। ফাইলটি পরীক্ষা করে আবার চেষ্টা করুন।"
 
+#: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
@@ -1255,6 +1264,10 @@ msgstr "কী দিয়ে আপনার ব্যাকএন্ড, স�
 #: src/components/common/text.ts
 msgid "A kind of field holds at most 50 fields. Delete one first."
 msgstr "একটি অবজেক্টে সর্বোচ্চ ৫০টি ফিল্ড থাকতে পারে। আগে একটি মুছুন।"
+
+#: src/features/settings/automation/text.ts
+msgid "A label was deleted"
+msgstr "একটি লেবেল মুছে ফেলা হয়েছে"
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -1400,9 +1413,17 @@ msgstr "একটি উত্তর ও তার কাজ এক ধাপে
 msgid "A reply was written in a discussion"
 msgstr "একটি আলোচনায় উত্তর লেখা হয়েছে"
 
+#: src/features/settings/automation/text.ts
+msgid "A required field is empty"
+msgstr "একটি আবশ্যক ফিল্ড খালি"
+
 #: src/components/common/text.ts
 msgid "A roadmap idea moved to another stage"
 msgstr "রোডম্যাপের একটি আইডিয়া অন্য ধাপে গেছে"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "A rule that is off never runs. Rules run in the order of the list."
+msgstr "বন্ধ নিয়ম কখনও চলে না। নিয়মগুলো তালিকার ক্রমে চলে।"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -1496,6 +1517,10 @@ msgstr "একটি \"নতুন কী\" এন্ট্রির প্র�
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "1 থেকে 10,000,000 পর্যন্ত একটি পূর্ণসংখ্যা"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 automation rules. Delete one first."
+msgstr "একটি ওয়ার্কস্পেসে সর্বোচ্চ ১০০টি অটোমেশন নিয়ম থাকতে পারে। আগে একটি মুছুন।"
 
 #: src/components/common/text.ts
 msgid "A workspace holds at most 100 SLA policies. Delete one first."
@@ -1679,6 +1704,10 @@ msgstr "ইনবক্স সেটিংসে একটি ওয়েবস
 msgid "Add a website or app"
 msgstr "একটি ওয়েবসাইট বা অ্যাপ যোগ করুন"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Add an action"
+msgstr "অ্যাকশন যোগ করুন"
+
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
 msgstr "আপনার সার্ভারে একটি ঠিকানা যোগ করুন এবং Yuva যে ইভেন্টগুলো সেটিকে জানাবে সেগুলো বেছে নিন।"
@@ -1697,6 +1726,10 @@ msgstr "ছবি যোগ করুন"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
 msgstr "একটি ইনবক্স যোগ করুন"
+
+#: src/features/settings/automation/text.ts
+msgid "Add an internal note"
+msgstr "অভ্যন্তরীণ নোট যোগ করুন"
 
 #: src/features/migrations/text.ts
 msgid "Add an OAuth client named “Yuva”, as a confidential client, and enter the redirect URL below as its redirect URL."
@@ -1721,6 +1754,10 @@ msgstr "চ্যানেল যোগ করুন"
 #: src/features/status/ComponentsTab.tsx
 msgid "Add component"
 msgstr "উপাদান যোগ করুন"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Add condition"
+msgstr "শর্ত যোগ করুন"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Add contact"
@@ -1747,6 +1784,10 @@ msgstr "হেডার যোগ করুন"
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
 msgstr "লেবেল {labelName} যোগ করুন"
+
+#: src/features/settings/automation/text.ts
+msgid "Add labels"
+msgstr "লেবেল যোগ করুন"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -1929,6 +1970,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "All"
@@ -2086,6 +2128,10 @@ msgstr "আগে থেকেই লিস্টে"
 msgid "Already on the list, left as they are"
 msgstr "আগে থেকেই লিস্টে, যেমন ছিল তেমন রাখা হয়েছে"
 
+#: src/features/settings/automation/text.ts
+msgid "already so"
+msgstr "আগে থেকেই তাই"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Also called audience or identifier."
 msgstr "Also called audience or identifier."
@@ -2203,6 +2249,7 @@ msgstr "<0>{title}</0>-এ একটি উত্তর গৃহীত হয�
 msgid "an API key"
 msgstr "একটি API কী"
 
+#: src/components/common/authorText.ts
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "An API key"
 msgstr "একটি API কী"
@@ -2218,6 +2265,18 @@ msgstr "অ্যাপ পাসওয়ার্ড দিয়ে মেই
 #: src/features/broadcasts/ListSettings.tsx
 msgid "An archived list keeps its subscribers and records, but forms and the preference page stop offering it."
 msgstr "আর্কাইভ করা লিস্ট তার সাবস্ক্রাইবার ও রেকর্ড রাখে, কিন্তু ফর্ম ও পছন্দের পেজ আর এটি দেখায় না।"
+
+#: src/components/common/authorText.ts
+msgid "An assistant connected by {name}"
+msgstr "{name} যে সহকারী সংযুক্ত করেছেন"
+
+#: src/components/common/text.ts
+msgid "An automation rule ran its webhook action"
+msgstr "একটি অটোমেশন নিয়ম তার ওয়েবহুক অ্যাকশন চালিয়েছে"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "An automation rule sends this reply, but it will not go out until an owner or admin saves the text, or bots may send is turned on."
+msgstr "একটি অটোমেশন নিয়ম এই উত্তরটি পাঠায়, কিন্তু মালিক বা অ্যাডমিন টেক্সট সংরক্ষণ না করা পর্যন্ত বা বটদের পাঠানোর অনুমতি না দেওয়া পর্যন্ত এটি যাবে না।"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "An e-mail address, phone number or web address"
@@ -2582,6 +2641,11 @@ msgstr "চেহারা"
 msgid "Application (client) ID"
 msgstr "অ্যাপ্লিকেশন (ক্লায়েন্ট) ID"
 
+#: src/features/settings/automation/text.ts
+msgid "Applied"
+msgstr "প্রয়োগ করা হয়েছে"
+
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Applies to"
 msgstr "প্রযোজ্য"
@@ -2723,8 +2787,13 @@ msgstr "একজন টিমমেটকে অ্যাসাইন বা �
 msgid "Assign to {name}"
 msgstr "{name}-কে দিন"
 
+#: src/features/settings/automation/text.ts
+msgid "Assign to a member"
+msgstr "একজন সদস্যকে অ্যাসাইন করুন"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/settings/automation/text.ts
 msgid "Assign to a team"
 msgstr "টিমকে দিন"
 
@@ -2746,6 +2815,7 @@ msgstr "{assignee}-কে অ্যাসাইন করা হয়েছে"
 msgid "Assigned to {assignee}, kept by name"
 msgstr "{assignee}-কে অ্যাসাইন করা হয়েছে, নামে রাখা হয়েছে"
 
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Assignee"
 msgstr "দায়িত্বপ্রাপ্ত ব্যক্তি"
@@ -2848,6 +2918,10 @@ msgstr "অ্যাট্রিবিউট কী, যেমন plan"
 msgid "Attribute keys use letters, digits, dots, dashes and underscores, at most 64."
 msgstr "অ্যাট্রিবিউট কী-তে অক্ষর, অঙ্ক, ডট, ড্যাশ ও আন্ডারস্কোর চলে, সর্বোচ্চ 64।"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Attribute name"
+msgstr "অ্যাট্রিবিউটের নাম"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Attribute of condition {n}"
 msgstr "শর্ত {n}-এর অ্যাট্রিবিউট"
@@ -2889,9 +2963,18 @@ msgstr "অটো-রিপ্লাই"
 msgid "automatic"
 msgstr "স্বয়ংক্রিয়"
 
+#: src/features/settings/automation/text.ts
+msgid "Automatic assignment (not available yet)"
+msgstr "স্বয়ংক্রিয় অ্যাসাইনমেন্ট (এখনও পাওয়া যায় না)"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "স্বয়ংক্রিয় মেইল কখনও স্বয়ংক্রিয় উত্তর চালু করে না।"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Automation"
+msgstr "অটোমেশন"
 
 #: src/app/UserMenu.tsx
 msgid "Available"
@@ -3076,6 +3159,14 @@ msgstr "দুটি রেকর্ডই পাওয়া গেছে। Yu
 msgid "Bots"
 msgstr "বট"
 
+#: src/features/settings/automation/text.ts
+msgid "Bots may not send and the author is not an owner or admin"
+msgstr "বটদের পাঠানোর অনুমতি নেই এবং লেখক মালিক বা অ্যাডমিন নন"
+
+#: src/components/common/text.ts
+msgid "Bots may not send in this workspace, and this reply was not saved by an owner or admin."
+msgstr "এই ওয়ার্কস্পেসে বটদের পাঠানোর অনুমতি নেই, এবং এই উত্তরটি কোনো মালিক বা অ্যাডমিন সংরক্ষণ করেননি।"
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bots may not send in this workspace: the key writes drafts and a member sends them."
 msgstr "এই ওয়ার্কস্পেসে বট পাঠাতে পারে না: কী ড্রাফট লেখে এবং একজন সদস্য সেগুলো পাঠান।"
@@ -3200,6 +3291,8 @@ msgstr "আপনার অ্যাপ ও পেজ থেকে পাঠা�
 msgid "Bundle ID"
 msgstr "Bundle ID"
 
+#: src/features/settings/automation/ConditionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
 msgstr "কাজের সময়"
@@ -3215,6 +3308,10 @@ msgstr "ই-মেইলে"
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "সদস্য অনুযায়ী"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "by rule {rule}"
+msgstr "নিয়ম {rule} দ্বারা"
 
 #: src/components/common/text.ts
 msgid "By the team"
@@ -3340,6 +3437,7 @@ msgid "Canned replies and macros, in the reply box"
 msgstr "তৈরি উত্তর ও ম্যাক্রো, উত্তরের ঘরে"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Canned reply"
 msgstr "ক্যানড রিপ্লাই"
 
@@ -3419,6 +3517,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "কথোপকথন সংরক্ষণের সময় {from} থেকে {to} করেছেন"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the automation rule {name}"
+msgstr "অটোমেশন নিয়ম {name} বদলেছেন"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the daily broadcast limit from {from} to {to}"
 msgstr "দৈনিক ব্রডকাস্ট সীমা {from} থেকে {to} করেছেন"
 
@@ -3451,6 +3553,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "পাঠানোর ডোমেন বদলালে নতুন ডোমেনের জন্য আবার চালু না করা পর্যন্ত DKIM সাইনিং বন্ধ হয়ে যায়।"
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -3576,6 +3679,10 @@ msgstr "{when} পরীক্ষা করা হয়েছে"
 #: src/features/broadcasts/Import.tsx
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "পরীক্ষা করা হয়েছে এবং একজন ওনার বা অ্যাডমিনের শুরু করার অপেক্ষায়।"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Checked every 5 minutes, once per quiet period. Only open and pending conversations."
+msgstr "প্রতি ৫ মিনিটে যাচাই করা হয়, প্রতিটি নীরব সময়ে একবার। শুধু খোলা ও অপেক্ষমাণ কথোপকথন।"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Checked with the tracker before it replaces the old one. The current one is never shown."
@@ -3804,6 +3911,10 @@ msgstr "উত্তর দেওয়ার পর প্রতিটি ক�
 msgid "Close everything"
 msgstr "সবকিছু বন্ধ করুন"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Close idle conversations"
+msgstr "নিষ্ক্রিয় কথোপকথন বন্ধ করুন"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Close older conversations"
 msgstr "পুরোনো কথোপকথন বন্ধ করুন"
@@ -3956,10 +4067,18 @@ msgstr "প্রভাবিত উপাদান"
 msgid "Components, history, incidents and updates are deleted with it."
 msgstr "উপাদান, ইতিহাস, ঘটনা ও আপডেট এর সাথে মুছে যায়।"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Condition"
+msgstr "শর্ত"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Conditions"
 msgstr "শর্ত"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Conditions: {n}"
+msgstr "শর্ত: {n}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Configuration set"
@@ -4198,6 +4317,10 @@ msgstr "কন্টাক্ট যোগ হয়েছে। তাঁকে
 msgid "Contact and identities"
 msgstr "কনট্যাক্ট ও পরিচয়"
 
+#: src/features/settings/automation/text.ts
+msgid "Contact attribute"
+msgstr "যোগাযোগের অ্যাট্রিবিউট"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactSheet.tsx
@@ -4243,6 +4366,7 @@ msgid "Contacts keep the values they hold; they show as plain attributes instead
 msgstr "যোগাযোগগুলো তাদের থাকা মান রেখে দেয়; সেগুলো ধরনযুক্ত ফিল্ডের বদলে সাধারণ অ্যাট্রিবিউট হিসেবে দেখা যায়।"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "contains"
 msgstr "ধারণ করে"
 
@@ -4288,6 +4412,10 @@ msgstr "Continue with your organisation's sign-in"
 #: src/features/contact/ContactsPage.tsx
 msgid "Convers."
 msgstr "কথোপ."
+
+#: src/features/settings/automation/text.ts
+msgid "Conversation"
+msgstr "কথোপকথন"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Conversation actions"
@@ -4586,6 +4714,10 @@ msgstr "লিস্ট তৈরি করুন"
 msgid "Create policy"
 msgstr "নীতি তৈরি করুন"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create rule"
+msgstr "নিয়ম তৈরি করুন"
+
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
 msgstr "স্ট্যাটাস পেজ তৈরি করুন"
@@ -4635,6 +4767,10 @@ msgstr "আপনার Yuva অ্যাকাউন্ট তৈরি কর�
 msgid "Create, change and delete custom fields"
 msgstr "কাস্টম ফিল্ড তৈরি, পরিবর্তন ও মুছে ফেলা"
 
+#: src/components/common/text.ts
+msgid "Create, change, reorder and delete automation rules"
+msgstr "অটোমেশন নিয়ম তৈরি, পরিবর্তন, ক্রম বদল ও মুছে ফেলা"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "Created"
@@ -4651,6 +4787,10 @@ msgstr "একটি বিশ্লেষণ এক্সপোর্ট তৈ
 #: src/features/settings/audit/sentence.ts
 msgid "Created the API key {name}"
 msgstr "API কী {name} তৈরি করেছেন"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the automation rule {name}"
+msgstr "অটোমেশন নিয়ম {name} তৈরি করেছেন"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Created the DKIM key {selector}"
@@ -4695,6 +4835,8 @@ msgid "Custom"
 msgstr "কাস্টম"
 
 #: src/features/fields/FieldFilter.tsx
+#: src/features/settings/automation/ConditionRow.tsx
+#: src/features/settings/automation/text.ts
 msgid "Custom field"
 msgstr "কাস্টম ফিল্ড"
 
@@ -4804,6 +4946,7 @@ msgstr "কর্মক্ষমতা কমেছে"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -4935,6 +5078,10 @@ msgstr "Yuva-র জন্য তৈরি করা OAuth ক্লায়ে
 msgid "Delete the policy {name}?"
 msgstr "নীতি {name} মুছবেন?"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Delete the rule {name}?"
+msgstr "নিয়ম {name} মুছবেন?"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "নির্বাচিত ব্লক মুছুন"
@@ -5053,6 +5200,10 @@ msgstr "{date} তারিখে মোছা হয়েছে"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "মুছে ফেলা পাঠক"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the automation rule {name}"
+msgstr "অটোমেশন নিয়ম {name} মুছেছেন"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
@@ -5341,6 +5492,10 @@ msgstr "নথি"
 msgid "Does it work with server-side rendering?"
 msgstr "এটি কি সার্ভার-সাইড রেন্ডারিংয়ের সঙ্গে কাজ করে?"
 
+#: src/features/settings/automation/text.ts
+msgid "does not contain"
+msgstr "ধারণ করে না"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "ডোমেন"
@@ -5348,6 +5503,10 @@ msgstr "ডোমেন"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Domain not verified"
 msgstr "ডোমেন যাচাই হয়নি"
+
+#: src/features/settings/automation/text.ts
+msgid "done"
+msgstr "সম্পন্ন"
 
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5595,6 +5754,10 @@ msgstr "ই-মেইল: {label}"
 msgid "E-mails to the people who signed up"
 msgstr "যারা সাইন আপ করেছেন তাদের ইমেইল"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
+msgstr "প্রতিটি অ্যাকশন একবার, সর্বোচ্চ ১০টি। অ্যাকশনগুলো একটি পরিবর্তন হিসেবে চলে; একটি ব্যর্থ হলে কোনোটিই প্রয়োগ হয় না।"
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Each component gets this state while the incident is open."
 msgstr "ঘটনা খোলা থাকা পর্যন্ত প্রতিটি উপাদান এই অবস্থায় থাকে।"
@@ -5652,6 +5815,7 @@ msgstr "প্রতিটি তার সব বার্তা ও নোট�
 #: src/features/broadcasts/Overview.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5720,6 +5884,10 @@ msgstr "মনিটর সম্পাদনা করুন"
 msgid "Edit policy"
 msgstr "নীতি সম্পাদনা করুন"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit rule"
+msgstr "নিয়ম সম্পাদনা"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "টিম সম্পাদনা করুন"
@@ -5784,9 +5952,14 @@ msgstr "ইমোজি"
 msgid "Empty in the first rows"
 msgstr "প্রথম সারিগুলোতে খালি"
 
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Enabled"
 msgstr "চালু"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Enabled: {name}"
+msgstr "চালু: {name}"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5926,6 +6099,10 @@ msgstr "গত ৩০ দিনের প্রতিটি সংকেত, ম
 msgid "Every check of the last 30 days, newest first."
 msgstr "গত ৩০ দিনের প্রতিটি পরীক্ষা, নতুনটি আগে।"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "every conversation"
+msgstr "প্রতিটি কথোপকথন"
+
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Every conversation"
 msgstr "প্রতিটি কথোপকথন"
@@ -5935,6 +6112,7 @@ msgid "Every imported conversation is closed."
 msgstr "প্রতিটি ইমপোর্ট করা কথোপকথন বন্ধ।"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "Every inbox"
 msgstr "প্রতিটি ইনবক্স"
 
@@ -5965,6 +6143,10 @@ msgstr "প্রতিটি পণ্য"
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "এই এন্ডপয়েন্টে প্রতিটি অনুরোধ, নতুন আগে। নতুন 100টি রাখা হয়।"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Every run of the last 30 days, newest first."
+msgstr "গত ৩০ দিনের সব রান, নতুনগুলো আগে।"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
@@ -6127,6 +6309,7 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
 #: src/features/status/ResponseChart.tsx
@@ -6172,6 +6355,7 @@ msgstr "ফিডব্যাক"
 #: src/features/docs/PagesTab.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/webhooks/events.tsx
 msgid "Feedback"
 msgstr "ফিডব্যাক"
@@ -6186,6 +6370,10 @@ msgstr "ফিডব্যাক এসেছে"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Feedback categories"
+msgstr "মতামতের বিভাগ"
+
+#: src/features/settings/automation/text.ts
+msgid "Feedback category"
 msgstr "মতামতের বিভাগ"
 
 #: src/features/feedback/FeedbackPage.tsx
@@ -7179,9 +7367,17 @@ msgstr "কারণ চিহ্নিত হয়েছে"
 msgid "Identity secret"
 msgstr "আইডেন্টিটি সিক্রেট"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Idle for {idle} min"
+msgstr "{idle} মিনিট নিষ্ক্রিয়"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "If {provider} mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "{provider} ওই ঠিকানায় নিশ্চিতকরণ মেইল করলে সেটি এই ইনবক্সে কথোপকথন হিসেবে আসে; সেখানে খুলুন।"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "If all of these match"
+msgstr "যদি এগুলো সব মেলে"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
@@ -7445,6 +7641,7 @@ msgstr "Zoho Mail-এ Settings › Mail accounts › IMAP access খুলুন
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "ইনবক্স"
@@ -7514,6 +7711,10 @@ msgstr "Include the start of the message"
 #: src/features/contact/ContactSheet.tsx
 msgid "Info"
 msgstr "তথ্য"
+
+#: src/features/settings/automation/text.ts
+msgid "Inside business hours"
+msgstr "কার্যসময়ের মধ্যে"
 
 #: src/app/Sidebar.tsx
 msgid "Insights"
@@ -7592,8 +7793,13 @@ msgid "IP address"
 msgstr "IP ঠিকানা"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is"
 msgstr "হলো"
+
+#: src/features/settings/automation/text.ts
+msgid "is any of"
+msgstr "এগুলোর কোনো একটি"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "is less than"
@@ -7603,11 +7809,17 @@ msgstr "এর চেয়ে কম"
 msgid "is more than"
 msgstr "এর চেয়ে বেশি"
 
+#: src/features/settings/automation/text.ts
+msgid "is none of"
+msgstr "এগুলোর কোনোটিই নয়"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is not"
 msgstr "নয়"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is not set"
 msgstr "সেট করা নেই"
 
@@ -7616,6 +7828,7 @@ msgid "is one of"
 msgstr "এগুলোর একটি"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is set"
 msgstr "সেট করা আছে"
 
@@ -7771,6 +7984,10 @@ msgstr "এর সঙ্গে এর সম্মতির রেকর্ড �
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "এর ইতিহাস মুছে যায়। যে ঘটনাগুলো এর উল্লেখ করেছিল সেগুলো আর করে না।"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Its log goes with it. What it already changed stays. This cannot be undone."
+msgstr "এর লগও সাথে মুছে যায়। এটি আগে যা বদলেছে তা থেকে যায়। এটি ফেরানো যায় না।"
+
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
 msgstr "এর সদস্যরা টিমের দেওয়া ইনবক্স প্রবেশাধিকার হারান, আর কথোপকথন টিম হারায় কিন্তু দায়িত্বপ্রাপ্ত ব্যক্তি থাকে।"
@@ -7888,6 +8105,7 @@ msgstr "কী, ওয়েবহুক ও সংযুক্ত অ্যা�
 msgid "Keyword"
 msgstr "কীওয়ার্ড"
 
+#: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
 msgid "Kind"
 msgstr "ধরন"
@@ -7919,6 +8137,7 @@ msgstr "শুধু লেবেল: এর মেইল All mail থেকে 
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -8430,6 +8649,14 @@ msgstr "লক করা"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "লক করা: পাঠকরা আর এখানে লিখতে পারে না। আপনি এখনও পারেন।"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Log"
+msgstr "লগ"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Log of {name}"
+msgstr "{name}-এর লগ"
+
 #: src/features/status/SettingsTab.tsx
 msgid "Logo URL"
 msgstr "লোগোর URL"
@@ -8785,6 +9012,7 @@ msgstr "মধ্যমা, প্রথম বার্তা থেকে ব�
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
 msgstr "সদস্য"
@@ -8873,6 +9101,10 @@ msgstr "বার্তা কপি হয়েছে"
 #: src/components/common/text.ts
 msgid "Message removed"
 msgstr "বার্তা সরানো হয়েছে"
+
+#: src/features/settings/automation/text.ts
+msgid "Message text"
+msgstr "বার্তার টেক্সট"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -8972,8 +9204,13 @@ msgstr "আমার"
 msgid "Minor"
 msgstr "ছোট"
 
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "minutes"
+msgstr "মিনিট"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Minutes"
 msgstr "মিনিট"
 
 #: src/features/settings/sla/PolicyDialog.tsx
@@ -9089,6 +9326,7 @@ msgstr "সবচেয়ে বেশি ভোট"
 msgid "Move {0} to the Trash?"
 msgstr "{0}টি ট্র্যাশে সরাবেন?"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "{name} সরান। টেনে আনুন, অথবা তীর কী-সহ Alt চাপুন।"
@@ -9097,6 +9335,7 @@ msgstr "{name} সরান। টেনে আনুন, অথবা তীর
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "কথোপকথন ট্র্যাশে সরানো, পুনরুদ্ধার করা এবং ট্র্যাশ পড়া"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -9197,6 +9436,7 @@ msgstr "ট্র্যাশে সরান"
 msgid "Move to Yuva"
 msgstr "Yuva-তে আসুন"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -9261,6 +9501,7 @@ msgstr "আমার ভিউ"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
@@ -9586,6 +9827,11 @@ msgstr "নতুন নীতি"
 msgid "New reply in <0>{title}</0>"
 msgstr "<0>{title}</0>-এ নতুন উত্তর"
 
+#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "New rule"
+msgstr "নতুন নিয়ম"
+
 #: src/features/settings/webhooks/sections.tsx
 msgid "New signing secret"
 msgstr "নতুন সাইনিং সিক্রেট"
@@ -9840,6 +10086,10 @@ msgstr "এখনও কোনো উপাদান নেই। গ্রা�
 #: src/features/status/ComponentsTab.tsx
 msgid "No components yet. Add the parts of your product that customers depend on."
 msgstr "এখনও কোনো উপাদান নেই। আপনার পণ্যের যেসব অংশের উপর গ্রাহকরা নির্ভর করেন সেগুলো যোগ করুন।"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "No conditions: the rule runs for every conversation the trigger fits."
+msgstr "কোনো শর্ত নেই: ট্রিগার যে কথোপকথনে মেলে, নিয়মটি তার প্রতিটিতে চলে।"
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "No confirmation"
@@ -10160,6 +10410,14 @@ msgstr "এই সময়সীমায় এখনও কোনো প্�
 msgid "No results"
 msgstr "কোনো ফল নেই"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "No rules yet."
+msgstr "এখনও কোনো নিয়ম নেই।"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "No runs in the last 30 days."
+msgstr "গত ৩০ দিনে কোনো রান নেই।"
+
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "No secret yet. Make one, then paste it into GitHub."
 msgstr "No secret yet. Make one, then paste it into GitHub."
@@ -10438,6 +10696,10 @@ msgstr "ইমপোর্ট হয়নি"
 msgid "Not isolated"
 msgstr "আলাদা নয়"
 
+#: src/features/settings/automation/text.ts
+msgid "Not matched"
+msgstr "মেলেনি"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Not offered on this server"
 msgstr "এই সার্ভারে দেওয়া হয় না"
@@ -10465,6 +10727,10 @@ msgstr "প্রস্তুত নয়"
 #: src/features/migrations/SourceStep.tsx
 msgid "Not right? Pick your provider"
 msgstr "ঠিক নয়? আপনার প্রদানকারী বেছে নিন"
+
+#: src/features/settings/automation/text.ts
+msgid "not run"
+msgstr "চলেনি"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
@@ -10531,6 +10797,7 @@ msgstr "এখনও ব্যবহার হয়নি"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Note"
 msgstr "নোট"
 
@@ -10682,6 +10949,11 @@ msgstr "আজ আপনাকে কিছুর জন্য দরকার �
 #: src/features/status/MonitorDialog.tsx
 msgid "Nothing opens by itself. Open an incident from the monitor when you want one."
 msgstr "নিজে থেকে কিছুই খোলে না। দরকার হলে মনিটর থেকে ঘটনা খুলুন।"
+
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Nothing to pick from yet."
+msgstr "বেছে নেওয়ার মতো এখনও কিছু নেই।"
 
 #: src/features/account/AccountPage.tsx
 msgid "Nothing unread."
@@ -10878,6 +11150,7 @@ msgstr "টেস্ট বার্তা পৌঁছালে Yuva {hours} �
 msgid "One e-mail a month about what is new."
 msgstr "মাসে একটি ই-মেইল, নতুন কী আছে তা নিয়ে।"
 
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "একটি ইনবক্স"
@@ -11046,6 +11319,7 @@ msgid "Only the person can subscribe again, by confirming a mail."
 msgstr "শুধু ব্যক্তি নিজে আবার সাবস্ক্রাইব করতে পারে, একটি মেইল নিশ্চিত করে।"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "শুধু টিম এটি দেখে"
 
@@ -11169,6 +11443,10 @@ msgstr "ChatGPT প্লাগইন খুলুন"
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Open Claude connectors"
 msgstr "Claude কানেক্টর খুলুন"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Open conversation"
+msgstr "কথোপকথন খুলুন"
 
 #: src/app/Palette.tsx
 msgid "Open conversations"
@@ -11420,6 +11698,7 @@ msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational ফিরিয়ে আনে; degraded, partial_outage ও major_outage ব্যর্থ করে।"
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/automation/ConditionRow.tsx
 msgid "Operator"
 msgstr "অপারেটর"
 
@@ -11501,6 +11780,10 @@ msgstr "«অন্যান্য» থাকে: মুছে ফেলা ব
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
 msgstr "আমাদের মনিটর {monitor} {at} থেকে একটি সমস্যা দেখছে। আমরা বিষয়টি দেখছি।"
 
+#: src/features/settings/automation/RunLog.tsx
+msgid "Outcome"
+msgstr "ফলাফল"
+
 #: src/features/migrations/text.ts
 msgid "Outlook.com and Microsoft 365"
 msgstr "Outlook.com ও Microsoft 365"
@@ -11524,6 +11807,10 @@ msgstr "Outlook.com ও Microsoft 365 “Microsoft দিয়ে সাইন 
 #: src/features/migrations/text.ts
 msgid "Outlook's .pst files are not read; convert them to .mbox first."
 msgstr "Outlook-এর .pst ফাইল পড়া হয় না; আগে সেগুলো .mbox-এ রূপান্তর করুন।"
+
+#: src/features/settings/automation/text.ts
+msgid "Outside business hours"
+msgstr "কার্যসময়ের বাইরে"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
@@ -11871,6 +12158,10 @@ msgstr "ব্যক্তি"
 msgid "Personal"
 msgstr "ব্যক্তিগত"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a canned reply"
+msgstr "একটি তৈরি উত্তর বেছে নিন"
+
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "পণ্যের একটি চ্যাট চ্যানেল বেছে কোডটি পেস্ট করুন। রেটিং ও প্রশ্ন তার ইনবক্সে আসে।"
@@ -11915,6 +12206,14 @@ msgstr "ত্রুটি ছাড়া রেন্ডার হয় এ�
 msgid "Pick a discussion to read and answer it."
 msgstr "পড়তে ও উত্তর দিতে একটি আলোচনা বেছে নিন।"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Pick a field"
+msgstr "একটি ফিল্ড বেছে নিন"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a member"
+msgstr "একজন সদস্য বেছে নিন"
+
 #: src/features/status/MonitorsPage.tsx
 msgid "Pick a monitor to see what happened."
 msgstr "কী ঘটেছে দেখতে একটি মনিটর বেছে নিন।"
@@ -11935,6 +12234,10 @@ msgstr "এখানে দেখতে একটি ফিডব্যাক �
 msgid "Pick a sender in the settings"
 msgstr "সেটিংসে একজন প্রেরক বেছে নিন"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a team"
+msgstr "একটি টিম বেছে নিন"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "পরের 90 দিনের মধ্যে, আপনার সময় অঞ্চল {zone}-এ, একটি সময় বেছে নিন।"
@@ -11951,7 +12254,12 @@ msgstr "সংযুক্ত করতে নিচ থেকে একটি �
 msgid "Pick an e-mail channel of this inbox that has an SMTP account. It sends the confirmation and welcome mails."
 msgstr "এই ইনবক্সের SMTP অ্যাকাউন্ট আছে এমন একটি ই-মেইল চ্যানেল বেছে নিন। এটি নিশ্চিতকরণ ও স্বাগত মেইল পাঠায়।"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick an endpoint"
+msgstr "একটি এন্ডপয়েন্ট বেছে নিন"
+
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "Pick an inbox"
 msgstr "একটি ইনবক্স বেছে নিন"
 
@@ -12241,6 +12549,8 @@ msgid "Previous screenshot"
 msgstr "আগের স্ক্রিনশট"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
@@ -12528,6 +12838,10 @@ msgstr "সারিতে। নতুন চেষ্টা কিছুক্
 msgid "Quick cleanup"
 msgstr "দ্রুত পরিষ্কার"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Quiet for (minutes)"
+msgstr "এত সময় নীরব (মিনিট)"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Quote"
 msgstr "উদ্ধৃতি"
@@ -12607,6 +12921,10 @@ msgstr "জিপ করা Maildir হিসেবে পড়া হয়ে
 #: src/features/migrations/text.ts
 msgid "Read as an mbox file."
 msgstr "mbox ফাইল হিসেবে পড়া হয়েছে।"
+
+#: src/components/common/text.ts
+msgid "Read automation rules and their run log"
+msgstr "অটোমেশন নিয়ম ও তাদের রান লগ পড়া"
 
 #: src/components/common/text.ts
 msgid "Read broadcasts and e-mail designs"
@@ -12900,9 +13218,17 @@ msgstr "{name}-কে সরাবেন?"
 msgid "Remove {sender}"
 msgstr "{sender} সরান"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Remove action"
+msgstr "অ্যাকশন সরান"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove channel"
 msgstr "চ্যানেল সরান"
+
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Remove condition"
+msgstr "শর্ত সরান"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove condition {n}"
@@ -12941,6 +13267,10 @@ msgstr "ইমপোর্ট করা ইতিহাস সরাবেন?"
 msgid "Remove label {labelName}"
 msgstr "লেবেল {labelName} সরান"
 
+#: src/features/settings/automation/text.ts
+msgid "Remove labels"
+msgstr "লেবেল সরান"
+
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Remove the APNs key?"
 msgstr "APNs কী সরাবেন?"
@@ -12948,6 +13278,10 @@ msgstr "APNs কী সরাবেন?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "{provider}-এ Yuva-র জন্য বানানো অ্যাপ পাসওয়ার্ড সরান; এটি আর দরকার নেই।"
+
+#: src/features/settings/automation/text.ts
+msgid "Remove the assignee"
+msgstr "অ্যাসাইনি সরান"
 
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
@@ -13225,6 +13559,10 @@ msgstr "Reply and resolve"
 msgid "Reply command"
 msgstr "Reply command"
 
+#: src/features/settings/automation/text.ts
+msgid "Reply held back to protect the customer"
+msgstr "গ্রাহককে রক্ষা করতে উত্তর আটকে রাখা হয়েছে"
+
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
 msgstr "উত্তর পোস্ট করা হয়েছে"
@@ -13283,6 +13621,10 @@ msgstr "এর বদলে আলোচনায় উত্তর দিন"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "নির্বাচিত পোস্টের উত্তর দিন"
+
+#: src/features/settings/automation/text.ts
+msgid "Reply with a canned reply"
+msgstr "তৈরি উত্তর দিয়ে জবাব দিন"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Reply with a quote"
@@ -13619,9 +13961,29 @@ msgstr "আপনার ডোমেন রাউট করুন"
 msgid "Route your mail to Yuva"
 msgstr "আপনার মেইল Yuva-তে রাউট করুন"
 
+#: src/features/conversation/messages/context.ts
+msgid "Rule {rule}"
+msgstr "নিয়ম {rule}"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Rule {rule} ran, nothing needed changing"
+msgstr "নিয়ম {rule} চলেছে, কিছু বদলানোর দরকার ছিল না"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Rule {rule} ran: {done}"
+msgstr "নিয়ম {rule} চলেছে: {done}"
+
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "নিয়ম"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Rules react to a conversation changing: they label, assign, reply, snooze or call a webhook. They run in the order of this list, each at most once per trigger, and what a rule changes never starts another rule."
+msgstr "কথোপকথন বদলালে নিয়মগুলো সাড়া দেয়: লেবেল দেয়, অ্যাসাইন করে, উত্তর দেয়, স্নুজ করে বা ওয়েবহুক ডাকে। সেগুলো এই তালিকার ক্রমে চলে, প্রতি ট্রিগারে সর্বোচ্চ একবার, এবং একটি নিয়ম যা বদলায় তা কখনও অন্য নিয়ম শুরু করে না।"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Rules that label, assign, reply and call webhooks"
+msgstr "যেসব নিয়ম লেবেল দেয়, অ্যাসাইন করে, উত্তর দেয় ও ওয়েবহুক ডাকে"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Run a check"
@@ -13676,6 +14038,7 @@ msgstr "শনিবার"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
@@ -14207,6 +14570,10 @@ msgstr "আপনার Amazon SES অ্যাকাউন্ট দিয়�
 msgid "Send to"
 msgstr "এদের পাঠান"
 
+#: src/features/settings/automation/text.ts
+msgid "Send to a webhook endpoint"
+msgstr "একটি ওয়েবহুক এন্ডপয়েন্টে পাঠান"
+
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -14453,6 +14820,14 @@ msgstr "Set progress"
 msgid "Set the feedback progress"
 msgstr "Set the feedback progress"
 
+#: src/features/settings/automation/text.ts
+msgid "Set the priority"
+msgstr "অগ্রাধিকার ঠিক করুন"
+
+#: src/features/settings/automation/text.ts
+msgid "Set the status"
+msgstr "স্ট্যাটাস ঠিক করুন"
+
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Set up"
 msgstr "সেট আপ করুন"
@@ -14604,6 +14979,7 @@ msgstr "বিজ্ঞপ্তিতে বার্তার লেখা দ
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MigrationsPage.tsx
+#: src/features/settings/automation/RunLog.tsx
 msgid "Show more"
 msgstr "আরও দেখান"
 
@@ -15000,6 +15376,10 @@ msgstr "এই কলাম বাদ দিন"
 msgid "Skip threads that contain only automatic mail"
 msgstr "শুধু স্বয়ংক্রিয় মেইল আছে এমন থ্রেড বাদ দিন"
 
+#: src/features/settings/automation/text.ts
+msgid "skipped"
+msgstr "এড়িয়ে যাওয়া হয়েছে"
+
 #: src/components/common/Linked.tsx
 #: src/components/common/text.ts
 msgid "Skipped"
@@ -15116,6 +15496,7 @@ msgstr "SMTP হোস্ট"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "স্নুজ"
 
@@ -15368,6 +15749,8 @@ msgstr "বন্ধ হলে অবস্থা"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -15460,6 +15843,7 @@ msgstr "সাবডোমেন পাওয়া যায়নি"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
 msgstr "বিষয়"
@@ -15652,6 +16036,8 @@ msgstr "TCP পরীক্ষা"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
@@ -15744,11 +16130,16 @@ msgid "Tests go only to members of the workspace, at most five at a time, with [
 msgstr "টেস্ট শুধু ওয়ার্কস্পেসের সদস্যদের যায়, একসঙ্গে সর্বোচ্চ পাঁচজন, বিষয়ের আগে [Test] সহ।"
 
 #: src/features/fields/value.ts
+#: src/features/settings/automation/ConditionRow.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Text"
 msgstr "লেখা"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "Text last saved by {who}"
+msgstr "টেক্সট সবশেষ সংরক্ষণ করেছেন {who}"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Thanks for waiting. Your invoice is on its way."
@@ -15786,6 +16177,10 @@ msgstr "আপনি যে {provider} ব্যবহারকারী দি�
 #: src/features/status/SettingsTab.tsx
 msgid "The address answers “not found” until you publish the page."
 msgstr "আপনি পেজ প্রকাশ না করা পর্যন্ত ঠিকানাটি “পাওয়া যায়নি” উত্তর দেয়।"
+
+#: src/features/settings/automation/text.ts
+msgid "The address bounced"
+msgstr "ঠিকানা থেকে ফিরে এসেছে"
 
 #: src/components/common/text.ts
 msgid "The address bounced or complained"
@@ -15827,6 +16222,14 @@ msgstr "ব্রডকাস্ট বাতিল করা হয়েছে
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "আগে ব্রাউজারকে ডেস্কটপ নোটিফিকেশনের অনুমতি দিতে হবে; ততক্ষণ শুধু শব্দ বাজে।"
 
+#: src/features/settings/automation/text.ts
+msgid "The canned reply was deleted"
+msgstr "তৈরি উত্তরটি মুছে ফেলা হয়েছে"
+
+#: src/features/settings/automation/text.ts
+msgid "The change was refused"
+msgstr "পরিবর্তন প্রত্যাখ্যাত হয়েছে"
+
 #: src/components/common/text.ts
 msgid "The channel already has a DKIM key. Delete it before creating another."
 msgstr "চ্যানেলে ইতিমধ্যে একটি DKIM কী আছে। আরেকটি তৈরির আগে সেটি মুছুন।"
@@ -15834,6 +16237,10 @@ msgstr "চ্যানেলে ইতিমধ্যে একটি DKIM ক�
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The channel cannot send yet. It needs an SMTP account and an address to send from."
 msgstr "চ্যানেল এখনও পাঠাতে পারে না। এর একটি SMTP অ্যাকাউন্ট ও পাঠানোর ঠিকানা দরকার।"
+
+#: src/features/settings/automation/text.ts
+msgid "The channel has no SMTP account"
+msgstr "চ্যানেলে কোনো SMTP অ্যাকাউন্ট নেই"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "The channel name when empty."
@@ -15892,6 +16299,10 @@ msgstr "সম্মতি পেজ ক্লায়েন্ট যা চ�
 #: src/components/common/text.ts
 msgid "The contact was deleted"
 msgstr "কনট্যাক্ট মুছে ফেলা হয়েছে"
+
+#: src/features/settings/automation/text.ts
+msgid "The contact writes a message"
+msgstr "যোগাযোগ একটি বার্তা লেখে"
 
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
@@ -16605,6 +17016,10 @@ msgstr "The sign-in took too long or was already used. Start again."
 msgid "The sign-in was declined"
 msgstr "সাইন-ইন প্রত্যাখ্যান করা হয়েছে"
 
+#: src/features/settings/automation/text.ts
+msgid "The status changes"
+msgstr "স্ট্যাটাস বদলায়"
+
 #: src/app/UserMenu.tsx
 msgid "The status was not changed. Try again."
 msgstr "স্ট্যাটাস বদলানো হয়নি। আবার চেষ্টা করুন।"
@@ -16616,6 +17031,10 @@ msgstr "বিষয়"
 #: src/features/setup/NewsletterStep.tsx
 msgid "The subscribe form shows the list’s name and description."
 msgstr "সাবস্ক্রাইব ফর্ম লিস্টের নাম ও বিবরণ দেখায়।"
+
+#: src/features/settings/automation/text.ts
+msgid "The team does not cover this inbox"
+msgstr "টিম এই ইনবক্স কভার করে না"
 
 #: src/app/TeamMenu.tsx
 msgid "The team today"
@@ -16698,6 +17117,10 @@ msgstr "এই কী-যুক্ত মোছা ফিল্ডের মা�
 msgid "The visitor typed {0} in the chat and has not confirmed it yet. This reply came from that address, so it may not be from the visitor."
 msgstr "ভিজিটর চ্যাটে {0} টাইপ করেছে এবং এখনও নিশ্চিত করেনি। এই উত্তর ওই ঠিকানা থেকে এসেছে, তাই এটি ভিজিটরের নাও হতে পারে।"
 
+#: src/features/settings/automation/text.ts
+msgid "The webhook endpoint is off or not available here"
+msgstr "ওয়েবহুক এন্ডপয়েন্ট বন্ধ বা এখানে পাওয়া যায় না"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "The What’s new count shows on the chat button while no messages are unread. The widget’s Home always shows it."
 msgstr "পড়া হয়নি এমন বার্তা না থাকলে চ্যাট বোতামে নতুন আপডেটের সংখ্যা দেখা যায়। উইজেটের হোম এটি সবসময় দেখায়।"
@@ -16765,6 +17188,10 @@ msgstr "থিম"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Theme and e-mail view on this device"
 msgstr "এই ডিভাইসে থিম ও ই-মেইল ভিউ"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Then"
+msgstr "তখন"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -17112,6 +17539,19 @@ msgstr "এই প্রপার্টিতে এই নামে একট�
 msgid "This property already has a segment with this name."
 msgstr "এই প্রপার্টিতে এই নামে একটি সেগমেন্ট আগে থেকেই আছে।"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
+msgstr "মালিক বা অ্যাডমিন এই নিয়ম ও তৈরি উত্তর {title} দুটোই সংরক্ষণ না করা পর্যন্ত, অথবা API কী সেটিংসে বটদের পাঠানোর অনুমতি না দেওয়া পর্যন্ত এই উত্তর পাঠানো হবে না।"
+
+#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
+msgstr "মালিক বা অ্যাডমিন তৈরি উত্তর {title} সংরক্ষণ না করা পর্যন্ত, অথবা API কী সেটিংসে বটদের পাঠানোর অনুমতি না দেওয়া পর্যন্ত এই উত্তর পাঠানো হবে না।"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
+msgstr "মালিক বা অ্যাডমিন এই নিয়ম সংরক্ষণ না করা পর্যন্ত, অথবা API কী সেটিংসে বটদের পাঠানোর অনুমতি না দেওয়া পর্যন্ত এই উত্তর পাঠানো হবে না।"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request expired or was already used. Start connecting again from the app."
 msgstr "এই অনুরোধের মেয়াদ শেষ বা আগেই ব্যবহার হয়েছে। অ্যাপ থেকে আবার সংযোগ শুরু করুন।"
@@ -17386,6 +17826,10 @@ msgstr "ট্র্যাশ, কখনও ইমপোর্ট হয়ন�
 msgid "Triage"
 msgstr "বাছাই করুন"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Trigger"
+msgstr "ট্রিগার"
+
 #: src/features/migrations/ConnectStep.tsx
 msgid "Trust this certificate for this server. Do this only if it is your own server and the fingerprint matches."
 msgstr "এই সার্ভারের জন্য এই সার্টিফিকেট বিশ্বাস করুন। শুধু তখনই করুন যদি এটি আপনার নিজের সার্ভার হয় এবং ফিঙ্গারপ্রিন্ট মেলে।"
@@ -17604,6 +18048,10 @@ msgstr "অনুসরণ বন্ধ করা হয়েছে"
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Unit"
 msgstr "একক"
+
+#: src/components/common/authorText.ts
+msgid "Unknown"
+msgstr "অজানা"
 
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
@@ -18322,6 +18770,7 @@ msgstr "ওয়েব পেজ ফিডব্যাক ফর্ম চা�
 msgid "Webhook"
 msgstr "Webhook"
 
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Webhook endpoint"
 msgstr "ওয়েবহুক এন্ডপয়েন্ট"
@@ -18498,6 +18947,7 @@ msgid "What’s new entry"
 msgstr "নতুন কী আছে এন্ট্রি"
 
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "When"
 msgstr "কখন"
 

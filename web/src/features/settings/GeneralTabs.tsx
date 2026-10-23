@@ -2,6 +2,7 @@ import { Trans, useLingui } from "@lingui/react/macro"
 
 import { SettingsStrip } from "@/components/common/SettingsStrip"
 import { useMigrations } from "@/features/migrations/queries"
+import { useAutomationRules } from "@/features/settings/automation/queries"
 import { PageHeader, PageTabs } from "@/features/settings/ui"
 import { useSession } from "@/lib/session"
 import { useCannedReplies, useCustomFields, useLabels, useMacros, useSlaPolicies, useTeams } from "@/lib/workspace"
@@ -14,6 +15,7 @@ type Tab =
   | "teams"
   | "fields"
   | "sla"
+  | "automation"
   | "migrations"
   | "audit-log"
 
@@ -26,6 +28,7 @@ export function GeneralTabs({ current }: { current: Tab }) {
   const teams = useTeams().data
   const fields = useCustomFields().data
   const sla = useSlaPolicies().data
+  const rules = useAutomationRules().data
   const moves = useMigrations().data?.pages[0]?.items
   return (
     <PageTabs
@@ -76,6 +79,13 @@ export function GeneralTabs({ current }: { current: Tab }) {
                 label: t`SLA policies`,
                 count: sla?.length,
                 testId: "general-tab-sla",
+              },
+              {
+                key: "automation",
+                to: "/settings/automation",
+                label: t`Automation`,
+                count: rules?.length,
+                testId: "general-tab-automation",
               },
               {
                 key: "migrations",

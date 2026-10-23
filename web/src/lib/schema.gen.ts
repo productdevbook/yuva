@@ -1142,7 +1142,7 @@ export interface paths {
          * Create an API key
          * @description Owners and admins only, with a member session. The secret is returned once and stored
          *     only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-         *     `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+         *     `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
          *     `audit:read` (`403 forbidden`).
          */
         post: operations["createApiKey"];
@@ -1545,6 +1545,127 @@ export interface paths {
          *     Scope: `inboxes:manage`.
          */
         patch: operations["updateSlaPolicy"];
+        trace?: never;
+    };
+    "/v1/automation-rules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List automation rules
+         * @description In `position` order. Callers limited to some inboxes (agents, inbox-limited keys) see the
+         *     workspace rules and the rules of their inboxes.
+         *
+         *     Scope: `automations:read`.
+         */
+        get: operations["listAutomationRules"];
+        put?: never;
+        /**
+         * Create an automation rule
+         * @description Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
+         *     runs for triggers that happen after it is saved. A workspace holds at most 100 rules
+         *     (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
+         *     custom field and the inbox a rule names must exist in the workspace (`400
+         *     validation_failed`); one deleted later makes the actions that need it fail.
+         *
+         *     Scope: `automations:manage`.
+         */
+        post: operations["createAutomationRule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/automation-rules/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Reorder automation rules
+         * @description Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
+         *     once, in the new order (`400 validation_failed` otherwise).
+         *
+         *     Scope: `automations:manage`.
+         */
+        put: operations["orderAutomationRules"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/automation-rules/{automationRuleId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get an automation rule
+         * @description A rule the caller does not see (see `GET /v1/automation-rules`) answers `404`.
+         *
+         *     Scope: `automations:read`.
+         */
+        get: operations["getAutomationRule"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete an automation rule
+         * @description Owners, admins and API keys not limited to inboxes. Its log goes with it; what it already
+         *     changed stays.
+         *
+         *     Scope: `automations:manage`.
+         */
+        delete: operations["deleteAutomationRule"];
+        options?: never;
+        head?: never;
+        /**
+         * Update an automation rule
+         * @description Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+         *     `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
+         *     when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
+         *     `enabled` (not a rename), which decides whether its replies may go out while
+         *     `bots_may_send` is off. Runs already queued use the rule as it is when they run.
+         *
+         *     Scope: `automations:manage`.
+         */
+        patch: operations["updateAutomationRule"];
+        trace?: never;
+    };
+    "/v1/automation-rules/{automationRuleId}/runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A rule's log
+         * @description The rule's runs of the last 30 days, newest first: one per trigger it was evaluated for,
+         *     `applied`, `failed` with the reason, or `not_matched` when its conditions did not match.
+         *     An idle trigger whose conversation is no longer quiet or no longer open or pending when the
+         *     rule would run leaves no run. Callers limited to some inboxes see the runs on
+         *     conversations of their inboxes.
+         *
+         *     Scope: `automations:read`.
+         */
+        get: operations["listAutomationRuns"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/v1/inboxes/{inboxId}/channels": {
@@ -11625,6 +11746,28 @@ export interface webhooks {
         patch?: never;
         trace?: never;
     };
+    "automation.triggered": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * An automation rule sent a conversation
+         * @description Sent only by a rule's `send_webhook` action, to the endpoint it names, whatever events the
+         *     endpoint lists; never through a subscription. An endpoint limited to another inbox, or
+         *     turned off, makes the action fail.
+         */
+        post: operations["webhookAutomationTriggered"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export interface components {
     schemas: {
@@ -11793,6 +11936,11 @@ export interface components {
          *       `account`, and `host` for a GitHub Enterprise Server. `issue_integration.updated`:
          *       `fields` among `name`, `token`, `default_target` and `webhook_secret`; never a token or
          *       secret. `issue_integration.secret_rotated`: none.
+         *     - `automation_rule.created`, `automation_rule.deleted`: `name`, `trigger`, `inbox_id`
+         *       when set, `action_types`, and `webhook_hosts` (the hosts of the endpoints its
+         *       `send_webhook` actions name, never their URLs). `automation_rule.updated`: `fields`
+         *       among `name`, `enabled`, `inbox_id`, `trigger`, `idle_minutes`, `conditions` and
+         *       `actions`, with the same `name`, `trigger`, `action_types` and `webhook_hosts`.
          *
          *     Details never make an action fail: when they would be too long, lists are replaced by
          *     `<name>_count` and `truncated` is `true`.
@@ -11802,9 +11950,9 @@ export interface components {
          *     More actions are added over time; show an unknown one by its name.
          * @enum {string}
          */
-        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated";
+        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted";
         /** @enum {string} */
-        AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "message" | "team" | "sso" | "sso_domain" | "issue_integration";
+        AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "message" | "team" | "sso" | "sso_domain" | "issue_integration" | "automation_rule";
         AuditTarget: {
             type: components["schemas"]["AuditTargetType"];
             /**
@@ -12246,10 +12394,16 @@ export interface components {
          *       implied: a key made without naming its scopes does not hold it. Writing values needs
          *       `conversations:write` or `contacts:write`.
          *
-         *     `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage` and `views:write` are never added to keys made before they existed.
+         *     - `automations:read`: automation rules and their logs.
+         *     - `automations:manage`: create, change, reorder and delete automation rules. Owners and
+         *       admins only; never offered to agents' tokens, refused for keys limited to inboxes. Never
+         *       implied: a key made without naming its scopes does not hold it. A rule acts on every
+         *       inbox it covers with the workspace's power.
+         *
+         *     `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write`, `fields:manage`, `views:write` and `automations:*` are never added to keys made before they existed.
          * @enum {string}
          */
-        ApiKeyScope: "conversations:read" | "conversations:write" | "conversations:delete" | "messages:write" | "messages:redact" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish" | "audit:read" | "integrations:read" | "integrations:manage" | "issues:write" | "fields:manage" | "views:write";
+        ApiKeyScope: "conversations:read" | "conversations:write" | "conversations:delete" | "messages:write" | "messages:redact" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish" | "audit:read" | "integrations:read" | "integrations:manage" | "issues:write" | "fields:manage" | "views:write" | "automations:read" | "automations:manage";
         /**
          * Format: uri
          * @description An `https` image URL.
@@ -13169,8 +13323,12 @@ export interface components {
             /** Format: int64 */
             count: number;
         };
-        /** @enum {string} */
-        WebhookEventType: "conversation.created" | "conversation.updated" | "conversation.rated" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.created" | "message.redacted" | "feedback.created" | "contact.updated" | "contact.deleted" | "draft.created" | "draft.updated" | "draft.deleted" | "discussion.created" | "discussion.post_created" | "discussion.answered" | "discussion.updated" | "subscription.created" | "subscription.updated" | "broadcast.updated" | "analytics.alert" | "status.component.updated" | "status.incident.created" | "status.incident.updated" | "status.incident.resolved" | "status.monitor.down" | "status.monitor.up" | "help.article.published" | "help.article.unpublished" | "help.article.deleted" | "discussion.stage_changed" | "changelog.entry.published" | "changelog.entry.unpublished" | "changelog.entry.deleted" | "team.created" | "team.updated" | "team.deleted" | "issue_link.created" | "issue_link.updated" | "issue_link.deleted" | "conversation.sla_warning" | "conversation.sla_breached";
+        /**
+         * @description `automation.triggered` cannot be listed in an endpoint's `events`: it is sent only to the
+         *     endpoint a rule's `send_webhook` action names.
+         * @enum {string}
+         */
+        WebhookEventType: "conversation.created" | "conversation.updated" | "conversation.rated" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.created" | "message.redacted" | "feedback.created" | "contact.updated" | "contact.deleted" | "draft.created" | "draft.updated" | "draft.deleted" | "discussion.created" | "discussion.post_created" | "discussion.answered" | "discussion.updated" | "subscription.created" | "subscription.updated" | "broadcast.updated" | "analytics.alert" | "status.component.updated" | "status.incident.created" | "status.incident.updated" | "status.incident.resolved" | "status.monitor.down" | "status.monitor.up" | "help.article.published" | "help.article.unpublished" | "help.article.deleted" | "discussion.stage_changed" | "changelog.entry.published" | "changelog.entry.unpublished" | "changelog.entry.deleted" | "team.created" | "team.updated" | "team.deleted" | "issue_link.created" | "issue_link.updated" | "issue_link.deleted" | "conversation.sla_warning" | "conversation.sla_breached" | "automation.triggered";
         WebhookEndpoint: {
             /** Format: uuid */
             id: string;
@@ -14267,7 +14425,7 @@ export interface components {
             via?: string;
         };
         /** @enum {string} */
-        EventType: "assigned" | "unassigned" | "status_changed" | "labels_changed" | "moved" | "rated" | "broadcast_reply" | "feedback_progress" | "macro_applied";
+        EventType: "assigned" | "unassigned" | "status_changed" | "labels_changed" | "moved" | "rated" | "broadcast_reply" | "feedback_progress" | "macro_applied" | "rule_applied";
         MessageEvent: {
             type: components["schemas"]["EventType"];
             /**
@@ -14320,6 +14478,11 @@ export interface components {
              *     sent and the rest applied.
              */
             skipped?: components["schemas"]["MacroSkipped"][];
+            /**
+             * @description `rule_applied` only: what the rule did, after the timeline events of its changes; the
+             *     message's `rule` names the rule.
+             */
+            actions?: components["schemas"]["AutomationRunAction"][];
         };
         Attachment: {
             /**
@@ -14387,6 +14550,11 @@ export interface components {
             redacted_at?: string;
             /** @description Who removed its content; absent when it was not redacted. */
             redacted_by?: components["schemas"]["MessageRedactedBy"];
+            /**
+             * @description The automation rule that wrote it (author `system`): its notes, replies and the timeline
+             *     events of its changes. Absent for everything else.
+             */
+            rule?: components["schemas"]["AutomationRuleRef"];
             /**
              * Format: date-time
              * @description For a sent draft, when it was sent.
@@ -14566,6 +14734,11 @@ export interface components {
             shortcut: components["schemas"]["Slug"];
             title: string;
             body: string;
+            /**
+             * @description Who last set its text; absent for replies last saved before this was recorded, which
+             *     automation rules send only while `bots_may_send` is on.
+             */
+            saved_by?: components["schemas"]["AutomationRuleAuthor"];
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
@@ -16508,6 +16681,229 @@ export interface components {
         };
         SlaPolicyOrder: {
             ids: string[];
+        };
+        /**
+         * @description `conversation_created`: a conversation was created (by a contact, a member or a key).
+         *     `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
+         *     the status changed, also when a contact's message or the snooze time reopened it.
+         *     `idle`: nothing was written in an open or pending conversation for `idle_minutes`
+         *     (checked every 5 minutes; once per quiet period).
+         * @enum {string}
+         */
+        AutomationTrigger: "conversation_created" | "message_received" | "status_changed" | "idle";
+        /**
+         * @description What a condition tests, and the operators it takes:
+         *     - `channel_kind` (`in`, `not_in`; `ChannelKind` values), `kind` (`ConversationKind`),
+         *       `feedback_category` (category keys), `priority` (`Priority`), `status`
+         *       (`ConversationStatus`).
+         *     - `subject`, `body` (`contains`, `not_contains`; case-insensitive): `body` is the
+         *       triggering contact message, or the contact's latest message for other triggers.
+         *     - `contact_attribute`, `custom_field` (`equals`, `not_equals`, `contains`,
+         *       `not_contains`, `is_set`, `is_not_set`) with `key`: a contact attribute, or a conversation
+         *       custom field (`CustomField.key`). Numbers, checkboxes and dates compare as their JSON
+         *       text (`42`, `true`, `2026-01-31`).
+         *     - `label` (`in`: has any of the labels, `not_in`: has none of them), `team` (`in`, `not_in`
+         *       with team ids, `is_set`, `is_not_set`), `assignee` (`is_set`, `is_not_set`).
+         *     - `business_hours` (`equals` `inside` or `outside`): the inbox's business hours now; an
+         *       inbox without hours is always inside.
+         * @enum {string}
+         */
+        AutomationConditionField: "channel_kind" | "kind" | "feedback_category" | "priority" | "status" | "subject" | "body" | "contact_attribute" | "custom_field" | "label" | "team" | "assignee" | "business_hours";
+        /** @enum {string} */
+        AutomationConditionOperator: "in" | "not_in" | "equals" | "not_equals" | "contains" | "not_contains" | "is_set" | "is_not_set";
+        /**
+         * @description `in` and `not_in` take `values`; `equals`, `not_equals`, `contains` and `not_contains`
+         *     take `value`; `is_set` and `is_not_set` take neither (`400 validation_failed` otherwise).
+         */
+        AutomationCondition: {
+            field: components["schemas"]["AutomationConditionField"];
+            operator: components["schemas"]["AutomationConditionOperator"];
+            /** @description `contact_attribute` and `custom_field` only. */
+            key?: string;
+            value?: string;
+            values?: string[];
+        };
+        /**
+         * @description - `add_labels`, `remove_labels` (`label_ids`).
+         *     - `assign_member` (`member_id`, a member with access to the conversation's inbox when the
+         *       rule runs), `assign_team` (`team_id`, a team granted the inbox), `unassign` (clears the
+         *       member). `assign_pool` leaves the conversation to automatic assignment; until automatic
+         *       assignment exists it does nothing and the run lists it as `skipped`.
+         *     - `set_priority` (`priority`), `set_status` (`status`: `open`, `pending` or `closed`;
+         *       closing needs the conversation's required custom fields), `snooze` (`snooze_minutes`).
+         *     - `add_note` (`body`): an internal note.
+         *     - `send_reply` (`canned_reply_id`): the canned reply's text to the contact, as an
+         *       automatic reply (`Auto-Submitted: auto-replied` by e-mail); see `AutomationRuleAuthor`
+         *       for `bots_may_send`.
+         *     - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
+         * @enum {string}
+         */
+        AutomationActionType: "add_labels" | "remove_labels" | "assign_member" | "assign_team" | "assign_pool" | "unassign" | "set_priority" | "set_status" | "snooze" | "add_note" | "send_reply" | "send_webhook";
+        /**
+         * @description Each type at most once per rule, and only the fields its type uses (`400
+         *     validation_failed` otherwise); `set_status` and `snooze` exclude each other, as do
+         *     `assign_member`, `assign_pool` and `unassign`, and `add_labels` and `remove_labels` share
+         *     no label.
+         */
+        AutomationAction: {
+            type: components["schemas"]["AutomationActionType"];
+            label_ids?: string[];
+            /** Format: uuid */
+            member_id?: string;
+            /** Format: uuid */
+            team_id?: string;
+            priority?: components["schemas"]["Priority"];
+            status?: components["schemas"]["ConversationStatus"];
+            /** Format: int32 */
+            snooze_minutes?: number;
+            body?: string;
+            /** Format: uuid */
+            canned_reply_id?: string;
+            /** Format: uuid */
+            webhook_id?: string;
+        };
+        /** @enum {string} */
+        AutomationRuleAuthorType: "member" | "api_key" | "oauth_grant";
+        /**
+         * @description Who last changed what a rule does (its trigger, scope, conditions, actions or `enabled`), or
+         *     a canned reply's text. A rule's reply goes out while `bots_may_send` is off only when both
+         *     the rule's and the canned reply's are a member who is still an owner or admin when the rule
+         *     runs.
+         */
+        AutomationRuleAuthor: {
+            type: components["schemas"]["AutomationRuleAuthorType"];
+            /**
+             * Format: uuid
+             * @description `member` and `oauth_grant`.
+             */
+            member_id?: string;
+            /**
+             * Format: uuid
+             * @description `api_key`.
+             */
+            api_key_id?: string;
+        };
+        AutomationRule: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            enabled: boolean;
+            /**
+             * Format: int32
+             * @description Its place in the workspace's one list, from 0.
+             */
+            position: number;
+            /**
+             * Format: uuid
+             * @description Absent for a workspace rule; an inbox rule acts only on that inbox's conversations.
+             */
+            inbox_id?: string;
+            trigger: components["schemas"]["AutomationTrigger"];
+            /**
+             * Format: int32
+             * @description `idle` only.
+             */
+            idle_minutes?: number;
+            /** @description All of them must match; empty matches every conversation. */
+            conditions: components["schemas"]["AutomationCondition"][];
+            actions: components["schemas"]["AutomationAction"][];
+            saved_by: components["schemas"]["AutomationRuleAuthor"];
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        AutomationRuleCreate: {
+            name: string;
+            /** @default true */
+            enabled: boolean;
+            /** Format: uuid */
+            inbox_id?: string;
+            trigger: components["schemas"]["AutomationTrigger"];
+            /**
+             * Format: int32
+             * @description Required for `idle`, refused for other triggers.
+             */
+            idle_minutes?: number;
+            conditions?: components["schemas"]["AutomationCondition"][];
+            actions: components["schemas"]["AutomationAction"][];
+        };
+        AutomationRuleUpdate: {
+            name?: string;
+            enabled?: boolean;
+            /**
+             * Format: uuid
+             * @description `null` makes it a workspace rule.
+             */
+            inbox_id?: string | null;
+            trigger?: components["schemas"]["AutomationTrigger"];
+            /** Format: int32 */
+            idle_minutes?: number | null;
+            conditions?: components["schemas"]["AutomationCondition"][];
+            actions?: components["schemas"]["AutomationAction"][];
+        };
+        AutomationRuleList: {
+            items: components["schemas"]["AutomationRule"][];
+        };
+        AutomationRuleOrder: {
+            ids: string[];
+        };
+        AutomationRuleRef: {
+            /** Format: uuid */
+            id: string;
+            /** @description The rule's name when it acted. */
+            name: string;
+        };
+        /** @enum {string} */
+        AutomationRunOutcome: "applied" | "failed" | "not_matched";
+        AutomationRunAction: {
+            type: components["schemas"]["AutomationActionType"];
+            /**
+             * @description `applied`; `unchanged` when the conversation already was that way; `skipped` for
+             *     `assign_pool`; `not_run` in a failed run.
+             * @enum {string}
+             */
+            result: "applied" | "unchanged" | "skipped" | "not_run";
+        };
+        AutomationRun: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            rule_id: string;
+            /** Format: uuid */
+            conversation_id: string;
+            trigger: components["schemas"]["AutomationTrigger"];
+            outcome: components["schemas"]["AutomationRunOutcome"];
+            /**
+             * @description `failed` only: the problem code the action met, as the same change through `/v1`
+             *     would answer it (`field_required`, `team_access`, `validation_failed`,
+             *     `email_undeliverable`, …), or `auto_reply` when a reply was refused to protect the
+             *     customer (an automatic reply or bounce, a blocked contact, spam, a rule reply in
+             *     the last hour or three in the last day), `bot_sending_disabled` (see
+             *     `AutomationRuleAuthor`), `label_gone`,
+             *     `canned_reply_gone`, `webhook_unavailable`.
+             */
+            error?: string;
+            /** @description `failed` only: a sentence for people. */
+            detail?: string;
+            actions: components["schemas"]["AutomationRunAction"][];
+            /** Format: date-time */
+            created_at: string;
+        };
+        AutomationRunPage: {
+            items: components["schemas"]["AutomationRun"][];
+            /** @description Absent on the last page. */
+            next_cursor?: string;
+        };
+        WebhookAutomationTriggeredData: {
+            rule: components["schemas"]["AutomationRuleRef"];
+            trigger: components["schemas"]["AutomationTrigger"];
+            /** @description After the rule's other actions. */
+            conversation: components["schemas"]["Conversation"];
+            contact: components["schemas"]["WebhookContact"];
+        };
+        WebhookAutomationTriggeredPayload: components["schemas"]["WebhookPayloadBase"] & {
+            data: components["schemas"]["WebhookAutomationTriggeredData"];
         };
         ConversationSla: {
             /** Format: uuid */
@@ -24887,6 +25283,7 @@ export interface components {
         MessageId: string;
         TeamId: string;
         SlaPolicyId: string;
+        AutomationRuleId: string;
         LabelId: string;
         CannedReplyId: string;
         MacroId: string;
@@ -27325,6 +27722,216 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SlaPolicy"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    listAutomationRules: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The rules. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationRuleList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    createAutomationRule: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AutomationRuleCreate"];
+            };
+        };
+        responses: {
+            /** @description The rule. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationRule"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    orderAutomationRules: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AutomationRuleOrder"];
+            };
+        };
+        responses: {
+            /** @description The rules in their new order. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationRuleList"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    getAutomationRule: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                automationRuleId: components["parameters"]["AutomationRuleId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The rule. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationRule"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    deleteAutomationRule: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                automationRuleId: components["parameters"]["AutomationRuleId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    updateAutomationRule: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                automationRuleId: components["parameters"]["AutomationRuleId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AutomationRuleUpdate"];
+            };
+        };
+        responses: {
+            /** @description The updated rule. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationRule"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    listAutomationRuns: {
+        parameters: {
+            query?: {
+                /** @description Only runs with this outcome. */
+                outcome?: components["schemas"]["AutomationRunOutcome"];
+                /** @description The `next_cursor` of the previous page. */
+                cursor?: components["parameters"]["Cursor"];
+                /** @description Page size, 1 to 100; 25 by default. */
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                automationRuleId: components["parameters"]["AutomationRuleId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The runs. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationRunPage"];
                 };
             };
             400: components["responses"]["Problem"];
@@ -42432,6 +43039,39 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["WebhookConversationSlaPayload"];
+            };
+        };
+        responses: {
+            /** @description Any 2xx answer counts as delivered. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhookAutomationTriggered: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description The delivery's id, the same on every retry; use it to ignore duplicates. */
+                "webhook-id": components["parameters"]["WebhookIdHeader"];
+                /** @description Unix seconds of this attempt. Refuse values far from your clock. */
+                "webhook-timestamp": components["parameters"]["WebhookTimestampHeader"];
+                /**
+                 * @description Space-separated `v1,<base64>` signatures: HMAC-SHA256 over
+                 *     `<webhook-id>.<webhook-timestamp>.<body>` with the base64-decoded part of the
+                 *     `whsec_` secret (Standard Webhooks). Two during a secret rotation.
+                 */
+                "webhook-signature": components["parameters"]["WebhookSignatureHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookAutomationTriggeredPayload"];
             };
         };
         responses: {

@@ -170,6 +170,10 @@ function useWho(m: Message, side: Side, ctx: ThreadContext, name: string) {
   const { t } = useLingui()
   const author = useAuthorName(m, ctx)
   const by = useAuthorName({ ...m, author: m.sent_by ?? m.author }, ctx)
+  if (m.rule) {
+    const rule = m.rule.name
+    return t`by rule ${rule}`
+  }
   if (side === "in") return m.author.type === "contact" ? name : author
   if (side === "me" && !m.sent_by) return t`You`
   return m.sent_by ? t`${author}, sent by ${by}` : author

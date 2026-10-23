@@ -1,18 +1,49 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { PencilIcon, QuoteIcon, Trash2Icon } from "lucide-react"
+import { PencilIcon, QuoteIcon, Trash2Icon, TriangleAlertIcon } from "lucide-react"
 import { useState } from "react"
 
 import { ErrorLine, useConfirm } from "@/components/common"
+import { useAuthorText } from "@/components/common/authorText"
 import { EmptyBox } from "@/components/common/EmptyBox"
 import { Button } from "@/components/ui/button"
 import { CannedReplyDialog } from "@/features/settings/canned/CannedReplyDialog"
+import { useAuthorityCheck, useAutomationRules } from "@/features/settings/automation/queries"
 import { GeneralHeader, Intro } from "@/features/settings/GeneralTabs"
 import { Card, headButton, Row, Rows } from "@/features/settings/ui"
 import { api, unwrap, type CannedReply } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { useCannedReplies } from "@/lib/workspace"
+
+function SavedBy({ r }: { r: CannedReply }) {
+  const authorText = useAuthorText()
+  const authority = useAuthorityCheck()
+  const rules = useAutomationRules().data
+  const who = authorText(r.saved_by)
+  const blocked =
+    !authority.botsMaySend &&
+    !authority.isManager(r.saved_by) &&
+    (rules ?? []).some((x) => x.actions.some((a) => a.type === "send_reply" && a.canned_reply_id === r.id))
+  return (
+    <>
+      <p className="truncate text-caption text-faint" data-testid="canned-saved-by">
+        <Trans>Text last saved by {who}</Trans>
+      </p>
+      {blocked && (
+        <p className="flex items-start gap-1.5 text-caption text-warning" data-testid="canned-rule-warning">
+          <TriangleAlertIcon className="mt-px size-3.5 shrink-0" />
+          <span>
+            <Trans>
+              An automation rule sends this reply, but it will not go out until an owner or admin saves the text, or
+              bots may send is turned on.
+            </Trans>
+          </span>
+        </p>
+      )}
+    </>
+  )
+}
 
 export function CannedRepliesPage() {
   const { t } = useLingui()
@@ -52,6 +83,7 @@ export function CannedRepliesPage() {
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-body font-medium">{r.title}</p>
                   <p className="truncate text-caption text-muted-foreground">{r.body}</p>
+                  <SavedBy r={r} />
                 </div>
                 {canManage && (
                   <>

@@ -45,6 +45,9 @@ export const AUDIT_GROUPS: Record<AuditGroup, AuditAction[]> = {
     "analytics_export.created",
   ],
   workspace: [
+    "automation_rule.created",
+    "automation_rule.updated",
+    "automation_rule.deleted",
     "workspace.retention_changed",
     "workspace.broadcast_approval_requested",
     "workspace.broadcasts_approved",
@@ -195,6 +198,12 @@ export function useAuditSentence() {
         const to = recipients(d.to, t`no limit`)
         return t`Changed the daily broadcast limit from ${from} to ${to}`
       }
+      case "automation_rule.created":
+        return t`Created the automation rule ${name}`
+      case "automation_rule.updated":
+        return t`Changed the automation rule ${name}`
+      case "automation_rule.deleted":
+        return t`Deleted the automation rule ${name}`
       default:
         return e.action
     }

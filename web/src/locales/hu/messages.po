@@ -1139,6 +1139,10 @@ msgstr "Egy beszélgetés megváltozott"
 msgid "A conversation is assigned to me"
 msgstr "Egy beszélgetést hozzám rendeltek"
 
+#: src/features/settings/automation/text.ts
+msgid "A conversation is idle"
+msgstr "Egy beszélgetés inaktív"
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "A beszélgetést egészében veszi, ha utoljára a tartományon belül frissült."
@@ -1150,6 +1154,10 @@ msgstr "A beszélgetésnek meg kell felelnie minden kitöltött sornak. Az üres
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "Egy beszélgetés elindult"
+
+#: src/features/settings/automation/text.ts
+msgid "A conversation starts"
+msgstr "Egy beszélgetés elindul"
 
 #: src/components/common/text.ts
 msgid "A conversation was deleted for good"
@@ -1219,6 +1227,7 @@ msgstr "Egy piszkozatot megírtak"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "A fájl tartalma nem egyezik a típusával. Ellenőrizd a fájlt, és próbáld újra."
 
+#: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
@@ -1255,6 +1264,10 @@ msgstr "A kulccsal a háttérrendszered, egy szkript vagy egy bot olvashat és �
 #: src/components/common/text.ts
 msgid "A kind of field holds at most 50 fields. Delete one first."
 msgstr "Egy objektumnak legfeljebb 50 mezője lehet. Előbb töröljön egyet."
+
+#: src/features/settings/automation/text.ts
+msgid "A label was deleted"
+msgstr "Egy címke törölve lett"
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -1400,9 +1413,17 @@ msgstr "Egy válasz és műveletei egy lépésben"
 msgid "A reply was written in a discussion"
 msgstr "Egy vitában választ írtak"
 
+#: src/features/settings/automation/text.ts
+msgid "A required field is empty"
+msgstr "Egy kötelező mező üres"
+
 #: src/components/common/text.ts
 msgid "A roadmap idea moved to another stage"
 msgstr "Egy ütemterv-ötlet másik szakaszba került"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "A rule that is off never runs. Rules run in the order of the list."
+msgstr "A kikapcsolt szabály soha nem fut le. A szabályok a lista sorrendjében futnak."
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -1496,6 +1517,10 @@ msgstr "Visszavontak egy bejegyzést az Újdonságokból"
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "Egész szám 1 és 10 000 000 között"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 automation rules. Delete one first."
+msgstr "Egy munkaterület legfeljebb 100 automatizálási szabályt tartalmazhat. Előbb töröljön egyet."
 
 #: src/components/common/text.ts
 msgid "A workspace holds at most 100 SLA policies. Delete one first."
@@ -1679,6 +1704,10 @@ msgstr "Adj hozzá webhelycsevegést a postafiók beállításaiban"
 msgid "Add a website or app"
 msgstr "Webhely vagy alkalmazás hozzáadása"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Add an action"
+msgstr "Művelet hozzáadása"
+
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
 msgstr "Adj hozzá egy címet a szervereden, és válaszd ki azokat az eseményeket, amelyekről a Yuva értesítse."
@@ -1697,6 +1726,10 @@ msgstr "Kép hozzáadása"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
 msgstr "Postafiók hozzáadása"
+
+#: src/features/settings/automation/text.ts
+msgid "Add an internal note"
+msgstr "Belső jegyzet hozzáadása"
 
 #: src/features/migrations/text.ts
 msgid "Add an OAuth client named “Yuva”, as a confidential client, and enter the redirect URL below as its redirect URL."
@@ -1721,6 +1754,10 @@ msgstr "Csatorna hozzáadása"
 #: src/features/status/ComponentsTab.tsx
 msgid "Add component"
 msgstr "Összetevő hozzáadása"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Add condition"
+msgstr "Feltétel hozzáadása"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Add contact"
@@ -1747,6 +1784,10 @@ msgstr "Fejléc hozzáadása"
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
 msgstr "A(z) {labelName} címke hozzáadása"
+
+#: src/features/settings/automation/text.ts
+msgid "Add labels"
+msgstr "Címkék hozzáadása"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -1929,6 +1970,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "All"
@@ -2086,6 +2128,10 @@ msgstr "Már a listán"
 msgid "Already on the list, left as they are"
 msgstr "Már a listán, változatlanul hagyva"
 
+#: src/features/settings/automation/text.ts
+msgid "already so"
+msgstr "már így van"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Also called audience or identifier."
 msgstr "Also called audience or identifier."
@@ -2203,6 +2249,7 @@ msgstr "Egy választ elfogadtak itt: <0>{title}</0>"
 msgid "an API key"
 msgstr "egy API-kulcs"
 
+#: src/components/common/authorText.ts
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "An API key"
 msgstr "Egy API-kulcs"
@@ -2218,6 +2265,18 @@ msgstr "Egy alkalmazásjelszóval levelek módosíthatók lennének; a Yuva kapc
 #: src/features/broadcasts/ListSettings.tsx
 msgid "An archived list keeps its subscribers and records, but forms and the preference page stop offering it."
 msgstr "Az archivált lista megtartja a feliratkozóit és a rekordjait, de az űrlapok és a beállítások oldal már nem kínálják fel."
+
+#: src/components/common/authorText.ts
+msgid "An assistant connected by {name}"
+msgstr "{name} által csatlakoztatott asszisztens"
+
+#: src/components/common/text.ts
+msgid "An automation rule ran its webhook action"
+msgstr "Egy automatizálási szabály lefuttatta a webhook-műveletét"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "An automation rule sends this reply, but it will not go out until an owner or admin saves the text, or bots may send is turned on."
+msgstr "Egy automatizálási szabály ezt a választ küldi, de addig nem megy ki, amíg egy tulajdonos vagy admin el nem menti a szöveget, vagy a botok nem küldhetnek."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "An e-mail address, phone number or web address"
@@ -2582,6 +2641,11 @@ msgstr "Megjelenés"
 msgid "Application (client) ID"
 msgstr "Alkalmazás (kliens) azonosítója"
 
+#: src/features/settings/automation/text.ts
+msgid "Applied"
+msgstr "Alkalmazva"
+
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Applies to"
 msgstr "Hatálya"
@@ -2723,8 +2787,13 @@ msgstr "Hozzárendelés vagy átadás kollégának"
 msgid "Assign to {name}"
 msgstr "Hozzárendelés: {name}"
 
+#: src/features/settings/automation/text.ts
+msgid "Assign to a member"
+msgstr "Hozzárendelés egy taghoz"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/settings/automation/text.ts
 msgid "Assign to a team"
 msgstr "Hozzárendelés csapathoz"
 
@@ -2746,6 +2815,7 @@ msgstr "Hozzárendelve: {assignee}"
 msgid "Assigned to {assignee}, kept by name"
 msgstr "Hozzárendelve: {assignee}, névvel megtartva"
 
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Assignee"
 msgstr "Felelős"
@@ -2848,6 +2918,10 @@ msgstr "Attribútumkulcs, például plan"
 msgid "Attribute keys use letters, digits, dots, dashes and underscores, at most 64."
 msgstr "Az attribútumkulcsok betűket, számokat, pontokat, kötőjeleket és aláhúzásokat használnak, legfeljebb 64 karaktert."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Attribute name"
+msgstr "Attribútum neve"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Attribute of condition {n}"
 msgstr "A(z) {n}. feltétel attribútuma"
@@ -2889,9 +2963,18 @@ msgstr "Automatikus válasz"
 msgid "automatic"
 msgstr "automatikus"
 
+#: src/features/settings/automation/text.ts
+msgid "Automatic assignment (not available yet)"
+msgstr "Automatikus hozzárendelés (még nem elérhető)"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "Az automatikus levél soha nem vált ki automatikus választ."
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Automation"
+msgstr "Automatizálás"
 
 #: src/app/UserMenu.tsx
 msgid "Available"
@@ -3076,6 +3159,14 @@ msgstr "Mindkét rekord megvan. A Yuva naponta egyszer ellenőrzi őket; hagyja 
 msgid "Bots"
 msgstr "Botok"
 
+#: src/features/settings/automation/text.ts
+msgid "Bots may not send and the author is not an owner or admin"
+msgstr "A botok nem küldhetnek, és a szerző nem tulajdonos vagy admin"
+
+#: src/components/common/text.ts
+msgid "Bots may not send in this workspace, and this reply was not saved by an owner or admin."
+msgstr "A botok ebben a munkaterületben nem küldhetnek, és ezt a választ nem tulajdonos vagy admin mentette."
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bots may not send in this workspace: the key writes drafts and a member sends them."
 msgstr "A botok ebben a munkaterületben nem küldhetnek: a kulcs piszkozatokat ír, és egy tag küldi el őket."
@@ -3200,6 +3291,8 @@ msgstr "Hibák, ötletek és dicséretek az alkalmazásaidból és oldalaidról"
 msgid "Bundle ID"
 msgstr "Bundle ID"
 
+#: src/features/settings/automation/ConditionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
 msgstr "Munkaidő"
@@ -3215,6 +3308,10 @@ msgstr "E-mailben"
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "Tagok szerint"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "by rule {rule}"
+msgstr "a(z) {rule} szabály által"
 
 #: src/components/common/text.ts
 msgid "By the team"
@@ -3340,6 +3437,7 @@ msgid "Canned replies and macros, in the reply box"
 msgstr "Mentett válaszok és makrók, a válaszmezőben"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Canned reply"
 msgstr "Gyorsválasz"
 
@@ -3419,6 +3517,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "Módosította a beszélgetések megőrzési idejét erről: {from} erre: {to}"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the automation rule {name}"
+msgstr "Módosította a(z) {name} automatizálási szabályt"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the daily broadcast limit from {from} to {to}"
 msgstr "Módosította a napi körlevélkorlátot erről: {from} erre: {to}"
 
@@ -3451,6 +3553,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "A küldési domain módosítása kikapcsolja a DKIM-aláírást, amíg újra be nem kapcsolod az új domainhez."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -3576,6 +3679,10 @@ msgstr "Ellenőrizve: {when}"
 #: src/features/broadcasts/Import.tsx
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "Ellenőrizve, és arra vár, hogy tulajdonos vagy admin elindítsa."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Checked every 5 minutes, once per quiet period. Only open and pending conversations."
+msgstr "5 percenként ellenőrzi, csendes időszakonként egyszer. Csak a nyitott és függőben lévő beszélgetéseket."
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Checked with the tracker before it replaces the old one. The current one is never shown."
@@ -3804,6 +3911,10 @@ msgstr "Minden beszélgetés lezárása a válasz után"
 msgid "Close everything"
 msgstr "Minden bezárása"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Close idle conversations"
+msgstr "Inaktív beszélgetések lezárása"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Close older conversations"
 msgstr "Régebbi beszélgetések bezárása"
@@ -3956,10 +4067,18 @@ msgstr "Érintett összetevők"
 msgid "Components, history, incidents and updates are deleted with it."
 msgstr "Az összetevők, az előzmények, az incidensek és a frissítések vele együtt törlődnek."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Condition"
+msgstr "Feltétel"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Conditions"
 msgstr "Feltételek"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Conditions: {n}"
+msgstr "Feltételek: {n}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Configuration set"
@@ -4198,6 +4317,10 @@ msgstr "Kapcsolat hozzáadva. Az Új beszélgetés gombbal írhat neki."
 msgid "Contact and identities"
 msgstr "Kontakt és identitások"
 
+#: src/features/settings/automation/text.ts
+msgid "Contact attribute"
+msgstr "Kapcsolattartó attribútuma"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactSheet.tsx
@@ -4243,6 +4366,7 @@ msgid "Contacts keep the values they hold; they show as plain attributes instead
 msgstr "A kapcsolatok megtartják az értékeiket; típusos mező helyett egyszerű tulajdonságként jelennek meg."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "contains"
 msgstr "tartalmazza"
 
@@ -4288,6 +4412,10 @@ msgstr "Continue with your organisation's sign-in"
 #: src/features/contact/ContactsPage.tsx
 msgid "Convers."
 msgstr "Besz."
+
+#: src/features/settings/automation/text.ts
+msgid "Conversation"
+msgstr "Beszélgetés"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Conversation actions"
@@ -4586,6 +4714,10 @@ msgstr "Lista létrehozása"
 msgid "Create policy"
 msgstr "Szabály létrehozása"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create rule"
+msgstr "Szabály létrehozása"
+
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
 msgstr "Állapotoldal létrehozása"
@@ -4635,6 +4767,10 @@ msgstr "Hozd létre a Yuva-fiókodat"
 msgid "Create, change and delete custom fields"
 msgstr "Egyéni mezők létrehozása, módosítása és törlése"
 
+#: src/components/common/text.ts
+msgid "Create, change, reorder and delete automation rules"
+msgstr "Automatizálási szabályok létrehozása, módosítása, átrendezése és törlése"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "Created"
@@ -4651,6 +4787,10 @@ msgstr "Elemzési exportot hozott létre"
 #: src/features/settings/audit/sentence.ts
 msgid "Created the API key {name}"
 msgstr "Létrehozta a(z) {name} API-kulcsot"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the automation rule {name}"
+msgstr "Létrehozta a(z) {name} automatizálási szabályt"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Created the DKIM key {selector}"
@@ -4695,6 +4835,8 @@ msgid "Custom"
 msgstr "Egyéni"
 
 #: src/features/fields/FieldFilter.tsx
+#: src/features/settings/automation/ConditionRow.tsx
+#: src/features/settings/automation/text.ts
 msgid "Custom field"
 msgstr "Egyéni mező"
 
@@ -4804,6 +4946,7 @@ msgstr "Csökkent teljesítmény"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -4935,6 +5078,10 @@ msgstr "Töröld a Yuvához létrehozott OAuth-klienst"
 msgid "Delete the policy {name}?"
 msgstr "Törli a(z) {name} szabályt?"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Delete the rule {name}?"
+msgstr "Törli a(z) {name} szabályt?"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "A kijelölt blokk törlése"
@@ -5053,6 +5200,10 @@ msgstr "Törölve ekkor: {date}"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "Törölt olvasó"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the automation rule {name}"
+msgstr "Törölte a(z) {name} automatizálási szabályt"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
@@ -5341,6 +5492,10 @@ msgstr "Dokumentumok"
 msgid "Does it work with server-side rendering?"
 msgstr "Működik szerveroldali rendereléssel?"
 
+#: src/features/settings/automation/text.ts
+msgid "does not contain"
+msgstr "nem tartalmazza"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "Domain"
@@ -5348,6 +5503,10 @@ msgstr "Domain"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Domain not verified"
 msgstr "A domain nincs ellenőrizve"
+
+#: src/features/settings/automation/text.ts
+msgid "done"
+msgstr "kész"
 
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5595,6 +5754,10 @@ msgstr "E-mail: {label}"
 msgid "E-mails to the people who signed up"
 msgstr "E-mailek a feliratkozóknak"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
+msgstr "Minden művelet egyszer, legfeljebb 10. A műveletek egy változtatásként futnak le; ha egy sikertelen, egyik sem érvényesül."
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Each component gets this state while the incident is open."
 msgstr "Minden összetevő ezt az állapotot kapja, amíg az incidens nyitott."
@@ -5652,6 +5815,7 @@ msgstr "Mindegyik az összes üzenetével és jegyzetével"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5720,6 +5884,10 @@ msgstr "Figyelő szerkesztése"
 msgid "Edit policy"
 msgstr "Szabály szerkesztése"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit rule"
+msgstr "Szabály szerkesztése"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Csapat szerkesztése"
@@ -5784,9 +5952,14 @@ msgstr "Emoji"
 msgid "Empty in the first rows"
 msgstr "Üres az első sorokban"
 
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Enabled"
 msgstr "Bekapcsolva"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Enabled: {name}"
+msgstr "Bekapcsolva: {name}"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5926,6 +6099,10 @@ msgstr "Minden jel, kihagyott jel és elküldött állapot az elmúlt 30 napból
 msgid "Every check of the last 30 days, newest first."
 msgstr "Az elmúlt 30 nap minden ellenőrzése, a legújabb elöl."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "every conversation"
+msgstr "minden beszélgetés"
+
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Every conversation"
 msgstr "Minden beszélgetés"
@@ -5935,6 +6112,7 @@ msgid "Every imported conversation is closed."
 msgstr "Minden importált beszélgetés lezárt."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "Every inbox"
 msgstr "Minden postafiók"
 
@@ -5965,6 +6143,10 @@ msgstr "Minden termék"
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "A végpontra érkezett minden kérés, legújabbal kezdve. A legutóbbi 100 marad meg."
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Every run of the last 30 days, newest first."
+msgstr "Az elmúlt 30 nap összes futása, a legújabb elöl."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
@@ -6127,6 +6309,7 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
 #: src/features/status/ResponseChart.tsx
@@ -6172,6 +6355,7 @@ msgstr "visszajelzés"
 #: src/features/docs/PagesTab.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/webhooks/events.tsx
 msgid "Feedback"
 msgstr "Visszajelzések"
@@ -6187,6 +6371,10 @@ msgstr "Visszajelzés érkezett"
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Feedback categories"
 msgstr "Visszajelzés-kategóriák"
+
+#: src/features/settings/automation/text.ts
+msgid "Feedback category"
+msgstr "Visszajelzési kategória"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -7179,9 +7367,17 @@ msgstr "Azonosítva"
 msgid "Identity secret"
 msgstr "Identitástitok"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Idle for {idle} min"
+msgstr "{idle} perce inaktív"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "If {provider} mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "Ha a(z) {provider} megerősítést küld erre a címre, beszélgetésként érkezik ebbe a postafiókba; nyisd meg ott."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "If all of these match"
+msgstr "Ha mindegyik teljesül"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
@@ -7445,6 +7641,7 @@ msgstr "A Zoho Mailben nyisd meg a Settings › Mail accounts › IMAP access r�
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Postafiók"
@@ -7514,6 +7711,10 @@ msgstr "Include the start of the message"
 #: src/features/contact/ContactSheet.tsx
 msgid "Info"
 msgstr "Infó"
+
+#: src/features/settings/automation/text.ts
+msgid "Inside business hours"
+msgstr "Nyitvatartási időn belül"
 
 #: src/app/Sidebar.tsx
 msgid "Insights"
@@ -7592,8 +7793,13 @@ msgid "IP address"
 msgstr "IP-cím"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is"
 msgstr "egyenlő"
+
+#: src/features/settings/automation/text.ts
+msgid "is any of"
+msgstr "a következők valamelyike"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "is less than"
@@ -7603,11 +7809,17 @@ msgstr "kisebb, mint"
 msgid "is more than"
 msgstr "nagyobb, mint"
 
+#: src/features/settings/automation/text.ts
+msgid "is none of"
+msgstr "a következők egyike sem"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is not"
 msgstr "nem egyenlő"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is not set"
 msgstr "nincs beállítva"
 
@@ -7616,6 +7828,7 @@ msgid "is one of"
 msgstr "az egyik ezek közül"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is set"
 msgstr "be van állítva"
 
@@ -7771,6 +7984,10 @@ msgstr "A hozzájárulási rekordja vele együtt törlődik. Mivel leiratkoztak,
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Az előzményei törlődnek. Az őt említő incidensek már nem említik."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Its log goes with it. What it already changed stays. This cannot be undone."
+msgstr "A naplója is törlődik vele. Amit már módosított, az megmarad. Ez nem vonható vissza."
+
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
 msgstr "A tagok elvesztik a csapat által adott postafiók-hozzáférést, a beszélgetések pedig elvesztik a csapatot, de megtartják a felelőst."
@@ -7888,6 +8105,7 @@ msgstr "Kulcsok, webhookok és csatlakoztatott asszisztensek"
 msgid "Keyword"
 msgstr "Kulcsszó"
 
+#: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
 msgid "Kind"
 msgstr "Típus"
@@ -7919,6 +8137,7 @@ msgstr "Csak címke: a levelei az Összes levélből jönnek, és a beszélgeté
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -8430,6 +8649,14 @@ msgstr "Zárolva"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "Zárolva: az olvasók itt már nem írhatnak. Te még igen."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Log"
+msgstr "Napló"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Log of {name}"
+msgstr "{name} naplója"
+
 #: src/features/status/SettingsTab.tsx
 msgid "Logo URL"
 msgstr "A logó URL-je"
@@ -8785,6 +9012,7 @@ msgstr "medián, az első üzenettől a lezárásig"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
 msgstr "Tag"
@@ -8873,6 +9101,10 @@ msgstr "Üzenet átmásolva"
 #: src/components/common/text.ts
 msgid "Message removed"
 msgstr "Üzenet eltávolítva"
+
+#: src/features/settings/automation/text.ts
+msgid "Message text"
+msgstr "Üzenet szövege"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -8972,9 +9204,14 @@ msgstr "Az enyéim"
 msgid "Minor"
 msgstr "Kisebb"
 
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "minutes"
 msgstr "perc"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Minutes"
+msgstr "Perc"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Minutes before a due time. 0 sends no warning."
@@ -9089,6 +9326,7 @@ msgstr "Legtöbb szavazat"
 msgid "Move {0} to the Trash?"
 msgstr "A Kukába helyezed: {0}?"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "{name} áthelyezése. Húzza, vagy nyomja meg az Alt billentyűt a nyilakkal."
@@ -9097,6 +9335,7 @@ msgstr "{name} áthelyezése. Húzza, vagy nyomja meg az Alt billentyűt a nyila
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Beszélgetések Kukába helyezése, visszaállítása és a Kuka olvasása"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -9197,6 +9436,7 @@ msgstr "Kukába helyezés"
 msgid "Move to Yuva"
 msgstr "Költözés a Yuvába"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -9261,6 +9501,7 @@ msgstr "Saját nézeteim"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
@@ -9586,6 +9827,11 @@ msgstr "Új szabály"
 msgid "New reply in <0>{title}</0>"
 msgstr "Új válasz itt: <0>{title}</0>"
 
+#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "New rule"
+msgstr "Új szabály"
+
 #: src/features/settings/webhooks/sections.tsx
 msgid "New signing secret"
 msgstr "Új aláírási titok"
@@ -9840,6 +10086,10 @@ msgstr "Még nincs összetevő. Az Összetevők lapon vegye fel a termék azon r
 #: src/features/status/ComponentsTab.tsx
 msgid "No components yet. Add the parts of your product that customers depend on."
 msgstr "Még nincs összetevő. Add hozzá a termékednek azokat a részeit, amelyektől az ügyfelek függenek."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "No conditions: the rule runs for every conversation the trigger fits."
+msgstr "Nincs feltétel: a szabály minden olyan beszélgetésre lefut, amelyre az indító illik."
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "No confirmation"
@@ -10160,6 +10410,14 @@ msgstr "Ebben a tartományban még nincs válaszidő."
 msgid "No results"
 msgstr "Nincs találat"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "No rules yet."
+msgstr "Még nincs szabály."
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "No runs in the last 30 days."
+msgstr "Nincs futás az elmúlt 30 napban."
+
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "No secret yet. Make one, then paste it into GitHub."
 msgstr "No secret yet. Make one, then paste it into GitHub."
@@ -10438,6 +10696,10 @@ msgstr "Nincs importálva"
 msgid "Not isolated"
 msgstr "Nincs elkülönítve"
 
+#: src/features/settings/automation/text.ts
+msgid "Not matched"
+msgstr "Nem egyezett"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Not offered on this server"
 msgstr "Ezen a szerveren nem érhető el"
@@ -10465,6 +10727,10 @@ msgstr "Nincs kész"
 #: src/features/migrations/SourceStep.tsx
 msgid "Not right? Pick your provider"
 msgstr "Nem stimmel? Válaszd ki a szolgáltatódat"
+
+#: src/features/settings/automation/text.ts
+msgid "not run"
+msgstr "nem futott le"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
@@ -10531,6 +10797,7 @@ msgstr "Még nincs használva"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Note"
 msgstr "Jegyzet"
 
@@ -10682,6 +10949,11 @@ msgstr "Ma semmi nem vár rád."
 #: src/features/status/MonitorDialog.tsx
 msgid "Nothing opens by itself. Open an incident from the monitor when you want one."
 msgstr "Semmi nem nyílik meg magától. Nyisson incidenst a figyelőből, amikor szeretne."
+
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Nothing to pick from yet."
+msgstr "Még nincs mit választani."
 
 #: src/features/account/AccountPage.tsx
 msgid "Nothing unread."
@@ -10878,6 +11150,7 @@ msgstr "Amint megérkezik egy tesztüzenet, a Yuva {hours} órát vár. Ha ezala
 msgid "One e-mail a month about what is new."
 msgstr "Havonta egy e-mail az újdonságokról."
 
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "Egy postafiók"
@@ -11046,6 +11319,7 @@ msgid "Only the person can subscribe again, by confirming a mail."
 msgstr "Csak maga a személy iratkozhat fel újra, egy levél megerősítésével."
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "Ezt csak a csapat látja"
 
@@ -11169,6 +11443,10 @@ msgstr "ChatGPT-bővítmények megnyitása"
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Open Claude connectors"
 msgstr "Claude-összekötők megnyitása"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Open conversation"
+msgstr "Beszélgetés megnyitása"
 
 #: src/app/Palette.tsx
 msgid "Open conversations"
@@ -11420,6 +11698,7 @@ msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "az operational helyreállít; a degraded, partial_outage és major_outage leállít."
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/automation/ConditionRow.tsx
 msgid "Operator"
 msgstr "Operátor"
 
@@ -11501,6 +11780,10 @@ msgstr "Az Egyéb marad: az eltávolított kategóriák ide kerülnek"
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
 msgstr "A(z) {monitor} figyelőnk {at} óta problémát jelez. Vizsgáljuk."
 
+#: src/features/settings/automation/RunLog.tsx
+msgid "Outcome"
+msgstr "Eredmény"
+
 #: src/features/migrations/text.ts
 msgid "Outlook.com and Microsoft 365"
 msgstr "Outlook.com és Microsoft 365"
@@ -11524,6 +11807,10 @@ msgstr "Az Outlook.com és a Microsoft 365 a „Bejelentkezés Microsofttal” m
 #: src/features/migrations/text.ts
 msgid "Outlook's .pst files are not read; convert them to .mbox first."
 msgstr "Az Outlook .pst fájljai nem olvashatók; előbb alakítsd át őket .mbox-szá."
+
+#: src/features/settings/automation/text.ts
+msgid "Outside business hours"
+msgstr "Nyitvatartási időn kívül"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
@@ -11871,6 +12158,10 @@ msgstr "Személy"
 msgid "Personal"
 msgstr "Személyes"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a canned reply"
+msgstr "Válasszon mentett választ"
+
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "Válaszd ki a termék egy csevegőcsatornáját, és illeszd be a kódot. Az értékelések és kérdések a postafiókjába érkeznek."
@@ -11915,6 +12206,14 @@ msgstr "Válassz olyan dizájnt, amely hibák nélkül renderelődik."
 msgid "Pick a discussion to read and answer it."
 msgstr "Válassz egy vitát, hogy elolvasd és válaszolj rá."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Pick a field"
+msgstr "Válasszon mezőt"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a member"
+msgstr "Válasszon tagot"
+
 #: src/features/status/MonitorsPage.tsx
 msgid "Pick a monitor to see what happened."
 msgstr "Válasszon egy figyelőt, hogy lássa, mi történt."
@@ -11935,6 +12234,10 @@ msgstr "Válassz egy visszajelzést, hogy itt lásd."
 msgid "Pick a sender in the settings"
 msgstr "Válassz feladót a beállításokban"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a team"
+msgstr "Válasszon csapatot"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "Válassz időpontot a következő 90 napban, a saját időzónádban: {zone}."
@@ -11951,7 +12254,12 @@ msgstr "Válassz lent egy asszisztenst a csatlakoztatáshoz."
 msgid "Pick an e-mail channel of this inbox that has an SMTP account. It sends the confirmation and welcome mails."
 msgstr "Válaszd ki a postafiók egy SMTP-fiókkal rendelkező e-mail-csatornáját. Ez küldi a megerősítő és üdvözlő leveleket."
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick an endpoint"
+msgstr "Válasszon végpontot"
+
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "Pick an inbox"
 msgstr "Válassz postafiókot"
 
@@ -12241,6 +12549,8 @@ msgid "Previous screenshot"
 msgstr "Előző képernyőkép"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
@@ -12528,6 +12838,10 @@ msgstr "Sorban áll. Az új kísérlet egy pillanat múlva megjelenik alább."
 msgid "Quick cleanup"
 msgstr "Gyors takarítás"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Quiet for (minutes)"
+msgstr "Csend ennyi ideig (perc)"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Quote"
 msgstr "Idézés"
@@ -12607,6 +12921,10 @@ msgstr "Tömörített Maildirként olvasva: a mappáiból címkék lesznek."
 #: src/features/migrations/text.ts
 msgid "Read as an mbox file."
 msgstr "mbox-fájlként olvasva."
+
+#: src/components/common/text.ts
+msgid "Read automation rules and their run log"
+msgstr "Automatizálási szabályok és futási naplójuk olvasása"
 
 #: src/components/common/text.ts
 msgid "Read broadcasts and e-mail designs"
@@ -12900,9 +13218,17 @@ msgstr "Eltávolítod: {name}?"
 msgid "Remove {sender}"
 msgstr "{sender} eltávolítása"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Remove action"
+msgstr "Művelet eltávolítása"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove channel"
 msgstr "Csatorna eltávolítása"
+
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Remove condition"
+msgstr "Feltétel eltávolítása"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove condition {n}"
@@ -12941,6 +13267,10 @@ msgstr "Eltávolítod az importált előzményeket?"
 msgid "Remove label {labelName}"
 msgstr "A(z) {labelName} címke eltávolítása"
 
+#: src/features/settings/automation/text.ts
+msgid "Remove labels"
+msgstr "Címkék eltávolítása"
+
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Remove the APNs key?"
 msgstr "Eltávolítod az APNs-kulcsot?"
@@ -12948,6 +13278,10 @@ msgstr "Eltávolítod az APNs-kulcsot?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Távolítsd el a Yuvához a(z) {provider} szolgáltatónál létrehozott alkalmazásjelszót; már nincs rá szükség."
+
+#: src/features/settings/automation/text.ts
+msgid "Remove the assignee"
+msgstr "Felelős eltávolítása"
 
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
@@ -13225,6 +13559,10 @@ msgstr "Válasz és megoldás"
 msgid "Reply command"
 msgstr "Reply command"
 
+#: src/features/settings/automation/text.ts
+msgid "Reply held back to protect the customer"
+msgstr "A válasz visszatartva az ügyfél védelmében"
+
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
 msgstr "Válasz közzétéve"
@@ -13283,6 +13621,10 @@ msgstr "Inkább a vitában válaszolj"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "Válasz a kijelölt bejegyzésre"
+
+#: src/features/settings/automation/text.ts
+msgid "Reply with a canned reply"
+msgstr "Válasz mentett válasszal"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Reply with a quote"
@@ -13619,9 +13961,29 @@ msgstr "Irányítsd a domained"
 msgid "Route your mail to Yuva"
 msgstr "Irányítsd a leveleidet a Yuvába"
 
+#: src/features/conversation/messages/context.ts
+msgid "Rule {rule}"
+msgstr "{rule} szabály"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Rule {rule} ran, nothing needed changing"
+msgstr "A(z) {rule} szabály lefutott, nem kellett semmit módosítani"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Rule {rule} ran: {done}"
+msgstr "A(z) {rule} szabály lefutott: {done}"
+
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "Szabályok"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Rules react to a conversation changing: they label, assign, reply, snooze or call a webhook. They run in the order of this list, each at most once per trigger, and what a rule changes never starts another rule."
+msgstr "A szabályok egy beszélgetés változására reagálnak: címkéznek, hozzárendelnek, válaszolnak, elnapolnak vagy webhookot hívnak. A lista sorrendjében futnak, indítónként legfeljebb egyszer, és amit egy szabály módosít, az soha nem indít el másik szabályt."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Rules that label, assign, reply and call webhooks"
+msgstr "Szabályok, amelyek címkéznek, hozzárendelnek, válaszolnak és webhookot hívnak"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Run a check"
@@ -13676,6 +14038,7 @@ msgstr "Szombat"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
@@ -14207,6 +14570,10 @@ msgstr "Küldés az Amazon SES-fiókodon át az SMTP-hitelesítő adataival"
 msgid "Send to"
 msgstr "Küldés ide"
 
+#: src/features/settings/automation/text.ts
+msgid "Send to a webhook endpoint"
+msgstr "Küldés webhook-végpontnak"
+
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -14453,6 +14820,14 @@ msgstr "Állapot beállítása"
 msgid "Set the feedback progress"
 msgstr "A visszajelzés állapotának beállítása"
 
+#: src/features/settings/automation/text.ts
+msgid "Set the priority"
+msgstr "Prioritás beállítása"
+
+#: src/features/settings/automation/text.ts
+msgid "Set the status"
+msgstr "Állapot beállítása"
+
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Set up"
 msgstr "Beállítás"
@@ -14604,6 +14979,7 @@ msgstr "Az üzenet szövegének megjelenítése az értesítésben"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MigrationsPage.tsx
+#: src/features/settings/automation/RunLog.tsx
 msgid "Show more"
 msgstr "Továbbiak megjelenítése"
 
@@ -15000,6 +15376,10 @@ msgstr "Oszlop kihagyása"
 msgid "Skip threads that contain only automatic mail"
 msgstr "Csak automatikus levelet tartalmazó szálak kihagyása"
 
+#: src/features/settings/automation/text.ts
+msgid "skipped"
+msgstr "kihagyva"
+
 #: src/components/common/Linked.tsx
 #: src/components/common/text.ts
 msgid "Skipped"
@@ -15116,6 +15496,7 @@ msgstr "SMTP-hoszt"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "Elhalasztás"
 
@@ -15368,6 +15749,8 @@ msgstr "Állapot leálláskor"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -15460,6 +15843,7 @@ msgstr "Az aldomain nem található"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
 msgstr "Tárgy"
@@ -15652,6 +16036,8 @@ msgstr "TCP-ellenőrzés"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
@@ -15744,11 +16130,16 @@ msgid "Tests go only to members of the workspace, at most five at a time, with [
 msgstr "A tesztek csak a munkaterület tagjainak mennek, egyszerre legfeljebb ötnek, a tárgy előtt [Test] előtaggal."
 
 #: src/features/fields/value.ts
+#: src/features/settings/automation/ConditionRow.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Text"
 msgstr "Szöveg"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "Text last saved by {who}"
+msgstr "A szöveget utoljára {who} mentette"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Thanks for waiting. Your invoice is on its way."
@@ -15786,6 +16177,10 @@ msgstr "A(z) {provider} felhasználó, amellyel bejelentkeztél, nem admin, és 
 #: src/features/status/SettingsTab.tsx
 msgid "The address answers “not found” until you publish the page."
 msgstr "A cím „nem található” választ ad, amíg közzé nem teszed az oldalt."
+
+#: src/features/settings/automation/text.ts
+msgid "The address bounced"
+msgstr "A cím visszapattant"
 
 #: src/components/common/text.ts
 msgid "The address bounced or complained"
@@ -15827,6 +16222,14 @@ msgstr "A tömeges levelet megszakították"
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "A böngészőnek előbb engedélyeznie kell az asztali értesítéseket; addig csak a hang szól."
 
+#: src/features/settings/automation/text.ts
+msgid "The canned reply was deleted"
+msgstr "A mentett válasz törölve lett"
+
+#: src/features/settings/automation/text.ts
+msgid "The change was refused"
+msgstr "A módosítást elutasították"
+
 #: src/components/common/text.ts
 msgid "The channel already has a DKIM key. Delete it before creating another."
 msgstr "A csatornának már van DKIM-kulcsa. Töröld, mielőtt újat hozol létre."
@@ -15834,6 +16237,10 @@ msgstr "A csatornának már van DKIM-kulcsa. Töröld, mielőtt újat hozol lét
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The channel cannot send yet. It needs an SMTP account and an address to send from."
 msgstr "A csatorna még nem tud küldeni. SMTP-fiókra és küldési címre van szüksége."
+
+#: src/features/settings/automation/text.ts
+msgid "The channel has no SMTP account"
+msgstr "A csatornának nincs SMTP-fiókja"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "The channel name when empty."
@@ -15892,6 +16299,10 @@ msgstr "A hozzájárulási oldal bejelöli, amit a kliens kér. Hagyd ki, amit n
 #: src/components/common/text.ts
 msgid "The contact was deleted"
 msgstr "A kontaktot törölték"
+
+#: src/features/settings/automation/text.ts
+msgid "The contact writes a message"
+msgstr "A kapcsolattartó üzenetet ír"
 
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
@@ -16605,6 +17016,10 @@ msgstr "The sign-in took too long or was already used. Start again."
 msgid "The sign-in was declined"
 msgstr "A bejelentkezést elutasították"
 
+#: src/features/settings/automation/text.ts
+msgid "The status changes"
+msgstr "Az állapot megváltozik"
+
 #: src/app/UserMenu.tsx
 msgid "The status was not changed. Try again."
 msgstr "Az állapot nem változott. Próbáld újra."
@@ -16616,6 +17031,10 @@ msgstr "A tárgy"
 #: src/features/setup/NewsletterStep.tsx
 msgid "The subscribe form shows the list’s name and description."
 msgstr "A feliratkozási űrlap a lista nevét és leírását mutatja."
+
+#: src/features/settings/automation/text.ts
+msgid "The team does not cover this inbox"
+msgstr "A csapat nem fedi le ezt a postaládát"
 
 #: src/app/TeamMenu.tsx
 msgid "The team today"
@@ -16698,6 +17117,10 @@ msgstr "Az ilyen kulcsú, törölt mező értékei még törlés alatt állnak. 
 msgid "The visitor typed {0} in the chat and has not confirmed it yet. This reply came from that address, so it may not be from the visitor."
 msgstr "A látogató ezt írta a csevegésben: {0}, de még nem erősítette meg. Ez a válasz arról a címről jött, így lehet, hogy nem a látogatótól származik."
 
+#: src/features/settings/automation/text.ts
+msgid "The webhook endpoint is off or not available here"
+msgstr "A webhook-végpont ki van kapcsolva, vagy itt nem érhető el"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "The What’s new count shows on the chat button while no messages are unread. The widget’s Home always shows it."
 msgstr "Az újdonságok száma a csevegőgombon jelenik meg, amíg nincs olvasatlan üzenet. A widget kezdőlapja mindig mutatja."
@@ -16765,6 +17188,10 @@ msgstr "Téma"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Theme and e-mail view on this device"
 msgstr "Téma és e-mail nézet ezen az eszközön"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Then"
+msgstr "Akkor"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -17112,6 +17539,19 @@ msgstr "Ennek a tulajdonságnak már van ilyen nevű célja."
 msgid "This property already has a segment with this name."
 msgstr "Ennek a tulajdonságnak már van ilyen nevű szegmense."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
+msgstr "Ez a válasz addig nem megy ki, amíg egy tulajdonos vagy admin el nem menti ezt a szabályt és a(z) {title} mentett választ is, vagy a botok nem küldhetnek az API-kulcsok beállításaiban."
+
+#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
+msgstr "Ez a válasz addig nem megy ki, amíg egy tulajdonos vagy admin el nem menti a(z) {title} mentett választ, vagy a botok nem küldhetnek az API-kulcsok beállításaiban."
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
+msgstr "Ez a válasz addig nem megy ki, amíg egy tulajdonos vagy admin el nem menti ezt a szabályt, vagy a botok nem küldhetnek az API-kulcsok beállításaiban."
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request expired or was already used. Start connecting again from the app."
 msgstr "Ez a kérés lejárt vagy már felhasználták. Indítsd újra a csatlakozást az alkalmazásból."
@@ -17386,6 +17826,10 @@ msgstr "Kuka, soha nem importálva"
 msgid "Triage"
 msgstr "Szortírozás"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Trigger"
+msgstr "Indító"
+
 #: src/features/migrations/ConnectStep.tsx
 msgid "Trust this certificate for this server. Do this only if it is your own server and the fingerprint matches."
 msgstr "Bízz meg ebben a tanúsítványban ennél a szervernél. Csak akkor tedd, ha ez a saját szervered, és az ujjlenyomat egyezik."
@@ -17604,6 +18048,10 @@ msgstr "Követés megszüntetve"
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Unit"
 msgstr "Egység"
+
+#: src/components/common/authorText.ts
+msgid "Unknown"
+msgstr "Ismeretlen"
 
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
@@ -18322,6 +18770,7 @@ msgstr "A weboldalak a bekapcsolt visszajelzési űrlappal rendelkező csevegő 
 msgid "Webhook"
 msgstr "Webhook"
 
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Webhook endpoint"
 msgstr "Webhook-végpont"
@@ -18498,6 +18947,7 @@ msgid "What’s new entry"
 msgstr "Újdonság-bejegyzés"
 
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "When"
 msgstr "Mikor"
 

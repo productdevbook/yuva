@@ -1139,6 +1139,10 @@ msgstr "تغيّرت محادثة"
 msgid "A conversation is assigned to me"
 msgstr "محادثة مسندة إليّ"
 
+#: src/features/settings/automation/text.ts
+msgid "A conversation is idle"
+msgstr "محادثة غير نشطة"
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "تُؤخذ المحادثة كاملة عندما يقع آخر تحديث لها ضمن النطاق."
@@ -1150,6 +1154,10 @@ msgstr "يجب أن تطابق المحادثة كل صف تملؤه. الصف �
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "بدأت محادثة"
+
+#: src/features/settings/automation/text.ts
+msgid "A conversation starts"
+msgstr "تبدأ محادثة"
 
 #: src/components/common/text.ts
 msgid "A conversation was deleted for good"
@@ -1219,6 +1227,7 @@ msgstr "كُتبت مسودة"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "محتوى الملف لا يطابق نوعه. تحقق من الملف وحاول مجددًا."
 
+#: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
@@ -1255,6 +1264,10 @@ msgstr "يتيح المفتاح لخلفيتك أو لسكربت أو لروبو
 #: src/components/common/text.ts
 msgid "A kind of field holds at most 50 fields. Delete one first."
 msgstr "يضم الكائن 50 حقلًا كحدٍّ أقصى. احذف حقلًا أولًا."
+
+#: src/features/settings/automation/text.ts
+msgid "A label was deleted"
+msgstr "حُذفت تسمية"
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -1400,9 +1413,17 @@ msgstr "رد وإجراءاته في خطوة واحدة"
 msgid "A reply was written in a discussion"
 msgstr "كُتب ردّ في نقاش"
 
+#: src/features/settings/automation/text.ts
+msgid "A required field is empty"
+msgstr "حقل مطلوب فارغ"
+
 #: src/components/common/text.ts
 msgid "A roadmap idea moved to another stage"
 msgstr "انتقلت فكرة في خريطة الطريق إلى مرحلة أخرى"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "A rule that is off never runs. Rules run in the order of the list."
+msgstr "القاعدة المعطّلة لا تعمل أبدًا. تعمل القواعد بترتيب القائمة."
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -1496,6 +1517,10 @@ msgstr "تم إلغاء نشر مدخل في «المستجدات»"
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "عدد صحيح من 1 إلى 10,000,000"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 automation rules. Delete one first."
+msgstr "تتّسع مساحة العمل لـ 100 قاعدة أتمتة على الأكثر. احذف واحدة أولًا."
 
 #: src/components/common/text.ts
 msgid "A workspace holds at most 100 SLA policies. Delete one first."
@@ -1679,6 +1704,10 @@ msgstr "أضف دردشة موقع في إعدادات صندوق الوارد"
 msgid "Add a website or app"
 msgstr "إضافة موقع أو تطبيق"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Add an action"
+msgstr "إضافة إجراء"
+
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
 msgstr "أضف عنوانًا على خادمك واختر الأحداث التي يجب أن يبلغه بها Yuva."
@@ -1697,6 +1726,10 @@ msgstr "إضافة صورة"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
 msgstr "إضافة صندوق وارد"
+
+#: src/features/settings/automation/text.ts
+msgid "Add an internal note"
+msgstr "إضافة ملاحظة داخلية"
 
 #: src/features/migrations/text.ts
 msgid "Add an OAuth client named “Yuva”, as a confidential client, and enter the redirect URL below as its redirect URL."
@@ -1721,6 +1754,10 @@ msgstr "إضافة قناة"
 #: src/features/status/ComponentsTab.tsx
 msgid "Add component"
 msgstr "إضافة مكوّن"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Add condition"
+msgstr "إضافة شرط"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Add contact"
@@ -1747,6 +1784,10 @@ msgstr "إضافة ترويسة"
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
 msgstr "إضافة التسمية {labelName}"
+
+#: src/features/settings/automation/text.ts
+msgid "Add labels"
+msgstr "إضافة تسميات"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -1929,6 +1970,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "All"
@@ -2086,6 +2128,10 @@ msgstr "موجود في القائمة بالفعل"
 msgid "Already on the list, left as they are"
 msgstr "موجود في القائمة بالفعل، تُرك كما هو"
 
+#: src/features/settings/automation/text.ts
+msgid "already so"
+msgstr "هي كذلك بالفعل"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Also called audience or identifier."
 msgstr "Also called audience or identifier."
@@ -2203,6 +2249,7 @@ msgstr "قُبلت إجابة في <0>{title}</0>"
 msgid "an API key"
 msgstr "مفتاح API"
 
+#: src/components/common/authorText.ts
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "An API key"
 msgstr "مفتاح API"
@@ -2218,6 +2265,18 @@ msgstr "يمكن استخدام كلمة مرور التطبيق لتغيير ا
 #: src/features/broadcasts/ListSettings.tsx
 msgid "An archived list keeps its subscribers and records, but forms and the preference page stop offering it."
 msgstr "تحتفظ القائمة المؤرشفة بمشتركيها وسجلاتها، لكن النماذج وصفحة التفضيلات تتوقف عن عرضها."
+
+#: src/components/common/authorText.ts
+msgid "An assistant connected by {name}"
+msgstr "المساعد الذي ربطه {name}"
+
+#: src/components/common/text.ts
+msgid "An automation rule ran its webhook action"
+msgstr "نفّذت قاعدة أتمتة إجراء Webhook الخاص بها"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "An automation rule sends this reply, but it will not go out until an owner or admin saves the text, or bots may send is turned on."
+msgstr "ترسل قاعدة أتمتة هذا الرد، لكنه لن يُرسل حتى يحفظ مالك أو مشرف النص أو يُسمح للبوتات بالإرسال."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "An e-mail address, phone number or web address"
@@ -2582,6 +2641,11 @@ msgstr "المظهر"
 msgid "Application (client) ID"
 msgstr "معرّف التطبيق (العميل)"
 
+#: src/features/settings/automation/text.ts
+msgid "Applied"
+msgstr "مطبّقة"
+
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Applies to"
 msgstr "تنطبق على"
@@ -2723,8 +2787,13 @@ msgstr "إسناد أو تسليم إلى زميل"
 msgid "Assign to {name}"
 msgstr "إسناد إلى {name}"
 
+#: src/features/settings/automation/text.ts
+msgid "Assign to a member"
+msgstr "إسناد إلى عضو"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/settings/automation/text.ts
 msgid "Assign to a team"
 msgstr "إسناد إلى فريق"
 
@@ -2746,6 +2815,7 @@ msgstr "مسندة إلى {assignee}"
 msgid "Assigned to {assignee}, kept by name"
 msgstr "مسندة إلى {assignee}، محفوظ بالاسم"
 
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Assignee"
 msgstr "المسؤول"
@@ -2848,6 +2918,10 @@ msgstr "مفتاح الخاصية، مثل plan"
 msgid "Attribute keys use letters, digits, dots, dashes and underscores, at most 64."
 msgstr "تستخدم مفاتيح الخصائص الحروف والأرقام والنقاط والشرطات والشرطات السفلية، بحد أقصى 64."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Attribute name"
+msgstr "اسم السمة"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Attribute of condition {n}"
 msgstr "خاصية الشرط {n}"
@@ -2889,9 +2963,18 @@ msgstr "رد تلقائي"
 msgid "automatic"
 msgstr "تلقائي"
 
+#: src/features/settings/automation/text.ts
+msgid "Automatic assignment (not available yet)"
+msgstr "الإسناد التلقائي (غير متاح بعد)"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "البريد الآلي لا يطلق ردًا تلقائيًا أبدًا."
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Automation"
+msgstr "الأتمتة"
 
 #: src/app/UserMenu.tsx
 msgid "Available"
@@ -3076,6 +3159,14 @@ msgstr "تم العثور على السجلين. يفحصهما Yuva مرة في
 msgid "Bots"
 msgstr "الروبوتات"
 
+#: src/features/settings/automation/text.ts
+msgid "Bots may not send and the author is not an owner or admin"
+msgstr "لا يُسمح للبوتات بالإرسال والكاتب ليس مالكًا أو مشرفًا"
+
+#: src/components/common/text.ts
+msgid "Bots may not send in this workspace, and this reply was not saved by an owner or admin."
+msgstr "لا يُسمح للبوتات بالإرسال في مساحة العمل هذه، ولم يحفظ هذا الرد مالك أو مشرف."
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bots may not send in this workspace: the key writes drafts and a member sends them."
 msgstr "لا يجوز للروبوتات الإرسال في مساحة العمل هذه: يكتب المفتاح مسودات ويرسلها عضو."
@@ -3200,6 +3291,8 @@ msgstr "الأخطاء والأفكار والثناء المرسلة من تط�
 msgid "Bundle ID"
 msgstr "Bundle ID"
 
+#: src/features/settings/automation/ConditionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
 msgstr "ساعات العمل"
@@ -3215,6 +3308,10 @@ msgstr "بالبريد الإلكتروني"
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "حسب العضو"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "by rule {rule}"
+msgstr "بواسطة القاعدة {rule}"
 
 #: src/components/common/text.ts
 msgid "By the team"
@@ -3340,6 +3437,7 @@ msgid "Canned replies and macros, in the reply box"
 msgstr "الردود الجاهزة والماكرو، في مربع الرد"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Canned reply"
 msgstr "رد جاهز"
 
@@ -3419,6 +3517,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "غيّر مدة الاحتفاظ بالمحادثات من {from} إلى {to}"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the automation rule {name}"
+msgstr "غيّر قاعدة الأتمتة {name}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the daily broadcast limit from {from} to {to}"
 msgstr "غيّر الحد اليومي للرسائل الجماعية من {from} إلى {to}"
 
@@ -3451,6 +3553,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "تغيير نطاق الإرسال يوقف توقيع DKIM حتى تفعّله مجددًا للنطاق الجديد."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -3576,6 +3679,10 @@ msgstr "فُحص {when}"
 #: src/features/broadcasts/Import.tsx
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "تم الفحص وينتظر أن يبدأه مالك أو مسؤول."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Checked every 5 minutes, once per quiet period. Only open and pending conversations."
+msgstr "يُفحص كل 5 دقائق، مرة واحدة لكل فترة هدوء. المحادثات المفتوحة والمعلّقة فقط."
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Checked with the tracker before it replaces the old one. The current one is never shown."
@@ -3804,6 +3911,10 @@ msgstr "أغلق كل محادثة بعد الرد"
 msgid "Close everything"
 msgstr "إغلاق كل شيء"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Close idle conversations"
+msgstr "إغلاق المحادثات غير النشطة"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Close older conversations"
 msgstr "إغلاق المحادثات الأقدم"
@@ -3956,10 +4067,18 @@ msgstr "المكوّنات المتأثرة"
 msgid "Components, history, incidents and updates are deleted with it."
 msgstr "تُحذف المكوّنات والسجل والحوادث والتحديثات معها."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Condition"
+msgstr "شرط"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Conditions"
 msgstr "الشروط"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Conditions: {n}"
+msgstr "الشروط: {n}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Configuration set"
@@ -4198,6 +4317,10 @@ msgstr "تمت إضافة جهة الاتصال. استخدم «محادثة ج�
 msgid "Contact and identities"
 msgstr "جهة الاتصال والهويات"
 
+#: src/features/settings/automation/text.ts
+msgid "Contact attribute"
+msgstr "سمة جهة الاتصال"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactSheet.tsx
@@ -4243,6 +4366,7 @@ msgid "Contacts keep the values they hold; they show as plain attributes instead
 msgstr "تحتفظ جهات الاتصال بالقيم التي لديها؛ وتظهر كسمات عادية بدلًا من حقل محدد النوع."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "contains"
 msgstr "يحتوي على"
 
@@ -4288,6 +4412,10 @@ msgstr "Continue with your organisation's sign-in"
 #: src/features/contact/ContactsPage.tsx
 msgid "Convers."
 msgstr "محاد."
+
+#: src/features/settings/automation/text.ts
+msgid "Conversation"
+msgstr "محادثة"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Conversation actions"
@@ -4586,6 +4714,10 @@ msgstr "إنشاء قائمة"
 msgid "Create policy"
 msgstr "إنشاء سياسة"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create rule"
+msgstr "إنشاء القاعدة"
+
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
 msgstr "إنشاء صفحة حالة"
@@ -4635,6 +4767,10 @@ msgstr "أنشئ حسابك في Yuva"
 msgid "Create, change and delete custom fields"
 msgstr "إنشاء الحقول المخصصة وتغييرها وحذفها"
 
+#: src/components/common/text.ts
+msgid "Create, change, reorder and delete automation rules"
+msgstr "إنشاء قواعد الأتمتة وتغييرها وإعادة ترتيبها وحذفها"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "Created"
@@ -4651,6 +4787,10 @@ msgstr "أنشأ تصدير تحليلات"
 #: src/features/settings/audit/sentence.ts
 msgid "Created the API key {name}"
 msgstr "أنشأ مفتاح API باسم {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the automation rule {name}"
+msgstr "أنشأ قاعدة الأتمتة {name}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Created the DKIM key {selector}"
@@ -4695,6 +4835,8 @@ msgid "Custom"
 msgstr "مخصص"
 
 #: src/features/fields/FieldFilter.tsx
+#: src/features/settings/automation/ConditionRow.tsx
+#: src/features/settings/automation/text.ts
 msgid "Custom field"
 msgstr "حقل مخصص"
 
@@ -4804,6 +4946,7 @@ msgstr "أداء متدهور"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -4935,6 +5078,10 @@ msgstr "احذف عميل OAuth الذي أنشأته لـ Yuva"
 msgid "Delete the policy {name}?"
 msgstr "حذف السياسة {name}؟"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Delete the rule {name}?"
+msgstr "حذف القاعدة {name}؟"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "حذف الكتلة المحددة"
@@ -5053,6 +5200,10 @@ msgstr "حُذفت في {date}"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "قارئ محذوف"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the automation rule {name}"
+msgstr "حذف قاعدة الأتمتة {name}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
@@ -5341,6 +5492,10 @@ msgstr "المستندات"
 msgid "Does it work with server-side rendering?"
 msgstr "هل يعمل مع العرض من جهة الخادم؟"
 
+#: src/features/settings/automation/text.ts
+msgid "does not contain"
+msgstr "لا يحتوي على"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "النطاق"
@@ -5348,6 +5503,10 @@ msgstr "النطاق"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Domain not verified"
 msgstr "النطاق غير موثَّق"
+
+#: src/features/settings/automation/text.ts
+msgid "done"
+msgstr "تم"
 
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5595,6 +5754,10 @@ msgstr "البريد الإلكتروني: {label}"
 msgid "E-mails to the people who signed up"
 msgstr "رسائل بريد إلى من اشتركوا"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
+msgstr "كل إجراء مرة واحدة، 10 على الأكثر. تعمل الإجراءات كتغيير واحد؛ إن فشل أحدها لا يُطبَّق أي منها."
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Each component gets this state while the incident is open."
 msgstr "يكون لكل مكوّن هذه الحالة ما دام الحادث مفتوحًا."
@@ -5652,6 +5815,7 @@ msgstr "كل واحدة بكل رسائلها وملاحظاتها"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5720,6 +5884,10 @@ msgstr "تعديل المراقب"
 msgid "Edit policy"
 msgstr "تعديل السياسة"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit rule"
+msgstr "تعديل القاعدة"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "تعديل الفريق"
@@ -5784,9 +5952,14 @@ msgstr "رمز تعبيري"
 msgid "Empty in the first rows"
 msgstr "فارغ في الصفوف الأولى"
 
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Enabled"
 msgstr "مفعّلة"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Enabled: {name}"
+msgstr "مفعّلة: {name}"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5926,6 +6099,10 @@ msgstr "كل إشارة وإشارة فائتة وحالة مرسلة خلال �
 msgid "Every check of the last 30 days, newest first."
 msgstr "كل فحص خلال آخر 30 يومًا، الأحدث أولًا."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "every conversation"
+msgstr "كل محادثة"
+
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Every conversation"
 msgstr "كل محادثة"
@@ -5935,6 +6112,7 @@ msgid "Every imported conversation is closed."
 msgstr "كل محادثة مستوردة مغلقة."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "Every inbox"
 msgstr "كل صندوق وارد"
 
@@ -5965,6 +6143,10 @@ msgstr "كل منتج"
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "كل طلب إلى نقطة النهاية هذه، الأحدث أولًا. يُحتفظ بأحدث 100."
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Every run of the last 30 days, newest first."
+msgstr "كل عمليات التشغيل في آخر 30 يومًا، الأحدث أولًا."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
@@ -6127,6 +6309,7 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
 #: src/features/status/ResponseChart.tsx
@@ -6172,6 +6355,7 @@ msgstr "ملاحظات"
 #: src/features/docs/PagesTab.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/webhooks/events.tsx
 msgid "Feedback"
 msgstr "الملاحظات"
@@ -6187,6 +6371,10 @@ msgstr "وصلت ملاحظات"
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Feedback categories"
 msgstr "فئات الملاحظات"
+
+#: src/features/settings/automation/text.ts
+msgid "Feedback category"
+msgstr "فئة الملاحظات"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -7179,9 +7367,17 @@ msgstr "تم تحديد السبب"
 msgid "Identity secret"
 msgstr "سر الهوية"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Idle for {idle} min"
+msgstr "غير نشطة منذ {idle} دقيقة"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "If {provider} mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "إذا أرسل {provider} تأكيدًا إلى ذلك العنوان، فسيصل إلى صندوق الوارد هذا كمحادثة؛ افتحه هناك."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "If all of these match"
+msgstr "إذا تطابقت كل هذه"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
@@ -7445,6 +7641,7 @@ msgstr "في Zoho Mail، افتح Settings › Mail accounts › IMAP access و�
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "صندوق الوارد"
@@ -7514,6 +7711,10 @@ msgstr "Include the start of the message"
 #: src/features/contact/ContactSheet.tsx
 msgid "Info"
 msgstr "معلومات"
+
+#: src/features/settings/automation/text.ts
+msgid "Inside business hours"
+msgstr "ضمن ساعات العمل"
 
 #: src/app/Sidebar.tsx
 msgid "Insights"
@@ -7592,8 +7793,13 @@ msgid "IP address"
 msgstr "عنوان IP"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is"
 msgstr "يساوي"
+
+#: src/features/settings/automation/text.ts
+msgid "is any of"
+msgstr "هو أحد"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "is less than"
@@ -7603,11 +7809,17 @@ msgstr "أقل من"
 msgid "is more than"
 msgstr "أكبر من"
 
+#: src/features/settings/automation/text.ts
+msgid "is none of"
+msgstr "ليس أيًّا من"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is not"
 msgstr "لا يساوي"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is not set"
 msgstr "غير محدد"
 
@@ -7616,6 +7828,7 @@ msgid "is one of"
 msgstr "أحد"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is set"
 msgstr "محدد"
 
@@ -7771,6 +7984,10 @@ msgstr "يُحذف سجل موافقته معه. ولأنه ألغى الاشت�
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "يُحذف سجله. الحوادث التي ذكرته لم تعد تذكره."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Its log goes with it. What it already changed stays. This cannot be undone."
+msgstr "يُحذف سجلّها معها. ما غيّرته بالفعل يبقى. لا يمكن التراجع عن هذا."
+
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
 msgstr "يفقد أعضاؤه الوصول إلى صناديق الوارد التي منحها الفريق، وتفقد محادثاته الفريق لكنها تحتفظ بالمسؤول."
@@ -7888,6 +8105,7 @@ msgstr "المفاتيح وwebhooks والمساعدون المتصلون"
 msgid "Keyword"
 msgstr "كلمة مفتاحية"
 
+#: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
 msgid "Kind"
 msgstr "النوع"
@@ -7919,6 +8137,7 @@ msgstr "وسم فقط: يأتي بريده من كل البريد، وتحصل �
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -8430,6 +8649,14 @@ msgstr "مقفل"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "مقفل: لم يعد بإمكان القرّاء الكتابة هنا. لا يزال بإمكانك أنت."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Log"
+msgstr "السجل"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Log of {name}"
+msgstr "سجل {name}"
+
 #: src/features/status/SettingsTab.tsx
 msgid "Logo URL"
 msgstr "عنوان URL للشعار"
@@ -8785,6 +9012,7 @@ msgstr "الوسيط، من الرسالة الأولى حتى الإغلاق"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
 msgstr "عضو"
@@ -8873,6 +9101,10 @@ msgstr "تم نسخ الرسالة"
 #: src/components/common/text.ts
 msgid "Message removed"
 msgstr "تمت إزالة الرسالة"
+
+#: src/features/settings/automation/text.ts
+msgid "Message text"
+msgstr "نص الرسالة"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -8972,8 +9204,13 @@ msgstr "الخاصة بي"
 msgid "Minor"
 msgstr "طفيف"
 
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "minutes"
+msgstr "دقائق"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Minutes"
 msgstr "دقائق"
 
 #: src/features/settings/sla/PolicyDialog.tsx
@@ -9089,6 +9326,7 @@ msgstr "الأكثر تصويتًا"
 msgid "Move {0} to the Trash?"
 msgstr "هل تريد نقل {0} إلى المهملات؟"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "انقل {name}. اسحب، أو اضغط Alt مع مفاتيح الأسهم."
@@ -9097,6 +9335,7 @@ msgstr "انقل {name}. اسحب، أو اضغط Alt مع مفاتيح الأس
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "نقل المحادثات إلى المهملات واستعادتها وقراءة المهملات"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -9197,6 +9436,7 @@ msgstr "نقل إلى المهملات"
 msgid "Move to Yuva"
 msgstr "الانتقال إلى Yuva"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -9261,6 +9501,7 @@ msgstr "عروضي"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
@@ -9586,6 +9827,11 @@ msgstr "سياسة جديدة"
 msgid "New reply in <0>{title}</0>"
 msgstr "رد جديد في <0>{title}</0>"
 
+#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "New rule"
+msgstr "قاعدة جديدة"
+
 #: src/features/settings/webhooks/sections.tsx
 msgid "New signing secret"
 msgstr "سر توقيع جديد"
@@ -9840,6 +10086,10 @@ msgstr "لا توجد مكوّنات بعد. أضف في تبويب المكوّ
 #: src/features/status/ComponentsTab.tsx
 msgid "No components yet. Add the parts of your product that customers depend on."
 msgstr "لا توجد مكوّنات بعد. أضف أجزاء منتجك التي يعتمد عليها العملاء."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "No conditions: the rule runs for every conversation the trigger fits."
+msgstr "لا شروط: تعمل القاعدة على كل محادثة يناسبها المشغّل."
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "No confirmation"
@@ -10160,6 +10410,14 @@ msgstr "لا توجد أزمنة استجابة في هذا النطاق بعد.
 msgid "No results"
 msgstr "لا نتائج"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "No rules yet."
+msgstr "لا توجد قواعد بعد."
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "No runs in the last 30 days."
+msgstr "لا عمليات تشغيل في آخر 30 يومًا."
+
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "No secret yet. Make one, then paste it into GitHub."
 msgstr "No secret yet. Make one, then paste it into GitHub."
@@ -10438,6 +10696,10 @@ msgstr "لم يُستورد"
 msgid "Not isolated"
 msgstr "غير معزول"
 
+#: src/features/settings/automation/text.ts
+msgid "Not matched"
+msgstr "لم تتطابق"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Not offered on this server"
 msgstr "غير متاح على هذا الخادم"
@@ -10465,6 +10727,10 @@ msgstr "غير جاهز"
 #: src/features/migrations/SourceStep.tsx
 msgid "Not right? Pick your provider"
 msgstr "غير صحيح؟ اختر مزوّدك"
+
+#: src/features/settings/automation/text.ts
+msgid "not run"
+msgstr "لم تُنفَّذ"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
@@ -10531,6 +10797,7 @@ msgstr "لم يُستخدم بعد"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Note"
 msgstr "ملاحظة"
 
@@ -10682,6 +10949,11 @@ msgstr "لا شيء يحتاجك اليوم."
 #: src/features/status/MonitorDialog.tsx
 msgid "Nothing opens by itself. Open an incident from the monitor when you want one."
 msgstr "لا يُفتح شيء تلقائيًا. افتح حادثًا من المراقب عندما تريد."
+
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Nothing to pick from yet."
+msgstr "لا يوجد ما يُختار بعد."
 
 #: src/features/account/AccountPage.tsx
 msgid "Nothing unread."
@@ -10878,6 +11150,7 @@ msgstr "بعد وصول رسالة اختبار، تنتظر Yuva {hours} ساع
 msgid "One e-mail a month about what is new."
 msgstr "رسالة بريد واحدة في الشهر عما هو جديد."
 
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "صندوق وارد واحد"
@@ -11046,6 +11319,7 @@ msgid "Only the person can subscribe again, by confirming a mail."
 msgstr "لا يستطيع الاشتراك مجددًا إلا الشخص نفسه، بتأكيد رسالة بريد."
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "يراه الفريق فقط"
 
@@ -11169,6 +11443,10 @@ msgstr "فتح إضافات ChatGPT"
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Open Claude connectors"
 msgstr "فتح موصّلات Claude"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Open conversation"
+msgstr "فتح المحادثة"
 
 #: src/app/Palette.tsx
 msgid "Open conversations"
@@ -11420,6 +11698,7 @@ msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational يعيد؛ وdegraded وpartial_outage وmajor_outage تُسقط."
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/automation/ConditionRow.tsx
 msgid "Operator"
 msgstr "المشغّل"
 
@@ -11501,6 +11780,10 @@ msgstr "تبقى «أخرى»: تنتقل إليها الفئات المحذوف
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
 msgstr "رصد مراقبنا {monitor} مشكلة منذ {at}. نحن نتحقق منها."
 
+#: src/features/settings/automation/RunLog.tsx
+msgid "Outcome"
+msgstr "النتيجة"
+
 #: src/features/migrations/text.ts
 msgid "Outlook.com and Microsoft 365"
 msgstr "Outlook.com وMicrosoft 365"
@@ -11524,6 +11807,10 @@ msgstr "يتصل Outlook.com وMicrosoft 365 عبر «تسجيل الدخول ب
 #: src/features/migrations/text.ts
 msgid "Outlook's .pst files are not read; convert them to .mbox first."
 msgstr "لا تُقرأ ملفات .pst من Outlook؛ حوّلها إلى .mbox أولًا."
+
+#: src/features/settings/automation/text.ts
+msgid "Outside business hours"
+msgstr "خارج ساعات العمل"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
@@ -11871,6 +12158,10 @@ msgstr "شخص"
 msgid "Personal"
 msgstr "شخصي"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a canned reply"
+msgstr "اختر ردًّا جاهزًا"
+
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "اختر قناة دردشة للمنتج والصق الشيفرة. تصل التقييمات والأسئلة إلى صندوق وارد القناة."
@@ -11915,6 +12206,14 @@ msgstr "اختر تصميمًا يُعرض بلا أخطاء."
 msgid "Pick a discussion to read and answer it."
 msgstr "اختر نقاشًا لقراءته والرد عليه."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Pick a field"
+msgstr "اختر حقلًا"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a member"
+msgstr "اختر عضوًا"
+
 #: src/features/status/MonitorsPage.tsx
 msgid "Pick a monitor to see what happened."
 msgstr "اختر مراقبًا لترى ما حدث."
@@ -11935,6 +12234,10 @@ msgstr "اختر ملاحظة لعرضها هنا."
 msgid "Pick a sender in the settings"
 msgstr "اختر مرسِلًا في الإعدادات"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a team"
+msgstr "اختر فريقًا"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "اختر وقتًا خلال الأيام الـ 90 القادمة، بمنطقتك الزمنية، {zone}."
@@ -11951,7 +12254,12 @@ msgstr "اختر مساعدًا أدناه لربطه."
 msgid "Pick an e-mail channel of this inbox that has an SMTP account. It sends the confirmation and welcome mails."
 msgstr "اختر قناة بريد إلكتروني في صندوق الوارد هذا لها حساب SMTP. فهي ترسل رسائل التأكيد والترحيب."
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick an endpoint"
+msgstr "اختر نقطة نهاية"
+
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "Pick an inbox"
 msgstr "اختر صندوق وارد"
 
@@ -12241,6 +12549,8 @@ msgid "Previous screenshot"
 msgstr "لقطة الشاشة السابقة"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
@@ -12528,6 +12838,10 @@ msgstr "في قائمة الانتظار. تظهر المحاولة الجديد
 msgid "Quick cleanup"
 msgstr "تنظيف سريع"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Quiet for (minutes)"
+msgstr "هدوء لمدة (دقائق)"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Quote"
 msgstr "اقتباس"
@@ -12607,6 +12921,10 @@ msgstr "قُرئ كـ Maildir مضغوط: تصبح مجلداته وسومًا."
 #: src/features/migrations/text.ts
 msgid "Read as an mbox file."
 msgstr "قُرئ كملف mbox."
+
+#: src/components/common/text.ts
+msgid "Read automation rules and their run log"
+msgstr "قراءة قواعد الأتمتة وسجل تشغيلها"
 
 #: src/components/common/text.ts
 msgid "Read broadcasts and e-mail designs"
@@ -12900,9 +13218,17 @@ msgstr "إزالة {name}؟"
 msgid "Remove {sender}"
 msgstr "إزالة {sender}"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Remove action"
+msgstr "إزالة الإجراء"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove channel"
 msgstr "إزالة القناة"
+
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Remove condition"
+msgstr "إزالة الشرط"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove condition {n}"
@@ -12941,6 +13267,10 @@ msgstr "إزالة السجل المستورد؟"
 msgid "Remove label {labelName}"
 msgstr "إزالة التسمية {labelName}"
 
+#: src/features/settings/automation/text.ts
+msgid "Remove labels"
+msgstr "إزالة التسميات"
+
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Remove the APNs key?"
 msgstr "إزالة مفتاح APNs؟"
@@ -12948,6 +13278,10 @@ msgstr "إزالة مفتاح APNs؟"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "احذف كلمة مرور التطبيق التي أنشأتها لـ Yuva في {provider}؛ لم تعد مطلوبة."
+
+#: src/features/settings/automation/text.ts
+msgid "Remove the assignee"
+msgstr "إزالة المسؤول"
 
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
@@ -13225,6 +13559,10 @@ msgstr "Reply and resolve"
 msgid "Reply command"
 msgstr "Reply command"
 
+#: src/features/settings/automation/text.ts
+msgid "Reply held back to protect the customer"
+msgstr "حُجب الرد لحماية العميل"
+
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
 msgstr "نُشر الرد"
@@ -13283,6 +13621,10 @@ msgstr "الرد على النقاش بدلًا من ذلك"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "الرد على المنشور المحدد"
+
+#: src/features/settings/automation/text.ts
+msgid "Reply with a canned reply"
+msgstr "الرد بردّ جاهز"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Reply with a quote"
@@ -13619,9 +13961,29 @@ msgstr "وجّه نطاقك"
 msgid "Route your mail to Yuva"
 msgstr "وجّه بريدك إلى Yuva"
 
+#: src/features/conversation/messages/context.ts
+msgid "Rule {rule}"
+msgstr "القاعدة {rule}"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Rule {rule} ran, nothing needed changing"
+msgstr "عملت القاعدة {rule}، ولم يكن هناك ما يُغيَّر"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Rule {rule} ran: {done}"
+msgstr "عملت القاعدة {rule}: {done}"
+
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "القواعد"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Rules react to a conversation changing: they label, assign, reply, snooze or call a webhook. They run in the order of this list, each at most once per trigger, and what a rule changes never starts another rule."
+msgstr "تتفاعل القواعد مع تغيّر المحادثة: تضع تسميات، تُسند، تردّ، تؤجّل أو تستدعي Webhook. تعمل بترتيب هذه القائمة، مرة واحدة على الأكثر لكل مشغّل، وما تغيّره قاعدة لا يشغّل قاعدة أخرى أبدًا."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Rules that label, assign, reply and call webhooks"
+msgstr "قواعد تضع التسميات وتُسند وتردّ وتستدعي Webhook"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Run a check"
@@ -13676,6 +14038,7 @@ msgstr "السبت"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
@@ -14207,6 +14570,10 @@ msgstr "أرسل عبر حساب Amazon SES الخاص بك ببيانات اع�
 msgid "Send to"
 msgstr "إرسال إلى"
 
+#: src/features/settings/automation/text.ts
+msgid "Send to a webhook endpoint"
+msgstr "إرسال إلى نقطة نهاية Webhook"
+
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -14453,6 +14820,14 @@ msgstr "Set progress"
 msgid "Set the feedback progress"
 msgstr "Set the feedback progress"
 
+#: src/features/settings/automation/text.ts
+msgid "Set the priority"
+msgstr "تعيين الأولوية"
+
+#: src/features/settings/automation/text.ts
+msgid "Set the status"
+msgstr "تعيين الحالة"
+
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Set up"
 msgstr "إعداد"
@@ -14604,6 +14979,7 @@ msgstr "إظهار نص الرسالة في الإشعار"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MigrationsPage.tsx
+#: src/features/settings/automation/RunLog.tsx
 msgid "Show more"
 msgstr "عرض المزيد"
 
@@ -15000,6 +15376,10 @@ msgstr "تخطي هذا العمود"
 msgid "Skip threads that contain only automatic mail"
 msgstr "تخطي السلاسل التي تحتوي على بريد آلي فقط"
 
+#: src/features/settings/automation/text.ts
+msgid "skipped"
+msgstr "تم تخطيه"
+
 #: src/components/common/Linked.tsx
 #: src/components/common/text.ts
 msgid "Skipped"
@@ -15116,6 +15496,7 @@ msgstr "مضيف SMTP"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "غفوة"
 
@@ -15368,6 +15749,8 @@ msgstr "الحالة عند التوقف"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -15460,6 +15843,7 @@ msgstr "لم يُعثر على النطاق الفرعي"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
 msgstr "الموضوع"
@@ -15652,6 +16036,8 @@ msgstr "فحص TCP"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
@@ -15744,11 +16130,16 @@ msgid "Tests go only to members of the workspace, at most five at a time, with [
 msgstr "تذهب الاختبارات إلى أعضاء مساحة العمل فقط، خمسة كحد أقصى في كل مرة، مع [Test] قبل الموضوع."
 
 #: src/features/fields/value.ts
+#: src/features/settings/automation/ConditionRow.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Text"
 msgstr "النص"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "Text last saved by {who}"
+msgstr "آخر من حفظ النص: {who}"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Thanks for waiting. Your invoice is on its way."
@@ -15786,6 +16177,10 @@ msgstr "مستخدم {provider} الذي سجّلت الدخول به ليس م�
 #: src/features/status/SettingsTab.tsx
 msgid "The address answers “not found” until you publish the page."
 msgstr "يردّ العنوان بـ«غير موجود» حتى تنشر الصفحة."
+
+#: src/features/settings/automation/text.ts
+msgid "The address bounced"
+msgstr "ارتدّ العنوان"
 
 #: src/components/common/text.ts
 msgid "The address bounced or complained"
@@ -15827,6 +16222,14 @@ msgstr "أُلغيت الرسالة الجماعية"
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "يجب أن يسمح المتصفح بإشعارات سطح المكتب أولًا؛ وإلى ذلك الحين يُشغَّل الصوت فقط."
 
+#: src/features/settings/automation/text.ts
+msgid "The canned reply was deleted"
+msgstr "حُذف الرد الجاهز"
+
+#: src/features/settings/automation/text.ts
+msgid "The change was refused"
+msgstr "رُفض التغيير"
+
 #: src/components/common/text.ts
 msgid "The channel already has a DKIM key. Delete it before creating another."
 msgstr "لدى القناة مفتاح DKIM بالفعل. احذفه قبل إنشاء آخر."
@@ -15834,6 +16237,10 @@ msgstr "لدى القناة مفتاح DKIM بالفعل. احذفه قبل إن
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The channel cannot send yet. It needs an SMTP account and an address to send from."
 msgstr "لا تستطيع القناة الإرسال بعد. تحتاج إلى حساب SMTP وعنوان للإرسال منه."
+
+#: src/features/settings/automation/text.ts
+msgid "The channel has no SMTP account"
+msgstr "لا يملك القناة حساب SMTP"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "The channel name when empty."
@@ -15892,6 +16299,10 @@ msgstr "تحدّد صفحة الموافقة ما يطلبه العميل. اس�
 #: src/components/common/text.ts
 msgid "The contact was deleted"
 msgstr "حُذفت جهة الاتصال"
+
+#: src/features/settings/automation/text.ts
+msgid "The contact writes a message"
+msgstr "تكتب جهة الاتصال رسالة"
 
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
@@ -16605,6 +17016,10 @@ msgstr "The sign-in took too long or was already used. Start again."
 msgid "The sign-in was declined"
 msgstr "رُفض تسجيل الدخول"
 
+#: src/features/settings/automation/text.ts
+msgid "The status changes"
+msgstr "تتغير الحالة"
+
 #: src/app/UserMenu.tsx
 msgid "The status was not changed. Try again."
 msgstr "لم تتغير الحالة. حاول مجددًا."
@@ -16616,6 +17031,10 @@ msgstr "الموضوع"
 #: src/features/setup/NewsletterStep.tsx
 msgid "The subscribe form shows the list’s name and description."
 msgstr "يعرض نموذج الاشتراك اسم القائمة ووصفها."
+
+#: src/features/settings/automation/text.ts
+msgid "The team does not cover this inbox"
+msgstr "لا يغطي الفريق صندوق الوارد هذا"
 
 #: src/app/TeamMenu.tsx
 msgid "The team today"
@@ -16698,6 +17117,10 @@ msgstr "ما زالت قيم حقل محذوف بهذا المفتاح قيد ا
 msgid "The visitor typed {0} in the chat and has not confirmed it yet. This reply came from that address, so it may not be from the visitor."
 msgstr "كتب الزائر {0} في الدردشة ولم يؤكده بعد. جاء هذا الرد من ذلك العنوان، فقد لا يكون من الزائر."
 
+#: src/features/settings/automation/text.ts
+msgid "The webhook endpoint is off or not available here"
+msgstr "نقطة نهاية Webhook متوقفة أو غير متاحة هنا"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "The What’s new count shows on the chat button while no messages are unread. The widget’s Home always shows it."
 msgstr "يظهر عدد المستجدات على زر الدردشة ما دامت لا توجد رسائل غير مقروءة. تعرضه الصفحة الرئيسية للأداة دائماً."
@@ -16765,6 +17188,10 @@ msgstr "السمة"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Theme and e-mail view on this device"
 msgstr "السمة وعرض البريد الإلكتروني على هذا الجهاز"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Then"
+msgstr "إذن"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -17112,6 +17539,19 @@ msgstr "لدى هذا الموقع هدف بهذا الاسم بالفعل."
 msgid "This property already has a segment with this name."
 msgstr "لدى هذا الموقع شريحة بهذا الاسم بالفعل."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
+msgstr "لن يُرسل هذا الرد حتى يحفظ مالك أو مشرف هذه القاعدة والرد الجاهز {title} معًا، أو يُسمح للبوتات بالإرسال في إعدادات مفاتيح API."
+
+#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
+msgstr "لن يُرسل هذا الرد حتى يحفظ مالك أو مشرف الرد الجاهز {title}، أو يُسمح للبوتات بالإرسال في إعدادات مفاتيح API."
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
+msgstr "لن يُرسل هذا الرد حتى يحفظ مالك أو مشرف هذه القاعدة، أو يُسمح للبوتات بالإرسال في إعدادات مفاتيح API."
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request expired or was already used. Start connecting again from the app."
 msgstr "انتهت صلاحية هذا الطلب أو استُخدم بالفعل. ابدأ الربط مجددًا من التطبيق."
@@ -17386,6 +17826,10 @@ msgstr "المهملات، لم تُستورد أبدًا"
 msgid "Triage"
 msgstr "فرز"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Trigger"
+msgstr "المشغّل"
+
 #: src/features/migrations/ConnectStep.tsx
 msgid "Trust this certificate for this server. Do this only if it is your own server and the fingerprint matches."
 msgstr "الوثوق بهذه الشهادة لهذا الخادم. افعل ذلك فقط إن كان خادمك الخاص وتطابقت البصمة."
@@ -17604,6 +18048,10 @@ msgstr "أُلغيت المتابعة"
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Unit"
 msgstr "الوحدة"
+
+#: src/components/common/authorText.ts
+msgid "Unknown"
+msgstr "غير معروف"
 
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
@@ -18322,6 +18770,7 @@ msgstr "تستخدم صفحات الويب أداة الدردشة مع تفعي
 msgid "Webhook"
 msgstr "Webhook"
 
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Webhook endpoint"
 msgstr "نقطة نهاية خطاف الويب"
@@ -18498,6 +18947,7 @@ msgid "What’s new entry"
 msgstr "إدخال المستجدات"
 
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "When"
 msgstr "متى"
 

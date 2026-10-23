@@ -1139,6 +1139,10 @@ msgstr "對話發生變化時"
 msgid "A conversation is assigned to me"
 msgstr "指派給我的對話"
 
+#: src/features/settings/automation/text.ts
+msgid "A conversation is idle"
+msgstr "對話處於閒置狀態"
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "最後更新在範圍內的對話會被整體匯入。"
@@ -1150,6 +1154,10 @@ msgstr "對話必須符合你填寫的每一列。留空的列符合所有內容
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "對話開始時"
+
+#: src/features/settings/automation/text.ts
+msgid "A conversation starts"
+msgstr "對話開始"
 
 #: src/components/common/text.ts
 msgid "A conversation was deleted for good"
@@ -1219,6 +1227,7 @@ msgstr "草稿被撰寫時"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "檔案內容與其類型不符。請檢查檔案後重試。"
 
+#: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
@@ -1255,6 +1264,10 @@ msgstr "金鑰可讓你的後端、指令碼或機器人讀取和寫入對話。
 #: src/components/common/text.ts
 msgid "A kind of field holds at most 50 fields. Delete one first."
 msgstr "每種物件最多有 50 個欄位。請先刪除一個。"
+
+#: src/features/settings/automation/text.ts
+msgid "A label was deleted"
+msgstr "標籤已被刪除"
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -1400,9 +1413,17 @@ msgstr "一則回覆及其動作，一步完成"
 msgid "A reply was written in a discussion"
 msgstr "討論中有了回覆時"
 
+#: src/features/settings/automation/text.ts
+msgid "A required field is empty"
+msgstr "必填欄位為空"
+
 #: src/components/common/text.ts
 msgid "A roadmap idea moved to another stage"
 msgstr "一個路線圖點子進入了另一個階段"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "A rule that is off never runs. Rules run in the order of the list."
+msgstr "已關閉的規則永遠不會執行。規則依清單順序執行。"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -1496,6 +1517,10 @@ msgstr "「最新動態」項目已取消發佈"
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "1 到 10,000,000 之間的整數"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 automation rules. Delete one first."
+msgstr "一個工作區最多可有 100 條自動化規則。請先刪除一條。"
 
 #: src/components/common/text.ts
 msgid "A workspace holds at most 100 SLA policies. Delete one first."
@@ -1679,6 +1704,10 @@ msgstr "在收件匣設定中新增網站聊天"
 msgid "Add a website or app"
 msgstr "新增網站或應用程式"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Add an action"
+msgstr "新增動作"
+
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
 msgstr "在你的伺服器上新增一個位址，並選擇 Yuva 需要通知它的事件。"
@@ -1697,6 +1726,10 @@ msgstr "新增圖片"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
 msgstr "新增收件匣"
+
+#: src/features/settings/automation/text.ts
+msgid "Add an internal note"
+msgstr "新增內部備註"
 
 #: src/features/migrations/text.ts
 msgid "Add an OAuth client named “Yuva”, as a confidential client, and enter the redirect URL below as its redirect URL."
@@ -1721,6 +1754,10 @@ msgstr "新增頻道"
 #: src/features/status/ComponentsTab.tsx
 msgid "Add component"
 msgstr "新增元件"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Add condition"
+msgstr "新增條件"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Add contact"
@@ -1747,6 +1784,10 @@ msgstr "新增標頭"
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
 msgstr "新增標籤 {labelName}"
+
+#: src/features/settings/automation/text.ts
+msgid "Add labels"
+msgstr "新增標籤"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -1929,6 +1970,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "All"
@@ -2086,6 +2128,10 @@ msgstr "已在列表中"
 msgid "Already on the list, left as they are"
 msgstr "已在列表中,保持原樣"
 
+#: src/features/settings/automation/text.ts
+msgid "already so"
+msgstr "已經如此"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Also called audience or identifier."
 msgstr "Also called audience or identifier."
@@ -2203,6 +2249,7 @@ msgstr "<0>{title}</0> 中有回答被採納"
 msgid "an API key"
 msgstr "API 金鑰"
 
+#: src/components/common/authorText.ts
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "An API key"
 msgstr "API 金鑰"
@@ -2218,6 +2265,18 @@ msgstr "應用程式專用密碼可能被用來修改郵件;Yuva 的連線會拒
 #: src/features/broadcasts/ListSettings.tsx
 msgid "An archived list keeps its subscribers and records, but forms and the preference page stop offering it."
 msgstr "已歸檔的列表會保留訂閱者和記錄,但表單和偏好設定頁面不再提供它。"
+
+#: src/components/common/authorText.ts
+msgid "An assistant connected by {name}"
+msgstr "由 {name} 連結的助理"
+
+#: src/components/common/text.ts
+msgid "An automation rule ran its webhook action"
+msgstr "自動化規則執行了它的 Webhook 動作"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "An automation rule sends this reply, but it will not go out until an owner or admin saves the text, or bots may send is turned on."
+msgstr "自動化規則會傳送這則回覆,但在擁有者或管理員儲存文字、或允許機器人傳送之前不會送出。"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "An e-mail address, phone number or web address"
@@ -2582,6 +2641,11 @@ msgstr "外觀"
 msgid "Application (client) ID"
 msgstr "應用程式(用戶端)ID"
 
+#: src/features/settings/automation/text.ts
+msgid "Applied"
+msgstr "已套用"
+
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Applies to"
 msgstr "適用於"
@@ -2723,8 +2787,13 @@ msgstr "指派或交給團隊成員"
 msgid "Assign to {name}"
 msgstr "指派給 {name}"
 
+#: src/features/settings/automation/text.ts
+msgid "Assign to a member"
+msgstr "指派給成員"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/settings/automation/text.ts
 msgid "Assign to a team"
 msgstr "指派給團隊"
 
@@ -2746,6 +2815,7 @@ msgstr "已指派給 {assignee}"
 msgid "Assigned to {assignee}, kept by name"
 msgstr "已指派給 {assignee},按名稱保留"
 
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Assignee"
 msgstr "負責人"
@@ -2848,6 +2918,10 @@ msgstr "屬性鍵,例如 plan"
 msgid "Attribute keys use letters, digits, dots, dashes and underscores, at most 64."
 msgstr "屬性鍵可使用字母、數字、點、短橫線和下劃線,最多 64 個字元。"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Attribute name"
+msgstr "屬性名稱"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Attribute of condition {n}"
 msgstr "條件 {n} 的屬性"
@@ -2889,9 +2963,18 @@ msgstr "自動回覆"
 msgid "automatic"
 msgstr "自動"
 
+#: src/features/settings/automation/text.ts
+msgid "Automatic assignment (not available yet)"
+msgstr "自動指派(尚未提供)"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "自動郵件絕不會觸發自動回覆。"
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Automation"
+msgstr "自動化"
 
 #: src/app/UserMenu.tsx
 msgid "Available"
@@ -3076,6 +3159,14 @@ msgstr "兩筆記錄都已找到。Yuva 每天檢查一次，請保持不變。"
 msgid "Bots"
 msgstr "機器人"
 
+#: src/features/settings/automation/text.ts
+msgid "Bots may not send and the author is not an owner or admin"
+msgstr "不允許機器人傳送,且作者不是擁有者或管理員"
+
+#: src/components/common/text.ts
+msgid "Bots may not send in this workspace, and this reply was not saved by an owner or admin."
+msgstr "此工作區不允許機器人傳送,且這則回覆不是由擁有者或管理員儲存的。"
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bots may not send in this workspace: the key writes drafts and a member sends them."
 msgstr "此工作區不允許機器人傳送:金鑰起草,由成員傳送。"
@@ -3200,6 +3291,8 @@ msgstr "從你的應用程式和頁面傳來的問題、想法和好評"
 msgid "Bundle ID"
 msgstr "Bundle ID"
 
+#: src/features/settings/automation/ConditionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
 msgstr "營業時間"
@@ -3215,6 +3308,10 @@ msgstr "透過電子郵件"
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "按成員"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "by rule {rule}"
+msgstr "由規則 {rule}"
 
 #: src/components/common/text.ts
 msgid "By the team"
@@ -3340,6 +3437,7 @@ msgid "Canned replies and macros, in the reply box"
 msgstr "預設回覆和巨集，在回覆框中"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Canned reply"
 msgstr "快捷回覆"
 
@@ -3419,6 +3517,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "將對話保留時間從 {from} 改為 {to}"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the automation rule {name}"
+msgstr "修改了自動化規則 {name}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the daily broadcast limit from {from} to {to}"
 msgstr "將每日群發上限從 {from} 改為 {to}"
 
@@ -3451,6 +3553,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "更改傳送域名會關閉 DKIM 簽名,直到你為新域名重新啟用。"
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -3576,6 +3679,10 @@ msgstr "{when} 檢查"
 #: src/features/broadcasts/Import.tsx
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "已檢查,等待所有者或管理員開始。"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Checked every 5 minutes, once per quiet period. Only open and pending conversations."
+msgstr "每 5 分鐘檢查一次,每個安靜期僅一次。僅限未關閉和待處理的對話。"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Checked with the tracker before it replaces the old one. The current one is never shown."
@@ -3804,6 +3911,10 @@ msgstr "回覆後關閉每則對話"
 msgid "Close everything"
 msgstr "全部關閉"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Close idle conversations"
+msgstr "關閉閒置對話"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Close older conversations"
 msgstr "關閉較早的對話"
@@ -3956,10 +4067,18 @@ msgstr "涉及的元件"
 msgid "Components, history, incidents and updates are deleted with it."
 msgstr "元件、歷史記錄、事件和更新會一併刪除。"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Condition"
+msgstr "條件"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Conditions"
 msgstr "條件"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Conditions: {n}"
+msgstr "條件:{n}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Configuration set"
@@ -4198,6 +4317,10 @@ msgstr "聯絡人已新增。點選「新對話」即可寫信給對方。"
 msgid "Contact and identities"
 msgstr "聯絡人與身份"
 
+#: src/features/settings/automation/text.ts
+msgid "Contact attribute"
+msgstr "聯絡人屬性"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactSheet.tsx
@@ -4243,6 +4366,7 @@ msgid "Contacts keep the values they hold; they show as plain attributes instead
 msgstr "聯絡人會保留已有的值；它們會顯示為一般屬性，而不是有類型的欄位。"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "contains"
 msgstr "包含"
 
@@ -4287,6 +4411,10 @@ msgstr "Continue with your organisation's sign-in"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Convers."
+msgstr "對話"
+
+#: src/features/settings/automation/text.ts
+msgid "Conversation"
 msgstr "對話"
 
 #: src/features/conversation/ChatView.tsx
@@ -4586,6 +4714,10 @@ msgstr "建立列表"
 msgid "Create policy"
 msgstr "建立政策"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create rule"
+msgstr "建立規則"
+
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
 msgstr "建立狀態頁"
@@ -4635,6 +4767,10 @@ msgstr "建立你的 Yuva 帳號"
 msgid "Create, change and delete custom fields"
 msgstr "建立、變更和刪除自訂欄位"
 
+#: src/components/common/text.ts
+msgid "Create, change, reorder and delete automation rules"
+msgstr "建立、修改、排序和刪除自動化規則"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "Created"
@@ -4651,6 +4787,10 @@ msgstr "建立了分析匯出"
 #: src/features/settings/audit/sentence.ts
 msgid "Created the API key {name}"
 msgstr "建立了 API 金鑰 {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the automation rule {name}"
+msgstr "建立了自動化規則 {name}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Created the DKIM key {selector}"
@@ -4695,6 +4835,8 @@ msgid "Custom"
 msgstr "自訂"
 
 #: src/features/fields/FieldFilter.tsx
+#: src/features/settings/automation/ConditionRow.tsx
+#: src/features/settings/automation/text.ts
 msgid "Custom field"
 msgstr "自訂欄位"
 
@@ -4804,6 +4946,7 @@ msgstr "效能降低"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -4935,6 +5078,10 @@ msgstr "刪除你為 Yuva 建立的 OAuth 用戶端"
 msgid "Delete the policy {name}?"
 msgstr "刪除政策 {name}？"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Delete the rule {name}?"
+msgstr "刪除規則 {name}?"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "刪除所選區塊"
@@ -5053,6 +5200,10 @@ msgstr "於 {date} 刪除"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "已刪除的讀者"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the automation rule {name}"
+msgstr "刪除了自動化規則 {name}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
@@ -5341,6 +5492,10 @@ msgstr "文件"
 msgid "Does it work with server-side rendering?"
 msgstr "它能用於服務端渲染嗎?"
 
+#: src/features/settings/automation/text.ts
+msgid "does not contain"
+msgstr "不包含"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "網域"
@@ -5348,6 +5503,10 @@ msgstr "網域"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Domain not verified"
 msgstr "域名未驗證"
+
+#: src/features/settings/automation/text.ts
+msgid "done"
+msgstr "完成"
 
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5595,6 +5754,10 @@ msgstr "郵件:{label}"
 msgid "E-mails to the people who signed up"
 msgstr "寄給已註冊使用者的郵件"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
+msgstr "每個動作最多一次,至多 10 個。動作會作為一次變更執行;只要有一個失敗,全部都不會套用。"
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Each component gets this state while the incident is open."
 msgstr "事件開啟期間，每個元件都處於此狀態。"
@@ -5652,6 +5815,7 @@ msgstr "每個都包含其所有訊息和備註"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5720,6 +5884,10 @@ msgstr "編輯監控"
 msgid "Edit policy"
 msgstr "編輯政策"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit rule"
+msgstr "編輯規則"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "編輯團隊"
@@ -5784,9 +5952,14 @@ msgstr "表情符號"
 msgid "Empty in the first rows"
 msgstr "前幾行為空"
 
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Enabled"
 msgstr "已啟用"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Enabled: {name}"
+msgstr "已開啟:{name}"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5926,6 +6099,10 @@ msgstr "最近 30 天的每個心跳訊號、漏掉的訊號和推送狀態，�
 msgid "Every check of the last 30 days, newest first."
 msgstr "最近 30 天的每次檢查,最新的在前。"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "every conversation"
+msgstr "每個對話"
+
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Every conversation"
 msgstr "所有對話"
@@ -5935,6 +6112,7 @@ msgid "Every imported conversation is closed."
 msgstr "匯入的每個對話都已關閉。"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "Every inbox"
 msgstr "所有收件匣"
 
@@ -5965,6 +6143,10 @@ msgstr "所有產品"
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "發往此端點的每個請求,最新的在前。保留最新的 100 個。"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Every run of the last 30 days, newest first."
+msgstr "最近 30 天的所有執行,最新的在前。"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
@@ -6127,6 +6309,7 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
 #: src/features/status/ResponseChart.tsx
@@ -6172,6 +6355,7 @@ msgstr "反饋"
 #: src/features/docs/PagesTab.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/webhooks/events.tsx
 msgid "Feedback"
 msgstr "反饋"
@@ -6187,6 +6371,10 @@ msgstr "收到反饋"
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Feedback categories"
 msgstr "意見回饋分類"
+
+#: src/features/settings/automation/text.ts
+msgid "Feedback category"
+msgstr "意見回饋類別"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -7179,9 +7367,17 @@ msgstr "已確認"
 msgid "Identity secret"
 msgstr "身份金鑰"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Idle for {idle} min"
+msgstr "閒置 {idle} 分鐘"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "If {provider} mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "如果 {provider} 向該地址傳送確認郵件,它會作為一個對話到達此收件匣;請在那裡開啟。"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "If all of these match"
+msgstr "如果以下條件全部符合"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
@@ -7445,6 +7641,7 @@ msgstr "在 Zoho Mail 中,開啟「設定 › 郵件帳戶 › IMAP 存取」並
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "收件匣"
@@ -7514,6 +7711,10 @@ msgstr "Include the start of the message"
 #: src/features/contact/ContactSheet.tsx
 msgid "Info"
 msgstr "資訊"
+
+#: src/features/settings/automation/text.ts
+msgid "Inside business hours"
+msgstr "營業時間內"
 
 #: src/app/Sidebar.tsx
 msgid "Insights"
@@ -7592,8 +7793,13 @@ msgid "IP address"
 msgstr "IP 位址"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is"
 msgstr "等於"
+
+#: src/features/settings/automation/text.ts
+msgid "is any of"
+msgstr "是其中之一"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "is less than"
@@ -7603,11 +7809,17 @@ msgstr "小於"
 msgid "is more than"
 msgstr "大於"
 
+#: src/features/settings/automation/text.ts
+msgid "is none of"
+msgstr "不是其中任何一個"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is not"
 msgstr "不是"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is not set"
 msgstr "未設定"
 
@@ -7616,6 +7828,7 @@ msgid "is one of"
 msgstr "是其中之一"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is set"
 msgstr "已設定"
 
@@ -7771,6 +7984,10 @@ msgstr "其同意記錄會一併刪除。由於對方已退訂,該地址會被�
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "其歷史記錄將被刪除。曾提到它的事件不再提到它。"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Its log goes with it. What it already changed stays. This cannot be undone."
+msgstr "它的記錄會一併刪除。它已經改動的內容會保留。此操作無法復原。"
+
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
 msgstr "成員將失去團隊授予的收件匣存取權限；對話會失去團隊，但保留負責人。"
@@ -7888,6 +8105,7 @@ msgstr "金鑰、Webhook 與已連線的助理"
 msgid "Keyword"
 msgstr "關鍵字"
 
+#: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
 msgid "Kind"
 msgstr "類型"
@@ -7919,6 +8137,7 @@ msgstr "僅標籤:其郵件來自「所有郵件」,其對話會帶上該標籤�
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -8430,6 +8649,14 @@ msgstr "已鎖定"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "已鎖定:讀者無法再在這裡發言。你仍然可以。"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Log"
+msgstr "記錄"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Log of {name}"
+msgstr "{name} 的記錄"
+
 #: src/features/status/SettingsTab.tsx
 msgid "Logo URL"
 msgstr "Logo 網址"
@@ -8785,6 +9012,7 @@ msgstr "中位數，從第一則訊息到關閉"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
 msgstr "成員"
@@ -8873,6 +9101,10 @@ msgstr "訊息已複製"
 #: src/components/common/text.ts
 msgid "Message removed"
 msgstr "訊息已移除"
+
+#: src/features/settings/automation/text.ts
+msgid "Message text"
+msgstr "訊息文字"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -8972,8 +9204,13 @@ msgstr "我的"
 msgid "Minor"
 msgstr "輕微"
 
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "minutes"
+msgstr "分鐘"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Minutes"
 msgstr "分鐘"
 
 #: src/features/settings/sla/PolicyDialog.tsx
@@ -9089,6 +9326,7 @@ msgstr "票數最多"
 msgid "Move {0} to the Trash?"
 msgstr "將 {0} 項移到垃圾箱？"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "移動 {name}。拖曳，或按 Alt 加方向鍵。"
@@ -9097,6 +9335,7 @@ msgstr "移動 {name}。拖曳，或按 Alt 加方向鍵。"
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "將對話移到垃圾箱、恢復對話並讀取垃圾箱"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -9197,6 +9436,7 @@ msgstr "移到垃圾箱"
 msgid "Move to Yuva"
 msgstr "遷移到 Yuva"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -9261,6 +9501,7 @@ msgstr "我的檢視"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
@@ -9586,6 +9827,11 @@ msgstr "新增政策"
 msgid "New reply in <0>{title}</0>"
 msgstr "<0>{title}</0> 中有新回覆"
 
+#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "New rule"
+msgstr "新增規則"
+
 #: src/features/settings/webhooks/sections.tsx
 msgid "New signing secret"
 msgstr "新簽名金鑰"
@@ -9840,6 +10086,10 @@ msgstr "還沒有元件。請在「元件」分頁中新增客戶仰賴的產品
 #: src/features/status/ComponentsTab.tsx
 msgid "No components yet. Add the parts of your product that customers depend on."
 msgstr "尚無元件。新增客戶所依賴的產品部分。"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "No conditions: the rule runs for every conversation the trigger fits."
+msgstr "沒有條件:規則會對觸發器適用的每個對話執行。"
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "No confirmation"
@@ -10160,6 +10410,14 @@ msgstr "此時間範圍內還沒有回應時間。"
 msgid "No results"
 msgstr "沒有結果"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "No rules yet."
+msgstr "還沒有規則。"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "No runs in the last 30 days."
+msgstr "最近 30 天沒有執行紀錄。"
+
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "No secret yet. Make one, then paste it into GitHub."
 msgstr "No secret yet. Make one, then paste it into GitHub."
@@ -10438,6 +10696,10 @@ msgstr "未匯入"
 msgid "Not isolated"
 msgstr "未隔離"
 
+#: src/features/settings/automation/text.ts
+msgid "Not matched"
+msgstr "未符合"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Not offered on this server"
 msgstr "此伺服器不提供"
@@ -10465,6 +10727,10 @@ msgstr "未就緒"
 #: src/features/migrations/SourceStep.tsx
 msgid "Not right? Pick your provider"
 msgstr "不對?請選擇你的供應商"
+
+#: src/features/settings/automation/text.ts
+msgid "not run"
+msgstr "未執行"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
@@ -10531,6 +10797,7 @@ msgstr "尚未使用"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Note"
 msgstr "備註"
 
@@ -10682,6 +10949,11 @@ msgstr "今天沒有需要你處理的事項。"
 #: src/features/status/MonitorDialog.tsx
 msgid "Nothing opens by itself. Open an incident from the monitor when you want one."
 msgstr "不會自動建立任何內容。需要時請從監控中建立事件。"
+
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Nothing to pick from yet."
+msgstr "目前沒有可選的內容。"
 
 #: src/features/account/AccountPage.tsx
 msgid "Nothing unread."
@@ -10878,6 +11150,7 @@ msgstr "測試訊息到達後,Yuva 會等待 {hours} 小時。如果這段時間
 msgid "One e-mail a month about what is new."
 msgstr "每月一封郵件,介紹新動態。"
 
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "一個收件匣"
@@ -11046,6 +11319,7 @@ msgid "Only the person can subscribe again, by confirming a mail."
 msgstr "只有本人可以透過確認郵件重新訂閱。"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "僅團隊可見"
 
@@ -11169,6 +11443,10 @@ msgstr "開啟 ChatGPT 外掛"
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Open Claude connectors"
 msgstr "開啟 Claude 聯結器"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Open conversation"
+msgstr "開啟對話"
 
 #: src/app/Palette.tsx
 msgid "Open conversations"
@@ -11420,6 +11698,7 @@ msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational 表示恢復；degraded、partial_outage 和 major_outage 表示失敗。"
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/automation/ConditionRow.tsx
 msgid "Operator"
 msgstr "營運方"
 
@@ -11501,6 +11780,10 @@ msgstr "「其他」會保留：移除的分類會移到這裡"
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
 msgstr "我們的監控 {monitor} 自 {at} 起發現問題。我們正在調查。"
 
+#: src/features/settings/automation/RunLog.tsx
+msgid "Outcome"
+msgstr "結果"
+
 #: src/features/migrations/text.ts
 msgid "Outlook.com and Microsoft 365"
 msgstr "Outlook.com 和 Microsoft 365"
@@ -11524,6 +11807,10 @@ msgstr "Outlook.com 和 Microsoft 365 透過「使用 Microsoft 登入」連線,
 #: src/features/migrations/text.ts
 msgid "Outlook's .pst files are not read; convert them to .mbox first."
 msgstr "不會讀取 Outlook 的 .pst 檔案;請先將其轉換為 .mbox。"
+
+#: src/features/settings/automation/text.ts
+msgid "Outside business hours"
+msgstr "營業時間外"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
@@ -11871,6 +12158,10 @@ msgstr "人員"
 msgid "Personal"
 msgstr "個人"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a canned reply"
+msgstr "選擇一則快速回覆"
+
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "選擇產品的一個聊天管道並貼上程式碼。評分與問題會進入它的收件匣。"
@@ -11915,6 +12206,14 @@ msgstr "請選擇能無錯誤渲染的設計。"
 msgid "Pick a discussion to read and answer it."
 msgstr "選擇一則討論來閱讀與回覆。"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Pick a field"
+msgstr "選擇一個欄位"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a member"
+msgstr "選擇一位成員"
+
 #: src/features/status/MonitorsPage.tsx
 msgid "Pick a monitor to see what happened."
 msgstr "選擇一個監控，查看發生了什麼。"
@@ -11935,6 +12234,10 @@ msgstr "選擇一則反饋，即可在此查看。"
 msgid "Pick a sender in the settings"
 msgstr "在設定中選擇發件人"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a team"
+msgstr "選擇一個團隊"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "請在未來 90 天內選擇一個時間,按你的時區 {zone}。"
@@ -11951,7 +12254,12 @@ msgstr "請在下方選擇要連線的助手。"
 msgid "Pick an e-mail channel of this inbox that has an SMTP account. It sends the confirmation and welcome mails."
 msgstr "選擇此收件匣中帶有 SMTP 帳號的郵件頻道。它會傳送確認郵件和歡迎郵件。"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick an endpoint"
+msgstr "選擇一個端點"
+
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "Pick an inbox"
 msgstr "選擇收件匣"
 
@@ -12241,6 +12549,8 @@ msgid "Previous screenshot"
 msgstr "上一張截圖"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
@@ -12528,6 +12838,10 @@ msgstr "已排隊。新的嘗試稍後會顯示在下面。"
 msgid "Quick cleanup"
 msgstr "快速清理"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Quiet for (minutes)"
+msgstr "安靜時間(分鐘)"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Quote"
 msgstr "引用"
@@ -12607,6 +12921,10 @@ msgstr "按壓縮的 Maildir 讀取:其資料夾會變成標籤。"
 #: src/features/migrations/text.ts
 msgid "Read as an mbox file."
 msgstr "按 mbox 檔案讀取。"
+
+#: src/components/common/text.ts
+msgid "Read automation rules and their run log"
+msgstr "讀取自動化規則及其執行記錄"
 
 #: src/components/common/text.ts
 msgid "Read broadcasts and e-mail designs"
@@ -12900,9 +13218,17 @@ msgstr "移除 {name}？"
 msgid "Remove {sender}"
 msgstr "移除 {sender}"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Remove action"
+msgstr "移除動作"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove channel"
 msgstr "移除頻道"
+
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Remove condition"
+msgstr "移除條件"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove condition {n}"
@@ -12941,6 +13267,10 @@ msgstr "移除匯入的歷史記錄?"
 msgid "Remove label {labelName}"
 msgstr "移除標籤 {labelName}"
 
+#: src/features/settings/automation/text.ts
+msgid "Remove labels"
+msgstr "移除標籤"
+
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Remove the APNs key?"
 msgstr "移除 APNs 金鑰？"
@@ -12948,6 +13278,10 @@ msgstr "移除 APNs 金鑰？"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "請在 {provider} 中移除你為 Yuva 建立的應用程式專用密碼;它不再需要了。"
+
+#: src/features/settings/automation/text.ts
+msgid "Remove the assignee"
+msgstr "移除負責人"
 
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
@@ -13225,6 +13559,10 @@ msgstr "回覆並標示為已解決"
 msgid "Reply command"
 msgstr "Reply command"
 
+#: src/features/settings/automation/text.ts
+msgid "Reply held back to protect the customer"
+msgstr "為保護客戶,回覆已被攔下"
+
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
 msgstr "回覆已釋出"
@@ -13283,6 +13621,10 @@ msgstr "改為回覆討論"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "回覆所選帖子"
+
+#: src/features/settings/automation/text.ts
+msgid "Reply with a canned reply"
+msgstr "以快速回覆進行回覆"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Reply with a quote"
@@ -13619,9 +13961,29 @@ msgstr "為你的域名設定路由"
 msgid "Route your mail to Yuva"
 msgstr "把郵件路由到 Yuva"
 
+#: src/features/conversation/messages/context.ts
+msgid "Rule {rule}"
+msgstr "規則 {rule}"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Rule {rule} ran, nothing needed changing"
+msgstr "規則 {rule} 已執行,無需變更"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Rule {rule} ran: {done}"
+msgstr "規則 {rule} 已執行:{done}"
+
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "規則"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Rules react to a conversation changing: they label, assign, reply, snooze or call a webhook. They run in the order of this list, each at most once per trigger, and what a rule changes never starts another rule."
+msgstr "規則會對對話的變化做出反應:加標籤、指派、回覆、延後或呼叫 Webhook。它們依此清單的順序執行,每個觸發器至多一次,規則所做的變更不會啟動另一條規則。"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Rules that label, assign, reply and call webhooks"
+msgstr "加標籤、指派、回覆和呼叫 Webhook 的規則"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Run a check"
@@ -13676,6 +14038,7 @@ msgstr "星期六"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
@@ -14207,6 +14570,10 @@ msgstr "透過你的 Amazon SES 帳號,使用其 SMTP 憑證傳送"
 msgid "Send to"
 msgstr "傳送給"
 
+#: src/features/settings/automation/text.ts
+msgid "Send to a webhook endpoint"
+msgstr "傳送到 Webhook 端點"
+
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -14453,6 +14820,14 @@ msgstr "設定進度"
 msgid "Set the feedback progress"
 msgstr "設定回饋進度"
 
+#: src/features/settings/automation/text.ts
+msgid "Set the priority"
+msgstr "設定優先順序"
+
+#: src/features/settings/automation/text.ts
+msgid "Set the status"
+msgstr "設定狀態"
+
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Set up"
 msgstr "設定"
@@ -14604,6 +14979,7 @@ msgstr "在通知中顯示訊息內容"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MigrationsPage.tsx
+#: src/features/settings/automation/RunLog.tsx
 msgid "Show more"
 msgstr "顯示更多"
 
@@ -15000,6 +15376,10 @@ msgstr "跳過此列"
 msgid "Skip threads that contain only automatic mail"
 msgstr "跳過只包含自動郵件的對話串"
 
+#: src/features/settings/automation/text.ts
+msgid "skipped"
+msgstr "已略過"
+
 #: src/components/common/Linked.tsx
 #: src/components/common/text.ts
 msgid "Skipped"
@@ -15116,6 +15496,7 @@ msgstr "SMTP 主機"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "推遲"
 
@@ -15368,6 +15749,8 @@ msgstr "故障時的狀態"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -15460,6 +15843,7 @@ msgstr "未找到子域名"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
 msgstr "主題"
@@ -15652,6 +16036,8 @@ msgstr "TCP 檢查"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
@@ -15744,11 +16130,16 @@ msgid "Tests go only to members of the workspace, at most five at a time, with [
 msgstr "測試只會發給工作區成員,一次最多五人,主題前會加上 [Test]。"
 
 #: src/features/fields/value.ts
+#: src/features/settings/automation/ConditionRow.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Text"
 msgstr "文字"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "Text last saved by {who}"
+msgstr "文字最後由 {who} 儲存"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Thanks for waiting. Your invoice is on its way."
@@ -15786,6 +16177,10 @@ msgstr "你登入的 {provider} 使用者不是管理員,只有管理員才能�
 #: src/features/status/SettingsTab.tsx
 msgid "The address answers “not found” until you publish the page."
 msgstr "在你發布頁面之前，該網址會回應「找不到」。"
+
+#: src/features/settings/automation/text.ts
+msgid "The address bounced"
+msgstr "地址已退信"
 
 #: src/components/common/text.ts
 msgid "The address bounced or complained"
@@ -15827,6 +16222,14 @@ msgstr "群發已取消"
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "瀏覽器必須先允許桌面通知;在此之前只會播放提示音。"
 
+#: src/features/settings/automation/text.ts
+msgid "The canned reply was deleted"
+msgstr "快速回覆已被刪除"
+
+#: src/features/settings/automation/text.ts
+msgid "The change was refused"
+msgstr "變更遭拒"
+
 #: src/components/common/text.ts
 msgid "The channel already has a DKIM key. Delete it before creating another."
 msgstr "該頻道已經有一個 DKIM 金鑰。請先刪除它,再建立另一個。"
@@ -15834,6 +16237,10 @@ msgstr "該頻道已經有一個 DKIM 金鑰。請先刪除它,再建立另一�
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The channel cannot send yet. It needs an SMTP account and an address to send from."
 msgstr "該頻道暫時無法傳送。它需要一個 SMTP 帳號和一個發件地址。"
+
+#: src/features/settings/automation/text.ts
+msgid "The channel has no SMTP account"
+msgstr "該頻道沒有 SMTP 帳號"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "The channel name when empty."
@@ -15892,6 +16299,10 @@ msgstr "同意頁面已勾選用戶端請求的內容。請取消勾選你不希
 #: src/components/common/text.ts
 msgid "The contact was deleted"
 msgstr "聯絡人已被刪除"
+
+#: src/features/settings/automation/text.ts
+msgid "The contact writes a message"
+msgstr "聯絡人傳來訊息"
 
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
@@ -16605,6 +17016,10 @@ msgstr "The sign-in took too long or was already used. Start again."
 msgid "The sign-in was declined"
 msgstr "登入被拒絕"
 
+#: src/features/settings/automation/text.ts
+msgid "The status changes"
+msgstr "狀態發生變化"
+
 #: src/app/UserMenu.tsx
 msgid "The status was not changed. Try again."
 msgstr "狀態沒有更改。請重試。"
@@ -16616,6 +17031,10 @@ msgstr "主題"
 #: src/features/setup/NewsletterStep.tsx
 msgid "The subscribe form shows the list’s name and description."
 msgstr "訂閱表單會顯示列表的名稱和描述。"
+
+#: src/features/settings/automation/text.ts
+msgid "The team does not cover this inbox"
+msgstr "團隊未涵蓋此收件匣"
 
 #: src/app/TeamMenu.tsx
 msgid "The team today"
@@ -16698,6 +17117,10 @@ msgstr "具有此鍵的已刪除欄位的值仍在清除中。請稍後再試。
 msgid "The visitor typed {0} in the chat and has not confirmed it yet. This reply came from that address, so it may not be from the visitor."
 msgstr "訪客在聊天中輸入了 {0},但尚未確認。這條回覆來自該地址,因此可能不是訪客本人發的。"
 
+#: src/features/settings/automation/text.ts
+msgid "The webhook endpoint is off or not available here"
+msgstr "Webhook 端點已關閉或在此無法使用"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "The What’s new count shows on the chat button while no messages are unread. The widget’s Home always shows it."
 msgstr "沒有未讀訊息時，聊天按鈕上會顯示新動態數量。小工具的首頁一律會顯示。"
@@ -16765,6 +17188,10 @@ msgstr "主題"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Theme and e-mail view on this device"
 msgstr "此裝置上的主題和郵件檢視"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Then"
+msgstr "則"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -17112,6 +17539,19 @@ msgstr "此屬性已有同名目標。"
 msgid "This property already has a segment with this name."
 msgstr "此屬性已有同名區隔。"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
+msgstr "在擁有者或管理員同時儲存此規則和快速回覆 {title},或在 API 金鑰設定中允許機器人傳送之前,這則回覆不會送出。"
+
+#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
+msgstr "在擁有者或管理員儲存快速回覆 {title},或在 API 金鑰設定中允許機器人傳送之前,這則回覆不會送出。"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
+msgstr "在擁有者或管理員儲存此規則,或在 API 金鑰設定中允許機器人傳送之前,這則回覆不會送出。"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request expired or was already used. Start connecting again from the app."
 msgstr "此請求已過期或已被使用。請從應用程式重新開始連線。"
@@ -17386,6 +17826,10 @@ msgstr "垃圾箱,從不匯入"
 msgid "Triage"
 msgstr "分類"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Trigger"
+msgstr "觸發器"
+
 #: src/features/migrations/ConnectStep.tsx
 msgid "Trust this certificate for this server. Do this only if it is your own server and the fingerprint matches."
 msgstr "為此伺服器信任此證書。僅當它是你自己的伺服器且指紋匹配時才這樣做。"
@@ -17604,6 +18048,10 @@ msgstr "已取消關注"
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Unit"
 msgstr "單位"
+
+#: src/components/common/authorText.ts
+msgid "Unknown"
+msgstr "未知"
 
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
@@ -18322,6 +18770,7 @@ msgstr "網頁使用已開啟回饋表單的聊天小工具。應用程式透過
 msgid "Webhook"
 msgstr "Webhook"
 
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Webhook endpoint"
 msgstr "Webhook 端點"
@@ -18498,6 +18947,7 @@ msgid "What’s new entry"
 msgstr "新動態項目"
 
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "When"
 msgstr "時間"
 

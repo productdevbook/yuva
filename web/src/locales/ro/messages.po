@@ -1139,6 +1139,10 @@ msgstr "O conversație s-a schimbat"
 msgid "A conversation is assigned to me"
 msgstr "O conversație îmi este atribuită"
 
+#: src/features/settings/automation/text.ts
+msgid "A conversation is idle"
+msgstr "O conversație este inactivă"
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "O conversație este luată în întregime când a fost actualizată ultima oară în interval."
@@ -1150,6 +1154,10 @@ msgstr "O conversație trebuie să corespundă fiecărui rând completat. Un râ
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "O conversație a început"
+
+#: src/features/settings/automation/text.ts
+msgid "A conversation starts"
+msgstr "Începe o conversație"
 
 #: src/components/common/text.ts
 msgid "A conversation was deleted for good"
@@ -1219,6 +1227,7 @@ msgstr "O ciornă a fost scrisă"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Conținutul unui fișier nu se potrivește cu tipul său. Verifică fișierul și încearcă din nou."
 
+#: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
@@ -1255,6 +1264,10 @@ msgstr "O cheie lasă backendul, un script sau un bot să citească și să scri
 #: src/components/common/text.ts
 msgid "A kind of field holds at most 50 fields. Delete one first."
 msgstr "Un obiect poate avea cel mult 50 de câmpuri. Ștergeți mai întâi unul."
+
+#: src/features/settings/automation/text.ts
+msgid "A label was deleted"
+msgstr "O etichetă a fost ștearsă"
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -1400,9 +1413,17 @@ msgstr "Un răspuns și acțiunile lui într-un singur pas"
 msgid "A reply was written in a discussion"
 msgstr "Un răspuns a fost scris într-o discuție"
 
+#: src/features/settings/automation/text.ts
+msgid "A required field is empty"
+msgstr "Un câmp obligatoriu este gol"
+
 #: src/components/common/text.ts
 msgid "A roadmap idea moved to another stage"
 msgstr "O idee din foaia de parcurs a trecut la altă etapă"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "A rule that is off never runs. Rules run in the order of the list."
+msgstr "O regulă dezactivată nu rulează niciodată. Regulile rulează în ordinea din listă."
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -1496,6 +1517,10 @@ msgstr "O intrare din Noutăți a fost retrasă"
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "Un număr întreg de la 1 la 10.000.000"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 automation rules. Delete one first."
+msgstr "Un spațiu de lucru conține cel mult 100 de reguli de automatizare. Șterge mai întâi una."
 
 #: src/components/common/text.ts
 msgid "A workspace holds at most 100 SLA policies. Delete one first."
@@ -1679,6 +1704,10 @@ msgstr "Adaugă un chat de site în setările căsuței"
 msgid "Add a website or app"
 msgstr "Adaugă un site sau o aplicație"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Add an action"
+msgstr "Adaugă o acțiune"
+
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
 msgstr "Adaugă o adresă pe serverul tău și alege evenimentele despre care Yuva trebuie să-i spună."
@@ -1697,6 +1726,10 @@ msgstr "Adaugă o imagine"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
 msgstr "Adaugă o căsuță"
+
+#: src/features/settings/automation/text.ts
+msgid "Add an internal note"
+msgstr "Adaugă o notă internă"
 
 #: src/features/migrations/text.ts
 msgid "Add an OAuth client named “Yuva”, as a confidential client, and enter the redirect URL below as its redirect URL."
@@ -1721,6 +1754,10 @@ msgstr "Adaugă canal"
 #: src/features/status/ComponentsTab.tsx
 msgid "Add component"
 msgstr "Adaugă componentă"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Add condition"
+msgstr "Adaugă condiție"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Add contact"
@@ -1747,6 +1784,10 @@ msgstr "Adaugă antet"
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
 msgstr "Adaugă eticheta {labelName}"
+
+#: src/features/settings/automation/text.ts
+msgid "Add labels"
+msgstr "Adaugă etichete"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -1929,6 +1970,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "All"
@@ -2086,6 +2128,10 @@ msgstr "Deja pe listă"
 msgid "Already on the list, left as they are"
 msgstr "Deja pe listă, lăsat neschimbat"
 
+#: src/features/settings/automation/text.ts
+msgid "already so"
+msgstr "deja așa"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Also called audience or identifier."
 msgstr "Also called audience or identifier."
@@ -2203,6 +2249,7 @@ msgstr "Un răspuns a fost acceptat în <0>{title}</0>"
 msgid "an API key"
 msgstr "o cheie API"
 
+#: src/components/common/authorText.ts
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "An API key"
 msgstr "O cheie API"
@@ -2218,6 +2265,18 @@ msgstr "O parolă de aplicație ar putea fi folosită pentru a modifica e-mailul
 #: src/features/broadcasts/ListSettings.tsx
 msgid "An archived list keeps its subscribers and records, but forms and the preference page stop offering it."
 msgstr "O listă arhivată își păstrează abonații și înregistrările, dar formularele și pagina de preferințe nu o mai oferă."
+
+#: src/components/common/authorText.ts
+msgid "An assistant connected by {name}"
+msgstr "Asistent conectat de {name}"
+
+#: src/components/common/text.ts
+msgid "An automation rule ran its webhook action"
+msgstr "O regulă de automatizare și-a rulat acțiunea de webhook"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "An automation rule sends this reply, but it will not go out until an owner or admin saves the text, or bots may send is turned on."
+msgstr "O regulă de automatizare trimite acest răspuns, dar acesta nu va pleca până când un proprietar sau un administrator nu salvează textul sau până când boții au voie să trimită."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "An e-mail address, phone number or web address"
@@ -2582,6 +2641,11 @@ msgstr "Aspect"
 msgid "Application (client) ID"
 msgstr "ID aplicație (client)"
 
+#: src/features/settings/automation/text.ts
+msgid "Applied"
+msgstr "Aplicată"
+
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Applies to"
 msgstr "Se aplică la"
@@ -2723,8 +2787,13 @@ msgstr "Atribuie sau predă unui coleg"
 msgid "Assign to {name}"
 msgstr "Atribuie lui {name}"
 
+#: src/features/settings/automation/text.ts
+msgid "Assign to a member"
+msgstr "Atribuie unui membru"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/settings/automation/text.ts
 msgid "Assign to a team"
 msgstr "Atribuie unei echipe"
 
@@ -2746,6 +2815,7 @@ msgstr "Atribuită lui {assignee}"
 msgid "Assigned to {assignee}, kept by name"
 msgstr "Atribuită lui {assignee}, păstrată după nume"
 
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Assignee"
 msgstr "Persoană atribuită"
@@ -2848,6 +2918,10 @@ msgstr "Cheie de atribut, de exemplu plan"
 msgid "Attribute keys use letters, digits, dots, dashes and underscores, at most 64."
 msgstr "Cheile de atribut folosesc litere, cifre, puncte, cratime și liniuțe de subliniere, cel mult 64."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Attribute name"
+msgstr "Numele atributului"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Attribute of condition {n}"
 msgstr "Atributul condiției {n}"
@@ -2889,9 +2963,18 @@ msgstr "Răspuns automat"
 msgid "automatic"
 msgstr "automat"
 
+#: src/features/settings/automation/text.ts
+msgid "Automatic assignment (not available yet)"
+msgstr "Atribuire automată (încă indisponibilă)"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "E-mailul automat nu declanșează niciodată un răspuns automat."
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Automation"
+msgstr "Automatizare"
 
 #: src/app/UserMenu.tsx
 msgid "Available"
@@ -3076,6 +3159,14 @@ msgstr "Ambele înregistrări au fost găsite. Yuva le verifică o dată pe zi; 
 msgid "Bots"
 msgstr "Boți"
 
+#: src/features/settings/automation/text.ts
+msgid "Bots may not send and the author is not an owner or admin"
+msgstr "Boții nu au voie să trimită, iar autorul nu este proprietar sau administrator"
+
+#: src/components/common/text.ts
+msgid "Bots may not send in this workspace, and this reply was not saved by an owner or admin."
+msgstr "Boții nu au voie să trimită în acest spațiu de lucru, iar acest răspuns nu a fost salvat de un proprietar sau administrator."
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bots may not send in this workspace: the key writes drafts and a member sends them."
 msgstr "Boții nu pot trimite în acest spațiu de lucru: cheia scrie ciorne, iar un membru le trimite."
@@ -3200,6 +3291,8 @@ msgstr "Erori, idei și laude trimise din aplicațiile și paginile tale"
 msgid "Bundle ID"
 msgstr "Bundle ID"
 
+#: src/features/settings/automation/ConditionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
 msgstr "Program de lucru"
@@ -3215,6 +3308,10 @@ msgstr "Prin e-mail"
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "După membru"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "by rule {rule}"
+msgstr "prin regula {rule}"
 
 #: src/components/common/text.ts
 msgid "By the team"
@@ -3340,6 +3437,7 @@ msgid "Canned replies and macros, in the reply box"
 msgstr "Răspunsuri salvate și macrouri, în câmpul de răspuns"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Canned reply"
 msgstr "Răspuns gata făcut"
 
@@ -3419,6 +3517,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "A schimbat durata de păstrare a conversațiilor de la {from} la {to}"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the automation rule {name}"
+msgstr "A modificat regula de automatizare {name}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the daily broadcast limit from {from} to {to}"
 msgstr "A schimbat limita zilnică de difuzări de la {from} la {to}"
 
@@ -3451,6 +3553,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Schimbarea domeniului de trimitere oprește semnarea DKIM până o reactivezi pentru noul domeniu."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -3576,6 +3679,10 @@ msgstr "Verificat {when}"
 #: src/features/broadcasts/Import.tsx
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "Verificat și așteaptă ca un proprietar sau admin să îl pornească."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Checked every 5 minutes, once per quiet period. Only open and pending conversations."
+msgstr "Verificat la fiecare 5 minute, o dată pe perioadă de liniște. Doar conversațiile deschise și în așteptare."
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Checked with the tracker before it replaces the old one. The current one is never shown."
@@ -3804,6 +3911,10 @@ msgstr "Închide fiecare conversație după răspuns"
 msgid "Close everything"
 msgstr "Închide totul"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Close idle conversations"
+msgstr "Închide conversațiile inactive"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Close older conversations"
 msgstr "Închide conversațiile mai vechi"
@@ -3956,10 +4067,18 @@ msgstr "Componente afectate"
 msgid "Components, history, incidents and updates are deleted with it."
 msgstr "Componentele, istoricul, incidentele și actualizările se șterg odată cu ea."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Condition"
+msgstr "Condiție"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Conditions"
 msgstr "Condiții"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Conditions: {n}"
+msgstr "Condiții: {n}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Configuration set"
@@ -4198,6 +4317,10 @@ msgstr "Contact adăugat. Folosește Conversație nouă ca să-i scrii."
 msgid "Contact and identities"
 msgstr "Contact și identități"
 
+#: src/features/settings/automation/text.ts
+msgid "Contact attribute"
+msgstr "Atribut de contact"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactSheet.tsx
@@ -4243,6 +4366,7 @@ msgid "Contacts keep the values they hold; they show as plain attributes instead
 msgstr "Contactele își păstrează valorile; apar ca atribute simple, nu ca un câmp tipizat."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "contains"
 msgstr "conține"
 
@@ -4288,6 +4412,10 @@ msgstr "Continue with your organisation's sign-in"
 #: src/features/contact/ContactsPage.tsx
 msgid "Convers."
 msgstr "Conv."
+
+#: src/features/settings/automation/text.ts
+msgid "Conversation"
+msgstr "Conversație"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Conversation actions"
@@ -4586,6 +4714,10 @@ msgstr "Creează listă"
 msgid "Create policy"
 msgstr "Creează politica"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create rule"
+msgstr "Creează regula"
+
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
 msgstr "Creează pagină de stare"
@@ -4635,6 +4767,10 @@ msgstr "Creează-ți contul Yuva"
 msgid "Create, change and delete custom fields"
 msgstr "Crearea, modificarea și ștergerea câmpurilor personalizate"
 
+#: src/components/common/text.ts
+msgid "Create, change, reorder and delete automation rules"
+msgstr "Creează, modifică, reordonează și șterge reguli de automatizare"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "Created"
@@ -4651,6 +4787,10 @@ msgstr "A creat un export de analiză"
 #: src/features/settings/audit/sentence.ts
 msgid "Created the API key {name}"
 msgstr "A creat cheia API {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the automation rule {name}"
+msgstr "A creat regula de automatizare {name}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Created the DKIM key {selector}"
@@ -4695,6 +4835,8 @@ msgid "Custom"
 msgstr "Personalizat"
 
 #: src/features/fields/FieldFilter.tsx
+#: src/features/settings/automation/ConditionRow.tsx
+#: src/features/settings/automation/text.ts
 msgid "Custom field"
 msgstr "Câmp personalizat"
 
@@ -4804,6 +4946,7 @@ msgstr "Performanță redusă"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -4935,6 +5078,10 @@ msgstr "Șterge clientul OAuth pe care l-ai creat pentru Yuva"
 msgid "Delete the policy {name}?"
 msgstr "Ștergeți politica {name}?"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Delete the rule {name}?"
+msgstr "Ștergi regula {name}?"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Șterge blocul selectat"
@@ -5053,6 +5200,10 @@ msgstr "Ștearsă pe {date}"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "Cititor șters"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the automation rule {name}"
+msgstr "A șters regula de automatizare {name}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
@@ -5341,6 +5492,10 @@ msgstr "Documente"
 msgid "Does it work with server-side rendering?"
 msgstr "Funcționează cu randare pe server?"
 
+#: src/features/settings/automation/text.ts
+msgid "does not contain"
+msgstr "nu conține"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "Domeniu"
@@ -5348,6 +5503,10 @@ msgstr "Domeniu"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Domain not verified"
 msgstr "Domeniu neverificat"
+
+#: src/features/settings/automation/text.ts
+msgid "done"
+msgstr "făcut"
 
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5595,6 +5754,10 @@ msgstr "E-mail: {label}"
 msgid "E-mails to the people who signed up"
 msgstr "E-mailuri către persoanele care s-au înscris"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
+msgstr "Fiecare acțiune o dată, cel mult 10. Acțiunile rulează ca o singură modificare; dacă una eșuează, nu se aplică niciuna."
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Each component gets this state while the incident is open."
 msgstr "Fiecare componentă are această stare cât timp incidentul este deschis."
@@ -5652,6 +5815,7 @@ msgstr "Fiecare cu toate mesajele și notele sale"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5720,6 +5884,10 @@ msgstr "Editează monitorul"
 msgid "Edit policy"
 msgstr "Editează politica"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit rule"
+msgstr "Editează regula"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Editează echipa"
@@ -5784,9 +5952,14 @@ msgstr "Emoji"
 msgid "Empty in the first rows"
 msgstr "Gol în primele rânduri"
 
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Enabled"
 msgstr "Activată"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Enabled: {name}"
+msgstr "Activată: {name}"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5926,6 +6099,10 @@ msgstr "Fiecare semnal, semnal ratat și stare trimisă din ultimele 30 de zile,
 msgid "Every check of the last 30 days, newest first."
 msgstr "Fiecare verificare din ultimele 30 de zile, cele mai noi primele."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "every conversation"
+msgstr "orice conversație"
+
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Every conversation"
 msgstr "Orice conversație"
@@ -5935,6 +6112,7 @@ msgid "Every imported conversation is closed."
 msgstr "Fiecare conversație importată este închisă."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "Every inbox"
 msgstr "Fiecare căsuță"
 
@@ -5965,6 +6143,10 @@ msgstr "Fiecare produs"
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Fiecare cerere către acest endpoint, cele mai noi primele. Ultimele 100 sunt păstrate."
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Every run of the last 30 days, newest first."
+msgstr "Toate rulările din ultimele 30 de zile, cele mai noi întâi."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
@@ -6127,6 +6309,7 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
 #: src/features/status/ResponseChart.tsx
@@ -6172,6 +6355,7 @@ msgstr "feedback"
 #: src/features/docs/PagesTab.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/webhooks/events.tsx
 msgid "Feedback"
 msgstr "Feedback"
@@ -6187,6 +6371,10 @@ msgstr "Feedback sosit"
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Feedback categories"
 msgstr "Categorii de feedback"
+
+#: src/features/settings/automation/text.ts
+msgid "Feedback category"
+msgstr "Categorie de feedback"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -7179,9 +7367,17 @@ msgstr "Identificat"
 msgid "Identity secret"
 msgstr "Secret de identitate"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Idle for {idle} min"
+msgstr "Inactivă de {idle} min"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "If {provider} mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "Dacă {provider} trimite o confirmare la acea adresă, aceasta ajunge în această căsuță ca o conversație; deschide-o acolo."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "If all of these match"
+msgstr "Dacă toate acestea se potrivesc"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
@@ -7445,6 +7641,7 @@ msgstr "În Zoho Mail, deschide Settings › Mail accounts › IMAP access și a
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Căsuță"
@@ -7514,6 +7711,10 @@ msgstr "Include the start of the message"
 #: src/features/contact/ContactSheet.tsx
 msgid "Info"
 msgstr "Info"
+
+#: src/features/settings/automation/text.ts
+msgid "Inside business hours"
+msgstr "În program"
 
 #: src/app/Sidebar.tsx
 msgid "Insights"
@@ -7592,8 +7793,13 @@ msgid "IP address"
 msgstr "Adresă IP"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is"
 msgstr "este"
+
+#: src/features/settings/automation/text.ts
+msgid "is any of"
+msgstr "este una dintre"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "is less than"
@@ -7603,11 +7809,17 @@ msgstr "este mai mic decât"
 msgid "is more than"
 msgstr "este mai mare decât"
 
+#: src/features/settings/automation/text.ts
+msgid "is none of"
+msgstr "nu este niciuna dintre"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is not"
 msgstr "nu este"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is not set"
 msgstr "nu este setat"
 
@@ -7616,6 +7828,7 @@ msgid "is one of"
 msgstr "este unul dintre"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is set"
 msgstr "este setat"
 
@@ -7771,6 +7984,10 @@ msgstr "Înregistrarea ei de consimțământ este ștearsă odată cu ea. Pentru
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Istoricul ei se șterge. Incidentele care o menționau nu o mai menționează."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Its log goes with it. What it already changed stays. This cannot be undone."
+msgstr "Jurnalul ei se șterge odată cu ea. Ce a modificat deja rămâne. Nu se poate anula."
+
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
 msgstr "Membrii ei pierd accesul la căsuțele oferite de echipă, iar conversațiile pierd echipa, dar păstrează persoana atribuită."
@@ -7888,6 +8105,7 @@ msgstr "Chei, webhook-uri și asistenți conectați"
 msgid "Keyword"
 msgstr "Cuvânt-cheie"
 
+#: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
 msgid "Kind"
 msgstr "Tip"
@@ -7919,6 +8137,7 @@ msgstr "Doar etichetă: e-mailul ei vine din Tot e-mailul, iar conversațiile ei
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -8430,6 +8649,14 @@ msgstr "Blocat"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "Blocat: cititorii nu mai pot scrie aici. Tu încă poți."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Log"
+msgstr "Jurnal"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Log of {name}"
+msgstr "Jurnalul regulii {name}"
+
 #: src/features/status/SettingsTab.tsx
 msgid "Logo URL"
 msgstr "URL-ul siglei"
@@ -8785,6 +9012,7 @@ msgstr "mediană, de la primul mesaj la închidere"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
 msgstr "Membru"
@@ -8873,6 +9101,10 @@ msgstr "Mesaj copiat"
 #: src/components/common/text.ts
 msgid "Message removed"
 msgstr "Mesaj eliminat"
+
+#: src/features/settings/automation/text.ts
+msgid "Message text"
+msgstr "Textul mesajului"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -8972,9 +9204,14 @@ msgstr "Ale mele"
 msgid "Minor"
 msgstr "Mic"
 
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "minutes"
 msgstr "minute"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Minutes"
+msgstr "Minute"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Minutes before a due time. 0 sends no warning."
@@ -9089,6 +9326,7 @@ msgstr "Cele mai multe voturi"
 msgid "Move {0} to the Trash?"
 msgstr "Muți {0} în coș?"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Mută {name}. Trageți sau apăsați Alt cu săgețile."
@@ -9097,6 +9335,7 @@ msgstr "Mută {name}. Trageți sau apăsați Alt cu săgețile."
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Mută conversații în coș, restaurează-le și citește coșul"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -9197,6 +9436,7 @@ msgstr "Mută în coș"
 msgid "Move to Yuva"
 msgstr "Mută la Yuva"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -9261,6 +9501,7 @@ msgstr "Vizualizările mele"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
@@ -9586,6 +9827,11 @@ msgstr "Politică nouă"
 msgid "New reply in <0>{title}</0>"
 msgstr "Răspuns nou în <0>{title}</0>"
 
+#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "New rule"
+msgstr "Regulă nouă"
+
 #: src/features/settings/webhooks/sections.tsx
 msgid "New signing secret"
 msgstr "Secret de semnare nou"
@@ -9840,6 +10086,10 @@ msgstr "Nicio componentă încă. În fila Componente adaugă părțile produsul
 #: src/features/status/ComponentsTab.tsx
 msgid "No components yet. Add the parts of your product that customers depend on."
 msgstr "Încă nu există componente. Adaugă părțile produsului tău de care depind clienții."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "No conditions: the rule runs for every conversation the trigger fits."
+msgstr "Nicio condiție: regula rulează pentru orice conversație la care se potrivește declanșatorul."
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "No confirmation"
@@ -10160,6 +10410,14 @@ msgstr "Încă nu există timpi de răspuns în acest interval."
 msgid "No results"
 msgstr "Niciun rezultat"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "No rules yet."
+msgstr "Nicio regulă încă."
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "No runs in the last 30 days."
+msgstr "Nicio rulare în ultimele 30 de zile."
+
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "No secret yet. Make one, then paste it into GitHub."
 msgstr "No secret yet. Make one, then paste it into GitHub."
@@ -10438,6 +10696,10 @@ msgstr "Neimportat"
 msgid "Not isolated"
 msgstr "Neizolat"
 
+#: src/features/settings/automation/text.ts
+msgid "Not matched"
+msgstr "Nu s-a potrivit"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Not offered on this server"
 msgstr "Nu este oferit pe acest server"
@@ -10465,6 +10727,10 @@ msgstr "Nu este gata"
 #: src/features/migrations/SourceStep.tsx
 msgid "Not right? Pick your provider"
 msgstr "Nu e corect? Alege furnizorul tău"
+
+#: src/features/settings/automation/text.ts
+msgid "not run"
+msgstr "nerulat"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
@@ -10531,6 +10797,7 @@ msgstr "Încă nefolosit"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Note"
 msgstr "Notă"
 
@@ -10682,6 +10949,11 @@ msgstr "Azi nimic nu are nevoie de tine."
 #: src/features/status/MonitorDialog.tsx
 msgid "Nothing opens by itself. Open an incident from the monitor when you want one."
 msgstr "Nu se deschide nimic de la sine. Deschide un incident din monitor când vrei."
+
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Nothing to pick from yet."
+msgstr "Încă nu există nimic de ales."
 
 #: src/features/account/AccountPage.tsx
 msgid "Nothing unread."
@@ -10878,6 +11150,7 @@ msgstr "Odată ce sosește un mesaj de test, Yuva așteaptă {hours} ore. Dacă 
 msgid "One e-mail a month about what is new."
 msgstr "Un e-mail pe lună despre noutăți."
 
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "O căsuță"
@@ -11046,6 +11319,7 @@ msgid "Only the person can subscribe again, by confirming a mail."
 msgstr "Doar persoana se poate abona din nou, confirmând un e-mail."
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "Doar echipa vede asta"
 
@@ -11169,6 +11443,10 @@ msgstr "Deschide pluginurile ChatGPT"
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Open Claude connectors"
 msgstr "Deschide conectorii Claude"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Open conversation"
+msgstr "Deschide conversația"
 
 #: src/app/Palette.tsx
 msgid "Open conversations"
@@ -11420,6 +11698,7 @@ msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational refac; degraded, partial_outage și major_outage opresc."
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/automation/ConditionRow.tsx
 msgid "Operator"
 msgstr "Operator"
 
@@ -11501,6 +11780,10 @@ msgstr "Altele rămâne: categoriile eliminate trec aici"
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
 msgstr "Monitorul nostru {monitor} a observat o problemă din {at}. Investigăm."
 
+#: src/features/settings/automation/RunLog.tsx
+msgid "Outcome"
+msgstr "Rezultat"
+
 #: src/features/migrations/text.ts
 msgid "Outlook.com and Microsoft 365"
 msgstr "Outlook.com și Microsoft 365"
@@ -11524,6 +11807,10 @@ msgstr "Outlook.com și Microsoft 365 se conectează cu „Conectează-te cu Mic
 #: src/features/migrations/text.ts
 msgid "Outlook's .pst files are not read; convert them to .mbox first."
 msgstr "Fișierele .pst din Outlook nu sunt citite; convertește-le mai întâi în .mbox."
+
+#: src/features/settings/automation/text.ts
+msgid "Outside business hours"
+msgstr "În afara programului"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
@@ -11871,6 +12158,10 @@ msgstr "Persoană"
 msgid "Personal"
 msgstr "Personal"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a canned reply"
+msgstr "Alege un răspuns salvat"
+
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "Alege un canal de chat al produsului și lipește codul. Evaluările și întrebările ajung în căsuța lui."
@@ -11915,6 +12206,14 @@ msgstr "Alege un design care se randează fără erori."
 msgid "Pick a discussion to read and answer it."
 msgstr "Alege o discuție pentru a o citi și a răspunde."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Pick a field"
+msgstr "Alege un câmp"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a member"
+msgstr "Alege un membru"
+
 #: src/features/status/MonitorsPage.tsx
 msgid "Pick a monitor to see what happened."
 msgstr "Alege un monitor pentru a vedea ce s-a întâmplat."
@@ -11935,6 +12234,10 @@ msgstr "Alege un feedback ca să-l vezi aici."
 msgid "Pick a sender in the settings"
 msgstr "Alege un expeditor în setări"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a team"
+msgstr "Alege o echipă"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "Alege o oră în următoarele 90 de zile, în fusul tău orar, {zone}."
@@ -11951,7 +12254,12 @@ msgstr "Alege mai jos un asistent de conectat."
 msgid "Pick an e-mail channel of this inbox that has an SMTP account. It sends the confirmation and welcome mails."
 msgstr "Alege un canal de e-mail al acestei căsuțe care are un cont SMTP. El trimite mesajele de confirmare și de bun venit."
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick an endpoint"
+msgstr "Alege un endpoint"
+
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "Pick an inbox"
 msgstr "Alege o căsuță"
 
@@ -12241,6 +12549,8 @@ msgid "Previous screenshot"
 msgstr "Captura anterioară"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
@@ -12528,6 +12838,10 @@ msgstr "În coadă. Noua încercare apare mai jos într-o clipă."
 msgid "Quick cleanup"
 msgstr "Curățare rapidă"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Quiet for (minutes)"
+msgstr "Liniște timp de (minute)"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Quote"
 msgstr "Citează"
@@ -12607,6 +12921,10 @@ msgstr "Citit ca un Maildir arhivat: dosarele lui devin etichete."
 #: src/features/migrations/text.ts
 msgid "Read as an mbox file."
 msgstr "Citit ca fișier mbox."
+
+#: src/components/common/text.ts
+msgid "Read automation rules and their run log"
+msgstr "Citirea regulilor de automatizare și a jurnalului lor de rulări"
 
 #: src/components/common/text.ts
 msgid "Read broadcasts and e-mail designs"
@@ -12900,9 +13218,17 @@ msgstr "Elimini pe {name}?"
 msgid "Remove {sender}"
 msgstr "Elimină {sender}"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Remove action"
+msgstr "Elimină acțiunea"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove channel"
 msgstr "Elimină canalul"
+
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Remove condition"
+msgstr "Elimină condiția"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove condition {n}"
@@ -12941,6 +13267,10 @@ msgstr "Elimini istoricul importat?"
 msgid "Remove label {labelName}"
 msgstr "Elimină eticheta {labelName}"
 
+#: src/features/settings/automation/text.ts
+msgid "Remove labels"
+msgstr "Elimină etichete"
+
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Remove the APNs key?"
 msgstr "Elimini cheia APNs?"
@@ -12948,6 +13278,10 @@ msgstr "Elimini cheia APNs?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Elimină parola de aplicație pe care ai creat-o pentru Yuva la {provider}; nu mai este necesară."
+
+#: src/features/settings/automation/text.ts
+msgid "Remove the assignee"
+msgstr "Elimină persoana atribuită"
 
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
@@ -13225,6 +13559,10 @@ msgstr "Răspunde și rezolvă"
 msgid "Reply command"
 msgstr "Reply command"
 
+#: src/features/settings/automation/text.ts
+msgid "Reply held back to protect the customer"
+msgstr "Răspuns reținut pentru a proteja clientul"
+
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
 msgstr "Răspuns publicat"
@@ -13283,6 +13621,10 @@ msgstr "Răspunde mai bine la discuție"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "Răspunde la postarea selectată"
+
+#: src/features/settings/automation/text.ts
+msgid "Reply with a canned reply"
+msgstr "Răspunde cu un răspuns salvat"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Reply with a quote"
@@ -13619,9 +13961,29 @@ msgstr "Direcționează-ți domeniul"
 msgid "Route your mail to Yuva"
 msgstr "Direcționează-ți e-mailul către Yuva"
 
+#: src/features/conversation/messages/context.ts
+msgid "Rule {rule}"
+msgstr "Regula {rule}"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Rule {rule} ran, nothing needed changing"
+msgstr "Regula {rule} a rulat, nu era nimic de schimbat"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Rule {rule} ran: {done}"
+msgstr "Regula {rule} a rulat: {done}"
+
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "Reguli"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Rules react to a conversation changing: they label, assign, reply, snooze or call a webhook. They run in the order of this list, each at most once per trigger, and what a rule changes never starts another rule."
+msgstr "Regulile reacționează la schimbarea unei conversații: pun etichete, atribuie, răspund, amână sau apelează un webhook. Rulează în ordinea din această listă, cel mult o dată pe declanșator, iar ce schimbă o regulă nu pornește niciodată altă regulă."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Rules that label, assign, reply and call webhooks"
+msgstr "Reguli care pun etichete, atribuie, răspund și apelează webhookuri"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Run a check"
@@ -13676,6 +14038,7 @@ msgstr "Sâmbătă"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
@@ -14207,6 +14570,10 @@ msgstr "Trimite prin contul tău Amazon SES cu credențialele lui SMTP"
 msgid "Send to"
 msgstr "Trimite către"
 
+#: src/features/settings/automation/text.ts
+msgid "Send to a webhook endpoint"
+msgstr "Trimite la un endpoint de webhook"
+
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -14453,6 +14820,14 @@ msgstr "Setează progresul"
 msgid "Set the feedback progress"
 msgstr "Setează progresul feedbackului"
 
+#: src/features/settings/automation/text.ts
+msgid "Set the priority"
+msgstr "Setează prioritatea"
+
+#: src/features/settings/automation/text.ts
+msgid "Set the status"
+msgstr "Setează starea"
+
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Set up"
 msgstr "Configurează"
@@ -14604,6 +14979,7 @@ msgstr "Arată textul mesajului în notificare"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MigrationsPage.tsx
+#: src/features/settings/automation/RunLog.tsx
 msgid "Show more"
 msgstr "Arată mai mult"
 
@@ -15000,6 +15376,10 @@ msgstr "Omite această coloană"
 msgid "Skip threads that contain only automatic mail"
 msgstr "Omite firele care conțin doar e-mail automat"
 
+#: src/features/settings/automation/text.ts
+msgid "skipped"
+msgstr "omisă"
+
 #: src/components/common/Linked.tsx
 #: src/components/common/text.ts
 msgid "Skipped"
@@ -15116,6 +15496,7 @@ msgstr "Gazdă SMTP"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "Amână"
 
@@ -15368,6 +15749,8 @@ msgstr "Stare la cădere"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -15460,6 +15843,7 @@ msgstr "Subdomeniul nu a fost găsit"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
 msgstr "Subiect"
@@ -15652,6 +16036,8 @@ msgstr "Verificare TCP"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
@@ -15744,11 +16130,16 @@ msgid "Tests go only to members of the workspace, at most five at a time, with [
 msgstr "Testele merg doar la membrii spațiului de lucru, cel mult cinci odată, cu [Test] înaintea subiectului."
 
 #: src/features/fields/value.ts
+#: src/features/settings/automation/ConditionRow.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Text"
 msgstr "Text"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "Text last saved by {who}"
+msgstr "Textul a fost salvat ultima dată de {who}"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Thanks for waiting. Your invoice is on its way."
@@ -15786,6 +16177,10 @@ msgstr "Utilizatorul {provider} cu care te-ai conectat nu este admin, iar doar a
 #: src/features/status/SettingsTab.tsx
 msgid "The address answers “not found” until you publish the page."
 msgstr "Adresa răspunde „nu a fost găsită” până publici pagina."
+
+#: src/features/settings/automation/text.ts
+msgid "The address bounced"
+msgstr "Adresa a respins mesajul"
 
 #: src/components/common/text.ts
 msgid "The address bounced or complained"
@@ -15827,6 +16222,14 @@ msgstr "Mesajul în masă a fost anulat"
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "Browserul trebuie mai întâi să permită notificările pe desktop; până atunci se redă doar sunetul."
 
+#: src/features/settings/automation/text.ts
+msgid "The canned reply was deleted"
+msgstr "Răspunsul salvat a fost șters"
+
+#: src/features/settings/automation/text.ts
+msgid "The change was refused"
+msgstr "Modificarea a fost refuzată"
+
 #: src/components/common/text.ts
 msgid "The channel already has a DKIM key. Delete it before creating another."
 msgstr "Canalul are deja o cheie DKIM. Șterge-o înainte să creezi alta."
@@ -15834,6 +16237,10 @@ msgstr "Canalul are deja o cheie DKIM. Șterge-o înainte să creezi alta."
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The channel cannot send yet. It needs an SMTP account and an address to send from."
 msgstr "Canalul nu poate trimite încă. Are nevoie de un cont SMTP și de o adresă de la care să trimită."
+
+#: src/features/settings/automation/text.ts
+msgid "The channel has no SMTP account"
+msgstr "Canalul nu are cont SMTP"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "The channel name when empty."
@@ -15892,6 +16299,10 @@ msgstr "Pagina de consimțământ bifează ce cere clientul. Lasă deoparte ce n
 #: src/components/common/text.ts
 msgid "The contact was deleted"
 msgstr "Contactul a fost șters"
+
+#: src/features/settings/automation/text.ts
+msgid "The contact writes a message"
+msgstr "Contactul scrie un mesaj"
 
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
@@ -16605,6 +17016,10 @@ msgstr "The sign-in took too long or was already used. Start again."
 msgid "The sign-in was declined"
 msgstr "Conectarea a fost refuzată"
 
+#: src/features/settings/automation/text.ts
+msgid "The status changes"
+msgstr "Starea se schimbă"
+
 #: src/app/UserMenu.tsx
 msgid "The status was not changed. Try again."
 msgstr "Starea nu a fost schimbată. Încearcă din nou."
@@ -16616,6 +17031,10 @@ msgstr "Subiectul"
 #: src/features/setup/NewsletterStep.tsx
 msgid "The subscribe form shows the list’s name and description."
 msgstr "Formularul de abonare arată numele și descrierea listei."
+
+#: src/features/settings/automation/text.ts
+msgid "The team does not cover this inbox"
+msgstr "Echipa nu acoperă această căsuță"
 
 #: src/app/TeamMenu.tsx
 msgid "The team today"
@@ -16698,6 +17117,10 @@ msgstr "Valorile unui câmp șters cu această cheie sunt încă în curs de șt
 msgid "The visitor typed {0} in the chat and has not confirmed it yet. This reply came from that address, so it may not be from the visitor."
 msgstr "Vizitatorul a tastat {0} în chat și nu l-a confirmat încă. Acest răspuns a venit de la acea adresă, deci s-ar putea să nu fie de la vizitator."
 
+#: src/features/settings/automation/text.ts
+msgid "The webhook endpoint is off or not available here"
+msgstr "Endpointul webhookului este oprit sau indisponibil aici"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "The What’s new count shows on the chat button while no messages are unread. The widget’s Home always shows it."
 msgstr "Numărul de noutăți apare pe butonul de chat cât timp nu există mesaje necitite. Pagina de start a widgetului îl arată mereu."
@@ -16765,6 +17188,10 @@ msgstr "Temă"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Theme and e-mail view on this device"
 msgstr "Tema și vizualizarea e-mailului pe acest dispozitiv"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Then"
+msgstr "Atunci"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -17112,6 +17539,19 @@ msgstr "Această proprietate are deja un obiectiv cu acest nume."
 msgid "This property already has a segment with this name."
 msgstr "Această proprietate are deja un segment cu acest nume."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
+msgstr "Acest răspuns nu va fi trimis până când un proprietar sau un administrator nu salvează atât această regulă, cât și răspunsul salvat {title}, sau până când boții au voie să trimită în setările cheilor API."
+
+#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
+msgstr "Acest răspuns nu va fi trimis până când un proprietar sau un administrator nu salvează răspunsul salvat {title}, sau până când boții au voie să trimită în setările cheilor API."
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
+msgstr "Acest răspuns nu va fi trimis până când un proprietar sau un administrator nu salvează această regulă, sau până când boții au voie să trimită în setările cheilor API."
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request expired or was already used. Start connecting again from the app."
 msgstr "Această cerere a expirat sau a fost deja folosită. Începe din nou conectarea din aplicație."
@@ -17386,6 +17826,10 @@ msgstr "Coș, niciodată importat"
 msgid "Triage"
 msgstr "Triază"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Trigger"
+msgstr "Declanșator"
+
 #: src/features/migrations/ConnectStep.tsx
 msgid "Trust this certificate for this server. Do this only if it is your own server and the fingerprint matches."
 msgstr "Ai încredere în acest certificat pentru acest server. Fă asta doar dacă este propriul tău server și amprenta se potrivește."
@@ -17604,6 +18048,10 @@ msgstr "Urmărire oprită"
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Unit"
 msgstr "Unitate"
+
+#: src/components/common/authorText.ts
+msgid "Unknown"
+msgstr "Necunoscut"
 
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
@@ -18322,6 +18770,7 @@ msgstr "Paginile web folosesc widgetul de chat cu formularul de feedback activat
 msgid "Webhook"
 msgstr "Webhook"
 
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Webhook endpoint"
 msgstr "Endpoint webhook"
@@ -18498,6 +18947,7 @@ msgid "What’s new entry"
 msgstr "Intrare de noutăți"
 
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "When"
 msgstr "Când"
 

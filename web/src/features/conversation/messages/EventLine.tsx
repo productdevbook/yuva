@@ -4,12 +4,14 @@ import { Link } from "react-router"
 import { formatDateTime, useEnumText } from "@/components/common/text"
 import { Marker, MarkerContent } from "@/components/ui/marker"
 import { broadcastLink } from "@/features/broadcasts/broadcastQueries"
+import { useAutomationText } from "@/features/settings/automation/text"
 import { timeOf, useAuthorName, type ThreadContext } from "@/features/conversation/messages/context"
 import type { Message } from "@/lib/api"
 
 export function EventLine({ m, ctx }: { m: Message; ctx: ThreadContext }) {
   const { t, i18n } = useLingui()
   const text = useEnumText()
+  const automation = useAutomationText()
   const actor = useAuthorName(m, ctx)
   const e = m.event
   if (!e) return null
@@ -112,6 +114,21 @@ export function EventLine({ m, ctx }: { m: Message; ctx: ThreadContext }) {
         <Trans>
           {actor} applied the macro {macro}
         </Trans>
+      )
+      break
+    }
+    case "rule_applied": {
+      const rule = m.rule?.name ?? ""
+      const done = (e.actions ?? [])
+        .filter((a) => a.result === "applied")
+        .map((a) => automation.action[a.type])
+        .join(", ")
+      body = done ? (
+        <Trans>
+          Rule {rule} ran: {done}
+        </Trans>
+      ) : (
+        <Trans>Rule {rule} ran, nothing needed changing</Trans>
       )
       break
     }

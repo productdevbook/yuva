@@ -1139,6 +1139,10 @@ msgstr "Một cuộc trò chuyện đã thay đổi"
 msgid "A conversation is assigned to me"
 msgstr "Một cuộc trò chuyện được giao cho tôi"
 
+#: src/features/settings/automation/text.ts
+msgid "A conversation is idle"
+msgstr "Một cuộc trò chuyện không hoạt động"
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "Một cuộc trò chuyện được lấy toàn bộ khi lần cập nhật cuối nằm trong khoảng thời gian đó."
@@ -1150,6 +1154,10 @@ msgstr "Cuộc trò chuyện phải khớp với mọi hàng bạn điền. Hàn
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "Một cuộc trò chuyện đã bắt đầu"
+
+#: src/features/settings/automation/text.ts
+msgid "A conversation starts"
+msgstr "Một cuộc trò chuyện bắt đầu"
 
 #: src/components/common/text.ts
 msgid "A conversation was deleted for good"
@@ -1219,6 +1227,7 @@ msgstr "Một bản nháp đã được viết"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Nội dung của tệp không khớp với loại của nó. Hãy kiểm tra tệp và thử lại."
 
+#: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
@@ -1255,6 +1264,10 @@ msgstr "Khóa cho phép backend, tập lệnh hoặc bot của bạn đọc và 
 #: src/components/common/text.ts
 msgid "A kind of field holds at most 50 fields. Delete one first."
 msgstr "Mỗi đối tượng có tối đa 50 trường. Hãy xóa một trường trước."
+
+#: src/features/settings/automation/text.ts
+msgid "A label was deleted"
+msgstr "Một nhãn đã bị xóa"
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -1400,9 +1413,17 @@ msgstr "Một câu trả lời và các hành động của nó trong một bư�
 msgid "A reply was written in a discussion"
 msgstr "Một phản hồi đã được viết trong một cuộc thảo luận"
 
+#: src/features/settings/automation/text.ts
+msgid "A required field is empty"
+msgstr "Một trường bắt buộc đang trống"
+
 #: src/components/common/text.ts
 msgid "A roadmap idea moved to another stage"
 msgstr "Một ý tưởng trong lộ trình đã chuyển sang giai đoạn khác"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "A rule that is off never runs. Rules run in the order of the list."
+msgstr "Quy tắc đang tắt sẽ không bao giờ chạy. Các quy tắc chạy theo thứ tự trong danh sách."
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -1496,6 +1517,10 @@ msgstr "Một mục trong Có gì mới đã bị gỡ xuất bản"
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "Một số nguyên từ 1 đến 10.000.000"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 automation rules. Delete one first."
+msgstr "Một không gian làm việc chứa tối đa 100 quy tắc tự động hóa. Hãy xóa một quy tắc trước."
 
 #: src/components/common/text.ts
 msgid "A workspace holds at most 100 SLA policies. Delete one first."
@@ -1679,6 +1704,10 @@ msgstr "Thêm chat trên trang web trong cài đặt hộp thư"
 msgid "Add a website or app"
 msgstr "Thêm trang web hoặc ứng dụng"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Add an action"
+msgstr "Thêm hành động"
+
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
 msgstr "Thêm một địa chỉ trên máy chủ của bạn và chọn các sự kiện mà Yuva cần báo cho địa chỉ đó."
@@ -1697,6 +1726,10 @@ msgstr "Thêm hình ảnh"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
 msgstr "Thêm hộp thư"
+
+#: src/features/settings/automation/text.ts
+msgid "Add an internal note"
+msgstr "Thêm ghi chú nội bộ"
 
 #: src/features/migrations/text.ts
 msgid "Add an OAuth client named “Yuva”, as a confidential client, and enter the redirect URL below as its redirect URL."
@@ -1721,6 +1754,10 @@ msgstr "Thêm kênh"
 #: src/features/status/ComponentsTab.tsx
 msgid "Add component"
 msgstr "Thêm thành phần"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Add condition"
+msgstr "Thêm điều kiện"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Add contact"
@@ -1747,6 +1784,10 @@ msgstr "Thêm header"
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
 msgstr "Thêm nhãn {labelName}"
+
+#: src/features/settings/automation/text.ts
+msgid "Add labels"
+msgstr "Thêm nhãn"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -1929,6 +1970,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "All"
@@ -2086,6 +2128,10 @@ msgstr "Đã có trong danh sách"
 msgid "Already on the list, left as they are"
 msgstr "Đã có trong danh sách, giữ nguyên"
 
+#: src/features/settings/automation/text.ts
+msgid "already so"
+msgstr "đã như vậy"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Also called audience or identifier."
 msgstr "Also called audience or identifier."
@@ -2203,6 +2249,7 @@ msgstr "Một câu trả lời đã được chấp nhận trong <0>{title}</0>"
 msgid "an API key"
 msgstr "một khóa API"
 
+#: src/components/common/authorText.ts
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "An API key"
 msgstr "Một khóa API"
@@ -2218,6 +2265,18 @@ msgstr "Mật khẩu ứng dụng có thể được dùng để thay đổi th�
 #: src/features/broadcasts/ListSettings.tsx
 msgid "An archived list keeps its subscribers and records, but forms and the preference page stop offering it."
 msgstr "Danh sách đã lưu trữ vẫn giữ người đăng ký và bản ghi của nó, nhưng biểu mẫu và trang tùy chọn không còn đưa danh sách này ra nữa."
+
+#: src/components/common/authorText.ts
+msgid "An assistant connected by {name}"
+msgstr "Trợ lý do {name} kết nối"
+
+#: src/components/common/text.ts
+msgid "An automation rule ran its webhook action"
+msgstr "Một quy tắc tự động hóa đã chạy hành động webhook của nó"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "An automation rule sends this reply, but it will not go out until an owner or admin saves the text, or bots may send is turned on."
+msgstr "Một quy tắc tự động hóa gửi câu trả lời này, nhưng nó sẽ không được gửi cho đến khi chủ sở hữu hoặc quản trị viên lưu nội dung, hoặc bot được phép gửi."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "An e-mail address, phone number or web address"
@@ -2582,6 +2641,11 @@ msgstr "Giao diện"
 msgid "Application (client) ID"
 msgstr "ID ứng dụng (client)"
 
+#: src/features/settings/automation/text.ts
+msgid "Applied"
+msgstr "Đã áp dụng"
+
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Applies to"
 msgstr "Áp dụng cho"
@@ -2723,8 +2787,13 @@ msgstr "Giao hoặc chuyển cho đồng nghiệp"
 msgid "Assign to {name}"
 msgstr "Giao cho {name}"
 
+#: src/features/settings/automation/text.ts
+msgid "Assign to a member"
+msgstr "Giao cho một thành viên"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/settings/automation/text.ts
 msgid "Assign to a team"
 msgstr "Giao cho nhóm"
 
@@ -2746,6 +2815,7 @@ msgstr "Đã giao cho {assignee}"
 msgid "Assigned to {assignee}, kept by name"
 msgstr "Đã giao cho {assignee}, giữ theo tên"
 
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Assignee"
 msgstr "Người phụ trách"
@@ -2848,6 +2918,10 @@ msgstr "Khóa thuộc tính, ví dụ plan"
 msgid "Attribute keys use letters, digits, dots, dashes and underscores, at most 64."
 msgstr "Khóa thuộc tính dùng chữ cái, chữ số, dấu chấm, dấu gạch ngang và dấu gạch dưới, tối đa 64 ký tự."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Attribute name"
+msgstr "Tên thuộc tính"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Attribute of condition {n}"
 msgstr "Thuộc tính của điều kiện {n}"
@@ -2889,9 +2963,18 @@ msgstr "Phản hồi tự động"
 msgid "automatic"
 msgstr "tự động"
 
+#: src/features/settings/automation/text.ts
+msgid "Automatic assignment (not available yet)"
+msgstr "Giao tự động (chưa có)"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "Thư tự động không bao giờ kích hoạt phản hồi tự động."
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Automation"
+msgstr "Tự động hóa"
 
 #: src/app/UserMenu.tsx
 msgid "Available"
@@ -3076,6 +3159,14 @@ msgstr "Đã tìm thấy cả hai bản ghi. Yuva kiểm tra chúng mỗi ngày 
 msgid "Bots"
 msgstr "Bot"
 
+#: src/features/settings/automation/text.ts
+msgid "Bots may not send and the author is not an owner or admin"
+msgstr "Bot không được phép gửi và tác giả không phải chủ sở hữu hay quản trị viên"
+
+#: src/components/common/text.ts
+msgid "Bots may not send in this workspace, and this reply was not saved by an owner or admin."
+msgstr "Bot không được phép gửi trong không gian làm việc này, và câu trả lời này không do chủ sở hữu hay quản trị viên lưu."
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bots may not send in this workspace: the key writes drafts and a member sends them."
 msgstr "Bot không được gửi trong không gian làm việc này: khóa viết bản nháp và một thành viên gửi chúng."
@@ -3200,6 +3291,8 @@ msgstr "Lỗi, ý tưởng và lời khen gửi từ ứng dụng và trang củ
 msgid "Bundle ID"
 msgstr "Bundle ID"
 
+#: src/features/settings/automation/ConditionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
 msgstr "Giờ làm việc"
@@ -3215,6 +3308,10 @@ msgstr "Qua email"
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "Theo thành viên"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "by rule {rule}"
+msgstr "bởi quy tắc {rule}"
 
 #: src/components/common/text.ts
 msgid "By the team"
@@ -3340,6 +3437,7 @@ msgid "Canned replies and macros, in the reply box"
 msgstr "Câu trả lời mẫu và macro, trong ô trả lời"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Canned reply"
 msgstr "Phản hồi mẫu"
 
@@ -3419,6 +3517,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "Đã đổi thời gian lưu hội thoại từ {from} sang {to}"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the automation rule {name}"
+msgstr "Đã thay đổi quy tắc tự động hóa {name}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the daily broadcast limit from {from} to {to}"
 msgstr "Đã đổi giới hạn thư hàng loạt mỗi ngày từ {from} sang {to}"
 
@@ -3451,6 +3553,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Đổi tên miền gửi sẽ tắt ký DKIM cho đến khi bạn bật lại cho tên miền mới."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -3576,6 +3679,10 @@ msgstr "Đã kiểm tra {when}"
 #: src/features/broadcasts/Import.tsx
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "Đã kiểm tra và đang chờ chủ sở hữu hoặc quản trị viên bắt đầu."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Checked every 5 minutes, once per quiet period. Only open and pending conversations."
+msgstr "Kiểm tra mỗi 5 phút, một lần cho mỗi khoảng im lặng. Chỉ các cuộc trò chuyện đang mở và đang chờ."
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Checked with the tracker before it replaces the old one. The current one is never shown."
@@ -3804,6 +3911,10 @@ msgstr "Đóng từng cuộc trò chuyện sau khi trả lời"
 msgid "Close everything"
 msgstr "Đóng tất cả"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Close idle conversations"
+msgstr "Đóng các cuộc trò chuyện không hoạt động"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Close older conversations"
 msgstr "Đóng các cuộc trò chuyện cũ"
@@ -3956,10 +4067,18 @@ msgstr "Thành phần bị ảnh hưởng"
 msgid "Components, history, incidents and updates are deleted with it."
 msgstr "Thành phần, lịch sử, sự cố và cập nhật bị xóa cùng với nó."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Condition"
+msgstr "Điều kiện"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Conditions"
 msgstr "Điều kiện"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Conditions: {n}"
+msgstr "Điều kiện: {n}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Configuration set"
@@ -4198,6 +4317,10 @@ msgstr "Đã thêm liên hệ. Dùng Cuộc trò chuyện mới để nhắn cho
 msgid "Contact and identities"
 msgstr "Liên hệ và danh tính"
 
+#: src/features/settings/automation/text.ts
+msgid "Contact attribute"
+msgstr "Thuộc tính liên hệ"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactSheet.tsx
@@ -4243,6 +4366,7 @@ msgid "Contacts keep the values they hold; they show as plain attributes instead
 msgstr "Liên hệ giữ nguyên các giá trị đang có; chúng hiển thị như thuộc tính thường thay vì trường có kiểu."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "contains"
 msgstr "chứa"
 
@@ -4288,6 +4412,10 @@ msgstr "Continue with your organisation's sign-in"
 #: src/features/contact/ContactsPage.tsx
 msgid "Convers."
 msgstr "Trò chuyện"
+
+#: src/features/settings/automation/text.ts
+msgid "Conversation"
+msgstr "Cuộc trò chuyện"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Conversation actions"
@@ -4586,6 +4714,10 @@ msgstr "Tạo danh sách"
 msgid "Create policy"
 msgstr "Tạo chính sách"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create rule"
+msgstr "Tạo quy tắc"
+
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
 msgstr "Tạo trang trạng thái"
@@ -4635,6 +4767,10 @@ msgstr "Tạo tài khoản Yuva của bạn"
 msgid "Create, change and delete custom fields"
 msgstr "Tạo, thay đổi và xóa trường tùy chỉnh"
 
+#: src/components/common/text.ts
+msgid "Create, change, reorder and delete automation rules"
+msgstr "Tạo, thay đổi, sắp xếp lại và xóa quy tắc tự động hóa"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "Created"
@@ -4651,6 +4787,10 @@ msgstr "Đã tạo một bản xuất số liệu phân tích"
 #: src/features/settings/audit/sentence.ts
 msgid "Created the API key {name}"
 msgstr "Đã tạo khóa API {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the automation rule {name}"
+msgstr "Đã tạo quy tắc tự động hóa {name}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Created the DKIM key {selector}"
@@ -4695,6 +4835,8 @@ msgid "Custom"
 msgstr "Tùy chỉnh"
 
 #: src/features/fields/FieldFilter.tsx
+#: src/features/settings/automation/ConditionRow.tsx
+#: src/features/settings/automation/text.ts
 msgid "Custom field"
 msgstr "Trường tùy chỉnh"
 
@@ -4804,6 +4946,7 @@ msgstr "Hiệu năng giảm"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -4935,6 +5078,10 @@ msgstr "Xóa ứng dụng khách OAuth bạn đã tạo cho Yuva"
 msgid "Delete the policy {name}?"
 msgstr "Xóa chính sách {name}?"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Delete the rule {name}?"
+msgstr "Xóa quy tắc {name}?"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Xóa khối đã chọn"
@@ -5053,6 +5200,10 @@ msgstr "Đã xóa vào {date}"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "Người đọc đã xóa"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the automation rule {name}"
+msgstr "Đã xóa quy tắc tự động hóa {name}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
@@ -5341,6 +5492,10 @@ msgstr "Tài liệu"
 msgid "Does it work with server-side rendering?"
 msgstr "Nó có hoạt động với kết xuất phía máy chủ không?"
 
+#: src/features/settings/automation/text.ts
+msgid "does not contain"
+msgstr "không chứa"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "Tên miền"
@@ -5348,6 +5503,10 @@ msgstr "Tên miền"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Domain not verified"
 msgstr "Tên miền chưa được xác minh"
+
+#: src/features/settings/automation/text.ts
+msgid "done"
+msgstr "xong"
 
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5595,6 +5754,10 @@ msgstr "Email: {label}"
 msgid "E-mails to the people who signed up"
 msgstr "Email gửi cho những người đã đăng ký"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
+msgstr "Mỗi hành động một lần, tối đa 10. Các hành động chạy như một thay đổi; nếu một hành động thất bại thì không hành động nào được áp dụng."
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Each component gets this state while the incident is open."
 msgstr "Mỗi thành phần ở trạng thái này khi sự cố còn mở."
@@ -5652,6 +5815,7 @@ msgstr "Mỗi cái cùng toàn bộ tin nhắn và ghi chú"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5720,6 +5884,10 @@ msgstr "Sửa trình giám sát"
 msgid "Edit policy"
 msgstr "Sửa chính sách"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit rule"
+msgstr "Sửa quy tắc"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Sửa nhóm"
@@ -5784,9 +5952,14 @@ msgstr "Emoji"
 msgid "Empty in the first rows"
 msgstr "Trống ở các dòng đầu"
 
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Enabled"
 msgstr "Bật"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Enabled: {name}"
+msgstr "Bật: {name}"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5926,6 +6099,10 @@ msgstr "Mọi tín hiệu, tín hiệu bị lỡ và trạng thái được gử
 msgid "Every check of the last 30 days, newest first."
 msgstr "Mọi lần kiểm tra trong 30 ngày qua, mới nhất trước."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "every conversation"
+msgstr "mọi cuộc trò chuyện"
+
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Every conversation"
 msgstr "Mọi cuộc trò chuyện"
@@ -5935,6 +6112,7 @@ msgid "Every imported conversation is closed."
 msgstr "Mọi cuộc trò chuyện đã nhập đều đã đóng."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "Every inbox"
 msgstr "Mọi hộp thư"
 
@@ -5965,6 +6143,10 @@ msgstr "Mọi sản phẩm"
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Mọi yêu cầu tới endpoint này, mới nhất trước. 100 yêu cầu mới nhất được giữ lại."
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Every run of the last 30 days, newest first."
+msgstr "Mọi lần chạy trong 30 ngày qua, mới nhất trước."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
@@ -6127,6 +6309,7 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
 #: src/features/status/ResponseChart.tsx
@@ -6172,6 +6355,7 @@ msgstr "phản hồi"
 #: src/features/docs/PagesTab.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/webhooks/events.tsx
 msgid "Feedback"
 msgstr "Phản hồi"
@@ -6186,6 +6370,10 @@ msgstr "Đã nhận phản hồi"
 
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Feedback categories"
+msgstr "Danh mục phản hồi"
+
+#: src/features/settings/automation/text.ts
+msgid "Feedback category"
 msgstr "Danh mục phản hồi"
 
 #: src/features/feedback/FeedbackPage.tsx
@@ -7179,9 +7367,17 @@ msgstr "Đã xác định"
 msgid "Identity secret"
 msgstr "Identity secret"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Idle for {idle} min"
+msgstr "Không hoạt động {idle} phút"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "If {provider} mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "Nếu {provider} gửi thư xác nhận đến địa chỉ đó, thư sẽ đến hộp thư này dưới dạng một cuộc trò chuyện; hãy mở nó ở đó."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "If all of these match"
+msgstr "Nếu tất cả những điều sau khớp"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
@@ -7445,6 +7641,7 @@ msgstr "Trong Zoho Mail, mở Settings › Mail accounts › IMAP access và b�
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Hộp thư"
@@ -7514,6 +7711,10 @@ msgstr "Include the start of the message"
 #: src/features/contact/ContactSheet.tsx
 msgid "Info"
 msgstr "Thông tin"
+
+#: src/features/settings/automation/text.ts
+msgid "Inside business hours"
+msgstr "Trong giờ làm việc"
 
 #: src/app/Sidebar.tsx
 msgid "Insights"
@@ -7592,8 +7793,13 @@ msgid "IP address"
 msgstr "Địa chỉ IP"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is"
 msgstr "là"
+
+#: src/features/settings/automation/text.ts
+msgid "is any of"
+msgstr "là một trong"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "is less than"
@@ -7603,11 +7809,17 @@ msgstr "nhỏ hơn"
 msgid "is more than"
 msgstr "lớn hơn"
 
+#: src/features/settings/automation/text.ts
+msgid "is none of"
+msgstr "không phải một trong"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is not"
 msgstr "không phải"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is not set"
 msgstr "chưa đặt"
 
@@ -7616,6 +7828,7 @@ msgid "is one of"
 msgstr "là một trong"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is set"
 msgstr "đã đặt"
 
@@ -7771,6 +7984,10 @@ msgstr "Bản ghi đồng ý của nó bị xóa cùng với nó. Vì họ đã 
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Lịch sử của nó bị xóa. Các sự cố từng nhắc đến nó sẽ không còn nhắc nữa."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Its log goes with it. What it already changed stays. This cannot be undone."
+msgstr "Nhật ký của nó cũng bị xóa theo. Những gì nó đã thay đổi vẫn giữ nguyên. Không thể hoàn tác."
+
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
 msgstr "Thành viên mất quyền truy cập hộp thư mà nhóm cấp, còn cuộc trò chuyện mất nhóm nhưng vẫn giữ người phụ trách."
@@ -7888,6 +8105,7 @@ msgstr "Khóa, webhook và trợ lý đã kết nối"
 msgid "Keyword"
 msgstr "Từ khóa"
 
+#: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
 msgid "Kind"
 msgstr "Loại"
@@ -7919,6 +8137,7 @@ msgstr "Chỉ là nhãn: thư của nó đến từ Tất cả thư, và các cu
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -8430,6 +8649,14 @@ msgstr "Đã khóa"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "Đã khóa: người đọc không còn viết ở đây được. Bạn vẫn viết được."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Log"
+msgstr "Nhật ký"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Log of {name}"
+msgstr "Nhật ký của {name}"
+
 #: src/features/status/SettingsTab.tsx
 msgid "Logo URL"
 msgstr "URL logo"
@@ -8785,6 +9012,7 @@ msgstr "trung vị, từ tin nhắn đầu tiên đến khi đóng"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
 msgstr "Thành viên"
@@ -8873,6 +9101,10 @@ msgstr "Đã sao chép tin nhắn"
 #: src/components/common/text.ts
 msgid "Message removed"
 msgstr "Tin nhắn đã bị gỡ"
+
+#: src/features/settings/automation/text.ts
+msgid "Message text"
+msgstr "Nội dung tin nhắn"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -8972,9 +9204,14 @@ msgstr "Của tôi"
 msgid "Minor"
 msgstr "Nhỏ"
 
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "minutes"
 msgstr "phút"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Minutes"
+msgstr "Phút"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Minutes before a due time. 0 sends no warning."
@@ -9089,6 +9326,7 @@ msgstr "Nhiều phiếu nhất"
 msgid "Move {0} to the Trash?"
 msgstr "Chuyển {0} vào Thùng rác?"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Di chuyển {name}. Kéo, hoặc nhấn Alt cùng các phím mũi tên."
@@ -9097,6 +9335,7 @@ msgstr "Di chuyển {name}. Kéo, hoặc nhấn Alt cùng các phím mũi tên."
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Chuyển cuộc trò chuyện vào Thùng rác, khôi phục chúng và đọc Thùng rác"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -9197,6 +9436,7 @@ msgstr "Chuyển vào Thùng rác"
 msgid "Move to Yuva"
 msgstr "Chuyển sang Yuva"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -9261,6 +9501,7 @@ msgstr "Chế độ xem của tôi"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
@@ -9586,6 +9827,11 @@ msgstr "Chính sách mới"
 msgid "New reply in <0>{title}</0>"
 msgstr "Phản hồi mới trong <0>{title}</0>"
 
+#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "New rule"
+msgstr "Quy tắc mới"
+
 #: src/features/settings/webhooks/sections.tsx
 msgid "New signing secret"
 msgstr "Signing secret mới"
@@ -9840,6 +10086,10 @@ msgstr "Chưa có thành phần nào. Hãy thêm các phần của sản phẩm 
 #: src/features/status/ComponentsTab.tsx
 msgid "No components yet. Add the parts of your product that customers depend on."
 msgstr "Chưa có thành phần. Hãy thêm những phần của sản phẩm mà khách hàng phụ thuộc vào."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "No conditions: the rule runs for every conversation the trigger fits."
+msgstr "Không có điều kiện: quy tắc chạy cho mọi cuộc trò chuyện mà trình kích hoạt áp dụng."
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "No confirmation"
@@ -10160,6 +10410,14 @@ msgstr "Chưa có thời gian phản hồi trong khoảng này."
 msgid "No results"
 msgstr "Không có kết quả"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "No rules yet."
+msgstr "Chưa có quy tắc nào."
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "No runs in the last 30 days."
+msgstr "Không có lần chạy nào trong 30 ngày qua."
+
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "No secret yet. Make one, then paste it into GitHub."
 msgstr "No secret yet. Make one, then paste it into GitHub."
@@ -10438,6 +10696,10 @@ msgstr "Chưa nhập"
 msgid "Not isolated"
 msgstr "Không được cách ly"
 
+#: src/features/settings/automation/text.ts
+msgid "Not matched"
+msgstr "Không khớp"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Not offered on this server"
 msgstr "Máy chủ này không cung cấp"
@@ -10465,6 +10727,10 @@ msgstr "Chưa sẵn sàng"
 #: src/features/migrations/SourceStep.tsx
 msgid "Not right? Pick your provider"
 msgstr "Không đúng? Hãy chọn nhà cung cấp của bạn"
+
+#: src/features/settings/automation/text.ts
+msgid "not run"
+msgstr "không chạy"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
@@ -10531,6 +10797,7 @@ msgstr "Chưa được dùng"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Note"
 msgstr "Ghi chú"
 
@@ -10682,6 +10949,11 @@ msgstr "Hôm nay không có gì cần bạn."
 #: src/features/status/MonitorDialog.tsx
 msgid "Nothing opens by itself. Open an incident from the monitor when you want one."
 msgstr "Không có gì tự mở. Hãy mở sự cố từ trình giám sát khi bạn muốn."
+
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Nothing to pick from yet."
+msgstr "Chưa có gì để chọn."
 
 #: src/features/account/AccountPage.tsx
 msgid "Nothing unread."
@@ -10878,6 +11150,7 @@ msgstr "Khi có một thư thử đến, Yuva chờ {hours} giờ. Nếu trong t
 msgid "One e-mail a month about what is new."
 msgstr "Mỗi tháng một email về những điều mới."
 
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "Một hộp thư"
@@ -11046,6 +11319,7 @@ msgid "Only the person can subscribe again, by confirming a mail."
 msgstr "Chỉ chính người đó mới đăng ký lại được, bằng cách xác nhận một thư."
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "Chỉ nhóm thấy mục này"
 
@@ -11169,6 +11443,10 @@ msgstr "Mở ChatGPT plugins"
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Open Claude connectors"
 msgstr "Mở Claude connectors"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Open conversation"
+msgstr "Mở cuộc trò chuyện"
 
 #: src/app/Palette.tsx
 msgid "Open conversations"
@@ -11420,6 +11698,7 @@ msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational khôi phục; degraded, partial_outage và major_outage làm ngừng."
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/automation/ConditionRow.tsx
 msgid "Operator"
 msgstr "Nhà vận hành"
 
@@ -11501,6 +11780,10 @@ msgstr "Khác được giữ lại: các danh mục bị xóa sẽ chuyển vào
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
 msgstr "Trình giám sát {monitor} của chúng tôi phát hiện sự cố từ {at}. Chúng tôi đang điều tra."
 
+#: src/features/settings/automation/RunLog.tsx
+msgid "Outcome"
+msgstr "Kết quả"
+
 #: src/features/migrations/text.ts
 msgid "Outlook.com and Microsoft 365"
 msgstr "Outlook.com và Microsoft 365"
@@ -11524,6 +11807,10 @@ msgstr "Outlook.com và Microsoft 365 kết nối bằng “Đăng nhập bằng
 #: src/features/migrations/text.ts
 msgid "Outlook's .pst files are not read; convert them to .mbox first."
 msgstr "Tệp .pst của Outlook không được đọc; hãy chuyển chúng sang .mbox trước."
+
+#: src/features/settings/automation/text.ts
+msgid "Outside business hours"
+msgstr "Ngoài giờ làm việc"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
@@ -11871,6 +12158,10 @@ msgstr "Người"
 msgid "Personal"
 msgstr "Cá nhân"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a canned reply"
+msgstr "Chọn một câu trả lời soạn sẵn"
+
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "Chọn một kênh trò chuyện của sản phẩm và dán mã. Đánh giá và câu hỏi sẽ vào hộp thư của kênh đó."
@@ -11915,6 +12206,14 @@ msgstr "Hãy chọn một thiết kế hiển thị không lỗi."
 msgid "Pick a discussion to read and answer it."
 msgstr "Chọn một thảo luận để đọc và trả lời."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Pick a field"
+msgstr "Chọn một trường"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a member"
+msgstr "Chọn một thành viên"
+
 #: src/features/status/MonitorsPage.tsx
 msgid "Pick a monitor to see what happened."
 msgstr "Chọn một trình giám sát để xem điều gì đã xảy ra."
@@ -11935,6 +12234,10 @@ msgstr "Chọn một phản hồi để xem ở đây."
 msgid "Pick a sender in the settings"
 msgstr "Chọn người gửi trong cài đặt"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a team"
+msgstr "Chọn một nhóm"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "Chọn một thời điểm trong 90 ngày tới, theo múi giờ của bạn, {zone}."
@@ -11951,7 +12254,12 @@ msgstr "Chọn một trợ lý bên dưới để kết nối."
 msgid "Pick an e-mail channel of this inbox that has an SMTP account. It sends the confirmation and welcome mails."
 msgstr "Chọn một kênh email của hộp thư này có tài khoản SMTP. Nó gửi thư xác nhận và chào mừng."
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick an endpoint"
+msgstr "Chọn một điểm cuối"
+
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "Pick an inbox"
 msgstr "Chọn một hộp thư"
 
@@ -12241,6 +12549,8 @@ msgid "Previous screenshot"
 msgstr "Ảnh chụp màn hình trước"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
@@ -12528,6 +12838,10 @@ msgstr "Đã xếp hàng. Lần thử mới sẽ hiện bên dưới trong giây
 msgid "Quick cleanup"
 msgstr "Dọn dẹp nhanh"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Quiet for (minutes)"
+msgstr "Im lặng trong (phút)"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Quote"
 msgstr "Trích dẫn"
@@ -12607,6 +12921,10 @@ msgstr "Được đọc như Maildir nén zip: các thư mục của nó trở t
 #: src/features/migrations/text.ts
 msgid "Read as an mbox file."
 msgstr "Được đọc như một tệp mbox."
+
+#: src/components/common/text.ts
+msgid "Read automation rules and their run log"
+msgstr "Đọc các quy tắc tự động hóa và nhật ký chạy của chúng"
 
 #: src/components/common/text.ts
 msgid "Read broadcasts and e-mail designs"
@@ -12900,9 +13218,17 @@ msgstr "Xóa {name}?"
 msgid "Remove {sender}"
 msgstr "Gỡ {sender}"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Remove action"
+msgstr "Xóa hành động"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove channel"
 msgstr "Gỡ kênh"
+
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Remove condition"
+msgstr "Xóa điều kiện"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove condition {n}"
@@ -12941,6 +13267,10 @@ msgstr "Xóa lịch sử đã nhập?"
 msgid "Remove label {labelName}"
 msgstr "Gỡ nhãn {labelName}"
 
+#: src/features/settings/automation/text.ts
+msgid "Remove labels"
+msgstr "Xóa nhãn"
+
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Remove the APNs key?"
 msgstr "Xóa khóa APNs?"
@@ -12948,6 +13278,10 @@ msgstr "Xóa khóa APNs?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Hãy gỡ mật khẩu ứng dụng bạn đã tạo cho Yuva trong {provider}; không còn cần nữa."
+
+#: src/features/settings/automation/text.ts
+msgid "Remove the assignee"
+msgstr "Bỏ người được giao"
 
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
@@ -13225,6 +13559,10 @@ msgstr "Trả lời và giải quyết"
 msgid "Reply command"
 msgstr "Reply command"
 
+#: src/features/settings/automation/text.ts
+msgid "Reply held back to protect the customer"
+msgstr "Câu trả lời bị giữ lại để bảo vệ khách hàng"
+
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
 msgstr "Đã đăng phản hồi"
@@ -13283,6 +13621,10 @@ msgstr "Phản hồi vào thảo luận thay vào đó"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "Phản hồi bài đăng đã chọn"
+
+#: src/features/settings/automation/text.ts
+msgid "Reply with a canned reply"
+msgstr "Trả lời bằng câu trả lời soạn sẵn"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Reply with a quote"
@@ -13619,9 +13961,29 @@ msgstr "Định tuyến tên miền của bạn"
 msgid "Route your mail to Yuva"
 msgstr "Định tuyến thư của bạn tới Yuva"
 
+#: src/features/conversation/messages/context.ts
+msgid "Rule {rule}"
+msgstr "Quy tắc {rule}"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Rule {rule} ran, nothing needed changing"
+msgstr "Quy tắc {rule} đã chạy, không có gì cần thay đổi"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Rule {rule} ran: {done}"
+msgstr "Quy tắc {rule} đã chạy: {done}"
+
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "Quy tắc"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Rules react to a conversation changing: they label, assign, reply, snooze or call a webhook. They run in the order of this list, each at most once per trigger, and what a rule changes never starts another rule."
+msgstr "Các quy tắc phản ứng khi một cuộc trò chuyện thay đổi: gắn nhãn, giao việc, trả lời, tạm hoãn hoặc gọi webhook. Chúng chạy theo thứ tự của danh sách này, tối đa một lần cho mỗi trình kích hoạt, và những gì một quy tắc thay đổi không bao giờ khởi động quy tắc khác."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Rules that label, assign, reply and call webhooks"
+msgstr "Các quy tắc gắn nhãn, giao việc, trả lời và gọi webhook"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Run a check"
@@ -13676,6 +14038,7 @@ msgstr "Thứ Bảy"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
@@ -14207,6 +14570,10 @@ msgstr "Gửi qua tài khoản Amazon SES của bạn với thông tin xác th�
 msgid "Send to"
 msgstr "Gửi tới"
 
+#: src/features/settings/automation/text.ts
+msgid "Send to a webhook endpoint"
+msgstr "Gửi đến một điểm cuối webhook"
+
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -14453,6 +14820,14 @@ msgstr "Đặt tiến độ"
 msgid "Set the feedback progress"
 msgstr "Đặt tiến độ của phản hồi"
 
+#: src/features/settings/automation/text.ts
+msgid "Set the priority"
+msgstr "Đặt mức ưu tiên"
+
+#: src/features/settings/automation/text.ts
+msgid "Set the status"
+msgstr "Đặt trạng thái"
+
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Set up"
 msgstr "Thiết lập"
@@ -14604,6 +14979,7 @@ msgstr "Hiện nội dung tin nhắn trong thông báo"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MigrationsPage.tsx
+#: src/features/settings/automation/RunLog.tsx
 msgid "Show more"
 msgstr "Hiện thêm"
 
@@ -15000,6 +15376,10 @@ msgstr "Bỏ qua cột này"
 msgid "Skip threads that contain only automatic mail"
 msgstr "Bỏ qua các chuỗi chỉ chứa thư tự động"
 
+#: src/features/settings/automation/text.ts
+msgid "skipped"
+msgstr "đã bỏ qua"
+
 #: src/components/common/Linked.tsx
 #: src/components/common/text.ts
 msgid "Skipped"
@@ -15116,6 +15496,7 @@ msgstr "Host SMTP"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "Tạm hoãn"
 
@@ -15368,6 +15749,8 @@ msgstr "Trạng thái khi ngừng"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -15460,6 +15843,7 @@ msgstr "Không tìm thấy tên miền phụ"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
 msgstr "Chủ đề"
@@ -15652,6 +16036,8 @@ msgstr "Kiểm tra TCP"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
@@ -15744,11 +16130,16 @@ msgid "Tests go only to members of the workspace, at most five at a time, with [
 msgstr "Thử nghiệm chỉ gửi đến thành viên của không gian làm việc, tối đa năm người mỗi lần, với [Test] trước chủ đề."
 
 #: src/features/fields/value.ts
+#: src/features/settings/automation/ConditionRow.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Text"
 msgstr "Văn bản"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "Text last saved by {who}"
+msgstr "Nội dung được lưu lần cuối bởi {who}"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Thanks for waiting. Your invoice is on its way."
@@ -15786,6 +16177,10 @@ msgstr "Người dùng {provider} bạn đã đăng nhập không phải quản 
 #: src/features/status/SettingsTab.tsx
 msgid "The address answers “not found” until you publish the page."
 msgstr "Địa chỉ trả lời “không tìm thấy” cho đến khi bạn xuất bản trang."
+
+#: src/features/settings/automation/text.ts
+msgid "The address bounced"
+msgstr "Địa chỉ đã trả thư về"
 
 #: src/components/common/text.ts
 msgid "The address bounced or complained"
@@ -15827,6 +16222,14 @@ msgstr "Thư hàng loạt đã bị hủy"
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "Trình duyệt phải cho phép thông báo trên màn hình trước; đến lúc đó chỉ có âm thanh phát."
 
+#: src/features/settings/automation/text.ts
+msgid "The canned reply was deleted"
+msgstr "Câu trả lời soạn sẵn đã bị xóa"
+
+#: src/features/settings/automation/text.ts
+msgid "The change was refused"
+msgstr "Thay đổi bị từ chối"
+
 #: src/components/common/text.ts
 msgid "The channel already has a DKIM key. Delete it before creating another."
 msgstr "Kênh đã có khóa DKIM. Hãy xóa nó trước khi tạo cái khác."
@@ -15834,6 +16237,10 @@ msgstr "Kênh đã có khóa DKIM. Hãy xóa nó trước khi tạo cái khác."
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The channel cannot send yet. It needs an SMTP account and an address to send from."
 msgstr "Kênh chưa thể gửi. Nó cần một tài khoản SMTP và một địa chỉ để gửi."
+
+#: src/features/settings/automation/text.ts
+msgid "The channel has no SMTP account"
+msgstr "Kênh không có tài khoản SMTP"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "The channel name when empty."
@@ -15892,6 +16299,10 @@ msgstr "Trang đồng ý đánh dấu những gì client yêu cầu. Hãy bỏ n
 #: src/components/common/text.ts
 msgid "The contact was deleted"
 msgstr "Liên hệ đã bị xóa"
+
+#: src/features/settings/automation/text.ts
+msgid "The contact writes a message"
+msgstr "Người liên hệ viết một tin nhắn"
 
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
@@ -16605,6 +17016,10 @@ msgstr "The sign-in took too long or was already used. Start again."
 msgid "The sign-in was declined"
 msgstr "Đăng nhập đã bị từ chối"
 
+#: src/features/settings/automation/text.ts
+msgid "The status changes"
+msgstr "Trạng thái thay đổi"
+
 #: src/app/UserMenu.tsx
 msgid "The status was not changed. Try again."
 msgstr "Trạng thái chưa được đổi. Hãy thử lại."
@@ -16616,6 +17031,10 @@ msgstr "Chủ đề"
 #: src/features/setup/NewsletterStep.tsx
 msgid "The subscribe form shows the list’s name and description."
 msgstr "Biểu mẫu đăng ký hiện tên và mô tả của danh sách."
+
+#: src/features/settings/automation/text.ts
+msgid "The team does not cover this inbox"
+msgstr "Nhóm không phụ trách hộp thư này"
 
 #: src/app/TeamMenu.tsx
 msgid "The team today"
@@ -16698,6 +17117,10 @@ msgstr "Giá trị của một trường đã xóa có khóa này vẫn đang đ
 msgid "The visitor typed {0} in the chat and has not confirmed it yet. This reply came from that address, so it may not be from the visitor."
 msgstr "Khách đã gõ {0} trong chat và chưa xác nhận. Phản hồi này đến từ địa chỉ đó, nên có thể không phải từ khách."
 
+#: src/features/settings/automation/text.ts
+msgid "The webhook endpoint is off or not available here"
+msgstr "Điểm cuối webhook đang tắt hoặc không dùng được ở đây"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "The What’s new count shows on the chat button while no messages are unread. The widget’s Home always shows it."
 msgstr "Số cập nhật mới hiện trên nút chat khi không có tin nhắn chưa đọc. Trang chủ của widget luôn hiện số này."
@@ -16765,6 +17188,10 @@ msgstr "Giao diện"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Theme and e-mail view on this device"
 msgstr "Giao diện và chế độ xem email trên thiết bị này"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Then"
+msgstr "Thì"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -17112,6 +17539,19 @@ msgstr "Thuộc tính này đã có một mục tiêu với tên này."
 msgid "This property already has a segment with this name."
 msgstr "Thuộc tính này đã có một phân khúc với tên này."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
+msgstr "Câu trả lời này sẽ không được gửi cho đến khi chủ sở hữu hoặc quản trị viên lưu cả quy tắc này lẫn câu trả lời soạn sẵn {title}, hoặc bot được phép gửi trong cài đặt khóa API."
+
+#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
+msgstr "Câu trả lời này sẽ không được gửi cho đến khi chủ sở hữu hoặc quản trị viên lưu câu trả lời soạn sẵn {title}, hoặc bot được phép gửi trong cài đặt khóa API."
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
+msgstr "Câu trả lời này sẽ không được gửi cho đến khi chủ sở hữu hoặc quản trị viên lưu quy tắc này, hoặc bot được phép gửi trong cài đặt khóa API."
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request expired or was already used. Start connecting again from the app."
 msgstr "Yêu cầu này đã hết hạn hoặc đã được dùng. Hãy bắt đầu kết nối lại từ ứng dụng."
@@ -17386,6 +17826,10 @@ msgstr "Thùng rác, không bao giờ được nhập"
 msgid "Triage"
 msgstr "Phân loại"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Trigger"
+msgstr "Trình kích hoạt"
+
 #: src/features/migrations/ConnectStep.tsx
 msgid "Trust this certificate for this server. Do this only if it is your own server and the fingerprint matches."
 msgstr "Tin cậy chứng chỉ này cho máy chủ này. Chỉ làm vậy nếu đó là máy chủ của bạn và dấu vân tay khớp."
@@ -17604,6 +18048,10 @@ msgstr "Đã bỏ theo dõi"
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Unit"
 msgstr "Đơn vị"
+
+#: src/components/common/authorText.ts
+msgid "Unknown"
+msgstr "Không rõ"
 
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
@@ -18322,6 +18770,7 @@ msgstr "Trang web dùng tiện ích chat có bật biểu mẫu phản hồi. �
 msgid "Webhook"
 msgstr "Webhook"
 
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Webhook endpoint"
 msgstr "Endpoint webhook"
@@ -18498,6 +18947,7 @@ msgid "What’s new entry"
 msgstr "Mục có gì mới"
 
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "When"
 msgstr "Khi nào"
 

@@ -1139,6 +1139,10 @@ msgstr "Диалог изменился"
 msgid "A conversation is assigned to me"
 msgstr "Диалог назначен мне"
 
+#: src/features/settings/automation/text.ts
+msgid "A conversation is idle"
+msgstr "Разговор неактивен"
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "Диалог берётся целиком, если он последний раз обновлялся в этом диапазоне."
@@ -1150,6 +1154,10 @@ msgstr "Диалог должен соответствовать каждой з
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "Диалог начался"
+
+#: src/features/settings/automation/text.ts
+msgid "A conversation starts"
+msgstr "Начинается разговор"
 
 #: src/components/common/text.ts
 msgid "A conversation was deleted for good"
@@ -1219,6 +1227,7 @@ msgstr "Черновик написан"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Содержимое файла не соответствует его типу. Проверьте файл и попробуйте снова."
 
+#: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
@@ -1255,6 +1264,10 @@ msgstr "Ключ позволяет вашему бэкенду, скрипту 
 #: src/components/common/text.ts
 msgid "A kind of field holds at most 50 fields. Delete one first."
 msgstr "У объекта может быть не больше 50 полей. Сначала удалите одно."
+
+#: src/features/settings/automation/text.ts
+msgid "A label was deleted"
+msgstr "Метка удалена"
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -1400,9 +1413,17 @@ msgstr "Ответ и его действия за один шаг"
 msgid "A reply was written in a discussion"
 msgstr "В обсуждении написан ответ"
 
+#: src/features/settings/automation/text.ts
+msgid "A required field is empty"
+msgstr "Обязательное поле пусто"
+
 #: src/components/common/text.ts
 msgid "A roadmap idea moved to another stage"
 msgstr "Идея из дорожной карты перешла на другой этап"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "A rule that is off never runs. Rules run in the order of the list."
+msgstr "Выключенное правило никогда не срабатывает. Правила выполняются в порядке списка."
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -1496,6 +1517,10 @@ msgstr "Запись в «Что нового» снята с публикаци
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "Целое число от 1 до 10 000 000"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 automation rules. Delete one first."
+msgstr "В рабочем пространстве может быть не больше 100 правил автоматизации. Сначала удалите одно."
 
 #: src/components/common/text.ts
 msgid "A workspace holds at most 100 SLA policies. Delete one first."
@@ -1679,6 +1704,10 @@ msgstr "Добавьте чат на сайте в настройках ящик
 msgid "Add a website or app"
 msgstr "Добавить сайт или приложение"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Add an action"
+msgstr "Добавить действие"
+
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
 msgstr "Добавьте адрес на своём сервере и выберите события, о которых Yuva должна ему сообщать."
@@ -1697,6 +1726,10 @@ msgstr "Добавить изображение"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
 msgstr "Добавить ящик"
+
+#: src/features/settings/automation/text.ts
+msgid "Add an internal note"
+msgstr "Добавить внутреннюю заметку"
 
 #: src/features/migrations/text.ts
 msgid "Add an OAuth client named “Yuva”, as a confidential client, and enter the redirect URL below as its redirect URL."
@@ -1721,6 +1754,10 @@ msgstr "Добавить канал"
 #: src/features/status/ComponentsTab.tsx
 msgid "Add component"
 msgstr "Добавить компонент"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Add condition"
+msgstr "Добавить условие"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Add contact"
@@ -1747,6 +1784,10 @@ msgstr "Добавить заголовок"
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
 msgstr "Добавить метку {labelName}"
+
+#: src/features/settings/automation/text.ts
+msgid "Add labels"
+msgstr "Добавить метки"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -1929,6 +1970,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "All"
@@ -2086,6 +2128,10 @@ msgstr "Уже в списке"
 msgid "Already on the list, left as they are"
 msgstr "Уже в списке, оставлены как есть"
 
+#: src/features/settings/automation/text.ts
+msgid "already so"
+msgstr "уже так"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Also called audience or identifier."
 msgstr "Also called audience or identifier."
@@ -2203,6 +2249,7 @@ msgstr "В <0>{title}</0> принят ответ"
 msgid "an API key"
 msgstr "ключ API"
 
+#: src/components/common/authorText.ts
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "An API key"
 msgstr "Ключ API"
@@ -2218,6 +2265,18 @@ msgstr "Пароль приложения мог бы менять почту; �
 #: src/features/broadcasts/ListSettings.tsx
 msgid "An archived list keeps its subscribers and records, but forms and the preference page stop offering it."
 msgstr "Архивный список сохраняет подписчиков и записи, но формы и страница предпочтений перестают его предлагать."
+
+#: src/components/common/authorText.ts
+msgid "An assistant connected by {name}"
+msgstr "Ассистент, подключённый пользователем {name}"
+
+#: src/components/common/text.ts
+msgid "An automation rule ran its webhook action"
+msgstr "Правило автоматизации выполнило своё действие с вебхуком"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "An automation rule sends this reply, but it will not go out until an owner or admin saves the text, or bots may send is turned on."
+msgstr "Правило автоматизации отправляет этот ответ, но он не уйдёт, пока владелец или администратор не сохранит текст или пока ботам не разрешат отправку."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "An e-mail address, phone number or web address"
@@ -2582,6 +2641,11 @@ msgstr "Оформление"
 msgid "Application (client) ID"
 msgstr "ID приложения (клиента)"
 
+#: src/features/settings/automation/text.ts
+msgid "Applied"
+msgstr "Применено"
+
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Applies to"
 msgstr "Применяется к"
@@ -2723,8 +2787,13 @@ msgstr "Назначить или передать коллеге"
 msgid "Assign to {name}"
 msgstr "Назначить: {name}"
 
+#: src/features/settings/automation/text.ts
+msgid "Assign to a member"
+msgstr "Назначить участнику"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/settings/automation/text.ts
 msgid "Assign to a team"
 msgstr "Назначить команде"
 
@@ -2746,6 +2815,7 @@ msgstr "Назначено: {assignee}"
 msgid "Assigned to {assignee}, kept by name"
 msgstr "Назначено: {assignee}, сохранено по имени"
 
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Assignee"
 msgstr "Ответственный"
@@ -2848,6 +2918,10 @@ msgstr "Ключ атрибута, например plan"
 msgid "Attribute keys use letters, digits, dots, dashes and underscores, at most 64."
 msgstr "Ключи атрибутов состоят из букв, цифр, точек, дефисов и подчёркиваний, не более 64 символов."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Attribute name"
+msgstr "Имя атрибута"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Attribute of condition {n}"
 msgstr "Атрибут условия {n}"
@@ -2889,9 +2963,18 @@ msgstr "Автоответ"
 msgid "automatic"
 msgstr "автоматически"
 
+#: src/features/settings/automation/text.ts
+msgid "Automatic assignment (not available yet)"
+msgstr "Автоматическое назначение (пока недоступно)"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "Автоматическая почта никогда не вызывает автоответ."
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Automation"
+msgstr "Автоматизация"
 
 #: src/app/UserMenu.tsx
 msgid "Available"
@@ -3076,6 +3159,14 @@ msgstr "Обе записи найдены. Yuva проверяет их раз 
 msgid "Bots"
 msgstr "Боты"
 
+#: src/features/settings/automation/text.ts
+msgid "Bots may not send and the author is not an owner or admin"
+msgstr "Ботам отправка не разрешена, а автор не владелец и не администратор"
+
+#: src/components/common/text.ts
+msgid "Bots may not send in this workspace, and this reply was not saved by an owner or admin."
+msgstr "В этом рабочем пространстве ботам отправка не разрешена, а этот ответ сохранил не владелец и не администратор."
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bots may not send in this workspace: the key writes drafts and a member sends them."
 msgstr "Боты не могут отправлять в этом рабочем пространстве: ключ пишет черновики, а отправляет их участник."
@@ -3200,6 +3291,8 @@ msgstr "Ошибки, идеи и похвала из ваших приложе�
 msgid "Bundle ID"
 msgstr "Bundle ID"
 
+#: src/features/settings/automation/ConditionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
 msgstr "Рабочее время"
@@ -3215,6 +3308,10 @@ msgstr "По электронной почте"
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "По участнику"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "by rule {rule}"
+msgstr "по правилу {rule}"
 
 #: src/components/common/text.ts
 msgid "By the team"
@@ -3340,6 +3437,7 @@ msgid "Canned replies and macros, in the reply box"
 msgstr "Готовые ответы и макросы, в поле ответа"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Canned reply"
 msgstr "Готовый ответ"
 
@@ -3419,6 +3517,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "Изменил(а) срок хранения переписок с {from} на {to}"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the automation rule {name}"
+msgstr "Изменил(а) правило автоматизации {name}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the daily broadcast limit from {from} to {to}"
 msgstr "Изменил(а) суточный лимит рассылок с {from} на {to}"
 
@@ -3451,6 +3553,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Смена домена отправки отключает подпись DKIM, пока вы не включите её снова для нового домена."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -3576,6 +3679,10 @@ msgstr "Проверено {when}"
 #: src/features/broadcasts/Import.tsx
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "Проверено и ждёт, пока владелец или администратор запустит."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Checked every 5 minutes, once per quiet period. Only open and pending conversations."
+msgstr "Проверяется каждые 5 минут, один раз за период тишины. Только открытые и ожидающие разговоры."
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Checked with the tracker before it replaces the old one. The current one is never shown."
@@ -3804,6 +3911,10 @@ msgstr "Закрыть каждый диалог после ответа"
 msgid "Close everything"
 msgstr "Закрыть всё"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Close idle conversations"
+msgstr "Закрывать неактивные разговоры"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Close older conversations"
 msgstr "Закрыть старые диалоги"
@@ -3956,10 +4067,18 @@ msgstr "Затронутые компоненты"
 msgid "Components, history, incidents and updates are deleted with it."
 msgstr "Компоненты, история, инциденты и обновления удаляются вместе с ней."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Condition"
+msgstr "Условие"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Conditions"
 msgstr "Условия"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Conditions: {n}"
+msgstr "Условия: {n}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Configuration set"
@@ -4198,6 +4317,10 @@ msgstr "Контакт добавлен. Чтобы написать ему, и�
 msgid "Contact and identities"
 msgstr "Контакт и идентификаторы"
 
+#: src/features/settings/automation/text.ts
+msgid "Contact attribute"
+msgstr "Атрибут контакта"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactSheet.tsx
@@ -4243,6 +4366,7 @@ msgid "Contacts keep the values they hold; they show as plain attributes instead
 msgstr "Контакты сохраняют свои значения; они отображаются как обычные атрибуты, а не как типизированное поле."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "contains"
 msgstr "содержит"
 
@@ -4288,6 +4412,10 @@ msgstr "Continue with your organisation's sign-in"
 #: src/features/contact/ContactsPage.tsx
 msgid "Convers."
 msgstr "Диал."
+
+#: src/features/settings/automation/text.ts
+msgid "Conversation"
+msgstr "Разговор"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Conversation actions"
@@ -4586,6 +4714,10 @@ msgstr "Создать список"
 msgid "Create policy"
 msgstr "Создать политику"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create rule"
+msgstr "Создать правило"
+
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
 msgstr "Создать страницу статуса"
@@ -4635,6 +4767,10 @@ msgstr "Создайте аккаунт Yuva"
 msgid "Create, change and delete custom fields"
 msgstr "Создание, изменение и удаление пользовательских полей"
 
+#: src/components/common/text.ts
+msgid "Create, change, reorder and delete automation rules"
+msgstr "Создание, изменение, перестановка и удаление правил автоматизации"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "Created"
@@ -4651,6 +4787,10 @@ msgstr "Создал(а) выгрузку аналитики"
 #: src/features/settings/audit/sentence.ts
 msgid "Created the API key {name}"
 msgstr "Создал(а) API-ключ {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the automation rule {name}"
+msgstr "Создал(а) правило автоматизации {name}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Created the DKIM key {selector}"
@@ -4695,6 +4835,8 @@ msgid "Custom"
 msgstr "Свой"
 
 #: src/features/fields/FieldFilter.tsx
+#: src/features/settings/automation/ConditionRow.tsx
+#: src/features/settings/automation/text.ts
 msgid "Custom field"
 msgstr "Пользовательское поле"
 
@@ -4804,6 +4946,7 @@ msgstr "Сниженная производительность"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -4935,6 +5078,10 @@ msgstr "Удалите клиент OAuth, созданный для Yuva"
 msgid "Delete the policy {name}?"
 msgstr "Удалить политику «{name}»?"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Delete the rule {name}?"
+msgstr "Удалить правило {name}?"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Удалить выбранный блок"
@@ -5053,6 +5200,10 @@ msgstr "Удалён {date}"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "Удалённый читатель"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the automation rule {name}"
+msgstr "Удалил(а) правило автоматизации {name}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
@@ -5341,6 +5492,10 @@ msgstr "Документы"
 msgid "Does it work with server-side rendering?"
 msgstr "Работает ли это с серверным рендерингом?"
 
+#: src/features/settings/automation/text.ts
+msgid "does not contain"
+msgstr "не содержит"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "Домен"
@@ -5348,6 +5503,10 @@ msgstr "Домен"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Domain not verified"
 msgstr "Домен не подтверждён"
+
+#: src/features/settings/automation/text.ts
+msgid "done"
+msgstr "готово"
 
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5595,6 +5754,10 @@ msgstr "E-mail: {label}"
 msgid "E-mails to the people who signed up"
 msgstr "Письма тем, кто подписался"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
+msgstr "Каждое действие один раз, не больше 10. Действия выполняются как одно изменение: если одно не удалось, не применяется ни одно."
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Each component gets this state while the incident is open."
 msgstr "Пока инцидент открыт, каждый компонент находится в этом состоянии."
@@ -5652,6 +5815,7 @@ msgstr "Каждый со всеми сообщениями и заметкам�
 #: src/features/broadcasts/Overview.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5720,6 +5884,10 @@ msgstr "Изменить монитор"
 msgid "Edit policy"
 msgstr "Изменить политику"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit rule"
+msgstr "Изменить правило"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Изменить команду"
@@ -5784,9 +5952,14 @@ msgstr "Эмодзи"
 msgid "Empty in the first rows"
 msgstr "Пусто в первых строках"
 
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Enabled"
 msgstr "Включена"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Enabled: {name}"
+msgstr "Включено: {name}"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5926,6 +6099,10 @@ msgstr "Каждый сигнал, пропущенный сигнал и при
 msgid "Every check of the last 30 days, newest first."
 msgstr "Все проверки за последние 30 дней, сначала новые."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "every conversation"
+msgstr "каждый разговор"
+
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Every conversation"
 msgstr "Любой диалог"
@@ -5935,6 +6112,7 @@ msgid "Every imported conversation is closed."
 msgstr "Каждый импортированный диалог закрыт."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "Every inbox"
 msgstr "Каждый ящик"
 
@@ -5965,6 +6143,10 @@ msgstr "Все продукты"
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Каждый запрос к этому эндпоинту, сначала новые. Хранятся последние 100."
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Every run of the last 30 days, newest first."
+msgstr "Все запуски за последние 30 дней, сначала новые."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
@@ -6127,6 +6309,7 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
 #: src/features/status/ResponseChart.tsx
@@ -6172,6 +6355,7 @@ msgstr "отзывы"
 #: src/features/docs/PagesTab.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/webhooks/events.tsx
 msgid "Feedback"
 msgstr "Отзывы"
@@ -6187,6 +6371,10 @@ msgstr "Пришёл отзыв"
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Feedback categories"
 msgstr "Категории отзывов"
+
+#: src/features/settings/automation/text.ts
+msgid "Feedback category"
+msgstr "Категория отзыва"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -7179,9 +7367,17 @@ msgstr "Причина выявлена"
 msgid "Identity secret"
 msgstr "Секрет личности"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Idle for {idle} min"
+msgstr "Неактивен {idle} мин"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "If {provider} mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "Если {provider} отправит подтверждение на этот адрес, оно придёт в этот ящик как диалог; откройте его там."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "If all of these match"
+msgstr "Если совпадают все условия"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
@@ -7445,6 +7641,7 @@ msgstr "В Zoho Mail откройте «Настройки › Почтовые 
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Входящие"
@@ -7514,6 +7711,10 @@ msgstr "Include the start of the message"
 #: src/features/contact/ContactSheet.tsx
 msgid "Info"
 msgstr "Информация"
+
+#: src/features/settings/automation/text.ts
+msgid "Inside business hours"
+msgstr "В рабочее время"
 
 #: src/app/Sidebar.tsx
 msgid "Insights"
@@ -7592,8 +7793,13 @@ msgid "IP address"
 msgstr "IP-адрес"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is"
 msgstr "равно"
+
+#: src/features/settings/automation/text.ts
+msgid "is any of"
+msgstr "является одним из"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "is less than"
@@ -7603,11 +7809,17 @@ msgstr "меньше"
 msgid "is more than"
 msgstr "больше"
 
+#: src/features/settings/automation/text.ts
+msgid "is none of"
+msgstr "не является ни одним из"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is not"
 msgstr "не равно"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is not set"
 msgstr "не задано"
 
@@ -7616,6 +7828,7 @@ msgid "is one of"
 msgstr "одно из"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is set"
 msgstr "задано"
 
@@ -7771,6 +7984,10 @@ msgstr "Запись о согласии удаляется вместе с ни
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Его история удаляется. Инциденты, которые его упоминали, больше не упоминают."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Its log goes with it. What it already changed stays. This cannot be undone."
+msgstr "Его журнал удаляется вместе с ним. Уже сделанные изменения остаются. Это нельзя отменить."
+
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
 msgstr "Участники потеряют доступ к ящикам, который давала команда, а диалоги потеряют команду, но сохранят ответственного."
@@ -7888,6 +8105,7 @@ msgstr "Ключи, вебхуки и подключённые ассистен�
 msgid "Keyword"
 msgstr "Ключевое слово"
 
+#: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
 msgid "Kind"
 msgstr "Тип"
@@ -7919,6 +8137,7 @@ msgstr "Только метка: его почта приходит из «Вс�
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -8430,6 +8649,14 @@ msgstr "Заблокировано"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "Заблокировано: читатели больше не могут здесь писать. Вы можете."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Log"
+msgstr "Журнал"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Log of {name}"
+msgstr "Журнал правила {name}"
+
 #: src/features/status/SettingsTab.tsx
 msgid "Logo URL"
 msgstr "URL логотипа"
@@ -8785,6 +9012,7 @@ msgstr "медиана, от первого сообщения до закрыт
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
 msgstr "Участник"
@@ -8873,6 +9101,10 @@ msgstr "Сообщение скопировано"
 #: src/components/common/text.ts
 msgid "Message removed"
 msgstr "Сообщение удалено"
+
+#: src/features/settings/automation/text.ts
+msgid "Message text"
+msgstr "Текст сообщения"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -8972,9 +9204,14 @@ msgstr "Мои"
 msgid "Minor"
 msgstr "Незначительное"
 
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "minutes"
 msgstr "минут"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Minutes"
+msgstr "Минуты"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Minutes before a due time. 0 sends no warning."
@@ -9089,6 +9326,7 @@ msgstr "Больше всего голосов"
 msgid "Move {0} to the Trash?"
 msgstr "Переместить в корзину: {0}?"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Переместить «{name}». Перетащите или нажмите Alt со стрелками."
@@ -9097,6 +9335,7 @@ msgstr "Переместить «{name}». Перетащите или нажм�
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Перемещать диалоги в корзину, восстанавливать их и читать корзину"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -9197,6 +9436,7 @@ msgstr "Переместить в корзину"
 msgid "Move to Yuva"
 msgstr "Перейти в Yuva"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -9261,6 +9501,7 @@ msgstr "Мои представления"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
@@ -9586,6 +9827,11 @@ msgstr "Новая политика"
 msgid "New reply in <0>{title}</0>"
 msgstr "Новый ответ в <0>{title}</0>"
 
+#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "New rule"
+msgstr "Новое правило"
+
 #: src/features/settings/webhooks/sections.tsx
 msgid "New signing secret"
 msgstr "Новый секрет подписи"
@@ -9840,6 +10086,10 @@ msgstr "Компонентов пока нет. Добавьте на вклад
 #: src/features/status/ComponentsTab.tsx
 msgid "No components yet. Add the parts of your product that customers depend on."
 msgstr "Компонентов пока нет. Добавьте части продукта, от которых зависят клиенты."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "No conditions: the rule runs for every conversation the trigger fits."
+msgstr "Условий нет: правило выполняется для каждого разговора, подходящего под триггер."
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "No confirmation"
@@ -10160,6 +10410,14 @@ msgstr "За этот период времени ответа пока нет."
 msgid "No results"
 msgstr "Нет результатов"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "No rules yet."
+msgstr "Правил пока нет."
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "No runs in the last 30 days."
+msgstr "За последние 30 дней запусков не было."
+
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "No secret yet. Make one, then paste it into GitHub."
 msgstr "No secret yet. Make one, then paste it into GitHub."
@@ -10438,6 +10696,10 @@ msgstr "Не импортировано"
 msgid "Not isolated"
 msgstr "Не изолировано"
 
+#: src/features/settings/automation/text.ts
+msgid "Not matched"
+msgstr "Не подошло"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Not offered on this server"
 msgstr "Не предлагается на этом сервере"
@@ -10465,6 +10727,10 @@ msgstr "Не готово"
 #: src/features/migrations/SourceStep.tsx
 msgid "Not right? Pick your provider"
 msgstr "Не то? Выберите своего провайдера"
+
+#: src/features/settings/automation/text.ts
+msgid "not run"
+msgstr "не выполнено"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
@@ -10531,6 +10797,7 @@ msgstr "Ещё не использовался"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Note"
 msgstr "Заметка"
 
@@ -10682,6 +10949,11 @@ msgstr "Сегодня вас никто не ждёт."
 #: src/features/status/MonitorDialog.tsx
 msgid "Nothing opens by itself. Open an incident from the monitor when you want one."
 msgstr "Ничего не открывается само. Откройте инцидент из монитора, когда понадобится."
+
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Nothing to pick from yet."
+msgstr "Выбирать пока нечего."
 
 #: src/features/account/AccountPage.tsx
 msgid "Nothing unread."
@@ -10878,6 +11150,7 @@ msgstr "Когда придёт тестовое сообщение, Yuva ждё
 msgid "One e-mail a month about what is new."
 msgstr "Одно письмо в месяц о новостях."
 
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "Один ящик"
@@ -11046,6 +11319,7 @@ msgid "Only the person can subscribe again, by confirming a mail."
 msgstr "Подписаться снова может только сам человек, подтвердив письмо."
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "Это видит только команда"
 
@@ -11169,6 +11443,10 @@ msgstr "Открыть плагины ChatGPT"
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Open Claude connectors"
 msgstr "Открыть коннекторы Claude"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Open conversation"
+msgstr "Открыть разговор"
 
 #: src/app/Palette.tsx
 msgid "Open conversations"
@@ -11420,6 +11698,7 @@ msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational восстанавливает; degraded, partial_outage и major_outage переводят в сбой."
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/automation/ConditionRow.tsx
 msgid "Operator"
 msgstr "Оператор"
 
@@ -11501,6 +11780,10 @@ msgstr "«Другое» остаётся: удалённые категории
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
 msgstr "Наш монитор {monitor} обнаружил проблему с {at}. Мы разбираемся."
 
+#: src/features/settings/automation/RunLog.tsx
+msgid "Outcome"
+msgstr "Результат"
+
 #: src/features/migrations/text.ts
 msgid "Outlook.com and Microsoft 365"
 msgstr "Outlook.com и Microsoft 365"
@@ -11524,6 +11807,10 @@ msgstr "Outlook.com и Microsoft 365 подключаются через «Во�
 #: src/features/migrations/text.ts
 msgid "Outlook's .pst files are not read; convert them to .mbox first."
 msgstr "Файлы Outlook .pst не читаются; сначала преобразуйте их в .mbox."
+
+#: src/features/settings/automation/text.ts
+msgid "Outside business hours"
+msgstr "Вне рабочего времени"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
@@ -11871,6 +12158,10 @@ msgstr "Человек"
 msgid "Personal"
 msgstr "Личный"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a canned reply"
+msgstr "Выберите готовый ответ"
+
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "Выберите чат-канал продукта и вставьте код. Оценки и вопросы попадут в его ящик."
@@ -11915,6 +12206,14 @@ msgstr "Выберите дизайн, который отображается �
 msgid "Pick a discussion to read and answer it."
 msgstr "Выберите обсуждение, чтобы прочитать и ответить."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Pick a field"
+msgstr "Выберите поле"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a member"
+msgstr "Выберите участника"
+
 #: src/features/status/MonitorsPage.tsx
 msgid "Pick a monitor to see what happened."
 msgstr "Выберите монитор, чтобы увидеть, что произошло."
@@ -11935,6 +12234,10 @@ msgstr "Выберите отзыв, чтобы увидеть его здесь
 msgid "Pick a sender in the settings"
 msgstr "Выберите отправителя в настройках"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a team"
+msgstr "Выберите команду"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "Выберите время в ближайшие 90 дней в вашем часовом поясе, {zone}."
@@ -11951,7 +12254,12 @@ msgstr "Выберите ниже ассистента, которого хот�
 msgid "Pick an e-mail channel of this inbox that has an SMTP account. It sends the confirmation and welcome mails."
 msgstr "Выберите почтовый канал этого ящика с аккаунтом SMTP. Он отправляет письма с подтверждением и приветствием."
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick an endpoint"
+msgstr "Выберите конечную точку"
+
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "Pick an inbox"
 msgstr "Выберите ящик"
 
@@ -12241,6 +12549,8 @@ msgid "Previous screenshot"
 msgstr "Предыдущий скриншот"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
@@ -12528,6 +12838,10 @@ msgstr "В очереди. Новая попытка появится ниже �
 msgid "Quick cleanup"
 msgstr "Быстрая очистка"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Quiet for (minutes)"
+msgstr "Тишина в течение (минут)"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Quote"
 msgstr "Цитировать"
@@ -12607,6 +12921,10 @@ msgstr "Прочитан как Maildir в zip: его папки становя
 #: src/features/migrations/text.ts
 msgid "Read as an mbox file."
 msgstr "Прочитан как файл mbox."
+
+#: src/components/common/text.ts
+msgid "Read automation rules and their run log"
+msgstr "Чтение правил автоматизации и журнала их запусков"
 
 #: src/components/common/text.ts
 msgid "Read broadcasts and e-mail designs"
@@ -12900,9 +13218,17 @@ msgstr "Удалить {name}?"
 msgid "Remove {sender}"
 msgstr "Удалить {sender}"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Remove action"
+msgstr "Убрать действие"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove channel"
 msgstr "Удалить канал"
+
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Remove condition"
+msgstr "Убрать условие"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove condition {n}"
@@ -12941,6 +13267,10 @@ msgstr "Удалить импортированную историю?"
 msgid "Remove label {labelName}"
 msgstr "Убрать метку {labelName}"
 
+#: src/features/settings/automation/text.ts
+msgid "Remove labels"
+msgstr "Убрать метки"
+
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Remove the APNs key?"
 msgstr "Удалить ключ APNs?"
@@ -12948,6 +13278,10 @@ msgstr "Удалить ключ APNs?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Удалите пароль приложения, созданный для Yuva в {provider}; он больше не нужен."
+
+#: src/features/settings/automation/text.ts
+msgid "Remove the assignee"
+msgstr "Снять назначение"
 
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
@@ -13225,6 +13559,10 @@ msgstr "Ответить и решить"
 msgid "Reply command"
 msgstr "Reply command"
 
+#: src/features/settings/automation/text.ts
+msgid "Reply held back to protect the customer"
+msgstr "Ответ задержан, чтобы защитить клиента"
+
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
 msgstr "Ответ опубликован"
@@ -13283,6 +13621,10 @@ msgstr "Вместо этого ответить в обсуждении"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "Ответить на выбранное сообщение"
+
+#: src/features/settings/automation/text.ts
+msgid "Reply with a canned reply"
+msgstr "Ответить готовым ответом"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Reply with a quote"
@@ -13619,9 +13961,29 @@ msgstr "Направьте свой домен"
 msgid "Route your mail to Yuva"
 msgstr "Направьте почту в Yuva"
 
+#: src/features/conversation/messages/context.ts
+msgid "Rule {rule}"
+msgstr "Правило {rule}"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Rule {rule} ran, nothing needed changing"
+msgstr "Правило {rule} выполнилось, менять было нечего"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Rule {rule} ran: {done}"
+msgstr "Правило {rule} выполнилось: {done}"
+
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "Правила"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Rules react to a conversation changing: they label, assign, reply, snooze or call a webhook. They run in the order of this list, each at most once per trigger, and what a rule changes never starts another rule."
+msgstr "Правила реагируют на изменение разговора: ставят метки, назначают, отвечают, откладывают или вызывают вебхук. Они выполняются в порядке этого списка, не больше одного раза на триггер, а то, что изменило одно правило, никогда не запускает другое."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Rules that label, assign, reply and call webhooks"
+msgstr "Правила, которые ставят метки, назначают, отвечают и вызывают вебхуки"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Run a check"
@@ -13676,6 +14038,7 @@ msgstr "Суббота"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
@@ -14207,6 +14570,10 @@ msgstr "Отправка через ваш аккаунт Amazon SES с его �
 msgid "Send to"
 msgstr "Кому отправить"
 
+#: src/features/settings/automation/text.ts
+msgid "Send to a webhook endpoint"
+msgstr "Отправить на конечную точку вебхука"
+
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -14453,6 +14820,14 @@ msgstr "Задать статус выполнения"
 msgid "Set the feedback progress"
 msgstr "Задать статус выполнения отзыва"
 
+#: src/features/settings/automation/text.ts
+msgid "Set the priority"
+msgstr "Задать приоритет"
+
+#: src/features/settings/automation/text.ts
+msgid "Set the status"
+msgstr "Задать статус"
+
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Set up"
 msgstr "Настроить"
@@ -14604,6 +14979,7 @@ msgstr "Показывать текст сообщения в уведомлен
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MigrationsPage.tsx
+#: src/features/settings/automation/RunLog.tsx
 msgid "Show more"
 msgstr "Показать ещё"
 
@@ -15000,6 +15376,10 @@ msgstr "Пропустить этот столбец"
 msgid "Skip threads that contain only automatic mail"
 msgstr "Пропускать цепочки, содержащие только автоматическую почту"
 
+#: src/features/settings/automation/text.ts
+msgid "skipped"
+msgstr "пропущено"
+
 #: src/components/common/Linked.tsx
 #: src/components/common/text.ts
 msgid "Skipped"
@@ -15116,6 +15496,7 @@ msgstr "Хост SMTP"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "Отложить"
 
@@ -15368,6 +15749,8 @@ msgstr "Состояние при сбое"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -15460,6 +15843,7 @@ msgstr "Поддомен не найден"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
 msgstr "Тема"
@@ -15652,6 +16036,8 @@ msgstr "TCP-проверка"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
@@ -15744,11 +16130,16 @@ msgid "Tests go only to members of the workspace, at most five at a time, with [
 msgstr "Тесты уходят только участникам рабочего пространства, не более пяти за раз, с пометкой [Test] перед темой."
 
 #: src/features/fields/value.ts
+#: src/features/settings/automation/ConditionRow.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Text"
 msgstr "Текст"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "Text last saved by {who}"
+msgstr "Текст последним сохранил(а) {who}"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Thanks for waiting. Your invoice is on its way."
@@ -15786,6 +16177,10 @@ msgstr "Пользователь {provider}, под которым вы вошл
 #: src/features/status/SettingsTab.tsx
 msgid "The address answers “not found” until you publish the page."
 msgstr "Пока вы не опубликуете страницу, адрес отвечает «не найдено»."
+
+#: src/features/settings/automation/text.ts
+msgid "The address bounced"
+msgstr "Адрес вернул ошибку"
 
 #: src/components/common/text.ts
 msgid "The address bounced or complained"
@@ -15827,6 +16222,14 @@ msgstr "Рассылка отменена"
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "Сначала браузер должен разрешить уведомления на рабочем столе; пока воспроизводится только звук."
 
+#: src/features/settings/automation/text.ts
+msgid "The canned reply was deleted"
+msgstr "Готовый ответ удалён"
+
+#: src/features/settings/automation/text.ts
+msgid "The change was refused"
+msgstr "Изменение отклонено"
+
 #: src/components/common/text.ts
 msgid "The channel already has a DKIM key. Delete it before creating another."
 msgstr "У канала уже есть ключ DKIM. Удалите его, прежде чем создавать другой."
@@ -15834,6 +16237,10 @@ msgstr "У канала уже есть ключ DKIM. Удалите его, п
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The channel cannot send yet. It needs an SMTP account and an address to send from."
 msgstr "Канал пока не может отправлять. Ему нужны аккаунт SMTP и адрес отправителя."
+
+#: src/features/settings/automation/text.ts
+msgid "The channel has no SMTP account"
+msgstr "У канала нет аккаунта SMTP"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "The channel name when empty."
@@ -15892,6 +16299,10 @@ msgstr "Страница согласия отмечает то, что запр
 #: src/components/common/text.ts
 msgid "The contact was deleted"
 msgstr "Контакт был удалён"
+
+#: src/features/settings/automation/text.ts
+msgid "The contact writes a message"
+msgstr "Контакт пишет сообщение"
 
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
@@ -16605,6 +17016,10 @@ msgstr "The sign-in took too long or was already used. Start again."
 msgid "The sign-in was declined"
 msgstr "Вход отклонён"
 
+#: src/features/settings/automation/text.ts
+msgid "The status changes"
+msgstr "Статус меняется"
+
 #: src/app/UserMenu.tsx
 msgid "The status was not changed. Try again."
 msgstr "Статус не изменён. Попробуйте снова."
@@ -16616,6 +17031,10 @@ msgstr "Тема"
 #: src/features/setup/NewsletterStep.tsx
 msgid "The subscribe form shows the list’s name and description."
 msgstr "Форма подписки показывает название и описание списка."
+
+#: src/features/settings/automation/text.ts
+msgid "The team does not cover this inbox"
+msgstr "Команда не обслуживает этот ящик"
 
 #: src/app/TeamMenu.tsx
 msgid "The team today"
@@ -16698,6 +17117,10 @@ msgstr "Значения удалённого поля с этим ключом 
 msgid "The visitor typed {0} in the chat and has not confirmed it yet. This reply came from that address, so it may not be from the visitor."
 msgstr "Посетитель ввёл {0} в чате и пока не подтвердил его. Этот ответ пришёл с этого адреса, поэтому он может быть не от посетителя."
 
+#: src/features/settings/automation/text.ts
+msgid "The webhook endpoint is off or not available here"
+msgstr "Конечная точка вебхука выключена или здесь недоступна"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "The What’s new count shows on the chat button while no messages are unread. The widget’s Home always shows it."
 msgstr "Число новостей показывается на кнопке чата, пока нет непрочитанных сообщений. На главной странице виджета оно видно всегда."
@@ -16765,6 +17188,10 @@ msgstr "Тема"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Theme and e-mail view on this device"
 msgstr "Тема и вид писем на этом устройстве"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Then"
+msgstr "Тогда"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -17112,6 +17539,19 @@ msgstr "У этого ресурса уже есть цель с таким на
 msgid "This property already has a segment with this name."
 msgstr "У этого ресурса уже есть сегмент с таким названием."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
+msgstr "Этот ответ не будет отправлен, пока владелец или администратор не сохранит и это правило, и готовый ответ {title}, или пока ботам не разрешат отправку в настройках API-ключей."
+
+#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
+msgstr "Этот ответ не будет отправлен, пока владелец или администратор не сохранит готовый ответ {title}, или пока ботам не разрешат отправку в настройках API-ключей."
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
+msgstr "Этот ответ не будет отправлен, пока владелец или администратор не сохранит это правило, или пока ботам не разрешат отправку в настройках API-ключей."
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request expired or was already used. Start connecting again from the app."
 msgstr "Этот запрос истёк или уже использован. Начните подключение снова из приложения."
@@ -17386,6 +17826,10 @@ msgstr "Корзина, никогда не импортируется"
 msgid "Triage"
 msgstr "Разобрать"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Trigger"
+msgstr "Триггер"
+
 #: src/features/migrations/ConnectStep.tsx
 msgid "Trust this certificate for this server. Do this only if it is your own server and the fingerprint matches."
 msgstr "Довериться этому сертификату для этого сервера. Делайте это, только если это ваш собственный сервер и отпечаток совпадает."
@@ -17604,6 +18048,10 @@ msgstr "Слежение отключено"
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Unit"
 msgstr "Единица"
+
+#: src/components/common/authorText.ts
+msgid "Unknown"
+msgstr "Неизвестно"
 
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
@@ -18322,6 +18770,7 @@ msgstr "Веб-страницы используют виджет чата с в
 msgid "Webhook"
 msgstr "Webhook"
 
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Webhook endpoint"
 msgstr "Эндпоинт вебхука"
@@ -18498,6 +18947,7 @@ msgid "What’s new entry"
 msgstr "Запись новостей"
 
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "When"
 msgstr "Когда"
 

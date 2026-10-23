@@ -30,6 +30,10 @@ function nameOf(a: MessageAuthor, ctx: ThreadContext, t: ReturnType<typeof useLi
 export function useAuthorName(m: Message, ctx: ThreadContext) {
   const { t } = useLingui()
   if (m.imported_author && !m.author.member_id) return m.imported_author.name || m.imported_author.address
+  if (m.rule && m.author.type === "system") {
+    const rule = m.rule.name
+    return t`Rule ${rule}`
+  }
   const name = nameOf(m.author, ctx, t)
   const via = m.author.via
   return via ? t`${name} via ${via}` : name

@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 
 import { ErrorLine } from "@/components/common"
+import { ChipMulti } from "@/components/common/ChipMulti"
 import { useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -20,7 +21,6 @@ import {
 } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
-import { cn } from "@/lib/utils"
 import { useInboxes, useLabels } from "@/lib/workspace"
 
 const MAX_MINUTES = 525600
@@ -51,46 +51,6 @@ function validAmount(a: Amount) {
 
 function sameList<T>(a: T[], b: T[]) {
   return a.length === b.length && a.every((x) => b.includes(x))
-}
-
-function toggled<T>(list: T[], v: T) {
-  return list.includes(v) ? list.filter((x) => x !== v) : [...list, v]
-}
-
-function Chips<T extends string>({
-  value,
-  onChange,
-  options,
-  label,
-}: {
-  value: T[]
-  onChange: (next: T[]) => void
-  options: readonly (readonly [T, string])[]
-  label: string
-}) {
-  return (
-    <div className="flex flex-wrap gap-1.5" role="group" aria-label={label}>
-      {options.map(([v, text]) => {
-        const on = value.includes(v)
-        return (
-          <button
-            key={v}
-            type="button"
-            aria-pressed={on}
-            onClick={() => onChange(toggled(value, v))}
-            className={cn(
-              "inline-flex h-[30px] max-w-full items-center rounded-lg border px-2.5 text-body outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
-              on
-                ? "border-foreground bg-surface font-medium text-foreground"
-                : "border-input bg-background text-muted-foreground hover:border-faint hover:text-foreground"
-            )}
-          >
-            <span className="truncate">{text}</span>
-          </button>
-        )
-      })}
-    </div>
-  )
 }
 
 function AmountInput({
@@ -242,7 +202,7 @@ function Form({ policy, onClose }: { policy: SlaPolicy | null; onClose: () => vo
         </p>
         {inboxes.length > 0 && (
           <Field label={<Trans>Inboxes</Trans>}>
-            <Chips
+            <ChipMulti
               value={inboxIds}
               onChange={setInboxIds}
               options={inboxes.map((i) => [i.id, i.name] as const)}
@@ -251,7 +211,7 @@ function Form({ policy, onClose }: { policy: SlaPolicy | null; onClose: () => vo
           </Field>
         )}
         <Field label={<Trans>Channels</Trans>}>
-          <Chips
+          <ChipMulti
             value={kinds}
             onChange={setKinds}
             options={CHANNELS.map((k) => [k, enums.channel[k]] as const)}
@@ -260,7 +220,7 @@ function Form({ policy, onClose }: { policy: SlaPolicy | null; onClose: () => vo
         </Field>
         {labels.length > 0 && (
           <Field label={<Trans>Labels</Trans>} hint={<Trans>Any of the labels you pick.</Trans>}>
-            <Chips
+            <ChipMulti
               value={labelIds}
               onChange={setLabelIds}
               options={labels.map((l) => [l.id, l.name] as const)}
@@ -269,7 +229,7 @@ function Form({ policy, onClose }: { policy: SlaPolicy | null; onClose: () => vo
           </Field>
         )}
         <Field label={<Trans>Priority</Trans>}>
-          <Chips
+          <ChipMulti
             value={priorities}
             onChange={setPriorities}
             options={PRIORITY_LIST.map((p) => [p, enums.priority[p]] as const)}

@@ -1139,6 +1139,10 @@ msgstr "Ha canviat una conversa"
 msgid "A conversation is assigned to me"
 msgstr "Se m'assigna una conversa"
 
+#: src/features/settings/automation/text.ts
+msgid "A conversation is idle"
+msgstr "Una conversa és inactiva"
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "A conversation is taken whole when it was last updated in the range."
 msgstr "Una conversa es pren sencera quan s'ha actualitzat per última vegada dins de l'interval."
@@ -1150,6 +1154,10 @@ msgstr "Una conversa ha de coincidir amb cada fila que ompliu. Una fila buida co
 #: src/components/common/text.ts
 msgid "A conversation started"
 msgstr "Ha començat una conversa"
+
+#: src/features/settings/automation/text.ts
+msgid "A conversation starts"
+msgstr "Comença una conversa"
 
 #: src/components/common/text.ts
 msgid "A conversation was deleted for good"
@@ -1219,6 +1227,7 @@ msgstr "S'ha escrit un esborrany"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "El contingut d'un fitxer no coincideix amb el seu tipus. Comprova el fitxer i torna-ho a provar."
 
+#: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
 msgid "a former member"
@@ -1255,6 +1264,10 @@ msgstr "Una clau permet que el teu backend, un script o un bot llegeixin i escri
 #: src/components/common/text.ts
 msgid "A kind of field holds at most 50 fields. Delete one first."
 msgstr "Un objecte admet com a màxim 50 camps. Elimina’n un primer."
+
+#: src/features/settings/automation/text.ts
+msgid "A label was deleted"
+msgstr "S'ha suprimit una etiqueta"
 
 #: src/features/settings/notifications/events.ts
 msgid "A later message from the contact while nobody is assigned."
@@ -1400,9 +1413,17 @@ msgstr "Una resposta i les seves accions en un sol pas"
 msgid "A reply was written in a discussion"
 msgstr "S'ha escrit una resposta en un debat"
 
+#: src/features/settings/automation/text.ts
+msgid "A required field is empty"
+msgstr "Un camp obligatori està buit"
+
 #: src/components/common/text.ts
 msgid "A roadmap idea moved to another stage"
 msgstr "Una idea de la full de ruta ha passat a una altra etapa"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "A rule that is off never runs. Rules run in the order of the list."
+msgstr "Una regla desactivada no s'executa mai. Les regles s'executen en l'ordre de la llista."
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -1496,6 +1517,10 @@ msgstr "S'ha despublicat una entrada de Novetats"
 #: src/features/broadcasts/Pace.tsx
 msgid "A whole number from 1 to 10,000,000"
 msgstr "Un nombre enter de l'1 al 10.000.000"
+
+#: src/components/common/text.ts
+msgid "A workspace holds at most 100 automation rules. Delete one first."
+msgstr "Un espai de treball admet com a màxim 100 regles d'automatització. Suprimeix-ne una primer."
 
 #: src/components/common/text.ts
 msgid "A workspace holds at most 100 SLA policies. Delete one first."
@@ -1679,6 +1704,10 @@ msgstr "Afegeix un xat de lloc web a la configuració de la safata"
 msgid "Add a website or app"
 msgstr "Afegeix un lloc web o una aplicació"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Add an action"
+msgstr "Afegeix una acció"
+
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Add an address on your server and pick the events Yuva should tell it about."
 msgstr "Afegeix una adreça al teu servidor i tria els esdeveniments que Yuva li ha de comunicar."
@@ -1697,6 +1726,10 @@ msgstr "Afegeix una imatge"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
 msgstr "Afegeix una safata"
+
+#: src/features/settings/automation/text.ts
+msgid "Add an internal note"
+msgstr "Afegeix una nota interna"
 
 #: src/features/migrations/text.ts
 msgid "Add an OAuth client named “Yuva”, as a confidential client, and enter the redirect URL below as its redirect URL."
@@ -1721,6 +1754,10 @@ msgstr "Afegeix un canal"
 #: src/features/status/ComponentsTab.tsx
 msgid "Add component"
 msgstr "Afegeix un component"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Add condition"
+msgstr "Afegeix una condició"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Add contact"
@@ -1747,6 +1784,10 @@ msgstr "Afegeix una capçalera"
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
 msgstr "Afegeix l'etiqueta {labelName}"
+
+#: src/features/settings/automation/text.ts
+msgid "Add labels"
+msgstr "Afegeix etiquetes"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -1929,6 +1970,7 @@ msgstr "Alertmanager"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "All"
@@ -2086,6 +2128,10 @@ msgstr "Ja és a la llista"
 msgid "Already on the list, left as they are"
 msgstr "Ja és a la llista, es deixa tal com és"
 
+#: src/features/settings/automation/text.ts
+msgid "already so"
+msgstr "ja era així"
+
 #: src/features/settings/sso/SamlForm.tsx
 msgid "Also called audience or identifier."
 msgstr "Also called audience or identifier."
@@ -2203,6 +2249,7 @@ msgstr "S'ha acceptat una resposta a <0>{title}</0>"
 msgid "an API key"
 msgstr "una clau d’API"
 
+#: src/components/common/authorText.ts
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "An API key"
 msgstr "Una clau d'API"
@@ -2218,6 +2265,18 @@ msgstr "Una contrasenya d'aplicació es podria fer servir per canviar el correu;
 #: src/features/broadcasts/ListSettings.tsx
 msgid "An archived list keeps its subscribers and records, but forms and the preference page stop offering it."
 msgstr "Una llista arxivada conserva els subscriptors i els registres, però els formularis i la pàgina de preferències deixen d'oferir-la."
+
+#: src/components/common/authorText.ts
+msgid "An assistant connected by {name}"
+msgstr "Assistent connectat per {name}"
+
+#: src/components/common/text.ts
+msgid "An automation rule ran its webhook action"
+msgstr "Una regla d'automatització ha executat la seva acció de webhook"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "An automation rule sends this reply, but it will not go out until an owner or admin saves the text, or bots may send is turned on."
+msgstr "Una regla d'automatització envia aquesta resposta, però no sortirà fins que un propietari o administrador desi el text o els bots puguin enviar."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "An e-mail address, phone number or web address"
@@ -2582,6 +2641,11 @@ msgstr "Aspecte"
 msgid "Application (client) ID"
 msgstr "ID d'aplicació (client)"
 
+#: src/features/settings/automation/text.ts
+msgid "Applied"
+msgstr "Aplicada"
+
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Applies to"
 msgstr "S'aplica a"
@@ -2723,8 +2787,13 @@ msgstr "Assigna o passa a un company"
 msgid "Assign to {name}"
 msgstr "Assigna a {name}"
 
+#: src/features/settings/automation/text.ts
+msgid "Assign to a member"
+msgstr "Assigna a un membre"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/settings/automation/text.ts
 msgid "Assign to a team"
 msgstr "Assigna a un equip"
 
@@ -2746,6 +2815,7 @@ msgstr "Assignada a {assignee}"
 msgid "Assigned to {assignee}, kept by name"
 msgstr "Assignada a {assignee}, conservada pel nom"
 
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Assignee"
 msgstr "Responsable"
@@ -2848,6 +2918,10 @@ msgstr "Clau d'atribut, com plan"
 msgid "Attribute keys use letters, digits, dots, dashes and underscores, at most 64."
 msgstr "Les claus d'atribut fan servir lletres, dígits, punts, guions i guions baixos, com a màxim 64."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Attribute name"
+msgstr "Nom de l'atribut"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Attribute of condition {n}"
 msgstr "Atribut de la condició {n}"
@@ -2889,9 +2963,18 @@ msgstr "Resposta automàtica"
 msgid "automatic"
 msgstr "automàtic"
 
+#: src/features/settings/automation/text.ts
+msgid "Automatic assignment (not available yet)"
+msgstr "Assignació automàtica (encara no disponible)"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Automatic mail never triggers an automatic reply."
 msgstr "El correu automàtic mai no desencadena una resposta automàtica."
+
+#: src/features/settings/GeneralTabs.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Automation"
+msgstr "Automatització"
 
 #: src/app/UserMenu.tsx
 msgid "Available"
@@ -3076,6 +3159,14 @@ msgstr "S'han trobat els dos registres. Yuva els comprova un cop al dia; deixa'l
 msgid "Bots"
 msgstr "Bots"
 
+#: src/features/settings/automation/text.ts
+msgid "Bots may not send and the author is not an owner or admin"
+msgstr "Els bots no poden enviar i l'autor no és propietari ni administrador"
+
+#: src/components/common/text.ts
+msgid "Bots may not send in this workspace, and this reply was not saved by an owner or admin."
+msgstr "Els bots no poden enviar en aquest espai de treball, i aquesta resposta no l'ha desat un propietari o administrador."
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Bots may not send in this workspace: the key writes drafts and a member sends them."
 msgstr "Els bots no poden enviar en aquest espai de treball: la clau escriu esborranys i un membre els envia."
@@ -3200,6 +3291,8 @@ msgstr "Errors, idees i elogis enviats des de les teves aplicacions i pàgines"
 msgid "Bundle ID"
 msgstr "Bundle ID"
 
+#: src/features/settings/automation/ConditionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Business hours"
 msgstr "Horari laboral"
@@ -3215,6 +3308,10 @@ msgstr "Per correu electrònic"
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "Per membre"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "by rule {rule}"
+msgstr "per la regla {rule}"
 
 #: src/components/common/text.ts
 msgid "By the team"
@@ -3340,6 +3437,7 @@ msgid "Canned replies and macros, in the reply box"
 msgstr "Respostes predefinides i macros, al quadre de resposta"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Canned reply"
 msgstr "Resposta predefinida"
 
@@ -3419,6 +3517,10 @@ msgid "Changed how long conversations are kept from {from} to {to}"
 msgstr "Ha canviat el temps de conservació de les converses de {from} a {to}"
 
 #: src/features/settings/audit/sentence.ts
+msgid "Changed the automation rule {name}"
+msgstr "Ha canviat la regla d'automatització {name}"
+
+#: src/features/settings/audit/sentence.ts
 msgid "Changed the daily broadcast limit from {from} to {to}"
 msgstr "Ha canviat el límit diari de difusions de {from} a {to}"
 
@@ -3451,6 +3553,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Canviar el domini d'enviament desactiva la signatura DKIM fins que la tornis a activar per al domini nou."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
@@ -3576,6 +3679,10 @@ msgstr "Comprovat {when}"
 #: src/features/broadcasts/Import.tsx
 msgid "Checked and waiting for an owner or admin to start it."
 msgstr "Comprovat i esperant que un propietari o administrador el comenci."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Checked every 5 minutes, once per quiet period. Only open and pending conversations."
+msgstr "Es comprova cada 5 minuts, una vegada per període de calma. Només converses obertes i pendents."
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Checked with the tracker before it replaces the old one. The current one is never shown."
@@ -3804,6 +3911,10 @@ msgstr "Tanca cada conversa després de respondre"
 msgid "Close everything"
 msgstr "Tanca-ho tot"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Close idle conversations"
+msgstr "Tanca les converses inactives"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Close older conversations"
 msgstr "Tanca les converses antigues"
@@ -3956,10 +4067,18 @@ msgstr "Components afectats"
 msgid "Components, history, incidents and updates are deleted with it."
 msgstr "Els components, l’historial, els incidents i les actualitzacions se suprimeixen amb ella."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Condition"
+msgstr "Condició"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Conditions"
 msgstr "Condicions"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Conditions: {n}"
+msgstr "Condicions: {n}"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Configuration set"
@@ -4198,6 +4317,10 @@ msgstr "Contacte afegit. Fes servir Nova conversa per escriure-li."
 msgid "Contact and identities"
 msgstr "Contacte i identitats"
 
+#: src/features/settings/automation/text.ts
+msgid "Contact attribute"
+msgstr "Atribut del contacte"
+
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactSheet.tsx
@@ -4243,6 +4366,7 @@ msgid "Contacts keep the values they hold; they show as plain attributes instead
 msgstr "Els contactes conserven els valors que tenen; es mostren com a atributs simples en lloc d’un camp amb tipus."
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "contains"
 msgstr "conté"
 
@@ -4288,6 +4412,10 @@ msgstr "Continue with your organisation's sign-in"
 #: src/features/contact/ContactsPage.tsx
 msgid "Convers."
 msgstr "Conv."
+
+#: src/features/settings/automation/text.ts
+msgid "Conversation"
+msgstr "Conversa"
 
 #: src/features/conversation/ChatView.tsx
 msgid "Conversation actions"
@@ -4586,6 +4714,10 @@ msgstr "Crea la llista"
 msgid "Create policy"
 msgstr "Crea la política"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create rule"
+msgstr "Crea la regla"
+
 #: src/features/status/CreatePageDialog.tsx
 msgid "Create status page"
 msgstr "Crea una pàgina d’estat"
@@ -4635,6 +4767,10 @@ msgstr "Crea el teu compte de Yuva"
 msgid "Create, change and delete custom fields"
 msgstr "Crear, canviar i suprimir camps personalitzats"
 
+#: src/components/common/text.ts
+msgid "Create, change, reorder and delete automation rules"
+msgstr "Crear, canviar, reordenar i suprimir regles d'automatització"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "Created"
@@ -4651,6 +4787,10 @@ msgstr "Ha creat una exportació d'analítica"
 #: src/features/settings/audit/sentence.ts
 msgid "Created the API key {name}"
 msgstr "Ha creat la clau d'API {name}"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Created the automation rule {name}"
+msgstr "Ha creat la regla d'automatització {name}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Created the DKIM key {selector}"
@@ -4695,6 +4835,8 @@ msgid "Custom"
 msgstr "Personalitzat"
 
 #: src/features/fields/FieldFilter.tsx
+#: src/features/settings/automation/ConditionRow.tsx
+#: src/features/settings/automation/text.ts
 msgid "Custom field"
 msgstr "Camp personalitzat"
 
@@ -4804,6 +4946,7 @@ msgstr "Rendiment degradat"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -4935,6 +5078,10 @@ msgstr "Elimina el client OAuth que vas crear per a Yuva"
 msgid "Delete the policy {name}?"
 msgstr "Voleu eliminar la política {name}?"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Delete the rule {name}?"
+msgstr "Vols suprimir la regla {name}?"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Elimina el bloc seleccionat"
@@ -5053,6 +5200,10 @@ msgstr "Eliminada el {date}"
 #: src/components/common/DiscussionAuthor.tsx
 msgid "Deleted reader"
 msgstr "Lector eliminat"
+
+#: src/features/settings/audit/sentence.ts
+msgid "Deleted the automation rule {name}"
+msgstr "Ha suprimit la regla d'automatització {name}"
 
 #: src/features/settings/audit/sentence.ts
 msgid "Deleted the inbox {name}"
@@ -5341,6 +5492,10 @@ msgstr "Documents"
 msgid "Does it work with server-side rendering?"
 msgstr "Funciona amb renderització al servidor?"
 
+#: src/features/settings/automation/text.ts
+msgid "does not contain"
+msgstr "no conté"
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Domain"
 msgstr "Domini"
@@ -5348,6 +5503,10 @@ msgstr "Domini"
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Domain not verified"
 msgstr "Domini no verificat"
+
+#: src/features/settings/automation/text.ts
+msgid "done"
+msgstr "fet"
 
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5595,6 +5754,10 @@ msgstr "Correu: {label}"
 msgid "E-mails to the people who signed up"
 msgstr "Correus a les persones que s’han subscrit"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Each action once, at most 10. Actions run as one change; if one fails, none of them applies."
+msgstr "Cada acció una vegada, com a màxim 10. Les accions s'apliquen com un sol canvi; si una falla, no s'aplica cap."
+
 #: src/features/status/IncidentDialog.tsx
 msgid "Each component gets this state while the incident is open."
 msgstr "Cada component té aquest estat mentre l’incident és obert."
@@ -5652,6 +5815,7 @@ msgstr "Cadascuna amb tots els seus missatges i notes"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5720,6 +5884,10 @@ msgstr "Edita el monitor"
 msgid "Edit policy"
 msgstr "Edita la política"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit rule"
+msgstr "Edita la regla"
+
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Edit team"
 msgstr "Edita l'equip"
@@ -5784,9 +5952,14 @@ msgstr "Emoji"
 msgid "Empty in the first rows"
 msgstr "Buit a les primeres files"
 
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Enabled"
 msgstr "Activada"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Enabled: {name}"
+msgstr "Activada: {name}"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/text.ts
@@ -5926,6 +6099,10 @@ msgstr "Cada senyal, senyal perdut i estat enviat dels darrers 30 dies, del més
 msgid "Every check of the last 30 days, newest first."
 msgstr "Cada comprovació dels darrers 30 dies, la més recent primer."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "every conversation"
+msgstr "cada conversa"
+
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Every conversation"
 msgstr "Totes les converses"
@@ -5935,6 +6112,7 @@ msgid "Every imported conversation is closed."
 msgstr "Totes les converses importades estan tancades."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "Every inbox"
 msgstr "Totes les safates"
 
@@ -5965,6 +6143,10 @@ msgstr "Tots els productes"
 #: src/features/settings/webhooks/AttemptLog.tsx
 msgid "Every request to this endpoint, newest first. The newest 100 are kept."
 msgstr "Cada sol·licitud a aquest endpoint, de la més recent a la més antiga. Es conserven les 100 més recents."
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Every run of the last 30 days, newest first."
+msgstr "Totes les execucions dels últims 30 dies, les més recents primer."
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Every scope except sending broadcasts and reading the audit log."
@@ -6127,6 +6309,7 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
 #: src/features/status/ResponseChart.tsx
@@ -6172,6 +6355,7 @@ msgstr "comentaris"
 #: src/features/docs/PagesTab.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/webhooks/events.tsx
 msgid "Feedback"
 msgstr "Comentaris"
@@ -6187,6 +6371,10 @@ msgstr "Han arribat comentaris"
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Feedback categories"
 msgstr "Categories de comentaris"
+
+#: src/features/settings/automation/text.ts
+msgid "Feedback category"
+msgstr "Categoria de comentaris"
 
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback details"
@@ -7179,9 +7367,17 @@ msgstr "Identificat"
 msgid "Identity secret"
 msgstr "Secret d'identitat"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Idle for {idle} min"
+msgstr "Inactiva fa {idle} min"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "If {provider} mails a confirmation to that address, it arrives in this inbox as a conversation; open it there."
 msgstr "Si {provider} envia una confirmació per correu a aquesta adreça, arriba a aquesta safata com a conversa; obre-la allà."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "If all of these match"
+msgstr "Si es compleixen totes aquestes"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/SignInConnectStep.tsx
@@ -7445,6 +7641,7 @@ msgstr "A Zoho Mail, obre Settings › Mail accounts › IMAP access i activa IM
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Safata"
@@ -7514,6 +7711,10 @@ msgstr "Include the start of the message"
 #: src/features/contact/ContactSheet.tsx
 msgid "Info"
 msgstr "Informació"
+
+#: src/features/settings/automation/text.ts
+msgid "Inside business hours"
+msgstr "Dins de l'horari laboral"
 
 #: src/app/Sidebar.tsx
 msgid "Insights"
@@ -7592,8 +7793,13 @@ msgid "IP address"
 msgstr "Adreça IP"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is"
 msgstr "és"
+
+#: src/features/settings/automation/text.ts
+msgid "is any of"
+msgstr "és un de"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "is less than"
@@ -7603,11 +7809,17 @@ msgstr "és menor que"
 msgid "is more than"
 msgstr "és major que"
 
+#: src/features/settings/automation/text.ts
+msgid "is none of"
+msgstr "no és cap de"
+
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is not"
 msgstr "no és"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is not set"
 msgstr "no està definit"
 
@@ -7616,6 +7828,7 @@ msgid "is one of"
 msgstr "és un de"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/settings/automation/text.ts
 msgid "is set"
 msgstr "està definit"
 
@@ -7771,6 +7984,10 @@ msgstr "El seu registre de consentiment s'elimina amb ell. Com que s'ha donat de
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "El seu historial se suprimeix. Els incidents que el citaven ja no el citen."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Its log goes with it. What it already changed stays. This cannot be undone."
+msgstr "El seu registre se suprimeix amb ella. Allò que ja ha canviat es queda. No es pot desfer."
+
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Its members lose the inbox access the team gave them, and its conversations lose the team but keep their assignee."
 msgstr "Els seus membres perden l'accés a les safates que els donava l'equip, i les converses perden l'equip però mantenen la persona assignada."
@@ -7888,6 +8105,7 @@ msgstr "Claus, webhooks i assistents connectats"
 msgid "Keyword"
 msgstr "Paraula clau"
 
+#: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
 msgid "Kind"
 msgstr "Tipus"
@@ -7919,6 +8137,7 @@ msgstr "Només etiqueta: el seu correu ve de Tot el correu i les seves converses
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/ReviewStep.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -8430,6 +8649,14 @@ msgstr "Bloquejat"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "Bloquejat: els lectors ja no hi poden escriure. Tu encara sí."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Log"
+msgstr "Registre"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Log of {name}"
+msgstr "Registre de {name}"
+
 #: src/features/status/SettingsTab.tsx
 msgid "Logo URL"
 msgstr "URL del logotip"
@@ -8785,6 +9012,7 @@ msgstr "mitjana, del primer missatge al tancament"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "Member"
 msgstr "Membre"
@@ -8873,6 +9101,10 @@ msgstr "Missatge copiat"
 #: src/components/common/text.ts
 msgid "Message removed"
 msgstr "Missatge eliminat"
+
+#: src/features/settings/automation/text.ts
+msgid "Message text"
+msgstr "Text del missatge"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "Message type"
@@ -8972,9 +9204,14 @@ msgstr "Meves"
 msgid "Minor"
 msgstr "Lleu"
 
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "minutes"
 msgstr "minuts"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Minutes"
+msgstr "Minuts"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Minutes before a due time. 0 sends no warning."
@@ -9089,6 +9326,7 @@ msgstr "Més vots"
 msgid "Move {0} to the Trash?"
 msgstr "Vols moure {0} a la paperera?"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Mou {name}. Arrossegueu, o premeu Alt amb les fletxes."
@@ -9097,6 +9335,7 @@ msgstr "Mou {name}. Arrossegueu, o premeu Alt amb les fletxes."
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Moure converses a la paperera, restaurar-les i llegir la paperera"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -9197,6 +9436,7 @@ msgstr "Moure a la paperera"
 msgid "Move to Yuva"
 msgstr "Passa a Yuva"
 
+#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -9261,6 +9501,7 @@ msgstr "Les meves vistes"
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 #: src/features/settings/channels/sections.tsx
@@ -9586,6 +9827,11 @@ msgstr "Política nova"
 msgid "New reply in <0>{title}</0>"
 msgstr "Resposta nova a <0>{title}</0>"
 
+#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "New rule"
+msgstr "Regla nova"
+
 #: src/features/settings/webhooks/sections.tsx
 msgid "New signing secret"
 msgstr "Secret de signatura nou"
@@ -9840,6 +10086,10 @@ msgstr "Encara no hi ha components. A la pestanya Components afegeix les parts d
 #: src/features/status/ComponentsTab.tsx
 msgid "No components yet. Add the parts of your product that customers depend on."
 msgstr "Encara no hi ha components. Afegeix les parts del teu producte de les quals depenen els clients."
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "No conditions: the rule runs for every conversation the trigger fits."
+msgstr "Sense condicions: la regla s'executa per a cada conversa que el disparador cobreix."
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "No confirmation"
@@ -10160,6 +10410,14 @@ msgstr "Encara no hi ha temps de resposta en aquest interval."
 msgid "No results"
 msgstr "Cap resultat"
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "No rules yet."
+msgstr "Encara no hi ha regles."
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "No runs in the last 30 days."
+msgstr "Cap execució en els últims 30 dies."
+
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "No secret yet. Make one, then paste it into GitHub."
 msgstr "No secret yet. Make one, then paste it into GitHub."
@@ -10438,6 +10696,10 @@ msgstr "No importat"
 msgid "Not isolated"
 msgstr "No aïllat"
 
+#: src/features/settings/automation/text.ts
+msgid "Not matched"
+msgstr "No ha coincidit"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Not offered on this server"
 msgstr "No s'ofereix en aquest servidor"
@@ -10465,6 +10727,10 @@ msgstr "No és a punt"
 #: src/features/migrations/SourceStep.tsx
 msgid "Not right? Pick your provider"
 msgstr "No és correcte? Tria el teu proveïdor"
+
+#: src/features/settings/automation/text.ts
+msgid "not run"
+msgstr "no executada"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
@@ -10531,6 +10797,7 @@ msgstr "Encara no usada"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Note"
 msgstr "Nota"
 
@@ -10682,6 +10949,11 @@ msgstr "Avui res no et necessita."
 #: src/features/status/MonitorDialog.tsx
 msgid "Nothing opens by itself. Open an incident from the monitor when you want one."
 msgstr "No s’obre res automàticament. Obre un incident des del monitor quan vulguis."
+
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Nothing to pick from yet."
+msgstr "Encara no hi ha res per triar."
 
 #: src/features/account/AccountPage.tsx
 msgid "Nothing unread."
@@ -10878,6 +11150,7 @@ msgstr "Quan arriba un missatge de prova, Yuva espera {hours} hores. Si en aques
 msgid "One e-mail a month about what is new."
 msgstr "Un correu al mes sobre les novetats."
 
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "One inbox"
 msgstr "Una safata"
@@ -11046,6 +11319,7 @@ msgid "Only the person can subscribe again, by confirming a mail."
 msgstr "Només la persona es pot tornar a subscriure, confirmant un correu."
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/settings/automation/ActionRow.tsx
 msgid "Only the team sees this"
 msgstr "Només ho veu l'equip"
 
@@ -11169,6 +11443,10 @@ msgstr "Obre els plugins de ChatGPT"
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Open Claude connectors"
 msgstr "Obre els connectors de Claude"
+
+#: src/features/settings/automation/RunLog.tsx
+msgid "Open conversation"
+msgstr "Obre la conversa"
 
 #: src/app/Palette.tsx
 msgid "Open conversations"
@@ -11420,6 +11698,7 @@ msgid "operational recovers; degraded, partial_outage and major_outage fail."
 msgstr "operational recupera; degraded, partial_outage i major_outage fan caure."
 
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/automation/ConditionRow.tsx
 msgid "Operator"
 msgstr "Operador"
 
@@ -11501,6 +11780,10 @@ msgstr "Altres es manté: les categories eliminades hi passen"
 msgid "Our monitor {monitor} has seen a problem since {at}. We are looking into it."
 msgstr "El nostre monitor {monitor} detecta un problema des de les {at}. Ho estem investigant."
 
+#: src/features/settings/automation/RunLog.tsx
+msgid "Outcome"
+msgstr "Resultat"
+
 #: src/features/migrations/text.ts
 msgid "Outlook.com and Microsoft 365"
 msgstr "Outlook.com i Microsoft 365"
@@ -11524,6 +11807,10 @@ msgstr "Outlook.com i Microsoft 365 es connecten amb «Inicia la sessió amb Mic
 #: src/features/migrations/text.ts
 msgid "Outlook's .pst files are not read; convert them to .mbox first."
 msgstr "Els fitxers .pst d'Outlook no es llegeixen; converteix-los primer a .mbox."
+
+#: src/features/settings/automation/text.ts
+msgid "Outside business hours"
+msgstr "Fora de l'horari laboral"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
@@ -11871,6 +12158,10 @@ msgstr "Persona"
 msgid "Personal"
 msgstr "Personal"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a canned reply"
+msgstr "Tria una resposta predefinida"
+
 #: src/features/docs/PagesTab.tsx
 msgid "Pick a chat channel of the product and paste the snippet. Ratings and questions land in its inbox."
 msgstr "Tria un canal de xat del producte i enganxa el codi. Les valoracions i preguntes arriben a la seva safata."
@@ -11915,6 +12206,14 @@ msgstr "Tria un disseny que es renderitzi sense errors."
 msgid "Pick a discussion to read and answer it."
 msgstr "Tria un debat per llegir-lo i respondre."
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Pick a field"
+msgstr "Tria un camp"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a member"
+msgstr "Tria un membre"
+
 #: src/features/status/MonitorsPage.tsx
 msgid "Pick a monitor to see what happened."
 msgstr "Tria un monitor per veure què ha passat."
@@ -11935,6 +12234,10 @@ msgstr "Tria un comentari per veure’l aquí."
 msgid "Pick a sender in the settings"
 msgstr "Tria un remitent a la configuració"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick a team"
+msgstr "Tria un equip"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "Tria una hora dels pròxims 90 dies, a la teva zona horària, {zone}."
@@ -11951,7 +12254,12 @@ msgstr "Tria a sota un assistent per connectar-lo."
 msgid "Pick an e-mail channel of this inbox that has an SMTP account. It sends the confirmation and welcome mails."
 msgstr "Tria un canal de correu d'aquesta safata que tingui un compte SMTP. Envia els correus de confirmació i de benvinguda."
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Pick an endpoint"
+msgstr "Tria un endpoint"
+
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "Pick an inbox"
 msgstr "Tria una safata"
 
@@ -12241,6 +12549,8 @@ msgid "Previous screenshot"
 msgstr "Captura anterior"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Priority"
@@ -12528,6 +12838,10 @@ msgstr "A la cua. El nou intent apareix a sota d'aquí a un moment."
 msgid "Quick cleanup"
 msgstr "Neteja ràpida"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Quiet for (minutes)"
+msgstr "En calma durant (minuts)"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Quote"
 msgstr "Cita"
@@ -12607,6 +12921,10 @@ msgstr "Es llegeix com a Maildir comprimit: les seves carpetes esdevenen etiquet
 #: src/features/migrations/text.ts
 msgid "Read as an mbox file."
 msgstr "Es llegeix com a fitxer mbox."
+
+#: src/components/common/text.ts
+msgid "Read automation rules and their run log"
+msgstr "Llegir les regles d'automatització i el seu registre d'execucions"
 
 #: src/components/common/text.ts
 msgid "Read broadcasts and e-mail designs"
@@ -12900,9 +13218,17 @@ msgstr "Vols eliminar {name}?"
 msgid "Remove {sender}"
 msgstr "Elimina {sender}"
 
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Remove action"
+msgstr "Treu l'acció"
+
 #: src/features/settings/channels/sections.tsx
 msgid "Remove channel"
 msgstr "Elimina el canal"
+
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "Remove condition"
+msgstr "Treu la condició"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Remove condition {n}"
@@ -12941,6 +13267,10 @@ msgstr "Elimines l'historial importat?"
 msgid "Remove label {labelName}"
 msgstr "Treu l'etiqueta {labelName}"
 
+#: src/features/settings/automation/text.ts
+msgid "Remove labels"
+msgstr "Treu etiquetes"
+
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Remove the APNs key?"
 msgstr "Vols eliminar la clau d'APNs?"
@@ -12948,6 +13278,10 @@ msgstr "Vols eliminar la clau d'APNs?"
 #: src/features/migrations/DoneStep.tsx
 msgid "Remove the app password you made for Yuva in {provider}; it is not needed any more."
 msgstr "Elimina la contrasenya d'aplicació que vas fer per a Yuva a {provider}; ja no cal."
+
+#: src/features/settings/automation/text.ts
+msgid "Remove the assignee"
+msgstr "Treu l'assignat"
 
 #: src/components/common/text.ts
 msgid "Remove the content of messages and notes"
@@ -13225,6 +13559,10 @@ msgstr "Respon i resol"
 msgid "Reply command"
 msgstr "Reply command"
 
+#: src/features/settings/automation/text.ts
+msgid "Reply held back to protect the customer"
+msgstr "Resposta retinguda per protegir el client"
+
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Reply posted"
 msgstr "Resposta publicada"
@@ -13283,6 +13621,10 @@ msgstr "Respon més aviat al debat"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "Respon a la publicació seleccionada"
+
+#: src/features/settings/automation/text.ts
+msgid "Reply with a canned reply"
+msgstr "Respon amb una resposta predefinida"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Reply with a quote"
@@ -13619,9 +13961,29 @@ msgstr "Encamina el teu domini"
 msgid "Route your mail to Yuva"
 msgstr "Encamina el teu correu a Yuva"
 
+#: src/features/conversation/messages/context.ts
+msgid "Rule {rule}"
+msgstr "Regla {rule}"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Rule {rule} ran, nothing needed changing"
+msgstr "La regla {rule} s'ha executat, no hi havia res per canviar"
+
+#: src/features/conversation/messages/EventLine.tsx
+msgid "Rule {rule} ran: {done}"
+msgstr "La regla {rule} s'ha executat: {done}"
+
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "Regles"
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "Rules react to a conversation changing: they label, assign, reply, snooze or call a webhook. They run in the order of this list, each at most once per trigger, and what a rule changes never starts another rule."
+msgstr "Les regles reaccionen quan una conversa canvia: etiqueten, assignen, responen, ajornen o criden un webhook. S'executen en l'ordre d'aquesta llista, com a màxim una vegada per disparador, i el que una regla canvia no inicia mai una altra regla."
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Rules that label, assign, reply and call webhooks"
+msgstr "Regles que etiqueten, assignen, responen i criden webhooks"
 
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Run a check"
@@ -13676,6 +14038,7 @@ msgstr "Dissabte"
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/ApiChannelDialog.tsx
 #: src/features/settings/fields/FieldDialog.tsx
@@ -14207,6 +14570,10 @@ msgstr "Envia pel teu compte d'Amazon SES amb les seves credencials SMTP"
 msgid "Send to"
 msgstr "Envia a"
 
+#: src/features/settings/automation/text.ts
+msgid "Send to a webhook endpoint"
+msgstr "Envia a un endpoint de webhook"
+
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -14453,6 +14820,14 @@ msgstr "Defineix el progrés"
 msgid "Set the feedback progress"
 msgstr "Defineix el progrés del comentari"
 
+#: src/features/settings/automation/text.ts
+msgid "Set the priority"
+msgstr "Defineix la prioritat"
+
+#: src/features/settings/automation/text.ts
+msgid "Set the status"
+msgstr "Defineix l'estat"
+
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Set up"
 msgstr "Configura"
@@ -14604,6 +14979,7 @@ msgstr "Mostra el text del missatge a la notificació"
 #: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MigrationsPage.tsx
+#: src/features/settings/automation/RunLog.tsx
 msgid "Show more"
 msgstr "Mostra'n més"
 
@@ -15000,6 +15376,10 @@ msgstr "Omet aquesta columna"
 msgid "Skip threads that contain only automatic mail"
 msgstr "Omet els fils que només contenen correu automàtic"
 
+#: src/features/settings/automation/text.ts
+msgid "skipped"
+msgstr "omesa"
+
 #: src/components/common/Linked.tsx
 #: src/components/common/text.ts
 msgid "Skipped"
@@ -15116,6 +15496,7 @@ msgstr "Host SMTP"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "Ajorna"
 
@@ -15368,6 +15749,8 @@ msgstr "Estat en caure"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -15460,6 +15843,7 @@ msgstr "Subdomini no trobat"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
 msgstr "Assumpte"
@@ -15652,6 +16036,8 @@ msgstr "Comprovació TCP"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/settings/automation/ActionRow.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
@@ -15744,11 +16130,16 @@ msgid "Tests go only to members of the workspace, at most five at a time, with [
 msgstr "Les proves només van als membres de l'espai de treball, com a màxim cinc alhora, amb [Test] davant de l'assumpte."
 
 #: src/features/fields/value.ts
+#: src/features/settings/automation/ConditionRow.tsx
 #: src/features/settings/canned/CannedReplyDialog.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Text"
 msgstr "Text"
+
+#: src/features/settings/canned/CannedRepliesPage.tsx
+msgid "Text last saved by {who}"
+msgstr "Text desat per última vegada per {who}"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Thanks for waiting. Your invoice is on its way."
@@ -15786,6 +16177,10 @@ msgstr "L'usuari de {provider} amb què has iniciat la sessió no és administra
 #: src/features/status/SettingsTab.tsx
 msgid "The address answers “not found” until you publish the page."
 msgstr "L’adreça respon «no trobat» fins que publiquis la pàgina."
+
+#: src/features/settings/automation/text.ts
+msgid "The address bounced"
+msgstr "L'adreça ha rebotat"
 
 #: src/components/common/text.ts
 msgid "The address bounced or complained"
@@ -15827,6 +16222,14 @@ msgstr "S'ha cancel·lat l'enviament massiu"
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "El navegador ha de permetre primer les notificacions d'escriptori; fins llavors només se sent el so."
 
+#: src/features/settings/automation/text.ts
+msgid "The canned reply was deleted"
+msgstr "La resposta predefinida s'ha suprimit"
+
+#: src/features/settings/automation/text.ts
+msgid "The change was refused"
+msgstr "El canvi s'ha rebutjat"
+
 #: src/components/common/text.ts
 msgid "The channel already has a DKIM key. Delete it before creating another."
 msgstr "El canal ja té una clau DKIM. Elimina-la abans de crear-ne una altra."
@@ -15834,6 +16237,10 @@ msgstr "El canal ja té una clau DKIM. Elimina-la abans de crear-ne una altra."
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The channel cannot send yet. It needs an SMTP account and an address to send from."
 msgstr "El canal encara no pot enviar. Necessita un compte SMTP i una adreça des de la qual enviar."
+
+#: src/features/settings/automation/text.ts
+msgid "The channel has no SMTP account"
+msgstr "El canal no té compte SMTP"
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "The channel name when empty."
@@ -15892,6 +16299,10 @@ msgstr "La pàgina de consentiment marca el que demana el client. Deixa fora el 
 #: src/components/common/text.ts
 msgid "The contact was deleted"
 msgstr "S'ha eliminat el contacte"
+
+#: src/features/settings/automation/text.ts
+msgid "The contact writes a message"
+msgstr "El contacte escriu un missatge"
 
 #: src/components/common/Linked.tsx
 msgid "The conversations stay open. Customers get it right away and it cannot be recalled."
@@ -16605,6 +17016,10 @@ msgstr "The sign-in took too long or was already used. Start again."
 msgid "The sign-in was declined"
 msgstr "L'inici de sessió s'ha rebutjat"
 
+#: src/features/settings/automation/text.ts
+msgid "The status changes"
+msgstr "Canvia l'estat"
+
 #: src/app/UserMenu.tsx
 msgid "The status was not changed. Try again."
 msgstr "L'estat no s'ha canviat. Torna-ho a provar."
@@ -16616,6 +17031,10 @@ msgstr "L'assumpte"
 #: src/features/setup/NewsletterStep.tsx
 msgid "The subscribe form shows the list’s name and description."
 msgstr "El formulari de subscripció mostra el nom i la descripció de la llista."
+
+#: src/features/settings/automation/text.ts
+msgid "The team does not cover this inbox"
+msgstr "L'equip no cobreix aquesta safata d'entrada"
 
 #: src/app/TeamMenu.tsx
 msgid "The team today"
@@ -16698,6 +17117,10 @@ msgstr "Els valors d’un camp eliminat amb aquesta clau encara s’estan esborr
 msgid "The visitor typed {0} in the chat and has not confirmed it yet. This reply came from that address, so it may not be from the visitor."
 msgstr "El visitant ha escrit {0} al xat i encara no l'ha confirmat. Aquesta resposta ha vingut d'aquesta adreça, de manera que pot no ser del visitant."
 
+#: src/features/settings/automation/text.ts
+msgid "The webhook endpoint is off or not available here"
+msgstr "L'endpoint del webhook està desactivat o no disponible aquí"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "The What’s new count shows on the chat button while no messages are unread. The widget’s Home always shows it."
 msgstr "El nombre de novetats apareix al botó del xat mentre no hi hagi missatges sense llegir. L’inici del widget sempre el mostra."
@@ -16765,6 +17188,10 @@ msgstr "Tema"
 #: src/features/settings/SettingsColumn.tsx
 msgid "Theme and e-mail view on this device"
 msgstr "Tema i vista de correu en aquest dispositiu"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Then"
+msgstr "Llavors"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -17112,6 +17539,19 @@ msgstr "Aquesta propietat ja té un objectiu amb aquest nom."
 msgid "This property already has a segment with this name."
 msgstr "Aquesta propietat ja té un segment amb aquest nom."
 
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
+msgstr "Aquesta resposta no s'enviarà fins que un propietari o administrador desi tant aquesta regla com la resposta predefinida {title}, o els bots puguin enviar a la configuració de les claus d'API."
+
+#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
+msgstr "Aquesta resposta no s'enviarà fins que un propietari o administrador desi la resposta predefinida {title}, o els bots puguin enviar a la configuració de les claus d'API."
+
+#: src/features/settings/automation/AutomationPage.tsx
+msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
+msgstr "Aquesta resposta no s'enviarà fins que un propietari o administrador desi aquesta regla, o els bots puguin enviar a la configuració de les claus d'API."
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request expired or was already used. Start connecting again from the app."
 msgstr "Aquesta sol·licitud ha caducat o ja s'ha fet servir. Torna a començar la connexió des de l'aplicació."
@@ -17386,6 +17826,10 @@ msgstr "Paperera, mai importada"
 msgid "Triage"
 msgstr "Tria"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Trigger"
+msgstr "Disparador"
+
 #: src/features/migrations/ConnectStep.tsx
 msgid "Trust this certificate for this server. Do this only if it is your own server and the fingerprint matches."
 msgstr "Confia en aquest certificat per a aquest servidor. Fes-ho només si és el teu propi servidor i l'empremta coincideix."
@@ -17604,6 +18048,10 @@ msgstr "Deixat de seguir"
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Unit"
 msgstr "Unitat"
+
+#: src/components/common/authorText.ts
+msgid "Unknown"
+msgstr "Desconegut"
 
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Unknown device"
@@ -18322,6 +18770,7 @@ msgstr "Les pàgines web fan servir el widget de xat amb el formulari de comenta
 msgid "Webhook"
 msgstr "Webhook"
 
+#: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Webhook endpoint"
 msgstr "Endpoint de webhook"
@@ -18498,6 +18947,7 @@ msgid "What’s new entry"
 msgstr "Entrada de novetats"
 
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/settings/automation/RuleDialog.tsx
 msgid "When"
 msgstr "Quan"
 
