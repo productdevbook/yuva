@@ -235,7 +235,8 @@ use [If the master key leaked](#if-the-master-key-leaked) instead.
    It writes nothing and exits with an error while any stored value is still under the old key (it
    lists the rows; run `rotate` again) or opens with neither key.
 6. Keep `YUVA_MASTER_KEY_PREVIOUS` while links in mail sent before the switch must keep working:
-   at least 60 days for unsubscribe links in broadcasts, and for rating and click links as long as
+   for unsubscribe links in broadcasts already sent as long as recipients may still use them, and for
+   rating and click links as long as
    you want them to count. Then remove it, restart and run `master-key check` once more.
 
 What changes and what does not:

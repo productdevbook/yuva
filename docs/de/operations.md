@@ -248,7 +248,8 @@ gehen Sie stattdessen nach [Wenn der Master-Key durchgesickert ist](#wenn-der-ma
    Schlüssel liegt (er listet die Zeilen; führen Sie `rotate` erneut aus) oder mit keinem der beiden
    Schlüssel lesbar ist.
 6. Behalten Sie `YUVA_MASTER_KEY_PREVIOUS`, solange Links in vor dem Wechsel versendeten E-Mails
-   weiter funktionieren sollen: mindestens 60 Tage für Abmelde-Links in Broadcasts, für
+   weiter funktionieren sollen: für Abmelde-Links in versendeten Broadcasts, solange Empfänger sie
+   noch nutzen können, für
    Bewertungs- und Klick-Links so lange, wie sie zählen sollen. Entfernen Sie ihn dann, starten Sie
    neu und führen Sie `master-key check` ein letztes Mal aus.
 

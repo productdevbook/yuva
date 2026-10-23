@@ -240,8 +240,8 @@ bunun yerine [Ana anahtar sızdıysa](#ana-anahtar-sızdıysa) bölümüne bakı
    Hiçbir şey yazmaz; saklanan bir değer hâlâ eski anahtardaysa (satırları listeler; `rotate`'i
    yeniden çalıştırın) ya da iki anahtarla da açılmıyorsa hata ile biter.
 6. Geçişten önce gönderilen e-postalardaki bağlantılar çalışmaya devam etmeli olduğu sürece
-   `YUVA_MASTER_KEY_PREVIOUS` kalsın: bültenlerdeki abonelikten çıkma bağlantıları için en az 60
-   gün, puanlama ve tıklama bağlantıları için sayılmasını istediğiniz sürece. Sonra kaldırın,
+   `YUVA_MASTER_KEY_PREVIOUS` kalsın: gönderilmiş bültenlerdeki abonelikten çıkma bağlantıları için
+   alıcılar onları kullanabildiği sürece, puanlama ve tıklama bağlantıları için sayılmasını istediğiniz sürece. Sonra kaldırın,
    yeniden başlatın ve `master-key check`'i bir kez daha çalıştırın.
 
 Neler değişir, neler değişmez:
