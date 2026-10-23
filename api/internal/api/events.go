@@ -2,7 +2,9 @@ package api
 
 import (
 	"context"
+	"encoding/json"
 	"slices"
+	"strings"
 	"uuid"
 
 	"github.com/jackc/pgx/v5"
@@ -17,6 +19,7 @@ type pendingEvent struct {
 	typ            string
 	inboxID        *uuid.UUID
 	conversationID *uuid.UUID
+	contactID      *uuid.UUID
 	data           []byte
 	deleted        *deletedContact
 	// noRules marks an event a rule caused later, such as the end of a snooze it set.
@@ -57,7 +60,27 @@ func (b *eventBatch) add(typ string, inboxID, conversationID *uuid.UUID, data an
 	if b.quiet {
 		return
 	}
-	b.items = append(b.items, pendingEvent{typ: typ, inboxID: inboxID, conversationID: conversationID, data: mustJSON(data)})
+	raw := mustJSON(data)
+	b.items = append(b.items, pendingEvent{typ: typ, inboxID: inboxID, conversationID: conversationID, contactID: eventContact(typ, data, raw), data: raw})
+}
+
+// eventContact is the contact an event is about: the contact of a contact event, the author of a
+// contact's message.
+func eventContact(typ string, data any, raw []byte) *uuid.UUID {
+	switch m := data.(type) {
+	case oas.Message:
+		return m.Author.ContactId
+	case *oas.Message:
+		return m.Author.ContactId
+	}
+	if !strings.HasPrefix(typ, "contact.") {
+		return nil
+	}
+	var ref struct {
+		ID *uuid.UUID `json:"id"`
+	}
+	_ = json.Unmarshal(raw, &ref)
+	return ref.ID
 }
 
 // conversationAt queues a conversation event at position i, before events queued after i.
@@ -66,7 +89,8 @@ func (b *eventBatch) conversationAt(i int, typ string, c store.Conversation, dat
 		return
 	}
 	inbox, conv := c.InboxID, c.ID
-	b.items = slices.Insert(b.items, i, pendingEvent{typ: typ, inboxID: &inbox, conversationID: &conv, data: mustJSON(data)})
+	raw := mustJSON(data)
+	b.items = slices.Insert(b.items, i, pendingEvent{typ: typ, inboxID: &inbox, conversationID: &conv, contactID: eventContact(typ, data, raw), data: raw})
 }
 
 func (b *eventBatch) conversation(typ string, c store.Conversation, data any) {
@@ -129,7 +153,7 @@ func writeEvents(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, i
 	ids := make([]int64, len(items))
 	for i, e := range items {
 		id, err := q.InsertEvent(ctx, store.InsertEventParams{
-			WorkspaceID: workspaceID, Type: e.typ, InboxID: e.inboxID, ConversationID: e.conversationID, Payload: e.data,
+			WorkspaceID: workspaceID, Type: e.typ, InboxID: e.inboxID, ConversationID: e.conversationID, ContactID: e.contactID, Payload: e.data,
 		})
 		if err != nil {
 			return nil, err

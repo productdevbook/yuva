@@ -1011,6 +1011,35 @@ func (q *Queries) LockConversation(ctx context.Context, arg LockConversationPara
 	return i, err
 }
 
+const lockConversationIDs = `-- name: LockConversationIDs :many
+SELECT id FROM conversations WHERE workspace_id = $1 AND id = ANY($2::uuid[]) ORDER BY id FOR UPDATE
+`
+
+type LockConversationIDsParams struct {
+	WorkspaceID uuid.UUID
+	Ids         []uuid.UUID
+}
+
+func (q *Queries) LockConversationIDs(ctx context.Context, arg LockConversationIDsParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, lockConversationIDs, arg.WorkspaceID, arg.Ids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var id uuid.UUID
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const moveConversation = `-- name: MoveConversation :one
 UPDATE conversations SET inbox_id = $1, channel_id = $2, assignee_id = $3,
     team_id = $4, updated_at = $5,

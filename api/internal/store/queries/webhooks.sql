@@ -51,8 +51,10 @@ UPDATE webhook_endpoints SET enabled = false, disabled_at = @now::timestamptz, d
 WHERE workspace_id = @workspace_id AND id = @id AND enabled;
 
 -- name: CreateWebhookDelivery :one
-INSERT INTO webhook_deliveries (id, workspace_id, endpoint_id, message_id, event_type, payload, next_attempt_at, created_at, updated_at)
-VALUES (@id, @workspace_id, @endpoint_id, @message_id, @event_type, @payload, @now::timestamptz, @now::timestamptz, @now::timestamptz)
+INSERT INTO webhook_deliveries (id, workspace_id, endpoint_id, message_id, event_type, payload, conversation_id, contact_id,
+                                next_attempt_at, created_at, updated_at)
+VALUES (@id, @workspace_id, @endpoint_id, @message_id, @event_type, @payload, sqlc.narg(conversation_id), sqlc.narg(contact_id),
+        @now::timestamptz, @now::timestamptz, @now::timestamptz)
 RETURNING *;
 
 -- name: GetWebhookDelivery :one
@@ -124,12 +126,15 @@ WHERE workspace_id = @workspace_id AND EXISTS (SELECT 1 FROM unnest(@needles::te
 ORDER BY id
 FOR UPDATE;
 
--- name: DeleteDeliveriesMentioning :execrows
-DELETE FROM webhook_deliveries d WHERE d.workspace_id = @workspace_id AND d.id IN (
-    SELECT x.id FROM webhook_deliveries x,
-        regexp_matches(x.payload, '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}', 'g') m
-    WHERE x.workspace_id = @workspace_id AND m[1]::uuid IN (SELECT unnest(@ids::uuid[]))
-);
+-- name: DeleteConversationDeliveries :exec
+DELETE FROM webhook_deliveries WHERE workspace_id = @workspace_id AND conversation_id = ANY(@conversation_ids::uuid[]);
+
+-- name: DeleteContactDeliveries :exec
+DELETE FROM webhook_deliveries WHERE workspace_id = @workspace_id AND contact_id = @contact_id
+  AND (NOT @contact_level_only::bool OR conversation_id IS NULL);
 
 -- name: SetWebhookDeliveryPayload :exec
 UPDATE webhook_deliveries SET payload = @payload WHERE workspace_id = @workspace_id AND id = @id;
+
+-- name: MoveContactDeliveries :exec
+UPDATE webhook_deliveries SET contact_id = @to_contact WHERE workspace_id = @workspace_id AND contact_id = @from_contact;

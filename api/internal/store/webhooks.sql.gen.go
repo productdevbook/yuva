@@ -63,19 +63,23 @@ func (q *Queries) ContactLastActivity(ctx context.Context, arg ContactLastActivi
 }
 
 const createWebhookDelivery = `-- name: CreateWebhookDelivery :one
-INSERT INTO webhook_deliveries (id, workspace_id, endpoint_id, message_id, event_type, payload, next_attempt_at, created_at, updated_at)
-VALUES ($1, $2, $3, $4, $5, $6, $7::timestamptz, $7::timestamptz, $7::timestamptz)
-RETURNING id, workspace_id, endpoint_id, message_id, event_type, payload, state, attempts, next_attempt_at, last_attempt_at, created_at, updated_at
+INSERT INTO webhook_deliveries (id, workspace_id, endpoint_id, message_id, event_type, payload, conversation_id, contact_id,
+                                next_attempt_at, created_at, updated_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8,
+        $9::timestamptz, $9::timestamptz, $9::timestamptz)
+RETURNING id, workspace_id, endpoint_id, message_id, event_type, payload, state, attempts, next_attempt_at, last_attempt_at, created_at, updated_at, conversation_id, contact_id
 `
 
 type CreateWebhookDeliveryParams struct {
-	ID          uuid.UUID
-	WorkspaceID uuid.UUID
-	EndpointID  uuid.UUID
-	MessageID   string
-	EventType   string
-	Payload     string
-	Now         time.Time
+	ID             uuid.UUID
+	WorkspaceID    uuid.UUID
+	EndpointID     uuid.UUID
+	MessageID      string
+	EventType      string
+	Payload        string
+	ConversationID *uuid.UUID
+	ContactID      *uuid.UUID
+	Now            time.Time
 }
 
 func (q *Queries) CreateWebhookDelivery(ctx context.Context, arg CreateWebhookDeliveryParams) (WebhookDelivery, error) {
@@ -86,6 +90,8 @@ func (q *Queries) CreateWebhookDelivery(ctx context.Context, arg CreateWebhookDe
 		arg.MessageID,
 		arg.EventType,
 		arg.Payload,
+		arg.ConversationID,
+		arg.ContactID,
 		arg.Now,
 	)
 	var i WebhookDelivery
@@ -102,6 +108,8 @@ func (q *Queries) CreateWebhookDelivery(ctx context.Context, arg CreateWebhookDe
 		&i.LastAttemptAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ConversationID,
+		&i.ContactID,
 	)
 	return i, err
 }
@@ -160,25 +168,34 @@ func (q *Queries) CreateWebhookEndpoint(ctx context.Context, arg CreateWebhookEn
 	return i, err
 }
 
-const deleteDeliveriesMentioning = `-- name: DeleteDeliveriesMentioning :execrows
-DELETE FROM webhook_deliveries d WHERE d.workspace_id = $1 AND d.id IN (
-    SELECT x.id FROM webhook_deliveries x,
-        regexp_matches(x.payload, '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}', 'g') m
-    WHERE x.workspace_id = $1 AND m[1]::uuid IN (SELECT unnest($2::uuid[]))
-)
+const deleteContactDeliveries = `-- name: DeleteContactDeliveries :exec
+DELETE FROM webhook_deliveries WHERE workspace_id = $1 AND contact_id = $2
+  AND (NOT $3::bool OR conversation_id IS NULL)
 `
 
-type DeleteDeliveriesMentioningParams struct {
-	WorkspaceID uuid.UUID
-	Ids         []uuid.UUID
+type DeleteContactDeliveriesParams struct {
+	WorkspaceID      uuid.UUID
+	ContactID        *uuid.UUID
+	ContactLevelOnly bool
 }
 
-func (q *Queries) DeleteDeliveriesMentioning(ctx context.Context, arg DeleteDeliveriesMentioningParams) (int64, error) {
-	result, err := q.db.Exec(ctx, deleteDeliveriesMentioning, arg.WorkspaceID, arg.Ids)
-	if err != nil {
-		return 0, err
-	}
-	return result.RowsAffected(), nil
+func (q *Queries) DeleteContactDeliveries(ctx context.Context, arg DeleteContactDeliveriesParams) error {
+	_, err := q.db.Exec(ctx, deleteContactDeliveries, arg.WorkspaceID, arg.ContactID, arg.ContactLevelOnly)
+	return err
+}
+
+const deleteConversationDeliveries = `-- name: DeleteConversationDeliveries :exec
+DELETE FROM webhook_deliveries WHERE workspace_id = $1 AND conversation_id = ANY($2::uuid[])
+`
+
+type DeleteConversationDeliveriesParams struct {
+	WorkspaceID     uuid.UUID
+	ConversationIds []uuid.UUID
+}
+
+func (q *Queries) DeleteConversationDeliveries(ctx context.Context, arg DeleteConversationDeliveriesParams) error {
+	_, err := q.db.Exec(ctx, deleteConversationDeliveries, arg.WorkspaceID, arg.ConversationIds)
+	return err
 }
 
 const deleteFinishedWebhookDeliveries = `-- name: DeleteFinishedWebhookDeliveries :execrows
@@ -260,7 +277,7 @@ const finishWebhookAttempt = `-- name: FinishWebhookAttempt :one
 UPDATE webhook_deliveries SET attempts = attempts + 1, last_attempt_at = $1::timestamptz, state = $2,
     next_attempt_at = $3, updated_at = $1::timestamptz
 WHERE workspace_id = $4 AND id = $5
-RETURNING id, workspace_id, endpoint_id, message_id, event_type, payload, state, attempts, next_attempt_at, last_attempt_at, created_at, updated_at
+RETURNING id, workspace_id, endpoint_id, message_id, event_type, payload, state, attempts, next_attempt_at, last_attempt_at, created_at, updated_at, conversation_id, contact_id
 `
 
 type FinishWebhookAttemptParams struct {
@@ -293,12 +310,14 @@ func (q *Queries) FinishWebhookAttempt(ctx context.Context, arg FinishWebhookAtt
 		&i.LastAttemptAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ConversationID,
+		&i.ContactID,
 	)
 	return i, err
 }
 
 const getEndpointDelivery = `-- name: GetEndpointDelivery :one
-SELECT id, workspace_id, endpoint_id, message_id, event_type, payload, state, attempts, next_attempt_at, last_attempt_at, created_at, updated_at FROM webhook_deliveries WHERE workspace_id = $1 AND endpoint_id = $2 AND id = $3
+SELECT id, workspace_id, endpoint_id, message_id, event_type, payload, state, attempts, next_attempt_at, last_attempt_at, created_at, updated_at, conversation_id, contact_id FROM webhook_deliveries WHERE workspace_id = $1 AND endpoint_id = $2 AND id = $3
 `
 
 type GetEndpointDeliveryParams struct {
@@ -323,12 +342,14 @@ func (q *Queries) GetEndpointDelivery(ctx context.Context, arg GetEndpointDelive
 		&i.LastAttemptAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ConversationID,
+		&i.ContactID,
 	)
 	return i, err
 }
 
 const getWebhookDelivery = `-- name: GetWebhookDelivery :one
-SELECT id, workspace_id, endpoint_id, message_id, event_type, payload, state, attempts, next_attempt_at, last_attempt_at, created_at, updated_at FROM webhook_deliveries WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, endpoint_id, message_id, event_type, payload, state, attempts, next_attempt_at, last_attempt_at, created_at, updated_at, conversation_id, contact_id FROM webhook_deliveries WHERE workspace_id = $1 AND id = $2
 `
 
 type GetWebhookDeliveryParams struct {
@@ -352,6 +373,8 @@ func (q *Queries) GetWebhookDelivery(ctx context.Context, arg GetWebhookDelivery
 		&i.LastAttemptAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ConversationID,
+		&i.ContactID,
 	)
 	return i, err
 }
@@ -519,7 +542,7 @@ func (q *Queries) ListWebhookAttempts(ctx context.Context, arg ListWebhookAttemp
 }
 
 const listWebhookDeliveries = `-- name: ListWebhookDeliveries :many
-SELECT id, workspace_id, endpoint_id, message_id, event_type, payload, state, attempts, next_attempt_at, last_attempt_at, created_at, updated_at FROM webhook_deliveries d
+SELECT id, workspace_id, endpoint_id, message_id, event_type, payload, state, attempts, next_attempt_at, last_attempt_at, created_at, updated_at, conversation_id, contact_id FROM webhook_deliveries d
 WHERE d.workspace_id = $1 AND d.endpoint_id = $2
   AND ($3::text IS NULL OR d.state = $3::text)
   AND ($4::timestamptz IS NULL
@@ -566,6 +589,8 @@ func (q *Queries) ListWebhookDeliveries(ctx context.Context, arg ListWebhookDeli
 			&i.LastAttemptAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.ConversationID,
+			&i.ContactID,
 		); err != nil {
 			return nil, err
 		}
@@ -693,6 +718,21 @@ func (q *Queries) LockWebhookEndpoint(ctx context.Context, arg LockWebhookEndpoi
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const moveContactDeliveries = `-- name: MoveContactDeliveries :exec
+UPDATE webhook_deliveries SET contact_id = $1 WHERE workspace_id = $2 AND contact_id = $3
+`
+
+type MoveContactDeliveriesParams struct {
+	ToContact   *uuid.UUID
+	WorkspaceID uuid.UUID
+	FromContact *uuid.UUID
+}
+
+func (q *Queries) MoveContactDeliveries(ctx context.Context, arg MoveContactDeliveriesParams) error {
+	_, err := q.db.Exec(ctx, moveContactDeliveries, arg.ToContact, arg.WorkspaceID, arg.FromContact)
+	return err
 }
 
 const pruneWebhookAttempts = `-- name: PruneWebhookAttempts :exec

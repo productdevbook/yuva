@@ -1182,6 +1182,7 @@ type Event struct {
 	ConversationID *uuid.UUID
 	Payload        []byte
 	CreatedAt      time.Time
+	ContactID      *uuid.UUID
 }
 
 type HelpArticle struct {
@@ -2719,18 +2720,20 @@ type WebhookAttempt struct {
 }
 
 type WebhookDelivery struct {
-	ID            uuid.UUID
-	WorkspaceID   uuid.UUID
-	EndpointID    uuid.UUID
-	MessageID     string
-	EventType     string
-	Payload       string
-	State         string
-	Attempts      int32
-	NextAttemptAt *time.Time
-	LastAttemptAt *time.Time
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
+	ID             uuid.UUID
+	WorkspaceID    uuid.UUID
+	EndpointID     uuid.UUID
+	MessageID      string
+	EventType      string
+	Payload        string
+	State          string
+	Attempts       int32
+	NextAttemptAt  *time.Time
+	LastAttemptAt  *time.Time
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+	ConversationID *uuid.UUID
+	ContactID      *uuid.UUID
 }
 
 type WebhookEndpoint struct {

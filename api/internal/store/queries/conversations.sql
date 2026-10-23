@@ -244,3 +244,6 @@ SELECT id FROM conversations WHERE workspace_id = @workspace_id AND contact_id =
 
 -- name: ListInboxConversationIDs :many
 SELECT id FROM conversations WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id;
+
+-- name: LockConversationIDs :many
+SELECT id FROM conversations WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[]) ORDER BY id FOR UPDATE;

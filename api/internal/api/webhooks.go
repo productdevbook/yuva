@@ -873,7 +873,7 @@ func (s *Server) FanOutWebhooks(ctx context.Context, a WebhookFanoutArgs) error 
 				id := newID()
 				d, err := q.CreateWebhookDelivery(ctx, store.CreateWebhookDeliveryParams{
 					ID: id, WorkspaceID: a.WorkspaceID, EndpointID: e.ID, MessageID: "msg_" + strings.ReplaceAll(id.String(), "-", ""),
-					EventType: h.typ, Payload: string(body), Now: now,
+					EventType: h.typ, Payload: string(body), ConversationID: ev.ConversationID, ContactID: ev.ContactID, Now: now,
 				})
 				if err != nil {
 					return err

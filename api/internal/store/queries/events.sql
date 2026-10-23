@@ -2,8 +2,8 @@
 SELECT pg_advisory_xact_lock(hashtextextended('yuva_events:' || sqlc.arg(workspace_id)::uuid::text, 0));
 
 -- name: InsertEvent :one
-INSERT INTO events (workspace_id, type, inbox_id, conversation_id, payload)
-VALUES (@workspace_id, @type, sqlc.narg(inbox_id), sqlc.narg(conversation_id), @payload)
+INSERT INTO events (workspace_id, type, inbox_id, conversation_id, contact_id, payload)
+VALUES (@workspace_id, @type, sqlc.narg(inbox_id), sqlc.narg(conversation_id), sqlc.narg(contact_id), @payload)
 RETURNING id;
 
 -- name: NotifyEvent :exec
@@ -34,8 +34,9 @@ SELECT coalesce(min(id), 0)::bigint AS id FROM events WHERE workspace_id = $1;
 DELETE FROM events WHERE workspace_id = @workspace_id AND conversation_id = ANY(@conversation_ids::uuid[])
   AND (NOT @keep_trash::bool OR type NOT IN ('conversation.trashed', 'conversation.restored'));
 
--- name: DeleteEventsMentioning :exec
-DELETE FROM events WHERE workspace_id = @workspace_id AND strpos(payload::text, @needle::text) > 0;
+-- name: DeleteContactEvents :exec
+DELETE FROM events WHERE workspace_id = @workspace_id AND contact_id = @contact_id
+  AND (NOT @contact_level_only::bool OR conversation_id IS NULL);
 
 -- name: LockConversationEvents :many
 SELECT id, payload FROM events WHERE workspace_id = @workspace_id AND conversation_id = @conversation_id
@@ -49,3 +50,6 @@ UPDATE events SET payload = @payload WHERE workspace_id = @workspace_id AND id =
 -- for the deliveries it writes and then rewrites them too.
 -- name: LockEventShared :one
 SELECT * FROM events WHERE workspace_id = $1 AND id = $2 FOR SHARE;
+
+-- name: MoveContactEvents :exec
+UPDATE events SET contact_id = @to_contact WHERE workspace_id = @workspace_id AND contact_id = @from_contact;

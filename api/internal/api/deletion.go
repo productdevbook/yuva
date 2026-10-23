@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"slices"
 	"strings"
 	"time"
 	"uuid"
@@ -197,7 +196,7 @@ func (s *Server) PurgeWorkspace(ctx context.Context, workspaceID uuid.UUID, budg
 		return out, err
 	}
 	for {
-		n, files, err := s.deleteConversationBatch(ctx, workspaceID, func(q *store.Queries, _ *eventBatch) ([]uuid.UUID, error) {
+		n, files, err := s.deleteConversationBatch(ctx, workspaceID, false, func(q *store.Queries, _ *eventBatch) ([]uuid.UUID, error) {
 			return q.ListWorkspaceConversationIDs(ctx, store.ListWorkspaceConversationIDsParams{WorkspaceID: workspaceID, MaxRows: purgeConversationBatch})
 		})
 		if err != nil {
@@ -306,9 +305,10 @@ func lockWorkspaceRows(ctx context.Context, q *store.Queries, workspaceID uuid.U
 }
 
 // deleteConversationBatch deletes the conversations list returns, with their messages and
-// attachments, and then their stored files. It returns how many conversations and files went;
+// attachments, and then their stored files; forget also deletes their events and webhook
+// deliveries first, which a workspace's purge leaves to the deletion of the workspace row. It returns how many conversations and files went;
 // none once the workspace row is gone.
-func (s *Server) deleteConversationBatch(ctx context.Context, workspaceID uuid.UUID, list func(q *store.Queries, events *eventBatch) ([]uuid.UUID, error)) (int, int, error) {
+func (s *Server) deleteConversationBatch(ctx context.Context, workspaceID uuid.UUID, forget bool, list func(q *store.Queries, events *eventBatch) ([]uuid.UUID, error)) (int, int, error) {
 	var keys []string
 	var n int
 	err := s.inTx(ctx, workspaceID, func(q *store.Queries, events *eventBatch) error {
@@ -320,8 +320,10 @@ func (s *Server) deleteConversationBatch(ctx context.Context, workspaceID uuid.U
 			return err
 		}
 		n = len(ids)
-		if err := forgetConversations(ctx, q, workspaceID, ids); err != nil {
-			return err
+		if forget {
+			if err := forgetConversations(ctx, q, workspaceID, ids); err != nil {
+				return err
+			}
 		}
 		if err := s.scrubSlackConversations(ctx, q, events, workspaceID, slackScrubDeleted, ids); err != nil {
 			return err
@@ -346,28 +348,45 @@ func (s *Server) deleteConversationBatch(ctx context.Context, workspaceID uuid.U
 	return n, len(keys), nil
 }
 
-// forgetConversations deletes, before the conversations themselves, their stored events and every
-// webhook delivery, pending or kept, whose payload names one of them or one of the contacts going
-// with them, so neither the event feed, a realtime replay nor a redelivery shows them again. The
-// events go first, the order redaction locks them in: fan-out reads its event under a shared lock,
-// so the deliveries it writes are committed before they are deleted here, or never written.
-func forgetConversations(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, ids []uuid.UUID, contacts ...uuid.UUID) error {
-	if len(ids) > 0 {
-		if err := q.DeleteConversationEvents(ctx, store.DeleteConversationEventsParams{WorkspaceID: workspaceID, ConversationIds: ids}); err != nil {
-			return err
-		}
-	}
-	for _, c := range contacts {
-		if err := q.DeleteEventsMentioning(ctx, store.DeleteEventsMentioningParams{WorkspaceID: workspaceID, Needle: c.String()}); err != nil {
-			return err
-		}
-	}
-	all := append(slices.Clone(ids), contacts...)
-	if len(all) == 0 {
+// forgetConversations deletes, before the conversations themselves, their stored events and
+// webhook deliveries, so neither the event feed, a realtime replay nor a redelivery shows them
+// again. The conversations are locked first, in id order and after the contact or inbox that owns
+// them: a write that adds to one holds it, so its events are committed before they are deleted
+// here, or it fails on the deleted conversation. Fan-out reads its event under a shared lock, so
+// the deliveries it writes are committed before the deliveries are deleted, or never written.
+func forgetConversations(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, ids []uuid.UUID) error {
+	if len(ids) == 0 {
 		return nil
 	}
-	_, err := q.DeleteDeliveriesMentioning(ctx, store.DeleteDeliveriesMentioningParams{WorkspaceID: workspaceID, Ids: all})
-	return err
+	if _, err := q.LockConversationIDs(ctx, store.LockConversationIDsParams{WorkspaceID: workspaceID, Ids: ids}); err != nil {
+		return err
+	}
+	if err := q.DeleteConversationEvents(ctx, store.DeleteConversationEventsParams{WorkspaceID: workspaceID, ConversationIds: ids}); err != nil {
+		return err
+	}
+	return q.DeleteConversationDeliveries(ctx, store.DeleteConversationDeliveriesParams{WorkspaceID: workspaceID, ConversationIds: ids})
+}
+
+// forgetContact deletes the stored events and webhook deliveries about a contact: all of them
+// when the contact is deleted, only those outside conversations when it is merged into another,
+// whose conversations keep theirs.
+func forgetContact(ctx context.Context, q *store.Queries, workspaceID, contactID uuid.UUID, contactLevelOnly bool) error {
+	if err := q.DeleteContactEvents(ctx, store.DeleteContactEventsParams{WorkspaceID: workspaceID, ContactID: &contactID, ContactLevelOnly: contactLevelOnly}); err != nil {
+		return err
+	}
+	return q.DeleteContactDeliveries(ctx, store.DeleteContactDeliveriesParams{WorkspaceID: workspaceID, ContactID: &contactID, ContactLevelOnly: contactLevelOnly})
+}
+
+// mergeContactCopies forgets the events and webhook deliveries about a contact merged into
+// another, and hands the target those of the messages that move with its conversations.
+func mergeContactCopies(ctx context.Context, q *store.Queries, workspaceID, from, to uuid.UUID) error {
+	if err := forgetContact(ctx, q, workspaceID, from, true); err != nil {
+		return err
+	}
+	if err := q.MoveContactEvents(ctx, store.MoveContactEventsParams{WorkspaceID: workspaceID, FromContact: &from, ToContact: &to}); err != nil {
+		return err
+	}
+	return q.MoveContactDeliveries(ctx, store.MoveContactDeliveriesParams{WorkspaceID: workspaceID, FromContact: &from, ToContact: &to})
 }
 
 func (s *Server) DeleteMe(ctx context.Context, req oas.DeleteMeRequestObject) (oas.DeleteMeResponseObject, error) {

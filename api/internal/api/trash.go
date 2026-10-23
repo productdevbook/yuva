@@ -144,7 +144,7 @@ func (s *Server) PurgeTrash(ctx context.Context, budget time.Duration) error {
 func (s *Server) purgeWorkspaceTrash(ctx context.Context, ws uuid.UUID, deadline time.Time) error {
 	now := s.now()
 	for {
-		n, _, err := s.deleteConversationBatch(ctx, ws, func(q *store.Queries, events *eventBatch) ([]uuid.UUID, error) {
+		n, _, err := s.deleteConversationBatch(ctx, ws, true, func(q *store.Queries, events *eventBatch) ([]uuid.UUID, error) {
 			rows, err := q.ListExpiredTrash(ctx, store.ListExpiredTrashParams{WorkspaceID: ws, At: s.dbAt(), MaxRows: retentionBatch})
 			if err != nil || len(rows) == 0 {
 				return nil, err

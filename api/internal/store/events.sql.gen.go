@@ -12,6 +12,22 @@ import (
 	"uuid"
 )
 
+const deleteContactEvents = `-- name: DeleteContactEvents :exec
+DELETE FROM events WHERE workspace_id = $1 AND contact_id = $2
+  AND (NOT $3::bool OR conversation_id IS NULL)
+`
+
+type DeleteContactEventsParams struct {
+	WorkspaceID      uuid.UUID
+	ContactID        *uuid.UUID
+	ContactLevelOnly bool
+}
+
+func (q *Queries) DeleteContactEvents(ctx context.Context, arg DeleteContactEventsParams) error {
+	_, err := q.db.Exec(ctx, deleteContactEvents, arg.WorkspaceID, arg.ContactID, arg.ContactLevelOnly)
+	return err
+}
+
 const deleteConversationEvents = `-- name: DeleteConversationEvents :exec
 DELETE FROM events WHERE workspace_id = $1 AND conversation_id = ANY($2::uuid[])
   AND (NOT $3::bool OR type NOT IN ('conversation.trashed', 'conversation.restored'))
@@ -45,20 +61,6 @@ func (q *Queries) DeleteEventsBefore(ctx context.Context, arg DeleteEventsBefore
 	return result.RowsAffected(), nil
 }
 
-const deleteEventsMentioning = `-- name: DeleteEventsMentioning :exec
-DELETE FROM events WHERE workspace_id = $1 AND strpos(payload::text, $2::text) > 0
-`
-
-type DeleteEventsMentioningParams struct {
-	WorkspaceID uuid.UUID
-	Needle      string
-}
-
-func (q *Queries) DeleteEventsMentioning(ctx context.Context, arg DeleteEventsMentioningParams) error {
-	_, err := q.db.Exec(ctx, deleteEventsMentioning, arg.WorkspaceID, arg.Needle)
-	return err
-}
-
 const eventExists = `-- name: EventExists :one
 SELECT EXISTS (SELECT 1 FROM events WHERE workspace_id = $1 AND id = $2) AS found
 `
@@ -87,7 +89,7 @@ func (q *Queries) FirstEventID(ctx context.Context, workspaceID uuid.UUID) (int6
 }
 
 const getEvent = `-- name: GetEvent :one
-SELECT id, workspace_id, type, inbox_id, conversation_id, payload, created_at FROM events WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, type, inbox_id, conversation_id, payload, created_at, contact_id FROM events WHERE workspace_id = $1 AND id = $2
 `
 
 type GetEventParams struct {
@@ -106,13 +108,14 @@ func (q *Queries) GetEvent(ctx context.Context, arg GetEventParams) (Event, erro
 		&i.ConversationID,
 		&i.Payload,
 		&i.CreatedAt,
+		&i.ContactID,
 	)
 	return i, err
 }
 
 const insertEvent = `-- name: InsertEvent :one
-INSERT INTO events (workspace_id, type, inbox_id, conversation_id, payload)
-VALUES ($1, $2, $3, $4, $5)
+INSERT INTO events (workspace_id, type, inbox_id, conversation_id, contact_id, payload)
+VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING id
 `
 
@@ -121,6 +124,7 @@ type InsertEventParams struct {
 	Type           string
 	InboxID        *uuid.UUID
 	ConversationID *uuid.UUID
+	ContactID      *uuid.UUID
 	Payload        []byte
 }
 
@@ -130,6 +134,7 @@ func (q *Queries) InsertEvent(ctx context.Context, arg InsertEventParams) (int64
 		arg.Type,
 		arg.InboxID,
 		arg.ConversationID,
+		arg.ContactID,
 		arg.Payload,
 	)
 	var id int64
@@ -149,7 +154,7 @@ func (q *Queries) LastEventID(ctx context.Context, workspaceID uuid.UUID) (int64
 }
 
 const listEventsAfter = `-- name: ListEventsAfter :many
-SELECT id, workspace_id, type, inbox_id, conversation_id, payload, created_at FROM events WHERE workspace_id = $1 AND id > $2 ORDER BY id LIMIT $3
+SELECT id, workspace_id, type, inbox_id, conversation_id, payload, created_at, contact_id FROM events WHERE workspace_id = $1 AND id > $2 ORDER BY id LIMIT $3
 `
 
 type ListEventsAfterParams struct {
@@ -175,6 +180,7 @@ func (q *Queries) ListEventsAfter(ctx context.Context, arg ListEventsAfterParams
 			&i.ConversationID,
 			&i.Payload,
 			&i.CreatedAt,
+			&i.ContactID,
 		); err != nil {
 			return nil, err
 		}
@@ -223,7 +229,7 @@ func (q *Queries) LockConversationEvents(ctx context.Context, arg LockConversati
 }
 
 const lockEventShared = `-- name: LockEventShared :one
-SELECT id, workspace_id, type, inbox_id, conversation_id, payload, created_at FROM events WHERE workspace_id = $1 AND id = $2 FOR SHARE
+SELECT id, workspace_id, type, inbox_id, conversation_id, payload, created_at, contact_id FROM events WHERE workspace_id = $1 AND id = $2 FOR SHARE
 `
 
 type LockEventSharedParams struct {
@@ -244,6 +250,7 @@ func (q *Queries) LockEventShared(ctx context.Context, arg LockEventSharedParams
 		&i.ConversationID,
 		&i.Payload,
 		&i.CreatedAt,
+		&i.ContactID,
 	)
 	return i, err
 }
@@ -254,6 +261,21 @@ SELECT pg_advisory_xact_lock(hashtextextended('yuva_events:' || $1::uuid::text, 
 
 func (q *Queries) LockEventStream(ctx context.Context, workspaceID uuid.UUID) error {
 	_, err := q.db.Exec(ctx, lockEventStream, workspaceID)
+	return err
+}
+
+const moveContactEvents = `-- name: MoveContactEvents :exec
+UPDATE events SET contact_id = $1 WHERE workspace_id = $2 AND contact_id = $3
+`
+
+type MoveContactEventsParams struct {
+	ToContact   *uuid.UUID
+	WorkspaceID uuid.UUID
+	FromContact *uuid.UUID
+}
+
+func (q *Queries) MoveContactEvents(ctx context.Context, arg MoveContactEventsParams) error {
+	_, err := q.db.Exec(ctx, moveContactEvents, arg.ToContact, arg.WorkspaceID, arg.FromContact)
 	return err
 }
 

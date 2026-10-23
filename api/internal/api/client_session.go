@@ -410,6 +410,9 @@ func (s *Server) mergeContact(ctx context.Context, q *store.Queries, events *eve
 	if err := moveContactAnalytics(ctx, q, ws, from, to); err != nil {
 		return err
 	}
+	if err := mergeContactCopies(ctx, q, ws, from, to); err != nil {
+		return err
+	}
 	if _, err := q.DeleteContact(ctx, store.DeleteContactParams{WorkspaceID: ws, ID: from}); err != nil {
 		return err
 	}

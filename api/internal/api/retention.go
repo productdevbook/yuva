@@ -175,7 +175,7 @@ func (s *Server) ApplyRetention(ctx context.Context) error {
 
 func (s *Server) expireConversations(ctx context.Context, workspaceID uuid.UUID, before time.Time) error {
 	for {
-		n, _, err := s.deleteConversationBatch(ctx, workspaceID, func(q *store.Queries, _ *eventBatch) ([]uuid.UUID, error) {
+		n, _, err := s.deleteConversationBatch(ctx, workspaceID, true, func(q *store.Queries, _ *eventBatch) ([]uuid.UUID, error) {
 			return q.ListExpiredConversationIDs(ctx, store.ListExpiredConversationIDsParams{
 				WorkspaceID: workspaceID, Before: before, MaxRows: retentionBatch,
 			})
