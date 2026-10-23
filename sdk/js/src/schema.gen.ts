@@ -32,10 +32,11 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Ask whether a status page domain is verified
+         * Ask whether an own domain is verified
          * @description For the operator's TLS proxy issuing certificates on demand (Caddy `on_demand_tls` `ask`):
-         *     `200` when `domain` is the verified own domain of a published status page in a live workspace,
-         *     `404` otherwise, also when the server's `YUVA_STATUS_DOMAINS` is not `ask`. It is public and
+         *     `200` when `domain` is the verified own domain of a published status page, help center or
+         *     changelog or a public roadmap board in a live workspace (and that feature is not off on the
+         *     server), `404` otherwise, also when the server's `YUVA_STATUS_DOMAINS` is not `ask`. It is public and
          *     reveals only domains that already serve public pages. Up to 120 requests a minute per IP
          *     address (`429 rate_limited`).
          */
@@ -460,6 +461,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/me/mentions/seen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark all your mentions seen
+         * @description Marks every mention `GET /v1/me/mentions` would list as unseen for the calling member as
+         *     seen, without opening the conversations. It records the mentions only: the read cursors
+         *     and "marked unread" flags of the conversations stay as they are, so messages around a
+         *     mention stay unread. Nothing is sent over realtime. Member sessions only.
+         */
+        post: operations["markMentionsSeen"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/mentions/{noteId}/seen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark one mention seen
+         * @description Marks one mention seen without opening its conversation; the read cursor and "marked
+         *     unread" flag stay as they are. Idempotent: an already seen mention gives `marked: 0`.
+         *     Answers `404 not_found` when the note does not mention the member, was written by the
+         *     member, or is in a conversation the member cannot see or in another workspace.
+         *     Opening the conversation still marks its mentions seen through the read cursor. Member
+         *     sessions only.
+         */
+        post: operations["markMentionSeen"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/account": {
         parameters: {
             query?: never;
@@ -685,9 +734,42 @@ export interface paths {
          *     `approval_requested` until the operator answers. `409 invalid_state` unless the status is
          *     `approval_required`.
          *
-         *     Owners only, with a member session.
+         *     Owners only, with a member session or an OAuth token with `workspace:manage` (a person stands
+         *     behind both); API keys are refused (`403 member_session_required`). The answers come from
+         *     the owner, never from an assistant.
          */
         post: operations["requestBroadcastApproval"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/audit-log": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The workspace's audit log
+         * @description Who did what to the workspace's members, access, keys, webhooks, channel credentials,
+         *     retention, exports and deletions, newest first. Each entry names its actor as it was at the
+         *     time (`member`, `api_key`, `oauth_grant` for a member through a connected app, `operator`
+         *     for the server's command line), the action, its target and small details. Entries never
+         *     hold message content, secrets, webhook URLs (only their host) or a contact's name or
+         *     address. They are kept `YUVA_AUDIT_DAYS` (365 by default) and go with the workspace.
+         *
+         *     Owners only: admins and agents get `403 forbidden`. API keys need `audit:read`, which only
+         *     an owner can give a key and which a key limited to inboxes cannot hold; OAuth tokens need
+         *     `audit:read`, offered only to owners.
+         *
+         *     Scope: `audit:read`.
+         */
+        get: operations["listAuditLog"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -831,8 +913,9 @@ export interface paths {
         /**
          * Create an API key
          * @description Owners and admins only, with a member session. The secret is returned once and stored
-         *     only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`
-         *     or `workspace:manage` (`400 validation_failed`).
+         *     only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
+         *     `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+         *     `audit:read` (`403 forbidden`).
          */
         post: operations["createApiKey"];
         delete?: never;
@@ -1604,14 +1687,38 @@ export interface paths {
          * Everything the workspace has today, in one answer
          * @description The panel's Home page in one request, for the calling member and only what they may see.
          *     Member sessions only (API keys and OAuth tokens answer `403 member_session_required`).
-         *     Every block is read from the counters and rollups the server keeps; none of it spends the
-         *     workspace's analytics query slots.
+         *     Every block is read from the counters, rollups and indexed tables the server keeps, in a
+         *     fixed number of queries whatever the workspace's size; none of it spends the workspace's
+         *     analytics query slots.
          *
+         *     `days` (7, 14 or 30) sets the period: today and the days before it in `timezone`, and the
+         *     same number of days before that as the previous period. `inbox_id` narrows every block
+         *     except `setup` to one inbox (`404` when the caller cannot see it).
+         *
+         *     - `period`: the period and the previous one.
          *     - `inbox` (every member): open, unassigned and waiting conversations in the inboxes the
          *       member can see, counted as `GET /v1/conversations/counts` counts them (spam left out),
-         *       and the conversation that has waited longest. A conversation waits while the contact's
-         *       last message has no reply from a member or bot after it; `since` is the contact's first
-         *       message after the last reply.
+         *       open feedback (`feedback` in the counts) and the five conversations that have waited
+         *       longest, oldest first (`oldest_waiting` is the first). A conversation waits while the
+         *       contact's last message has no reply from a member or bot after it; `since` is the
+         *       contact's first message after the last reply.
+         *     - `activity` (every member): conversations started, first replies with their median time,
+         *       and ratings, for the period, the previous period and each day of the period, with the
+         *       conversations of each day per inbox. Counted as `GET /v1/stats` counts first replies and
+         *       ratings.
+         *     - `products` (every member): each inbox the member can see, by name, with its open
+         *       conversations and the conversations and ratings of the period.
+         *     - `team` (every member): open conversations per assignee in those inboxes; members with
+         *       none are left out. Names and presence are `GET /v1/members`.
+         *     - `status_pages` (every member): the status page of each inbox the member can see, with
+         *       its state and its components' worst state and uptime per day of the period, in the
+         *       page's time zone. Hidden components are left out.
+         *     - `ideas` (when the server has roadmaps): the five published ideas with the most votes
+         *       that are not shipped or closed.
+         *     - `upcoming`: the next five of scheduled broadcasts (when the server sends broadcasts),
+         *       open incidents and maintenance that is not completed, and scheduled what's new entries
+         *       (when the server has what's new), soonest first; an incident that has started sorts by
+         *       its start.
          *     - `analytics` (when the server collects analytics): the properties the member can see, as
          *       `GET /v1/analytics/properties` lists them, each with visitors today, visitors in the last
          *       30 minutes (as `GET /v1/analytics/properties/{id}/realtime` counts them) and visitors per
@@ -1619,7 +1726,7 @@ export interface paths {
          *     - `broadcasts` (when the server sends broadcasts): the last sent broadcast of the inboxes
          *       the member can see. There is no open tracking, so there are no opens.
          *     - `setup` (owners and admins): the setup checklist, built from the same state as the MCP
-         *       `get_setup_state` tool.
+         *       `get_setup_state` tool. Not narrowed by `inbox_id`.
          */
         get: operations["getHome"];
         put?: never;
@@ -2450,7 +2557,12 @@ export interface paths {
          * Reply as a member
          * @description A reply to the thread (`parent_post_id` absent) or to one of its replies, published at once,
          *     also in locked threads. Replies are one level deep: a reply to a reply answers
-         *     `400 validation_failed`. Followers are notified. Member sessions only.
+         *     `400 validation_failed`. Followers are notified.
+         *
+         *     Members, and OAuth tokens with `messages:write`, which reply as their member; the post's
+         *     `author.via` names the client. A token issued for `/mcp` replies only while the
+         *     workspace's `bots_may_send` is on (`403 bot_sending_disabled`). API keys are refused
+         *     (`403 member_session_required`): a post has no bot author.
          */
         post: operations["createDiscussionPost"];
         delete?: never;
@@ -2472,13 +2584,17 @@ export interface paths {
          * @description Marks a published reply to the thread itself (not a reply to a reply, not the opening post)
          *     as its answer, replacing an earlier one (`400 validation_failed` otherwise), also in locked
          *     threads. Followers are told once (`discussion.answered`). Ideas have no accepted answer
-         *     (`409 not_supported`). Member sessions only.
+         *     (`409 not_supported`). Marking the reply that is already the answer changes nothing.
+         *     Members and OAuth tokens with `messages:write`, as for `createDiscussionPost`; API keys are
+         *     refused (`403 member_session_required`).
          */
         put: operations["acceptDiscussionAnswer"];
         post?: never;
         /**
          * Clear the accepted answer
-         * @description Member sessions only.
+         * @description Clearing a thread without an answer changes nothing. Members and OAuth tokens with
+         *     `messages:write`, as for `createDiscussionPost`; API keys are refused
+         *     (`403 member_session_required`).
          */
         delete: operations["clearDiscussionAnswer"];
         options?: never;
@@ -2657,6 +2773,8 @@ export interface paths {
          *     keeps the old one reserved for this board, and its public addresses redirect to the new one,
          *     for 90 days; a board keeps its 10 newest former slugs, and its slug changes 10 times a day
          *     at most (`429 rate_limited`). `channel_id` must stay a `chat` channel of the board's inbox.
+         *     `custom_domain` sets or removes the board's own domain, checked and served like a status
+         *     page's; a private board does not answer on it.
          *
          *     Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `roadmap:write`.
          */
@@ -4039,19 +4157,30 @@ export interface paths {
         };
         get?: never;
         /**
-         * Connect the mailbox with a password
-         * @description The user name and the app password (or password) of the mailbox, and for `imap` the
-         *     server; presets take their own server, and a preset with several servers (Zoho's data
-         *     centres, GMX) takes `host` from its list. The credentials are encrypted at once, replace
-         *     any stored before, are never returned or logged, and are deleted when the migration
-         *     completes, is cancelled or deleted. `certificate_sha256` trusts a server whose certificate
-         *     is not valid for its name (a self-hosted server with its own certificate): the SHA-256 of
-         *     the certificate the connection test reported, checked on every connection.
+         * Connect the mailbox with a password, or a help desk with an API token
+         * @description `kind: password` (the default): the user name and the app password (or password) of the
+         *     mailbox, and for `imap` the server; presets take their own server, and a preset with
+         *     several servers (Zoho's data centres, GMX) takes `host` from its list.
+         *     `certificate_sha256` trusts a server whose certificate is not valid for its name (a
+         *     self-hosted server with its own certificate): the SHA-256 of the certificate the
+         *     connection test reported, checked on every connection.
+         *
+         *     `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
+         *     team creates in its own account, plus the fields its preset's `token_fields` names: a
+         *     second `secret`, the account's `subdomain`, or the `base_url` of a self-hosted install
+         *     (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
+         *     address only where the operator allows one). The token is sent only in the help desk's
+         *     own auth header and only to its API hosts, with `GET` only; the connection test then reads
+         *     the account and its folders.
+         *
+         *     Either way the secret is encrypted at once, replaces any stored before, is never returned,
+         *     logged or put in a job's arguments, and is deleted when the migration completes, is
+         *     cancelled or deleted.
          *
          *     In `draft` and `connected`; a `connected` migration goes back to `draft` until the next
          *     test passes. In `needs_attention` it reconnects the same account on the same server
-         *     (`409 migration_state` otherwise, and for help desks, export files and `microsoft`, which
-         *     connect otherwise).
+         *     (`409 migration_state` otherwise, and for export files, `microsoft` and help desks that
+         *     sign in with OAuth, which connect otherwise; `kind` must be the one the preset takes).
          *
          *     Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
          */
@@ -4114,7 +4243,10 @@ export interface paths {
         put?: never;
         /**
          * Connect a help desk or a Microsoft mailbox with a sign-in
-         * @description Starts the sign-in of a `zendesk` or `helpscout` migration with an OAuth client the team
+         * @description A help desk whose preset's `auth` is `token` connects with
+         *     `PUT /v1/migrations/{migrationId}/credentials` instead (`409 migration_state`).
+         *
+         *     Starts the sign-in of a `zendesk` or `helpscout` migration with an OAuth client the team
          *     created in its own help desk account, whose redirect URL is the preset's `redirect_url`:
          *     in Zendesk an OAuth client (Admin Center › Apps and integrations › APIs › OAuth clients),
          *     in Help Scout an app (Your Profile › My Apps). The client id and secret are encrypted at
@@ -6759,7 +6891,8 @@ export interface paths {
          *     `slug` keeps the old one reserved for this changelog, and its public addresses redirect to
          *     the new one, for 90 days; a changelog keeps its 10 newest former slugs, and its slug
          *     changes 10 times a day at most (`429 rate_limited`). A locale cannot leave `locales` while
-         *     an entry has a translation in it (`409 locale_in_use`).
+         *     an entry has a translation in it (`409 locale_in_use`). `custom_domain` sets or removes the
+         *     changelog's own domain, checked and served like a status page's.
          *
          *     Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `changelog:publish`.
          */
@@ -7135,7 +7268,8 @@ export interface paths {
          *     Changing `slug` keeps the old one reserved for this center, and its public addresses
          *     redirect to the new one, for 90 days; a center keeps its 10 newest former slugs, and its
          *     slug changes 10 times a day at most (`429 rate_limited`). A locale cannot leave `locales`
-         *     while an article has a translation in it (`409 locale_in_use`).
+         *     while an article has a translation in it (`409 locale_in_use`). `custom_domain` sets or
+         *     removes the center's own domain, checked and served like a status page's.
          *
          *     Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `help:publish`.
          */
@@ -9802,6 +9936,97 @@ export interface components {
             /** @description Whether API keys and OAuth tokens with `broadcasts:send` may schedule and resume broadcasts. Owners and admins, with a member session. */
             broadcasts_by_keys?: boolean;
         };
+        /**
+         * @description - `member`: a member with a session.
+         *     - `api_key`: an API key; `name` is its bot name.
+         *     - `oauth_grant`: a member through a connected app (OAuth or MCP); `member_id` is the member
+         *       and `via` the app's name.
+         *     - `operator`: the server's operator on the command line; no `id` or `name`.
+         * @enum {string}
+         */
+        AuditActorKind: "member" | "api_key" | "oauth_grant" | "operator";
+        AuditActor: {
+            kind: components["schemas"]["AuditActorKind"];
+            /**
+             * Format: uuid
+             * @description The member, API key or connected app (grant). Absent for `operator`.
+             */
+            id?: string;
+            /** @description The display name at the time, kept after the actor is gone. Absent for `operator`. */
+            name?: string;
+            /**
+             * Format: uuid
+             * @description For `member` and `oauth_grant`, the member.
+             */
+            member_id?: string;
+            /** @description For `oauth_grant`, the connected app's name. */
+            via?: string;
+        };
+        /**
+         * @description The action; the part before the dot is the target's type. `details` by action:
+         *     - `member.joined`: `role`; the actor is the member who accepted an invite.
+         *     - `member.role_changed`: `from`, `to`.
+         *     - `member.removed`: `role`, and `reason` `account_deleted` when the person deleted their account.
+         *     - `member.inbox_access_granted`, `member.inbox_access_revoked`: `inbox_id`, `inbox_name`.
+         *     - `invite.created`: `email`, `role`. `invite.deleted`: none.
+         *     - `api_key.created`: `name`, `prefix`, `scopes`, `inbox_count` when limited, `expires_at` when set.
+         *       `api_key.revoked`: `name`, `prefix`.
+         *     - `oauth_grant.created`: `client`, `scopes`. `oauth_grant.revoked`: `client`.
+         *     - `webhook.created`, `webhook.deleted`: `host` (never the URL), `events`.
+         *       `webhook.updated`: `fields` among `url`, `events`, `enabled` and `include_notes`, and `host`.
+         *       `webhook.secret_rotated`: none.
+         *     - `channel.credentials_changed`: `fields` among `smtp` and `broadcast_smtp` (the account
+         *       or its password; never the values).
+         *     - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
+         *       none. `channel.dkim_key_created`: `selector`.
+         *     - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+         *     - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
+         *       `started` (the entry is written when the export starts streaming).
+         *     - `list.consent_exported`: `name`, `format`, `started`.
+         *     - `analytics_export.created`: `property_id`, `kind`, `format`.
+         *     - `workspace.retention_changed`: `from`, `to` (days; `null` keeps everything).
+         *     - `workspace.broadcast_approval_requested`: none. `workspace.broadcasts_approved`,
+         *       `workspace.broadcasts_denied`: `reason` when the operator gave one.
+         *       `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).
+         *       `workspace.broadcast_limit_changed`: `from`, `to` (recipients a day; `null` is no limit).
+         *
+         *     Details never make an action fail: when they would be too long, lists are replaced by
+         *     `<name>_count` and `truncated` is `true`.
+         *     A workspace's deletion is not in its log, which goes with the workspace; the operator's
+         *     digest names it.
+         *
+         *     More actions are added over time; show an unknown one by its name.
+         * @enum {string}
+         */
+        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed";
+        /** @enum {string} */
+        AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export";
+        AuditTarget: {
+            type: components["schemas"]["AuditTargetType"];
+            /**
+             * Format: uuid
+             * @description The target, which may no longer exist.
+             */
+            id: string;
+        };
+        AuditEntry: {
+            /** Format: uuid */
+            id: string;
+            actor: components["schemas"]["AuditActor"];
+            action: components["schemas"]["AuditAction"];
+            target: components["schemas"]["AuditTarget"];
+            /** @description Small, non-secret facts about the action; see `AuditAction`. */
+            details: {
+                [key: string]: unknown;
+            };
+            /** Format: date-time */
+            created_at: string;
+        };
+        AuditEntryPage: {
+            items: components["schemas"]["AuditEntry"][];
+            /** @description Absent on the last page. */
+            next_cursor?: string;
+        };
         WorkspaceDeletion: {
             /** @description The workspace's name, exactly; anything else is refused with `400 confirmation_mismatch`. */
             name: string;
@@ -9953,7 +10178,8 @@ export interface components {
          *       message e-mail and raw source; list labels and canned replies.
          *     - `conversations:write`: create, update (status, assignee, snooze, priority, labels), move
          *       and bulk-update conversations.
-         *     - `messages:write`: outgoing and incoming messages, drafts: create, edit, discard.
+         *     - `messages:write`: outgoing and incoming messages, drafts: create, edit, discard; for
+         *       OAuth tokens also replies to reader threads and their accepted answer.
          *     - `drafts:send`: send a draft (`POST /v1/messages/{id}/send`), together with
          *       `messages:write`.
          *     - `notes:write`: notes.
@@ -9965,7 +10191,8 @@ export interface components {
          *     - `labels:write`: create, update and delete labels.
          *     - `canned_replies:write`: create, update and delete canned replies.
          *     - `webhooks:manage`: webhooks, their deliveries and attempts.
-         *     - `workspace:manage`: update the workspace, usage.
+         *     - `workspace:manage`: update the workspace, usage; for an owner's OAuth token also asking
+         *       the operator to allow broadcasts.
          *     - `feedback:write`: feedback.
          *     - `lists:read`: mailing lists, subscriptions, growth, consent exports.
          *     - `lists:write`: create, change and delete lists; add, unsubscribe and delete
@@ -10011,10 +10238,14 @@ export interface components {
          *       and unpublish entries, change or delete published ones. API keys only, and never implied:
          *       a key made without naming its scopes does not hold it, and OAuth clients are not offered it.
          *
-         *     `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*` and `changelog:*` are never added to keys made before they existed.
+         *     - `audit:read`: the workspace's audit log. Only an owner gives it to a key, and only to a key
+         *       without an inbox limit; offered only to owners' OAuth tokens. Never implied: a key made
+         *       without naming its scopes does not hold it.
+         *
+         *     `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*` and `audit:read` are never added to keys made before they existed.
          * @enum {string}
          */
-        ApiKeyScope: "conversations:read" | "conversations:write" | "messages:write" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish";
+        ApiKeyScope: "conversations:read" | "conversations:write" | "messages:write" | "drafts:send" | "notes:write" | "contacts:read" | "contacts:write" | "inboxes:read" | "inboxes:manage" | "labels:write" | "canned_replies:write" | "webhooks:manage" | "workspace:manage" | "feedback:write" | "lists:read" | "lists:write" | "broadcasts:read" | "broadcasts:write" | "broadcasts:send" | "migrations:manage" | "analytics:read" | "analytics:write" | "analytics:manage" | "status:read" | "status:manage" | "help:read" | "help:write" | "help:publish" | "roadmap:read" | "roadmap:write" | "roadmap:stage" | "changelog:read" | "changelog:write" | "changelog:publish" | "audit:read";
         /**
          * Format: uri
          * @description An `https` image URL.
@@ -11370,6 +11601,18 @@ export interface components {
              */
             unseen: number;
         };
+        MentionsSeen: {
+            /**
+             * Format: int64
+             * @description Mentions that were unseen and are marked now.
+             */
+            marked: number;
+            /**
+             * Format: int64
+             * @description Unseen mentions left over all pages.
+             */
+            unseen: number;
+        };
         /**
          * @description `bot`: written with an API key. `assistant`: written by a member through an OAuth client.
          *     `member`: written by a member in the panel.
@@ -11424,6 +11667,14 @@ export interface components {
              * @description Median seconds from the contact's first message to that reply; absent when `first_replies` is 0.
              */
             median_first_reply_seconds?: number;
+            /**
+             * Format: int64
+             * @description Median seconds, over conversations closed in the window, from the first message the
+             *     contact sent after the conversation's previous close (the first one ever when it was
+             *     never closed before) to the last close in the window. Conversations without such a
+             *     message are left out. Follows `inbox_id`; absent when none was closed.
+             */
+            median_resolution_seconds?: number;
             ratings: components["schemas"]["RatingStats"];
             /** @description Per member, by member id. */
             members: components["schemas"]["MemberStats"][];
@@ -11484,10 +11735,36 @@ export interface components {
         };
         /** @description The Home blocks; a block the member may not see is absent. */
         Home: {
+            period: components["schemas"]["HomePeriod"];
             inbox: components["schemas"]["HomeInbox"];
+            activity: components["schemas"]["HomeActivity"];
+            products: components["schemas"]["HomeProduct"][];
+            team: components["schemas"]["HomeTeam"];
+            status_pages: components["schemas"]["HomeStatusPage"][];
+            ideas?: components["schemas"]["HomeIdea"][];
+            upcoming: components["schemas"]["HomeUpcoming"][];
             analytics?: components["schemas"]["HomeAnalytics"];
             broadcasts?: components["schemas"]["HomeBroadcasts"];
             setup?: components["schemas"]["HomeSetup"];
+        };
+        HomePeriod: {
+            days: number;
+            timezone: string;
+            /**
+             * Format: date-time
+             * @description Start of the period, the start of its first day.
+             */
+            since: string;
+            /**
+             * Format: date-time
+             * @description End of the period, now.
+             */
+            until: string;
+            /**
+             * Format: date-time
+             * @description Start of the previous period, which ends at `since`.
+             */
+            previous_since: string;
         };
         HomeInbox: {
             /**
@@ -11502,7 +11779,14 @@ export interface components {
              * @description Open conversations whose contact waits for a reply.
              */
             waiting: number;
+            /**
+             * Format: int64
+             * @description Open feedback, spam left out (`feedback` in the conversation counts).
+             */
+            feedback: number;
             oldest_waiting?: components["schemas"]["HomeWaitingConversation"];
+            /** @description The five conversations that have waited longest, oldest first. */
+            waiting_conversations: components["schemas"]["HomeWaitingConversation"][];
         };
         /** @description The open conversation that has waited longest; absent when none waits. */
         HomeWaitingConversation: {
@@ -11511,6 +11795,9 @@ export interface components {
             /** Format: uuid */
             inbox_id: string;
             subject: string;
+            channel_kind?: components["schemas"]["ChannelKind"];
+            /** @description The contact's last message, shortened. */
+            preview: string;
             contact: components["schemas"]["HomeContact"];
             /**
              * Format: date-time
@@ -11528,6 +11815,170 @@ export interface components {
              * @description The contact's first address, when it has one.
              */
             email?: string;
+        };
+        HomeActivityTotals: {
+            /**
+             * Format: int64
+             * @description Conversations started, spam left out.
+             */
+            conversations: number;
+            /**
+             * Format: int64
+             * @description Conversations whose first member reply falls in the span.
+             */
+            first_replies: number;
+            /**
+             * Format: int64
+             * @description Median time from the contact's first message to that reply; absent without first replies.
+             */
+            median_first_reply_seconds?: number;
+            /** Format: int64 */
+            good: number;
+            /** Format: int64 */
+            bad: number;
+        };
+        HomeActivity: {
+            /**
+             * Format: int64
+             * @description Conversations started in the period, spam left out.
+             */
+            conversations: number;
+            /** Format: int64 */
+            first_replies: number;
+            /** Format: int64 */
+            median_first_reply_seconds?: number;
+            /** Format: int64 */
+            good: number;
+            /** Format: int64 */
+            bad: number;
+            previous: components["schemas"]["HomeActivityTotals"];
+            /** @description Each day of the period, oldest first; the last one is today. */
+            days: components["schemas"]["HomeActivityDay"][];
+        };
+        HomeActivityDay: {
+            /** Format: date */
+            day: string;
+            /** Format: int64 */
+            conversations: number;
+            /** Format: int64 */
+            first_replies: number;
+            /** Format: int64 */
+            median_first_reply_seconds?: number;
+            /** Format: int64 */
+            good: number;
+            /** Format: int64 */
+            bad: number;
+            /** @description Conversations started that day per inbox; inboxes without any are left out. */
+            inboxes: components["schemas"]["HomeInboxConversations"][];
+        };
+        HomeInboxConversations: {
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: int64 */
+            conversations: number;
+        };
+        HomeProduct: {
+            /** Format: uuid */
+            inbox_id: string;
+            /**
+             * Format: int64
+             * @description Open conversations, spam left out.
+             */
+            open: number;
+            /**
+             * Format: int64
+             * @description Conversations started in the period.
+             */
+            conversations: number;
+            /**
+             * Format: int64
+             * @description Good ratings in the period.
+             */
+            good: number;
+            /** Format: int64 */
+            bad: number;
+        };
+        HomeTeam: {
+            members: components["schemas"]["HomeMemberLoad"][];
+        };
+        HomeMemberLoad: {
+            /** Format: uuid */
+            member_id: string;
+            /**
+             * Format: int64
+             * @description Open conversations assigned to the member, spam left out.
+             */
+            open: number;
+        };
+        HomeStatusPage: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            name: string;
+            published: boolean;
+            /** @description The worst state of the page's visible components. */
+            state: components["schemas"]["StatusComponentStateValue"];
+            /**
+             * @description The days of the period in the page's time zone, oldest first, each with the worst state of
+             *     any component and the uptime over all of them; days without any state are left out.
+             */
+            days: components["schemas"]["PublicStatusDay"][];
+            components: components["schemas"]["HomeStatusComponent"][];
+        };
+        HomeStatusComponent: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            state: components["schemas"]["StatusComponentStateValue"];
+            /** @description The days of the period as the status page shows them; days without any state are left out. */
+            days: components["schemas"]["PublicStatusDay"][];
+        };
+        HomeIdea: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            title: string;
+            /** Format: int64 */
+            votes: number;
+            stage: components["schemas"]["IdeaStage"];
+        };
+        HomeUpcoming: {
+            /** @enum {string} */
+            kind: "broadcast" | "incident" | "maintenance" | "whats_new";
+            /**
+             * Format: uuid
+             * @description The broadcast, incident or what's new entry.
+             */
+            id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /**
+             * Format: date-time
+             * @description When it happens: a broadcast's `scheduled_at`, a maintenance's `scheduled_start`, an
+             *     incident's start (or when it was published or created), an entry's `publish_at`.
+             */
+            at: string;
+            /** @description A broadcast's name, an incident's title, an entry's title in its changelog's default locale. */
+            title: string;
+            /**
+             * Format: uuid
+             * @description Incidents and maintenance.
+             */
+            status_page_id?: string;
+            /**
+             * Format: uuid
+             * @description What's new entries.
+             */
+            changelog_id?: string;
+            /** @description What's new entries, the changelog's default locale. */
+            locale?: string;
+            /**
+             * Format: int64
+             * @description Broadcasts: `counts.recipients` as `GET /v1/broadcasts` lists it.
+             */
+            recipients?: number;
         };
         HomeAnalytics: {
             properties: components["schemas"]["HomeProperty"][];
@@ -12031,8 +12482,9 @@ export interface components {
          *     `set_credentials`, `test_connection`, `scan`, `start`, `pause`, `resume`, `cancel`, `finish`,
          *     `retry` (failed items), `remove_history`, `delete`, `probe` (a test mail to check the
          *     switch), `upload` (parts of the export file, and completing it) and `sign_in` (a help
-         *     desk's sign-in with the team's OAuth client, or Sign in with Microsoft). A server lists
-         *     only the actions it offers.
+         *     desk's sign-in with the team's OAuth client, or Sign in with Microsoft). A help desk whose
+         *     auth is `token` lists `set_credentials` where one with `oauth` lists `sign_in`. A server
+         *     lists only the actions it offers.
          * @enum {string}
          */
         MigrationAction: "update" | "set_credentials" | "test_connection" | "scan" | "start" | "pause" | "resume" | "cancel" | "finish" | "retry" | "remove_history" | "delete" | "probe" | "upload" | "sign_in";
@@ -12051,20 +12503,24 @@ export interface components {
          * @description `password`: a user name with an app password or password. `microsoft`: Sign in with
          *     Microsoft (`POST /v1/migrations/{migrationId}/sign-in`), whose token is sent with
          *     `AUTHENTICATE XOAUTH2`. `oauth`: a help desk's sign-in with an OAuth client the team
-         *     creates in its own account (`POST /v1/migrations/{migrationId}/sign-in`).
+         *     creates in its own account (`POST /v1/migrations/{migrationId}/sign-in`). `token`: a help
+         *     desk's API token the team creates in its own account, with the fields the preset's
+         *     `token_fields` names (`PUT /v1/migrations/{migrationId}/credentials` with `kind: token`).
          * @enum {string}
          */
-        MigrationAuth: "password" | "microsoft" | "oauth";
+        MigrationAuth: "password" | "microsoft" | "oauth" | "token";
         /**
-         * @description The stored credentials, without the secret. A help desk's are `oauth`, with the account's
-         *     API host as `server` (`<subdomain>.zendesk.com`, `api.helpscout.net`). A Microsoft
+         * @description The stored credentials, without the secret. A help desk's are `oauth` or `token`, as its
+         *     preset's `auth`, with the account's API host as `server` (`<subdomain>.zendesk.com`,
+         *     `api.helpscout.net`, or the host of a `base_url`); a `token` is never answered and has no
+         *     `scopes` or `expires_at`. A Microsoft
          *     sign-in's are `oauth` too, with `outlook.office365.com:993` as `server`, the granted
          *     `scopes` and when the access token expires; the token is refreshed before a connection
          *     when it expires within five minutes.
          */
         MigrationCredentials: {
             /** @enum {string} */
-            kind: "password" | "oauth";
+            kind: "password" | "oauth" | "token";
             server: components["schemas"]["MigrationServer"];
             /** @description The trusted certificate's SHA-256, when one is pinned. */
             certificate_sha256?: string;
@@ -12078,10 +12534,31 @@ export interface components {
             /** Format: date-time */
             updated_at: string;
         };
+        /**
+         * @description `kind: password` needs `username` and `password`; `kind: token` needs `token` and the
+         *     fields the preset's `token_fields` names, and takes no others.
+         */
         MigrationCredentialsInput: {
-            /** @description Usually the mailbox address; iCloud takes the part before `@`. */
-            username: string;
-            password: string;
+            /**
+             * @description `password` when left out.
+             * @enum {string}
+             */
+            kind?: "password" | "token";
+            /** @description `password`: usually the mailbox address; iCloud takes the part before `@`. */
+            username?: string;
+            password?: string;
+            /** @description `token`: the help desk's API token. */
+            token?: string;
+            /** @description `token`, where `token_fields` names `secret`: the help desk's second secret. */
+            secret?: string;
+            /** @description `token`, where `token_fields` names `subdomain`: the account's subdomain. */
+            subdomain?: string;
+            /**
+             * Format: uri
+             * @description `token`, where `token_fields` names `base_url`: the HTTPS address of a self-hosted
+             *     install, such as `https://help.example.com`; no user name, query or fragment.
+             */
+            base_url?: string;
             host?: string;
             /** Format: int32 */
             port?: number;
@@ -12619,6 +13096,13 @@ export interface components {
              * @description Zendesk: incremental export requests a minute (of the 10 Zendesk allows).
              */
             incremental_per_minute?: number;
+            /**
+             * Format: int32
+             * @description Help desks with a daily limit: requests a day until the provider reports its limit;
+             *     then at most half of the daily limit it reports. The dry run's time estimate uses it
+             *     when it is set.
+             */
+            requests_per_day?: number;
         };
         MigrationPreset: {
             id: components["schemas"]["MigrationPresetId"];
@@ -12674,6 +13158,11 @@ export interface components {
             team_client?: boolean;
             /** @description The sign-in needs the account's subdomain (Zendesk's `<subdomain>.zendesk.com`). */
             subdomain?: boolean;
+            /**
+             * @description `token` presets: the fields `PUT /v1/migrations/{migrationId}/credentials` takes with
+             *     `kind: token`, `token` first, in the order the connect form shows them.
+             */
+            token_fields?: ("token" | "secret" | "subdomain" | "base_url")[];
         };
         MigrationPresetList: {
             items: components["schemas"]["MigrationPreset"][];
@@ -13471,7 +13960,7 @@ export interface components {
             id: number;
         };
         /** @description One server message on `/v1/realtime`, told apart by `type`. */
-        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["MigrationProgressEvent"] | components["schemas"]["MigrationForwardingConfirmationEvent"] | components["schemas"]["BroadcastProgressEvent"] | components["schemas"]["StatusNoticeEvent"] | components["schemas"]["StatusPageEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["HelpArticleSignal"] | components["schemas"]["ChangelogEntryEvent"] | components["schemas"]["ChangelogEntrySignal"] | components["schemas"]["RoadmapBoardSignal"] | components["schemas"]["ListImportEvent"] | components["schemas"]["ListImportProgressEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ContactPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["MigrationProgressEvent"] | components["schemas"]["MigrationForwardingConfirmationEvent"] | components["schemas"]["BroadcastProgressEvent"] | components["schemas"]["StatusNoticeEvent"] | components["schemas"]["StatusPageEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["HelpArticleSignal"] | components["schemas"]["ChangelogEntryEvent"] | components["schemas"]["ChangelogEntrySignal"] | components["schemas"]["RoadmapBoardSignal"] | components["schemas"]["HelpCenterSignal"] | components["schemas"]["ChangelogSignal"] | components["schemas"]["ListImportEvent"] | components["schemas"]["ListImportProgressEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ContactPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
         /**
          * @description `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
          *     hours. `away`: never shown as available.
@@ -13806,6 +14295,11 @@ export interface components {
             member_id?: string;
             /** Format: uuid */
             contact_id?: string;
+            /**
+             * @description The OAuth client a member wrote this with (its name at the time), as in
+             *     "Ayşe via Claude Code"; absent for the panel and on `/client/v1`.
+             */
+            via?: string;
         };
         /**
          * @description A thread on a documentation page (`kind: page`) or a roadmap idea (`kind: idea`). Its
@@ -14116,7 +14610,11 @@ export interface components {
             name: string;
             description: string;
             slug: components["schemas"]["RoadmapBoardSlug"];
-            /** @description The public page, at the server's `/roadmap/{slug}`. */
+            /**
+             * @description The public page: on its own domain once that is verified (with
+             *     `YUVA_STATUS_DOMAINS=cloudflare`, once its custom hostname and certificate are both
+             *     `active`), else at the server's `/roadmap/{slug}`.
+             */
             url: string;
             /** @description A private board is a triage tool for the team and has no public page. */
             public: boolean;
@@ -14127,6 +14625,8 @@ export interface components {
              */
             analytics_property_id?: string;
             counts: components["schemas"]["RoadmapBoardCounts"];
+            custom_domain?: components["schemas"]["StatusCustomDomain"];
+            own_domains?: components["schemas"]["StatusOwnDomains"];
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
@@ -14162,6 +14662,16 @@ export interface components {
             suggestions?: components["schemas"]["RoadmapSuggestions"];
             /** Format: uuid */
             analytics_property_id?: string | null;
+            /**
+             * @description A hostname such as `roadmap.example.com`, `null` to remove it; the public board then answers at `/` of
+             *     the domain once it is verified. The rules are a status page's `custom_domain`: not one of the
+             *     server's own hosts, not the verified domain of another status page, help center, roadmap
+             *     board or changelog (`409 domain_taken`), at most `YUVA_STATUS_DOMAIN_LIMIT` pages of any kind
+             *     in a workspace with a domain that is not `off` (`403 status_domain_limit`), and only
+             *     `null`, an empty string or the current domain when `YUVA_STATUS_DOMAINS` is `off`.
+             * @example roadmap.example.com
+             */
+            custom_domain?: string | null;
         };
         RoadmapStageMove: {
             stage: components["schemas"]["IdeaStage"];
@@ -17227,8 +17737,9 @@ export interface components {
             updated_at: string;
         };
         /**
-         * @description Whether the server lets pages use their own domain (`YUVA_STATUS_DOMAINS`). Absent when it
-         *     is `off`; setting `custom_domain` is then refused.
+         * @description Whether the server lets status pages, help centers, roadmap boards and changelogs use their
+         *     own domain (`YUVA_STATUS_DOMAINS`). Absent when it is `off`; setting `custom_domain` is then
+         *     refused.
          */
         StatusOwnDomains: {
             /**
@@ -17242,8 +17753,8 @@ export interface components {
         /**
          * @description `pending`: the CNAME and TXT records were not seen yet (checked every 10 minutes).
          *     `failed`: the last check found them but they name another target or value (checked every 10
-         *     minutes); or, no longer checked until `custom_domain` is sent again, another page verified the
-         *     domain first (`problem` `taken`) or the claim was not verified within 7 days (`problem`
+         *     minutes); or, no longer checked until `custom_domain` is sent again, another page (of any
+         *     kind) verified the domain first (`problem` `taken`) or the claim was not verified within 7 days (`problem`
          *     `expired`). `verified`: both were seen; the domain serves the page (checked every day). Only
          *     a verified domain holds its name: any number of pages may claim a domain while it is pending
          *     or failed. `off`: a verified domain whose records were gone for 3 days; it no longer serves
@@ -17252,8 +17763,9 @@ export interface components {
          */
         StatusDomainState: "pending" | "verified" | "failed" | "off";
         /**
-         * @description The page's own domain, absent when it has none or the server's `YUVA_STATUS_DOMAINS` is
-         *     `off`. The owner adds a CNAME from `domain` to `cname_target` and a TXT record `txt_name` with
+         * @description The own domain of a status page, help center, roadmap board or changelog, absent when it has
+         *     none or the server's `YUVA_STATUS_DOMAINS` is `off`. One domain belongs to one page of one
+         *     workspace across all four kinds. The owner adds a CNAME from `domain` to `cname_target` and a TXT record `txt_name` with
          *     `txt_value`. `cloudflare` is present when the server registers verified domains as Cloudflare
          *     for SaaS custom hostnames.
          */
@@ -19641,7 +20153,11 @@ export interface components {
             /** @description Shown on the changelog's home page. */
             description: string;
             slug: components["schemas"]["ChangelogSlug"];
-            /** @description The public home page, `<public URL>/changelog/{slug}`. */
+            /**
+             * @description The public home page: on its own domain once that is verified (with
+             *     `YUVA_STATUS_DOMAINS=cloudflare`, once its custom hostname and certificate are both
+             *     `active`), else `<public URL>/changelog/{slug}`.
+             */
             url: string;
             default_locale: components["schemas"]["LanguageTag"];
             /** @description The locales entries may be written and published in; the default locale is one of them. */
@@ -19657,6 +20173,8 @@ export interface components {
             /** @description The caller may publish and schedule this changelog's entries. */
             can_publish: boolean;
             counts: components["schemas"]["ChangelogCounts"];
+            custom_domain?: components["schemas"]["StatusCustomDomain"];
+            own_domains?: components["schemas"]["StatusOwnDomains"];
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
@@ -19690,6 +20208,16 @@ export interface components {
             analytics_property_id?: string | null;
             agents_may_publish?: boolean;
             published?: boolean;
+            /**
+             * @description A hostname such as `changelog.example.com`, `null` to remove it; the changelog then answers at `/` of
+             *     the domain once it is verified. The rules are a status page's `custom_domain`: not one of the
+             *     server's own hosts, not the verified domain of another status page, help center, roadmap
+             *     board or changelog (`409 domain_taken`), at most `YUVA_STATUS_DOMAIN_LIMIT` pages of any kind
+             *     in a workspace with a domain that is not `off` (`403 status_domain_limit`), and only
+             *     `null`, an empty string or the current domain when `YUVA_STATUS_DOMAINS` is `off`.
+             * @example changelog.example.com
+             */
+            custom_domain?: string | null;
         };
         ChangelogEntryTranslationSummary: {
             locale: components["schemas"]["LanguageTag"];
@@ -19944,6 +20472,29 @@ export interface components {
             data: components["schemas"]["ChangelogEntryEventData"];
         };
         /**
+         * @description `changelog.updated`, on `/v1/realtime` only: the changelog was edited, or its own domain changed state or
+         *     its Cloudflare hostname or certificate status moved. Not stored, no id, never replayed;
+         *     reload the changelog after it and after a reconnect. Reaches whoever holds `changelog:read` and sees
+         *     its inbox.
+         */
+        ChangelogSignal: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "changelog.updated";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: {
+                /** Format: uuid */
+                changelog_id: string;
+            };
+        };
+        /**
          * @description `changelog.entry.updated`, on `/v1/realtime` only: an entry or a translation's draft
          *     changed (created, saved, labels or image changed, scheduled, unscheduled), so an editor
          *     open on an older `version` can say it changed elsewhere and lists can refresh. Not
@@ -20069,7 +20620,11 @@ export interface components {
             /** @description Shown on the center's home page. */
             description: string;
             slug: components["schemas"]["HelpCenterSlug"];
-            /** @description The public home page, at the server's help URL. */
+            /**
+             * @description The public home page: on its own domain once that is verified (with
+             *     `YUVA_STATUS_DOMAINS=cloudflare`, once its custom hostname and certificate are both
+             *     `active`), else at the server's help URL.
+             */
             url: string;
             default_locale: components["schemas"]["LanguageTag"];
             /** @description The locales articles may be written and published in; the default locale is one of them. */
@@ -20093,6 +20648,8 @@ export interface components {
             /** @description The caller may publish and unpublish this center's articles. */
             can_publish: boolean;
             counts: components["schemas"]["HelpCenterCounts"];
+            custom_domain?: components["schemas"]["StatusCustomDomain"];
+            own_domains?: components["schemas"]["StatusOwnDomains"];
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
@@ -20129,6 +20686,29 @@ export interface components {
             /** @description Default `false`. */
             published?: boolean;
         };
+        /**
+         * @description `help.center.updated`, on `/v1/realtime` only: the center was edited, or its own domain changed state or
+         *     its Cloudflare hostname or certificate status moved. Not stored, no id, never replayed;
+         *     reload the center after it and after a reconnect. Reaches whoever holds `help:read` and sees
+         *     its inbox.
+         */
+        HelpCenterSignal: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "help.center.updated";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: {
+                /** Format: uuid */
+                center_id: string;
+            };
+        };
         HelpCenterUpdate: {
             name?: string;
             description?: string;
@@ -20146,6 +20726,16 @@ export interface components {
             analytics_property_id?: string | null;
             agents_may_publish?: boolean;
             published?: boolean;
+            /**
+             * @description A hostname such as `help.example.com`, `null` to remove it; the center then answers at `/` of
+             *     the domain once it is verified. The rules are a status page's `custom_domain`: not one of the
+             *     server's own hosts, not the verified domain of another status page, help center, roadmap
+             *     board or changelog (`409 domain_taken`), at most `YUVA_STATUS_DOMAIN_LIMIT` pages of any kind
+             *     in a workspace with a domain that is not `off` (`403 status_domain_limit`), and only
+             *     `null`, an empty string or the current domain when `YUVA_STATUS_DOMAINS` is `off`.
+             * @example help.example.com
+             */
+            custom_domain?: string | null;
         };
         /**
          * @description One of a fixed set of icons a collection shows.
@@ -21578,6 +22168,63 @@ export interface operations {
             403: components["responses"]["Problem"];
         };
     };
+    markMentionsSeen: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description How many mentions were marked. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MentionsSeen"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
+    markMentionSeen: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                noteId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The result, with the unseen mentions left. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MentionsSeen"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     getReaderAccount: {
         parameters: {
             query?: never;
@@ -21896,6 +22543,53 @@ export interface operations {
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             409: components["responses"]["Problem"];
+        };
+    };
+    listAuditLog: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Only entries by this member, API key or connected app (`actor.id`). A member's id also
+                 *     matches what they did through connected apps (`actor.member_id`).
+                 */
+                actor_id?: string;
+                /** @description Only entries by this kind of actor. */
+                actor_kind?: components["schemas"]["AuditActorKind"];
+                /**
+                 * @description Only these actions. Repeat the parameter (`action=api_key.created&action=api_key.revoked`)
+                 *     or give a comma-separated list.
+                 */
+                action?: components["schemas"]["AuditAction"][];
+                /** @description Only entries at or after this time. */
+                since?: string;
+                /** @description Only entries before this time. */
+                until?: string;
+                /** @description The `next_cursor` of the previous page. */
+                cursor?: components["parameters"]["Cursor"];
+                /** @description Page size, 1 to 100; 25 by default. */
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of entries. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditEntryPage"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
         };
     };
     createWorkspace: {
@@ -23501,7 +24195,14 @@ export interface operations {
     };
     getHome: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Length of the period in days, today included. */
+                days?: 7 | 14 | 30;
+                /** @description Only this inbox (`404` when the caller cannot see it). */
+                inbox_id?: string;
+                /** @description IANA time zone that defines the days of the period. */
+                timezone?: string;
+            };
             header?: {
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
@@ -23520,8 +24221,10 @@ export interface operations {
                     "application/json": components["schemas"]["Home"];
                 };
             };
+            400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
         };
     };
     getStats: {
