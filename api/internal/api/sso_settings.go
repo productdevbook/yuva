@@ -203,6 +203,11 @@ func (s *Server) SetSsoOidcProvider(ctx context.Context, req oas.SetSsoOidcProvi
 		} else if cur.Protocol != nil {
 			details["replaced"] = *cur.Protocol
 		}
+		if cur.Protocol != nil && (created || slices.ContainsFunc(fields, func(f string) bool { return f == "issuer" || f == "client_id" })) {
+			if err := s.endSSOProvider(ctx, q, p, cur.ID, details); err != nil {
+				return err
+			}
+		}
 		if err := s.audit(ctx, q, p, action, oas.AuditTargetSso, cur.ID, details); err != nil {
 			return err
 		}
@@ -229,6 +234,33 @@ func (s *Server) DeleteSsoSamlProvider(ctx context.Context, _ oas.DeleteSsoSamlP
 	return oas.DeleteSsoSamlProvider204Response{}, nil
 }
 
+// endSSOProvider ends what a replaced or removed identity provider made: its sessions (but the
+// caller's) and the OAuth grants approved with them; actions queued through it lose it, so the
+// sso_required gate stops them. The settings row keeps its id, so this is what tells an old
+// provider's sign-ins from the new one's.
+func (s *Server) endSSOProvider(ctx context.Context, q *store.Queries, p principal, settings uuid.UUID, details auditDetails) error {
+	arg := store.ForgetSsoOnLinkedRepliesParams{WorkspaceID: p.workspaceID, SettingsID: &settings}
+	n, err := q.DeleteSsoProviderSessions(ctx, store.DeleteSsoProviderSessionsParams{WorkspaceID: &p.workspaceID, SettingsID: &settings, Keep: p.sessionID})
+	if err != nil {
+		return err
+	}
+	g, err := q.RevokeSsoProviderGrants(ctx, store.RevokeSsoProviderGrantsParams{WorkspaceID: p.workspaceID, SettingsID: &settings, Now: s.now()})
+	if err != nil {
+		return err
+	}
+	if err := q.ForgetSsoOnLinkedReplies(ctx, arg); err != nil {
+		return err
+	}
+	if err := q.ForgetSsoOnIssueLinks(ctx, store.ForgetSsoOnIssueLinksParams(arg)); err != nil {
+		return err
+	}
+	if err := q.ForgetSsoOnStageChanges(ctx, store.ForgetSsoOnStageChangesParams(arg)); err != nil {
+		return err
+	}
+	details["sessions_ended"], details["grants_revoked"] = n, g
+	return nil
+}
+
 func (s *Server) deleteSSOProvider(ctx context.Context, protocol string) error {
 	p := principalFrom(ctx)
 	if err := requireOwner(p); err != nil {
@@ -242,7 +274,11 @@ func (s *Server) deleteSSOProvider(ctx context.Context, protocol string) error {
 		if err != nil {
 			return err
 		}
-		return s.audit(ctx, q, p, oas.AuditSsoProviderDeleted, oas.AuditTargetSso, set.ID, auditDetails{"protocol": protocol})
+		details := auditDetails{"protocol": protocol}
+		if err := s.endSSOProvider(ctx, q, p, set.ID, details); err != nil {
+			return err
+		}
+		return s.audit(ctx, q, p, oas.AuditSsoProviderDeleted, oas.AuditTargetSso, set.ID, details)
 	})
 }
 
@@ -371,6 +407,14 @@ func (s *Server) SetSsoSamlProvider(ctx context.Context, req oas.SetSsoSamlProvi
 			action, details["fields"] = oas.AuditSsoProviderUpdated, fields
 		} else if cur.Protocol != nil {
 			details["replaced"] = *cur.Protocol
+		}
+		replaced := slices.ContainsFunc(fields, func(f string) bool {
+			return f == "entity_id" || f == "sso_url" || f == "certificates" || f == "metadata_url"
+		})
+		if cur.Protocol != nil && (created || replaced) {
+			if err := s.endSSOProvider(ctx, q, p, cur.ID, details); err != nil {
+				return err
+			}
 		}
 		if err := s.audit(ctx, q, p, action, oas.AuditTargetSso, cur.ID, details); err != nil {
 			return err

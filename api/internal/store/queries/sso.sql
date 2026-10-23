@@ -146,3 +146,24 @@ RETURNING *;
 UPDATE sso_domains SET verified_at = NULL, missing_since = NULL
 WHERE workspace_id = @workspace_id AND id = @id AND verified_at IS NOT NULL AND missing_since <= @before::timestamptz
 RETURNING *;
+
+-- A replaced or removed identity provider: what it made ends (the caller's own session stays).
+-- name: DeleteSsoProviderSessions :execrows
+DELETE FROM sessions WHERE sso_workspace_id = @workspace_id AND sso_settings_id = @settings_id AND id <> @keep;
+
+-- name: RevokeSsoProviderGrants :execrows
+UPDATE oauth_grants SET revoked_at = @now::timestamptz
+WHERE workspace_id = @workspace_id AND sso_settings_id = @settings_id AND revoked_at IS NULL;
+
+-- name: ForgetSsoOnLinkedReplies :exec
+UPDATE linked_replies SET sso_settings_id = NULL WHERE workspace_id = @workspace_id AND sso_settings_id = @settings_id;
+
+-- name: ForgetSsoOnIssueLinks :exec
+UPDATE issue_links SET sso_settings_id = NULL WHERE workspace_id = @workspace_id AND sso_settings_id = @settings_id;
+
+-- name: ForgetSsoOnStageChanges :exec
+UPDATE roadmap_stage_changes SET sso_settings_id = NULL WHERE workspace_id = @workspace_id AND sso_settings_id = @settings_id;
+
+-- A deleted workspace gives its domain claims up at once, so another workspace may claim them.
+-- name: DeleteWorkspaceSsoDomains :execrows
+DELETE FROM sso_domains WHERE workspace_id = $1;

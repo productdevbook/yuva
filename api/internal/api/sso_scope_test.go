@@ -63,7 +63,7 @@ func TestSSOSessionTakeoverAcrossWorkspacesFails(t *testing.T) {
 		t.Fatal("an SSO sign-in accepted another workspace's invite")
 	}
 	me := attacker.expect(http.StatusOK, "GET", "/v1/me", nil)
-	if n := len(me.body["memberships"].([]any)); n != 2 {
+	if ms := me.body["memberships"].([]any); len(ms) != 1 || ms[0].(map[string]any)["workspace"].(map[string]any)["id"] != e.ws.WorkspaceID.String() {
 		t.Fatalf("memberships: %s", me.raw)
 	}
 	if n := h.count("SELECT count(*) FROM sessions s JOIN people p ON p.id = s.person_id WHERE p.email = $1 AND s.method = 'sso' AND s.user_agent IS NOT NULL", ceo); n != 1 {

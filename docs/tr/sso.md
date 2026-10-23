@@ -28,8 +28,13 @@ alan adlarınızdan birinde olmalıdır.
 Sağlayıcınız üzerinden yapılan giriş yalnızca sizin çalışma alanınızda (ve tartışma sayfalarında okur
 olarak) geçerlidir. Başka çalışma alanlarının da üyesi olan biri oralara e-postayla gelen bir kodla ya
 da geçiş anahtarıyla girer; başka bir çalışma alanını açtığında panel bunu ister. Böyle bir giriş
-geçiş anahtarı ekleyemez ya da kaldıramaz, çalışma alanı oluşturamaz, hesabı silemez
-(`sso_session_scope`) ve yalnızca sizin çalışma alanınızın davetlerini kabul eder. Yuva 0.1.0'a kadar
+geçiş anahtarı ekleyemez ya da kaldıramaz, çalışma alanı oluşturamaz, hesabı silemez, kişinin
+adını, dilini ya da müsaitliğini değiştiremez, diğer oturumlarını kapatamaz, diğer cihazlarının
+bildirimlerine dokunamaz (`sso_session_scope`) ve yalnızca sizin çalışma alanınızın davetlerini
+kabul eder. Sağlayıcınızı değiştirmek (başka protokol, issuer ya da client id, ya da başka bir SAML
+varlığı, giriş adresi, sertifikalar veya metadata adresi) ya da kaldırmak, onun üzerinden giriş
+yapan herkesin oturumunu kapatır ve böyle onaylanan bağlı uygulamaları geri alır. Çalışma alanını
+silmek alan adlarını hemen serbest bırakır. Yuva 0.1.0'a kadar
 bir sağlayıcı üzerinden giriş kişinin bütün çalışma alanlarında geçerliydi; artık değil, böylece bir
 çalışma alanının kimlik sağlayıcısını yöneten kişi birinin adına onun diğer çalışma alanlarında iş
 yapamaz.

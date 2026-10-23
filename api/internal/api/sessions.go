@@ -16,6 +16,9 @@ func (s *Server) ListSessions(ctx context.Context, _ oas.ListSessionsRequestObje
 	}
 	out := oas.ListSessions200JSONResponse{Items: make([]oas.Session, 0, len(rows))}
 	for _, r := range rows {
+		if p.ssoWorkspace != nil && r.ID != p.sessionID {
+			continue
+		}
 		item := oas.Session{
 			Id: r.ID, Method: oas.SessionMethod(r.Method), Current: r.ID == p.sessionID, UserAgent: r.UserAgent,
 			CreatedAt: r.CreatedAt, LastSeenAt: r.LastSeenAt, ExpiresAt: r.ExpiresAt,
@@ -30,6 +33,9 @@ func (s *Server) ListSessions(ctx context.Context, _ oas.ListSessionsRequestObje
 
 func (s *Server) DeleteOtherSessions(ctx context.Context, _ oas.DeleteOtherSessionsRequestObject) (oas.DeleteOtherSessionsResponseObject, error) {
 	p := principalFrom(ctx)
+	if err := p.ssoScope(nil); err != nil {
+		return nil, err
+	}
 	n, err := s.st.DeleteOtherSessions(ctx, store.DeleteOtherSessionsParams{PersonID: p.personID, Keep: p.sessionID})
 	if err != nil {
 		return nil, err

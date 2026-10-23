@@ -162,6 +162,35 @@ func (q *Queries) GetPushSubscription(ctx context.Context, arg GetPushSubscripti
 	return i, err
 }
 
+const getPushSubscriptionByEndpoint = `-- name: GetPushSubscriptionByEndpoint :one
+SELECT id, person_id, session_id, endpoint, p256dh, auth, user_agent, created_at, updated_at, last_success_at, last_failure_at, last_error FROM push_subscriptions WHERE person_id = $1 AND endpoint = $2
+`
+
+type GetPushSubscriptionByEndpointParams struct {
+	PersonID uuid.UUID
+	Endpoint string
+}
+
+func (q *Queries) GetPushSubscriptionByEndpoint(ctx context.Context, arg GetPushSubscriptionByEndpointParams) (PushSubscription, error) {
+	row := q.db.QueryRow(ctx, getPushSubscriptionByEndpoint, arg.PersonID, arg.Endpoint)
+	var i PushSubscription
+	err := row.Scan(
+		&i.ID,
+		&i.PersonID,
+		&i.SessionID,
+		&i.Endpoint,
+		&i.P256dh,
+		&i.Auth,
+		&i.UserAgent,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.LastSuccessAt,
+		&i.LastFailureAt,
+		&i.LastError,
+	)
+	return i, err
+}
+
 const listInboxNotifications = `-- name: ListInboxNotifications :many
 SELECT n.workspace_id, n.member_id, n.inbox_id, n.events, n.updated_at FROM inbox_notifications n
 WHERE n.workspace_id = $1 AND n.member_id = $2

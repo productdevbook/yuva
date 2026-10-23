@@ -263,7 +263,8 @@ export interface paths {
         };
         /**
          * The signed-in person
-         * @description The person behind the session and the workspaces they belong to.
+         * @description The person behind the session and the workspaces they belong to; for a session made through
+         *     single sign-on only the workspace that made it.
          */
         get: operations["getMe"];
         put?: never;
@@ -283,7 +284,11 @@ export interface paths {
         delete: operations["deleteMe"];
         options?: never;
         head?: never;
-        /** Update the signed-in person */
+        /**
+         * Update the signed-in person
+         * @description Name, locale and availability belong to the person in every workspace, so a session made
+         *     through single sign-on is refused with `403 sso_session_scope`.
+         */
         patch: operations["updateMe"];
         trace?: never;
     };
@@ -365,7 +370,7 @@ export interface paths {
          * List sign-in sessions
          * @description The signed-in person's live sessions in the panel and the member apps, most recently seen
          *     first. `current` marks the one making this request. Needs a member session: keys and tokens get
-         *     `403 member_session_required`.
+         *     `403 member_session_required`. A session made through single sign-on lists only itself.
          */
         get: operations["listSessions"];
         put?: never;
@@ -375,6 +380,7 @@ export interface paths {
          * @description Ends every session of the signed-in person except the one making this request, with their
          *     push subscriptions and reader tokens; their live updates close within a minute. Needs a member
          *     session: keys and tokens get `403 member_session_required`. Removing a passkey does the same.
+         *     A session made through single sign-on is refused with `403 sso_session_scope`.
          */
         delete: operations["deleteOtherSessions"];
         options?: never;
@@ -413,7 +419,8 @@ export interface paths {
         };
         /**
          * List push subscriptions
-         * @description The signed-in person's push subscriptions, newest first.
+         * @description The signed-in person's push subscriptions, newest first. A session made through single sign-on lists
+         *     only the subscriptions it registered.
          */
         get: operations["listPushSubscriptions"];
         put?: never;
@@ -425,7 +432,8 @@ export interface paths {
          *     saved by another person is never taken over: 409 `push_endpoint_taken`. Signing out or
          *     removing the subscription frees the endpoint. The endpoint must be an `https` URL on a
          *     public address. At most 20 subscriptions per person. 404 `push_disabled` when the server
-         *     has no VAPID keys.
+         *     has no VAPID keys. A session made through single sign-on cannot move an endpoint another session of
+         *     the person registered (`403 sso_session_scope`).
          */
         post: operations["createPushSubscription"];
         delete?: never;
@@ -446,7 +454,8 @@ export interface paths {
         post?: never;
         /**
          * Remove a push subscription
-         * @description Call it before `PushSubscription.unsubscribe()` when the member turns push off.
+         * @description Call it before `PushSubscription.unsubscribe()` when the member turns push off. A session made through single sign-on
+         *     removes only the subscriptions it registered (`403 sso_session_scope`).
          */
         delete: operations["deletePushSubscription"];
         options?: never;
@@ -466,7 +475,8 @@ export interface paths {
         /**
          * Send a test notification
          * @description Queues a test notification to the subscription and returns its payload. The outcome shows
-         *     up as `last_success_at` or `last_error` on the subscription.
+         *     up as `last_success_at` or `last_error` on the subscription. A session made through single sign-on tests
+         *     only the subscriptions it registered (`403 sso_session_scope`).
          */
         post: operations["testPushSubscription"];
         delete?: never;
@@ -626,7 +636,8 @@ export interface paths {
          * Change the reader name or e-mail settings
          * @description `name` is the person's name (the same as `PATCH /v1/me`), shown on their posts; an empty name
          *     shows them as "Reader". `email_notifications` turns e-mails about followed threads on or off
-         *     for every workspace; in-app notifications stay.
+         *     for every workspace; in-app notifications stay. A session made through single sign-on cannot
+         *     change `name` (`403 sso_session_scope`).
          */
         patch: operations["updateReaderAccount"];
         trace?: never;
@@ -795,7 +806,8 @@ export interface paths {
          *     nothing more is sent to them. A background job then deletes everything else in batches:
          *     conversations, messages, attachments and raw e-mails with their stored files, contacts,
          *     inboxes, channels, members, invites and settings. People keep their account; members left
-         *     with no other workspace lose their push subscriptions.
+         *     with no other workspace lose their push subscriptions. Its single sign-on domain claims are
+         *     removed at once, so another workspace may claim them.
          */
         delete: operations["deleteWorkspace"];
         options?: never;
@@ -928,15 +940,18 @@ export interface paths {
          *     client secret is stored encrypted and never returned; leave it out to keep the stored
          *     one (required the first time). Register `redirect_uri` from `GET /v1/sso` at the
          *     provider. Owners only, with a member session; recorded as `sso.provider_created` or
-         *     `sso.provider_updated`.
+         *     `sso.provider_updated`. Replacing a SAML provider or changing `issuer` or `client_id` ends
+         *     the sessions made through the old provider (except the caller's), revokes the OAuth grants
+         *     approved with them, and actions they queued then need the new provider like any other.
          */
         put: operations["setSsoOidcProvider"];
         post?: never;
         /**
          * Remove the OpenID Connect provider
          * @description Removes the OpenID Connect provider (`404` when the workspace uses SAML or none) and turns
-         *     `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
-         *     `sso.provider_deleted`.
+         *     `sso_required` off; claimed domains stay. Sessions made through it end (except the caller's)
+         *     and the OAuth grants approved with them are revoked. Owners only, with a member session;
+         *     recorded as `sso.provider_deleted`.
          */
         delete: operations["deleteSsoOidcProvider"];
         options?: never;
@@ -970,15 +985,19 @@ export interface paths {
          *     other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
          *     ACS URL (HTTP-POST), NameID format `emailAddress`, or load its `metadata_url`. Owners
          *     only, with a member session; recorded as `sso.provider_created` (also when it replaces
-         *     the other protocol) or `sso.provider_updated`.
+         *     the other protocol) or `sso.provider_updated`. Replacing an OpenID Connect provider, or
+         *     changing the entity id, single sign-on URL, certificates or metadata URL, ends the sessions
+         *     made through the old provider (except the caller's) and revokes the OAuth grants approved
+         *     with them; a certificate change found by the automatic metadata refresh does not.
          */
         put: operations["setSsoSamlProvider"];
         post?: never;
         /**
          * Remove the SAML identity provider
          * @description Removes the SAML provider (`404` when the workspace uses OpenID Connect or none) and turns
-         *     `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
-         *     `sso.provider_deleted`.
+         *     `sso_required` off; claimed domains stay. Sessions made through it end (except the caller's)
+         *     and the OAuth grants approved with them are revoked. Owners only, with a member session;
+         *     recorded as `sso.provider_deleted`.
          */
         delete: operations["deleteSsoSamlProvider"];
         options?: never;
@@ -12207,6 +12226,8 @@ export interface components {
          *     - `list.consent_exported`: `name`, `format`, `started`.
          *     - `analytics_export.created`: `property_id`, `kind`, `format`.
          *     - `workspace.retention_changed`: `from`, `to` (days; `null` keeps everything).
+         *     - `workspace.bots_may_send_changed`, `workspace.broadcasts_by_keys_changed`: `from`, `to`
+         *       (booleans).
          *     - `workspace.broadcast_approval_requested`: none. `workspace.broadcasts_approved`,
          *       `workspace.broadcasts_denied`: `reason` when the operator gave one.
          *       `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).
@@ -12222,7 +12243,8 @@ export interface components {
          *       `groups_attribute` and `allowed_groups`. `sso.provider_created` names `replaced` (the
          *       other protocol) when it replaced a provider. A change found when SAML metadata is
          *       fetched again at a sign-in is `sso.provider_updated` by `system` with `via:
-         *       metadata_refresh`. `sso.provider_deleted`: `protocol`.
+         *       metadata_refresh`. `sso.provider_deleted`: `protocol`. When the change ended the old
+         *       provider's sessions, `sessions_ended` and `grants_revoked` count them.
          *     - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
          *       `sso_required`, `jit` and `jit_role`; `sessions_revoked`, the sessions ended, when
          *       `sso_required` was turned on.
@@ -12256,7 +12278,7 @@ export interface components {
          *     More actions are added over time; show an unknown one by its name.
          * @enum {string}
          */
-        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "sso_domain.lapsed" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted";
+        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.bots_may_send_changed" | "workspace.broadcasts_by_keys_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "sso_domain.lapsed" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted";
         /** @enum {string} */
         AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "message" | "team" | "sso" | "sso_domain" | "issue_integration" | "automation_rule";
         AuditTarget: {
@@ -26368,6 +26390,7 @@ export interface operations {
             };
             400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
         };
     };
     listPasskeys: {
@@ -26575,6 +26598,7 @@ export interface operations {
             };
             400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
             409: components["responses"]["Problem"];
         };
@@ -26598,6 +26622,7 @@ export interface operations {
                 content?: never;
             };
             401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
         };
     };
@@ -26622,6 +26647,7 @@ export interface operations {
                 };
             };
             401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
         };
     };
@@ -26872,6 +26898,7 @@ export interface operations {
             };
             400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
         };
     };
     createReaderToken: {

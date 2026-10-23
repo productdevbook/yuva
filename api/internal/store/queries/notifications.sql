@@ -56,6 +56,9 @@ SELECT count(*) FROM push_subscriptions WHERE person_id = @person_id AND endpoin
 -- name: ListPushSubscriptions :many
 SELECT * FROM push_subscriptions WHERE person_id = $1 ORDER BY created_at DESC, id DESC;
 
+-- name: GetPushSubscriptionByEndpoint :one
+SELECT * FROM push_subscriptions WHERE person_id = @person_id AND endpoint = @endpoint;
+
 -- name: GetPushSubscription :one
 SELECT * FROM push_subscriptions WHERE person_id = $1 AND id = $2;
 

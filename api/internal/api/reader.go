@@ -53,6 +53,9 @@ func (s *Server) UpdateReaderAccount(ctx context.Context, req oas.UpdateReaderAc
 		return nil, errValidation("send name or email_notifications")
 	}
 	if b.Name != nil {
+		if err := principalFrom(ctx).ssoScope(nil); err != nil {
+			return nil, err
+		}
 		name, err := trimmed(*b.Name, 0, 200, "name")
 		if err != nil {
 			return nil, err

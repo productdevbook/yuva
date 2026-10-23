@@ -3922,7 +3922,8 @@ and audit; `sso_settings.protocol` (`oidc` or `saml`) says which one, so a works
   verified domain is unique across the server (partial unique index): a domain another workspace
   verified answers `409 domain_taken` when added or verified; pending claims may overlap. Only the
   exact domain is claimed, not subdomains. At most 50 per workspace. Removing the last verified one
-  turns `sso_required` off.
+  turns `sso_required` off. Deleting the workspace deletes its claims in the same transaction, so a
+  workspace waiting for its purge never holds a domain.
 - **Daily re-check** (migration 00122, #180): a verified claim no longer stays forever, since a
   domain that changes hands would otherwise keep its old owner's claim (and its sign-ins) and block
   the new one. The periodic `sso_domain_sweep` (hourly, default queue) lists the verified domains
@@ -3968,9 +3969,20 @@ and audit; `sso_settings.protocol` (`oidc` or `saml`) says which one, so a works
   workspace is refused the same way (the consent page lists only the session's workspace), and a
   grant whose `sso_settings_id` is not its own workspace's (approved that way before) no longer
   authenticates. Actions for the whole person are refused from an `sso` session with `403
-  sso_session_scope`: adding or removing a passkey, creating a workspace and deleting the account;
-  reader tokens are issued only for the session's workspace's channels. Web Push from another
-  workspace skips subscriptions made under such a session. Owners keep their break-glass: a code
+  sso_session_scope`: adding or removing a passkey, creating a workspace, deleting the account,
+  `PATCH /v1/me` (name, locale and availability are the person's in every workspace), a reader
+  `name` in `PATCH /v1/account`, and `DELETE /v1/me/sessions`. It reads only its own part of the
+  person: `GET /v1/me` lists only its workspace, `GET /v1/me/sessions` only itself, and the push
+  subscription endpoints list, remove and test only the subscriptions it registered and refuse to
+  move an endpoint another session registered. Reader tokens are issued only for the session's
+  workspace's channels. Web Push from another workspace skips subscriptions made under such a
+  session. The `sso_settings` row keeps its id when the provider changes, so replacing the provider
+  (another protocol, `issuer` or `client_id`, or SAML `entity_id`, single sign-on URL, certificates
+  or metadata URL saved by an owner) or removing it deletes the sessions made through it (except
+  the caller's), revokes the OAuth grants approved with them and clears `sso_settings_id` on queued
+  actions, so they need the new provider like any other; `sessions_ended` and `grants_revoked`
+  count them in the audit entry. A certificate change found by the automatic metadata refresh is
+  the same provider and ends nothing. Owners keep their break-glass: a code
   or passkey session is still the person's, and `sso_required` never refuses an owner.
 - **Notices**: the person gets `sso_first_sign_in` the first time they sign in to a workspace
   through its provider (`sso_sign_ins`, one row per workspace and person, filled from existing

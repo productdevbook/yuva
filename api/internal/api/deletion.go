@@ -106,6 +106,9 @@ func (s *Server) closeWorkspace(ctx context.Context, p principal) error {
 		if _, err := q.DeleteWorkspaceWebhookEndpoints(ctx, workspaceID); err != nil {
 			return err
 		}
+		if _, err := q.DeleteWorkspaceSsoDomains(ctx, workspaceID); err != nil {
+			return err
+		}
 		if _, err := q.DeleteLonelyMembersPushSubscriptions(ctx, workspaceID); err != nil {
 			return err
 		}

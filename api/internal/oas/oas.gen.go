@@ -9920,7 +9920,8 @@ type Attributes map[string]interface{}
 //     `groups_attribute` and `allowed_groups`. `sso.provider_created` names `replaced` (the
 //     other protocol) when it replaced a provider. A change found when SAML metadata is
 //     fetched again at a sign-in is `sso.provider_updated` by `system` with `via:
-//     metadata_refresh`. `sso.provider_deleted`: `protocol`.
+//     metadata_refresh`. `sso.provider_deleted`: `protocol`. When the change ended the old
+//     provider's sessions, `sessions_ended` and `grants_revoked` count them.
 //   - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
 //     `sso_required`, `jit` and `jit_role`; `sessions_revoked`, the sessions ended, when
 //     `sso_required` was turned on.
@@ -10035,7 +10036,8 @@ type AuditEntry struct {
 	//   `groups_attribute` and `allowed_groups`. `sso.provider_created` names `replaced` (the
 	//   other protocol) when it replaced a provider. A change found when SAML metadata is
 	//   fetched again at a sign-in is `sso.provider_updated` by `system` with `via:
-	//   metadata_refresh`. `sso.provider_deleted`: `protocol`.
+	//   metadata_refresh`. `sso.provider_deleted`: `protocol`. When the change ended the old
+	//   provider's sessions, `sessions_ended` and `grants_revoked` count them.
 	// - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
 	//   `sso_required`, `jit` and `jit_role`; `sessions_revoked`, the sessions ended, when
 	//   `sso_required` was turned on.
@@ -73023,6 +73025,20 @@ func (response UpdateReaderAccount401ApplicationProblemPlusJSONResponse) VisitUp
 	return err
 }
 
+type UpdateReaderAccount403ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateReaderAccount403ApplicationProblemPlusJSONResponse) VisitUpdateReaderAccountResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type ListReaderDiscussionsRequestObject struct {
 	Params ListReaderDiscussionsParams
 }
@@ -96653,6 +96669,20 @@ func (response UpdateMe401ApplicationProblemPlusJSONResponse) VisitUpdateMeRespo
 	return err
 }
 
+type UpdateMe403ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateMe403ApplicationProblemPlusJSONResponse) VisitUpdateMeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type ListMentionsRequestObject struct {
 	Params ListMentionsParams
 }
@@ -97417,6 +97447,20 @@ func (response CreatePushSubscription401ApplicationProblemPlusJSONResponse) Visi
 	return err
 }
 
+type CreatePushSubscription403ApplicationProblemPlusJSONResponse Problem
+
+func (response CreatePushSubscription403ApplicationProblemPlusJSONResponse) VisitCreatePushSubscriptionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type CreatePushSubscription404ApplicationProblemPlusJSONResponse Problem
 
 func (response CreatePushSubscription404ApplicationProblemPlusJSONResponse) VisitCreatePushSubscriptionResponse(w http.ResponseWriter) error {
@@ -97477,6 +97521,20 @@ func (response DeletePushSubscription401ApplicationProblemPlusJSONResponse) Visi
 	return err
 }
 
+type DeletePushSubscription403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeletePushSubscription403ApplicationProblemPlusJSONResponse) VisitDeletePushSubscriptionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type DeletePushSubscription404ApplicationProblemPlusJSONResponse Problem
 
 func (response DeletePushSubscription404ApplicationProblemPlusJSONResponse) VisitDeletePushSubscriptionResponse(w http.ResponseWriter) error {
@@ -97525,6 +97583,20 @@ func (response TestPushSubscription401ApplicationProblemPlusJSONResponse) VisitT
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type TestPushSubscription403ApplicationProblemPlusJSONResponse Problem
+
+func (response TestPushSubscription403ApplicationProblemPlusJSONResponse) VisitTestPushSubscriptionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
 	_, err := buf.WriteTo(w)
 	return err
 }

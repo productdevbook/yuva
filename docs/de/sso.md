@@ -28,8 +28,13 @@ tragen, und die Adresse muss in einer Ihrer verifizierten Domains liegen.
 Eine Anmeldung über Ihren Anbieter gilt nur in Ihrem Workspace (und auf Diskussionsseiten als Leser).
 Wer auch Mitglied anderer Workspaces ist, meldet sich dort mit einem per E-Mail gesendeten Code oder
 einem Passkey an; öffnet die Person einen anderen Workspace, fordert das Panel sie dazu auf. Eine
-solche Anmeldung kann keine Passkeys hinzufügen oder entfernen, keinen Workspace anlegen und das Konto
-nicht löschen (`sso_session_scope`), und sie nimmt nur Einladungen Ihres Workspaces an. Bis Yuva 0.1.0
+solche Anmeldung kann keine Passkeys hinzufügen oder entfernen, keinen Workspace anlegen, das Konto
+nicht löschen, Name, Sprache oder Verfügbarkeit der Person nicht ändern, ihre anderen Sitzungen
+nicht beenden und die Benachrichtigungen ihrer anderen Geräte nicht anfassen (`sso_session_scope`),
+und sie nimmt nur Einladungen Ihres Workspaces an. Wer Ihren Anbieter ersetzt (anderes Protokoll,
+anderer Issuer oder Client-ID, andere SAML-Entität, Anmelde-URL, Zertifikate oder Metadaten-URL) oder
+entfernt, meldet alle ab, die sich darüber angemeldet haben, und widerruft die so genehmigten
+verbundenen Apps. Das Löschen des Workspaces gibt seine Domains sofort frei. Bis Yuva 0.1.0
 galt eine Anmeldung über einen Anbieter für alle Workspaces der Person; das ist nicht mehr so, damit
 niemand, der den Identitätsanbieter eines Workspaces betreibt, in den anderen Workspaces einer Person
 als diese handeln kann.

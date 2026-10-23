@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"slices"
 	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
@@ -42,14 +43,21 @@ func (s *Server) buildMe(ctx context.Context, q *store.Queries, personID uuid.UU
 }
 
 func (s *Server) GetMe(ctx context.Context, _ oas.GetMeRequestObject) (oas.GetMeResponseObject, error) {
-	me, err := s.buildMe(ctx, s.st.Queries, principalFrom(ctx).personID)
+	p := principalFrom(ctx)
+	me, err := s.buildMe(ctx, s.st.Queries, p.personID)
 	if err != nil {
 		return nil, err
+	}
+	if p.ssoWorkspace != nil {
+		me.Memberships = slices.DeleteFunc(me.Memberships, func(m oas.Membership) bool { return m.Workspace.Id != *p.ssoWorkspace })
 	}
 	return oas.GetMe200JSONResponse(me), nil
 }
 
 func (s *Server) UpdateMe(ctx context.Context, req oas.UpdateMeRequestObject) (oas.UpdateMeResponseObject, error) {
+	if err := principalFrom(ctx).ssoScope(nil); err != nil {
+		return nil, err
+	}
 	b := req.Body
 	if b.Name == nil && b.Locale == nil && b.Availability == nil {
 		return nil, errValidation("send name, locale or availability")

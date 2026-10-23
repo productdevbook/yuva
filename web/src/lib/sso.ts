@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react"
 
-import { api, ApiError, unwrap } from "@/lib/api"
+import { api, ApiError, currentWorkspace, unwrap } from "@/lib/api"
 
 export type SsoPrompt = { kind: "required"; email: string } | { kind: "scope"; workspaceId: string }
 
@@ -18,7 +18,11 @@ export function noteSsoRequired(err: unknown) {
   if (err.code === "sso_required" && body?.sso_email) {
     if (prompt?.kind !== "required" || prompt.email !== body.sso_email)
       show({ kind: "required", email: body.sso_email })
-  } else if (err.code === "sso_session_scope" && body?.sso_workspace_id) {
+  } else if (
+    err.code === "sso_session_scope" &&
+    body?.sso_workspace_id &&
+    body.sso_workspace_id !== currentWorkspace()
+  ) {
     if (prompt?.kind !== "scope" || prompt.workspaceId !== body.sso_workspace_id) {
       show({ kind: "scope", workspaceId: body.sso_workspace_id })
     }

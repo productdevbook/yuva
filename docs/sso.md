@@ -27,8 +27,12 @@ one of your verified domains.
 A sign-in through your provider works only in your workspace (and on discussion pages as a reader).
 Someone who is also a member of other workspaces signs in there with an e-mailed code or a passkey;
 when they open another workspace, the panel asks them to. Such a sign-in cannot add or remove
-passkeys, create a workspace or delete the account (`sso_session_scope`), and it accepts only your
-workspace's invitations. Until Yuva 0.1.0 a sign-in through a provider counted for every workspace of
+passkeys, create a workspace, delete the account, change the person's name, language or
+availability, sign out their other sessions or touch their other devices' notifications
+(`sso_session_scope`), and it accepts only your workspace's invitations. Replacing your provider
+(another protocol, issuer or client id, or another SAML entity, sign-on URL, certificates or
+metadata URL) or removing it signs out everyone who signed in through it and revokes the
+connected apps they approved that way. Deleting the workspace releases its domains at once. Until Yuva 0.1.0 a sign-in through a provider counted for every workspace of
 the person; it no longer does, so that whoever runs one workspace's identity provider cannot act as
 someone in their other workspaces.
 

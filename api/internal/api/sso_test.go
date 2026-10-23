@@ -413,8 +413,7 @@ func TestSSORequiredGatesWorkspaceAccess(t *testing.T) {
 	if got.body["sso_required"] != false || got.body["oidc"] != nil || len(got.body["domains"].([]any)) != 1 {
 		t.Fatalf("after provider removed: %s", got.raw)
 	}
-	viaSSO.workspace = e.ws.WorkspaceID.String()
-	viaSSO.expect(http.StatusOK, "GET", "/v1/inboxes", nil)
+	viaSSO.expectProblem(http.StatusUnauthorized, "unauthenticated", "GET", "/v1/me", nil)
 	fresh.expectProblem(http.StatusUnauthorized, "unauthenticated", "GET", "/v1/me", nil)
 	again := e.h.client()
 	again.signIn(agentEmail)

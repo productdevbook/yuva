@@ -450,6 +450,10 @@ export function setWorkspace(id: string | null) {
   workspaceId = id
 }
 
+export function currentWorkspace() {
+  return workspaceId
+}
+
 export const api = createClient<paths>({ baseUrl: window.location.origin, credentials: "same-origin" })
 
 api.use({

@@ -184,6 +184,38 @@ func (q *Queries) DeleteSsoDomain(ctx context.Context, arg DeleteSsoDomainParams
 	return i, err
 }
 
+const deleteSsoProviderSessions = `-- name: DeleteSsoProviderSessions :execrows
+DELETE FROM sessions WHERE sso_workspace_id = $1 AND sso_settings_id = $2 AND id <> $3
+`
+
+type DeleteSsoProviderSessionsParams struct {
+	WorkspaceID *uuid.UUID
+	SettingsID  *uuid.UUID
+	Keep        uuid.UUID
+}
+
+// A replaced or removed identity provider: what it made ends (the caller's own session stays).
+func (q *Queries) DeleteSsoProviderSessions(ctx context.Context, arg DeleteSsoProviderSessionsParams) (int64, error) {
+	result, err := q.db.Exec(ctx, deleteSsoProviderSessions, arg.WorkspaceID, arg.SettingsID, arg.Keep)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
+const deleteWorkspaceSsoDomains = `-- name: DeleteWorkspaceSsoDomains :execrows
+DELETE FROM sso_domains WHERE workspace_id = $1
+`
+
+// A deleted workspace gives its domain claims up at once, so another workspace may claim them.
+func (q *Queries) DeleteWorkspaceSsoDomains(ctx context.Context, workspaceID uuid.UUID) (int64, error) {
+	result, err := q.db.Exec(ctx, deleteWorkspaceSsoDomains, workspaceID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
 const findSsoByDomain = `-- name: FindSsoByDomain :one
 SELECT s.workspace_id, s.id, s.protocol, s.oidc_issuer, s.oidc_client_id, s.oidc_client_secret, s.oidc_scopes, s.groups_claim, s.allowed_groups, s.sso_required, s.jit, s.jit_role, s.created_at, s.updated_at, s.saml_entity_id, s.saml_sso_url, s.saml_certificates, s.saml_metadata_url, s.saml_metadata_at, s.saml_metadata_tried_at, s.saml_email_attribute FROM sso_domains d
 JOIN sso_settings s ON s.workspace_id = d.workspace_id
@@ -219,6 +251,48 @@ func (q *Queries) FindSsoByDomain(ctx context.Context, domain string) (SsoSettin
 		&i.SamlEmailAttribute,
 	)
 	return i, err
+}
+
+const forgetSsoOnIssueLinks = `-- name: ForgetSsoOnIssueLinks :exec
+UPDATE issue_links SET sso_settings_id = NULL WHERE workspace_id = $1 AND sso_settings_id = $2
+`
+
+type ForgetSsoOnIssueLinksParams struct {
+	WorkspaceID uuid.UUID
+	SettingsID  *uuid.UUID
+}
+
+func (q *Queries) ForgetSsoOnIssueLinks(ctx context.Context, arg ForgetSsoOnIssueLinksParams) error {
+	_, err := q.db.Exec(ctx, forgetSsoOnIssueLinks, arg.WorkspaceID, arg.SettingsID)
+	return err
+}
+
+const forgetSsoOnLinkedReplies = `-- name: ForgetSsoOnLinkedReplies :exec
+UPDATE linked_replies SET sso_settings_id = NULL WHERE workspace_id = $1 AND sso_settings_id = $2
+`
+
+type ForgetSsoOnLinkedRepliesParams struct {
+	WorkspaceID uuid.UUID
+	SettingsID  *uuid.UUID
+}
+
+func (q *Queries) ForgetSsoOnLinkedReplies(ctx context.Context, arg ForgetSsoOnLinkedRepliesParams) error {
+	_, err := q.db.Exec(ctx, forgetSsoOnLinkedReplies, arg.WorkspaceID, arg.SettingsID)
+	return err
+}
+
+const forgetSsoOnStageChanges = `-- name: ForgetSsoOnStageChanges :exec
+UPDATE roadmap_stage_changes SET sso_settings_id = NULL WHERE workspace_id = $1 AND sso_settings_id = $2
+`
+
+type ForgetSsoOnStageChangesParams struct {
+	WorkspaceID uuid.UUID
+	SettingsID  *uuid.UUID
+}
+
+func (q *Queries) ForgetSsoOnStageChanges(ctx context.Context, arg ForgetSsoOnStageChangesParams) error {
+	_, err := q.db.Exec(ctx, forgetSsoOnStageChanges, arg.WorkspaceID, arg.SettingsID)
+	return err
 }
 
 const getSsoDomain = `-- name: GetSsoDomain :one
@@ -643,6 +717,25 @@ type RelaxSsoWithoutDomainsParams struct {
 
 func (q *Queries) RelaxSsoWithoutDomains(ctx context.Context, arg RelaxSsoWithoutDomainsParams) (int64, error) {
 	result, err := q.db.Exec(ctx, relaxSsoWithoutDomains, arg.Now, arg.WorkspaceID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
+const revokeSsoProviderGrants = `-- name: RevokeSsoProviderGrants :execrows
+UPDATE oauth_grants SET revoked_at = $1::timestamptz
+WHERE workspace_id = $2 AND sso_settings_id = $3 AND revoked_at IS NULL
+`
+
+type RevokeSsoProviderGrantsParams struct {
+	Now         time.Time
+	WorkspaceID uuid.UUID
+	SettingsID  *uuid.UUID
+}
+
+func (q *Queries) RevokeSsoProviderGrants(ctx context.Context, arg RevokeSsoProviderGrantsParams) (int64, error) {
+	result, err := q.db.Exec(ctx, revokeSsoProviderGrants, arg.Now, arg.WorkspaceID, arg.SettingsID)
 	if err != nil {
 		return 0, err
 	}

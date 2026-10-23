@@ -60,9 +60,12 @@ func (s *Server) ListPushSubscriptions(ctx context.Context, _ oas.ListPushSubscr
 	if err != nil {
 		return nil, err
 	}
-	out := oas.ListPushSubscriptions200JSONResponse{Items: make([]oas.PushSubscription, len(rows))}
-	for i, r := range rows {
-		out.Items[i] = pushSubscriptionBody(r, p.sessionID)
+	out := oas.ListPushSubscriptions200JSONResponse{Items: make([]oas.PushSubscription, 0, len(rows))}
+	for _, r := range rows {
+		if p.ssoWorkspace != nil && r.SessionID != p.sessionID {
+			continue
+		}
+		out.Items = append(out.Items, pushSubscriptionBody(r, p.sessionID))
 	}
 	return out, nil
 }
@@ -98,6 +101,15 @@ func (s *Server) CreatePushSubscription(ctx context.Context, req oas.CreatePushS
 		if n >= maxPushSubscriptions {
 			return errValidation("at most 20 push subscriptions; remove one first")
 		}
+		if p.ssoWorkspace != nil {
+			cur, err := q.GetPushSubscriptionByEndpoint(ctx, store.GetPushSubscriptionByEndpointParams{PersonID: p.personID, Endpoint: u.String()})
+			if err == nil && cur.SessionID != p.sessionID {
+				return p.ssoScope(nil)
+			}
+			if err != nil && !store.IsNotFound(err) {
+				return err
+			}
+		}
 		out, err = q.UpsertPushSubscription(ctx, store.UpsertPushSubscriptionParams{
 			ID: newID(), PersonID: p.personID, SessionID: p.sessionID, Endpoint: u.String(),
 			P256dh: b.Keys.P256dh, Auth: b.Keys.Auth, UserAgent: agent, Now: s.now(),
@@ -114,7 +126,11 @@ func (s *Server) CreatePushSubscription(ctx context.Context, req oas.CreatePushS
 }
 
 func (s *Server) DeletePushSubscription(ctx context.Context, req oas.DeletePushSubscriptionRequestObject) (oas.DeletePushSubscriptionResponseObject, error) {
-	n, err := s.st.DeletePushSubscription(ctx, store.DeletePushSubscriptionParams{PersonID: principalFrom(ctx).personID, ID: req.PushSubscriptionId})
+	p := principalFrom(ctx)
+	if err := s.ownPushSubscription(ctx, p, req.PushSubscriptionId); err != nil {
+		return nil, err
+	}
+	n, err := s.st.DeletePushSubscription(ctx, store.DeletePushSubscriptionParams{PersonID: p.personID, ID: req.PushSubscriptionId})
 	if err != nil {
 		return nil, err
 	}
@@ -122,6 +138,25 @@ func (s *Server) DeletePushSubscription(ctx context.Context, req oas.DeletePushS
 		return nil, errNotFound
 	}
 	return oas.DeletePushSubscription204Response{}, nil
+}
+
+// ownPushSubscription lets a session made through single sign-on touch only the subscriptions it
+// made: the others are the person's devices for every workspace.
+func (s *Server) ownPushSubscription(ctx context.Context, p principal, id uuid.UUID) error {
+	if p.ssoWorkspace == nil {
+		return nil
+	}
+	sub, err := s.st.GetPushSubscription(ctx, store.GetPushSubscriptionParams{PersonID: p.personID, ID: id})
+	if store.IsNotFound(err) {
+		return errNotFound
+	}
+	if err != nil {
+		return err
+	}
+	if sub.SessionID != p.sessionID {
+		return p.ssoScope(nil)
+	}
+	return nil
 }
 
 func (s *Server) TestPushSubscription(ctx context.Context, req oas.TestPushSubscriptionRequestObject) (oas.TestPushSubscriptionResponseObject, error) {
@@ -132,6 +167,9 @@ func (s *Server) TestPushSubscription(ctx context.Context, req oas.TestPushSubsc
 	}
 	if err != nil {
 		return nil, err
+	}
+	if p.ssoWorkspace != nil && sub.SessionID != p.sessionID {
+		return nil, p.ssoScope(nil)
 	}
 	if s.push == nil {
 		return nil, errPushDisabled

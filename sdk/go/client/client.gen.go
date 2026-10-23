@@ -9966,7 +9966,8 @@ type Attributes map[string]interface{}
 //     `groups_attribute` and `allowed_groups`. `sso.provider_created` names `replaced` (the
 //     other protocol) when it replaced a provider. A change found when SAML metadata is
 //     fetched again at a sign-in is `sso.provider_updated` by `system` with `via:
-//     metadata_refresh`. `sso.provider_deleted`: `protocol`.
+//     metadata_refresh`. `sso.provider_deleted`: `protocol`. When the change ended the old
+//     provider's sessions, `sessions_ended` and `grants_revoked` count them.
 //   - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
 //     `sso_required`, `jit` and `jit_role`; `sessions_revoked`, the sessions ended, when
 //     `sso_required` was turned on.
@@ -10081,7 +10082,8 @@ type AuditEntry struct {
 	//   `groups_attribute` and `allowed_groups`. `sso.provider_created` names `replaced` (the
 	//   other protocol) when it replaced a provider. A change found when SAML metadata is
 	//   fetched again at a sign-in is `sso.provider_updated` by `system` with `via:
-	//   metadata_refresh`. `sso.provider_deleted`: `protocol`.
+	//   metadata_refresh`. `sso.provider_deleted`: `protocol`. When the change ended the old
+	//   provider's sessions, `sessions_ended` and `grants_revoked` count them.
 	// - `sso.settings_changed`: `fields`, and `from`/`to` objects with the changed values of
 	//   `sso_required`, `jit` and `jit_role`; `sessions_revoked`, the sessions ended, when
 	//   `sso_required` was turned on.
@@ -35170,7 +35172,8 @@ type ClientInterface interface {
 	//
 	// `name` is the person's name (the same as `PATCH /v1/me`), shown on their posts; an empty name
 	// shows them as "Reader". `email_notifications` turns e-mails about followed threads on or off
-	// for every workspace; in-app notifications stay.
+	// for every workspace; in-app notifications stay. A session made through single sign-on cannot
+	// change `name` (`403 sso_session_scope`).
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -35181,7 +35184,8 @@ type ClientInterface interface {
 	//
 	// `name` is the person's name (the same as `PATCH /v1/me`), shown on their posts; an empty name
 	// shows them as "Reader". `email_notifications` turns e-mails about followed threads on or off
-	// for every workspace; in-app notifications stay.
+	// for every workspace; in-app notifications stay. A session made through single sign-on cannot
+	// change `name` (`403 sso_session_scope`).
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -40910,12 +40914,16 @@ type ClientInterface interface {
 
 	// GetMe The signed-in person
 	//
-	// The person behind the session and the workspaces they belong to.
+	// The person behind the session and the workspaces they belong to; for a session made through
+	// single sign-on only the workspace that made it.
 	//
 	// Corresponds with GET /v1/me (the `GetMe` operationId).
 	GetMe(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdateMeWithBody Update the signed-in person
+	//
+	// Name, locale and availability belong to the person in every workspace, so a session made
+	// through single sign-on is refused with `403 sso_session_scope`.
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -40923,6 +40931,9 @@ type ClientInterface interface {
 	UpdateMeWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdateMe Update the signed-in person
+	//
+	// Name, locale and availability belong to the person in every workspace, so a session made
+	// through single sign-on is refused with `403 sso_session_scope`.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -41068,7 +41079,8 @@ type ClientInterface interface {
 
 	// ListPushSubscriptions List push subscriptions
 	//
-	// The signed-in person's push subscriptions, newest first.
+	// The signed-in person's push subscriptions, newest first. A session made through single sign-on lists
+	// only the subscriptions it registered.
 	//
 	// Corresponds with GET /v1/me/push-subscriptions (the `ListPushSubscriptions` operationId).
 	ListPushSubscriptions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -41081,7 +41093,8 @@ type ClientInterface interface {
 	// saved by another person is never taken over: 409 `push_endpoint_taken`. Signing out or
 	// removing the subscription frees the endpoint. The endpoint must be an `https` URL on a
 	// public address. At most 20 subscriptions per person. 404 `push_disabled` when the server
-	// has no VAPID keys.
+	// has no VAPID keys. A session made through single sign-on cannot move an endpoint another session of
+	// the person registered (`403 sso_session_scope`).
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -41096,7 +41109,8 @@ type ClientInterface interface {
 	// saved by another person is never taken over: 409 `push_endpoint_taken`. Signing out or
 	// removing the subscription frees the endpoint. The endpoint must be an `https` URL on a
 	// public address. At most 20 subscriptions per person. 404 `push_disabled` when the server
-	// has no VAPID keys.
+	// has no VAPID keys. A session made through single sign-on cannot move an endpoint another session of
+	// the person registered (`403 sso_session_scope`).
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -41105,7 +41119,8 @@ type ClientInterface interface {
 
 	// DeletePushSubscription Remove a push subscription
 	//
-	// Call it before `PushSubscription.unsubscribe()` when the member turns push off.
+	// Call it before `PushSubscription.unsubscribe()` when the member turns push off. A session made through single sign-on
+	// removes only the subscriptions it registered (`403 sso_session_scope`).
 	//
 	// Corresponds with DELETE /v1/me/push-subscriptions/{pushSubscriptionId} (the `DeletePushSubscription` operationId).
 	DeletePushSubscription(ctx context.Context, pushSubscriptionId PushSubscriptionId, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -41113,7 +41128,8 @@ type ClientInterface interface {
 	// TestPushSubscription Send a test notification
 	//
 	// Queues a test notification to the subscription and returns its payload. The outcome shows
-	// up as `last_success_at` or `last_error` on the subscription.
+	// up as `last_success_at` or `last_error` on the subscription. A session made through single sign-on tests
+	// only the subscriptions it registered (`403 sso_session_scope`).
 	//
 	// Corresponds with POST /v1/me/push-subscriptions/{pushSubscriptionId}/test (the `TestPushSubscription` operationId).
 	TestPushSubscription(ctx context.Context, pushSubscriptionId PushSubscriptionId, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -41123,6 +41139,7 @@ type ClientInterface interface {
 	// Ends every session of the signed-in person except the one making this request, with their
 	// push subscriptions and reader tokens; their live updates close within a minute. Needs a member
 	// session: keys and tokens get `403 member_session_required`. Removing a passkey does the same.
+	// A session made through single sign-on is refused with `403 sso_session_scope`.
 	//
 	// Corresponds with DELETE /v1/me/sessions (the `DeleteOtherSessions` operationId).
 	DeleteOtherSessions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -41131,7 +41148,7 @@ type ClientInterface interface {
 	//
 	// The signed-in person's live sessions in the panel and the member apps, most recently seen
 	// first. `current` marks the one making this request. Needs a member session: keys and tokens get
-	// `403 member_session_required`.
+	// `403 member_session_required`. A session made through single sign-on lists only itself.
 	//
 	// Corresponds with GET /v1/me/sessions (the `ListSessions` operationId).
 	ListSessions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -42583,8 +42600,9 @@ type ClientInterface interface {
 	// DeleteSsoOidcProvider Remove the OpenID Connect provider
 	//
 	// Removes the OpenID Connect provider (`404` when the workspace uses SAML or none) and turns
-	// `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
-	// `sso.provider_deleted`.
+	// `sso_required` off; claimed domains stay. Sessions made through it end (except the caller's)
+	// and the OAuth grants approved with them are revoked. Owners only, with a member session;
+	// recorded as `sso.provider_deleted`.
 	//
 	// Corresponds with DELETE /v1/sso/oidc (the `DeleteSsoOidcProvider` operationId).
 	DeleteSsoOidcProvider(ctx context.Context, params *DeleteSsoOidcProviderParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -42598,7 +42616,9 @@ type ClientInterface interface {
 	// client secret is stored encrypted and never returned; leave it out to keep the stored
 	// one (required the first time). Register `redirect_uri` from `GET /v1/sso` at the
 	// provider. Owners only, with a member session; recorded as `sso.provider_created` or
-	// `sso.provider_updated`.
+	// `sso.provider_updated`. Replacing a SAML provider or changing `issuer` or `client_id` ends
+	// the sessions made through the old provider (except the caller's), revokes the OAuth grants
+	// approved with them, and actions they queued then need the new provider like any other.
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -42614,7 +42634,9 @@ type ClientInterface interface {
 	// client secret is stored encrypted and never returned; leave it out to keep the stored
 	// one (required the first time). Register `redirect_uri` from `GET /v1/sso` at the
 	// provider. Owners only, with a member session; recorded as `sso.provider_created` or
-	// `sso.provider_updated`.
+	// `sso.provider_updated`. Replacing a SAML provider or changing `issuer` or `client_id` ends
+	// the sessions made through the old provider (except the caller's), revokes the OAuth grants
+	// approved with them, and actions they queued then need the new provider like any other.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -42624,8 +42646,9 @@ type ClientInterface interface {
 	// DeleteSsoSamlProvider Remove the SAML identity provider
 	//
 	// Removes the SAML provider (`404` when the workspace uses OpenID Connect or none) and turns
-	// `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
-	// `sso.provider_deleted`.
+	// `sso_required` off; claimed domains stay. Sessions made through it end (except the caller's)
+	// and the OAuth grants approved with them are revoked. Owners only, with a member session;
+	// recorded as `sso.provider_deleted`.
 	//
 	// Corresponds with DELETE /v1/sso/saml (the `DeleteSsoSamlProvider` operationId).
 	DeleteSsoSamlProvider(ctx context.Context, params *DeleteSsoSamlProviderParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -42648,7 +42671,10 @@ type ClientInterface interface {
 	// other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
 	// ACS URL (HTTP-POST), NameID format `emailAddress`, or load its `metadata_url`. Owners
 	// only, with a member session; recorded as `sso.provider_created` (also when it replaces
-	// the other protocol) or `sso.provider_updated`.
+	// the other protocol) or `sso.provider_updated`. Replacing an OpenID Connect provider, or
+	// changing the entity id, single sign-on URL, certificates or metadata URL, ends the sessions
+	// made through the old provider (except the caller's) and revokes the OAuth grants approved
+	// with them; a certificate change found by the automatic metadata refresh does not.
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -42673,7 +42699,10 @@ type ClientInterface interface {
 	// other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
 	// ACS URL (HTTP-POST), NameID format `emailAddress`, or load its `metadata_url`. Owners
 	// only, with a member session; recorded as `sso.provider_created` (also when it replaces
-	// the other protocol) or `sso.provider_updated`.
+	// the other protocol) or `sso.provider_updated`. Replacing an OpenID Connect provider, or
+	// changing the entity id, single sign-on URL, certificates or metadata URL, ends the sessions
+	// made through the old provider (except the caller's) and revokes the OAuth grants approved
+	// with them; a certificate change found by the automatic metadata refresh does not.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -43850,7 +43879,8 @@ type ClientInterface interface {
 	// nothing more is sent to them. A background job then deletes everything else in batches:
 	// conversations, messages, attachments and raw e-mails with their stored files, contacts,
 	// inboxes, channels, members, invites and settings. People keep their account; members left
-	// with no other workspace lose their push subscriptions.
+	// with no other workspace lose their push subscriptions. Its single sign-on domain claims are
+	// removed at once, so another workspace may claim them.
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -43865,7 +43895,8 @@ type ClientInterface interface {
 	// nothing more is sent to them. A background job then deletes everything else in batches:
 	// conversations, messages, attachments and raw e-mails with their stored files, contacts,
 	// inboxes, channels, members, invites and settings. People keep their account; members left
-	// with no other workspace lose their push subscriptions.
+	// with no other workspace lose their push subscriptions. Its single sign-on domain claims are
+	// removed at once, so another workspace may claim them.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -46274,7 +46305,8 @@ func (c *Client) GetReaderAccount(ctx context.Context, reqEditors ...RequestEdit
 //
 // `name` is the person's name (the same as `PATCH /v1/me`), shown on their posts; an empty name
 // shows them as "Reader". `email_notifications` turns e-mails about followed threads on or off
-// for every workspace; in-app notifications stay.
+// for every workspace; in-app notifications stay. A session made through single sign-on cannot
+// change `name` (`403 sso_session_scope`).
 //
 // Takes any type of body and a specified content type.
 //
@@ -46295,7 +46327,8 @@ func (c *Client) UpdateReaderAccountWithBody(ctx context.Context, contentType st
 //
 // `name` is the person's name (the same as `PATCH /v1/me`), shown on their posts; an empty name
 // shows them as "Reader". `email_notifications` turns e-mails about followed threads on or off
-// for every workspace; in-app notifications stay.
+// for every workspace; in-app notifications stay. A session made through single sign-on cannot
+// change `name` (`403 sso_session_scope`).
 //
 // Takes a body of the `application/json` content type.
 //
@@ -56014,7 +56047,8 @@ func (c *Client) DeleteMe(ctx context.Context, body DeleteMeJSONRequestBody, req
 
 // GetMe The signed-in person
 //
-// The person behind the session and the workspaces they belong to.
+// The person behind the session and the workspaces they belong to; for a session made through
+// single sign-on only the workspace that made it.
 //
 // Corresponds with GET /v1/me (the `GetMe` operationId).
 func (c *Client) GetMe(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -56030,6 +56064,9 @@ func (c *Client) GetMe(ctx context.Context, reqEditors ...RequestEditorFn) (*htt
 }
 
 // UpdateMeWithBody Update the signed-in person
+//
+// Name, locale and availability belong to the person in every workspace, so a session made
+// through single sign-on is refused with `403 sso_session_scope`.
 //
 // Takes any type of body and a specified content type.
 //
@@ -56047,6 +56084,9 @@ func (c *Client) UpdateMeWithBody(ctx context.Context, contentType string, body 
 }
 
 // UpdateMe Update the signed-in person
+//
+// Name, locale and availability belong to the person in every workspace, so a session made
+// through single sign-on is refused with `403 sso_session_scope`.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -56342,7 +56382,8 @@ func (c *Client) DeletePasskey(ctx context.Context, passkeyId PasskeyId, reqEdit
 
 // ListPushSubscriptions List push subscriptions
 //
-// The signed-in person's push subscriptions, newest first.
+// The signed-in person's push subscriptions, newest first. A session made through single sign-on lists
+// only the subscriptions it registered.
 //
 // Corresponds with GET /v1/me/push-subscriptions (the `ListPushSubscriptions` operationId).
 func (c *Client) ListPushSubscriptions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -56365,7 +56406,8 @@ func (c *Client) ListPushSubscriptions(ctx context.Context, reqEditors ...Reques
 // saved by another person is never taken over: 409 `push_endpoint_taken`. Signing out or
 // removing the subscription frees the endpoint. The endpoint must be an `https` URL on a
 // public address. At most 20 subscriptions per person. 404 `push_disabled` when the server
-// has no VAPID keys.
+// has no VAPID keys. A session made through single sign-on cannot move an endpoint another session of
+// the person registered (`403 sso_session_scope`).
 //
 // Takes any type of body and a specified content type.
 //
@@ -56390,7 +56432,8 @@ func (c *Client) CreatePushSubscriptionWithBody(ctx context.Context, contentType
 // saved by another person is never taken over: 409 `push_endpoint_taken`. Signing out or
 // removing the subscription frees the endpoint. The endpoint must be an `https` URL on a
 // public address. At most 20 subscriptions per person. 404 `push_disabled` when the server
-// has no VAPID keys.
+// has no VAPID keys. A session made through single sign-on cannot move an endpoint another session of
+// the person registered (`403 sso_session_scope`).
 //
 // Takes a body of the `application/json` content type.
 //
@@ -56409,7 +56452,8 @@ func (c *Client) CreatePushSubscription(ctx context.Context, body CreatePushSubs
 
 // DeletePushSubscription Remove a push subscription
 //
-// Call it before `PushSubscription.unsubscribe()` when the member turns push off.
+// Call it before `PushSubscription.unsubscribe()` when the member turns push off. A session made through single sign-on
+// removes only the subscriptions it registered (`403 sso_session_scope`).
 //
 // Corresponds with DELETE /v1/me/push-subscriptions/{pushSubscriptionId} (the `DeletePushSubscription` operationId).
 func (c *Client) DeletePushSubscription(ctx context.Context, pushSubscriptionId PushSubscriptionId, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -56427,7 +56471,8 @@ func (c *Client) DeletePushSubscription(ctx context.Context, pushSubscriptionId 
 // TestPushSubscription Send a test notification
 //
 // Queues a test notification to the subscription and returns its payload. The outcome shows
-// up as `last_success_at` or `last_error` on the subscription.
+// up as `last_success_at` or `last_error` on the subscription. A session made through single sign-on tests
+// only the subscriptions it registered (`403 sso_session_scope`).
 //
 // Corresponds with POST /v1/me/push-subscriptions/{pushSubscriptionId}/test (the `TestPushSubscription` operationId).
 func (c *Client) TestPushSubscription(ctx context.Context, pushSubscriptionId PushSubscriptionId, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -56447,6 +56492,7 @@ func (c *Client) TestPushSubscription(ctx context.Context, pushSubscriptionId Pu
 // Ends every session of the signed-in person except the one making this request, with their
 // push subscriptions and reader tokens; their live updates close within a minute. Needs a member
 // session: keys and tokens get `403 member_session_required`. Removing a passkey does the same.
+// A session made through single sign-on is refused with `403 sso_session_scope`.
 //
 // Corresponds with DELETE /v1/me/sessions (the `DeleteOtherSessions` operationId).
 func (c *Client) DeleteOtherSessions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -56465,7 +56511,7 @@ func (c *Client) DeleteOtherSessions(ctx context.Context, reqEditors ...RequestE
 //
 // The signed-in person's live sessions in the panel and the member apps, most recently seen
 // first. `current` marks the one making this request. Needs a member session: keys and tokens get
-// `403 member_session_required`.
+// `403 member_session_required`. A session made through single sign-on lists only itself.
 //
 // Corresponds with GET /v1/me/sessions (the `ListSessions` operationId).
 func (c *Client) ListSessions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -58837,8 +58883,9 @@ func (c *Client) VerifySsoDomain(ctx context.Context, ssoDomainId SsoDomainId, p
 // DeleteSsoOidcProvider Remove the OpenID Connect provider
 //
 // Removes the OpenID Connect provider (`404` when the workspace uses SAML or none) and turns
-// `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
-// `sso.provider_deleted`.
+// `sso_required` off; claimed domains stay. Sessions made through it end (except the caller's)
+// and the OAuth grants approved with them are revoked. Owners only, with a member session;
+// recorded as `sso.provider_deleted`.
 //
 // Corresponds with DELETE /v1/sso/oidc (the `DeleteSsoOidcProvider` operationId).
 func (c *Client) DeleteSsoOidcProvider(ctx context.Context, params *DeleteSsoOidcProviderParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -58862,7 +58909,9 @@ func (c *Client) DeleteSsoOidcProvider(ctx context.Context, params *DeleteSsoOid
 // client secret is stored encrypted and never returned; leave it out to keep the stored
 // one (required the first time). Register `redirect_uri` from `GET /v1/sso` at the
 // provider. Owners only, with a member session; recorded as `sso.provider_created` or
-// `sso.provider_updated`.
+// `sso.provider_updated`. Replacing a SAML provider or changing `issuer` or `client_id` ends
+// the sessions made through the old provider (except the caller's), revokes the OAuth grants
+// approved with them, and actions they queued then need the new provider like any other.
 //
 // Takes any type of body and a specified content type.
 //
@@ -58888,7 +58937,9 @@ func (c *Client) SetSsoOidcProviderWithBody(ctx context.Context, params *SetSsoO
 // client secret is stored encrypted and never returned; leave it out to keep the stored
 // one (required the first time). Register `redirect_uri` from `GET /v1/sso` at the
 // provider. Owners only, with a member session; recorded as `sso.provider_created` or
-// `sso.provider_updated`.
+// `sso.provider_updated`. Replacing a SAML provider or changing `issuer` or `client_id` ends
+// the sessions made through the old provider (except the caller's), revokes the OAuth grants
+// approved with them, and actions they queued then need the new provider like any other.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -58908,8 +58959,9 @@ func (c *Client) SetSsoOidcProvider(ctx context.Context, params *SetSsoOidcProvi
 // DeleteSsoSamlProvider Remove the SAML identity provider
 //
 // Removes the SAML provider (`404` when the workspace uses OpenID Connect or none) and turns
-// `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
-// `sso.provider_deleted`.
+// `sso_required` off; claimed domains stay. Sessions made through it end (except the caller's)
+// and the OAuth grants approved with them are revoked. Owners only, with a member session;
+// recorded as `sso.provider_deleted`.
 //
 // Corresponds with DELETE /v1/sso/saml (the `DeleteSsoSamlProvider` operationId).
 func (c *Client) DeleteSsoSamlProvider(ctx context.Context, params *DeleteSsoSamlProviderParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -58942,7 +58994,10 @@ func (c *Client) DeleteSsoSamlProvider(ctx context.Context, params *DeleteSsoSam
 // other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
 // ACS URL (HTTP-POST), NameID format `emailAddress`, or load its `metadata_url`. Owners
 // only, with a member session; recorded as `sso.provider_created` (also when it replaces
-// the other protocol) or `sso.provider_updated`.
+// the other protocol) or `sso.provider_updated`. Replacing an OpenID Connect provider, or
+// changing the entity id, single sign-on URL, certificates or metadata URL, ends the sessions
+// made through the old provider (except the caller's) and revokes the OAuth grants approved
+// with them; a certificate change found by the automatic metadata refresh does not.
 //
 // Takes any type of body and a specified content type.
 //
@@ -58977,7 +59032,10 @@ func (c *Client) SetSsoSamlProviderWithBody(ctx context.Context, params *SetSsoS
 // other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
 // ACS URL (HTTP-POST), NameID format `emailAddress`, or load its `metadata_url`. Owners
 // only, with a member session; recorded as `sso.provider_created` (also when it replaces
-// the other protocol) or `sso.provider_updated`.
+// the other protocol) or `sso.provider_updated`. Replacing an OpenID Connect provider, or
+// changing the entity id, single sign-on URL, certificates or metadata URL, ends the sessions
+// made through the old provider (except the caller's) and revokes the OAuth grants approved
+// with them; a certificate change found by the automatic metadata refresh does not.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -61064,7 +61122,8 @@ func (c *Client) RotateWebhookSecret(ctx context.Context, webhookId WebhookId, p
 // nothing more is sent to them. A background job then deletes everything else in batches:
 // conversations, messages, attachments and raw e-mails with their stored files, contacts,
 // inboxes, channels, members, invites and settings. People keep their account; members left
-// with no other workspace lose their push subscriptions.
+// with no other workspace lose their push subscriptions. Its single sign-on domain claims are
+// removed at once, so another workspace may claim them.
 //
 // Takes any type of body and a specified content type.
 //
@@ -61089,7 +61148,8 @@ func (c *Client) DeleteWorkspaceWithBody(ctx context.Context, params *DeleteWork
 // nothing more is sent to them. A background job then deletes everything else in batches:
 // conversations, messages, attachments and raw e-mails with their stored files, contacts,
 // inboxes, channels, members, invites and settings. People keep their account; members left
-// with no other workspace lose their push subscriptions.
+// with no other workspace lose their push subscriptions. Its single sign-on domain claims are
+// removed at once, so another workspace may claim them.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -95147,7 +95207,8 @@ type ClientWithResponsesInterface interface {
 	//
 	// `name` is the person's name (the same as `PATCH /v1/me`), shown on their posts; an empty name
 	// shows them as "Reader". `email_notifications` turns e-mails about followed threads on or off
-	// for every workspace; in-app notifications stay.
+	// for every workspace; in-app notifications stay. A session made through single sign-on cannot
+	// change `name` (`403 sso_session_scope`).
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -95158,7 +95219,8 @@ type ClientWithResponsesInterface interface {
 	//
 	// `name` is the person's name (the same as `PATCH /v1/me`), shown on their posts; an empty name
 	// shows them as "Reader". `email_notifications` turns e-mails about followed threads on or off
-	// for every workspace; in-app notifications stay.
+	// for every workspace; in-app notifications stay. A session made through single sign-on cannot
+	// change `name` (`403 sso_session_scope`).
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -101255,7 +101317,8 @@ type ClientWithResponsesInterface interface {
 
 	// GetMeWithResponse The signed-in person
 	//
-	// The person behind the session and the workspaces they belong to.
+	// The person behind the session and the workspaces they belong to; for a session made through
+	// single sign-on only the workspace that made it.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -101264,12 +101327,18 @@ type ClientWithResponsesInterface interface {
 
 	// UpdateMeWithBodyWithResponse Update the signed-in person
 	//
+	// Name, locale and availability belong to the person in every workspace, so a session made
+	// through single sign-on is refused with `403 sso_session_scope`.
+	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with PATCH /v1/me (the `UpdateMe` operationId).
 	UpdateMeWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateMeResponse, error)
 
 	// UpdateMeWithResponse Update the signed-in person
+	//
+	// Name, locale and availability belong to the person in every workspace, so a session made
+	// through single sign-on is refused with `403 sso_session_scope`.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -101431,7 +101500,8 @@ type ClientWithResponsesInterface interface {
 
 	// ListPushSubscriptionsWithResponse List push subscriptions
 	//
-	// The signed-in person's push subscriptions, newest first.
+	// The signed-in person's push subscriptions, newest first. A session made through single sign-on lists
+	// only the subscriptions it registered.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -101446,7 +101516,8 @@ type ClientWithResponsesInterface interface {
 	// saved by another person is never taken over: 409 `push_endpoint_taken`. Signing out or
 	// removing the subscription frees the endpoint. The endpoint must be an `https` URL on a
 	// public address. At most 20 subscriptions per person. 404 `push_disabled` when the server
-	// has no VAPID keys.
+	// has no VAPID keys. A session made through single sign-on cannot move an endpoint another session of
+	// the person registered (`403 sso_session_scope`).
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -101461,7 +101532,8 @@ type ClientWithResponsesInterface interface {
 	// saved by another person is never taken over: 409 `push_endpoint_taken`. Signing out or
 	// removing the subscription frees the endpoint. The endpoint must be an `https` URL on a
 	// public address. At most 20 subscriptions per person. 404 `push_disabled` when the server
-	// has no VAPID keys.
+	// has no VAPID keys. A session made through single sign-on cannot move an endpoint another session of
+	// the person registered (`403 sso_session_scope`).
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -101470,7 +101542,8 @@ type ClientWithResponsesInterface interface {
 
 	// DeletePushSubscriptionWithResponse Remove a push subscription
 	//
-	// Call it before `PushSubscription.unsubscribe()` when the member turns push off.
+	// Call it before `PushSubscription.unsubscribe()` when the member turns push off. A session made through single sign-on
+	// removes only the subscriptions it registered (`403 sso_session_scope`).
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -101480,7 +101553,8 @@ type ClientWithResponsesInterface interface {
 	// TestPushSubscriptionWithResponse Send a test notification
 	//
 	// Queues a test notification to the subscription and returns its payload. The outcome shows
-	// up as `last_success_at` or `last_error` on the subscription.
+	// up as `last_success_at` or `last_error` on the subscription. A session made through single sign-on tests
+	// only the subscriptions it registered (`403 sso_session_scope`).
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -101492,6 +101566,7 @@ type ClientWithResponsesInterface interface {
 	// Ends every session of the signed-in person except the one making this request, with their
 	// push subscriptions and reader tokens; their live updates close within a minute. Needs a member
 	// session: keys and tokens get `403 member_session_required`. Removing a passkey does the same.
+	// A session made through single sign-on is refused with `403 sso_session_scope`.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -101502,7 +101577,7 @@ type ClientWithResponsesInterface interface {
 	//
 	// The signed-in person's live sessions in the panel and the member apps, most recently seen
 	// first. `current` marks the one making this request. Needs a member session: keys and tokens get
-	// `403 member_session_required`.
+	// `403 member_session_required`. A session made through single sign-on lists only itself.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -103048,8 +103123,9 @@ type ClientWithResponsesInterface interface {
 	// DeleteSsoOidcProviderWithResponse Remove the OpenID Connect provider
 	//
 	// Removes the OpenID Connect provider (`404` when the workspace uses SAML or none) and turns
-	// `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
-	// `sso.provider_deleted`.
+	// `sso_required` off; claimed domains stay. Sessions made through it end (except the caller's)
+	// and the OAuth grants approved with them are revoked. Owners only, with a member session;
+	// recorded as `sso.provider_deleted`.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -103065,7 +103141,9 @@ type ClientWithResponsesInterface interface {
 	// client secret is stored encrypted and never returned; leave it out to keep the stored
 	// one (required the first time). Register `redirect_uri` from `GET /v1/sso` at the
 	// provider. Owners only, with a member session; recorded as `sso.provider_created` or
-	// `sso.provider_updated`.
+	// `sso.provider_updated`. Replacing a SAML provider or changing `issuer` or `client_id` ends
+	// the sessions made through the old provider (except the caller's), revokes the OAuth grants
+	// approved with them, and actions they queued then need the new provider like any other.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -103081,7 +103159,9 @@ type ClientWithResponsesInterface interface {
 	// client secret is stored encrypted and never returned; leave it out to keep the stored
 	// one (required the first time). Register `redirect_uri` from `GET /v1/sso` at the
 	// provider. Owners only, with a member session; recorded as `sso.provider_created` or
-	// `sso.provider_updated`.
+	// `sso.provider_updated`. Replacing a SAML provider or changing `issuer` or `client_id` ends
+	// the sessions made through the old provider (except the caller's), revokes the OAuth grants
+	// approved with them, and actions they queued then need the new provider like any other.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -103091,8 +103171,9 @@ type ClientWithResponsesInterface interface {
 	// DeleteSsoSamlProviderWithResponse Remove the SAML identity provider
 	//
 	// Removes the SAML provider (`404` when the workspace uses OpenID Connect or none) and turns
-	// `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
-	// `sso.provider_deleted`.
+	// `sso_required` off; claimed domains stay. Sessions made through it end (except the caller's)
+	// and the OAuth grants approved with them are revoked. Owners only, with a member session;
+	// recorded as `sso.provider_deleted`.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -103117,7 +103198,10 @@ type ClientWithResponsesInterface interface {
 	// other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
 	// ACS URL (HTTP-POST), NameID format `emailAddress`, or load its `metadata_url`. Owners
 	// only, with a member session; recorded as `sso.provider_created` (also when it replaces
-	// the other protocol) or `sso.provider_updated`.
+	// the other protocol) or `sso.provider_updated`. Replacing an OpenID Connect provider, or
+	// changing the entity id, single sign-on URL, certificates or metadata URL, ends the sessions
+	// made through the old provider (except the caller's) and revokes the OAuth grants approved
+	// with them; a certificate change found by the automatic metadata refresh does not.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -103142,7 +103226,10 @@ type ClientWithResponsesInterface interface {
 	// other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
 	// ACS URL (HTTP-POST), NameID format `emailAddress`, or load its `metadata_url`. Owners
 	// only, with a member session; recorded as `sso.provider_created` (also when it replaces
-	// the other protocol) or `sso.provider_updated`.
+	// the other protocol) or `sso.provider_updated`. Replacing an OpenID Connect provider, or
+	// changing the entity id, single sign-on URL, certificates or metadata URL, ends the sessions
+	// made through the old provider (except the caller's) and revokes the OAuth grants approved
+	// with them; a certificate change found by the automatic metadata refresh does not.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -104411,7 +104498,8 @@ type ClientWithResponsesInterface interface {
 	// nothing more is sent to them. A background job then deletes everything else in batches:
 	// conversations, messages, attachments and raw e-mails with their stored files, contacts,
 	// inboxes, channels, members, invites and settings. People keep their account; members left
-	// with no other workspace lose their push subscriptions.
+	// with no other workspace lose their push subscriptions. Its single sign-on domain claims are
+	// removed at once, so another workspace may claim them.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -104426,7 +104514,8 @@ type ClientWithResponsesInterface interface {
 	// nothing more is sent to them. A background job then deletes everything else in batches:
 	// conversations, messages, attachments and raw e-mails with their stored files, contacts,
 	// inboxes, channels, members, invites and settings. People keep their account; members left
-	// with no other workspace lose their push subscriptions.
+	// with no other workspace lose their push subscriptions. Its single sign-on domain claims are
+	// removed at once, so another workspace may claim them.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -108658,6 +108747,8 @@ type UpdateReaderAccountResponse struct {
 	ApplicationproblemJSON400 *Problem
 	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
 	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
@@ -108673,6 +108764,11 @@ func (r UpdateReaderAccountResponse) GetApplicationproblemJSON400() *Problem {
 // GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
 func (r UpdateReaderAccountResponse) GetApplicationproblemJSON401() *Problem {
 	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r UpdateReaderAccountResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
 }
 
 // GetBody returns the raw response body bytes
@@ -128531,6 +128627,8 @@ type UpdateMeResponse struct {
 	ApplicationproblemJSON400 *Problem
 	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
 	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
@@ -128546,6 +128644,11 @@ func (r UpdateMeResponse) GetApplicationproblemJSON400() *Problem {
 // GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
 func (r UpdateMeResponse) GetApplicationproblemJSON401() *Problem {
 	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r UpdateMeResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
 }
 
 // GetBody returns the raw response body bytes
@@ -129281,6 +129384,8 @@ type CreatePushSubscriptionResponse struct {
 	ApplicationproblemJSON400 *Problem
 	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
 	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
 	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
 	ApplicationproblemJSON404 *Problem
 	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
@@ -129300,6 +129405,11 @@ func (r CreatePushSubscriptionResponse) GetApplicationproblemJSON400() *Problem 
 // GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
 func (r CreatePushSubscriptionResponse) GetApplicationproblemJSON401() *Problem {
 	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r CreatePushSubscriptionResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
 }
 
 // GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
@@ -129346,6 +129456,8 @@ type DeletePushSubscriptionResponse struct {
 	HTTPResponse *http.Response
 	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
 	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
 	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
 	ApplicationproblemJSON404 *Problem
 }
@@ -129353,6 +129465,11 @@ type DeletePushSubscriptionResponse struct {
 // GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
 func (r DeletePushSubscriptionResponse) GetApplicationproblemJSON401() *Problem {
 	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeletePushSubscriptionResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
 }
 
 // GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
@@ -129396,6 +129513,8 @@ type TestPushSubscriptionResponse struct {
 	JSON202 *PushNotification
 	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
 	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
 	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
 	ApplicationproblemJSON404 *Problem
 }
@@ -129408,6 +129527,11 @@ func (r TestPushSubscriptionResponse) GetJSON202() *PushNotification {
 // GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
 func (r TestPushSubscriptionResponse) GetApplicationproblemJSON401() *Problem {
 	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r TestPushSubscriptionResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
 }
 
 // GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
@@ -141093,7 +141217,8 @@ func (c *ClientWithResponses) GetReaderAccountWithResponse(ctx context.Context, 
 //
 // `name` is the person's name (the same as `PATCH /v1/me`), shown on their posts; an empty name
 // shows them as "Reader". `email_notifications` turns e-mails about followed threads on or off
-// for every workspace; in-app notifications stay.
+// for every workspace; in-app notifications stay. A session made through single sign-on cannot
+// change `name` (`403 sso_session_scope`).
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -141110,7 +141235,8 @@ func (c *ClientWithResponses) UpdateReaderAccountWithBodyWithResponse(ctx contex
 //
 // `name` is the person's name (the same as `PATCH /v1/me`), shown on their posts; an empty name
 // shows them as "Reader". `email_notifications` turns e-mails about followed threads on or off
-// for every workspace; in-app notifications stay.
+// for every workspace; in-app notifications stay. A session made through single sign-on cannot
+// change `name` (`403 sso_session_scope`).
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -149601,7 +149727,8 @@ func (c *ClientWithResponses) DeleteMeWithResponse(ctx context.Context, body Del
 
 // GetMeWithResponse The signed-in person
 //
-// The person behind the session and the workspaces they belong to.
+// The person behind the session and the workspaces they belong to; for a session made through
+// single sign-on only the workspace that made it.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -149616,6 +149743,9 @@ func (c *ClientWithResponses) GetMeWithResponse(ctx context.Context, reqEditors 
 
 // UpdateMeWithBodyWithResponse Update the signed-in person
 //
+// Name, locale and availability belong to the person in every workspace, so a session made
+// through single sign-on is refused with `403 sso_session_scope`.
+//
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
 // Corresponds with PATCH /v1/me (the `UpdateMe` operationId).
@@ -149628,6 +149758,9 @@ func (c *ClientWithResponses) UpdateMeWithBodyWithResponse(ctx context.Context, 
 }
 
 // UpdateMeWithResponse Update the signed-in person
+//
+// Name, locale and availability belong to the person in every workspace, so a session made
+// through single sign-on is refused with `403 sso_session_scope`.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -149879,7 +150012,8 @@ func (c *ClientWithResponses) DeletePasskeyWithResponse(ctx context.Context, pas
 
 // ListPushSubscriptionsWithResponse List push subscriptions
 //
-// The signed-in person's push subscriptions, newest first.
+// The signed-in person's push subscriptions, newest first. A session made through single sign-on lists
+// only the subscriptions it registered.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -149900,7 +150034,8 @@ func (c *ClientWithResponses) ListPushSubscriptionsWithResponse(ctx context.Cont
 // saved by another person is never taken over: 409 `push_endpoint_taken`. Signing out or
 // removing the subscription frees the endpoint. The endpoint must be an `https` URL on a
 // public address. At most 20 subscriptions per person. 404 `push_disabled` when the server
-// has no VAPID keys.
+// has no VAPID keys. A session made through single sign-on cannot move an endpoint another session of
+// the person registered (`403 sso_session_scope`).
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -149921,7 +150056,8 @@ func (c *ClientWithResponses) CreatePushSubscriptionWithBodyWithResponse(ctx con
 // saved by another person is never taken over: 409 `push_endpoint_taken`. Signing out or
 // removing the subscription frees the endpoint. The endpoint must be an `https` URL on a
 // public address. At most 20 subscriptions per person. 404 `push_disabled` when the server
-// has no VAPID keys.
+// has no VAPID keys. A session made through single sign-on cannot move an endpoint another session of
+// the person registered (`403 sso_session_scope`).
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -149936,7 +150072,8 @@ func (c *ClientWithResponses) CreatePushSubscriptionWithResponse(ctx context.Con
 
 // DeletePushSubscriptionWithResponse Remove a push subscription
 //
-// Call it before `PushSubscription.unsubscribe()` when the member turns push off.
+// Call it before `PushSubscription.unsubscribe()` when the member turns push off. A session made through single sign-on
+// removes only the subscriptions it registered (`403 sso_session_scope`).
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -149952,7 +150089,8 @@ func (c *ClientWithResponses) DeletePushSubscriptionWithResponse(ctx context.Con
 // TestPushSubscriptionWithResponse Send a test notification
 //
 // Queues a test notification to the subscription and returns its payload. The outcome shows
-// up as `last_success_at` or `last_error` on the subscription.
+// up as `last_success_at` or `last_error` on the subscription. A session made through single sign-on tests
+// only the subscriptions it registered (`403 sso_session_scope`).
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -149970,6 +150108,7 @@ func (c *ClientWithResponses) TestPushSubscriptionWithResponse(ctx context.Conte
 // Ends every session of the signed-in person except the one making this request, with their
 // push subscriptions and reader tokens; their live updates close within a minute. Needs a member
 // session: keys and tokens get `403 member_session_required`. Removing a passkey does the same.
+// A session made through single sign-on is refused with `403 sso_session_scope`.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -149986,7 +150125,7 @@ func (c *ClientWithResponses) DeleteOtherSessionsWithResponse(ctx context.Contex
 //
 // The signed-in person's live sessions in the panel and the member apps, most recently seen
 // first. `current` marks the one making this request. Needs a member session: keys and tokens get
-// `403 member_session_required`.
+// `403 member_session_required`. A session made through single sign-on lists only itself.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -152084,8 +152223,9 @@ func (c *ClientWithResponses) VerifySsoDomainWithResponse(ctx context.Context, s
 // DeleteSsoOidcProviderWithResponse Remove the OpenID Connect provider
 //
 // Removes the OpenID Connect provider (`404` when the workspace uses SAML or none) and turns
-// `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
-// `sso.provider_deleted`.
+// `sso_required` off; claimed domains stay. Sessions made through it end (except the caller's)
+// and the OAuth grants approved with them are revoked. Owners only, with a member session;
+// recorded as `sso.provider_deleted`.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -152107,7 +152247,9 @@ func (c *ClientWithResponses) DeleteSsoOidcProviderWithResponse(ctx context.Cont
 // client secret is stored encrypted and never returned; leave it out to keep the stored
 // one (required the first time). Register `redirect_uri` from `GET /v1/sso` at the
 // provider. Owners only, with a member session; recorded as `sso.provider_created` or
-// `sso.provider_updated`.
+// `sso.provider_updated`. Replacing a SAML provider or changing `issuer` or `client_id` ends
+// the sessions made through the old provider (except the caller's), revokes the OAuth grants
+// approved with them, and actions they queued then need the new provider like any other.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -152129,7 +152271,9 @@ func (c *ClientWithResponses) SetSsoOidcProviderWithBodyWithResponse(ctx context
 // client secret is stored encrypted and never returned; leave it out to keep the stored
 // one (required the first time). Register `redirect_uri` from `GET /v1/sso` at the
 // provider. Owners only, with a member session; recorded as `sso.provider_created` or
-// `sso.provider_updated`.
+// `sso.provider_updated`. Replacing a SAML provider or changing `issuer` or `client_id` ends
+// the sessions made through the old provider (except the caller's), revokes the OAuth grants
+// approved with them, and actions they queued then need the new provider like any other.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -152145,8 +152289,9 @@ func (c *ClientWithResponses) SetSsoOidcProviderWithResponse(ctx context.Context
 // DeleteSsoSamlProviderWithResponse Remove the SAML identity provider
 //
 // Removes the SAML provider (`404` when the workspace uses OpenID Connect or none) and turns
-// `sso_required` off; claimed domains stay. Owners only, with a member session; recorded as
-// `sso.provider_deleted`.
+// `sso_required` off; claimed domains stay. Sessions made through it end (except the caller's)
+// and the OAuth grants approved with them are revoked. Owners only, with a member session;
+// recorded as `sso.provider_deleted`.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -152177,7 +152322,10 @@ func (c *ClientWithResponses) DeleteSsoSamlProviderWithResponse(ctx context.Cont
 // other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
 // ACS URL (HTTP-POST), NameID format `emailAddress`, or load its `metadata_url`. Owners
 // only, with a member session; recorded as `sso.provider_created` (also when it replaces
-// the other protocol) or `sso.provider_updated`.
+// the other protocol) or `sso.provider_updated`. Replacing an OpenID Connect provider, or
+// changing the entity id, single sign-on URL, certificates or metadata URL, ends the sessions
+// made through the old provider (except the caller's) and revokes the OAuth grants approved
+// with them; a certificate change found by the automatic metadata refresh does not.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -152208,7 +152356,10 @@ func (c *ClientWithResponses) SetSsoSamlProviderWithBodyWithResponse(ctx context
 // other way round). Register `saml_sp` from `GET /v1/sso` at the provider: entity id,
 // ACS URL (HTTP-POST), NameID format `emailAddress`, or load its `metadata_url`. Owners
 // only, with a member session; recorded as `sso.provider_created` (also when it replaces
-// the other protocol) or `sso.provider_updated`.
+// the other protocol) or `sso.provider_updated`. Replacing an OpenID Connect provider, or
+// changing the entity id, single sign-on URL, certificates or metadata URL, ends the sessions
+// made through the old provider (except the caller's) and revokes the OAuth grants approved
+// with them; a certificate change found by the automatic metadata refresh does not.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -154023,7 +154174,8 @@ func (c *ClientWithResponses) RotateWebhookSecretWithResponse(ctx context.Contex
 // nothing more is sent to them. A background job then deletes everything else in batches:
 // conversations, messages, attachments and raw e-mails with their stored files, contacts,
 // inboxes, channels, members, invites and settings. People keep their account; members left
-// with no other workspace lose their push subscriptions.
+// with no other workspace lose their push subscriptions. Its single sign-on domain claims are
+// removed at once, so another workspace may claim them.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -154044,7 +154196,8 @@ func (c *ClientWithResponses) DeleteWorkspaceWithBodyWithResponse(ctx context.Co
 // nothing more is sent to them. A background job then deletes everything else in batches:
 // conversations, messages, attachments and raw e-mails with their stored files, contacts,
 // inboxes, channels, members, invites and settings. People keep their account; members left
-// with no other workspace lose their push subscriptions.
+// with no other workspace lose their push subscriptions. Its single sign-on domain claims are
+// removed at once, so another workspace may claim them.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -157493,6 +157646,13 @@ func ParseUpdateReaderAccountResponse(rsp *http.Response) (*UpdateReaderAccountR
 			return nil, err
 		}
 		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
 
 	}
 
@@ -173185,6 +173345,13 @@ func ParseUpdateMeResponse(rsp *http.Response) (*UpdateMeResponse, error) {
 		}
 		response.ApplicationproblemJSON401 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
 	}
 
 	return response, nil
@@ -173746,6 +173913,13 @@ func ParseCreatePushSubscriptionResponse(rsp *http.Response) (*CreatePushSubscri
 		}
 		response.ApplicationproblemJSON401 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest Problem
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -173789,6 +173963,13 @@ func ParseDeletePushSubscriptionResponse(rsp *http.Response) (*DeletePushSubscri
 		}
 		response.ApplicationproblemJSON401 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest Problem
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -173828,6 +174009,13 @@ func ParseTestPushSubscriptionResponse(rsp *http.Response) (*TestPushSubscriptio
 			return nil, err
 		}
 		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest Problem
