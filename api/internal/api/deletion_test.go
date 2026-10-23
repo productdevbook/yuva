@@ -312,19 +312,23 @@ func TestDeleteAccountWhileWorkspaceIsPurged(t *testing.T) {
 		name := tm.owner.expect(http.StatusOK, "GET", "/v1/workspace", nil).str("name")
 		tm.owner.expect(http.StatusAccepted, "DELETE", "/v1/workspace", map[string]any{"name": name})
 
-		purged := make(chan error, 1)
-		go func() {
-			for {
-				p, err := h.srv.PurgeWorkspace(ctx, uuid.MustParse(tm.ws), time.Minute)
-				if err != nil || p.Done {
-					purged <- err
-					return
+		purged := make(chan error, 2)
+		for range 2 {
+			go func() {
+				for {
+					p, err := h.srv.PurgeWorkspace(ctx, uuid.MustParse(tm.ws), time.Minute)
+					if err != nil || p.Done {
+						purged <- err
+						return
+					}
 				}
-			}
-		}()
+			}()
+		}
 		tm.owner.expect(http.StatusNoContent, "DELETE", "/v1/me", map[string]any{"email": ownerEmail})
-		if err := <-purged; err != nil {
-			t.Fatal(err)
+		for range 2 {
+			if err := <-purged; err != nil {
+				t.Fatal(err)
+			}
 		}
 		if n := h.count("SELECT count(*) FROM people WHERE email = $1", ownerEmail); n != 0 {
 			t.Fatalf("person left: %d", n)
@@ -332,5 +336,37 @@ func TestDeleteAccountWhileWorkspaceIsPurged(t *testing.T) {
 		if n := h.count("SELECT count(*) FROM workspaces WHERE id = $1", tm.ws); n != 0 {
 			t.Fatalf("workspace left: %d", n)
 		}
+	}
+}
+
+func TestDeleteAccountWhileRetentionExpires(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	for range 5 {
+		tm := newTeam(t, h)
+		agentEmail := personEmail(tm.agent)
+		if _, err := h.st.Pool.Exec(ctx, `WITH c AS (
+			INSERT INTO conversations (id, workspace_id, inbox_id, contact_id, assignee_id, status, last_activity_at, created_at, updated_at)
+			SELECT gen_random_uuid(), $1, $2, $3, $4, 'closed', now() - interval '10 days', now() - interval '10 days', now() - interval '10 days'
+			FROM generate_series(1, 1000) RETURNING id)
+			INSERT INTO conversation_member_states (workspace_id, member_id, conversation_id, pinned_at) SELECT $1, $4, id, now() FROM c`,
+			tm.ws, tm.inbox, tm.contact, tm.agentID); err != nil {
+			t.Fatal(err)
+		}
+		tm.owner.expect(http.StatusOK, "PATCH", "/v1/workspace", map[string]any{"retention_days": 1})
+
+		expired := make(chan error, 1)
+		go func() { expired <- h.srv.ApplyRetention(ctx) }()
+		tm.agent.expect(http.StatusNoContent, "DELETE", "/v1/me", map[string]any{"email": agentEmail})
+		if err := <-expired; err != nil {
+			t.Fatal(err)
+		}
+		if n := h.count("SELECT count(*) FROM conversations WHERE workspace_id = $1", tm.ws); n != 0 {
+			t.Fatalf("%d conversations left", n)
+		}
+		if n := h.count("SELECT count(*) FROM people WHERE email = $1", agentEmail); n != 0 {
+			t.Fatalf("person left: %d", n)
+		}
+		tm.owner.expect(http.StatusOK, "PATCH", "/v1/workspace", map[string]any{"retention_days": nil})
 	}
 }

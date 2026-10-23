@@ -407,7 +407,7 @@ ORDER BY w.id
 FOR NO KEY UPDATE
 `
 
-// In id order, deleted ones too: each batch of a workspace's deletion locks its row before its rows.
+// In id order, deleted ones too: every batch delete of a workspace's rows locks its row first.
 func (q *Queries) LockPersonWorkspaces(ctx context.Context, personID uuid.UUID) ([]uuid.UUID, error) {
 	rows, err := q.db.Query(ctx, lockPersonWorkspaces, personID)
 	if err != nil {
@@ -434,6 +434,18 @@ SELECT id FROM workspaces WHERE id = $1 FOR UPDATE
 
 func (q *Queries) LockWorkspace(ctx context.Context, id uuid.UUID) (uuid.UUID, error) {
 	row := q.db.QueryRow(ctx, lockWorkspace, id)
+	var id_2 uuid.UUID
+	err := row.Scan(&id_2)
+	return id_2, err
+}
+
+const lockWorkspaceRows = `-- name: LockWorkspaceRows :one
+SELECT id FROM workspaces WHERE id = $1 FOR NO KEY UPDATE
+`
+
+// Strong enough to order against LockPersonWorkspaces, weak enough to let writes into the workspace through.
+func (q *Queries) LockWorkspaceRows(ctx context.Context, id uuid.UUID) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, lockWorkspaceRows, id)
 	var id_2 uuid.UUID
 	err := row.Scan(&id_2)
 	return id_2, err

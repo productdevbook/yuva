@@ -169,9 +169,6 @@ func (s *Server) PurgeWorkspace(ctx context.Context, workspaceID uuid.UUID, budg
 	deadline := time.Now().Add(budget)
 	for {
 		n, files, err := s.deleteConversationBatch(ctx, workspaceID, func(q *store.Queries) ([]uuid.UUID, error) {
-			if _, err := q.LockWorkspace(ctx, workspaceID); err != nil {
-				return nil, err
-			}
 			return q.ListWorkspaceConversationIDs(ctx, store.ListWorkspaceConversationIDsParams{WorkspaceID: workspaceID, MaxRows: purgeConversationBatch})
 		})
 		if err != nil {
@@ -190,16 +187,21 @@ func (s *Server) PurgeWorkspace(ctx context.Context, workspaceID uuid.UUID, budg
 	}
 	for {
 		var n int64
+		live := false
 		err := s.st.InTx(ctx, func(q *store.Queries) error {
-			if _, err := q.LockWorkspace(ctx, workspaceID); err != nil {
+			var err error
+			if live, err = lockWorkspaceRows(ctx, q, workspaceID); err != nil || !live {
 				return err
 			}
-			var err error
 			n, err = q.DeleteWorkspaceContacts(ctx, store.DeleteWorkspaceContactsParams{WorkspaceID: workspaceID, MaxRows: purgeContactBatch})
 			return err
 		})
 		if err != nil {
 			return out, err
+		}
+		if !live {
+			out.Done = true
+			return out, nil
 		}
 		out.Contacts += n
 		if n < purgeContactBatch {
@@ -211,16 +213,21 @@ func (s *Server) PurgeWorkspace(ctx context.Context, workspaceID uuid.UUID, budg
 	}
 	for {
 		var keys []string
+		live := false
 		err := s.st.InTx(ctx, func(q *store.Queries) error {
-			if _, err := q.LockWorkspace(ctx, workspaceID); err != nil {
+			var err error
+			if live, err = lockWorkspaceRows(ctx, q, workspaceID); err != nil || !live {
 				return err
 			}
-			var err error
 			keys, err = q.DeleteWorkspaceEmailImages(ctx, store.DeleteWorkspaceEmailImagesParams{WorkspaceID: workspaceID, Lim: purgeContactBatch})
 			return err
 		})
 		if err != nil {
 			return out, err
+		}
+		if !live {
+			out.Done = true
+			return out, nil
 		}
 		s.deleteObjects(ctx, keys)
 		out.Files += len(keys)
@@ -253,12 +260,26 @@ func (s *Server) PurgeWorkspace(ctx context.Context, workspaceID uuid.UUID, budg
 	return out, nil
 }
 
+// lockWorkspaceRows locks the workspace row before a batch deletes rows that deletePerson's
+// cascades also reach, the order deletePerson keeps. False means the workspace row is gone.
+func lockWorkspaceRows(ctx context.Context, q *store.Queries, workspaceID uuid.UUID) (bool, error) {
+	_, err := q.LockWorkspaceRows(ctx, workspaceID)
+	if store.IsNotFound(err) {
+		return false, nil
+	}
+	return err == nil, err
+}
+
 // deleteConversationBatch deletes the conversations list returns, with their messages and
-// attachments, and then their stored files. It returns how many conversations and files went.
+// attachments, and then their stored files. It returns how many conversations and files went;
+// none once the workspace row is gone.
 func (s *Server) deleteConversationBatch(ctx context.Context, workspaceID uuid.UUID, list func(q *store.Queries) ([]uuid.UUID, error)) (int, int, error) {
 	var keys []string
 	var n int
 	err := s.st.InTx(ctx, func(q *store.Queries) error {
+		if live, err := lockWorkspaceRows(ctx, q, workspaceID); err != nil || !live {
+			return err
+		}
 		ids, err := list(q)
 		if err != nil || len(ids) == 0 {
 			return err

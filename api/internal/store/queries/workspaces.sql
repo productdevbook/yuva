@@ -15,7 +15,11 @@ SELECT * FROM workspaces WHERE id = $1;
 -- name: LockWorkspace :one
 SELECT id FROM workspaces WHERE id = $1 FOR UPDATE;
 
--- In id order, deleted ones too: each batch of a workspace's deletion locks its row before its rows.
+-- Strong enough to order against LockPersonWorkspaces, weak enough to let writes into the workspace through.
+-- name: LockWorkspaceRows :one
+SELECT id FROM workspaces WHERE id = $1 FOR NO KEY UPDATE;
+
+-- In id order, deleted ones too: every batch delete of a workspace's rows locks its row first.
 -- name: LockPersonWorkspaces :many
 SELECT w.id FROM workspaces w
 WHERE w.id IN (SELECT m.workspace_id FROM members m WHERE m.person_id = @person_id)
