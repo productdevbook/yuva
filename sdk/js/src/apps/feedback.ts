@@ -2,18 +2,11 @@ import { msg } from "@lingui/core/macro"
 import { ApiError } from "../client/api"
 import { canCapture, captureScreen } from "../panel/capture"
 import { el, fileSize, iconButton, textButton } from "../panel/helpers"
-import { icons } from "../panel/icons"
+import { categoryIcon, icons } from "../panel/icons"
 import type { AppContext } from "../types"
 import type { Translate } from "./apps"
 
 const maxFiles = 10
-
-const labels = {
-  bug: msg`Bug`,
-  idea: msg`Idea`,
-  praise: msg`Praise`,
-  other: msg`Other`,
-}
 
 const prompts = {
   bug: msg`What happened, and what did you expect?`,
@@ -31,8 +24,8 @@ function currentPage(): { page_url?: string; page_title?: string } {
 }
 
 export function feedbackApp(context: AppContext, t: Translate, root: HTMLElement): () => void {
-  const categories = context.inbox.feedback_categories
-  let category = categories[0] ?? "other"
+  const categories = context.inbox.feedback_category_items
+  let category = categories[0]?.key ?? "other"
   let score = 0
   let files: File[] = []
   let phase: "form" | "sending" | "sent" = "form"
@@ -131,12 +124,14 @@ export function feedbackApp(context: AppContext, t: Translate, root: HTMLElement
     const group = el("div", "seg")
     group.setAttribute("role", "group")
     group.setAttribute("aria-label", t(msg`What is it about`))
-    for (const value of categories) {
-      const button = textButton(t(labels[value]), "", () => {
-        category = value
+    for (const item of categories) {
+      const button = textButton("", "", () => {
+        category = item.key
         render()
       })
-      button.setAttribute("aria-pressed", String(value === category))
+      button.insertAdjacentHTML("beforeend", categoryIcon(item.icon))
+      button.append(el("span", "", item.name))
+      button.setAttribute("aria-pressed", String(item.key === category))
       group.append(button)
     }
     kinds.append(group)
@@ -159,7 +154,7 @@ export function feedbackApp(context: AppContext, t: Translate, root: HTMLElement
     rate.append(scores, ends)
 
     const more = section(`03 — ${t(msg`Tell us more`)}`)
-    text.placeholder = t(prompts[category])
+    text.placeholder = t(Object.hasOwn(prompts, category) ? prompts[category as keyof typeof prompts] : prompts.other)
     text.setAttribute("aria-label", t(msg`Tell us more`))
     text.disabled = phase === "sending"
     const attach = el("div", "attach")

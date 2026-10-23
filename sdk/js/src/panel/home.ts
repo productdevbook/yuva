@@ -118,7 +118,7 @@ export function buildHome(data: HomeData): HTMLElement {
   const tiles: { app: AppKind; icon: string; title: string; text: string; count?: number }[] = []
   if (inbox.help)
     tiles.push({ app: "help", icon: icons.book, title: t(msg`Help center`), text: t(msg`Guides and answers`) })
-  if (inbox.feedback_categories.length > 0)
+  if (inbox.feedback_category_items.length > 0)
     tiles.push({
       app: "feedback",
       icon: icons.bubble,

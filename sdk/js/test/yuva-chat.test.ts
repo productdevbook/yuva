@@ -178,6 +178,7 @@ describe("<yuva-chat> realtime", () => {
       discussions: "off",
     },
     feedback_categories: [],
+    feedback_category_items: [],
     ask_for_rating: false,
   }
   const session: ClientSession = {

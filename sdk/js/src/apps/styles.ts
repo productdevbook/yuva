@@ -1,9 +1,9 @@
 export const styles = `
 .app { flex: 1; min-block-size: 0; display: flex; flex-direction: column; }
 .app .page { flex: 1; }
-.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border: 1px solid var(--yuva-strong); border-radius: 10px; overflow: hidden; }
-.seg button { min-block-size: 44px; padding: 0 8px; border: 0; background: transparent; color: var(--yuva-muted); cursor: pointer; }
-.seg button + button { border-inline-start: 1px solid var(--yuva-strong); }
+.seg { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 1px; background: var(--yuva-strong); border: 1px solid var(--yuva-strong); border-radius: 10px; overflow: hidden; }
+.seg button { display: flex; align-items: center; justify-content: center; gap: 6px; min-block-size: 44px; padding: 0 8px; border: 0; background: var(--yuva-bg); color: var(--yuva-muted); cursor: pointer; }
+.seg button svg { flex: none; }
 .seg button[aria-pressed="true"] { background: var(--yuva-fg); color: var(--yuva-bg); }
 .scores { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
 .scores button { min-block-size: 48px; padding: 0; border: 1px solid var(--yuva-strong); border-radius: 10px; background: transparent; color: var(--yuva-muted); font-family: var(--yuva-mono); font-size: 15px; font-weight: 500; cursor: pointer; }
