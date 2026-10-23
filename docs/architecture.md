@@ -3248,6 +3248,31 @@ appear in help search. Writing, rendering and translating are M20's.
      and badge, the feed, mailing an entry through broadcasts, MCP) and README lines. Check: links resolve,
      and every documented endpoint exists in `openapi/`.
 
+### Team mail (M34–M38)
+
+Some teams use Yuva as their mail client rather than for support: shared addresses such as sales@ and
+people's own mailboxes. They get the same conversation model in a place and with words of their own, as
+Feedback did in M18. Planned after 0.1.0; issues in `backlog.md`. Decisions:
+
+- **Purpose, not a new model.** An inbox is `support` or `mail`. A `mail` inbox has only e-mail
+  channels, and the support features stay off for it: ratings, SLA policies, automatic assignment,
+  greetings, status, help, roadmap and What's new, support stats and reports. `closed` reads Archived.
+  Starred is per member, Trash is a state emptied after 30 days.
+- **Personal mailboxes are private.** A personal mailbox (`owner_member_id`) is read only by its owner
+  and the members they delegate to. Owners and admins see that it exists, its address, size and usage,
+  never its content; API keys and webhooks never reach it, and assistants only through the owner's own
+  OAuth grant. This is the one place where an owner does not see every inbox, so that people can
+  move their own mail into Yuva. Retention, contact export and deletion, and workspace deletion still
+  cover it, and every delegation and hand-over is in the audit log.
+- **Leaving.** When a member with a personal mailbox is removed, an owner or admin deletes the mailbox
+  or hands it to a named member; nobody reads it before that choice.
+- **Sending as a person.** A mail goes from the channel address with the member's name, or from the
+  member's own address once that address is verified by a code and its domain is a verified sending
+  domain of the channel. Delegates send "on behalf of".
+- **Yuva is the mailbox.** A domain's mail is routed to Yuva (the edge Worker or any MTA) and history
+  comes in through Moving to Yuva (M14). Two-way IMAP sync with a mailbox that stays at Gmail or
+  Outlook is not planned: it would write to the source, which M14's read-only rule forbids.
+
 ### Storage
 
 Attachments and raw e-mails in S3-compatible storage (R2, S3, MinIO) or on local disk for a

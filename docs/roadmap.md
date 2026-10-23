@@ -630,6 +630,55 @@ Status: planned; items Y-129 to Y-132 in `backlog.md`. Waits for M24, M25 and M2
 Accept: `v0.1.0` is tagged; the image, npm package, JitPack and SwiftPM builds and the MCP registry
 entry all report `0.1.0`; a fresh install from `docs/install.md` works on a clean host.
 
+## M34 — Mail inboxes
+
+Status: planned; items Y-163 to Y-165 in `backlog.md`. After 0.1.0. Decisions in `architecture.md` › Team mail.
+
+- An inbox's purpose, `support` or `mail`; a Mail section in the panel with folders; choosing support,
+  mail or both when a workspace starts.
+
+Accept: an owner of a new workspace chooses team mail and lands on `/mail`; a mail to the inbox's
+address appears under Inbox, is archived, starred and trashed with undo, and never shows in
+Conversations, support stats or a rating request.
+
+## M35 — Writing mail
+
+Status: planned; items Y-166 to Y-169 in `backlog.md`. After 0.1.0.
+
+- New mail to many recipients with Cc and Bcc, sending as the member, signatures, member drafts and
+  scheduled send.
+
+Accept: a member writes to two people with one Cc from their verified own address with their signature;
+all three replies join the conversation; a draft started on a phone opens on a desktop; a mail scheduled
+for five minutes ahead goes once with two replicas.
+
+## M36 — Personal mailboxes
+
+Status: planned; items Y-170 to Y-172 in `backlog.md`. After 0.1.0.
+
+- Mailboxes that belong to one member, delegation, and what happens when a member leaves.
+
+Accept: an owner of the workspace gets `404` on every conversation of a member's personal mailbox in the
+panel, the API, realtime, search and MCP; a delegate reads and sends on behalf, and loses access at once
+when revoked; removing the member hands the mailbox to a named member, and the audit log has each step.
+
+## M37 — Organizing mail
+
+Status: planned; items Y-173 to Y-174 in `backlog.md`. After 0.1.0.
+
+- Mail filters on the automation rules engine and search operators.
+
+Accept: a filter archives and labels mail from a list; `from:` and `has:attachment` find the right
+conversations in the panel and through MCP.
+
+## M38 — Team mail acceptance
+
+Status: planned; items Y-175 to Y-176 in `backlog.md`. After 0.1.0.
+
+- Guides in en, tr, de and the verifier's run of M34 to M37.
+
+Accept: each run reports pass with evidence; each failure becomes its own backlog item.
+
 ## Later
 
 - M10, native apps for members (#18, #19): not scheduled; not part of 0.1.0.

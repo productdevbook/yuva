@@ -594,3 +594,154 @@ a withdrawn item stays here marked withdrawn. Work before `Y-117` is tracked in 
 - **Acceptance**
   - SAML 2.0 SP-initiated sign-in on the same domain claim and membership rules as OIDC.
   - Signed assertions only; replay and clock-skew tests.
+
+## M34 — Mail inboxes
+
+### Y-163 · Inbox purpose `support` or `mail`
+
+- **Area** api · **Owner** yuva-api · **Priority** P0 · **Depends on** – · **Chapters** architecture › Team mail
+- **Acceptance**
+  - `inboxes.purpose` is `support` (every existing inbox) or `mail`, set on create and changeable by
+    owners and admins; contract first, in `/v1`, MCP and the CLI (`yuva inbox create --purpose`).
+  - A `mail` inbox has only e-mail channels (`409 purpose_mismatch` for chat, app and api), asks no
+    rating, is left out of SLA policies, automatic assignment, the greeting auto-reply, status, help,
+    roadmap and What's new pickers, and out of support stats and reports.
+  - Conversations keep their model: `closed` is Archived for a `mail` inbox, `pending` and `snoozed`
+    unchanged; webhooks and events carry `purpose`.
+  - Moving a conversation between a `support` and a `mail` inbox works as `move` does today.
+
+### Y-164 · Mail section in the panel
+
+- **Area** web · **Owner** yuva-panel · **Priority** P0 · **Depends on** Y-163 · **Chapters** architecture › Team mail
+- **Acceptance**
+  - A Mail entry in the rail (`/mail`, its own `G` shortcut, an unread badge) for members with a
+    `mail` inbox; Conversations and its counts leave `mail` inboxes out, as Feedback is left out today.
+  - Folders Inbox, Starred, Snoozed, Sent, Drafts, Archive and Trash per mail inbox and for all of
+    them; rows read as mail (sender, subject, first line, attachment mark, time), the thread as stacked
+    messages with headers, not chat bubbles.
+  - Archive, Trash, Star, Snooze, Mark unread with undo; a starred and a trashed state per conversation
+    (`starred_by` per member, `trashed_at` emptied after 30 days by the retention job).
+  - en, tr, de and the other panel catalogs; screenshots (WebP) at desktop and phone width.
+
+### Y-165 · Choosing support, mail or both
+
+- **Area** web · **Owner** yuva-panel · **Priority** P1 · **Depends on** Y-164 · **Chapters** architecture › Panel › Home and setup
+- **Acceptance**
+  - A new workspace's owner is asked "Support, team mail or both"; the answer orders the `/setup`
+    cards and the rail, and can be changed in workspace settings.
+  - Mail-only workspaces land on `/mail`; Home leaves out support blocks they do not use.
+  - `get_setup_state` and `GET /v1/home` report the mail card.
+
+## M35 — Writing mail
+
+### Y-166 · New mail to many recipients
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P0 · **Depends on** Y-145, Y-163 · **Chapters** architecture › E-mail
+- **Acceptance**
+  - A member writes a new mail from a `mail` inbox with To, Cc and Bcc (each up to 50 addresses), a
+    subject and attachments; it opens a conversation whose participants are the recipients.
+  - Any participant's reply joins it; "Reply" and "Reply all" choose the recipients; loop, spam and
+    suppression rules hold.
+  - Recipients are suggested from contacts the member may see; an unknown address becomes a contact.
+
+### Y-167 · Sending as the member
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P0 · **Depends on** Y-166 · **Chapters** architecture › E-mail
+- **Acceptance**
+  - A `mail` channel sends either from the channel address with the member's name
+    (`Ayşe Yılmaz (Acme) <sales@acme.com>`) or, for a personal mailbox, from the member's own address.
+  - A member's own address is used only after it is verified by a code sent to it and its domain is a
+    verified sending domain of the channel (SPF, DKIM, DMARC alignment by the deliverability check).
+  - Replies to either come back into the conversation through the channel's address or the member's
+    address routed to Yuva.
+
+### Y-168 · Signatures
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P1 · **Depends on** – · **Chapters** architecture › E-mail
+- **Acceptance**
+  - Each member has a signature per inbox (Markdown, images from `/i/{token}`), and an inbox has a
+    default with `{{member.name}}` and `{{member.title}}`.
+  - The composer inserts it below the reply and above the quote; members can turn it off per message.
+  - Support inboxes can use it too; chat and app replies never carry one.
+
+### Y-169 · Scheduled send and member drafts
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P1 · **Depends on** Y-166 · **Chapters** architecture › E-mail
+- **Acceptance**
+  - A member's unsent reply or new mail is saved as their own draft as they type and opens on any
+    device; drafts are visible only to their author (bot drafts keep their review flow).
+  - "Send later" schedules a mail; it is listed under Scheduled, can be edited or cancelled until it
+    goes, and goes once even with several replicas.
+  - Undo send keeps its few seconds for both.
+
+## M36 — Personal mailboxes
+
+### Y-170 · Personal mailboxes and their privacy
+
+- **Area** api · **Owner** yuva-api · **Priority** P0 · **Depends on** Y-163, Y-135 · **Chapters** architecture › Team mail, Concepts
+- **Acceptance**
+  - A `mail` inbox can be personal: `owner_member_id` set, created by the member for themself or by an
+    owner or admin for a member.
+  - Only the owner and the members they delegate to (Y-171) read its conversations,
+    contacts' mail in it, attachments, drafts and events; owners and admins, API keys and other
+    members get `404`, in `/v1`, realtime, MCP, search, exports and webhooks. Owners and admins see its
+    name, address, size and usage only.
+  - A personal mailbox sends no webhooks and no MCP access except through its owner's own OAuth grant.
+  - Workspace retention, contact export and deletion, and workspace deletion still cover it.
+  - Tests for each surface: an owner of the workspace gets `404` on a conversation of a member's
+    personal mailbox.
+
+### Y-171 · Delegation
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P1 · **Depends on** Y-170 · **Chapters** architecture › Team mail
+- **Acceptance**
+  - The owner of a personal mailbox grants another member read, or read and send; sending shows
+    "on behalf of" in `Sender` and the timeline names who sent it.
+  - Revoking takes effect at once, including open realtime connections.
+  - Each grant and revoke is in the audit log.
+
+### Y-172 · When a member leaves
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P1 · **Depends on** Y-170 · **Chapters** architecture › Team mail, Privacy and data
+- **Acceptance**
+  - Removing a member with a personal mailbox asks the owner or admin to choose: delete it, or hand it
+    to a named member; a handed-over mailbox becomes that member's personal mailbox.
+  - The choice is in the audit log; nobody reads the mailbox before the hand-over.
+  - Deleting one's own account follows the same choice for its mailboxes, made by an owner afterwards.
+
+## M37 — Organizing mail
+
+### Y-173 · Mail filters
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P1 · **Depends on** Y-141, Y-164 · **Chapters** architecture › Team mail
+- **Acceptance**
+  - Filters on the automation rules engine with mail conditions (from, to, cc, subject, has
+    attachment, list-id) and actions (label, star, archive, trash, snooze, forward to a teammate).
+  - A personal mailbox's filters are its owner's; a shared mailbox's are set by owners and admins.
+  - "Filter messages like this" from a message.
+
+### Y-174 · Mail search operators
+
+- **Area** api · **Owner** yuva-api, then yuva-panel · **Priority** P2 · **Depends on** Y-164 · **Chapters** architecture › Team mail
+- **Acceptance**
+  - The conversation search takes `from:`, `to:`, `cc:`, `subject:`, `has:attachment`, `is:starred`,
+    `in:<folder>`, `before:` and `after:` on top of the existing full-text search.
+  - Operators are parsed on the server, in `/v1` and MCP alike; unknown ones are searched as text.
+
+## M38 — Team mail acceptance
+
+### Y-175 · Team mail guides
+
+- **Area** docs · **Owner** yuva-docs · **Priority** P1 · **Depends on** M34–M37 · **Chapters** –
+- **Acceptance**
+  - `docs/team-mail.md` with `tr` and `de`: shared and personal mailboxes, routing a domain's mail to
+    Yuva, moving history with M14, sending as yourself, privacy, delegation, leaving members.
+  - The site's feature pages say what team mail is and is not.
+
+### Y-176 · Team mail on a running server
+
+- **Area** verify · **Owner** yuva-verifier · **Priority** P0 · **Depends on** M34–M37 · **Chapters** roadmap M34–M38
+- **Acceptance**
+  - The Accept items of M34 to M37 on a server built from `main`, mail to simulator addresses and
+    Mailpit only, in a throwaway workspace deleted afterwards.
+  - Screenshots (WebP) of the Mail section, the composer and a delegated mailbox.
