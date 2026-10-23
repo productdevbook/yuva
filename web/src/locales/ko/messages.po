@@ -1380,6 +1380,10 @@ msgstr "로그인은 10분 안에 돌아와야 하며 한 번만 유효합니다
 msgid "A sign-in must come back within 10 minutes and works once. Sign in again."
 msgstr "로그인은 10분 안에 돌아와야 하며 한 번만 유효합니다. 다시 로그인하세요."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "A signing certificate expires within 30 days. Sign-ins stop working when it does, unless your provider has published a newer one in its metadata."
+msgstr "A signing certificate expires within 30 days. Sign-ins stop working when it does, unless your provider has published a newer one in its metadata."
+
 #: src/features/inbox/SourceFilter.tsx
 msgid "A site shows the conversations sent from its pages."
 msgstr "사이트는 해당 페이지에서 보낸 대화를 보여 줍니다."
@@ -1520,6 +1524,10 @@ msgstr "Acme 상태"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Acme Support"
 msgstr "Acme 지원"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "ACS URL"
+msgstr "ACS URL"
 
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Actions"
@@ -2003,6 +2011,7 @@ msgstr "허용됨"
 msgid "Allowed file types"
 msgstr "허용하는 파일 형식"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Allowed groups"
 msgstr "Allowed groups"
@@ -2036,6 +2045,14 @@ msgstr "이미 리스트에 있음"
 #: src/features/broadcasts/Import.tsx
 msgid "Already on the list, left as they are"
 msgstr "이미 리스트에 있어 그대로 두었습니다"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Also called audience or identifier."
+msgstr "Also called audience or identifier."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Also called reply URL. HTTP-POST binding."
+msgstr "Also called reply URL. HTTP-POST binding."
 
 #: src/features/settings/profile/ProfileForm.tsx
 msgid "Also for sign-in and notification e-mails"
@@ -3929,6 +3946,7 @@ msgstr "어시스턴트 연결"
 msgid "Connect an assistant such as Claude or ChatGPT"
 msgstr "Claude나 ChatGPT 같은 어시스턴트 연결"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Connect and test"
 msgstr "Connect and test"
@@ -5343,6 +5361,10 @@ msgstr "이메일 주소"
 msgid "E-mail addresses"
 msgstr "이메일 주소"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "E-mail attribute"
+msgstr "E-mail attribute"
+
 #: src/components/common/EmailHtml.tsx
 msgid "E-mail content"
 msgstr "이메일 내용"
@@ -5656,6 +5678,10 @@ msgstr "1에서 36,500 사이의 정수 일수를 입력하거나 비워 두세�
 msgid "Enter your work e-mail and we send you a code. No password; the same code signs you in later."
 msgstr "업무용 이메일을 입력하면 코드를 보내 드립니다. 비밀번호는 없고, 나중에도 같은 코드로 로그인합니다."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Entity ID"
+msgstr "Entity ID"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Entries"
 msgstr "항목"
@@ -5837,6 +5863,10 @@ msgstr "기대 상태 시작"
 msgid "Expected status to"
 msgstr "기대 상태 끝"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Expired"
+msgstr "Expired"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "expired {expires}"
 msgstr "{expires}에 만료됨"
@@ -5848,6 +5878,10 @@ msgstr "만료"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Expires (optional)"
 msgstr "만료(선택)"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Expires soon"
+msgstr "Expires soon"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
@@ -6212,6 +6246,10 @@ msgstr "예: 우리 회사가 고객에게 보내는 월간 제품 뉴스레터.
 msgid "For example: a subscribe form with confirmation on our site, or a checkbox at sign-up."
 msgstr "예: 사이트의 확인 절차가 있는 구독 양식이나 가입 시의 체크박스."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "For providers without a metadata address, such as Google Workspace. It replaces the address."
+msgstr "For providers without a metadata address, such as Google Workspace. It replaces the address."
+
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "For signed-in users, your backend signs an identity token with the inbox's identity secret and the app passes it to the SDK."
 msgstr "로그인한 사용자의 경우, 백엔드가 받은 편지함의 ID 시크릿으로 ID 토큰에 서명하고 앱이 이를 SDK에 전달합니다."
@@ -6538,6 +6576,10 @@ msgstr "그룹"
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
 msgstr "결제나 지원처럼 멤버를 묶고, 그룹의 받은 편지함을 한곳에서 지정하세요."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Groups attribute"
+msgstr "Groups attribute"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
@@ -7723,6 +7765,10 @@ msgstr "성"
 msgid "Last push failed: {failed}"
 msgstr "마지막 푸시 실패: {failed}"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Last read {fetched}"
+msgstr "Last read {fetched}"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Last read {when}"
 msgstr "마지막으로 읽음 {when}"
@@ -7792,6 +7838,10 @@ msgstr "Leave empty for {0}."
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Leave empty for github.com. Otherwise the server's API, https://host/api/v3."
 msgstr "Leave empty for github.com. Otherwise the server's API, https://host/api/v3."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Leave empty when the NameID is the e-mail address."
+msgstr "Leave empty when the NameID is the e-mail address."
 
 #: src/features/conversation/Collision.tsx
 msgid "Leave it to {name}"
@@ -8597,6 +8647,14 @@ msgstr "보낸 메시지"
 msgid "Messages the key sends show its bot name and picture."
 msgstr "키가 보내는 메시지에는 봇 이름과 사진이 표시됩니다."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Metadata"
+msgstr "Metadata"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Metadata URL"
+msgstr "Metadata URL"
+
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Method"
 msgstr "메서드"
@@ -8981,6 +9039,10 @@ msgstr "이름(예: 업무용 노트북)"
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
 msgstr "name@example.com"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "NameID format"
+msgstr "NameID format"
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
@@ -11036,6 +11098,10 @@ msgstr "또는"
 msgid "Or move from a help desk"
 msgstr "또는 헬프 데스크에서 이전"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Or paste the metadata"
+msgstr "Or paste the metadata"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Or pick your provider"
 msgstr "또는 제공업체 선택"
@@ -11264,6 +11330,10 @@ msgstr "Paste the address of an existing issue. Its state then sets the progress
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "서브도메인과 함께 아래에 붙여 넣으세요. Yuva는 read 스코프만 요청하며 그 이상은 받지 않습니다."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Paste these into your identity provider, or give it the metadata address."
+msgstr "Paste these into your identity provider, or give it the metadata address."
+
 #: src/features/setup/InstallStep.tsx
 msgid "Paste this before the closing body tag of your pages"
 msgstr "페이지의 body 닫는 태그 바로 앞에 붙여 넣으세요"
@@ -11366,6 +11436,7 @@ msgstr "연락처는 대화가 종료되면 엄지로 평가합니다. 더 긴 �
 msgid "People send a bug, an idea or praise, with a screenshot and the device details. It lands here."
 msgstr "사람들이 스크린샷과 기기 정보와 함께 버그, 아이디어, 칭찬을 보냅니다. 여기로 도착합니다."
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
 msgstr "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
@@ -11763,6 +11834,10 @@ msgstr "내가 게시했으며 채택된 답변으로 표시되었습니다."
 msgid "Preference page"
 msgstr "수신 설정 페이지"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Preferred: Yuva reads it again when the provider rotates its certificate. Saving with the same address reads it now."
+msgstr "Preferred: Yuva reads it again when the provider rotates its certificate. Saving with the same address reads it now."
+
 #: src/components/common/text.ts
 msgid "Preparing"
 msgstr "준비 중"
@@ -11930,6 +12005,7 @@ msgstr "Proton Mail은 내 컴퓨터의 Proton Mail Bridge를 통해서만 IMAP�
 msgid "Provider"
 msgstr "Provider"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider removed"
 msgstr "Provider removed"
@@ -11937,6 +12013,10 @@ msgstr "Provider removed"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider saved. Its discovery document was read."
 msgstr "Provider saved. Its discovery document was read."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Provider saved. Its metadata was read."
+msgstr "Provider saved. Its metadata was read."
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
@@ -12419,6 +12499,7 @@ msgstr "원격 이미지는 보낸 사람에게 메일을 열었음을 알릴 �
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/MonitorHttpFields.tsx
@@ -12520,6 +12601,7 @@ msgstr "FCM 서비스 계정을 제거할까요?"
 msgid "Remove the message or note you clicked on"
 msgstr "클릭한 메시지 또는 메모 삭제"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
@@ -13171,6 +13253,10 @@ msgstr "이름이 같고, 둘 다 {shared}에 연락했습니다."
 msgid "Same name."
 msgstr "이름이 같습니다."
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "SAML 2.0"
+msgstr "SAML 2.0"
+
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Sandbox (development builds)"
 msgstr "샌드박스(개발 빌드)"
@@ -13211,6 +13297,7 @@ msgstr "저장"
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "답변을 보낼 때 대화에 일어날 일과 함께 저장하세요."
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
 msgstr "Save and test"
@@ -13258,6 +13345,14 @@ msgstr "초안 지금 저장"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "저장됨"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
+msgstr "Saving a SAML provider removes the OpenID Connect provider and its client secret."
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Saving an OpenID Connect provider removes the SAML provider and its certificates."
+msgstr "Saving an OpenID Connect provider removes the SAML provider and its certificates."
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Saving removes the broadcast account; broadcasts then use the account for replies."
@@ -13878,6 +13973,7 @@ msgstr "오늘 발송: {sent}통. 일일 한도가 없습니다."
 msgid "Sent: {0}"
 msgstr "보냄: {0}"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Separate with commas. Leave empty to let everyone in your domains sign in."
 msgstr "Separate with commas. Leave empty to let everyone in your domains sign in."
@@ -14006,6 +14102,10 @@ msgstr "설정 가이드"
 #: src/features/setup/SetupLayout.tsx
 msgid "Setup steps"
 msgstr "설정 단계"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "SHA-256 fingerprint"
+msgstr "SHA-256 fingerprint"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "SHA-256 fingerprint of the certificate the server sent"
@@ -14422,6 +14522,10 @@ msgstr "Single sign-on"
 #: src/components/common/text.ts
 msgid "Single sign-on is required only once a provider is connected and a domain is verified."
 msgstr "Single sign-on is required only once a provider is connected and a domain is verified."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Single sign-on URL"
+msgstr "Single sign-on URL"
 
 #: src/features/docs/Toolbar.tsx
 #: src/features/inbox/SourceFilter.tsx
@@ -15219,6 +15323,10 @@ msgstr "업데이트 후 앱에서 로그아웃됩니다."
 msgid "The app registration you created for Yuva is not needed any more either: delete it in Microsoft Entra › App registrations."
 msgstr "Yuva용으로 만든 앱 등록도 더 이상 필요하지 않습니다. Microsoft Entra › 앱 등록에서 삭제하세요."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "The attribute that lists a person's groups."
+msgstr "The attribute that lists a person's groups."
+
 #: src/features/status/ComponentsTab.tsx
 msgid "The bars are the last {days} days, as visitors see them."
 msgstr "막대는 방문자가 보는 것과 같은 최근 {days}일입니다."
@@ -15697,6 +15805,10 @@ msgstr "mbox 파일이 zip 안에서 압축되어 있습니다. Takeout 아카�
 #: src/features/migrations/text.ts
 msgid "The message could not be read"
 msgstr "메시지를 읽을 수 없습니다"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "The metadata was pasted. Paste it again when your provider renews its certificate."
+msgstr "The metadata was pasted. Paste it again when your provider renews its certificate."
 
 #: src/features/migrations/text.ts
 msgid "The Microsoft account you signed in with cannot open this mailbox, and Yuva stored nothing. Sign in with the mailbox's own account; use a private window if the browser keeps choosing the other one."
@@ -17175,6 +17287,10 @@ msgstr "업데이트"
 msgid "Updating"
 msgstr "업데이트 중"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Upload a metadata file"
+msgstr "Upload a metadata file"
+
 #: src/features/migrations/ConnectStep.tsx
 msgid "Upload a Takeout file instead"
 msgstr "대신 Takeout 파일 업로드"
@@ -17391,6 +17507,14 @@ msgstr "대개 클라이언트 시크릿이나 OAuth 클라이언트의 리디�
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Usually your company or team; you can change it later"
 msgstr "보통 회사나 팀 이름. 나중에 바꿀 수 있습니다"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Valid"
+msgstr "Valid"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Valid {from} to {to}"
+msgstr "Valid {from} to {to}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "value"
@@ -18404,6 +18528,10 @@ msgstr "내 폴더"
 msgid "Your folders and labels become Yuva labels on the conversations they hold."
 msgstr "폴더와 레이블은 그것이 담고 있는 대화의 Yuva 레이블이 됩니다."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Your identity provider"
+msgstr "Your identity provider"
+
 #: src/features/auth/ssoError.ts
 msgid "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
 msgstr "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
@@ -18490,6 +18618,10 @@ msgstr "{first}님에게 보낸 답장이 전송되지 않았습니다. {0}"
 #: src/features/oauth/ConsentPage.tsx
 msgid "Your role in this workspace cannot give any of the access this app asks for."
 msgstr "이 워크스페이스에서 내 역할로는 이 앱이 요청하는 접근 권한을 하나도 줄 수 없습니다."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Your service provider details"
+msgstr "Your service provider details"
 
 #: src/components/common/text.ts
 msgid "Your session has ended. Sign in again."

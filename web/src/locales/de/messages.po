@@ -1380,6 +1380,10 @@ msgstr "Eine Anmeldung muss innerhalb von 10 Minuten zurückkommen und funktioni
 msgid "A sign-in must come back within 10 minutes and works once. Sign in again."
 msgstr "Eine Anmeldung muss innerhalb von 10 Minuten zurückkommen und funktioniert nur einmal. Melden Sie sich erneut an."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "A signing certificate expires within 30 days. Sign-ins stop working when it does, unless your provider has published a newer one in its metadata."
+msgstr "Ein Signaturzertifikat läuft innerhalb von 30 Tagen ab. Danach funktionieren Anmeldungen nicht mehr, außer Ihr Anbieter hat ein neueres in seinen Metadaten veröffentlicht."
+
 #: src/features/inbox/SourceFilter.tsx
 msgid "A site shows the conversations sent from its pages."
 msgstr "Eine Website zeigt die Unterhaltungen, die von ihren Seiten gesendet wurden."
@@ -1520,6 +1524,10 @@ msgstr "Acme-Status"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Acme Support"
 msgstr "Acme Support"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "ACS URL"
+msgstr "ACS-URL"
 
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Actions"
@@ -2003,6 +2011,7 @@ msgstr "Erlaubt"
 msgid "Allowed file types"
 msgstr "Erlaubte Dateitypen"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Allowed groups"
 msgstr "Erlaubte Gruppen"
@@ -2036,6 +2045,14 @@ msgstr "Bereits auf der Liste"
 #: src/features/broadcasts/Import.tsx
 msgid "Already on the list, left as they are"
 msgstr "Bereits auf der Liste, unverändert gelassen"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Also called audience or identifier."
+msgstr "Wird auch Audience oder Bezeichner genannt."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Also called reply URL. HTTP-POST binding."
+msgstr "Wird auch Reply-URL genannt. HTTP-POST-Binding."
 
 #: src/features/settings/profile/ProfileForm.tsx
 msgid "Also for sign-in and notification e-mails"
@@ -3929,6 +3946,7 @@ msgstr "Assistenten verbinden"
 msgid "Connect an assistant such as Claude or ChatGPT"
 msgstr "Einen Assistenten wie Claude oder ChatGPT verbinden"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Connect and test"
 msgstr "Verbinden und testen"
@@ -5343,6 +5361,10 @@ msgstr "E-Mail-Adresse"
 msgid "E-mail addresses"
 msgstr "E-Mail-Adressen"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "E-mail attribute"
+msgstr "E-Mail-Attribut"
+
 #: src/components/common/EmailHtml.tsx
 msgid "E-mail content"
 msgstr "E-Mail-Inhalt"
@@ -5656,6 +5678,10 @@ msgstr "Gib ganze Tage von 1 bis 36.500 ein oder lass das Feld leer."
 msgid "Enter your work e-mail and we send you a code. No password; the same code signs you in later."
 msgstr "Geben Sie Ihre geschäftliche E-Mail-Adresse ein, und wir senden Ihnen einen Code. Kein Passwort; derselbe Code meldet Sie später wieder an."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Entity ID"
+msgstr "Entity-ID"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Entries"
 msgstr "Einträge"
@@ -5837,6 +5863,10 @@ msgstr "Erwarteter Status von"
 msgid "Expected status to"
 msgstr "Erwarteter Status bis"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Expired"
+msgstr "Abgelaufen"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "expired {expires}"
 msgstr "abgelaufen {expires}"
@@ -5848,6 +5878,10 @@ msgstr "Läuft ab"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Expires (optional)"
 msgstr "Läuft ab (optional)"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Expires soon"
+msgstr "Läuft bald ab"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
@@ -6212,6 +6246,10 @@ msgstr "Zum Beispiel: ein monatlicher Produkt-Newsletter unseres Unternehmens an
 msgid "For example: a subscribe form with confirmation on our site, or a checkbox at sign-up."
 msgstr "Zum Beispiel: ein Anmeldeformular mit Bestätigung auf unserer Website oder ein Kontrollkästchen bei der Registrierung."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "For providers without a metadata address, such as Google Workspace. It replaces the address."
+msgstr "Für Anbieter ohne Metadaten-Adresse, etwa Google Workspace. Ersetzt die Adresse."
+
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "For signed-in users, your backend signs an identity token with the inbox's identity secret and the app passes it to the SDK."
 msgstr "Für angemeldete Nutzer signiert Ihr Backend ein Identitäts-Token mit dem Identity Secret des Postfachs, und die App übergibt es an das SDK."
@@ -6538,6 +6576,10 @@ msgstr "Gruppe"
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
 msgstr "Fassen Sie Mitglieder zusammen, etwa für Abrechnung oder Support, und geben Sie der Gruppe ihre Postfächer an einer Stelle."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Groups attribute"
+msgstr "Gruppenattribut"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
@@ -7723,6 +7765,10 @@ msgstr "Nachname"
 msgid "Last push failed: {failed}"
 msgstr "Letzter Push fehlgeschlagen: {failed}"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Last read {fetched}"
+msgstr "Zuletzt gelesen: {fetched}"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Last read {when}"
 msgstr "Zuletzt gelesen {when}"
@@ -7792,6 +7838,10 @@ msgstr "Leer lassen für {0}."
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Leave empty for github.com. Otherwise the server's API, https://host/api/v3."
 msgstr "Für github.com leer lassen. Sonst die API des Servers, https://host/api/v3."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Leave empty when the NameID is the e-mail address."
+msgstr "Leer lassen, wenn die NameID die E-Mail-Adresse ist."
 
 #: src/features/conversation/Collision.tsx
 msgid "Leave it to {name}"
@@ -8597,6 +8647,14 @@ msgstr "gesendete Nachrichten"
 msgid "Messages the key sends show its bot name and picture."
 msgstr "Vom Schlüssel gesendete Nachrichten zeigen seinen Bot-Namen und sein Bild."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Metadata"
+msgstr "Metadaten"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Metadata URL"
+msgstr "Metadaten-URL"
+
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Method"
 msgstr "Methode"
@@ -8981,6 +9039,10 @@ msgstr "Name, z. B. Arbeitslaptop"
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
 msgstr "name@example.com"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "NameID format"
+msgstr "NameID-Format"
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
@@ -11036,6 +11098,10 @@ msgstr "oder"
 msgid "Or move from a help desk"
 msgstr "Oder von einem Helpdesk umziehen"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Or paste the metadata"
+msgstr "Oder die Metadaten einfügen"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Or pick your provider"
 msgstr "Oder wählen Sie Ihren Anbieter"
@@ -11264,6 +11330,10 @@ msgstr "Fügen Sie die Adresse eines bestehenden Issues ein. Sein Status bestimm
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "Fügen Sie sie unten mit Ihrer Subdomain ein. Yuva fragt nur die Berechtigung read an und akzeptiert nicht mehr."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Paste these into your identity provider, or give it the metadata address."
+msgstr "Fügen Sie diese bei Ihrem Identitätsanbieter ein oder geben Sie ihm die Metadaten-Adresse."
+
 #: src/features/setup/InstallStep.tsx
 msgid "Paste this before the closing body tag of your pages"
 msgstr "Fügen Sie dies vor dem schließenden Body-Tag Ihrer Seiten ein"
@@ -11366,6 +11436,7 @@ msgstr "Kontakte bewerten eine Unterhaltung mit einem Daumen, wenn sie geschloss
 msgid "People send a bug, an idea or praise, with a screenshot and the device details. It lands here."
 msgstr "Nutzer senden einen Fehler, eine Idee oder Lob, mit Screenshot und Gerätedetails. Es landet hier."
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
 msgstr "Alle melden sich wieder mit Code oder Passkey an, und Single Sign-on ist nicht mehr erforderlich. Ihre Domains bleiben erhalten."
@@ -11763,6 +11834,10 @@ msgstr "Von Ihnen gepostet und als akzeptierte Antwort markiert."
 msgid "Preference page"
 msgstr "Einstellungsseite"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Preferred: Yuva reads it again when the provider rotates its certificate. Saving with the same address reads it now."
+msgstr "Bevorzugt: Yuva liest sie erneut, wenn der Anbieter sein Zertifikat erneuert. Speichern mit derselben Adresse liest sie sofort."
+
 #: src/components/common/text.ts
 msgid "Preparing"
 msgstr "Wird vorbereitet"
@@ -11930,6 +12005,7 @@ msgstr "Proton Mail ist über IMAP nur mit Proton Mail Bridge auf Ihrem eigenen 
 msgid "Provider"
 msgstr "Anbieter"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider removed"
 msgstr "Anbieter entfernt"
@@ -11937,6 +12013,10 @@ msgstr "Anbieter entfernt"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider saved. Its discovery document was read."
 msgstr "Anbieter gespeichert. Sein Discovery-Dokument wurde gelesen."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Provider saved. Its metadata was read."
+msgstr "Anbieter gespeichert. Seine Metadaten wurden gelesen."
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
@@ -12419,6 +12499,7 @@ msgstr "Externe Bilder können dem Absender mitteilen, dass Sie die Mail geöffn
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/MonitorHttpFields.tsx
@@ -12520,6 +12601,7 @@ msgstr "FCM-Dienstkonto entfernen?"
 msgid "Remove the message or note you clicked on"
 msgstr "Die angeklickte Nachricht oder Notiz entfernen"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Remove the provider?"
 msgstr "Anbieter entfernen?"
@@ -13171,6 +13253,10 @@ msgstr "Gleicher Name, beide haben an {shared} geschrieben."
 msgid "Same name."
 msgstr "Gleicher Name."
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "SAML 2.0"
+msgstr "SAML 2.0"
+
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Sandbox (development builds)"
 msgstr "Sandbox (Entwicklungs-Builds)"
@@ -13211,6 +13297,7 @@ msgstr "Speichern"
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "Speichern Sie eine Antwort zusammen mit dem, was beim Senden mit der Unterhaltung geschehen soll."
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
 msgstr "Speichern und testen"
@@ -13258,6 +13345,14 @@ msgstr "Den Entwurf jetzt speichern"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "Gespeichert"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
+msgstr "Das Speichern eines SAML-Anbieters entfernt den OpenID-Connect-Anbieter und sein Client-Secret."
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Saving an OpenID Connect provider removes the SAML provider and its certificates."
+msgstr "Das Speichern eines OpenID-Connect-Anbieters entfernt den SAML-Anbieter und seine Zertifikate."
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Saving removes the broadcast account; broadcasts then use the account for replies."
@@ -13878,6 +13973,7 @@ msgstr "Heute gesendet: {sent}. Es gibt kein Tageslimit."
 msgid "Sent: {0}"
 msgstr "Gesendet: {0}"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Separate with commas. Leave empty to let everyone in your domains sign in."
 msgstr "Mit Kommas trennen. Leer lassen, damit sich alle aus Ihren Domains anmelden können."
@@ -14006,6 +14102,10 @@ msgstr "Einrichtungsanleitung"
 #: src/features/setup/SetupLayout.tsx
 msgid "Setup steps"
 msgstr "Einrichtungsschritte"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "SHA-256 fingerprint"
+msgstr "SHA-256-Fingerabdruck"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "SHA-256 fingerprint of the certificate the server sent"
@@ -14422,6 +14522,10 @@ msgstr "Single Sign-on"
 #: src/components/common/text.ts
 msgid "Single sign-on is required only once a provider is connected and a domain is verified."
 msgstr "Single Sign-on lässt sich erst verlangen, wenn ein Anbieter verbunden und eine Domain verifiziert ist."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Single sign-on URL"
+msgstr "Single-Sign-on-URL"
 
 #: src/features/docs/Toolbar.tsx
 #: src/features/inbox/SourceFilter.tsx
@@ -15219,6 +15323,10 @@ msgstr "Die App meldet mich nach dem Update ab."
 msgid "The app registration you created for Yuva is not needed any more either: delete it in Microsoft Entra › App registrations."
 msgstr "Auch die App-Registrierung, die Sie für Yuva erstellt haben, wird nicht mehr gebraucht: Löschen Sie sie in Microsoft Entra › App-Registrierungen."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "The attribute that lists a person's groups."
+msgstr "Das Attribut, das die Gruppen einer Person auflistet."
+
 #: src/features/status/ComponentsTab.tsx
 msgid "The bars are the last {days} days, as visitors see them."
 msgstr "Die Balken zeigen die letzten {days} Tage, so wie Besucher sie sehen."
@@ -15697,6 +15805,10 @@ msgstr "Die mbox-Datei ist in der Zip-Datei komprimiert. Entpacken Sie das Takeo
 #: src/features/migrations/text.ts
 msgid "The message could not be read"
 msgstr "Die Nachricht konnte nicht gelesen werden"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "The metadata was pasted. Paste it again when your provider renews its certificate."
+msgstr "Die Metadaten wurden eingefügt. Fügen Sie sie erneut ein, wenn Ihr Anbieter sein Zertifikat erneuert."
 
 #: src/features/migrations/text.ts
 msgid "The Microsoft account you signed in with cannot open this mailbox, and Yuva stored nothing. Sign in with the mailbox's own account; use a private window if the browser keeps choosing the other one."
@@ -17175,6 +17287,10 @@ msgstr "Updates"
 msgid "Updating"
 msgstr "Wird aktualisiert"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Upload a metadata file"
+msgstr "Metadaten-Datei hochladen"
+
 #: src/features/migrations/ConnectStep.tsx
 msgid "Upload a Takeout file instead"
 msgstr "Stattdessen eine Takeout-Datei hochladen"
@@ -17391,6 +17507,14 @@ msgstr "Meist ist das Client Secret oder die Weiterleitungs-URL im OAuth-Client 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Usually your company or team; you can change it later"
 msgstr "Meist Ihr Unternehmen oder Team; Sie können es später ändern"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Valid"
+msgstr "Gültig"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Valid {from} to {to}"
+msgstr "Gültig von {from} bis {to}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "value"
@@ -18404,6 +18528,10 @@ msgstr "Ihr Ordner"
 msgid "Your folders and labels become Yuva labels on the conversations they hold."
 msgstr "Ihre Ordner und Labels werden zu Yuva-Labels an den Unterhaltungen, die sie enthalten."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Your identity provider"
+msgstr "Ihr Identitätsanbieter"
+
 #: src/features/auth/ssoError.ts
 msgid "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
 msgstr "Ihr Identitätsanbieter hat Ihre E-Mail-Adresse nicht verifiziert, deshalb kann Yuva ihr nicht vertrauen. Bitten Sie Ihre Administration, sie dort zu verifizieren."
@@ -18490,6 +18618,10 @@ msgstr "Ihre Antwort an {first} wurde nicht gesendet. {0}"
 #: src/features/oauth/ConsentPage.tsx
 msgid "Your role in this workspace cannot give any of the access this app asks for."
 msgstr "Ihre Rolle in diesem Workspace kann keinen der von dieser App verlangten Zugriffe geben."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Your service provider details"
+msgstr "Angaben zu Ihrem Service Provider"
 
 #: src/components/common/text.ts
 msgid "Your session has ended. Sign in again."

@@ -1380,6 +1380,10 @@ msgstr "Lần đăng nhập phải quay lại trong vòng 10 phút và chỉ dù
 msgid "A sign-in must come back within 10 minutes and works once. Sign in again."
 msgstr "Lần đăng nhập phải quay lại trong vòng 10 phút và chỉ dùng được một lần. Hãy đăng nhập lại."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "A signing certificate expires within 30 days. Sign-ins stop working when it does, unless your provider has published a newer one in its metadata."
+msgstr "A signing certificate expires within 30 days. Sign-ins stop working when it does, unless your provider has published a newer one in its metadata."
+
 #: src/features/inbox/SourceFilter.tsx
 msgid "A site shows the conversations sent from its pages."
 msgstr "Một trang web hiển thị các cuộc trò chuyện gửi từ các trang của nó."
@@ -1520,6 +1524,10 @@ msgstr "Trạng thái Acme"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Acme Support"
 msgstr "Acme Support"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "ACS URL"
+msgstr "ACS URL"
 
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Actions"
@@ -2003,6 +2011,7 @@ msgstr "Được phép"
 msgid "Allowed file types"
 msgstr "Loại tệp được phép"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Allowed groups"
 msgstr "Allowed groups"
@@ -2036,6 +2045,14 @@ msgstr "Đã có trong danh sách"
 #: src/features/broadcasts/Import.tsx
 msgid "Already on the list, left as they are"
 msgstr "Đã có trong danh sách, giữ nguyên"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Also called audience or identifier."
+msgstr "Also called audience or identifier."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Also called reply URL. HTTP-POST binding."
+msgstr "Also called reply URL. HTTP-POST binding."
 
 #: src/features/settings/profile/ProfileForm.tsx
 msgid "Also for sign-in and notification e-mails"
@@ -3929,6 +3946,7 @@ msgstr "Kết nối một trợ lý"
 msgid "Connect an assistant such as Claude or ChatGPT"
 msgstr "Kết nối một trợ lý như Claude hoặc ChatGPT"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Connect and test"
 msgstr "Connect and test"
@@ -5343,6 +5361,10 @@ msgstr "Địa chỉ email"
 msgid "E-mail addresses"
 msgstr "Địa chỉ email"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "E-mail attribute"
+msgstr "E-mail attribute"
+
 #: src/components/common/EmailHtml.tsx
 msgid "E-mail content"
 msgstr "Nội dung email"
@@ -5656,6 +5678,10 @@ msgstr "Nhập số ngày nguyên từ 1 đến 36.500, hoặc để trống."
 msgid "Enter your work e-mail and we send you a code. No password; the same code signs you in later."
 msgstr "Nhập email công việc của bạn và chúng tôi sẽ gửi cho bạn một mã. Không cần mật khẩu; chính mã đó sẽ đăng nhập cho bạn sau này."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Entity ID"
+msgstr "Entity ID"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Entries"
 msgstr "Mục"
@@ -5837,6 +5863,10 @@ msgstr "Trạng thái mong đợi từ"
 msgid "Expected status to"
 msgstr "Trạng thái mong đợi đến"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Expired"
+msgstr "Expired"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "expired {expires}"
 msgstr "đã hết hạn {expires}"
@@ -5848,6 +5878,10 @@ msgstr "Hết hạn"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Expires (optional)"
 msgstr "Hết hạn (không bắt buộc)"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Expires soon"
+msgstr "Expires soon"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
@@ -6212,6 +6246,10 @@ msgstr "Ví dụ: bản tin sản phẩm hằng tháng từ công ty chúng tôi
 msgid "For example: a subscribe form with confirmation on our site, or a checkbox at sign-up."
 msgstr "Ví dụ: một biểu mẫu đăng ký có xác nhận trên trang của chúng tôi, hoặc một ô tích khi đăng ký."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "For providers without a metadata address, such as Google Workspace. It replaces the address."
+msgstr "For providers without a metadata address, such as Google Workspace. It replaces the address."
+
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "For signed-in users, your backend signs an identity token with the inbox's identity secret and the app passes it to the SDK."
 msgstr "Với người dùng đã đăng nhập, backend của bạn ký một token danh tính bằng identity secret của hộp thư và ứng dụng chuyển nó cho SDK."
@@ -6538,6 +6576,10 @@ msgstr "Nhóm"
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
 msgstr "Gom thành viên theo nhóm, chẳng hạn thanh toán hoặc hỗ trợ, và gán hộp thư cho nhóm ở một nơi."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Groups attribute"
+msgstr "Groups attribute"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
@@ -7723,6 +7765,10 @@ msgstr "Họ"
 msgid "Last push failed: {failed}"
 msgstr "Lần đẩy cuối thất bại: {failed}"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Last read {fetched}"
+msgstr "Last read {fetched}"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Last read {when}"
 msgstr "Đọc lần cuối {when}"
@@ -7792,6 +7838,10 @@ msgstr "Leave empty for {0}."
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Leave empty for github.com. Otherwise the server's API, https://host/api/v3."
 msgstr "Leave empty for github.com. Otherwise the server's API, https://host/api/v3."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Leave empty when the NameID is the e-mail address."
+msgstr "Leave empty when the NameID is the e-mail address."
 
 #: src/features/conversation/Collision.tsx
 msgid "Leave it to {name}"
@@ -8597,6 +8647,14 @@ msgstr "tin nhắn đã gửi"
 msgid "Messages the key sends show its bot name and picture."
 msgstr "Tin nhắn do khóa gửi hiện tên và ảnh bot của nó."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Metadata"
+msgstr "Metadata"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Metadata URL"
+msgstr "Metadata URL"
+
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Method"
 msgstr "Phương thức"
@@ -8981,6 +9039,10 @@ msgstr "Tên, ví dụ Laptop công ty"
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
 msgstr "name@example.com"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "NameID format"
+msgstr "NameID format"
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
@@ -11036,6 +11098,10 @@ msgstr "hoặc"
 msgid "Or move from a help desk"
 msgstr "Hoặc chuyển từ một help desk"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Or paste the metadata"
+msgstr "Or paste the metadata"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Or pick your provider"
 msgstr "Hoặc chọn nhà cung cấp của bạn"
@@ -11264,6 +11330,10 @@ msgstr "Paste the address of an existing issue. Its state then sets the progress
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "Dán chúng bên dưới cùng tên miền phụ của bạn. Yuva chỉ yêu cầu phạm vi read và không nhận gì hơn."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Paste these into your identity provider, or give it the metadata address."
+msgstr "Paste these into your identity provider, or give it the metadata address."
+
 #: src/features/setup/InstallStep.tsx
 msgid "Paste this before the closing body tag of your pages"
 msgstr "Dán đoạn này trước thẻ đóng body của các trang của bạn"
@@ -11366,6 +11436,7 @@ msgstr "Liên hệ đánh giá cuộc trò chuyện bằng biểu tượng ngón
 msgid "People send a bug, an idea or praise, with a screenshot and the device details. It lands here."
 msgstr "Mọi người gửi lỗi, ý tưởng hoặc lời khen, kèm ảnh chụp màn hình và thông tin thiết bị. Nó sẽ đến đây."
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
 msgstr "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
@@ -11763,6 +11834,10 @@ msgstr "Do bạn đăng và được đánh dấu là câu trả lời được 
 msgid "Preference page"
 msgstr "Trang tùy chọn"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Preferred: Yuva reads it again when the provider rotates its certificate. Saving with the same address reads it now."
+msgstr "Preferred: Yuva reads it again when the provider rotates its certificate. Saving with the same address reads it now."
+
 #: src/components/common/text.ts
 msgid "Preparing"
 msgstr "Đang chuẩn bị"
@@ -11930,6 +12005,7 @@ msgstr "Proton Mail chỉ truy cập được qua IMAP thông qua Proton Mail Br
 msgid "Provider"
 msgstr "Provider"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider removed"
 msgstr "Provider removed"
@@ -11937,6 +12013,10 @@ msgstr "Provider removed"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider saved. Its discovery document was read."
 msgstr "Provider saved. Its discovery document was read."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Provider saved. Its metadata was read."
+msgstr "Provider saved. Its metadata was read."
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
@@ -12419,6 +12499,7 @@ msgstr "Hình ảnh từ xa có thể cho người gửi biết bạn đã mở 
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/MonitorHttpFields.tsx
@@ -12520,6 +12601,7 @@ msgstr "Xóa tài khoản dịch vụ FCM?"
 msgid "Remove the message or note you clicked on"
 msgstr "Gỡ tin nhắn hoặc ghi chú bạn đã nhấp vào"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
@@ -13171,6 +13253,10 @@ msgstr "Trùng tên, cả hai đều nhắn tới {shared}."
 msgid "Same name."
 msgstr "Trùng tên."
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "SAML 2.0"
+msgstr "SAML 2.0"
+
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Sandbox (development builds)"
 msgstr "Sandbox (bản dựng phát triển)"
@@ -13211,6 +13297,7 @@ msgstr "Lưu"
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "Lưu một câu trả lời cùng với điều sẽ xảy ra với cuộc trò chuyện khi bạn gửi."
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
 msgstr "Save and test"
@@ -13258,6 +13345,14 @@ msgstr "Lưu bản nháp ngay"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "Đã lưu"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
+msgstr "Saving a SAML provider removes the OpenID Connect provider and its client secret."
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Saving an OpenID Connect provider removes the SAML provider and its certificates."
+msgstr "Saving an OpenID Connect provider removes the SAML provider and its certificates."
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Saving removes the broadcast account; broadcasts then use the account for replies."
@@ -13878,6 +13973,7 @@ msgstr "Đã gửi hôm nay: {sent}. Không có giới hạn hằng ngày."
 msgid "Sent: {0}"
 msgstr "Đã gửi: {0}"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Separate with commas. Leave empty to let everyone in your domains sign in."
 msgstr "Separate with commas. Leave empty to let everyone in your domains sign in."
@@ -14006,6 +14102,10 @@ msgstr "Hướng dẫn thiết lập"
 #: src/features/setup/SetupLayout.tsx
 msgid "Setup steps"
 msgstr "Các bước thiết lập"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "SHA-256 fingerprint"
+msgstr "SHA-256 fingerprint"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "SHA-256 fingerprint of the certificate the server sent"
@@ -14422,6 +14522,10 @@ msgstr "Single sign-on"
 #: src/components/common/text.ts
 msgid "Single sign-on is required only once a provider is connected and a domain is verified."
 msgstr "Single sign-on is required only once a provider is connected and a domain is verified."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Single sign-on URL"
+msgstr "Single sign-on URL"
 
 #: src/features/docs/Toolbar.tsx
 #: src/features/inbox/SourceFilter.tsx
@@ -15219,6 +15323,10 @@ msgstr "Ứng dụng đăng xuất tôi sau bản cập nhật."
 msgid "The app registration you created for Yuva is not needed any more either: delete it in Microsoft Entra › App registrations."
 msgstr "Ứng dụng đã đăng ký bạn tạo cho Yuva cũng không còn cần nữa: hãy xóa nó trong Microsoft Entra › App registrations."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "The attribute that lists a person's groups."
+msgstr "The attribute that lists a person's groups."
+
 #: src/features/status/ComponentsTab.tsx
 msgid "The bars are the last {days} days, as visitors see them."
 msgstr "Các cột là {days} ngày qua, như khách truy cập nhìn thấy."
@@ -15697,6 +15805,10 @@ msgstr "Tệp mbox bị nén bên trong tệp zip. Hãy giải nén kho lưu tr�
 #: src/features/migrations/text.ts
 msgid "The message could not be read"
 msgstr "Không thể đọc tin nhắn"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "The metadata was pasted. Paste it again when your provider renews its certificate."
+msgstr "The metadata was pasted. Paste it again when your provider renews its certificate."
 
 #: src/features/migrations/text.ts
 msgid "The Microsoft account you signed in with cannot open this mailbox, and Yuva stored nothing. Sign in with the mailbox's own account; use a private window if the browser keeps choosing the other one."
@@ -17175,6 +17287,10 @@ msgstr "Cập nhật"
 msgid "Updating"
 msgstr "Đang cập nhật"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Upload a metadata file"
+msgstr "Upload a metadata file"
+
 #: src/features/migrations/ConnectStep.tsx
 msgid "Upload a Takeout file instead"
 msgstr "Tải lên tệp Takeout thay vào đó"
@@ -17391,6 +17507,14 @@ msgstr "Thường là client secret, hoặc URL chuyển hướng trong ứng d�
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Usually your company or team; you can change it later"
 msgstr "Thường là công ty hoặc nhóm của bạn; bạn có thể đổi sau"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Valid"
+msgstr "Valid"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Valid {from} to {to}"
+msgstr "Valid {from} to {to}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "value"
@@ -18404,6 +18528,10 @@ msgstr "Thư mục của bạn"
 msgid "Your folders and labels become Yuva labels on the conversations they hold."
 msgstr "Thư mục và nhãn của bạn trở thành nhãn Yuva trên các cuộc trò chuyện chúng chứa."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Your identity provider"
+msgstr "Your identity provider"
+
 #: src/features/auth/ssoError.ts
 msgid "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
 msgstr "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
@@ -18490,6 +18618,10 @@ msgstr "Phản hồi của bạn cho {first} chưa được gửi. {0}"
 #: src/features/oauth/ConsentPage.tsx
 msgid "Your role in this workspace cannot give any of the access this app asks for."
 msgstr "Vai trò của bạn trong không gian làm việc này không thể cấp bất kỳ quyền truy cập nào mà ứng dụng này yêu cầu."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Your service provider details"
+msgstr "Your service provider details"
 
 #: src/components/common/text.ts
 msgid "Your session has ended. Sign in again."

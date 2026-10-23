@@ -1380,6 +1380,10 @@ msgstr "Oturum açma işlemi 10 dakika içinde geri dönmeli ve yalnızca bir ke
 msgid "A sign-in must come back within 10 minutes and works once. Sign in again."
 msgstr "Oturum açma işlemi 10 dakika içinde geri dönmeli ve yalnızca bir kez kullanılabilir. Yeniden oturum açın."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "A signing certificate expires within 30 days. Sign-ins stop working when it does, unless your provider has published a newer one in its metadata."
+msgstr "Bir imza sertifikasının süresi 30 gün içinde doluyor. Sağlayıcınız meta verisinde daha yeni bir sertifika yayımlamadıysa, süre dolunca girişler çalışmaz."
+
 #: src/features/inbox/SourceFilter.tsx
 msgid "A site shows the conversations sent from its pages."
 msgstr "Bir site, sayfalarından gönderilen konuşmaları gösterir."
@@ -1520,6 +1524,10 @@ msgstr "Acme durumu"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Acme Support"
 msgstr "Acme Destek"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "ACS URL"
+msgstr "ACS URL'si"
 
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Actions"
@@ -2003,6 +2011,7 @@ msgstr "İzinli"
 msgid "Allowed file types"
 msgstr "İzin verilen dosya türleri"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Allowed groups"
 msgstr "İzin verilen gruplar"
@@ -2036,6 +2045,14 @@ msgstr "Zaten listede"
 #: src/features/broadcasts/Import.tsx
 msgid "Already on the list, left as they are"
 msgstr "Zaten listede, olduğu gibi bırakılır"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Also called audience or identifier."
+msgstr "Hedef kitle (audience) veya tanımlayıcı olarak da geçer."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Also called reply URL. HTTP-POST binding."
+msgstr "Yanıt URL'si olarak da geçer. HTTP-POST bağlaması."
 
 #: src/features/settings/profile/ProfileForm.tsx
 msgid "Also for sign-in and notification e-mails"
@@ -3929,6 +3946,7 @@ msgstr "Asistan bağlayın"
 msgid "Connect an assistant such as Claude or ChatGPT"
 msgstr "Claude ya da ChatGPT gibi bir asistan bağlayın"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Connect and test"
 msgstr "Bağla ve dene"
@@ -5343,6 +5361,10 @@ msgstr "E-posta adresi"
 msgid "E-mail addresses"
 msgstr "E-posta adresleri"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "E-mail attribute"
+msgstr "E-posta özniteliği"
+
 #: src/components/common/EmailHtml.tsx
 msgid "E-mail content"
 msgstr "E-posta içeriği"
@@ -5656,6 +5678,10 @@ msgstr "1 ile 36.500 arasında tam gün girin ya da boş bırakın."
 msgid "Enter your work e-mail and we send you a code. No password; the same code signs you in later."
 msgstr "İş e-posta adresinizi yazın, size bir kod gönderelim. Parola yok; sonraki girişlerde de aynı şekilde kodla girersiniz."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Entity ID"
+msgstr "Varlık kimliği"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Entries"
 msgstr "Kayıtlar"
@@ -5837,6 +5863,10 @@ msgstr "Beklenen durum (en düşük)"
 msgid "Expected status to"
 msgstr "Beklenen durum (en yüksek)"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Expired"
+msgstr "Süresi doldu"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "expired {expires}"
 msgstr "{expires} süresi doldu"
@@ -5848,6 +5878,10 @@ msgstr "Son geçerlilik"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Expires (optional)"
 msgstr "Son geçerlilik (isteğe bağlı)"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Expires soon"
+msgstr "Yakında doluyor"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
@@ -6212,6 +6246,10 @@ msgstr "Örneğin: şirketimizden müşterilerimize aylık ürün bülteni."
 msgid "For example: a subscribe form with confirmation on our site, or a checkbox at sign-up."
 msgstr "Örneğin: sitemizde onaylı bir abonelik formu ya da kayıt sırasında bir onay kutusu."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "For providers without a metadata address, such as Google Workspace. It replaces the address."
+msgstr "Meta veri adresi olmayan sağlayıcılar için, örneğin Google Workspace. Adresin yerine geçer."
+
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "For signed-in users, your backend signs an identity token with the inbox's identity secret and the app passes it to the SDK."
 msgstr "Oturum açmış kullanıcılar için arka ucunuz gelen kutusunun kimlik anahtarıyla bir kimlik belirteci imzalar, uygulama da bunu SDK'ya iletir."
@@ -6538,6 +6576,10 @@ msgstr "Grup"
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
 msgstr "Faturalama veya destek gibi üyeleri gruplayın ve grubun gelen kutularını tek yerden verin."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Groups attribute"
+msgstr "Grup özniteliği"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
@@ -7723,6 +7765,10 @@ msgstr "Soyad"
 msgid "Last push failed: {failed}"
 msgstr "Son bildirim gönderilemedi: {failed}"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Last read {fetched}"
+msgstr "Son okunma: {fetched}"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Last read {when}"
 msgstr "Son okuma {when}"
@@ -7792,6 +7838,10 @@ msgstr "Boş bırakırsanız {0} kullanılır."
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Leave empty for github.com. Otherwise the server's API, https://host/api/v3."
 msgstr "github.com için boş bırakın. Aksi halde sunucunun API'si: https://host/api/v3."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Leave empty when the NameID is the e-mail address."
+msgstr "NameID e-posta adresiyse boş bırakın."
 
 #: src/features/conversation/Collision.tsx
 msgid "Leave it to {name}"
@@ -8597,6 +8647,14 @@ msgstr "gönderilen mesaj"
 msgid "Messages the key sends show its bot name and picture."
 msgstr "Anahtarın gönderdiği mesajlarda bot adı ve görseli görünür."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Metadata"
+msgstr "Meta veri"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Metadata URL"
+msgstr "Meta veri adresi"
+
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Method"
 msgstr "Yöntem"
@@ -8981,6 +9039,10 @@ msgstr "Ad, ör. İş bilgisayarı"
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
 msgstr "ad@ornek.com"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "NameID format"
+msgstr "NameID biçimi"
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
@@ -11036,6 +11098,10 @@ msgstr "veya"
 msgid "Or move from a help desk"
 msgstr "Ya da bir yardım masasından taşıyın"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Or paste the metadata"
+msgstr "Ya da meta veriyi yapıştırın"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Or pick your provider"
 msgstr "Ya da sağlayıcınızı seçin"
@@ -11264,6 +11330,10 @@ msgstr "Mevcut bir issue'nun adresini yapıştırın. Durumu, müşterinin görd
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "Bunları alt alan adınızla birlikte aşağıya yapıştırın. Yuva yalnızca read kapsamını ister ve fazlasını kabul etmez."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Paste these into your identity provider, or give it the metadata address."
+msgstr "Bunları kimlik sağlayıcınıza yapıştırın ya da ona meta veri adresini verin."
+
 #: src/features/setup/InstallStep.tsx
 msgid "Paste this before the closing body tag of your pages"
 msgstr "Bunu sayfalarınızda kapanış body etiketinden önce yapıştırın"
@@ -11366,6 +11436,7 @@ msgstr "İnsanlar bir görüşmeyi kapandığında başparmakla değerlendirir. 
 msgid "People send a bug, an idea or praise, with a screenshot and the device details. It lands here."
 msgstr "Kişiler ekran görüntüsü ve cihaz bilgileriyle bir hata, fikir ya da övgü gönderir. Buraya düşer."
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
 msgstr "Kişiler yine kod veya geçiş anahtarıyla giriş yapar ve tek oturum açma zorunlu olmaktan çıkar. Alan adlarınız kalır."
@@ -11763,6 +11834,10 @@ msgstr "Sizin adınıza gönderilir ve kabul edilen yanıt olarak işaretlenir."
 msgid "Preference page"
 msgstr "Tercih sayfası"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Preferred: Yuva reads it again when the provider rotates its certificate. Saving with the same address reads it now."
+msgstr "Tercih edilir: sağlayıcı sertifikasını yenilediğinde Yuva adresi yeniden okur. Aynı adresle kaydetmek onu hemen okutur."
+
 #: src/components/common/text.ts
 msgid "Preparing"
 msgstr "Hazırlanıyor"
@@ -11930,6 +12005,7 @@ msgstr "Proton Mail'e IMAP ile yalnızca kendi bilgisayarınızdaki Proton Mail 
 msgid "Provider"
 msgstr "Sağlayıcı"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider removed"
 msgstr "Sağlayıcı kaldırıldı"
@@ -11937,6 +12013,10 @@ msgstr "Sağlayıcı kaldırıldı"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider saved. Its discovery document was read."
 msgstr "Sağlayıcı kaydedildi. Keşif belgesi okundu."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Provider saved. Its metadata was read."
+msgstr "Sağlayıcı kaydedildi. Meta verisi okundu."
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
@@ -12419,6 +12499,7 @@ msgstr "Uzak görseller, postayı açtığınızı gönderene bildirebilir."
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/MonitorHttpFields.tsx
@@ -12520,6 +12601,7 @@ msgstr "FCM hizmet hesabı kaldırılsın mı?"
 msgid "Remove the message or note you clicked on"
 msgstr "Tıkladığınız iletiyi veya notu kaldır"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Remove the provider?"
 msgstr "Sağlayıcı kaldırılsın mı?"
@@ -13171,6 +13253,10 @@ msgstr "Aynı ad, ikisi de {shared} adresine yazdı."
 msgid "Same name."
 msgstr "Aynı ad."
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "SAML 2.0"
+msgstr "SAML 2.0"
+
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Sandbox (development builds)"
 msgstr "Sandbox (geliştirme sürümleri)"
@@ -13211,6 +13297,7 @@ msgstr "Kaydet"
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "Bir yanıtı, gönderdiğinizde konuşmaya olacakların yanında kaydedin."
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
 msgstr "Kaydet ve dene"
@@ -13258,6 +13345,14 @@ msgstr "Taslağı şimdi kaydet"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "Kaydedildi"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
+msgstr "Bir SAML sağlayıcısını kaydetmek OpenID Connect sağlayıcısını ve istemci sırrını siler."
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Saving an OpenID Connect provider removes the SAML provider and its certificates."
+msgstr "Bir OpenID Connect sağlayıcısını kaydetmek SAML sağlayıcısını ve sertifikalarını siler."
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Saving removes the broadcast account; broadcasts then use the account for replies."
@@ -13878,6 +13973,7 @@ msgstr "Bugün gönderilen: {sent}. Günlük sınır yok."
 msgid "Sent: {0}"
 msgstr "Gönderilen: {0}"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Separate with commas. Leave empty to let everyone in your domains sign in."
 msgstr "Virgülle ayırın. Alan adlarınızdaki herkesin girebilmesi için boş bırakın."
@@ -14006,6 +14102,10 @@ msgstr "Kurulum kılavuzu"
 #: src/features/setup/SetupLayout.tsx
 msgid "Setup steps"
 msgstr "Kurulum adımları"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "SHA-256 fingerprint"
+msgstr "SHA-256 parmak izi"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "SHA-256 fingerprint of the certificate the server sent"
@@ -14422,6 +14522,10 @@ msgstr "Tek oturum açma"
 #: src/components/common/text.ts
 msgid "Single sign-on is required only once a provider is connected and a domain is verified."
 msgstr "Tek oturum açma, ancak bir sağlayıcı bağlandığında ve bir alan adı doğrulandığında zorunlu kılınabilir."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Single sign-on URL"
+msgstr "Tek oturum açma adresi"
 
 #: src/features/docs/Toolbar.tsx
 #: src/features/inbox/SourceFilter.tsx
@@ -15219,6 +15323,10 @@ msgstr "Güncellemeden sonra uygulama oturumumu kapatıyor."
 msgid "The app registration you created for Yuva is not needed any more either: delete it in Microsoft Entra › App registrations."
 msgstr "Yuva için oluşturduğunuz uygulama kaydına da artık gerek yok: Microsoft Entra › App registrations bölümünden silin."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "The attribute that lists a person's groups."
+msgstr "Kişinin gruplarını listeleyen öznitelik."
+
 #: src/features/status/ComponentsTab.tsx
 msgid "The bars are the last {days} days, as visitors see them."
 msgstr "Çubuklar, ziyaretçilerin gördüğü gibi son {days} günü gösterir."
@@ -15697,6 +15805,10 @@ msgstr "mbox dosyası zip içinde sıkıştırılmış. Takeout arşivini zip'te
 #: src/features/migrations/text.ts
 msgid "The message could not be read"
 msgstr "Mesaj okunamadı"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "The metadata was pasted. Paste it again when your provider renews its certificate."
+msgstr "Meta veri yapıştırılmıştı. Sağlayıcınız sertifikasını yenilediğinde yeniden yapıştırın."
 
 #: src/features/migrations/text.ts
 msgid "The Microsoft account you signed in with cannot open this mailbox, and Yuva stored nothing. Sign in with the mailbox's own account; use a private window if the browser keeps choosing the other one."
@@ -17175,6 +17287,10 @@ msgstr "Güncellemeler"
 msgid "Updating"
 msgstr "Güncelleniyor"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Upload a metadata file"
+msgstr "Meta veri dosyası yükle"
+
 #: src/features/migrations/ConnectStep.tsx
 msgid "Upload a Takeout file instead"
 msgstr "Bunun yerine Takeout dosyası yükleyin"
@@ -17391,6 +17507,14 @@ msgstr "Genellikle istemci gizli anahtarı ya da OAuth istemcisindeki yönlendir
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Usually your company or team; you can change it later"
 msgstr "Genellikle şirketinizin ya da ekibinizin adı; sonra değiştirebilirsiniz"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Valid"
+msgstr "Geçerli"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Valid {from} to {to}"
+msgstr "{from} ile {to} arasında geçerli"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "value"
@@ -18404,6 +18528,10 @@ msgstr "Kendi klasörünüz"
 msgid "Your folders and labels become Yuva labels on the conversations they hold."
 msgstr "Klasörleriniz ve etiketleriniz, içerdikleri konuşmalarda Yuva etiketine dönüşür."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Your identity provider"
+msgstr "Kimlik sağlayıcınız"
+
 #: src/features/auth/ssoError.ts
 msgid "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
 msgstr "Kimlik sağlayıcınız e-posta adresinizi doğrulamamış, bu yüzden Yuva ona güvenemez. Yöneticinizden orada doğrulatmasını isteyin."
@@ -18490,6 +18618,10 @@ msgstr "{first} için yanıtın gönderilmedi. {0}"
 #: src/features/oauth/ConsentPage.tsx
 msgid "Your role in this workspace cannot give any of the access this app asks for."
 msgstr "Bu çalışma alanındaki rolünüz, uygulamanın istediği izinlerin hiçbirini veremiyor."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Your service provider details"
+msgstr "Hizmet sağlayıcı bilgileriniz"
 
 #: src/components/common/text.ts
 msgid "Your session has ended. Sign in again."

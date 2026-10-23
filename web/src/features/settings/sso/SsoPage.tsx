@@ -3,12 +3,13 @@ import { GlobeIcon, PlusIcon } from "lucide-react"
 import { useState } from "react"
 import { Navigate } from "react-router"
 
-import { CodeLine, ErrorLine, toast, useConfirm } from "@/components/common"
+import { CodeLine, ErrorLine, Notice, toast, useConfirm } from "@/components/common"
 import { EmptyBox } from "@/components/common/EmptyBox"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Switch } from "@/components/ui/switch"
+import { SamlForm } from "@/features/settings/sso/SamlForm"
 import { useSso, useSsoMutations } from "@/features/settings/sso/queries"
 import {
   Card,
@@ -370,7 +371,7 @@ function DomainsSection({ sso }: { sso: SsoSettings }) {
 function RulesSection({ sso }: { sso: SsoSettings }) {
   const { t } = useLingui()
   const { rules } = useSsoMutations()
-  const ready = !!sso.oidc && sso.domains.some((d) => d.state === "verified")
+  const ready = !!(sso.oidc || sso.saml) && sso.domains.some((d) => d.state === "verified")
   return (
     <Section title={<Trans>Sign-in rules</Trans>}>
       <Card>
@@ -437,9 +438,11 @@ export function SsoPage() {
   const { t } = useLingui()
   const { isOwner } = useSession()
   const q = useSso(isOwner)
-  const [protocol, setProtocol] = useState<SsoProtocol>("oidc")
+  const [picked, setPicked] = useState<SsoProtocol | null>(null)
   if (!isOwner) return <Navigate to="/settings/profile" replace />
   const sso = q.data
+  const protocol: SsoProtocol = picked ?? sso?.protocol ?? "oidc"
+  const switching = !!sso?.protocol && sso.protocol !== protocol
   return (
     <>
       <PageHeader
@@ -461,14 +464,30 @@ export function SsoPage() {
                 <ChoiceSelect<SsoProtocol>
                   id="sso-protocol"
                   value={protocol}
-                  onChange={setProtocol}
-                  options={[["oidc", t`OpenID Connect`]]}
+                  onChange={setPicked}
+                  options={[
+                    ["oidc", t`OpenID Connect`],
+                    ["saml", t`SAML 2.0`],
+                  ]}
                   label={t`Protocol`}
                   className="w-56"
                 />
               </Field>
+              {switching && (
+                <Notice tone="warning" data-testid="sso-switch-warning">
+                  {protocol === "saml" ? (
+                    <Trans>Saving a SAML provider removes the OpenID Connect provider and its client secret.</Trans>
+                  ) : (
+                    <Trans>Saving an OpenID Connect provider removes the SAML provider and its certificates.</Trans>
+                  )}
+                </Notice>
+              )}
             </Card>
-            <ProviderForm key={sso.oidc?.updated_at ?? "new"} sso={sso} />
+            {protocol === "saml" ? (
+              <SamlForm sso={sso} />
+            ) : (
+              <ProviderForm key={sso.oidc?.updated_at ?? "new"} sso={sso} />
+            )}
           </Section>
           <DomainsSection sso={sso} />
           <RulesSection sso={sso} />

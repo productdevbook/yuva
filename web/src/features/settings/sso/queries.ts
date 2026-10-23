@@ -1,6 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
-import { api, unwrap, type SsoDomain, type SsoOidcInput, type SsoSettings, type SsoSettingsUpdate } from "@/lib/api"
+import {
+  api,
+  unwrap,
+  type SsoDomain,
+  type SsoOidcInput,
+  type SsoSamlInput,
+  type SsoSettings,
+  type SsoSettingsUpdate,
+} from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 
@@ -30,6 +38,14 @@ export function useSsoMutations() {
     }),
     removeProvider: useMutation({
       mutationFn: () => unwrap(api.DELETE("/v1/sso/oidc")),
+      onSuccess: refresh,
+    }),
+    saveSaml: useMutation({
+      mutationFn: (body: SsoSamlInput) => unwrap(api.PUT("/v1/sso/saml", { body })),
+      onSuccess: put,
+    }),
+    removeSaml: useMutation({
+      mutationFn: () => unwrap(api.DELETE("/v1/sso/saml")),
       onSuccess: refresh,
     }),
     addDomain: useMutation({

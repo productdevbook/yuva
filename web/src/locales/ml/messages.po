@@ -1380,6 +1380,10 @@ msgstr "സൈൻ-ഇൻ 10 മിനിറ്റിനുള്ളിൽ തി
 msgid "A sign-in must come back within 10 minutes and works once. Sign in again."
 msgstr "സൈൻ-ഇൻ 10 മിനിറ്റിനുള്ളിൽ തിരികെ വരണം, ഒരു തവണ മാത്രമേ പ്രവർത്തിക്കൂ. വീണ്ടും സൈൻ ഇൻ ചെയ്യുക."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "A signing certificate expires within 30 days. Sign-ins stop working when it does, unless your provider has published a newer one in its metadata."
+msgstr "A signing certificate expires within 30 days. Sign-ins stop working when it does, unless your provider has published a newer one in its metadata."
+
 #: src/features/inbox/SourceFilter.tsx
 msgid "A site shows the conversations sent from its pages."
 msgstr "A site shows the conversations sent from its pages."
@@ -1520,6 +1524,10 @@ msgstr "Acme-യുടെ അവസ്ഥ"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Acme Support"
 msgstr "Acme Support"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "ACS URL"
+msgstr "ACS URL"
 
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Actions"
@@ -2003,6 +2011,7 @@ msgstr "അനുവദിച്ചു"
 msgid "Allowed file types"
 msgstr "അനുവദിച്ച ഫയൽ തരങ്ങൾ"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Allowed groups"
 msgstr "Allowed groups"
@@ -2036,6 +2045,14 @@ msgstr "ഇതിനകം ലിസ്റ്റിലുണ്ട്"
 #: src/features/broadcasts/Import.tsx
 msgid "Already on the list, left as they are"
 msgstr "ഇതിനകം ലിസ്റ്റിലുണ്ട്, അതുപോലെ വിട്ടു"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Also called audience or identifier."
+msgstr "Also called audience or identifier."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Also called reply URL. HTTP-POST binding."
+msgstr "Also called reply URL. HTTP-POST binding."
 
 #: src/features/settings/profile/ProfileForm.tsx
 msgid "Also for sign-in and notification e-mails"
@@ -3929,6 +3946,7 @@ msgstr "ഒരു അസിസ്റ്റന്റിനെ കണക്റ്�
 msgid "Connect an assistant such as Claude or ChatGPT"
 msgstr "Claude അല്ലെങ്കിൽ ChatGPT പോലുള്ള ഒരു അസിസ്റ്റന്റിനെ കണക്റ്റ് ചെയ്യുക"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Connect and test"
 msgstr "Connect and test"
@@ -5343,6 +5361,10 @@ msgstr "ഇമെയിൽ വിലാസം"
 msgid "E-mail addresses"
 msgstr "ഇമെയിൽ വിലാസങ്ങൾ"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "E-mail attribute"
+msgstr "E-mail attribute"
+
 #: src/components/common/EmailHtml.tsx
 msgid "E-mail content"
 msgstr "ഇമെയിൽ ഉള്ളടക്കം"
@@ -5656,6 +5678,10 @@ msgstr "1 മുതൽ 36,500 വരെയുള്ള പൂർണ്ണ ദി
 msgid "Enter your work e-mail and we send you a code. No password; the same code signs you in later."
 msgstr "നിങ്ങളുടെ ജോലി ഇമെയിൽ നൽകുക, ഞങ്ങൾ നിങ്ങൾക്ക് ഒരു കോഡ് അയയ്ക്കും. പാസ്‌വേഡ് ഇല്ല; അതേ കോഡ് പിന്നീട് നിങ്ങളെ സൈൻ ഇൻ ചെയ്യും."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Entity ID"
+msgstr "Entity ID"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Entries"
 msgstr "എൻട്രികൾ"
@@ -5837,6 +5863,10 @@ msgstr "പ്രതീക്ഷിക്കുന്ന സ്റ്റാറ�
 msgid "Expected status to"
 msgstr "പ്രതീക്ഷിക്കുന്ന സ്റ്റാറ്റസ് വരെ"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Expired"
+msgstr "Expired"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "expired {expires}"
 msgstr "{expires}-ന് കാലഹരണപ്പെട്ടു"
@@ -5848,6 +5878,10 @@ msgstr "കാലഹരണപ്പെടുന്നു"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Expires (optional)"
 msgstr "കാലഹരണപ്പെടുന്നു (ഓപ്ഷണൽ)"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Expires soon"
+msgstr "Expires soon"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
@@ -6212,6 +6246,10 @@ msgstr "ഉദാഹരണത്തിന്: ഞങ്ങളുടെ കമ്
 msgid "For example: a subscribe form with confirmation on our site, or a checkbox at sign-up."
 msgstr "ഉദാഹരണത്തിന്: ഞങ്ങളുടെ സൈറ്റിൽ സ്ഥിരീകരണത്തോടുകൂടിയ സബ്സ്ക്രൈബ് ഫോം, അല്ലെങ്കിൽ സൈൻ-അപ്പിൽ ഒരു ചെക്ക്ബോക്സ്."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "For providers without a metadata address, such as Google Workspace. It replaces the address."
+msgstr "For providers without a metadata address, such as Google Workspace. It replaces the address."
+
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "For signed-in users, your backend signs an identity token with the inbox's identity secret and the app passes it to the SDK."
 msgstr "സൈൻ ഇൻ ചെയ്ത ഉപയോക്താക്കൾക്ക്, നിങ്ങളുടെ ബാക്കെൻഡ് ഇൻബോക്സിന്റെ ഐഡന്റിറ്റി സീക്രട്ട് ഉപയോഗിച്ച് ഒരു ഐഡന്റിറ്റി ടോക്കൺ സൈൻ ചെയ്യുകയും ആപ്പ് അത് SDK-യ്ക്ക് കൈമാറുകയും ചെയ്യുന്നു."
@@ -6538,6 +6576,10 @@ msgstr "ഗ്രൂപ്പ്"
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Group members, such as billing or support, and give the group its inboxes in one place."
 msgstr "ബില്ലിംഗ് അല്ലെങ്കിൽ സപ്പോർട്ട് പോലെ അംഗങ്ങളെ ഗ്രൂപ്പാക്കി, ഗ്രൂപ്പിന്റെ ഇൻബോക്സുകൾ ഒരിടത്ത് നൽകുക."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Groups attribute"
+msgstr "Groups attribute"
 
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Groups claim"
@@ -7723,6 +7765,10 @@ msgstr "അവസാന പേര്"
 msgid "Last push failed: {failed}"
 msgstr "അവസാന പുഷ് പരാജയപ്പെട്ടു: {failed}"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Last read {fetched}"
+msgstr "Last read {fetched}"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Last read {when}"
 msgstr "അവസാനം വായിച്ചത് {when}"
@@ -7792,6 +7838,10 @@ msgstr "Leave empty for {0}."
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Leave empty for github.com. Otherwise the server's API, https://host/api/v3."
 msgstr "Leave empty for github.com. Otherwise the server's API, https://host/api/v3."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Leave empty when the NameID is the e-mail address."
+msgstr "Leave empty when the NameID is the e-mail address."
 
 #: src/features/conversation/Collision.tsx
 msgid "Leave it to {name}"
@@ -8597,6 +8647,14 @@ msgstr "അയച്ച സന്ദേശങ്ങൾ"
 msgid "Messages the key sends show its bot name and picture."
 msgstr "കീ അയയ്ക്കുന്ന സന്ദേശങ്ങൾ അതിന്റെ ബോട്ട് പേരും ചിത്രവും കാണിക്കുന്നു."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Metadata"
+msgstr "Metadata"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Metadata URL"
+msgstr "Metadata URL"
+
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Method"
 msgstr "മെത്തേഡ്"
@@ -8981,6 +9039,10 @@ msgstr "പേര്, ഉദാ. ഓഫീസ് ലാപ്ടോപ്പ്"
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
 msgstr "name@example.com"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "NameID format"
+msgstr "NameID format"
 
 #: src/features/settings/channels/Attachments.tsx
 msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
@@ -11036,6 +11098,10 @@ msgstr "അല്ലെങ്കിൽ"
 msgid "Or move from a help desk"
 msgstr "അല്ലെങ്കിൽ ഒരു ഹെൽപ്പ് ഡെസ്കിൽ നിന്ന് മാറുക"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Or paste the metadata"
+msgstr "Or paste the metadata"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Or pick your provider"
 msgstr "അല്ലെങ്കിൽ നിങ്ങളുടെ ദാതാവിനെ തിരഞ്ഞെടുക്കുക"
@@ -11264,6 +11330,10 @@ msgstr "Paste the address of an existing issue. Its state then sets the progress
 msgid "Paste them below with your subdomain. Yuva asks only for the scope read and accepts nothing more."
 msgstr "അവ നിങ്ങളുടെ സബ്ഡൊമെയ്‌നിനൊപ്പം താഴെ ഒട്ടിക്കുക. Yuva read സ്കോപ്പ് മാത്രം ആവശ്യപ്പെടുന്നു, അതിൽ കൂടുതൽ ഒന്നും സ്വീകരിക്കുന്നില്ല."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Paste these into your identity provider, or give it the metadata address."
+msgstr "Paste these into your identity provider, or give it the metadata address."
+
 #: src/features/setup/InstallStep.tsx
 msgid "Paste this before the closing body tag of your pages"
 msgstr "ഇത് നിങ്ങളുടെ പേജുകളുടെ അടയ്ക്കുന്ന body ടാഗിന് മുമ്പ് ഒട്ടിക്കുക"
@@ -11366,6 +11436,7 @@ msgstr "സംഭാഷണം അടയ്ക്കുമ്പോൾ കോൺ�
 msgid "People send a bug, an idea or praise, with a screenshot and the device details. It lands here."
 msgstr "ആളുകൾ സ്ക്രീൻഷോട്ടും ഉപകരണ വിവരങ്ങളും സഹിതം ബഗ്, ആശയം അല്ലെങ്കിൽ പ്രശംസ അയയ്ക്കുന്നു. അത് ഇവിടെ എത്തുന്നു."
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
 msgstr "People sign in with a code or a passkey again, and single sign-on stops being required. Your domains stay."
@@ -11763,6 +11834,10 @@ msgstr "നിങ്ങൾ പോസ്റ്റ് ചെയ്തതും അ
 msgid "Preference page"
 msgstr "മുൻഗണനാ പേജ്"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Preferred: Yuva reads it again when the provider rotates its certificate. Saving with the same address reads it now."
+msgstr "Preferred: Yuva reads it again when the provider rotates its certificate. Saving with the same address reads it now."
+
 #: src/components/common/text.ts
 msgid "Preparing"
 msgstr "തയ്യാറാക്കുന്നു"
@@ -11930,6 +12005,7 @@ msgstr "Proton Mail-ൽ IMAP വഴി എത്താൻ കഴിയുന്�
 msgid "Provider"
 msgstr "Provider"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider removed"
 msgstr "Provider removed"
@@ -11937,6 +12013,10 @@ msgstr "Provider removed"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Provider saved. Its discovery document was read."
 msgstr "Provider saved. Its discovery document was read."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Provider saved. Its metadata was read."
+msgstr "Provider saved. Its metadata was read."
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
@@ -12419,6 +12499,7 @@ msgstr "റിമോട്ട് ചിത്രങ്ങൾക്ക് നി�
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/Passkeys.tsx
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/MonitorHttpFields.tsx
@@ -12520,6 +12601,7 @@ msgstr "FCM സർവീസ് അക്കൗണ്ട് നീക്കം �
 msgid "Remove the message or note you clicked on"
 msgstr "നിങ്ങൾ ക്ലിക്ക് ചെയ്ത സന്ദേശമോ കുറിപ്പോ നീക്കം ചെയ്യുക"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
@@ -13171,6 +13253,10 @@ msgstr "ഒരേ പേര്, രണ്ടുപേരും {shared}-ലേ�
 msgid "Same name."
 msgstr "ഒരേ പേര്."
 
+#: src/features/settings/sso/SsoPage.tsx
+msgid "SAML 2.0"
+msgstr "SAML 2.0"
+
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Sandbox (development builds)"
 msgstr "സാൻഡ്ബോക്സ് (ഡെവലപ്മെന്റ് ബിൽഡുകൾ)"
@@ -13211,6 +13297,7 @@ msgstr "സേവ് ചെയ്യുക"
 msgid "Save a reply together with what should happen to the conversation when you send it."
 msgstr "അയയ്ക്കുമ്പോൾ സംഭാഷണത്തിന് എന്ത് സംഭവിക്കണമെന്നതിനൊപ്പം ഒരു മറുപടി സംരക്ഷിക്കുക."
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
 msgstr "Save and test"
@@ -13258,6 +13345,14 @@ msgstr "കരട് ഇപ്പോൾ സംരക്ഷിക്കുക"
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "സേവ് ചെയ്തു"
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Saving a SAML provider removes the OpenID Connect provider and its client secret."
+msgstr "Saving a SAML provider removes the OpenID Connect provider and its client secret."
+
+#: src/features/settings/sso/SsoPage.tsx
+msgid "Saving an OpenID Connect provider removes the SAML provider and its certificates."
+msgstr "Saving an OpenID Connect provider removes the SAML provider and its certificates."
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Saving removes the broadcast account; broadcasts then use the account for replies."
@@ -13878,6 +13973,7 @@ msgstr "ഇന്ന് അയച്ചത്: {sent}. ദൈനംദിന പ
 msgid "Sent: {0}"
 msgstr "അയച്ചത്: {0}"
 
+#: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Separate with commas. Leave empty to let everyone in your domains sign in."
 msgstr "Separate with commas. Leave empty to let everyone in your domains sign in."
@@ -14006,6 +14102,10 @@ msgstr "സെറ്റപ്പ് ഗൈഡ്"
 #: src/features/setup/SetupLayout.tsx
 msgid "Setup steps"
 msgstr "സെറ്റപ്പ് ഘട്ടങ്ങൾ"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "SHA-256 fingerprint"
+msgstr "SHA-256 fingerprint"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "SHA-256 fingerprint of the certificate the server sent"
@@ -14422,6 +14522,10 @@ msgstr "Single sign-on"
 #: src/components/common/text.ts
 msgid "Single sign-on is required only once a provider is connected and a domain is verified."
 msgstr "Single sign-on is required only once a provider is connected and a domain is verified."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Single sign-on URL"
+msgstr "Single sign-on URL"
 
 #: src/features/docs/Toolbar.tsx
 #: src/features/inbox/SourceFilter.tsx
@@ -15219,6 +15323,10 @@ msgstr "അപ്ഡേറ്റിന് ശേഷം ആപ്പ് എന്
 msgid "The app registration you created for Yuva is not needed any more either: delete it in Microsoft Entra › App registrations."
 msgstr "നിങ്ങൾ Yuva-യ്ക്കായി ഉണ്ടാക്കിയ ആപ്പ് രജിസ്ട്രേഷനും ഇനി ആവശ്യമില്ല: Microsoft Entra › App registrations-ൽ അത് ഇല്ലാതാക്കുക."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "The attribute that lists a person's groups."
+msgstr "The attribute that lists a person's groups."
+
 #: src/features/status/ComponentsTab.tsx
 msgid "The bars are the last {days} days, as visitors see them."
 msgstr "സന്ദർശകർ കാണുന്നതുപോലെ കഴിഞ്ഞ {days} ദിവസമാണ് ബാറുകൾ."
@@ -15697,6 +15805,10 @@ msgstr "mbox ഫയൽ zip-നുള്ളിൽ കംപ്രസ് ചെയ
 #: src/features/migrations/text.ts
 msgid "The message could not be read"
 msgstr "സന്ദേശം വായിക്കാൻ കഴിഞ്ഞില്ല"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "The metadata was pasted. Paste it again when your provider renews its certificate."
+msgstr "The metadata was pasted. Paste it again when your provider renews its certificate."
 
 #: src/features/migrations/text.ts
 msgid "The Microsoft account you signed in with cannot open this mailbox, and Yuva stored nothing. Sign in with the mailbox's own account; use a private window if the browser keeps choosing the other one."
@@ -17175,6 +17287,10 @@ msgstr "അപ്ഡേറ്റുകൾ"
 msgid "Updating"
 msgstr "അപ്ഡേറ്റ് ചെയ്യുന്നു"
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Upload a metadata file"
+msgstr "Upload a metadata file"
+
 #: src/features/migrations/ConnectStep.tsx
 msgid "Upload a Takeout file instead"
 msgstr "പകരം ഒരു Takeout ഫയൽ അപ്‌ലോഡ് ചെയ്യുക"
@@ -17391,6 +17507,14 @@ msgstr "സാധാരണയായി ക്ലയന്റ് സീക്ര�
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Usually your company or team; you can change it later"
 msgstr "സാധാരണയായി നിങ്ങളുടെ കമ്പനിയോ ടീമോ; പിന്നീട് മാറ്റാം"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Valid"
+msgstr "Valid"
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Valid {from} to {to}"
+msgstr "Valid {from} to {to}"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "value"
@@ -18404,6 +18528,10 @@ msgstr "നിങ്ങളുടെ ഫോൾഡർ"
 msgid "Your folders and labels become Yuva labels on the conversations they hold."
 msgstr "നിങ്ങളുടെ ഫോൾഡറുകളും ലേബലുകളും അവ ഉൾക്കൊള്ളുന്ന സംഭാഷണങ്ങളിൽ Yuva ലേബലുകളാകുന്നു."
 
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Your identity provider"
+msgstr "Your identity provider"
+
 #: src/features/auth/ssoError.ts
 msgid "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
 msgstr "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
@@ -18490,6 +18618,10 @@ msgstr "{first}-ന് നിങ്ങളുടെ മറുപടി അയച�
 #: src/features/oauth/ConsentPage.tsx
 msgid "Your role in this workspace cannot give any of the access this app asks for."
 msgstr "ഈ വർക്ക്സ്പേസിലെ നിങ്ങളുടെ റോളിന് ഈ ആപ്പ് ആവശ്യപ്പെടുന്ന ഒരു ആക്‌സസും നൽകാൻ കഴിയില്ല."
+
+#: src/features/settings/sso/SamlForm.tsx
+msgid "Your service provider details"
+msgstr "Your service provider details"
 
 #: src/components/common/text.ts
 msgid "Your session has ended. Sign in again."
