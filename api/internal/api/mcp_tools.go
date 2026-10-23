@@ -127,16 +127,17 @@ type mcpPage[T any] struct {
 }
 
 type searchConversationsIn struct {
-	Query     string     `json:"query,omitempty" jsonschema:"full-text search over subject, messages, notes and contact; -word excludes"`
-	InboxID   *uuid.UUID `json:"inbox_id,omitempty"`
-	Status    string     `json:"status,omitempty"`
-	Assignee  string     `json:"assignee,omitempty" jsonschema:"a member id, me or unassigned"`
-	TeamID    *uuid.UUID `json:"team_id,omitempty" jsonschema:"only conversations assigned to this team, from list_teams"`
-	LabelID   *uuid.UUID `json:"label_id,omitempty"`
-	ContactID *uuid.UUID `json:"contact_id,omitempty"`
-	Spam      bool       `json:"spam,omitempty" jsonschema:"true lists only conversations flagged as spam"`
-	Cursor    string     `json:"cursor,omitempty"`
-	Limit     int32      `json:"limit,omitempty" jsonschema:"1 to 100, default 25"`
+	Query     string            `json:"query,omitempty" jsonschema:"full-text search over subject, messages, notes and contact; -word excludes"`
+	InboxID   *uuid.UUID        `json:"inbox_id,omitempty"`
+	Status    string            `json:"status,omitempty"`
+	Assignee  string            `json:"assignee,omitempty" jsonschema:"a member id, me or unassigned"`
+	TeamID    *uuid.UUID        `json:"team_id,omitempty" jsonschema:"only conversations assigned to this team, from list_teams"`
+	LabelID   *uuid.UUID        `json:"label_id,omitempty"`
+	ContactID *uuid.UUID        `json:"contact_id,omitempty"`
+	Spam      bool              `json:"spam,omitempty" jsonschema:"true lists only conversations flagged as spam"`
+	Fields    map[string]string `json:"fields,omitempty" jsonschema:"custom field key from list_custom_fields to the exact value it must hold (a number, true or false, or the text); all must match"`
+	Cursor    string            `json:"cursor,omitempty"`
+	Limit     int32             `json:"limit,omitempty" jsonschema:"1 to 100, default 25"`
 }
 
 type listFeedbackIn struct {
@@ -417,6 +418,7 @@ type mcpBulkFailure struct {
 	Status int32     `json:"status"`
 	Code   string    `json:"code"`
 	Detail string    `json:"detail,omitempty"`
+	Field  string    `json:"field,omitempty" jsonschema:"the custom field a field_required or field_invalid refusal names"`
 }
 
 type bulkOut struct {
@@ -488,6 +490,9 @@ func (c *mcpCall) bulk(ctx context.Context, b oas.ConversationBulkUpdate) (bulkO
 		if f.Detail != nil {
 			mf.Detail = *f.Detail
 		}
+		if f.Field != nil {
+			mf.Field = *f.Field
+		}
 		out.Failed = append(out.Failed, mf)
 	}
 	return out, nil
@@ -528,6 +533,9 @@ var mcpTools = append([]mcpTool{
 			}
 			if in.Spam {
 				params.Spam = &in.Spam
+			}
+			if len(in.Fields) > 0 {
+				ctx = withFieldFilter(ctx, in.Fields)
 			}
 			return c.listConversations(ctx, params)
 		}),
@@ -809,4 +817,4 @@ var mcpTools = append([]mcpTool{
 			}
 			return contactOut(oas.Contact(res.(oas.MergeContact200JSONResponse))), nil
 		}),
-}, slices.Concat(mcpSetupTools, mcpContactTools, mcpListTools, mcpBroadcastTools, mcpDesignTools, mcpMigrationTools, mcpAnalyticsTools, mcpStatusTools, mcpHelpTools, mcpRoadmapTools, mcpChangelogTools, mcpInitTools, mcpTeamTools, mcpIssueTools)...)
+}, slices.Concat(mcpSetupTools, mcpContactTools, mcpListTools, mcpBroadcastTools, mcpDesignTools, mcpMigrationTools, mcpAnalyticsTools, mcpStatusTools, mcpHelpTools, mcpRoadmapTools, mcpChangelogTools, mcpInitTools, mcpTeamTools, mcpIssueTools, mcpFieldTools)...)

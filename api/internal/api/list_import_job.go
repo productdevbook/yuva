@@ -622,6 +622,10 @@ func (s *Server) importBatch(ctx context.Context, q *store.Queries, events *even
 	if err := s.classifyStored(ctx, q, ws, list.ID, batch); err != nil {
 		return err
 	}
+	fieldDefs, err := contactFieldDefs(ctx, q, ws)
+	if err != nil {
+		return err
+	}
 	var dailyLimit int64 = -1
 	if imp.Reconfirm {
 		w, err := q.GetWorkspace(ctx, ws)
@@ -665,6 +669,7 @@ func (s *Server) importBatch(ctx context.Context, q *store.Queries, events *even
 			b.ExternalId = &r.externalID
 		}
 		if r.attrs != nil {
+			r.attrs, _ = keepValidContactFields(fieldDefs, r.attrs, true)
 			b.Attributes = new(oas.Attributes(r.attrs))
 		}
 		contactID, email, created, err := s.subscriber(ctx, q, p, list, &b)

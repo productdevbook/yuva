@@ -462,6 +462,11 @@ func (s *Server) CreateContact(ctx context.Context, req oas.CreateContactRequest
 	if in.attributes, err = contactAttributes(b.Attributes); err != nil {
 		return nil, err
 	}
+	if b.Attributes != nil {
+		if err := checkContactFields(ctx, s.st.Queries, p.workspaceID, *b.Attributes); err != nil {
+			return nil, err
+		}
+	}
 	in.blocked = b.Blocked != nil && *b.Blocked
 	var out oas.Contact
 	err = s.st.InTx(ctx, func(q *store.Queries) error {
@@ -567,6 +572,9 @@ func (s *Server) UpdateContact(ctx context.Context, req oas.UpdateContactRequest
 		}
 		if b.Attributes != nil {
 			if in.attributes, err = contactAttributes(b.Attributes); err != nil {
+				return err
+			}
+			if err := checkContactFields(ctx, q, p.workspaceID, *b.Attributes); err != nil {
 				return err
 			}
 		}

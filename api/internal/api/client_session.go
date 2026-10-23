@@ -328,13 +328,20 @@ func (s *Server) identifyContact(ctx context.Context, q *store.Queries, events *
 		_ = json.Unmarshal(cur.Attributes, &merged)
 		var add map[string]any
 		_ = json.Unmarshal(c.attrs, &add)
+		defs, err := contactFieldDefs(ctx, q, ws)
+		if err != nil {
+			return contactRow{}, err
+		}
+		if _, dropped := keepValidContactFields(defs, add, false); len(dropped) > 0 {
+			s.log.InfoContext(ctx, "identity token attributes dropped", "contact_id", id, "fields", dropped)
+		}
 		for k, v := range add {
 			if _, taken := merged[k]; !fillOnly || !taken {
 				merged[k] = v
 			}
 		}
 		if attrs = mustJSON(merged); len(attrs) > maxAttributesBytes {
-			attrs = c.attrs
+			attrs = mustJSON(add)
 			if fillOnly {
 				attrs = cur.Attributes
 			}

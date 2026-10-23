@@ -641,6 +641,11 @@ func (s *Server) CreateSubscription(ctx context.Context, req oas.CreateSubscript
 		if err := requireManagerOrKey(p); err != nil {
 			return err
 		}
+		if b.Attributes != nil {
+			if err := checkContactFields(ctx, q, p.workspaceID, *b.Attributes); err != nil {
+				return err
+			}
+		}
 		contactID, email, _, err := s.subscriber(ctx, q, p, list, b)
 		if err != nil {
 			return err

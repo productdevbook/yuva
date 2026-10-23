@@ -188,7 +188,7 @@ func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conver
 			LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt, CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt,
 			RelatedConversationId: c.RelatedConversationId, ClosedAt: c.ClosedAt, Rating: c.Rating, LastReadByContactAt: c.LastReadByContactAt, BroadcastId: c.BroadcastId,
 			Imported: c.Imported, HelpArticleId: c.HelpArticleId, Idea: c.Idea, Issues: c.Issues, Contact: contacts[r.ContactID], LastMessage: previews[r.ID], Unread: unread[r.ID], PinnedAt: pinned[r.ID],
-			TrashedAt: c.TrashedAt, TrashedBy: c.TrashedBy, DeletesAt: c.DeletesAt,
+			TrashedAt: c.TrashedAt, TrashedBy: c.TrashedBy, DeletesAt: c.DeletesAt, Fields: c.Fields,
 		}
 	}
 	return out, nil
@@ -204,7 +204,7 @@ func conversationBody(c store.Conversation, labels []uuid.UUID) oas.Conversation
 		AssigneeId: c.AssigneeID, TeamId: c.TeamID, Labels: labels, LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt,
 		CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt, RelatedConversationId: c.RelatedConversationID, BroadcastId: c.BroadcastID,
 		ClosedAt: c.ClosedAt, Rating: conversationRating(c), LastReadByContactAt: c.LastReadByContactAt, Imported: conversationImport(c),
-		HelpArticleId: c.HelpArticleID, TrashedAt: c.TrashedAt,
+		HelpArticleId: c.HelpArticleID, TrashedAt: c.TrashedAt, Fields: decodeFields(c.Fields),
 	}
 	if c.TrashedAt != nil {
 		out.TrashedBy = &oas.ConversationTrashedBy{MemberId: c.TrashedByMemberID, ApiKeyId: c.TrashedByApiKeyID}
@@ -362,7 +362,8 @@ func (s *Server) recordChanges(ctx context.Context, q *store.Queries, events *ev
 
 func conversationChanged(a, b store.Conversation) bool {
 	return a.Subject != b.Subject || a.Status != b.Status || a.Priority != b.Priority || a.Spam != b.Spam ||
-		!sameID(a.AssigneeID, b.AssigneeID) || !sameID(a.TeamID, b.TeamID) || !sameTime(a.SnoozeUntil, b.SnoozeUntil) || !sameString(a.FeedbackProgress, b.FeedbackProgress)
+		!sameID(a.AssigneeID, b.AssigneeID) || !sameID(a.TeamID, b.TeamID) || !sameTime(a.SnoozeUntil, b.SnoozeUntil) || !sameString(a.FeedbackProgress, b.FeedbackProgress) ||
+		!sameFields(a.Fields, b.Fields)
 }
 
 func sameString(a, b *string) bool {
@@ -505,6 +506,9 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 			return nil, errValidation("team=mine needs a member session")
 		}
 		arg.TeamsOf = &p.memberID
+	}
+	if arg.Fields, err = fieldFilter(ctx, s.st.Queries, p.workspaceID, fieldFilterPairs(ctx)); err != nil {
+		return nil, err
 	}
 	rows, err := s.st.ListConversations(ctx, arg)
 	if err != nil {
@@ -797,6 +801,9 @@ func (s *Server) changeConversation(ctx context.Context, q *store.Queries, event
 			next.FeedbackProgress = new(string(v))
 		}
 	}
+	if err := applyFieldChange(ctx, q, p.workspaceID, cur, &next, b.Fields); err != nil {
+		return out, err
+	}
 	labelMap, err := conversationLabels(ctx, q, p.workspaceID, []uuid.UUID{cur.ID})
 	if err != nil {
 		return out, err
@@ -840,6 +847,11 @@ func (s *Server) changeConversation(ctx context.Context, q *store.Queries, event
 	}
 	if !sameID(cur.TeamID, next.TeamID) {
 		if _, err := q.SetConversationTeam(ctx, store.SetConversationTeamParams{WorkspaceID: p.workspaceID, ID: cur.ID, TeamID: next.TeamID, Now: now}); err != nil {
+			return out, err
+		}
+	}
+	if !sameFields(cur.Fields, next.Fields) {
+		if _, err := q.SetConversationFields(ctx, store.SetConversationFieldsParams{WorkspaceID: p.workspaceID, ID: cur.ID, Fields: next.Fields, Now: now}); err != nil {
 			return out, err
 		}
 	}

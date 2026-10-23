@@ -32,6 +32,7 @@ type mcpConversation struct {
 	FeedbackScore    int32                  `json:"feedback_score,omitempty" jsonschema:"1 (worst) to 5 (best) when the contact scored the feedback"`
 	FeedbackProgress string                 `json:"feedback_progress,omitempty" jsonschema:"planned, in_progress, done or wont_do, for feedback whose progress a member set"`
 	IdeaID           *uuid.UUID             `json:"idea_id,omitempty" jsonschema:"the roadmap idea this feedback is linked to"`
+	Fields           map[string]any         `json:"fields,omitempty" jsonschema:"custom field values by key; names and types come from list_custom_fields"`
 	CreatedAt        time.Time              `json:"created_at"`
 	LastActivityAt   time.Time              `json:"last_activity_at"`
 	CustomerContent  mcpConversationContent `json:"customer_content"`
@@ -75,7 +76,7 @@ func conversationOut(c oas.Conversation) mcpConversation {
 		IdeaID: idea, ID: c.Id, InboxID: c.InboxId, ContactID: c.ContactId, Kind: string(c.Kind), Status: string(c.Status),
 		Priority: string(c.Priority), AssigneeID: c.AssigneeId, TeamID: c.TeamId, Labels: labels, Spam: c.Spam, SnoozeUntil: c.SnoozeUntil,
 		FeedbackCategory: cat, FeedbackScore: score, FeedbackProgress: progress, CreatedAt: c.CreatedAt, LastActivityAt: c.LastActivityAt,
-		CustomerContent: mcpConversationContent{Subject: c.Subject, Feedback: fb},
+		CustomerContent: mcpConversationContent{Subject: c.Subject, Feedback: fb}, Fields: c.Fields,
 	}
 }
 
@@ -83,7 +84,7 @@ func conversationItemOut(c oas.ConversationListItem) mcpConversation {
 	out := conversationOut(oas.Conversation{
 		Id: c.Id, InboxId: c.InboxId, ContactId: c.ContactId, Kind: c.Kind, Status: c.Status, Priority: c.Priority,
 		AssigneeId: c.AssigneeId, Labels: c.Labels, Spam: c.Spam, SnoozeUntil: c.SnoozeUntil, Feedback: c.Feedback, Idea: c.Idea,
-		CreatedAt: c.CreatedAt, LastActivityAt: c.LastActivityAt, Subject: c.Subject,
+		CreatedAt: c.CreatedAt, LastActivityAt: c.LastActivityAt, Subject: c.Subject, Fields: c.Fields,
 	})
 	unread := c.Unread
 	out.Unread = &unread

@@ -931,6 +931,7 @@ const (
 	ConversationsWrite  ApiKeyScope = "conversations:write"
 	DraftsSend          ApiKeyScope = "drafts:send"
 	FeedbackWrite       ApiKeyScope = "feedback:write"
+	FieldsManage        ApiKeyScope = "fields:manage"
 	HelpPublish         ApiKeyScope = "help:publish"
 	HelpRead            ApiKeyScope = "help:read"
 	HelpWrite           ApiKeyScope = "help:write"
@@ -993,6 +994,8 @@ func (e ApiKeyScope) Valid() bool {
 	case DraftsSend:
 		return true
 	case FeedbackWrite:
+		return true
+	case FieldsManage:
 		return true
 	case HelpPublish:
 		return true
@@ -2306,6 +2309,51 @@ func (e ConversationStatus) Valid() bool {
 	case ConversationStatusPending:
 		return true
 	case ConversationStatusSnoozed:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CustomFieldObject.
+const (
+	CustomFieldObjectContact      CustomFieldObject = "contact"
+	CustomFieldObjectConversation CustomFieldObject = "conversation"
+)
+
+// Valid indicates whether the value is a known member of the CustomFieldObject enum.
+func (e CustomFieldObject) Valid() bool {
+	switch e {
+	case CustomFieldObjectContact:
+		return true
+	case CustomFieldObjectConversation:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CustomFieldType.
+const (
+	CustomFieldTypeCheckbox CustomFieldType = "checkbox"
+	CustomFieldTypeDate     CustomFieldType = "date"
+	CustomFieldTypeNumber   CustomFieldType = "number"
+	CustomFieldTypeSelect   CustomFieldType = "select"
+	CustomFieldTypeText     CustomFieldType = "text"
+)
+
+// Valid indicates whether the value is a known member of the CustomFieldType enum.
+func (e CustomFieldType) Valid() bool {
+	switch e {
+	case CustomFieldTypeCheckbox:
+		return true
+	case CustomFieldTypeDate:
+		return true
+	case CustomFieldTypeNumber:
+		return true
+	case CustomFieldTypeSelect:
+		return true
+	case CustomFieldTypeText:
 		return true
 	default:
 		return false
@@ -8408,6 +8456,11 @@ type AnalyticsRangeProblem struct {
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
 
+	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	//
+	// Examples: order_id
+	Field *string `json:"field,omitempty"`
+
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
 	// the workspace already runs as many migrations at a time as the server allows;
@@ -9004,7 +9057,12 @@ type ApiKeyList struct {
 //	  - `issues:write`: create, link and unlink GitHub and Linear issues on feedback and ideas,
 //	    together with `conversations:read`.
 //
-// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*` and `issues:write` are never added to keys made before they existed.
+//	  - `fields:manage`: create, change and delete custom field definitions. Owners and admins
+//	    only; never offered to agents' tokens, refused for keys limited to inboxes. Never
+//	    implied: a key made without naming its scopes does not hold it. Writing values needs
+//	    `conversations:write` or `contacts:write`.
+//
+// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write` and `fields:manage` are never added to keys made before they existed.
 type ApiKeyScope string
 
 // ApiKeyUpdate Only the fields sent change. Scopes, inbox limit and expiry cannot change.
@@ -9158,7 +9216,9 @@ type Attachment struct {
 	Size   int64 `json:"size"`
 }
 
-// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB.
+// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB. A key that is a
+// contact custom field must hold a value of its type (`400 field_invalid` naming the key in
+// `field` on `/v1`; identity tokens drop such a value); `null` leaves it unset.
 type Attributes map[string]interface{}
 
 // AuditAction The action; the part before the dot is the target's type. `details` by action:
@@ -9707,6 +9767,11 @@ type BroadcastProblem struct {
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
 
+	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	//
+	// Examples: order_id
+	Field *string `json:"field,omitempty"`
+
 	// Items `review_failed` only: the blocking review items.
 	Items *[]BroadcastReviewItem `json:"items,omitempty"`
 
@@ -10069,6 +10134,11 @@ type ChangelogConflictProblem struct {
 	// Examples: not_found
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
+
+	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	//
+	// Examples: order_id
+	Field *string `json:"field,omitempty"`
 
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
@@ -11868,7 +11938,9 @@ type Contact struct {
 	// conversations the caller can see, spam left out; `last_seen_at` does not depend on the caller.
 	Activity *ContactActivity `json:"activity,omitempty"`
 
-	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB.
+	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB. A key that is a
+	// contact custom field must hold a value of its type (`400 field_invalid` naming the key in
+	// `field` on `/v1`; identity tokens drop such a value); `null` leaves it unset.
 	Attributes Attributes `json:"attributes"`
 
 	// Blocked Mail and chat from a blocked contact are refused.
@@ -11910,7 +11982,9 @@ type ContactActivity struct {
 
 // ContactCreate defines model for ContactCreate.
 type ContactCreate struct {
-	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB.
+	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB. A key that is a
+	// contact custom field must hold a value of its type (`400 field_invalid` naming the key in
+	// `field` on `/v1`; identity tokens drop such a value); `null` leaves it unset.
 	Attributes  *Attributes   `json:"attributes,omitempty"`
 	Blocked     *bool         `json:"blocked,omitempty"`
 	Emails      *[]Email      `json:"emails,omitempty"`
@@ -12091,7 +12165,9 @@ type ContactSummary struct {
 
 // ContactUpdate defines model for ContactUpdate.
 type ContactUpdate struct {
-	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB.
+	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB. A key that is a
+	// contact custom field must hold a value of its type (`400 field_invalid` naming the key in
+	// `field` on `/v1`; identity tokens drop such a value); `null` leaves it unset.
 	Attributes *Attributes `json:"attributes,omitempty"`
 	Blocked    *bool       `json:"blocked,omitempty"`
 
@@ -12142,6 +12218,10 @@ type Conversation struct {
 
 	// Feedback `feedback` conversations only: category and what the app sent with it.
 	Feedback *Feedback `json:"feedback,omitempty"`
+
+	// Fields Values of the workspace's conversation custom fields by key (see `CustomFieldType`); `{}`
+	// when none is set.
+	Fields CustomFieldValues `json:"fields"`
 
 	// HelpArticleId The help article the contact read just before starting the conversation from it; absent otherwise.
 	HelpArticleId *uuid.UUID `json:"help_article_id,omitempty"`
@@ -12212,9 +12292,14 @@ type Conversation struct {
 
 // ConversationBulkFailure defines model for ConversationBulkFailure.
 type ConversationBulkFailure struct {
-	Code   string    `json:"code"`
-	Detail *string   `json:"detail,omitempty"`
-	Id     uuid.UUID `json:"id"`
+	Code   string  `json:"code"`
+	Detail *string `json:"detail,omitempty"`
+
+	// Field `field_invalid` and `field_required` only: the custom field's key.
+	//
+	// Examples: order_id
+	Field *CustomFieldKey `json:"field,omitempty"`
+	Id    uuid.UUID       `json:"id"`
 
 	// Status The HTTP status the single change would have answered.
 	Status int32 `json:"status"`
@@ -12235,7 +12320,12 @@ type ConversationBulkUpdate struct {
 	// AssigneeId A member; `null` unassigns.
 	AssigneeId      nullable.Nullable[uuid.UUID] `json:"assignee_id,omitempty"`
 	ConversationIds []uuid.UUID                  `json:"conversation_ids"`
-	RemoveLabels    *[]uuid.UUID                 `json:"remove_labels,omitempty"`
+
+	// Fields Sets the named conversation custom fields and keeps the others; `null` clears one. Every
+	// key must be a conversation field and every value fit its type, or `400 field_invalid`
+	// names the key in `field`.
+	Fields       *CustomFieldValuesUpdate `json:"fields,omitempty"`
+	RemoveLabels *[]uuid.UUID             `json:"remove_labels,omitempty"`
 
 	// SnoozeUntil Required with status `snoozed`.
 	SnoozeUntil *time.Time          `json:"snooze_until,omitempty"`
@@ -12414,6 +12504,10 @@ type ConversationListItem struct {
 
 	// Feedback `feedback` conversations only: category and what the app sent with it.
 	Feedback *Feedback `json:"feedback,omitempty"`
+
+	// Fields Values of the workspace's conversation custom fields by key (see `CustomFieldType`); `{}`
+	// when none is set.
+	Fields CustomFieldValues `json:"fields"`
 
 	// HelpArticleId The help article the contact read just before starting the conversation from it; absent otherwise.
 	HelpArticleId *uuid.UUID `json:"help_article_id,omitempty"`
@@ -12627,6 +12721,11 @@ type ConversationUpdate struct {
 	// another kind is refused with `409 not_feedback`; `null` there changes nothing.
 	FeedbackProgress nullable.Nullable[FeedbackProgress] `json:"feedback_progress,omitempty"`
 
+	// Fields Sets the named conversation custom fields and keeps the others; `null` clears one. Every
+	// key must be a conversation field and every value fit its type, or `400 field_invalid`
+	// names the key in `field`.
+	Fields *CustomFieldValuesUpdate `json:"fields,omitempty"`
+
 	// Labels Replaces the labels.
 	Labels      *[]uuid.UUID `json:"labels,omitempty"`
 	Priority    *Priority    `json:"priority,omitempty"`
@@ -12647,6 +12746,95 @@ type CountByID struct {
 	Count int64     `json:"count"`
 	Id    uuid.UUID `json:"id"`
 }
+
+// CustomField defines model for CustomField.
+type CustomField struct {
+	CreatedAt time.Time `json:"created_at"`
+	Id        uuid.UUID `json:"id"`
+
+	// Key The key the value is stored under, in `fields` of a conversation or `attributes` of a contact.
+	//
+	// Examples: order_id
+	Key CustomFieldKey `json:"key"`
+
+	// Name What the panel shows.
+	Name   string            `json:"name"`
+	Object CustomFieldObject `json:"object"`
+
+	// Options `select` only: the values to choose from, 1 to 100 distinct strings of 1 to 100 characters.
+	Options  CustomFieldOptions `json:"options"`
+	Position int32              `json:"position"`
+
+	// RequiredOnClose Conversation fields only: closing a conversation without a value answers
+	// `409 field_required` naming the field. Spam is closed without it.
+	RequiredOnClose bool `json:"required_on_close"`
+
+	// Type The JSON value each type takes: `text` a string of 1 to 1000 characters, `number` a finite
+	// number, `date` a `YYYY-MM-DD` string, `select` one of the field's `options`, `checkbox`
+	// `true` or `false`.
+	Type      CustomFieldType `json:"type"`
+	UpdatedAt time.Time       `json:"updated_at"`
+}
+
+// CustomFieldCreate defines model for CustomFieldCreate.
+type CustomFieldCreate struct {
+	// Key The key the value is stored under, in `fields` of a conversation or `attributes` of a contact.
+	//
+	// Examples: order_id
+	Key    CustomFieldKey    `json:"key"`
+	Name   string            `json:"name"`
+	Object CustomFieldObject `json:"object"`
+
+	// Options `select` only: the values to choose from, 1 to 100 distinct strings of 1 to 100 characters.
+	Options         *CustomFieldOptions `json:"options,omitempty"`
+	Position        *int32              `json:"position,omitempty"`
+	RequiredOnClose *bool               `json:"required_on_close,omitempty"`
+
+	// Type The JSON value each type takes: `text` a string of 1 to 1000 characters, `number` a finite
+	// number, `date` a `YYYY-MM-DD` string, `select` one of the field's `options`, `checkbox`
+	// `true` or `false`.
+	Type CustomFieldType `json:"type"`
+}
+
+// CustomFieldKey The key the value is stored under, in `fields` of a conversation or `attributes` of a contact.
+//
+// Examples: order_id
+type CustomFieldKey = string
+
+// CustomFieldList defines model for CustomFieldList.
+type CustomFieldList struct {
+	Items []CustomField `json:"items"`
+}
+
+// CustomFieldObject defines model for CustomFieldObject.
+type CustomFieldObject string
+
+// CustomFieldOptions `select` only: the values to choose from, 1 to 100 distinct strings of 1 to 100 characters.
+type CustomFieldOptions = []string
+
+// CustomFieldType The JSON value each type takes: `text` a string of 1 to 1000 characters, `number` a finite
+// number, `date` a `YYYY-MM-DD` string, `select` one of the field's `options`, `checkbox`
+// `true` or `false`.
+type CustomFieldType string
+
+// CustomFieldUpdate defines model for CustomFieldUpdate.
+type CustomFieldUpdate struct {
+	Name *string `json:"name,omitempty"`
+
+	// Options `select` only: the values to choose from, 1 to 100 distinct strings of 1 to 100 characters.
+	Options         *CustomFieldOptions `json:"options,omitempty"`
+	Position        *int32              `json:"position,omitempty"`
+	RequiredOnClose *bool               `json:"required_on_close,omitempty"`
+}
+
+// CustomFieldValues Values of the workspace's conversation custom fields by key (see `CustomFieldType`); `{}`
+// when none is set.
+type CustomFieldValues map[string]interface{}
+
+// CustomFieldValuesUpdate Sets the named conversation custom fields and keeps the others; `null` clears one. Every
+// key must be a conversation field and every value fit its type, or `400 field_invalid`
+// names the key in `field`.
+type CustomFieldValuesUpdate map[string]interface{}
 
 // DeliverabilityCheck defines model for DeliverabilityCheck.
 type DeliverabilityCheck struct {
@@ -13568,6 +13756,11 @@ type EmailDesignProblem struct {
 	Detail *string             `json:"detail,omitempty"`
 	Errors *[]EmailDesignIssue `json:"errors,omitempty"`
 
+	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	//
+	// Examples: order_id
+	Field *string `json:"field,omitempty"`
+
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
 	// the workspace already runs as many migrations at a time as the server allows;
@@ -13905,6 +14098,11 @@ type EmailImageProblem struct {
 	// Examples: not_found
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
+
+	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	//
+	// Examples: order_id
+	Field *string `json:"field,omitempty"`
 
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
@@ -14968,6 +15166,11 @@ type HelpConflictProblem struct {
 	// Examples: not_found
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
+
+	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	//
+	// Examples: order_id
+	Field *string `json:"field,omitempty"`
 
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
@@ -17717,6 +17920,11 @@ type MigrationFileProblem struct {
 	// Entry `file_refused` only: the zip entry it is about, when one is.
 	Entry *string `json:"entry,omitempty"`
 
+	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	//
+	// Examples: order_id
+	Field *string `json:"field,omitempty"`
+
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
 	// the workspace already runs as many migrations at a time as the server allows;
@@ -18758,6 +18966,11 @@ type Problem struct {
 	// Examples: not_found
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
+
+	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	//
+	// Examples: order_id
+	Field *string `json:"field,omitempty"`
 
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
@@ -20081,6 +20294,10 @@ type StatusIncidentConversation struct {
 	// Feedback `feedback` conversations only: category and what the app sent with it.
 	Feedback *Feedback `json:"feedback,omitempty"`
 
+	// Fields Values of the workspace's conversation custom fields by key (see `CustomFieldType`); `{}`
+	// when none is set.
+	Fields CustomFieldValues `json:"fields"`
+
 	// HelpArticleId The help article the contact read just before starting the conversation from it; absent otherwise.
 	HelpArticleId *uuid.UUID `json:"help_article_id,omitempty"`
 	Id            uuid.UUID  `json:"id"`
@@ -21004,7 +21221,9 @@ type SubscriptionContact struct {
 
 // SubscriptionCreate Name the person with `email`, `contact_id` or `external_id` (at least one).
 type SubscriptionCreate struct {
-	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB.
+	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB. A key that is a
+	// contact custom field must hold a value of its type (`400 field_invalid` naming the key in
+	// `field` on `/v1`; identity tokens drop such a value); `null` leaves it unset.
 	Attributes *Attributes `json:"attributes,omitempty"`
 
 	// Consent How the person agreed, as the caller declares it; stored as proof.
@@ -21404,7 +21623,9 @@ type WebhookChangelogEntryPayload struct {
 
 // WebhookContact The contact as a host backend needs it.
 type WebhookContact struct {
-	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB.
+	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB. A key that is a
+	// contact custom field must hold a value of its type (`400 field_invalid` naming the key in
+	// `field` on `/v1`; identity tokens drop such a value); `null` leaves it unset.
 	Attributes Attributes `json:"attributes"`
 	Emails     []Email    `json:"emails"`
 
@@ -21949,6 +22170,9 @@ type ConversationKinds = []ConversationKind
 
 // Cursor defines model for Cursor.
 type Cursor = string
+
+// CustomFieldId defines model for CustomFieldId.
+type CustomFieldId = uuid.UUID
 
 // DeliveryId defines model for DeliveryId.
 type DeliveryId = uuid.UUID
@@ -23477,6 +23701,42 @@ type MarkConversationUnreadParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListCustomFieldsParams defines parameters for ListCustomFields.
+type ListCustomFieldsParams struct {
+	// Object Only the fields of this object.
+	Object *CustomFieldObject `form:"object,omitempty" json:"object,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CreateCustomFieldParams defines parameters for CreateCustomField.
+type CreateCustomFieldParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteCustomFieldParams defines parameters for DeleteCustomField.
+type DeleteCustomFieldParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetCustomFieldParams defines parameters for GetCustomField.
+type GetCustomFieldParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateCustomFieldParams defines parameters for UpdateCustomField.
+type UpdateCustomFieldParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -26377,6 +26637,12 @@ type MarkConversationReadJSONRequestBody = ConversationReadCreate
 
 // SetMemberTypingJSONRequestBody defines body for SetMemberTyping for application/json ContentType.
 type SetMemberTypingJSONRequestBody = TypingCreate
+
+// CreateCustomFieldJSONRequestBody defines body for CreateCustomField for application/json ContentType.
+type CreateCustomFieldJSONRequestBody = CustomFieldCreate
+
+// UpdateCustomFieldJSONRequestBody defines body for UpdateCustomField for application/json ContentType.
+type UpdateCustomFieldJSONRequestBody = CustomFieldUpdate
 
 // UpdateDiscussionPostJSONRequestBody defines body for UpdateDiscussionPost for application/json ContentType.
 type UpdateDiscussionPostJSONRequestBody = DiscussionPostUpdate
@@ -31358,6 +31624,21 @@ type ServerInterface interface {
 	// MarkConversationUnread Mark a conversation unread
 	// (POST /v1/conversations/{conversationId}/unread)
 	MarkConversationUnread(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params MarkConversationUnreadParams)
+	// ListCustomFields List custom fields
+	// (GET /v1/custom-fields)
+	ListCustomFields(w http.ResponseWriter, r *http.Request, params ListCustomFieldsParams)
+	// CreateCustomField Create a custom field
+	// (POST /v1/custom-fields)
+	CreateCustomField(w http.ResponseWriter, r *http.Request, params CreateCustomFieldParams)
+	// DeleteCustomField Delete a custom field
+	// (DELETE /v1/custom-fields/{customFieldId})
+	DeleteCustomField(w http.ResponseWriter, r *http.Request, customFieldId CustomFieldId, params DeleteCustomFieldParams)
+	// GetCustomField Get a custom field
+	// (GET /v1/custom-fields/{customFieldId})
+	GetCustomField(w http.ResponseWriter, r *http.Request, customFieldId CustomFieldId, params GetCustomFieldParams)
+	// UpdateCustomField Update a custom field
+	// (PATCH /v1/custom-fields/{customFieldId})
+	UpdateCustomField(w http.ResponseWriter, r *http.Request, customFieldId CustomFieldId, params UpdateCustomFieldParams)
 	// ListDiscussionPosts Posts by state (the moderation queue)
 	// (GET /v1/discussion-posts)
 	ListDiscussionPosts(w http.ResponseWriter, r *http.Request, params ListDiscussionPostsParams)
@@ -42951,6 +43232,270 @@ func (siw *ServerInterfaceWrapper) MarkConversationUnread(w http.ResponseWriter,
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.MarkConversationUnread(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListCustomFields operation middleware
+func (siw *ServerInterfaceWrapper) ListCustomFields(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListCustomFieldsParams
+
+	// ------------- Optional query parameter "object" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "object", r.URL.Query(), &params.Object, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "object"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "object", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListCustomFields(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateCustomField operation middleware
+func (siw *ServerInterfaceWrapper) CreateCustomField(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateCustomFieldParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateCustomField(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteCustomField operation middleware
+func (siw *ServerInterfaceWrapper) DeleteCustomField(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "customFieldId" -------------
+	var customFieldId CustomFieldId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customFieldId", r.PathValue("customFieldId"), &customFieldId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customFieldId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteCustomFieldParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteCustomField(w, r, customFieldId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetCustomField operation middleware
+func (siw *ServerInterfaceWrapper) GetCustomField(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "customFieldId" -------------
+	var customFieldId CustomFieldId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customFieldId", r.PathValue("customFieldId"), &customFieldId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customFieldId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetCustomFieldParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetCustomField(w, r, customFieldId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateCustomField operation middleware
+func (siw *ServerInterfaceWrapper) UpdateCustomField(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "customFieldId" -------------
+	var customFieldId CustomFieldId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customFieldId", r.PathValue("customFieldId"), &customFieldId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customFieldId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateCustomFieldParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateCustomField(w, r, customFieldId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -59403,6 +59948,11 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/macros/{macroId}", wrapper.DeleteMacro)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/macros/{macroId}", wrapper.GetMacro)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/macros/{macroId}", wrapper.UpdateMacro)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/custom-fields", wrapper.ListCustomFields)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/custom-fields", wrapper.CreateCustomField)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/custom-fields/{customFieldId}", wrapper.DeleteCustomField)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/custom-fields/{customFieldId}", wrapper.GetCustomField)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/custom-fields/{customFieldId}", wrapper.UpdateCustomField)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/docs/sites", wrapper.ListDocsSites)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/docs/pages", wrapper.ListDocsPages)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/docs/summary", wrapper.GetDocsSummary)
@@ -79381,6 +79931,349 @@ func (response MarkConversationUnread403ApplicationProblemPlusJSONResponse) Visi
 type MarkConversationUnread404ApplicationProblemPlusJSONResponse Problem
 
 func (response MarkConversationUnread404ApplicationProblemPlusJSONResponse) VisitMarkConversationUnreadResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListCustomFieldsRequestObject struct {
+	Params ListCustomFieldsParams
+}
+
+type ListCustomFieldsResponseObject interface {
+	VisitListCustomFieldsResponse(w http.ResponseWriter) error
+}
+
+type ListCustomFields200JSONResponse CustomFieldList
+
+func (response ListCustomFields200JSONResponse) VisitListCustomFieldsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListCustomFields401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListCustomFields401ApplicationProblemPlusJSONResponse) VisitListCustomFieldsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListCustomFields403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListCustomFields403ApplicationProblemPlusJSONResponse) VisitListCustomFieldsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateCustomFieldRequestObject struct {
+	Params CreateCustomFieldParams
+	Body   *CreateCustomFieldJSONRequestBody
+}
+
+type CreateCustomFieldResponseObject interface {
+	VisitCreateCustomFieldResponse(w http.ResponseWriter) error
+}
+
+type CreateCustomField201JSONResponse CustomField
+
+func (response CreateCustomField201JSONResponse) VisitCreateCustomFieldResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateCustomField400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response CreateCustomField400ApplicationProblemPlusJSONResponse) VisitCreateCustomFieldResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateCustomField401ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateCustomField401ApplicationProblemPlusJSONResponse) VisitCreateCustomFieldResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateCustomField403ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateCustomField403ApplicationProblemPlusJSONResponse) VisitCreateCustomFieldResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateCustomField409ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateCustomField409ApplicationProblemPlusJSONResponse) VisitCreateCustomFieldResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteCustomFieldRequestObject struct {
+	CustomFieldId CustomFieldId `json:"customFieldId"`
+	Params        DeleteCustomFieldParams
+}
+
+type DeleteCustomFieldResponseObject interface {
+	VisitDeleteCustomFieldResponse(w http.ResponseWriter) error
+}
+
+type DeleteCustomField204Response struct {
+}
+
+func (response DeleteCustomField204Response) VisitDeleteCustomFieldResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteCustomField401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteCustomField401ApplicationProblemPlusJSONResponse) VisitDeleteCustomFieldResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteCustomField403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteCustomField403ApplicationProblemPlusJSONResponse) VisitDeleteCustomFieldResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteCustomField404ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteCustomField404ApplicationProblemPlusJSONResponse) VisitDeleteCustomFieldResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetCustomFieldRequestObject struct {
+	CustomFieldId CustomFieldId `json:"customFieldId"`
+	Params        GetCustomFieldParams
+}
+
+type GetCustomFieldResponseObject interface {
+	VisitGetCustomFieldResponse(w http.ResponseWriter) error
+}
+
+type GetCustomField200JSONResponse CustomField
+
+func (response GetCustomField200JSONResponse) VisitGetCustomFieldResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetCustomField401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetCustomField401ApplicationProblemPlusJSONResponse) VisitGetCustomFieldResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetCustomField403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetCustomField403ApplicationProblemPlusJSONResponse) VisitGetCustomFieldResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetCustomField404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetCustomField404ApplicationProblemPlusJSONResponse) VisitGetCustomFieldResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateCustomFieldRequestObject struct {
+	CustomFieldId CustomFieldId `json:"customFieldId"`
+	Params        UpdateCustomFieldParams
+	Body          *UpdateCustomFieldJSONRequestBody
+}
+
+type UpdateCustomFieldResponseObject interface {
+	VisitUpdateCustomFieldResponse(w http.ResponseWriter) error
+}
+
+type UpdateCustomField200JSONResponse CustomField
+
+func (response UpdateCustomField200JSONResponse) VisitUpdateCustomFieldResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateCustomField400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UpdateCustomField400ApplicationProblemPlusJSONResponse) VisitUpdateCustomFieldResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateCustomField401ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateCustomField401ApplicationProblemPlusJSONResponse) VisitUpdateCustomFieldResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateCustomField403ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateCustomField403ApplicationProblemPlusJSONResponse) VisitUpdateCustomFieldResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateCustomField404ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateCustomField404ApplicationProblemPlusJSONResponse) VisitUpdateCustomFieldResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -101539,6 +102432,21 @@ type StrictServerInterface interface {
 	// MarkConversationUnread Mark a conversation unread
 	// (POST /v1/conversations/{conversationId}/unread)
 	MarkConversationUnread(ctx context.Context, request MarkConversationUnreadRequestObject) (MarkConversationUnreadResponseObject, error)
+	// ListCustomFields List custom fields
+	// (GET /v1/custom-fields)
+	ListCustomFields(ctx context.Context, request ListCustomFieldsRequestObject) (ListCustomFieldsResponseObject, error)
+	// CreateCustomField Create a custom field
+	// (POST /v1/custom-fields)
+	CreateCustomField(ctx context.Context, request CreateCustomFieldRequestObject) (CreateCustomFieldResponseObject, error)
+	// DeleteCustomField Delete a custom field
+	// (DELETE /v1/custom-fields/{customFieldId})
+	DeleteCustomField(ctx context.Context, request DeleteCustomFieldRequestObject) (DeleteCustomFieldResponseObject, error)
+	// GetCustomField Get a custom field
+	// (GET /v1/custom-fields/{customFieldId})
+	GetCustomField(ctx context.Context, request GetCustomFieldRequestObject) (GetCustomFieldResponseObject, error)
+	// UpdateCustomField Update a custom field
+	// (PATCH /v1/custom-fields/{customFieldId})
+	UpdateCustomField(ctx context.Context, request UpdateCustomFieldRequestObject) (UpdateCustomFieldResponseObject, error)
 	// ListDiscussionPosts Posts by state (the moderation queue)
 	// (GET /v1/discussion-posts)
 	ListDiscussionPosts(ctx context.Context, request ListDiscussionPostsRequestObject) (ListDiscussionPostsResponseObject, error)
@@ -108358,6 +109266,153 @@ func (sh *strictHandler) MarkConversationUnread(w http.ResponseWriter, r *http.R
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(MarkConversationUnreadResponseObject); ok {
 		if err := validResponse.VisitMarkConversationUnreadResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListCustomFields operation middleware
+func (sh *strictHandler) ListCustomFields(w http.ResponseWriter, r *http.Request, params ListCustomFieldsParams) {
+	var request ListCustomFieldsRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListCustomFields(ctx, request.(ListCustomFieldsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListCustomFields")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListCustomFieldsResponseObject); ok {
+		if err := validResponse.VisitListCustomFieldsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreateCustomField operation middleware
+func (sh *strictHandler) CreateCustomField(w http.ResponseWriter, r *http.Request, params CreateCustomFieldParams) {
+	var request CreateCustomFieldRequestObject
+
+	request.Params = params
+
+	var body CreateCustomFieldJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateCustomField(ctx, request.(CreateCustomFieldRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateCustomField")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(CreateCustomFieldResponseObject); ok {
+		if err := validResponse.VisitCreateCustomFieldResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteCustomField operation middleware
+func (sh *strictHandler) DeleteCustomField(w http.ResponseWriter, r *http.Request, customFieldId CustomFieldId, params DeleteCustomFieldParams) {
+	var request DeleteCustomFieldRequestObject
+
+	request.CustomFieldId = customFieldId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteCustomField(ctx, request.(DeleteCustomFieldRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteCustomField")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteCustomFieldResponseObject); ok {
+		if err := validResponse.VisitDeleteCustomFieldResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetCustomField operation middleware
+func (sh *strictHandler) GetCustomField(w http.ResponseWriter, r *http.Request, customFieldId CustomFieldId, params GetCustomFieldParams) {
+	var request GetCustomFieldRequestObject
+
+	request.CustomFieldId = customFieldId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetCustomField(ctx, request.(GetCustomFieldRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetCustomField")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetCustomFieldResponseObject); ok {
+		if err := validResponse.VisitGetCustomFieldResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UpdateCustomField operation middleware
+func (sh *strictHandler) UpdateCustomField(w http.ResponseWriter, r *http.Request, customFieldId CustomFieldId, params UpdateCustomFieldParams) {
+	var request UpdateCustomFieldRequestObject
+
+	request.CustomFieldId = customFieldId
+	request.Params = params
+
+	var body UpdateCustomFieldJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateCustomField(ctx, request.(UpdateCustomFieldRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateCustomField")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UpdateCustomFieldResponseObject); ok {
+		if err := validResponse.VisitUpdateCustomFieldResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

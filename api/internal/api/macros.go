@@ -364,6 +364,9 @@ func macroChange(m *store.Macro, then *oas.ConversationUpdate, now time.Time) (o
 	if then.FeedbackProgress.IsSpecified() {
 		upd.FeedbackProgress = then.FeedbackProgress
 	}
+	if then.Fields != nil {
+		upd.Fields = then.Fields
+	}
 	return upd, add, remove
 }
 

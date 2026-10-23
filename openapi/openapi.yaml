@@ -74,7 +74,7 @@ tags:
       Workspace API keys for host backends, scripts and bots. A key holds scopes (`ApiKeyScope`),
       may be limited to some inboxes and may expire; these are fixed when the key is made. A key
       limited to inboxes sees what an agent with access to exactly those inboxes sees and cannot
-      hold `inboxes:manage`, `webhooks:manage`, `workspace:manage` or `migrations:manage`; an inbox that is deleted
+      hold `inboxes:manage`, `webhooks:manage`, `workspace:manage`, `migrations:manage` or `fields:manage`; an inbox that is deleted
       drops out of the limit, and a key whose every inbox is gone sees nothing. Keys made before
       scopes existed hold every scope.
 
@@ -110,6 +110,11 @@ tags:
     description: Workspace labels for conversations.
   - name: canned-replies
     description: Saved answers members insert into replies.
+  - name: custom-fields
+    description: |
+      Typed fields (text, number, date, select, checkbox) on conversations and contacts. A
+      conversation's values are in its `fields`; a contact's in its `attributes`, where keys
+      without a field stay free-form.
   - name: macros
     description: |
       A reply plus actions (labels, assignee, status, priority, snooze), personal or shared. The
@@ -2100,7 +2105,7 @@ paths:
       description: |
         Owners and admins only, with a member session. The secret is returned once and stored
         only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-        `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+        `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
         `audit:read` (`403 forbidden`).
       tags: [api-keys]
       security:
@@ -3540,6 +3545,11 @@ paths:
         Each item carries the contact (id, name, first e-mail address), a preview of the last
         `message` (notes and events are not previewed), and `unread` and `pinned_at` for the
         calling member.
+
+        `field.<key>=<value>` keeps the conversations whose custom field `<key>` holds exactly
+        `<value>`: a number for `number`, `true` or `false` for `checkbox`, the text otherwise.
+        Several keys must all match. A key that is not a conversation field, a repeated key or a
+        value that does not fit the type answers `400 field_invalid` with `field`.
       tags: [conversations]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
@@ -3896,7 +3906,8 @@ paths:
         emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
         A conversation the caller cannot see (or of another workspace) is listed in `failed`
         with `not_found`; one whose inbox the new assignee cannot access with
-        `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
+        `validation_failed`; one that would close without a required custom field with
+        `field_required` and `field`. A request that is invalid as a whole (no change, an unknown label or
         member, a past `snooze_until`) is refused with `400` and changes nothing.
 
         `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
@@ -3964,6 +3975,11 @@ paths:
         `event` messages. `snooze_until` is required with status `snoozed` and cleared by any other
         status. A `feedback_progress` value is refused with `409 not_feedback` on a conversation whose
         `kind` is not `feedback`.
+
+        `fields` sets custom field values (`400 field_invalid` naming the key in `field`). Closing
+        a conversation that is not spam while a field marked `required_on_close` has no value,
+        after the change, answers `409 field_required` naming the first such field in `field`;
+        this holds for bulk changes (per item), macros and `then` of a message too.
 
         Scope: `conversations:write`.
       tags: [conversations]
@@ -5209,6 +5225,145 @@ paths:
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
         - $ref: "#/components/parameters/MacroId"
+      responses:
+        "204":
+          description: Deleted.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/custom-fields:
+    get:
+      operationId: listCustomFields
+      summary: List custom fields
+      description: |
+        The workspace's custom field definitions, by object, position and creation.
+
+        Scope: `conversations:read` or `contacts:read`.
+      tags: [custom-fields]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - name: object
+          in: query
+          description: Only the fields of this object.
+          schema:
+            $ref: "#/components/schemas/CustomFieldObject"
+      responses:
+        "200":
+          description: The custom fields.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomFieldList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: createCustomField
+      summary: Create a custom field
+      description: |
+        Owners, admins and API keys not limited to inboxes. At most 50 fields per object
+        (`403 field_limit`); `key` is unique per object (`409 field_taken`). A conversation key
+        whose values from a deleted field are still being cleared answers `409 field_clearing`.
+
+        Scope: `fields:manage`.
+      tags: [custom-fields]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomFieldCreate"
+      responses:
+        "201":
+          description: The custom field.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomField"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /v1/custom-fields/{customFieldId}:
+    get:
+      operationId: getCustomField
+      summary: Get a custom field
+      description: "Scope: `conversations:read` or `contacts:read`."
+      tags: [custom-fields]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/CustomFieldId"
+      responses:
+        "200":
+          description: The custom field.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomField"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    patch:
+      operationId: updateCustomField
+      summary: Update a custom field
+      description: |
+        Owners, admins and API keys not limited to inboxes. The object, key and type do not change.
+        `options` replaces the options as a whole; conversation values of a removed option are
+        cleared in the background (one `conversation.updated` each), contact attributes are kept.
+
+        Scope: `fields:manage`.
+      tags: [custom-fields]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/CustomFieldId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomFieldUpdate"
+      responses:
+        "200":
+          description: The updated custom field.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomField"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: deleteCustomField
+      summary: Delete a custom field
+      description: |
+        Owners, admins and API keys not limited to inboxes. A conversation field's values are
+        cleared in the background (one `conversation.updated` each); a contact field's attribute
+        stays on the contacts as a free-form attribute.
+
+        Scope: `fields:manage`.
+      tags: [custom-fields]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/CustomFieldId"
       responses:
         "204":
           description: Deleted.
@@ -18646,6 +18801,13 @@ components:
       schema:
         type: string
         format: uuid
+    CustomFieldId:
+      name: customFieldId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
     ChannelKey:
       name: channel_key
       in: path
@@ -19874,7 +20036,12 @@ components:
         - `issues:write`: create, link and unlink GitHub and Linear issues on feedback and ideas,
           together with `conversations:read`.
 
-        `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*` and `issues:write` are never added to keys made before they existed.
+        - `fields:manage`: create, change and delete custom field definitions. Owners and admins
+          only; never offered to agents' tokens, refused for keys limited to inboxes. Never
+          implied: a key made without naming its scopes does not hold it. Writing values needs
+          `conversations:write` or `contacts:write`.
+
+        `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write` and `fields:manage` are never added to keys made before they existed.
       enum:
         - conversations:read
         - conversations:write
@@ -19916,6 +20083,7 @@ components:
         - integrations:read
         - integrations:manage
         - issues:write
+        - fields:manage
     BotAvatarUrl:
       type: string
       format: uri
@@ -21108,7 +21276,10 @@ components:
     Attributes:
       type: object
       additionalProperties: true
-      description: Free-form data about the contact (plan, app version, ...), at most 16 KiB.
+      description: |
+        Free-form data about the contact (plan, app version, ...), at most 16 KiB. A key that is a
+        contact custom field must hold a value of its type (`400 field_invalid` naming the key in
+        `field` on `/v1`; identity tokens drop such a value); `null` leaves it unset.
     UndeliverableEmail:
       type: object
       description: An address that bounced permanently or complained; replies to it are refused.
@@ -21774,7 +21945,7 @@ components:
       enum: [low, normal, high, urgent]
     Conversation:
       type: object
-      required: [id, inbox_id, contact_id, kind, subject, status, priority, spam, labels, last_activity_at, created_at, updated_at]
+      required: [id, inbox_id, contact_id, kind, subject, status, priority, spam, labels, fields, last_activity_at, created_at, updated_at]
       properties:
         id:
           type: string
@@ -21863,6 +22034,8 @@ components:
           items:
             type: string
             format: uuid
+        fields:
+          $ref: "#/components/schemas/CustomFieldValues"
         last_message_at:
           type: string
           format: date-time
@@ -22010,6 +22183,8 @@ components:
           items:
             type: string
             format: uuid
+        fields:
+          $ref: "#/components/schemas/CustomFieldValuesUpdate"
         feedback_progress:
           anyOf:
             - $ref: "#/components/schemas/FeedbackProgress"
@@ -22052,6 +22227,8 @@ components:
           items:
             type: string
             format: uuid
+        fields:
+          $ref: "#/components/schemas/CustomFieldValuesUpdate"
         trashed:
           type: boolean
           description: |
@@ -22072,6 +22249,9 @@ components:
           type: string
         detail:
           type: string
+        field:
+          $ref: "#/components/schemas/CustomFieldKey"
+          description: "`field_invalid` and `field_required` only: the custom field's key."
     ConversationBulkResult:
       type: object
       required: [updated, failed]
@@ -23470,6 +23650,126 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CannedReply"
+    CustomFieldObject:
+      type: string
+      enum: [conversation, contact]
+      x-enum-varnames: [CustomFieldObjectConversation, CustomFieldObjectContact]
+    CustomFieldType:
+      type: string
+      enum: [text, number, date, select, checkbox]
+      x-enum-varnames: [CustomFieldTypeText, CustomFieldTypeNumber, CustomFieldTypeDate, CustomFieldTypeSelect, CustomFieldTypeCheckbox]
+      description: |
+        The JSON value each type takes: `text` a string of 1 to 1000 characters, `number` a finite
+        number, `date` a `YYYY-MM-DD` string, `select` one of the field's `options`, `checkbox`
+        `true` or `false`.
+    CustomFieldKey:
+      type: string
+      pattern: "^[a-z][a-z0-9_]{0,39}$"
+      description: The key the value is stored under, in `fields` of a conversation or `attributes` of a contact.
+      examples: [order_id]
+    CustomFieldOptions:
+      type: array
+      description: "`select` only: the values to choose from, 1 to 100 distinct strings of 1 to 100 characters."
+      maxItems: 100
+      items:
+        type: string
+        minLength: 1
+        maxLength: 100
+    CustomField:
+      type: object
+      required: [id, object, key, name, type, options, required_on_close, position, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          $ref: "#/components/schemas/CustomFieldObject"
+        key:
+          $ref: "#/components/schemas/CustomFieldKey"
+        name:
+          type: string
+          description: What the panel shows.
+        type:
+          $ref: "#/components/schemas/CustomFieldType"
+        options:
+          $ref: "#/components/schemas/CustomFieldOptions"
+        required_on_close:
+          type: boolean
+          description: |
+            Conversation fields only: closing a conversation without a value answers
+            `409 field_required` naming the field. Spam is closed without it.
+        position:
+          type: integer
+          format: int32
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CustomFieldCreate:
+      type: object
+      required: [object, key, name, type]
+      properties:
+        object:
+          $ref: "#/components/schemas/CustomFieldObject"
+        key:
+          $ref: "#/components/schemas/CustomFieldKey"
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        type:
+          $ref: "#/components/schemas/CustomFieldType"
+        options:
+          $ref: "#/components/schemas/CustomFieldOptions"
+        required_on_close:
+          type: boolean
+          default: false
+        position:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 10000
+    CustomFieldUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        options:
+          $ref: "#/components/schemas/CustomFieldOptions"
+        required_on_close:
+          type: boolean
+        position:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 10000
+    CustomFieldList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CustomField"
+    CustomFieldValues:
+      type: object
+      description: |
+        Values of the workspace's conversation custom fields by key (see `CustomFieldType`); `{}`
+        when none is set.
+      additionalProperties: true
+    CustomFieldValuesUpdate:
+      type: object
+      description: |
+        Sets the named conversation custom fields and keeps the others; `null` clears one. Every
+        key must be a conversation field and every value fit its type, or `400 field_invalid`
+        names the key in `field`.
+      maxProperties: 50
+      additionalProperties: true
     MacroVisibility:
       type: string
       enum: [personal, shared]
@@ -38373,6 +38673,10 @@ components:
           type: string
           description: "`insufficient_scope` only: the scope the API key lacks."
           examples: [messages:write]
+        field:
+          type: string
+          description: "`field_invalid` and `field_required` only: the key of the custom field."
+          examples: [order_id]
         limit:
           $ref: "#/components/schemas/HostedLimit"
         sso_email:

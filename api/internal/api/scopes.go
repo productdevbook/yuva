@@ -14,13 +14,13 @@ var allScopes = []oas.ApiKeyScope{
 	oas.BroadcastsRead, oas.BroadcastsWrite, oas.BroadcastsSend, oas.MigrationsManage,
 	oas.AnalyticsRead, oas.AnalyticsWrite, oas.AnalyticsManage, oas.StatusRead, oas.StatusManage,
 	oas.HelpRead, oas.HelpWrite, oas.HelpPublish, oas.RoadmapRead, oas.RoadmapWrite, oas.RoadmapStage,
-	oas.ChangelogRead, oas.ChangelogWrite, oas.ChangelogPublish, oas.AuditRead, oas.IntegrationsRead, oas.IntegrationsManage, oas.IssuesWrite,
+	oas.ChangelogRead, oas.ChangelogWrite, oas.ChangelogPublish, oas.AuditRead, oas.IntegrationsRead, oas.IntegrationsManage, oas.IssuesWrite, oas.FieldsManage,
 }
 
 // notImpliedScopes are left out of a key made without naming its scopes.
-var notImpliedScopes = []oas.ApiKeyScope{oas.ConversationsDelete, oas.MessagesRedact, oas.BroadcastsSend, oas.StatusManage, oas.HelpPublish, oas.RoadmapStage, oas.ChangelogPublish, oas.AuditRead}
+var notImpliedScopes = []oas.ApiKeyScope{oas.ConversationsDelete, oas.MessagesRedact, oas.BroadcastsSend, oas.StatusManage, oas.HelpPublish, oas.RoadmapStage, oas.ChangelogPublish, oas.AuditRead, oas.FieldsManage}
 
-var unlimitedOnlyScopes = []oas.ApiKeyScope{oas.InboxesManage, oas.WebhooksManage, oas.WorkspaceManage, oas.MigrationsManage, oas.AnalyticsManage, oas.AuditRead, oas.IntegrationsManage}
+var unlimitedOnlyScopes = []oas.ApiKeyScope{oas.InboxesManage, oas.WebhooksManage, oas.WorkspaceManage, oas.MigrationsManage, oas.AnalyticsManage, oas.AuditRead, oas.IntegrationsManage, oas.FieldsManage}
 
 // operationScopes lists every operation an API key may call with the scopes it needs. An operation
 // missing here needs a member session.
@@ -138,6 +138,12 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"CreateMacro": nil,
 	"UpdateMacro": nil,
 	"DeleteMacro": nil,
+
+	"ListCustomFields":  nil,
+	"GetCustomField":    nil,
+	"CreateCustomField": {oas.FieldsManage},
+	"UpdateCustomField": {oas.FieldsManage},
+	"DeleteCustomField": {oas.FieldsManage},
 
 	"ListWebhooks":          {oas.WebhooksManage},
 	"CreateWebhook":         {oas.WebhooksManage},
@@ -412,7 +418,7 @@ func errInsufficientScope(scope oas.ApiKeyScope) *apiError {
 // CreateMessage (nil) needs messages:write or notes:write by its kind, the macro writes (nil)
 // canned_replies:write for a shared macro and conversations:write for a personal one, and BulkUpdateConversations
 // (nil) conversations:delete for trashed and conversations:write for any other change, checked
-// once the body is read.
+// once the body is read; the custom field reads (nil) conversations:read or contacts:read.
 func keyMayCall(p principal, operationID string) error {
 	scopes, ok := operationScopes[operationID]
 	if !ok {

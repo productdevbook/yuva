@@ -929,6 +929,7 @@ const (
 	ConversationsWrite  ApiKeyScope = "conversations:write"
 	DraftsSend          ApiKeyScope = "drafts:send"
 	FeedbackWrite       ApiKeyScope = "feedback:write"
+	FieldsManage        ApiKeyScope = "fields:manage"
 	HelpPublish         ApiKeyScope = "help:publish"
 	HelpRead            ApiKeyScope = "help:read"
 	HelpWrite           ApiKeyScope = "help:write"
@@ -991,6 +992,8 @@ func (e ApiKeyScope) Valid() bool {
 	case DraftsSend:
 		return true
 	case FeedbackWrite:
+		return true
+	case FieldsManage:
 		return true
 	case HelpPublish:
 		return true
@@ -2304,6 +2307,51 @@ func (e ConversationStatus) Valid() bool {
 	case ConversationStatusPending:
 		return true
 	case ConversationStatusSnoozed:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CustomFieldObject.
+const (
+	CustomFieldObjectContact      CustomFieldObject = "contact"
+	CustomFieldObjectConversation CustomFieldObject = "conversation"
+)
+
+// Valid indicates whether the value is a known member of the CustomFieldObject enum.
+func (e CustomFieldObject) Valid() bool {
+	switch e {
+	case CustomFieldObjectContact:
+		return true
+	case CustomFieldObjectConversation:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CustomFieldType.
+const (
+	CustomFieldTypeCheckbox CustomFieldType = "checkbox"
+	CustomFieldTypeDate     CustomFieldType = "date"
+	CustomFieldTypeNumber   CustomFieldType = "number"
+	CustomFieldTypeSelect   CustomFieldType = "select"
+	CustomFieldTypeText     CustomFieldType = "text"
+)
+
+// Valid indicates whether the value is a known member of the CustomFieldType enum.
+func (e CustomFieldType) Valid() bool {
+	switch e {
+	case CustomFieldTypeCheckbox:
+		return true
+	case CustomFieldTypeDate:
+		return true
+	case CustomFieldTypeNumber:
+		return true
+	case CustomFieldTypeSelect:
+		return true
+	case CustomFieldTypeText:
 		return true
 	default:
 		return false
@@ -8454,6 +8502,11 @@ type AnalyticsRangeProblem struct {
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
 
+	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	//
+	// Examples: order_id
+	Field *string `json:"field,omitempty"`
+
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
 	// the workspace already runs as many migrations at a time as the server allows;
@@ -9050,7 +9103,12 @@ type ApiKeyList struct {
 //	  - `issues:write`: create, link and unlink GitHub and Linear issues on feedback and ideas,
 //	    together with `conversations:read`.
 //
-// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*` and `issues:write` are never added to keys made before they existed.
+//	  - `fields:manage`: create, change and delete custom field definitions. Owners and admins
+//	    only; never offered to agents' tokens, refused for keys limited to inboxes. Never
+//	    implied: a key made without naming its scopes does not hold it. Writing values needs
+//	    `conversations:write` or `contacts:write`.
+//
+// `conversations:delete`, `messages:redact`, `lists:*`, `broadcasts:*`, `migrations:manage`, `analytics:*`, `status:*`, `help:*`, `roadmap:*`, `changelog:*`, `audit:read`, `integrations:*`, `issues:write` and `fields:manage` are never added to keys made before they existed.
 type ApiKeyScope string
 
 // ApiKeyUpdate Only the fields sent change. Scopes, inbox limit and expiry cannot change.
@@ -9204,7 +9262,9 @@ type Attachment struct {
 	Size   int64 `json:"size"`
 }
 
-// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB.
+// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB. A key that is a
+// contact custom field must hold a value of its type (`400 field_invalid` naming the key in
+// `field` on `/v1`; identity tokens drop such a value); `null` leaves it unset.
 type Attributes map[string]interface{}
 
 // AuditAction The action; the part before the dot is the target's type. `details` by action:
@@ -9753,6 +9813,11 @@ type BroadcastProblem struct {
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
 
+	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	//
+	// Examples: order_id
+	Field *string `json:"field,omitempty"`
+
 	// Items `review_failed` only: the blocking review items.
 	Items *[]BroadcastReviewItem `json:"items,omitempty"`
 
@@ -10115,6 +10180,11 @@ type ChangelogConflictProblem struct {
 	// Examples: not_found
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
+
+	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	//
+	// Examples: order_id
+	Field *string `json:"field,omitempty"`
 
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
@@ -11914,7 +11984,9 @@ type Contact struct {
 	// conversations the caller can see, spam left out; `last_seen_at` does not depend on the caller.
 	Activity *ContactActivity `json:"activity,omitempty"`
 
-	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB.
+	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB. A key that is a
+	// contact custom field must hold a value of its type (`400 field_invalid` naming the key in
+	// `field` on `/v1`; identity tokens drop such a value); `null` leaves it unset.
 	Attributes Attributes `json:"attributes"`
 
 	// Blocked Mail and chat from a blocked contact are refused.
@@ -11956,7 +12028,9 @@ type ContactActivity struct {
 
 // ContactCreate defines model for ContactCreate.
 type ContactCreate struct {
-	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB.
+	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB. A key that is a
+	// contact custom field must hold a value of its type (`400 field_invalid` naming the key in
+	// `field` on `/v1`; identity tokens drop such a value); `null` leaves it unset.
 	Attributes  *Attributes   `json:"attributes,omitempty"`
 	Blocked     *bool         `json:"blocked,omitempty"`
 	Emails      *[]Email      `json:"emails,omitempty"`
@@ -12137,7 +12211,9 @@ type ContactSummary struct {
 
 // ContactUpdate defines model for ContactUpdate.
 type ContactUpdate struct {
-	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB.
+	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB. A key that is a
+	// contact custom field must hold a value of its type (`400 field_invalid` naming the key in
+	// `field` on `/v1`; identity tokens drop such a value); `null` leaves it unset.
 	Attributes *Attributes `json:"attributes,omitempty"`
 	Blocked    *bool       `json:"blocked,omitempty"`
 
@@ -12188,6 +12264,10 @@ type Conversation struct {
 
 	// Feedback `feedback` conversations only: category and what the app sent with it.
 	Feedback *Feedback `json:"feedback,omitempty"`
+
+	// Fields Values of the workspace's conversation custom fields by key (see `CustomFieldType`); `{}`
+	// when none is set.
+	Fields CustomFieldValues `json:"fields"`
 
 	// HelpArticleId The help article the contact read just before starting the conversation from it; absent otherwise.
 	HelpArticleId *uuid.UUID `json:"help_article_id,omitempty"`
@@ -12258,9 +12338,14 @@ type Conversation struct {
 
 // ConversationBulkFailure defines model for ConversationBulkFailure.
 type ConversationBulkFailure struct {
-	Code   string    `json:"code"`
-	Detail *string   `json:"detail,omitempty"`
-	Id     uuid.UUID `json:"id"`
+	Code   string  `json:"code"`
+	Detail *string `json:"detail,omitempty"`
+
+	// Field `field_invalid` and `field_required` only: the custom field's key.
+	//
+	// Examples: order_id
+	Field *CustomFieldKey `json:"field,omitempty"`
+	Id    uuid.UUID       `json:"id"`
 
 	// Status The HTTP status the single change would have answered.
 	Status int32 `json:"status"`
@@ -12281,7 +12366,12 @@ type ConversationBulkUpdate struct {
 	// AssigneeId A member; `null` unassigns.
 	AssigneeId      nullable.Nullable[uuid.UUID] `json:"assignee_id,omitempty"`
 	ConversationIds []uuid.UUID                  `json:"conversation_ids"`
-	RemoveLabels    *[]uuid.UUID                 `json:"remove_labels,omitempty"`
+
+	// Fields Sets the named conversation custom fields and keeps the others; `null` clears one. Every
+	// key must be a conversation field and every value fit its type, or `400 field_invalid`
+	// names the key in `field`.
+	Fields       *CustomFieldValuesUpdate `json:"fields,omitempty"`
+	RemoveLabels *[]uuid.UUID             `json:"remove_labels,omitempty"`
 
 	// SnoozeUntil Required with status `snoozed`.
 	SnoozeUntil *time.Time          `json:"snooze_until,omitempty"`
@@ -12460,6 +12550,10 @@ type ConversationListItem struct {
 
 	// Feedback `feedback` conversations only: category and what the app sent with it.
 	Feedback *Feedback `json:"feedback,omitempty"`
+
+	// Fields Values of the workspace's conversation custom fields by key (see `CustomFieldType`); `{}`
+	// when none is set.
+	Fields CustomFieldValues `json:"fields"`
 
 	// HelpArticleId The help article the contact read just before starting the conversation from it; absent otherwise.
 	HelpArticleId *uuid.UUID `json:"help_article_id,omitempty"`
@@ -12673,6 +12767,11 @@ type ConversationUpdate struct {
 	// another kind is refused with `409 not_feedback`; `null` there changes nothing.
 	FeedbackProgress nullable.Nullable[FeedbackProgress] `json:"feedback_progress,omitempty"`
 
+	// Fields Sets the named conversation custom fields and keeps the others; `null` clears one. Every
+	// key must be a conversation field and every value fit its type, or `400 field_invalid`
+	// names the key in `field`.
+	Fields *CustomFieldValuesUpdate `json:"fields,omitempty"`
+
 	// Labels Replaces the labels.
 	Labels      *[]uuid.UUID `json:"labels,omitempty"`
 	Priority    *Priority    `json:"priority,omitempty"`
@@ -12693,6 +12792,95 @@ type CountByID struct {
 	Count int64     `json:"count"`
 	Id    uuid.UUID `json:"id"`
 }
+
+// CustomField defines model for CustomField.
+type CustomField struct {
+	CreatedAt time.Time `json:"created_at"`
+	Id        uuid.UUID `json:"id"`
+
+	// Key The key the value is stored under, in `fields` of a conversation or `attributes` of a contact.
+	//
+	// Examples: order_id
+	Key CustomFieldKey `json:"key"`
+
+	// Name What the panel shows.
+	Name   string            `json:"name"`
+	Object CustomFieldObject `json:"object"`
+
+	// Options `select` only: the values to choose from, 1 to 100 distinct strings of 1 to 100 characters.
+	Options  CustomFieldOptions `json:"options"`
+	Position int32              `json:"position"`
+
+	// RequiredOnClose Conversation fields only: closing a conversation without a value answers
+	// `409 field_required` naming the field. Spam is closed without it.
+	RequiredOnClose bool `json:"required_on_close"`
+
+	// Type The JSON value each type takes: `text` a string of 1 to 1000 characters, `number` a finite
+	// number, `date` a `YYYY-MM-DD` string, `select` one of the field's `options`, `checkbox`
+	// `true` or `false`.
+	Type      CustomFieldType `json:"type"`
+	UpdatedAt time.Time       `json:"updated_at"`
+}
+
+// CustomFieldCreate defines model for CustomFieldCreate.
+type CustomFieldCreate struct {
+	// Key The key the value is stored under, in `fields` of a conversation or `attributes` of a contact.
+	//
+	// Examples: order_id
+	Key    CustomFieldKey    `json:"key"`
+	Name   string            `json:"name"`
+	Object CustomFieldObject `json:"object"`
+
+	// Options `select` only: the values to choose from, 1 to 100 distinct strings of 1 to 100 characters.
+	Options         *CustomFieldOptions `json:"options,omitempty"`
+	Position        *int32              `json:"position,omitempty"`
+	RequiredOnClose *bool               `json:"required_on_close,omitempty"`
+
+	// Type The JSON value each type takes: `text` a string of 1 to 1000 characters, `number` a finite
+	// number, `date` a `YYYY-MM-DD` string, `select` one of the field's `options`, `checkbox`
+	// `true` or `false`.
+	Type CustomFieldType `json:"type"`
+}
+
+// CustomFieldKey The key the value is stored under, in `fields` of a conversation or `attributes` of a contact.
+//
+// Examples: order_id
+type CustomFieldKey = string
+
+// CustomFieldList defines model for CustomFieldList.
+type CustomFieldList struct {
+	Items []CustomField `json:"items"`
+}
+
+// CustomFieldObject defines model for CustomFieldObject.
+type CustomFieldObject string
+
+// CustomFieldOptions `select` only: the values to choose from, 1 to 100 distinct strings of 1 to 100 characters.
+type CustomFieldOptions = []string
+
+// CustomFieldType The JSON value each type takes: `text` a string of 1 to 1000 characters, `number` a finite
+// number, `date` a `YYYY-MM-DD` string, `select` one of the field's `options`, `checkbox`
+// `true` or `false`.
+type CustomFieldType string
+
+// CustomFieldUpdate defines model for CustomFieldUpdate.
+type CustomFieldUpdate struct {
+	Name *string `json:"name,omitempty"`
+
+	// Options `select` only: the values to choose from, 1 to 100 distinct strings of 1 to 100 characters.
+	Options         *CustomFieldOptions `json:"options,omitempty"`
+	Position        *int32              `json:"position,omitempty"`
+	RequiredOnClose *bool               `json:"required_on_close,omitempty"`
+}
+
+// CustomFieldValues Values of the workspace's conversation custom fields by key (see `CustomFieldType`); `{}`
+// when none is set.
+type CustomFieldValues map[string]interface{}
+
+// CustomFieldValuesUpdate Sets the named conversation custom fields and keeps the others; `null` clears one. Every
+// key must be a conversation field and every value fit its type, or `400 field_invalid`
+// names the key in `field`.
+type CustomFieldValuesUpdate map[string]interface{}
 
 // DeliverabilityCheck defines model for DeliverabilityCheck.
 type DeliverabilityCheck struct {
@@ -13614,6 +13802,11 @@ type EmailDesignProblem struct {
 	Detail *string             `json:"detail,omitempty"`
 	Errors *[]EmailDesignIssue `json:"errors,omitempty"`
 
+	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	//
+	// Examples: order_id
+	Field *string `json:"field,omitempty"`
+
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
 	// the workspace already runs as many migrations at a time as the server allows;
@@ -13951,6 +14144,11 @@ type EmailImageProblem struct {
 	// Examples: not_found
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
+
+	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	//
+	// Examples: order_id
+	Field *string `json:"field,omitempty"`
 
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
@@ -15014,6 +15212,11 @@ type HelpConflictProblem struct {
 	// Examples: not_found
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
+
+	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	//
+	// Examples: order_id
+	Field *string `json:"field,omitempty"`
 
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
@@ -17763,6 +17966,11 @@ type MigrationFileProblem struct {
 	// Entry `file_refused` only: the zip entry it is about, when one is.
 	Entry *string `json:"entry,omitempty"`
 
+	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	//
+	// Examples: order_id
+	Field *string `json:"field,omitempty"`
+
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
 	// the workspace already runs as many migrations at a time as the server allows;
@@ -18804,6 +19012,11 @@ type Problem struct {
 	// Examples: not_found
 	Code   string  `json:"code"`
 	Detail *string `json:"detail,omitempty"`
+
+	// Field `field_invalid` and `field_required` only: the key of the custom field.
+	//
+	// Examples: order_id
+	Field *string `json:"field,omitempty"`
 
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
@@ -20127,6 +20340,10 @@ type StatusIncidentConversation struct {
 	// Feedback `feedback` conversations only: category and what the app sent with it.
 	Feedback *Feedback `json:"feedback,omitempty"`
 
+	// Fields Values of the workspace's conversation custom fields by key (see `CustomFieldType`); `{}`
+	// when none is set.
+	Fields CustomFieldValues `json:"fields"`
+
 	// HelpArticleId The help article the contact read just before starting the conversation from it; absent otherwise.
 	HelpArticleId *uuid.UUID `json:"help_article_id,omitempty"`
 	Id            uuid.UUID  `json:"id"`
@@ -21050,7 +21267,9 @@ type SubscriptionContact struct {
 
 // SubscriptionCreate Name the person with `email`, `contact_id` or `external_id` (at least one).
 type SubscriptionCreate struct {
-	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB.
+	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB. A key that is a
+	// contact custom field must hold a value of its type (`400 field_invalid` naming the key in
+	// `field` on `/v1`; identity tokens drop such a value); `null` leaves it unset.
 	Attributes *Attributes `json:"attributes,omitempty"`
 
 	// Consent How the person agreed, as the caller declares it; stored as proof.
@@ -21450,7 +21669,9 @@ type WebhookChangelogEntryPayload struct {
 
 // WebhookContact The contact as a host backend needs it.
 type WebhookContact struct {
-	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB.
+	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB. A key that is a
+	// contact custom field must hold a value of its type (`400 field_invalid` naming the key in
+	// `field` on `/v1`; identity tokens drop such a value); `null` leaves it unset.
 	Attributes Attributes `json:"attributes"`
 	Emails     []Email    `json:"emails"`
 
@@ -21995,6 +22216,9 @@ type ConversationKinds = []ConversationKind
 
 // Cursor defines model for Cursor.
 type Cursor = string
+
+// CustomFieldId defines model for CustomFieldId.
+type CustomFieldId = uuid.UUID
 
 // DeliveryId defines model for DeliveryId.
 type DeliveryId = uuid.UUID
@@ -23577,6 +23801,42 @@ type MarkConversationUnreadParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListCustomFieldsParams defines parameters for ListCustomFields.
+type ListCustomFieldsParams struct {
+	// Object Only the fields of this object.
+	Object *CustomFieldObject `form:"object,omitempty" json:"object,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CreateCustomFieldParams defines parameters for CreateCustomField.
+type CreateCustomFieldParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteCustomFieldParams defines parameters for DeleteCustomField.
+type DeleteCustomFieldParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetCustomFieldParams defines parameters for GetCustomField.
+type GetCustomFieldParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UpdateCustomFieldParams defines parameters for UpdateCustomField.
+type UpdateCustomFieldParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -26492,6 +26752,12 @@ type MarkConversationReadJSONRequestBody = ConversationReadCreate
 
 // SetMemberTypingJSONRequestBody defines body for SetMemberTyping for application/json ContentType.
 type SetMemberTypingJSONRequestBody = TypingCreate
+
+// CreateCustomFieldJSONRequestBody defines body for CreateCustomField for application/json ContentType.
+type CreateCustomFieldJSONRequestBody = CustomFieldCreate
+
+// UpdateCustomFieldJSONRequestBody defines body for UpdateCustomField for application/json ContentType.
+type UpdateCustomFieldJSONRequestBody = CustomFieldUpdate
 
 // UpdateDiscussionPostJSONRequestBody defines body for UpdateDiscussionPost for application/json ContentType.
 type UpdateDiscussionPostJSONRequestBody = DiscussionPostUpdate
@@ -33444,7 +33710,7 @@ type ClientInterface interface {
 	//
 	// Owners and admins only, with a member session. The secret is returned once and stored
 	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-	// `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+	// `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
 	// `audit:read` (`403 forbidden`).
 	//
 	// Takes any type of body and a specified content type.
@@ -33456,7 +33722,7 @@ type ClientInterface interface {
 	//
 	// Owners and admins only, with a member session. The secret is returned once and stored
 	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-	// `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+	// `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
 	// `audit:read` (`403 forbidden`).
 	//
 	// Takes a body of the `application/json` content type.
@@ -34768,6 +35034,11 @@ type ClientInterface interface {
 	// `message` (notes and events are not previewed), and `unread` and `pinned_at` for the
 	// calling member.
 	//
+	// `field.<key>=<value>` keeps the conversations whose custom field `<key>` holds exactly
+	// `<value>`: a number for `number`, `true` or `false` for `checkbox`, the text otherwise.
+	// Several keys must all match. A key that is not a conversation field, a repeated key or a
+	// value that does not fit the type answers `400 field_invalid` with `field`.
+	//
 	// Corresponds with GET /v1/conversations (the `ListConversations` operationId).
 	ListConversations(ctx context.Context, params *ListConversationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -34797,7 +35068,8 @@ type ClientInterface interface {
 	// emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
 	// A conversation the caller cannot see (or of another workspace) is listed in `failed`
 	// with `not_found`; one whose inbox the new assignee cannot access with
-	// `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
+	// `validation_failed`; one that would close without a required custom field with
+	// `field_required` and `field`. A request that is invalid as a whole (no change, an unknown label or
 	// member, a past `snooze_until`) is refused with `400` and changes nothing.
 	//
 	// `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
@@ -34822,7 +35094,8 @@ type ClientInterface interface {
 	// emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
 	// A conversation the caller cannot see (or of another workspace) is listed in `failed`
 	// with `not_found`; one whose inbox the new assignee cannot access with
-	// `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
+	// `validation_failed`; one that would close without a required custom field with
+	// `field_required` and `field`. A request that is invalid as a whole (no change, an unknown label or
 	// member, a past `snooze_until`) is refused with `400` and changes nothing.
 	//
 	// `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
@@ -34893,6 +35166,11 @@ type ClientInterface interface {
 	// status. A `feedback_progress` value is refused with `409 not_feedback` on a conversation whose
 	// `kind` is not `feedback`.
 	//
+	// `fields` sets custom field values (`400 field_invalid` naming the key in `field`). Closing
+	// a conversation that is not spam while a field marked `required_on_close` has no value,
+	// after the change, answers `409 field_required` naming the first such field in `field`;
+	// this holds for bulk changes (per item), macros and `then` of a message too.
+	//
 	// Scope: `conversations:write`.
 	//
 	// Takes any type of body and a specified content type.
@@ -34906,6 +35184,11 @@ type ClientInterface interface {
 	// `event` messages. `snooze_until` is required with status `snoozed` and cleared by any other
 	// status. A `feedback_progress` value is refused with `409 not_feedback` on a conversation whose
 	// `kind` is not `feedback`.
+	//
+	// `fields` sets custom field values (`400 field_invalid` naming the key in `field`). Closing
+	// a conversation that is not spam while a field marked `required_on_close` has no value,
+	// after the change, answers `409 field_required` naming the first such field in `field`;
+	// this holds for bulk changes (per item), macros and `then` of a message too.
 	//
 	// Scope: `conversations:write`.
 	//
@@ -35302,6 +35585,85 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /v1/conversations/{conversationId}/unread (the `MarkConversationUnread` operationId).
 	MarkConversationUnread(ctx context.Context, conversationId ConversationId, params *MarkConversationUnreadParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListCustomFields List custom fields
+	//
+	// The workspace's custom field definitions, by object, position and creation.
+	//
+	// Scope: `conversations:read` or `contacts:read`.
+	//
+	// Corresponds with GET /v1/custom-fields (the `ListCustomFields` operationId).
+	ListCustomFields(ctx context.Context, params *ListCustomFieldsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateCustomFieldWithBody Create a custom field
+	//
+	// Owners, admins and API keys not limited to inboxes. At most 50 fields per object
+	// (`403 field_limit`); `key` is unique per object (`409 field_taken`). A conversation key
+	// whose values from a deleted field are still being cleared answers `409 field_clearing`.
+	//
+	// Scope: `fields:manage`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/custom-fields (the `CreateCustomField` operationId).
+	CreateCustomFieldWithBody(ctx context.Context, params *CreateCustomFieldParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateCustomField Create a custom field
+	//
+	// Owners, admins and API keys not limited to inboxes. At most 50 fields per object
+	// (`403 field_limit`); `key` is unique per object (`409 field_taken`). A conversation key
+	// whose values from a deleted field are still being cleared answers `409 field_clearing`.
+	//
+	// Scope: `fields:manage`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/custom-fields (the `CreateCustomField` operationId).
+	CreateCustomField(ctx context.Context, params *CreateCustomFieldParams, body CreateCustomFieldJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteCustomField Delete a custom field
+	//
+	// Owners, admins and API keys not limited to inboxes. A conversation field's values are
+	// cleared in the background (one `conversation.updated` each); a contact field's attribute
+	// stays on the contacts as a free-form attribute.
+	//
+	// Scope: `fields:manage`.
+	//
+	// Corresponds with DELETE /v1/custom-fields/{customFieldId} (the `DeleteCustomField` operationId).
+	DeleteCustomField(ctx context.Context, customFieldId CustomFieldId, params *DeleteCustomFieldParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetCustomField Get a custom field
+	//
+	// Scope: `conversations:read` or `contacts:read`.
+	//
+	// Corresponds with GET /v1/custom-fields/{customFieldId} (the `GetCustomField` operationId).
+	GetCustomField(ctx context.Context, customFieldId CustomFieldId, params *GetCustomFieldParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateCustomFieldWithBody Update a custom field
+	//
+	// Owners, admins and API keys not limited to inboxes. The object, key and type do not change.
+	// `options` replaces the options as a whole; conversation values of a removed option are
+	// cleared in the background (one `conversation.updated` each), contact attributes are kept.
+	//
+	// Scope: `fields:manage`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PATCH /v1/custom-fields/{customFieldId} (the `UpdateCustomField` operationId).
+	UpdateCustomFieldWithBody(ctx context.Context, customFieldId CustomFieldId, params *UpdateCustomFieldParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateCustomField Update a custom field
+	//
+	// Owners, admins and API keys not limited to inboxes. The object, key and type do not change.
+	// `options` replaces the options as a whole; conversation values of a removed option are
+	// cleared in the background (one `conversation.updated` each), contact attributes are kept.
+	//
+	// Scope: `fields:manage`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PATCH /v1/custom-fields/{customFieldId} (the `UpdateCustomField` operationId).
+	UpdateCustomField(ctx context.Context, customFieldId CustomFieldId, params *UpdateCustomFieldParams, body UpdateCustomFieldJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListDiscussionPosts Posts by state (the moderation queue)
 	//
@@ -44399,7 +44761,7 @@ func (c *Client) ListApiKeys(ctx context.Context, params *ListApiKeysParams, req
 //
 // Owners and admins only, with a member session. The secret is returned once and stored
 // only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-// `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+// `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
 // `audit:read` (`403 forbidden`).
 //
 // Takes any type of body and a specified content type.
@@ -44421,7 +44783,7 @@ func (c *Client) CreateApiKeyWithBody(ctx context.Context, params *CreateApiKeyP
 //
 // Owners and admins only, with a member session. The secret is returned once and stored
 // only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-// `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+// `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
 // `audit:read` (`403 forbidden`).
 //
 // Takes a body of the `application/json` content type.
@@ -46723,6 +47085,11 @@ func (c *Client) ListContactVisits(ctx context.Context, contactId ContactId, par
 // `message` (notes and events are not previewed), and `unread` and `pinned_at` for the
 // calling member.
 //
+// `field.<key>=<value>` keeps the conversations whose custom field `<key>` holds exactly
+// `<value>`: a number for `number`, `true` or `false` for `checkbox`, the text otherwise.
+// Several keys must all match. A key that is not a conversation field, a repeated key or a
+// value that does not fit the type answers `400 field_invalid` with `field`.
+//
 // Corresponds with GET /v1/conversations (the `ListConversations` operationId).
 func (c *Client) ListConversations(ctx context.Context, params *ListConversationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListConversationsRequest(c.Server, params)
@@ -46782,7 +47149,8 @@ func (c *Client) CreateConversation(ctx context.Context, params *CreateConversat
 // emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
 // A conversation the caller cannot see (or of another workspace) is listed in `failed`
 // with `not_found`; one whose inbox the new assignee cannot access with
-// `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
+// `validation_failed`; one that would close without a required custom field with
+// `field_required` and `field`. A request that is invalid as a whole (no change, an unknown label or
 // member, a past `snooze_until`) is refused with `400` and changes nothing.
 //
 // `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
@@ -46817,7 +47185,8 @@ func (c *Client) BulkUpdateConversationsWithBody(ctx context.Context, params *Bu
 // emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
 // A conversation the caller cannot see (or of another workspace) is listed in `failed`
 // with `not_found`; one whose inbox the new assignee cannot access with
-// `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
+// `validation_failed`; one that would close without a required custom field with
+// `field_required` and `field`. A request that is invalid as a whole (no change, an unknown label or
 // member, a past `snooze_until`) is refused with `400` and changes nothing.
 //
 // `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
@@ -46928,6 +47297,11 @@ func (c *Client) GetConversation(ctx context.Context, conversationId Conversatio
 // status. A `feedback_progress` value is refused with `409 not_feedback` on a conversation whose
 // `kind` is not `feedback`.
 //
+// `fields` sets custom field values (`400 field_invalid` naming the key in `field`). Closing
+// a conversation that is not spam while a field marked `required_on_close` has no value,
+// after the change, answers `409 field_required` naming the first such field in `field`;
+// this holds for bulk changes (per item), macros and `then` of a message too.
+//
 // Scope: `conversations:write`.
 //
 // Takes any type of body and a specified content type.
@@ -46951,6 +47325,11 @@ func (c *Client) UpdateConversationWithBody(ctx context.Context, conversationId 
 // `event` messages. `snooze_until` is required with status `snoozed` and cleared by any other
 // status. A `feedback_progress` value is refused with `409 not_feedback` on a conversation whose
 // `kind` is not `feedback`.
+//
+// `fields` sets custom field values (`400 field_invalid` naming the key in `field`). Closing
+// a conversation that is not spam while a field marked `required_on_close` has no value,
+// after the change, answers `409 field_required` naming the first such field in `field`;
+// this holds for bulk changes (per item), macros and `then` of a message too.
 //
 // Scope: `conversations:write`.
 //
@@ -47548,6 +47927,155 @@ func (c *Client) SetMemberTyping(ctx context.Context, conversationId Conversatio
 // Corresponds with POST /v1/conversations/{conversationId}/unread (the `MarkConversationUnread` operationId).
 func (c *Client) MarkConversationUnread(ctx context.Context, conversationId ConversationId, params *MarkConversationUnreadParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewMarkConversationUnreadRequest(c.Server, conversationId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListCustomFields List custom fields
+//
+// The workspace's custom field definitions, by object, position and creation.
+//
+// Scope: `conversations:read` or `contacts:read`.
+//
+// Corresponds with GET /v1/custom-fields (the `ListCustomFields` operationId).
+func (c *Client) ListCustomFields(ctx context.Context, params *ListCustomFieldsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListCustomFieldsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateCustomFieldWithBody Create a custom field
+//
+// Owners, admins and API keys not limited to inboxes. At most 50 fields per object
+// (`403 field_limit`); `key` is unique per object (`409 field_taken`). A conversation key
+// whose values from a deleted field are still being cleared answers `409 field_clearing`.
+//
+// Scope: `fields:manage`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/custom-fields (the `CreateCustomField` operationId).
+func (c *Client) CreateCustomFieldWithBody(ctx context.Context, params *CreateCustomFieldParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateCustomFieldRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateCustomField Create a custom field
+//
+// Owners, admins and API keys not limited to inboxes. At most 50 fields per object
+// (`403 field_limit`); `key` is unique per object (`409 field_taken`). A conversation key
+// whose values from a deleted field are still being cleared answers `409 field_clearing`.
+//
+// Scope: `fields:manage`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/custom-fields (the `CreateCustomField` operationId).
+func (c *Client) CreateCustomField(ctx context.Context, params *CreateCustomFieldParams, body CreateCustomFieldJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateCustomFieldRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteCustomField Delete a custom field
+//
+// Owners, admins and API keys not limited to inboxes. A conversation field's values are
+// cleared in the background (one `conversation.updated` each); a contact field's attribute
+// stays on the contacts as a free-form attribute.
+//
+// Scope: `fields:manage`.
+//
+// Corresponds with DELETE /v1/custom-fields/{customFieldId} (the `DeleteCustomField` operationId).
+func (c *Client) DeleteCustomField(ctx context.Context, customFieldId CustomFieldId, params *DeleteCustomFieldParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteCustomFieldRequest(c.Server, customFieldId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetCustomField Get a custom field
+//
+// Scope: `conversations:read` or `contacts:read`.
+//
+// Corresponds with GET /v1/custom-fields/{customFieldId} (the `GetCustomField` operationId).
+func (c *Client) GetCustomField(ctx context.Context, customFieldId CustomFieldId, params *GetCustomFieldParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetCustomFieldRequest(c.Server, customFieldId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateCustomFieldWithBody Update a custom field
+//
+// Owners, admins and API keys not limited to inboxes. The object, key and type do not change.
+// `options` replaces the options as a whole; conversation values of a removed option are
+// cleared in the background (one `conversation.updated` each), contact attributes are kept.
+//
+// Scope: `fields:manage`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PATCH /v1/custom-fields/{customFieldId} (the `UpdateCustomField` operationId).
+func (c *Client) UpdateCustomFieldWithBody(ctx context.Context, customFieldId CustomFieldId, params *UpdateCustomFieldParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateCustomFieldRequestWithBody(c.Server, customFieldId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateCustomField Update a custom field
+//
+// Owners, admins and API keys not limited to inboxes. The object, key and type do not change.
+// `options` replaces the options as a whole; conversation values of a removed option are
+// cleared in the background (one `conversation.updated` each), contact attributes are kept.
+//
+// Scope: `fields:manage`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PATCH /v1/custom-fields/{customFieldId} (the `UpdateCustomField` operationId).
+func (c *Client) UpdateCustomField(ctx context.Context, customFieldId CustomFieldId, params *UpdateCustomFieldParams, body UpdateCustomFieldJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateCustomFieldRequest(c.Server, customFieldId, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -69014,6 +69542,301 @@ func NewMarkConversationUnreadRequest(server string, conversationId Conversation
 	return req, nil
 }
 
+// NewListCustomFieldsRequest constructs an http.Request for the ListCustomFields method
+func NewListCustomFieldsRequest(server string, params *ListCustomFieldsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/custom-fields")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Object != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "object", *params.Object, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewCreateCustomFieldRequest calls the generic CreateCustomField builder with application/json body
+func NewCreateCustomFieldRequest(server string, params *CreateCustomFieldParams, body CreateCustomFieldJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateCustomFieldRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewCreateCustomFieldRequestWithBody constructs an http.Request for the CreateCustomField method, with any body, and a specified content type
+func NewCreateCustomFieldRequestWithBody(server string, params *CreateCustomFieldParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/custom-fields")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewDeleteCustomFieldRequest constructs an http.Request for the DeleteCustomField method
+func NewDeleteCustomFieldRequest(server string, customFieldId CustomFieldId, params *DeleteCustomFieldParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "customFieldId", customFieldId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/custom-fields/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewGetCustomFieldRequest constructs an http.Request for the GetCustomField method
+func NewGetCustomFieldRequest(server string, customFieldId CustomFieldId, params *GetCustomFieldParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "customFieldId", customFieldId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/custom-fields/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewUpdateCustomFieldRequest calls the generic UpdateCustomField builder with application/json body
+func NewUpdateCustomFieldRequest(server string, customFieldId CustomFieldId, params *UpdateCustomFieldParams, body UpdateCustomFieldJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateCustomFieldRequestWithBody(server, customFieldId, params, "application/json", bodyReader)
+}
+
+// NewUpdateCustomFieldRequestWithBody constructs an http.Request for the UpdateCustomField method, with any body, and a specified content type
+func NewUpdateCustomFieldRequestWithBody(server string, customFieldId CustomFieldId, params *UpdateCustomFieldParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "customFieldId", customFieldId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/custom-fields/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewListDiscussionPostsRequest constructs an http.Request for the ListDiscussionPosts method
 func NewListDiscussionPostsRequest(server string, params *ListDiscussionPostsParams) (*http.Request, error) {
 	var err error
@@ -88945,7 +89768,7 @@ type ClientWithResponsesInterface interface {
 	//
 	// Owners and admins only, with a member session. The secret is returned once and stored
 	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-	// `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+	// `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
 	// `audit:read` (`403 forbidden`).
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -88957,7 +89780,7 @@ type ClientWithResponsesInterface interface {
 	//
 	// Owners and admins only, with a member session. The secret is returned once and stored
 	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-	// `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+	// `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
 	// `audit:read` (`403 forbidden`).
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
@@ -90363,6 +91186,11 @@ type ClientWithResponsesInterface interface {
 	// `message` (notes and events are not previewed), and `unread` and `pinned_at` for the
 	// calling member.
 	//
+	// `field.<key>=<value>` keeps the conversations whose custom field `<key>` holds exactly
+	// `<value>`: a number for `number`, `true` or `false` for `checkbox`, the text otherwise.
+	// Several keys must all match. A key that is not a conversation field, a repeated key or a
+	// value that does not fit the type answers `400 field_invalid` with `field`.
+	//
 	// Returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with GET /v1/conversations (the `ListConversations` operationId).
@@ -90394,7 +91222,8 @@ type ClientWithResponsesInterface interface {
 	// emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
 	// A conversation the caller cannot see (or of another workspace) is listed in `failed`
 	// with `not_found`; one whose inbox the new assignee cannot access with
-	// `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
+	// `validation_failed`; one that would close without a required custom field with
+	// `field_required` and `field`. A request that is invalid as a whole (no change, an unknown label or
 	// member, a past `snooze_until`) is refused with `400` and changes nothing.
 	//
 	// `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
@@ -90419,7 +91248,8 @@ type ClientWithResponsesInterface interface {
 	// emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
 	// A conversation the caller cannot see (or of another workspace) is listed in `failed`
 	// with `not_found`; one whose inbox the new assignee cannot access with
-	// `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
+	// `validation_failed`; one that would close without a required custom field with
+	// `field_required` and `field`. A request that is invalid as a whole (no change, an unknown label or
 	// member, a past `snooze_until`) is refused with `400` and changes nothing.
 	//
 	// `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
@@ -90496,6 +91326,11 @@ type ClientWithResponsesInterface interface {
 	// status. A `feedback_progress` value is refused with `409 not_feedback` on a conversation whose
 	// `kind` is not `feedback`.
 	//
+	// `fields` sets custom field values (`400 field_invalid` naming the key in `field`). Closing
+	// a conversation that is not spam while a field marked `required_on_close` has no value,
+	// after the change, answers `409 field_required` naming the first such field in `field`;
+	// this holds for bulk changes (per item), macros and `then` of a message too.
+	//
 	// Scope: `conversations:write`.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -90509,6 +91344,11 @@ type ClientWithResponsesInterface interface {
 	// `event` messages. `snooze_until` is required with status `snoozed` and cleared by any other
 	// status. A `feedback_progress` value is refused with `409 not_feedback` on a conversation whose
 	// `kind` is not `feedback`.
+	//
+	// `fields` sets custom field values (`400 field_invalid` naming the key in `field`). Closing
+	// a conversation that is not spam while a field marked `required_on_close` has no value,
+	// after the change, answers `409 field_required` naming the first such field in `field`;
+	// this holds for bulk changes (per item), macros and `then` of a message too.
 	//
 	// Scope: `conversations:write`.
 	//
@@ -90921,6 +91761,91 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /v1/conversations/{conversationId}/unread (the `MarkConversationUnread` operationId).
 	MarkConversationUnreadWithResponse(ctx context.Context, conversationId ConversationId, params *MarkConversationUnreadParams, reqEditors ...RequestEditorFn) (*MarkConversationUnreadResponse, error)
+
+	// ListCustomFieldsWithResponse List custom fields
+	//
+	// The workspace's custom field definitions, by object, position and creation.
+	//
+	// Scope: `conversations:read` or `contacts:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/custom-fields (the `ListCustomFields` operationId).
+	ListCustomFieldsWithResponse(ctx context.Context, params *ListCustomFieldsParams, reqEditors ...RequestEditorFn) (*ListCustomFieldsResponse, error)
+
+	// CreateCustomFieldWithBodyWithResponse Create a custom field
+	//
+	// Owners, admins and API keys not limited to inboxes. At most 50 fields per object
+	// (`403 field_limit`); `key` is unique per object (`409 field_taken`). A conversation key
+	// whose values from a deleted field are still being cleared answers `409 field_clearing`.
+	//
+	// Scope: `fields:manage`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/custom-fields (the `CreateCustomField` operationId).
+	CreateCustomFieldWithBodyWithResponse(ctx context.Context, params *CreateCustomFieldParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateCustomFieldResponse, error)
+
+	// CreateCustomFieldWithResponse Create a custom field
+	//
+	// Owners, admins and API keys not limited to inboxes. At most 50 fields per object
+	// (`403 field_limit`); `key` is unique per object (`409 field_taken`). A conversation key
+	// whose values from a deleted field are still being cleared answers `409 field_clearing`.
+	//
+	// Scope: `fields:manage`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/custom-fields (the `CreateCustomField` operationId).
+	CreateCustomFieldWithResponse(ctx context.Context, params *CreateCustomFieldParams, body CreateCustomFieldJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateCustomFieldResponse, error)
+
+	// DeleteCustomFieldWithResponse Delete a custom field
+	//
+	// Owners, admins and API keys not limited to inboxes. A conversation field's values are
+	// cleared in the background (one `conversation.updated` each); a contact field's attribute
+	// stays on the contacts as a free-form attribute.
+	//
+	// Scope: `fields:manage`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/custom-fields/{customFieldId} (the `DeleteCustomField` operationId).
+	DeleteCustomFieldWithResponse(ctx context.Context, customFieldId CustomFieldId, params *DeleteCustomFieldParams, reqEditors ...RequestEditorFn) (*DeleteCustomFieldResponse, error)
+
+	// GetCustomFieldWithResponse Get a custom field
+	//
+	// Scope: `conversations:read` or `contacts:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/custom-fields/{customFieldId} (the `GetCustomField` operationId).
+	GetCustomFieldWithResponse(ctx context.Context, customFieldId CustomFieldId, params *GetCustomFieldParams, reqEditors ...RequestEditorFn) (*GetCustomFieldResponse, error)
+
+	// UpdateCustomFieldWithBodyWithResponse Update a custom field
+	//
+	// Owners, admins and API keys not limited to inboxes. The object, key and type do not change.
+	// `options` replaces the options as a whole; conversation values of a removed option are
+	// cleared in the background (one `conversation.updated` each), contact attributes are kept.
+	//
+	// Scope: `fields:manage`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /v1/custom-fields/{customFieldId} (the `UpdateCustomField` operationId).
+	UpdateCustomFieldWithBodyWithResponse(ctx context.Context, customFieldId CustomFieldId, params *UpdateCustomFieldParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateCustomFieldResponse, error)
+
+	// UpdateCustomFieldWithResponse Update a custom field
+	//
+	// Owners, admins and API keys not limited to inboxes. The object, key and type do not change.
+	// `options` replaces the options as a whole; conversation values of a removed option are
+	// cleared in the background (one `conversation.updated` each), contact attributes are kept.
+	//
+	// Scope: `fields:manage`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /v1/custom-fields/{customFieldId} (the `UpdateCustomField` operationId).
+	UpdateCustomFieldWithResponse(ctx context.Context, customFieldId CustomFieldId, params *UpdateCustomFieldParams, body UpdateCustomFieldJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateCustomFieldResponse, error)
 
 	// ListDiscussionPostsWithResponse Posts by state (the moderation queue)
 	//
@@ -110286,6 +111211,316 @@ func (r MarkConversationUnreadResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r MarkConversationUnreadResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListCustomFieldsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *CustomFieldList
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListCustomFieldsResponse) GetJSON200() *CustomFieldList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListCustomFieldsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListCustomFieldsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r ListCustomFieldsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListCustomFieldsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListCustomFieldsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListCustomFieldsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateCustomFieldResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON201 the response for an HTTP 201 `application/json` response
+	JSON201 *CustomField
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON201 returns the response for an HTTP 201 `application/json` response
+func (r CreateCustomFieldResponse) GetJSON201() *CustomField {
+	return r.JSON201
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r CreateCustomFieldResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r CreateCustomFieldResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r CreateCustomFieldResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r CreateCustomFieldResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r CreateCustomFieldResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateCustomFieldResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateCustomFieldResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateCustomFieldResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteCustomFieldResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DeleteCustomFieldResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeleteCustomFieldResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r DeleteCustomFieldResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteCustomFieldResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteCustomFieldResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteCustomFieldResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteCustomFieldResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetCustomFieldResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *CustomField
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetCustomFieldResponse) GetJSON200() *CustomField {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetCustomFieldResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetCustomFieldResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r GetCustomFieldResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r GetCustomFieldResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetCustomFieldResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetCustomFieldResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetCustomFieldResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateCustomFieldResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *CustomField
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateCustomFieldResponse) GetJSON200() *CustomField {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r UpdateCustomFieldResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r UpdateCustomFieldResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r UpdateCustomFieldResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r UpdateCustomFieldResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateCustomFieldResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateCustomFieldResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateCustomFieldResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateCustomFieldResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -132177,7 +133412,7 @@ func (c *ClientWithResponses) ListApiKeysWithResponse(ctx context.Context, param
 //
 // Owners and admins only, with a member session. The secret is returned once and stored
 // only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-// `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+// `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
 // `audit:read` (`403 forbidden`).
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -132195,7 +133430,7 @@ func (c *ClientWithResponses) CreateApiKeyWithBodyWithResponse(ctx context.Conte
 //
 // Owners and admins only, with a member session. The secret is returned once and stored
 // only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
-// `workspace:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
+// `workspace:manage`, `fields:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
 // `audit:read` (`403 forbidden`).
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
@@ -134195,6 +135430,11 @@ func (c *ClientWithResponses) ListContactVisitsWithResponse(ctx context.Context,
 // `message` (notes and events are not previewed), and `unread` and `pinned_at` for the
 // calling member.
 //
+// `field.<key>=<value>` keeps the conversations whose custom field `<key>` holds exactly
+// `<value>`: a number for `number`, `true` or `false` for `checkbox`, the text otherwise.
+// Several keys must all match. A key that is not a conversation field, a repeated key or a
+// value that does not fit the type answers `400 field_invalid` with `field`.
+//
 // Returns a wrapper object for the known response body format(s).
 //
 // Corresponds with GET /v1/conversations (the `ListConversations` operationId).
@@ -134244,7 +135484,8 @@ func (c *ClientWithResponses) CreateConversationWithResponse(ctx context.Context
 // emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
 // A conversation the caller cannot see (or of another workspace) is listed in `failed`
 // with `not_found`; one whose inbox the new assignee cannot access with
-// `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
+// `validation_failed`; one that would close without a required custom field with
+// `field_required` and `field`. A request that is invalid as a whole (no change, an unknown label or
 // member, a past `snooze_until`) is refused with `400` and changes nothing.
 //
 // `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
@@ -134275,7 +135516,8 @@ func (c *ClientWithResponses) BulkUpdateConversationsWithBodyWithResponse(ctx co
 // emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
 // A conversation the caller cannot see (or of another workspace) is listed in `failed`
 // with `not_found`; one whose inbox the new assignee cannot access with
-// `validation_failed`. A request that is invalid as a whole (no change, an unknown label or
+// `validation_failed`; one that would close without a required custom field with
+// `field_required` and `field`. A request that is invalid as a whole (no change, an unknown label or
 // member, a past `snooze_until`) is refused with `400` and changes nothing.
 //
 // `trashed` moves the conversations to the trash (`true`) or restores them (`false`), as
@@ -134376,6 +135618,11 @@ func (c *ClientWithResponses) GetConversationWithResponse(ctx context.Context, c
 // status. A `feedback_progress` value is refused with `409 not_feedback` on a conversation whose
 // `kind` is not `feedback`.
 //
+// `fields` sets custom field values (`400 field_invalid` naming the key in `field`). Closing
+// a conversation that is not spam while a field marked `required_on_close` has no value,
+// after the change, answers `409 field_required` naming the first such field in `field`;
+// this holds for bulk changes (per item), macros and `then` of a message too.
+//
 // Scope: `conversations:write`.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -134395,6 +135642,11 @@ func (c *ClientWithResponses) UpdateConversationWithBodyWithResponse(ctx context
 // `event` messages. `snooze_until` is required with status `snoozed` and cleared by any other
 // status. A `feedback_progress` value is refused with `409 not_feedback` on a conversation whose
 // `kind` is not `feedback`.
+//
+// `fields` sets custom field values (`400 field_invalid` naming the key in `field`). Closing
+// a conversation that is not spam while a field marked `required_on_close` has no value,
+// after the change, answers `409 field_required` naming the first such field in `field`;
+// this holds for bulk changes (per item), macros and `then` of a message too.
 //
 // Scope: `conversations:write`.
 //
@@ -134932,6 +136184,133 @@ func (c *ClientWithResponses) MarkConversationUnreadWithResponse(ctx context.Con
 		return nil, err
 	}
 	return ParseMarkConversationUnreadResponse(rsp)
+}
+
+// ListCustomFieldsWithResponse List custom fields
+//
+// The workspace's custom field definitions, by object, position and creation.
+//
+// Scope: `conversations:read` or `contacts:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/custom-fields (the `ListCustomFields` operationId).
+func (c *ClientWithResponses) ListCustomFieldsWithResponse(ctx context.Context, params *ListCustomFieldsParams, reqEditors ...RequestEditorFn) (*ListCustomFieldsResponse, error) {
+	rsp, err := c.ListCustomFields(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListCustomFieldsResponse(rsp)
+}
+
+// CreateCustomFieldWithBodyWithResponse Create a custom field
+//
+// Owners, admins and API keys not limited to inboxes. At most 50 fields per object
+// (`403 field_limit`); `key` is unique per object (`409 field_taken`). A conversation key
+// whose values from a deleted field are still being cleared answers `409 field_clearing`.
+//
+// Scope: `fields:manage`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/custom-fields (the `CreateCustomField` operationId).
+func (c *ClientWithResponses) CreateCustomFieldWithBodyWithResponse(ctx context.Context, params *CreateCustomFieldParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateCustomFieldResponse, error) {
+	rsp, err := c.CreateCustomFieldWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateCustomFieldResponse(rsp)
+}
+
+// CreateCustomFieldWithResponse Create a custom field
+//
+// Owners, admins and API keys not limited to inboxes. At most 50 fields per object
+// (`403 field_limit`); `key` is unique per object (`409 field_taken`). A conversation key
+// whose values from a deleted field are still being cleared answers `409 field_clearing`.
+//
+// Scope: `fields:manage`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/custom-fields (the `CreateCustomField` operationId).
+func (c *ClientWithResponses) CreateCustomFieldWithResponse(ctx context.Context, params *CreateCustomFieldParams, body CreateCustomFieldJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateCustomFieldResponse, error) {
+	rsp, err := c.CreateCustomField(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateCustomFieldResponse(rsp)
+}
+
+// DeleteCustomFieldWithResponse Delete a custom field
+//
+// Owners, admins and API keys not limited to inboxes. A conversation field's values are
+// cleared in the background (one `conversation.updated` each); a contact field's attribute
+// stays on the contacts as a free-form attribute.
+//
+// Scope: `fields:manage`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/custom-fields/{customFieldId} (the `DeleteCustomField` operationId).
+func (c *ClientWithResponses) DeleteCustomFieldWithResponse(ctx context.Context, customFieldId CustomFieldId, params *DeleteCustomFieldParams, reqEditors ...RequestEditorFn) (*DeleteCustomFieldResponse, error) {
+	rsp, err := c.DeleteCustomField(ctx, customFieldId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteCustomFieldResponse(rsp)
+}
+
+// GetCustomFieldWithResponse Get a custom field
+//
+// Scope: `conversations:read` or `contacts:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/custom-fields/{customFieldId} (the `GetCustomField` operationId).
+func (c *ClientWithResponses) GetCustomFieldWithResponse(ctx context.Context, customFieldId CustomFieldId, params *GetCustomFieldParams, reqEditors ...RequestEditorFn) (*GetCustomFieldResponse, error) {
+	rsp, err := c.GetCustomField(ctx, customFieldId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetCustomFieldResponse(rsp)
+}
+
+// UpdateCustomFieldWithBodyWithResponse Update a custom field
+//
+// Owners, admins and API keys not limited to inboxes. The object, key and type do not change.
+// `options` replaces the options as a whole; conversation values of a removed option are
+// cleared in the background (one `conversation.updated` each), contact attributes are kept.
+//
+// Scope: `fields:manage`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /v1/custom-fields/{customFieldId} (the `UpdateCustomField` operationId).
+func (c *ClientWithResponses) UpdateCustomFieldWithBodyWithResponse(ctx context.Context, customFieldId CustomFieldId, params *UpdateCustomFieldParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateCustomFieldResponse, error) {
+	rsp, err := c.UpdateCustomFieldWithBody(ctx, customFieldId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateCustomFieldResponse(rsp)
+}
+
+// UpdateCustomFieldWithResponse Update a custom field
+//
+// Owners, admins and API keys not limited to inboxes. The object, key and type do not change.
+// `options` replaces the options as a whole; conversation values of a removed option are
+// cleared in the background (one `conversation.updated` each), contact attributes are kept.
+//
+// Scope: `fields:manage`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /v1/custom-fields/{customFieldId} (the `UpdateCustomField` operationId).
+func (c *ClientWithResponses) UpdateCustomFieldWithResponse(ctx context.Context, customFieldId CustomFieldId, params *UpdateCustomFieldParams, body UpdateCustomFieldJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateCustomFieldResponse, error) {
+	rsp, err := c.UpdateCustomField(ctx, customFieldId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateCustomFieldResponse(rsp)
 }
 
 // ListDiscussionPostsWithResponse Posts by state (the moderation queue)
@@ -153559,6 +154938,244 @@ func ParseMarkConversationUnreadResponse(rsp *http.Response) (*MarkConversationU
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListCustomFieldsResponse parses an HTTP response from a ListCustomFieldsWithResponse call
+func ParseListCustomFieldsResponse(rsp *http.Response) (*ListCustomFieldsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListCustomFieldsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CustomFieldList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateCustomFieldResponse parses an HTTP response from a CreateCustomFieldWithResponse call
+func ParseCreateCustomFieldResponse(rsp *http.Response) (*CreateCustomFieldResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateCustomFieldResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest CustomField
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteCustomFieldResponse parses an HTTP response from a DeleteCustomFieldWithResponse call
+func ParseDeleteCustomFieldResponse(rsp *http.Response) (*DeleteCustomFieldResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteCustomFieldResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetCustomFieldResponse parses an HTTP response from a GetCustomFieldWithResponse call
+func ParseGetCustomFieldResponse(rsp *http.Response) (*GetCustomFieldResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetCustomFieldResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CustomField
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateCustomFieldResponse parses an HTTP response from a UpdateCustomFieldWithResponse call
+func ParseUpdateCustomFieldResponse(rsp *http.Response) (*UpdateCustomFieldResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateCustomFieldResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CustomField
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Problem

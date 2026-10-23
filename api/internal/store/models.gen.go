@@ -839,6 +839,7 @@ type Conversation struct {
 	PushThrough           *time.Time
 	PushSentAt            *time.Time
 	TeamID                *uuid.UUID
+	Fields                []byte
 }
 
 type ConversationLabel struct {
@@ -862,6 +863,20 @@ type ConversationRead struct {
 	LastReadMessageID uuid.UUID
 	LastReadAt        time.Time
 	UpdatedAt         time.Time
+}
+
+type CustomField struct {
+	ID              uuid.UUID
+	WorkspaceID     uuid.UUID
+	Object          string
+	Key             string
+	Name            string
+	Type            string
+	Options         []byte
+	RequiredOnClose bool
+	Position        int32
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
 }
 
 type DeliverabilityCheck struct {

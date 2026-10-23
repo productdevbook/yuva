@@ -14,6 +14,7 @@ type apiError struct {
 	Code   string
 	Detail string
 	Scope  string
+	Field  string
 	Limit  oas.HostedLimit
 	// RetryAfter, in seconds, is sent as the Retry-After header when set.
 	RetryAfter int
@@ -46,6 +47,9 @@ func (e *apiError) body() oas.Problem {
 	}
 	if e.Scope != "" {
 		p.Scope = &e.Scope
+	}
+	if e.Field != "" {
+		p.Field = &e.Field
 	}
 	if e.Limit != "" {
 		p.Limit = &e.Limit

@@ -440,6 +440,10 @@ func (s *Server) sendLinkedReply(ctx context.Context, a LinkedReplyArgs) (outcom
 	if err == nil && reply.Close {
 		closed := oas.ConversationStatusClosed
 		_, err = s.UpdateConversation(actx, oas.UpdateConversationRequestObject{ConversationId: a.ConversationID, Body: &oas.ConversationUpdate{Status: &closed}})
+		if ae, ok := errors.AsType[*apiError](err); ok && ae.Code == "field_required" {
+			s.log.InfoContext(ctx, "linked reply left the conversation open", slog.String("conversation_id", a.ConversationID.String()), slog.String("field", ae.Field))
+			err = nil
+		}
 	}
 	var e *apiError
 	if errors.As(err, &e) && e.Status < 500 && e.Status != http.StatusTooManyRequests && e.Status != http.StatusConflict {
