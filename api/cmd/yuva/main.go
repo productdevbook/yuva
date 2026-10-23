@@ -65,6 +65,8 @@ const usageText = `usage:
   yuva analytics property list --workspace <id|name>
   yuva analytics geoip-update   (downloads this month's DB-IP Lite database into YUVA_GEOIP_DIR)
   yuva person delete --email <address> --yes
+  yuva master-key rotate [--batch <n>]   (re-seals what YUVA_MASTER_KEY_PREVIOUS sealed under YUVA_MASTER_KEY)
+  yuva master-key check [--batch <n>]    (exits non-zero while anything is not under YUVA_MASTER_KEY alone)
   yuva vapid-keys                (prints a new Web Push key pair)
   yuva templates render [--dir templates/email]   (writes each gallery template's preview.<locale>.html)
   yuva mcp stdio --url <server> --key <key>   (bridges stdio to the server's /mcp; or YUVA_URL, YUVA_API_KEY)`
@@ -116,7 +118,7 @@ func main() {
 				break
 			}
 			err = operatorCLI(ctx, cfg, os.Args[1], os.Args[2:])
-		case "inbox", "channel", "workspace", "person":
+		case "inbox", "channel", "workspace", "person", "master-key":
 			err = operatorCLI(ctx, cfg, os.Args[1], os.Args[2:])
 		case "ingest-email":
 			os.Exit(ingestEmail(ctx, cfg, log, os.Args[2:]))
@@ -143,6 +145,17 @@ func buildVersion() string {
 		}
 	}
 	return "dev"
+}
+
+func masterKeys(cfg config.Config) (*secret.Key, error) {
+	if _, err := secret.ParseKey(cfg.MasterKey); err != nil {
+		return nil, fmt.Errorf("YUVA_MASTER_KEY: %w", err)
+	}
+	k, err := secret.ParseKeys(cfg.MasterKey, cfg.MasterKeyPrevious)
+	if err != nil {
+		return nil, fmt.Errorf("YUVA_MASTER_KEY_PREVIOUS: %w", err)
+	}
+	return k, nil
 }
 
 func openStore(ctx context.Context, cfg config.Config) (*store.Store, error) {
@@ -178,9 +191,12 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 	if err := cfg.RequireMasterKey(); err != nil {
 		return err
 	}
-	masterKey, err := secret.ParseKey(cfg.MasterKey)
+	masterKey, err := masterKeys(cfg)
 	if err != nil {
-		return fmt.Errorf("YUVA_MASTER_KEY: %w", err)
+		return err
+	}
+	if masterKey.HasPrevious() {
+		log.Warn("YUVA_MASTER_KEY_PREVIOUS is set: values sealed under it still open; run yuva master-key rotate and yuva master-key check, then remove it")
 	}
 	objects, err := openStorage(cfg.Storage)
 	if err != nil {
@@ -530,9 +546,9 @@ func ingestEmail(ctx context.Context, cfg config.Config, log *slog.Logger, args 
 		fmt.Fprintln(os.Stderr, err)
 		return exitTempFail
 	}
-	masterKey, err := secret.ParseKey(cfg.MasterKey)
+	masterKey, err := masterKeys(cfg)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "YUVA_MASTER_KEY:", err)
+		fmt.Fprintln(os.Stderr, err)
 		return exitTempFail
 	}
 	objects, err := openStorage(cfg.Storage)

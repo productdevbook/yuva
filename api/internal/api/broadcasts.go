@@ -860,9 +860,13 @@ func (s *Server) audiencePageAfter(ctx context.Context, q *store.Queries, ws uui
 	if err != nil || len(rows) == 0 {
 		return nil, err
 	}
-	hashes := make([][]byte, len(rows))
+	emails := make([]string, len(rows))
 	for i, r := range rows {
-		hashes[i] = s.optOutHash(ws, r.Email)
+		emails[i] = r.Email
+	}
+	hashes, err := s.optOutHashes(ctx, q, ws, emails...)
+	if err != nil {
+		return nil, err
 	}
 	found, err := q.ListOptOutHashes(ctx, store.ListOptOutHashesParams{WorkspaceID: ws, Hashes: hashes})
 	if err != nil {

@@ -45,6 +45,8 @@ type Config struct {
 	MailLogFull bool
 
 	MasterKey string
+	// MasterKeyPrevious is the master key being retired: values sealed under it still open.
+	MasterKeyPrevious string
 
 	Storage     Storage
 	Attachments Attachments
@@ -261,7 +263,8 @@ func Load(version string) (Config, error) {
 			From:     env("YUVA_SMTP_FROM", ""),
 			TLS:      env("YUVA_SMTP_TLS", "starttls"),
 		},
-		MasterKey: os.Getenv("YUVA_MASTER_KEY"),
+		MasterKey:         os.Getenv("YUVA_MASTER_KEY"),
+		MasterKeyPrevious: os.Getenv("YUVA_MASTER_KEY_PREVIOUS"),
 		Storage: Storage{
 			Driver:            env("YUVA_STORAGE", "local"),
 			Dir:               env("YUVA_STORAGE_DIR", "data/attachments"),
@@ -863,6 +866,9 @@ func loopbackHost(host string) bool {
 func (c Config) rejectDevSecrets(host string) error {
 	if loopbackHost(host) {
 		return nil
+	}
+	if strings.TrimSpace(c.MasterKeyPrevious) == devSecrets["YUVA_MASTER_KEY"] {
+		return errors.New("YUVA_MASTER_KEY_PREVIOUS is the public development value from deploy/compose.yaml: anyone could seal links the server accepts; serve from localhost or leave it unset")
 	}
 	set := map[string]string{
 		"YUVA_MASTER_KEY":        c.MasterKey,

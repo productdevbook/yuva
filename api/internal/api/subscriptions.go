@@ -2,9 +2,9 @@ package api
 
 import (
 	"context"
-	"crypto/hmac"
-	"crypto/sha256"
 	"encoding/json"
+	"errors"
+	"log/slog"
 	"net/http"
 	"net/mail"
 	"strings"
@@ -74,17 +74,30 @@ func subscriptionAddress(raw string) (string, error) {
 	return strings.ToLower(a.Address), nil
 }
 
-// optOutHash keys an address to a workspace under a key derived from the master key, so the row
-// proves an objection without keeping the address.
-func (s *Server) optOutHash(ws uuid.UUID, email string) []byte {
-	mac := hmac.New(sha256.New, s.secrets.Derive("yuva email optout v1 "+ws.String()))
-	mac.Write([]byte(strings.ToLower(email)))
-	return mac.Sum(nil)
+// optOutHashes keys addresses to a workspace under its opt-out key, so a row proves an objection
+// without keeping the address.
+func (s *Server) optOutHashes(ctx context.Context, q *store.Queries, ws uuid.UUID, emails ...string) ([][]byte, error) {
+	key, err := s.optOutKey(ctx, q, ws, false)
+	if err != nil {
+		return nil, err
+	}
+	out := make([][]byte, len(emails))
+	for i, e := range emails {
+		out[i] = optOutHash(key, e)
+	}
+	return out, nil
 }
 
 func (s *Server) rememberOptOuts(ctx context.Context, q *store.Queries, ws uuid.UUID, emails []string, reason string) error {
+	if len(emails) == 0 {
+		return nil
+	}
+	key, err := s.optOutKey(ctx, q, ws, true)
+	if err != nil {
+		return err
+	}
 	for _, e := range emails {
-		if err := q.AddOptOut(ctx, store.AddOptOutParams{WorkspaceID: ws, EmailHash: s.optOutHash(ws, e), Reason: reason, Now: s.now()}); err != nil {
+		if err := q.AddOptOut(ctx, store.AddOptOutParams{WorkspaceID: ws, EmailHash: optOutHash(key, e), Reason: reason, Now: s.now()}); err != nil {
 			return err
 		}
 	}
@@ -92,7 +105,19 @@ func (s *Server) rememberOptOuts(ctx context.Context, q *store.Queries, ws uuid.
 }
 
 func (s *Server) optedOut(ctx context.Context, q *store.Queries, ws uuid.UUID, email string) (bool, error) {
-	return q.IsOptedOut(ctx, store.IsOptedOutParams{WorkspaceID: ws, EmailHash: s.optOutHash(ws, email)})
+	h, err := s.optOutHashes(ctx, q, ws, email)
+	if err != nil {
+		return false, err
+	}
+	return q.IsOptedOut(ctx, store.IsOptedOutParams{WorkspaceID: ws, EmailHash: h[0]})
+}
+
+func (s *Server) forgetOptOut(ctx context.Context, q *store.Queries, ws uuid.UUID, email string) error {
+	h, err := s.optOutHashes(ctx, q, ws, email)
+	if err != nil {
+		return err
+	}
+	return q.DeleteOptOut(ctx, store.DeleteOptOutParams{WorkspaceID: ws, EmailHash: h[0]})
 }
 
 // rememberContactObjections keeps, before a contact is deleted, the addresses that unsubscribed
@@ -339,7 +364,7 @@ func (s *Server) confirmListSubscription(ctx context.Context, q *store.Queries, 
 		return out, err
 	}
 	if list.Kind != listKindStatus {
-		if err := q.DeleteOptOut(ctx, store.DeleteOptOutParams{WorkspaceID: sub.WorkspaceID, EmailHash: s.optOutHash(sub.WorkspaceID, sub.Email)}); err != nil {
+		if err := s.forgetOptOut(ctx, q, sub.WorkspaceID, sub.Email); err != nil {
 			return out, err
 		}
 	}
@@ -1073,6 +1098,10 @@ func (s *Server) ExpireSubscriptions(ctx context.Context) error {
 				_, err = q.DeleteSubscriptions(ctx, store.DeleteSubscriptionsParams{WorkspaceID: ws, Ids: ids})
 				return err
 			})
+			if errors.Is(err, errOptOutKey) {
+				s.log.ErrorContext(ctx, "unsubscribed subscriptions kept: their opt-outs cannot be recorded", slog.String("workspace_id", ws.String()), slog.Any("error", err))
+				break
+			}
 			if err != nil {
 				return err
 			}

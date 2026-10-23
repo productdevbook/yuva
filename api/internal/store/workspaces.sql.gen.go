@@ -321,6 +321,37 @@ func (q *Queries) ListWorkspaceIDs(ctx context.Context) ([]uuid.UUID, error) {
 	return items, nil
 }
 
+const listWorkspaceIDsAfter = `-- name: ListWorkspaceIDsAfter :many
+SELECT id FROM workspaces WHERE id > $1 ORDER BY id LIMIT $2
+`
+
+type ListWorkspaceIDsAfterParams struct {
+	After uuid.UUID
+	Lim   int32
+}
+
+// Every workspace, deleted ones too, in id order: the master key rotation re-seals workspace by
+// workspace.
+func (q *Queries) ListWorkspaceIDsAfter(ctx context.Context, arg ListWorkspaceIDsAfterParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listWorkspaceIDsAfter, arg.After, arg.Lim)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var id uuid.UUID
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listWorkspaceRetention = `-- name: ListWorkspaceRetention :many
 SELECT id, retention_days::integer AS retention_days FROM workspaces WHERE retention_days IS NOT NULL ORDER BY id
 `

@@ -436,8 +436,10 @@ func (s *Server) openShare(ctx context.Context, token string, needAccess bool) (
 	return sh, prop, unlocked, nil
 }
 
-func (s *Server) shareAccessMAC(sh store.AnalyticsShare, payload []byte) []byte {
-	mac := hmac.New(sha256.New, s.secrets.Derive("yuva analytics share access v1"))
+const shareAccessInfo = "yuva analytics share access v1"
+
+func shareAccessMAC(key []byte, sh store.AnalyticsShare, payload []byte) []byte {
+	mac := hmac.New(sha256.New, key)
 	mac.Write(payload)
 	if sh.PasswordHash != nil {
 		mac.Write([]byte(*sh.PasswordHash))
@@ -454,7 +456,7 @@ func (s *Server) shareAccessToken(sh store.AnalyticsShare) (string, time.Time) {
 	}
 	payload := binary.BigEndian.AppendUint64(slices.Clone(sh.ID[:]), uint64(exp.Unix()))
 	return shareAccessPrefix + base64.RawURLEncoding.EncodeToString(payload) + "." +
-		base64.RawURLEncoding.EncodeToString(s.shareAccessMAC(sh, payload)), exp
+		base64.RawURLEncoding.EncodeToString(shareAccessMAC(s.secrets.Derive(shareAccessInfo), sh, payload)), exp
 }
 
 func (s *Server) checkShareAccess(sh store.AnalyticsShare, token string) bool {
@@ -471,7 +473,7 @@ func (s *Server) checkShareAccess(sh store.AnalyticsShare, token string) bool {
 		return false
 	}
 	mac, err := base64.RawURLEncoding.DecodeString(m64)
-	if err != nil || !hmac.Equal(mac, s.shareAccessMAC(sh, payload)) {
+	if err != nil || !s.anyDerived(shareAccessInfo, func(k []byte) bool { return hmac.Equal(mac, shareAccessMAC(k, sh, payload)) }) {
 		return false
 	}
 	if !slices.Equal(payload[:16], sh.ID[:]) {

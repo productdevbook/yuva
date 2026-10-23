@@ -179,6 +179,17 @@ WHERE s.workspace_id = @workspace_id AND s.list_id = @list_id AND s.state IN ('s
 ORDER BY s.created_at, s.id
 LIMIT @lim;
 
+-- name: GetOptOutKey :one
+SELECT optout_key FROM workspace_keys WHERE workspace_id = @workspace_id;
+
+-- name: KeepOptOutKey :exec
+INSERT INTO workspace_keys (workspace_id, optout_key, created_at) VALUES (@workspace_id, @optout_key, @now)
+ON CONFLICT (workspace_id) DO NOTHING;
+
+-- name: HasOptOutsWithoutKey :one
+SELECT (EXISTS (SELECT 1 FROM email_optouts o WHERE o.workspace_id = @workspace_id)
+   AND NOT EXISTS (SELECT 1 FROM workspace_keys k WHERE k.workspace_id = @workspace_id))::bool AS unkept;
+
 -- name: AddOptOut :exec
 INSERT INTO email_optouts (workspace_id, email_hash, reason, created_at) VALUES (@workspace_id, @email_hash, @reason, @now)
 ON CONFLICT (workspace_id, email_hash) DO NOTHING;

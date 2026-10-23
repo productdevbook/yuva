@@ -61,15 +61,26 @@ func (s *Server) addressProven(e store.EmailChannel) bool {
 	return e.VerifiedAt != nil && !(isCatchAll(e.Address) && s.sharedMailDomain(email.Domain(e.Address)))
 }
 
-func (s *Server) emailProofValue(workspaceID uuid.UUID, domain string) string {
-	m := hmac.New(sha256.New, s.secrets.Derive("yuva email domain proof v1"))
-	m.Write(workspaceID[:])
-	m.Write([]byte(domain))
-	return emailProofPrefix + hex.EncodeToString(m.Sum(nil))[:32]
+const (
+	emailProofInfo = "yuva email domain proof v1"
+	verifyCodeInfo = "yuva email address codes v1"
+)
+
+// emailProofValues is the TXT value that proves the domain, then the one made under the previous
+// master key, which still proves it during a rotation.
+func (s *Server) emailProofValues(workspaceID uuid.UUID, domain string) []string {
+	var out []string
+	for _, key := range s.secrets.Derived(emailProofInfo) {
+		m := hmac.New(sha256.New, key)
+		m.Write(workspaceID[:])
+		m.Write([]byte(domain))
+		out = append(out, emailProofPrefix+hex.EncodeToString(m.Sum(nil))[:32])
+	}
+	return out
 }
 
-func (s *Server) verifyCodeHash(channelID uuid.UUID, code string) []byte {
-	m := hmac.New(sha256.New, s.secrets.Derive("yuva email address codes v1"))
+func verifyCodeHash(key []byte, channelID uuid.UUID, code string) []byte {
+	m := hmac.New(sha256.New, key)
 	m.Write(channelID[:])
 	m.Write([]byte(code))
 	return m.Sum(nil)
@@ -78,7 +89,7 @@ func (s *Server) verifyCodeHash(channelID uuid.UUID, code string) []byte {
 func (s *Server) emailVerificationBody(e store.EmailChannel) *oas.EmailVerification {
 	domain := email.Domain(e.Address)
 	out := &oas.EmailVerification{
-		State: oas.EmailVerificationUnverified, TxtName: emailProofTXT + domain, TxtValue: s.emailProofValue(e.WorkspaceID, domain),
+		State: oas.EmailVerificationUnverified, TxtName: emailProofTXT + domain, TxtValue: s.emailProofValues(e.WorkspaceID, domain)[0],
 		CodeAllowed: s.codeAllowed(e.Address), Problem: e.VerifyProblem, CheckedAt: e.VerifyCheckedAt,
 	}
 	if s.addressProven(e) {
@@ -181,7 +192,7 @@ func (s *Server) SendEmailVerificationCode(ctx context.Context, req oas.SendEmai
 		}
 		expires := now.Add(verifyCodeTTL)
 		saved, err := q.StartEmailVerificationCode(ctx, store.StartEmailVerificationCodeParams{
-			WorkspaceID: p.workspaceID, ChannelID: c.ID, Address: cur.Address, CodeHash: s.verifyCodeHash(c.ID, code),
+			WorkspaceID: p.workspaceID, ChannelID: c.ID, Address: cur.Address, CodeHash: verifyCodeHash(s.secrets.Derive(verifyCodeInfo), c.ID, code),
 			ExpiresAt: &expires, MessageID: &msgID, Now: &now,
 		})
 		if err != nil {
@@ -236,7 +247,7 @@ func (s *Server) VerifyEmailChannel(ctx context.Context, req oas.VerifyEmailChan
 		return nil, rateLimited(wait)
 	}
 	domain := email.Domain(e.Address)
-	seen, problemText := s.lookupEmailProof(ctx, domain, s.emailProofValue(p.workspaceID, domain))
+	seen, problemText := s.lookupEmailProof(ctx, domain, s.emailProofValues(p.workspaceID, domain))
 	now := s.now()
 	var out oas.Channel
 	var losses []addressLoss
@@ -282,7 +293,7 @@ func (s *Server) verifyByCode(ctx context.Context, p principal, c store.Channel,
 		}
 		if cur.VerifiedAt == nil {
 			if cur.VerifyCodeHash == nil || cur.VerifyCodeExpiresAt == nil || !cur.VerifyCodeExpiresAt.After(now) ||
-				!hmac.Equal(cur.VerifyCodeHash, s.verifyCodeHash(c.ID, code)) {
+				!s.anyDerived(verifyCodeInfo, func(k []byte) bool { return hmac.Equal(cur.VerifyCodeHash, verifyCodeHash(k, c.ID, code)) }) {
 				wrong = true
 				return q.FailEmailVerificationCode(ctx, store.FailEmailVerificationCodeParams{WorkspaceID: p.workspaceID, ChannelID: c.ID, MaxAttempts: verifyCodeMaxAttempts})
 			}
@@ -503,7 +514,7 @@ func rateAddress(addr string) string {
 	return base + "@" + domain
 }
 
-func (s *Server) lookupEmailProof(ctx context.Context, domain, value string) (bool, string) {
+func (s *Server) lookupEmailProof(ctx context.Context, domain string, values []string) (bool, string) {
 	r := s.status.Resolver
 	if r == nil {
 		r = net.DefaultResolver
@@ -515,7 +526,7 @@ func (s *Server) lookupEmailProof(ctx context.Context, domain, value string) (bo
 	switch {
 	case err != nil && !dnsMissing(err):
 		return false, "DNS lookup of " + name + " failed: " + err.Error()
-	case slices.ContainsFunc(txts, func(t string) bool { return strings.TrimSpace(t) == value }):
+	case slices.ContainsFunc(txts, func(t string) bool { return slices.Contains(values, strings.TrimSpace(t)) }):
 		return true, ""
 	case len(txts) > 0:
 		return false, "the TXT record " + name + " does not hold the verification value"

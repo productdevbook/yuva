@@ -556,8 +556,10 @@ func (s *Server) UnlinkMySlack(ctx context.Context, _ oas.UnlinkMySlackRequestOb
 	return oas.UnlinkMySlack204Response{}, nil
 }
 
-func (s *Server) slackCodeHash(ws, member uuid.UUID, slackUser, code string) []byte {
-	m := hmac.New(sha256.New, s.secrets.Derive("yuva slack link codes"))
+const slackCodeInfo = "yuva slack link codes"
+
+func slackCodeHash(key []byte, ws, member uuid.UUID, slackUser, code string) []byte {
+	m := hmac.New(sha256.New, key)
 	m.Write(ws[:])
 	m.Write(member[:])
 	m.Write([]byte(slackUser + ":" + code))
@@ -610,7 +612,7 @@ func (s *Server) StartMySlackLink(ctx context.Context, req oas.StartMySlackLinkR
 	name := truncateRunes(user.Name, 200)
 	if _, err := s.st.SetSlackLinkCode(ctx, store.SetSlackLinkCodeParams{
 		WorkspaceID: p.workspaceID, MemberID: p.memberID, SlackUserID: user.ID, SlackUserName: name,
-		CodeHash: s.slackCodeHash(p.workspaceID, p.memberID, user.ID, code), ExpiresAt: s.now().Add(slackLinkTTL),
+		CodeHash: slackCodeHash(s.secrets.Derive(slackCodeInfo), p.workspaceID, p.memberID, user.ID, code), ExpiresAt: s.now().Add(slackLinkTTL),
 	}); err != nil {
 		return nil, err
 	}
@@ -652,7 +654,9 @@ func (s *Server) ConfirmMySlackLink(ctx context.Context, req oas.ConfirmMySlackL
 		if !row.ExpiresAt.After(s.now()) || row.Attempts >= slackLinkTries {
 			return errCodeExpired
 		}
-		if !hmac.Equal(row.CodeHash, s.slackCodeHash(p.workspaceID, p.memberID, row.SlackUserID, code)) {
+		if !s.anyDerived(slackCodeInfo, func(k []byte) bool {
+			return hmac.Equal(row.CodeHash, slackCodeHash(k, p.workspaceID, p.memberID, row.SlackUserID, code))
+		}) {
 			wrong = true
 			return q.CountSlackLinkCodeAttempt(ctx, store.CountSlackLinkCodeAttemptParams{WorkspaceID: p.workspaceID, MemberID: p.memberID})
 		}

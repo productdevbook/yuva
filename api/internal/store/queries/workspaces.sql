@@ -95,3 +95,8 @@ WHERE ps.person_id IN (SELECT m.person_id FROM members m WHERE m.workspace_id = 
 SELECT w.id, w.name FROM members m JOIN workspaces w ON w.id = m.workspace_id
 WHERE m.person_id = $1 AND m.role = 'owner' AND w.deleted_at IS NULL
 ORDER BY w.id;
+
+-- Every workspace, deleted ones too, in id order: the master key rotation re-seals workspace by
+-- workspace.
+-- name: ListWorkspaceIDsAfter :many
+SELECT id FROM workspaces WHERE id > @after ORDER BY id LIMIT @lim;

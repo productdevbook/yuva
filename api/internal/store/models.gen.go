@@ -2802,3 +2802,9 @@ type Workspace struct {
 	BroadcastsByKeys       bool
 	AnalyticsMonthlyEvents *int64
 }
+
+type WorkspaceKey struct {
+	WorkspaceID uuid.UUID
+	OptoutKey   []byte
+	CreatedAt   time.Time
+}

@@ -11,6 +11,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"time"
 
@@ -55,6 +56,7 @@ type Server struct {
 	now      func() time.Time
 	sleep    func(ctx context.Context, d time.Duration) error
 	secrets  *secret.Key
+	optKeys  sync.Map
 	objects  storage.Storage
 	attach   AttachmentSettings
 	sanitize *bluemonday.Policy

@@ -21,7 +21,6 @@ import (
 	"github.com/productdevbook/yuva/api/internal/config"
 	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/oas"
-	"github.com/productdevbook/yuva/api/internal/secret"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
@@ -52,9 +51,9 @@ func operatorCLI(ctx context.Context, cfg config.Config, cmd string, args []stri
 	if err := cfg.RequireMasterKey(); err != nil {
 		return err
 	}
-	masterKey, err := secret.ParseKey(cfg.MasterKey)
+	masterKey, err := masterKeys(cfg)
 	if err != nil {
-		return fmt.Errorf("YUVA_MASTER_KEY: %w", err)
+		return err
 	}
 	st, err := openStore(ctx, cfg)
 	if err != nil {
@@ -80,6 +79,8 @@ func operatorCLI(ctx context.Context, cfg config.Config, cmd string, args []stri
 		return personCommand(ctx, srv, args, os.Stderr)
 	case "analytics":
 		return analyticsCommand(ctx, st, srv, args, os.Stdout, os.Stderr)
+	case "master-key":
+		return masterKeyCommand(ctx, srv, args, os.Stdout, os.Stderr)
 	}
 	return channelCommand(ctx, st, srv, args, os.Stdin, os.Stdout, os.Stderr)
 }

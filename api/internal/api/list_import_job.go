@@ -378,15 +378,21 @@ func (s *Server) takesMail(ctx context.Context, domain string) bool {
 // unsubscribed from the list) and marks the ones already on the list.
 func (s *Server) classifyStored(ctx context.Context, q *store.Queries, ws, listID uuid.UUID, rows []*importRow) error {
 	var emails []string
-	var hashes [][]byte
 	for _, r := range rows {
 		if r.reason == "" {
 			emails = append(emails, r.email)
-			hashes = append(hashes, s.optOutHash(ws, r.email))
 		}
 	}
 	if len(emails) == 0 {
 		return nil
+	}
+	hashes, err := s.optOutHashes(ctx, q, ws, emails...)
+	if err != nil {
+		return err
+	}
+	hashOf := make(map[string][]byte, len(emails))
+	for i, e := range emails {
+		hashOf[e] = hashes[i]
 	}
 	suppressed, err := q.SuppressedEmailsIn(ctx, store.SuppressedEmailsInParams{WorkspaceID: ws, Emails: emails})
 	if err != nil {
@@ -420,7 +426,7 @@ func (s *Server) classifyStored(ctx context.Context, q *store.Queries, ws, listI
 		switch {
 		case bad[r.email]:
 			r.reason = reasonSuppressed
-		case opted[string(s.optOutHash(ws, r.email))]:
+		case opted[string(hashOf[r.email])]:
 			r.reason = reasonOptedOut
 		case onList && objected(store.ListSubscription{State: sub.State, UnsubscribeReason: sub.UnsubscribeReason}):
 			r.reason = reasonUnsubscribed

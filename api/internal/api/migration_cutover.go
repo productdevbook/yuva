@@ -95,8 +95,12 @@ func readForwardingConfirmation(raw []byte) *oas.MigrationForwardingConfirmation
 	return out
 }
 
-func (s *Server) probeMAC(workspaceID, migrationID uuid.UUID) []byte {
-	mac := hmac.New(sha256.New, s.secrets.Derive("migration-probe:"+workspaceID.String()+migrationID.String()))
+func probeInfo(workspaceID, migrationID uuid.UUID) string {
+	return "migration-probe:" + workspaceID.String() + migrationID.String()
+}
+
+func probeMAC(key []byte, migrationID uuid.UUID) []byte {
+	mac := hmac.New(sha256.New, key)
 	mac.Write([]byte(migrationID.String()))
 	return mac.Sum(nil)
 }
@@ -104,7 +108,7 @@ func (s *Server) probeMAC(workspaceID, migrationID uuid.UUID) []byte {
 // probeValue is the Yuva-Probe header of a migration's test message: its id and an HMAC of it
 // under a key only this server derives.
 func (s *Server) probeValue(workspaceID, migrationID uuid.UUID) string {
-	return migrationID.String() + "." + hex.EncodeToString(s.probeMAC(workspaceID, migrationID))
+	return migrationID.String() + "." + hex.EncodeToString(probeMAC(s.secrets.Derive(probeInfo(workspaceID, migrationID)), migrationID))
 }
 
 // probeMigration is the migration a Yuva-Probe header names when its HMAC is this server's.
@@ -118,7 +122,7 @@ func (s *Server) probeMigration(workspaceID uuid.UUID, header string) (uuid.UUID
 		return uuid.Nil(), false
 	}
 	got, err := hex.DecodeString(mac)
-	if err != nil || !hmac.Equal(got, s.probeMAC(workspaceID, mid)) {
+	if err != nil || !s.anyDerived(probeInfo(workspaceID, mid), func(k []byte) bool { return hmac.Equal(got, probeMAC(k, mid)) }) {
 		return uuid.Nil(), false
 	}
 	return mid, true

@@ -861,7 +861,7 @@ func (s *Server) joinLists(ctx context.Context, q *store.Queries, events *eventB
 	if t.page != nil {
 		return nil
 	}
-	return q.DeleteOptOut(ctx, store.DeleteOptOutParams{WorkspaceID: t.ws, EmailHash: s.optOutHash(t.ws, addr)})
+	return s.forgetOptOut(ctx, q, t.ws, addr)
 }
 
 func (s *Server) saveChoices(ctx context.Context, q *store.Queries, events *eventBatch, r *http.Request, t *manageTarget, chosen []uuid.UUID) ([]uuid.UUID, error) {

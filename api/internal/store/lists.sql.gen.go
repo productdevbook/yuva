@@ -453,6 +453,17 @@ func (q *Queries) GetMailingList(ctx context.Context, arg GetMailingListParams) 
 	return i, err
 }
 
+const getOptOutKey = `-- name: GetOptOutKey :one
+SELECT optout_key FROM workspace_keys WHERE workspace_id = $1
+`
+
+func (q *Queries) GetOptOutKey(ctx context.Context, workspaceID uuid.UUID) ([]byte, error) {
+	row := q.db.QueryRow(ctx, getOptOutKey, workspaceID)
+	var optout_key []byte
+	err := row.Scan(&optout_key)
+	return optout_key, err
+}
+
 const getSubscription = `-- name: GetSubscription :one
 SELECT id, workspace_id, list_id, contact_id, email, state, source, consent_at, confirmed_at, confirmation_sent_at, confirmations_sent, unsubscribed_at, unsubscribe_reason, unsubscribe_broadcast_id, created_at, updated_at, chose_components FROM list_subscriptions WHERE workspace_id = $1 AND id = $2
 `
@@ -487,6 +498,18 @@ func (q *Queries) GetSubscription(ctx context.Context, arg GetSubscriptionParams
 	return i, err
 }
 
+const hasOptOutsWithoutKey = `-- name: HasOptOutsWithoutKey :one
+SELECT (EXISTS (SELECT 1 FROM email_optouts o WHERE o.workspace_id = $1)
+   AND NOT EXISTS (SELECT 1 FROM workspace_keys k WHERE k.workspace_id = $1))::bool AS unkept
+`
+
+func (q *Queries) HasOptOutsWithoutKey(ctx context.Context, workspaceID uuid.UUID) (bool, error) {
+	row := q.db.QueryRow(ctx, hasOptOutsWithoutKey, workspaceID)
+	var unkept bool
+	err := row.Scan(&unkept)
+	return unkept, err
+}
+
 const isEmailSuppressedAnyScope = `-- name: IsEmailSuppressedAnyScope :one
 SELECT EXISTS (SELECT 1 FROM email_suppressions WHERE workspace_id = $1 AND email = $2 AND scope <> 'confirmations') AS suppressed
 `
@@ -517,6 +540,22 @@ func (q *Queries) IsOptedOut(ctx context.Context, arg IsOptedOutParams) (bool, e
 	var opted_out bool
 	err := row.Scan(&opted_out)
 	return opted_out, err
+}
+
+const keepOptOutKey = `-- name: KeepOptOutKey :exec
+INSERT INTO workspace_keys (workspace_id, optout_key, created_at) VALUES ($1, $2, $3)
+ON CONFLICT (workspace_id) DO NOTHING
+`
+
+type KeepOptOutKeyParams struct {
+	WorkspaceID uuid.UUID
+	OptoutKey   []byte
+	Now         time.Time
+}
+
+func (q *Queries) KeepOptOutKey(ctx context.Context, arg KeepOptOutKeyParams) error {
+	_, err := q.db.Exec(ctx, keepOptOutKey, arg.WorkspaceID, arg.OptoutKey, arg.Now)
+	return err
 }
 
 const listConsentEvents = `-- name: ListConsentEvents :many
