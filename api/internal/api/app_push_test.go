@@ -199,6 +199,24 @@ func (h *harness) runAppPushSends(ws string) (retries int) {
 	return retries
 }
 
+func (h *harness) waitConnections(ws string, want int) {
+	h.t.Helper()
+	deadline := time.Now().Add(10 * time.Second)
+	for {
+		var n int
+		if err := h.st.Pool.QueryRow(context.Background(), "SELECT count(*) FROM realtime_connections WHERE workspace_id = $1 AND contact_id IS NOT NULL", ws).Scan(&n); err != nil {
+			h.t.Fatal(err)
+		}
+		if n == want {
+			return
+		}
+		if time.Now().After(deadline) {
+			h.t.Fatalf("contact connections %d, want %d", n, want)
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+}
+
 func TestAppPush(t *testing.T) {
 	ec, p8, rk, sa := testAppPushKeys(t)
 	fake := newFakeAppPush(t, &ec.PublicKey, &rk.PublicKey)
@@ -337,12 +355,14 @@ func TestAppPush(t *testing.T) {
 	if err != nil {
 		t.Fatalf("dial: %d %v", status, err)
 	}
+	h.waitConnections(at.ws, 1)
 	reply("You are online")
 	h.runAppPushChecks(at.ws)
 	if n := len(h.jobs("app_push_send", at.ws)); n != 0 {
 		t.Fatalf("pushed to a connected contact: %d", n)
 	}
 	ws.close()
+	h.waitConnections(at.ws, 0)
 
 	busy := register(cs, "ios", "busy", "com.example.app")
 	if _, err := h.st.Pool.Exec(context.Background(), "DELETE FROM push_devices WHERE workspace_id = $1 AND id <> $2", at.ws, busy); err != nil {
