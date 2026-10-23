@@ -195,6 +195,26 @@ a withdrawn item stays here marked withdrawn. Work before `Y-117` is tracked in 
   - A fresh install from `docs/install.md` on a clean host serves `/healthz` and `/v1/version`
     with `0.1.0`.
 
+### Y-180 · SSO sessions limited to the workspace they came through
+
+- **Area** api · **Owner** yuva-api · **Priority** P0 · **Depends on** – · **Chapters** architecture › Single sign-on
+- **Acceptance**
+  - A session created through a workspace's SSO acts only in that workspace (and as a reader); other workspaces of the same person need their own sign-in (`403 sso_session_scope` with a hint).
+  - SSO sign-in accepts only that workspace's pending invites, never invites of other workspaces.
+  - Passkey registration, workspace creation and reader-token creation are refused from an SSO session made by another workspace.
+  - The person is e-mailed on every SSO sign-in to a workspace for the first time and on every passkey added or removed.
+  - Verified SSO domains are re-checked daily; a claim whose TXT record has been gone for 7 days is unverified, `sso_required` turns off with it, and the owner is told; a lapsed claim no longer blocks another workspace.
+  - `architecture.md` › Single sign-on records the changed decision (sessions are no longer person-wide for SSO); `docs/sso.md` (tr, de) explain it.
+  - Tests: the cross-tenant takeover from the #129 finding M2 fails at each step.
+
+### Y-181 · Slack replies and queued actions pass the SSO gate
+
+- **Area** api · **Owner** yuva-api · **Priority** P1 · **Depends on** – · **Chapters** architecture › Single sign-on
+- **Acceptance**
+  - A Slack thread reply or `!reply` from a member covered by `sso_required` is refused with an ephemeral "sign in through SSO" message and changes nothing.
+  - Queued actions replayed as a member (`callerPrincipal`: linked replies, issue-link and roadmap actions) apply the same gate and stop for a covered member.
+  - Tests for both.
+
 ## M27 — Scale and safety
 
 ### Y-134 · Rate limits shared across replicas
