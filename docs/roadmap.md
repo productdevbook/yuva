@@ -514,3 +514,47 @@ confirmed count, uploads a logo from a public URL into an `announcement` design,
 broadcast whose review has no `sender_identity_missing`. A URL on a private address is refused. An
 agent sees none of the owner-only tools; a token without `lists:write` gets `insufficient_scope`
 naming it. `start_conversation` with `send: true` leaves a draft while `bots_may_send` is off.
+
+## M24 — Tidy for 0.1.0
+
+Status: planned; items Y-117 to Y-125 in `backlog.md`.
+
+- The roadmap, `architecture.md`, `CLAUDE.md` and the guides say what the code does today; nothing
+  internal in the repository.
+- Unused generated queries and an empty Go package removed; every string translated in every SDK.
+
+Accept: every Status line names the version it shipped in or says what is left; a grep for internal
+paths finds none; every check in the `CLAUDE.md` table passes.
+
+## M25 — Acceptance for 0.1.0
+
+Status: planned; items Y-126 to Y-128 in `backlog.md`.
+
+- The Accept items of M6.1, M17 and M23, the milestones released without them, run on a server built
+  from `main`.
+
+Accept: each run reports pass with evidence; each failure becomes its own backlog item and is fixed
+before M26.
+
+## M26 — Release 0.1.0
+
+Status: planned; items Y-129 to Y-132 in `backlog.md`. Waits for M24 and M25.
+
+- A security review of everything added since the 0.0.1 review (#15).
+- One version, `0.1.0`, in the server, the contract, every SDK, the chart, the MCP manifests and the
+  guides; release notes and a post on the site.
+
+Accept: `v0.1.0` is tagged; the image, npm package, JitPack and SwiftPM builds and the MCP registry
+entry all report `0.1.0`; a fresh install from `docs/install.md` works on a clean host.
+
+## Later
+
+- M10, native apps for members (#18, #19): not scheduled; not part of 0.1.0.
+
+## 0.1.0 summary
+
+| Milestone | Items | IDs | api | web | sdk | docs | verify | release |
+|---|---|---|---|---|---|---|---|---|
+| M24 Tidy | 8 (+1 withdrawn) | Y-117–Y-125 | 1 | – | 1 | 6 | – | – |
+| M25 Acceptance | 3 | Y-126–Y-128 | – | – | – | – | 3 | – |
+| M26 Release | 4 | Y-129–Y-132 | 1 | – | – | 1 | – | 2 |
