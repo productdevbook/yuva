@@ -398,6 +398,36 @@ func (q *Queries) LockBootstrap(ctx context.Context) error {
 	return err
 }
 
+const lockPersonWorkspaces = `-- name: LockPersonWorkspaces :many
+SELECT w.id FROM workspaces w
+WHERE w.id IN (SELECT m.workspace_id FROM members m WHERE m.person_id = $1)
+   OR w.id IN (SELECT c.workspace_id FROM contacts c WHERE c.person_id = $1)
+   OR w.created_by = $1
+ORDER BY w.id
+FOR NO KEY UPDATE
+`
+
+// In id order, deleted ones too: each batch of a workspace's deletion locks its row before its rows.
+func (q *Queries) LockPersonWorkspaces(ctx context.Context, personID uuid.UUID) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, lockPersonWorkspaces, personID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var id uuid.UUID
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const lockWorkspace = `-- name: LockWorkspace :one
 SELECT id FROM workspaces WHERE id = $1 FOR UPDATE
 `

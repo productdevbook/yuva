@@ -15,6 +15,15 @@ SELECT * FROM workspaces WHERE id = $1;
 -- name: LockWorkspace :one
 SELECT id FROM workspaces WHERE id = $1 FOR UPDATE;
 
+-- In id order, deleted ones too: each batch of a workspace's deletion locks its row before its rows.
+-- name: LockPersonWorkspaces :many
+SELECT w.id FROM workspaces w
+WHERE w.id IN (SELECT m.workspace_id FROM members m WHERE m.person_id = @person_id)
+   OR w.id IN (SELECT c.workspace_id FROM contacts c WHERE c.person_id = @person_id)
+   OR w.created_by = @person_id
+ORDER BY w.id
+FOR NO KEY UPDATE;
+
 -- name: CountWorkspaces :one
 SELECT count(*) FROM workspaces;
 

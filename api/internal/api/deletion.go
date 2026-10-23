@@ -157,7 +157,7 @@ type WorkspacePurge struct {
 // PurgeWorkspace deletes a workspace marked deleted, in batches, for at most about budget: the
 // conversations with their stored files, then the contacts, then the workspace row, which takes
 // everything else with it. Done reports that nothing is left. A workspace not marked deleted is
-// never touched.
+// never touched. Each batch locks the workspace row first, the order deletePerson keeps too.
 func (s *Server) PurgeWorkspace(ctx context.Context, workspaceID uuid.UUID, budget time.Duration) (WorkspacePurge, error) {
 	var out WorkspacePurge
 	if _, err := s.st.GetDeletedWorkspace(ctx, workspaceID); store.IsNotFound(err) {
@@ -169,6 +169,9 @@ func (s *Server) PurgeWorkspace(ctx context.Context, workspaceID uuid.UUID, budg
 	deadline := time.Now().Add(budget)
 	for {
 		n, files, err := s.deleteConversationBatch(ctx, workspaceID, func(q *store.Queries) ([]uuid.UUID, error) {
+			if _, err := q.LockWorkspace(ctx, workspaceID); err != nil {
+				return nil, err
+			}
 			return q.ListWorkspaceConversationIDs(ctx, store.ListWorkspaceConversationIDsParams{WorkspaceID: workspaceID, MaxRows: purgeConversationBatch})
 		})
 		if err != nil {
@@ -186,7 +189,15 @@ func (s *Server) PurgeWorkspace(ctx context.Context, workspaceID uuid.UUID, budg
 		}
 	}
 	for {
-		n, err := s.st.DeleteWorkspaceContacts(ctx, store.DeleteWorkspaceContactsParams{WorkspaceID: workspaceID, MaxRows: purgeContactBatch})
+		var n int64
+		err := s.st.InTx(ctx, func(q *store.Queries) error {
+			if _, err := q.LockWorkspace(ctx, workspaceID); err != nil {
+				return err
+			}
+			var err error
+			n, err = q.DeleteWorkspaceContacts(ctx, store.DeleteWorkspaceContactsParams{WorkspaceID: workspaceID, MaxRows: purgeContactBatch})
+			return err
+		})
 		if err != nil {
 			return out, err
 		}
@@ -199,7 +210,15 @@ func (s *Server) PurgeWorkspace(ctx context.Context, workspaceID uuid.UUID, budg
 		}
 	}
 	for {
-		keys, err := s.st.DeleteWorkspaceEmailImages(ctx, store.DeleteWorkspaceEmailImagesParams{WorkspaceID: workspaceID, Lim: purgeContactBatch})
+		var keys []string
+		err := s.st.InTx(ctx, func(q *store.Queries) error {
+			if _, err := q.LockWorkspace(ctx, workspaceID); err != nil {
+				return err
+			}
+			var err error
+			keys, err = q.DeleteWorkspaceEmailImages(ctx, store.DeleteWorkspaceEmailImagesParams{WorkspaceID: workspaceID, Lim: purgeContactBatch})
+			return err
+		})
 		if err != nil {
 			return out, err
 		}
@@ -302,15 +321,15 @@ func (s *Server) OperatorDeletePerson(ctx context.Context, email string) (store.
 func (s *Server) deletePerson(ctx context.Context, person store.Person) error {
 	var workspaces []uuid.UUID
 	err := s.st.InTx(ctx, func(q *store.Queries) error {
+		if _, err := q.LockPersonWorkspaces(ctx, person.ID); err != nil {
+			return err
+		}
 		owned, err := q.ListOwnedWorkspaces(ctx, person.ID)
 		if err != nil {
 			return err
 		}
 		var sole []string
 		for _, w := range owned {
-			if _, err := q.LockWorkspace(ctx, w.ID); err != nil {
-				return err
-			}
 			n, err := q.CountOwners(ctx, w.ID)
 			if err != nil {
 				return err
