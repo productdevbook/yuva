@@ -195,6 +195,24 @@ while it is on; a reopened conversation gets no new resolution target.
 - **API, stats, reports.** `Conversation.sla` = `{policy_id, due_at, state: on_track | due_soon | breached | met | paused, targets[]}`. `/v1/stats` gains `sla.met` and `sla.breached`, in total, per inbox and per member (`assignee_id_at_outcome`). Y-147 rolls up the met and breached instants of `conversation_sla`.
 - **Endpoints.** `/v1/sla-policies` (CRUD plus `PUT /order`): `inboxes:read` and `inboxes:manage`, owners and admins.
 
+- **As built (#140, migrations 00109 and 00110).** Outcomes live in `sla_outcomes` (one per target
+  start, unique on conversation, target and start; inserts `ON CONFLICT DO NOTHING`), because
+  next-reply targets replace one another on `conversation_sla`; `/v1/stats` and #147 count from it.
+  A breached target keeps its `due_at` until met, so breached conversations sort first. Every
+  evaluation re-checks that the row's policy is enabled and matches; when no policy applies (spam,
+  trash, no match, a policy disabled, narrowed or deleted) the row is kept with `dropped_at` instead
+  of being deleted, and when one applies again the running targets get back the business time they
+  had left, so time while dropped never counts and a breach is never recorded twice. A conversation
+  that never had a row starts no target before the policy's `created_at`. Policy edits and label or
+  inbox deletions re-evaluate the conversations they drive in the same transaction; deleting the last
+  label or inbox in a policy's list turns the policy off. The clock walks civil dates, so days whose
+  midnight does not exist (America/Santiago) are neither skipped nor counted twice; enabled hours with
+  no intervals count as plain time. A warning is queued only while its time is still ahead.
+  `snooze_wake` leaves spam and trashed conversations snoozed. Inbox-limited keys cannot write
+  policies; agents and limited keys see policies with no inbox list or one naming their inboxes.
+  `conversation.updated` is also sent when only `sla` changes. Notification recipients still need
+  inbox access; `away` skips team members, not the assignee.
+
 **Automation rules (#141).**
 - **Rules.** `automation_rules (workspace_id, id, name, enabled, position, inbox_id nullable, trigger, idle_minutes, conditions jsonb, actions jsonb, created_by, …)`.
   - Triggers: `conversation_created`, `message_received` (contact message), `status_changed`, `idle`.
@@ -254,6 +272,14 @@ while it is on; a reopened conversation gets no new resolution target.
 - **Required on close.** Closing without a required field answers `409 field_required` (with `field`). This holds on PATCH, bulk (per item), MCP, macros and rules (the rule logs `failed`).
 - **Deletions.** Deleting a field or a select option clears the conversation values in a River batch job; contact attributes are kept.
 - **Endpoints and payloads.** `/v1/custom-fields` with the new manager scope `fields:manage`. Values are written with `conversations:write` / `contacts:write`. `fields` appears on webhook and realtime payloads.
+
+- **As built (#144, migrations 00106 and 00107).** Object, key and type are immutable; `options`
+  replaces the list; `required_on_close` exists only on conversation fields. Every deletion of a field
+  or a select option queues its own `custom_field_clear` job, which walks conversations by id 500 at
+  a time; a create refused with `409 field_clearing` queues a fresh clear, so a lost job never blocks
+  a key. Lifting spam from a closed conversation also needs the required fields. Spam conversations
+  close without them. A "reply to linked" with close still sends and leaves a conversation open when
+  its required field is missing.
 
 **MCP (coverage rules).**
 - **Added:** `list_teams`, `list_macros` (body as text for `draft_reply`; actions listed), `list_custom_fields`, `set_conversation_fields`. Also: `assign` gains `team_id`; `search_conversations` gains `team_id`, `sla_state`, `sort=sla_due` and `fields`; `get_conversation` returns `sla` and `fields`.
