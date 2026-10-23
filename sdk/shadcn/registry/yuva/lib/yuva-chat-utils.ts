@@ -234,3 +234,31 @@ export function withAddress(template: string, address: string): (string | { addr
   }
   return parts
 }
+
+export interface YuvaAttachmentLimits {
+  max_bytes: number
+  types: string[]
+}
+
+export function attachmentLimits(inbox: unknown): YuvaAttachmentLimits | null {
+  const value = (inbox as { attachments?: Partial<YuvaAttachmentLimits> } | null)?.attachments
+  if (!value || typeof value.max_bytes !== "number" || !Array.isArray(value.types)) return null
+  return { max_bytes: value.max_bytes, types: value.types }
+}
+
+export function allowsType(limits: YuvaAttachmentLimits, type: string): boolean {
+  const value = type.toLowerCase()
+  return limits.types.some((entry) => entry === value || (entry.endsWith("/*") && value.startsWith(entry.slice(0, -1))))
+}
+
+export function fileProblem(
+  limits: YuvaAttachmentLimits,
+  file: { size: number; type: string }
+): "size" | "type" | null {
+  if (!allowsType(limits, file.type)) return "type"
+  return file.size > limits.max_bytes ? "size" : null
+}
+
+export const canAttach = (limits: YuvaAttachmentLimits): boolean => limits.types.length > 0
+
+export const acceptAttribute = (limits: YuvaAttachmentLimits): string => limits.types.join(",")

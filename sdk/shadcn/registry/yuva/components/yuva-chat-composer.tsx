@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { acceptAttribute, allowsType, canAttach, fileProblem } from "useyuva"
 import { ArrowUpIcon, FileIcon, ImageIcon, PaperclipIcon, ScanIcon, XIcon } from "lucide-react"
 import {
   Attachment,
@@ -22,7 +21,17 @@ import {
 } from "@/components/ui/input-group"
 import { Kbd } from "@/components/ui/kbd"
 import type { YuvaChatState } from "@/hooks/use-yuva-chat"
-import { chatErrorText, defaultYuvaChatLabels, sizeLabel, type YuvaChatLabels } from "@/lib/yuva-chat-utils"
+import {
+  acceptAttribute,
+  allowsType,
+  attachmentLimits,
+  canAttach,
+  chatErrorText,
+  defaultYuvaChatLabels,
+  fileProblem,
+  sizeLabel,
+  type YuvaChatLabels,
+} from "@/lib/yuva-chat-utils"
 import { cn } from "@/lib/utils"
 
 export interface YuvaChatComposerProps {
@@ -51,7 +60,7 @@ export function YuvaChatComposer({
   const [capturing, setCapturing] = React.useState(false)
   const [fileNote, setFileNote] = React.useState("")
   const empty = body.trim() === "" && files.length === 0
-  const limits = chat.inbox?.attachments
+  const limits = attachmentLimits(chat.inbox)
 
   const addFiles = (incoming: File[]) => {
     let note = ""
