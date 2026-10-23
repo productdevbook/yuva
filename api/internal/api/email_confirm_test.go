@@ -4,11 +4,13 @@ import (
 	"encoding/json"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/productdevbook/yuva/api/internal/email"
+	"github.com/productdevbook/yuva/api/internal/mail"
 )
 
 type confirmationView struct {
@@ -399,17 +401,34 @@ func TestTypedEmailConfirmationCaps(t *testing.T) {
 	ct := newChatTeam(t, h, "live", true)
 	long := "Claim your refund\n\nat evil.example " + strings.Repeat("x", 150)
 	ct.owner.expect(http.StatusOK, "PATCH", "/v1/inboxes/"+ct.chatInbox, map[string]any{"name": long})
-	victim := unique("victim") + "@example.net"
-	for range 8 {
-		_, v := typeEmail(t, h, ct, victim)
-		if v.email != victim || v.state != "sent" {
-			t.Fatalf("typing the address: %+v", v)
+	user := unique("victim")
+	victim := user + "@gmail.com"
+	spellings := []string{victim, strings.ToUpper(user[:1]) + user[1:] + "@gmail.com", user + "+news@gmail.com", user[:3] + "." + user[3:] + "@googlemail.com"}
+	for i := range 8 {
+		addr := spellings[i%len(spellings)]
+		cs, v := typeEmail(t, h, ct, addr)
+		want := "sent"
+		if i >= 3 {
+			want = "limited"
+		}
+		if v.state != want || v.expires != (want == "sent") {
+			t.Fatalf("visitor %d typing %s: %+v, want %s", i+1, addr, v, want)
+		}
+		if v := sessionConfirmation(t, cs); v.state != want {
+			t.Fatalf("visitor %d's session: %+v, want %s", i+1, v, want)
 		}
 	}
 	time.Sleep(100 * time.Millisecond)
-	msgs := h.mail.to(victim)
+	var msgs []mail.Message
+	seen := map[string]bool{}
+	for _, a := range spellings {
+		if a = strings.ToLower(a); !seen[a] {
+			seen[a] = true
+			msgs = append(msgs, h.mail.to(a)...)
+		}
+	}
 	if len(msgs) != 3 {
-		t.Fatalf("%d confirmation mails reached one address from 8 visitors, want 3", len(msgs))
+		t.Fatalf("%d confirmation mails reached one mailbox from 8 visitors, want 3", len(msgs))
 	}
 	for _, m := range msgs {
 		if strings.Contains(m.Subject, "\n") || strings.Contains(m.Text, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx") || strings.Contains(m.HTML, "\n\nat evil") {
@@ -420,18 +439,56 @@ func TestTypedEmailConfirmationCaps(t *testing.T) {
 		}
 	}
 
-	other := unique("other") + "@example.net"
-	if _, v := typeEmail(t, h, ct, other); v.state != "sent" {
-		t.Fatalf("another address: %+v", v)
-	}
-	h.mail.wait(t, other, 1)
-
 	second := newChatTeam(t, h, "live", true)
-	if _, v := typeEmail(t, h, second, victim); v.state != "sent" {
+	if _, v := typeEmail(t, h, second, victim); v.state != "limited" {
 		t.Fatalf("typing the address in another workspace: %+v", v)
 	}
 	time.Sleep(100 * time.Millisecond)
-	if n := len(h.mail.to(victim)); n != 3 {
+	if n := len(h.mail.to(victim)); n > 3 {
 		t.Fatalf("another workspace sent past the server-wide cap: %d mails", n)
+	}
+
+	third := newChatTeam(t, h, "live", true)
+	for i := range 31 {
+		cs := third.session(h, map[string]any{})
+		cs.start("hello")
+		cs.ip = "10.250.7." + strconv.Itoa(i+1)
+		r := cs.expect(http.StatusOK, "PUT", "/client/v1/contact/email", map[string]any{"email": unique("n") + "@example.net"})
+		want := "sent"
+		if i == 30 {
+			want = "limited"
+		}
+		if v := confirmationOf(t, r.body); v.state != want {
+			t.Fatalf("visitor %d of one network: %+v, want %s", i+1, v, want)
+		}
+	}
+	if _, v := typeEmail(t, h, third, unique("elsewhere")+"@example.net"); v.state != "sent" {
+		t.Fatalf("a visitor of another network after one network's 30: %+v", v)
+	}
+}
+
+func TestIdentityTokenUnverifiedEmailGetsOneLink(t *testing.T) {
+	h := newHarness(t)
+	ct := newChatTeam(t, h, "live", false)
+	addr := unique("unverified") + "@example.net"
+	sub := unique("user")
+	start := func() contactSession {
+		return ct.session(h, map[string]any{"identity_token": ct.token(h, map[string]any{"sub": sub, "email": addr})})
+	}
+	first := start()
+	if v := confirmationOf(t, first.body["contact"].(map[string]any)); v.email != addr || v.state != "sent" {
+		t.Fatalf("first session: %+v", v)
+	}
+	h.mail.wait(t, addr, 1)
+	start()
+	time.Sleep(100 * time.Millisecond)
+	if n := len(h.mail.to(addr)); n != 1 {
+		t.Fatalf("%d confirmation mails for one unverified token address, want 1", n)
+	}
+	verified := unique("verified") + "@example.net"
+	cs := ct.session(h, map[string]any{"identity_token": ct.token(h, map[string]any{"sub": unique("user"), "email": verified, "email_verified": true})})
+	time.Sleep(100 * time.Millisecond)
+	if n := len(h.mail.to(verified)); n != 0 || cs.body["contact"].(map[string]any)["email"] != verified {
+		t.Fatalf("a verified token address: %d mails, contact %v", n, cs.body["contact"])
 	}
 }

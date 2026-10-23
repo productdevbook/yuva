@@ -2277,6 +2277,7 @@ func (e ClientConversationUpdatedEventType) Valid() bool {
 // Defines values for ClientEmailConfirmationState.
 const (
 	EmailConfirmationConfirmed     ClientEmailConfirmationState = "confirmed"
+	EmailConfirmationLimited       ClientEmailConfirmationState = "limited"
 	EmailConfirmationSent          ClientEmailConfirmationState = "sent"
 	EmailConfirmationUndeliverable ClientEmailConfirmationState = "undeliverable"
 )
@@ -2285,6 +2286,8 @@ const (
 func (e ClientEmailConfirmationState) Valid() bool {
 	switch e {
 	case EmailConfirmationConfirmed:
+		return true
+	case EmailConfirmationLimited:
 		return true
 	case EmailConfirmationSent:
 		return true
@@ -12055,20 +12058,26 @@ type ClientEmailConfirmation struct {
 	// Examples: owner@example.com
 	Email Email `json:"email"`
 
-	// ExpiresAt `sent` only: when the link runs out; after it the confirmation is absent.
+	// ExpiresAt `sent` only: when the link runs out; after it the confirmation is absent (as for `limited`).
 	ExpiresAt *time.Time `json:"expires_at,omitempty"`
 
 	// State `sent`: a confirmation link went to `email` and was neither confirmed nor bounced yet ("we
 	// sent a link to …, check your inbox"). `undeliverable`: mail to `email` cannot be delivered
 	// (the link bounced, or the address bounced before); ask for another address. `confirmed`:
-	// the link was confirmed and `email` is the contact's `email`.
+	// the link was confirmed and `email` is the contact's `email`. `limited`: no link went out
+	// because the address, the visitor's network or the channel reached its limit for confirmation
+	// mails for now; ask the visitor to try again later or to use another address. Until an
+	// address is confirmed it gets no replies.
 	State ClientEmailConfirmationState `json:"state"`
 }
 
 // ClientEmailConfirmationState `sent`: a confirmation link went to `email` and was neither confirmed nor bounced yet ("we
 // sent a link to …, check your inbox"). `undeliverable`: mail to `email` cannot be delivered
 // (the link bounced, or the address bounced before); ask for another address. `confirmed`:
-// the link was confirmed and `email` is the contact's `email`.
+// the link was confirmed and `email` is the contact's `email`. `limited`: no link went out
+// because the address, the visitor's network or the channel reached its limit for confirmation
+// mails for now; ask the visitor to try again later or to use another address. Until an
+// address is confirmed it gets no replies.
 type ClientEmailConfirmationState string
 
 // ClientEmailUpdate defines model for ClientEmailUpdate.
@@ -33778,8 +33787,9 @@ type ClientInterface interface {
 	// Answers an access token for the link's other endpoints, valid for 12 hours or until the
 	// link expires, is revoked or gets another password. A wrong password answers
 	// `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-	// in all, and a link takes 60 tries an hour from everyone (`429 rate_limited`). A link without
-	// a password answers `409 no_password`.
+	// in all, a network (IPv4 /24, IPv6 /48) 60 times an hour per link, and a link takes 1,000
+	// tries an hour in all (`429 rate_limited`). A link without a password answers
+	// `409 no_password`.
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -33791,8 +33801,9 @@ type ClientInterface interface {
 	// Answers an access token for the link's other endpoints, valid for 12 hours or until the
 	// link expires, is revoked or gets another password. A wrong password answers
 	// `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-	// in all, and a link takes 60 tries an hour from everyone (`429 rate_limited`). A link without
-	// a password answers `409 no_password`.
+	// in all, a network (IPv4 /24, IPv6 /48) 60 times an hour per link, and a link takes 1,000
+	// tries an hour in all (`429 rate_limited`). A link without a password answers
+	// `409 no_password`.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -34347,9 +34358,11 @@ type ClientInterface interface {
 	// nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 	// existing contact; it is used only while the contact has no address from an identity token
 	// or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-	// has it; at most 3 per contact and hour, 3 per address and day on the server, and a daily
-	// number per channel and workspace; a link held back by these limits still shows `sent`); it
-	// becomes one of the contact's addresses only once that link is confirmed. `email_confirmation` on the answer says whether a link went out, and a
+	// has it; at most 3 per contact and hour and 6 a day, 3 per address and day on the server
+	// (the address compared without case, `+tag` and, for Gmail, dots), 30 per network (IPv4 /24,
+	// IPv6 /48) and channel a day, and 5,000 per channel a day; a link held back by these limits
+	// shows `limited`); it becomes one of the contact's addresses only once that link is
+	// confirmed. `email_confirmation` on the answer says whether a link went out, and a
 	// `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 	// address that bounced before is stored but not mailed and shows `undeliverable`: ask for
 	// another one.
@@ -34367,9 +34380,11 @@ type ClientInterface interface {
 	// nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 	// existing contact; it is used only while the contact has no address from an identity token
 	// or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-	// has it; at most 3 per contact and hour, 3 per address and day on the server, and a daily
-	// number per channel and workspace; a link held back by these limits still shows `sent`); it
-	// becomes one of the contact's addresses only once that link is confirmed. `email_confirmation` on the answer says whether a link went out, and a
+	// has it; at most 3 per contact and hour and 6 a day, 3 per address and day on the server
+	// (the address compared without case, `+tag` and, for Gmail, dots), 30 per network (IPv4 /24,
+	// IPv6 /48) and channel a day, and 5,000 per channel a day; a link held back by these limits
+	// shows `limited`); it becomes one of the contact's addresses only once that link is
+	// confirmed. `email_confirmation` on the answer says whether a link went out, and a
 	// `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 	// address that bounced before is stored but not mailed and shows `undeliverable`: ask for
 	// another one.
@@ -34850,7 +34865,9 @@ type ClientInterface interface {
 	//   then by the token's `email` when it carries `email_verified: true` and that contact has
 	//   no external id in this inbox, or created. `name`, `locale` and `attrs` from the token
 	//   are saved on the contact; a verified `email` becomes one of its addresses, an unverified
-	//   one is kept like a typed address and never used to find a contact. `exp` is required and at most 10 minutes ahead; tokens
+	//   one is kept like a typed address and never used to find a contact: it gets one
+	//   confirmation link (the first session that brings it, within the limits of
+	//   `PUT /client/v1/contact/email`) and replies only once that link is confirmed. `exp` is required and at most 10 minutes ahead; tokens
 	//   with another `alg`, a wrong signature or a missing or past `exp`, and a token whose
 	//   `jti` was already used, answer `401 invalid_identity_token`. When `visitor_id` names an anonymous visitor of this inbox,
 	//   that visitor's conversations move to the identified contact and the visitor id ends.
@@ -34884,7 +34901,9 @@ type ClientInterface interface {
 	//   then by the token's `email` when it carries `email_verified: true` and that contact has
 	//   no external id in this inbox, or created. `name`, `locale` and `attrs` from the token
 	//   are saved on the contact; a verified `email` becomes one of its addresses, an unverified
-	//   one is kept like a typed address and never used to find a contact. `exp` is required and at most 10 minutes ahead; tokens
+	//   one is kept like a typed address and never used to find a contact: it gets one
+	//   confirmation link (the first session that brings it, within the limits of
+	//   `PUT /client/v1/contact/email`) and replies only once that link is confirmed. `exp` is required and at most 10 minutes ahead; tokens
 	//   with another `alg`, a wrong signature or a missing or past `exp`, and a token whose
 	//   `jti` was already used, answer `401 invalid_identity_token`. When `visitor_id` names an anonymous visitor of this inbox,
 	//   that visitor's conversations move to the identified contact and the visitor id ends.
@@ -35162,9 +35181,11 @@ type ClientInterface interface {
 	// `200` when `domain` is the verified own domain of a published status page, help center or
 	// changelog or a public roadmap board in a live workspace (and that feature is not off on the
 	// server), `404` otherwise, also when the server's `YUVA_STATUS_DOMAINS` is not `ask`. It is public and
-	// reveals only domains that already serve public pages. The proxy asks from one address for
-	// every name a handshake brings, so a name known not to be an own domain is answered from
-	// memory and the limit is per name asked: up to 30 lookups a minute (`429 rate_limited`).
+	// reveals only domains that already serve public pages. A live domain and a name known not to
+	// be one are answered from memory (30 seconds). The proxy's own asks (from a loopback or
+	// trusted proxy address, without a forwarded client address) are never limited; any other
+	// caller gets 120 asks a minute per address and 30 lookups a minute per name that memory
+	// cannot answer (`429 rate_limited`).
 	//
 	// Corresponds with GET /status-domains/check (the `CheckStatusDomain` operationId).
 	CheckStatusDomain(ctx context.Context, params *CheckStatusDomainParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -44052,8 +44073,9 @@ func (c *Client) GetSharedAnalytics(ctx context.Context, token AnalyticsShareTok
 // Answers an access token for the link's other endpoints, valid for 12 hours or until the
 // link expires, is revoked or gets another password. A wrong password answers
 // `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-// in all, and a link takes 60 tries an hour from everyone (`429 rate_limited`). A link without
-// a password answers `409 no_password`.
+// in all, a network (IPv4 /24, IPv6 /48) 60 times an hour per link, and a link takes 1,000
+// tries an hour in all (`429 rate_limited`). A link without a password answers
+// `409 no_password`.
 //
 // Takes any type of body and a specified content type.
 //
@@ -44075,8 +44097,9 @@ func (c *Client) UnlockSharedAnalyticsWithBody(ctx context.Context, token Analyt
 // Answers an access token for the link's other endpoints, valid for 12 hours or until the
 // link expires, is revoked or gets another password. A wrong password answers
 // `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-// in all, and a link takes 60 tries an hour from everyone (`429 rate_limited`). A link without
-// a password answers `409 no_password`.
+// in all, a network (IPv4 /24, IPv6 /48) 60 times an hour per link, and a link takes 1,000
+// tries an hour in all (`429 rate_limited`). A link without a password answers
+// `409 no_password`.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -44901,9 +44924,11 @@ func (c *Client) GetClientWhatsNewEntry(ctx context.Context, channelKey ClientWh
 // nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 // existing contact; it is used only while the contact has no address from an identity token
 // or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-// has it; at most 3 per contact and hour, 3 per address and day on the server, and a daily
-// number per channel and workspace; a link held back by these limits still shows `sent`); it
-// becomes one of the contact's addresses only once that link is confirmed. `email_confirmation` on the answer says whether a link went out, and a
+// has it; at most 3 per contact and hour and 6 a day, 3 per address and day on the server
+// (the address compared without case, `+tag` and, for Gmail, dots), 30 per network (IPv4 /24,
+// IPv6 /48) and channel a day, and 5,000 per channel a day; a link held back by these limits
+// shows `limited`); it becomes one of the contact's addresses only once that link is
+// confirmed. `email_confirmation` on the answer says whether a link went out, and a
 // `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 // address that bounced before is stored but not mailed and shows `undeliverable`: ask for
 // another one.
@@ -44931,9 +44956,11 @@ func (c *Client) SetClientContactEmailWithBody(ctx context.Context, contentType 
 // nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 // existing contact; it is used only while the contact has no address from an identity token
 // or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-// has it; at most 3 per contact and hour, 3 per address and day on the server, and a daily
-// number per channel and workspace; a link held back by these limits still shows `sent`); it
-// becomes one of the contact's addresses only once that link is confirmed. `email_confirmation` on the answer says whether a link went out, and a
+// has it; at most 3 per contact and hour and 6 a day, 3 per address and day on the server
+// (the address compared without case, `+tag` and, for Gmail, dots), 30 per network (IPv4 /24,
+// IPv6 /48) and channel a day, and 5,000 per channel a day; a link held back by these limits
+// shows `limited`); it becomes one of the contact's addresses only once that link is
+// confirmed. `email_confirmation` on the answer says whether a link went out, and a
 // `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 // address that bounced before is stored but not mailed and shows `undeliverable`: ask for
 // another one.
@@ -45774,7 +45801,9 @@ func (c *Client) GetClientSession(ctx context.Context, reqEditors ...RequestEdit
 //     then by the token's `email` when it carries `email_verified: true` and that contact has
 //     no external id in this inbox, or created. `name`, `locale` and `attrs` from the token
 //     are saved on the contact; a verified `email` becomes one of its addresses, an unverified
-//     one is kept like a typed address and never used to find a contact. `exp` is required and at most 10 minutes ahead; tokens
+//     one is kept like a typed address and never used to find a contact: it gets one
+//     confirmation link (the first session that brings it, within the limits of
+//     `PUT /client/v1/contact/email`) and replies only once that link is confirmed. `exp` is required and at most 10 minutes ahead; tokens
 //     with another `alg`, a wrong signature or a missing or past `exp`, and a token whose
 //     `jti` was already used, answer `401 invalid_identity_token`. When `visitor_id` names an anonymous visitor of this inbox,
 //     that visitor's conversations move to the identified contact and the visitor id ends.
@@ -45818,7 +45847,9 @@ func (c *Client) CreateClientSessionWithBody(ctx context.Context, contentType st
 //     then by the token's `email` when it carries `email_verified: true` and that contact has
 //     no external id in this inbox, or created. `name`, `locale` and `attrs` from the token
 //     are saved on the contact; a verified `email` becomes one of its addresses, an unverified
-//     one is kept like a typed address and never used to find a contact. `exp` is required and at most 10 minutes ahead; tokens
+//     one is kept like a typed address and never used to find a contact: it gets one
+//     confirmation link (the first session that brings it, within the limits of
+//     `PUT /client/v1/contact/email`) and replies only once that link is confirmed. `exp` is required and at most 10 minutes ahead; tokens
 //     with another `alg`, a wrong signature or a missing or past `exp`, and a token whose
 //     `jti` was already used, answer `401 invalid_identity_token`. When `visitor_id` names an anonymous visitor of this inbox,
 //     that visitor's conversations move to the identified contact and the visitor id ends.
@@ -46286,9 +46317,11 @@ func (c *Client) SlackOAuthCallback(ctx context.Context, params *SlackOAuthCallb
 // `200` when `domain` is the verified own domain of a published status page, help center or
 // changelog or a public roadmap board in a live workspace (and that feature is not off on the
 // server), `404` otherwise, also when the server's `YUVA_STATUS_DOMAINS` is not `ask`. It is public and
-// reveals only domains that already serve public pages. The proxy asks from one address for
-// every name a handshake brings, so a name known not to be an own domain is answered from
-// memory and the limit is per name asked: up to 30 lookups a minute (`429 rate_limited`).
+// reveals only domains that already serve public pages. A live domain and a name known not to
+// be one are answered from memory (30 seconds). The proxy's own asks (from a loopback or
+// trusted proxy address, without a forwarded client address) are never limited; any other
+// caller gets 120 asks a minute per address and 30 lookups a minute per name that memory
+// cannot answer (`429 rate_limited`).
 //
 // Corresponds with GET /status-domains/check (the `CheckStatusDomain` operationId).
 func (c *Client) CheckStatusDomain(ctx context.Context, params *CheckStatusDomainParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -93759,8 +93792,9 @@ type ClientWithResponsesInterface interface {
 	// Answers an access token for the link's other endpoints, valid for 12 hours or until the
 	// link expires, is revoked or gets another password. A wrong password answers
 	// `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-	// in all, and a link takes 60 tries an hour from everyone (`429 rate_limited`). A link without
-	// a password answers `409 no_password`.
+	// in all, a network (IPv4 /24, IPv6 /48) 60 times an hour per link, and a link takes 1,000
+	// tries an hour in all (`429 rate_limited`). A link without a password answers
+	// `409 no_password`.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -93772,8 +93806,9 @@ type ClientWithResponsesInterface interface {
 	// Answers an access token for the link's other endpoints, valid for 12 hours or until the
 	// link expires, is revoked or gets another password. A wrong password answers
 	// `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-	// in all, and a link takes 60 tries an hour from everyone (`429 rate_limited`). A link without
-	// a password answers `409 no_password`.
+	// in all, a network (IPv4 /24, IPv6 /48) 60 times an hour per link, and a link takes 1,000
+	// tries an hour in all (`429 rate_limited`). A link without a password answers
+	// `409 no_password`.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -94354,9 +94389,11 @@ type ClientWithResponsesInterface interface {
 	// nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 	// existing contact; it is used only while the contact has no address from an identity token
 	// or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-	// has it; at most 3 per contact and hour, 3 per address and day on the server, and a daily
-	// number per channel and workspace; a link held back by these limits still shows `sent`); it
-	// becomes one of the contact's addresses only once that link is confirmed. `email_confirmation` on the answer says whether a link went out, and a
+	// has it; at most 3 per contact and hour and 6 a day, 3 per address and day on the server
+	// (the address compared without case, `+tag` and, for Gmail, dots), 30 per network (IPv4 /24,
+	// IPv6 /48) and channel a day, and 5,000 per channel a day; a link held back by these limits
+	// shows `limited`); it becomes one of the contact's addresses only once that link is
+	// confirmed. `email_confirmation` on the answer says whether a link went out, and a
 	// `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 	// address that bounced before is stored but not mailed and shows `undeliverable`: ask for
 	// another one.
@@ -94374,9 +94411,11 @@ type ClientWithResponsesInterface interface {
 	// nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 	// existing contact; it is used only while the contact has no address from an identity token
 	// or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-	// has it; at most 3 per contact and hour, 3 per address and day on the server, and a daily
-	// number per channel and workspace; a link held back by these limits still shows `sent`); it
-	// becomes one of the contact's addresses only once that link is confirmed. `email_confirmation` on the answer says whether a link went out, and a
+	// has it; at most 3 per contact and hour and 6 a day, 3 per address and day on the server
+	// (the address compared without case, `+tag` and, for Gmail, dots), 30 per network (IPv4 /24,
+	// IPv6 /48) and channel a day, and 5,000 per channel a day; a link held back by these limits
+	// shows `limited`); it becomes one of the contact's addresses only once that link is
+	// confirmed. `email_confirmation` on the answer says whether a link went out, and a
 	// `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 	// address that bounced before is stored but not mailed and shows `undeliverable`: ask for
 	// another one.
@@ -94883,7 +94922,9 @@ type ClientWithResponsesInterface interface {
 	//   then by the token's `email` when it carries `email_verified: true` and that contact has
 	//   no external id in this inbox, or created. `name`, `locale` and `attrs` from the token
 	//   are saved on the contact; a verified `email` becomes one of its addresses, an unverified
-	//   one is kept like a typed address and never used to find a contact. `exp` is required and at most 10 minutes ahead; tokens
+	//   one is kept like a typed address and never used to find a contact: it gets one
+	//   confirmation link (the first session that brings it, within the limits of
+	//   `PUT /client/v1/contact/email`) and replies only once that link is confirmed. `exp` is required and at most 10 minutes ahead; tokens
 	//   with another `alg`, a wrong signature or a missing or past `exp`, and a token whose
 	//   `jti` was already used, answer `401 invalid_identity_token`. When `visitor_id` names an anonymous visitor of this inbox,
 	//   that visitor's conversations move to the identified contact and the visitor id ends.
@@ -94917,7 +94958,9 @@ type ClientWithResponsesInterface interface {
 	//   then by the token's `email` when it carries `email_verified: true` and that contact has
 	//   no external id in this inbox, or created. `name`, `locale` and `attrs` from the token
 	//   are saved on the contact; a verified `email` becomes one of its addresses, an unverified
-	//   one is kept like a typed address and never used to find a contact. `exp` is required and at most 10 minutes ahead; tokens
+	//   one is kept like a typed address and never used to find a contact: it gets one
+	//   confirmation link (the first session that brings it, within the limits of
+	//   `PUT /client/v1/contact/email`) and replies only once that link is confirmed. `exp` is required and at most 10 minutes ahead; tokens
 	//   with another `alg`, a wrong signature or a missing or past `exp`, and a token whose
 	//   `jti` was already used, answer `401 invalid_identity_token`. When `visitor_id` names an anonymous visitor of this inbox,
 	//   that visitor's conversations move to the identified contact and the visitor id ends.
@@ -95215,9 +95258,11 @@ type ClientWithResponsesInterface interface {
 	// `200` when `domain` is the verified own domain of a published status page, help center or
 	// changelog or a public roadmap board in a live workspace (and that feature is not off on the
 	// server), `404` otherwise, also when the server's `YUVA_STATUS_DOMAINS` is not `ask`. It is public and
-	// reveals only domains that already serve public pages. The proxy asks from one address for
-	// every name a handshake brings, so a name known not to be an own domain is answered from
-	// memory and the limit is per name asked: up to 30 lookups a minute (`429 rate_limited`).
+	// reveals only domains that already serve public pages. A live domain and a name known not to
+	// be one are answered from memory (30 seconds). The proxy's own asks (from a loopback or
+	// trusted proxy address, without a forwarded client address) are never limited; any other
+	// caller gets 120 asks a minute per address and 30 lookups a minute per name that memory
+	// cannot answer (`429 rate_limited`).
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -139258,8 +139303,9 @@ func (c *ClientWithResponses) GetSharedAnalyticsWithResponse(ctx context.Context
 // Answers an access token for the link's other endpoints, valid for 12 hours or until the
 // link expires, is revoked or gets another password. A wrong password answers
 // `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-// in all, and a link takes 60 tries an hour from everyone (`429 rate_limited`). A link without
-// a password answers `409 no_password`.
+// in all, a network (IPv4 /24, IPv6 /48) 60 times an hour per link, and a link takes 1,000
+// tries an hour in all (`429 rate_limited`). A link without a password answers
+// `409 no_password`.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -139277,8 +139323,9 @@ func (c *ClientWithResponses) UnlockSharedAnalyticsWithBodyWithResponse(ctx cont
 // Answers an access token for the link's other endpoints, valid for 12 hours or until the
 // link expires, is revoked or gets another password. A wrong password answers
 // `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-// in all, and a link takes 60 tries an hour from everyone (`429 rate_limited`). A link without
-// a password answers `409 no_password`.
+// in all, a network (IPv4 /24, IPv6 /48) 60 times an hour per link, and a link takes 1,000
+// tries an hour in all (`429 rate_limited`). A link without a password answers
+// `409 no_password`.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -140021,9 +140068,11 @@ func (c *ClientWithResponses) GetClientWhatsNewEntryWithResponse(ctx context.Con
 // nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 // existing contact; it is used only while the contact has no address from an identity token
 // or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-// has it; at most 3 per contact and hour, 3 per address and day on the server, and a daily
-// number per channel and workspace; a link held back by these limits still shows `sent`); it
-// becomes one of the contact's addresses only once that link is confirmed. `email_confirmation` on the answer says whether a link went out, and a
+// has it; at most 3 per contact and hour and 6 a day, 3 per address and day on the server
+// (the address compared without case, `+tag` and, for Gmail, dots), 30 per network (IPv4 /24,
+// IPv6 /48) and channel a day, and 5,000 per channel a day; a link held back by these limits
+// shows `limited`); it becomes one of the contact's addresses only once that link is
+// confirmed. `email_confirmation` on the answer says whether a link went out, and a
 // `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 // address that bounced before is stored but not mailed and shows `undeliverable`: ask for
 // another one.
@@ -140047,9 +140096,11 @@ func (c *ClientWithResponses) SetClientContactEmailWithBodyWithResponse(ctx cont
 // nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
 // existing contact; it is used only while the contact has no address from an identity token
 // or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-// has it; at most 3 per contact and hour, 3 per address and day on the server, and a daily
-// number per channel and workspace; a link held back by these limits still shows `sent`); it
-// becomes one of the contact's addresses only once that link is confirmed. `email_confirmation` on the answer says whether a link went out, and a
+// has it; at most 3 per contact and hour and 6 a day, 3 per address and day on the server
+// (the address compared without case, `+tag` and, for Gmail, dots), 30 per network (IPv4 /24,
+// IPv6 /48) and channel a day, and 5,000 per channel a day; a link held back by these limits
+// shows `limited`); it becomes one of the contact's addresses only once that link is
+// confirmed. `email_confirmation` on the answer says whether a link went out, and a
 // `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
 // address that bounced before is stored but not mailed and shows `undeliverable`: ask for
 // another one.
@@ -140772,7 +140823,9 @@ func (c *ClientWithResponses) GetClientSessionWithResponse(ctx context.Context, 
 //     then by the token's `email` when it carries `email_verified: true` and that contact has
 //     no external id in this inbox, or created. `name`, `locale` and `attrs` from the token
 //     are saved on the contact; a verified `email` becomes one of its addresses, an unverified
-//     one is kept like a typed address and never used to find a contact. `exp` is required and at most 10 minutes ahead; tokens
+//     one is kept like a typed address and never used to find a contact: it gets one
+//     confirmation link (the first session that brings it, within the limits of
+//     `PUT /client/v1/contact/email`) and replies only once that link is confirmed. `exp` is required and at most 10 minutes ahead; tokens
 //     with another `alg`, a wrong signature or a missing or past `exp`, and a token whose
 //     `jti` was already used, answer `401 invalid_identity_token`. When `visitor_id` names an anonymous visitor of this inbox,
 //     that visitor's conversations move to the identified contact and the visitor id ends.
@@ -140812,7 +140865,9 @@ func (c *ClientWithResponses) CreateClientSessionWithBodyWithResponse(ctx contex
 //     then by the token's `email` when it carries `email_verified: true` and that contact has
 //     no external id in this inbox, or created. `name`, `locale` and `attrs` from the token
 //     are saved on the contact; a verified `email` becomes one of its addresses, an unverified
-//     one is kept like a typed address and never used to find a contact. `exp` is required and at most 10 minutes ahead; tokens
+//     one is kept like a typed address and never used to find a contact: it gets one
+//     confirmation link (the first session that brings it, within the limits of
+//     `PUT /client/v1/contact/email`) and replies only once that link is confirmed. `exp` is required and at most 10 minutes ahead; tokens
 //     with another `alg`, a wrong signature or a missing or past `exp`, and a token whose
 //     `jti` was already used, answer `401 invalid_identity_token`. When `visitor_id` names an anonymous visitor of this inbox,
 //     that visitor's conversations move to the identified contact and the visitor id ends.
@@ -141224,9 +141279,11 @@ func (c *ClientWithResponses) SlackOAuthCallbackWithResponse(ctx context.Context
 // `200` when `domain` is the verified own domain of a published status page, help center or
 // changelog or a public roadmap board in a live workspace (and that feature is not off on the
 // server), `404` otherwise, also when the server's `YUVA_STATUS_DOMAINS` is not `ask`. It is public and
-// reveals only domains that already serve public pages. The proxy asks from one address for
-// every name a handshake brings, so a name known not to be an own domain is answered from
-// memory and the limit is per name asked: up to 30 lookups a minute (`429 rate_limited`).
+// reveals only domains that already serve public pages. A live domain and a name known not to
+// be one are answered from memory (30 seconds). The proxy's own asks (from a loopback or
+// trusted proxy address, without a forwarded client address) are never limited; any other
+// caller gets 120 asks a minute per address and 30 lookups a minute per name that memory
+// cannot answer (`429 rate_limited`).
 //
 // Returns a wrapper object for the known response body format(s).
 //

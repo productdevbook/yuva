@@ -16038,7 +16038,9 @@ paths:
           then by the token's `email` when it carries `email_verified: true` and that contact has
           no external id in this inbox, or created. `name`, `locale` and `attrs` from the token
           are saved on the contact; a verified `email` becomes one of its addresses, an unverified
-          one is kept like a typed address and never used to find a contact. `exp` is required and at most 10 minutes ahead; tokens
+          one is kept like a typed address and never used to find a contact: it gets one
+          confirmation link (the first session that brings it, within the limits of
+          `PUT /client/v1/contact/email`) and replies only once that link is confirmed. `exp` is required and at most 10 minutes ahead; tokens
           with another `alg`, a wrong signature or a missing or past `exp`, and a token whose
           `jti` was already used, answer `401 invalid_identity_token`. When `visitor_id` names an anonymous visitor of this inbox,
           that visitor's conversations move to the identified contact and the visitor id ends.
@@ -17500,9 +17502,11 @@ paths:
         nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
         existing contact; it is used only while the contact has no address from an identity token
         or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-        has it; at most 3 per contact and hour, 3 per address and day on the server, and a daily
-        number per channel and workspace; a link held back by these limits still shows `sent`); it
-        becomes one of the contact's addresses only once that link is confirmed. `email_confirmation` on the answer says whether a link went out, and a
+        has it; at most 3 per contact and hour and 6 a day, 3 per address and day on the server
+        (the address compared without case, `+tag` and, for Gmail, dots), 30 per network (IPv4 /24,
+        IPv6 /48) and channel a day, and 5,000 per channel a day; a link held back by these limits
+        shows `limited`); it becomes one of the contact's addresses only once that link is
+        confirmed. `email_confirmation` on the answer says whether a link went out, and a
         `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
         address that bounced before is stored but not mailed and shows `undeliverable`: ask for
         another one.
@@ -33043,16 +33047,19 @@ components:
         expires_at:
           type: string
           format: date-time
-          description: "`sent` only: when the link runs out; after it the confirmation is absent."
+          description: "`sent` only: when the link runs out; after it the confirmation is absent (as for `limited`)."
     ClientEmailConfirmationState:
       type: string
       description: |
         `sent`: a confirmation link went to `email` and was neither confirmed nor bounced yet ("we
         sent a link to …, check your inbox"). `undeliverable`: mail to `email` cannot be delivered
         (the link bounced, or the address bounced before); ask for another address. `confirmed`:
-        the link was confirmed and `email` is the contact's `email`.
-      enum: [sent, undeliverable, confirmed]
-      x-enum-varnames: [EmailConfirmationSent, EmailConfirmationUndeliverable, EmailConfirmationConfirmed]
+        the link was confirmed and `email` is the contact's `email`. `limited`: no link went out
+        because the address, the visitor's network or the channel reached its limit for confirmation
+        mails for now; ask the visitor to try again later or to use another address. Until an
+        address is confirmed it gets no replies.
+      enum: [sent, undeliverable, confirmed, limited]
+      x-enum-varnames: [EmailConfirmationSent, EmailConfirmationUndeliverable, EmailConfirmationConfirmed, EmailConfirmationLimited]
     ClientSessionInfo:
       type: object
       required: [expires_at, contact, inbox]

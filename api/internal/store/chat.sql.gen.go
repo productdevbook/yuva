@@ -774,6 +774,21 @@ func (q *Queries) GetSessionChannel(ctx context.Context, arg GetSessionChannelPa
 	return i, err
 }
 
+const holdEmailConfirmation = `-- name: HoldEmailConfirmation :exec
+UPDATE email_confirmations SET held_at = $1::timestamptz WHERE workspace_id = $2 AND id = $3
+`
+
+type HoldEmailConfirmationParams struct {
+	Now         time.Time
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) HoldEmailConfirmation(ctx context.Context, arg HoldEmailConfirmationParams) error {
+	_, err := q.db.Exec(ctx, holdEmailConfirmation, arg.Now, arg.WorkspaceID, arg.ID)
+	return err
+}
+
 const inboxEmailChannel = `-- name: InboxEmailChannel :one
 SELECT e.workspace_id, e.channel_id, e.address, e.display_name, e.from_address, e.smtp_host, e.smtp_port, e.smtp_username, e.smtp_password, e.smtp_tls, e.auto_reply_enabled, e.auto_reply_text, e.auto_reply_interval_hours, e.broadcast_smtp_host, e.broadcast_smtp_port, e.broadcast_smtp_username, e.broadcast_smtp_password, e.broadcast_smtp_tls, e.broadcast_rate, e.dkim_selector, e.dkim_private_key, e.dkim_enabled, e.dkim_public_key, e.forward_token, e.ses_tenant, e.ses_configuration_set, e.smtp_aws_account, e.broadcast_smtp_aws_account, e.ses_state, e.ses_detail, e.ses_checked_at FROM email_channels e
 JOIN channels c ON c.workspace_id = e.workspace_id AND c.id = e.channel_id
@@ -827,7 +842,7 @@ func (q *Queries) InboxEmailChannel(ctx context.Context, arg InboxEmailChannelPa
 }
 
 const latestEmailConfirmation = `-- name: LatestEmailConfirmation :one
-SELECT email, expires_at, bounced_at, confirmed_at FROM email_confirmations
+SELECT email, expires_at, bounced_at, confirmed_at, held_at FROM email_confirmations
 WHERE workspace_id = $1 AND contact_id = $2
 ORDER BY created_at DESC, id DESC
 LIMIT 1
@@ -843,6 +858,7 @@ type LatestEmailConfirmationRow struct {
 	ExpiresAt   time.Time
 	BouncedAt   *time.Time
 	ConfirmedAt *time.Time
+	HeldAt      *time.Time
 }
 
 func (q *Queries) LatestEmailConfirmation(ctx context.Context, arg LatestEmailConfirmationParams) (LatestEmailConfirmationRow, error) {
@@ -853,6 +869,7 @@ func (q *Queries) LatestEmailConfirmation(ctx context.Context, arg LatestEmailCo
 		&i.ExpiresAt,
 		&i.BouncedAt,
 		&i.ConfirmedAt,
+		&i.HeldAt,
 	)
 	return i, err
 }

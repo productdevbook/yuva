@@ -9,7 +9,6 @@ import (
 	"strings"
 	"uuid"
 
-	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -236,7 +235,7 @@ func (s *Server) CreateClientFeedback(ctx context.Context, req oas.CreateClientF
 	}
 	var (
 		convID, msgID uuid.UUID
-		confirm       *mail.Message
+		confirm       *typedConfirmation
 	)
 	err = s.inTx(ctx, cp.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		if err := s.requireInboxCategory(ctx, q, cp.workspaceID, cp.inboxID, fb.Category); err != nil {
@@ -273,7 +272,9 @@ func (s *Server) CreateClientFeedback(ctx context.Context, req oas.CreateClientF
 		s.deleteObjects(ctx, stored)
 		return nil, err
 	}
-	s.sendTypedConfirmation(ctx, cp, confirm)
+	if _, err := s.sendTypedConfirmation(ctx, confirm, cp.channelID); err != nil {
+		return nil, err
+	}
 	out, err := s.clientConversationCreated(ctx, cp, convID, msgID)
 	if err != nil {
 		return nil, err

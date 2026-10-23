@@ -2279,6 +2279,7 @@ func (e ClientConversationUpdatedEventType) Valid() bool {
 // Defines values for ClientEmailConfirmationState.
 const (
 	EmailConfirmationConfirmed     ClientEmailConfirmationState = "confirmed"
+	EmailConfirmationLimited       ClientEmailConfirmationState = "limited"
 	EmailConfirmationSent          ClientEmailConfirmationState = "sent"
 	EmailConfirmationUndeliverable ClientEmailConfirmationState = "undeliverable"
 )
@@ -2287,6 +2288,8 @@ const (
 func (e ClientEmailConfirmationState) Valid() bool {
 	switch e {
 	case EmailConfirmationConfirmed:
+		return true
+	case EmailConfirmationLimited:
 		return true
 	case EmailConfirmationSent:
 		return true
@@ -12009,20 +12012,26 @@ type ClientEmailConfirmation struct {
 	// Examples: owner@example.com
 	Email Email `json:"email"`
 
-	// ExpiresAt `sent` only: when the link runs out; after it the confirmation is absent.
+	// ExpiresAt `sent` only: when the link runs out; after it the confirmation is absent (as for `limited`).
 	ExpiresAt *time.Time `json:"expires_at,omitempty"`
 
 	// State `sent`: a confirmation link went to `email` and was neither confirmed nor bounced yet ("we
 	// sent a link to …, check your inbox"). `undeliverable`: mail to `email` cannot be delivered
 	// (the link bounced, or the address bounced before); ask for another address. `confirmed`:
-	// the link was confirmed and `email` is the contact's `email`.
+	// the link was confirmed and `email` is the contact's `email`. `limited`: no link went out
+	// because the address, the visitor's network or the channel reached its limit for confirmation
+	// mails for now; ask the visitor to try again later or to use another address. Until an
+	// address is confirmed it gets no replies.
 	State ClientEmailConfirmationState `json:"state"`
 }
 
 // ClientEmailConfirmationState `sent`: a confirmation link went to `email` and was neither confirmed nor bounced yet ("we
 // sent a link to …, check your inbox"). `undeliverable`: mail to `email` cannot be delivered
 // (the link bounced, or the address bounced before); ask for another address. `confirmed`:
-// the link was confirmed and `email` is the contact's `email`.
+// the link was confirmed and `email` is the contact's `email`. `limited`: no link went out
+// because the address, the visitor's network or the channel reached its limit for confirmation
+// mails for now; ask the visitor to try again later or to use another address. Until an
+// address is confirmed it gets no replies.
 type ClientEmailConfirmationState string
 
 // ClientEmailUpdate defines model for ClientEmailUpdate.

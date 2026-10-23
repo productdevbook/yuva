@@ -8,7 +8,6 @@ import (
 	"time"
 	"uuid"
 
-	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -132,12 +131,13 @@ func (s *Server) GetClientChannel(ctx context.Context, req oas.GetClientChannelR
 
 func (s *Server) startContactSession(ctx context.Context, chat store.ChatChannel, limits attachLimits, inbox store.Inbox, claims *identityClaims, visitor string) (oas.ClientSession, error) {
 	ws := chat.WorkspaceID
-	var out oas.ClientSession
+	var (
+		out     oas.ClientSession
+		confirm *typedConfirmation
+		contact contactRow
+	)
 	err := s.inTx(ctx, ws, func(q *store.Queries, events *eventBatch) error {
-		var (
-			contact contactRow
-			err     error
-		)
+		var err error
 		if claims != nil && claims.jti != "" {
 			if err := s.useTokenID(ctx, q, inbox, *claims); err != nil {
 				return err
@@ -155,6 +155,11 @@ func (s *Server) startContactSession(ctx context.Context, chat store.ChatChannel
 		if contact.Blocked {
 			return errContactBlocked
 		}
+		if claims != nil {
+			if confirm, err = s.confirmTokenEmail(ctx, q, inbox, contact, *claims); err != nil {
+				return err
+			}
+		}
 		now := s.now()
 		token := contactTokenPrefix + randomToken(32)
 		sess, err := q.CreateContactSession(ctx, store.CreateContactSessionParams{
@@ -171,7 +176,36 @@ func (s *Server) startContactSession(ctx context.Context, chat store.ChatChannel
 		out.Inbox, err = s.clientInbox(ctx, q, inbox, chat, limits)
 		return err
 	})
+	if err != nil {
+		return out, err
+	}
+	held, err := s.sendTypedConfirmation(ctx, confirm, chat.ChannelID)
+	if err != nil || !held {
+		return out, err
+	}
+	c, err := s.st.GetContact(ctx, store.GetContactParams{WorkspaceID: ws, ID: contact.ID})
+	if err != nil {
+		return out, err
+	}
+	out.Contact, err = s.clientContactBody(ctx, s.st.Queries, c, true)
 	return out, err
+}
+
+// confirmTokenEmail asks once for a confirmation of the unverified e-mail an identity token
+// brought, which the contact keeps like a typed address: the first session that brings it gets the
+// link, later ones do not ask again.
+func (s *Server) confirmTokenEmail(ctx context.Context, q *store.Queries, inbox store.Inbox, c contactRow, claims identityClaims) (*typedConfirmation, error) {
+	if claims.email == "" || claims.emailVerified || c.TypedEmail == nil || *c.TypedEmail != claims.email {
+		return nil, nil
+	}
+	last, err := q.LatestEmailConfirmation(ctx, store.LatestEmailConfirmationParams{WorkspaceID: c.WorkspaceID, ContactID: c.ID})
+	switch {
+	case err == nil && last.Email == claims.email:
+		return nil, nil
+	case err != nil && !store.IsNotFound(err):
+		return nil, err
+	}
+	return s.requestEmailConfirmation(ctx, q, inbox, c.ID, claims.email)
 }
 
 var errTokenReused = errIdentity("the token's jti was already used")
@@ -533,7 +567,7 @@ func (s *Server) SetClientContactEmail(ctx context.Context, req oas.SetClientCon
 	}
 	var (
 		out     oas.ClientContact
-		confirm *mail.Message
+		confirm *typedConfirmation
 	)
 	err = s.inTx(ctx, cp.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		r, err := q.SetContactTypedEmail(ctx, store.SetContactTypedEmailParams{WorkspaceID: cp.workspaceID, ID: cp.contactID, TypedEmail: &addr, Now: s.now()})
@@ -556,11 +590,23 @@ func (s *Server) SetClientContactEmail(ctx context.Context, req oas.SetClientCon
 	if err != nil {
 		return nil, err
 	}
-	s.sendTypedConfirmation(ctx, cp, confirm)
+	held, err := s.sendTypedConfirmation(ctx, confirm, cp.channelID)
+	if err != nil {
+		return nil, err
+	}
+	if held {
+		c, err := s.st.GetContact(ctx, store.GetContactParams{WorkspaceID: cp.workspaceID, ID: cp.contactID})
+		if err != nil {
+			return nil, err
+		}
+		if out, err = s.clientContactBody(ctx, s.st.Queries, c, cp.identified); err != nil {
+			return nil, err
+		}
+	}
 	return oas.SetClientContactEmail200JSONResponse(out), nil
 }
 
-func (s *Server) confirmTypedEmail(ctx context.Context, q *store.Queries, cp contactPrincipal, addr string) (*mail.Message, error) {
+func (s *Server) confirmTypedEmail(ctx context.Context, q *store.Queries, cp contactPrincipal, addr string) (*typedConfirmation, error) {
 	inbox, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: cp.workspaceID, ID: cp.inboxID})
 	if err != nil {
 		return nil, err

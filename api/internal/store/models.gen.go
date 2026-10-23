@@ -1116,6 +1116,7 @@ type EmailConfirmation struct {
 	BouncedAt       *time.Time
 	ComplainedAt    *time.Time
 	ConfirmedAt     *time.Time
+	HeldAt          *time.Time
 }
 
 type EmailDesign struct {

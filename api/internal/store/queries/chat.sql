@@ -333,8 +333,11 @@ DELETE FROM email_confirmations WHERE workspace_id = @workspace_id AND expires_a
 -- name: SetEmailConfirmationRelayID :exec
 UPDATE email_confirmations SET relay_message_id = @relay_message_id WHERE workspace_id = @workspace_id AND id = @id;
 
+-- name: HoldEmailConfirmation :exec
+UPDATE email_confirmations SET held_at = @now::timestamptz WHERE workspace_id = @workspace_id AND id = @id;
+
 -- name: LatestEmailConfirmation :one
-SELECT email, expires_at, bounced_at, confirmed_at FROM email_confirmations
+SELECT email, expires_at, bounced_at, confirmed_at, held_at FROM email_confirmations
 WHERE workspace_id = @workspace_id AND contact_id = @contact_id
 ORDER BY created_at DESC, id DESC
 LIMIT 1;

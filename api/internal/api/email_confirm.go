@@ -26,10 +26,17 @@ const (
 )
 
 var (
-	limitTypedConfirmPerAddress   = limit{3, 24 * time.Hour}
-	limitTypedConfirmPerChannel   = limit{300, 24 * time.Hour}
-	limitTypedConfirmPerWorkspace = limit{1000, 24 * time.Hour}
+	limitTypedConfirmPerAddress = limit{3, 24 * time.Hour}
+	limitTypedConfirmPerContact = limit{6, 24 * time.Hour}
+	budgetTypedConfirm          = budget{limit{30, 24 * time.Hour}, limit{5000, 24 * time.Hour}}
 )
+
+// typedConfirmation is a confirmation mail for a typed address, to send once its transaction
+// committed.
+type typedConfirmation struct {
+	msg             mail.Message
+	ws, id, contact uuid.UUID
+}
 
 // sendMail hands a mail to the server mailer, which sends it after the request has answered
 // (mail.Async), and only logs a failure.
@@ -41,7 +48,7 @@ func (s *Server) sendMail(ctx context.Context, msg mail.Message) {
 
 // requestEmailConfirmation records a typed address for confirmation and returns the mail to send
 // once the transaction commits, or nil when no mail is due.
-func (s *Server) requestEmailConfirmation(ctx context.Context, q *store.Queries, inbox store.Inbox, contactID uuid.UUID, addr string) (*mail.Message, error) {
+func (s *Server) requestEmailConfirmation(ctx context.Context, q *store.Queries, inbox store.Inbox, contactID uuid.UUID, addr string) (*typedConfirmation, error) {
 	ws, now := inbox.WorkspaceID, s.now()
 	if _, err := q.GetContactIDByEmail(ctx, store.GetContactIDByEmailParams{WorkspaceID: ws, Email: addr}); !store.IsNotFound(err) {
 		return nil, err
@@ -88,22 +95,61 @@ func (s *Server) requestEmailConfirmation(ctx context.Context, q *store.Queries,
 			s.log.WarnContext(ctx, "confirmation relay id", slog.Any("error", err))
 		}
 	}
-	return &msg, nil
+	return &typedConfirmation{msg: msg, ws: ws, id: id, contact: contactID}, nil
 }
 
-// sendTypedConfirmation sends a confirmation mail for a typed address, if any, within the
-// server-wide limit for that address and the daily limits of the channel and workspace. It runs
-// after the transaction committed: a mail it refuses leaves the confirmation looking sent, as for a
-// suppressed address, so a visitor cannot tell the address was capped.
-func (s *Server) sendTypedConfirmation(ctx context.Context, cp contactPrincipal, msg *mail.Message) {
-	if msg == nil || s.rateLimit(ctx,
-		rateCheck{"typed-confirm:address:" + msg.To, limitTypedConfirmPerAddress},
-		rateCheck{"typed-confirm:channel:" + cp.channelID.String(), limitTypedConfirmPerChannel},
-		rateCheck{"typed-confirm:workspace:" + cp.workspaceID.String(), limitTypedConfirmPerWorkspace},
-	) != nil {
-		return
+// sendTypedConfirmation sends a confirmation mail for a typed address, if one is due, within the
+// limits per address (server-wide), contact, the caller's network on the channel and the channel.
+// It runs after the transaction committed, so the limits count only mails that are due. A mail
+// the limits hold back marks its confirmation `limited` and tells the contact's streams; it says
+// whether that happened.
+func (s *Server) sendTypedConfirmation(ctx context.Context, tc *typedConfirmation, channel uuid.UUID) (bool, error) {
+	if tc == nil {
+		return false, nil
 	}
-	s.sendMail(ctx, *msg)
+	ip := s.clientIP(requestFrom(ctx))
+	checks := append([]rateCheck{
+		{"typed-confirm:address:" + confirmAddressKey(tc.msg.To), limitTypedConfirmPerAddress},
+		{"typed-confirm:contact:" + tc.contact.String(), limitTypedConfirmPerContact},
+	}, sharedChecks(ip, "typed-confirm:channel:"+channel.String(), budgetTypedConfirm)...)
+	if s.rateLimit(ctx, checks...) == nil {
+		s.sendMail(ctx, tc.msg)
+		return false, nil
+	}
+	return true, s.inTx(ctx, tc.ws, func(q *store.Queries, events *eventBatch) error {
+		if err := q.HoldEmailConfirmation(ctx, store.HoldEmailConfirmationParams{WorkspaceID: tc.ws, ID: tc.id, Now: s.now()}); err != nil {
+			return err
+		}
+		row, err := q.GetContact(ctx, store.GetContactParams{WorkspaceID: tc.ws, ID: tc.contact})
+		if err != nil {
+			return err
+		}
+		body, err := s.contactBody(ctx, q, tc.ws, allInboxScope, row)
+		if err != nil {
+			return err
+		}
+		events.add(realtime.ContactUpdated, nil, nil, body)
+		return nil
+	})
+}
+
+// confirmAddressKey is an address as the per-address limit counts it: without case and `+tag`,
+// and without dots where the provider ignores them, so spellings of one mailbox count together.
+func confirmAddressKey(addr string) string {
+	addr = strings.ToLower(addr)
+	at := strings.LastIndexByte(addr, '@')
+	if at < 0 {
+		return addr
+	}
+	local, domain := addr[:at], addr[at+1:]
+	local, _, _ = strings.Cut(local, "+")
+	if domain == "googlemail.com" {
+		domain = "gmail.com"
+	}
+	if domain == "gmail.com" {
+		local = strings.ReplaceAll(local, ".", "")
+	}
+	return local + "@" + domain
 }
 
 // confirmInboxName is the inbox name as the confirmation mail shows it: the workspace chose it, and
@@ -170,6 +216,8 @@ func (s *Server) emailConfirmationState(ctx context.Context, q *store.Queries, c
 		return nil, nil
 	case r.BouncedAt != nil:
 		out.State = oas.EmailConfirmationUndeliverable
+	case r.ConfirmedAt == nil && r.HeldAt != nil && r.ExpiresAt.After(s.now()):
+		out.State = oas.EmailConfirmationLimited
 	case r.ConfirmedAt == nil && r.ExpiresAt.After(s.now()):
 		out.State, out.ExpiresAt = oas.EmailConfirmationSent, &r.ExpiresAt
 	default:
