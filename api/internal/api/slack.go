@@ -22,6 +22,7 @@ import (
 
 	"github.com/riverqueue/river"
 
+	"github.com/productdevbook/yuva/api/internal/jobs"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/slack"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -781,6 +782,10 @@ type SlackEventArgs struct {
 
 func (SlackEventArgs) Kind() string { return "slack_event" }
 
+func (SlackEventArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{Queue: jobs.OutboundQueue}
+}
+
 type slackEventWorker struct {
 	river.WorkerDefaults[SlackEventArgs]
 	s *Server
@@ -978,6 +983,10 @@ type SlackPostArgs struct {
 }
 
 func (SlackPostArgs) Kind() string { return "slack_post" }
+
+func (SlackPostArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{Queue: jobs.OutboundQueue}
+}
 
 type slackPostWorker struct {
 	river.WorkerDefaults[SlackPostArgs]

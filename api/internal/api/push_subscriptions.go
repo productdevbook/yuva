@@ -13,6 +13,7 @@ import (
 
 	"github.com/riverqueue/river"
 
+	"github.com/productdevbook/yuva/api/internal/jobs"
 	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/push"
@@ -162,6 +163,8 @@ type PushArgs struct {
 }
 
 func (PushArgs) Kind() string { return "push_send" }
+
+func (PushArgs) InsertOpts() river.InsertOpts { return river.InsertOpts{Queue: jobs.OutboundQueue} }
 
 func pushOpts() *river.InsertOpts { return &river.InsertOpts{MaxAttempts: pushAttempts} }
 

@@ -16,6 +16,7 @@ import (
 	"github.com/riverqueue/river"
 
 	"github.com/productdevbook/yuva/api/internal/email"
+	"github.com/productdevbook/yuva/api/internal/jobs"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
@@ -330,6 +331,10 @@ type DeliverabilityProbeArgs struct {
 }
 
 func (DeliverabilityProbeArgs) Kind() string { return "deliverability_probe" }
+
+func (DeliverabilityProbeArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{Queue: jobs.EmailQueue}
+}
 
 type deliverabilityProbeWorker struct {
 	river.WorkerDefaults[DeliverabilityProbeArgs]

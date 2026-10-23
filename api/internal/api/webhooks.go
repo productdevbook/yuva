@@ -15,6 +15,7 @@ import (
 	"github.com/riverqueue/river"
 	"go.opentelemetry.io/otel/attribute"
 
+	"github.com/productdevbook/yuva/api/internal/jobs"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -566,6 +567,10 @@ type WebhookDeliveryArgs struct {
 }
 
 func (WebhookDeliveryArgs) Kind() string { return "webhook_delivery" }
+
+func (WebhookDeliveryArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{Queue: jobs.WebhookQueue}
+}
 
 type webhookDeliveryWorker struct {
 	river.WorkerDefaults[WebhookDeliveryArgs]

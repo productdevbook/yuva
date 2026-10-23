@@ -11,6 +11,7 @@ import (
 	"github.com/riverqueue/river"
 
 	"github.com/productdevbook/yuva/api/internal/email"
+	"github.com/productdevbook/yuva/api/internal/jobs"
 	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
@@ -88,6 +89,8 @@ type ListMailArgs struct {
 }
 
 func (ListMailArgs) Kind() string { return "list_mail" }
+
+func (ListMailArgs) InsertOpts() river.InsertOpts { return river.InsertOpts{Queue: jobs.EmailQueue} }
 
 func listMailOpts() *river.InsertOpts { return &river.InsertOpts{MaxAttempts: listMailAttempts} }
 

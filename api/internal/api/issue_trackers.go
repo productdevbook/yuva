@@ -883,7 +883,7 @@ type IssueSyncArgs struct {
 func (IssueSyncArgs) Kind() string { return "issue_sync" }
 
 func (IssueSyncArgs) InsertOpts() river.InsertOpts {
-	return river.InsertOpts{MaxAttempts: issueSyncAttempts}
+	return river.InsertOpts{Queue: jobs.OutboundQueue, MaxAttempts: issueSyncAttempts}
 }
 
 type issueSyncWorker struct {

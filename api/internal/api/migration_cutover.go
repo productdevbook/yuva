@@ -17,6 +17,7 @@ import (
 	"github.com/riverqueue/river"
 
 	"github.com/productdevbook/yuva/api/internal/email"
+	"github.com/productdevbook/yuva/api/internal/jobs"
 	"github.com/productdevbook/yuva/api/internal/migrate"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/realtime"
@@ -210,6 +211,10 @@ type MigrationProbeArgs struct {
 }
 
 func (MigrationProbeArgs) Kind() string { return "migration_probe" }
+
+func (MigrationProbeArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{Queue: jobs.EmailQueue}
+}
 
 type migrationProbeWorker struct {
 	river.WorkerDefaults[MigrationProbeArgs]

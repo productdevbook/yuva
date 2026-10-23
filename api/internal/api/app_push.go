@@ -12,6 +12,7 @@ import (
 	"github.com/riverqueue/river"
 
 	"github.com/productdevbook/yuva/api/internal/apppush"
+	"github.com/productdevbook/yuva/api/internal/jobs"
 	"github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -323,6 +324,10 @@ type AppPushSendArgs struct {
 }
 
 func (AppPushSendArgs) Kind() string { return "app_push_send" }
+
+func (AppPushSendArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{Queue: jobs.OutboundQueue}
+}
 
 type appPushSendWorker struct {
 	river.WorkerDefaults[AppPushSendArgs]

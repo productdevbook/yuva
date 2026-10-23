@@ -18,6 +18,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 
 	"github.com/productdevbook/yuva/api/internal/email"
+	"github.com/productdevbook/yuva/api/internal/jobs"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -252,6 +253,8 @@ type EmailSendArgs struct {
 }
 
 func (EmailSendArgs) Kind() string { return "email_send" }
+
+func (EmailSendArgs) InsertOpts() river.InsertOpts { return river.InsertOpts{Queue: jobs.EmailQueue} }
 
 type emailSendWorker struct {
 	river.WorkerDefaults[EmailSendArgs]

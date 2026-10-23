@@ -10,6 +10,7 @@ import (
 
 	"github.com/riverqueue/river"
 
+	"github.com/productdevbook/yuva/api/internal/jobs"
 	"github.com/productdevbook/yuva/api/internal/slack"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
@@ -26,6 +27,8 @@ type SlackSLAArgs struct {
 }
 
 func (SlackSLAArgs) Kind() string { return "slack_sla_post" }
+
+func (SlackSLAArgs) InsertOpts() river.InsertOpts { return river.InsertOpts{Queue: jobs.OutboundQueue} }
 
 type slackSLAWorker struct {
 	river.WorkerDefaults[SlackSLAArgs]

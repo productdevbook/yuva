@@ -19,6 +19,7 @@ import (
 
 	"github.com/riverqueue/river"
 
+	"github.com/productdevbook/yuva/api/internal/jobs"
 	"github.com/productdevbook/yuva/api/internal/mail/images"
 	"github.com/productdevbook/yuva/api/internal/migrate/helpdesk"
 	"github.com/productdevbook/yuva/api/internal/oas"
@@ -43,6 +44,8 @@ type HelpImportArgs struct {
 }
 
 func (HelpImportArgs) Kind() string { return "help_import" }
+
+func (HelpImportArgs) InsertOpts() river.InsertOpts { return river.InsertOpts{Queue: jobs.ImportQueue} }
 
 // helpImportOpts queues without uniqueness: every slice locks nothing but continues from the
 // checkpoint, and every write is keyed by the source's ids, so a second job only shares the work.

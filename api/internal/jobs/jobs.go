@@ -92,20 +92,54 @@ const (
 	AnalyticsReportsInterval    = time.Hour
 )
 
-// New starts no migration workers when migrationWorkers is 0, and no analytics workers or analytics
-// periodic jobs when analyticsWorkers is 0. sesTenants adds the periodic Amazon SES tenant status check.
-func New(pool *pgxpool.Pool, q *store.Queries, log *slog.Logger, broadcastWorkers, migrationWorkers, analyticsWorkers int, sesTenants bool, register ...func(*river.Workers)) (*river.Client[pgx.Tx], error) {
+// WebhookQueue holds the webhook deliveries. An attempt can wait out a customer's endpoint for the
+// whole webhook timeout and a broken endpoint is retried for a day, so they never hold up assignment,
+// automation, SLA checks, notifications or snooze wake-ups on the default queue.
+const WebhookQueue = "webhooks"
+
+// OutboundQueue holds the posts to other services (Web Push, APNs and FCM, Slack, issue trackers),
+// for the same reason; a broken webhook endpoint does not delay them either.
+const OutboundQueue = "outbound"
+
+// EmailQueue holds the mail sent through a workspace's own SMTP account, which can be slow or
+// unreachable.
+const EmailQueue = "email"
+
+// ImportQueue holds the help center imports, which read another help desk for minutes.
+const ImportQueue = "imports"
+
+const (
+	DefaultWorkers  = 10
+	WebhookWorkers  = 10
+	OutboundWorkers = 10
+	EmailWorkers    = 10
+	ImportWorkers   = 2
+)
+
+// Queues starts no migration workers when migrationWorkers is 0 and no analytics workers when
+// analyticsWorkers is 0.
+func Queues(broadcastWorkers, migrationWorkers, analyticsWorkers int) map[string]river.QueueConfig {
 	if broadcastWorkers < 1 {
 		broadcastWorkers = 2
 	}
-	queues := map[string]river.QueueConfig{river.QueueDefault: {MaxWorkers: 10}, BroadcastQueue: {MaxWorkers: broadcastWorkers}, StatusNoticeQueue: {MaxWorkers: 2},
-		StatusCheckQueue: {MaxWorkers: StatusCheckWorkers}}
+	queues := map[string]river.QueueConfig{
+		river.QueueDefault: {MaxWorkers: DefaultWorkers}, BroadcastQueue: {MaxWorkers: broadcastWorkers}, StatusNoticeQueue: {MaxWorkers: 2},
+		StatusCheckQueue: {MaxWorkers: StatusCheckWorkers}, WebhookQueue: {MaxWorkers: WebhookWorkers}, OutboundQueue: {MaxWorkers: OutboundWorkers},
+		EmailQueue: {MaxWorkers: EmailWorkers}, ImportQueue: {MaxWorkers: ImportWorkers},
+	}
 	if migrationWorkers > 0 {
 		queues[MigrationQueue] = river.QueueConfig{MaxWorkers: migrationWorkers}
 	}
 	if analyticsWorkers > 0 {
 		queues[AnalyticsQueue] = river.QueueConfig{MaxWorkers: analyticsWorkers}
 	}
+	return queues
+}
+
+// New runs the queues of Queues, without analytics periodic jobs when analyticsWorkers is 0.
+// sesTenants adds the periodic Amazon SES tenant status check.
+func New(pool *pgxpool.Pool, q *store.Queries, log *slog.Logger, broadcastWorkers, migrationWorkers, analyticsWorkers int, sesTenants bool, register ...func(*river.Workers)) (*river.Client[pgx.Tx], error) {
+	queues := Queues(broadcastWorkers, migrationWorkers, analyticsWorkers)
 	workers := river.NewWorkers()
 	river.AddWorker(workers, &EventCleanupWorker{Queries: q, Now: time.Now})
 	for _, r := range register {
