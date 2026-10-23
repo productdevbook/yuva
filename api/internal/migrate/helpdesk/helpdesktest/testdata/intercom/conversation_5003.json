@@ -1,0 +1,80 @@
+{
+  "type": "conversation",
+  "id": "5003",
+  "title": null,
+  "state": "closed",
+  "open": false,
+  "created_at": 1759930000,
+  "updated_at": 1759999700,
+  "team_assignee_id": 3002,
+  "admin_assignee_id": 7001,
+  "source": {
+    "type": "email",
+    "id": "9003",
+    "delivered_as": "admin_initiated",
+    "subject": "<b>Your renewal</b>",
+    "body": "<p>Your plan renews on Monday.</p>",
+    "author": {
+      "type": "admin",
+      "id": "7001",
+      "name": "Deniz Kaya",
+      "email": "deniz@ic.example.com"
+    },
+    "attachments": []
+  },
+  "contacts": {
+    "type": "contact.list",
+    "contacts": [
+      {
+        "type": "contact",
+        "id": "u-103"
+      }
+    ]
+  },
+  "tags": {
+    "type": "tag.list",
+    "tags": [
+      {
+        "type": "tag",
+        "id": "1",
+        "name": "renewal"
+      }
+    ]
+  },
+  "conversation_parts": {
+    "type": "conversation_part.list",
+    "conversation_parts": [
+      {
+        "type": "conversation_part",
+        "id": "p1",
+        "part_type": "comment",
+        "body": "<p>Thanks, noted.</p>",
+        "created_at": 1759940000,
+        "updated_at": 1759940000,
+        "author": {
+          "type": "user",
+          "id": "u-103",
+          "name": "Selin Yildiz",
+          "email": "selin@ic-customer.example.com"
+        },
+        "attachments": []
+      },
+      {
+        "type": "conversation_part",
+        "id": "p2",
+        "part_type": "close",
+        "body": "",
+        "created_at": 1759941000,
+        "updated_at": 1759941000,
+        "author": {
+          "type": "admin",
+          "id": "7001",
+          "name": "Deniz Kaya",
+          "email": "deniz@ic.example.com"
+        },
+        "attachments": []
+      }
+    ],
+    "total_count": 2
+  }
+}

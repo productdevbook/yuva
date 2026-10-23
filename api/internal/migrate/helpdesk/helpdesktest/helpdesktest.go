@@ -43,6 +43,9 @@ const (
 	FrontToken       = "front-api-token-8f3a21"
 	FrontLimit       = 30
 	FrontRetryAfter  = 7
+	IntercomToken    = "ic-private-app-token"
+	IntercomLimit    = 40
+	IntercomCDN      = "downloads.intercomcdn.com"
 	OutsideHost      = "files.example.org"
 	ChatwootHost     = "chatwoot.acme.example"
 	ChatwootToken    = "cw-admin-token-1"
@@ -50,14 +53,15 @@ const (
 
 // Request is one request the server saw, at the test's clock.
 type Request struct {
-	Method string
-	Host   string
-	Path   string
-	Query  string
-	Auth   string
-	Token  string
-	Body   string
-	At     time.Time
+	Method  string
+	Host    string
+	Path    string
+	Query   string
+	Auth    string
+	Token   string
+	Version string
+	Body    string
+	At      time.Time
 }
 
 type Server struct {
@@ -68,6 +72,8 @@ type Server struct {
 	ZendeskExpires int
 	// FrontThrottle is how many of the next Front data requests are answered 429 with Retry-After.
 	FrontThrottle int
+	// IntercomLimited is how many of the next Intercom API requests are answered 429.
+	IntercomLimited int
 
 	t        testing.TB
 	srv      *httptest.Server
@@ -93,7 +99,7 @@ func New(t testing.TB, now func() time.Time) *Server {
 	}
 	tmpl := &x509.Certificate{
 		SerialNumber: big.NewInt(1), Subject: pkix.Name{CommonName: "helpdesk fixtures"},
-		DNSNames:  []string{"*.zendesk.com", "*.zdusercontent.com", "api.helpscout.net", "secure.helpscout.net", "api2.frontapp.com", "*.freshdesk.com", "s3.eu-west-1.amazonaws.com", OutsideHost, ChatwootHost},
+		DNSNames:  []string{"*.zendesk.com", "*.zdusercontent.com", "api.helpscout.net", "secure.helpscout.net", "api2.frontapp.com", "*.freshdesk.com", "s3.eu-west-1.amazonaws.com", "api.intercom.io", "api.eu.intercom.io", "api.au.intercom.io", IntercomCDN, OutsideHost, ChatwootHost},
 		NotBefore: time.Now().Add(-time.Hour), NotAfter: time.Now().Add(24 * time.Hour), KeyUsage: x509.KeyUsageDigitalSignature,
 		ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth}, IsCA: true, BasicConstraintsValid: true,
 	}
@@ -154,7 +160,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 	s.mu.Lock()
 	s.requests = append(s.requests, Request{Method: r.Method, Host: host, Path: r.URL.Path, Query: r.URL.RawQuery, Auth: r.Header.Get("Authorization"),
-		Token: r.Header.Get("api_access_token"), Body: string(body), At: s.now()})
+		Token: r.Header.Get("api_access_token"), Version: r.Header.Get("Intercom-Version"), Body: string(body), At: s.now()})
 	s.mu.Unlock()
 	switch {
 	case host == ZendeskSubdomain+".zendesk.com":
@@ -162,7 +168,7 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		s.zendesk(w, r, body)
 	case strings.HasSuffix(host, ".zdusercontent.com"):
 		s.attachment(w, r.URL.Path)
-	case host == OutsideHost:
+	case host == OutsideHost || host == IntercomCDN:
 		s.attachment(w, r.URL.Path)
 	case host == ChatwootHost:
 		s.chatwoot(w, r)
@@ -170,6 +176,8 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		s.freshdesk(w, r)
 	case host == FreshdeskFilesHost, host == FreshdeskS3Host:
 		s.freshdeskFiles(w, r)
+	case strings.HasSuffix(host, ".intercom.io"):
+		s.intercom(w, r)
 	case host == "api.helpscout.net":
 		w.Header().Set("X-RateLimit-Limit-Minute", fmt.Sprint(HelpScoutLimit))
 		s.helpscout(w, r, body)
@@ -606,3 +614,54 @@ func (s *Server) frontSearch(w http.ResponseWriter, query string) {
 
 // Fixture is a fixture file as recorded, for a test that answers a changed copy.
 func Fixture(name string) ([]byte, error) { return fixtures.ReadFile("testdata/" + name) }
+
+func (s *Server) intercom(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+	if tok, ok := strings.CutPrefix(r.Header.Get("Authorization"), "Bearer "); !ok || tok != IntercomToken {
+		w.WriteHeader(http.StatusUnauthorized)
+		_, _ = w.Write([]byte(`{"type":"error.list","errors":[{"code":"unauthorized","message":"Access Token Invalid"}]}`))
+		return
+	}
+	w.Header().Set("X-RateLimit-Limit", fmt.Sprint(IntercomLimit))
+	s.mu.Lock()
+	limited := s.IntercomLimited > 0
+	if limited {
+		s.IntercomLimited--
+	}
+	s.mu.Unlock()
+	if limited {
+		w.Header().Set("X-RateLimit-Reset", fmt.Sprint(s.now().Add(4*time.Second).Unix()))
+		w.WriteHeader(http.StatusTooManyRequests)
+		_, _ = w.Write([]byte(`{"type":"error.list","errors":[{"code":"rate_limit_exceeded","message":"Exceeded rate limit of 20 in 10_seconds"}]}`))
+		return
+	}
+	parts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
+	switch {
+	case r.URL.Path == "/me":
+		s.json(w, r, "intercom/me.json")
+	case r.URL.Path == "/teams":
+		s.json(w, r, "intercom/teams.json")
+	case r.URL.Path == "/admins":
+		s.json(w, r, "intercom/admins.json")
+	case r.URL.Path == "/conversations":
+		switch r.URL.Query().Get("starting_after") {
+		case "":
+			s.json(w, r, "intercom/conversations_1.json")
+		case "ic-c1":
+			s.json(w, r, "intercom/conversations_2.json")
+		case "ic-c2":
+			s.json(w, r, "intercom/conversations_3.json")
+		default:
+			http.NotFound(w, r)
+		}
+	case len(parts) == 2 && parts[0] == "conversations":
+		s.json(w, r, "intercom/conversation_"+parts[1]+".json")
+	case len(parts) == 2 && parts[0] == "contacts":
+		s.json(w, r, "intercom/contact_"+parts[1]+".json")
+	default:
+		http.NotFound(w, r)
+	}
+}

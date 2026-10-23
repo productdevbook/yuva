@@ -4225,7 +4225,7 @@ export interface paths {
          *
          *     `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
          *     team creates in its own account, plus the fields its preset's `token_fields` names: a
-         *     second `secret`, the account's `subdomain`, the `base_url` of a self-hosted install, or an `account` number
+         *     second `secret`, the account's `subdomain`, the `base_url` of a self-hosted install, an `account` number, or the data `region`
          *     (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
          *     address only where the operator allows one). The token is sent only in the help desk's
          *     own auth header and only to its API hosts, with `GET` only; the connection test then reads
@@ -12674,21 +12674,21 @@ export interface components {
         };
         /**
          * @description Where the history comes from: `imap`, a mailbox read over IMAP; `file`, export files;
-         *     `zendesk`, `helpscout`, `chatwoot`, `front` and `freshdesk`, help desks. A server offers the sources its operator allows
+         *     `zendesk`, `helpscout`, `chatwoot`, `front`, `freshdesk` and `intercom`, help desks. A server offers the sources its operator allows
          *     (`YUVA_MIGRATION_SOURCES`) among those built: all of them.
          * @enum {string}
          */
-        MigrationSource: "imap" | "file" | "zendesk" | "helpscout" | "chatwoot" | "front" | "freshdesk";
+        MigrationSource: "imap" | "file" | "zendesk" | "helpscout" | "chatwoot" | "front" | "freshdesk" | "intercom";
         /**
          * @description The provider of an `imap` mailbox: `gmail`, `google_workspace`, `microsoft` (Outlook.com
          *     and Microsoft 365, through "Sign in with Microsoft"), `yandex`, `icloud`, `zoho`, `yahoo`,
          *     `fastmail`, `gmx`, or `imap` for any other server. For a `file` migration: `takeout`, a
          *     Google Takeout file, or `file`, any other export file; both read every format the server
          *     knows, which `upload.format` names once the upload is complete. A help desk has the preset
-         *     of its source: `zendesk`, `helpscout`, `chatwoot`, `front` or `freshdesk`.
+         *     of its source: `zendesk`, `helpscout`, `chatwoot`, `front`, `freshdesk` or `intercom`.
          * @enum {string}
          */
-        MigrationPresetId: "gmail" | "google_workspace" | "microsoft" | "yandex" | "icloud" | "zoho" | "yahoo" | "fastmail" | "gmx" | "imap" | "takeout" | "file" | "zendesk" | "helpscout" | "chatwoot" | "front" | "freshdesk";
+        MigrationPresetId: "gmail" | "google_workspace" | "microsoft" | "yandex" | "icloud" | "zoho" | "yahoo" | "fastmail" | "gmx" | "imap" | "takeout" | "file" | "zendesk" | "helpscout" | "chatwoot" | "front" | "freshdesk" | "intercom";
         /**
          * @description - `draft`: created; not connected yet.
          *     - `connected`: the connection test passed; choose what to read.
@@ -12796,6 +12796,11 @@ export interface components {
              *     is not an administrator of that account.
              */
             account?: string;
+            /**
+             * @description `token`, where `token_fields` names `region`: the data region of the workspace (Intercom: `api.intercom.io`, `api.eu.intercom.io` or `api.au.intercom.io`).
+             * @enum {string}
+             */
+            region?: "us" | "eu" | "au";
             host?: string;
             /** Format: int32 */
             port?: number;
@@ -13325,7 +13330,8 @@ export interface components {
             /**
              * Format: int32
              * @description Help desks: requests a minute until the provider reports its limit; then at most half
-             *     of the per-minute limit it reports (`X-Rate-Limit`, `X-RateLimit-Limit-Minute`, `X-RateLimit-Total`).
+             *     of the per-minute limit it reports (`X-Rate-Limit`, `X-RateLimit-Limit-Minute`, `X-RateLimit-Total`; Intercom's `X-RateLimit-Limit` counts a
+             *     10-second window).
              */
             requests_per_minute?: number;
             /**
@@ -13399,7 +13405,7 @@ export interface components {
              * @description `token` presets: the fields `PUT /v1/migrations/{migrationId}/credentials` takes with
              *     `kind: token`, `token` first, in the order the connect form shows them.
              */
-            token_fields?: ("token" | "secret" | "subdomain" | "base_url" | "account")[];
+            token_fields?: ("token" | "secret" | "subdomain" | "base_url" | "account" | "region")[];
         };
         MigrationPresetList: {
             items: components["schemas"]["MigrationPreset"][];
@@ -13722,7 +13728,7 @@ export interface components {
             id: number;
             /**
              * @description `too_large` (over the message limit), `unparseable`, `gone` (no longer in the mailbox),
-             *     `failed` (five failed attempts), `blocked` (from a blocked contact), `auth_failed`,
+             *     `failed` (five failed attempts), `truncated` (a help desk returned only the most recent parts of a very long conversation; the older ones were not imported), `blocked` (from a blocked contact), `auth_failed`,
              *     `source_unreachable`, `throttled`, `folder_changed` (the folder was recreated and read
              *     again), `hosted_limit`, `source_write_refused` (Yuva kept a command from the mailbox;
              *     a bug), and for `microsoft` `token_refresh_failed` (Microsoft refused to refresh the

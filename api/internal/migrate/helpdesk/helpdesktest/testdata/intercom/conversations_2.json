@@ -1,0 +1,92 @@
+{
+  "type": "conversation.list",
+  "conversations": [
+    {
+      "type": "conversation",
+      "id": "5004",
+      "title": null,
+      "state": "closed",
+      "open": false,
+      "created_at": 1759100000,
+      "updated_at": 1759200000,
+      "team_assignee_id": 3001,
+      "admin_assignee_id": 0,
+      "source": {
+        "type": "conversation",
+        "id": "9004",
+        "delivered_as": "customer_initiated",
+        "subject": "",
+        "body": "<p>Old question about invoices.</p>",
+        "author": {
+          "type": "user",
+          "id": "u-100",
+          "name": "Ayse Demir",
+          "email": "ayse@ic-customer.example.org"
+        },
+        "attachments": []
+      },
+      "contacts": {
+        "type": "contact.list",
+        "contacts": [
+          {
+            "type": "contact",
+            "id": "u-100"
+          }
+        ]
+      },
+      "tags": {
+        "type": "tag.list",
+        "tags": []
+      }
+    },
+    {
+      "type": "conversation",
+      "id": "5005",
+      "title": null,
+      "state": "closed",
+      "open": false,
+      "created_at": 1759050000,
+      "updated_at": 1759150000,
+      "team_assignee_id": 3002,
+      "admin_assignee_id": 7002,
+      "source": {
+        "type": "conversation",
+        "id": "9005",
+        "delivered_as": "customer_initiated",
+        "subject": "",
+        "body": "<p>Long running thread.</p>",
+        "author": {
+          "type": "user",
+          "id": "u-104",
+          "name": "Mert Arslan",
+          "email": "mert@ic-customer.example.net"
+        },
+        "attachments": []
+      },
+      "contacts": {
+        "type": "contact.list",
+        "contacts": [
+          {
+            "type": "contact",
+            "id": "u-104"
+          }
+        ]
+      },
+      "tags": {
+        "type": "tag.list",
+        "tags": []
+      }
+    }
+  ],
+  "total_count": 6,
+  "pages": {
+    "type": "pages",
+    "page": 1,
+    "per_page": 150,
+    "total_pages": 3,
+    "next": {
+      "page": 2,
+      "starting_after": "ic-c2"
+    }
+  }
+}

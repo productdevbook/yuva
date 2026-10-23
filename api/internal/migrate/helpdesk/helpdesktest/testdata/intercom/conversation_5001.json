@@ -1,0 +1,195 @@
+{
+  "type": "conversation",
+  "id": "5001",
+  "title": "Charged twice",
+  "state": "open",
+  "open": true,
+  "created_at": 1759910000,
+  "updated_at": 1759999900,
+  "team_assignee_id": 3001,
+  "admin_assignee_id": 7002,
+  "source": {
+    "type": "conversation",
+    "id": "9001",
+    "delivered_as": "customer_initiated",
+    "subject": "",
+    "body": "<p>I was charged twice for order 4411.</p>",
+    "author": {
+      "type": "user",
+      "id": "u-100",
+      "name": "Ayse Demir",
+      "email": "AYSE@ic-customer.example.org"
+    },
+    "attachments": [
+      {
+        "type": "upload",
+        "name": "receipt.png",
+        "url": "https://downloads.intercomcdn.com/i/o/810001/receipt.png",
+        "content_type": "image/png",
+        "filesize": 70
+      }
+    ]
+  },
+  "contacts": {
+    "type": "contact.list",
+    "contacts": [
+      {
+        "type": "contact",
+        "id": "u-100"
+      }
+    ]
+  },
+  "tags": {
+    "type": "tag.list",
+    "tags": [
+      {
+        "type": "tag",
+        "id": "1",
+        "name": "billing"
+      },
+      {
+        "type": "tag",
+        "id": "2",
+        "name": "vip"
+      }
+    ]
+  },
+  "conversation_parts": {
+    "type": "conversation_part.list",
+    "conversation_parts": [
+      {
+        "type": "conversation_part",
+        "id": "p1",
+        "part_type": "comment",
+        "body": "<p>Sorry about that, checking now.</p>",
+        "created_at": 1759911000,
+        "updated_at": 1759911000,
+        "author": {
+          "type": "admin",
+          "id": "7002",
+          "name": "Ece Aksoy",
+          "email": "ece@ic.example.com"
+        },
+        "attachments": [
+          {
+            "type": "upload",
+            "name": "refund.pdf",
+            "url": "https://downloads.intercomcdn.com/i/o/810001/refund.pdf",
+            "content_type": "application/pdf",
+            "filesize": 40
+          },
+          {
+            "type": "upload",
+            "name": "steal.txt",
+            "url": "https://api.intercom.io/steal",
+            "content_type": "text/plain",
+            "filesize": 5
+          }
+        ]
+      },
+      {
+        "type": "conversation_part",
+        "id": "p2",
+        "part_type": "note",
+        "body": "<p>Duplicate charge confirmed in the payment provider.</p>",
+        "created_at": 1759912000,
+        "updated_at": 1759912000,
+        "author": {
+          "type": "admin",
+          "id": "7002",
+          "name": "Ece Aksoy",
+          "email": "ece@ic.example.com"
+        },
+        "attachments": []
+      },
+      {
+        "type": "conversation_part",
+        "id": "p3",
+        "part_type": "assignment",
+        "body": "",
+        "created_at": 1759913000,
+        "updated_at": 1759913000,
+        "author": {
+          "type": "admin",
+          "id": "7001",
+          "name": "Deniz Kaya",
+          "email": "deniz@ic.example.com"
+        },
+        "attachments": []
+      },
+      {
+        "type": "conversation_part",
+        "id": "p4",
+        "part_type": "comment",
+        "body": "<p>Bora from the same company here, see <a href=\"https://files.example.org/evil.png\">this link</a>.</p>",
+        "created_at": 1759914000,
+        "updated_at": 1759914000,
+        "author": {
+          "type": "user",
+          "id": "u-101",
+          "name": "Bora Demir",
+          "email": "bora@ic-customer.example.org"
+        },
+        "attachments": []
+      },
+      {
+        "type": "conversation_part",
+        "id": "p5",
+        "part_type": "comment",
+        "body": "<p>A teammate will follow up.</p>",
+        "created_at": 1759915000,
+        "updated_at": 1759915000,
+        "author": {
+          "type": "bot",
+          "id": "bot-1",
+          "name": "Fin",
+          "email": ""
+        },
+        "attachments": []
+      },
+      {
+        "type": "conversation_part",
+        "id": "p6",
+        "part_type": "comment",
+        "body": "<p>Thanks, waiting.</p>",
+        "created_at": 1759916000,
+        "updated_at": 1759916000,
+        "author": {
+          "type": "user"
+        },
+        "attachments": []
+      },
+      {
+        "type": "conversation_part",
+        "id": "p7",
+        "part_type": "close",
+        "body": "",
+        "created_at": 1759917000,
+        "updated_at": 1759917000,
+        "author": {
+          "type": "admin",
+          "id": "7002",
+          "name": "Ece Aksoy",
+          "email": "ece@ic.example.com"
+        },
+        "attachments": []
+      },
+      {
+        "type": "conversation_part",
+        "id": "p8",
+        "part_type": "snoozed",
+        "body": "",
+        "created_at": 1759918000,
+        "updated_at": 1759918000,
+        "author": {
+          "type": "admin",
+          "id": "7002",
+          "name": "Ece Aksoy",
+          "email": "ece@ic.example.com"
+        },
+        "attachments": []
+      }
+    ],
+    "total_count": 8
+  }
+}

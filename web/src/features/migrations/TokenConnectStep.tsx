@@ -15,6 +15,7 @@ import { Link } from "react-router"
 import { ErrorLine, Notice, StepHeader } from "@/components/common"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
 import { FollowsNotice } from "@/features/migrations/parts"
 import {
   useMigrationFolders,
@@ -29,6 +30,12 @@ import type { Migration, MigrationCredentialsInput, MigrationPreset, MigrationTe
 
 const SUBDOMAIN = /^[a-z0-9][a-z0-9-]{0,62}$/
 
+const REGIONS = [
+  { value: "us", label: "US · api.intercom.io" },
+  { value: "eu", label: "EU · api.eu.intercom.io" },
+  { value: "au", label: "AU · api.au.intercom.io" },
+] as const
+
 export function TokenConnectStep({ m, preset }: { m: Migration; preset: MigrationPreset }) {
   const guide = useGuides()[m.preset]
   const codeText = useTestCodeText()
@@ -39,6 +46,7 @@ export function TokenConnectStep({ m, preset }: { m: Migration; preset: Migratio
   const [subdomain, setSubdomain] = useState("")
   const [baseUrl, setBaseUrl] = useState("")
   const [account, setAccount] = useState("")
+  const [region, setRegion] = useState<(typeof REGIONS)[number]["value"]>("us")
   const [result, setResult] = useState<MigrationTestResult | null>(null)
   const credentials = useSetCredentials(m.id)
   const test = useTestConnection(m.id)
@@ -69,6 +77,7 @@ export function TokenConnectStep({ m, preset }: { m: Migration; preset: Migratio
         ...(fields.includes("subdomain") ? { subdomain: sub } : {}),
         ...(fields.includes("base_url") ? { base_url: base } : {}),
         ...(fields.includes("account") ? { account: accountId } : {}),
+        ...(fields.includes("region") ? { region } : {}),
       }
       await credentials.mutateAsync(body)
       const r = await test.mutateAsync()
@@ -216,6 +225,22 @@ export function TokenConnectStep({ m, preset }: { m: Migration; preset: Migratio
                 className="h-10 rounded-xl"
                 data-testid="migration-subdomain"
               />
+            </Field>
+          )}
+          {fields.includes("region") && (
+            <Field label={<Trans>Region</Trans>} htmlFor="migration-region">
+              <NativeSelect
+                id="migration-region"
+                value={region}
+                onChange={(e) => setRegion(e.target.value as typeof region)}
+                data-testid="migration-region"
+              >
+                {REGIONS.map((r) => (
+                  <NativeSelectOption key={r.value} value={r.value}>
+                    {r.label}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
             </Field>
           )}
           <Field

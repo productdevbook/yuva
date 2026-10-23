@@ -237,7 +237,8 @@ tags:
       token for IMAP, sent with `AUTHENTICATE XOAUTH2`. Help desks (Zendesk, Help Scout and Front) are
       read over their APIs, Front with an API token a Front admin creates and the others with the team's own OAuth client. Yuva only reads the source: it opens folders with `EXAMINE`, fetches with
       `BODY.PEEK`, and its connection refuses every command that could delete, move or mark
-      anything; a help desk's connection sends only `GET` requests, besides the token exchange.
+      anything; a help desk's connection sends only `GET` requests, besides the token exchange. An `intercom` migration connects with the access token
+      of a private app the team creates in its own workspace, with the data `region`.
 
       Owners, admins and API keys without an inbox limit manage migrations; agents get `403`.
       Keys and OAuth tokens need `migrations:manage`, which agents' tokens are never offered.
@@ -7470,7 +7471,7 @@ paths:
 
         `kind: token`: a help desk whose preset's `auth` is `token` connects with an API token the
         team creates in its own account, plus the fields its preset's `token_fields` names: a
-        second `secret`, the account's `subdomain`, the `base_url` of a self-hosted install, or an `account` number
+        second `secret`, the account's `subdomain`, the `base_url` of a self-hosted install, an `account` number, or the data `region`
         (HTTPS only; it is dialled with the same address checks as an IMAP server, so a private
         address only where the operator allows one). The token is sent only in the help desk's
         own auth header and only to its API hosts, with `GET` only; the connection test then reads
@@ -21159,10 +21160,10 @@ components:
       type: string
       description: |
         Where the history comes from: `imap`, a mailbox read over IMAP; `file`, export files;
-        `zendesk`, `helpscout`, `chatwoot`, `front` and `freshdesk`, help desks. A server offers the sources its operator allows
+        `zendesk`, `helpscout`, `chatwoot`, `front`, `freshdesk` and `intercom`, help desks. A server offers the sources its operator allows
         (`YUVA_MIGRATION_SOURCES`) among those built: all of them.
-      enum: [imap, file, zendesk, helpscout, chatwoot, front, freshdesk]
-      x-enum-varnames: [MigrationSourceImap, MigrationSourceFile, MigrationSourceZendesk, MigrationSourceHelpscout, MigrationSourceChatwoot, MigrationSourceFront, MigrationSourceFreshdesk]
+      enum: [imap, file, zendesk, helpscout, chatwoot, front, freshdesk, intercom]
+      x-enum-varnames: [MigrationSourceImap, MigrationSourceFile, MigrationSourceZendesk, MigrationSourceHelpscout, MigrationSourceChatwoot, MigrationSourceFront, MigrationSourceFreshdesk, MigrationSourceIntercom]
     MigrationPresetId:
       type: string
       description: |
@@ -21171,9 +21172,9 @@ components:
         `fastmail`, `gmx`, or `imap` for any other server. For a `file` migration: `takeout`, a
         Google Takeout file, or `file`, any other export file; both read every format the server
         knows, which `upload.format` names once the upload is complete. A help desk has the preset
-        of its source: `zendesk`, `helpscout`, `chatwoot`, `front` or `freshdesk`.
-      enum: [gmail, google_workspace, microsoft, yandex, icloud, zoho, yahoo, fastmail, gmx, imap, takeout, file, zendesk, helpscout, chatwoot, front, freshdesk]
-      x-enum-varnames: [PresetGmail, PresetGoogleWorkspace, PresetMicrosoft, PresetYandex, PresetIcloud, PresetZoho, PresetYahoo, PresetFastmail, PresetGmx, PresetImap, PresetTakeout, PresetFile, PresetZendesk, PresetHelpscout, PresetChatwoot, PresetFront, PresetFreshdesk]
+        of its source: `zendesk`, `helpscout`, `chatwoot`, `front`, `freshdesk` or `intercom`.
+      enum: [gmail, google_workspace, microsoft, yandex, icloud, zoho, yahoo, fastmail, gmx, imap, takeout, file, zendesk, helpscout, chatwoot, front, freshdesk, intercom]
+      x-enum-varnames: [PresetGmail, PresetGoogleWorkspace, PresetMicrosoft, PresetYandex, PresetIcloud, PresetZoho, PresetYahoo, PresetFastmail, PresetGmx, PresetImap, PresetTakeout, PresetFile, PresetZendesk, PresetHelpscout, PresetChatwoot, PresetFront, PresetFreshdesk, PresetIntercom]
     MigrationState:
       type: string
       description: |
@@ -21322,6 +21323,11 @@ components:
             read, one of the accounts the token's user belongs to (Chatwoot's account id, the
             number after `/app/accounts/` in its address). The connection test refuses a user who
             is not an administrator of that account.
+        region:
+          type: string
+          enum: [us, eu, au]
+          x-enum-varnames: [CredentialsRegionUs, CredentialsRegionEu, CredentialsRegionAu]
+          description: "`token`, where `token_fields` names `region`: the data region of the workspace (Intercom: `api.intercom.io`, `api.eu.intercom.io` or `api.au.intercom.io`)."
         host:
           type: string
           minLength: 1
@@ -22023,7 +22029,8 @@ components:
           format: int32
           description: |
             Help desks: requests a minute until the provider reports its limit; then at most half
-            of the per-minute limit it reports (`X-Rate-Limit`, `X-RateLimit-Limit-Minute`, `X-RateLimit-Total`).
+            of the per-minute limit it reports (`X-Rate-Limit`, `X-RateLimit-Limit-Minute`, `X-RateLimit-Total`; Intercom's `X-RateLimit-Limit` counts a
+            10-second window).
         incremental_per_minute:
           type: integer
           format: int32
@@ -22116,8 +22123,8 @@ components:
             `kind: token`, `token` first, in the order the connect form shows them.
           items:
             type: string
-            enum: [token, secret, subdomain, base_url, account]
-            x-enum-varnames: [TokenFieldToken, TokenFieldSecret, TokenFieldSubdomain, TokenFieldBaseUrl, TokenFieldAccount]
+            enum: [token, secret, subdomain, base_url, account, region]
+            x-enum-varnames: [TokenFieldToken, TokenFieldSecret, TokenFieldSubdomain, TokenFieldBaseUrl, TokenFieldAccount, TokenFieldRegion]
     MigrationPresetList:
       type: object
       required: [items]
@@ -22538,7 +22545,7 @@ components:
           type: string
           description: |
             `too_large` (over the message limit), `unparseable`, `gone` (no longer in the mailbox),
-            `failed` (five failed attempts), `blocked` (from a blocked contact), `auth_failed`,
+            `failed` (five failed attempts), `truncated` (a help desk returned only the most recent parts of a very long conversation; the older ones were not imported), `blocked` (from a blocked contact), `auth_failed`,
             `source_unreachable`, `throttled`, `folder_changed` (the folder was recreated and read
             again), `hosted_limit`, `source_write_refused` (Yuva kept a command from the mailbox;
             a bug), and for `microsoft` `token_refresh_failed` (Microsoft refused to refresh the

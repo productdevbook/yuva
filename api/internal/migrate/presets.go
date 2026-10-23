@@ -55,6 +55,7 @@ const (
 
 	SourceZendesk   = "zendesk"
 	SourceHelpScout = "helpscout"
+	SourceIntercom  = "intercom"
 
 	UsernameAddress   = "address"
 	UsernameLocalPart = "local_part"
@@ -75,6 +76,7 @@ const (
 	PresetFile            = "file"
 	PresetZendesk         = "zendesk"
 	PresetHelpScout       = "helpscout"
+	PresetIntercom        = "intercom"
 )
 
 func tls993(hosts ...string) []Server {

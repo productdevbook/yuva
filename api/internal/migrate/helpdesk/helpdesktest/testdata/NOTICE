@@ -1,7 +1,7 @@
 The fixtures in this directory were written for Yuva and contain no copied material and no data
 from a real account. They imitate what Zendesk's Support API and Help Scout's Mailbox API 2.0
 answer, shaped after the providers' public API documentation (developer.zendesk.com and
-developer.helpscout.com: response fields, cursor and page pagination, the rate-limit headers the
+developer.helpscout.com and developers.intercom.com: response fields, cursor and page pagination, the rate-limit headers the
 mock server adds), with example.com, example.org and example.net addresses and invented names,
 ids and content.
 
@@ -26,3 +26,8 @@ ids and content.
 - freshdesk/: users/me (agents/me), roles, agents, products, email configs, the ticket listing with its
   requesters, each ticket's description and conversations. Written for Yuva after developers.freshdesk.com,
   with invented data; attachment URLs are signed with a signature the mock server marks stale on first use.
+- intercom/: me, teams, admins, three cursor pages of conversations (`starting_after`), each
+  conversation with its parts (comments, notes, a bot, assignment and state parts, a part cut
+  from a conversation of 503 parts) and the contacts, one of them a lead without an e-mail
+  address. Attachments point at Intercom's CDN host, and one points at the API host to check it
+  is refused.

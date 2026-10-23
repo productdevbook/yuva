@@ -121,6 +121,8 @@ type client struct {
 	files        *http.Client
 	budget       *Budget
 	retryHeaders []string
+	resetHeaders []string
+	headers      map[string]string
 }
 
 // inlineWait is the longest wait for the incremental exports a reader sleeps through; a longer
@@ -152,6 +154,11 @@ func (c *client) get(ctx context.Context, hc *http.Client, class Class, rawURL, 
 		accept = "application/json"
 	}
 	req.Header.Set("Accept", accept)
+	if hc == c.api {
+		for k, v := range c.headers {
+			req.Header.Set(k, v)
+		}
+	}
 	res, err := hc.Do(req)
 	if err != nil {
 		return nil, err
@@ -190,11 +197,19 @@ func (c *client) failure(res *http.Response, path string) error {
 	case http.StatusUnauthorized:
 		return &AuthError{se}
 	case http.StatusTooManyRequests, statusEnhanceYourCalm:
-		wait := time.Minute
+		wait, told := time.Minute, false
 		for _, h := range c.retryHeaders {
 			if v, err := strconv.Atoi(strings.TrimSpace(res.Header.Get(h))); err == nil && v >= 0 {
-				wait = time.Duration(v) * time.Second
+				wait, told = time.Duration(v)*time.Second, true
 				break
+			}
+		}
+		if !told {
+			for _, h := range c.resetHeaders {
+				if v, err := strconv.ParseInt(strings.TrimSpace(res.Header.Get(h)), 10, 64); err == nil && v > 1_000_000_000 {
+					wait = time.Unix(v, 0).Sub(c.cfg.now())
+					break
+				}
 			}
 		}
 		return &LimitError{Until: c.cfg.now().Add(max(wait, time.Second))}

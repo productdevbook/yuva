@@ -125,7 +125,7 @@ a request over one is refused with `422 hosted_limit` naming it.
 | Variable | Default | Meaning |
 |---|---|---|
 | `YUVA_FORWARDING_DOMAIN` | unset | A domain name such as `forward.example.com` whose mail you point at Yuva like the channels' domains (see [Inbound](email.md#inbound)). Every e-mail channel then has a [forwarding address](email.md#forwarding-address) `<token>@` this domain. Unset, there are no forwarding addresses and moving a mailbox switches mail by MX only. |
-| `YUVA_MIGRATION_SOURCES` | all built | Comma-separated sources teams may move from: `imap`, `file`, `zendesk`, `helpscout`, `chatwoot`, `front`, `freshdesk`. Mailboxes over IMAP and export files are built so far. Empty turns moving off. |
+| `YUVA_MIGRATION_SOURCES` | all built | Comma-separated sources teams may move from: `imap`, `file`, `zendesk`, `helpscout`, `chatwoot`, `front`, `freshdesk`, `intercom`. Mailboxes over IMAP and export files are built so far. Empty turns moving off. |
 | `YUVA_MIGRATION_WORKERS` | `2` | Migrations copied at once per process; `0` runs none in this process. |
 | `YUVA_MIGRATION_MAX_ACTIVE` | `0` | Most migrations of one workspace that scan, copy or sync at once; `0` is no limit. |
 | `YUVA_MIGRATION_MAX_BYTES` | `0` | Most bytes one workspace imports in a month; `0` is no limit. |

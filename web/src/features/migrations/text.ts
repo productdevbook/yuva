@@ -276,6 +276,15 @@ export function useGuides() {
       link: guideUrl("migrate-freshdesk"),
       linkLabel: t`Read the guide`,
     },
+    intercom: {
+      steps: [
+        t`In Intercom, open Settings › Integrations › Developer Hub, choose New app and name it “Yuva”. Create it in your own workspace.`,
+        t`Under Configure › Authentication, turn on only the read permissions: read conversations, read users and companies, read admins and read tags.`,
+        t`Copy the access token from the same page and paste it below with your workspace's region. Delete the app when the migration is done.`,
+      ],
+      link: guideUrl("migrate-intercom"),
+      linkLabel: t`Read the guide`,
+    },
     file: {
       steps: [
         t`Thunderbird, Apple Mail and most mail apps export a folder as an .mbox file: upload that file.`,

@@ -4025,6 +4025,10 @@ msgstr "ಈಗಲೇ ನಕಲಿಸಿ ಮತ್ತು ನಿಮ್ಮ ರಿ�
 msgid "Copy the 16-character password and paste it below. Gmail's IMAP is always on."
 msgstr "16-ಅಕ್ಷರದ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ನಕಲಿಸಿ ಮತ್ತು ಕೆಳಗೆ ಅಂಟಿಸಿ. Gmail ನ IMAP ಯಾವಾಗಲೂ ಆನ್ ಆಗಿರುತ್ತದೆ."
 
+#: src/features/migrations/text.ts
+msgid "Copy the access token from the same page and paste it below with your workspace's region. Delete the app when the migration is done."
+msgstr "ಅದೇ ಪುಟದಿಂದ ಪ್ರವೇಶ ಟೋಕನ್ ನಕಲಿಸಿ ಮತ್ತು ನಿಮ್ಮ ವರ್ಕ್‌ಸ್ಪೇಸ್‌ನ ಪ್ರದೇಶದೊಂದಿಗೆ ಕೆಳಗೆ ಅಂಟಿಸಿ. ವಲಸೆ ಮುಗಿದ ನಂತರ ಆ್ಯಪ್ ಅನ್ನು ಅಳಿಸಿ."
+
 #: src/features/status/MonitorToken.tsx
 msgid "Copy the address now: it is shown only once. Anyone who has it can report for this monitor."
 msgstr "ವಿಳಾಸವನ್ನು ಈಗಲೇ ನಕಲಿಸಿ: ಅದನ್ನು ಒಮ್ಮೆ ಮಾತ್ರ ತೋರಿಸಲಾಗುತ್ತದೆ. ಅದನ್ನು ಹೊಂದಿರುವ ಯಾರಾದರೂ ಈ ಮಾನಿಟರ್ ಪರವಾಗಿ ವರದಿ ಮಾಡಬಹುದು."
@@ -6699,6 +6703,10 @@ msgstr "GMX ನಲ್ಲಿ, E-mail settings › POP3 & IMAP ತೆರೆದು 
 #: src/features/migrations/text.ts
 msgid "In Help Scout, open Your Profile › My Apps and choose Create App."
 msgstr "Help Scout ನಲ್ಲಿ, Your Profile › My Apps ತೆರೆದು Create App ಆರಿಸಿ."
+
+#: src/features/migrations/text.ts
+msgid "In Intercom, open Settings › Integrations › Developer Hub, choose New app and name it “Yuva”. Create it in your own workspace."
+msgstr "Intercom ನಲ್ಲಿ Settings › Integrations › Developer Hub ತೆರೆಯಿರಿ, New app ಆಯ್ಕೆಮಾಡಿ ಮತ್ತು ಅದಕ್ಕೆ “Yuva” ಎಂದು ಹೆಸರಿಡಿ. ಅದನ್ನು ನಿಮ್ಮದೇ ವರ್ಕ್‌ಸ್ಪೇಸ್‌ನಲ್ಲಿ ರಚಿಸಿ."
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "In Microsoft 365 that is mailbox forwarding or a mail flow rule; an admin may first have to allow external forwarding."
@@ -11617,6 +11625,7 @@ msgstr "ಉಲ್ಲೇಖ"
 msgid "Refresh"
 msgstr "ರಿಫ್ರೆಶ್"
 
+#: src/features/migrations/TokenConnectStep.tsx
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Region"
 msgstr "ಪ್ರದೇಶ"
@@ -15733,6 +15742,10 @@ msgstr "ತಲುಪಿಸಲಾಗದು: ಬೌನ್ಸ್ ಆಗಿದೆ, {
 msgid "Undeliverable: marked as spam by the recipient, {since}"
 msgstr "ತಲುಪಿಸಲಾಗದು: ಸ್ವೀಕರಿಸುವವರು ಸ್ಪ್ಯಾಮ್ ಎಂದು ಗುರುತಿಸಿದ್ದಾರೆ, {since}"
 
+#: src/features/migrations/text.ts
+msgid "Under Configure › Authentication, turn on only the read permissions: read conversations, read users and companies, read admins and read tags."
+msgstr "Configure › Authentication ಅಡಿಯಲ್ಲಿ ಓದುವ ಅನುಮತಿಗಳನ್ನು ಮಾತ್ರ ಆನ್ ಮಾಡಿ: ಸಂಭಾಷಣೆಗಳನ್ನು ಓದುವುದು, ಬಳಕೆದಾರರು ಮತ್ತು ಕಂಪನಿಗಳನ್ನು ಓದುವುದು, ನಿರ್ವಾಹಕರನ್ನು ಓದುವುದು ಮತ್ತು ಟ್ಯಾಗ್‌ಗಳನ್ನು ಓದುವುದು."
+
 #: src/features/setup/AddChannelStep.tsx
 #: src/features/setup/InstallStep.tsx
 msgid "Under each page: “Was this page helpful?”, then feedback and the page’s discussions."
@@ -17400,5 +17413,5 @@ msgid "Yuva's own notes cannot be changed."
 msgstr "Yuva ದ ಸ್ವಂತ ಟಿಪ್ಪಣಿಗಳನ್ನು ಬದಲಾಯಿಸಲಾಗದು."
 
 #: src/features/migrations/MigrationsPage.tsx
-msgid "Zendesk, Help Scout, Front, Freshdesk"
-msgstr "Zendesk, Help Scout, Front, Freshdesk"
+msgid "Zendesk, Help Scout, Front, Freshdesk, Intercom"
+msgstr "Zendesk, Help Scout, Front, Freshdesk, Intercom"

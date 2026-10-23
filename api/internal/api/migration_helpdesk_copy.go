@@ -538,6 +538,10 @@ func (r *migrationRun) previewHelpdesk(ctx context.Context) error {
 				continue
 			}
 			msgs, err := src.Messages(ctx, t)
+			var cut *helpdesk.TruncatedError
+			if errors.As(err, &cut) {
+				err = nil
+			}
 			if err != nil {
 				_ = r.saveThrottle(ctx)
 				return deskErr(err)
@@ -760,6 +764,11 @@ func (r *migrationRun) copyTicket(ctx context.Context, src helpdesk.Source, team
 	var t helpdesk.Ticket
 	_ = json.Unmarshal(it.Meta, &t)
 	msgs, err := src.Messages(ctx, t)
+	var cut *helpdesk.TruncatedError
+	if errors.As(err, &cut) {
+		s.addMigrationError(ctx, m, "truncated", cut.Error()+"; the older parts were not imported", "", &t.UpdatedAt, t.Subject)
+		err = nil
+	}
 	var se *helpdesk.StatusError
 	if errors.As(err, &se) && se.Status == http.StatusNotFound {
 		s.addMigrationError(ctx, m, "gone", "the ticket is no longer in the help desk", "", &t.UpdatedAt, t.Subject)

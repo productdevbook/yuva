@@ -1806,7 +1806,7 @@ losing a message and without changing anything at the source. Decisions:
   licensed reader) need no access to the account and are the fast way for very large Gmail
   mailboxes: Takeout first, then IMAP for newer mail and the cutover. Help desks: Zendesk with OAuth
   `read`, Help Scout, Chatwoot (an administrator's access token, the install's HTTPS base URL and the account
-  number; conversations by last activity, messages backwards with `before`, 60 requests a minute); each team creates the OAuth client in its own help desk with Yuva's redirect URL
+  number; conversations by last activity, messages backwards with `before`, 60 requests a minute); Intercom (a private app's access token, see below); each team creates the OAuth client in its own help desk with Yuva's redirect URL
   and enters its id and secret on the panel's connect page (there is no operator-wide client), and a
   help-desk migration goes through the same cutover as a mailbox. Front connects with an API token a
   Front admin creates (feature Access resources, namespaces Global and Shared, permission Read only),
@@ -1823,13 +1823,13 @@ losing a message and without changing anything at the source. Decisions:
   attribute prefix and how its changes are read after the scan; the preset, the sign-in, the reader
   and the copy read the entry, so a new help desk is a new entry. A `token` desk connects with
   `PUT /v1/migrations/{id}/credentials` (`kind: token`, the API token and, where the entry asks, a
-  second secret, the account's subdomain, the HTTPS base URL of a self-hosted install or an account number), sealed like
+  second secret, the account's subdomain, the HTTPS base URL of a self-hosted install, an account number or the data region), sealed like
   OAuth tokens and deleted with them; the panel shows its form in place of "Sign in". Freshdesk is
   a token desk: an admin's API key (no scopes, no read-only key) sent as Basic `key:X` to
   `<subdomain>.freshdesk.com` only; tickets listed by `updated_at` from `updated_since`, started again at the
   last change time after Freshdesk's 300-page cut and deduplicated by id; attachment URLs are pre-signed,
   fetched without the key and read again once when expired; a budget of half of `X-RateLimit-Total` (50 a
-  minute until reported) and 20 list requests a minute. Detection from the address and the domain's MX picks the preset; autoconfig is
+  minute until reported) and 20 list requests a minute. Intercom (`internal/migrate/helpdesk/intercom.go`) connects with the access token of a private app the team creates in its own workspace and a region (`us`, `eu`, `au`: the API host); it sends a pinned `Intercom-Version` and counts 10-second windows (`X-RateLimit-Limit`, half of it; a 429 waits until `X-RateLimit-Reset`, a Unix time). Its search endpoints are `POST`, so conversations are listed with `GET /conversations` (`starting_after`, 150 a page; Intercom documents no order, so every pass reads the listing to its end and keeps what changed since the cursor) and read with `GET /conversations/{id}`, which returns at most the 500 most recent parts (500 parts count as cut whatever `total_count` says): a longer conversation imports those and records a `truncated` error. Teams are the folders, with an "Unassigned" folder (id 0) for the rest; an incoming message's author is its actual sender (a second contact), the requester only when the sender is missing; attachments are the `upload` files Intercom lists, fetched without the token, and a link typed into a message is never fetched. Detection from the address and the domain's MX picks the preset; autoconfig is
   read only from the team's own domain. Provider mail APIs and other sign-ins were considered and
   rejected for one IMAP path.
 - **Read-only, enforced three times.** No credential a mailbox accepts is read-only (Microsoft's

@@ -22,6 +22,7 @@ const (
 	AccountNone      = ""
 	AccountSubdomain = "subdomain"
 	AccountBaseURL   = "base_url"
+	AccountRegion    = "region"
 )
 
 // The fields of a token desk's connect form, as the API names them.
@@ -31,6 +32,7 @@ const (
 	FieldSubdomain = "subdomain"
 	FieldBaseURL   = "base_url"
 	FieldAccount   = "account"
+	FieldRegion    = "region"
 )
 
 // How the token goes on a request.
@@ -72,6 +74,7 @@ type Account struct {
 	Subdomain string `json:"subdomain,omitempty"`
 	BaseURL   string `json:"base_url,omitempty"`
 	ID        string `json:"id,omitempty"`
+	Region    string `json:"region,omitempty"`
 }
 
 // Credentials are what the reader sends: the access or API token, and a token desk's second
@@ -122,6 +125,10 @@ type Desk struct {
 	// IncrementalShare: the cap is this share of the reported limit instead (Front's search guard).
 	IncrementalShare float64
 	RetryHeaders     []string
+	// ResetHeaders hold the Unix time the limit renews at, used when RetryHeaders give no wait.
+	ResetHeaders []string
+	// Headers go on every request to the API hosts.
+	Headers map[string]string
 	// AttributePrefix names a contact's attributes from this help desk (zendesk_id).
 	AttributePrefix string
 	Sync            SyncCursor
@@ -132,7 +139,7 @@ type Desk struct {
 
 var (
 	registryMu sync.RWMutex
-	registry   = []Desk{zendeskDesk, helpScoutDesk, chatwootDesk, frontDesk, freshdeskDesk}
+	registry   = []Desk{zendeskDesk, helpScoutDesk, chatwootDesk, frontDesk, freshdeskDesk, intercomDesk}
 )
 
 // Desks are the help desks in the order the panel shows them.
@@ -187,6 +194,8 @@ func (d Desk) Fields() []string {
 		out = append(out, FieldSubdomain)
 	case AccountBaseURL:
 		out = append(out, FieldBaseURL)
+	case AccountRegion:
+		out = append(out, FieldRegion)
 	}
 	if d.AccountID {
 		out = append(out, FieldAccount)
@@ -265,7 +274,7 @@ func (d Desk) client(cfg Config, a Account, creds Credentials, budget *Budget) *
 		fb.hosts = Hosts{}
 	}
 	return &client{
-		cfg: cfg, budget: d.Budget(budget), retryHeaders: d.RetryHeaders,
+		cfg: cfg, budget: d.Budget(budget), retryHeaders: d.RetryHeaders, resetHeaders: d.ResetHeaders, headers: d.Headers,
 		api: cfg.dataClient(api, b), files: cfg.dataClient(files, fb),
 	}
 }
@@ -354,4 +363,16 @@ var frontDesk = Desk{
 	// The search guard is 40% of the company's limit; 20 is that of the smallest plan.
 	IncrementalMax: 20, IncrementalShare: 0.4, RetryHeaders: []string{"Retry-After"}, AttributePrefix: "front", Sync: SyncModifiedSince,
 	read: func(c *client, _ Account) Source { return &Front{c: c} },
+}
+
+var intercomDesk = Desk{
+	Source: "intercom", Name: "Intercom", Guide: "migrate-intercom", Auth: AuthToken, Account: AccountRegion,
+	APIHosts:      func(a Account) Hosts { return Hosts{Exact: []string{IntercomHost(a.Region)}} },
+	FilesAnywhere: true,
+	Send:          Send{Scheme: SendBearer},
+	Limits:        []Limit{{Window: IntercomWindow, Default: intercomPerWindow, Headers: []string{"X-RateLimit-Limit"}}},
+	RetryHeaders:  []string{"Retry-After"}, ResetHeaders: []string{"X-RateLimit-Reset"},
+	Headers:         map[string]string{"Intercom-Version": intercomVersion},
+	AttributePrefix: "intercom", Sync: SyncModifiedSince,
+	read: func(c *client, a Account) Source { return &Intercom{c: c, host: IntercomHost(a.Region)} },
 }

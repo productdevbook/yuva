@@ -65,12 +65,13 @@ type helpdeskSecret struct {
 	Subdomain string          `json:"subdomain,omitempty"`
 	BaseURL   string          `json:"base_url,omitempty"`
 	AccountID string          `json:"account_id,omitempty"`
+	Region    string          `json:"region,omitempty"`
 	Secret    string          `json:"secret,omitempty"`
 	Account   string          `json:"account"`
 }
 
 func (sec helpdeskSecret) account() helpdesk.Account {
-	return helpdesk.Account{Subdomain: sec.Subdomain, BaseURL: sec.BaseURL, ID: sec.AccountID}
+	return helpdesk.Account{Subdomain: sec.Subdomain, BaseURL: sec.BaseURL, ID: sec.AccountID, Region: sec.Region}
 }
 
 type signInSecret struct {
@@ -870,10 +871,14 @@ func tokenSecret(d helpdesk.Desk, token string, b *oas.MigrationCredentialsInput
 	sec := helpdeskSecret{Tokens: helpdesk.Tokens{Access: token}}
 	port := int32(helpdeskPort)
 	fields := d.Fields()
+	var region *string
+	if b.Region != nil {
+		region = new(string(*b.Region))
+	}
 	for _, f := range []struct {
 		name string
 		v    *string
-	}{{helpdesk.FieldSecret, b.Secret}, {helpdesk.FieldSubdomain, b.Subdomain}, {helpdesk.FieldBaseURL, b.BaseUrl}, {helpdesk.FieldAccount, b.Account}} {
+	}{{helpdesk.FieldSecret, b.Secret}, {helpdesk.FieldSubdomain, b.Subdomain}, {helpdesk.FieldBaseURL, b.BaseUrl}, {helpdesk.FieldAccount, b.Account}, {helpdesk.FieldRegion, region}} {
 		if f.v != nil && !slices.Contains(fields, f.name) {
 			return sec, 0, errValidation(f.name + " is not one of " + d.Name + "'s token_fields")
 		}
@@ -892,6 +897,12 @@ func tokenSecret(d helpdesk.Desk, token string, b *oas.MigrationCredentialsInput
 		if !subdomainRe.MatchString(sec.Subdomain) {
 			return sec, 0, errValidation("subdomain must be the account's subdomain: letters, digits and hyphens")
 		}
+	}
+	if region != nil {
+		if !helpdesk.IntercomRegion(*region) {
+			return sec, 0, errValidation("region must be us, eu or au")
+		}
+		sec.Region = *region
 	}
 	if b.BaseUrl != nil {
 		base, err := helpdesk.BaseURL(*b.BaseUrl)
