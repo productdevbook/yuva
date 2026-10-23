@@ -5,7 +5,7 @@ import android.os.Build
 import java.util.UUID
 
 class YuvaFeedback(
-    val category: YuvaFeedbackCategory,
+    val categoryKey: String,
     val body: String,
     val subject: String? = null,
     val screenshots: List<YuvaUpload> = emptyList(),
@@ -13,7 +13,20 @@ class YuvaFeedback(
     val email: String? = null,
     val screen: String? = null,
     val clientId: String = UUID.randomUUID().toString(),
-)
+) {
+    constructor(
+        category: YuvaFeedbackCategory,
+        body: String,
+        subject: String? = null,
+        screenshots: List<YuvaUpload> = emptyList(),
+        allowEmail: Boolean = false,
+        email: String? = null,
+        screen: String? = null,
+        clientId: String = UUID.randomUUID().toString(),
+    ) : this(category.value, body, subject, screenshots, allowEmail, email, screen, clientId)
+
+    val category: YuvaFeedbackCategory get() = YuvaFeedbackCategory.fromKey(categoryKey)
+}
 
 data class YuvaDeviceInfo(
     val appVersion: String?,

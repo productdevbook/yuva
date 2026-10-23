@@ -705,6 +705,10 @@ internal fun categoryLabel(category: dev.yuva.YuvaFeedbackCategory): Int = when 
 }
 
 
+@Composable
+internal fun categoryTitle(feedback: dev.yuva.YuvaFeedbackInfo): String =
+    feedback.categoryName ?: stringResource(categoryLabel(feedback.category))
+
 internal fun stateLabel(state: YuvaFeedbackState): Int = when (state) {
     YuvaFeedbackState.SENT -> R.string.yuva_feedback_state_sent
     YuvaFeedbackState.ANSWERED -> R.string.yuva_feedback_state_answered
@@ -718,8 +722,7 @@ internal fun stateLabel(state: YuvaFeedbackState): Int = when (state) {
 @Composable
 private fun FeedbackRow(conversation: YuvaConversation, shape: Shape, color: Color, modifier: Modifier, onClick: () -> Unit) {
     val context = LocalContext.current
-    val title = conversation.feedback?.let { stringResource(categoryLabel(it.category)) }
-        ?: stringResource(R.string.yuva_feedback_kind)
+    val title = conversation.feedback?.let { categoryTitle(it) } ?: stringResource(R.string.yuva_feedback_kind)
     val text = conversation.feedback?.text?.takeIf { it.isNotEmpty() }
         ?: conversation.subject.ifEmpty { conversation.lastMessage?.text.orEmpty() }
     ConversationListRow(
@@ -732,7 +735,7 @@ private fun FeedbackRow(conversation: YuvaConversation, shape: Shape, color: Col
         color = color,
         onClick = onClick,
         modifier = modifier,
-        leading = { CategoryIcon(conversation.feedback?.category, RowAvatar) },
+        leading = { CategoryIcon(conversation.feedback?.categoryKey, RowAvatar) },
     ) {
         Row(Modifier.padding(top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             conversation.feedbackState?.let { state ->

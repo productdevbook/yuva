@@ -388,11 +388,11 @@ struct FeedbackRow: View {
 
     var body: some View {
         RowLayout(
-            title: conversation.feedback.map { L.t("feedback.category." + $0.category.rawValue) } ?? L.t("feedback.kind"),
+            title: conversation.feedback?.displayName ?? L.t("feedback.kind"),
             preview: firstLine, date: conversation.lastMessageAt ?? conversation.createdAt,
             unread: conversation.unread, previewLines: 1
         ) {
-            CategoryIcon(category: conversation.feedback?.category, size: ConversationRowMetrics.avatar)
+            CategoryIcon(key: conversation.feedback?.categoryKey, size: ConversationRowMetrics.avatar)
         } extra: {
             HStack(spacing: 8) {
                 if let state = conversation.feedbackState {

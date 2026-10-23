@@ -3,6 +3,7 @@ package dev.yuva
 import android.content.Context
 import java.io.IOException
 import java.time.Instant
+import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
@@ -221,7 +222,7 @@ class YuvaClient internal constructor(
         device: YuvaDeviceInfo = YuvaDeviceInfo.current(appContext),
     ): YuvaConversationStarted {
         val fields = mapOf(
-            "category" to feedback.category.value,
+            "category" to feedback.categoryKey,
             "body" to feedback.body,
             "client_id" to feedback.clientId,
             "subject" to feedback.subject,
@@ -387,6 +388,7 @@ class YuvaClient internal constructor(
         val request = Request.Builder()
             .url(url(path, query))
             .header("Accept", "application/json")
+            .header("Accept-Language", Locale.getDefault().toLanguageTag())
             .method(method, body?.toRequestBody() ?: if (method == "GET" || method == "DELETE") null else "{}".toRequestBody(JSON_TYPE))
             .apply { if (bearer != null) bearer(bearer) }
             .build()

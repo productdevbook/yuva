@@ -15,7 +15,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -146,11 +161,19 @@ internal val AvatarShape: Shape = LobedShape(9, 0.09f)
 
 internal data class CategoryShape(val lobes: Int, val depth: Float, val rotation: Float = 0f)
 
-internal fun categoryShape(category: YuvaFeedbackCategory?): CategoryShape = when (category) {
-    YuvaFeedbackCategory.BUG -> CategoryShape(8, 0.13f)
-    YuvaFeedbackCategory.IDEA -> CategoryShape(12, 0.08f)
-    YuvaFeedbackCategory.PRAISE -> CategoryShape(4, 0.2f, (PI / 4).toFloat())
-    YuvaFeedbackCategory.OTHER, null -> CategoryShape(4, 0.07f, (PI / 4).toFloat())
+private fun builtInCategory(key: String?): YuvaFeedbackCategory? = YuvaFeedbackCategory.entries.firstOrNull { it.value == key }
+
+private fun keyHash(key: String): Int = key.fold(7) { acc, c -> (acc * 31 + c.code) and 0xFFFF }
+
+internal fun categoryShape(key: String?): CategoryShape {
+    if (key == null) return categoryShape(YuvaFeedbackCategory.OTHER.value)
+    return when (builtInCategory(key)) {
+        YuvaFeedbackCategory.BUG -> CategoryShape(8, 0.13f)
+        YuvaFeedbackCategory.IDEA -> CategoryShape(12, 0.08f)
+        YuvaFeedbackCategory.PRAISE -> CategoryShape(4, 0.2f, (PI / 4).toFloat())
+        YuvaFeedbackCategory.OTHER -> CategoryShape(4, 0.07f, (PI / 4).toFloat())
+        null -> CategoryShape(5 + keyHash(key) % 6, 0.1f)
+    }
 }
 
 internal object LogoCache {
@@ -169,11 +192,37 @@ internal object LogoCache {
 
 internal data class CategoryStyle(val icon: ImageVector, val tint: Color)
 
-internal fun categoryStyle(category: YuvaFeedbackCategory?): CategoryStyle = when (category) {
-    YuvaFeedbackCategory.BUG -> CategoryStyle(YuvaIcons.Bug, Color(0xFFE5484D))
-    YuvaFeedbackCategory.IDEA -> CategoryStyle(YuvaIcons.Lightbulb, Color(0xFFF5A524))
-    YuvaFeedbackCategory.PRAISE -> CategoryStyle(Icons.Filled.Favorite, Color(0xFFE5528A))
-    YuvaFeedbackCategory.OTHER, null -> CategoryStyle(YuvaIcons.Chat, Color(0xFF8B8D98))
+internal fun categoryStyle(key: String?, icon: String? = null): CategoryStyle {
+    if (key == null) return categoryStyle(YuvaFeedbackCategory.OTHER.value)
+    return when (builtInCategory(key)) {
+        YuvaFeedbackCategory.BUG -> CategoryStyle(YuvaIcons.Bug, Color(0xFFE5484D))
+        YuvaFeedbackCategory.IDEA -> CategoryStyle(YuvaIcons.Lightbulb, Color(0xFFF5A524))
+        YuvaFeedbackCategory.PRAISE -> CategoryStyle(Icons.Filled.Favorite, Color(0xFFE5528A))
+        YuvaFeedbackCategory.OTHER -> CategoryStyle(YuvaIcons.Chat, Color(0xFF8B8D98))
+        null -> CategoryStyle(lucideIcon(icon), Color(0xFF8B8D98))
+    }
+}
+
+internal fun lucideIcon(name: String?): ImageVector = when (name) {
+    "bug" -> YuvaIcons.Bug
+    "lightbulb" -> YuvaIcons.Lightbulb
+    "heart" -> Icons.Filled.Favorite
+    "star" -> Icons.Filled.Star
+    "palette", "pen", "pencil" -> Icons.Filled.Create
+    "zap", "alert-triangle", "triangle-alert" -> Icons.Filled.Warning
+    "wrench", "hammer" -> Icons.Filled.Build
+    "settings" -> Icons.Filled.Settings
+    "mail" -> Icons.Filled.Email
+    "user" -> Icons.Filled.Person
+    "lock", "shield" -> Icons.Filled.Lock
+    "bell" -> Icons.Filled.Notifications
+    "credit-card", "shopping-cart" -> Icons.Filled.ShoppingCart
+    "thumbs-up" -> Icons.Filled.ThumbUp
+    "info", "help-circle", "circle-help" -> Icons.Filled.Info
+    "search" -> Icons.Filled.Search
+    "home", "house" -> Icons.Filled.Home
+    "phone", "smartphone" -> Icons.Filled.Phone
+    else -> YuvaIcons.Chat
 }
 
 internal data class TonalColors(val container: Color, val content: Color)
@@ -182,9 +231,10 @@ internal data class TonalColors(val container: Color, val content: Color)
 internal fun isDarkSurface(): Boolean = MaterialTheme.colorScheme.surface.luminance() < 0.5f
 
 @Composable
-internal fun categoryColors(category: YuvaFeedbackCategory?): TonalColors {
+internal fun categoryColors(key: String?): TonalColors {
     val dark = isDarkSurface()
-    return when (category) {
+    val scheme = MaterialTheme.colorScheme
+    return when (builtInCategory(key)) {
         YuvaFeedbackCategory.BUG ->
             if (dark) TonalColors(Color(0xFF5F1A1C), Color(0xFFFFB4AB)) else TonalColors(Color(0xFFFFDAD6), Color(0xFFA4161A))
         YuvaFeedbackCategory.IDEA ->
@@ -192,19 +242,26 @@ internal fun categoryColors(category: YuvaFeedbackCategory?): TonalColors {
         YuvaFeedbackCategory.PRAISE ->
             if (dark) TonalColors(Color(0xFF64193F), Color(0xFFFFB0CF)) else TonalColors(Color(0xFFFFD8E6), Color(0xFFA0175A))
         YuvaFeedbackCategory.OTHER, null ->
-            TonalColors(MaterialTheme.colorScheme.secondaryContainer, MaterialTheme.colorScheme.onSecondaryContainer)
+            if (key == null || key == YuvaFeedbackCategory.OTHER.value) {
+                TonalColors(scheme.secondaryContainer, scheme.onSecondaryContainer)
+            } else when (keyHash(key) % 3) {
+                0 -> TonalColors(scheme.tertiaryContainer, scheme.onTertiaryContainer)
+                1 -> TonalColors(scheme.primaryContainer, scheme.onPrimaryContainer)
+                else -> TonalColors(scheme.secondaryContainer, scheme.onSecondaryContainer)
+            }
     }
 }
 
 @Composable
 internal fun CategoryIcon(
-    category: YuvaFeedbackCategory?,
+    key: String?,
     size: Dp = 48.dp,
     morph: Float = 1f,
-    colors: TonalColors = categoryColors(category),
+    icon: String? = null,
+    colors: TonalColors = categoryColors(key),
 ) {
-    val style = categoryStyle(category)
-    val shape = categoryShape(category)
+    val style = categoryStyle(key, icon)
+    val shape = categoryShape(key)
     Box(
         Modifier.size(size).clip(LobedShape(shape.lobes, shape.depth * morph, shape.rotation)).background(colors.container),
         contentAlignment = Alignment.Center,

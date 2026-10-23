@@ -370,6 +370,7 @@ public actor YuvaClient {
         var request = URLRequest(url: url(path, query: query))
         request.httpMethod = method
         request.setValue("application/json", forHTTPHeaderField: "Accept")
+        if let language = Locale.preferredLanguages.first { request.setValue(language, forHTTPHeaderField: "Accept-Language") }
         if let token { request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization") }
         if let body {
             if body.files.isEmpty {

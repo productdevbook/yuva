@@ -87,6 +87,8 @@ import dev.yuva.YuvaConversation
 import dev.yuva.YuvaEvent
 import dev.yuva.YuvaFeedback
 import dev.yuva.YuvaFeedbackCategory
+import dev.yuva.YuvaFeedbackCategoryItem
+import dev.yuva.YuvaInbox
 import dev.yuva.YuvaUpload
 import java.util.UUID
 import kotlinx.coroutines.CancellationException
@@ -107,8 +109,8 @@ fun YuvaFeedbackView(
     TrackOpen()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var categories by remember { mutableStateOf(YuvaFeedbackCategory.entries.toList()) }
-    var category by remember { mutableStateOf(YuvaFeedbackCategory.BUG) }
+    var categories by remember { mutableStateOf<List<YuvaFeedbackCategoryItem>>(emptyList()) }
+    var category by remember { mutableStateOf(YuvaFeedbackCategory.BUG.value) }
     var message by remember { mutableStateOf("") }
     val screenshots = remember { mutableStateListOf<YuvaUpload>().apply { screenshot?.let(::add) } }
     var allowEmail by remember { mutableStateOf(false) }
@@ -126,19 +128,27 @@ fun YuvaFeedbackView(
         }
     }
 
-    fun offer(offered: List<YuvaFeedbackCategory>) {
+    val builtIns = YuvaFeedbackCategory.entries.map {
+        YuvaFeedbackCategoryItem(it.value, stringResource(categoryLabel(it)))
+    }
+    val shown = categories.ifEmpty { builtIns }
+
+    fun offer(inbox: YuvaInbox) {
+        val offered = inbox.feedbackCategoryItems.ifEmpty {
+            inbox.feedbackCategories.map { c -> builtIns.first { it.key == c.value } }
+        }
         if (offered.isEmpty()) return
         categories = offered
-        if (category !in offered) category = offered.first()
+        if (offered.none { it.key == category }) category = offered.first().key
     }
 
     LaunchedEffect(client) {
         val session = runCatching { client.start() }.getOrNull() ?: return@LaunchedEffect
-        offer(session.inbox.feedbackCategories)
+        offer(session.inbox)
         knownEmail = session.contact.email
     }
     LaunchedEffect(client) {
-        client.events().collect { event -> if (event is YuvaEvent.InboxUpdated) offer(event.inbox.feedbackCategories) }
+        client.events().collect { event -> if (event is YuvaEvent.InboxUpdated) offer(event.inbox) }
     }
 
     val needsEmail = allowEmail && knownEmail == null
@@ -157,7 +167,7 @@ fun YuvaFeedbackView(
             try {
                 val result = client.sendFeedback(
                     YuvaFeedback(
-                        category = category,
+                        categoryKey = category,
                         body = message.trim(),
                         screenshots = screenshots.toList(),
                         allowEmail = allowEmail,
@@ -217,14 +227,14 @@ fun YuvaFeedbackView(
         ) {
             SectionLabel(stringResource(R.string.yuva_feedback_category))
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                categories.chunked(2).forEach { pair ->
+                shown.chunked(2).forEach { pair ->
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         pair.forEach { option ->
                             CategoryTile(
                                 option,
-                                selected = option == category,
+                                selected = option.key == category,
                                 enabled = !sending,
-                                onClick = { category = option },
+                                onClick = { category = option.key },
                                 modifier = Modifier.weight(1f),
                             )
                         }
@@ -370,13 +380,13 @@ private fun roundFieldColors() = TextFieldDefaults.colors(
 
 @Composable
 private fun CategoryTile(
-    category: YuvaFeedbackCategory,
+    item: YuvaFeedbackCategoryItem,
     selected: Boolean,
     enabled: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = categoryColors(category)
+    val colors = categoryColors(item.key)
     val bounce = spring<Dp>(dampingRatio = 0.6f, stiffness = Spring.StiffnessMedium)
     val corner by animateDpAsState(if (selected) 32.dp else 16.dp, bounce, label = "corner")
     val morph by animateFloatAsState(
@@ -411,10 +421,10 @@ private fun CategoryTile(
                 spring(stiffness = Spring.StiffnessMediumLow),
                 label = "iconContent",
             )
-            CategoryIcon(category, 44.dp, morph = 0.15f + 0.85f * morph, colors = TonalColors(iconContainer, iconContent))
+            CategoryIcon(item.key, 44.dp, morph = 0.15f + 0.85f * morph, icon = item.icon, colors = TonalColors(iconContainer, iconContent))
             Spacer(Modifier.size(12.dp))
             Text(
-                stringResource(categoryLabel(category)),
+                item.name,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
                 maxLines = 1,

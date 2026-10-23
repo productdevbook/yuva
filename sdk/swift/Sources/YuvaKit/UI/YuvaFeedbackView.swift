@@ -6,8 +6,8 @@ public struct YuvaFeedbackView: View {
     private let screen: String?
     private let onDone: () -> Void
     private let onViewFeedback: ((YuvaConversation) -> Void)?
-    @State private var categories: [YuvaFeedbackCategory] = YuvaFeedbackCategory.allCases
-    @State private var category: YuvaFeedbackCategory = .bug
+    @State private var categories: [YuvaFeedbackCategoryItem] = YuvaFeedbackCategory.allCases.map(\.item)
+    @State private var category: String = YuvaFeedbackCategory.bug.rawValue
     @State private var message = ""
     @State private var screenshots: [YuvaUpload]
     @State private var picked: [PhotosPickerItem] = []
@@ -76,20 +76,22 @@ public struct YuvaFeedbackView: View {
         .countsAsOpen()
         .task {
             guard let session = try? await client.start() else { return }
-            offer(session.inbox.feedbackCategories)
+            offer(session.inbox)
             knownEmail = session.contact.email
         }
         .task {
             for await event in client.events() {
-                if case .inboxUpdated(let inbox) = event { offer(inbox.feedbackCategories) }
+                if case .inboxUpdated(let inbox) = event { offer(inbox) }
             }
         }
     }
 
-    private func offer(_ offered: [YuvaFeedbackCategory]) {
+    private func offer(_ inbox: YuvaInbox) {
+        let items = inbox.feedbackCategoryItems
+        let offered = items.isEmpty ? inbox.feedbackCategories.map(\.item) : items
         guard !offered.isEmpty else { return }
         categories = offered
-        if !offered.contains(category), let first = offered.first { category = first }
+        if !offered.contains(where: { $0.key == category }), let first = offered.first { category = first.key }
     }
 
     private var needsEmail: Bool { allowEmail && knownEmail == nil }
@@ -104,7 +106,7 @@ public struct YuvaFeedbackView: View {
         Form {
             Section(L.t("feedback.category")) {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 130), spacing: 8)], spacing: 8) {
-                    ForEach(categories, id: \.self) { option in
+                    ForEach(categories) { option in
                         categoryChip(option)
                     }
                 }
@@ -173,20 +175,21 @@ public struct YuvaFeedbackView: View {
         }
     }
 
-    private func categoryChip(_ option: YuvaFeedbackCategory) -> some View {
-        let selected = option == category
+    private func categoryChip(_ option: YuvaFeedbackCategoryItem) -> some View {
+        let selected = option.key == category
+        let tint = CategoryStyle.tint(key: option.key)
         return Button {
-            category = option
+            category = option.key
         } label: {
-            Label(L.t("feedback.category." + option.rawValue), systemImage: option.symbol)
+            Label(option.name, systemImage: CategoryStyle.symbol(key: option.key, icon: option.icon))
                 .font(.subheadline.weight(.medium))
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 10)
-                .foregroundStyle(selected ? Color.white : option.tint)
+                .foregroundStyle(selected ? Color.white : tint)
                 .background(RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(selected ? option.tint : option.tint.opacity(0.14)))
+                    .fill(selected ? tint : tint.opacity(0.14)))
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(selected ? .isSelected : [])
@@ -199,7 +202,7 @@ public struct YuvaFeedbackView: View {
         do {
             let result = try await client.sendFeedback(
                 YuvaFeedback(
-                    category: category, body: message.trimmingCharacters(in: .whitespacesAndNewlines),
+                    categoryKey: category, body: message.trimmingCharacters(in: .whitespacesAndNewlines),
                     screenshots: screenshots, allowEmail: allowEmail, email: needsEmail ? email : nil, screen: screen,
                     clientId: clientId))
             started = result.conversation

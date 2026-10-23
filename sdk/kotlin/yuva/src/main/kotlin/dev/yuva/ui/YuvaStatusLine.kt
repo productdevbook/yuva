@@ -157,10 +157,10 @@ private fun statusColors(incident: YuvaStatusIncident): TonalColors {
     return when {
         incident.kind == YuvaStatusKind.MAINTENANCE ->
             if (dark) TonalColors(Color(0xFF0F3D6E), Color(0xFFA8C8FF)) else TonalColors(Color(0xFFD3E4FF), Color(0xFF0B3D7A))
-        incident.impact == YuvaStatusImpact.CRITICAL -> categoryColors(dev.yuva.YuvaFeedbackCategory.BUG)
+        incident.impact == YuvaStatusImpact.CRITICAL -> categoryColors("bug")
         incident.impact == YuvaStatusImpact.MAJOR ->
             if (dark) TonalColors(Color(0xFF5A2D0C), Color(0xFFFFB68A)) else TonalColors(Color(0xFFFFDCC4), Color(0xFF7A3500))
-        incident.impact == YuvaStatusImpact.MINOR -> categoryColors(dev.yuva.YuvaFeedbackCategory.IDEA)
+        incident.impact == YuvaStatusImpact.MINOR -> categoryColors("idea")
         else -> TonalColors(MaterialTheme.colorScheme.secondaryContainer, MaterialTheme.colorScheme.onSecondaryContainer)
     }
 }

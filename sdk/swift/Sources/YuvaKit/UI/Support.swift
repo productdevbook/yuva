@@ -93,20 +93,57 @@ struct AvatarView: View {
 }
 
 struct CategoryIcon: View {
-    let category: YuvaFeedbackCategory?
+    let key: String?
+    var icon: String?
     var size: CGFloat = 44
 
     var body: some View {
-        Image(systemName: category?.symbol ?? "bubble.left.fill")
+        Image(systemName: key.map { CategoryStyle.symbol(key: $0, icon: icon) } ?? "bubble.left.fill")
             .font(.system(size: size * 0.42, weight: .semibold))
             .foregroundStyle(.white)
             .frame(width: size, height: size)
-            .background(Circle().fill((category?.tint ?? .gray).gradient))
+            .background(Circle().fill((key.map(CategoryStyle.tint) ?? .gray).gradient))
             .accessibilityHidden(true)
     }
 }
 
+enum CategoryStyle {
+    private static let lucide: [String: String] = [
+        "bug": "ladybug.fill", "lightbulb": "lightbulb.fill", "heart": "heart.fill",
+        "message-circle": "ellipsis.bubble.fill", "star": "star.fill", "palette": "paintpalette.fill",
+        "zap": "bolt.fill", "wrench": "wrench.fill", "settings": "gearshape.fill", "mail": "envelope.fill",
+        "user": "person.fill", "lock": "lock.fill", "shield": "shield.fill", "bell": "bell.fill",
+        "credit-card": "creditcard.fill", "thumbs-up": "hand.thumbsup.fill", "thumbs-down": "hand.thumbsdown.fill",
+        "alert-triangle": "exclamationmark.triangle.fill", "triangle-alert": "exclamationmark.triangle.fill",
+        "info": "info.circle.fill", "help-circle": "questionmark.circle.fill", "circle-help": "questionmark.circle.fill",
+        "search": "magnifyingglass", "home": "house.fill", "house": "house.fill", "globe": "globe",
+        "smartphone": "iphone", "camera": "camera.fill", "image": "photo.fill", "file-text": "doc.text.fill",
+        "gauge": "gauge.with.dots.needle.67percent", "rocket": "paperplane.fill", "sparkles": "sparkles",
+    ]
+    private static let palette: [Color] = [.teal, .indigo, .mint, .purple, .cyan, .brown]
+
+    static func symbol(key: String, icon: String?) -> String {
+        if let builtin = YuvaFeedbackCategory(rawValue: key) { return builtin.symbol }
+        return icon.flatMap { lucide[$0] } ?? "tag.fill"
+    }
+
+    static func tint(key: String) -> Color {
+        if let builtin = YuvaFeedbackCategory(rawValue: key) { return builtin.tint }
+        return palette[key.utf8.reduce(0) { ($0 &* 31 &+ Int($1)) & 0xFFFF } % palette.count]
+    }
+}
+
+extension YuvaFeedbackInfo {
+    var displayName: String {
+        categoryName ?? L.t("feedback.category." + category.rawValue)
+    }
+}
+
 extension YuvaFeedbackCategory {
+    var item: YuvaFeedbackCategoryItem {
+        YuvaFeedbackCategoryItem(key: rawValue, name: L.t("feedback.category." + rawValue), icon: nil)
+    }
+
     var symbol: String {
         switch self {
         case .bug: "ladybug.fill"

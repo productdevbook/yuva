@@ -4,8 +4,23 @@ public enum YuvaFeedbackCategory: String, Codable, Sendable, CaseIterable {
     case bug, idea, praise, other
 }
 
+public struct YuvaFeedbackCategoryItem: Codable, Sendable, Hashable, Identifiable {
+    public let key: String
+    public let name: String
+    public let icon: String?
+
+    public var id: String { key }
+
+    public init(key: String, name: String, icon: String? = nil) {
+        self.key = key
+        self.name = name
+        self.icon = icon
+    }
+}
+
 public struct YuvaFeedback: Sendable {
-    public var category: YuvaFeedbackCategory
+    public var categoryKey: String
+    public var category: YuvaFeedbackCategory { YuvaFeedbackCategory(rawValue: categoryKey) ?? .other }
     public var body: String
     public var subject: String?
     public var screenshots: [YuvaUpload]
@@ -18,7 +33,16 @@ public struct YuvaFeedback: Sendable {
         category: YuvaFeedbackCategory, body: String, subject: String? = nil, screenshots: [YuvaUpload] = [],
         allowEmail: Bool = false, email: String? = nil, screen: String? = nil, clientId: String = UUID().uuidString
     ) {
-        self.category = category
+        self.init(
+            categoryKey: category.rawValue, body: body, subject: subject, screenshots: screenshots, allowEmail: allowEmail,
+            email: email, screen: screen, clientId: clientId)
+    }
+
+    public init(
+        categoryKey: String, body: String, subject: String? = nil, screenshots: [YuvaUpload] = [],
+        allowEmail: Bool = false, email: String? = nil, screen: String? = nil, clientId: String = UUID().uuidString
+    ) {
+        self.categoryKey = categoryKey
         self.body = body
         self.subject = subject
         self.screenshots = screenshots
@@ -129,7 +153,9 @@ extension YuvaConversation {
 }
 
 public struct YuvaFeedbackInfo: Codable, Sendable, Hashable {
-    public let category: YuvaFeedbackCategory
+    private let categoryValue: String?
+    private let categoryKeyValue: String?
+    public let categoryName: String?
     public let allowEmail: Bool
     public let text: String?
     public let attachmentCount: Int?
@@ -143,19 +169,26 @@ public struct YuvaFeedbackInfo: Codable, Sendable, Hashable {
     public let installationId: String?
     private let progressName: String?
 
+    public var categoryKey: String { categoryKeyValue ?? categoryValue ?? YuvaFeedbackCategory.other.rawValue }
+
+    public var category: YuvaFeedbackCategory { YuvaFeedbackCategory(rawValue: categoryKey) ?? .other }
+
     public var progress: YuvaFeedbackProgress? { progressName.flatMap(YuvaFeedbackProgress.init(rawValue:)) }
 
     func settingProgress(_ progress: YuvaFeedbackProgress?) -> YuvaFeedbackInfo {
         YuvaFeedbackInfo(
-            category: category, allowEmail: allowEmail, text: text, attachmentCount: attachmentCount,
+            categoryValue: categoryValue, categoryKeyValue: categoryKeyValue, categoryName: categoryName,
+            allowEmail: allowEmail, text: text, attachmentCount: attachmentCount,
             appVersion: appVersion, build: build, os: os, osVersion: osVersion, deviceModel: deviceModel,
             locale: locale, screen: screen, installationId: installationId, progressName: progress?.rawValue)
     }
 
     enum CodingKeys: String, CodingKey {
-        case category, allowEmail, text, attachmentCount, appVersion, build, os, osVersion, deviceModel, locale
+        case categoryName, allowEmail, text, attachmentCount, appVersion, build, os, osVersion, deviceModel, locale
         case screen, installationId
         case progressName = "progress"
+        case categoryValue = "category"
+        case categoryKeyValue = "categoryKey"
     }
 }
 
@@ -165,7 +198,7 @@ extension YuvaClient {
         -> YuvaConversationStarted
     {
         var fields: [String: String] = [
-            "category": feedback.category.rawValue,
+            "category": feedback.categoryKey,
             "body": feedback.body,
             "client_id": feedback.clientId,
             "allow_email": feedback.allowEmail ? "true" : "false",

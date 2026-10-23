@@ -425,10 +425,10 @@ fun YuvaThreadView(
                 title = {
                     val inbox = state.inbox
                     val feedback = state.conversation?.isFeedback == true
-                    val category = state.conversation?.feedback?.category
+                    val category = state.conversation?.feedback
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         if (feedback) {
-                            CategoryIcon(category, 40.dp)
+                            CategoryIcon(category?.categoryKey, 40.dp)
                             Spacer(Modifier.size(12.dp))
                         } else if (inbox != null) {
                             Avatar(inbox.name.take(1).uppercase(), 40.dp, inbox.branding.logoUrl)
@@ -436,7 +436,7 @@ fun YuvaThreadView(
                         }
                         Column {
                             Text(
-                                if (feedback && category != null) stringResource(categoryLabel(category)) else title,
+                                if (feedback && category != null) categoryTitle(category) else title,
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.SemiBold,
                                 maxLines = 1,

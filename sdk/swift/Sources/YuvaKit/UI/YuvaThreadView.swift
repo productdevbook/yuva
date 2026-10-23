@@ -260,7 +260,7 @@ public struct YuvaThreadView: View {
                     .frame(maxWidth: .infinity).padding(4).background(.bar)
             }
             if let state = model.feedbackState {
-                FeedbackHeader(category: model.conversation?.feedback?.category, state: state)
+                FeedbackHeader(feedback: model.conversation?.feedback, state: state)
             }
             messages
         }
@@ -512,14 +512,14 @@ public struct YuvaThreadView: View {
 }
 
 struct FeedbackHeader: View {
-    let category: YuvaFeedbackCategory?
+    let feedback: YuvaFeedbackInfo?
     let state: YuvaFeedbackState
 
     var body: some View {
         HStack(spacing: 10) {
-            CategoryIcon(category: category, size: 28)
-            if let category {
-                Text(L.t("feedback.category." + category.rawValue)).font(.subheadline.weight(.semibold))
+            CategoryIcon(key: feedback?.categoryKey, size: 28)
+            if let feedback {
+                Text(feedback.displayName).font(.subheadline.weight(.semibold))
             }
             Spacer()
             FeedbackTag(text: state.label, tint: state.tint)

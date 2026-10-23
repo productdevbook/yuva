@@ -69,8 +69,15 @@ enum class YuvaFeedbackCategory(val value: String) {
     @SerialName("bug") BUG("bug"),
     @SerialName("idea") IDEA("idea"),
     @SerialName("praise") PRAISE("praise"),
-    @SerialName("other") OTHER("other"),
+    @SerialName("other") OTHER("other");
+
+    companion object {
+        fun fromKey(key: String?): YuvaFeedbackCategory = entries.firstOrNull { it.value == key } ?: OTHER
+    }
 }
+
+@Serializable
+data class YuvaFeedbackCategoryItem(val key: String, val name: String = "", val icon: String? = null)
 
 @Serializable(YuvaFeedbackProgressSerializer::class)
 enum class YuvaFeedbackProgress(val value: String) {
@@ -195,6 +202,7 @@ data class YuvaInbox(
     val presence: YuvaPresence? = null,
     val status: YuvaInboxStatus? = null,
     @SerialName("feedback_categories") internal val feedbackCategoryNames: List<String> = emptyList(),
+    val feedbackCategoryItems: List<YuvaFeedbackCategoryItem> = emptyList(),
     val askForRating: Boolean = false,
 ) {
     val feedbackCategories: List<YuvaFeedbackCategory>
@@ -239,7 +247,9 @@ data class YuvaMessagePreview(
 
 @Serializable
 data class YuvaFeedbackInfo(
-    val category: YuvaFeedbackCategory,
+    @SerialName("category") internal val categoryValue: String = "other",
+    @SerialName("category_key") internal val categoryKeyValue: String? = null,
+    val categoryName: String? = null,
     val allowEmail: Boolean = false,
     val text: String? = null,
     val attachmentCount: Int = 0,
@@ -252,7 +262,10 @@ data class YuvaFeedbackInfo(
     val screen: String? = null,
     val installationId: String? = null,
     val progress: YuvaFeedbackProgress? = null,
-)
+) {
+    val categoryKey: String get() = categoryKeyValue ?: categoryValue
+    val category: YuvaFeedbackCategory get() = YuvaFeedbackCategory.fromKey(categoryKey)
+}
 
 @Serializable
 data class YuvaConversation(
