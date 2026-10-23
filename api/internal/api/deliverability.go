@@ -360,7 +360,7 @@ func (s *Server) CheckDeliverability(ctx context.Context, req oas.CheckDeliverab
 	if !ok {
 		return nil, errNotEmailChannel
 	}
-	if err := s.rateLimit(rateCheck{"deliverability:" + c.ID.String(), limit{checksPerHour, time.Hour}}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"deliverability:" + c.ID.String(), limit{checksPerHour, time.Hour}}); err != nil {
 		return nil, err
 	}
 	token := email.NewConversationToken()

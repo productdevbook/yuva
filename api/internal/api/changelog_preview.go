@@ -117,7 +117,7 @@ func (s *Server) PreviewChangelog(ctx context.Context, req oas.PreviewChangelogR
 	default:
 		return nil, errValidation("view must be home or entry")
 	}
-	if err := s.rateLimit(rateCheck{"changelog-render:" + p.viewerID().String(), limitChangelogRender}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"changelog-render:" + p.viewerID().String(), limitChangelogRender}); err != nil {
 		return nil, err
 	}
 	c, err := visibleChangelog(ctx, s.st.Queries, p, req.ChangelogId, false)

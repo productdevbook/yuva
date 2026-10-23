@@ -29,7 +29,7 @@ func identitySecretContext(workspaceID, inboxID uuid.UUID) []byte {
 func (s *Server) CreateClientSession(ctx context.Context, req oas.CreateClientSessionRequestObject) (oas.CreateClientSessionResponseObject, error) {
 	b := req.Body
 	ip := rateIP(s.clientIP(requestFrom(ctx)))
-	if err := s.rateLimit(rateCheck{"session:ip:" + ip, limitSessionPerIP}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"session:ip:" + ip, limitSessionPerIP}); err != nil {
 		return nil, err
 	}
 	key := strings.TrimSpace(b.ChannelKey)
@@ -43,7 +43,7 @@ func (s *Server) CreateClientSession(ctx context.Context, req oas.CreateClientSe
 	if err != nil {
 		return nil, err
 	}
-	if err := s.rateLimit(rateCheck{"session:channel:" + ch.ChannelID.String(), limitSessionPerChannel}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"session:channel:" + ch.ChannelID.String(), limitSessionPerChannel}); err != nil {
 		return nil, err
 	}
 	if !s.originAllowedFor(ctx, ch.WorkspaceID, originFrom(ctx), ch.Kind, ch.AllowedOrigins) {
@@ -102,7 +102,7 @@ func clientDiscussionMode(chat store.ChatChannel) oas.DiscussionMode {
 }
 
 func (s *Server) GetClientChannel(ctx context.Context, req oas.GetClientChannelRequestObject) (oas.GetClientChannelResponseObject, error) {
-	if err := s.rateLimit(rateCheck{"channel:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitChannelPerIP}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"channel:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitChannelPerIP}); err != nil {
 		return nil, err
 	}
 	key := strings.TrimSpace(req.ChannelKey)
@@ -206,7 +206,11 @@ func (s *Server) anonymousContact(ctx context.Context, q *store.Queries, channel
 	}
 	now := s.now()
 	key := "anonymous:" + channelID.String() + ":" + rateIP(s.clientIP(requestFrom(ctx)))
-	if !s.limits.allow(key, limit{s.chat.AnonymousContactsPerHour, time.Hour}, now) {
+	ok, err := s.limits.allow(ctx, key, limit{s.chat.AnonymousContactsPerHour, time.Hour}, now)
+	if err != nil {
+		return contactRow{}, "", err
+	}
+	if !ok {
 		return contactRow{}, "", errAnonymousLimit
 	}
 	r, err := q.CreateContact(ctx, store.CreateContactParams{ID: newID(), WorkspaceID: ws, Attributes: []byte("{}"), Now: now})
@@ -506,7 +510,7 @@ func (s *Server) SetClientContactEmail(ctx context.Context, req oas.SetClientCon
 	if !cp.chat.AskEmailOffline {
 		return nil, problem(http.StatusForbidden, "forbidden", "this channel does not ask for an e-mail address")
 	}
-	if err := s.rateLimit(s.writeChecks(ctx, cp)...); err != nil {
+	if err := s.rateLimit(ctx, s.writeChecks(ctx, cp)...); err != nil {
 		return nil, err
 	}
 	addr, err := normalizeEmail(req.Body.Email)

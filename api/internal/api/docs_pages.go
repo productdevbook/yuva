@@ -120,7 +120,7 @@ func (s *Server) docsChannel(ctx context.Context, key string, perChannel *limit)
 		return ch, err
 	}
 	if perChannel != nil {
-		if err := s.rateLimit(rateCheck{"page-rating:channel:" + ch.ChannelID.String(), *perChannel}); err != nil {
+		if err := s.rateLimit(ctx, rateCheck{"page-rating:channel:" + ch.ChannelID.String(), *perChannel}); err != nil {
 			return ch, err
 		}
 	}
@@ -131,7 +131,7 @@ func (s *Server) docsChannel(ctx context.Context, key string, perChannel *limit)
 }
 
 func (s *Server) CreatePageRating(ctx context.Context, req oas.CreatePageRatingRequestObject) (oas.CreatePageRatingResponseObject, error) {
-	if err := s.rateLimit(rateCheck{"page-rating:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitSessionPerIP}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"page-rating:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitSessionPerIP}); err != nil {
 		return nil, err
 	}
 	ch, err := s.docsChannel(ctx, req.ChannelKey, &limitSessionPerChannel)

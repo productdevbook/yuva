@@ -1799,6 +1799,23 @@ type PushSubscription struct {
 	LastError     *string
 }
 
+type RateLimit struct {
+	Key       []byte
+	StartedAt time.Time
+	EndsAt    time.Time
+	Lim       int32
+	Want      int32
+	Count     int32
+	Granted   int32
+}
+
+type RateSlot struct {
+	Key       []byte
+	Slot      int32
+	Holder    uuid.UUID
+	ExpiresAt time.Time
+}
+
 type ReaderNotification struct {
 	ID           uuid.UUID
 	WorkspaceID  uuid.UUID

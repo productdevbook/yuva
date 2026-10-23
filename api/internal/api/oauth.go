@@ -140,7 +140,11 @@ func (s *Server) meterBearer(ctx context.Context, p principal) error {
 		key = "bearer:" + p.grantID.String()
 	}
 	now := s.now()
-	if ok, wait := s.limits.allowWait(key, limitBearer, now); !ok {
+	ok, wait, err := s.limits.allowWait(ctx, key, limitBearer, now)
+	if err != nil {
+		return err
+	}
+	if !ok {
 		return rateLimited(wait)
 	}
 	if !p.isGrant() {
@@ -334,7 +338,11 @@ func optional(v string) *string {
 }
 
 func (s *Server) serveOAuthRegister(w http.ResponseWriter, r *http.Request) {
-	if err := s.rateLimit(rateCheck{"oauth-register:" + rateIP(s.clientIP(r)), limitRegisterPerIP}); err != nil {
+	if err := s.rateLimit(r.Context(), rateCheck{"oauth-register:" + rateIP(s.clientIP(r)), limitRegisterPerIP}); err != nil {
+		if !isAPIError(err) {
+			s.writeOAuthError(w, r, err)
+			return
+		}
 		s.writeOAuthError(w, r, &oauthError{status: http.StatusTooManyRequests, code: "rate_limited", description: "too many registrations from this address; try again later"})
 		return
 	}
@@ -448,7 +456,12 @@ func (s *Server) serveOAuthAuthorize(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(status)
 		_, _ = io.WriteString(w, msg+"\n")
 	}
-	if err := s.rateLimit(rateCheck{"oauth-authorize:" + rateIP(s.clientIP(r)), limitAuthorizePerIP}); err != nil {
+	if err := s.rateLimit(r.Context(), rateCheck{"oauth-authorize:" + rateIP(s.clientIP(r)), limitAuthorizePerIP}); err != nil {
+		if !isAPIError(err) {
+			s.log.ErrorContext(r.Context(), "oauth authorize", slog.Any("error", err))
+			plain(http.StatusInternalServerError, "server_error")
+			return
+		}
 		plain(http.StatusTooManyRequests, "rate_limited: too many authorization requests; try again in a minute")
 		return
 	}

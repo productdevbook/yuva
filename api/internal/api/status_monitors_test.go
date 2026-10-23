@@ -529,9 +529,4 @@ func TestStatusMonitorIngressLimits(t *testing.T) {
 	call(http.StatusTooManyRequests, "POST", "/ingress/status/guess", map[string]any{"state": "operational"})
 	h.clock.Advance(time.Minute)
 	call(http.StatusOK, "GET", "/ingress/heartbeat/"+token, nil)
-
-	h.clock.Advance(time.Minute)
-	h.srv.FillRateLimiter(h.clock.Now())
-	call(http.StatusTooManyRequests, "GET", "/ingress/heartbeat/guess", nil)
-	call(http.StatusOK, "GET", "/ingress/heartbeat/"+token, nil)
 }

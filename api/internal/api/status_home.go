@@ -352,8 +352,8 @@ func (s *Server) serveHome(w http.ResponseWriter, r *http.Request, l homeLocale)
 			return
 		}
 	}
-	if err := s.rateLimit(rateCheck{"status:ip:" + rateIP(s.clientIP(r)), limitStatusPerIP}); err != nil {
-		writeProblem(w, err.(*apiError))
+	if err := s.rateLimit(ctx, rateCheck{"status:ip:" + rateIP(s.clientIP(r)), limitStatusPerIP}); err != nil {
+		s.writeError(w, r, err)
 		return
 	}
 	e, err := s.homeAnswer(ctx, l)

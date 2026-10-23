@@ -114,7 +114,7 @@ func (s *Server) CreateClientFeedback(ctx context.Context, req oas.CreateClientF
 	if cp.kind != string(oas.ChannelKindApp) && cp.kind != string(oas.ChannelKindChat) {
 		return nil, errFeedbackChannel
 	}
-	if err := s.rateLimit(s.writeChecks(ctx, cp)...); err != nil {
+	if err := s.rateLimit(ctx, s.writeChecks(ctx, cp)...); err != nil {
 		return nil, err
 	}
 	var (

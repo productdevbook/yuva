@@ -33,7 +33,7 @@ func clientList(l store.MailingList) oas.ClientMailingList {
 }
 
 func (s *Server) ListClientMailingLists(ctx context.Context, req oas.ListClientMailingListsRequestObject) (oas.ListClientMailingListsResponseObject, error) {
-	if err := s.rateLimit(rateCheck{"subscribe-lists:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitChannelPerIP}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"subscribe-lists:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitChannelPerIP}); err != nil {
 		return nil, err
 	}
 	ch, err := s.docsChannel(ctx, req.ChannelKey, nil)
@@ -79,14 +79,14 @@ func formListsFor(public []store.MailingList, ids []uuid.UUID) ([]store.MailingL
 // depends on what the workspace knows about it.
 func (s *Server) CreateClientSubscription(ctx context.Context, req oas.CreateClientSubscriptionRequestObject) (oas.CreateClientSubscriptionResponseObject, error) {
 	r := requestFrom(ctx)
-	if err := s.rateLimit(rateCheck{"subscribe:ip:" + rateIP(s.clientIP(r)), limitSubscribePerIP}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"subscribe:ip:" + rateIP(s.clientIP(r)), limitSubscribePerIP}); err != nil {
 		return nil, err
 	}
 	ch, err := s.docsChannel(ctx, req.ChannelKey, nil)
 	if err != nil {
 		return nil, err
 	}
-	if err := s.rateLimit(rateCheck{"subscribe:channel:" + ch.ChannelID.String(), limitSubscribePerChannel}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"subscribe:channel:" + ch.ChannelID.String(), limitSubscribePerChannel}); err != nil {
 		return nil, err
 	}
 	b := req.Body
@@ -177,8 +177,11 @@ func (s *Server) subscribeFromForm(ctx context.Context, q *store.Queries, events
 		return id, nil
 	}
 	confirm := func(l store.MailingList, sub store.ListSubscription) error {
-		if l.ChannelID == nil || !ready[*l.ChannelID] || !s.confirmationAllowed(ws, l.ID, addr, &channelID) {
+		if l.ChannelID == nil || !ready[*l.ChannelID] {
 			return nil
+		}
+		if ok, err := s.confirmationAllowed(ctx, ws, l.ID, addr, &channelID); err != nil || !ok {
+			return err
 		}
 		return s.queueConfirmation(ctx, q, events, sub)
 	}
@@ -352,8 +355,8 @@ func (s *Server) SubscribeClient(ctx context.Context, req oas.SubscribeClientReq
 			if ready, err := s.readyChannels(ctx, q, ws, []store.MailingList{l}); err != nil || !ready[*l.ChannelID] {
 				return err
 			}
-			if !s.confirmationAllowed(ws, l.ID, addr, nil) {
-				return nil
+			if ok, err := s.confirmationAllowed(ctx, ws, l.ID, addr, nil); err != nil || !ok {
+				return err
 			}
 			return s.queueConfirmation(ctx, q, events, sub)
 		}

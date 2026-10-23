@@ -127,8 +127,8 @@ func (s *Server) publicHelpCenter(w http.ResponseWriter, r *http.Request) (store
 		redirect(store.HelpCenter{Slug: slug}, false)
 		return store.HelpCenter{}, false
 	}
-	if err := s.rateLimit(rateCheck{"help:ip:" + rateIP(s.clientIP(r)), limitPublicPerIP}); err != nil {
-		writeProblem(w, err.(*apiError))
+	if err := s.rateLimit(ctx, rateCheck{"help:ip:" + rateIP(s.clientIP(r)), limitPublicPerIP}); err != nil {
+		s.writeError(w, r, err)
 		return store.HelpCenter{}, false
 	}
 	var c store.HelpCenter
@@ -177,11 +177,12 @@ func (s *Server) helpCached(c store.HelpCenter, key, ctype string, build func() 
 const helpPageType = "text/html; charset=utf-8"
 
 // A view counts once per address, article and hour.
-func (s *Server) countHelpView(r *http.Request, c store.HelpCenter, article uuid.UUID, locale string) {
-	if r.Method != http.MethodGet {
-		return
+func (s *Server) countHelpView(ctx context.Context, r *http.Request, c store.HelpCenter, article uuid.UUID, locale string) {
+	ok, err := s.limits.allow(ctx, "help-view:"+rateIP(s.clientIP(r))+":"+article.String(), limitHelpViewPerHour, s.now())
+	if err != nil {
+		s.log.ErrorContext(ctx, "help view rate limit", slog.Any("error", err))
 	}
-	if s.limits.allow("help-view:"+rateIP(s.clientIP(r))+":"+article.String(), limitHelpViewPerHour, s.now()) {
+	if ok {
 		s.countHelpArticle(c, article, locale, helpArticleCount{views: 1})
 	}
 }
@@ -284,7 +285,9 @@ func (s *Server) helpAnswer(ctx context.Context, r *http.Request, c store.HelpCe
 		if rt.slug != a.Slug {
 			return publicEntry{}, "", helpRedirect(s.helpArticleURL(c, a.Number, locale, a.Slug))
 		}
-		s.countHelpView(r, c, a.ID, locale)
+		if r.Method == http.MethodGet {
+			s.countHelpView(ctx, r, c, a.ID, locale)
+		}
 		thanks := r.URL.Query().Get("thanks")
 		if thanks != "up" && thanks != "down" {
 			thanks = ""
@@ -322,7 +325,7 @@ func (s *Server) helpSearchAnswer(ctx context.Context, r *http.Request, c store.
 		return e, csp, err
 	}
 	ip := rateIP(s.clientIP(r))
-	if err := s.rateLimit(
+	if err := s.rateLimit(ctx,
 		rateCheck{"help-search:ip:" + ip + ":" + c.ID.String(), limitHelpSearchPerIP},
 		rateCheck{"help-search:center:" + c.ID.String(), limitHelpSearchCenter},
 	); err != nil {
@@ -380,11 +383,11 @@ func (s *Server) serveHelpPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	ip := rateIP(s.clientIP(r))
-	if err := s.rateLimit(
+	if err := s.rateLimit(ctx,
 		rateCheck{"help-reaction:ip:" + ip, limitSessionPerIP},
 		rateCheck{"help-reaction:center:" + c.ID.String(), limitSessionPerChannel},
 	); err != nil {
-		writeProblem(w, err.(*apiError))
+		s.writeError(w, r, err)
 		return
 	}
 	a, err := s.st.GetPublicHelpArticleByNumber(ctx, store.GetPublicHelpArticleByNumberParams{WorkspaceID: c.WorkspaceID, CenterID: c.ID, Locale: rt.locale, Number: rt.number})

@@ -14,6 +14,7 @@ import (
 
 	"github.com/productdevbook/yuva/api/internal/analytics"
 	"github.com/productdevbook/yuva/api/internal/oas"
+	"github.com/productdevbook/yuva/api/internal/store"
 )
 
 const (
@@ -316,6 +317,9 @@ func (s *Server) SendAnalyticsEvents(ctx context.Context, req oas.SendAnalyticsE
 			drop(reason, 1)
 		}
 	}
+	if items, err = s.rateServerItems(ctx, prop, items, now, drop); err != nil {
+		return nil, err
+	}
 	if len(changes) > 0 {
 		if err := s.takeConsentChanges(ctx, nil, cp, changes, now); err != nil {
 			return nil, err
@@ -338,13 +342,62 @@ func (s *Server) SendAnalyticsEvents(ctx context.Context, req oas.SendAnalyticsE
 	return oas.SendAnalyticsEvents202JSONResponse(out), nil
 }
 
+// rateServerItems counts a batch's events against their addresses' limits and then the property's,
+// one statement each, and drops in order the events past them.
+func (s *Server) rateServerItems(ctx context.Context, prop store.AnalyticsProperty, items []analyticsItem, now time.Time, drop func(reason string, n int)) ([]analyticsItem, error) {
+	var takes []rateTake
+	at := map[string]int{}
+	for _, it := range items {
+		if it.address == "" {
+			continue
+		}
+		i, ok := at[it.address]
+		if !ok {
+			i, at[it.address] = len(takes), len(takes)
+			takes = append(takes, rateTake{it.address, limitAnalyticsPerAddress, 0})
+		}
+		takes[i].n++
+	}
+	if len(takes) > 0 {
+		g, err := s.limits.take(ctx, now, takes...)
+		if err != nil {
+			return nil, err
+		}
+		kept := make([]analyticsItem, 0, len(items))
+		for _, it := range items {
+			if it.address != "" {
+				i := at[it.address]
+				if g[i].n == 0 {
+					drop(analytics.ReasonRate, 1)
+					continue
+				}
+				g[i].n--
+			}
+			kept = append(kept, it)
+		}
+		items = kept
+	}
+	if len(items) == 0 {
+		return items, nil
+	}
+	g, err := s.limits.take(ctx, now, rateTake{rateKeyAnalyticsProperty(prop.ID), limit{s.analytics.settings.PropertyEventsPerMinute, time.Minute}, len(items)})
+	if err != nil {
+		return nil, err
+	}
+	if n := g[0].n; n < len(items) {
+		drop(analytics.ReasonRate, len(items)-n)
+		items = items[:n]
+	}
+	return items, nil
+}
+
 // notCollected marks a valid event that is not collected and not counted: DNT, GPC, no consent.
 const notCollected = "-"
 
 // serverItem checks one server-side event; reason names why a valid event is dropped before it
-// reaches its visit (late, excluded, bot, rate, or notCollected).
+// reaches its visit (late, excluded, bot, or notCollected).
 func (s *Server) serverItem(ctx context.Context, cp *cachedProperty, se oas.AnalyticsServerEvent, now time.Time, children, consent bool) (analyticsItem, string, error) {
-	a, prop := s.analytics, cp.prop
+	prop := cp.prop
 	e, err := serverEvent(se)
 	if err != nil {
 		return analyticsItem{}, "", err
@@ -399,12 +452,7 @@ func (s *Server) serverItem(ctx context.Context, cp *cachedProperty, se oas.Anal
 		return item, analytics.ReasonBot, nil
 	}
 	if v.hasIP {
-		if ok, _ := a.limits.allowWait("a:"+prop.ID.String()+":"+v.short.String(), limitAnalyticsPerAddress, now); !ok {
-			return item, analytics.ReasonRate, nil
-		}
-	}
-	if !a.limits.allow("p:"+prop.ID.String(), limit{a.settings.PropertyEventsPerMinute, time.Minute}, now) {
-		return item, analytics.ReasonRate, nil
+		item.address = rateKeyAnalyticsAddress(prop.ID, v.short)
 	}
 	language := ""
 	if !children {

@@ -91,8 +91,8 @@ func (s *Server) publicChangelog(w http.ResponseWriter, r *http.Request) (store.
 		changelogGone(w, "en")
 		return store.Changelog{}, false
 	}
-	if err := s.rateLimit(rateCheck{"changelog:ip:" + rateIP(s.clientIP(r)), limitPublicPerIP}); err != nil {
-		writeProblem(w, err.(*apiError))
+	if err := s.rateLimit(ctx, rateCheck{"changelog:ip:" + rateIP(s.clientIP(r)), limitPublicPerIP}); err != nil {
+		s.writeError(w, r, err)
 		return store.Changelog{}, false
 	}
 	var c store.Changelog

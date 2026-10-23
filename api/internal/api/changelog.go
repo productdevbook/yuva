@@ -366,7 +366,7 @@ func (s *Server) UpdateChangelog(ctx context.Context, req oas.UpdateChangelogReq
 		}
 		now := s.now()
 		if f.slug != cur.Slug {
-			if err := s.rateLimit(rateCheck{"changelog-slug:" + cur.ID.String(), limitChangelogSlug}); err != nil {
+			if err := s.rateLimit(ctx, rateCheck{"changelog-slug:" + cur.ID.String(), limitChangelogSlug}); err != nil {
 				return err
 			}
 			if taken, err := q.ChangelogSlugTaken(ctx, store.ChangelogSlugTakenParams{Slug: f.slug, ID: cur.ID}); err != nil || taken {
@@ -474,7 +474,7 @@ func (s *Server) RenderMarkdown(ctx context.Context, req oas.RenderMarkdownReque
 	if p.scoped() && requireScope(p, oas.HelpWrite) != nil && requireScope(p, oas.ChangelogWrite) != nil {
 		return nil, errInsufficientScope(oas.ChangelogWrite)
 	}
-	if err := s.rateLimit(rateCheck{"markdown-render:" + p.viewerID().String(), limitChangelogRender}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"markdown-render:" + p.viewerID().String(), limitChangelogRender}); err != nil {
 		return nil, err
 	}
 	if len([]rune(req.Body.Body)) > maxHelpBody {
@@ -492,7 +492,7 @@ func (s *Server) UploadChangelogImage(ctx context.Context, req oas.UploadChangel
 		return nil, err
 	}
 	p := principalFrom(ctx)
-	if err := s.rateLimit(rateCheck{"email-image-upload:" + p.workspaceID.String(), limitImageUpload}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"email-image-upload:" + p.workspaceID.String(), limitImageUpload}); err != nil {
 		return nil, err
 	}
 	if _, err := visibleChangelog(ctx, s.st.Queries, p, req.ChangelogId, false); err != nil {

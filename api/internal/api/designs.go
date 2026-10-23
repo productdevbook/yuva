@@ -700,8 +700,8 @@ func (s *Server) RenderEmailDesign(ctx context.Context, req oas.RenderEmailDesig
 	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
-	if ok, wait := s.limits.allowWait("render:"+p.viewerID().String(), limitRender, s.now()); !ok {
-		return nil, rateLimited(wait)
+	if err := s.rateLimit(ctx, rateCheck{"render:" + p.viewerID().String(), limitRender}); err != nil {
+		return nil, err
 	}
 	b := req.Body
 	q := s.st.Queries

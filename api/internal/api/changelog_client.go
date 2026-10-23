@@ -44,7 +44,7 @@ func (s *Server) whatsNewClientChangelog(ctx context.Context, key string) (store
 		return none, errUnknownChannelKey
 	}
 	ip := rateIP(s.clientIP(requestFrom(ctx)))
-	if err := s.rateLimit(rateCheck{"whats-new-ip:" + ip, limitChannelPerIP}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"whats-new-ip:" + ip, limitChannelPerIP}); err != nil {
 		return none, err
 	}
 	ch, err := s.st.FindChatChannelByKey(ctx, key)
@@ -64,7 +64,7 @@ func (s *Server) whatsNewClientChangelog(ctx context.Context, key string) (store
 	if err != nil {
 		return none, err
 	}
-	err = s.rateLimit(
+	err = s.rateLimit(ctx,
 		rateCheck{"whats-new:" + ip + ":" + ch.ChannelID.String(), limitWhatsNewPerIP},
 		rateCheck{"whats-new:changelog:" + c.ID.String(), limitWhatsNewPerChangelog},
 	)

@@ -321,7 +321,7 @@ func (s *Server) SendBroadcastTest(ctx context.Context, req oas.SendBroadcastTes
 		return nil, errDesignRequired
 	}
 	for range members {
-		if s.rateLimit(rateCheck{"broadcast-test:" + p.workspaceID.String(), limit{testsPerHour, time.Hour}}) != nil {
+		if s.rateLimit(ctx, rateCheck{"broadcast-test:" + p.workspaceID.String(), limit{testsPerHour, time.Hour}}) != nil {
 			return nil, errTestLimit
 		}
 	}

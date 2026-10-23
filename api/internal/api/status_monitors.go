@@ -856,28 +856,21 @@ func (s *Server) serveStatusPush(w http.ResponseWriter, r *http.Request) {
 
 // serveMonitorIngress limits calls per client address, finds the monitor by its token, limits calls
 // per monitor and takes the result read reports; take false answers with the monitor's state and
-// changes nothing. Only an address, never a token the caller made up, takes a place in the limiter
-// before the lookup, and a full limiter refuses an unknown token but never a known monitor.
+// changes nothing. Only an address, never a token the caller made up, is counted before the lookup.
 func (s *Server) serveMonitorIngress(w http.ResponseWriter, r *http.Request, kind string, read func() (monitorResult, bool, error)) {
 	token := r.PathValue("token")
 	if token == "" || len(token) > 100 {
 		writeProblem(w, errStatusMonitorGone)
 		return
 	}
-	now := s.now()
-	addr, wait := s.limits.check("monitor:ip:"+rateIP(s.clientIP(r)), limitMonitorPerAddress, now)
-	if addr == limitRefused {
-		writeProblem(w, rateLimited(wait))
+	ctx := r.Context()
+	if err := s.rateLimit(ctx, rateCheck{"monitor:ip:" + rateIP(s.clientIP(r)), limitMonitorPerAddress}); err != nil {
+		s.writeError(w, r, err)
 		return
 	}
 	hash := hashSecret(token)
-	ctx := r.Context()
 	row, err := s.st.FindStatusMonitorByToken(ctx, hash)
 	if store.IsNotFound(err) {
-		if addr == limitFull {
-			writeProblem(w, rateLimited(wait))
-			return
-		}
 		writeProblem(w, errStatusMonitorGone)
 		return
 	}
@@ -885,8 +878,8 @@ func (s *Server) serveMonitorIngress(w http.ResponseWriter, r *http.Request, kin
 		s.writeError(w, r, err)
 		return
 	}
-	if v, wait := s.limits.check("monitor:"+hex.EncodeToString(hash[:16]), limitMonitorPerToken, now); v == limitRefused {
-		writeProblem(w, rateLimited(wait))
+	if err := s.rateLimit(ctx, rateCheck{"monitor:" + hex.EncodeToString(hash[:16]), limitMonitorPerToken}); err != nil {
+		s.writeError(w, r, err)
 		return
 	}
 	if live, err := s.workspaceLive(ctx, row.WorkspaceID); err != nil || !live {

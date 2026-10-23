@@ -133,8 +133,8 @@ func (s *Server) publicStatusPage(w http.ResponseWriter, r *http.Request) (store
 		http.Redirect(w, r, target, redirect)
 		return store.StatusPage{}, false
 	}
-	if err := s.rateLimit(rateCheck{"status:ip:" + rateIP(s.clientIP(r)), limitStatusPerIP}); err != nil {
-		writeProblem(w, err.(*apiError))
+	if err := s.rateLimit(ctx, rateCheck{"status:ip:" + rateIP(s.clientIP(r)), limitStatusPerIP}); err != nil {
+		s.writeError(w, r, err)
 		return store.StatusPage{}, false
 	}
 	var pg store.StatusPage
@@ -492,7 +492,7 @@ func (snap *statusSnap) json() oas.PublicStatusPage {
 
 func (s *Server) GetClientStatusPage(ctx context.Context, req oas.GetClientStatusPageRequestObject) (oas.GetClientStatusPageResponseObject, error) {
 	r := requestFrom(ctx)
-	if err := s.rateLimit(rateCheck{"status:ip:" + rateIP(s.clientIP(r)), limitStatusPerIP}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"status:ip:" + rateIP(s.clientIP(r)), limitStatusPerIP}); err != nil {
 		return nil, err
 	}
 	pg, err := s.st.FindStatusPageBySlug(ctx, req.Slug)

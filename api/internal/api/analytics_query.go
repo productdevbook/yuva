@@ -27,6 +27,7 @@ import (
 const (
 	analyticsQueriesPerWorkspace = 4
 	analyticsQueryWait           = 2 * time.Second
+	analyticsQueryLease          = 2*analytics.QueryTimeout + 30*time.Second
 	analyticsFinishedTTL         = 10 * time.Minute
 	analyticsOpenTTL             = 30 * time.Second
 	analyticsRealtimeTTL         = 10 * time.Second
@@ -39,33 +40,23 @@ const (
 var errAnalyticsBusyQueries = &apiError{Status: http.StatusTooManyRequests, Code: "rate_limited",
 	Detail: "this workspace already runs four analytics queries; try again in a moment", RetryAfter: 2}
 
-// querySlots lets each workspace run a few analytics queries at once.
+// querySlots lets each workspace run a few analytics queries at once across all replicas. A slot is
+// leased for longer than a query and its comparison may run, so one a crashed process held frees
+// itself.
 type querySlots struct {
-	mu sync.Mutex
-	m  map[uuid.UUID]chan struct{}
+	limits *rateLimiter
+	now    func() time.Time
 }
 
-func (q *querySlots) acquire(ctx context.Context, ws uuid.UUID) (func(), error) {
-	q.mu.Lock()
-	if q.m == nil {
-		q.m = map[uuid.UUID]chan struct{}{}
+func (q querySlots) acquire(ctx context.Context, ws uuid.UUID) (func(), error) {
+	release, ok, err := q.limits.acquireSlot(ctx, "analytics-query:"+ws.String(), analyticsQueriesPerWorkspace, analyticsQueryLease, analyticsQueryWait, q.now)
+	if err != nil {
+		return nil, err
 	}
-	ch, ok := q.m[ws]
 	if !ok {
-		ch = make(chan struct{}, analyticsQueriesPerWorkspace)
-		q.m[ws] = ch
-	}
-	q.mu.Unlock()
-	t := time.NewTimer(analyticsQueryWait)
-	defer t.Stop()
-	select {
-	case ch <- struct{}{}:
-		return func() { <-ch }, nil
-	case <-t.C:
 		return nil, errAnalyticsBusyQueries
-	case <-ctx.Done():
-		return nil, ctx.Err()
 	}
+	return release, nil
 }
 
 type cachedAnswer struct {

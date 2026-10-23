@@ -114,7 +114,6 @@ type analyticsState struct {
 	resolver    *analytics.Resolver
 	props       *propertyCache
 	usage       *usageCache
-	limits      *rateLimiter
 }
 
 func (s *Server) newAnalytics(d Deps) *analyticsState {
@@ -122,7 +121,7 @@ func (s *Server) newAnalytics(d Deps) *analyticsState {
 	st := &analytics.PGStore{Pool: d.Store.Pool}
 	a := &analyticsState{
 		settings: set, store: st, buffer: analytics.NewBuffer(set.Buffer), props: &propertyCache{m: map[string]*cachedProperty{}},
-		usage: &usageCache{m: map[uuid.UUID]*usageEntry{}}, limits: newRateLimiter(),
+		usage: &usageCache{m: map[uuid.UUID]*usageEntry{}}, slots: querySlots{limits: s.limits, now: s.now},
 		resolver: &analytics.Resolver{Store: st, Salts: analytics.NewSalts(st), Visits: analytics.NewVisits(set.VisitCache), Grace: set.SaltGrace},
 	}
 	if set.GeoIP != analytics.GeoOff {
@@ -770,6 +769,12 @@ func (s *Server) serveAnalyticsCollect(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusAccepted)
 }
 
+func rateKeyAnalyticsAddress(prop uuid.UUID, short analytics.ShortIP) string {
+	return "analytics:address:" + prop.String() + ":" + short.String()
+}
+
+func rateKeyAnalyticsProperty(prop uuid.UUID) string { return "analytics:property:" + prop.String() }
+
 // admitAnalytics checks n events from the request's address against the property's excluded
 // addresses and limits and counts them against the workspace's monthly cap. The address is
 // shortened right after the exclusion check. Unless ok, the answer is written.
@@ -790,19 +795,26 @@ func (s *Server) admitAnalytics(w http.ResponseWriter, r *http.Request, cp *cach
 		w.WriteHeader(http.StatusAccepted)
 		return analytics.ShortIP{}, false
 	}
-	for i := range n {
-		if ok, wait := a.limits.allowWait("a:"+prop.ID.String()+":"+short.String(), limitAnalyticsPerAddress, now); !ok {
-			drop(analytics.ReasonRate, n-i)
-			writeProblem(w, rateLimited(wait))
-			return analytics.ShortIP{}, false
-		}
+	g, err := s.limits.take(r.Context(), now, rateTake{rateKeyAnalyticsAddress(prop.ID, short), limitAnalyticsPerAddress, n})
+	if err != nil {
+		s.log.ErrorContext(r.Context(), "analytics rate limit", slog.Any("error", err))
+		writeProblem(w, errInternal)
+		return analytics.ShortIP{}, false
 	}
-	for i := range n {
-		if !a.limits.allow("p:"+prop.ID.String(), limit{a.settings.PropertyEventsPerMinute, time.Minute}, now) {
-			drop(analytics.ReasonRate, n-i)
-			w.WriteHeader(http.StatusAccepted)
-			return analytics.ShortIP{}, false
-		}
+	if g[0].n < n {
+		drop(analytics.ReasonRate, n-g[0].n)
+		writeProblem(w, rateLimited(g[0].wait))
+		return analytics.ShortIP{}, false
+	}
+	if g, err = s.limits.take(r.Context(), now, rateTake{rateKeyAnalyticsProperty(prop.ID), limit{a.settings.PropertyEventsPerMinute, time.Minute}, n}); err != nil {
+		s.log.ErrorContext(r.Context(), "analytics rate limit", slog.Any("error", err))
+		writeProblem(w, errInternal)
+		return analytics.ShortIP{}, false
+	}
+	if g[0].n < n {
+		drop(analytics.ReasonRate, n-g[0].n)
+		w.WriteHeader(http.StatusAccepted)
+		return analytics.ShortIP{}, false
 	}
 	ok, err := s.takeUsage(r.Context(), prop.WorkspaceID, n, now)
 	if err != nil {
@@ -829,6 +841,8 @@ type analyticsItem struct {
 	describe func(pg analytics.Page, refHost, refPath string) *analytics.VisitInfo
 	// persistent: visitor is a consented persistent id's hash, the same on every day.
 	persistent bool
+	// address is the rate limit key of a server event's address, empty without one.
+	address string
 }
 
 // takeAnalytics puts checked events into the buffer: excluded paths and spam referrers are dropped,

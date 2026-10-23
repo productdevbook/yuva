@@ -83,7 +83,7 @@ func (s *Server) serveStatusSubscribe(w http.ResponseWriter, r *http.Request) {
 		s.statusSubscribeFormPage(w, r, f, words, http.StatusOK, note, "", formLists(r.URL.Query()["components"]))
 		return
 	}
-	if err := s.rateLimit(rateCheck{"status-subscribe:ip:" + rateIP(s.clientIP(r)), limitStatusSubscribeIP},
+	if err := s.rateLimit(ctx, rateCheck{"status-subscribe:ip:" + rateIP(s.clientIP(r)), limitStatusSubscribeIP},
 		rateCheck{"status-subscribe:page:" + pg.ID.String(), limitStatusSubscribePage}); err != nil {
 		var ae *apiError
 		if errors.As(err, &ae) && ae.RetryAfter > 0 {

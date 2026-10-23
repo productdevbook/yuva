@@ -124,7 +124,7 @@ func (s *Server) UploadEmailImage(ctx context.Context, req oas.UploadEmailImageR
 	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
-	if err := s.rateLimit(rateCheck{"email-image-upload:" + p.workspaceID.String(), limitImageUpload}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"email-image-upload:" + p.workspaceID.String(), limitImageUpload}); err != nil {
 		return nil, err
 	}
 	data, filename, err := readImageUpload(req.Body)

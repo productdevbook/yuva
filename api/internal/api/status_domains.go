@@ -811,7 +811,7 @@ func (s *Server) addStatusDomainWorkers(workers *river.Workers) {
 }
 
 func (s *Server) CheckStatusDomain(ctx context.Context, req oas.CheckStatusDomainRequestObject) (oas.CheckStatusDomainResponseObject, error) {
-	if err := s.rateLimit(rateCheck{"status-domain-check:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitStatusPerIP}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"status-domain-check:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitStatusPerIP}); err != nil {
 		return nil, err
 	}
 	d := spelledDomain(req.Params.Domain)

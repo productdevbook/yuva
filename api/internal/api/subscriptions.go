@@ -382,7 +382,7 @@ func (s *Server) requestAgain(ctx context.Context, q *store.Queries, events *eve
 
 // confirmationAllowed counts a confirmation mail against the per-address limits and, for forms,
 // the channel's daily limit.
-func (s *Server) confirmationAllowed(ws, listID uuid.UUID, email string, channel *uuid.UUID) bool {
+func (s *Server) confirmationAllowed(ctx context.Context, ws, listID uuid.UUID, email string, channel *uuid.UUID) (bool, error) {
 	checks := []rateCheck{
 		{"list-confirm:address:" + ws.String() + ":" + email, limitConfirmPerAddress},
 		{"list-confirm:address-list:" + listID.String() + ":" + email, limitConfirmPerAddressList},
@@ -390,7 +390,11 @@ func (s *Server) confirmationAllowed(ws, listID uuid.UUID, email string, channel
 	if channel != nil {
 		checks = append(checks, rateCheck{"list-confirm:channel:" + channel.String(), limitConfirmPerChannel})
 	}
-	return s.rateLimit(checks...) == nil
+	err := s.rateLimit(ctx, checks...)
+	if isAPIError(err) {
+		return false, nil
+	}
+	return err == nil, err
 }
 
 func (s *Server) queueConfirmation(ctx context.Context, q *store.Queries, events *eventBatch, sub store.ListSubscription) error {
@@ -697,7 +701,11 @@ func (s *Server) CreateSubscription(ctx context.Context, req oas.CreateSubscript
 			s.queueWelcome(events, list, out)
 			return nil
 		}
-		if !s.confirmationAllowed(p.workspaceID, list.ID, email, nil) {
+		ok, err := s.confirmationAllowed(ctx, p.workspaceID, list.ID, email, nil)
+		if err != nil {
+			return err
+		}
+		if !ok {
 			return errConfirmationLimit
 		}
 		if out, err = s.newSubscription(ctx, q, events, list, contactID, email, subPending, principalSource(p), nil); err != nil {
@@ -849,8 +857,14 @@ func (s *Server) ResendSubscriptionConfirmation(ctx context.Context, req oas.Res
 		if err := listChannel(ctx, q, p.workspaceID, list.InboxID, *list.ChannelID); err != nil {
 			return err
 		}
-		if sub.ConfirmationsSent >= maxConfirmations || s.rateLimit(rateCheck{"list-confirm:subscription:" + sub.ID.String(), limitConfirmPerSub}) != nil {
+		if sub.ConfirmationsSent >= maxConfirmations {
 			return errConfirmationLimit
+		}
+		if err := s.rateLimit(ctx, rateCheck{"list-confirm:subscription:" + sub.ID.String(), limitConfirmPerSub}); err != nil {
+			if isAPIError(err) {
+				return errConfirmationLimit
+			}
+			return err
 		}
 		return s.queueConfirmation(ctx, q, events, sub)
 	})

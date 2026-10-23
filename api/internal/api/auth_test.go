@@ -204,7 +204,11 @@ func newHarnessWith(t *testing.T, configure func(*api.Deps)) *harness {
 	if err != nil {
 		t.Fatal(err)
 	}
-	key, err := secret.ParseKey(base64.StdEncoding.EncodeToString(bytes.Repeat([]byte{7}, 32)))
+	// Each harness is its own deployment: rate limit keys are hashed with the master key, so
+	// harnesses sharing the test database never share a window.
+	raw := make([]byte, 32)
+	_, _ = rand.Read(raw)
+	key, err := secret.ParseKey(base64.StdEncoding.EncodeToString(raw))
 	if err != nil {
 		t.Fatal(err)
 	}

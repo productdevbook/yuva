@@ -71,7 +71,7 @@ func (s *Server) helpClientCenter(ctx context.Context, key string) (store.HelpCe
 	if err := s.helpOn(); err != nil {
 		return none, store.FindChatChannelByKeyRow{}, err
 	}
-	if err := s.rateLimit(rateCheck{"help-client:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitChannelPerIP}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"help-client:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitChannelPerIP}); err != nil {
 		return none, store.FindChatChannelByKeyRow{}, err
 	}
 	key = strings.TrimSpace(key)
@@ -193,7 +193,7 @@ func (s *Server) SearchClientHelp(ctx context.Context, req oas.SearchClientHelpR
 	if len(words) == 0 {
 		return nil, errHelpQueryEmpty
 	}
-	if err := s.rateLimit(
+	if err := s.rateLimit(ctx,
 		rateCheck{"help-search:ip:" + rateIP(s.clientIP(requestFrom(ctx))) + ":" + ch.ChannelID.String(), limitHelpSearchPerIP},
 		rateCheck{"help-search:center:" + c.ID.String(), limitHelpSearchCenter},
 	); err != nil {
@@ -276,9 +276,7 @@ func (s *Server) GetClientHelpArticle(ctx context.Context, req oas.GetClientHelp
 		return nil, err
 	}
 	r := requestFrom(ctx)
-	if s.limits.allow("help-view:"+rateIP(s.clientIP(r))+":"+a.ID.String(), limitHelpViewPerHour, s.now()) {
-		s.countHelpArticle(c, a.ID, locale, helpArticleCount{views: 1})
-	}
+	s.countHelpView(ctx, r, c, a.ID, locale)
 	_, index, err := s.helpCollections(ctx, q, c, locale)
 	if err != nil {
 		return nil, err
@@ -303,14 +301,14 @@ func (s *Server) CreateClientHelpReaction(ctx context.Context, req oas.CreateCli
 	if utf8.RuneCountInString(deref(b.Search)) > maxHelpQueryLen {
 		return nil, errValidation("search must be at most 200 characters")
 	}
-	if err := s.rateLimit(rateCheck{"help-reaction:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitSessionPerIP}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"help-reaction:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitSessionPerIP}); err != nil {
 		return nil, err
 	}
 	c, ch, err := s.helpClientCenter(ctx, req.ChannelKey)
 	if err != nil {
 		return nil, err
 	}
-	if err := s.rateLimit(rateCheck{"help-reaction:channel:" + ch.ChannelID.String(), limitSessionPerChannel}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"help-reaction:channel:" + ch.ChannelID.String(), limitSessionPerChannel}); err != nil {
 		return nil, err
 	}
 	if err := offersLocale(c, b.Locale); err != nil {
@@ -340,7 +338,7 @@ func (s *Server) CreateClientHelpSearchClick(ctx context.Context, req oas.Create
 	if b == nil || utf8.RuneCountInString(b.Q) > maxHelpQueryLen || len(helpQueryWords(b.Q)) == 0 {
 		return nil, errHelpQueryEmpty
 	}
-	if err := s.rateLimit(rateCheck{"help-click:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitHelpClickPerIP}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"help-click:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitHelpClickPerIP}); err != nil {
 		return nil, err
 	}
 	c, _, err := s.helpClientCenter(ctx, req.ChannelKey)

@@ -414,7 +414,7 @@ func (s *Server) UpdateHelpCenter(ctx context.Context, req oas.UpdateHelpCenterR
 		}
 		now := s.now()
 		if f.slug != cur.Slug {
-			if err := s.rateLimit(rateCheck{"help-slug:" + cur.ID.String(), limitHelpSlug}); err != nil {
+			if err := s.rateLimit(ctx, rateCheck{"help-slug:" + cur.ID.String(), limitHelpSlug}); err != nil {
 				return err
 			}
 			if taken, err := q.HelpSlugTaken(ctx, store.HelpSlugTakenParams{Slug: f.slug, ID: cur.ID}); err != nil || taken {

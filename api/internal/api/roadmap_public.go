@@ -106,8 +106,8 @@ func (s *Server) publicRoadmapBoard(w http.ResponseWriter, r *http.Request) (sto
 		roadmapGone(w, "en")
 		return store.RoadmapBoard{}, false
 	}
-	if err := s.rateLimit(rateCheck{"roadmap:ip:" + rateIP(s.clientIP(r)), limitPublicPerIP}); err != nil {
-		writeProblem(w, err.(*apiError))
+	if err := s.rateLimit(ctx, rateCheck{"roadmap:ip:" + rateIP(s.clientIP(r)), limitPublicPerIP}); err != nil {
+		s.writeError(w, r, err)
 		return store.RoadmapBoard{}, false
 	}
 	var b store.RoadmapBoard
@@ -413,7 +413,7 @@ func (s *Server) PreviewRoadmapBoard(ctx context.Context, req oas.PreviewRoadmap
 	} else if prm.View != nil && *prm.View != oas.PreviewRoadmapBoardViewHome {
 		return nil, errValidation("view must be home or idea")
 	}
-	if err := s.rateLimit(rateCheck{"roadmap-render:" + p.viewerID().String(), limitHelpRender}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"roadmap-render:" + p.viewerID().String(), limitHelpRender}); err != nil {
 		return nil, err
 	}
 	b, err := visibleBoard(ctx, s.st.Queries, p, req.BoardId, false)

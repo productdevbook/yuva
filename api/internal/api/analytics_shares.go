@@ -408,7 +408,7 @@ func (s *Server) openShare(ctx context.Context, token string, needAccess bool) (
 		return store.AnalyticsShare{}, store.AnalyticsProperty{}, false, err
 	}
 	r := requestFrom(ctx)
-	if err := s.rateLimit(rateCheck{"share:ip:" + rateIP(s.clientIP(r)), limitSharePerIP}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"share:ip:" + rateIP(s.clientIP(r)), limitSharePerIP}); err != nil {
 		return store.AnalyticsShare{}, store.AnalyticsProperty{}, false, err
 	}
 	sh, prop, err := s.lookupShare(ctx, token)
@@ -522,7 +522,7 @@ func (s *Server) UnlockSharedAnalytics(ctx context.Context, req oas.UnlockShared
 		return nil, err
 	}
 	ip := rateIP(s.clientIP(requestFrom(ctx)))
-	if err := s.rateLimit(rateCheck{"share-unlock:ip:" + ip, limitUnlockPerIP}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"share-unlock:ip:" + ip, limitUnlockPerIP}); err != nil {
 		return nil, err
 	}
 	sh, _, err := s.lookupShare(ctx, req.Token)
@@ -532,7 +532,7 @@ func (s *Server) UnlockSharedAnalytics(ctx context.Context, req oas.UnlockShared
 	if sh.PasswordHash == nil {
 		return nil, errShareNoPassword
 	}
-	if err := s.rateLimit(rateCheck{"share-unlock:" + sh.ID.String() + ":" + ip, limitUnlockPerShareIP}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"share-unlock:" + sh.ID.String() + ":" + ip, limitUnlockPerShareIP}); err != nil {
 		return nil, err
 	}
 	if !checkSharePassword(*sh.PasswordHash, req.Body.Password) {
@@ -642,8 +642,8 @@ func (s *Server) GetSharedAnalyticsRealtime(ctx context.Context, req oas.GetShar
 // serveSharePage serves the panel's page for a share link, framable by the link's embed origins
 // only; an unknown, revoked or expired link gets the page too, which then says so.
 func (s *Server) serveSharePage(w http.ResponseWriter, r *http.Request) {
-	if err := s.rateLimit(rateCheck{"share:ip:" + rateIP(s.clientIP(r)), limitSharePerIP}); err != nil {
-		writeProblem(w, err.(*apiError))
+	if err := s.rateLimit(r.Context(), rateCheck{"share:ip:" + rateIP(s.clientIP(r)), limitSharePerIP}); err != nil {
+		s.writeError(w, r, err)
 		return
 	}
 	var ancestors []string

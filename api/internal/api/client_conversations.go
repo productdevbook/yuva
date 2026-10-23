@@ -368,7 +368,7 @@ func (s *Server) addContactMessage(ctx context.Context, q *store.Queries, events
 
 func (s *Server) CreateClientConversation(ctx context.Context, req oas.CreateClientConversationRequestObject) (oas.CreateClientConversationResponseObject, error) {
 	cp := contactFrom(ctx)
-	if err := s.rateLimit(s.writeChecks(ctx, cp)...); err != nil {
+	if err := s.rateLimit(ctx, s.writeChecks(ctx, cp)...); err != nil {
 		return nil, err
 	}
 	var in *messageInput
@@ -512,7 +512,7 @@ func (s *Server) clientConversationCreated(ctx context.Context, cp contactPrinci
 
 func (s *Server) CreateClientMessage(ctx context.Context, req oas.CreateClientMessageRequestObject) (oas.CreateClientMessageResponseObject, error) {
 	cp := contactFrom(ctx)
-	if err := s.rateLimit(s.writeChecks(ctx, cp)...); err != nil {
+	if err := s.rateLimit(ctx, s.writeChecks(ctx, cp)...); err != nil {
 		return nil, err
 	}
 	if _, err := clientConversation(ctx, s.st.Queries, cp, req.ConversationId, false); err != nil {
@@ -647,7 +647,7 @@ func (s *Server) MarkClientConversationRead(ctx context.Context, req oas.MarkCli
 
 func (s *Server) SetClientTyping(ctx context.Context, req oas.SetClientTypingRequestObject) (oas.SetClientTypingResponseObject, error) {
 	cp := contactFrom(ctx)
-	if err := s.rateLimit(rateCheck{"typing:" + cp.sessionID.String(), limitTypingPerSession}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"typing:" + cp.sessionID.String(), limitTypingPerSession}); err != nil {
 		return nil, err
 	}
 	c, err := clientConversation(ctx, s.st.Queries, cp, req.ConversationId, false)

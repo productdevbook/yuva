@@ -49,6 +49,7 @@ const (
 	StatusNoticeSweepInterval   = time.Minute
 	StatusDomainSweepInterval   = time.Minute
 	ChangelogSweepInterval      = time.Minute
+	RateLimitSweepInterval      = time.Minute
 )
 
 // StatusNoticeQueue holds the status notice jobs, so a notice about an outage never waits behind a
@@ -138,6 +139,9 @@ func New(pool *pgxpool.Pool, q *store.Queries, log *slog.Logger, broadcastWorker
 		river.NewPeriodicJob(river.PeriodicInterval(ChangelogSweepInterval), func() (river.JobArgs, *river.InsertOpts) {
 			return ChangelogSweepArgs{}, nil
 		}, &river.PeriodicJobOpts{ID: "changelog_sweep", RunOnStart: true}),
+		river.NewPeriodicJob(river.PeriodicInterval(RateLimitSweepInterval), func() (river.JobArgs, *river.InsertOpts) {
+			return RateLimitSweepArgs{}, nil
+		}, &river.PeriodicJobOpts{ID: "rate_limit_sweep", RunOnStart: true}),
 	}
 	if sesTenants {
 		periodic = append(periodic, river.NewPeriodicJob(river.PeriodicInterval(SESTenantStatusInterval), func() (river.JobArgs, *river.InsertOpts) {
@@ -286,6 +290,18 @@ type ChangelogSweepArgs struct{}
 func (ChangelogSweepArgs) Kind() string { return "changelog_sweep" }
 
 func (ChangelogSweepArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{UniqueOpts: river.UniqueOpts{ByArgs: true, ByState: []rivertype.JobState{
+		rivertype.JobStateAvailable, rivertype.JobStatePending, rivertype.JobStateRunning, rivertype.JobStateScheduled, rivertype.JobStateRetryable,
+	}}}
+}
+
+// RateLimitSweepArgs is worked by the api package: it deletes the rate limit windows and query slot
+// leases that ended.
+type RateLimitSweepArgs struct{}
+
+func (RateLimitSweepArgs) Kind() string { return "rate_limit_sweep" }
+
+func (RateLimitSweepArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{UniqueOpts: river.UniqueOpts{ByArgs: true, ByState: []rivertype.JobState{
 		rivertype.JobStateAvailable, rivertype.JobStatePending, rivertype.JobStateRunning, rivertype.JobStateScheduled, rivertype.JobStateRetryable,
 	}}}

@@ -157,10 +157,7 @@ func (s *Server) readerContact(ctx context.Context, q *store.Queries, ws, person
 }
 
 func (s *Server) discussionChecks(ctx context.Context, d *discussant) []rateCheck {
-	who := "member:" + uuidString(d.memberID)
-	if d.contactID != nil {
-		who = "contact:" + d.contactID.String()
-	}
+	who := d.rateWho()
 	return append(s.writeChecks(ctx, contactPrincipal{channelID: d.channelID}),
 		rateCheck{"discussion:post:" + who, limit{discussionPostsPerMin, time.Minute}},
 		rateCheck{"discussion:posth:" + who, limitDiscussionPostsPerHour})
@@ -301,7 +298,7 @@ func (s *Server) readerOf(ctx context.Context, ch store.FindChatChannelByKeyRow)
 }
 
 func (s *Server) discussionChannel(ctx context.Context, key string) (store.FindChatChannelByKeyRow, error) {
-	if err := s.rateLimit(rateCheck{"discussions:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitChannelPerIP}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"discussions:ip:" + rateIP(s.clientIP(requestFrom(ctx))), limitChannelPerIP}); err != nil {
 		return store.FindChatChannelByKeyRow{}, err
 	}
 	return s.docsChannel(ctx, key, nil)
@@ -437,7 +434,7 @@ func (s *Server) CreateClientDiscussion(ctx context.Context, req oas.CreateClien
 	if err := d.checkOpen(); err != nil {
 		return nil, err
 	}
-	if err := s.rateLimit(s.discussionChecks(ctx, d)...); err != nil {
+	if err := s.rateLimit(ctx, s.discussionChecks(ctx, d)...); err != nil {
 		return nil, err
 	}
 	if b.PageUrl == nil {
@@ -488,7 +485,7 @@ func (s *Server) CreateClientDiscussion(ctx context.Context, req oas.CreateClien
 
 func (s *Server) CreateClientDiscussionPost(ctx context.Context, req oas.CreateClientDiscussionPostRequestObject) (oas.CreateClientDiscussionPostResponseObject, error) {
 	d := discussantFrom(ctx)
-	if err := s.rateLimit(s.discussionChecks(ctx, d)...); err != nil {
+	if err := s.rateLimit(ctx, s.discussionChecks(ctx, d)...); err != nil {
 		return nil, err
 	}
 	body, err := discussionBodyText(req.Body.Body)
@@ -566,7 +563,7 @@ func (s *Server) ClearClientDiscussionAnswer(ctx context.Context, req oas.ClearC
 
 func (s *Server) clientFollow(ctx context.Context, id uuid.UUID, follow bool) error {
 	d := discussantFrom(ctx)
-	if err := s.rateLimit(s.writeChecks(ctx, contactPrincipal{channelID: d.channelID})...); err != nil {
+	if err := s.rateLimit(ctx, s.writeChecks(ctx, contactPrincipal{channelID: d.channelID})...); err != nil {
 		return err
 	}
 	return s.inTx(ctx, d.workspaceID, func(q *store.Queries, _ *eventBatch) error {
@@ -675,7 +672,7 @@ func (s *Server) DeleteClientDiscussionPost(ctx context.Context, req oas.DeleteC
 
 func (s *Server) clientVote(ctx context.Context, id uuid.UUID, add bool) (oas.DiscussionPost, error) {
 	d := discussantFrom(ctx)
-	if err := s.rateLimit(s.writeChecks(ctx, contactPrincipal{channelID: d.channelID})...); err != nil {
+	if err := s.rateLimit(ctx, s.writeChecks(ctx, contactPrincipal{channelID: d.channelID})...); err != nil {
 		return oas.DiscussionPost{}, err
 	}
 	err := s.inTx(ctx, d.workspaceID, func(q *store.Queries, _ *eventBatch) error {
@@ -696,7 +693,7 @@ func (s *Server) clientVote(ctx context.Context, id uuid.UUID, add bool) (oas.Di
 			return errIdeaClosed
 		}
 		if t.d.Kind == kindIdea {
-			if err := s.rateLimit(rateCheck{"idea:vote:" + d.rateWho(), limitIdeaVotes}); err != nil {
+			if err := s.rateLimit(ctx, rateCheck{"idea:vote:" + d.rateWho(), limitIdeaVotes}); err != nil {
 				return err
 			}
 		}
@@ -748,7 +745,7 @@ func (s *Server) createClientIdea(ctx context.Context, d *discussant, b *oas.Cli
 	if err := s.roadmapOn(); err != nil {
 		return nil, err
 	}
-	if err := s.rateLimit(s.discussionChecks(ctx, d)...); err != nil {
+	if err := s.rateLimit(ctx, s.discussionChecks(ctx, d)...); err != nil {
 		return nil, err
 	}
 	if b.PageUrl != nil || b.PageTitle != nil {
@@ -832,7 +829,7 @@ func (s *Server) listClientIdeas(ctx context.Context, ch store.FindChatChannelBy
 		return nil, err
 	}
 	if arg.Tsq != nil {
-		if err := s.rateLimit(rateCheck{"ideas:search:" + rateIP(s.clientIP(requestFrom(ctx))) + ":" + ch.ChannelID.String(), limitIdeaSearch}); err != nil {
+		if err := s.rateLimit(ctx, rateCheck{"ideas:search:" + rateIP(s.clientIP(requestFrom(ctx))) + ":" + ch.ChannelID.String(), limitIdeaSearch}); err != nil {
 			return nil, err
 		}
 	}

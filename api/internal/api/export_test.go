@@ -2,17 +2,24 @@ package api
 
 import (
 	"context"
-	"fmt"
 	"time"
 	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
-func (s *Server) FillRateLimiter(now time.Time) {
-	for i := range maxBuckets {
-		s.limits.allow(fmt.Sprint("fill", i), limit{1, time.Hour}, now)
+func (s *Server) TakeRate(ctx context.Context, key string, n, lim int, window time.Duration) (int, time.Duration, error) {
+	g, err := s.limits.take(ctx, s.now(), rateTake{key, limit{lim, window}, n})
+	if err != nil {
+		return 0, 0, err
 	}
+	return g[0].n, g[0].wait, nil
+}
+
+func (s *Server) RateKeyHash(key string) []byte { return s.limits.hash(key) }
+
+func (s *Server) AcquireQuerySlot(ctx context.Context, ws uuid.UUID) (func(), error) {
+	return s.analytics.slots.acquire(ctx, ws)
 }
 
 func SetMaxIncidentLinks(n int) (restore func()) {

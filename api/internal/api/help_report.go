@@ -117,7 +117,7 @@ func (s *Server) RenderHelpMarkdown(ctx context.Context, req oas.RenderHelpMarkd
 		return nil, err
 	}
 	p := principalFrom(ctx)
-	if err := s.rateLimit(rateCheck{"help-render:" + p.viewerID().String(), limitHelpRender}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"help-render:" + p.viewerID().String(), limitHelpRender}); err != nil {
 		return nil, err
 	}
 	if len([]rune(req.Body.Body)) > maxHelpBody {
@@ -141,7 +141,7 @@ func (s *Server) UploadHelpImage(ctx context.Context, req oas.UploadHelpImageReq
 		return nil, err
 	}
 	p := principalFrom(ctx)
-	if err := s.rateLimit(rateCheck{"email-image-upload:" + p.workspaceID.String(), limitImageUpload}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"email-image-upload:" + p.workspaceID.String(), limitImageUpload}); err != nil {
 		return nil, err
 	}
 	if _, err := visibleHelpCenter(ctx, s.st.Queries, p, req.CenterId, false); err != nil {
@@ -224,7 +224,7 @@ func (s *Server) PreviewHelpCenter(ctx context.Context, req oas.PreviewHelpCente
 	if view != "home" && prm.Id == nil {
 		return nil, errValidation("id is required for view=" + string(view))
 	}
-	if err := s.rateLimit(rateCheck{"help-render:" + p.viewerID().String(), limitHelpRender}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"help-render:" + p.viewerID().String(), limitHelpRender}); err != nil {
 		return nil, err
 	}
 	q := s.st.Queries

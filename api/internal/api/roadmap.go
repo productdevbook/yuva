@@ -321,7 +321,7 @@ func (s *Server) UpdateRoadmapBoard(ctx context.Context, req oas.UpdateRoadmapBo
 		}
 		now := s.now()
 		if f.slug != cur.Slug {
-			if err := s.rateLimit(rateCheck{"roadmap-slug:" + cur.ID.String(), limitRoadmapSlug}); err != nil {
+			if err := s.rateLimit(ctx, rateCheck{"roadmap-slug:" + cur.ID.String(), limitRoadmapSlug}); err != nil {
 				return err
 			}
 			if taken, err := q.RoadmapSlugTaken(ctx, store.RoadmapSlugTakenParams{Slug: f.slug, ID: cur.ID}); err != nil || taken {

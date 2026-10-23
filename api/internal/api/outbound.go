@@ -287,6 +287,7 @@ func (s *Server) AddWorkers(workers *river.Workers) {
 	river.AddWorker(workers, &statusNoticeSweepWorker{s: s})
 	river.AddWorker(workers, &changelogPublishWorker{s: s})
 	river.AddWorker(workers, &changelogSweepWorker{s: s})
+	river.AddWorker(workers, &rateLimitSweepWorker{s: s})
 	s.addStatusDomainWorkers(workers)
 	s.addAnalyticsWorkers(workers)
 	s.addSESWorkers(workers)

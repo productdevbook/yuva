@@ -130,7 +130,7 @@ func (s *Server) SendAnalyticsReport(ctx context.Context, req oas.SendAnalyticsR
 	if err != nil {
 		return nil, err
 	}
-	if err := s.rateLimit(rateCheck{"analytics-report:" + p.memberID.String(), limitReportsPerMember}); err != nil {
+	if err := s.rateLimit(ctx, rateCheck{"analytics-report:" + p.memberID.String(), limitReportsPerMember}); err != nil {
 		return nil, err
 	}
 	sub, err := s.subscriptionOf(ctx, p, prop.ID)

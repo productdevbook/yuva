@@ -132,7 +132,7 @@ func (c *mcpCall) uploadImage(ctx context.Context, in uploadImageIn) (uploadImag
 	if err := requireManagerOrKey(c.p); err != nil {
 		return uploadImageOut{}, err
 	}
-	if err := c.s.rateLimit(rateCheck{"email-image-upload:" + c.p.workspaceID.String(), limitImageUpload}); err != nil {
+	if err := c.s.rateLimit(ctx, rateCheck{"email-image-upload:" + c.p.workspaceID.String(), limitImageUpload}); err != nil {
 		return uploadImageOut{}, err
 	}
 	var data []byte
