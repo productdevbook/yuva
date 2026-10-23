@@ -44,7 +44,7 @@ göre sıralayın.
 | `conversation.updated` | Durum, atanan kişi, öncelik, etiketler, konu ya da spam işareti değişti veya konuşma taşındı | `conversation`, `contact` |
 | `conversation.rated` | Kişi konuşmayı değerlendirdi (`conversation.rating`) | `conversation`, `contact` |
 | `conversation.trashed`, `conversation.restored` | Bir konuşma [Çöp kutusuna](headless.md#konuşmaları-silme) taşındı veya geri alındı | `conversation`, `contact` |
-| `conversation.deleted` | Çöp kutusu onu, taşındıktan 30 gün sonra kalıcı olarak sildi | `id`, `inbox_id`, `contact_id` |
+| `conversation.deleted` | Çöp kutusu onu, taşındıktan 30 gün sonra kalıcı olarak sildi | yalnızca `id`, `inbox_id`, `contact_id` içeren `conversation` |
 | `message.created` | Kişiden gelen ya da kişiye giden bir mesaj; açıksa notlar da | `message`, `conversation`, `contact` |
 | `feedback.created` | Bir uygulamadan ya da `POST /v1/feedback` ile gelen geri bildirim; uygulamadan gelende `feedback.score` (1 ile 5) olabilir | `message`, `conversation`, `contact` |
 | `contact.updated` | Bir kişi değişti | `contact` |
