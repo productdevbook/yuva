@@ -318,8 +318,7 @@ type AppPushSendArgs struct {
 	DeviceID       uuid.UUID `json:"device_id"`
 	ContactID      uuid.UUID `json:"contact_id"`
 	ConversationID uuid.UUID `json:"conversation_id"`
-	Title          string    `json:"title"`
-	Body           string    `json:"body"`
+	MessageID      uuid.UUID `json:"message_id"`
 	Badge          int       `json:"badge"`
 }
 
@@ -411,21 +410,13 @@ func (s *Server) CheckAppPush(ctx context.Context, workspaceID, conversationID u
 		if err != nil || len(targets) == 0 {
 			return err
 		}
-		generic, preview, err := appPushText(ctx, q, c, latest.Body)
-		if err != nil {
-			return err
-		}
 		badge, err := q.CountUnreadForContact(ctx, store.CountUnreadForContactParams{WorkspaceID: workspaceID, InboxID: c.InboxID, ContactID: c.ContactID})
 		if err != nil {
 			return err
 		}
 		for _, t := range targets {
-			msg := generic
-			if t.ShowContent {
-				msg = preview
-			}
 			events.job(AppPushSendArgs{
-				WorkspaceID: workspaceID, DeviceID: t.ID, ContactID: c.ContactID, ConversationID: c.ID, Title: msg.Subject, Body: strings.TrimSpace(msg.Text), Badge: int(badge),
+				WorkspaceID: workspaceID, DeviceID: t.ID, ContactID: c.ContactID, ConversationID: c.ID, MessageID: latest.ID, Badge: int(badge),
 			}, &river.InsertOpts{MaxAttempts: appPushAttempts})
 		}
 		return q.ClaimAppPush(ctx, store.ClaimAppPushParams{WorkspaceID: workspaceID, ID: c.ID, Through: latest.CreatedAt, Now: now})
@@ -433,29 +424,27 @@ func (s *Server) CheckAppPush(ctx context.Context, workspaceID, conversationID u
 	return next, err
 }
 
-// appPushText renders the push without the reply's text and with its start, in the contact's
-// language (else the inbox's), titled with the inbox name.
-func appPushText(ctx context.Context, q *store.Queries, c store.Conversation, body string) (generic, preview mail.Message, err error) {
-	in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: c.WorkspaceID, ID: c.InboxID})
+// appPushText renders the push titled with the inbox name, in the contact's language (else the
+// inbox's), with the start of the reply when the channel shows content.
+func appPushText(ctx context.Context, q *store.Queries, workspaceID, inboxID uuid.UUID, contactLocale *string, body string, showContent bool) (mail.Message, error) {
+	in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: workspaceID, ID: inboxID})
 	if err != nil {
-		return generic, preview, err
-	}
-	ct, err := q.GetContact(ctx, store.GetContactParams{WorkspaceID: c.WorkspaceID, ID: c.ContactID})
-	if err != nil {
-		return generic, preview, err
+		return mail.Message{}, err
 	}
 	locale := in.DefaultLocale
-	if ct.Locale != nil && *ct.Locale != "" {
-		locale = *ct.Locale
+	if contactLocale != nil && *contactLocale != "" {
+		locale = *contactLocale
 	}
-	if generic, err = mail.Render("push_app_reply", locale, map[string]any{"Inbox": in.Name}); err != nil {
-		return generic, preview, err
+	data := map[string]any{"Inbox": in.Name}
+	if showContent {
+		data["Preview"] = excerpt(body, pushPreviewRunes)
 	}
-	preview, err = mail.Render("push_app_reply", locale, map[string]any{"Inbox": in.Name, "Preview": excerpt(body, pushPreviewRunes)})
-	return generic, preview, err
+	return mail.Render("push_app_reply", locale, data)
 }
 
-// SendAppPush makes one attempt to deliver a push to a device. A token APNs or FCM reports
+// SendAppPush makes one attempt to deliver a push to a device, rendering the preview now: nothing
+// is sent when the reply was redacted, trashed or deleted, or its conversation or contact is gone.
+// Jobs queued before the args dropped the text carry a title and body, which are ignored. A token APNs or FCM reports
 // invalid is deleted; a refused key is recorded on the channel. It reports whether to try again.
 func (s *Server) SendAppPush(ctx context.Context, a AppPushSendArgs) (bool, error) {
 	if live, err := s.workspaceLive(ctx, a.WorkspaceID); err != nil || !live {
@@ -468,7 +457,22 @@ func (s *Server) SendAppPush(ctx context.Context, a AppPushSendArgs) (bool, erro
 	if err != nil {
 		return false, err
 	}
-	n := apppush.Notification{Title: a.Title, Body: a.Body, Badge: a.Badge, ConversationID: a.ConversationID.String()}
+	var mid *uuid.UUID
+	if a.MessageID != uuid.Nil() {
+		mid = &a.MessageID
+	}
+	pv, err := s.st.GetPushPreviewMessage(ctx, store.GetPushPreviewMessageParams{WorkspaceID: a.WorkspaceID, ConversationID: a.ConversationID, ContactID: a.ContactID, MessageID: mid})
+	if store.IsNotFound(err) {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	msg, err := appPushText(ctx, s.st.Queries, a.WorkspaceID, pv.InboxID, pv.ContactLocale, pv.Body, t.ShowContent)
+	if err != nil {
+		return false, err
+	}
+	n := apppush.Notification{Title: msg.Subject, Body: strings.TrimSpace(msg.Text), Badge: a.Badge, ConversationID: a.ConversationID.String()}
 	var r apppush.Result
 	switch t.Platform {
 	case string(oas.Ios):

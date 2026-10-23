@@ -1356,7 +1356,9 @@ inline thread inside a product's own panel.
   id). The contact's last connection closing, or lapsing, queues the same check for replies that
   arrived while they were connected. The push's title is the inbox name, its body the start of the
   reply (140 characters) when `show_content`, else a fixed "new reply" line in the contact's
-  language; the badge is the contact's number of unread conversations in the inbox; the payload
+  language, rendered when the send job runs (the job carries the message id and the badge, never text,
+  and ignores any text an older job stored), and nothing is sent when the reply was redacted or
+  trashed, its conversation is trashed or spam, or the contact is deleted; the badge is the contact's number of unread conversations in the inbox; the payload
   carries `yuva_conversation_id` exactly as a host-sent push does. iOS devices whose app id is not
   the channel's bundle id are skipped. One River job per device, naming the contact it was meant for (a token that moved since gets
   nothing), sends it with the standard library

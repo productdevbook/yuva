@@ -130,7 +130,7 @@ func (q *Queries) GetAppPushSettings(ctx context.Context, arg GetAppPushSettings
 const getPushDeviceTarget = `-- name: GetPushDeviceTarget :one
 SELECT d.id, d.channel_id, d.contact_id, d.platform, d.token, d.app_id,
        s.apns_key_id, s.apns_team_id, s.apns_bundle_id, s.apns_production, s.apns_key, s.apns_verified,
-       s.fcm_project_id, s.fcm_credentials
+       s.fcm_project_id, s.fcm_credentials, s.show_content
 FROM push_devices d
 JOIN app_push_settings s ON s.workspace_id = d.workspace_id AND s.channel_id = d.channel_id
 WHERE d.workspace_id = $1 AND d.id = $2 AND d.contact_id = $3 AND s.enabled
@@ -157,6 +157,7 @@ type GetPushDeviceTargetRow struct {
 	ApnsVerified   bool
 	FcmProjectID   *string
 	FcmCredentials []byte
+	ShowContent    bool
 }
 
 func (q *Queries) GetPushDeviceTarget(ctx context.Context, arg GetPushDeviceTargetParams) (GetPushDeviceTargetRow, error) {
@@ -177,7 +178,46 @@ func (q *Queries) GetPushDeviceTarget(ctx context.Context, arg GetPushDeviceTarg
 		&i.ApnsVerified,
 		&i.FcmProjectID,
 		&i.FcmCredentials,
+		&i.ShowContent,
 	)
+	return i, err
+}
+
+const getPushPreviewMessage = `-- name: GetPushPreviewMessage :one
+SELECT m.body, c.inbox_id, ct.locale AS contact_locale FROM messages m
+JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
+JOIN contacts ct ON ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
+WHERE m.workspace_id = $1 AND m.conversation_id = $2 AND c.contact_id = $3
+  AND c.trashed_at IS NULL AND NOT c.spam
+  AND m.kind = 'message' AND m.direction = 'out' AND m.author_type IN ('member', 'bot') AND m.delivery_state IS NULL
+  AND NOT m.draft AND m.imported_at IS NULL AND m.redacted_at IS NULL
+  AND ($4::uuid IS NULL OR m.id = $4::uuid)
+ORDER BY m.created_at DESC, m.id DESC
+LIMIT 1
+`
+
+type GetPushPreviewMessageParams struct {
+	WorkspaceID    uuid.UUID
+	ConversationID uuid.UUID
+	ContactID      uuid.UUID
+	MessageID      *uuid.UUID
+}
+
+type GetPushPreviewMessageRow struct {
+	Body          string
+	InboxID       uuid.UUID
+	ContactLocale *string
+}
+
+func (q *Queries) GetPushPreviewMessage(ctx context.Context, arg GetPushPreviewMessageParams) (GetPushPreviewMessageRow, error) {
+	row := q.db.QueryRow(ctx, getPushPreviewMessage,
+		arg.WorkspaceID,
+		arg.ConversationID,
+		arg.ContactID,
+		arg.MessageID,
+	)
+	var i GetPushPreviewMessageRow
+	err := row.Scan(&i.Body, &i.InboxID, &i.ContactLocale)
 	return i, err
 }
 
@@ -187,7 +227,7 @@ JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversatio
 LEFT JOIN contact_reads r ON r.workspace_id = m.workspace_id AND r.conversation_id = m.conversation_id
 WHERE m.workspace_id = $1 AND m.conversation_id = $2
   AND m.kind = 'message' AND m.direction = 'out' AND m.author_type IN ('member', 'bot') AND m.delivery_state IS NULL
-  AND NOT m.draft AND m.imported_at IS NULL
+  AND NOT m.draft AND m.imported_at IS NULL AND m.redacted_at IS NULL
   AND (r.last_read_at IS NULL OR (m.created_at, m.id) > (r.last_read_at, r.last_read_message_id))
   AND (c.push_through IS NULL OR m.created_at > c.push_through)
   AND m.created_at >= (SELECT min(d.created_at) FROM push_devices d WHERE d.workspace_id = c.workspace_id AND d.contact_id = c.contact_id)
