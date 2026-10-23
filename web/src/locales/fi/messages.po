@@ -926,6 +926,10 @@ msgstr "{updates, plural, one {# päivitys} other {# päivitystä}}"
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {Tuo # osoite} other {Tuo # osoitetta}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, kirjauduttu {created}, viimeksi aktiivinen {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, one {# katselu} other {# katselua}}"
@@ -5879,6 +5883,10 @@ msgstr "Sähköpostinäkymä"
 msgid "E-mail: {label}"
 msgstr "Sähköposti: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "Sähköpostilla tullut koodi"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "Sähköpostit liittyneille henkilöille"
@@ -6268,6 +6276,10 @@ msgstr "Jokaisella avoimella keskustelulla on vastuuhenkilö."
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "Jokaisella avoimella keskustelulla on vastaus."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "Kaikki muut selaimet ja laitteet kirjataan ulos. Tämä pysyy kirjautuneena."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "Käynnissä olevat osat"
 msgid "Passed"
 msgstr "Läpäisi"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "Pääsyavain"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "Pääsyavaimen nimi"
@@ -15177,6 +15193,10 @@ msgstr "Palvelutili asetettu"
 msgid "SES tenant"
 msgstr "SES-tenant"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "Istunnot"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "Valvonnan asettama, {since}"
@@ -15616,8 +15636,17 @@ msgstr "Kirjautuminen:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "Kirjaudu ulos"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "Kirjaudu ulos kaikkialta muualta"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "Kirjaudutaanko ulos kaikkialta muualta?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "Kirjauduttu palveluun {provider}"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "Kirjauduttu palveluun {provider} uudelleen"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "Kirjauduttu ulos kaikkialta muualta"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "Yksivaiheinen vahvistus"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "Joukkolähetys peruutettiin"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "Selaimen on ensin sallittava työpöytäilmoitukset; siihen asti vain ääni kuuluu."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "Selaimet ja laitteet, joilla olet kirjautuneena. Kirjaa muut ulos, jos et tunnista jotakin."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "Tämä osoite peruutti tämän listan tilauksen. Vain henkilö voi palat
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "Tämä poistaa sinut myös jokaisesta työtilasta, johon kuulut. Viestisi säilyvät, ja ne näytetään poistetun lukijan viesteinä."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "Tämä kirjaa sinut ulos myös kaikilla muilla laitteilla."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "Tämä joukkolähetys ei ole enää luonnos, joten sitä ei voi muuttaa."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "Tämän keskustelun sähköpostikanavalla ei ole SMTP-tiliä, joten vastausta ei lähetetty. Lisää sellainen postilaatikon asetuksissa."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "Tämä laite"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "Tuntematon"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "Tuntematon laite"
 

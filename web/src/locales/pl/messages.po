@@ -926,6 +926,10 @@ msgstr "{updates, plural, one {# aktualizacja} few {# aktualizacje} many {# aktu
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {Importuj # adres} few {Importuj # adresy} many {Importuj # adresów} other {Importuj # adresu}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, zalogowano {created}, ostatnia aktywność {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, one {# wyświetlenie} few {# wyświetlenia} many {# wyświetleń} other {# wyświetlenia}}"
@@ -5879,6 +5883,10 @@ msgstr "Widok e-maila"
 msgid "E-mail: {label}"
 msgstr "E-mail: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "Kod wysłany e-mailem"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "E-maile do osób, które się zapisały"
@@ -6268,6 +6276,10 @@ msgstr "Każda otwarta rozmowa ma przypisaną osobę."
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "Każda otwarta dyskusja ma odpowiedź."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "Wszystkie inne przeglądarki i urządzenia zostaną wylogowane. To pozostanie zalogowane."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "Części w toku"
 msgid "Passed"
 msgstr "Przeszło"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "Klucz dostępu"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "Nazwa klucza dostępu"
@@ -15177,6 +15193,10 @@ msgstr "Konto usługi ustawione"
 msgid "SES tenant"
 msgstr "Tenant SES"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "Sesje"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "Ustawiony przez monitor, {since}"
@@ -15616,8 +15636,17 @@ msgstr "Logowanie:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "Wyloguj się"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "Wyloguj ze wszystkich innych miejsc"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "Wylogować ze wszystkich innych miejsc?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "Zalogowano do {provider}"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "Ponownie zalogowano do {provider}"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "Wylogowano ze wszystkich innych miejsc"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "Pojedyncza zgoda"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "Wysyłka masowa została anulowana"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "Przeglądarka musi najpierw zezwolić na powiadomienia na pulpicie; do tego czasu odtwarzany jest tylko dźwięk."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "Przeglądarki i urządzenia, na których jesteś zalogowany. Wyloguj pozostałe, jeśli któregoś nie rozpoznajesz."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "Ten adres wypisał się z tej listy. Tylko ta osoba może wrócić: wybi
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "To usuwa Cię także ze wszystkich obszarów roboczych, do których należysz. Twoje wpisy zostają, pokazane jako od usuniętego czytelnika."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "To wyloguje Cię także na wszystkich innych urządzeniach."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "Ta wysyłka masowa nie jest już wersją roboczą, więc nie można jej zmienić."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "Kanał e-mail tej rozmowy nie ma konta SMTP, więc odpowiedź nie została wysłana. Dodaj je w ustawieniach skrzynki."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "To urządzenie"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "Nieznany"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "Nieznane urządzenie"
 

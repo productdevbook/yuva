@@ -4,6 +4,7 @@ import { useNavigate } from "react-router"
 import { DeleteAccountButton } from "@/features/auth/DeleteAccountButton"
 import { SlackAccount } from "@/features/settings/slack/SlackAccount"
 import { Passkeys } from "@/features/settings/profile/Passkeys"
+import { Sessions } from "@/features/settings/profile/Sessions"
 import { ProfileForm } from "@/features/settings/profile/ProfileForm"
 import { Card, PageHeader, Rows, Section, SettingRow } from "@/features/settings/ui"
 import { useSession, useSignOut } from "@/lib/session"
@@ -18,6 +19,7 @@ export function ProfilePage() {
       <PageHeader title={<Trans>Profile</Trans>} />
       <ProfileForm key={me.person.id} />
       <Passkeys />
+      <Sessions />
       <SlackAccount />
       <Section>
         <Card flush>

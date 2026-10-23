@@ -926,6 +926,10 @@ msgstr "{updates, plural, other {# kemas kini}}"
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, other {Import # alamat}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, log masuk {created}, aktif kali terakhir {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, other {# paparan}}"
@@ -5879,6 +5883,10 @@ msgstr "Paparan e-mel"
 msgid "E-mail: {label}"
 msgstr "E-mel: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "Kod melalui e-mel"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "E-mel kepada orang yang mendaftar"
@@ -6268,6 +6276,10 @@ msgstr "Setiap perbualan terbuka ada orang yang menguruskannya."
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "Setiap perbincangan terbuka ada jawapan."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "Semua pelayar dan peranti lain akan dilog keluar. Peranti ini kekal log masuk."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "Bahagian sedang berjalan"
 msgid "Passed"
 msgstr "Lulus"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "Kunci laluan"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "Nama kunci laluan"
@@ -15177,6 +15193,10 @@ msgstr "Akaun perkhidmatan ditetapkan"
 msgid "SES tenant"
 msgstr "Penyewa SES"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "Sesi"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "Ditetapkan oleh monitor, {since}"
@@ -15616,8 +15636,17 @@ msgstr "Log masuk:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "Log keluar"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "Log keluar di semua tempat lain"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "Log keluar di semua tempat lain?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "Dilog masuk ke {provider}"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "Dilog masuk ke {provider} semula"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "Telah log keluar di semua tempat lain"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "Opt-in tunggal"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "Siaran dibatalkan"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "Pelayar mesti membenarkan pemberitahuan desktop dahulu; sehingga itu hanya bunyi dimainkan."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "Pelayar dan peranti tempat anda log masuk. Log keluar yang lain jika anda tidak mengenali salah satu."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "Alamat ini menyahlanggan daripada senarai ini. Hanya orang itu boleh kem
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "Ini juga mengalih keluar anda daripada setiap ruang kerja yang anda sertai. Siaran anda kekal, ditunjukkan sebagai daripada pembaca yang dipadam."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "Ini juga melog keluar anda daripada semua peranti lain."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "Siaran ini tidak lagi draf, jadi ia tidak boleh diubah."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "Saluran e-mel perbualan ini tiada akaun SMTP, jadi balasan tidak dihantar. Tambah satu dalam tetapan peti masuk."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "Peranti ini"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "Tidak diketahui"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "Peranti tidak diketahui"
 

@@ -32,7 +32,10 @@ export function Passkeys() {
   const remove = useMutation({
     mutationFn: (id: string) =>
       unwrap(api.DELETE("/v1/me/passkeys/{passkeyId}", { params: { path: { passkeyId: id } } })),
-    onSuccess: refresh,
+    onSuccess: () => {
+      void refresh()
+      void qc.invalidateQueries({ queryKey: keys.sessions })
+    },
   })
   const supported = passkeysSupported()
   return (
@@ -96,7 +99,12 @@ export function Passkeys() {
                     onClick={() =>
                       confirm({
                         title: <Trans>Remove this passkey?</Trans>,
-                        description: <Trans>You will no longer be able to sign in with it.</Trans>,
+                        description: (
+                          <>
+                            <Trans>You will no longer be able to sign in with it.</Trans>{" "}
+                            <Trans>This also signs you out on every other device.</Trans>
+                          </>
+                        ),
                         confirm: <Trans>Remove</Trans>,
                         run: () => remove.mutate(p.id),
                       })

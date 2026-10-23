@@ -926,6 +926,10 @@ msgstr "{updates, plural, one {# aktualizácia} few {# aktualizácie} many {# ak
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {Importovať # adresu} few {Importovať # adresy} many {Importovať # adresy} other {Importovať # adries}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, prihlásené {created}, naposledy aktívne {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, one {# zobrazenie} few {# zobrazenia} many {# zobrazenia} other {# zobrazení}}"
@@ -5879,6 +5883,10 @@ msgstr "Zobrazenie e-mailu"
 msgid "E-mail: {label}"
 msgstr "E-mail: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "Kód poslaný e-mailom"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "E-maily ľuďom, ktorí sa prihlásili"
@@ -6268,6 +6276,10 @@ msgstr "Každá otvorená konverzácia má niekoho pridelenú."
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "Každá otvorená diskusia má odpoveď."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "Všetky ostatné prehliadače a zariadenia budú odhlásené. Toto zostane prihlásené."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "Časti v priebehu"
 msgid "Passed"
 msgstr "Prešlo"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "Prístupový kľúč"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "Názov prístupového kľúča"
@@ -15177,6 +15193,10 @@ msgstr "Účet služby nastavený"
 msgid "SES tenant"
 msgstr "Tenant SES"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "Relácie"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "Nastavil monitor, {since}"
@@ -15616,8 +15636,17 @@ msgstr "Prihlásenie:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "Odhlásiť sa"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "Odhlásiť všade inde"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "Odhlásiť všade inde?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "Prihlásené k {provider}"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "Znova prihlásené k {provider}"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "Odhlásené všade inde"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "Jednoduché potvrdenie"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "Hromadná správa bola zrušená"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "Prehliadač musí najprv povoliť oznámenia na ploche; dovtedy sa prehrá len zvuk."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "Prehliadače a zariadenia, na ktorých ste prihlásení. Ak niektoré nepoznáte, ostatné odhláste."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "Táto adresa sa odhlásila z tohto zoznamu. Vrátiť sa môže len samot
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "Tým vás tiež odstránime zo všetkých pracovných priestorov, do ktorých patríte. Vaše príspevky zostanú, zobrazené ako od odstráneného čitateľa."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "Tým sa odhlásite aj na všetkých ostatných zariadeniach."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "Táto hromadná správa už nie je koncept, takže ju nemožno zmeniť."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "E-mailový kanál tejto konverzácie nemá účet SMTP, takže odpoveď nebola odoslaná. Pridajte ho v nastaveniach schránky."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "Toto zariadenie"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "Neznáme"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "Neznáme zariadenie"
 

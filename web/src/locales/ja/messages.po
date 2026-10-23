@@ -926,6 +926,10 @@ msgstr "{updates, plural, other {# 件の更新}}"
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, other {# 件のアドレスをインポート}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}、{created} にサインイン、最終アクティビティ {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, other {# 回表示}}"
@@ -5879,6 +5883,10 @@ msgstr "メール表示"
 msgid "E-mail: {label}"
 msgstr "メール: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "メールで届くコード"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "登録した人へのメール"
@@ -6268,6 +6276,10 @@ msgstr "未完了の会話にはすべて担当者がいます。"
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "未完了のディスカッションにはすべて回答があります。"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "他のすべてのブラウザとデバイスがサインアウトされます。このデバイスはサインインしたままです。"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "処理中のパート"
 msgid "Passed"
 msgstr "合格"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "パスキー"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "パスキー名"
@@ -15177,6 +15193,10 @@ msgstr "サービスアカウントは設定済み"
 msgid "SES tenant"
 msgstr "SES テナント"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "セッション"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "モニターが設定、{since}"
@@ -15616,8 +15636,17 @@ msgstr "サインイン:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "サインアウト"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "他のすべての場所でサインアウト"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "他のすべての場所でサインアウトしますか？"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "{provider} にサインインしました"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "{provider} に再度サインインしました"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "他のすべての場所でサインアウトしました"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "シングルオプトイン"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "一斉配信がキャンセルされました"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "先にブラウザーでデスクトップ通知を許可する必要があります。それまでは音だけが鳴ります。"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "サインインしているブラウザとデバイスです。見覚えのないものがあれば、残りをサインアウトしてください。"
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "このアドレスはこのリストを配信停止しました。戻れ
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "所属しているすべてのワークスペースからも退出します。あなたの投稿は残り、削除された閲覧者からのものとして表示されます。"
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "他のすべてのデバイスからもサインアウトされます。"
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "この一斉配信はドラフトではなくなったため、変更できません。"
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "この会話のメールチャネルには SMTP アカウントがないため、返信は送信されませんでした。受信トレイの設定で追加してください。"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "このデバイス"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "不明"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "不明なデバイス"
 

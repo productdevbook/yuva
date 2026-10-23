@@ -926,6 +926,10 @@ msgstr "{updates, plural, one {# oppdatering} other {# oppdateringer}}"
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {Importer # adresse} other {Importer # adresser}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, logget inn {created}, sist aktiv {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, one {# visning} other {# visninger}}"
@@ -5879,6 +5883,10 @@ msgstr "E-postvisning"
 msgid "E-mail: {label}"
 msgstr "E-post: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "Kode på e-post"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "E-poster til de som har meldt seg på"
@@ -6268,6 +6276,10 @@ msgstr "Hver åpne samtale har noen."
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "Hver åpne diskusjon har et svar."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "Alle andre nettlesere og enheter logges ut. Denne forblir innlogget."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "Deler som pågår"
 msgid "Passed"
 msgstr "Bestått"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "Passkey"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "Navn på passkey"
@@ -15177,6 +15193,10 @@ msgstr "Tjenestekonto angitt"
 msgid "SES tenant"
 msgstr "SES-tenant"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "Økter"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "Satt av en monitor, {since}"
@@ -15616,8 +15636,17 @@ msgstr "Innlogging:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "Logg ut"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "Logg ut overalt ellers"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "Logg ut overalt ellers?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "Logget inn på {provider}"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "Logget inn på {provider} igjen"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "Logget ut overalt ellers"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "Enkel opt-in"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "Utsendelsen ble avbrutt"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "Nettleseren må først tillate skrivebordsvarsler; inntil da spilles bare lyden."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "Nettleserne og enhetene du er logget inn på. Logg ut av resten hvis du ikke kjenner igjen en."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "Denne adressen meldte seg av denne listen. Bare personen kan komme tilba
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "Dette fjerner deg også fra alle arbeidsområder du tilhører. Innleggene dine blir værende, vist som fra en slettet leser."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "Dette logger deg også ut på alle andre enheter."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "Denne utsendelsen er ikke lenger et utkast, så den kan ikke endres."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "E-postkanalen til denne samtalen har ingen SMTP-konto, så svaret ble ikke sendt. Legg til en i postboksens innstillinger."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "Denne enheten"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "Ukjent"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "Ukjent enhet"
 

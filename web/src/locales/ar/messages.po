@@ -926,6 +926,10 @@ msgstr "{updates, plural, zero {لا تحديثات} one {تحديث واحد} t
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, zero {استيراد # عنوان} one {استيراد عنوان واحد} two {استيراد عنوانين} few {استيراد # عناوين} many {استيراد # عنوانًا} other {استيراد # عنوان}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}، سجّلت الدخول في {created}، آخر نشاط {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, zero {# مشاهدة} one {مشاهدة واحدة} two {مشاهدتان} few {# مشاهدات} many {# مشاهدة} other {# مشاهدة}}"
@@ -5879,6 +5883,10 @@ msgstr "عرض البريد الإلكتروني"
 msgid "E-mail: {label}"
 msgstr "البريد الإلكتروني: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "رمز يُرسل بالبريد الإلكتروني"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "رسائل بريد إلى من اشتركوا"
@@ -6268,6 +6276,10 @@ msgstr "لكل محادثة مفتوحة شخص مسؤول عنها."
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "لكل نقاش مفتوح إجابة."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "سيتم تسجيل الخروج من جميع المتصفحات والأجهزة الأخرى، ويبقى هذا الجهاز مسجّل الدخول."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "أجزاء قيد التنفيذ"
 msgid "Passed"
 msgstr "نجح"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "مفتاح المرور"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "اسم مفتاح المرور"
@@ -15177,6 +15193,10 @@ msgstr "حساب الخدمة محدَّد"
 msgid "SES tenant"
 msgstr "مستأجر SES"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "الجلسات"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "ضبطه مراقب، {since}"
@@ -15616,8 +15636,17 @@ msgstr "تسجيل الدخول:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "تسجيل الخروج"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "تسجيل الخروج من كل مكان آخر"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "تسجيل الخروج من كل مكان آخر؟"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "تم تسجيل الدخول إلى {provider}"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "تم تسجيل الدخول إلى {provider} مجددًا"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "تم تسجيل الخروج من كل مكان آخر"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "تأكيد مفرد"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "أُلغيت الرسالة الجماعية"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "يجب أن يسمح المتصفح بإشعارات سطح المكتب أولًا؛ وإلى ذلك الحين يُشغَّل الصوت فقط."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "المتصفحات والأجهزة التي سجّلت الدخول عليها. سجّل الخروج من البقية إذا لم تتعرف على أحدها."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "ألغى هذا العنوان اشتراكه من هذه القائمة
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "يزيلك هذا أيضًا من كل مساحة عمل تنتمي إليها. تبقى منشوراتك، وتظهر كأنها من قارئ محذوف."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "هذا يسجّل خروجك أيضًا من جميع الأجهزة الأخرى."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "لم تعد هذه الرسالة الجماعية مسودة، لذا لا يمكن تغييرها."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "ليس لقناة البريد الإلكتروني لهذه المحادثة حساب SMTP، لذا لم يُرسل الرد. أضف واحدًا في إعدادات صندوق الوارد."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "هذا الجهاز"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "غير معروف"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "جهاز غير معروف"
 

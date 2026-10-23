@@ -926,6 +926,10 @@ msgstr "{updates, plural, other {# pembaruan}}"
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, other {Impor # alamat}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, masuk {created}, terakhir aktif {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, other {# tayangan}}"
@@ -5879,6 +5883,10 @@ msgstr "Tampilan email"
 msgid "E-mail: {label}"
 msgstr "Email: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "Kode lewat email"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "Email untuk orang yang mendaftar"
@@ -6268,6 +6276,10 @@ msgstr "Setiap percakapan terbuka ada yang menangani."
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "Setiap diskusi terbuka punya jawaban."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "Semua browser dan perangkat lain akan dikeluarkan. Perangkat ini tetap masuk."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "Bagian yang sedang berjalan"
 msgid "Passed"
 msgstr "Lulus"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "Passkey"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "Nama passkey"
@@ -15177,6 +15193,10 @@ msgstr "Akun layanan sudah diatur"
 msgid "SES tenant"
 msgstr "Tenant SES"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "Sesi"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "Diatur oleh monitor, {since}"
@@ -15616,8 +15636,17 @@ msgstr "Masuk:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "Keluar"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "Keluar di semua tempat lain"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "Keluar di semua tempat lain?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "Sudah masuk ke {provider}"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "Sudah masuk lagi ke {provider}"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "Sudah keluar di semua tempat lain"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "Opt-in tunggal"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "Siaran massal dibatalkan"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "Browser harus mengizinkan notifikasi desktop terlebih dahulu; sampai saat itu hanya bunyi yang diputar."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "Browser dan perangkat tempat Anda masuk. Keluarkan sisanya jika ada yang tidak Anda kenal."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "Alamat ini berhenti berlangganan dari milis ini. Hanya orangnya yang dap
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "Ini juga menghapus Anda dari setiap ruang kerja tempat Anda tergabung. Kiriman Anda tetap ada, ditampilkan sebagai dari pembaca yang dihapus."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "Ini juga mengeluarkan Anda dari semua perangkat lain."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "Siaran massal ini bukan lagi draf, jadi tidak dapat diubah."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "Saluran email percakapan ini tidak punya akun SMTP, sehingga balasan tidak terkirim. Tambahkan satu di pengaturan kotak masuk."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "Perangkat ini"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "Tidak diketahui"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "Perangkat tidak dikenal"
 

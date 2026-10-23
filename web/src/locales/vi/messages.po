@@ -926,6 +926,10 @@ msgstr "{updates, plural, other {# cập nhật}}"
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, other {Nhập # địa chỉ}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, đăng nhập {created}, hoạt động gần nhất {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, other {# lượt xem}}"
@@ -5879,6 +5883,10 @@ msgstr "Chế độ xem email"
 msgid "E-mail: {label}"
 msgstr "Email: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "Mã gửi qua email"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "Email gửi cho những người đã đăng ký"
@@ -6268,6 +6276,10 @@ msgstr "Mọi cuộc trò chuyện đang mở đều có người phụ trách."
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "Mọi cuộc thảo luận đang mở đều có câu trả lời."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "Mọi trình duyệt và thiết bị khác sẽ bị đăng xuất. Thiết bị này vẫn đăng nhập."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "Các phần đang xử lý"
 msgid "Passed"
 msgstr "Đạt"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "Khóa truy cập"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "Tên khóa truy cập"
@@ -15177,6 +15193,10 @@ msgstr "Đã đặt tài khoản dịch vụ"
 msgid "SES tenant"
 msgstr "Tenant SES"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "Phiên"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "Do bộ giám sát đặt, {since}"
@@ -15616,8 +15636,17 @@ msgstr "Đăng nhập:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "Đăng xuất"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "Đăng xuất ở mọi nơi khác"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "Đăng xuất ở mọi nơi khác?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "Đã đăng nhập vào {provider}"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "Đã đăng nhập lại vào {provider}"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "Đã đăng xuất ở mọi nơi khác"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "Xác nhận đơn"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "Thư hàng loạt đã bị hủy"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "Trình duyệt phải cho phép thông báo trên màn hình trước; đến lúc đó chỉ có âm thanh phát."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "Các trình duyệt và thiết bị bạn đang đăng nhập. Hãy đăng xuất các nơi còn lại nếu bạn không nhận ra nơi nào."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "Địa chỉ này đã hủy đăng ký khỏi danh sách. Chỉ chính 
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "Việc này cũng gỡ bạn khỏi mọi không gian làm việc bạn thuộc về. Bài đăng của bạn vẫn còn, hiển thị như từ một người đọc đã xóa."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "Việc này cũng đăng xuất bạn khỏi mọi thiết bị khác."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "Thư hàng loạt này không còn là bản nháp, nên không thể thay đổi."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "Kênh email của cuộc trò chuyện này không có tài khoản SMTP, nên phản hồi chưa được gửi. Hãy thêm trong cài đặt hộp thư."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "Thiết bị này"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "Không rõ"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "Thiết bị không xác định"
 

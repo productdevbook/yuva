@@ -926,6 +926,10 @@ msgstr "{updates, plural, one {# frissítés} other {# frissítés}}"
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {# cím importálása} other {# cím importálása}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, bejelentkezés: {created}, utolsó aktivitás: {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, one {# megtekintés} other {# megtekintés}}"
@@ -5879,6 +5883,10 @@ msgstr "E-mail nézet"
 msgid "E-mail: {label}"
 msgstr "E-mail: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "E-mailben küldött kód"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "E-mailek a feliratkozóknak"
@@ -6268,6 +6276,10 @@ msgstr "Minden nyitott beszélgetéshez van valaki."
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "Minden nyitott vitának van válasza."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "Az összes többi böngészőből és eszközről kijelentkeztetjük. Ez bejelentkezve marad."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "Folyamatban lévő részek"
 msgid "Passed"
 msgstr "Átment"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "Hozzáférési kulcs"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "Hozzáférési kulcs neve"
@@ -15177,6 +15193,10 @@ msgstr "Szolgáltatásfiók beállítva"
 msgid "SES tenant"
 msgstr "SES-bérlő"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "Munkamenetek"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "Figyelő állította be, {since}"
@@ -15616,8 +15636,17 @@ msgstr "Bejelentkezés:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "Kijelentkezés"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "Kijelentkezés mindenhol máshol"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "Kijelentkezik mindenhol máshol?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "Bejelentkezve ide: {provider}"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "Újra bejelentkezve ide: {provider}"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "Kijelentkezve mindenhol máshol"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "Egyszeri opt-in"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "A tömeges levelet megszakították"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "A böngészőnek előbb engedélyeznie kell az asztali értesítéseket; addig csak a hang szól."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "A böngészők és eszközök, amelyeken be van jelentkezve. Ha valamelyiket nem ismeri fel, jelentkeztesse ki a többit."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "Ez a cím leiratkozott erről a listáról. Csak maga a személy térhet
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "Ez eltávolít téged minden munkaterületről is, amelyhez tartozol. A bejegyzéseid megmaradnak, törölt olvasótól származóként megjelenítve."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "Ez a többi eszközön is kijelentkeztet."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "Ez a tömeges levél már nem piszkozat, ezért nem módosítható."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "Ennek a beszélgetésnek az e-mail-csatornájához nincs SMTP-fiók, ezért a válasz nem lett elküldve. Adj hozzá egyet a postafiók beállításaiban."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "Ez az eszköz"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "Ismeretlen"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "Ismeretlen eszköz"
 

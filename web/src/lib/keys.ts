@@ -122,6 +122,7 @@ export const keys = {
   participants: (ws: string, id: string) => ["ws", ws, "participants", id] as const,
   messageEmail: (ws: string, id: string) => ["ws", ws, "message-email", id] as const,
   passkeys: ["me", "passkeys"] as const,
+  sessions: ["me", "sessions"] as const,
   notifications: (ws: string) => ["ws", ws, "notifications"] as const,
   mentions: (ws: string) => ["ws", ws, "mentions"] as const,
   draftLists: (ws: string) => ["ws", ws, "drafts"] as const,

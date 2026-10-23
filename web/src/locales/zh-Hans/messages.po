@@ -926,6 +926,10 @@ msgstr "{updates, plural, other {# 条更新}}"
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, other {导入 # 个地址}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}，{created}登录，最近活动 {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, other {# 次浏览}}"
@@ -5879,6 +5883,10 @@ msgstr "邮件视图"
 msgid "E-mail: {label}"
 msgstr "邮件:{label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "邮件验证码"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "发给已注册用户的邮件"
@@ -6268,6 +6276,10 @@ msgstr "每个未关闭的对话都有人负责。"
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "每个未关闭的讨论都有回答。"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "其他所有浏览器和设备都将退出登录，当前设备保持登录。"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "进行中的部分"
 msgid "Passed"
 msgstr "通过"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "通行密钥"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "通行密钥名称"
@@ -15177,6 +15193,10 @@ msgstr "服务账号已设置"
 msgid "SES tenant"
 msgstr "SES 租户"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "会话"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "由监控设置，{since}"
@@ -15616,8 +15636,17 @@ msgstr "登录:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "退出登录"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "在其他所有地方退出登录"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "在其他所有地方退出登录？"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "已登录 {provider}"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "已重新登录 {provider}"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "已在其他所有地方退出登录"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "单次确认订阅"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "群发已取消"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "浏览器必须先允许桌面通知;在此之前只会播放提示音。"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "你已登录的浏览器和设备。如果有不认识的，请退出其余的登录。"
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "此地址已退订此列表。只有本人才能回来:选择“给他�
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "这也会把你从所属的所有工作区中移除。你的帖子会保留,显示为已删除读者发布。"
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "这也会让你在其他所有设备上退出登录。"
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "此群发已不是草稿,因此无法更改。"
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "此对话的邮件渠道没有 SMTP 账号,因此回复未发送。请在收件箱设置中添加。"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "此设备"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "未知"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "未知设备"
 

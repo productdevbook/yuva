@@ -926,6 +926,10 @@ msgstr "{updates, plural, one {# güncelleme} other {# güncelleme}}"
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {# adresi içe aktar} other {# adresi içe aktar}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, {created} tarihinde giriş yapıldı, son etkinlik {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, one {# görüntüleme} other {# görüntüleme}}"
@@ -5879,6 +5883,10 @@ msgstr "E-posta görünümü"
 msgid "E-mail: {label}"
 msgstr "E-posta: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "E-postayla gelen kod"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "Kaydolan kişilere e-postalar"
@@ -6268,6 +6276,10 @@ msgstr "Açık konuşmaların hepsinin bir sorumlusu var."
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "Açık tartışmaların hepsinin bir yanıtı var."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "Diğer tüm tarayıcılarda ve cihazlarda oturum kapatılır. Bu cihazdaki oturum açık kalır."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "Gönderilen parçalar"
 msgid "Passed"
 msgstr "Geçti"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "Geçiş anahtarı"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "Geçiş anahtarı adı"
@@ -15177,6 +15193,10 @@ msgstr "Hizmet hesabı tanımlı"
 msgid "SES tenant"
 msgstr "SES kiracısı"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "Oturumlar"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "Bir monitör ayarladı, {since}"
@@ -15616,8 +15636,17 @@ msgstr "Oturum açın:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "Çıkış yap"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "Diğer her yerde çıkış yap"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "Diğer her yerde çıkış yapılsın mı?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "{provider} hesabında oturum açıldı"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "{provider} hesabında yeniden oturum açıldı"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "Diğer her yerde çıkış yapıldı"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "Tek onay"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "Bülten iptal edildi"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "Önce tarayıcının masaüstü bildirimlerine izin vermesi gerekiyor; o zamana kadar yalnızca ses çalar."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "Oturum açtığınız tarayıcılar ve cihazlar. Tanımadığınız varsa diğerlerinden çıkış yapın."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "Bu adres bu listeden çıktı. Yalnızca kişinin kendisi geri dönebili
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "Bu, sizi üyesi olduğunuz tüm çalışma alanlarından da çıkarır. Gönderileriniz kalır ve silinmiş bir okuyucudan gelmiş gibi görünür."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "Bu işlem, diğer tüm cihazlardaki oturumunuzu da kapatır."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "Bu bülten artık taslak değil, bu yüzden değiştirilemez."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "Bu konuşmanın e-posta kanalında SMTP hesabı yok, yanıt gönderilmedi. Gelen kutusu ayarlarından bir hesap ekleyin."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "Bu cihaz"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "Bilinmiyor"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "Bilinmeyen cihaz"
 

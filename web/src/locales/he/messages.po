@@ -926,6 +926,10 @@ msgstr "{updates, plural, one {עדכון אחד} two {# עדכונים} other {
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {ייבוא כתובת #} two {ייבוא # כתובות} other {ייבוא # כתובות}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, התחברות ב-{created}, פעילות אחרונה {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, one {צפייה #} two {# צפיות} other {# צפיות}}"
@@ -5879,6 +5883,10 @@ msgstr "תצוגת אימייל"
 msgid "E-mail: {label}"
 msgstr "אימייל: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "קוד שנשלח באימייל"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "אימיילים לאנשים שנרשמו"
@@ -6268,6 +6276,10 @@ msgstr "לכל שיחה פתוחה יש אחראי."
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "לכל דיון פתוח יש תשובה."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "כל שאר הדפדפנים והמכשירים ינותקו. המכשיר הזה יישאר מחובר."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "חלקים בתהליך"
 msgid "Passed"
 msgstr "עבר"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "מפתח גישה"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "שם מפתח הגישה"
@@ -15177,6 +15193,10 @@ msgstr "חשבון השירות הוגדר"
 msgid "SES tenant"
 msgstr "דייר SES"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "הפעלות"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "הוגדר על ידי מוניטור, {since}"
@@ -15616,8 +15636,17 @@ msgstr "כניסה:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "יציאה"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "התנתקות מכל מקום אחר"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "להתנתק מכל מקום אחר?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "נכנס אל {provider}"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "נכנס אל {provider} שוב"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "נותקת מכל מקום אחר"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "אישור יחיד"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "השליחה ההמונית בוטלה"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "הדפדפן צריך לאפשר קודם התראות שולחן עבודה; עד אז מושמע רק הצליל."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "הדפדפנים והמכשירים שאתם מחוברים בהם. נתקו את השאר אם אינכם מכירים אחד מהם."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "הכתובת הזאת הסירה את עצמה מהרשימה הזאת. 
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "זה מסיר אותך גם מכל סביבת עבודה ששייכת אליה. הפוסטים שלך נשארים, ומוצגים כאילו מקורא שנמחק."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "פעולה זו גם מנתקת אתכם מכל המכשירים האחרים."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "השליחה ההמונית הזאת כבר לא טיוטה, ולכן אי אפשר לשנות אותה."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "לערוץ האימייל של השיחה הזאת אין חשבון SMTP, ולכן התשובה לא נשלחה. הוסף אחד בהגדרות תיבת הדואר."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "המכשיר הזה"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "לא ידוע"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "מכשיר לא ידוע"
 

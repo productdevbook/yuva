@@ -926,6 +926,10 @@ msgstr "{updates, plural, one {# posodobitev} two {# posodobitvi} few {# posodob
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {Uvozi # naslov} two {Uvozi # naslova} few {Uvozi # naslove} other {Uvozi # naslovov}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, prijava {created}, nazadnje aktivno {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, one {# ogled} two {# ogleda} few {# ogledi} other {# ogledov}}"
@@ -5879,6 +5883,10 @@ msgstr "Pogled e-pošte"
 msgid "E-mail: {label}"
 msgstr "E-pošta: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "Koda po e-pošti"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "E-pošta osebam, ki so se prijavile"
@@ -6268,6 +6276,10 @@ msgstr "Vsak odprt pogovor ima nekoga."
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "Vsaka odprta razprava ima odgovor."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "Vsi drugi brskalniki in naprave bodo odjavljeni. Ta ostane prijavljena."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "Deli v teku"
 msgid "Passed"
 msgstr "Uspelo"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "Ključ za dostop"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "Ime ključa za dostop"
@@ -15177,6 +15193,10 @@ msgstr "Storitveni račun nastavljen"
 msgid "SES tenant"
 msgstr "Najemnik SES"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "Seje"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "Nastavil monitor, {since}"
@@ -15616,8 +15636,17 @@ msgstr "Prijava:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "Odjava"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "Odjava povsod drugje"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "Odjava povsod drugje?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "Prijavljeno v {provider}"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "Znova prijavljeno v {provider}"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "Odjavljeno povsod drugje"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "Enojna potrditev"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "Množično sporočilo je bilo preklicano"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "Brskalnik mora najprej dovoliti obvestila na namizju; do takrat se predvaja samo zvok."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "Brskalniki in naprave, v katerih ste prijavljeni. Če katerega ne poznate, odjavite ostale."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "Ta naslov se je odjavil s tega seznama. Vrniti se lahko samo oseba sama:
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "S tem vas odstranimo tudi iz vseh delovnih prostorov, v katerih ste. Vaše objave ostanejo, prikazane kot od izbrisanega bralca."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "S tem se odjavite tudi na vseh drugih napravah."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "To množično sporočilo ni več osnutek, zato ga ni mogoče spremeniti."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "E-poštni kanal tega pogovora nima računa SMTP, zato odgovor ni bil poslan. Dodajte ga v nastavitvah nabiralnika."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "Ta naprava"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "Neznano"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "Neznana naprava"
 

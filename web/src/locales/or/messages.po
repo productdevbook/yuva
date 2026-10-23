@@ -926,6 +926,10 @@ msgstr "{updates, plural, one {# ଅପଡେଟ} other {# ଅପଡେଟ}}"
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {# ଠିକଣା ଆମଦାନି କରନ୍ତୁ} other {# ଠିକଣା ଆମଦାନି କରନ୍ତୁ}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, {created} ରେ ସାଇନ୍ ଇନ୍, ଶେଷ ସକ୍ରିୟ {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, one {# ଦେଖା} other {# ଦେଖା}}"
@@ -5879,6 +5883,10 @@ msgstr "ଇମେଲ୍ ଦୃଶ୍ୟ"
 msgid "E-mail: {label}"
 msgstr "ଇମେଲ୍: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "ଇମେଲ୍ ଦ୍ୱାରା ଆସିଥିବା କୋଡ୍"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "ସାଇନ୍ ଅପ୍ କରିଥିବା ଲୋକଙ୍କୁ ଇମେଲ୍"
@@ -6268,6 +6276,10 @@ msgstr "ପ୍ରତ୍ୟେକ ଖୋଲା କଥାବାର୍ତ୍ତା�
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "ପ୍ରତ୍ୟେକ ଖୋଲା ଆଲୋଚନାର ଉତ୍ତର ଅଛି।"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "ଅନ୍ୟ ସମସ୍ତ ବ୍ରାଉଜର ଓ ଡିଭାଇସରୁ ସାଇନ୍ ଆଉଟ୍ ହେବ। ଏହି ଡିଭାଇସ୍ ସାଇନ୍ ଇନ୍ ରହିବ।"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "ଚାଲିଥିବା ଅଂଶ"
 msgid "Passed"
 msgstr "ପାସ୍ ହେଲା"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "ପାସ୍କୀ"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "ପାସ୍କୀ ନାମ"
@@ -15177,6 +15193,10 @@ msgstr "ସର୍ଭିସ ଆକାଉଣ୍ଟ ସେଟ୍ ହୋଇଛି"
 msgid "SES tenant"
 msgstr "SES ଟେନାଣ୍ଟ"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "ସେସନ୍"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "ଏକ ମନିଟର ସେଟ୍ କରିଛି, {since}"
@@ -15616,8 +15636,17 @@ msgstr "ସାଇନ୍ ଇନ୍:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "ସାଇନ୍ ଆଉଟ୍ କରନ୍ତୁ"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "ଅନ୍ୟ ସବୁ ଜାଗାରୁ ସାଇନ୍ ଆଉଟ୍ କରନ୍ତୁ"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "ଅନ୍ୟ ସବୁ ଜାଗାରୁ ସାଇନ୍ ଆଉଟ୍ କରିବେ?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "{provider} ରେ ସାଇନ୍ ଇନ୍ ହେଲା"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "{provider} ରେ ପୁଣି ସାଇନ୍ ଇନ୍ ହେଲା"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "ଅନ୍ୟ ସବୁ ଜାଗାରୁ ସାଇନ୍ ଆଉଟ୍ ହେଲା"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "ସିଙ୍ଗଲ୍ ଅପ୍ଟ-ଇନ୍"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "ବ୍ରଡକାଷ୍ଟ ବାତିଲ କରାଗଲା"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "ବ୍ରାଉଜର ପ୍ରଥମେ ଡେସ୍କଟପ୍ ବିଜ୍ଞପ୍ତିକୁ ଅନୁମତି ଦେବା ଜରୁରୀ; ସେତେବେଳ ପର୍ଯ୍ୟନ୍ତ କେବଳ ଶବ୍ଦ ବାଜେ।"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "ଆପଣ ଯେଉଁ ବ୍ରାଉଜର ଓ ଡିଭାଇସରେ ସାଇନ୍ ଇନ୍ ଅଛନ୍ତି। କୌଣସିଟି ଚିହ୍ନି ନପାରିଲେ ବାକିଗୁଡ଼ିକରୁ ସାଇନ୍ ଆଉଟ୍ କରନ୍ତୁ।"
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "ଏହି ଠିକଣା ଏହି ତାଲିକାରୁ ଅନସ�
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "ଏହା ଆପଣଙ୍କୁ ଆପଣ ସଦସ୍ୟ ଥିବା ପ୍ରତ୍ୟେକ ୱାର୍କସ୍ପେସ୍ରୁ ମଧ୍ୟ ହଟାଏ। ଆପଣଙ୍କ ପୋଷ୍ଟ ରହେ, ଡିଲିଟ୍ ହୋଇଥିବା ପାଠକଙ୍କ ଭାବେ ଦେଖାଯାଏ।"
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "ଏହା ଆପଣଙ୍କୁ ଅନ୍ୟ ସମସ୍ତ ଡିଭାଇସରୁ ମଧ୍ୟ ସାଇନ୍ ଆଉଟ୍ କରିବ।"
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "ଏହି ବ୍ରଡକାଷ୍ଟ ଆଉ ଡ୍ରାଫ୍ଟ ନୁହେଁ, ତେଣୁ ଏହାକୁ ବଦଳାଯାଇପାରିବ ନାହିଁ।"
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "ଏହି କଥାବାର୍ତ୍ତାର ଇମେଲ୍ ଚ୍ୟାନେଲର SMTP ଖାତା ନାହିଁ, ତେଣୁ ଉତ୍ତର ପଠାଗଲା ନାହିଁ। ଇନବକ୍ସ ସେଟିଂସରେ ଗୋଟିଏ ଯୋଡ଼ନ୍ତୁ।"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "ଏହି ଡିଭାଇସ୍"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "ଅଜଣା"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "ଅଜଣା ଡିଭାଇସ୍"
 

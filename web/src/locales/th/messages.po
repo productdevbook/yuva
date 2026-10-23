@@ -926,6 +926,10 @@ msgstr "{updates, plural, other {อัปเดต # รายการ}}"
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, other {นำเข้า # ที่อยู่}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, เข้าสู่ระบบเมื่อ {created}, ใช้งานล่าสุด {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, other {# ครั้งที่ดู}}"
@@ -5879,6 +5883,10 @@ msgstr "มุมมองอีเมล"
 msgid "E-mail: {label}"
 msgstr "อีเมล: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "รหัสทางอีเมล"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "อีเมลถึงผู้ที่สมัครไว้"
@@ -6268,6 +6276,10 @@ msgstr "ทุกการสนทนาที่เปิดอยู่มี
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "ทุกกระทู้ที่เปิดอยู่มีคำตอบ"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "เบราว์เซอร์และอุปกรณ์อื่นทั้งหมดจะถูกออกจากระบบ อุปกรณ์นี้ยังคงเข้าสู่ระบบอยู่"
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "ส่วนที่กำลังดำเนินการ"
 msgid "Passed"
 msgstr "ผ่าน"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "พาสคีย์"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "ชื่อพาสคีย์"
@@ -15177,6 +15193,10 @@ msgstr "ตั้งค่าบัญชีบริการแล้ว"
 msgid "SES tenant"
 msgstr "tenant SES"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "เซสชัน"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "ตั้งโดยตัวตรวจสอบ {since}"
@@ -15616,8 +15636,17 @@ msgstr "ลงชื่อเข้าใช้:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "ออกจากระบบ"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "ออกจากระบบทุกที่อื่น"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "ออกจากระบบทุกที่อื่นหรือไม่"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "ลงชื่อเข้าใช้ {provider} แล้ว"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "ลงชื่อเข้าใช้ {provider} อีกครั้งแล้ว"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "ออกจากระบบทุกที่อื่นแล้ว"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "ยืนยันขั้นเดียว"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "บรอดคาสต์ถูกยกเลิก"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "เบราว์เซอร์ต้องอนุญาตการแจ้งเตือนบนเดสก์ท็อปก่อน จนกว่าจะถึงตอนนั้นจะมีเฉพาะเสียงที่เล่น"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "เบราว์เซอร์และอุปกรณ์ที่คุณเข้าสู่ระบบอยู่ ออกจากระบบที่เหลือหากมีที่คุณไม่รู้จัก"
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "ที่อยู่นี้ยกเลิกการสมัคร
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "การดำเนินการนี้ยังนำคุณออกจากทุกพื้นที่ทำงานที่คุณอยู่ โพสต์ของคุณยังอยู่ โดยแสดงเป็นของผู้อ่านที่ถูกลบ"
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "การทำเช่นนี้จะออกจากระบบบนอุปกรณ์อื่นทั้งหมดด้วย"
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "บรอดคาสต์นี้ไม่ใช่ฉบับร่างแล้ว จึงเปลี่ยนแปลงไม่ได้"
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "ช่องทางอีเมลของการสนทนานี้ไม่มีบัญชี SMTP จึงไม่ได้ส่งการตอบกลับ เพิ่มในการตั้งค่ากล่องข้อความ"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "อุปกรณ์นี้"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "ไม่ทราบ"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "อุปกรณ์ที่ไม่รู้จัก"
 

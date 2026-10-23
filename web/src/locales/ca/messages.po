@@ -926,6 +926,10 @@ msgstr "{updates, plural, one {# actualització} other {# actualitzacions}}"
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {Importa # adreça} other {Importa # adreces}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, sessió iniciada el {created}, darrera activitat {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, one {# visualització} other {# visualitzacions}}"
@@ -5879,6 +5883,10 @@ msgstr "Vista de correu"
 msgid "E-mail: {label}"
 msgstr "Correu: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "Codi enviat per correu"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "Correus a les persones que s’han subscrit"
@@ -6268,6 +6276,10 @@ msgstr "Totes les converses obertes tenen algú."
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "Tots els debats oberts tenen una resposta."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "Es tancarà la sessió a tots els altres navegadors i dispositius. Aquest continuarà amb la sessió iniciada."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "Parts en curs"
 msgid "Passed"
 msgstr "Superat"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "Clau d'accés"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "Nom de la clau d'accés"
@@ -15177,6 +15193,10 @@ msgstr "Compte de servei definit"
 msgid "SES tenant"
 msgstr "Tenant de SES"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "Sessions"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "Fixat per un monitor, {since}"
@@ -15616,8 +15636,17 @@ msgstr "Inicia la sessió:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "Tanca la sessió"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "Tanca la sessió a tota la resta"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "Vols tancar la sessió a tota la resta?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "Sessió iniciada a {provider}"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "Sessió iniciada a {provider} de nou"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "Sessió tancada a tota la resta"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "Confirmació simple"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "S'ha cancel·lat l'enviament massiu"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "El navegador ha de permetre primer les notificacions d'escriptori; fins llavors només se sent el so."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "Els navegadors i dispositius on heu iniciat la sessió. Tanqueu la resta si no en reconeixeu algun."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "Aquesta adreça s'ha donat de baixa d'aquesta llista. Només la persona 
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "Això també et treu de tots els espais de treball als quals pertanys. Les teves publicacions es queden, mostrades com d'un lector eliminat."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "Això també tanca la vostra sessió a tots els altres dispositius."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "Aquest enviament massiu ja no és un esborrany, de manera que no es pot canviar."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "El canal de correu d'aquesta conversa no té compte SMTP, de manera que la resposta no s'ha enviat. Afegeix-ne un a la configuració de la safata."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "Aquest dispositiu"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "Desconegut"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "Dispositiu desconegut"
 

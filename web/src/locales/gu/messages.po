@@ -926,6 +926,10 @@ msgstr "{updates, plural, one {# અપડેટ} other {# અપડેટ}}"
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {# સરનામું આયાત કરો} other {# સરનામાં આયાત કરો}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, {created} એ સાઇન ઇન કર્યું, છેલ્લી પ્રવૃત્તિ {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, one {# વ્યૂ} other {# વ્યૂ}}"
@@ -5879,6 +5883,10 @@ msgstr "ઇમેઇલ વ્યૂ"
 msgid "E-mail: {label}"
 msgstr "ઇમેઇલ: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "ઇમેઇલથી આવેલો કોડ"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "સાઇન અપ કરનાર લોકોને ઇમેઇલ"
@@ -6268,6 +6276,10 @@ msgstr "દરેક ખુલ્લી વાતચીતમાં કોઈ �
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "દરેક ખુલ્લી ચર્ચાને જવાબ છે."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "બાકીના બધા બ્રાઉઝર અને ડિવાઇસમાંથી સાઇન આઉટ થશે. આ ડિવાઇસ સાઇન ઇન રહેશે."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "ચાલુ ભાગ"
 msgid "Passed"
 msgstr "પાસ થયું"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "પાસકી"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "પાસકીનું નામ"
@@ -15177,6 +15193,10 @@ msgstr "સર્વિસ એકાઉન્ટ સેટ છે"
 msgid "SES tenant"
 msgstr "SES ટેનન્ટ"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "સત્રો"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "એક મોનિટરે નક્કી કર્યું, {since}"
@@ -15616,8 +15636,17 @@ msgstr "સાઇન ઇન:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "સાઇન આઉટ કરો"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "બીજે બધે સાઇન આઉટ કરો"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "બીજે બધે સાઇન આઉટ કરવું છે?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "{provider} માં સાઇન ઇન થયું"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "{provider} માં ફરી સાઇન ઇન થયું"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "બીજે બધે સાઇન આઉટ થઈ ગયું"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "સિંગલ ઑપ્ટ-ઇન"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "બ્રૉડકાસ્ટ રદ કરવામાં આવ્ય
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "બ્રાઉઝરે પહેલાં ડેસ્કટૉપ સૂચનાઓને મંજૂરી આપવી પડે; ત્યાં સુધી ફક્ત અવાજ વાગે છે."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "જે બ્રાઉઝર અને ડિવાઇસ પર તમે સાઇન ઇન છો. કોઈ ન ઓળખાય તો બાકીનામાંથી સાઇન આઉટ કરો."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "આ સરનામાએ આ લિસ્ટમાંથી અનસ�
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "આ તમને તમે જેના સભ્ય છો તે દરેક વર્કસ્પેસમાંથી પણ દૂર કરે છે. તમારી પોસ્ટ રહે છે, કાઢી નાખેલા વાચકની તરીકે દેખાય છે."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "આથી તમે બીજા બધા ડિવાઇસમાંથી પણ સાઇન આઉટ થશો."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "આ બ્રૉડકાસ્ટ હવે ડ્રાફ્ટ નથી, તેથી તે બદલી શકાતું નથી."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "આ વાતચીતની ઇમેઇલ ચૅનલ પાસે SMTP ખાતું નથી, તેથી જવાબ મોકલાયો નહીં. ઇનબૉક્સ સેટિંગ્સમાં એક ઉમેરો."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "આ ઉપકરણ"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "અજ્ઞાત"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "અજાણ્યું ઉપકરણ"
 

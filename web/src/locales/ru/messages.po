@@ -926,6 +926,10 @@ msgstr "{updates, plural, one {# обновление} few {# обновлени
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {Импортировать # адрес} few {Импортировать # адреса} many {Импортировать # адресов} other {Импортировать # адреса}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, вход {created}, последняя активность {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, one {# просмотр} few {# просмотра} many {# просмотров} other {# просмотра}}"
@@ -5879,6 +5883,10 @@ msgstr "Вид письма"
 msgid "E-mail: {label}"
 msgstr "E-mail: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "Код из письма"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "Письма тем, кто подписался"
@@ -6268,6 +6276,10 @@ msgstr "У каждого открытого диалога есть испол�
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "У каждого открытого обсуждения есть ответ."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "На всех остальных браузерах и устройствах будет выполнен выход. Это устройство останется в системе."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "Частей в процессе"
 msgid "Passed"
 msgstr "Пройдено"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "Ключ доступа"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "Название ключа доступа"
@@ -15177,6 +15193,10 @@ msgstr "Сервисный аккаунт задан"
 msgid "SES tenant"
 msgstr "Арендатор SES"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "Сеансы"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "Задано монитором, {since}"
@@ -15616,8 +15636,17 @@ msgstr "Вход:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "Выйти"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "Выйти везде, кроме этого устройства"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "Выйти везде, кроме этого устройства?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "Вход в {provider} выполнен"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "Повторный вход в {provider} выполнен"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "Выход выполнен везде, кроме этого устройства"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "Одинарное подтверждение"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "Рассылка отменена"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "Сначала браузер должен разрешить уведомления на рабочем столе; пока воспроизводится только звук."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "Браузеры и устройства, на которых вы вошли. Если какое-то вам незнакомо, выйдите на остальных."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "Этот адрес отписался от этого списка. В�
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "Это также удаляет вас из каждого рабочего пространства, в котором вы состоите. Ваши сообщения остаются, как от удалённого читателя."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "Это также завершит ваш сеанс на всех остальных устройствах."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "Эта рассылка больше не черновик, поэтому её нельзя изменить."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "У почтового канала этого диалога нет аккаунта SMTP, поэтому ответ не отправлен. Добавьте его в настройках ящика."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "Это устройство"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "Неизвестно"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "Неизвестное устройство"
 

@@ -926,6 +926,10 @@ msgstr "{updates, plural, other {업데이트 #개}}"
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, other {주소 #개 가져오기}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, {created} 로그인, 마지막 활동 {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, other {조회 #회}}"
@@ -5879,6 +5883,10 @@ msgstr "이메일 보기"
 msgid "E-mail: {label}"
 msgstr "이메일: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "이메일로 받은 코드"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "가입한 사람들에게 보내는 이메일"
@@ -6268,6 +6276,10 @@ msgstr "열린 대화마다 담당자가 있습니다."
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "열린 토론마다 답변이 있습니다."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "다른 모든 브라우저와 기기에서 로그아웃됩니다. 이 기기는 로그인 상태를 유지합니다."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "진행 중인 부분"
 msgid "Passed"
 msgstr "통과"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "패스키"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "패스키 이름"
@@ -15177,6 +15193,10 @@ msgstr "서비스 계정 설정됨"
 msgid "SES tenant"
 msgstr "SES 테넌트"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "세션"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "모니터가 설정함, {since}"
@@ -15616,8 +15636,17 @@ msgstr "로그인:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "로그아웃"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "다른 모든 곳에서 로그아웃"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "다른 모든 곳에서 로그아웃할까요?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "{provider}에 로그인했습니다"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "{provider}에 다시 로그인했습니다"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "다른 모든 곳에서 로그아웃했습니다"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "단일 옵트인"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "일괄 발송이 취소되었습니다"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "먼저 브라우저에서 데스크톱 알림을 허용해야 합니다. 그때까지는 소리만 재생됩니다."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "로그인되어 있는 브라우저와 기기입니다. 모르는 항목이 있으면 나머지를 로그아웃하세요."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "이 주소는 이 리스트의 구독을 취소했습니다. 본인만 �
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "내가 속한 모든 워크스페이스에서도 나가게 됩니다. 내 게시물은 남으며 삭제된 독자가 쓴 것으로 표시됩니다."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "다른 모든 기기에서도 로그아웃됩니다."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "이 일괄 발송은 더 이상 초안이 아니므로 변경할 수 없습니다."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "이 대화의 이메일 채널에 SMTP 계정이 없어 답장을 보내지 못했습니다. 받은 편지함 설정에서 추가하세요."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "이 기기"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "알 수 없음"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "알 수 없는 기기"
 

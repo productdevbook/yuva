@@ -926,6 +926,10 @@ msgstr "{updates, plural, one {# actualización} other {# actualizaciones}}"
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {Importar # dirección} other {Importar # direcciones}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, sesión iniciada el {created}, última actividad {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, one {# vista} other {# vistas}}"
@@ -5879,6 +5883,10 @@ msgstr "Vista de correo"
 msgid "E-mail: {label}"
 msgstr "Correo: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "Código enviado por correo"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "Correos a las personas que se suscribieron"
@@ -6268,6 +6276,10 @@ msgstr "Cada conversación abierta tiene a alguien."
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "Cada debate abierto tiene una respuesta."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "Se cerrará la sesión en todos los demás navegadores y dispositivos. Este seguirá con la sesión iniciada."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "Partes en curso"
 msgid "Passed"
 msgstr "Superado"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "Clave de acceso"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "Nombre de la clave de acceso"
@@ -15177,6 +15193,10 @@ msgstr "Cuenta de servicio guardada"
 msgid "SES tenant"
 msgstr "Tenant de SES"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "Sesiones"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "Fijado por un monitor, {since}"
@@ -15616,8 +15636,17 @@ msgstr "Iniciar sesión:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "Cerrar sesión"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "Cerrar sesión en todos los demás sitios"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "¿Cerrar sesión en todos los demás sitios?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "Sesión iniciada en {provider}"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "Sesión iniciada de nuevo en {provider}"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "Sesión cerrada en todos los demás sitios"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "Confirmación simple"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "Se canceló el envío"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "El navegador tiene que permitir antes las notificaciones de escritorio; hasta entonces solo suena el sonido."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "Los navegadores y dispositivos en los que has iniciado sesión. Cierra la sesión en el resto si no reconoces alguno."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "Esta dirección se dio de baja de esta lista. Solo la persona puede volv
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "Esto también te quita de todos los espacios de trabajo a los que perteneces. Tus publicaciones se quedan, mostradas como de un lector eliminado."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "Esto también cierra tu sesión en todos los demás dispositivos."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "Este envío ya no es un borrador, así que no se puede cambiar."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "El canal de correo de esta conversación no tiene cuenta SMTP, así que no se envió la respuesta. Añade una en la configuración del buzón."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "Este dispositivo"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "Desconocido"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "Dispositivo desconocido"
 

@@ -926,6 +926,10 @@ msgstr "{updates, plural, one {# புதுப்பிப்பு} other {# 
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {# முகவரியை இறக்குமதி செய்} other {# முகவரிகளை இறக்குமதி செய்}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, {created} அன்று உள்நுழைந்தது, கடைசியாகச் செயல்பட்டது {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, one {# பார்வை} other {# பார்வைகள்}}"
@@ -5879,6 +5883,10 @@ msgstr "மின்னஞ்சல் பார்வை"
 msgid "E-mail: {label}"
 msgstr "மின்னஞ்சல்: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "மின்னஞ்சலில் வந்த குறியீடு"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "பதிவு செய்தவர்களுக்கு மின்னஞ்சல்கள்"
@@ -6268,6 +6276,10 @@ msgstr "திறந்துள்ள ஒவ்வோர் உரையாட�
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "திறந்துள்ள ஒவ்வொரு விவாதத்துக்கும் பதில் உள்ளது."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "மற்ற எல்லா உலாவிகளிலிருந்தும் சாதனங்களிலிருந்தும் வெளியேற்றப்படும். இந்தச் சாதனம் உள்நுழைந்தே இருக்கும்."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "நடப்பில் உள்ள பகுதிகள்"
 msgid "Passed"
 msgstr "தேர்ச்சி"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "பாஸ்கீ"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "பாஸ்கீ பெயர்"
@@ -15177,6 +15193,10 @@ msgstr "சேவைக் கணக்கு அமைக்கப்பட்�
 msgid "SES tenant"
 msgstr "SES டெனன்ட்"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "அமர்வுகள்"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "ஒரு கண்காணிப்பி அமைத்தது, {since}"
@@ -15616,8 +15636,17 @@ msgstr "உள்நுழைவு:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "வெளியேறு"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "மற்ற எல்லா இடங்களிலும் வெளியேறு"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "மற்ற எல்லா இடங்களிலும் வெளியேறவா?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "{provider}-இல் உள்நுழைந்தது"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "{provider}-இல் மீண்டும் உள்நுழைந்தது"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "மற்ற எல்லா இடங்களிலும் வெளியேறினீர்கள்"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "ஒற்றை ஒப்புதல்"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "ஒளிபரப்பு ரத்துசெய்யப்பட�
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "உலாவி முதலில் டெஸ்க்டாப் அறிவிப்புகளை அனுமதிக்க வேண்டும்; அதுவரை ஒலி மட்டுமே ஒலிக்கும்."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "நீங்கள் உள்நுழைந்துள்ள உலாவிகளும் சாதனங்களும். எதையாவது அடையாளம் தெரியவில்லை என்றால் மற்றவற்றிலிருந்து வெளியேறவும்."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "இந்த முகவரி இந்தப் பட்டியல
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "இது நீங்கள் உறுப்பினராக உள்ள ஒவ்வொரு பணியிடத்திலிருந்தும் உங்களை அகற்றும். உங்கள் இடுகைகள் இருக்கும், நீக்கப்பட்ட வாசகரிடமிருந்து எனக் காட்டப்படும்."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "இது மற்ற எல்லாச் சாதனங்களிலிருந்தும் உங்களை வெளியேற்றும்."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "இந்த ஒளிபரப்பு இனி வரைவு அல்ல; எனவே மாற்ற முடியாது."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "இந்த உரையாடலின் மின்னஞ்சல் சேனலுக்கு SMTP கணக்கு இல்லை; எனவே பதில் அனுப்பப்படவில்லை. இன்பாக்ஸ் அமைப்புகளில் ஒன்றைச் சேருங்கள்."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "இந்தச் சாதனம்"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "தெரியாதது"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "அறியாத சாதனம்"
 

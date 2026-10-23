@@ -926,6 +926,10 @@ msgstr "{updates, plural, one {# ενημέρωση} other {# ενημερώσε
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {Εισαγωγή # διεύθυνσης} other {Εισαγωγή # διευθύνσεων}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, σύνδεση {created}, τελευταία δραστηριότητα {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, one {# προβολή} other {# προβολές}}"
@@ -5879,6 +5883,10 @@ msgstr "Προβολή e-mail"
 msgid "E-mail: {label}"
 msgstr "E-mail: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "Κωδικός μέσω email"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "Email προς όσους έχουν εγγραφεί"
@@ -6268,6 +6276,10 @@ msgstr "Κάθε ανοιχτή συνομιλία έχει κάποιον υπ�
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "Κάθε ανοιχτή συζήτηση έχει απάντηση."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "Όλα τα άλλα προγράμματα περιήγησης και οι άλλες συσκευές αποσυνδέονται. Αυτή παραμένει συνδεδεμένη."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "Μέρη σε εξέλιξη"
 msgid "Passed"
 msgstr "Πέρασε"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "Passkey"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "Όνομα passkey"
@@ -15177,6 +15193,10 @@ msgstr "Ο λογαριασμός υπηρεσίας έχει οριστεί"
 msgid "SES tenant"
 msgstr "Μισθωτής SES"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "Συνεδρίες"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "Ορίστηκε από παρακολούθηση, {since}"
@@ -15616,8 +15636,17 @@ msgstr "Σύνδεση:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "Αποσύνδεση"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "Αποσύνδεση από παντού αλλού"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "Αποσύνδεση από παντού αλλού;"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "Συνδεθήκατε στο {provider}"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "Συνδεθήκατε ξανά στο {provider}"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "Αποσυνδεθήκατε από παντού αλλού"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "Απλή επιβεβαίωση"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "Η μαζική αποστολή ακυρώθηκε"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "Το πρόγραμμα περιήγησης πρέπει πρώτα να επιτρέψει τις ειδοποιήσεις επιφάνειας εργασίας· μέχρι τότε παίζει μόνο ο ήχος."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "Τα προγράμματα περιήγησης και οι συσκευές όπου είστε συνδεδεμένοι. Αποσυνδέστε τα υπόλοιπα αν δεν αναγνωρίζετε κάποιο."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "Αυτή η διεύθυνση διαγράφηκε από τη λίστ
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "Αυτό σας αφαιρεί επίσης από κάθε χώρο εργασίας στον οποίο ανήκετε. Οι αναρτήσεις σας παραμένουν, εμφανιζόμενες ως από διαγραμμένο αναγνώστη."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "Αυτό σας αποσυνδέει και από όλες τις άλλες συσκευές."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "Αυτή η μαζική αποστολή δεν είναι πια πρόχειρο, οπότε δεν μπορεί να αλλάξει."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "Το κανάλι e-mail αυτής της συνομιλίας δεν έχει λογαριασμό SMTP, οπότε η απάντηση δεν στάλθηκε. Προσθέστε έναν στις ρυθμίσεις εισερχομένων."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "Αυτή η συσκευή"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "Άγνωστο"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "Άγνωστη συσκευή"
 

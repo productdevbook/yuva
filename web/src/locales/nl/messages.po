@@ -926,6 +926,10 @@ msgstr "{updates, plural, one {# update} other {# updates}}"
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {# adres importeren} other {# adressen importeren}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, ingelogd op {created}, laatst actief {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, one {# weergave} other {# weergaven}}"
@@ -5879,6 +5883,10 @@ msgstr "E-mailweergave"
 msgid "E-mail: {label}"
 msgstr "E-mail: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "Code per e-mail"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "E-mails aan de mensen die zich hebben aangemeld"
@@ -6268,6 +6276,10 @@ msgstr "Elk open gesprek heeft iemand."
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "Elke open discussie heeft een antwoord."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "Alle andere browsers en apparaten worden uitgelogd. Dit apparaat blijft ingelogd."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "Delen in uitvoering"
 msgid "Passed"
 msgstr "Geslaagd"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "Passkey"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "Naam van de passkey"
@@ -15177,6 +15193,10 @@ msgstr "Serviceaccount ingesteld"
 msgid "SES tenant"
 msgstr "SES-tenant"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "Sessies"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "Ingesteld door een monitor, {since}"
@@ -15616,8 +15636,17 @@ msgstr "Inloggen:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "Uitloggen"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "Overal elders uitloggen"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "Overal elders uitloggen?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "Ingelogd bij {provider}"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "Opnieuw ingelogd bij {provider}"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "Overal elders uitgelogd"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "Single opt-in"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "De mailing is geannuleerd"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "De browser moet eerst bureaubladmeldingen toestaan; tot die tijd wordt alleen het geluid afgespeeld."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "De browsers en apparaten waarop u bent ingelogd. Log de rest uit als u er een niet kent."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "Dit adres heeft zich van deze lijst afgemeld. Alleen de persoon kan teru
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "Dit verwijdert je ook uit elke werkruimte waartoe je behoort. Je berichten blijven, getoond als van een verwijderde lezer."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "Hiermee logt u ook uit op alle andere apparaten."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "Deze mailing is geen concept meer, dus hij kan niet worden gewijzigd."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "Het e-mailkanaal van dit gesprek heeft geen SMTP-account, dus het antwoord is niet verzonden. Voeg er een toe in de mailboxinstellingen."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "Dit apparaat"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "Onbekend"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "Onbekend apparaat"
 

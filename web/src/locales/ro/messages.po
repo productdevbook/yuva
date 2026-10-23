@@ -926,6 +926,10 @@ msgstr "{updates, plural, one {# actualizare} few {# actualizări} other {# de a
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {Importă # adresă} few {Importă # adrese} other {Importă # de adrese}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, autentificat {created}, ultima activitate {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, one {# vizualizare} few {# vizualizări} other {# de vizualizări}}"
@@ -5879,6 +5883,10 @@ msgstr "Vizualizare e-mail"
 msgid "E-mail: {label}"
 msgstr "E-mail: {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "Cod trimis prin e-mail"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "E-mailuri către persoanele care s-au înscris"
@@ -6268,6 +6276,10 @@ msgstr "Fiecare conversație deschisă are pe cineva."
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "Fiecare discuție deschisă are un răspuns."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "Toate celelalte browsere și dispozitive sunt deconectate. Acesta rămâne conectat."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "Părți în curs"
 msgid "Passed"
 msgstr "Trecut"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "Cheie de acces"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "Numele cheii de acces"
@@ -15177,6 +15193,10 @@ msgstr "Cont de serviciu setat"
 msgid "SES tenant"
 msgstr "Tenant SES"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "Sesiuni"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "Setată de un monitor, {since}"
@@ -15616,8 +15636,17 @@ msgstr "Conectare:"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "Deconectează-te"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "Deconectează-te de peste tot în rest"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "Te deconectezi de peste tot în rest?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "Conectat la {provider}"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "Conectat din nou la {provider}"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "Deconectat de peste tot în rest"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "Confirmare simplă"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "Mesajul în masă a fost anulat"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "Browserul trebuie mai întâi să permită notificările pe desktop; până atunci se redă doar sunetul."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "Browserele și dispozitivele pe care sunteți conectat. Deconectați-le pe celelalte dacă nu recunoașteți unul."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "Această adresă s-a dezabonat de la această listă. Doar persoana se p
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "Asta te elimină și din fiecare spațiu de lucru din care faci parte. Postările tale rămân, afișate ca fiind de la un cititor șters."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "Astfel vei fi deconectat și de pe toate celelalte dispozitive."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "Acest mesaj în masă nu mai este o ciornă, deci nu poate fi schimbat."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "Canalul de e-mail al acestei conversații nu are un cont SMTP, deci răspunsul nu a fost trimis. Adaugă unul în setările căsuței."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "Acest dispozitiv"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "Necunoscut"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "Dispozitiv necunoscut"
 

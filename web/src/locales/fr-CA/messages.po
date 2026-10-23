@@ -926,6 +926,10 @@ msgstr "{updates, plural, one {# mise à jour} other {# mises à jour}}"
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {Importer # adresse} other {Importer # adresses}}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "{via}, signed in {created}, last active {seen}"
+msgstr "{via}, connecté le {created}, dernière activité {seen}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{views, plural, one {# view} other {# views}}"
 msgstr "{views, plural, one {# vue} other {# vues}}"
@@ -5879,6 +5883,10 @@ msgstr "Vue courriel"
 msgid "E-mail: {label}"
 msgstr "Courriel : {label}"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "E-mailed code"
+msgstr "Code envoyé par e-mail"
+
 #: src/features/broadcasts/Overview.tsx
 msgid "E-mails to the people who signed up"
 msgstr "E-mails aux personnes inscrites"
@@ -6268,6 +6276,10 @@ msgstr "Chaque conversation ouverte a quelqu’un."
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Every open discussion has an answer."
 msgstr "Chaque discussion ouverte a une réponse."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Every other browser and device is signed out. This one stays signed in."
+msgstr "Tous les autres navigateurs et appareils sont déconnectés. Celui-ci reste connecté."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
@@ -12230,6 +12242,10 @@ msgstr "Parties en cours"
 msgid "Passed"
 msgstr "Réussi"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Passkey"
+msgstr "Clé d’accès"
+
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Passkey name"
 msgstr "Nom de la clé d’accès"
@@ -15177,6 +15193,10 @@ msgstr "Compte de service enregistré"
 msgid "SES tenant"
 msgstr "Tenant SES"
 
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sessions"
+msgstr "Sessions"
+
 #: src/features/status/ComponentsTab.tsx
 msgid "Set by a monitor, {since}"
 msgstr "Défini par une sonde, {since}"
@@ -15616,8 +15636,17 @@ msgstr "Connexion :"
 #: src/features/account/AccountPage.tsx
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Sign out"
 msgstr "Se déconnecter"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else"
+msgstr "Se déconnecter partout ailleurs"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Sign out everywhere else?"
+msgstr "Se déconnecter partout ailleurs ?"
 
 #: src/features/account/AccountPage.tsx
 msgid "Sign-in address"
@@ -15655,6 +15684,10 @@ msgstr "Connecté à {provider}"
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Signed in to {provider} again"
 msgstr "Reconnecté à {provider}"
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "Signed out everywhere else"
+msgstr "Déconnecté partout ailleurs"
 
 #: src/components/common/text.ts
 msgid "Signed-in user"
@@ -15700,6 +15733,7 @@ msgid "Single opt-in"
 msgstr "Single opt-in"
 
 #: src/app/Palette.tsx
+#: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -16613,6 +16647,10 @@ msgstr "L’envoi a été annulé"
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "The browser has to allow desktop notifications first; until then only the sound plays."
 msgstr "Le navigateur doit d’abord autoriser les notifications de bureau ; d’ici là, seul le son est joué."
+
+#: src/features/settings/profile/Sessions.tsx
+msgid "The browsers and devices you are signed in on. Sign out of the rest if you do not know one."
+msgstr "Les navigateurs et appareils sur lesquels vous êtes connecté. Déconnectez les autres si vous n’en reconnaissez pas un."
 
 #: src/features/settings/automation/text.ts
 msgid "The canned reply was deleted"
@@ -17693,6 +17731,10 @@ msgstr "Cette adresse s’est désabonnée de cette liste. Seule la personne peu
 msgid "This also removes you from every workspace you belong to. Your posts stay, shown as from a deleted reader."
 msgstr "Cela vous retire aussi de tous les espaces de travail auxquels vous appartenez. Vos messages restent, affichés comme venant d’un lecteur supprimé."
 
+#: src/features/settings/profile/Passkeys.tsx
+msgid "This also signs you out on every other device."
+msgstr "Cela vous déconnecte aussi de tous les autres appareils."
+
 #: src/components/common/text.ts
 msgid "This broadcast is no longer a draft, so it cannot be changed."
 msgstr "Cet envoi n’est plus un brouillon, il ne peut donc pas être modifié."
@@ -17779,6 +17821,7 @@ msgid "This conversation's e-mail channel has no SMTP account, so the reply was 
 msgstr "Le canal courriel de cette conversation n’a pas de compte SMTP, donc la réponse n’a pas été envoyée. Ajoutez-en un dans les paramètres de la boîte."
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "This device"
 msgstr "Cet appareil"
 
@@ -18498,6 +18541,7 @@ msgid "Unknown"
 msgstr "Inconnu"
 
 #: src/features/settings/notifications/PushSection.tsx
+#: src/features/settings/profile/Sessions.tsx
 msgid "Unknown device"
 msgstr "Appareil inconnu"
 
