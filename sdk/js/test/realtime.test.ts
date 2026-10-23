@@ -104,7 +104,7 @@ test("a socket that stayed up for a minute resets the backoff", () => {
 
 test("retry_after on 1013 is honoured and a nudge does not skip it", () => {
   const { realtime } = setup()
-  FakeSocket.all[0]!.drop(1013, "too_many_connections retry_after=45")
+  FakeSocket.all[0]!.drop(1013, "too_many_connections;retry_after=45")
   realtime.nudge()
   advance(44_000)
   expect(FakeSocket.all.length).toBe(1)

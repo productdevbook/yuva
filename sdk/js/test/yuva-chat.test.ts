@@ -447,6 +447,73 @@ describe("<yuva-chat> realtime", () => {
       expect(JSON.parse(localStorage.getItem("yuva:pk_test")!).dismissed_status).toBeUndefined()
     })
   })
+  describe("confirmation held back", () => {
+    test("says the confirmation was not sent, makes no saved claim, and sends again on request", async () => {
+      const typed = { ...session.contact, typed_email: "ada@example.com" }
+      let setEmails = 0
+      globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+        const route = `${init?.method ?? "GET"} ${new URL(String(input)).pathname}`
+        const reply = (status: number, body: unknown) =>
+          new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } })
+        switch (route) {
+          case "GET /client/v1/channels/pk_test":
+            return reply(200, { ...inbox, chat: { ...inbox.chat, ask_email_offline: true }, mode: "async" })
+          case "POST /client/v1/session":
+            return reply(201, { ...session, inbox })
+          case "GET /client/v1/conversations":
+            return reply(200, { items: [] })
+          case "POST /client/v1/conversations": {
+            const { client_id } = JSON.parse(String(init?.body)) as { client_id: string }
+            return reply(201, {
+              conversation: {
+                id: "c1",
+                kind: "conversation",
+                subject: "Hello",
+                status: "open",
+                unread: false,
+                can_rate: false,
+                created_at: at,
+              },
+              message: message("m1", "Hello", "contact", client_id),
+            })
+          }
+          case "PUT /client/v1/contact/email":
+            setEmails++
+            return reply(200, {
+              ...typed,
+              email_confirmation: { email: "ada@example.com", state: setEmails > 1 ? "sent" : "limited" },
+            })
+          default:
+            return reply(204, {})
+        }
+      }) as typeof fetch
+      globalThis.WebSocket = FakeSocket as unknown as typeof WebSocket
+
+      const element = mount({ layout: "embedded", channel: "pk_test", server: "http://yuva.test", locale: "en" })
+      await compose(element)
+      const textarea = panel(element).querySelector<HTMLTextAreaElement>("textarea")!
+      textarea.value = "Hello"
+      textarea.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }))
+      await until(() => panel(element).querySelector(".card input") !== null)
+      const input = panel(element).querySelector<HTMLInputElement>(".card input")!
+      input.value = "ada@example.com"
+      panel(element).querySelector<HTMLFormElement>(".card form")!.requestSubmit()
+      await until(() => setEmails === 1 && panel(element).textContent?.includes("couldn't send") === true)
+
+      const text = panel(element).textContent ?? ""
+      expect(text).toContain("We couldn't send the confirmation now. Try again later.")
+      expect(text).not.toContain("Thanks!")
+      expect(text).not.toContain("We sent")
+
+      const again = [...panel(element).querySelectorAll<HTMLButtonElement>(".mail button")].find(
+        (button) => button.textContent === "Send again"
+      )!
+      again.click()
+      await until(() => panel(element).textContent?.includes("Check your inbox") === true)
+      expect(panel(element).textContent).toContain("Check your inbox")
+    })
+  })
+
   describe("removed conversation", () => {
     const conversation = {
       id: "c1",

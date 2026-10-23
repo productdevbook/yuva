@@ -65,6 +65,7 @@ export interface YuvaChatLabels {
   emailChange: string
   emailResend: string
   emailResent: string
+  emailLimited: string
   emailUndeliverableTitle: string
   emailUndeliverableHint: string
   emailConfirmed: string
@@ -135,6 +136,7 @@ export const defaultYuvaChatLabels: YuvaChatLabels = {
   emailChange: "Change address",
   emailResend: "Send again",
   emailResent: "Sent again.",
+  emailLimited: "We couldn't send the confirmation now. Try again later.",
   emailUndeliverableTitle: "We couldn't reach {address}",
   emailUndeliverableHint: "That address doesn't accept mail. Check it for a typo.",
   emailConfirmed: "Replies will also reach {address}",

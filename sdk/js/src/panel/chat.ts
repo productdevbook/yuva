@@ -99,7 +99,7 @@ interface Thread {
 
 type Entry = { kind: "message"; message: ClientMessage } | { kind: "pending"; pending: Pending }
 
-type EmailMode = "sent" | "bad" | "ask" | "confirmed" | "saved"
+type EmailMode = "sent" | "bad" | "limited" | "ask" | "confirmed" | "saved"
 
 export class Chat implements PanelController {
   #host: PanelHost
@@ -937,7 +937,10 @@ export class Chat implements PanelController {
       this.#emailSaved = true
       this.#emailEditing = false
       this.#emailError = ""
-      this.#emailNote = address === undefined ? "" : this.#t(msg`We sent it again.`)
+      this.#emailNote =
+        address === undefined || this.#contact.email_confirmation?.state === "limited"
+          ? ""
+          : this.#t(msg`We sent it again.`)
     } catch (error) {
       this.#emailError =
         error instanceof ApiError && error.status === 429
@@ -1699,6 +1702,7 @@ export class Chat implements PanelController {
     const live =
       confirmation?.state === "sent" && (!confirmation.expires_at || Date.parse(confirmation.expires_at) > Date.now())
     if (confirmation?.state === "undeliverable" && !this.#emailEditing) return "bad"
+    if (confirmation?.state === "limited" && !this.#emailEditing) return "limited"
     if (live && !this.#emailEditing) return "sent"
     if (confirmation?.state === "confirmed" && !this.#emailEditing) return "confirmed"
     const verified = !!contact?.email
@@ -1770,6 +1774,28 @@ export class Chat implements PanelController {
         textButton(this.#t(msg`Send again`), "link soft", () => void this.#saveEmail(address))
       )
       text.append(el("b", "", this.#t(msg`Check your inbox`)), soft, acts, ...note(), ...failure())
+      this.#email.append(text)
+    } else if (mode === "limited") {
+      this.#email.className = "mail"
+      this.#email.innerHTML = icons.mail
+      const text = el("div", "text")
+      const acts = el("div", "acts")
+      acts.append(
+        textButton(this.#t(msg`Change address`), "link brand", () => {
+          this.#emailEditing = true
+          this.#emailError = ""
+          this.#emailNote = ""
+          this.#render()
+          this.#emailInput.focus()
+        }),
+        textButton(this.#t(msg`Send again`), "link soft", () => void this.#saveEmail(address))
+      )
+      text.append(
+        el("b", "", this.#t(msg`We couldn't send the confirmation now. Try again later.`)),
+        acts,
+        ...note(),
+        ...failure()
+      )
       this.#email.append(text)
     } else if (mode === "bad") {
       this.#email.className = "mail bad"

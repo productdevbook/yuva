@@ -37,8 +37,11 @@ export interface paths {
          *     `200` when `domain` is the verified own domain of a published status page, help center or
          *     changelog or a public roadmap board in a live workspace (and that feature is not off on the
          *     server), `404` otherwise, also when the server's `YUVA_STATUS_DOMAINS` is not `ask`. It is public and
-         *     reveals only domains that already serve public pages. Up to 120 requests a minute per IP
-         *     address (`429 rate_limited`).
+         *     reveals only domains that already serve public pages. A live domain and a name known not to
+         *     be one are answered from memory (30 seconds). The proxy's own asks (from a loopback or
+         *     trusted proxy address, without a forwarded client address) are never limited; any other
+         *     caller gets 120 asks a minute per address and 30 lookups a minute per name that memory
+         *     cannot answer (`429 rate_limited`).
          */
         get: operations["checkStatusDomain"];
         put?: never;
@@ -1760,8 +1763,12 @@ export interface paths {
          *     address and outbound SMTP account); a `chat` channel needs `chat` (at least one allowed
          *     origin) and gets a generated public key; an `app` channel takes `app` (optional, defaults
          *     apply) and gets a generated public key; `settings` are stored as given.
-         *     An address belongs to one channel of the whole server, because inbound mail picks its
-         *     channel by the recipient alone; a taken address answers `409 email_address_taken`.
+         *     A new e-mail channel receives mail only at its forwarding address until its address is
+         *     proven (`email.verification`, `POST /v1/channels/{id}/verification-code` and
+         *     `POST /v1/channels/{id}/verify`). Any number of workspaces may claim an address; one that
+         *     proved it holds it. The same address twice in this workspace answers
+         *     `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
+         *     provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
          *
          *     Scope: `inboxes:manage`.
          */
@@ -1853,6 +1860,65 @@ export interface paths {
          *     Scope: `inboxes:manage`.
          */
         post: operations["rotateForwardingAddress"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/channels/{channelId}/verification-code": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mail a code that proves an e-mail channel's address
+         * @description Owners, admins and API keys. Mails an 8-digit code from the server's own sender to the
+         *     channel's address; it is valid for an hour and for 5 tries, and a new one replaces it. The
+         *     mail names neither the workspace nor the inbox. Enter it with
+         *     `POST /v1/channels/{id}/verify`; a code mail that comes back through the channel's
+         *     forwarding address verifies the channel by itself. At most one a minute per channel, 20 a
+         *     day per workspace and 5 a day to one address across the server (`429 rate_limited`).
+         *
+         *     `400 validation_failed` for other kinds, a catch-all and an address on the forwarding
+         *     domain (prove those with the TXT record); `409 email_verified` when the address is already proven
+         *     by this channel.
+         *
+         *     Scope: `inboxes:manage`.
+         */
+        post: operations["sendEmailVerificationCode"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/channels/{channelId}/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Prove an e-mail channel's address
+         * @description Owners, admins and API keys. With `code`, checks the code mailed to the address; a wrong,
+         *     used or expired code answers `400 verification_code_invalid`. Without it, looks the TXT
+         *     record `email.verification.txt_name` up now: when it holds `txt_value` the address is
+         *     proven, otherwise the channel stays `unverified` with `problem` saying what was found. A
+         *     proven address is taken from any channel that held it before, in any workspace, and is
+         *     recorded as `channel.address_verified`. An address already proven answers as it is.
+         *     `400 validation_failed` for other kinds and for a catch-all on a shared domain.
+         *
+         *     Scope: `inboxes:manage`.
+         */
+        post: operations["verifyEmailChannel"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2791,8 +2857,9 @@ export interface paths {
          *     address bounced or complained; `suggested` ones are copied only when named in `cc`. `cc` replaces that list (`[]` copies no one) and `bcc` adds hidden
          *     recipients, at most 20 addresses each: they receive the mail as envelope recipients only and
          *     never appear in its headers. Addresses in `cc` become participants; `bcc` never does. Each
-         *     address must be a valid address that this server neither receives nor sends mail for
-         *     (`400 validation_failed`, the same answer for both); one that bounced or complained is refused with
+         *     address must be a valid address that this workspace neither receives nor sends mail for
+         *     (a channel address of this workspace, its catch-all domain or sending address, a forwarding address or
+         *     the server's own sender; `400 validation_failed`, the same answer for both); one that bounced or complained is refused with
          *     `409 email_undeliverable`, while an unsubscribe from broadcasts does not stop a reply. The
          *     contact's own address is dropped from both, and an address in both stays in `cc`. `cc` and
          *     `bcc` are refused (`400 validation_failed`) on notes, `in` messages, drafts (send them with
@@ -2884,7 +2951,8 @@ export interface paths {
          * List a conversation's participants
          * @description The people copied on the conversation's e-mail besides its contact, oldest first, at most
          *     20 per conversation. The `To` and `Cc` addresses of inbound mail that are not addresses of
-         *     this server (any channel's address, sending address or forwarding address) are `active`
+         *     this workspace (a channel's address, catch-all domain or sending address, a
+         *     forwarding address, the server's own sender) are `active`
          *     when the mail passed DMARC (`email.dmarc` `pass`) and `suggested` otherwise, since `From`
          *     can be forged; automatic mail and mail that failed DMARC add no one. Addresses a member
          *     names in a reply's `cc` or adds here are `active`. Replies copy `active` participants by
@@ -2900,7 +2968,7 @@ export interface paths {
         /**
          * Add a participant
          * @description Adds an address as an `active` participant, or makes a `suggested` one `active`. The
-         *     address must be valid and not one this server receives or sends mail for
+         *     address must be valid and not one this workspace receives or sends mail for
          *     (`400 validation_failed`, the same answer for both); a conversation holds at most 20
          *     (`409 participants_full`). Whoever can see the conversation may; API keys and OAuth tokens
          *     need `conversations:write`.
@@ -9328,7 +9396,9 @@ export interface paths {
          *       then by the token's `email` when it carries `email_verified: true` and that contact has
          *       no external id in this inbox, or created. `name`, `locale` and `attrs` from the token
          *       are saved on the contact; a verified `email` becomes one of its addresses, an unverified
-         *       one is kept like a typed address and never used to find a contact. `exp` is required and at most 10 minutes ahead; tokens
+         *       one is kept like a typed address and never used to find a contact: it gets one
+         *       confirmation link (the first session that brings it, within the limits of
+         *       `PUT /client/v1/contact/email`) and replies only once that link is confirmed. `exp` is required and at most 10 minutes ahead; tokens
          *       with another `alg`, a wrong signature or a missing or past `exp`, and a token whose
          *       `jti` was already used, answer `401 invalid_identity_token`. When `visitor_id` names an anonymous visitor of this inbox,
          *       that visitor's conversations move to the identified contact and the visitor id ends.
@@ -9339,7 +9409,8 @@ export interface paths {
          *
          *     For a `chat` channel, browsers must call from one of the channel's allowed origins
          *     (`403 origin_not_allowed`, also without an `Origin` header); an `app` channel's key needs no
-         *     origin. Requests are rate limited per IP address and per channel (`429 rate_limited`), and an
+         *     origin. Requests are rate limited per IP address (IPv6 per /64), per network (IPv4 /24, IPv6 /48)
+         *     and channel, and with a far higher ceiling per channel (`429 rate_limited`), and an
          *     IP address starts at most `YUVA_ANONYMOUS_CONTACTS_PER_HOUR` new anonymous visitors per
          *     channel and hour (default 20; `429 anonymous_limit`; resuming a visitor does not count). A
          *     blocked contact answers `403 contact_blocked`.
@@ -9501,7 +9572,8 @@ export interface paths {
          *     comes in the default locale with `fallback: true`). Cursor-paged. Needs no session and
          *     creates no contact; a browser must come from an allowed origin. `404 whats_new_off`
          *     without a published changelog, and on a server with `YUVA_WHATS_NEW=off`. 120 reads a
-         *     minute per address and channel, and 2,400 per changelog (`429 rate_limited` with
+         *     minute per address and channel, 480 per network (IPv4 /24, IPv6 /48) and changelog, and
+         *     24,000 per changelog (`429 rate_limited` with
          *     `Retry-After`). Sent with `Cache-Control: public, max-age=60`.
          */
         get: operations["getClientWhatsNew"];
@@ -9617,8 +9689,8 @@ export interface paths {
          *     after it was issued (`400 form_token`); `website` is a honeypot that must stay empty
          *     (a filled one is answered `202` and ignored); `list_ids` must be public lists of the
          *     channel's inbox (`404 list_not_found`); `400 invalid_email`. At most 10 requests per IP
-         *     address and hour and 600 per channel and hour (`429 rate_limited` with `Retry-After`, the
-         *     seconds until the hour ends); confirmation mails are
+         *     address and hour, 40 per network (IPv4 /24, IPv6 /48) and channel and hour, and 6,000 per
+         *     channel and hour (`429 rate_limited` with `Retry-After`, the seconds until the hour ends); confirmation mails are
          *     capped per address (3 a day, 1 per list in 10 minutes) and per channel (1,000 a day)
          *     without changing the answer.
          *
@@ -9677,7 +9749,8 @@ export interface paths {
          *
          *     Send `final=true` once the visitor settled on the query (Enter, a result opened, or 1.5
          *     seconds without typing); only those are counted in the report. 30 searches a minute per
-         *     address and channel, and 1,200 per center (`429 rate_limited` with `Retry-After`). Sent with
+         *     address and channel, 120 per network (IPv4 /24, IPv6 /48) and center, and 12,000 per center
+         *     (`429 rate_limited` with `Retry-After`). Sent with
          *     `Cache-Control: public, max-age=60`. `404 help_off` without a published center.
          */
         get: operations["searchClientHelp"];
@@ -10200,8 +10273,8 @@ export interface paths {
          *     `allow_email: true` lets members' replies the contact has not read in the app be e-mailed
          *     to them (after the same delay as chat replies); `email` is the address to use while the
          *     contact has no address from an identity token or their own mail, kept like
-         *     `PUT /client/v1/contact/email`. Without `allow_email`, replies reach the contact only in
-         *     the app.
+         *     `PUT /client/v1/contact/email`: it gets replies only once its confirmation link is
+         *     confirmed. Without `allow_email`, replies reach the contact only in the app.
          *
          *     Send `multipart/form-data` to attach screenshots (the other fields as form fields and up to
          *     10 `files` parts), within the session channel's limits (`attachments` on `ClientInbox`) like
@@ -10232,11 +10305,16 @@ export interface paths {
         /**
          * Leave an e-mail address for replies
          * @description Stores the address the contact typed (e.g. when nobody is available), so replies they have
-         *     not read can be e-mailed to them. A typed address is never used to find or merge an
+         *     not read can be e-mailed to them once they confirm it: anyone can type any address, so
+         *     nothing but the confirmation link goes to it before. A typed address is never used to find or merge an
          *     existing contact; it is used only while the contact has no address from an identity token
          *     or from their own mail. Yuva mails the address a confirmation link (unless a contact already
-         *     has it; at most 3 per hour); it becomes one of the contact's addresses only once that link
-         *     is confirmed. `email_confirmation` on the answer says whether a link went out, and a
+         *     has it; at most 3 per contact and hour and 6 a day; per address, 3 a day from one network
+         *     (IPv4 /24, IPv6 /48) and 10 a day on the server, the address compared without case and
+         *     `+tag`, its domain in ASCII and, for Gmail, without dots; 30 per network and workspace and
+         *     2,000 per workspace a day. The limits are taken together or not at all, so a request they
+         *     refuse spends no one's budget, and a link held back by them shows `limited`); it becomes one of the contact's addresses only once that link is
+         *     confirmed. `email_confirmation` on the answer says whether a link went out, and a
          *     `contact.updated` frame on `/client/v1/realtime` brings its bounce or confirmation. An
          *     address that bounced before is stored but not mailed and shows `undeliverable`: ask for
          *     another one.
@@ -10430,7 +10508,10 @@ export interface paths {
          * @description Answers an access token for the link's other endpoints, valid for 12 hours or until the
          *     link expires, is revoked or gets another password. A wrong password answers
          *     `401 wrong_password`; an IP address may try 10 times a minute per link and 30 times a minute
-         *     in all (`429 rate_limited`). A link without a password answers `409 no_password`.
+         *     in all. Wrong passwords count against the link: 60 an hour per network (IPv4 /24, IPv6 /48)
+         *     and 1,000 an hour in all; past either, unlocks wait (`429 rate_limited`). Right passwords
+         *     count only against the per-address limits. A link without a password answers
+         *     `409 no_password`.
          */
         post: operations["unlockSharedAnalytics"];
         delete?: never;
@@ -10535,8 +10616,10 @@ export interface paths {
          *     (`conversation.created`, `conversation.updated`, `message.created`, `message.updated`,
          *     `read`, `contact.updated`) carry an increasing `id`; resume exactly as on `/v1/realtime`: remember the larger
          *     of `ready.last_event_id` and the last `id` received, reconnect with `?last_event_id=`, and
-         *     reload over HTTP on `resync_required`. `typing`, `presence` and `inbox.updated` have no
-         *     `id` and are not replayed. `message.*` carries only messages (no notes or internal events),
+         *     reload over HTTP on `resync_required`. A connection replays nothing from before its session
+         *     was created and at most 1,000 events of the workspace; further back it gets
+         *     `resync_required`. `typing`, `presence` and `inbox.updated` have no `id` and are not
+         *     replayed. `message.*` carries only messages (no notes or internal events),
          *     and `conversation.updated` only the status and a feedback's progress (a change to either
          *     sends it; show a progress change as a line in the thread). `typing` (a member typing), `read` (how far
          *     members have read) and `presence` (whether someone is available; sent after `ready` and
@@ -10554,7 +10637,13 @@ export interface paths {
          *
          *     The server pings every 30 seconds; the client sends nothing. Close codes as on
          *     `/v1/realtime`: 1008 when the session ends or the contact is deleted (start a new session),
-         *     1013 and 1012 (reconnect with `last_event_id`).
+         *     1013 and 1012 (reconnect with `last_event_id`). A session keeps at most 20 connections open
+         *     and an address 200 on each server; one more is accepted and closed at once with 1013 and
+         *     the reason `too_many_connections;retry_after=30` (open connections are never closed for a
+         *     newer one). Wait at least `retry_after` seconds, keep backing off while it repeats, and
+         *     reconnect only when the page or app is in use again. A session opens
+         *     at most 30 connections a minute and an address 120 (`429 rate_limited` with
+         *     `Retry-After`).
          */
         get: operations["clientRealtime"];
         put?: never;
@@ -12213,6 +12302,13 @@ export interface components {
          *       or its password), `apns` and `fcm` (an app channel's push credentials); never the values.
          *     - `channel.key_rotated`, `channel.forwarding_address_rotated`, `channel.dkim_key_deleted`:
          *       none. `channel.dkim_key_created`: `selector`.
+         *     - `channel.address_verified`: `address`, `method` (`code` or `dns`); by `system` when the
+         *       code came back through the forwarding address. `channel.address_lost`: `address`, by
+         *       `system`, when a channel of another workspace proved the address later, or proved an
+         *       exact address that this catch-all or `local@` channel received until then (`via`, the
+         *       channel's address); the workspace's owners are e-mailed too. `channel.address_proven`:
+         *       `address`, by `operator`, when the server's operator vouched for the address with
+         *       `yuva channel prove`.
          *     - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
          *     - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
          *       `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
@@ -12278,7 +12374,7 @@ export interface components {
          *     More actions are added over time; show an unknown one by its name.
          * @enum {string}
          */
-        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.bots_may_send_changed" | "workspace.broadcasts_by_keys_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "sso_domain.lapsed" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted";
+        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.address_verified" | "channel.address_lost" | "channel.address_proven" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.bots_may_send_changed" | "workspace.broadcasts_by_keys_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "sso_domain.lapsed" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted";
         /** @enum {string} */
         AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "message" | "team" | "sso" | "sso_domain" | "issue_integration" | "automation_rule";
         AuditTarget: {
@@ -13253,11 +13349,13 @@ export interface components {
         /** @description Settings of an `email` channel. */
         EmailChannel: {
             /**
-             * @description The address the channel receives mail at, unique on the server. `*@example.com` makes a
-             *     catch-all channel (one per domain): it receives mail to every address of the domain that
-             *     no other channel has, and replies go out from the address the contact wrote to, so the
-             *     SMTP account must be allowed to send from the whole domain. `from_address` is then used
-             *     only for conversations that have no such address and cannot itself be a catch-all.
+             * @description The address the channel receives mail at once it is proven (`verification`); until
+             *     then mail reaches the channel only at its forwarding address. `*@example.com` makes a
+             *     catch-all channel (one per domain, proven by the domain's TXT record): it receives mail
+             *     to every address of the domain that no other proven channel has, and replies go out from
+             *     the address the contact wrote to, so the SMTP account must be allowed to send from the
+             *     whole domain. `from_address` is then used only for conversations that have no such
+             *     address and cannot itself be a catch-all. Changing the address starts its proof over.
              */
             address: components["schemas"]["Email"];
             /** @description The name in `From`; the channel name when empty. */
@@ -13278,14 +13376,73 @@ export interface components {
             /** @description The channel's Yuva DKIM key; absent without one. */
             dkim?: components["schemas"]["EmailDkim"];
             ses?: components["schemas"]["EmailSes"];
+            verification?: components["schemas"]["EmailVerification"];
+        };
+        /**
+         * @description Whether the channel's address is proven. Only a proven address routes mail to the channel
+         *     and holds the address against other workspaces; an unproven channel still receives at its
+         *     forwarding address and sends through its SMTP account. Within this workspace every
+         *     channel's address counts as its own, proven or not (dropped as a sender, never copied or
+         *     kept as a participant). Prove an exact address with a code mailed to it
+         *     (`POST /v1/channels/{id}/verification-code`, then `POST /v1/channels/{id}/verify` with
+         *     `code`; when the code mail comes back through the channel's forwarding address the channel
+         *     is verified by itself), or any address and every catch-all with the TXT record `txt_name`
+         *     holding `txt_value` (`POST /v1/channels/{id}/verify` without `code`). One record proves
+         *     every channel of this workspace on that domain. The workspace that proves an address last
+         *     holds it: the channel that held it before becomes `unverified` with problem `taken`.
+         */
+        EmailVerification: {
+            /** @enum {string} */
+            state: "unverified" | "verified";
+            /**
+             * @description How the address was proven: `code` (the code mailed to it), `dns` (the TXT record) or
+             *     `operator` (the server's operator vouched for it with `yuva channel prove`). Absent
+             *     while unverified.
+             * @enum {string}
+             */
+            method?: "code" | "dns" | "operator";
+            /** Format: date-time */
+            verified_at?: string;
+            /**
+             * @description Why the last check did not verify it, or `taken` when another channel proved the
+             *     address later. Absent when verified.
+             */
+            problem?: string;
+            /**
+             * Format: date-time
+             * @description When the TXT record was last looked up.
+             */
+            checked_at?: string;
+            /** @description The TXT record name, `_yuva-mail.<domain>`. */
+            txt_name: string;
+            /** @description The value the TXT record must hold for this workspace and domain. */
+            txt_value: string;
+            /**
+             * @description `false` for a catch-all and for an address on the forwarding domain: those are proven
+             *     only by the TXT record.
+             */
+            code_allowed: boolean;
+            /**
+             * Format: date-time
+             * @description When the last code was mailed; absent when no code is open.
+             */
+            code_sent_at?: string;
+            /** Format: date-time */
+            code_expires_at?: string;
+        };
+        EmailVerifyInput: {
+            /** @description The code mailed to the address; absent looks the TXT record up instead. */
+            code?: string;
         };
         EmailChannelInput: {
             /**
-             * @description The address the channel receives mail at, unique on the server. `*@example.com` makes a
-             *     catch-all channel (one per domain): it receives mail to every address of the domain that
-             *     no other channel has, and replies go out from the address the contact wrote to, so the
-             *     SMTP account must be allowed to send from the whole domain. `from_address` is then used
-             *     only for conversations that have no such address and cannot itself be a catch-all.
+             * @description The address the channel receives mail at once it is proven (`verification`); until
+             *     then mail reaches the channel only at its forwarding address. `*@example.com` makes a
+             *     catch-all channel (one per domain, proven by the domain's TXT record): it receives mail
+             *     to every address of the domain that no other proven channel has, and replies go out from
+             *     the address the contact wrote to, so the SMTP account must be allowed to send from the
+             *     whole domain. `from_address` is then used only for conversations that have no such
+             *     address and cannot itself be a catch-all. Changing the address starts its proof over.
              */
             address: components["schemas"]["Email"];
             display_name?: string;
@@ -20227,7 +20384,7 @@ export interface components {
             state: components["schemas"]["ClientEmailConfirmationState"];
             /**
              * Format: date-time
-             * @description `sent` only: when the link runs out; after it the confirmation is absent.
+             * @description `sent` only: when the link runs out; after it the confirmation is absent (as for `limited`).
              */
             expires_at?: string;
         };
@@ -20235,10 +20392,13 @@ export interface components {
          * @description `sent`: a confirmation link went to `email` and was neither confirmed nor bounced yet ("we
          *     sent a link to …, check your inbox"). `undeliverable`: mail to `email` cannot be delivered
          *     (the link bounced, or the address bounced before); ask for another address. `confirmed`:
-         *     the link was confirmed and `email` is the contact's `email`.
+         *     the link was confirmed and `email` is the contact's `email`. `limited`: no link went out
+         *     because the address, the visitor's network or the channel reached its limit for confirmation
+         *     mails for now; ask the visitor to try again later or to use another address. Until an
+         *     address is confirmed it gets no replies.
          * @enum {string}
          */
-        ClientEmailConfirmationState: "sent" | "undeliverable" | "confirmed";
+        ClientEmailConfirmationState: "sent" | "undeliverable" | "confirmed" | "limited";
         ClientSessionInfo: {
             /**
              * Format: date-time
@@ -28910,6 +29070,70 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description The channel with its new forwarding address. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Channel"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    sendEmailVerificationCode: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                channelId: components["parameters"]["ChannelId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The channel with `email.verification.code_sent_at`. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Channel"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
+        };
+    };
+    verifyEmailChannel: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                channelId: components["parameters"]["ChannelId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["EmailVerifyInput"];
+            };
+        };
+        responses: {
+            /** @description The channel after the check. */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -41852,6 +42076,7 @@ export interface operations {
             400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
             503: components["responses"]["Problem"];
         };
     };

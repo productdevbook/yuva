@@ -8,7 +8,7 @@ import type { YuvaChatState } from "@/hooks/use-yuva-chat"
 import { cn } from "@/lib/utils"
 import { chatErrorText, defaultYuvaChatLabels, withAddress, type YuvaChatLabels } from "@/lib/yuva-chat-utils"
 
-type Mode = "ask" | "sent" | "bad" | "confirmed"
+type Mode = "ask" | "sent" | "bad" | "limited" | "confirmed"
 
 export interface YuvaChatEmailProps {
   chat: YuvaChatState
@@ -58,6 +58,7 @@ export function YuvaChatEmail({ chat, labels: custom, className }: YuvaChatEmail
   let mode: Mode | null = null
   if (started && contact) {
     if (confirmation?.state === "undeliverable" && !editing) mode = "bad"
+    else if (confirmation?.state === "limited" && !editing) mode = "limited"
     else if (live && !editing) mode = "sent"
     else if (confirmation?.state === "confirmed" && !editing) mode = "confirmed"
     else if (editing || (confirmation?.state === "sent" && !verified)) mode = "ask"
@@ -119,6 +120,40 @@ export function YuvaChatEmail({ chat, labels: custom, className }: YuvaChatEmail
           <Address template={labels.emailConfirmed} address={address} />
         </span>
       </p>
+    )
+  }
+  if (mode === "limited") {
+    return (
+      <div
+        role="status"
+        className={cn("flex items-start gap-3 rounded-xl border border-dashed border-input p-3", className)}
+      >
+        <MailIcon className="mt-0.5 size-[1.125rem] shrink-0 text-primary" aria-hidden />
+        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+          <span className="font-medium">{labels.emailLimited}</span>
+          <div className="mt-0.5 flex items-center gap-4 text-[0.8125rem]">
+            <button
+              type="button"
+              className="min-h-7 cursor-pointer font-medium text-primary hover:underline"
+              onClick={() => {
+                setDraft(null)
+                setEditing(true)
+              }}
+            >
+              {labels.emailChange}
+            </button>
+            <button
+              type="button"
+              disabled={busy}
+              className="min-h-7 cursor-pointer text-muted-foreground hover:text-foreground disabled:opacity-50"
+              onClick={() => void save(address)}
+            >
+              {labels.emailResend}
+            </button>
+          </div>
+          {failure}
+        </div>
+      </div>
     )
   }
   if (mode === "sent") {
