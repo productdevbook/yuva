@@ -531,7 +531,7 @@ paths finds none; every check in the `CLAUDE.md` table passes.
 
 ## M25 — Acceptance for 0.1.0
 
-Status: in progress; items Y-126 to Y-128, Y-162 and Y-177 in `backlog.md`.
+Status: done on 2026-10-23; items Y-126 to Y-128, Y-162 and Y-177 in `backlog.md`.
 
 - The Accept items of M6.1, M17 and M23, the milestones released without them, run on a server built
   from `main`.
