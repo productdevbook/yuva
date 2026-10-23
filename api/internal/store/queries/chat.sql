@@ -44,8 +44,9 @@ SELECT EXISTS (
 -- name: CreateContactSession :one
 WITH s AS (
     INSERT INTO contact_sessions (id, workspace_id, channel_id, inbox_id, contact_id, token_hash, identified,
-                                  created_at, expires_at, last_seen_at)
-    VALUES (@id, @workspace_id, @channel_id, @inbox_id, @contact_id, @token_hash, @identified, @now, @expires_at, @now)
+                                  created_at, expires_at, last_seen_at, first_event_id)
+    VALUES (@id, @workspace_id, @channel_id, @inbox_id, @contact_id, @token_hash, @identified, @now, @expires_at, @now,
+            (SELECT coalesce(max(e.id), 0) FROM events e WHERE e.workspace_id = @workspace_id))
     RETURNING *),
 seen AS (
     UPDATE contacts SET last_active_at = greatest(coalesce(contacts.last_active_at, s.last_seen_at), s.last_seen_at)

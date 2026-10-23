@@ -187,13 +187,14 @@ func (q *Queries) CreateChatVisitor(ctx context.Context, arg CreateChatVisitorPa
 const createContactSession = `-- name: CreateContactSession :one
 WITH s AS (
     INSERT INTO contact_sessions (id, workspace_id, channel_id, inbox_id, contact_id, token_hash, identified,
-                                  created_at, expires_at, last_seen_at)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $8)
-    RETURNING id, workspace_id, channel_id, inbox_id, contact_id, token_hash, identified, created_at, expires_at, last_seen_at),
+                                  created_at, expires_at, last_seen_at, first_event_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $8,
+            (SELECT coalesce(max(e.id), 0) FROM events e WHERE e.workspace_id = $2))
+    RETURNING id, workspace_id, channel_id, inbox_id, contact_id, token_hash, identified, created_at, expires_at, last_seen_at, first_event_id),
 seen AS (
     UPDATE contacts SET last_active_at = greatest(coalesce(contacts.last_active_at, s.last_seen_at), s.last_seen_at)
     FROM s WHERE contacts.workspace_id = s.workspace_id AND contacts.id = s.contact_id)
-SELECT id, workspace_id, channel_id, inbox_id, contact_id, token_hash, identified, created_at, expires_at, last_seen_at FROM s
+SELECT id, workspace_id, channel_id, inbox_id, contact_id, token_hash, identified, created_at, expires_at, last_seen_at, first_event_id FROM s
 `
 
 type CreateContactSessionParams struct {
@@ -209,16 +210,17 @@ type CreateContactSessionParams struct {
 }
 
 type CreateContactSessionRow struct {
-	ID          uuid.UUID
-	WorkspaceID uuid.UUID
-	ChannelID   uuid.UUID
-	InboxID     uuid.UUID
-	ContactID   uuid.UUID
-	TokenHash   []byte
-	Identified  bool
-	CreatedAt   time.Time
-	ExpiresAt   time.Time
-	LastSeenAt  time.Time
+	ID           uuid.UUID
+	WorkspaceID  uuid.UUID
+	ChannelID    uuid.UUID
+	InboxID      uuid.UUID
+	ContactID    uuid.UUID
+	TokenHash    []byte
+	Identified   bool
+	CreatedAt    time.Time
+	ExpiresAt    time.Time
+	LastSeenAt   time.Time
+	FirstEventID int64
 }
 
 func (q *Queries) CreateContactSession(ctx context.Context, arg CreateContactSessionParams) (CreateContactSessionRow, error) {
@@ -245,6 +247,7 @@ func (q *Queries) CreateContactSession(ctx context.Context, arg CreateContactSes
 		&i.CreatedAt,
 		&i.ExpiresAt,
 		&i.LastSeenAt,
+		&i.FirstEventID,
 	)
 	return i, err
 }
@@ -624,7 +627,7 @@ func (q *Queries) GetContactRead(ctx context.Context, arg GetContactReadParams) 
 }
 
 const getContactSessionByTokenHash = `-- name: GetContactSessionByTokenHash :one
-SELECT s.id, s.workspace_id, s.channel_id, s.inbox_id, s.contact_id, s.token_hash, s.identified, s.created_at, s.expires_at, s.last_seen_at, ct.blocked AS contact_blocked FROM contact_sessions s
+SELECT s.id, s.workspace_id, s.channel_id, s.inbox_id, s.contact_id, s.token_hash, s.identified, s.created_at, s.expires_at, s.last_seen_at, s.first_event_id, ct.blocked AS contact_blocked FROM contact_sessions s
 JOIN contacts ct ON ct.workspace_id = s.workspace_id AND ct.id = s.contact_id
 JOIN workspaces w ON w.id = s.workspace_id
 WHERE s.token_hash = $1 AND s.expires_at > $2 AND w.deleted_at IS NULL
@@ -646,6 +649,7 @@ type GetContactSessionByTokenHashRow struct {
 	CreatedAt      time.Time
 	ExpiresAt      time.Time
 	LastSeenAt     time.Time
+	FirstEventID   int64
 	ContactBlocked bool
 }
 
@@ -664,6 +668,7 @@ func (q *Queries) GetContactSessionByTokenHash(ctx context.Context, arg GetConta
 		&i.CreatedAt,
 		&i.ExpiresAt,
 		&i.LastSeenAt,
+		&i.FirstEventID,
 		&i.ContactBlocked,
 	)
 	return i, err

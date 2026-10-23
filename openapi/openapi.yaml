@@ -17902,8 +17902,10 @@ paths:
         (`conversation.created`, `conversation.updated`, `message.created`, `message.updated`,
         `read`, `contact.updated`) carry an increasing `id`; resume exactly as on `/v1/realtime`: remember the larger
         of `ready.last_event_id` and the last `id` received, reconnect with `?last_event_id=`, and
-        reload over HTTP on `resync_required`. `typing`, `presence` and `inbox.updated` have no
-        `id` and are not replayed. `message.*` carries only messages (no notes or internal events),
+        reload over HTTP on `resync_required`. A connection replays nothing from before its session
+        was created and at most 1,000 events of the workspace; further back it gets
+        `resync_required`. `typing`, `presence` and `inbox.updated` have no `id` and are not
+        replayed. `message.*` carries only messages (no notes or internal events),
         and `conversation.updated` only the status and a feedback's progress (a change to either
         sends it; show a progress change as a line in the thread). `typing` (a member typing), `read` (how far
         members have read) and `presence` (whether someone is available; sent after `ready` and
@@ -17921,7 +17923,11 @@ paths:
 
         The server pings every 30 seconds; the client sends nothing. Close codes as on
         `/v1/realtime`: 1008 when the session ends or the contact is deleted (start a new session),
-        1013 and 1012 (reconnect with `last_event_id`).
+        1013 and 1012 (reconnect with `last_event_id`). A session keeps at most 5 connections open
+        and an address 50 on each server: a newer one closes the oldest with 1013 and the reason
+        `too_many_connections` (reconnect only when that page is in use again). A session opens
+        at most 30 connections a minute and an address 120 (`429 rate_limited` with
+        `Retry-After`).
       tags: [client]
       security:
         - contactSession: []
@@ -17951,6 +17957,8 @@ paths:
         "401":
           $ref: "#/components/responses/Problem"
         "403":
+          $ref: "#/components/responses/Problem"
+        "429":
           $ref: "#/components/responses/Problem"
         "503":
           $ref: "#/components/responses/Problem"

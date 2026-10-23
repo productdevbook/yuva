@@ -60,6 +60,7 @@ type Server struct {
 	sanitize *bluemonday.Policy
 	original *bluemonday.Policy
 	hub      *realtime.Hub
+	sockets  *clientSockets
 	jobs     *river.Client[pgx.Tx]
 	ingress  IngressSettings
 	ingestQ  chan struct{}
@@ -300,7 +301,7 @@ func New(d Deps) *Server {
 	srv := &Server{
 		log: d.Log, st: d.Store, version: d.Version, mailer: d.Mailer, webauthn: d.WebAuthn, auth: d.Auth, now: now, sleep: sleep,
 		secrets: d.Secrets, objects: d.Storage, attach: d.Attachments, sanitize: htmlPolicy(), original: originalHTMLPolicy(),
-		hub: d.Hub, jobs: jobs, ingress: d.Ingress, ingestQ: make(chan struct{}, ingestSlots), sender: sender, smtpPriv: d.SMTPAllowPrivate, snsCerts: newCertCache(fetch), fetch: fetch,
+		hub: d.Hub, sockets: newClientSockets(), jobs: jobs, ingress: d.Ingress, ingestQ: make(chan struct{}, ingestSlots), sender: sender, smtpPriv: d.SMTPAllowPrivate, snsCerts: newCertCache(fetch), fetch: fetch,
 		chat: chat, limits: newRateLimiter(d.Store, d.Secrets, d.Log, d.RateLimitClock, sleep), webhooks: d.Webhooks, hooks: hooks, sso: newSSOState(d.Webhooks), push: pusher, appPush: newAppPushClient(d.AppPush), issueTrackers: d.IssueTrackers,
 		slack: d.Slack, slackAPI: newSlackClient(d.Slack, sleep),
 		noPanel: d.DisablePanel, panelKey: d.PanelAnalyticsKey, noWidget: d.DisableWidget, operator: d.OperatorEmails, imagesMax: d.EmailImagesMaxBytes,

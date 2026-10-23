@@ -79,12 +79,23 @@ func (s *Server) serveClientRealtime(w http.ResponseWriter, r *http.Request) {
 		writeProblem(w, errInternal)
 		return
 	}
+	addr := rateIP(s.clientIP(r))
+	if err := s.rateLimit(r.Context(),
+		rateCheck{"client-realtime:session:" + cp.sessionID.String(), limitClientRealtimePerSession},
+		rateCheck{"client-realtime:ip:" + addr, limitClientRealtimePerIP},
+	); err != nil {
+		var e *apiError
+		if errors.As(err, &e) {
+			writeProblem(w, e)
+		}
+		return
+	}
 	conn, err := websocket.Accept(w, r, &websocket.AcceptOptions{InsecureSkipVerify: true, Subprotocols: []string{wsProtocol}})
 	if err != nil {
 		return
 	}
 	defer conn.CloseNow()
-	code, reason, err := s.clientStream(conn, r, cp, token, resumeFrom)
+	code, reason, err := s.clientStream(conn, r, cp, token, addr, resumeFrom)
 	if err != nil && r.Context().Err() == nil {
 		s.log.WarnContext(r.Context(), "client realtime stream ended", slog.Any("error", err))
 	}
@@ -93,7 +104,7 @@ func (s *Server) serveClientRealtime(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *Server) clientStream(conn *websocket.Conn, r *http.Request, cp contactPrincipal, token string, resumeFrom *int64) (websocket.StatusCode, string, error) {
+func (s *Server) clientStream(conn *websocket.Conn, r *http.Request, cp contactPrincipal, token, addr string, resumeFrom *int64) (websocket.StatusCode, string, error) {
 	ctx := conn.CloseRead(r.Context())
 	sub := s.hub.Subscribe(cp.workspaceID)
 	defer s.hub.Unsubscribe(sub)
@@ -111,10 +122,14 @@ func (s *Server) clientStream(conn *websocket.Conn, r *http.Request, cp contactP
 		return websocket.StatusInternalError, "internal", err
 	}
 	connID := newID()
+	sock, first := s.sockets.open(cp.sessionID, cp.contactID, addr)
 	if err := s.st.OpenConnection(ctx, store.OpenConnectionParams{ID: connID, WorkspaceID: cp.workspaceID, ContactID: &cp.contactID, Now: s.now()}); err != nil {
+		s.sockets.close(sock)
 		return websocket.StatusInternalError, "internal", err
 	}
-	s.announceContactPresence(ctx, cp.workspaceID, cp.contactID)
+	if first {
+		s.contactPresenceChanged(ctx, cp.workspaceID, cp.contactID)
+	}
 	defer func() {
 		bg := context.WithoutCancel(ctx)
 		// Last seen moves before the connection goes, so a continuity check never sees the contact
@@ -125,7 +140,10 @@ func (s *Server) clientStream(conn *websocket.Conn, r *http.Request, cp contactP
 		if err := s.st.CloseConnection(bg, store.CloseConnectionParams{WorkspaceID: cp.workspaceID, ID: connID}); err != nil {
 			s.log.WarnContext(bg, "client realtime close", slog.Any("error", err))
 		}
-		s.announceContactPresence(bg, cp.workspaceID, cp.contactID)
+		if !s.sockets.close(sock) {
+			return
+		}
+		s.contactPresenceChanged(bg, cp.workspaceID, cp.contactID)
 		s.scheduleContactContinuity(bg, cp.workspaceID, cp.contactID)
 		s.scheduleContactPush(bg, cp.workspaceID, cp.contactID)
 	}()
@@ -159,9 +177,12 @@ func (s *Server) clientStream(conn *websocket.Conn, r *http.Request, cp contactP
 	}
 
 	if resumeFrom != nil {
-		known := *resumeFrom == 0
+		// A session replays only what happened since it was created, and at most clientReplayMax
+		// events of the workspace; further back, the client loads its state again.
+		from := max(*resumeFrom, cp.firstEvent)
+		known := from == 0
 		if !known {
-			if known, err = s.st.EventExists(ctx, store.EventExistsParams{WorkspaceID: cp.workspaceID, ID: *resumeFrom}); err != nil {
+			if known, err = s.st.EventExists(ctx, store.EventExistsParams{WorkspaceID: cp.workspaceID, ID: from}); err != nil {
 				return websocket.StatusInternalError, "internal", err
 			}
 		}
@@ -170,7 +191,8 @@ func (s *Server) clientStream(conn *websocket.Conn, r *http.Request, cp contactP
 				return 0, "", err
 			}
 		} else {
-			last = *resumeFrom
+			head, replayed := last, 0
+			last = from
 			for {
 				rows, err := s.st.ListEventsAfter(ctx, store.ListEventsAfterParams{WorkspaceID: cp.workspaceID, After: last, Lim: replayPageSize})
 				if err != nil {
@@ -183,6 +205,13 @@ func (s *Server) clientStream(conn *websocket.Conn, r *http.Request, cp contactP
 					}
 				}
 				if len(rows) < replayPageSize {
+					break
+				}
+				if replayed += len(rows); replayed >= clientReplayMax {
+					last = max(head, last)
+					if err := send(realtimeResync{Type: "resync_required"}); err != nil {
+						return 0, "", err
+					}
 					break
 				}
 			}
@@ -212,6 +241,8 @@ func (s *Server) clientStream(conn *websocket.Conn, r *http.Request, cp contactP
 		select {
 		case <-ctx.Done():
 			return 0, "", nil
+		case <-sock.kicked:
+			return websocket.StatusTryAgainLater, reasonTooManySockets, nil
 		case <-sub.Done():
 			switch sub.Reason() {
 			case realtime.ReasonSlowConsumer:

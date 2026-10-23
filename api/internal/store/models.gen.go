@@ -826,16 +826,17 @@ type ContactRead struct {
 }
 
 type ContactSession struct {
-	ID          uuid.UUID
-	WorkspaceID uuid.UUID
-	ChannelID   uuid.UUID
-	InboxID     uuid.UUID
-	ContactID   uuid.UUID
-	TokenHash   []byte
-	Identified  bool
-	CreatedAt   time.Time
-	ExpiresAt   time.Time
-	LastSeenAt  time.Time
+	ID           uuid.UUID
+	WorkspaceID  uuid.UUID
+	ChannelID    uuid.UUID
+	InboxID      uuid.UUID
+	ContactID    uuid.UUID
+	TokenHash    []byte
+	Identified   bool
+	CreatedAt    time.Time
+	ExpiresAt    time.Time
+	LastSeenAt   time.Time
+	FirstEventID int64
 }
 
 type Conversation struct {

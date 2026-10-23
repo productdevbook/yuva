@@ -32,6 +32,7 @@ type contactPrincipal struct {
 	channelID   uuid.UUID
 	contactID   uuid.UUID
 	sessionID   uuid.UUID
+	firstEvent  int64
 	identified  bool
 	expiresAt   time.Time
 	kind        string
@@ -197,7 +198,7 @@ func (s *Server) resolveContact(ctx context.Context, token string) (contactPrinc
 	}
 	return contactPrincipal{
 		workspaceID: sess.WorkspaceID, inboxID: sess.InboxID, channelID: sess.ChannelID, contactID: sess.ContactID,
-		sessionID: sess.ID, identified: sess.Identified, expiresAt: expires, kind: ch.Kind, chat: chat,
+		sessionID: sess.ID, firstEvent: sess.FirstEventID, identified: sess.Identified, expiresAt: expires, kind: ch.Kind, chat: chat,
 		attach: s.effectiveLimits(ch.AttachmentMaxBytes, ch.AttachmentTypes),
 	}, nil
 }
