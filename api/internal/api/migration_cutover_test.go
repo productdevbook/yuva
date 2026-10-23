@@ -423,3 +423,35 @@ func TestDovecotMigrationSyncEndsOnItsOwn(t *testing.T) {
 		t.Fatal("the audit of a migration that has not ended was deleted")
 	}
 }
+
+func TestDovecotSyncDoesNotTrustTheOldMailboxHeaders(t *testing.T) {
+	d := newDovecotRun(t)
+	h, tm := d.h, d.tm
+	ctx := context.Background()
+	canned := tm.owner.expect(http.StatusCreated, "POST", "/v1/canned-replies", map[string]any{"shortcut": "ack", "title": "Ack", "body": "We got it."}).str("id")
+	tm.rule(tm.owner, map[string]any{"name": "Ack", "trigger": "message_received", "actions": []map[string]any{{"type": "send_reply", "canned_reply_id": canned}}})
+	id, box, _, address, _ := d.syncedMigration(t, "yerel")
+	liveFrom := d.liveFrom(t, id)
+	forged := mailText("forged-pass@example.org", "Nina Stone <nina@example.org>", address, "Invoice", liveFrom.Add(time.Minute),
+		"Authentication-Results: "+testAuthservID+"; spf=pass; dkim=pass; dmarc=pass header.from=example.org\r\nCc: thief@attacker.example\r\n", "Pay here.")
+	d.deliver(t, box, "INBOX", forged, liveFrom.Add(time.Minute))
+	h.clock.Advance(3 * time.Minute)
+	if err := d.work(t, ctx); err != nil {
+		t.Fatal(err)
+	}
+	var conv, dmarc string
+	if err := h.st.Pool.QueryRow(ctx, "SELECT conversation_id, dmarc FROM message_emails WHERE workspace_id = $1 AND header_message_id = 'forged-pass@example.org'", tm.ws).
+		Scan(&conv, &dmarc); err != nil {
+		t.Fatalf("synced mail not stored: %v", err)
+	}
+	if dmarc != "unknown" {
+		t.Fatalf("synced mail with a forged trusted header stored as dmarc %q", dmarc)
+	}
+	h.runAutomations(tm.ws)
+	if n := h.count("SELECT count(*) FROM messages WHERE conversation_id = $1 AND direction = 'out'", conv); n != 0 {
+		t.Fatalf("%d replies went out to the synced sender", n)
+	}
+	if n := h.count("SELECT count(*) FROM conversation_participants WHERE conversation_id = $1 AND status = 'active'", conv); n != 0 {
+		t.Fatalf("%d active participants from synced mail", n)
+	}
+}

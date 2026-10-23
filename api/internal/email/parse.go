@@ -44,6 +44,7 @@ type Message struct {
 
 	AllAuthResults []string
 	DKIMSignatures []string
+	singleFrom     bool
 	Probe          string
 	MigrationProbe string
 }
@@ -89,6 +90,7 @@ func Parse(raw []byte) (*Message, error) {
 	}
 	if from, err := env.AddressList("From"); err == nil && len(from) > 0 {
 		m.From = Address{Name: strings.TrimSpace(from[0].Name), Email: strings.ToLower(strings.TrimSpace(from[0].Address))}
+		m.singleFrom = len(from) == 1 && len(env.GetHeaderValues("From")) == 1
 	}
 	m.To = addresses(env, "To")
 	m.Cc = addresses(env, "Cc")
@@ -161,20 +163,30 @@ func attachments(env *enmime.Envelope) []Attachment {
 	return out
 }
 
-// HeaderSender reads only the header of raw: the From address and the Authentication-Results
-// values in order, so that limits apply before the body is parsed.
+// HeaderSender reads only the header of raw: the From address when there is exactly one, and the
+// Authentication-Results values in order, so that limits apply before the body is parsed.
 func HeaderSender(raw []byte) (from string, authResults []string) {
 	msg, err := mail.ReadMessage(bytes.NewReader(raw))
 	if err != nil {
 		return "", nil
 	}
-	if list, err := msg.Header.AddressList("From"); err == nil && len(list) > 0 {
+	if list, err := msg.Header.AddressList("From"); err == nil && len(list) == 1 && len(msg.Header["From"]) == 1 {
 		from = strings.ToLower(strings.TrimSpace(list[0].Address))
 	}
 	for _, v := range msg.Header["Authentication-Results"] {
 		authResults = append(authResults, strings.TrimSpace(v))
 	}
 	return from, authResults
+}
+
+// DMARC is the message's trusted DMARC verdict; a pass counts only for a message with exactly one
+// From address, the only kind DMARC defines (RFC 7489 §6.6.1).
+func (m *Message) DMARC(authservID string) string {
+	v := TrustedDMARC(m.AllAuthResults, authservID)
+	if v == DMARCPass && !m.singleFrom {
+		return DMARCUnknown
+	}
+	return v
 }
 
 // TrustedDMARC is the DMARC verdict of the topmost Authentication-Results only when its authserv-id
@@ -243,7 +255,7 @@ func authResInfo(v string) (parts []string, ok bool) {
 			}
 		case c == '"':
 			quoted = true
-			b.WriteString(` " `)
+			b.WriteByte('"')
 		case c == '(':
 			depth = 1
 			b.WriteByte(' ')
@@ -259,7 +271,11 @@ func authResInfo(v string) (parts []string, ok bool) {
 
 type authResult struct{ method, result string }
 
-var methodSpec = regexp.MustCompile(`^\s*([A-Za-z0-9][A-Za-z0-9-]*)\s*(?:/\s*[0-9]+\s*)?=\s*([A-Za-z0-9][A-Za-z0-9-]*)(?:\s|$)`)
+// resinfo is one result per RFC 8601 §2.2 after authResInfo: methodspec, an optional reasonspec and
+// propspecs only, so text the sender put into an unquoted local part rarely reads as one.
+var resinfo = regexp.MustCompile(`^\s*([A-Za-z0-9][A-Za-z0-9-]*)\s*(?:/\s*[0-9]+\s*)?=\s*([A-Za-z0-9][A-Za-z0-9-]*)` +
+	`(?:\s+(?i:reason)\s*=\s*(?:"|[^\s"=]+))?` +
+	`(?:\s+[A-Za-z0-9][A-Za-z0-9-]*\s*\.\s*[A-Za-z0-9][A-Za-z0-9_.-]*\s*=\s*\S*)*\s*$`)
 
 // parseAuthResults reads the method=result that starts each resinfo (RFC 8601 §2.2). Reasons and
 // properties such as smtp.mailfrom or header.i carry values the sender chose and are never read.
@@ -274,7 +290,7 @@ func parseAuthResults(v string) ([]authResult, bool) {
 		case "", "none":
 			continue
 		}
-		m := methodSpec.FindStringSubmatch(p)
+		m := resinfo.FindStringSubmatch(p)
 		if m == nil {
 			return nil, false
 		}

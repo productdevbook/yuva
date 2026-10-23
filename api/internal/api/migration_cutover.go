@@ -172,7 +172,7 @@ func (s *Server) takeMigrationProbe(ctx context.Context, ch store.FindEmailChann
 // DMARC result from the trusted receiver.
 func (s *Server) takeForwardingConfirmation(ctx context.Context, ch store.FindEmailChannelByAddressRow, m *email.Message) (bool, error) {
 	c, ok := email.GoogleForwardingConfirmation(m)
-	if !ok || email.TrustedDMARC(m.AllAuthResults, s.ingress.AuthservID) != email.DMARCPass {
+	if !ok || m.DMARC(s.ingress.AuthservID) != email.DMARCPass {
 		return false, nil
 	}
 	taken := false

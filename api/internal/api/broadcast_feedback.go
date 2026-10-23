@@ -393,9 +393,9 @@ func (s *Server) unsubscribedThrough(ctx context.Context, q *store.Queries, ws, 
 // applyFeedbackReport handles an ARF abuse report (RFC 5965) that reached a channel: only from a
 // sender whose DMARC result the receiving server vouches for, and only for mail we sent from this
 // workspace to one address that alone was given its Message-ID.
-func (s *Server) applyFeedbackReport(ctx context.Context, ch store.FindEmailChannelByAddressRow, m *email.Message) (IngestResult, bool, error) {
+func (s *Server) applyFeedbackReport(ctx context.Context, ch store.FindEmailChannelByAddressRow, m *email.Message, dmarc string) (IngestResult, bool, error) {
 	f := m.Feedback
-	if f == nil || !f.Complaint() || f.OriginalMessageID == "" || email.TrustedDMARC(m.AllAuthResults, s.ingress.AuthservID) != email.DMARCPass {
+	if f == nil || !f.Complaint() || f.OriginalMessageID == "" || dmarc != email.DMARCPass {
 		return IngestResult{}, false, nil
 	}
 	d, err := s.st.FindBroadcastDeliveryByHeader(ctx, store.FindBroadcastDeliveryByHeaderParams{WorkspaceID: ch.WorkspaceID, HeaderMessageID: f.OriginalMessageID})

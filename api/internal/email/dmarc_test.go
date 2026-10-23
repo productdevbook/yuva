@@ -32,6 +32,10 @@ func TestTrustedDMARCReadsOnlyTheMethodResult(t *testing.T) {
 		{"pass and none", "mx.cloudflare.net; dmarc=pass header.from=example.net; dmarc=none header.from=example.net", email.DMARCUnknown},
 		{"pass, none and fail", "mx.cloudflare.net; dmarc=pass; dmarc=none; dmarc=fail", email.DMARCFail},
 		{"trailing semicolon", "mx.cloudflare.net; dmarc=pass header.from=example.net;", email.DMARCPass},
+		{"unquoted local part with a space", "mx.cloudflare.net; spf=pass smtp.mailfrom=x;dmarc=pass y.z@attacker.example", email.DMARCUnknown},
+		{"quoted local part with a space", `mx.cloudflare.net; spf=pass smtp.mailfrom="x;dmarc=pass y.z"@attacker.example; dmarc=none header.from=example.net`, email.DMARCNone},
+		{"word after the result", "mx.cloudflare.net; dmarc=pass trust me", email.DMARCUnknown},
+		{"reason and properties", "mx.cloudflare.net; dmarc=fail reason=aligned header.from=example.net policy.dmarc=none", email.DMARCFail},
 		{"edge fixture layout", "mx.cloudflare.net; spf=pass smtp.mailfrom=example.org; dkim=pass header.d=example.org; dmarc=pass header.from=example.org", email.DMARCPass},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -87,5 +91,32 @@ func TestHeaderSenderMatchesParse(t *testing.T) {
 	}
 	if from, ar := email.HeaderSender([]byte("not a message")); from != "" || ar != nil {
 		t.Fatalf("garbage: %q %q", from, ar)
+	}
+}
+
+func TestDMARCPassNeedsOneFromAddress(t *testing.T) {
+	const ar = "Authentication-Results: mx.cloudflare.net; dmarc=pass header.from=example.net\r\n"
+	for _, tc := range []struct{ name, from, want string }{
+		{"one address", "From: a@example.net\r\n", email.DMARCPass},
+		{"two addresses", "From: a@example.net, b@victim.example\r\n", email.DMARCUnknown},
+		{"two headers", "From: a@example.net\r\nFrom: b@victim.example\r\n", email.DMARCUnknown},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			raw := []byte(ar + tc.from + "To: s@example.com\r\nSubject: x\r\n\r\nbody\r\n")
+			m, err := email.Parse(raw)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got := m.DMARC("mx.cloudflare.net"); got != tc.want {
+				t.Fatalf("DMARC = %q, want %q", got, tc.want)
+			}
+			if from, _ := email.HeaderSender(raw); (from != "") != (tc.want == email.DMARCPass) {
+				t.Fatalf("HeaderSender from %q", from)
+			}
+		})
+	}
+	fail := []byte("Authentication-Results: mx.cloudflare.net; dmarc=fail header.from=example.net\r\nFrom: a@example.net, b@example.net\r\nTo: s@example.com\r\n\r\nx\r\n")
+	if m, _ := email.Parse(fail); m.DMARC("mx.cloudflare.net") != email.DMARCFail {
+		t.Fatal("a fail with two From addresses is no longer a fail")
 	}
 }

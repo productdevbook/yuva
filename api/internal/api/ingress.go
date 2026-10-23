@@ -358,13 +358,16 @@ func (s *Server) IngestEmail(ctx context.Context, envelopeTo, envelopeFrom strin
 			return IngestResult{Status: IngestDropped}, nil
 		}
 	}
-	return s.ingestToChannel(ctx, ch, recipient, envelopeFrom, fromTrusted, raw, m, ingestOptions{})
+	return s.ingestToChannel(ctx, ch, recipient, envelopeFrom, fromTrusted, raw, m, ingestOptions{trustedReceiver: true})
 }
 
 // ingestOptions: noGreeting leaves out the channel's auto-reply, for new mail catch-up sync found
-// in a mailbox whose provider may have answered it already.
+// in a mailbox whose provider may have answered it already. trustedReceiver is set only for mail
+// that came through our own receiver, whose Authentication-Results may be believed; mail read from
+// another mailbox is DMARC unknown whatever its headers say.
 type ingestOptions struct {
-	noGreeting bool
+	noGreeting      bool
+	trustedReceiver bool
 }
 
 // ingestToChannel stores a parsed inbound message for the channel as live mail.
@@ -384,8 +387,12 @@ func (s *Server) ingestToChannel(ctx context.Context, ch store.FindEmailChannelB
 		return IngestResult{}, err
 	}
 	nullFrom := fromTrusted && nullSender(envelopeFrom)
+	dmarc := email.DMARCUnknown
+	if opts.trustedReceiver {
+		dmarc = m.DMARC(s.ingress.AuthservID)
+	}
 	if m.Feedback != nil {
-		res, handled, err := s.applyFeedbackReport(ctx, ch, m)
+		res, handled, err := s.applyFeedbackReport(ctx, ch, m, dmarc)
 		if err != nil || handled {
 			return res, err
 		}
@@ -444,7 +451,6 @@ func (s *Server) ingestToChannel(ctx context.Context, ch store.FindEmailChannelB
 	if m.AuthResults != "" {
 		authResults = &m.AuthResults
 	}
-	dmarc := email.TrustedDMARC(m.AllAuthResults, s.ingress.AuthservID)
 	spam := dmarc == email.DMARCFail
 	rawSize := int64(len(raw))
 

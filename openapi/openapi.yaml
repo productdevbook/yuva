@@ -18291,7 +18291,7 @@ paths:
 
         The deprecated `v2=`, the hex HMAC over
         `<X-Yuva-Timestamp>.<X-Yuva-Envelope-To>.<X-Yuva-Envelope-From>.<raw body>`, is accepted
-        while `YUVA_INGRESS_ACCEPT_V2` is on (the default for now); its body is read before it is
+        only while `YUVA_INGRESS_ACCEPT_V2` is set (off by default); its body is read before it is
         authenticated. The deprecated `v1=`, over `<X-Yuva-Timestamp>.<X-Yuva-Envelope-To>.<raw body>`,
         is accepted only when `YUVA_INGRESS_ACCEPT_V1` is set, and then the envelope sender is not
         trusted (it never marks a delivery report or automatic mail). A version that is not accepted
