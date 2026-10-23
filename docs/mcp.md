@@ -225,6 +225,7 @@ answers `insufficient_scope` with the scope to grant.
 |---|---|
 | `get_setup_state`, `report_yuva_issue` | none; every connection |
 | `search_conversations`, `get_conversation`, `list_labels`, `list_canned_replies`, `get_counts` | `conversations:read` |
+| `get_report` ([Reports](reports.md)) | `reports:read` |
 | `list_feedback` (with `feedback_score`, 1 to 5, when the contact gave one; `without_idea` keeps feedback not linked to an idea) | `conversations:read` |
 | `list_inboxes` | `inboxes:read` |
 | `get_contact`, `lookup_contact` | `contacts:read` |

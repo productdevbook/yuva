@@ -390,6 +390,7 @@ Ein Aufruf ohne den nötigen Scope antwortet mit `403 insufficient_scope`.
 | `views:write` | [Gespeicherte Ansichten](#gespeicherte-ansichten) speichern, ändern, sortieren und löschen. Jeder Ansichten-Endpunkt, auch zum Lesen, braucht zusätzlich `conversations:read`. |
 | `automations:read` | [Automatisierungsregeln](automation.md) und ihre Protokolle lesen |
 | `automations:manage` | Automatisierungsregeln anlegen, ändern, sortieren und löschen. Nur Inhaber und Admins; ein auf Posteingänge beschränkter Schlüssel kann es nicht besitzen. In keinem anderen Scope enthalten: nennen Sie ihn ausdrücklich. |
+| `reports:read` | [Berichte](reports.md) und ihr CSV-Export über die Posteingänge, die der Aufrufer sehen kann |
 | `integrations:read` | `GET /v1/issue-integrations` und eine einzelne Integration: die Verbindungen zu [GitHub und Linear](issue-trackers.md), nie ein Token. |
 | `integrations:manage` | GitHub und Linear verbinden, ändern und trennen, ein neues Webhook-Geheimnis erzeugen. Ein auf Postfächer begrenzter Schlüssel kann ihn nicht halten. |
 | `issues:write` | GitHub- und Linear-Issues an Feedback und Ideen erstellen, verknüpfen und lösen (`/v1/conversations/{id}/issues`, `/v1/discussions/{id}/issues`), zusammen mit `conversations:read`. |

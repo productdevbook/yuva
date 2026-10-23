@@ -373,6 +373,7 @@ A call without the needed scope answers `403 insufficient_scope`.
 | `views:write` | Save, change, reorder and delete [saved views](#saved-views). Every views endpoint, reads included, also needs `conversations:read`. |
 | `automations:read` | [Automation rules](automation.md) and their logs |
 | `automations:manage` | Create, change, reorder and delete automation rules. Owners and admins only; a key limited to inboxes cannot hold it. Not included in any other scope: name it. |
+| `reports:read` | [Reports](reports.md) and their CSV export, over the inboxes the caller can see |
 | `integrations:read` | `GET /v1/issue-integrations` and one integration: the [GitHub and Linear](issue-trackers.md) connections, never a token. |
 | `integrations:manage` | Connect, change and disconnect GitHub and Linear, make a new webhook secret. A key limited to inboxes cannot hold it. |
 | `issues:write` | Create, link and unlink GitHub and Linear issues on feedback and ideas (`/v1/conversations/{id}/issues`, `/v1/discussions/{id}/issues`), together with `conversations:read`. |

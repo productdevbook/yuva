@@ -379,6 +379,7 @@ Gereken yetki olmadan yapılan çağrı `403 insufficient_scope` döner.
 | `views:write` | [Kayıtlı görünümleri](#kayıtlı-görünümler) kaydetme, değiştirme, sıralama ve silme. Okumalar dahil her görünüm uç noktası ayrıca `conversations:read` ister. |
 | `automations:read` | [Otomasyon kurallarını](automation.md) ve günlüklerini okuma |
 | `automations:manage` | Otomasyon kurallarını oluşturma, değiştirme, sıralama ve silme. Yalnızca sahipler ve yöneticiler; gelen kutularıyla sınırlı bir anahtar bunu taşıyamaz. Başka hiçbir yetkiye dahil değildir: adıyla verin. |
+| `reports:read` | [Raporlar](reports.md) ve CSV dışa aktarımı, çağıranın görebildiği gelen kutuları üzerinden |
 | `integrations:read` | `GET /v1/issue-integrations` ve tek bir entegrasyon: [GitHub ve Linear](issue-trackers.md) bağlantıları, hiçbir zaman bir belirteç değil. |
 | `integrations:manage` | GitHub ve Linear bağlamak, değiştirmek, bağlantıyı kesmek, yeni webhook gizli değeri üretmek. Gelen kutularına sınırlı bir anahtar bunu tutamaz. |
 | `issues:write` | Geri bildirim ve fikirlerde GitHub ve Linear kayıtları oluşturmak, bağlamak ve bağlantıyı kaldırmak (`/v1/conversations/{id}/issues`, `/v1/discussions/{id}/issues`), `conversations:read` ile birlikte. |
