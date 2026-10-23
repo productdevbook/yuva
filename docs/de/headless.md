@@ -74,6 +74,42 @@ und zeigen Sie "Diese Nachricht wurde entfernt". Dieselbe Nachricht trägt auch 
 Liste `redacted: true`. `createYuvaClient()` reicht den Frame im Event `event` weiter, die React-Hooks aktualisieren
 die Nachricht, und die Swift- und Kotlin-SDKs senden `YuvaEvent.messageRedacted(_:)` / `YuvaEvent.MessageRedacted(message)`.
 
+### Grenzen der Live-Verbindung
+
+`GET /client/v1/realtime` begrenzt, was ein Besucher oder eine Adresse offen halten kann:
+
+| Limit | Wert |
+|---|---|
+| Offene Verbindungen | 20 pro Sitzung und 200 pro Adresse, auf jedem Server |
+| Neue Verbindungen | 30 pro Minute und Sitzung und 120 pro Minute und Adresse; mehr antwortet `429 rate_limited` mit `Retry-After`, was ein Browser als geschlossenen Socket (1006) meldet |
+
+Eine Verbindung über dem Limit offener Verbindungen wird angenommen und sofort mit dem Code `1013` und dem Grund
+`too_many_connections;retry_after=30` geschlossen; offene Verbindungen bleiben. Warten Sie mindestens so viele
+Sekunden, warten Sie bei Wiederholung länger und verbinden Sie sich erst wieder, wenn die Seite oder App
+wieder genutzt wird.
+
+Eine Verbindung spielt höchstens 1.000 Ereignisse erneut ab und nichts von vor dem Erstellen ihrer Sitzung.
+Liegen zwischen `last_event_id` und jetzt mehr, sendet sie `resync_required`: Laden Sie über HTTP neu, wie bei
+einer abgelaufenen Position.
+
+### E-Mail-Adresse des Besuchers
+
+Eine Adresse, die ein Besucher eingibt (`PUT /client/v1/contact/email`, das Feedback-Formular oder ein
+unbestätigtes `email` in einem [Identity-Token](identity.md)), wird getrennt gehalten. Nur ein
+Bestätigungslink geht an sie, und Antworten werden erst nach der Bestätigung per E-Mail gesendet.
+`email_confirmation` am Kontakt zeigt den Stand:
+
+| `state` | Bedeutung |
+|---|---|
+| `sent` | Ein Link ging raus und ist weder bestätigt noch zurückgekommen; `expires_at` ist der Ablauf (24 Stunden). |
+| `undeliverable` | Der Link oder eine frühere E-Mail kam zurück: Fragen Sie nach einer anderen Adresse. |
+| `confirmed` | Die Adresse ist jetzt das `email` des Kontakts. |
+| `limited` | Es ging kein Link raus, weil die Adresse, das Netz des Besuchers, der Kontakt oder der Workspace für den Moment sein Limit an Bestätigungs-E-Mails erreicht hat. Sagen Sie das und bitten Sie den Besucher, es später zu versuchen oder eine andere Adresse zu nutzen; sagen Sie nicht, ein Link sei gesendet worden. |
+
+Ein `contact.updated`-Frame auf der Live-Verbindung trägt jede Änderung. Die Limits: 3 pro Tag und Adresse aus
+einem Netz, 10 pro Tag und Adresse serverweit, 6 pro Tag und Kontakt, 30 pro Tag und Netz und Workspace und
+2.000 pro Tag und Workspace.
+
 Außerhalb eines Browsers verwenden Sie den Schlüssel eines `app`-Kanals; `chat`-Kanäle akzeptieren
 nur ihre erlaubten Origins. React-Hooks liegen in `useyuva/react`; alle Optionen stehen in der
 [SDK-README](../../sdk/js/README.md).
@@ -103,6 +139,12 @@ ausgehende Nachricht eines Schlüssels muss dann ein Entwurf sein (sonst `403 bo
 Ist sie an, antwortet ein Schlüssel mit `messages:write` direkt und sendet mit `drafts:send` auch
 Entwürfe. Ändern kann sie nur ein im Panel angemeldeter Inhaber oder Admin (`bots_may_send` bei
 `PATCH /v1/workspace`), nie ein Schlüssel.
+
+Die Einstellung gilt für jeden Assistenten, nicht nur für Schlüssel: Das Token einer verbundenen App (eines
+[OAuth](mcp.md#oauth)-Clients) liefert als Entwurf, solange sie aus ist, egal für welche Ressource das Token
+ausgestellt wurde. Nur die eigenen Mitglieds-Apps des Servers senden als das Mitglied, was auch immer sie
+sagt; der Operator listet sie in [`YUVA_OAUTH_FIRST_PARTY_CLIENTS`](configuration.md#server), und die Liste ist
+standardmäßig leer.
 
 [Automatisierungsregeln](automation.md) antworten Kunden mit einer Textvorlage. Eine Textvorlage hat `saved_by`: wer
 ihren Text zuletzt gesetzt hat. Solange **Bots may send** aus ist, sendet eine Regel sie nur, wenn ein Inhaber oder
@@ -395,6 +437,28 @@ Ein Aufruf ohne den nötigen Scope antwortet mit `403 insufficient_scope`.
 | `integrations:manage` | GitHub und Linear verbinden, ändern und trennen, ein neues Webhook-Geheimnis erzeugen. Ein auf Postfächer begrenzter Schlüssel kann ihn nicht halten. |
 | `issues:write` | GitHub- und Linear-Issues an Feedback und Ideen erstellen, verknüpfen und lösen (`/v1/conversations/{id}/issues`, `/v1/discussions/{id}/issues`), zusammen mit `conversations:read`. |
 | `feedback:write` | `POST /v1/feedback` |
+
+### OAuth-Clients
+
+| Regel | Detail |
+|---|---|
+| Ressource | Ein Client, der keine Mitglieds-App ist, darf nur `resource=<YUVA_PUBLIC_URL>/mcp` anfordern. Wird `<YUVA_PUBLIC_URL>`, die ganze API, angefordert, wird das bei der Weiterleitung mit `error=invalid_target` abgelehnt; der Server fällt nicht auf `/mcp` zurück. |
+| Frühere Freigaben | Eine Freigabe für `<YUVA_PUBLIC_URL>`, die ein solcher Client vor 0.1.0 erhielt, behält den `/v1`-Zugriff, liefert aber wie jeder Assistent als Entwurf, solange **Bots may send** nicht an ist. |
+| `redirect_uri` | Trug die Autorisierungsanfrage eine mit, muss die Token-Anfrage sie exakt wiederholen, sonst `400 invalid_grant`. |
+| Präsenz | Ein Mitglied zählt (für die automatische Zuweisung und die Präsenz) nur über die eigene Sitzung oder eine Mitglieds-App als online, nie über einen API-Schlüssel oder einen Assistenten. |
+
+### Anmeldesitzungen
+
+Ein Mitglied sieht und beendet seine eigenen Sitzungen; dafür ist eine Mitgliedssitzung nötig (Schlüssel und
+verbundene Apps bekommen `403 member_session_required`).
+
+| Aufruf | Bewirkt |
+|---|---|
+| `GET /v1/me/sessions` | `{"items": [...]}`, zuletzt gesehene zuerst. Jede hat `id`, `method` (`code`, `passkey` oder `sso`), `current`, `device` (etwa `Firefox on Linux`, fehlt, wenn unbekannt), `user_agent`, `created_at`, `last_seen_at` (höchstens einmal pro Minute aktualisiert) und `expires_at`. |
+| `DELETE /v1/me/sessions` | Beendet alle anderen Sitzungen der Person samt Push-Abonnements und Reader-Tokens und antwortet `{"revoked": n}`. Ihre Live-Updates schließen sich innerhalb einer Minute. |
+
+Das Entfernen eines Passkeys (`DELETE /v1/me/passkeys/{passkeyId}`) beendet auch die anderen Sitzungen. Eine Sitzung
+über Single Sign-on listet nur sich selbst und kann die anderen nicht beenden (`403 sso_session_scope`).
 
 ### Schlüssel
 

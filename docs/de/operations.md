@@ -4,6 +4,111 @@ So aktualisieren, sichern, wiederherstellen und überwachen Sie einen Yuva-Serve
 verwenden das Compose-Setup aus der [Installationsanleitung](install.md) und laufen in dessen
 Verzeichnis.
 
+## Update auf 0.1.0
+
+Beim Start von 0.1.0 ändern sich vier Dinge. Lesen Sie sie, und folgen Sie dann den Schritten unter [Updates](#updates).
+
+### E-Mail-Adressen müssen nachgewiesen werden
+
+Ab 0.1.0 empfängt ein E-Mail-Kanal E-Mails an seiner eigenen Adresse (ein MX-Eintrag, der auf Yuva zeigt,
+`/ingress/email` oder `yuva ingest-email --to`) erst, nachdem sein Workspace die Adresse nachgewiesen hat.
+Nichts wird übernommen: Jeder vorhandene E-Mail-Kanal beginnt nicht nachgewiesen, denn gespeicherte
+E-Mails können die Zustellung per MX nicht von der Zustellung über eine Weiterleitungsadresse unterscheiden,
+an die sich jeder selbst senden kann.
+
+| Ein nicht nachgewiesener Kanal | |
+|---|---|
+| Hört auf | E-Mails nach seiner eigenen Adresse zu routen, bei Kanälen, deren Domain-MX auf Yuva zeigt. Ein Catch-all (`*@domain`) routet nichts. |
+| Funktioniert weiter | E-Mails an seine [Weiterleitungsadresse](email.md#weiterleitungsadresse) (`<token>@YUVA_FORWARDING_DOMAIN`), die Weiterleitung von Gmail oder Outlook läuft also weiter. Senden über sein SMTP-Konto. |
+| Wird abgelehnt | Ein Catch-all auf `YUVA_FORWARDING_DOMAIN` oder bei einem öffentlichen Mail-Anbieter wie gmail.com. Er empfängt nichts; ändern Sie seine Adresse. |
+
+Der Server meldet Ihnen jeden Kanal einmal: im Digest des Operators unter „E-mail address to prove“, wenn
+[`YUVA_OPERATOR_EMAIL`](configuration.md#anmeldung-und-passkeys) gesetzt ist, sonst als Warnung im Log
+(`e-mail channel address must be proven`). Jede nennt den Workspace und den Kanal.
+
+Weisen Sie einen Kanal auf einem von drei Wegen nach:
+
+- **DNS.** Der Workspace legt einen TXT-Eintrag `_yuva-mail.<domain>` mit einem Wert an, der mit
+  `yuva-mail-verify=` beginnt (beides steht in `email.verification` des Kanals), und lässt Yuva ihn prüfen.
+  Ein Eintrag weist alle Kanäle dieses Workspace auf der Domain nach. Nur so lässt sich ein Catch-all
+  nachweisen.
+- **Code.** Der Workspace lässt einen Code an die Adresse senden und sendet ihn zurück. Leitet das Postfach
+  an die Weiterleitungsadresse des Kanals weiter, weist die Code-E-Mail den Kanal von selbst nach.
+- **Sie.** Wenn Sie wissen, dass der Kanal zu seinem Workspace gehört, bürgen Sie dafür. Ohne `--yes` listet
+  der Befehl nur auf, was er nachweisen würde:
+
+  ```sh
+  docker compose exec yuva /yuva channel prove --all-unproven --workspace <ws>
+  docker compose exec yuva /yuva channel prove --all-unproven --workspace <ws> --yes --plan <code>
+  docker compose exec yuva /yuva channel prove --channel <id> --yes --address support@example.com
+  docker compose exec yuva /yuva channel prove --channel support@example.com --workspace <ws> --yes
+  ```
+
+  Die Liste zeigt jeden Kanal, Workspace, jede Adresse und jeden Namen mit einem Ergebnis: `would prove`,
+  `already proven` oder `refused: …`. Solange etwas nachgewiesen würde, endet der Befehl mit einem Fehler und
+  gibt den Plan-Code aus. `--yes` muss wiederholen, was Ihnen gezeigt wurde: `--plan <code>` bei
+  `--all-unproven` (ein Code der aufgelisteten Kanäle und Adressen, eine geänderte Liste wird also
+  abgelehnt) und `--address` bei einem Kanal, der per ID angegeben ist. `--workspace` ist bei
+  `--all-unproven` nötig und wenn mehrere Workspaces dieselbe Adresse beanspruchen. Der Nachweis steht im
+  [Audit-Log](#audit-log) des Workspace als `channel.address_proven` durch `operator`, und der Kanal zeigt
+  die Methode `operator`.
+
+  Abgelehnt wird er bei einer Adresse, die ein anderer Workspace nachgewiesen hat, bei einem Catch-all auf
+  einer gemeinsam genutzten Domain und wenn der Nachweis einem nachgewiesenen Kanal eines anderen Workspace
+  E-Mails wegnehmen würde („would take from workspace …“). Der Operator nimmt niemandem eine Adresse weg.
+
+Um eine Lücke zu vermeiden, weisen Sie die Kanäle, die per MX empfangen, gleich nach dem Update nach, oder
+bitten Sie die Workspaces, vorher ihre TXT-Einträge anzulegen (der Wert erscheint am Kanal, sobald 0.1.0
+läuft). Workspaces weisen Adressen über die API nach, siehe [E-Mail](email.md#adresse-nachweisen).
+
+### Signaturen und automatische Antworten
+
+- **`YUVA_INGRESS_ACCEPT_V2` ist jetzt standardmäßig aus.** Der Server akzeptiert nur `v3`-Signaturen. Der
+  Email Worker in `edge/` signiert `v3`; läuft bei Ihnen noch ein älterer, deployen Sie ihn vor dem Update
+  neu oder setzen Sie bis dahin `YUVA_INGRESS_ACCEPT_V2=true`. Mit `v2` signierte E-Mails werden sonst mit
+  `401` abgelehnt, und der Worker leitet sie an `FALLBACK_FORWARD` weiter, oder der sendende Server versucht
+  es erneut.
+- **Automatische Antworten brauchen DMARC.** Begrüßungen, Regelantworten und Bewertungsanfragen gehen nur
+  an Absender, deren E-Mail laut [`YUVA_INGRESS_AUTHSERV_ID`](configuration.md#eingehende-e-mail) DMARC
+  bestanden hat. Ein Server ohne diese Einstellung sendet keine davon und warnt beim Start. Setzen Sie sie,
+  bevor Sie sich darauf verlassen.
+
+### E-Mails ohne SMTP
+
+Ohne `YUVA_SMTP_HOST` sendet der Server keine E-Mails und schreibt sie geschwärzt ins Log. Ein Anmeldecode
+ist eine Zeile, `sign-in code (log mailer, not sent)`, mit der Adresse als `*@domain` und dem `code`. Jede
+andere E-Mail protokolliert nur die Domain des Empfängers und die Größen. `YUVA_MAIL_LOG=full` schreibt ganze
+E-Mails (Empfänger, Betreff, Text) und wird beim Start abgelehnt, wenn `YUVA_PUBLIC_URL` keine Localhost-
+oder Loopback-Adresse ist; nutzen Sie es nur auf Ihrem eigenen Rechner. Logzeilen und wiederholte
+Sendefehler behalten nur die Domain einer Adresse (`*@example.com`); der Zustellfehler, den das Panel bei
+einer fehlgeschlagenen Nachricht zeigt, enthält dagegen die volle Antwort des Mailservers.
+
+### Job-Queues
+
+Hintergrundarbeit läuft jetzt auf mehr Queues, damit ein langsamer Endpunkt eines Kunden Zuweisung oder
+Benachrichtigungen nicht aufhalten kann. Ein Job, der einen von einem Workspace gewählten Server oder einen
+anderen Dienst aufruft, läuft außerhalb der Queue `default`. Jeder Prozess führt alle aus; die Größen sind
+fest, und es gibt nichts einzustellen.
+
+| Queue | Worker pro Prozess | Führt aus |
+|---|---|---|
+| `default` | 10 | Zuweisung, Automatisierung, SLA-Prüfungen, Benachrichtigungen, Snooze-Aufwecken, Webhook-Fan-out, Aufbewahrung und alles, was nur die Datenbank liest und schreibt. |
+| `webhooks` | 10 | Webhook-Zustellungen. |
+| `outbound` | 10 | Web Push, App-Push (APNs und FCM), Slack-Beiträge und Issue-Tracker-Sync. |
+| `email` | 10 | E-Mails über das SMTP-Konto eines Workspace: Antworten, Listen-E-Mails und Zustellbarkeitsprüfungen. |
+| `imports` | 2 | Importe von Help Centern. |
+
+Die Queues `broadcast`, `migrations` und `analytics` sind unverändert ([Konfiguration](configuration.md)).
+Jobs, die vor dem Update in `default` eingereiht wurden, werden dort weiter abgearbeitet. So sehen Sie den
+Rückstau pro Queue:
+
+```sql
+SELECT queue, state, count(*) FROM river_job
+WHERE state IN ('available','running','retryable') GROUP BY 1, 2;
+```
+
+Ein wachsender Rückstau in `webhooks` bedeutet langsame oder fehlerhafte Kunden-Endpunkte; er hält nichts anderes mehr auf.
+
 ## Updates
 
 1. Lesen Sie die Release Notes jeder Version zwischen Ihrer und der neuen.
@@ -85,6 +190,8 @@ Befehle, die eine ID oder ein Secret ausgeben, schreiben nur das auf stdout.
 | `channel create-email --workspace <ws> --inbox <id\|slug> --name <name> --address <address> [--display-name <name>] [--from-address <address>] [--smtp-host <host> [--smtp-port <n>] [--tls starttls\|tls\|none] [--smtp-username <name>] [--smtp-password-file <path\|->]]` | Legt einen E-Mail-Kanal an und gibt seine ID aus. Passwort aus einer Datei, oder mit `-` von stdin. |
 | `channel create-chat --workspace <ws> --inbox <id\|slug> --name <name> --origin <origin>... [--allow-anonymous] [--ask-email-offline=false] [--greeting <text>]` | Legt einen Chat-Kanal (Web-Widget) an und gibt seine ID und seinen öffentlichen Schlüssel (`yuva_pk_…`) durch einen Tabulator getrennt aus. `--origin` für jede Website wiederholen. |
 | `channel list --workspace <ws> --inbox <id\|slug>` | Listet die Kanäle eines Posteingangs auf, bei Chat-Kanälen mit öffentlichem Schlüssel und Origins. |
+| `channel prove --channel <id\|address> [--workspace <ws>] [--yes [--address <address>]]` | Bürgt als Operator für die Adresse eines E-Mail-Kanals ([Update auf 0.1.0](#e-mail-adressen-müssen-nachgewiesen-werden)). Ohne `--yes` listet er auf, was er nachweisen würde. Abgelehnt bei einer Adresse, die ein anderer Workspace nachgewiesen hat, und bei Catch-alls auf gemeinsam genutzten Domains. |
+| `channel prove --all-unproven --workspace <ws> [--yes --plan <code>]` | Dasselbe für jeden nicht nachgewiesenen E-Mail-Kanal des Workspace. `--plan` ist der Code, den die Liste ausgibt. |
 | `workspace delete --workspace <ws> --yes` | Löscht einen Workspace ([unten](#workspace-oder-konto-entfernen)). Ohne `--yes` ein Probelauf. |
 | `workspace broadcasts approve\|deny\|suspend --workspace <ws> [--reason <text>]` | Beantwortet die Broadcast-Freigabe eines Workspaces oder sperrt ihn ([unten](#broadcasts-auf-einem-gehosteten-server)). |
 | `workspace broadcasts limit --workspace <ws> --daily <n>` | Setzt die Empfänger pro UTC-Tag des Workspaces; `0` hebt das Limit auf. |
@@ -274,9 +381,9 @@ Workspace löschen.
 
 Das Audit-Log hält fest, wer Zugriff, Zugangsdaten und Daten eines Workspace geändert hat: wer beigetreten
 ist, gegangen ist oder die Rolle gewechselt hat; Einladungen; erstellte oder widerrufene API-Schlüssel und
-verbundene Apps; Webhooks und ihre Geheimnisse; Zugangsdaten und Schlüssel von E-Mail-Kanälen;
+verbundene Apps; Webhooks und ihre Geheimnisse; Zugangsdaten und Schlüssel von E-Mail-Kanälen; nachgewiesene oder verlorene E-Mail-Adressen;
 Postfachzugriff und Löschungen; in den Papierkorb gelegte, wiederhergestellte oder gelöschte Unterhaltungen; entfernte Nachrichten (`message.redacted`: die Unterhaltung, ob Nachricht oder Notiz, wie viele Dateien, nie der Text); gelöschte Kontakte; Exporte von Einwilligungs- und Analytics-Daten;
-Änderungen der Aufbewahrung; und die Antworten des Betreibers zu Broadcasts. Jeder Eintrag hat den Akteur
+Änderungen der Aufbewahrung; ob API-Schlüssel und Assistenten direkt an Kunden senden oder Broadcasts planen dürfen; und die Antworten des Betreibers zu Broadcasts. Jeder Eintrag hat den Akteur
 (ein Mitglied, einen API-Schlüssel, ein Mitglied über eine verbundene App oder die Befehlszeile des
 Servers), die Aktion wie `api_key.created`, ihr Ziel, einige Details und die Zeit. Ein Eintrag wird im
 selben Schritt wie die Änderung geschrieben.
@@ -288,6 +395,12 @@ gesetzt ist.
 
 Team-Änderungen werden als `team.created`, `team.deleted`, `team.member_added`, `team.member_removed`,
 `team.inbox_access_granted` und `team.inbox_access_revoked` erfasst.
+
+Nachweise von E-Mail-Adressen werden als `channel.address_verified` (`address`, `method`), `channel.address_lost`
+(`address`; durch das System, wenn ein anderer Workspace die Adresse später nachwies) und
+`channel.address_proven` (durch den Operator, [oben](#e-mail-adressen-müssen-nachgewiesen-werden)) erfasst. Die
+beiden Einstellungen werden als `workspace.bots_may_send_changed` und `workspace.broadcasts_by_keys_changed` mit
+`from` und `to` erfasst, nur wenn sich der Wert ändert.
 
 Änderungen an Automatisierungsregeln werden als `automation_rule.created`, `automation_rule.updated` und
 `automation_rule.deleted` erfasst ([Automatisierungsregeln](automation.md#10-zugriff)).
@@ -334,6 +447,13 @@ Yuva räumt einmal pro Stunde auf:
 | [Audit-Log](#audit-log)-Einträge | `YUVA_AUDIT_DAYS` Tage (standardmäßig 365) |
 | Original-`.eml` eingehender E-Mails (wenn `retention_days` gesetzt ist) | so viele Tage; die Nachricht selbst bleibt |
 
+Wann immer Unterhaltungen endgültig gelöscht werden (ein Kontakt, ein Posteingang, Aufbewahrung, die
+Papierkorb-Bereinigung oder ein Workspace), löscht derselbe Schritt auch ihre gespeicherten Ereignisse und jede
+Webhook-Zustellung, ob ausstehend oder aufbewahrt, die sie enthält: `/v1/events`, Realtime-Replay und das
+Zustellprotokoll zeigen den Inhalt sofort nicht mehr, und eine ausstehende Zustellung wird nicht wiederholt. Die
+gespeicherten Dateien (Anhänge, rohe E-Mails, E-Mail-Bilder, Import-Uploads) löscht ein Job, der es wiederholt,
+bis der Speicher antwortet; ein fehlerhafter Speicher hinterlässt also keine Dateien, auf die nichts mehr zeigt.
+
 ## Mehrere Serverprozesse
 
 Beliebig viele Serverprozesse können sich eine Datenbank teilen (mehr `replicaCount` im Helm-Chart
@@ -351,9 +471,24 @@ oder mehrere Container hinter einem Proxy). Sie koordinieren sich über Postgres
 - Der Job `rate_limit_sweep` löscht abgelaufene Fenster und Leases jede Minute.
 - Fenster und Leases werden mit der Uhr der Datenbank gemessen, die Uhren der Prozesse spielen für die
   Limits keine Rolle.
-- Schlägt eine Prüfung in der Datenbank fehl (Verbindungsverlust, Timeout), lässt der Server die Anfrage
-  durch, statt sie abzulehnen; er protokolliert dann höchstens einmal pro Minute
-  `rate limit check failed; letting requests through`.
+- Limits, die alle Besucher eines Chat-Kanals, Help Centers oder einer Seite teilen, werden pro Netz
+  aufgeteilt. Nach dem Limit pro Adresse (IPv4 /32, IPv6 /64) darf ein Netz (IPv4 /24, IPv6 /48) nur einen
+  Teil des gemeinsamen Budgets nutzen, sodass eine Flut aus wenigen Quellen niemanden sonst aussperrt:
+
+  | Gemeinsames Budget | Ein Netz | Alle Besucher |
+  |---|---|---|
+  | Sitzungsstarts eines Kanals | 120 pro Minute | 6.000 pro Minute |
+  | Schreibzugriffe der Besucher eines Kanals | 240 pro Minute | 12.000 pro Minute |
+  | Help-Center-Suche | 120 pro Minute | 12.000 pro Minute |
+  | Listenanmeldungen eines Kanals | 40 pro Stunde | 6.000 pro Stunde |
+  | Statusseiten-Anmeldungen | 40 pro Stunde | 3.000 pro Stunde |
+  | Lesezugriffe auf Neuigkeiten | 480 pro Minute | 24.000 pro Minute |
+
+- Schlägt eine Prüfung in der Datenbank fehl (Verbindungsverlust, Timeout), sperrt das nie ein angemeldetes
+  Mitglied, einen API-Schlüssel oder eine verbundene App aus: Diese Anfragen gehen durch. Jede andere Anfrage
+  (Besucher, Kontakte) wird mit denselben Limits im Speicher des Prozesses gezählt, bis die Datenbank
+  antwortet; der Server protokolliert dann höchstens einmal pro Minute
+  `rate limit check failed; counting anonymous requests in this process`.
 - [`YUVA_CLIENT_IP_HEADER` und `YUVA_TRUSTED_PROXIES`](configuration.md) müssen in jedem Prozess gleich
   sein, sonst zählen die Limits pro Adresse unterschiedliche Adressen.
 
@@ -371,6 +506,8 @@ Logs sind JSON-Zeilen auf stderr. Zeilen, die einen Alarm wert sind:
 | Log-Meldung | Bedeutung |
 |---|---|
 | `mail not sent` | Das SMTP-Konto des Servers schlägt fehl; Anmeldecodes kommen nicht an. |
+| `e-mail channel address must be proven` | Ein E-Mail-Kanal ist nicht nachgewiesen, und `YUVA_OPERATOR_EMAIL` ist nicht gesetzt, um davon zu erfahren ([Update auf 0.1.0](#e-mail-adressen-müssen-nachgewiesen-werden)). |
+| `rate limit check failed` | Die Datenbank konnte Rate Limits nicht zählen ([Mehrere Serverprozesse](#mehrere-serverprozesse)). |
 | `email send failed, retrying` | Das SMTP-Konto eines Kanals schlägt fehl. |
 | `YUVA_SMTP_HOST is not set` (ebenso für `YUVA_INGRESS_SECRET`, `YUVA_VAPID_PUBLIC_KEY`) | Eine Funktion ist per Konfiguration abgeschaltet. |
 | `not ready` | Die Datenbank ist nicht erreichbar. |

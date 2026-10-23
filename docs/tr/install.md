@@ -197,7 +197,7 @@ Veritabanı geçişleri her pod başlamadan önce bir init container içinde ça
 | Ne | Not |
 |---|---|
 | Postgres 16 veya üstü | Her şeyi tutar. Redis yok. |
-| SMTP hesabı | Giriş kodları ve bildirimler için. Yoksa e-postalar loga yazılır. |
+| SMTP hesabı | Giriş kodları ve bildirimler için. Yoksa yalnızca giriş kodları loga yazılır, başka e-posta gönderilmez. |
 | Ek depolama | Bir Docker volume'u ya da `YUVA_STORAGE=s3` ve `YUVA_S3_*` [ayarlarıyla](configuration.md#ekler-ve-depolama) S3. |
 | TLS'li alan adı | Geçiş anahtarları ve Web Push HTTPS ister. |
 

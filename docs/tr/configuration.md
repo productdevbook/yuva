@@ -44,6 +44,7 @@ virgülle ayrılır. Boolean değerler `true`/`false`, `1`/`0` ve `t`/`f` kabul 
 | `YUVA_MCP` | `on` | `off`, MCP uç noktası `/mcp`'yi kapatır (`404` döner). OAuth açık kalır. |
 | `YUVA_PANEL` | `on` | `off`, panelin ve OAuth onay sayfasının sunulmasını durdurur; API anahtarları çalışmaya devam eder. |
 | `YUVA_PANEL_ANALYTICS_KEY` | boş | Bu sunucuda, alan adı panelinki olan bir [Analitik](analytics.md) web sitesinin herkese açık anahtarı (`yuva_ak_…`). Panel kendi ekranlarını orada sayar; kayıt kimlikleri `:id` olarak gider (`/conversations/:id`), hiçbir konuşma ya da kişi kimliği gönderilmez. |
+| `YUVA_OAUTH_FIRST_PARTY_CLIENTS` | atanmamış | Kendi üye uygulamalarınız olan OAuth `client_id`'leri; virgül ya da boşlukla ayrılır (meta veri belgesiyle kaydolan uygulamalar için `https` adresi). Yalnızca bunlar tüm API'yi isteyebilir ve [Botlar gönderebilir](headless.md#botlar-gönderebilir) ne derse desin üye olarak gönderebilir; diğer her istemci bir asistandır. Tam eşleşir. Atanmamışsa hiçbir istemci birinci taraf değildir. |
 | `YUVA_WIDGET` | `on` | `off`, `/yuva.js`, `/yuva-chat.js`, `/yuva-docs.js` ve `/yuva-analytics.js` dosyalarının sunulmasını durdurur; `/client/v1` kalır. |
 
 ## Giriş ve geçiş anahtarları
@@ -65,12 +66,13 @@ vardır.
 
 | Değişken | Varsayılan | Anlamı |
 |---|---|---|
-| `YUVA_SMTP_HOST` | atanmamış | SMTP sunucusu. Atanmamışsa e-postalar loga yazılır. |
+| `YUVA_SMTP_HOST` | atanmamış | SMTP sunucusu. Atanmamışsa e-posta gönderilmez: giriş kodları, adresi yalnızca alan adına indirilmiş tek bir satır olarak loga yazılır; diğer e-postalar yalnızca alıcının alan adı ve boyutlarıyla ([`YUVA_MAIL_LOG`](#sunucu-e-postası)). |
 | `YUVA_SMTP_PORT` | `tls` ile `465`, yoksa `587` | SMTP portu. |
 | `YUVA_SMTP_TLS` | `starttls` | `starttls`, `tls` (doğrudan TLS) ya da `none`. |
 | `YUVA_SMTP_USERNAME` | atanmamış | SMTP kullanıcı adı. |
 | `YUVA_SMTP_PASSWORD` | atanmamış | SMTP parolası. |
 | `YUVA_SMTP_FROM` | atanmamış | Gönderen, ör. `Yuva <yuva@example.com>`. `YUVA_SMTP_HOST` ile birlikte zorunlu. |
+| `YUVA_MAIL_LOG` | `redacted` | `YUVA_SMTP_HOST` atanmadığı için gönderilmeyen e-postalardan logda ne görüneceği. `redacted`: alıcının alan adı, boyutlar ve giriş kodu satırı. `full`: her e-postanın alıcısı, konusu ve metni. `YUVA_PUBLIC_URL` bir localhost ya da loopback adresi değilse sunucu `full` ile başlamayı reddeder; yalnızca kendi makinenizde kullanın. |
 | `YUVA_SMTP_ALLOW_PRIVATE` | `false` | E-posta kanallarının loopback ve özel ağ adreslerindeki SMTP sunucularını (ör. Mailpit) kullanmasına izin verir. |
 
 ## Ekler ve depolama
@@ -108,8 +110,8 @@ ve gelen e-posta için geçerlidir. [Yuva'ya taşıma](migrate.md) hiçbir kanal
 |---|---|---|
 | `YUVA_INGRESS_SECRET` | atanmamış | `/ingress/email` isteklerini imzalar; Email Worker aynı değeri kullanır. Atanmamışsa bu uç nokta tüm e-postaları reddeder. |
 | `YUVA_INGRESS_ACCEPT_V1` | `false` | Eski bir Email Worker'ı yeniden deploy edene kadar eski `v1` imzasını da kabul eder. |
-| `YUVA_INGRESS_ACCEPT_V2` | `true` | Eski `v2` imzasını da kabul eder; bu imzada e-posta doğrulanmadan önce okunur. Bütün Email Worker'lar `v3` ile imzaladığında `false` yapın; bu, GHSA-jfvx-vc82-56f7 duyurusundaki açığı kapatır. |
-| `YUVA_INGRESS_AUTHSERV_ID` | atanmamış | E-postayı alan sunucunuzun authserv-id'si, ör. `mx.cloudflare.net`. DMARC sonuçlarının kullanılması için gerekir; yoksa her gelen ileti DMARC `unknown` ile saklanır ve sunucu açılışta uyarı verir. |
+| `YUVA_INGRESS_ACCEPT_V2` | `false` | Eski `v2` imzasını da kabul eder; bu imzada e-posta doğrulanmadan önce okunur (GHSA-jfvx-vc82-56f7 duyurusu). Yalnızca `v3` imzasından eski bir Email Worker hâlâ deploy edilmişken `true` yapın; yeniden deploy edince tekrar kapatın. |
+| `YUVA_INGRESS_AUTHSERV_ID` | atanmamış | E-postayı alan sunucunuzun authserv-id'si, ör. `mx.cloudflare.net`. DMARC sonuçlarının kullanılması için gerekir; yoksa her gelen ileti DMARC `unknown` ile saklanır, bir göndericiye karşılama, kural yanıtı ya da değerlendirme isteği e-postalanmaz ve sunucu açılışta uyarı verir. |
 | `YUVA_INGRESS_MAX_CONCURRENT` | `8` | `/ingress/email`'in süreç başına aynı anda işlediği mesaj sayısı; fazlası `503` alır. |
 | `YUVA_SES_TOPIC_ARNS` | atanmamış | `/ingress/ses`'in SES geri dönme (bounce) ve şikâyet bildirimlerini kabul ettiği SNS topic ARN'leri. |
 | `YUVA_SES_REGION` | atanmamış | Yuva'nın [tenant](operations.md#barındırılan-sunucuda-amazon-ses-tenantları)'larını yönettiği Amazon SES bölgesi, örn. `eu-west-1`. Başka bir bölgede SES üzerinden gönderen kanallar yalıtılmaz. Sonraki üçüyle birlikte ayarlayın ya da hiçbirini ayarlamayın. |
@@ -117,7 +119,7 @@ ve gelen e-posta için geçerlidir. [Yuva'ya taşıma](migrate.md) hiçbir kanal
 | `YUVA_SES_SECRET_ACCESS_KEY` | atanmamış | Gizli anahtarı. |
 | `YUVA_SES_CONFIGURATION_SET` | atanmamış | Yuva'nın her tenant ile ilişkilendirdiği ve `X-SES-CONFIGURATION-SET` içinde adını yazdığı configuration set. 1 ila 64 harf, rakam, `-` veya `_`. |
 | `YUVA_SES_TENANT_PREFIX` | `yuva-` | Yuva'nın oluşturduğu her tenant adının başlangıcı; en fazla 32 harf, rakam, `-` veya `_`. IAM politikası yalnızca bu önekle başlayan tenant'lara izin verir. |
-| `YUVA_EMAIL_SENDER_HOURLY_CAP` | `500` | Bir göndericinin bir çalışma alanına saatte gönderebileceği e-posta sayısı; fazlası reddedilir (`429`). |
+| `YUVA_EMAIL_SENDER_HOURLY_CAP` | `500` | Bir göndericinin bir çalışma alanına saatte gönderebileceği e-posta sayısı; fazlası reddedilir (`429`). DMARC'tan geçen e-posta ile diğerleri ayrı sayılır; böylece bir müşterinin adına sahte e-posta, gerçek e-postasının sınırını tüketemez. |
 
 ## Yuva'ya taşıma
 

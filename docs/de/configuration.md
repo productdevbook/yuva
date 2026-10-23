@@ -45,6 +45,7 @@ und `t`/`f`.
 | `YUVA_MCP` | `on` | `off` schaltet den MCP-Endpunkt `/mcp` ab (er antwortet mit `404`). OAuth bleibt an. |
 | `YUVA_PANEL` | `on` | `off` liefert das Panel und die OAuth-Zustimmung nicht mehr aus; API-Schlüssel funktionieren weiter. |
 | `YUVA_PANEL_ANALYTICS_KEY` | nicht gesetzt | Der öffentliche Schlüssel (`yuva_ak_…`) einer Website in [Analytics](analytics.md) auf diesem Server, deren Domain die des Panels ist. Das Panel zählt dann dort seine eigenen Ansichten, mit `:id` statt Datensatz-IDs (`/conversations/:id`); keine Konversations- oder Kontakt-ID wird gesendet. |
+| `YUVA_OAUTH_FIRST_PARTY_CLIENTS` | nicht gesetzt | OAuth-`client_id`s, durch Komma oder Leerzeichen getrennt (bei Apps, die sich per Metadaten-Dokument registrieren, ihre `https`-URL), die Ihre eigenen Mitglieds-Apps sind. Nur sie dürfen die ganze API anfordern und als das Mitglied senden, was auch immer [Bots dürfen senden](headless.md#bots-may-send) sagt; jeder andere Client ist ein Assistent. Wird exakt verglichen. Nicht gesetzt, ist kein Client ein eigener Client des Servers. |
 | `YUVA_WIDGET` | `on` | `off` liefert `/yuva.js`, `/yuva-chat.js`, `/yuva-docs.js` und `/yuva-analytics.js` nicht mehr aus; `/client/v1` bleibt. |
 
 ## Anmeldung und Passkeys
@@ -65,12 +66,13 @@ Anmeldecodes, Einladungen und Benachrichtigungen. E-Mail-Kanäle haben [ihr eige
 
 | Variable | Standard | Bedeutung |
 |---|---|---|
-| `YUVA_SMTP_HOST` | nicht gesetzt | SMTP-Server. Ohne Wert werden E-Mails stattdessen ins Log geschrieben. |
+| `YUVA_SMTP_HOST` | nicht gesetzt | SMTP-Server. Ohne Wert werden keine E-Mails gesendet: Anmeldecodes stehen als eine Zeile mit auf die Domain gekürzter Adresse im Log, andere E-Mails nur mit der Domain des Empfängers und den Größen ([`YUVA_MAIL_LOG`](#server-e-mail)). |
 | `YUVA_SMTP_PORT` | `465` mit `tls`, sonst `587` | SMTP-Port. |
 | `YUVA_SMTP_TLS` | `starttls` | `starttls`, `tls` (implizites TLS) oder `none`. |
 | `YUVA_SMTP_USERNAME` | nicht gesetzt | SMTP-Benutzername. |
 | `YUVA_SMTP_PASSWORD` | nicht gesetzt | SMTP-Passwort. |
 | `YUVA_SMTP_FROM` | nicht gesetzt | Absender, z. B. `Yuva <yuva@example.com>`. Pflicht zusammen mit `YUVA_SMTP_HOST`. |
+| `YUVA_MAIL_LOG` | `redacted` | Was das Log von E-Mails zeigt, die der Server nicht sendet, weil `YUVA_SMTP_HOST` nicht gesetzt ist. `redacted`: die Domain des Empfängers, die Größen und die Zeile mit dem Anmeldecode. `full`: Empfänger, Betreff und Text jeder E-Mail. Der Server startet mit `full` nur, wenn `YUVA_PUBLIC_URL` eine Localhost- oder Loopback-Adresse ist; nutzen Sie es nur auf Ihrem eigenen Rechner. |
 | `YUVA_SMTP_ALLOW_PRIVATE` | `false` | Erlaubt E-Mail-Kanälen SMTP-Hosts auf Loopback- und privaten Adressen, etwa Mailpit. |
 
 ## Dateien und Speicher
@@ -108,8 +110,8 @@ für das Web-Widget und die mobilen SDKs, für Screenshots im Feedback und für 
 |---|---|---|
 | `YUVA_INGRESS_SECRET` | nicht gesetzt | Signiert Anfragen an `/ingress/email`; der Email Worker verwendet denselben Wert. Ohne Wert lehnt dieser Endpunkt jede E-Mail ab. |
 | `YUVA_INGRESS_ACCEPT_V1` | `false` | Akzeptiert zusätzlich die alte `v1`-Signatur, bis Sie einen älteren Email Worker neu deployen. |
-| `YUVA_INGRESS_ACCEPT_V2` | `true` | Akzeptiert zusätzlich die alte `v2`-Signatur, bei der die Nachricht vor der Prüfung gelesen wird. Setzen Sie `false`, sobald jeder Email Worker mit `v3` signiert; das schließt Advisory GHSA-jfvx-vc82-56f7. |
-| `YUVA_INGRESS_AUTHSERV_ID` | nicht gesetzt | Authserv-ID Ihres empfangenden Mailservers, z. B. `mx.cloudflare.net`. Nötig, damit DMARC-Ergebnisse genutzt werden; ohne sie wird jede eingehende Nachricht mit DMARC `unknown` gespeichert und der Server warnt beim Start. |
+| `YUVA_INGRESS_ACCEPT_V2` | `false` | Akzeptiert zusätzlich die alte `v2`-Signatur, bei der die Nachricht vor der Prüfung gelesen wird (Advisory GHSA-jfvx-vc82-56f7). Setzen Sie `true` nur, solange noch ein Email Worker deployt ist, der älter als die `v3`-Signatur ist, und schalten Sie es nach dem Neu-Deployen wieder aus. |
+| `YUVA_INGRESS_AUTHSERV_ID` | nicht gesetzt | Authserv-ID Ihres empfangenden Mailservers, z. B. `mx.cloudflare.net`. Nötig, damit DMARC-Ergebnisse genutzt werden; ohne sie wird jede eingehende Nachricht mit DMARC `unknown` gespeichert, an keinen Absender gehen Begrüßung, Regelantwort oder Bewertungsanfrage, und der Server warnt beim Start. |
 | `YUVA_INGRESS_MAX_CONCURRENT` | `8` | Nachrichten, die `/ingress/email` pro Prozess gleichzeitig verarbeitet; weitere erhalten `503`. |
 | `YUVA_SES_TOPIC_ARNS` | nicht gesetzt | SNS-Topic-ARNs, deren SES-Bounces und -Beschwerden `/ingress/ses` annimmt. |
 | `YUVA_SES_REGION` | nicht gesetzt | Die Amazon-SES-Region, deren [Tenants](operations.md#amazon-ses-tenants-auf-einem-gehosteten-server) Yuva verwaltet, z. B. `eu-west-1`. Kanäle, die über SES in einer anderen Region senden, werden nicht isoliert. Zusammen mit den nächsten drei setzen, oder keine. |
@@ -117,7 +119,7 @@ für das Web-Widget und die mobilen SDKs, für Screenshots im Feedback und für 
 | `YUVA_SES_SECRET_ACCESS_KEY` | nicht gesetzt | Sein Secret. |
 | `YUVA_SES_CONFIGURATION_SET` | nicht gesetzt | Das Configuration Set, das Yuva jedem Tenant zuordnet und in `X-SES-CONFIGURATION-SET` nennt. 1 bis 64 Buchstaben, Ziffern, `-` oder `_`. |
 | `YUVA_SES_TENANT_PREFIX` | `yuva-` | Anfang jedes Tenant-Namens, den Yuva anlegt, bis zu 32 Buchstaben, Ziffern, `-` oder `_`. Die IAM-Richtlinie erlaubt nur Tenants mit diesem Präfix. |
-| `YUVA_EMAIL_SENDER_HOURLY_CAP` | `500` | Eingehende E-Mails, die ein Absender pro Stunde an einen Workspace senden darf; weitere werden abgelehnt (`429`). |
+| `YUVA_EMAIL_SENDER_HOURLY_CAP` | `500` | Eingehende E-Mails, die ein Absender pro Stunde an einen Workspace senden darf; weitere werden abgelehnt (`429`). E-Mails mit bestandenem DMARC und andere werden getrennt gezählt, sodass gefälschte E-Mails im Namen eines Kunden das Limit seiner echten E-Mails nicht aufbrauchen. |
 
 ## Zu Yuva umziehen
 

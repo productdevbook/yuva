@@ -127,6 +127,7 @@ reopens the conversation, no rule runs for the wake-up.
 `Auto-Submitted: auto-replied`). It is refused, and the run fails with `error: auto_reply`, when:
 
 - the message that triggered the rule is an automatic reply or a bounce;
+- the message that triggered the rule is an e-mail that did not pass DMARC (chat and API messages are not affected);
 - the contact is blocked;
 - the conversation is spam;
 - a rule already replied in this conversation within the last hour, or three times in the last 24 hours.

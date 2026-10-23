@@ -125,6 +125,7 @@ yeniden açıldığında uyanma için hiçbir kural çalışmaz.
 ile). Aşağıdaki durumlarda reddedilir ve çalıştırma `error: auto_reply` ile başarısız olur:
 
 - kuralı tetikleyen mesaj bir otomatik yanıt ya da geri dönen e-postadır (bounce);
+- kuralı tetikleyen mesaj DMARC'tan geçmemiş bir e-postaysa (sohbet ve API mesajları etkilenmez);
 - kişi engellenmiştir;
 - konuşma spamdır;
 - bir kural bu konuşmada son bir saat içinde ya da son 24 saatte üç kez zaten yanıt verdi.

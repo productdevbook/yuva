@@ -3,6 +3,107 @@
 Bir Yuva sunucusunu güncelleme, yedekleme, geri yükleme ve izleme. Örnekler
 [kurulum rehberindeki](install.md) Compose kurulumunu kullanır ve onun dizininde çalıştırılır.
 
+## 0.1.0 sürümüne yükseltme
+
+0.1.0 başlarken dört şey değişir. Bunları okuyun, sonra [Güncelleme](#güncelleme) adımlarını izleyin.
+
+### E-posta adresleri kanıtlanmalıdır
+
+0.1.0'dan itibaren bir e-posta kanalı, kendi adresine gelen e-postayı (Yuva'yı gösteren bir MX kaydı,
+`/ingress/email` ya da `yuva ingest-email --to`) yalnızca çalışma alanı adresi kanıtladıktan sonra alır.
+Hiçbir şey devredilmez: mevcut her e-posta kanalı kanıtlanmamış başlar, çünkü saklanan e-posta, MX ile
+teslimi, herkesin kendine gönderebileceği bir yönlendirme adresi üzerinden teslimden ayırt edemez.
+
+| Kanıtlanmamış bir kanal | |
+|---|---|
+| Durur | Kendi adresine göre e-posta yönlendirme; alan adının MX'i Yuva'yı gösteren kanallar için. Bir catch-all (`*@domain`) hiçbir şey yönlendirmez. |
+| Çalışmaya devam eder | [Yönlendirme adresine](email.md#yönlendirme-adresi) (`<token>@YUVA_FORWARDING_DOMAIN`) gelen e-posta; yani Gmail ya da Outlook yönlendirmesi sürer. SMTP hesabıyla gönderim. |
+| Reddedilir | `YUVA_FORWARDING_DOMAIN` üzerindeki ya da gmail.com gibi genel bir e-posta sağlayıcısındaki catch-all. Hiçbir şey almaz; adresini değiştirin. |
+
+Sunucu her kanalı size bir kez bildirir: [`YUVA_OPERATOR_EMAIL`](configuration.md#giriş-ve-geçiş-anahtarları)
+ayarlıysa operatör özetinde "E-mail address to prove" başlığı altında, değilse logda bir uyarı olarak
+(`e-mail channel address must be proven`). Her biri çalışma alanını ve kanalı belirtir.
+
+Bir kanalı üç yoldan biriyle kanıtlayın:
+
+- **DNS.** Çalışma alanı, `_yuva-mail.<domain>` adlı ve değeri `yuva-mail-verify=` ile başlayan bir TXT
+  kaydı ekler (ikisi de kanalın `email.verification` alanındadır) ve Yuva'dan denetlemesini ister. Tek kayıt,
+  çalışma alanının o alan adındaki tüm kanallarını kanıtlar. Catch-all'ı kanıtlamanın tek yolu budur.
+- **Kod.** Çalışma alanı adrese bir kod gönderttirir ve geri yollar. Posta kutusu kanalın yönlendirme
+  adresine yönlendiriliyorsa kod e-postası kanalı kendiliğinden kanıtlar.
+- **Siz.** Kanalın çalışma alanına ait olduğunu biliyorsanız teminat verin. `--yes` olmadan komut yalnızca
+  neyi kanıtlayacağını listeler:
+
+  ```sh
+  docker compose exec yuva /yuva channel prove --all-unproven --workspace <ws>
+  docker compose exec yuva /yuva channel prove --all-unproven --workspace <ws> --yes --plan <code>
+  docker compose exec yuva /yuva channel prove --channel <id> --yes --address support@example.com
+  docker compose exec yuva /yuva channel prove --channel support@example.com --workspace <ws> --yes
+  ```
+
+  Liste her kanalı, çalışma alanını, adresi ve adı bir sonuçla gösterir: `would prove`, `already proven`
+  ya da `refused: …`. Kanıtlanacak bir şey olduğu sürece hatayla çıkar ve plan kodunu yazdırır. `--yes`,
+  size gösterileni yinelemelidir: `--all-unproven` için `--plan <code>` (listelenen kanalların ve
+  adreslerin kodu; liste değiştiyse reddedilir) ve id ile verilen kanal için `--address`. `--workspace`,
+  `--all-unproven` ile ve birden çok çalışma alanı aynı adresi talep ettiğinde gerekir. Kanıt, çalışma
+  alanının [denetim günlüğüne](#denetim-günlüğü) `operator` tarafından `channel.address_proven` olarak
+  yazılır ve kanalda yöntem `operator` görünür.
+
+  Başka bir çalışma alanının kanıtladığı adres, ortak alan adındaki catch-all ve kanıtlamanın başka bir
+  çalışma alanının kanıtlanmış kanalından e-posta alacağı durumlar ("would take from workspace …")
+  reddedilir. Operatör hiç kimseden adres almaz.
+
+Boşluk oluşmaması için e-postayı MX ile alan kanalları yükseltmenin hemen ardından kanıtlayın ya da çalışma alanlarından
+önce TXT kayıtlarını eklemelerini isteyin (değer, 0.1.0 çalışınca kanalda görünür). Çalışma alanları adresleri
+API ile kanıtlar; bkz. [E-posta](email.md#adresi-kanıtlama).
+
+### İmzalar ve otomatik yanıtlar
+
+- **`YUVA_INGRESS_ACCEPT_V2` artık varsayılan olarak kapalı.** Sunucu yalnızca `v3` imzalarını kabul
+  eder. `edge/` içindeki Email Worker `v3` ile imzalar; hâlâ eski birini çalıştırıyorsanız yükseltmeden
+  önce yeniden deploy edin ya da bunu yapana kadar `YUVA_INGRESS_ACCEPT_V2=true` atayın. `v2` ile imzalı
+  e-posta aksi hâlde `401` ile reddedilir ve Worker onu `FALLBACK_FORWARD` adresine iletir ya da gönderen
+  sunucu yeniden dener.
+- **Otomatik yanıtlar DMARC ister.** Karşılamalar, kural yanıtları ve değerlendirme istekleri yalnızca
+  e-postası [`YUVA_INGRESS_AUTHSERV_ID`](configuration.md#gelen-e-posta) uyarınca DMARC'tan geçen
+  göndericilere gönderilir. Bu ayarı olmayan bir sunucu hiçbirini göndermez ve başlangıçta uyarır. Bunlara
+  güvenmeden önce atayın.
+
+### SMTP olmadan e-posta
+
+`YUVA_SMTP_HOST` olmadan sunucu e-posta göndermez ve onu karartılmış olarak loga yazar. Bir giriş kodu tek
+satırdır, `sign-in code (log mailer, not sent)`; adres `*@domain` olarak kısaltılır ve `code` yer alır.
+Diğer her e-posta yalnızca alıcının alan adını ve boyutları loglar. `YUVA_MAIL_LOG=full` e-postaların
+tamamını (alıcı, konu, metin) yazar ve `YUVA_PUBLIC_URL` bir localhost ya da loopback adresi değilse
+başlangıçta reddedilir; yalnızca kendi makinenizde kullanın. Log satırları ve yeniden denenen gönderim
+hataları bir adresin yalnızca alan adını tutar (`*@example.com`); panelde başarısız bir mesajda gösterilen
+teslim hatası ise posta sunucusunun tam yanıtını içerir.
+
+### İş kuyrukları
+
+Arka plan işleri artık daha çok kuyrukta çalışır; böylece yavaş bir müşteri uç noktası atamayı ya da
+bildirimleri geciktiremez. Bir çalışma alanının seçtiği sunucuyu ya da başka bir hizmeti çağıran iş
+`default` kuyruğunun dışında çalışır. Her süreç hepsini çalıştırır; boyutlar sabittir ve ayarlanacak bir şey
+yoktur.
+
+| Kuyruk | Süreç başına çalışan | Çalıştırdığı |
+|---|---|---|
+| `default` | 10 | Atama, otomasyon, SLA denetimleri, bildirimler, erteleme uyandırmaları, webhook dağıtımı, saklama ve yalnızca veritabanını okuyup yazan diğer işler. |
+| `webhooks` | 10 | Webhook teslimatları. |
+| `outbound` | 10 | Web Push, uygulama push'u (APNs ve FCM), Slack gönderileri ve sorun izleyici eşitlemesi. |
+| `email` | 10 | Bir çalışma alanının SMTP hesabıyla giden e-posta: yanıtlar, liste e-postaları ve teslim edilebilirlik denetimleri. |
+| `imports` | 2 | Yardım merkezi içe aktarmaları. |
+
+`broadcast`, `migrations` ve `analytics` kuyrukları değişmedi ([Yapılandırma](configuration.md)).
+Yükseltmeden önce `default` kuyruğuna alınmış işler orada çalışmaya devam eder. Kuyruk başına birikimi görmek için:
+
+```sql
+SELECT queue, state, count(*) FROM river_job
+WHERE state IN ('available','running','retryable') GROUP BY 1, 2;
+```
+
+Büyüyen bir `webhooks` birikimi yavaş ya da başarısız müşteri uç noktaları demektir; artık başka hiçbir şeyi geciktirmez.
+
 ## Güncelleme
 
 1. Kendi sürümünüzle yeni sürüm arasındaki her sürümün sürüm notlarını okuyun.
@@ -82,6 +183,8 @@ Bir id ya da gizli anahtar yazdıran komutlar stdout'a yalnızca onu yazar.
 | `channel create-email --workspace <ws> --inbox <id\|slug> --name <name> --address <address> [--display-name <name>] [--from-address <address>] [--smtp-host <host> [--smtp-port <n>] [--tls starttls\|tls\|none] [--smtp-username <name>] [--smtp-password-file <path\|->]]` | Bir e-posta kanalı oluşturur ve id'sini yazdırır. Parola bir dosyadan ya da `-` ile stdin'den okunur. |
 | `channel create-chat --workspace <ws> --inbox <id\|slug> --name <name> --origin <origin>... [--allow-anonymous] [--ask-email-offline=false] [--greeting <text>]` | Bir sohbet (web widget) kanalı oluşturur; id'sini ve genel anahtarını (`yuva_pk_…`) aralarında bir sekmeyle yazdırır. Her site için `--origin` yinelenir. |
 | `channel list --workspace <ws> --inbox <id\|slug>` | Bir gelen kutusunun kanallarını listeler; sohbet kanallarında genel anahtarı ve origin'leri de gösterir. |
+| `channel prove --channel <id\|address> [--workspace <ws>] [--yes [--address <address>]]` | Bir e-posta kanalının adresi için operatör olarak teminat verir ([0.1.0'a yükseltme](#e-posta-adresleri-kanıtlanmalıdır)). `--yes` olmadan kanıtlayacağını listeler. Başka bir çalışma alanının kanıtladığı adres ve ortak alan adlarındaki catch-all'lar için reddedilir. |
+| `channel prove --all-unproven --workspace <ws> [--yes --plan <code>]` | Çalışma alanının kanıtlanmamış her e-posta kanalı için aynısı. `--plan`, listenin yazdırdığı koddur. |
 | `workspace delete --workspace <ws> --yes` | Bir çalışma alanını siler ([aşağıda](#çalışma-alanını-veya-hesabı-silme)). `--yes` olmadan yalnızca deneme yapar. |
 | `workspace broadcasts approve\|deny\|suspend --workspace <ws> [--reason <text>]` | Bir çalışma alanının bülten onayını yanıtlar ya da onu askıya alır ([aşağıda](#barındırılan-sunucuda-bültenler)). |
 | `workspace broadcasts limit --workspace <ws> --daily <n>` | Çalışma alanının UTC günü başına alıcı sayısını belirler; `0` sınırı kaldırır. |
@@ -267,8 +370,8 @@ siler. Çalışma alanı hemen kullanılamaz hâle gelir; ardından bir arka pla
 Denetim günlüğü, bir çalışma alanının erişimini, kimlik bilgilerini ve verilerini kimin değiştirdiğini
 kaydeder: kimin katıldığı, ayrıldığı veya rol değiştirdiği; davetler; oluşturulan veya iptal edilen API
 anahtarları ve bağlı uygulamalar; webhook'lar ve gizli anahtarları; e-posta kanalı kimlik bilgileri ve
-anahtarları; gelen kutusu erişimi ve silinmeleri; Çöp kutusuna taşınan, geri alınan veya silinen konuşmalar; kaldırılan mesajlar (`message.redacted`: konuşma, mesaj mı not mu, kaç dosya; metin asla); kişi silmeleri; onay ve analitik verisi dışa
-aktarmaları; saklama değişiklikleri; ve operatörün bültenlerle ilgili yanıtları. Her kayıtta işlemi yapan
+anahtarları; kanıtlanan ya da kaybedilen e-posta adresleri; gelen kutusu erişimi ve silinmeleri; Çöp kutusuna taşınan, geri alınan veya silinen konuşmalar; kaldırılan mesajlar (`message.redacted`: konuşma, mesaj mı not mu, kaç dosya; metin asla); kişi silmeleri; onay ve analitik verisi dışa
+aktarmaları; saklama değişiklikleri; API anahtarlarının ve asistanların müşterilere doğrudan gönderip gönderemeyeceği ya da bülten zamanlayıp zamanlayamayacağı; ve operatörün bültenlerle ilgili yanıtları. Her kayıtta işlemi yapan
 (bir üye, bir API anahtarı, bağlı bir uygulama üzerinden bir üye veya sunucunun komut satırı),
 `api_key.created` gibi eylem, hedefi, birkaç ayrıntı ve zaman bulunur. Kayıt, değişiklikle aynı adımda
 yazılır.
@@ -280,6 +383,12 @@ bunu bildirir.
 
 Ekip değişiklikleri `team.created`, `team.deleted`, `team.member_added`, `team.member_removed`,
 `team.inbox_access_granted` ve `team.inbox_access_revoked` olarak kaydedilir.
+
+E-posta adresi kanıtları `channel.address_verified` (`address`, `method`), `channel.address_lost` (`address`;
+başka bir çalışma alanı adresi sonradan kanıtladığında sistem tarafından) ve `channel.address_proven`
+(operatör tarafından, [yukarıda](#e-posta-adresleri-kanıtlanmalıdır)) olarak kaydedilir. İki ayar
+`workspace.bots_may_send_changed` ve `workspace.broadcasts_by_keys_changed` olarak, `from` ve `to` ile ve
+yalnızca değer değiştiğinde kaydedilir.
 
 Otomasyon kuralı değişiklikleri `automation_rule.created`, `automation_rule.updated` ve
 `automation_rule.deleted` olarak kaydedilir ([Otomasyon kuralları](automation.md#10-erişim)).
@@ -326,6 +435,13 @@ Yuva saatte bir temizlik yapar:
 | [Denetim günlüğü](#denetim-günlüğü) kayıtları | `YUVA_AUDIT_DAYS` gün (varsayılan 365) |
 | Gelen e-postaların özgün `.eml` dosyası (`retention_days` atanmışsa) | o kadar gün; mesajın kendisi kalır |
 
+Konuşmalar kalıcı olarak silindiğinde (bir kişi, bir gelen kutusu, saklama, Çöp kutusu temizliği ya da bir
+çalışma alanı), aynı adımda saklanan olayları ve onları taşıyan, bekleyen ya da saklanan her webhook
+teslimatını da siler: `/v1/events`, gerçek zamanlı tekrar oynatma ve teslimat günlüğü içeriği hemen göstermeyi
+bırakır, bekleyen bir teslimat yeniden denenmez. Saklanan dosyalar (ekler, ham e-postalar, e-posta görselleri,
+içe aktarma yüklemeleri), depo yanıt verene kadar yeniden deneyen bir işle silinir; böylece başarısız bir depo,
+hiçbir şeyin işaret etmediği dosyalar bırakmaz.
+
 ## Birden fazla sunucu süreci
 
 Her sayıda sunucu süreci tek bir veritabanını paylaşabilir (Helm chart'ında daha fazla `replicaCount`
@@ -343,9 +459,24 @@ ya da tek bir proxy arkasında birden çok konteyner). Süreçler Postgres üzer
   değildir.
 - `rate_limit_sweep` işi, süresi dolmuş pencereleri ve kiraları dakikada bir siler.
 - Pencereler ve kiralar veritabanının saatiyle ölçülür; süreçlerin saatleri sınırları etkilemez.
-- Veritabanında başarısız olan bir kontrol (bağlantı kaybı, zaman aşımı) isteği reddetmek yerine
-  geçirir; sunucu bu sürdüğü sürece en fazla dakikada bir
-  `rate limit check failed; letting requests through` kaydı yazar.
+- Bir sohbet kanalının, yardım merkezinin ya da sayfanın tüm ziyaretçilerinin paylaştığı sınırlar ağ başına
+  bölünür. Adres başına sınırdan sonra (IPv4 /32, IPv6 /64) bir ağ (IPv4 /24, IPv6 /48) paylaşılan bütçenin
+  yalnızca bir kısmını kullanabilir; böylece birkaç kaynaktan gelen bir akın diğer herkesi dışarıda bırakamaz:
+
+  | Paylaşılan bütçe | Bir ağ | Tüm ziyaretçiler |
+  |---|---|---|
+  | Bir kanalın oturum başlatmaları | dakikada 120 | dakikada 6.000 |
+  | Bir kanalın ziyaretçilerinin yazmaları | dakikada 240 | dakikada 12.000 |
+  | Yardım merkezi araması | dakikada 120 | dakikada 12.000 |
+  | Bir kanalın liste kayıtları | saatte 40 | saatte 6.000 |
+  | Durum sayfası kayıtları | saatte 40 | saatte 3.000 |
+  | Yenilikler okumaları | dakikada 480 | dakikada 24.000 |
+
+- Veritabanında başarısız olan bir kontrol (bağlantı kaybı, zaman aşımı) oturum açmış bir üyeyi, API
+  anahtarını ya da bağlı uygulamayı asla dışarıda bırakmaz: bu istekler geçer. Diğer her istek (ziyaretçiler,
+  kişiler) veritabanı yanıt verene kadar aynı sınırlarla sürecin kendi belleğinde sayılır; sunucu bu sürdüğü
+  sürece en fazla dakikada bir
+  `rate limit check failed; counting anonymous requests in this process` kaydı yazar.
 - [`YUVA_CLIENT_IP_HEADER` ve `YUVA_TRUSTED_PROXIES`](configuration.md) her süreçte aynı olmalıdır;
   yoksa adres başına sınırlar farklı adresleri sayar.
 
@@ -363,6 +494,8 @@ Loglar stderr'e JSON satırları olarak yazılır. Alarm kurmaya değer satırla
 | Log mesajı | Anlamı |
 |---|---|
 | `mail not sent` | Sunucunun SMTP hesabı çalışmıyor; giriş kodları ulaşmıyor. |
+| `e-mail channel address must be proven` | Bir e-posta kanalı kanıtlanmamış ve haberdar olmak için `YUVA_OPERATOR_EMAIL` ayarlı değil ([0.1.0'a yükseltme](#e-posta-adresleri-kanıtlanmalıdır)). |
+| `rate limit check failed` | Veritabanı hız sınırlarını sayamadı ([Birden fazla sunucu süreci](#birden-fazla-sunucu-süreci)). |
 | `email send failed, retrying` | Bir kanalın SMTP hesabı çalışmıyor. |
 | `YUVA_SMTP_HOST is not set` (`YUVA_INGRESS_SECRET` ve `YUVA_VAPID_PUBLIC_KEY` için de aynısı) | Bir özellik yapılandırma nedeniyle kapalı. |
 | `not ready` | Veritabanına ulaşılamıyor. |

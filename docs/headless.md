@@ -71,6 +71,39 @@ When a member [removes a message](#removing-a-message), the stream sends a `mess
 `createYuvaClient()` passes the frame on its `event` event, the React hooks update the message, and the Swift and
 Kotlin SDKs send `YuvaEvent.messageRedacted(_:)` / `YuvaEvent.MessageRedacted(message)`.
 
+### Live connection limits
+
+`GET /client/v1/realtime` limits what one visitor or one address can hold open:
+
+| Limit | Value |
+|---|---|
+| Open connections | 20 per session and 200 per address, on each server |
+| New connections | 30 a minute per session and 120 a minute per address; more answer `429 rate_limited` with `Retry-After`, which a browser reports as a closed socket (1006) |
+
+A connection beyond an open-connection limit is accepted and closed at once with code `1013` and the
+reason `too_many_connections;retry_after=30`; connections that are open stay. Wait at least that many
+seconds, keep backing off while it repeats, and reconnect only when the page or app is in use again.
+
+A connection replays at most 1,000 events and nothing from before its session was created. When more lie
+between `last_event_id` and now it sends `resync_required`: reload over HTTP, as for an expired position.
+
+### The visitor's e-mail address
+
+An address a visitor types (`PUT /client/v1/contact/email`, the feedback form, or an unconfirmed `email` in an
+[identity token](identity.md)) is kept apart. Nothing but one confirmation link is mailed to it, and replies
+are e-mailed only after it is confirmed. `email_confirmation` on the contact says where it stands:
+
+| `state` | Meaning |
+|---|---|
+| `sent` | A link went out and is neither confirmed nor bounced; `expires_at` is when it runs out (24 hours). |
+| `undeliverable` | The link or an earlier mail bounced: ask for another address. |
+| `confirmed` | The address is now the contact's `email`. |
+| `limited` | No link went out because the address, the visitor's network, the contact or the workspace reached its limit of confirmation mails for now. Say so, and ask the visitor to try later or to use another address; do not say a link was sent. |
+
+A `contact.updated` frame on the live connection carries each change. The limits are 3 a day per address from
+one network, 10 a day per address on the server, 6 a day per contact, 30 a day per network and workspace and
+2,000 a day per workspace.
+
 Outside a browser, use an `app` channel's key; `chat` channels accept only their allowed origins.
 React hooks are in `useyuva/react`; every option is in the [SDK README](../sdk/js/README.md).
 
@@ -98,6 +131,11 @@ The workspace setting **Bots may send** (Settings → API keys) is off by defaul
 message must then be a draft (`403 bot_sending_disabled` otherwise). When on, a key with
 `messages:write` replies directly, and with `drafts:send` also sends drafts. Only an owner or admin
 signed in to the panel can change it (`bots_may_send` on `PATCH /v1/workspace`), never a key.
+
+The setting holds for every assistant, not only keys: a token of a connected app (an [OAuth](mcp.md#oauth)
+client) delivers as drafts unless it is on, whichever resource the token was issued for. Only the server's own
+member apps send as the member whatever it says; the operator lists them in
+[`YUVA_OAUTH_FIRST_PARTY_CLIENTS`](configuration.md#server), and the list is empty by default.
 
 [Automation rules](automation.md) reply to customers with a canned reply. A canned reply has `saved_by`: who
 last set its text. While **Bots may send** is off, a rule sends it only when an owner or admin saved it.
@@ -378,6 +416,28 @@ A call without the needed scope answers `403 insufficient_scope`.
 | `integrations:manage` | Connect, change and disconnect GitHub and Linear, make a new webhook secret. A key limited to inboxes cannot hold it. |
 | `issues:write` | Create, link and unlink GitHub and Linear issues on feedback and ideas (`/v1/conversations/{id}/issues`, `/v1/discussions/{id}/issues`), together with `conversations:read`. |
 | `feedback:write` | `POST /v1/feedback` |
+
+### OAuth clients
+
+| Rule | Detail |
+|---|---|
+| Resource | A client other than a member app may ask only for `resource=<YUVA_PUBLIC_URL>/mcp`. Asking for `<YUVA_PUBLIC_URL>`, the whole API, is refused on the redirect with `error=invalid_target`; the server does not fall back to `/mcp`. |
+| Earlier grants | A grant for `<YUVA_PUBLIC_URL>` made before 0.1.0 by such a client keeps its `/v1` access but sends like any assistant, as drafts unless **Bots may send** is on. |
+| `redirect_uri` | If the authorization request carried one, the token request must repeat it exactly, else `400 invalid_grant`. |
+| Presence | A member counts as online (for automatic assignment and presence) only through their own session or a member app, never through an API key or an assistant. |
+
+### Sign-in sessions
+
+A member sees and ends their own sessions, with a member session (keys and connected apps get
+`403 member_session_required`).
+
+| Call | Does |
+|---|---|
+| `GET /v1/me/sessions` | `{"items": [...]}`, most recently seen first. Each has `id`, `method` (`code`, `passkey` or `sso`), `current`, `device` (such as `Firefox on Linux`, absent when unknown), `user_agent`, `created_at`, `last_seen_at` (updated at most once a minute) and `expires_at`. |
+| `DELETE /v1/me/sessions` | Ends every other session of the person, with their push subscriptions and reader tokens, and answers `{"revoked": n}`. Their live updates close within a minute. |
+
+Removing a passkey (`DELETE /v1/me/passkeys/{passkeyId}`) ends the other sessions too. A session made through
+single sign-on lists only itself and cannot end the others (`403 sso_session_scope`).
 
 ### Keys
 

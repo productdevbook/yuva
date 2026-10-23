@@ -72,6 +72,40 @@ Aynı mesaj sonraki bir tekrar oynatmada veya listede de `redacted: true` taşı
 `createYuvaClient()` çerçeveyi `event` olayında iletir, React kancaları mesajı günceller; Swift ve Kotlin SDK'ları
 `YuvaEvent.messageRedacted(_:)` / `YuvaEvent.MessageRedacted(message)` gönderir.
 
+### Canlı bağlantı sınırları
+
+`GET /client/v1/realtime`, bir ziyaretçinin ya da bir adresin açık tutabileceklerini sınırlar:
+
+| Sınır | Değer |
+|---|---|
+| Açık bağlantı | Her sunucuda oturum başına 20, adres başına 200 |
+| Yeni bağlantı | Oturum başına dakikada 30, adres başına dakikada 120; fazlası `Retry-After` ile `429 rate_limited` döndürür, tarayıcı bunu kapanmış bir soket (1006) olarak bildirir |
+
+Açık bağlantı sınırını aşan bir bağlantı kabul edilir ve hemen `1013` koduyla, `too_many_connections;retry_after=30`
+gerekçesiyle kapatılır; açık olanlar kalır. En az o kadar saniye bekleyin, tekrarladıkça beklemeyi artırın ve
+yalnızca sayfa ya da uygulama yeniden kullanıma girdiğinde bağlanın.
+
+Bir bağlantı en çok 1.000 olayı tekrar oynatır ve oturumu oluşturulmadan önceki hiçbir şeyi oynatmaz.
+`last_event_id` ile şimdi arasında daha fazlası varsa `resync_required` gönderir: süresi dolmuş bir konum gibi
+HTTP üzerinden yeniden yükleyin.
+
+### Ziyaretçinin e-posta adresi
+
+Bir ziyaretçinin yazdığı adres (`PUT /client/v1/contact/email`, geri bildirim formu ya da bir
+[kimlik token'ındaki](identity.md) onaylanmamış `email`) ayrı tutulur. Ona yalnızca tek bir onay bağlantısı
+gönderilir ve yanıtlar ancak onaylandıktan sonra e-postayla gider. Kişideki `email_confirmation` durumu söyler:
+
+| `state` | Anlamı |
+|---|---|
+| `sent` | Bir bağlantı gitti ve henüz onaylanmadı ya da geri dönmedi; `expires_at` süresinin dolduğu andır (24 saat). |
+| `undeliverable` | Bağlantı ya da önceki bir e-posta geri döndü: başka bir adres isteyin. |
+| `confirmed` | Adres artık kişinin `email` alanıdır. |
+| `limited` | Adres, ziyaretçinin ağı, kişi ya da çalışma alanı onay e-postaları sınırına şimdilik ulaştığı için hiçbir bağlantı gitmedi. Bunu söyleyin ve ziyaretçiden daha sonra denemesini ya da başka bir adres kullanmasını isteyin; bağlantı gönderildiğini söylemeyin. |
+
+Canlı bağlantıdaki bir `contact.updated` çerçevesi her değişikliği taşır. Sınırlar: aynı ağdan adres başına
+günde 3, sunucuda adres başına günde 10, kişi başına günde 6, ağ ve çalışma alanı başına günde 30 ve çalışma
+alanı başına günde 2.000.
+
 Tarayıcı dışında bir `app` kanalının anahtarını kullanın; `chat` kanalları yalnızca izin verilen
 origin'leri kabul eder. React hook'ları `useyuva/react` içinde; tüm seçenekler
 [SDK README](../../sdk/js/README.md)'sinde.
@@ -101,6 +135,11 @@ bu durumda bir anahtarın giden mesajı taslak olmak zorundadır (yoksa `403 bot
 Açıkken `messages:write` yetkili bir anahtar doğrudan yanıt verir, `drafts:send` ile taslakları da
 gönderir. Bunu yalnızca panelde oturum açmış bir sahip ya da yönetici değiştirebilir
 (`PATCH /v1/workspace` üzerinde `bots_may_send`), anahtarlar asla.
+
+Ayar yalnızca anahtarlar için değil, her asistan için geçerlidir: bağlı bir uygulamanın ([OAuth](mcp.md#oauth)
+istemcisi) token'ı, hangi kaynak için verilmiş olursa olsun, ayar açık değilse taslak olarak iletir. Yalnızca
+sunucunun kendi üye uygulamaları ayar ne derse desin üye olarak gönderir; operatör bunları
+[`YUVA_OAUTH_FIRST_PARTY_CLIENTS`](configuration.md#sunucu) içinde listeler ve liste varsayılan olarak boştur.
 
 [Otomasyon kuralları](automation.md) müşterilere hazır yanıtla cevap verir. Bir hazır yanıtın `saved_by` alanı
 metnini en son kimin değiştirdiğini söyler. **Botlar gönderebilir** kapalıyken bir kural onu yalnızca bir sahip ya da
@@ -384,6 +423,28 @@ Gereken yetki olmadan yapılan çağrı `403 insufficient_scope` döner.
 | `integrations:manage` | GitHub ve Linear bağlamak, değiştirmek, bağlantıyı kesmek, yeni webhook gizli değeri üretmek. Gelen kutularına sınırlı bir anahtar bunu tutamaz. |
 | `issues:write` | Geri bildirim ve fikirlerde GitHub ve Linear kayıtları oluşturmak, bağlamak ve bağlantıyı kaldırmak (`/v1/conversations/{id}/issues`, `/v1/discussions/{id}/issues`), `conversations:read` ile birlikte. |
 | `feedback:write` | `POST /v1/feedback` |
+
+### OAuth istemcileri
+
+| Kural | Ayrıntı |
+|---|---|
+| Kaynak | Üye uygulaması olmayan bir istemci yalnızca `resource=<YUVA_PUBLIC_URL>/mcp` isteyebilir. `<YUVA_PUBLIC_URL>`, yani tüm API istenirse yönlendirmede `error=invalid_target` ile reddedilir; sunucu `/mcp`'ye geri düşmez. |
+| Eski izinler | Böyle bir istemcinin 0.1.0'dan önce `<YUVA_PUBLIC_URL>` için verilmiş izni `/v1` erişimini korur ama her asistan gibi, **Botlar gönderebilir** açık değilse taslak olarak iletir. |
+| `redirect_uri` | Yetkilendirme isteği bir tane taşıdıysa token isteği onu birebir yinelemelidir; yoksa `400 invalid_grant`. |
+| Varlık | Bir üye, yalnızca kendi oturumu ya da bir üye uygulaması üzerinden çevrimiçi sayılır (otomatik atama ve varlık için); API anahtarı ya da asistan üzerinden asla. |
+
+### Giriş oturumları
+
+Bir üye kendi oturumlarını görür ve sonlandırır; bunun için üye oturumu gerekir (anahtarlar ve bağlı
+uygulamalar `403 member_session_required` alır).
+
+| Çağrı | Yaptığı |
+|---|---|
+| `GET /v1/me/sessions` | `{"items": [...]}`, en son görülen başta. Her birinde `id`, `method` (`code`, `passkey` ya da `sso`), `current`, `device` (ör. `Firefox on Linux`; bilinmiyorsa yok), `user_agent`, `created_at`, `last_seen_at` (en çok dakikada bir güncellenir) ve `expires_at` bulunur. |
+| `DELETE /v1/me/sessions` | Kişinin diğer tüm oturumlarını, push abonelikleri ve okuyucu token'larıyla birlikte sonlandırır ve `{"revoked": n}` döndürür. Canlı güncellemeleri bir dakika içinde kapanır. |
+
+Bir passkey'i kaldırmak (`DELETE /v1/me/passkeys/{passkeyId}`) diğer oturumları da sonlandırır. Tek oturum açma ile
+yapılmış bir oturum yalnızca kendini listeler ve diğerlerini sonlandıramaz (`403 sso_session_scope`).
 
 ### Anahtarlar
 

@@ -129,6 +129,7 @@ keine Regel.
 Sie wird abgelehnt, und der Lauf schlägt mit `error: auto_reply` fehl, wenn:
 
 - die auslösende Nachricht eine automatische Antwort oder ein Bounce ist;
+- die auslösende Nachricht eine E-Mail ist, die DMARC nicht bestanden hat (Chat- und API-Nachrichten sind nicht betroffen);
 - der Kontakt gesperrt ist;
 - die Unterhaltung Spam ist;
 - eine Regel in dieser Unterhaltung schon innerhalb der letzten Stunde oder dreimal in den letzten 24 Stunden geantwortet hat.

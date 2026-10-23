@@ -69,6 +69,15 @@ ablief, und zeigt nach der Bestätigung eine unauffällige Zeile. Das Panel folg
 `prefers-color-scheme`, nutzt die Launcher-Farbe des Kanals als Akzent und die Geist-Schrift der
 Seite, falls vorhanden, sonst die Systemschrift.
 
+Antworten gehen an eine eingegebene Adresse erst per E-Mail, nachdem der Besucher sie bestätigt hat: Jeder kann
+jede Adresse eingeben, also geht vorher nichts außer dem Bestätigungslink an sie. Bestätigungslinks sind
+begrenzt: 3 pro Tag und Adresse aus einem Netz, 10 pro Tag und Adresse serverweit, 6 pro Tag und Besucher, 30
+pro Tag und Netz und Workspace und 2.000 pro Tag und Workspace. Hält ein Limit einen Link zurück, geht keiner
+raus, und `email_confirmation` des Besuchers hat den Zustand `limited`
+([Details](headless.md#e-mail-adresse-des-besuchers)). Ein `email` in einem Identity-Token, das Ihr Backend
+nicht als `email_verified` markiert hat, bekommt auf dieselbe Weise einen Bestätigungslink, während
+`email_verified: true` es sofort zur Adresse des Besuchers macht.
+
 ## Was das Widget speichert
 
 Das Widget hält seine Sitzung im `localStorage` Ihrer Seite, damit die Unterhaltung eines Besuchers

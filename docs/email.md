@@ -16,6 +16,36 @@ yuva channel create-email --workspace Example --inbox support --name "Support" \
 The SMTP account sends the replies ([Outbound SMTP](#outbound-smtp)). Then route incoming mail to
 Yuva with one of the three ways below, and set up [DNS](#dns-checklist).
 
+## Prove an address
+
+A channel receives mail at its own address (an MX record that points at Yuva, `/ingress/email` or
+`yuva ingest-email --to`) only after its workspace has proven the address. Until then it still receives
+mail at its [forwarding address](#forwarding-address) and sends replies through its SMTP account. A
+channel's `email.verification` holds its `state` (`unverified` or `verified`), the `method` that proved
+it (`code`, `dns` or `operator`), the TXT record to add and, while a code is open, when it runs out.
+
+| Way | For | How |
+|---|---|---|
+| Code | An exact address, not one on the forwarding domain | `POST /v1/channels/{channelId}/verification-code` mails an 8-digit code to the address. Send it back with `POST /v1/channels/{channelId}/verify` and `{"code": "…"}`. A code is valid for an hour and 5 tries, and a new one replaces it. If the mailbox forwards to the channel's forwarding address, the code mail proves the channel by itself. |
+| DNS | Any address; the only way for a [catch-all](#catch-all-channels) | Add the TXT record `email.verification.txt_name` (`_yuva-mail.<domain>`) with the value `txt_value` (`yuva-mail-verify=…`), then `POST /v1/channels/{channelId}/verify` with no body. One record proves every channel of the workspace on that domain. |
+| Operator | An address the operator trusts the workspace with | The server's operator runs `yuva channel prove` ([Operations](operations.md#e-mail-addresses-must-be-proven)). |
+
+Owners, admins and API keys with `inboxes:manage` do the first two. A wrong or expired code answers
+`400 verification_code_invalid`; a DNS check that finds nothing leaves the channel `unverified` with a
+`problem`. Code mails are limited to one a minute per channel, 20 a day per workspace and 5 a day to one
+address across the server (`429 rate_limited`), and DNS checks to 30 an hour per workspace.
+
+- A catch-all on the server's forwarding domain or on a public mail provider (gmail.com, outlook.com, …)
+  is refused (`400 validation_failed`): it would take other people's mail.
+- Several workspaces may claim the same address, but only the one that proved it last receives its mail.
+  When another workspace proves an address you had proven, your channel goes back to `unverified` with the
+  problem `taken` and your owners get an e-mail (at most one a day, listing the addresses). Prove it again
+  to take it back. A claim that is not proven blocks nobody.
+- Proving an exact address also moves mail that a catch-all or `local@` channel of another workspace
+  received for it until then; that workspace is told the same way.
+- Changing a channel's address starts the proof over.
+- Each proof and loss is in the [audit log](operations.md#audit-log).
+
 ## Inbound
 
 Yuva does not listen for SMTP. Pick one of these three ways to bring mail in.
@@ -54,11 +84,11 @@ When Yuva is down or busy, the sender retries later. To keep such mail, deploy w
 An older Email Worker signs with `v1`, which the server refuses. Redeploy it, or set
 `YUVA_INGRESS_ACCEPT_V1=true` until you do.
 
-The Email Worker signs with `v3`, which the server checks before it reads the message. Workers
-deployed before it sign with `v2`, which is still accepted while `YUVA_INGRESS_ACCEPT_V2` is on (the
-default for now). With `v2` the message is read before it is known to be genuine, so anyone can
-make the server buffer unsigned uploads (advisory GHSA-jfvx-vc82-56f7). Redeploy the Worker, then
-set `YUVA_INGRESS_ACCEPT_V2=false`. A proxy in front of the API must pass `Content-Length` on to
+The Email Worker signs with `v3`, which the server checks before it reads the message. A Worker
+deployed before it signs `v2`, which is accepted only while `YUVA_INGRESS_ACCEPT_V2=true` (off by
+default). With `v2` the message is read before it is known to be genuine, so anyone can make the
+server buffer unsigned uploads (advisory GHSA-jfvx-vc82-56f7): redeploy the Worker instead of turning
+it on. A proxy in front of the API must pass `Content-Length` on to
 `/ingress/email`: `v3` refuses a chunked body.
 
 ### Any MTA: `yuva ingest-email`
@@ -98,7 +128,8 @@ yuva      unix  -       n       n       -       -       pipe
 
 Post the raw message to `/ingress/email`, signed with `YUVA_INGRESS_SECRET`. The format is in
 [edge/README.md](../edge/README.md#ingress-contract). Set `YUVA_INGRESS_AUTHSERV_ID` to the
-authserv-id your MTA writes into `Authentication-Results`, or DMARC is not used. Your MTA must put
+authserv-id your MTA writes into `Authentication-Results`, or DMARC is not used and no automatic reply
+is sent to a sender. Your MTA must put
 its own `Authentication-Results` on top of every message it passes on: Yuva reads the topmost one,
 so a message the MTA leaves without one would be judged by a header its sender wrote.
 
@@ -186,7 +217,8 @@ Send a test reply to a mailbox you control and check for `spf=pass`, `dkim=pass`
 
 A channel with the address `*@example.com` receives mail for every other address of the domain.
 Replies go out from the address the contact wrote to, so its SMTP account must be allowed to send
-for the whole domain. Give it a `--from-address` for chats that continue by e-mail.
+for the whole domain. Give it a `--from-address` for chats that continue by e-mail. A catch-all receives mail
+only after its domain is [proven with the TXT record](#prove-an-address), and not on a shared domain.
 
 ```sh
 yuva channel create-email --workspace Example --inbox support --name "Everything else" \
@@ -198,13 +230,14 @@ yuva channel create-email --workspace Example --inbox support --name "Everything
 
 | Topic | Behaviour |
 |---|---|
-| Channel | The envelope recipient's channel; `local+tag@domain` falls back to `local@domain`. Unknown addresses are rejected. |
+| Channel | Chosen by the envelope recipient, only through a proven address: the channel's forwarding address, then the proven exact address (`local+tag@domain` falls back to a proven `local@domain`), then the domain's proven catch-all. Unknown and unproven addresses are rejected. |
 | Threading | By `In-Reply-To` and `References`; anything else starts a new conversation. A reply reopens the conversation. |
-| Cc and participants | The `To` and `Cc` addresses of a mail that are not Yuva's own become the conversation's participants (at most 20). They are active only when the mail passed DMARC (which needs `YUVA_INGRESS_AUTHSERV_ID`); otherwise they are suggested, shown to members but never copied. A member can add or remove participants. An active participant's reply that passes DMARC joins the conversation as their message; anyone else who answers the thread starts a new conversation that links to it. Mail that fails DMARC or is automatic adds no one. |
+| Cc and participants | The `To` and `Cc` addresses of a mail that are not the workspace's own become the conversation's participants (at most 20). They are active only when the mail passed DMARC (which needs `YUVA_INGRESS_AUTHSERV_ID`); otherwise they are suggested, shown to members but never copied. A member can add or remove participants. An active participant's reply that passes DMARC joins the conversation as their message; anyone else who answers the thread starts a new conversation that links to it. Mail that fails DMARC or is automatic adds no one. The workspace's own addresses are the contact's addresses, the sender, every channel address of the workspace (proven or not), its catch-all domains, forwarding addresses and the server's sender; another workspace's address is an ordinary address. |
 | Replies | Go `To` the contact and `Cc` the active participants; automatic mail (greetings, rules) copies no one. Each reply can replace the `Cc` and add `Bcc` (20 addresses each); `Bcc` recipients get the mail but never appear in it, and only members see them. An address that bounced or complained is refused or, as a participant, left out; an unsubscribe from broadcasts does not stop replies. |
 | Forwarding | A member can forward one message or the whole conversation (its messages, never notes or drafts, with or without their files up to 20 MiB) to up to 10 outside addresses with a note on top. It goes from the inbox's e-mail channel with the member's name, `Reply-To` the channel address and the subject `Fwd: …`, and is shown to members only, never to the contact. The contact's address, addresses already copied on the conversation, Yuva's own addresses and addresses that bounced or complained are refused, and a member forwards at most 20 times an hour (200 per workspace). An answer to the forward that passes DMARC joins the conversation for members only and makes its sender a forwarded participant, who is not copied on replies; any other mail from them starts a new conversation. Only the member who forwarded and the assignee are notified of an answer. Assistants forward only where they may send; otherwise they leave a draft. |
-| Automatic mail | Auto-replies, bulk mail and delivery reports are stored, never answered. Mail from Yuva's own addresses is dropped. |
-| DMARC | Used only with `YUVA_INGRESS_AUTHSERV_ID`, from the topmost `Authentication-Results` when it carries that authserv-id. Several headers carrying it mean the sender added one: a `fail` among them counts, a `pass` does not. A failing new conversation is marked spam; a failing reply starts a new one. |
+| Automatic mail | Auto-replies, bulk mail and delivery reports are stored, never answered. Mail from the receiving channel's own address, from the server's sender or from any channel address of the same workspace (proven or not) is dropped; another workspace's addresses never drop mail. |
+| DMARC | Used only with `YUVA_INGRESS_AUTHSERV_ID`, from the topmost `Authentication-Results` when it carries that authserv-id. Several headers carrying it mean the sender added one: a `fail` among them counts, a `pass` does not. The header is read as RFC 8601 says: only the result each method states counts, never text inside an address or a reason, and a header that does not parse is `unknown`. A `pass` counts only for a message with one From address. A failing new conversation is marked spam; a failing reply starts a new one. Mail read from your old mailbox while you [move to Yuva](migrate.md) is always `unknown`. |
+| Automatic replies | A greeting, a rule's `send_reply` and a rating request go to an e-mail sender only when their mail passed DMARC. Without `YUVA_INGRESS_AUTHSERV_ID` none is sent. A rule reply that is held back fails the run with `auto_reply`. Chat and API conversations are not affected. |
 
 ### Limits
 
@@ -213,7 +246,7 @@ yuva channel create-email --workspace Example --inbox support --name "Everything
 | Message size | 25 MiB |
 | Attachments | The channel's [attachment limits](configuration.md#attachments-and-storage); a part over them is skipped, the message is kept and the part stays in the raw e-mail |
 | New conversations per sender and channel | 20 per hour; more mail joins their latest conversation |
-| Inbound mails per sender and workspace | `YUVA_EMAIL_SENDER_HOURLY_CAP`, 500 per hour; more are refused |
+| Inbound mails per sender and workspace | `YUVA_EMAIL_SENDER_HOURLY_CAP`, 500 per hour; more are refused. Mail that passed DMARC and other mail are counted apart. |
 | Messages processed at once | `YUVA_INGRESS_MAX_CONCURRENT`, 8; more get `503` |
 | Time to send the message body | 30 seconds; slower uploads get `503` |
 | Worker wait for Yuva | 20 seconds |

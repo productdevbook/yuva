@@ -44,6 +44,7 @@ An empty variable means unset and takes the default, except for `YUVA_METRICS_AD
 | `YUVA_MCP` | `on` | `off` turns off the MCP endpoint `/mcp` (it answers `404`). OAuth stays on. |
 | `YUVA_PANEL` | `on` | `off` stops serving the panel and OAuth consent; API keys keep working. |
 | `YUVA_PANEL_ANALYTICS_KEY` | unset | The public key (`yuva_ak_…`) of a website in [Analytics](analytics.md) on this server whose domain is the panel's. The panel then counts its own screens there, with record IDs replaced by `:id` (`/conversations/:id`), so no conversation or contact ID is sent. |
+| `YUVA_OAUTH_FIRST_PARTY_CLIENTS` | unset | OAuth `client_id`s, comma- or space-separated (for apps that register by metadata document, their `https` URL), that are your own member apps. Only these may ask for the whole API and send as the member whatever [Bots may send](headless.md#bots-may-send) says; every other client is an assistant. Matched exactly. Unset, no client is first-party. |
 | `YUVA_WIDGET` | `on` | `off` stops serving `/yuva.js`, `/yuva-chat.js`, `/yuva-docs.js` and `/yuva-analytics.js`; `/client/v1` stays. |
 
 ## Sign-in and passkeys
@@ -64,12 +65,13 @@ Sign-in codes, invitations and notifications. E-mail channels have [their own SM
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `YUVA_SMTP_HOST` | unset | SMTP server. Unset, mail is written to the log instead. |
+| `YUVA_SMTP_HOST` | unset | SMTP server. Unset, no mail is sent: sign-in codes are written to the log as one line with the address reduced to its domain, and other mail only as the recipient's domain and sizes ([`YUVA_MAIL_LOG`](#server-e-mail)). |
 | `YUVA_SMTP_PORT` | `465` with `tls`, else `587` | SMTP port. |
 | `YUVA_SMTP_TLS` | `starttls` | `starttls`, `tls` (implicit TLS) or `none`. |
 | `YUVA_SMTP_USERNAME` | unset | SMTP user name. |
 | `YUVA_SMTP_PASSWORD` | unset | SMTP password. |
 | `YUVA_SMTP_FROM` | unset | Sender, e.g. `Yuva <yuva@example.com>`. Required with `YUVA_SMTP_HOST`. |
+| `YUVA_MAIL_LOG` | `redacted` | What the log shows of mail the server does not send because `YUVA_SMTP_HOST` is unset. `redacted`: the recipient's domain and the sizes, and the sign-in code line. `full`: recipient, subject and text of every mail. The server refuses to start with `full` unless `YUVA_PUBLIC_URL` is a localhost or loopback address, so use it only on your own machine. |
 | `YUVA_SMTP_ALLOW_PRIVATE` | `false` | Lets e-mail channels use SMTP hosts on loopback and private addresses, such as Mailpit. |
 
 ## Attachments and storage
@@ -106,8 +108,8 @@ for inbound e-mail. [Moving to Yuva](migrate.md) belongs to no channel and keeps
 |---|---|---|
 | `YUVA_INGRESS_SECRET` | unset | Signs requests to `/ingress/email`; the Email Worker uses the same value. Unset, that endpoint refuses all mail. |
 | `YUVA_INGRESS_ACCEPT_V1` | `false` | Also accepts the old `v1` signature, until you redeploy an older Email Worker. |
-| `YUVA_INGRESS_ACCEPT_V2` | `true` | Also accepts the old `v2` signature, whose message is read before it is authenticated. Set `false` once every Email Worker signs `v3`; that closes advisory GHSA-jfvx-vc82-56f7. |
-| `YUVA_INGRESS_AUTHSERV_ID` | unset | Authserv-id of your receiving mail server, e.g. `mx.cloudflare.net`. Needed to use DMARC results; without it every inbound message is stored with DMARC `unknown` and the server warns at startup. |
+| `YUVA_INGRESS_ACCEPT_V2` | `false` | Also accepts the old `v2` signature, whose message is read before it is authenticated (advisory GHSA-jfvx-vc82-56f7). Set `true` only while an Email Worker older than the `v3` signature is still deployed, and turn it off again once it is redeployed. |
+| `YUVA_INGRESS_AUTHSERV_ID` | unset | Authserv-id of your receiving mail server, e.g. `mx.cloudflare.net`. Needed to use DMARC results; without it every inbound message is stored with DMARC `unknown`, no greeting, rule reply or rating request is e-mailed to a sender, and the server warns at startup. |
 | `YUVA_INGRESS_MAX_CONCURRENT` | `8` | Messages `/ingress/email` handles at once per process; more get `503`. |
 | `YUVA_SES_TOPIC_ARNS` | unset | SNS topic ARNs whose SES bounces and complaints `/ingress/ses` accepts. |
 | `YUVA_SES_REGION` | unset | The Amazon SES region whose [tenants](operations.md#amazon-ses-tenants-on-a-hosted-server) Yuva manages, e.g. `eu-west-1`. Channels that send through SES in another region are not isolated. Set it with the next three, or none. |
@@ -115,7 +117,7 @@ for inbound e-mail. [Moving to Yuva](migrate.md) belongs to no channel and keeps
 | `YUVA_SES_SECRET_ACCESS_KEY` | unset | Its secret. |
 | `YUVA_SES_CONFIGURATION_SET` | unset | The configuration set Yuva associates with every tenant and names in `X-SES-CONFIGURATION-SET`. 1 to 64 letters, digits, `-` or `_`. |
 | `YUVA_SES_TENANT_PREFIX` | `yuva-` | Start of every tenant name Yuva creates, up to 32 letters, digits, `-` or `_`. The IAM policy allows only tenants with it. |
-| `YUVA_EMAIL_SENDER_HOURLY_CAP` | `500` | Inbound e-mails one sender may send to a workspace per hour; more are refused (`429`). |
+| `YUVA_EMAIL_SENDER_HOURLY_CAP` | `500` | Inbound e-mails one sender may send to a workspace per hour; more are refused (`429`). Mail that passed DMARC and other mail are counted separately, so forged mail in a customer's name cannot use up the cap of their real mail. |
 
 ## Moving to Yuva
 

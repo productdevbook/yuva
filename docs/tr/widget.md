@@ -65,6 +65,14 @@ adres geri döndüğünde ya da bağlantı 24 saat sonra geçersiz olduğunda ye
 sessiz bir satır gösterir. Panel `prefers-color-scheme` değerini izler, vurgu rengi olarak kanalın
 başlatıcı rengini kullanır; sayfada Geist yazı tipi varsa onu, yoksa sistem yazı tipini kullanır.
 
+Yanıtlar, yazılan bir adrese yalnızca ziyaretçi onayladıktan sonra e-postayla gider: herkes herhangi bir adresi
+yazabilir, bu yüzden onaydan önce ona onay bağlantısından başka bir şey gitmez. Onay bağlantıları sınırlıdır:
+aynı ağdan adres başına günde 3, sunucuda adres başına günde 10, ziyaretçi başına günde 6, ağ ve çalışma alanı
+başına günde 30 ve çalışma alanı başına günde 2.000. Bir sınır bağlantıyı tuttuğunda hiçbiri gitmez ve
+ziyaretçinin `email_confirmation` durumu `limited` olur ([ayrıntılar](headless.md#ziyaretçinin-e-posta-adresi)).
+Arka ucunuzun `email_verified` olarak işaretlemediği bir kimlik token'ı `email` değeri aynı şekilde tek bir onay
+bağlantısı alır; `email_verified: true` ise onu hemen ziyaretçinin adresi yapar.
+
 ## Widget neleri saklar
 
 Widget oturumunu sayfanızın `localStorage` alanında tutar; böylece ziyaretçinin konuşması sayfa

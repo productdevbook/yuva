@@ -198,7 +198,7 @@ Migrationen laufen vor jedem Pod-Start in einem Init-Container. Anhänge liegen 
 | Was | Hinweise |
 |---|---|
 | Postgres 16 oder neuer | Enthält alles. Kein Redis. |
-| SMTP-Konto | Für Anmeldecodes und Benachrichtigungen. Ohne Konto landen E-Mails im Log. |
+| SMTP-Konto | Für Anmeldecodes und Benachrichtigungen. Ohne Konto landen nur Anmeldecodes im Log, andere E-Mails werden nicht gesendet. |
 | Speicher für Anhänge | Ein Docker-Volume oder S3 mit `YUVA_STORAGE=s3` und den `YUVA_S3_*`-[Einstellungen](configuration.md#dateien-und-speicher). |
 | Hostname mit TLS | Passkeys und Web Push brauchen HTTPS. |
 

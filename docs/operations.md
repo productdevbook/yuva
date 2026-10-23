@@ -3,6 +3,105 @@
 How to upgrade, back up, restore and watch a Yuva server. The examples use the Compose setup from
 the [install guide](install.md) and run from its directory.
 
+## Upgrading to 0.1.0
+
+Four things change when 0.1.0 starts. Read them, then follow [Upgrades](#upgrades).
+
+### E-mail addresses must be proven
+
+From 0.1.0 an e-mail channel receives mail at its own address (an MX record that points at Yuva,
+`/ingress/email` or `yuva ingest-email --to`) only after its workspace has proven the address. Nothing
+is carried over: every existing e-mail channel starts unproven, because stored mail cannot tell
+delivery by MX from delivery through a forwarding address, which anyone can send to themselves.
+
+| An unproven channel | |
+|---|---|
+| Stops | Routing mail by its own address, for channels whose domain's MX points at Yuva. A catch-all (`*@domain`) routes nothing. |
+| Keeps working | Mail to its [forwarding address](email.md#forwarding-address) (`<token>@YUVA_FORWARDING_DOMAIN`), so Gmail or Outlook forwarding carries on. Sending through its SMTP account. |
+| Is refused | A catch-all on `YUVA_FORWARDING_DOMAIN` or on a public mail provider such as gmail.com. It receives nothing; change its address. |
+
+The server tells you about each channel once: in the operator digest under "E-mail address to prove"
+when [`YUVA_OPERATOR_EMAIL`](configuration.md#sign-in-and-passkeys) is set, otherwise as a warning in
+the log (`e-mail channel address must be proven`). Each names the workspace and the channel.
+
+Prove a channel in one of three ways:
+
+- **DNS.** The workspace adds a TXT record, `_yuva-mail.<domain>` with a value starting
+  `yuva-mail-verify=` (both are in the channel's `email.verification`), and asks Yuva to check it. One
+  record proves every channel of that workspace on the domain. This is the only way to prove a
+  catch-all.
+- **Code.** The workspace has a code mailed to the address and sends it back. When the mailbox
+  forwards to the channel's forwarding address, the code mail proves the channel by itself.
+- **You.** If you know the channel belongs to its workspace, vouch for it. Without `--yes` the command
+  only lists what it would prove:
+
+  ```sh
+  docker compose exec yuva /yuva channel prove --all-unproven --workspace <ws>
+  docker compose exec yuva /yuva channel prove --all-unproven --workspace <ws> --yes --plan <code>
+  docker compose exec yuva /yuva channel prove --channel <id> --yes --address support@example.com
+  docker compose exec yuva /yuva channel prove --channel support@example.com --workspace <ws> --yes
+  ```
+
+  The list shows each channel, workspace, address and name with a result: `would prove`,
+  `already proven` or `refused: …`. It exits with an error while anything would be proven, and prints
+  the plan code. `--yes` must repeat what you were shown: `--plan <code>` for `--all-unproven` (a
+  code of the listed channels and addresses, so a changed list is refused), and `--address` for a
+  channel given by id. `--workspace` is needed with `--all-unproven` and when several workspaces claim
+  the same address. The proof is recorded as `channel.address_proven` by `operator` in the
+  workspace's [audit log](#audit-log), and the channel shows the method `operator`.
+
+  It is refused for an address another workspace has proven, for a catch-all on a shared domain, and
+  when proving would take mail away from another workspace's proven channel ("would take from
+  workspace …"). The operator never takes an address from anyone.
+
+To avoid a gap, prove the channels that receive by MX right after the upgrade, or ask the workspaces
+to add their TXT records first (the value appears in the channel once 0.1.0 runs). Workspaces prove
+addresses through the API, as described in [E-mail](email.md#prove-an-address).
+
+### Signatures and automatic replies
+
+- **`YUVA_INGRESS_ACCEPT_V2` is now off by default.** The server accepts only `v3` signatures. The
+  Email Worker in `edge/` signs `v3`; if you still run an older one, redeploy it before upgrading or
+  set `YUVA_INGRESS_ACCEPT_V2=true` until you have. Mail signed `v2` is otherwise refused with `401`,
+  and the Worker forwards it to `FALLBACK_FORWARD` or the sending server retries.
+- **Automatic replies need DMARC.** Greetings, rule replies and rating requests are e-mailed only to
+  senders whose mail passed DMARC according to [`YUVA_INGRESS_AUTHSERV_ID`](configuration.md#inbound-e-mail).
+  A server without it sends none of them and warns at start. Set it before you rely on them.
+
+### Mail without SMTP
+
+Without `YUVA_SMTP_HOST` the server sends no mail and writes it to the log, redacted. A sign-in code is
+one line, `sign-in code (log mailer, not sent)`, with the address reduced to `*@domain` and the `code`.
+Every other mail logs only the recipient's domain and the sizes. `YUVA_MAIL_LOG=full` writes whole
+mails (recipient, subject, text) and is refused at start unless `YUVA_PUBLIC_URL` is a localhost or
+loopback address; use it only on your own machine. Log lines and retried send errors keep only the
+domain of an address (`*@example.com`); the delivery error shown on a failed message in the panel
+still holds the mail server's full answer.
+
+### Job queues
+
+Background work now runs on more queues, so a slow customer endpoint cannot hold up assignment or
+notifications. A job that calls a server chosen by a workspace or another service runs off the
+`default` queue. Every process runs all of them; the sizes are fixed and there is nothing to set.
+
+| Queue | Workers per process | Runs |
+|---|---|---|
+| `default` | 10 | Assignment, automation, SLA checks, notifications, snooze wake-ups, webhook fan-out, retention and the rest that only reads and writes the database. |
+| `webhooks` | 10 | Webhook deliveries. |
+| `outbound` | 10 | Web Push, app push (APNs and FCM), Slack posts and issue-tracker sync. |
+| `email` | 10 | Mail sent through a workspace's SMTP account: replies, list mail and deliverability checks. |
+| `imports` | 2 | Help center imports. |
+
+The `broadcast`, `migrations` and `analytics` queues are unchanged ([Configuration](configuration.md)).
+Jobs queued on `default` before the upgrade are still worked there. To see a backlog per queue:
+
+```sql
+SELECT queue, state, count(*) FROM river_job
+WHERE state IN ('available','running','retryable') GROUP BY 1, 2;
+```
+
+A growing `webhooks` backlog means slow or failing customer endpoints; it no longer delays anything else.
+
 ## Upgrades
 
 1. Read the release notes of every version between yours and the new one.
@@ -81,6 +180,8 @@ Commands that print an id or a secret write only that to stdout.
 | `channel create-email --workspace <ws> --inbox <id\|slug> --name <name> --address <address> [--display-name <name>] [--from-address <address>] [--smtp-host <host> [--smtp-port <n>] [--tls starttls\|tls\|none] [--smtp-username <name>] [--smtp-password-file <path\|->]]` | Creates an e-mail channel and prints its id. Password from a file, or stdin with `-`. |
 | `channel create-chat --workspace <ws> --inbox <id\|slug> --name <name> --origin <origin>... [--allow-anonymous] [--ask-email-offline=false] [--greeting <text>]` | Creates a chat (web widget) channel and prints its id and public key (`yuva_pk_…`), separated by a tab. Repeat `--origin` for each site. |
 | `channel list --workspace <ws> --inbox <id\|slug>` | Lists an inbox's channels, with a chat channel's public key and origins. |
+| `channel prove --channel <id\|address> [--workspace <ws>] [--yes [--address <address>]]` | Vouches for an e-mail channel's address as the operator ([Upgrading to 0.1.0](#e-mail-addresses-must-be-proven)). Without `--yes`, lists what it would prove. Refused for an address another workspace proved and for catch-alls on shared domains. |
+| `channel prove --all-unproven --workspace <ws> [--yes --plan <code>]` | The same for every unproven e-mail channel of the workspace. `--plan` is the code the list printed. |
 | `workspace delete --workspace <ws> --yes` | Deletes a workspace ([below](#deleting-a-workspace-or-an-account)). Without `--yes`, a dry run. |
 | `workspace broadcasts approve\|deny\|suspend --workspace <ws> [--reason <text>]` | Answers a workspace's broadcast approval, or suspends it ([below](#broadcasts-on-a-hosted-server)). |
 | `workspace broadcasts limit --workspace <ws> --daily <n>` | Sets the workspace's recipients per UTC day; `0` removes the limit. |
@@ -267,8 +368,8 @@ author. A workspace's only owner must hand over ownership or delete the workspac
 
 The audit log records who changed a workspace's access, credentials and data: who joined, left or
 changed role; invites; API keys and connected apps created or revoked; webhooks and their secrets;
-e-mail channel credentials and keys; inbox access and deletions; conversations moved to the Trash, restored or deleted; messages removed (`message.redacted`: the conversation, whether it was a message or note, how many files, never the text); contact deletions; exports of
-consent data and analytics; retention changes; and the operator's answers about broadcasts. Each
+e-mail channel credentials and keys; e-mail addresses proven or lost; inbox access and deletions; conversations moved to the Trash, restored or deleted; messages removed (`message.redacted`: the conversation, whether it was a message or note, how many files, never the text); contact deletions; exports of
+consent data and analytics; retention changes; whether API keys and assistants may send to customers or schedule broadcasts; and the operator's answers about broadcasts. Each
 entry has the actor (a member, an API key, a member through a connected app, or the server's command
 line), the action such as `api_key.created`, its target and a few details, and the time. An entry is
 written in the same step as the change.
@@ -279,6 +380,12 @@ operator's digest names it when [`YUVA_OPERATOR_EMAIL`](configuration.md) is set
 
 Team changes are recorded as `team.created`, `team.deleted`, `team.member_added`, `team.member_removed`,
 `team.inbox_access_granted` and `team.inbox_access_revoked`.
+
+E-mail address proofs are recorded as `channel.address_verified` (`address`, `method`), `channel.address_lost`
+(`address`; by the system, when another workspace proved the address later) and `channel.address_proven`
+(by the operator, [above](#e-mail-addresses-must-be-proven)). The two settings are recorded as
+`workspace.bots_may_send_changed` and `workspace.broadcasts_by_keys_changed`, with `from` and `to`, only when the
+value changes.
 
 Automation rule changes are recorded as `automation_rule.created`, `automation_rule.updated` and
 `automation_rule.deleted` ([Automation rules](automation.md#10-access)).
@@ -325,6 +432,12 @@ Yuva cleans up once an hour:
 | [Audit log](#audit-log) entries | `YUVA_AUDIT_DAYS` days (365 by default) |
 | Original `.eml` of inbound mail (when `retention_days` is set) | that many days; the message itself stays |
 
+Whenever conversations are deleted for good (a contact, an inbox, retention, the Trash cleanup or a workspace),
+the same step also deletes their stored events and every webhook delivery, pending or kept, that carries them:
+`/v1/events`, realtime replay and the delivery log stop showing the content at once, and a pending delivery is not
+retried. The stored files (attachments, raw e-mails, e-mail images, import uploads) are deleted by a job that
+retries until the store answers, so a failing store leaves no files behind that nothing points to.
+
 ## Several server processes
 
 Any number of server processes can share one database (more `replicaCount` in the Helm chart, or
@@ -341,9 +454,24 @@ several containers behind one proxy). They coordinate through Postgres:
 - The `rate_limit_sweep` job deletes ended windows and leases every minute.
 - Windows and leases are measured by the database's clock, so the processes' clocks do not matter to
   the limits.
-- A check that fails in the database (a lost connection, a timeout) lets the request through rather
-  than failing it; the server logs `rate limit check failed; letting requests through` at most once
-  a minute while it lasts.
+- Limits that all visitors of one chat channel, help center or page share are split per network. After
+  the limit per address (IPv4 /32, IPv6 /64), one network (IPv4 /24, IPv6 /48) may use only part of the
+  shared budget, so a flood from a few sources cannot lock everyone else out:
+
+  | Shared budget | One network | All visitors |
+  |---|---|---|
+  | Session starts of a channel | 120 a minute | 6,000 a minute |
+  | Writes of a channel's visitors | 240 a minute | 12,000 a minute |
+  | Help center search | 120 a minute | 12,000 a minute |
+  | List sign-ups of a channel | 40 an hour | 6,000 an hour |
+  | Status page sign-ups | 40 an hour | 3,000 an hour |
+  | What's new reads | 480 a minute | 24,000 a minute |
+
+- A check that fails in the database (a lost connection, a timeout) never locks out a signed-in member,
+  API key or connected app: those requests go through. Every other request (visitors, contacts) is
+  counted in the process's own memory with the same limits until the database answers; the server
+  logs `rate limit check failed; counting anonymous requests in this process` at most once a minute
+  while it lasts.
 - [`YUVA_CLIENT_IP_HEADER` and `YUVA_TRUSTED_PROXIES`](configuration.md) must be the same on every
   process, or the per-address limits count different addresses.
 
@@ -361,6 +489,8 @@ Logs are JSON lines on stderr. Lines worth an alert:
 | Log message | Meaning |
 |---|---|
 | `mail not sent` | The server's SMTP account fails; sign-in codes do not arrive. |
+| `e-mail channel address must be proven` | An e-mail channel is unproven and `YUVA_OPERATOR_EMAIL` is not set to hear of it ([Upgrading to 0.1.0](#e-mail-addresses-must-be-proven)). |
+| `rate limit check failed` | The database could not count rate limits ([Several server processes](#several-server-processes)). |
 | `email send failed, retrying` | A channel's SMTP account fails. |
 | `YUVA_SMTP_HOST is not set` (and the same for `YUVA_INGRESS_SECRET`, `YUVA_VAPID_PUBLIC_KEY`) | A feature is off by configuration. |
 | `not ready` | The database is unreachable. |

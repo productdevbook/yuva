@@ -17,6 +17,40 @@ Das SMTP-Konto versendet die Antworten ([Ausgehendes SMTP](#ausgehendes-smtp)). 
 eingehende E-Mails auf einem der drei Wege unten zu Yuva und richten Sie das [DNS](#dns-checkliste)
 ein.
 
+## Adresse nachweisen
+
+Ein Kanal empfängt E-Mails an seiner eigenen Adresse (ein MX-Eintrag, der auf Yuva zeigt,
+`/ingress/email` oder `yuva ingest-email --to`) erst, nachdem sein Workspace die Adresse nachgewiesen hat.
+Bis dahin empfängt er weiter E-Mails an seiner [Weiterleitungsadresse](#weiterleitungsadresse) und sendet
+Antworten über sein SMTP-Konto. `email.verification` des Kanals enthält den Zustand (`state`: `unverified`
+oder `verified`), die Methode, mit der die Adresse nachgewiesen wurde (`method`: `code`, `dns` oder
+`operator`), den hinzuzufügenden TXT-Eintrag und, solange ein Code offen ist, wann er abläuft.
+
+| Weg | Für | So geht es |
+|---|---|---|
+| Code | Eine genaue Adresse, nicht eine auf der Weiterleitungsdomain | `POST /v1/channels/{channelId}/verification-code` sendet einen 8-stelligen Code an die Adresse. Senden Sie ihn mit `POST /v1/channels/{channelId}/verify` und `{"code": "…"}` zurück. Ein Code gilt eine Stunde und für 5 Versuche; ein neuer ersetzt den alten. Leitet das Postfach an die Weiterleitungsadresse des Kanals weiter, weist die Code-E-Mail den Kanal von selbst nach. |
+| DNS | Jede Adresse; der einzige Weg für einen [Catch-all](#catch-all-adressen) | Legen Sie den TXT-Eintrag `email.verification.txt_name` (`_yuva-mail.<domain>`) mit dem Wert `txt_value` (`yuva-mail-verify=…`) an und rufen Sie dann `POST /v1/channels/{channelId}/verify` ohne Body auf. Ein Eintrag weist alle Kanäle des Workspace auf dieser Domain nach. |
+| Operator | Eine Adresse, bei der der Operator dem Workspace vertraut | Der Operator des Servers führt `yuva channel prove` aus ([Betrieb](operations.md#e-mail-adressen-müssen-nachgewiesen-werden)). |
+
+Die ersten beiden Wege gehen für Owner, Admins und API-Schlüssel mit `inboxes:manage`. Ein falscher oder
+abgelaufener Code antwortet `400 verification_code_invalid`; eine DNS-Prüfung ohne Fund lässt den Kanal mit
+einem `problem` auf `unverified`. Code-E-Mails sind auf eine pro Minute und Kanal, 20 pro Tag und Workspace
+und 5 pro Tag an dieselbe Adresse serverweit begrenzt (`429 rate_limited`), DNS-Prüfungen auf 30 pro Stunde
+und Workspace.
+
+- Ein Catch-all auf der Weiterleitungsdomain des Servers oder bei einem öffentlichen Mail-Anbieter
+  (gmail.com, outlook.com, …) wird abgelehnt (`400 validation_failed`): Er würde die E-Mails anderer
+  empfangen.
+- Mehrere Workspaces können dieselbe Adresse beanspruchen, aber nur der, der sie zuletzt nachgewiesen hat,
+  empfängt ihre E-Mails. Weist ein anderer Workspace eine Adresse nach, die Sie nachgewiesen hatten, geht Ihr
+  Kanal mit dem Problem `taken` zurück auf `unverified`, und Ihre Owner bekommen eine E-Mail (höchstens
+  eine pro Tag, mit den Adressen). Weisen Sie sie erneut nach, um sie zurückzuholen. Ein nicht
+  nachgewiesener Anspruch blockiert niemanden.
+- Wer eine genaue Adresse nachweist, übernimmt auch E-Mails, die ein Catch-all- oder `local@`-Kanal eines
+  anderen Workspace bis dahin dafür empfing; dieser Workspace wird auf dieselbe Weise benachrichtigt.
+- Wer die Adresse eines Kanals ändert, beginnt den Nachweis von vorn.
+- Jeder Nachweis und Verlust steht im [Audit-Log](operations.md#audit-log).
+
 ## Eingehende E-Mails
 
 Yuva nimmt selbst kein SMTP entgegen. Wählen Sie einen dieser drei Wege, um E-Mails hereinzuholen.
@@ -57,11 +91,11 @@ Email-Routing-Adresse): Sie gehen dann dorthin.
 Ein älterer Email Worker signiert mit `v1`, was der Server ablehnt. Deployen Sie ihn neu, oder setzen
 Sie bis dahin `YUVA_INGRESS_ACCEPT_V1=true`.
 
-Der Email Worker signiert mit `v3`, was der Server prüft, bevor er die Nachricht liest. Früher
-deployte Worker signieren mit `v2`; das wird weiter akzeptiert, solange `YUVA_INGRESS_ACCEPT_V2` an
-ist (vorerst der Standard). Bei `v2` wird die Nachricht gelesen, bevor feststeht, dass sie echt ist,
-sodass jeder den Server unsignierte Uploads puffern lassen kann (Advisory GHSA-jfvx-vc82-56f7).
-Deployen Sie den Worker neu und setzen Sie dann `YUVA_INGRESS_ACCEPT_V2=false`. Ein Proxy vor der
+Der Email Worker signiert mit `v3`, was der Server prüft, bevor er die Nachricht liest. Ein früher
+deployter Worker signiert mit `v2`; das wird nur akzeptiert, solange `YUVA_INGRESS_ACCEPT_V2=true` ist
+(standardmäßig aus). Bei `v2` wird die Nachricht gelesen, bevor feststeht, dass sie echt ist,
+sodass jeder den Server unsignierte Uploads puffern lassen kann (Advisory GHSA-jfvx-vc82-56f7):
+Deployen Sie den Worker neu, statt die Option einzuschalten. Ein Proxy vor der
 API muss `Content-Length` an `/ingress/email` weitergeben: `v3` lehnt einen Body in Chunks
 (chunked) ab.
 
@@ -104,7 +138,7 @@ yuva      unix  -       n       n       -       -       pipe
 Senden Sie die Rohnachricht per POST an `/ingress/email`, signiert mit `YUVA_INGRESS_SECRET`. Das
 Format steht in [edge/README.md](../../edge/README.md#ingress-contract). Setzen Sie
 `YUVA_INGRESS_AUTHSERV_ID` auf die Authserv-ID, die Ihr MTA in `Authentication-Results` schreibt,
-sonst wird DMARC nicht genutzt. Ihr MTA muss jeder Nachricht, die er weitergibt, oben ein eigenes
+sonst wird DMARC nicht genutzt und kein Absender bekommt eine automatische Antwort. Ihr MTA muss jeder Nachricht, die er weitergibt, oben ein eigenes
 `Authentication-Results` voranstellen: Yuva liest das oberste, eine Nachricht ohne den Header Ihres
 MTA würde also nach einem Header beurteilt, den ihr Absender geschrieben hat.
 
@@ -200,7 +234,8 @@ Senden Sie eine Testantwort an ein Postfach, auf das Sie Zugriff haben, und prü
 Ein Kanal mit der Adresse `*@example.com` empfängt E-Mails an alle übrigen Adressen der Domain.
 Antworten gehen von der Adresse hinaus, an die der Kontakt geschrieben hat; sein SMTP-Konto muss
 deshalb für die ganze Domain senden dürfen. Geben Sie ihm eine `--from-address` für Chats, die per
-E-Mail weitergehen.
+E-Mail weitergehen. Ein Catch-all empfängt E-Mails erst, nachdem seine Domain
+[mit dem TXT-Eintrag nachgewiesen](#adresse-nachweisen) ist, und nicht auf einer gemeinsam genutzten Domain.
 
 ```sh
 yuva channel create-email --workspace Example --inbox support --name "Everything else" \
@@ -212,13 +247,14 @@ yuva channel create-email --workspace Example --inbox support --name "Everything
 
 | Thema | Verhalten |
 |---|---|
-| Kanal | Der Kanal des Envelope-Empfängers; `local+tag@domain` fällt auf `local@domain` zurück. Unbekannte Adressen werden abgewiesen. |
+| Kanal | Gewählt nach dem Envelope-Empfänger, nur über eine nachgewiesene Adresse: zuerst die Weiterleitungsadresse des Kanals, dann die nachgewiesene genaue Adresse (`local+tag@domain` fällt auf ein nachgewiesenes `local@domain` zurück), dann der nachgewiesene Catch-all der Domain. Unbekannte und nicht nachgewiesene Adressen werden abgewiesen. |
 | Threading | Über `In-Reply-To` und `References`; alles andere beginnt eine neue Unterhaltung. Eine Antwort öffnet die Unterhaltung wieder. |
-| Cc und Beteiligte | Die `To`- und `Cc`-Adressen einer E-Mail, die nicht Yuva gehören, werden Beteiligte der Unterhaltung (höchstens 20). Aktiv sind sie nur, wenn die E-Mail DMARC bestanden hat (dafür ist `YUVA_INGRESS_AUTHSERV_ID` nötig); sonst sind sie vorgeschlagen, für Mitglieder sichtbar, aber nie in Kopie. Mitglieder können Beteiligte hinzufügen und entfernen. Die Antwort eines aktiven Beteiligten, die DMARC besteht, kommt als seine Nachricht in die Unterhaltung; jeder andere, der auf den Thread antwortet, beginnt eine neue Unterhaltung, die auf sie verweist. E-Mails, die DMARC nicht bestehen oder automatisch sind, fügen niemanden hinzu. |
+| Cc und Beteiligte | Die `To`- und `Cc`-Adressen einer E-Mail, die nicht zum Workspace gehören, werden Beteiligte der Unterhaltung (höchstens 20). Aktiv sind sie nur, wenn die E-Mail DMARC bestanden hat (dafür ist `YUVA_INGRESS_AUTHSERV_ID` nötig); sonst sind sie vorgeschlagen, für Mitglieder sichtbar, aber nie in Kopie. Mitglieder können Beteiligte hinzufügen und entfernen. Die Antwort eines aktiven Beteiligten, die DMARC besteht, kommt als seine Nachricht in die Unterhaltung; jeder andere, der auf den Thread antwortet, beginnt eine neue Unterhaltung, die auf sie verweist. E-Mails, die DMARC nicht bestehen oder automatisch sind, fügen niemanden hinzu. Die eigenen Adressen des Workspace sind die Adressen des Kontakts, der Absender, jede Kanaladresse des Workspace (nachgewiesen oder nicht), seine Catch-all-Domains, Weiterleitungsadressen und der Absender des Servers; die Adresse eines anderen Workspace ist eine gewöhnliche Adresse. |
 | Antworten | Gehen per `To` an den Kontakt und per `Cc` an die aktiven Beteiligten; automatische E-Mails (Begrüßungen, Regeln) setzen niemanden in Kopie. Jede Antwort kann das `Cc` ersetzen und `Bcc` hinzufügen (je 20 Adressen); `Bcc`-Empfänger erhalten die E-Mail, erscheinen aber nie darin, und nur Mitglieder sehen sie. Eine Adresse mit Bounce oder Beschwerde wird abgelehnt oder als Beteiligte ausgelassen; eine Abmeldung von Broadcasts stoppt keine Antworten. |
 | Weiterleiten | Ein Mitglied kann eine Nachricht oder die ganze Unterhaltung (ihre Nachrichten, nie Notizen oder Entwürfe, mit oder ohne Dateien bis 20 MiB) mit einer eigenen Notiz darüber an bis zu 10 externe Adressen weiterleiten. Sie geht über den E-Mail-Kanal des Posteingangs mit dem Namen des Mitglieds, `Reply-To` der Kanaladresse und dem Betreff `Fwd: …` und ist nur für Mitglieder sichtbar, nie für den Kontakt. Die Adresse des Kontakts, Adressen, die schon in Kopie stehen, Yuvas eigene Adressen und Adressen mit Bounce oder Beschwerde werden abgelehnt; ein Mitglied leitet höchstens 20-mal pro Stunde weiter (200 pro Workspace). Eine Antwort auf die Weiterleitung, die DMARC besteht, kommt nur für Mitglieder sichtbar in die Unterhaltung und macht ihren Absender zu einem weitergeleiteten Beteiligten, der bei Antworten nicht in Kopie steht; jede andere E-Mail von ihm beginnt eine neue Unterhaltung. Über eine Antwort werden nur das weiterleitende Mitglied und die zugewiesene Person benachrichtigt. Assistenten leiten nur weiter, wo sie senden dürfen; sonst hinterlassen sie einen Entwurf. |
-| Automatische E-Mails | Abwesenheitsnotizen, Massen-E-Mails und Zustellberichte werden gespeichert, aber nie beantwortet. E-Mails von Yuvas eigenen Adressen werden verworfen. |
-| DMARC | Nur mit `YUVA_INGRESS_AUTHSERV_ID` genutzt, aus dem obersten `Authentication-Results`, wenn es diese Authserv-ID trägt. Tragen mehrere Header sie, hat der Absender einen hinzugefügt: ein `fail` darunter zählt, ein `pass` nicht. Eine neue Unterhaltung, die durchfällt, wird als Spam markiert; eine Antwort, die durchfällt, beginnt eine neue. |
+| Automatische E-Mails | Abwesenheitsnotizen, Massen-E-Mails und Zustellberichte werden gespeichert, aber nie beantwortet. E-Mails von der eigenen Adresse des empfangenden Kanals, vom Absender des Servers oder von jeder Kanaladresse desselben Workspace (nachgewiesen oder nicht) werden verworfen; Adressen anderer Workspaces verwerfen nie eine E-Mail. |
+| DMARC | Nur mit `YUVA_INGRESS_AUTHSERV_ID` genutzt, aus dem obersten `Authentication-Results`, wenn es diese Authserv-ID trägt. Tragen mehrere Header sie, hat der Absender einen hinzugefügt: ein `fail` darunter zählt, ein `pass` nicht. Der Header wird gelesen, wie RFC 8601 es sagt: Nur das Ergebnis, das jede Methode nennt, zählt, nie Text in einer Adresse oder Begründung; ein Header, der sich nicht parsen lässt, ist `unknown`. Ein `pass` zählt nur bei einer Nachricht mit einer einzigen From-Adresse. Eine neue Unterhaltung, die durchfällt, wird als Spam markiert; eine Antwort, die durchfällt, beginnt eine neue. E-Mails, die beim [Umzug zu Yuva](migrate.md) aus Ihrem alten Postfach gelesen werden, sind immer `unknown`. |
+| Automatische Antworten | Eine Begrüßung, das `send_reply` einer Regel und eine Bewertungsanfrage gehen nur an einen E-Mail-Absender, dessen E-Mail DMARC bestanden hat. Ohne `YUVA_INGRESS_AUTHSERV_ID` wird keine gesendet. Eine zurückgehaltene Regelantwort lässt den Lauf mit `auto_reply` fehlschlagen. Chat- und API-Unterhaltungen sind nicht betroffen. |
 
 ### Grenzen
 
@@ -227,7 +263,7 @@ yuva channel create-email --workspace Example --inbox support --name "Everything
 | Nachrichtengröße | 25 MiB |
 | Anhänge | Die [Datei-Grenzen](configuration.md#dateien-und-speicher) des Kanals; ein Teil darüber wird übersprungen, die Nachricht bleibt erhalten und das Teil bleibt in der Roh-E-Mail |
 | Neue Unterhaltungen pro Absender und Kanal | 20 pro Stunde; weitere E-Mails landen in seiner neuesten Unterhaltung |
-| Eingehende E-Mails pro Absender und Workspace | `YUVA_EMAIL_SENDER_HOURLY_CAP`, 500 pro Stunde; weitere werden abgelehnt |
+| Eingehende E-Mails pro Absender und Workspace | `YUVA_EMAIL_SENDER_HOURLY_CAP`, 500 pro Stunde; weitere werden abgelehnt. E-Mails mit bestandenem DMARC und andere werden getrennt gezählt. |
 | Gleichzeitig verarbeitete Nachrichten | `YUVA_INGRESS_MAX_CONCURRENT`, 8; weitere erhalten `503` |
 | Zeit zum Senden des Nachrichteninhalts | 30 Sekunden; langsamere Uploads erhalten `503` |
 | Wartezeit des Workers auf Yuva | 20 Sekunden |

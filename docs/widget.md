@@ -62,6 +62,14 @@ again), asks again when the address bounced or the link ran out after 24 hours, 
 line once it is confirmed. The panel follows `prefers-color-scheme`, uses the channel's launcher
 colour as its accent and the page's Geist font when it has one, else the system font.
 
+Replies are e-mailed to a typed address only after the visitor confirms it: anyone can type any address, so
+nothing but the confirmation link goes to it before. Confirmation links are limited: 3 a day per address from
+one network, 10 a day per address on the server, 6 a day per visitor, 30 a day per network and workspace, and
+2,000 a day per workspace. When a limit holds a link back, none goes out and the visitor's
+`email_confirmation` has the state `limited` ([details](headless.md#the-visitors-e-mail-address)). An `email`
+in an identity token that your backend has not marked `email_verified` gets one confirmation link in the same
+way, while `email_verified: true` makes it the visitor's address at once.
+
 ## What the widget stores
 
 The widget keeps its session in your page's `localStorage`, so a visitor's conversation survives a

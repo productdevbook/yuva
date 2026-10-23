@@ -196,7 +196,7 @@ Migrations run in an init container before each pod starts. Attachments are kept
 | What | Notes |
 |---|---|
 | Postgres 16 or newer | Holds everything. No Redis. |
-| SMTP account | For sign-in codes and notifications. Without it, mail goes to the log. |
+| SMTP account | For sign-in codes and notifications. Without it, only sign-in codes reach the log and no other mail is sent. |
 | Attachment storage | A Docker volume, or S3 with `YUVA_STORAGE=s3` and the `YUVA_S3_*` [settings](configuration.md#attachments-and-storage). |
 | Host name with TLS | Passkeys and Web Push need HTTPS. |
 
