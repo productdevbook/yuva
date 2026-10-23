@@ -13273,6 +13273,221 @@ paths:
           $ref: "#/components/responses/Problem"
         "429":
           $ref: "#/components/responses/Problem"
+  /v1/help-centers/{centerId}/imports:
+    get:
+      operationId: listHelpImports
+      summary: List a center's article imports
+      description: |
+        The imports of Zendesk Guide and Help Scout Docs articles into the center, newest first.
+
+        Scope: `help:read`.
+      tags: [help]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/HelpCenterId"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: A page of imports.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HelpImportPage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: startHelpImport
+      summary: Import help articles from Zendesk or Help Scout
+      description: |
+        Reads a help center of another service, only ever with `GET`, and writes it into this
+        center as drafts. Nothing is published and the source is not changed.
+
+        `zendesk` reads the Guide of the Zendesk account of `migration_id`, a Zendesk migration of
+        the workspace that is signed in (its stored sign-in is reused; the OAuth `read` scope
+        already covers Guide, so no new scope is asked; `422 source_not_connected` when the
+        migration holds no sign-in any more, for instance after it completed or was cancelled).
+        Categories become collections and sections their sub-collections (a section inside a
+        section becomes a sub-collection named `Parent / Child`, since a center has two levels).
+        Every article is imported with every translation in a locale the center offers (`en-us`
+        matches `en-US`, else `en`); translations in other locales are skipped and named in
+        `skipped_locales`, so a manager can add the locale to the center and run the import again.
+        The brand help centers of other brands are not read.
+
+        `helpscout` reads the Docs sites of a Help Scout account with `docs_api_key`, a Docs API
+        key (Help Scout's Mailbox sign-in does not reach Docs). The key is sealed, used only by
+        this import and deleted when it ends. Collections become collections and categories
+        their sub-collections. Docs sites have no languages, so every article is written in
+        `locale` (the center's default when absent). Browser sessions only: a `docs_api_key` is
+        refused for OAuth connections (`403`).
+
+        Article HTML becomes Markdown. Images are downloaded from where the article shows them
+        (with the source's sign-in only for the source's own hosts), stored as the workspace's
+        images (the `/i/` URLs of `uploadHelpImage`) and rewritten; an image that cannot be
+        stored stays a link to its original and counts in `images_failed`. Links between imported
+        articles are rewritten to the articles' new pages, in a last pass. The old URL and the new
+        URL of every article and collection are kept for `listHelpImportRedirects` and
+        `downloadHelpImportRedirects`; setting up the redirects at the old address is the owner's
+        to do.
+
+        The import runs as a background job in slices and resumes after a restart. It is
+        idempotent: an article imported before updates its draft (a new `version`) and never
+        duplicates; a draft that changed in Yuva since the last import is kept unless
+        `overwrite_edited` is true; an unchanged one is left alone. At most one import per center
+        runs (`409 import_running`). `help.import.updated` and `help.import.progress` reach
+        `/v1/realtime`, and every saved draft sends `help.article.updated` as when it is edited.
+
+        Agents with access to the center's inbox, owners, admins and API keys. Scope: `help:write`.
+      tags: [help]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/HelpCenterId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HelpImportCreate"
+      responses:
+        "202":
+          description: The import, `queued`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HelpImport"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+        "422":
+          $ref: "#/components/responses/Problem"
+        "429":
+          $ref: "#/components/responses/Problem"
+  /v1/help-centers/{centerId}/imports/{importId}:
+    get:
+      operationId: getHelpImport
+      summary: An article import
+      description: |
+        Its state, phase and counts. Scope: `help:read`.
+      tags: [help]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/HelpCenterId"
+        - $ref: "#/components/parameters/ImportId"
+      responses:
+        "200":
+          description: The import.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HelpImport"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: cancelHelpImport
+      summary: Cancel an article import
+      description: |
+        Stops a `queued` or `running` import after the item in progress and deletes the sealed
+        key. What it already imported stays, with its redirects. A finished import is left as it
+        is.
+
+        Agents with access to the center's inbox, owners, admins and API keys. Scope: `help:write`.
+      tags: [help]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/HelpCenterId"
+        - $ref: "#/components/parameters/ImportId"
+      responses:
+        "204":
+          description: Cancelled.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/help-centers/{centerId}/imports/{importId}/redirects:
+    get:
+      operationId: listHelpImportRedirects
+      summary: The old and new URLs of an import
+      description: |
+        One row per article translation and collection the import saw, by `kind`, `locale` and
+        `old_url`, with the page that now holds it in the center. `published` is false while
+        the page is a draft, so the new URL answers `404` until a member publishes it.
+        A re-run reports everything it saw again, also what it left unchanged.
+
+        Scope: `help:read`.
+      tags: [help]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/HelpCenterId"
+        - $ref: "#/components/parameters/ImportId"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: A page of redirects.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HelpImportRedirectPage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/help-centers/{centerId}/imports/{importId}/redirects.csv:
+    get:
+      operationId: downloadHelpImportRedirects
+      summary: Download an import's redirects
+      description: |
+        The rows of `listHelpImportRedirects` as a CSV file with the columns `kind`, `locale`,
+        `old_url`, `new_url` and `published`. Cells are quoted and formula-like values defused as
+        in the consent export.
+
+        Scope: `help:read`.
+      tags: [help]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/HelpCenterId"
+        - $ref: "#/components/parameters/ImportId"
+      responses:
+        "200":
+          description: The redirects.
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+          content:
+            text/csv:
+              schema:
+                type: string
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
   /v1/help-centers/{centerId}/search:
     get:
       operationId: searchHelpArticles
@@ -17716,7 +17931,7 @@ components:
         - `help:read`: help centers, their collections, articles, translations, revisions,
           previews, search and report.
         - `help:write`: create and change collections and articles, save, restore and delete draft
-          translations, render Markdown, upload images.
+          translations, render Markdown, upload images, import articles from Zendesk or Help Scout.
         - `help:publish`: create, configure and delete help centers; publish and unpublish
           translations, delete published ones. API keys only, and never implied: a key made without
           naming its scopes does not hold it, and OAuth clients are not offered it.
@@ -23474,6 +23689,8 @@ components:
         - $ref: "#/components/schemas/ChangelogEntryEvent"
         - $ref: "#/components/schemas/ChangelogEntrySignal"
         - $ref: "#/components/schemas/RoadmapBoardSignal"
+        - $ref: "#/components/schemas/HelpImportEvent"
+        - $ref: "#/components/schemas/HelpImportProgressEvent"
         - $ref: "#/components/schemas/HelpCenterSignal"
         - $ref: "#/components/schemas/ChangelogSignal"
         - $ref: "#/components/schemas/ListImportEvent"
@@ -23538,6 +23755,8 @@ components:
           changelog.entry.deleted: "#/components/schemas/ChangelogEntryEvent"
           changelog.entry.updated: "#/components/schemas/ChangelogEntrySignal"
           roadmap.board.updated: "#/components/schemas/RoadmapBoardSignal"
+          help.import.updated: "#/components/schemas/HelpImportEvent"
+          help.import.progress: "#/components/schemas/HelpImportProgressEvent"
           help.center.updated: "#/components/schemas/HelpCenterSignal"
           changelog.updated: "#/components/schemas/ChangelogSignal"
           list_import.updated: "#/components/schemas/ListImportEvent"
@@ -34574,6 +34793,263 @@ components:
         next_cursor:
           type: string
           description: Absent on the last page.
+    HelpImportSource:
+      type: string
+      enum: [zendesk, helpscout]
+    HelpImportState:
+      type: string
+      description: |
+        `queued` until a worker takes it, `running`, then `done`, `failed` (see `error`) or
+        `cancelled`. A `failed` import can be started again; it continues idempotently.
+      enum: [queued, running, done, failed, cancelled]
+    HelpImportPhase:
+      type: string
+      description: |
+        `source` checks the sign-in and reads the languages, `collections` writes the structure,
+        `articles` the drafts and their images, `links` rewrites the links between articles.
+      enum: [source, collections, articles, links]
+    HelpImportCreate:
+      type: object
+      required: [source]
+      properties:
+        source:
+          $ref: "#/components/schemas/HelpImportSource"
+        migration_id:
+          type: string
+          format: uuid
+          description: Required for `zendesk`; a Zendesk migration of the workspace.
+        docs_api_key:
+          type: string
+          minLength: 1
+          maxLength: 200
+          writeOnly: true
+          description: Required for `helpscout`; a Help Scout Docs API key.
+        site_id:
+          type: string
+          maxLength: 100
+          description: '`helpscout`: read only this Docs site; every site when absent.'
+        locale:
+          $ref: "#/components/schemas/LanguageTag"
+        overwrite_edited:
+          type: boolean
+          default: false
+          description: |
+            Replace a draft that was edited in Yuva after the last import. Off: it is kept and
+            counted in `translations_kept`.
+    HelpImportCounts:
+      type: object
+      required:
+        - collections
+        - articles
+        - translations_created
+        - translations_updated
+        - translations_unchanged
+        - translations_kept
+        - images_stored
+        - images_failed
+        - links_rewritten
+        - truncated
+        - failed
+      properties:
+        collections:
+          type: integer
+          format: int32
+          description: Collections created or updated.
+        articles:
+          type: integer
+          format: int32
+          description: Articles of the source that were read.
+        translations_created:
+          type: integer
+          format: int32
+        translations_updated:
+          type: integer
+          format: int32
+        translations_unchanged:
+          type: integer
+          format: int32
+          description: Same text as the last import, left alone.
+        translations_kept:
+          type: integer
+          format: int32
+          description: Drafts edited in Yuva since the last import, left as they are.
+        images_stored:
+          type: integer
+          format: int32
+        images_failed:
+          type: integer
+          format: int32
+          description: Images that stayed links to their original.
+        links_rewritten:
+          type: integer
+          format: int32
+        truncated:
+          type: integer
+          format: int32
+          description: Bodies cut at 100,000 characters.
+        failed:
+          type: integer
+          format: int32
+          description: Articles or collections that could not be written (a body the center refuses, or the 200 collections a center holds).
+    HelpImport:
+      type: object
+      required: [id, center_id, source, state, phase, counts, skipped_locales, redirects, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        center_id:
+          type: string
+          format: uuid
+        source:
+          $ref: "#/components/schemas/HelpImportSource"
+        migration_id:
+          type: string
+          format: uuid
+          description: The Zendesk migration whose sign-in was used.
+        state:
+          $ref: "#/components/schemas/HelpImportState"
+        phase:
+          $ref: "#/components/schemas/HelpImportPhase"
+        counts:
+          $ref: "#/components/schemas/HelpImportCounts"
+        skipped_locales:
+          type: array
+          description: Locales of the source that the center does not offer, not imported.
+          items:
+            type: string
+        redirects:
+          type: integer
+          format: int32
+          description: Rows `listHelpImportRedirects` holds.
+        overwrite_edited:
+          type: boolean
+        error:
+          type: string
+          description: Why a `failed` import stopped.
+        member_id:
+          type: string
+          format: uuid
+        api_key_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        started_at:
+          type: string
+          format: date-time
+        finished_at:
+          type: string
+          format: date-time
+    HelpImportPage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/HelpImport"
+        next_cursor:
+          type: string
+          description: Absent on the last page.
+    HelpImportRedirect:
+      type: object
+      required: [kind, locale, old_url, new_url, published]
+      properties:
+        kind:
+          type: string
+          enum: [article, collection]
+        locale:
+          $ref: "#/components/schemas/LanguageTag"
+        old_url:
+          type: string
+        new_url:
+          type: string
+        published:
+          type: boolean
+        article_id:
+          type: string
+          format: uuid
+        collection_id:
+          type: string
+          format: uuid
+    HelpImportRedirectPage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/HelpImportRedirect"
+        next_cursor:
+          type: string
+          description: Absent on the last page.
+    HelpImportProgress:
+      type: object
+      required: [id, center_id, state, phase, counts]
+      properties:
+        id:
+          type: string
+          format: uuid
+        center_id:
+          type: string
+          format: uuid
+        state:
+          $ref: "#/components/schemas/HelpImportState"
+        phase:
+          $ref: "#/components/schemas/HelpImportPhase"
+        counts:
+          $ref: "#/components/schemas/HelpImportCounts"
+    HelpImportEvent:
+      type: object
+      description: |
+        `help.import.updated`, on `/v1/realtime` only: an article import started, moved to another
+        phase or ended. Not stored, no id, never replayed, no webhook. Reaches whoever holds
+        `help:write` and sees the center's inbox.
+      required: [type, workspace_id, inbox_id, created_at, data]
+      properties:
+        type:
+          type: string
+          enum: [help.import.updated]
+          x-enum-varnames: [HelpImportUpdated]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/HelpImport"
+    HelpImportProgressEvent:
+      type: object
+      description: |
+        `help.import.progress`, on `/v1/realtime` only: the counts of a running article import, at
+        most once every two seconds. Not stored, no id, never replayed. Reaches whoever holds
+        `help:write` and sees the center's inbox.
+      required: [type, workspace_id, inbox_id, created_at, data]
+      properties:
+        type:
+          type: string
+          enum: [help.import.progress]
+          x-enum-varnames: [HelpImportProgressType]
+        workspace_id:
+          type: string
+          format: uuid
+        inbox_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        data:
+          $ref: "#/components/schemas/HelpImportProgress"
     HelpPublishedCopy:
       type: object
       required: [title, body, keywords, slug, html, excerpt, published_at]

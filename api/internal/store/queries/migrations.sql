@@ -634,3 +634,6 @@ WHERE i.workspace_id = @workspace_id AND i.migration_id = @migration_id AND i.th
   AND i.state = 'duplicate' AND i.reason = 'in_yuva'
 ORDER BY i.received_at DESC
 LIMIT 1;
+
+-- name: LockMigrationCredentials :one
+SELECT * FROM migration_credentials WHERE workspace_id = $1 AND migration_id = $2 FOR UPDATE;

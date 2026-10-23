@@ -3261,6 +3261,123 @@ func (e HelpIcon) Valid() bool {
 	}
 }
 
+// Defines values for HelpImportEventType.
+const (
+	HelpImportUpdated HelpImportEventType = "help.import.updated"
+)
+
+// Valid indicates whether the value is a known member of the HelpImportEventType enum.
+func (e HelpImportEventType) Valid() bool {
+	switch e {
+	case HelpImportUpdated:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for HelpImportPhase.
+const (
+	HelpImportPhaseArticles    HelpImportPhase = "articles"
+	HelpImportPhaseCollections HelpImportPhase = "collections"
+	HelpImportPhaseLinks       HelpImportPhase = "links"
+	HelpImportPhaseSource      HelpImportPhase = "source"
+)
+
+// Valid indicates whether the value is a known member of the HelpImportPhase enum.
+func (e HelpImportPhase) Valid() bool {
+	switch e {
+	case HelpImportPhaseArticles:
+		return true
+	case HelpImportPhaseCollections:
+		return true
+	case HelpImportPhaseLinks:
+		return true
+	case HelpImportPhaseSource:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for HelpImportProgressEventType.
+const (
+	HelpImportProgressType HelpImportProgressEventType = "help.import.progress"
+)
+
+// Valid indicates whether the value is a known member of the HelpImportProgressEventType enum.
+func (e HelpImportProgressEventType) Valid() bool {
+	switch e {
+	case HelpImportProgressType:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for HelpImportRedirectKind.
+const (
+	HelpImportRedirectKindArticle    HelpImportRedirectKind = "article"
+	HelpImportRedirectKindCollection HelpImportRedirectKind = "collection"
+)
+
+// Valid indicates whether the value is a known member of the HelpImportRedirectKind enum.
+func (e HelpImportRedirectKind) Valid() bool {
+	switch e {
+	case HelpImportRedirectKindArticle:
+		return true
+	case HelpImportRedirectKindCollection:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for HelpImportSource.
+const (
+	Helpscout HelpImportSource = "helpscout"
+	Zendesk   HelpImportSource = "zendesk"
+)
+
+// Valid indicates whether the value is a known member of the HelpImportSource enum.
+func (e HelpImportSource) Valid() bool {
+	switch e {
+	case Helpscout:
+		return true
+	case Zendesk:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for HelpImportState.
+const (
+	HelpImportStateCancelled HelpImportState = "cancelled"
+	HelpImportStateDone      HelpImportState = "done"
+	HelpImportStateFailed    HelpImportState = "failed"
+	HelpImportStateQueued    HelpImportState = "queued"
+	HelpImportStateRunning   HelpImportState = "running"
+)
+
+// Valid indicates whether the value is a known member of the HelpImportState enum.
+func (e HelpImportState) Valid() bool {
+	switch e {
+	case HelpImportStateCancelled:
+		return true
+	case HelpImportStateDone:
+		return true
+	case HelpImportStateFailed:
+		return true
+	case HelpImportStateQueued:
+		return true
+	case HelpImportStateRunning:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for HelpRevisionKind.
 const (
 	HelpRevisionPublish HelpRevisionKind = "publish"
@@ -8579,7 +8696,7 @@ type ApiKeyList struct {
 //	  - `help:read`: help centers, their collections, articles, translations, revisions,
 //	    previews, search and report.
 //	  - `help:write`: create and change collections and articles, save, restore and delete draft
-//	    translations, render Markdown, upload images.
+//	    translations, render Markdown, upload images, import articles from Zendesk or Help Scout.
 //	  - `help:publish`: create, configure and delete help centers; publish and unpublish
 //	    translations, delete published ones. API keys only, and never implied: a key made without
 //	    naming its scopes does not hold it, and OAuth clients are not offered it.
@@ -14530,6 +14647,179 @@ type HelpImage struct {
 	Url      string `json:"url"`
 	Width    int32  `json:"width"`
 }
+
+// HelpImport defines model for HelpImport.
+type HelpImport struct {
+	ApiKeyId  *uuid.UUID       `json:"api_key_id,omitempty"`
+	CenterId  uuid.UUID        `json:"center_id"`
+	Counts    HelpImportCounts `json:"counts"`
+	CreatedAt time.Time        `json:"created_at"`
+
+	// Error Why a `failed` import stopped.
+	Error      *string    `json:"error,omitempty"`
+	FinishedAt *time.Time `json:"finished_at,omitempty"`
+	Id         uuid.UUID  `json:"id"`
+	MemberId   *uuid.UUID `json:"member_id,omitempty"`
+
+	// MigrationId The Zendesk migration whose sign-in was used.
+	MigrationId     *uuid.UUID `json:"migration_id,omitempty"`
+	OverwriteEdited *bool      `json:"overwrite_edited,omitempty"`
+
+	// Phase `source` checks the sign-in and reads the languages, `collections` writes the structure,
+	// `articles` the drafts and their images, `links` rewrites the links between articles.
+	Phase HelpImportPhase `json:"phase"`
+
+	// Redirects Rows `listHelpImportRedirects` holds.
+	Redirects int32 `json:"redirects"`
+
+	// SkippedLocales Locales of the source that the center does not offer, not imported.
+	SkippedLocales []string         `json:"skipped_locales"`
+	Source         HelpImportSource `json:"source"`
+	StartedAt      *time.Time       `json:"started_at,omitempty"`
+
+	// State `queued` until a worker takes it, `running`, then `done`, `failed` (see `error`) or
+	// `cancelled`. A `failed` import can be started again; it continues idempotently.
+	State     HelpImportState `json:"state"`
+	UpdatedAt time.Time       `json:"updated_at"`
+}
+
+// HelpImportCounts defines model for HelpImportCounts.
+type HelpImportCounts struct {
+	// Articles Articles of the source that were read.
+	Articles int32 `json:"articles"`
+
+	// Collections Collections created or updated.
+	Collections int32 `json:"collections"`
+
+	// Failed Articles or collections that could not be written (a body the center refuses, or the 200 collections a center holds).
+	Failed int32 `json:"failed"`
+
+	// ImagesFailed Images that stayed links to their original.
+	ImagesFailed        int32 `json:"images_failed"`
+	ImagesStored        int32 `json:"images_stored"`
+	LinksRewritten      int32 `json:"links_rewritten"`
+	TranslationsCreated int32 `json:"translations_created"`
+
+	// TranslationsKept Drafts edited in Yuva since the last import, left as they are.
+	TranslationsKept int32 `json:"translations_kept"`
+
+	// TranslationsUnchanged Same text as the last import, left alone.
+	TranslationsUnchanged int32 `json:"translations_unchanged"`
+	TranslationsUpdated   int32 `json:"translations_updated"`
+
+	// Truncated Bodies cut at 100,000 characters.
+	Truncated int32 `json:"truncated"`
+}
+
+// HelpImportCreate defines model for HelpImportCreate.
+type HelpImportCreate struct {
+	// DocsApiKey Required for `helpscout`; a Help Scout Docs API key.
+	DocsApiKey *string `json:"docs_api_key,omitempty"`
+
+	// Locale A BCP 47 language tag.
+	//
+	// Examples: en, tr
+	Locale *LanguageTag `json:"locale,omitempty"`
+
+	// MigrationId Required for `zendesk`; a Zendesk migration of the workspace.
+	MigrationId *uuid.UUID `json:"migration_id,omitempty"`
+
+	// OverwriteEdited Replace a draft that was edited in Yuva after the last import. Off: it is kept and
+	// counted in `translations_kept`.
+	OverwriteEdited *bool `json:"overwrite_edited,omitempty"`
+
+	// SiteId `helpscout`: read only this Docs site; every site when absent.
+	SiteId *string          `json:"site_id,omitempty"`
+	Source HelpImportSource `json:"source"`
+}
+
+// HelpImportEvent `help.import.updated`, on `/v1/realtime` only: an article import started, moved to another
+// phase or ended. Not stored, no id, never replayed, no webhook. Reaches whoever holds
+// `help:write` and sees the center's inbox.
+type HelpImportEvent struct {
+	CreatedAt   time.Time           `json:"created_at"`
+	Data        HelpImport          `json:"data"`
+	InboxId     uuid.UUID           `json:"inbox_id"`
+	Type        HelpImportEventType `json:"type"`
+	WorkspaceId uuid.UUID           `json:"workspace_id"`
+}
+
+// HelpImportEventType defines model for HelpImportEvent.Type.
+type HelpImportEventType string
+
+// HelpImportPage defines model for HelpImportPage.
+type HelpImportPage struct {
+	Items []HelpImport `json:"items"`
+
+	// NextCursor Absent on the last page.
+	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// HelpImportPhase `source` checks the sign-in and reads the languages, `collections` writes the structure,
+// `articles` the drafts and their images, `links` rewrites the links between articles.
+type HelpImportPhase string
+
+// HelpImportProgress defines model for HelpImportProgress.
+type HelpImportProgress struct {
+	CenterId uuid.UUID        `json:"center_id"`
+	Counts   HelpImportCounts `json:"counts"`
+	Id       uuid.UUID        `json:"id"`
+
+	// Phase `source` checks the sign-in and reads the languages, `collections` writes the structure,
+	// `articles` the drafts and their images, `links` rewrites the links between articles.
+	Phase HelpImportPhase `json:"phase"`
+
+	// State `queued` until a worker takes it, `running`, then `done`, `failed` (see `error`) or
+	// `cancelled`. A `failed` import can be started again; it continues idempotently.
+	State HelpImportState `json:"state"`
+}
+
+// HelpImportProgressEvent `help.import.progress`, on `/v1/realtime` only: the counts of a running article import, at
+// most once every two seconds. Not stored, no id, never replayed. Reaches whoever holds
+// `help:write` and sees the center's inbox.
+type HelpImportProgressEvent struct {
+	CreatedAt   time.Time                   `json:"created_at"`
+	Data        HelpImportProgress          `json:"data"`
+	InboxId     uuid.UUID                   `json:"inbox_id"`
+	Type        HelpImportProgressEventType `json:"type"`
+	WorkspaceId uuid.UUID                   `json:"workspace_id"`
+}
+
+// HelpImportProgressEventType defines model for HelpImportProgressEvent.Type.
+type HelpImportProgressEventType string
+
+// HelpImportRedirect defines model for HelpImportRedirect.
+type HelpImportRedirect struct {
+	ArticleId    *uuid.UUID             `json:"article_id,omitempty"`
+	CollectionId *uuid.UUID             `json:"collection_id,omitempty"`
+	Kind         HelpImportRedirectKind `json:"kind"`
+
+	// Locale A BCP 47 language tag.
+	//
+	// Examples: en, tr
+	Locale    LanguageTag `json:"locale"`
+	NewUrl    string      `json:"new_url"`
+	OldUrl    string      `json:"old_url"`
+	Published bool        `json:"published"`
+}
+
+// HelpImportRedirectKind defines model for HelpImportRedirect.Kind.
+type HelpImportRedirectKind string
+
+// HelpImportRedirectPage defines model for HelpImportRedirectPage.
+type HelpImportRedirectPage struct {
+	Items []HelpImportRedirect `json:"items"`
+
+	// NextCursor Absent on the last page.
+	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// HelpImportSource defines model for HelpImportSource.
+type HelpImportSource string
+
+// HelpImportState `queued` until a worker takes it, `running`, then `done`, `failed` (see `error`) or
+// `cancelled`. A `failed` import can be started again; it continues idempotently.
+type HelpImportState string
 
 // HelpMarkdown defines model for HelpMarkdown.
 type HelpMarkdown struct {
@@ -22734,6 +23024,57 @@ type UploadHelpImageParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListHelpImportsParams defines parameters for ListHelpImports.
+type ListHelpImportsParams struct {
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// StartHelpImportParams defines parameters for StartHelpImport.
+type StartHelpImportParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CancelHelpImportParams defines parameters for CancelHelpImport.
+type CancelHelpImportParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetHelpImportParams defines parameters for GetHelpImport.
+type GetHelpImportParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListHelpImportRedirectsParams defines parameters for ListHelpImportRedirects.
+type ListHelpImportRedirectsParams struct {
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DownloadHelpImportRedirectsParams defines parameters for DownloadHelpImportRedirects.
+type DownloadHelpImportRedirectsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // PreviewHelpCenterParams defines parameters for PreviewHelpCenter.
 type PreviewHelpCenterParams struct {
 	View *PreviewHelpCenterParamsView `form:"view,omitempty" json:"view,omitempty"`
@@ -24723,6 +25064,9 @@ type UpdateHelpCollectionJSONRequestBody = HelpCollectionUpdate
 
 // UploadHelpImageMultipartRequestBody defines body for UploadHelpImage for multipart/form-data ContentType.
 type UploadHelpImageMultipartRequestBody = EmailImageUpload
+
+// StartHelpImportJSONRequestBody defines body for StartHelpImport for application/json ContentType.
+type StartHelpImportJSONRequestBody = HelpImportCreate
 
 // RenderHelpMarkdownJSONRequestBody defines body for RenderHelpMarkdown for application/json ContentType.
 type RenderHelpMarkdownJSONRequestBody = HelpMarkdown
@@ -27578,6 +27922,58 @@ func (t *RealtimeMessage) MergeRoadmapBoardSignal(v RoadmapBoardSignal) error {
 	return err
 }
 
+// AsHelpImportEvent returns the union data inside the RealtimeMessage as a HelpImportEvent
+func (t RealtimeMessage) AsHelpImportEvent() (HelpImportEvent, error) {
+	var body HelpImportEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromHelpImportEvent overwrites any union data inside the RealtimeMessage as the provided HelpImportEvent
+func (t *RealtimeMessage) FromHelpImportEvent(v HelpImportEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeHelpImportEvent performs a merge with any union data inside the RealtimeMessage, using the provided HelpImportEvent
+func (t *RealtimeMessage) MergeHelpImportEvent(v HelpImportEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsHelpImportProgressEvent returns the union data inside the RealtimeMessage as a HelpImportProgressEvent
+func (t RealtimeMessage) AsHelpImportProgressEvent() (HelpImportProgressEvent, error) {
+	var body HelpImportProgressEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromHelpImportProgressEvent overwrites any union data inside the RealtimeMessage as the provided HelpImportProgressEvent
+func (t *RealtimeMessage) FromHelpImportProgressEvent(v HelpImportProgressEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeHelpImportProgressEvent performs a merge with any union data inside the RealtimeMessage, using the provided HelpImportProgressEvent
+func (t *RealtimeMessage) MergeHelpImportProgressEvent(v HelpImportProgressEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsHelpCenterSignal returns the union data inside the RealtimeMessage as a HelpCenterSignal
 func (t RealtimeMessage) AsHelpCenterSignal() (HelpCenterSignal, error) {
 	var body HelpCenterSignal
@@ -27918,6 +28314,10 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsHelpArticleSignal()
 	case "help.center.updated":
 		return t.AsHelpCenterSignal()
+	case "help.import.progress":
+		return t.AsHelpImportProgressEvent()
+	case "help.import.updated":
+		return t.AsHelpImportEvent()
 	case "inbox.created":
 		return t.AsInboxCreatedEvent()
 	case "inbox.deleted":
@@ -34193,6 +34593,148 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /v1/help-centers/{centerId}/images (the `UploadHelpImage` operationId).
 	UploadHelpImageWithBody(ctx context.Context, centerId HelpCenterId, params *UploadHelpImageParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListHelpImports List a center's article imports
+	//
+	// The imports of Zendesk Guide and Help Scout Docs articles into the center, newest first.
+	//
+	// Scope: `help:read`.
+	//
+	// Corresponds with GET /v1/help-centers/{centerId}/imports (the `ListHelpImports` operationId).
+	ListHelpImports(ctx context.Context, centerId HelpCenterId, params *ListHelpImportsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// StartHelpImportWithBody Import help articles from Zendesk or Help Scout
+	//
+	// Reads a help center of another service, only ever with `GET`, and writes it into this
+	// center as drafts. Nothing is published and the source is not changed.
+	//
+	// `zendesk` reads the Guide of the Zendesk account of `migration_id`, a Zendesk migration of
+	// the workspace that is signed in (its stored sign-in is reused; the OAuth `read` scope
+	// already covers Guide, so no new scope is asked; `422 source_not_connected` when the
+	// migration holds no sign-in any more, for instance after it completed or was cancelled).
+	// Categories become collections and sections their sub-collections (a section inside a
+	// section becomes a sub-collection named `Parent / Child`, since a center has two levels).
+	// Every article is imported with every translation in a locale the center offers (`en-us`
+	// matches `en-US`, else `en`); translations in other locales are skipped and named in
+	// `skipped_locales`, so a manager can add the locale to the center and run the import again.
+	// The brand help centers of other brands are not read.
+	//
+	// `helpscout` reads the Docs sites of a Help Scout account with `docs_api_key`, a Docs API
+	// key (Help Scout's Mailbox sign-in does not reach Docs). The key is sealed, used only by
+	// this import and deleted when it ends. Collections become collections and categories
+	// their sub-collections. Docs sites have no languages, so every article is written in
+	// `locale` (the center's default when absent). Browser sessions only: a `docs_api_key` is
+	// refused for OAuth connections (`403`).
+	//
+	// Article HTML becomes Markdown. Images are downloaded from where the article shows them
+	// (with the source's sign-in only for the source's own hosts), stored as the workspace's
+	// images (the `/i/` URLs of `uploadHelpImage`) and rewritten; an image that cannot be
+	// stored stays a link to its original and counts in `images_failed`. Links between imported
+	// articles are rewritten to the articles' new pages, in a last pass. The old URL and the new
+	// URL of every article and collection are kept for `listHelpImportRedirects` and
+	// `downloadHelpImportRedirects`; setting up the redirects at the old address is the owner's
+	// to do.
+	//
+	// The import runs as a background job in slices and resumes after a restart. It is
+	// idempotent: an article imported before updates its draft (a new `version`) and never
+	// duplicates; a draft that changed in Yuva since the last import is kept unless
+	// `overwrite_edited` is true; an unchanged one is left alone. At most one import per center
+	// runs (`409 import_running`). `help.import.updated` and `help.import.progress` reach
+	// `/v1/realtime`, and every saved draft sends `help.article.updated` as when it is edited.
+	//
+	// Agents with access to the center's inbox, owners, admins and API keys. Scope: `help:write`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/help-centers/{centerId}/imports (the `StartHelpImport` operationId).
+	StartHelpImportWithBody(ctx context.Context, centerId HelpCenterId, params *StartHelpImportParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// StartHelpImport Import help articles from Zendesk or Help Scout
+	//
+	// Reads a help center of another service, only ever with `GET`, and writes it into this
+	// center as drafts. Nothing is published and the source is not changed.
+	//
+	// `zendesk` reads the Guide of the Zendesk account of `migration_id`, a Zendesk migration of
+	// the workspace that is signed in (its stored sign-in is reused; the OAuth `read` scope
+	// already covers Guide, so no new scope is asked; `422 source_not_connected` when the
+	// migration holds no sign-in any more, for instance after it completed or was cancelled).
+	// Categories become collections and sections their sub-collections (a section inside a
+	// section becomes a sub-collection named `Parent / Child`, since a center has two levels).
+	// Every article is imported with every translation in a locale the center offers (`en-us`
+	// matches `en-US`, else `en`); translations in other locales are skipped and named in
+	// `skipped_locales`, so a manager can add the locale to the center and run the import again.
+	// The brand help centers of other brands are not read.
+	//
+	// `helpscout` reads the Docs sites of a Help Scout account with `docs_api_key`, a Docs API
+	// key (Help Scout's Mailbox sign-in does not reach Docs). The key is sealed, used only by
+	// this import and deleted when it ends. Collections become collections and categories
+	// their sub-collections. Docs sites have no languages, so every article is written in
+	// `locale` (the center's default when absent). Browser sessions only: a `docs_api_key` is
+	// refused for OAuth connections (`403`).
+	//
+	// Article HTML becomes Markdown. Images are downloaded from where the article shows them
+	// (with the source's sign-in only for the source's own hosts), stored as the workspace's
+	// images (the `/i/` URLs of `uploadHelpImage`) and rewritten; an image that cannot be
+	// stored stays a link to its original and counts in `images_failed`. Links between imported
+	// articles are rewritten to the articles' new pages, in a last pass. The old URL and the new
+	// URL of every article and collection are kept for `listHelpImportRedirects` and
+	// `downloadHelpImportRedirects`; setting up the redirects at the old address is the owner's
+	// to do.
+	//
+	// The import runs as a background job in slices and resumes after a restart. It is
+	// idempotent: an article imported before updates its draft (a new `version`) and never
+	// duplicates; a draft that changed in Yuva since the last import is kept unless
+	// `overwrite_edited` is true; an unchanged one is left alone. At most one import per center
+	// runs (`409 import_running`). `help.import.updated` and `help.import.progress` reach
+	// `/v1/realtime`, and every saved draft sends `help.article.updated` as when it is edited.
+	//
+	// Agents with access to the center's inbox, owners, admins and API keys. Scope: `help:write`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/help-centers/{centerId}/imports (the `StartHelpImport` operationId).
+	StartHelpImport(ctx context.Context, centerId HelpCenterId, params *StartHelpImportParams, body StartHelpImportJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CancelHelpImport Cancel an article import
+	//
+	// Stops a `queued` or `running` import after the item in progress and deletes the sealed
+	// key. What it already imported stays, with its redirects. A finished import is left as it
+	// is.
+	//
+	// Agents with access to the center's inbox, owners, admins and API keys. Scope: `help:write`.
+	//
+	// Corresponds with DELETE /v1/help-centers/{centerId}/imports/{importId} (the `CancelHelpImport` operationId).
+	CancelHelpImport(ctx context.Context, centerId HelpCenterId, importId ImportId, params *CancelHelpImportParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetHelpImport An article import
+	//
+	// Its state, phase and counts. Scope: `help:read`.
+	//
+	// Corresponds with GET /v1/help-centers/{centerId}/imports/{importId} (the `GetHelpImport` operationId).
+	GetHelpImport(ctx context.Context, centerId HelpCenterId, importId ImportId, params *GetHelpImportParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListHelpImportRedirects The old and new URLs of an import
+	//
+	// One row per article translation and collection the import saw, by `kind`, `locale` and
+	// `old_url`, with the page that now holds it in the center. `published` is false while
+	// the page is a draft, so the new URL answers `404` until a member publishes it.
+	// A re-run reports everything it saw again, also what it left unchanged.
+	//
+	// Scope: `help:read`.
+	//
+	// Corresponds with GET /v1/help-centers/{centerId}/imports/{importId}/redirects (the `ListHelpImportRedirects` operationId).
+	ListHelpImportRedirects(ctx context.Context, centerId HelpCenterId, importId ImportId, params *ListHelpImportRedirectsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DownloadHelpImportRedirects Download an import's redirects
+	//
+	// The rows of `listHelpImportRedirects` as a CSV file with the columns `kind`, `locale`,
+	// `old_url`, `new_url` and `published`. Cells are quoted and formula-like values defused as
+	// in the consent export.
+	//
+	// Scope: `help:read`.
+	//
+	// Corresponds with GET /v1/help-centers/{centerId}/imports/{importId}/redirects.csv (the `DownloadHelpImportRedirects` operationId).
+	DownloadHelpImportRedirects(ctx context.Context, centerId HelpCenterId, importId ImportId, params *DownloadHelpImportRedirectsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// PreviewHelpCenter Preview a help center page
 	//
@@ -46131,6 +46673,218 @@ func (c *Client) UpdateHelpCollection(ctx context.Context, centerId HelpCenterId
 // Corresponds with POST /v1/help-centers/{centerId}/images (the `UploadHelpImage` operationId).
 func (c *Client) UploadHelpImageWithBody(ctx context.Context, centerId HelpCenterId, params *UploadHelpImageParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUploadHelpImageRequestWithBody(c.Server, centerId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListHelpImports List a center's article imports
+//
+// The imports of Zendesk Guide and Help Scout Docs articles into the center, newest first.
+//
+// Scope: `help:read`.
+//
+// Corresponds with GET /v1/help-centers/{centerId}/imports (the `ListHelpImports` operationId).
+func (c *Client) ListHelpImports(ctx context.Context, centerId HelpCenterId, params *ListHelpImportsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListHelpImportsRequest(c.Server, centerId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// StartHelpImportWithBody Import help articles from Zendesk or Help Scout
+//
+// Reads a help center of another service, only ever with `GET`, and writes it into this
+// center as drafts. Nothing is published and the source is not changed.
+//
+// `zendesk` reads the Guide of the Zendesk account of `migration_id`, a Zendesk migration of
+// the workspace that is signed in (its stored sign-in is reused; the OAuth `read` scope
+// already covers Guide, so no new scope is asked; `422 source_not_connected` when the
+// migration holds no sign-in any more, for instance after it completed or was cancelled).
+// Categories become collections and sections their sub-collections (a section inside a
+// section becomes a sub-collection named `Parent / Child`, since a center has two levels).
+// Every article is imported with every translation in a locale the center offers (`en-us`
+// matches `en-US`, else `en`); translations in other locales are skipped and named in
+// `skipped_locales`, so a manager can add the locale to the center and run the import again.
+// The brand help centers of other brands are not read.
+//
+// `helpscout` reads the Docs sites of a Help Scout account with `docs_api_key`, a Docs API
+// key (Help Scout's Mailbox sign-in does not reach Docs). The key is sealed, used only by
+// this import and deleted when it ends. Collections become collections and categories
+// their sub-collections. Docs sites have no languages, so every article is written in
+// `locale` (the center's default when absent). Browser sessions only: a `docs_api_key` is
+// refused for OAuth connections (`403`).
+//
+// Article HTML becomes Markdown. Images are downloaded from where the article shows them
+// (with the source's sign-in only for the source's own hosts), stored as the workspace's
+// images (the `/i/` URLs of `uploadHelpImage`) and rewritten; an image that cannot be
+// stored stays a link to its original and counts in `images_failed`. Links between imported
+// articles are rewritten to the articles' new pages, in a last pass. The old URL and the new
+// URL of every article and collection are kept for `listHelpImportRedirects` and
+// `downloadHelpImportRedirects`; setting up the redirects at the old address is the owner's
+// to do.
+//
+// The import runs as a background job in slices and resumes after a restart. It is
+// idempotent: an article imported before updates its draft (a new `version`) and never
+// duplicates; a draft that changed in Yuva since the last import is kept unless
+// `overwrite_edited` is true; an unchanged one is left alone. At most one import per center
+// runs (`409 import_running`). `help.import.updated` and `help.import.progress` reach
+// `/v1/realtime`, and every saved draft sends `help.article.updated` as when it is edited.
+//
+// Agents with access to the center's inbox, owners, admins and API keys. Scope: `help:write`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/help-centers/{centerId}/imports (the `StartHelpImport` operationId).
+func (c *Client) StartHelpImportWithBody(ctx context.Context, centerId HelpCenterId, params *StartHelpImportParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewStartHelpImportRequestWithBody(c.Server, centerId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// StartHelpImport Import help articles from Zendesk or Help Scout
+//
+// Reads a help center of another service, only ever with `GET`, and writes it into this
+// center as drafts. Nothing is published and the source is not changed.
+//
+// `zendesk` reads the Guide of the Zendesk account of `migration_id`, a Zendesk migration of
+// the workspace that is signed in (its stored sign-in is reused; the OAuth `read` scope
+// already covers Guide, so no new scope is asked; `422 source_not_connected` when the
+// migration holds no sign-in any more, for instance after it completed or was cancelled).
+// Categories become collections and sections their sub-collections (a section inside a
+// section becomes a sub-collection named `Parent / Child`, since a center has two levels).
+// Every article is imported with every translation in a locale the center offers (`en-us`
+// matches `en-US`, else `en`); translations in other locales are skipped and named in
+// `skipped_locales`, so a manager can add the locale to the center and run the import again.
+// The brand help centers of other brands are not read.
+//
+// `helpscout` reads the Docs sites of a Help Scout account with `docs_api_key`, a Docs API
+// key (Help Scout's Mailbox sign-in does not reach Docs). The key is sealed, used only by
+// this import and deleted when it ends. Collections become collections and categories
+// their sub-collections. Docs sites have no languages, so every article is written in
+// `locale` (the center's default when absent). Browser sessions only: a `docs_api_key` is
+// refused for OAuth connections (`403`).
+//
+// Article HTML becomes Markdown. Images are downloaded from where the article shows them
+// (with the source's sign-in only for the source's own hosts), stored as the workspace's
+// images (the `/i/` URLs of `uploadHelpImage`) and rewritten; an image that cannot be
+// stored stays a link to its original and counts in `images_failed`. Links between imported
+// articles are rewritten to the articles' new pages, in a last pass. The old URL and the new
+// URL of every article and collection are kept for `listHelpImportRedirects` and
+// `downloadHelpImportRedirects`; setting up the redirects at the old address is the owner's
+// to do.
+//
+// The import runs as a background job in slices and resumes after a restart. It is
+// idempotent: an article imported before updates its draft (a new `version`) and never
+// duplicates; a draft that changed in Yuva since the last import is kept unless
+// `overwrite_edited` is true; an unchanged one is left alone. At most one import per center
+// runs (`409 import_running`). `help.import.updated` and `help.import.progress` reach
+// `/v1/realtime`, and every saved draft sends `help.article.updated` as when it is edited.
+//
+// Agents with access to the center's inbox, owners, admins and API keys. Scope: `help:write`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/help-centers/{centerId}/imports (the `StartHelpImport` operationId).
+func (c *Client) StartHelpImport(ctx context.Context, centerId HelpCenterId, params *StartHelpImportParams, body StartHelpImportJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewStartHelpImportRequest(c.Server, centerId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CancelHelpImport Cancel an article import
+//
+// Stops a `queued` or `running` import after the item in progress and deletes the sealed
+// key. What it already imported stays, with its redirects. A finished import is left as it
+// is.
+//
+// Agents with access to the center's inbox, owners, admins and API keys. Scope: `help:write`.
+//
+// Corresponds with DELETE /v1/help-centers/{centerId}/imports/{importId} (the `CancelHelpImport` operationId).
+func (c *Client) CancelHelpImport(ctx context.Context, centerId HelpCenterId, importId ImportId, params *CancelHelpImportParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCancelHelpImportRequest(c.Server, centerId, importId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetHelpImport An article import
+//
+// Its state, phase and counts. Scope: `help:read`.
+//
+// Corresponds with GET /v1/help-centers/{centerId}/imports/{importId} (the `GetHelpImport` operationId).
+func (c *Client) GetHelpImport(ctx context.Context, centerId HelpCenterId, importId ImportId, params *GetHelpImportParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetHelpImportRequest(c.Server, centerId, importId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListHelpImportRedirects The old and new URLs of an import
+//
+// One row per article translation and collection the import saw, by `kind`, `locale` and
+// `old_url`, with the page that now holds it in the center. `published` is false while
+// the page is a draft, so the new URL answers `404` until a member publishes it.
+// A re-run reports everything it saw again, also what it left unchanged.
+//
+// Scope: `help:read`.
+//
+// Corresponds with GET /v1/help-centers/{centerId}/imports/{importId}/redirects (the `ListHelpImportRedirects` operationId).
+func (c *Client) ListHelpImportRedirects(ctx context.Context, centerId HelpCenterId, importId ImportId, params *ListHelpImportRedirectsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListHelpImportRedirectsRequest(c.Server, centerId, importId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DownloadHelpImportRedirects Download an import's redirects
+//
+// The rows of `listHelpImportRedirects` as a CSV file with the columns `kind`, `locale`,
+// `old_url`, `new_url` and `published`. Cells are quoted and formula-like values defused as
+// in the consent export.
+//
+// Scope: `help:read`.
+//
+// Corresponds with GET /v1/help-centers/{centerId}/imports/{importId}/redirects.csv (the `DownloadHelpImportRedirects` operationId).
+func (c *Client) DownloadHelpImportRedirects(ctx context.Context, centerId HelpCenterId, importId ImportId, params *DownloadHelpImportRedirectsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDownloadHelpImportRedirectsRequest(c.Server, centerId, importId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -68191,6 +68945,430 @@ func NewUploadHelpImageRequestWithBody(server string, centerId HelpCenterId, par
 	return req, nil
 }
 
+// NewListHelpImportsRequest constructs an http.Request for the ListHelpImports method
+func NewListHelpImportsRequest(server string, centerId HelpCenterId, params *ListHelpImportsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "centerId", centerId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/help-centers/%s/imports", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: "int32"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewStartHelpImportRequest calls the generic StartHelpImport builder with application/json body
+func NewStartHelpImportRequest(server string, centerId HelpCenterId, params *StartHelpImportParams, body StartHelpImportJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewStartHelpImportRequestWithBody(server, centerId, params, "application/json", bodyReader)
+}
+
+// NewStartHelpImportRequestWithBody constructs an http.Request for the StartHelpImport method, with any body, and a specified content type
+func NewStartHelpImportRequestWithBody(server string, centerId HelpCenterId, params *StartHelpImportParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "centerId", centerId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/help-centers/%s/imports", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewCancelHelpImportRequest constructs an http.Request for the CancelHelpImport method
+func NewCancelHelpImportRequest(server string, centerId HelpCenterId, importId ImportId, params *CancelHelpImportParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "centerId", centerId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "importId", importId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/help-centers/%s/imports/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewGetHelpImportRequest constructs an http.Request for the GetHelpImport method
+func NewGetHelpImportRequest(server string, centerId HelpCenterId, importId ImportId, params *GetHelpImportParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "centerId", centerId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "importId", importId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/help-centers/%s/imports/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewListHelpImportRedirectsRequest constructs an http.Request for the ListHelpImportRedirects method
+func NewListHelpImportRedirectsRequest(server string, centerId HelpCenterId, importId ImportId, params *ListHelpImportRedirectsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "centerId", centerId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "importId", importId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/help-centers/%s/imports/%s/redirects", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: "int32"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewDownloadHelpImportRedirectsRequest constructs an http.Request for the DownloadHelpImportRedirects method
+func NewDownloadHelpImportRedirectsRequest(server string, centerId HelpCenterId, importId ImportId, params *DownloadHelpImportRedirectsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "centerId", centerId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "importId", importId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/help-centers/%s/imports/%s/redirects.csv", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewPreviewHelpCenterRequest constructs an http.Request for the PreviewHelpCenter method
 func NewPreviewHelpCenterRequest(server string, centerId HelpCenterId, params *PreviewHelpCenterParams) (*http.Request, error) {
 	var err error
@@ -84016,6 +85194,158 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /v1/help-centers/{centerId}/images (the `UploadHelpImage` operationId).
 	UploadHelpImageWithBodyWithResponse(ctx context.Context, centerId HelpCenterId, params *UploadHelpImageParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadHelpImageResponse, error)
+
+	// ListHelpImportsWithResponse List a center's article imports
+	//
+	// The imports of Zendesk Guide and Help Scout Docs articles into the center, newest first.
+	//
+	// Scope: `help:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/help-centers/{centerId}/imports (the `ListHelpImports` operationId).
+	ListHelpImportsWithResponse(ctx context.Context, centerId HelpCenterId, params *ListHelpImportsParams, reqEditors ...RequestEditorFn) (*ListHelpImportsResponse, error)
+
+	// StartHelpImportWithBodyWithResponse Import help articles from Zendesk or Help Scout
+	//
+	// Reads a help center of another service, only ever with `GET`, and writes it into this
+	// center as drafts. Nothing is published and the source is not changed.
+	//
+	// `zendesk` reads the Guide of the Zendesk account of `migration_id`, a Zendesk migration of
+	// the workspace that is signed in (its stored sign-in is reused; the OAuth `read` scope
+	// already covers Guide, so no new scope is asked; `422 source_not_connected` when the
+	// migration holds no sign-in any more, for instance after it completed or was cancelled).
+	// Categories become collections and sections their sub-collections (a section inside a
+	// section becomes a sub-collection named `Parent / Child`, since a center has two levels).
+	// Every article is imported with every translation in a locale the center offers (`en-us`
+	// matches `en-US`, else `en`); translations in other locales are skipped and named in
+	// `skipped_locales`, so a manager can add the locale to the center and run the import again.
+	// The brand help centers of other brands are not read.
+	//
+	// `helpscout` reads the Docs sites of a Help Scout account with `docs_api_key`, a Docs API
+	// key (Help Scout's Mailbox sign-in does not reach Docs). The key is sealed, used only by
+	// this import and deleted when it ends. Collections become collections and categories
+	// their sub-collections. Docs sites have no languages, so every article is written in
+	// `locale` (the center's default when absent). Browser sessions only: a `docs_api_key` is
+	// refused for OAuth connections (`403`).
+	//
+	// Article HTML becomes Markdown. Images are downloaded from where the article shows them
+	// (with the source's sign-in only for the source's own hosts), stored as the workspace's
+	// images (the `/i/` URLs of `uploadHelpImage`) and rewritten; an image that cannot be
+	// stored stays a link to its original and counts in `images_failed`. Links between imported
+	// articles are rewritten to the articles' new pages, in a last pass. The old URL and the new
+	// URL of every article and collection are kept for `listHelpImportRedirects` and
+	// `downloadHelpImportRedirects`; setting up the redirects at the old address is the owner's
+	// to do.
+	//
+	// The import runs as a background job in slices and resumes after a restart. It is
+	// idempotent: an article imported before updates its draft (a new `version`) and never
+	// duplicates; a draft that changed in Yuva since the last import is kept unless
+	// `overwrite_edited` is true; an unchanged one is left alone. At most one import per center
+	// runs (`409 import_running`). `help.import.updated` and `help.import.progress` reach
+	// `/v1/realtime`, and every saved draft sends `help.article.updated` as when it is edited.
+	//
+	// Agents with access to the center's inbox, owners, admins and API keys. Scope: `help:write`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/help-centers/{centerId}/imports (the `StartHelpImport` operationId).
+	StartHelpImportWithBodyWithResponse(ctx context.Context, centerId HelpCenterId, params *StartHelpImportParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*StartHelpImportResponse, error)
+
+	// StartHelpImportWithResponse Import help articles from Zendesk or Help Scout
+	//
+	// Reads a help center of another service, only ever with `GET`, and writes it into this
+	// center as drafts. Nothing is published and the source is not changed.
+	//
+	// `zendesk` reads the Guide of the Zendesk account of `migration_id`, a Zendesk migration of
+	// the workspace that is signed in (its stored sign-in is reused; the OAuth `read` scope
+	// already covers Guide, so no new scope is asked; `422 source_not_connected` when the
+	// migration holds no sign-in any more, for instance after it completed or was cancelled).
+	// Categories become collections and sections their sub-collections (a section inside a
+	// section becomes a sub-collection named `Parent / Child`, since a center has two levels).
+	// Every article is imported with every translation in a locale the center offers (`en-us`
+	// matches `en-US`, else `en`); translations in other locales are skipped and named in
+	// `skipped_locales`, so a manager can add the locale to the center and run the import again.
+	// The brand help centers of other brands are not read.
+	//
+	// `helpscout` reads the Docs sites of a Help Scout account with `docs_api_key`, a Docs API
+	// key (Help Scout's Mailbox sign-in does not reach Docs). The key is sealed, used only by
+	// this import and deleted when it ends. Collections become collections and categories
+	// their sub-collections. Docs sites have no languages, so every article is written in
+	// `locale` (the center's default when absent). Browser sessions only: a `docs_api_key` is
+	// refused for OAuth connections (`403`).
+	//
+	// Article HTML becomes Markdown. Images are downloaded from where the article shows them
+	// (with the source's sign-in only for the source's own hosts), stored as the workspace's
+	// images (the `/i/` URLs of `uploadHelpImage`) and rewritten; an image that cannot be
+	// stored stays a link to its original and counts in `images_failed`. Links between imported
+	// articles are rewritten to the articles' new pages, in a last pass. The old URL and the new
+	// URL of every article and collection are kept for `listHelpImportRedirects` and
+	// `downloadHelpImportRedirects`; setting up the redirects at the old address is the owner's
+	// to do.
+	//
+	// The import runs as a background job in slices and resumes after a restart. It is
+	// idempotent: an article imported before updates its draft (a new `version`) and never
+	// duplicates; a draft that changed in Yuva since the last import is kept unless
+	// `overwrite_edited` is true; an unchanged one is left alone. At most one import per center
+	// runs (`409 import_running`). `help.import.updated` and `help.import.progress` reach
+	// `/v1/realtime`, and every saved draft sends `help.article.updated` as when it is edited.
+	//
+	// Agents with access to the center's inbox, owners, admins and API keys. Scope: `help:write`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/help-centers/{centerId}/imports (the `StartHelpImport` operationId).
+	StartHelpImportWithResponse(ctx context.Context, centerId HelpCenterId, params *StartHelpImportParams, body StartHelpImportJSONRequestBody, reqEditors ...RequestEditorFn) (*StartHelpImportResponse, error)
+
+	// CancelHelpImportWithResponse Cancel an article import
+	//
+	// Stops a `queued` or `running` import after the item in progress and deletes the sealed
+	// key. What it already imported stays, with its redirects. A finished import is left as it
+	// is.
+	//
+	// Agents with access to the center's inbox, owners, admins and API keys. Scope: `help:write`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/help-centers/{centerId}/imports/{importId} (the `CancelHelpImport` operationId).
+	CancelHelpImportWithResponse(ctx context.Context, centerId HelpCenterId, importId ImportId, params *CancelHelpImportParams, reqEditors ...RequestEditorFn) (*CancelHelpImportResponse, error)
+
+	// GetHelpImportWithResponse An article import
+	//
+	// Its state, phase and counts. Scope: `help:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/help-centers/{centerId}/imports/{importId} (the `GetHelpImport` operationId).
+	GetHelpImportWithResponse(ctx context.Context, centerId HelpCenterId, importId ImportId, params *GetHelpImportParams, reqEditors ...RequestEditorFn) (*GetHelpImportResponse, error)
+
+	// ListHelpImportRedirectsWithResponse The old and new URLs of an import
+	//
+	// One row per article translation and collection the import saw, by `kind`, `locale` and
+	// `old_url`, with the page that now holds it in the center. `published` is false while
+	// the page is a draft, so the new URL answers `404` until a member publishes it.
+	// A re-run reports everything it saw again, also what it left unchanged.
+	//
+	// Scope: `help:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/help-centers/{centerId}/imports/{importId}/redirects (the `ListHelpImportRedirects` operationId).
+	ListHelpImportRedirectsWithResponse(ctx context.Context, centerId HelpCenterId, importId ImportId, params *ListHelpImportRedirectsParams, reqEditors ...RequestEditorFn) (*ListHelpImportRedirectsResponse, error)
+
+	// DownloadHelpImportRedirectsWithResponse Download an import's redirects
+	//
+	// The rows of `listHelpImportRedirects` as a CSV file with the columns `kind`, `locale`,
+	// `old_url`, `new_url` and `published`. Cells are quoted and formula-like values defused as
+	// in the consent export.
+	//
+	// Scope: `help:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/help-centers/{centerId}/imports/{importId}/redirects.csv (the `DownloadHelpImportRedirects` operationId).
+	DownloadHelpImportRedirectsWithResponse(ctx context.Context, centerId HelpCenterId, importId ImportId, params *DownloadHelpImportRedirectsParams, reqEditors ...RequestEditorFn) (*DownloadHelpImportRedirectsResponse, error)
 
 	// PreviewHelpCenterWithResponse Preview a help center page
 	//
@@ -105166,6 +106496,413 @@ func (r UploadHelpImageResponse) ContentType() string {
 	return ""
 }
 
+type ListHelpImportsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *HelpImportPage
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListHelpImportsResponse) GetJSON200() *HelpImportPage {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r ListHelpImportsResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListHelpImportsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListHelpImportsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ListHelpImportsResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r ListHelpImportsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListHelpImportsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListHelpImportsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListHelpImportsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type StartHelpImportResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON202 the response for an HTTP 202 `application/json` response
+	JSON202 *HelpImport
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+	// ApplicationproblemJSON422 the response for an HTTP 422 `application/problem+json` response
+	ApplicationproblemJSON422 *Problem
+	// ApplicationproblemJSON429 the response for an HTTP 429 `application/problem+json` response
+	ApplicationproblemJSON429 *Problem
+}
+
+// GetJSON202 returns the response for an HTTP 202 `application/json` response
+func (r StartHelpImportResponse) GetJSON202() *HelpImport {
+	return r.JSON202
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r StartHelpImportResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r StartHelpImportResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r StartHelpImportResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r StartHelpImportResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r StartHelpImportResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetApplicationproblemJSON422 returns the response for an HTTP 422 `application/problem+json` response
+func (r StartHelpImportResponse) GetApplicationproblemJSON422() *Problem {
+	return r.ApplicationproblemJSON422
+}
+
+// GetApplicationproblemJSON429 returns the response for an HTTP 429 `application/problem+json` response
+func (r StartHelpImportResponse) GetApplicationproblemJSON429() *Problem {
+	return r.ApplicationproblemJSON429
+}
+
+// GetBody returns the raw response body bytes
+func (r StartHelpImportResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r StartHelpImportResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r StartHelpImportResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r StartHelpImportResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CancelHelpImportResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r CancelHelpImportResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r CancelHelpImportResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r CancelHelpImportResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r CancelHelpImportResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CancelHelpImportResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CancelHelpImportResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CancelHelpImportResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetHelpImportResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *HelpImport
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetHelpImportResponse) GetJSON200() *HelpImport {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetHelpImportResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetHelpImportResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r GetHelpImportResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r GetHelpImportResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetHelpImportResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetHelpImportResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetHelpImportResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListHelpImportRedirectsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *HelpImportRedirectPage
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListHelpImportRedirectsResponse) GetJSON200() *HelpImportRedirectPage {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r ListHelpImportRedirectsResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListHelpImportRedirectsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListHelpImportRedirectsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ListHelpImportRedirectsResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r ListHelpImportRedirectsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListHelpImportRedirectsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListHelpImportRedirectsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListHelpImportRedirectsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+// DownloadHelpImportRedirectsResponse200Headers the declared response headers of an HTTP 200 response for DownloadHelpImportRedirects
+type DownloadHelpImportRedirectsResponse200Headers struct {
+	ContentDisposition *string
+}
+
+type DownloadHelpImportRedirectsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// Headers200 the parsed response headers for an HTTP 200 response
+	Headers200 *DownloadHelpImportRedirectsResponse200Headers
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DownloadHelpImportRedirectsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DownloadHelpImportRedirectsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r DownloadHelpImportRedirectsResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r DownloadHelpImportRedirectsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DownloadHelpImportRedirectsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DownloadHelpImportRedirectsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DownloadHelpImportRedirectsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type PreviewHelpCenterResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -123888,6 +125625,200 @@ func (c *ClientWithResponses) UploadHelpImageWithBodyWithResponse(ctx context.Co
 	return ParseUploadHelpImageResponse(rsp)
 }
 
+// ListHelpImportsWithResponse List a center's article imports
+//
+// The imports of Zendesk Guide and Help Scout Docs articles into the center, newest first.
+//
+// Scope: `help:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/help-centers/{centerId}/imports (the `ListHelpImports` operationId).
+func (c *ClientWithResponses) ListHelpImportsWithResponse(ctx context.Context, centerId HelpCenterId, params *ListHelpImportsParams, reqEditors ...RequestEditorFn) (*ListHelpImportsResponse, error) {
+	rsp, err := c.ListHelpImports(ctx, centerId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListHelpImportsResponse(rsp)
+}
+
+// StartHelpImportWithBodyWithResponse Import help articles from Zendesk or Help Scout
+//
+// Reads a help center of another service, only ever with `GET`, and writes it into this
+// center as drafts. Nothing is published and the source is not changed.
+//
+// `zendesk` reads the Guide of the Zendesk account of `migration_id`, a Zendesk migration of
+// the workspace that is signed in (its stored sign-in is reused; the OAuth `read` scope
+// already covers Guide, so no new scope is asked; `422 source_not_connected` when the
+// migration holds no sign-in any more, for instance after it completed or was cancelled).
+// Categories become collections and sections their sub-collections (a section inside a
+// section becomes a sub-collection named `Parent / Child`, since a center has two levels).
+// Every article is imported with every translation in a locale the center offers (`en-us`
+// matches `en-US`, else `en`); translations in other locales are skipped and named in
+// `skipped_locales`, so a manager can add the locale to the center and run the import again.
+// The brand help centers of other brands are not read.
+//
+// `helpscout` reads the Docs sites of a Help Scout account with `docs_api_key`, a Docs API
+// key (Help Scout's Mailbox sign-in does not reach Docs). The key is sealed, used only by
+// this import and deleted when it ends. Collections become collections and categories
+// their sub-collections. Docs sites have no languages, so every article is written in
+// `locale` (the center's default when absent). Browser sessions only: a `docs_api_key` is
+// refused for OAuth connections (`403`).
+//
+// Article HTML becomes Markdown. Images are downloaded from where the article shows them
+// (with the source's sign-in only for the source's own hosts), stored as the workspace's
+// images (the `/i/` URLs of `uploadHelpImage`) and rewritten; an image that cannot be
+// stored stays a link to its original and counts in `images_failed`. Links between imported
+// articles are rewritten to the articles' new pages, in a last pass. The old URL and the new
+// URL of every article and collection are kept for `listHelpImportRedirects` and
+// `downloadHelpImportRedirects`; setting up the redirects at the old address is the owner's
+// to do.
+//
+// The import runs as a background job in slices and resumes after a restart. It is
+// idempotent: an article imported before updates its draft (a new `version`) and never
+// duplicates; a draft that changed in Yuva since the last import is kept unless
+// `overwrite_edited` is true; an unchanged one is left alone. At most one import per center
+// runs (`409 import_running`). `help.import.updated` and `help.import.progress` reach
+// `/v1/realtime`, and every saved draft sends `help.article.updated` as when it is edited.
+//
+// Agents with access to the center's inbox, owners, admins and API keys. Scope: `help:write`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/help-centers/{centerId}/imports (the `StartHelpImport` operationId).
+func (c *ClientWithResponses) StartHelpImportWithBodyWithResponse(ctx context.Context, centerId HelpCenterId, params *StartHelpImportParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*StartHelpImportResponse, error) {
+	rsp, err := c.StartHelpImportWithBody(ctx, centerId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseStartHelpImportResponse(rsp)
+}
+
+// StartHelpImportWithResponse Import help articles from Zendesk or Help Scout
+//
+// Reads a help center of another service, only ever with `GET`, and writes it into this
+// center as drafts. Nothing is published and the source is not changed.
+//
+// `zendesk` reads the Guide of the Zendesk account of `migration_id`, a Zendesk migration of
+// the workspace that is signed in (its stored sign-in is reused; the OAuth `read` scope
+// already covers Guide, so no new scope is asked; `422 source_not_connected` when the
+// migration holds no sign-in any more, for instance after it completed or was cancelled).
+// Categories become collections and sections their sub-collections (a section inside a
+// section becomes a sub-collection named `Parent / Child`, since a center has two levels).
+// Every article is imported with every translation in a locale the center offers (`en-us`
+// matches `en-US`, else `en`); translations in other locales are skipped and named in
+// `skipped_locales`, so a manager can add the locale to the center and run the import again.
+// The brand help centers of other brands are not read.
+//
+// `helpscout` reads the Docs sites of a Help Scout account with `docs_api_key`, a Docs API
+// key (Help Scout's Mailbox sign-in does not reach Docs). The key is sealed, used only by
+// this import and deleted when it ends. Collections become collections and categories
+// their sub-collections. Docs sites have no languages, so every article is written in
+// `locale` (the center's default when absent). Browser sessions only: a `docs_api_key` is
+// refused for OAuth connections (`403`).
+//
+// Article HTML becomes Markdown. Images are downloaded from where the article shows them
+// (with the source's sign-in only for the source's own hosts), stored as the workspace's
+// images (the `/i/` URLs of `uploadHelpImage`) and rewritten; an image that cannot be
+// stored stays a link to its original and counts in `images_failed`. Links between imported
+// articles are rewritten to the articles' new pages, in a last pass. The old URL and the new
+// URL of every article and collection are kept for `listHelpImportRedirects` and
+// `downloadHelpImportRedirects`; setting up the redirects at the old address is the owner's
+// to do.
+//
+// The import runs as a background job in slices and resumes after a restart. It is
+// idempotent: an article imported before updates its draft (a new `version`) and never
+// duplicates; a draft that changed in Yuva since the last import is kept unless
+// `overwrite_edited` is true; an unchanged one is left alone. At most one import per center
+// runs (`409 import_running`). `help.import.updated` and `help.import.progress` reach
+// `/v1/realtime`, and every saved draft sends `help.article.updated` as when it is edited.
+//
+// Agents with access to the center's inbox, owners, admins and API keys. Scope: `help:write`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/help-centers/{centerId}/imports (the `StartHelpImport` operationId).
+func (c *ClientWithResponses) StartHelpImportWithResponse(ctx context.Context, centerId HelpCenterId, params *StartHelpImportParams, body StartHelpImportJSONRequestBody, reqEditors ...RequestEditorFn) (*StartHelpImportResponse, error) {
+	rsp, err := c.StartHelpImport(ctx, centerId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseStartHelpImportResponse(rsp)
+}
+
+// CancelHelpImportWithResponse Cancel an article import
+//
+// Stops a `queued` or `running` import after the item in progress and deletes the sealed
+// key. What it already imported stays, with its redirects. A finished import is left as it
+// is.
+//
+// Agents with access to the center's inbox, owners, admins and API keys. Scope: `help:write`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/help-centers/{centerId}/imports/{importId} (the `CancelHelpImport` operationId).
+func (c *ClientWithResponses) CancelHelpImportWithResponse(ctx context.Context, centerId HelpCenterId, importId ImportId, params *CancelHelpImportParams, reqEditors ...RequestEditorFn) (*CancelHelpImportResponse, error) {
+	rsp, err := c.CancelHelpImport(ctx, centerId, importId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCancelHelpImportResponse(rsp)
+}
+
+// GetHelpImportWithResponse An article import
+//
+// Its state, phase and counts. Scope: `help:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/help-centers/{centerId}/imports/{importId} (the `GetHelpImport` operationId).
+func (c *ClientWithResponses) GetHelpImportWithResponse(ctx context.Context, centerId HelpCenterId, importId ImportId, params *GetHelpImportParams, reqEditors ...RequestEditorFn) (*GetHelpImportResponse, error) {
+	rsp, err := c.GetHelpImport(ctx, centerId, importId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetHelpImportResponse(rsp)
+}
+
+// ListHelpImportRedirectsWithResponse The old and new URLs of an import
+//
+// One row per article translation and collection the import saw, by `kind`, `locale` and
+// `old_url`, with the page that now holds it in the center. `published` is false while
+// the page is a draft, so the new URL answers `404` until a member publishes it.
+// A re-run reports everything it saw again, also what it left unchanged.
+//
+// Scope: `help:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/help-centers/{centerId}/imports/{importId}/redirects (the `ListHelpImportRedirects` operationId).
+func (c *ClientWithResponses) ListHelpImportRedirectsWithResponse(ctx context.Context, centerId HelpCenterId, importId ImportId, params *ListHelpImportRedirectsParams, reqEditors ...RequestEditorFn) (*ListHelpImportRedirectsResponse, error) {
+	rsp, err := c.ListHelpImportRedirects(ctx, centerId, importId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListHelpImportRedirectsResponse(rsp)
+}
+
+// DownloadHelpImportRedirectsWithResponse Download an import's redirects
+//
+// The rows of `listHelpImportRedirects` as a CSV file with the columns `kind`, `locale`,
+// `old_url`, `new_url` and `published`. Cells are quoted and formula-like values defused as
+// in the consent export.
+//
+// Scope: `help:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/help-centers/{centerId}/imports/{importId}/redirects.csv (the `DownloadHelpImportRedirects` operationId).
+func (c *ClientWithResponses) DownloadHelpImportRedirectsWithResponse(ctx context.Context, centerId HelpCenterId, importId ImportId, params *DownloadHelpImportRedirectsParams, reqEditors ...RequestEditorFn) (*DownloadHelpImportRedirectsResponse, error) {
+	rsp, err := c.DownloadHelpImportRedirects(ctx, centerId, importId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDownloadHelpImportRedirectsResponse(rsp)
+}
+
 // PreviewHelpCenterWithResponse Preview a help center page
 //
 // A page of the center as visitors see it, also while the center or the article is
@@ -142601,6 +144532,332 @@ func ParseUploadHelpImageResponse(rsp *http.Response) (*UploadHelpImageResponse,
 		}
 		response.ApplicationproblemJSON429 = &dest
 
+	}
+
+	return response, nil
+}
+
+// ParseListHelpImportsResponse parses an HTTP response from a ListHelpImportsWithResponse call
+func ParseListHelpImportsResponse(rsp *http.Response) (*ListHelpImportsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListHelpImportsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest HelpImportPage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseStartHelpImportResponse parses an HTTP response from a StartHelpImportWithResponse call
+func ParseStartHelpImportResponse(rsp *http.Response) (*StartHelpImportResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &StartHelpImportResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest HelpImport
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON429 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCancelHelpImportResponse parses an HTTP response from a CancelHelpImportWithResponse call
+func ParseCancelHelpImportResponse(rsp *http.Response) (*CancelHelpImportResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CancelHelpImportResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetHelpImportResponse parses an HTTP response from a GetHelpImportWithResponse call
+func ParseGetHelpImportResponse(rsp *http.Response) (*GetHelpImportResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetHelpImportResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest HelpImport
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListHelpImportRedirectsResponse parses an HTTP response from a ListHelpImportRedirectsWithResponse call
+func ParseListHelpImportRedirectsResponse(rsp *http.Response) (*ListHelpImportRedirectsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListHelpImportRedirectsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest HelpImportRedirectPage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDownloadHelpImportRedirectsResponse parses an HTTP response from a DownloadHelpImportRedirectsWithResponse call
+func ParseDownloadHelpImportRedirectsResponse(rsp *http.Response) (*DownloadHelpImportRedirectsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DownloadHelpImportRedirectsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	switch {
+	case rsp.StatusCode == 200:
+		var headers DownloadHelpImportRedirectsResponse200Headers
+		if values := rsp.Header.Values("Content-Disposition"); len(values) > 0 {
+			var value string
+			if err := runtime.BindStyledParameterWithOptions("simple", "Content-Disposition", values[0], &value, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			}
+			headers.ContentDisposition = &value
+		}
+		response.Headers200 = &headers
 	}
 
 	return response, nil

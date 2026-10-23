@@ -3263,6 +3263,123 @@ func (e HelpIcon) Valid() bool {
 	}
 }
 
+// Defines values for HelpImportEventType.
+const (
+	HelpImportUpdated HelpImportEventType = "help.import.updated"
+)
+
+// Valid indicates whether the value is a known member of the HelpImportEventType enum.
+func (e HelpImportEventType) Valid() bool {
+	switch e {
+	case HelpImportUpdated:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for HelpImportPhase.
+const (
+	HelpImportPhaseArticles    HelpImportPhase = "articles"
+	HelpImportPhaseCollections HelpImportPhase = "collections"
+	HelpImportPhaseLinks       HelpImportPhase = "links"
+	HelpImportPhaseSource      HelpImportPhase = "source"
+)
+
+// Valid indicates whether the value is a known member of the HelpImportPhase enum.
+func (e HelpImportPhase) Valid() bool {
+	switch e {
+	case HelpImportPhaseArticles:
+		return true
+	case HelpImportPhaseCollections:
+		return true
+	case HelpImportPhaseLinks:
+		return true
+	case HelpImportPhaseSource:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for HelpImportProgressEventType.
+const (
+	HelpImportProgressType HelpImportProgressEventType = "help.import.progress"
+)
+
+// Valid indicates whether the value is a known member of the HelpImportProgressEventType enum.
+func (e HelpImportProgressEventType) Valid() bool {
+	switch e {
+	case HelpImportProgressType:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for HelpImportRedirectKind.
+const (
+	HelpImportRedirectKindArticle    HelpImportRedirectKind = "article"
+	HelpImportRedirectKindCollection HelpImportRedirectKind = "collection"
+)
+
+// Valid indicates whether the value is a known member of the HelpImportRedirectKind enum.
+func (e HelpImportRedirectKind) Valid() bool {
+	switch e {
+	case HelpImportRedirectKindArticle:
+		return true
+	case HelpImportRedirectKindCollection:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for HelpImportSource.
+const (
+	Helpscout HelpImportSource = "helpscout"
+	Zendesk   HelpImportSource = "zendesk"
+)
+
+// Valid indicates whether the value is a known member of the HelpImportSource enum.
+func (e HelpImportSource) Valid() bool {
+	switch e {
+	case Helpscout:
+		return true
+	case Zendesk:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for HelpImportState.
+const (
+	HelpImportStateCancelled HelpImportState = "cancelled"
+	HelpImportStateDone      HelpImportState = "done"
+	HelpImportStateFailed    HelpImportState = "failed"
+	HelpImportStateQueued    HelpImportState = "queued"
+	HelpImportStateRunning   HelpImportState = "running"
+)
+
+// Valid indicates whether the value is a known member of the HelpImportState enum.
+func (e HelpImportState) Valid() bool {
+	switch e {
+	case HelpImportStateCancelled:
+		return true
+	case HelpImportStateDone:
+		return true
+	case HelpImportStateFailed:
+		return true
+	case HelpImportStateQueued:
+		return true
+	case HelpImportStateRunning:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for HelpRevisionKind.
 const (
 	HelpRevisionPublish HelpRevisionKind = "publish"
@@ -8533,7 +8650,7 @@ type ApiKeyList struct {
 //	  - `help:read`: help centers, their collections, articles, translations, revisions,
 //	    previews, search and report.
 //	  - `help:write`: create and change collections and articles, save, restore and delete draft
-//	    translations, render Markdown, upload images.
+//	    translations, render Markdown, upload images, import articles from Zendesk or Help Scout.
 //	  - `help:publish`: create, configure and delete help centers; publish and unpublish
 //	    translations, delete published ones. API keys only, and never implied: a key made without
 //	    naming its scopes does not hold it, and OAuth clients are not offered it.
@@ -14484,6 +14601,179 @@ type HelpImage struct {
 	Url      string `json:"url"`
 	Width    int32  `json:"width"`
 }
+
+// HelpImport defines model for HelpImport.
+type HelpImport struct {
+	ApiKeyId  *uuid.UUID       `json:"api_key_id,omitempty"`
+	CenterId  uuid.UUID        `json:"center_id"`
+	Counts    HelpImportCounts `json:"counts"`
+	CreatedAt time.Time        `json:"created_at"`
+
+	// Error Why a `failed` import stopped.
+	Error      *string    `json:"error,omitempty"`
+	FinishedAt *time.Time `json:"finished_at,omitempty"`
+	Id         uuid.UUID  `json:"id"`
+	MemberId   *uuid.UUID `json:"member_id,omitempty"`
+
+	// MigrationId The Zendesk migration whose sign-in was used.
+	MigrationId     *uuid.UUID `json:"migration_id,omitempty"`
+	OverwriteEdited *bool      `json:"overwrite_edited,omitempty"`
+
+	// Phase `source` checks the sign-in and reads the languages, `collections` writes the structure,
+	// `articles` the drafts and their images, `links` rewrites the links between articles.
+	Phase HelpImportPhase `json:"phase"`
+
+	// Redirects Rows `listHelpImportRedirects` holds.
+	Redirects int32 `json:"redirects"`
+
+	// SkippedLocales Locales of the source that the center does not offer, not imported.
+	SkippedLocales []string         `json:"skipped_locales"`
+	Source         HelpImportSource `json:"source"`
+	StartedAt      *time.Time       `json:"started_at,omitempty"`
+
+	// State `queued` until a worker takes it, `running`, then `done`, `failed` (see `error`) or
+	// `cancelled`. A `failed` import can be started again; it continues idempotently.
+	State     HelpImportState `json:"state"`
+	UpdatedAt time.Time       `json:"updated_at"`
+}
+
+// HelpImportCounts defines model for HelpImportCounts.
+type HelpImportCounts struct {
+	// Articles Articles of the source that were read.
+	Articles int32 `json:"articles"`
+
+	// Collections Collections created or updated.
+	Collections int32 `json:"collections"`
+
+	// Failed Articles or collections that could not be written (a body the center refuses, or the 200 collections a center holds).
+	Failed int32 `json:"failed"`
+
+	// ImagesFailed Images that stayed links to their original.
+	ImagesFailed        int32 `json:"images_failed"`
+	ImagesStored        int32 `json:"images_stored"`
+	LinksRewritten      int32 `json:"links_rewritten"`
+	TranslationsCreated int32 `json:"translations_created"`
+
+	// TranslationsKept Drafts edited in Yuva since the last import, left as they are.
+	TranslationsKept int32 `json:"translations_kept"`
+
+	// TranslationsUnchanged Same text as the last import, left alone.
+	TranslationsUnchanged int32 `json:"translations_unchanged"`
+	TranslationsUpdated   int32 `json:"translations_updated"`
+
+	// Truncated Bodies cut at 100,000 characters.
+	Truncated int32 `json:"truncated"`
+}
+
+// HelpImportCreate defines model for HelpImportCreate.
+type HelpImportCreate struct {
+	// DocsApiKey Required for `helpscout`; a Help Scout Docs API key.
+	DocsApiKey *string `json:"docs_api_key,omitempty"`
+
+	// Locale A BCP 47 language tag.
+	//
+	// Examples: en, tr
+	Locale *LanguageTag `json:"locale,omitempty"`
+
+	// MigrationId Required for `zendesk`; a Zendesk migration of the workspace.
+	MigrationId *uuid.UUID `json:"migration_id,omitempty"`
+
+	// OverwriteEdited Replace a draft that was edited in Yuva after the last import. Off: it is kept and
+	// counted in `translations_kept`.
+	OverwriteEdited *bool `json:"overwrite_edited,omitempty"`
+
+	// SiteId `helpscout`: read only this Docs site; every site when absent.
+	SiteId *string          `json:"site_id,omitempty"`
+	Source HelpImportSource `json:"source"`
+}
+
+// HelpImportEvent `help.import.updated`, on `/v1/realtime` only: an article import started, moved to another
+// phase or ended. Not stored, no id, never replayed, no webhook. Reaches whoever holds
+// `help:write` and sees the center's inbox.
+type HelpImportEvent struct {
+	CreatedAt   time.Time           `json:"created_at"`
+	Data        HelpImport          `json:"data"`
+	InboxId     uuid.UUID           `json:"inbox_id"`
+	Type        HelpImportEventType `json:"type"`
+	WorkspaceId uuid.UUID           `json:"workspace_id"`
+}
+
+// HelpImportEventType defines model for HelpImportEvent.Type.
+type HelpImportEventType string
+
+// HelpImportPage defines model for HelpImportPage.
+type HelpImportPage struct {
+	Items []HelpImport `json:"items"`
+
+	// NextCursor Absent on the last page.
+	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// HelpImportPhase `source` checks the sign-in and reads the languages, `collections` writes the structure,
+// `articles` the drafts and their images, `links` rewrites the links between articles.
+type HelpImportPhase string
+
+// HelpImportProgress defines model for HelpImportProgress.
+type HelpImportProgress struct {
+	CenterId uuid.UUID        `json:"center_id"`
+	Counts   HelpImportCounts `json:"counts"`
+	Id       uuid.UUID        `json:"id"`
+
+	// Phase `source` checks the sign-in and reads the languages, `collections` writes the structure,
+	// `articles` the drafts and their images, `links` rewrites the links between articles.
+	Phase HelpImportPhase `json:"phase"`
+
+	// State `queued` until a worker takes it, `running`, then `done`, `failed` (see `error`) or
+	// `cancelled`. A `failed` import can be started again; it continues idempotently.
+	State HelpImportState `json:"state"`
+}
+
+// HelpImportProgressEvent `help.import.progress`, on `/v1/realtime` only: the counts of a running article import, at
+// most once every two seconds. Not stored, no id, never replayed. Reaches whoever holds
+// `help:write` and sees the center's inbox.
+type HelpImportProgressEvent struct {
+	CreatedAt   time.Time                   `json:"created_at"`
+	Data        HelpImportProgress          `json:"data"`
+	InboxId     uuid.UUID                   `json:"inbox_id"`
+	Type        HelpImportProgressEventType `json:"type"`
+	WorkspaceId uuid.UUID                   `json:"workspace_id"`
+}
+
+// HelpImportProgressEventType defines model for HelpImportProgressEvent.Type.
+type HelpImportProgressEventType string
+
+// HelpImportRedirect defines model for HelpImportRedirect.
+type HelpImportRedirect struct {
+	ArticleId    *uuid.UUID             `json:"article_id,omitempty"`
+	CollectionId *uuid.UUID             `json:"collection_id,omitempty"`
+	Kind         HelpImportRedirectKind `json:"kind"`
+
+	// Locale A BCP 47 language tag.
+	//
+	// Examples: en, tr
+	Locale    LanguageTag `json:"locale"`
+	NewUrl    string      `json:"new_url"`
+	OldUrl    string      `json:"old_url"`
+	Published bool        `json:"published"`
+}
+
+// HelpImportRedirectKind defines model for HelpImportRedirect.Kind.
+type HelpImportRedirectKind string
+
+// HelpImportRedirectPage defines model for HelpImportRedirectPage.
+type HelpImportRedirectPage struct {
+	Items []HelpImportRedirect `json:"items"`
+
+	// NextCursor Absent on the last page.
+	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// HelpImportSource defines model for HelpImportSource.
+type HelpImportSource string
+
+// HelpImportState `queued` until a worker takes it, `running`, then `done`, `failed` (see `error`) or
+// `cancelled`. A `failed` import can be started again; it continues idempotently.
+type HelpImportState string
 
 // HelpMarkdown defines model for HelpMarkdown.
 type HelpMarkdown struct {
@@ -22665,6 +22955,57 @@ type UploadHelpImageParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListHelpImportsParams defines parameters for ListHelpImports.
+type ListHelpImportsParams struct {
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// StartHelpImportParams defines parameters for StartHelpImport.
+type StartHelpImportParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// CancelHelpImportParams defines parameters for CancelHelpImport.
+type CancelHelpImportParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetHelpImportParams defines parameters for GetHelpImport.
+type GetHelpImportParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListHelpImportRedirectsParams defines parameters for ListHelpImportRedirects.
+type ListHelpImportRedirectsParams struct {
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DownloadHelpImportRedirectsParams defines parameters for DownloadHelpImportRedirects.
+type DownloadHelpImportRedirectsParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // PreviewHelpCenterParams defines parameters for PreviewHelpCenter.
 type PreviewHelpCenterParams struct {
 	View *PreviewHelpCenterParamsView `form:"view,omitempty" json:"view,omitempty"`
@@ -24645,6 +24986,9 @@ type UpdateHelpCollectionJSONRequestBody = HelpCollectionUpdate
 
 // UploadHelpImageMultipartRequestBody defines body for UploadHelpImage for multipart/form-data ContentType.
 type UploadHelpImageMultipartRequestBody = EmailImageUpload
+
+// StartHelpImportJSONRequestBody defines body for StartHelpImport for application/json ContentType.
+type StartHelpImportJSONRequestBody = HelpImportCreate
 
 // RenderHelpMarkdownJSONRequestBody defines body for RenderHelpMarkdown for application/json ContentType.
 type RenderHelpMarkdownJSONRequestBody = HelpMarkdown
@@ -27500,6 +27844,58 @@ func (t *RealtimeMessage) MergeRoadmapBoardSignal(v RoadmapBoardSignal) error {
 	return err
 }
 
+// AsHelpImportEvent returns the union data inside the RealtimeMessage as a HelpImportEvent
+func (t RealtimeMessage) AsHelpImportEvent() (HelpImportEvent, error) {
+	var body HelpImportEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromHelpImportEvent overwrites any union data inside the RealtimeMessage as the provided HelpImportEvent
+func (t *RealtimeMessage) FromHelpImportEvent(v HelpImportEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeHelpImportEvent performs a merge with any union data inside the RealtimeMessage, using the provided HelpImportEvent
+func (t *RealtimeMessage) MergeHelpImportEvent(v HelpImportEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsHelpImportProgressEvent returns the union data inside the RealtimeMessage as a HelpImportProgressEvent
+func (t RealtimeMessage) AsHelpImportProgressEvent() (HelpImportProgressEvent, error) {
+	var body HelpImportProgressEvent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromHelpImportProgressEvent overwrites any union data inside the RealtimeMessage as the provided HelpImportProgressEvent
+func (t *RealtimeMessage) FromHelpImportProgressEvent(v HelpImportProgressEvent) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeHelpImportProgressEvent performs a merge with any union data inside the RealtimeMessage, using the provided HelpImportProgressEvent
+func (t *RealtimeMessage) MergeHelpImportProgressEvent(v HelpImportProgressEvent) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsHelpCenterSignal returns the union data inside the RealtimeMessage as a HelpCenterSignal
 func (t RealtimeMessage) AsHelpCenterSignal() (HelpCenterSignal, error) {
 	var body HelpCenterSignal
@@ -27840,6 +28236,10 @@ func (t RealtimeMessage) ValueByDiscriminator() (interface{}, error) {
 		return t.AsHelpArticleSignal()
 	case "help.center.updated":
 		return t.AsHelpCenterSignal()
+	case "help.import.progress":
+		return t.AsHelpImportProgressEvent()
+	case "help.import.updated":
+		return t.AsHelpImportEvent()
 	case "inbox.created":
 		return t.AsInboxCreatedEvent()
 	case "inbox.deleted":
@@ -29484,6 +29884,24 @@ type ServerInterface interface {
 	// UploadHelpImage Upload an image for articles
 	// (POST /v1/help-centers/{centerId}/images)
 	UploadHelpImage(w http.ResponseWriter, r *http.Request, centerId HelpCenterId, params UploadHelpImageParams)
+	// ListHelpImports List a center's article imports
+	// (GET /v1/help-centers/{centerId}/imports)
+	ListHelpImports(w http.ResponseWriter, r *http.Request, centerId HelpCenterId, params ListHelpImportsParams)
+	// StartHelpImport Import help articles from Zendesk or Help Scout
+	// (POST /v1/help-centers/{centerId}/imports)
+	StartHelpImport(w http.ResponseWriter, r *http.Request, centerId HelpCenterId, params StartHelpImportParams)
+	// CancelHelpImport Cancel an article import
+	// (DELETE /v1/help-centers/{centerId}/imports/{importId})
+	CancelHelpImport(w http.ResponseWriter, r *http.Request, centerId HelpCenterId, importId ImportId, params CancelHelpImportParams)
+	// GetHelpImport An article import
+	// (GET /v1/help-centers/{centerId}/imports/{importId})
+	GetHelpImport(w http.ResponseWriter, r *http.Request, centerId HelpCenterId, importId ImportId, params GetHelpImportParams)
+	// ListHelpImportRedirects The old and new URLs of an import
+	// (GET /v1/help-centers/{centerId}/imports/{importId}/redirects)
+	ListHelpImportRedirects(w http.ResponseWriter, r *http.Request, centerId HelpCenterId, importId ImportId, params ListHelpImportRedirectsParams)
+	// DownloadHelpImportRedirects Download an import's redirects
+	// (GET /v1/help-centers/{centerId}/imports/{importId}/redirects.csv)
+	DownloadHelpImportRedirects(w http.ResponseWriter, r *http.Request, centerId HelpCenterId, importId ImportId, params DownloadHelpImportRedirectsParams)
 	// PreviewHelpCenter Preview a help center page
 	// (GET /v1/help-centers/{centerId}/preview)
 	PreviewHelpCenter(w http.ResponseWriter, r *http.Request, centerId HelpCenterId, params PreviewHelpCenterParams)
@@ -44815,6 +45233,413 @@ func (siw *ServerInterfaceWrapper) UploadHelpImage(w http.ResponseWriter, r *htt
 	handler.ServeHTTP(w, r)
 }
 
+// ListHelpImports operation middleware
+func (siw *ServerInterfaceWrapper) ListHelpImports(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "centerId" -------------
+	var centerId HelpCenterId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "centerId", r.PathValue("centerId"), &centerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "centerId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListHelpImportsParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int32"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListHelpImports(w, r, centerId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// StartHelpImport operation middleware
+func (siw *ServerInterfaceWrapper) StartHelpImport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "centerId" -------------
+	var centerId HelpCenterId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "centerId", r.PathValue("centerId"), &centerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "centerId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params StartHelpImportParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.StartHelpImport(w, r, centerId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CancelHelpImport operation middleware
+func (siw *ServerInterfaceWrapper) CancelHelpImport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "centerId" -------------
+	var centerId HelpCenterId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "centerId", r.PathValue("centerId"), &centerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "centerId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "importId" -------------
+	var importId ImportId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "importId", r.PathValue("importId"), &importId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "importId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CancelHelpImportParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CancelHelpImport(w, r, centerId, importId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetHelpImport operation middleware
+func (siw *ServerInterfaceWrapper) GetHelpImport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "centerId" -------------
+	var centerId HelpCenterId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "centerId", r.PathValue("centerId"), &centerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "centerId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "importId" -------------
+	var importId ImportId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "importId", r.PathValue("importId"), &importId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "importId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetHelpImportParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetHelpImport(w, r, centerId, importId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListHelpImportRedirects operation middleware
+func (siw *ServerInterfaceWrapper) ListHelpImportRedirects(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "centerId" -------------
+	var centerId HelpCenterId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "centerId", r.PathValue("centerId"), &centerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "centerId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "importId" -------------
+	var importId ImportId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "importId", r.PathValue("importId"), &importId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "importId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListHelpImportRedirectsParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int32"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListHelpImportRedirects(w, r, centerId, importId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DownloadHelpImportRedirects operation middleware
+func (siw *ServerInterfaceWrapper) DownloadHelpImportRedirects(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "centerId" -------------
+	var centerId HelpCenterId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "centerId", r.PathValue("centerId"), &centerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "centerId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "importId" -------------
+	var importId ImportId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "importId", r.PathValue("importId"), &importId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "importId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DownloadHelpImportRedirectsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DownloadHelpImportRedirects(w, r, centerId, importId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // PreviewHelpCenter operation middleware
 func (siw *ServerInterfaceWrapper) PreviewHelpCenter(w http.ResponseWriter, r *http.Request) {
 
@@ -54770,6 +55595,12 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/help-centers/{centerId}/articles/{articleId}/translations/{locale}/revisions/{revisionId}/restore", wrapper.RestoreHelpArticleRevision)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/help-centers/{centerId}/render", wrapper.RenderHelpMarkdown)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/help-centers/{centerId}/images", wrapper.UploadHelpImage)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/help-centers/{centerId}/imports", wrapper.ListHelpImports)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/help-centers/{centerId}/imports", wrapper.StartHelpImport)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/help-centers/{centerId}/imports/{importId}", wrapper.CancelHelpImport)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/help-centers/{centerId}/imports/{importId}", wrapper.GetHelpImport)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/help-centers/{centerId}/imports/{importId}/redirects", wrapper.ListHelpImportRedirects)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/help-centers/{centerId}/imports/{importId}/redirects.csv", wrapper.DownloadHelpImportRedirects)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/help-centers/{centerId}/search", wrapper.SearchHelpArticles)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/help-centers/{centerId}/report", wrapper.GetHelpReport)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/client/v1/session", wrapper.DeleteClientSession)
@@ -78871,6 +79702,505 @@ func (response UploadHelpImage429ApplicationProblemPlusJSONResponse) VisitUpload
 	return err
 }
 
+type ListHelpImportsRequestObject struct {
+	CenterId HelpCenterId `json:"centerId"`
+	Params   ListHelpImportsParams
+}
+
+type ListHelpImportsResponseObject interface {
+	VisitListHelpImportsResponse(w http.ResponseWriter) error
+}
+
+type ListHelpImports200JSONResponse HelpImportPage
+
+func (response ListHelpImports200JSONResponse) VisitListHelpImportsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListHelpImports400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListHelpImports400ApplicationProblemPlusJSONResponse) VisitListHelpImportsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListHelpImports401ApplicationProblemPlusJSONResponse Problem
+
+func (response ListHelpImports401ApplicationProblemPlusJSONResponse) VisitListHelpImportsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListHelpImports403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListHelpImports403ApplicationProblemPlusJSONResponse) VisitListHelpImportsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListHelpImports404ApplicationProblemPlusJSONResponse Problem
+
+func (response ListHelpImports404ApplicationProblemPlusJSONResponse) VisitListHelpImportsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartHelpImportRequestObject struct {
+	CenterId HelpCenterId `json:"centerId"`
+	Params   StartHelpImportParams
+	Body     *StartHelpImportJSONRequestBody
+}
+
+type StartHelpImportResponseObject interface {
+	VisitStartHelpImportResponse(w http.ResponseWriter) error
+}
+
+type StartHelpImport202JSONResponse HelpImport
+
+func (response StartHelpImport202JSONResponse) VisitStartHelpImportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(202)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartHelpImport400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response StartHelpImport400ApplicationProblemPlusJSONResponse) VisitStartHelpImportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartHelpImport401ApplicationProblemPlusJSONResponse Problem
+
+func (response StartHelpImport401ApplicationProblemPlusJSONResponse) VisitStartHelpImportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartHelpImport403ApplicationProblemPlusJSONResponse Problem
+
+func (response StartHelpImport403ApplicationProblemPlusJSONResponse) VisitStartHelpImportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartHelpImport404ApplicationProblemPlusJSONResponse Problem
+
+func (response StartHelpImport404ApplicationProblemPlusJSONResponse) VisitStartHelpImportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartHelpImport409ApplicationProblemPlusJSONResponse Problem
+
+func (response StartHelpImport409ApplicationProblemPlusJSONResponse) VisitStartHelpImportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartHelpImport422ApplicationProblemPlusJSONResponse Problem
+
+func (response StartHelpImport422ApplicationProblemPlusJSONResponse) VisitStartHelpImportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StartHelpImport429ApplicationProblemPlusJSONResponse Problem
+
+func (response StartHelpImport429ApplicationProblemPlusJSONResponse) VisitStartHelpImportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CancelHelpImportRequestObject struct {
+	CenterId HelpCenterId `json:"centerId"`
+	ImportId ImportId     `json:"importId"`
+	Params   CancelHelpImportParams
+}
+
+type CancelHelpImportResponseObject interface {
+	VisitCancelHelpImportResponse(w http.ResponseWriter) error
+}
+
+type CancelHelpImport204Response struct {
+}
+
+func (response CancelHelpImport204Response) VisitCancelHelpImportResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type CancelHelpImport401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response CancelHelpImport401ApplicationProblemPlusJSONResponse) VisitCancelHelpImportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CancelHelpImport403ApplicationProblemPlusJSONResponse Problem
+
+func (response CancelHelpImport403ApplicationProblemPlusJSONResponse) VisitCancelHelpImportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CancelHelpImport404ApplicationProblemPlusJSONResponse Problem
+
+func (response CancelHelpImport404ApplicationProblemPlusJSONResponse) VisitCancelHelpImportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetHelpImportRequestObject struct {
+	CenterId HelpCenterId `json:"centerId"`
+	ImportId ImportId     `json:"importId"`
+	Params   GetHelpImportParams
+}
+
+type GetHelpImportResponseObject interface {
+	VisitGetHelpImportResponse(w http.ResponseWriter) error
+}
+
+type GetHelpImport200JSONResponse HelpImport
+
+func (response GetHelpImport200JSONResponse) VisitGetHelpImportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetHelpImport401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetHelpImport401ApplicationProblemPlusJSONResponse) VisitGetHelpImportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetHelpImport403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetHelpImport403ApplicationProblemPlusJSONResponse) VisitGetHelpImportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetHelpImport404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetHelpImport404ApplicationProblemPlusJSONResponse) VisitGetHelpImportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListHelpImportRedirectsRequestObject struct {
+	CenterId HelpCenterId `json:"centerId"`
+	ImportId ImportId     `json:"importId"`
+	Params   ListHelpImportRedirectsParams
+}
+
+type ListHelpImportRedirectsResponseObject interface {
+	VisitListHelpImportRedirectsResponse(w http.ResponseWriter) error
+}
+
+type ListHelpImportRedirects200JSONResponse HelpImportRedirectPage
+
+func (response ListHelpImportRedirects200JSONResponse) VisitListHelpImportRedirectsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListHelpImportRedirects400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListHelpImportRedirects400ApplicationProblemPlusJSONResponse) VisitListHelpImportRedirectsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListHelpImportRedirects401ApplicationProblemPlusJSONResponse Problem
+
+func (response ListHelpImportRedirects401ApplicationProblemPlusJSONResponse) VisitListHelpImportRedirectsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListHelpImportRedirects403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListHelpImportRedirects403ApplicationProblemPlusJSONResponse) VisitListHelpImportRedirectsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListHelpImportRedirects404ApplicationProblemPlusJSONResponse Problem
+
+func (response ListHelpImportRedirects404ApplicationProblemPlusJSONResponse) VisitListHelpImportRedirectsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DownloadHelpImportRedirectsRequestObject struct {
+	CenterId HelpCenterId `json:"centerId"`
+	ImportId ImportId     `json:"importId"`
+	Params   DownloadHelpImportRedirectsParams
+}
+
+type DownloadHelpImportRedirectsResponseObject interface {
+	VisitDownloadHelpImportRedirectsResponse(w http.ResponseWriter) error
+}
+
+type DownloadHelpImportRedirects200ResponseHeaders struct {
+	ContentDisposition *string
+}
+
+type DownloadHelpImportRedirects200TextcsvResponse struct {
+	Body          io.Reader
+	Headers       DownloadHelpImportRedirects200ResponseHeaders
+	ContentLength int64
+}
+
+func (response DownloadHelpImportRedirects200TextcsvResponse) VisitDownloadHelpImportRedirectsResponse(w http.ResponseWriter) error {
+
+	w.Header().Set("Content-Type", "text/csv")
+	if response.ContentLength != 0 {
+		w.Header().Set("Content-Length", fmt.Sprint(response.ContentLength))
+	}
+	if response.Headers.ContentDisposition != nil {
+		w.Header().Set("Content-Disposition", fmt.Sprint(*response.Headers.ContentDisposition))
+	}
+	w.WriteHeader(200)
+
+	if closer, ok := response.Body.(io.ReadCloser); ok {
+		defer closer.Close()
+	}
+	_, err := io.Copy(w, response.Body)
+	return err
+}
+
+type DownloadHelpImportRedirects401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DownloadHelpImportRedirects401ApplicationProblemPlusJSONResponse) VisitDownloadHelpImportRedirectsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DownloadHelpImportRedirects403ApplicationProblemPlusJSONResponse Problem
+
+func (response DownloadHelpImportRedirects403ApplicationProblemPlusJSONResponse) VisitDownloadHelpImportRedirectsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DownloadHelpImportRedirects404ApplicationProblemPlusJSONResponse Problem
+
+func (response DownloadHelpImportRedirects404ApplicationProblemPlusJSONResponse) VisitDownloadHelpImportRedirectsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type PreviewHelpCenterRequestObject struct {
 	CenterId HelpCenterId `json:"centerId"`
 	Params   PreviewHelpCenterParams
@@ -92399,6 +93729,24 @@ type StrictServerInterface interface {
 	// UploadHelpImage Upload an image for articles
 	// (POST /v1/help-centers/{centerId}/images)
 	UploadHelpImage(ctx context.Context, request UploadHelpImageRequestObject) (UploadHelpImageResponseObject, error)
+	// ListHelpImports List a center's article imports
+	// (GET /v1/help-centers/{centerId}/imports)
+	ListHelpImports(ctx context.Context, request ListHelpImportsRequestObject) (ListHelpImportsResponseObject, error)
+	// StartHelpImport Import help articles from Zendesk or Help Scout
+	// (POST /v1/help-centers/{centerId}/imports)
+	StartHelpImport(ctx context.Context, request StartHelpImportRequestObject) (StartHelpImportResponseObject, error)
+	// CancelHelpImport Cancel an article import
+	// (DELETE /v1/help-centers/{centerId}/imports/{importId})
+	CancelHelpImport(ctx context.Context, request CancelHelpImportRequestObject) (CancelHelpImportResponseObject, error)
+	// GetHelpImport An article import
+	// (GET /v1/help-centers/{centerId}/imports/{importId})
+	GetHelpImport(ctx context.Context, request GetHelpImportRequestObject) (GetHelpImportResponseObject, error)
+	// ListHelpImportRedirects The old and new URLs of an import
+	// (GET /v1/help-centers/{centerId}/imports/{importId}/redirects)
+	ListHelpImportRedirects(ctx context.Context, request ListHelpImportRedirectsRequestObject) (ListHelpImportRedirectsResponseObject, error)
+	// DownloadHelpImportRedirects Download an import's redirects
+	// (GET /v1/help-centers/{centerId}/imports/{importId}/redirects.csv)
+	DownloadHelpImportRedirects(ctx context.Context, request DownloadHelpImportRedirectsRequestObject) (DownloadHelpImportRedirectsResponseObject, error)
 	// PreviewHelpCenter Preview a help center page
 	// (GET /v1/help-centers/{centerId}/preview)
 	PreviewHelpCenter(ctx context.Context, request PreviewHelpCenterRequestObject) (PreviewHelpCenterResponseObject, error)
@@ -100647,6 +101995,179 @@ func (sh *strictHandler) UploadHelpImage(w http.ResponseWriter, r *http.Request,
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(UploadHelpImageResponseObject); ok {
 		if err := validResponse.VisitUploadHelpImageResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListHelpImports operation middleware
+func (sh *strictHandler) ListHelpImports(w http.ResponseWriter, r *http.Request, centerId HelpCenterId, params ListHelpImportsParams) {
+	var request ListHelpImportsRequestObject
+
+	request.CenterId = centerId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListHelpImports(ctx, request.(ListHelpImportsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListHelpImports")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListHelpImportsResponseObject); ok {
+		if err := validResponse.VisitListHelpImportsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// StartHelpImport operation middleware
+func (sh *strictHandler) StartHelpImport(w http.ResponseWriter, r *http.Request, centerId HelpCenterId, params StartHelpImportParams) {
+	var request StartHelpImportRequestObject
+
+	request.CenterId = centerId
+	request.Params = params
+
+	var body StartHelpImportJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.StartHelpImport(ctx, request.(StartHelpImportRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "StartHelpImport")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(StartHelpImportResponseObject); ok {
+		if err := validResponse.VisitStartHelpImportResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CancelHelpImport operation middleware
+func (sh *strictHandler) CancelHelpImport(w http.ResponseWriter, r *http.Request, centerId HelpCenterId, importId ImportId, params CancelHelpImportParams) {
+	var request CancelHelpImportRequestObject
+
+	request.CenterId = centerId
+	request.ImportId = importId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.CancelHelpImport(ctx, request.(CancelHelpImportRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CancelHelpImport")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(CancelHelpImportResponseObject); ok {
+		if err := validResponse.VisitCancelHelpImportResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetHelpImport operation middleware
+func (sh *strictHandler) GetHelpImport(w http.ResponseWriter, r *http.Request, centerId HelpCenterId, importId ImportId, params GetHelpImportParams) {
+	var request GetHelpImportRequestObject
+
+	request.CenterId = centerId
+	request.ImportId = importId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetHelpImport(ctx, request.(GetHelpImportRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetHelpImport")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetHelpImportResponseObject); ok {
+		if err := validResponse.VisitGetHelpImportResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListHelpImportRedirects operation middleware
+func (sh *strictHandler) ListHelpImportRedirects(w http.ResponseWriter, r *http.Request, centerId HelpCenterId, importId ImportId, params ListHelpImportRedirectsParams) {
+	var request ListHelpImportRedirectsRequestObject
+
+	request.CenterId = centerId
+	request.ImportId = importId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListHelpImportRedirects(ctx, request.(ListHelpImportRedirectsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListHelpImportRedirects")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListHelpImportRedirectsResponseObject); ok {
+		if err := validResponse.VisitListHelpImportRedirectsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DownloadHelpImportRedirects operation middleware
+func (sh *strictHandler) DownloadHelpImportRedirects(w http.ResponseWriter, r *http.Request, centerId HelpCenterId, importId ImportId, params DownloadHelpImportRedirectsParams) {
+	var request DownloadHelpImportRedirectsRequestObject
+
+	request.CenterId = centerId
+	request.ImportId = importId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DownloadHelpImportRedirects(ctx, request.(DownloadHelpImportRedirectsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DownloadHelpImportRedirects")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DownloadHelpImportRedirectsResponseObject); ok {
+		if err := validResponse.VisitDownloadHelpImportRedirectsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

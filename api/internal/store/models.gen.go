@@ -1215,6 +1215,46 @@ type HelpCollectionTranslation struct {
 	UpdatedAt    time.Time
 }
 
+type HelpImport struct {
+	ID             uuid.UUID
+	WorkspaceID    uuid.UUID
+	CenterID       uuid.UUID
+	Source         string
+	MigrationID    *uuid.UUID
+	Origin         string
+	Sealed         []byte
+	Options        []byte
+	State          string
+	Phase          string
+	Checkpoint     []byte
+	Counts         []byte
+	SkippedLocales []string
+	Error          *string
+	MemberID       *uuid.UUID
+	ApiKeyID       *uuid.UUID
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+	StartedAt      *time.Time
+	FinishedAt     *time.Time
+}
+
+type HelpImportItem struct {
+	WorkspaceID  uuid.UUID
+	CenterID     uuid.UUID
+	Origin       string
+	Kind         string
+	SourceID     string
+	Locale       string
+	LinkKey      string
+	TargetID     uuid.UUID
+	OldUrl       string
+	Version      int32
+	ContentHash  []byte
+	ImportID     uuid.UUID
+	LinksPending bool
+	UpdatedAt    time.Time
+}
+
 type HelpSearchDaily struct {
 	WorkspaceID uuid.UUID
 	CenterID    uuid.UUID

@@ -221,6 +221,7 @@ Araçlar `/v1` ile aynı kontrollerden geçer. Kullanamayacağınız araçlar li
 | `move_idea_stage` (yalnızca `roadmap:stage` adıyla verildiğinde; `confirm_linked` ister) | `roadmap:stage` |
 | `list_help_centers`, `search_help_articles`, `get_help_article`, `help_search_gaps` | `help:read` |
 | `draft_help_article`, `update_help_article_draft` (yalnızca taslak, `base_version` ile; `locale` bir çeviri yazar) | `help:write` |
+| `import_help_articles` (oturumu açık bir Zendesk taşımasından merkeze, taslak olarak), `get_help_import` | `help:write` |
 | `list_whats_new_entries`, `get_whats_new_entry` | `changelog:read` |
 | `draft_whats_new_entry`, `update_whats_new_draft` (yalnızca taslak, `base_version` ile; `locale` bir çeviri yazar) | `changelog:write` |
 | `list_mailing_lists` | `lists:read` |

@@ -47,6 +47,7 @@ const (
 	IntercomLimit    = 40
 	IntercomCDN      = "downloads.intercomcdn.com"
 	OutsideHost      = "files.example.org"
+	DocsKey          = "docs-key-7f21"
 	ChatwootHost     = "chatwoot.acme.example"
 	ChatwootToken    = "cw-admin-token-1"
 )
@@ -107,7 +108,7 @@ func New(t testing.TB, now func() time.Time) *Server {
 	}
 	tmpl := &x509.Certificate{
 		SerialNumber: big.NewInt(1), Subject: pkix.Name{CommonName: "helpdesk fixtures"},
-		DNSNames:  []string{"*.zendesk.com", "*.zdusercontent.com", "api.helpscout.net", "secure.helpscout.net", "api2.frontapp.com", "*.freshdesk.com", "s3.eu-west-1.amazonaws.com", "api.intercom.io", "api.eu.intercom.io", "api.au.intercom.io", IntercomCDN, "api.crisp.chat", CrispStorage, OutsideHost, ChatwootHost},
+		DNSNames:  []string{"*.zendesk.com", "*.zdusercontent.com", "api.helpscout.net", "secure.helpscout.net", "api2.frontapp.com", "*.freshdesk.com", "s3.eu-west-1.amazonaws.com", "api.intercom.io", "api.eu.intercom.io", "api.au.intercom.io", IntercomCDN, "api.crisp.chat", CrispStorage, "docsapi.helpscout.net", OutsideHost, ChatwootHost},
 		NotBefore: time.Now().Add(-time.Hour), NotAfter: time.Now().Add(24 * time.Hour), KeyUsage: x509.KeyUsageDigitalSignature,
 		ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth}, IsCA: true, BasicConstraintsValid: true,
 	}
@@ -176,6 +177,8 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		s.zendesk(w, r, body)
 	case strings.HasSuffix(host, ".zdusercontent.com"):
 		s.attachment(w, r.URL.Path)
+	case host == OutsideHost && strings.Contains(r.URL.Path, "/private/"):
+		w.WriteHeader(http.StatusUnauthorized)
 	case host == OutsideHost || host == IntercomCDN:
 		s.attachment(w, r.URL.Path)
 	case host == ChatwootHost:
@@ -190,6 +193,8 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		s.crisp(w, r)
 	case host == CrispStorage:
 		s.crispStorage(w, r)
+	case host == "docsapi.helpscout.net":
+		s.helpscoutDocs(w, r)
 	case host == "api.helpscout.net":
 		w.Header().Set("X-RateLimit-Limit-Minute", fmt.Sprint(HelpScoutLimit))
 		s.helpscout(w, r, body)
@@ -287,6 +292,10 @@ func (s *Server) zendesk(w http.ResponseWriter, r *http.Request, body []byte) {
 	}
 	q := r.URL.Query()
 	p := strings.TrimSuffix(r.URL.Path, ".json")
+	if strings.HasPrefix(p, "/api/v2/help_center/") || strings.HasPrefix(p, "/hc/article_attachments/") {
+		s.zendeskGuide(w, r, p, q)
+		return
+	}
 	switch {
 	case p == "/api/v2/users/me":
 		s.json(w, r, "zendesk/users_me.json")

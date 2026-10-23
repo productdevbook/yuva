@@ -176,6 +176,30 @@ bölümünde "Başlık - URL", HTML bölümünde izlemesiz bir bağlantı bloğu
 `article_ids` ile alır. Bir makaleyi sonradan yayından kaldırırsanız eski mesajlar okunabilir kalır ve
 bağlantı merkezin bulunamadı sayfasını gösterir.
 
+## Zendesk veya Help Scout'tan içe aktarma
+
+Var olan bir yardım merkezini bunun içine taslak olarak alın. Hiçbir şey yayımlanmaz, kaynak yalnızca
+okunur.
+
+- **Zendesk Guide.** Oturumu açık bir Zendesk taşımasını (Yuva'ya taşın) kullanın; salt okunur
+  oturumu yeniden kullanılır, yeni izin istenmez. Kategoriler koleksiyon, bölümler alt koleksiyon olur
+  (bölüm içindeki bölüm `Üst / Alt` adlı alt koleksiyon olur). Her makale, merkezin sunduğu dillerdeki
+  çevirileriyle gelir; diğer diller atlananlar olarak listelenir, dili merkezin dillerine ekleyip
+  yeniden içe aktarın.
+- **Help Scout Docs.** Help Scout'ta bir Docs API anahtarı oluşturun (Your Profile, API Keys) ve içe
+  aktarmaya verin; Yuva anahtarı içe aktarma bitene kadar mühürlü saklar. Koleksiyonlar koleksiyon,
+  kategoriler alt koleksiyon olur. Docs sitelerinin dili yoktur: makalelerin yazıldığı dili seçin.
+- **Yolda neler değişir.** Makale HTML'i Markdown olur. Görseller indirilir, merkezin görselleri olarak
+  saklanır ve yeniden yazılır; alınamayan görsel bağlantı olarak kalır. İçe aktarılan makaleler arası
+  bağlantılar yeni sayfalarına yönelir.
+- **Yeniden çalıştırma.** Daha önce alınan makale taslağını günceller, çoğalmaz. Yuva'da sonradan
+  düzenlediğiniz taslak, üzerine yazmayı istemedikçe korunur.
+- **Yönlendirmeler.** İçe aktarma her eski adresi yeni adresiyle listeler (CSV olarak indirin).
+  Eski adreste yönlendirmeyi kurmak size aittir; yeni adres, makaleyi yayımlayana kadar `404` verir.
+
+`POST /v1/help-centers/{id}/imports` ile başlatın (yetki `help:write`); bir asistan Zendesk içe
+aktarmasını başlatıp `import_help_articles` ve `get_help_import` araçlarıyla izleyebilir.
+
 ## API
 
 Hepsi `/v1/help-centers` altındadır ve [API başvurusunda](headless.md) `help` etiketini taşır.

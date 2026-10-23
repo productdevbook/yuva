@@ -7724,6 +7724,146 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/help-centers/{centerId}/imports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List a center's article imports
+         * @description The imports of Zendesk Guide and Help Scout Docs articles into the center, newest first.
+         *
+         *     Scope: `help:read`.
+         */
+        get: operations["listHelpImports"];
+        put?: never;
+        /**
+         * Import help articles from Zendesk or Help Scout
+         * @description Reads a help center of another service, only ever with `GET`, and writes it into this
+         *     center as drafts. Nothing is published and the source is not changed.
+         *
+         *     `zendesk` reads the Guide of the Zendesk account of `migration_id`, a Zendesk migration of
+         *     the workspace that is signed in (its stored sign-in is reused; the OAuth `read` scope
+         *     already covers Guide, so no new scope is asked; `422 source_not_connected` when the
+         *     migration holds no sign-in any more, for instance after it completed or was cancelled).
+         *     Categories become collections and sections their sub-collections (a section inside a
+         *     section becomes a sub-collection named `Parent / Child`, since a center has two levels).
+         *     Every article is imported with every translation in a locale the center offers (`en-us`
+         *     matches `en-US`, else `en`); translations in other locales are skipped and named in
+         *     `skipped_locales`, so a manager can add the locale to the center and run the import again.
+         *     The brand help centers of other brands are not read.
+         *
+         *     `helpscout` reads the Docs sites of a Help Scout account with `docs_api_key`, a Docs API
+         *     key (Help Scout's Mailbox sign-in does not reach Docs). The key is sealed, used only by
+         *     this import and deleted when it ends. Collections become collections and categories
+         *     their sub-collections. Docs sites have no languages, so every article is written in
+         *     `locale` (the center's default when absent). Browser sessions only: a `docs_api_key` is
+         *     refused for OAuth connections (`403`).
+         *
+         *     Article HTML becomes Markdown. Images are downloaded from where the article shows them
+         *     (with the source's sign-in only for the source's own hosts), stored as the workspace's
+         *     images (the `/i/` URLs of `uploadHelpImage`) and rewritten; an image that cannot be
+         *     stored stays a link to its original and counts in `images_failed`. Links between imported
+         *     articles are rewritten to the articles' new pages, in a last pass. The old URL and the new
+         *     URL of every article and collection are kept for `listHelpImportRedirects` and
+         *     `downloadHelpImportRedirects`; setting up the redirects at the old address is the owner's
+         *     to do.
+         *
+         *     The import runs as a background job in slices and resumes after a restart. It is
+         *     idempotent: an article imported before updates its draft (a new `version`) and never
+         *     duplicates; a draft that changed in Yuva since the last import is kept unless
+         *     `overwrite_edited` is true; an unchanged one is left alone. At most one import per center
+         *     runs (`409 import_running`). `help.import.updated` and `help.import.progress` reach
+         *     `/v1/realtime`, and every saved draft sends `help.article.updated` as when it is edited.
+         *
+         *     Agents with access to the center's inbox, owners, admins and API keys. Scope: `help:write`.
+         */
+        post: operations["startHelpImport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/help-centers/{centerId}/imports/{importId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * An article import
+         * @description Its state, phase and counts. Scope: `help:read`.
+         */
+        get: operations["getHelpImport"];
+        put?: never;
+        post?: never;
+        /**
+         * Cancel an article import
+         * @description Stops a `queued` or `running` import after the item in progress and deletes the sealed
+         *     key. What it already imported stays, with its redirects. A finished import is left as it
+         *     is.
+         *
+         *     Agents with access to the center's inbox, owners, admins and API keys. Scope: `help:write`.
+         */
+        delete: operations["cancelHelpImport"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/help-centers/{centerId}/imports/{importId}/redirects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The old and new URLs of an import
+         * @description One row per article translation and collection the import saw, by `kind`, `locale` and
+         *     `old_url`, with the page that now holds it in the center. `published` is false while
+         *     the page is a draft, so the new URL answers `404` until a member publishes it.
+         *     A re-run reports everything it saw again, also what it left unchanged.
+         *
+         *     Scope: `help:read`.
+         */
+        get: operations["listHelpImportRedirects"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/help-centers/{centerId}/imports/{importId}/redirects.csv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Download an import's redirects
+         * @description The rows of `listHelpImportRedirects` as a CSV file with the columns `kind`, `locale`,
+         *     `old_url`, `new_url` and `published`. Cells are quoted and formula-like values defused as
+         *     in the consent export.
+         *
+         *     Scope: `help:read`.
+         */
+        get: operations["downloadHelpImportRedirects"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/help-centers/{centerId}/search": {
         parameters: {
             query?: never;
@@ -10474,7 +10614,7 @@ export interface components {
          *     - `help:read`: help centers, their collections, articles, translations, revisions,
          *       previews, search and report.
          *     - `help:write`: create and change collections and articles, save, restore and delete draft
-         *       translations, render Markdown, upload images.
+         *       translations, render Markdown, upload images, import articles from Zendesk or Help Scout.
          *     - `help:publish`: create, configure and delete help centers; publish and unpublish
          *       translations, delete published ones. API keys only, and never implied: a key made without
          *       naming its scopes does not hold it, and OAuth clients are not offered it.
@@ -14374,7 +14514,7 @@ export interface components {
             id: number;
         };
         /** @description One server message on `/v1/realtime`, told apart by `type`. */
-        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["MigrationProgressEvent"] | components["schemas"]["MigrationForwardingConfirmationEvent"] | components["schemas"]["BroadcastProgressEvent"] | components["schemas"]["StatusNoticeEvent"] | components["schemas"]["StatusPageEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["HelpArticleSignal"] | components["schemas"]["ChangelogEntryEvent"] | components["schemas"]["ChangelogEntrySignal"] | components["schemas"]["RoadmapBoardSignal"] | components["schemas"]["HelpCenterSignal"] | components["schemas"]["ChangelogSignal"] | components["schemas"]["ListImportEvent"] | components["schemas"]["ListImportProgressEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ContactPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
+        RealtimeMessage: components["schemas"]["ConversationEvent"] | components["schemas"]["ConversationDeletedEvent"] | components["schemas"]["ConversationMovedEvent"] | components["schemas"]["MessageCreatedEvent"] | components["schemas"]["MessageUpdatedEvent"] | components["schemas"]["DraftEvent"] | components["schemas"]["ContactUpdatedEvent"] | components["schemas"]["ContactDeletedEvent"] | components["schemas"]["InboxCreatedEvent"] | components["schemas"]["InboxUpdatedEvent"] | components["schemas"]["InboxDeletedEvent"] | components["schemas"]["InboxAccessChangedEvent"] | components["schemas"]["ConversationReadEvent"] | components["schemas"]["ContactReadEvent"] | components["schemas"]["ConversationPinEvent"] | components["schemas"]["DiscussionEvent"] | components["schemas"]["DiscussionStageEvent"] | components["schemas"]["SubscriptionEvent"] | components["schemas"]["BroadcastEvent"] | components["schemas"]["MigrationEvent"] | components["schemas"]["AnalyticsAlertEvent"] | components["schemas"]["StatusComponentEvent"] | components["schemas"]["StatusIncidentEvent"] | components["schemas"]["StatusMonitorEvent"] | components["schemas"]["MigrationProgressEvent"] | components["schemas"]["MigrationForwardingConfirmationEvent"] | components["schemas"]["BroadcastProgressEvent"] | components["schemas"]["StatusNoticeEvent"] | components["schemas"]["StatusPageEvent"] | components["schemas"]["HelpArticleEvent"] | components["schemas"]["HelpArticleSignal"] | components["schemas"]["ChangelogEntryEvent"] | components["schemas"]["ChangelogEntrySignal"] | components["schemas"]["RoadmapBoardSignal"] | components["schemas"]["HelpImportEvent"] | components["schemas"]["HelpImportProgressEvent"] | components["schemas"]["HelpCenterSignal"] | components["schemas"]["ChangelogSignal"] | components["schemas"]["ListImportEvent"] | components["schemas"]["ListImportProgressEvent"] | components["schemas"]["TypingEvent"] | components["schemas"]["MemberPresenceEvent"] | components["schemas"]["ContactPresenceEvent"] | components["schemas"]["ViewingEvent"] | components["schemas"]["RealtimeReady"] | components["schemas"]["RealtimeResyncRequired"];
         /**
          * @description `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
          *     hours. `away`: never shown as available.
@@ -21490,6 +21630,190 @@ export interface components {
             items: components["schemas"]["HelpArticleSummary"][];
             /** @description Absent on the last page. */
             next_cursor?: string;
+        };
+        /** @enum {string} */
+        HelpImportSource: "zendesk" | "helpscout";
+        /**
+         * @description `queued` until a worker takes it, `running`, then `done`, `failed` (see `error`) or
+         *     `cancelled`. A `failed` import can be started again; it continues idempotently.
+         * @enum {string}
+         */
+        HelpImportState: "queued" | "running" | "done" | "failed" | "cancelled";
+        /**
+         * @description `source` checks the sign-in and reads the languages, `collections` writes the structure,
+         *     `articles` the drafts and their images, `links` rewrites the links between articles.
+         * @enum {string}
+         */
+        HelpImportPhase: "source" | "collections" | "articles" | "links";
+        HelpImportCreate: {
+            source: components["schemas"]["HelpImportSource"];
+            /**
+             * Format: uuid
+             * @description Required for `zendesk`; a Zendesk migration of the workspace.
+             */
+            migration_id?: string;
+            /** @description Required for `helpscout`; a Help Scout Docs API key. */
+            docs_api_key?: string;
+            /** @description `helpscout`: read only this Docs site; every site when absent. */
+            site_id?: string;
+            locale?: components["schemas"]["LanguageTag"];
+            /**
+             * @description Replace a draft that was edited in Yuva after the last import. Off: it is kept and
+             *     counted in `translations_kept`.
+             * @default false
+             */
+            overwrite_edited: boolean;
+        };
+        HelpImportCounts: {
+            /**
+             * Format: int32
+             * @description Collections created or updated.
+             */
+            collections: number;
+            /**
+             * Format: int32
+             * @description Articles of the source that were read.
+             */
+            articles: number;
+            /** Format: int32 */
+            translations_created: number;
+            /** Format: int32 */
+            translations_updated: number;
+            /**
+             * Format: int32
+             * @description Same text as the last import, left alone.
+             */
+            translations_unchanged: number;
+            /**
+             * Format: int32
+             * @description Drafts edited in Yuva since the last import, left as they are.
+             */
+            translations_kept: number;
+            /** Format: int32 */
+            images_stored: number;
+            /**
+             * Format: int32
+             * @description Images that stayed links to their original.
+             */
+            images_failed: number;
+            /** Format: int32 */
+            links_rewritten: number;
+            /**
+             * Format: int32
+             * @description Bodies cut at 100,000 characters.
+             */
+            truncated: number;
+            /**
+             * Format: int32
+             * @description Articles or collections that could not be written (a body the center refuses, or the 200 collections a center holds).
+             */
+            failed: number;
+        };
+        HelpImport: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            center_id: string;
+            source: components["schemas"]["HelpImportSource"];
+            /**
+             * Format: uuid
+             * @description The Zendesk migration whose sign-in was used.
+             */
+            migration_id?: string;
+            state: components["schemas"]["HelpImportState"];
+            phase: components["schemas"]["HelpImportPhase"];
+            counts: components["schemas"]["HelpImportCounts"];
+            /** @description Locales of the source that the center does not offer, not imported. */
+            skipped_locales: string[];
+            /**
+             * Format: int32
+             * @description Rows `listHelpImportRedirects` holds.
+             */
+            redirects: number;
+            overwrite_edited?: boolean;
+            /** @description Why a `failed` import stopped. */
+            error?: string;
+            /** Format: uuid */
+            member_id?: string;
+            /** Format: uuid */
+            api_key_id?: string;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+            /** Format: date-time */
+            started_at?: string;
+            /** Format: date-time */
+            finished_at?: string;
+        };
+        HelpImportPage: {
+            items: components["schemas"]["HelpImport"][];
+            /** @description Absent on the last page. */
+            next_cursor?: string;
+        };
+        HelpImportRedirect: {
+            /** @enum {string} */
+            kind: "article" | "collection";
+            locale: components["schemas"]["LanguageTag"];
+            old_url: string;
+            new_url: string;
+            published: boolean;
+            /** Format: uuid */
+            article_id?: string;
+            /** Format: uuid */
+            collection_id?: string;
+        };
+        HelpImportRedirectPage: {
+            items: components["schemas"]["HelpImportRedirect"][];
+            /** @description Absent on the last page. */
+            next_cursor?: string;
+        };
+        HelpImportProgress: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            center_id: string;
+            state: components["schemas"]["HelpImportState"];
+            phase: components["schemas"]["HelpImportPhase"];
+            counts: components["schemas"]["HelpImportCounts"];
+        };
+        /**
+         * @description `help.import.updated`, on `/v1/realtime` only: an article import started, moved to another
+         *     phase or ended. Not stored, no id, never replayed, no webhook. Reaches whoever holds
+         *     `help:write` and sees the center's inbox.
+         */
+        HelpImportEvent: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "help.import.updated";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["HelpImport"];
+        };
+        /**
+         * @description `help.import.progress`, on `/v1/realtime` only: the counts of a running article import, at
+         *     most once every two seconds. Not stored, no id, never replayed. Reaches whoever holds
+         *     `help:write` and sees the center's inbox.
+         */
+        HelpImportProgressEvent: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "help.import.progress";
+            /** Format: uuid */
+            workspace_id: string;
+            /** Format: uuid */
+            inbox_id: string;
+            /** Format: date-time */
+            created_at: string;
+            data: components["schemas"]["HelpImportProgress"];
         };
         HelpPublishedCopy: {
             title: string;
@@ -34014,6 +34338,199 @@ export interface operations {
             415: components["responses"]["Problem"];
             422: components["responses"]["Problem"];
             429: components["responses"]["Problem"];
+        };
+    };
+    listHelpImports: {
+        parameters: {
+            query?: {
+                /** @description The `next_cursor` of the previous page. */
+                cursor?: components["parameters"]["Cursor"];
+                /** @description Page size, 1 to 100; 25 by default. */
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                centerId: components["parameters"]["HelpCenterId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of imports. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HelpImportPage"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    startHelpImport: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                centerId: components["parameters"]["HelpCenterId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HelpImportCreate"];
+            };
+        };
+        responses: {
+            /** @description The import, `queued`. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HelpImport"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+            422: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
+        };
+    };
+    getHelpImport: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                centerId: components["parameters"]["HelpCenterId"];
+                importId: components["parameters"]["ImportId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The import. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HelpImport"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    cancelHelpImport: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                centerId: components["parameters"]["HelpCenterId"];
+                importId: components["parameters"]["ImportId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Cancelled. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    listHelpImportRedirects: {
+        parameters: {
+            query?: {
+                /** @description The `next_cursor` of the previous page. */
+                cursor?: components["parameters"]["Cursor"];
+                /** @description Page size, 1 to 100; 25 by default. */
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                centerId: components["parameters"]["HelpCenterId"];
+                importId: components["parameters"]["ImportId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of redirects. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HelpImportRedirectPage"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    downloadHelpImportRedirects: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                centerId: components["parameters"]["HelpCenterId"];
+                importId: components["parameters"]["ImportId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The redirects. */
+            200: {
+                headers: {
+                    "Content-Disposition"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv": string;
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
         };
     };
     searchHelpArticles: {

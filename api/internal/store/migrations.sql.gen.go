@@ -2683,6 +2683,35 @@ func (q *Queries) LockMigrationChannel(ctx context.Context, channelID uuid.UUID)
 	return err
 }
 
+const lockMigrationCredentials = `-- name: LockMigrationCredentials :one
+SELECT workspace_id, migration_id, kind, sealed, host, port, tls, certificate_sha256, scopes, expires_at, created_at, updated_at FROM migration_credentials WHERE workspace_id = $1 AND migration_id = $2 FOR UPDATE
+`
+
+type LockMigrationCredentialsParams struct {
+	WorkspaceID uuid.UUID
+	MigrationID uuid.UUID
+}
+
+func (q *Queries) LockMigrationCredentials(ctx context.Context, arg LockMigrationCredentialsParams) (MigrationCredential, error) {
+	row := q.db.QueryRow(ctx, lockMigrationCredentials, arg.WorkspaceID, arg.MigrationID)
+	var i MigrationCredential
+	err := row.Scan(
+		&i.WorkspaceID,
+		&i.MigrationID,
+		&i.Kind,
+		&i.Sealed,
+		&i.Host,
+		&i.Port,
+		&i.Tls,
+		&i.CertificateSha256,
+		&i.Scopes,
+		&i.ExpiresAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const lockMigrationItem = `-- name: LockMigrationItem :one
 SELECT state, attempts, message_id FROM migration_items
 WHERE workspace_id = $1 AND migration_id = $2 AND source_id = $3

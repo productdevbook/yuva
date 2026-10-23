@@ -246,6 +246,7 @@ answers `insufficient_scope` with the scope to grant.
 | `move_idea_stage` (only when `roadmap:stage` is named; needs `confirm_linked`) | `roadmap:stage` |
 | `list_help_centers`, `search_help_articles`, `get_help_article`, `help_search_gaps` | `help:read` |
 | `draft_help_article`, `update_help_article_draft` (drafts only, with `base_version`; a `locale` writes a translation) | `help:write` |
+| `import_help_articles` (a signed-in Zendesk migration into a center, as drafts), `get_help_import` | `help:write` |
 | `list_whats_new_entries`, `get_whats_new_entry` | `changelog:read` |
 | `draft_whats_new_entry`, `update_whats_new_draft` (drafts only, with `base_version`; a `locale` writes a translation) | `changelog:write` |
 | `list_mailing_lists` | `lists:read` |

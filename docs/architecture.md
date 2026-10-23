@@ -2895,7 +2895,28 @@ and the searches that found nothing say which article to write next.
   are Yuva counters, not analytics events: they work without a property and never hold a visitor
   hash. Whether the widget's Help app sends a `help_article_view` event to a linked property is
   decided with the analytics architect before the widget step.
-- **Not in M20.** Importing help articles from Zendesk or Help Scout in "Moving to Yuva".
+- **Importing articles (#150).** `POST /v1/help-centers/{id}/imports` reads a Zendesk Guide or Help
+  Scout Docs into the center as drafts, never published, through the help-desk transport (GET only,
+  the desk's budget, images fetched without the token outside its hosts). Zendesk reuses the sealed
+  OAuth sign-in of a Zendesk migration (`migration_id`), so it needs a migration manager (owner, admin,
+  or a key or token with `migrations:manage`); anyone else gets the same `404` as for an unknown id; its `read` scope already covers the Help
+  Center API, so no scope was added. Help Scout's Docs API takes a Docs API key (Basic auth to
+  `docsapi.helpscout.net`), not the Mailbox sign-in, so the request carries `docs_api_key`, sealed in
+  `help_imports.sealed` under context `help-import:`+workspace+import and cleared when the import
+  ends; browser sessions only, so an assistant starts Zendesk imports only. Categories become
+  collections and sections sub-collections (Docs: collections and categories), deeper sections
+  `Parent / Child`; translations map to the center's locales (same tag, else the one center locale of
+  that language), others are listed in `skipped_locales`. `internal/migrate/helpdesk/htmlmd.go`
+  converts the HTML subset to Markdown. A River job (`help_import`, default queue, 25-second slices,
+  checkpoint on the row) runs the source, collections, articles and links phases;
+  `help_import_items` keys every collection and article translation by origin, kind, source id and
+  locale, so a re-run updates instead of duplicating, leaves an unchanged one alone and keeps a draft
+  whose `version` moved since (unless `overwrite_edited`). Links between imported articles are
+  rewritten in a last pass. The same table holds the old URL, and `listHelpImportRedirects` and
+  `redirects.csv` pair it with the page's current URL; setting up redirects is the owner's. One import
+  per center at a time, 10 starts an hour per workspace. Drafts send `help.article.updated`;
+  `help.import.updated` and `help.import.progress` are realtime signals for `help:write` holders who
+  see the inbox, never stored or sent to webhooks.
 
 ### Roadmap board (M21)
 

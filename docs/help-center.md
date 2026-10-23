@@ -173,6 +173,31 @@ tracking. Over the API, `POST /v1/conversations/{id}/messages` takes `article_id
 articles of the inbox's center. If you unpublish an article later, old messages stay readable and the
 link shows the center's not-found page.
 
+## Import from Zendesk or Help Scout
+
+Bring a help center you already have into this one, as drafts. Nothing is published and the source
+is only read.
+
+- **Zendesk Guide.** Use a Zendesk migration that is signed in (Move to Yuva); its read-only sign-in
+  is reused, no new permission is asked. Categories become collections, sections their
+  sub-collections (a section inside a section becomes `Parent / Child`). Every article comes with
+  each translation in a language the center offers; other languages are listed as skipped, so add the
+  language to the center's locales and import again.
+- **Help Scout Docs.** Create a Docs API key in Help Scout (Your Profile, API Keys) and give it to the
+  import; Yuva keeps it sealed until the import ends. Collections become collections, categories their
+  sub-collections. Docs sites have no languages: pick the one the articles are written in.
+- **What changes on the way.** Article HTML becomes Markdown. Images are downloaded, stored as the
+  center's images and rewritten; one that cannot be fetched stays a link. Links between imported
+  articles point to their new pages.
+- **Run it again.** An article imported before updates its draft and is never duplicated. A draft you
+  edited in Yuva since is kept unless you ask to overwrite it.
+- **Redirects.** The import lists each old URL with its new URL (download it as CSV). Setting up
+  the redirects at the old address is up to you, and a new URL answers `404` until you publish the
+  article.
+
+Start it with `POST /v1/help-centers/{id}/imports` (scope `help:write`); an assistant can start a
+Zendesk import and follow it with the `import_help_articles` and `get_help_import` tools.
+
 ## API
 
 All of it is under `/v1/help-centers` with the tag `help` in the [API reference](headless.md).

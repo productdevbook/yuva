@@ -540,12 +540,48 @@ func (s *Server) openHelpdesk(ctx context.Context, m store.Migration, budget *he
 	if !ok {
 		return nil, sec, errNotHelpdesk
 	}
-	if d.OAuth != nil && sec.Tokens.Refresh != "" && !sec.Tokens.Expires.IsZero() && s.now().Add(tokenRefreshAhead).After(sec.Tokens.Expires) {
+	if sec.needsRefresh(d, s.now()) {
+		if sec, err = s.refreshHelpdesk(ctx, m, d); err != nil {
+			return nil, sec, err
+		}
+	}
+	access := sec.Tokens.Access
+	return s.helpdeskSource(d, sec, func() string { return access }, budget), sec, nil
+}
+
+func (sec helpdeskSecret) needsRefresh(d helpdesk.Desk, now time.Time) bool {
+	return d.OAuth != nil && sec.Tokens.Refresh != "" && !sec.Tokens.Expires.IsZero() && now.Add(tokenRefreshAhead).After(sec.Tokens.Expires)
+}
+
+// refreshHelpdesk trades the refresh token for new tokens under a lock on the credentials row, so a
+// job of the migration and one of a help import never both spend a rotating refresh token: the one
+// that waits reads what the other stored.
+func (s *Server) refreshHelpdesk(ctx context.Context, m store.Migration, d helpdesk.Desk) (helpdeskSecret, error) {
+	var sec helpdeskSecret
+	err := s.st.InTx(ctx, func(q *store.Queries) error {
+		cred, err := q.LockMigrationCredentials(ctx, store.LockMigrationCredentialsParams{WorkspaceID: m.WorkspaceID, MigrationID: m.ID})
+		if err != nil {
+			if store.IsNotFound(err) {
+				return &helpdesk.AuthError{StatusError: helpdesk.StatusError{Status: http.StatusUnauthorized, Body: "no credentials are stored"}}
+			}
+			return err
+		}
+		plain, err := s.secrets.Open(cred.Sealed, migrationSecretContext(m.WorkspaceID, m.ID))
+		if err != nil {
+			return err
+		}
+		sec = helpdeskSecret{}
+		if err := json.Unmarshal(plain, &sec); err != nil {
+			return err
+		}
+		if !sec.needsRefresh(d, s.now()) {
+			return nil
+		}
 		cctx, cancel := context.WithTimeout(ctx, signInTimeout)
 		defer cancel()
 		t, err := d.OAuth.Refresh(cctx, s.helpdeskConfig(), sec.account(), sec.App, sec.Tokens.Refresh)
 		if err != nil {
-			return nil, sec, err
+			return err
 		}
 		if t.Refresh == "" {
 			t.Refresh = sec.Tokens.Refresh
@@ -557,18 +593,15 @@ func (s *Server) openHelpdesk(ctx context.Context, m store.Migration, budget *he
 			t.Scopes = []string{}
 		}
 		if len(d.Scopes) > 0 && !sameScopes(t.Scopes, d.Scopes) {
-			return nil, sec, &helpdesk.TokenError{Status: http.StatusForbidden, Code: "scope_too_broad"}
+			return &helpdesk.TokenError{Status: http.StatusForbidden, Code: "scope_too_broad"}
 		}
 		sec.Tokens = t
-		if err := s.st.SetMigrationCredentials(ctx, store.SetMigrationCredentialsParams{
+		return q.SetMigrationCredentials(ctx, store.SetMigrationCredentialsParams{
 			WorkspaceID: m.WorkspaceID, MigrationID: m.ID, Kind: cred.Kind, Sealed: s.secrets.Seal(mustJSON(sec), migrationSecretContext(m.WorkspaceID, m.ID)),
 			Host: cred.Host, Port: cred.Port, Tls: cred.Tls, Scopes: t.Scopes, ExpiresAt: expiresAt(t), Now: s.now(),
-		}); err != nil {
-			return nil, sec, err
-		}
-	}
-	access := sec.Tokens.Access
-	return s.helpdeskSource(d, sec, func() string { return access }, budget), sec, nil
+		})
+	})
+	return sec, err
 }
 
 func (sec helpdeskSecret) secrets() []string {
@@ -742,7 +775,7 @@ func (s *Server) saveBudget(ctx context.Context, m store.Migration, b *helpdesk.
 			return err
 		}
 		t := readThrottle(cur.Throttle)
-		t.Requests = b
+		t.Requests = mergeBudgets(t.Requests, b)
 		return q.SetMigrationThrottle(ctx, store.SetMigrationThrottleParams{WorkspaceID: m.WorkspaceID, ID: m.ID, Throttle: mustJSON(t)})
 	})
 	if err != nil {
@@ -933,4 +966,20 @@ func tokenSecret(d helpdesk.Desk, token string, b *oas.MigrationCredentialsInput
 		}
 	}
 	return sec, port, nil
+}
+
+// mergeBudgets keeps the use of both jobs that read the same help desk: the later state, with the
+// larger daily count of the same day.
+func mergeBudgets(stored, mine *helpdesk.Budget) *helpdesk.Budget {
+	if stored == nil {
+		return mine
+	}
+	out := *mine
+	if stored.At.After(mine.At) {
+		out = *stored
+	}
+	if stored.DayStart.Equal(mine.DayStart) {
+		out.DayUsed = max(stored.DayUsed, mine.DayUsed)
+	}
+	return &out
 }

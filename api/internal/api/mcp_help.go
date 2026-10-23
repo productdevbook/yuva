@@ -72,6 +72,33 @@ type getHelpArticleIn struct {
 	ArticleID uuid.UUID `json:"article_id" jsonschema:"an article from search_help_articles"`
 }
 
+type importHelpIn struct {
+	CenterID        uuid.UUID `json:"center_id" jsonschema:"a help center from list_help_centers"`
+	MigrationID     uuid.UUID `json:"migration_id" jsonschema:"a Zendesk migration of the workspace that is signed in"`
+	OverwriteEdited bool      `json:"overwrite_edited,omitempty" jsonschema:"replace drafts a member edited since the last import; off keeps them"`
+}
+
+type getHelpImportIn struct {
+	CenterID uuid.UUID `json:"center_id"`
+	ImportID uuid.UUID `json:"import_id" jsonschema:"an import from import_help_articles"`
+}
+
+type mcpHelpImport struct {
+	ID             uuid.UUID            `json:"id"`
+	State          string               `json:"state"`
+	Phase          string               `json:"phase"`
+	Counts         oas.HelpImportCounts `json:"counts"`
+	SkippedLocales []string             `json:"skipped_locales"`
+	Redirects      int32                `json:"redirects" jsonschema:"old URL to new URL rows; a member downloads them in Yuva"`
+	Error          string               `json:"error,omitempty"`
+	Note           string               `json:"note" jsonschema:"what happens next"`
+}
+
+func helpImportOutMCP(h oas.HelpImport) mcpHelpImport {
+	return mcpHelpImport{ID: h.Id, State: string(h.State), Phase: string(h.Phase), Counts: h.Counts, SkippedLocales: h.SkippedLocales, Redirects: h.Redirects,
+		Error: deref(h.Error), Note: "Everything is imported as drafts. A member reviews and publishes them in Yuva and sets up the redirects from the old URLs."}
+}
+
 type mcpHelpTranslation struct {
 	Locale        string `json:"locale"`
 	State         string `json:"state" jsonschema:"draft, published, or changed (published with a newer draft)"`
@@ -349,6 +376,28 @@ var mcpHelpTools = []mcpTool{
 				return mcpHelpDraft{}, err
 			}
 			return c.helpTranslationDraft(ctx, in.CenterID, in.ArticleID, put)
+		}),
+	defineTool("import_help_articles", "Import a Zendesk Guide as drafts",
+		"Starts reading the Guide of a signed-in Zendesk migration (read-only; needs owner or admin rights and migrations:manage, since it uses the migration's sign-in) into a help center: categories and sections become collections, articles come with every translation the center offers, images are stored, links between articles are rewritten. Everything stays a draft; a member publishes in Yuva. Idempotent: run again to update. Follow it with get_help_import. A Help Scout Docs import needs a Docs API key and is started in the panel. Maps to POST /v1/help-centers/{id}/imports.",
+		additive, nil, mcpTool{ops: []string{"StartHelpImport"}},
+		func(ctx context.Context, c *mcpCall, in importHelpIn) (mcpHelpImport, error) {
+			res, err := c.s.StartHelpImport(ctx, oas.StartHelpImportRequestObject{CenterId: in.CenterID, Body: &oas.HelpImportCreate{
+				Source: oas.Zendesk, MigrationId: &in.MigrationID, OverwriteEdited: &in.OverwriteEdited,
+			}})
+			if err != nil {
+				return mcpHelpImport{}, err
+			}
+			return helpImportOutMCP(oas.HelpImport(res.(oas.StartHelpImport202JSONResponse))), nil
+		}),
+	defineTool("get_help_import", "Follow a help article import",
+		"State, phase and counts of an article import. Maps to GET /v1/help-centers/{id}/imports/{id}.",
+		readOnly, nil, mcpTool{ops: []string{"GetHelpImport"}},
+		func(ctx context.Context, c *mcpCall, in getHelpImportIn) (mcpHelpImport, error) {
+			res, err := c.s.GetHelpImport(ctx, oas.GetHelpImportRequestObject{CenterId: in.CenterID, ImportId: in.ImportID})
+			if err != nil {
+				return mcpHelpImport{}, err
+			}
+			return helpImportOutMCP(oas.HelpImport(res.(oas.GetHelpImport200JSONResponse))), nil
 		}),
 	defineTool("help_search_gaps", "Find gaps in a help center",
 		"What visitors searched for and found nothing, most frequent first, and the articles that got the most no answers to was this helpful, over the last 7, 30 or 90 days. Use it to decide which article to write or improve next. Maps to GET /v1/help-centers/{id}/report.",

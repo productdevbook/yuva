@@ -225,6 +225,7 @@ aufgelistet; ein Aufruf dennoch antwortet mit `insufficient_scope` und dem zu er
 | `move_idea_stage` (nur wenn `roadmap:stage` ausdrücklich genannt ist; braucht `confirm_linked`) | `roadmap:stage` |
 | `list_help_centers`, `search_help_articles`, `get_help_article`, `help_search_gaps` | `help:read` |
 | `draft_help_article`, `update_help_article_draft` (nur Entwürfe, mit `base_version`; eine `locale` schreibt eine Übersetzung) | `help:write` |
+| `import_help_articles` (aus einer angemeldeten Zendesk-Migration ins Center, als Entwürfe), `get_help_import` | `help:write` |
 | `list_whats_new_entries`, `get_whats_new_entry` | `changelog:read` |
 | `draft_whats_new_entry`, `update_whats_new_draft` (nur Entwürfe, mit `base_version`; eine `locale` schreibt eine Übersetzung) | `changelog:write` |
 | `list_mailing_lists` | `lists:read` |

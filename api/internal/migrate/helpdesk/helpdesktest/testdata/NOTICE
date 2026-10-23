@@ -36,3 +36,13 @@ ids and content.
   with a second participant, an anonymous visitor) and each conversation's messages in batches the
   way `timestamp_before` pages them, shaped after docs.crisp.chat (REST API v1) with example
   addresses and invented ids. Files point at storage.crisp.chat and at hosts outside Crisp.
+
+- zendesk/help_*.json: the Guide (Help Center API) of the same account: its languages, the
+  categories and sections per language (a section nested in a section), and the articles per
+  language in two cursor pages, shaped after developer.zendesk.com (Help Center API: Categories,
+  Sections, Articles; `page[size]`, `meta.has_more`, `meta.after_cursor`), with invented content.
+  The Turkish article list also holds an article the account shows in English for want of a
+  translation.
+- helpscout_docs/: sites, collections, the categories and article lists of each collection (paged)
+  and each article, shaped after developer.helpscout.com (Docs API 1.0: `{items, page, pages}`
+  lists, Basic auth with a Docs API key), with invented content.

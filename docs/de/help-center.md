@@ -181,6 +181,35 @@ Block mit Link, ohne Tracking. Per API nimmt `POST /v1/conversations/{id}/messag
 zu 3 veröffentlichte Artikel des Centers des Posteingangs. Ziehen Sie einen Artikel später zurück, bleiben
 alte Nachrichten lesbar, und der Link zeigt die Nicht-gefunden-Seite des Centers.
 
+## Import aus Zendesk oder Help Scout
+
+Holen Sie ein vorhandenes Help-Center als Entwürfe in dieses. Nichts wird veröffentlicht, die Quelle
+wird nur gelesen.
+
+- **Zendesk Guide.** Nutzen Sie eine angemeldete Zendesk-Migration (Zu Yuva umziehen); ihre
+  Nur-Lese-Anmeldung wird wiederverwendet, es wird keine neue Berechtigung verlangt. Kategorien
+  werden Sammlungen, Abschnitte deren Untersammlungen (ein Abschnitt in einem Abschnitt wird
+  `Eltern / Kind`). Jeder Artikel kommt mit allen Übersetzungen in Sprachen, die das Center anbietet;
+  andere Sprachen werden als übersprungen aufgeführt – ergänzen Sie die Sprache im Center und
+  importieren Sie erneut.
+- **Help Scout Docs.** Legen Sie in Help Scout einen Docs-API-Schlüssel an (Your Profile, API Keys)
+  und geben Sie ihn dem Import; Yuva hält ihn versiegelt, bis der Import endet. Sammlungen werden
+  Sammlungen, Kategorien Untersammlungen. Docs-Sites haben keine Sprachen: Wählen Sie die Sprache der
+  Artikel.
+- **Was unterwegs geschieht.** Artikel-HTML wird Markdown. Bilder werden geladen, als Bilder des
+  Centers gespeichert und umgeschrieben; ein nicht ladbares bleibt ein Link. Links zwischen
+  importierten Artikeln zeigen auf die neuen Seiten.
+- **Erneut ausführen.** Ein früher importierter Artikel aktualisiert seinen Entwurf und wird nie
+  verdoppelt. Ein Entwurf, den Sie seitdem in Yuva bearbeitet haben, bleibt erhalten, außer Sie
+  wählen Überschreiben.
+- **Weiterleitungen.** Der Import listet jede alte URL mit der neuen (als CSV herunterladbar). Die
+  Weiterleitung unter der alten Adresse einzurichten ist Ihre Sache; die neue URL antwortet `404`,
+  bis Sie den Artikel veröffentlichen.
+
+Starten Sie ihn mit `POST /v1/help-centers/{id}/imports` (Berechtigung `help:write`); ein Assistent
+kann einen Zendesk-Import starten und mit den Tools `import_help_articles` und `get_help_import`
+verfolgen.
+
 ## API
 
 Alles liegt unter `/v1/help-centers` und trägt in der [API-Referenz](headless.md) das Tag `help`.
